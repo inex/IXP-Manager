@@ -24,7 +24,8 @@
                 {/if}
             {/if}
             <br />
-            Copyright &copy; Internet Neutral Exchange Association Ltd. 2005 - {$smarty.now|date_format:"%Y"}. All Rights Reserved
+            Copyright &copy; Internet Neutral Exchange Association Ltd. 2009 - {$smarty.now|date_format:"%Y"}. Licensed under GPL v2.0. Find us on <a href="https://github.com/inex/IXP-Manager">github.com</a>.
+
         </p>
 
     </div>
