@@ -1,0 +1,2 @@
+Feb 11 22:05:18 <local2.err> sw04 376333: Feb 11 22:05:18 GMT: %LINK-3-UPDOWN: TenGigabitEthernet3/3, changed state to down
+Feb 11 22:05:27 <local2.err> sw04 376340: Feb 11 22:05:27 GMT: %LINK-3-UPDOWN: Interface TenGigabitEthernet3/3, changed state to up

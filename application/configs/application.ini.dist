@@ -1,0 +1,248 @@
+;
+; Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+; All Rights Reserved.
+; 
+; This file is part of IXP Manager.
+; 
+; IXP Manager is free software: you can redistribute it and/or modify it
+; under the terms of the GNU General Public License as published by the Free
+; Software Foundation, version v2.0 of the License.
+;
+; IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+; more details.
+; 
+; You should have received a copy of the GNU General Public License v2.0
+; along with IXP Manager.  If not, see:
+; 
+; http://www.gnu.org/licenses/gpl-2.0.html
+
+[production]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bootstrap Options                         
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+phpSettings.display_startup_errors = 0
+phpSettings.display_errors = 0
+
+includePaths.library = APPLICATION_PATH "/../library"
+
+; SETME!
+includePaths.doctrine = /path/to/Doctrine/lib
+
+pluginPaths.INEX_Resource = APPLICATION_PATH "/../library/INEX/Resource"
+
+bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
+bootstrap.class = "Bootstrap"                     
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Resources                                 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+resources.frontController.controllerDirectory = APPLICATION_PATH "/controllers"
+resources.frontController.params.noViewRenderer = 1
+
+resources.auth = 1
+
+resources.doctrine.connection_string = "mysql://user:pass@host/database"
+resources.doctrine.data_fixtures_path = APPLICATION_PATH "/../doctrine/data/fixtures"         
+resources.doctrine.models_path = APPLICATION_PATH "/models"                                   
+resources.doctrine.migrations_path = APPLICATION_PATH "/../doctrine/migrations"               
+resources.doctrine.sql_path = APPLICATION_PATH "/../doctrine/data/sql"                        
+resources.doctrine.yaml_schema_path = APPLICATION_PATH "/../doctrine/schema"                  
+resources.doctrine.generate_models_options.generateTableClasses = true
+
+resources.logger.enabled = 1
+resources.logger.writers.email.from = ops-auto@example.com
+resources.logger.writers.email.to = ops-auto@example.com
+resources.logger.writers.email.prefix = IXP_ERROR
+resources.logger.writers.email.level = 3
+resources.logger.writers.stream.level = 7
+resources.logger.writers.stream.path = APPLICATION_PATH "/../var/log"
+resources.logger.writers.stream.owner = www
+resources.logger.writers.stream.group = www
+
+resources.namespace.checkip = 1
+resources.namespace.timeout = 3600
+
+resources.session.save_path = APPLICATION_PATH "/../var/session"
+resources.session.use_only_cookies = true
+resources.session.remember_me_seconds = 3600
+resources.session.name = INEX_IXP
+
+resources.mailer.smtphost = mail.example.com
+; resources.mailer.username = 
+; resources.mailer.password = 
+; resources.mailer.auth = login | plain | cram-md5
+
+; We use Smarty as the templating engine for IXP
+resources.view.templates = APPLICATION_PATH "/views"
+resources.view.compiled  = APPLICATION_PATH "/../var/templates_c"
+resources.view.cache     = APPLICATION_PATH "/../var/cache"
+resources.view.config    = APPLICATION_PATH "/configs/smarty"
+resources.view.plugins[] = APPLICATION_PATH "/../library/inex-smarty/functions"
+resources.view.plugins[] = "plugins"
+resources.view.debugging = 0
+
+
+; enable zfdebug plugin
+resources.zfdebug.enabled = false
+resources.zfdebug.plugins[] = "Variables"
+resources.zfdebug.plugins.File.base_path = APPLICATION_PATH "/../"
+resources.zfdebug.plugins[] = "Database"
+resources.zfdebug.plugins[] = "Memory"
+resources.zfdebug.plugins[] = "Time"
+resources.zfdebug.plugins[] = "Registry"
+resources.zfdebug.plugins[] = "Exception"
+resources.zfdebug.users[] = "user1"
+resources.zfdebug.users[] = "user2"
+
+
+identity.orgname  = "An IXP"
+identity.name  = "Another IXP Operations"
+identity.email = "operations@example.com"
+identity.testemail = "x@example.com"
+identity.autobot.name  = "IXP Ops Autobot"
+identity.autobot.email = "ops-auto@example.com"
+identity.ixp.fullname = "Another IXP's Manager"
+identity.ixp.url = "https://www.example.com/ixp/"
+identity.ixp.logo = APPLICATION_PATH "/../public/images/mylogo.jpg
+
+
+sms.clickatell.username = "user"
+sms.clickatell.password = "pass"
+sms.clickatell.api_id = "appid"
+sms.clickatell.sender_id = "IXP_NAME"
+
+
+; MRTG Parameters
+mrtg.path = http://www.example.com/mrtg/members
+
+mrtg.traffic_graphs[] = "aggregate::Aggregate Graphs"
+mrtg.traffic_graphs[] = "network1::IXP Infrastructure #1"
+mrtg.traffic_graphs[] = "network2::IXP Infrastructure #2"
+
+mrtg.trunk_graphs[] = "core-pop1-pop2-lan1::PoP 1 to PoP 2 (LAN1)"
+
+; LANs for public and 'my' peering matric.
+peering_matrix.public.0.name   = "Public Peering LAN #1"
+peering_matrix.public.0.number = 10
+peering_matrix.public.0.table  = "/path/to/peering-matrix/public-vlan10-ipv4.html"
+peering_matrix.public.1.name   = "Public Peering LAN #2"
+peering_matrix.public.1.number = 12
+peering_matrix.public.1.table  = "/path/to/peering-matrix/public-vlan12-ipv4.html"
+
+; details for the primary / only / main peering LAN
+primary_peering_lan.vlan_tag = 10
+
+; Change Log Facility
+change_log.enabled = 1
+
+
+;; IXP Tool / CLI Settings
+
+cli.traffic_differentials.stddev_calc_length = 60
+cli.traffic_differentials.from_email = "ops@example.com"
+cli.traffic_differentials.from_name  = "Another IXP Operations"
+cli.traffic_differentials.subject = "Another IXP Traffic Differentials"
+cli.traffic_differentials.recipients[] = "user1@example.com"
+cli.traffic_differentials.recipients[] = "user2@example.com"
+
+cli.port_utilisation.threshold = 0.8
+cli.port_utilisation.from_email = "ops@example.com"
+cli.port_utilisation.from_name  = "Another IXP Operations"
+cli.port_utilisation.subject = "IXP Port Utilisation Report"
+cli.port_utilisation.recipients[] = "user1@example.com"
+cli.port_utilisation.recipients[] = "user2@example.com"
+
+;; Meeting RSVP Handler
+meeting.rsvp_to_email = "rsvp@example.com"
+meeting.rsvp_to_name  = "Meeting Administrator"
+
+
+
+;; SEC (Simple Event Correlator) Handler Settings
+
+sec.pagers[] = "353861234567"
+sec.pagers[] = "353871234567"
+
+
+; alert_customers must be true for cc_opsauto to have an effect
+sec.bgp_auth.alert_customers  = true 
+sec.bgp_auth.cc_opsauto       = false  
+sec.bgp_auth.alert_operations = false  
+
+; alert_customers must be true for cc_opsauto to have an effect
+sec.port_updown.alert_customers  = true 
+sec.port_updown.cc_opsauto       = false  
+sec.port_updown.alert_operations = false
+
+; alert_customers must be true for cc_opsauto to have an effect
+sec.security_violation.alert_customers  = true  
+sec.security_violation.cc_opsauto       = false  
+sec.security_violation.alert_operations = false  
+
+
+
+menu.staff_links.cacti.name = "Cacti"
+menu.staff_links.cacti.link = "https://www.example.com/cacti/"
+
+menu.staff_links.ipplan.name = "IP Plan"
+menu.staff_links.ipplan.link = "https://www.example.com/ipplan/"
+
+
+[staging : production]
+
+
+[testing : production]
+
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
+
+resources.logger.writers.firebug.enabled = 1
+resources.logger.writers.firebug.level = 7
+
+
+
+
+
+
+
+[development : production]
+
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
+
+includePaths.doctrine = APPLICATION_PATH "/../library/Doctrine"
+
+
+resources.doctrine.connection_string = "mysql://user:pass@host/database"
+
+
+resources.logger.writers.firebug.enabled = 1
+resources.logger.writers.firebug.level = 7
+resources.logger.writers.stream.owner = www-data
+resources.logger.writers.stream.group = www-data
+
+resources.mailer.smtphost = "mail.example.com"
+
+resources.view.debugging = 0
+
+resources.namespace.timeout = 3000
+resources.session.remember_me_seconds = 3000
+
+identity.ixp.url = "http://127.0.0.1/ixp/"
+
+[clidev : development]
+
+resources.zfdebug.enabled = false
+
+[productioncli : production]
+
+resources.zfdebug.enabled = false
+
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
+
