@@ -1,1 +1,8 @@
 .project
+public/.htaccess
+application/configs/application.ini
+var/cache/*
+var/log/*
+var/meetings/*
+var/session/*
+var/templates_c/*
