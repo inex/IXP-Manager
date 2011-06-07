@@ -6,3 +6,5 @@ var/log/*
 var/meetings/*
 var/session/*
 var/templates_c/*
+library/Doctrine
+library/Zend
