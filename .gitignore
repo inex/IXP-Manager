@@ -8,3 +8,6 @@ var/session/*
 var/templates_c/*
 library/Doctrine
 library/Zend
+library/ZFDebug
+library/smarty
+*~
