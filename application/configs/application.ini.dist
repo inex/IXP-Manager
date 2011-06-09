@@ -101,6 +101,11 @@ resources.zfdebug.users[] = "user1"
 resources.zfdebug.users[] = "user2"
 
 
+; Individual controllers (those extending FrontEnd) can be disabled via:
+; controller.sec-viewer.enabled = 0
+; which will display an appropriate message (index/controller-disabled.tpl) 
+
+
 identity.orgname  = "An IXP"
 identity.name  = "Another IXP Operations"
 identity.email = "operations@example.com"

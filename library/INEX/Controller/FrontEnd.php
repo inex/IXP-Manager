@@ -79,6 +79,13 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
      */
     public function preDispatch()
     {
+        // is this controller enabled?
+        if( isset( $this->config['controller'][$this->getRequest()->getParam( 'controller' )]['enabled'] )
+                && !$this->config['controller'][$this->getRequest()->getParam( 'controller' )]['enabled'] )
+        {
+            return( $this->_forward( 'controller-disabled', 'index' ) );
+        } 
+        
         if( $this->feAuthLevelRequired != User::AUTH_PUBLIC )
         {
             if( isset( $this->frontend['authLevels'][$this->getRequest()->getActionName()] )

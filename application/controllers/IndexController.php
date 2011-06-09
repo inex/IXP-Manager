@@ -58,6 +58,10 @@ class IndexController extends INEX_Controller_Action
         }
     }
 
+    public function controllerDisabledAction()
+    {
+        $this->view->display( 'index/controller-disabled.tpl' );
+    }
 }
 
 ?>
