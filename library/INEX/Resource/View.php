@@ -77,6 +77,9 @@ class INEX_Resource_View extends Zend_Application_Resource_ResourceAbstract
                 ) 
             );
             
+            if( isset( $options['skin'] ) )
+                $view->setSkin( $options['skin'] );
+            
             $view->getEngine()->debugging = $options['debugging'];
             
             // Add it to the ViewRenderer

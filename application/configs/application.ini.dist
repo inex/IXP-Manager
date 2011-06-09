@@ -79,6 +79,7 @@ resources.mailer.smtphost = mail.example.com
 
 ; We use Smarty as the templating engine for IXP
 resources.view.templates = APPLICATION_PATH "/views"
+;resources.view.skin      = "skinname"
 resources.view.compiled  = APPLICATION_PATH "/../var/templates_c"
 resources.view.cache     = APPLICATION_PATH "/../var/cache"
 resources.view.config    = APPLICATION_PATH "/configs/smarty"
