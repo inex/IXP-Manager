@@ -49,6 +49,6 @@ class PeeringMatrix extends BasePeeringMatrix
 
         $this->hasOne( 'Cust as X_Cust',   array( 'local' => 'x_custid',  'foreign' => 'id') );
         $this->hasOne( 'Cust as Y_Cust',   array( 'local' => 'y_custid',  'foreign' => 'id') );
-        $this->hasOne( 'MyPeeringMatrix',  array( 'local' => 'x_custid',  'foreign' => 'custid') );
+        $this->hasMany( 'MyPeeringMatrix',  array( 'local' => 'x_custid',  'foreign' => 'custid') );
     }
 }
