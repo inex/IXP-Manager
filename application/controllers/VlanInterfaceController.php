@@ -52,7 +52,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             ),
 
             'sortDefaults' => array(
-                'column' => 'vlanName',
+                'column' => 'Vlan.name',
                 'order'  => 'desc'
             ),
 
