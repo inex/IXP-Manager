@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <div class="yui-g" style="height: 600px; margin-bottom: 150px;">
 
@@ -13,7 +13,7 @@
 </table>
 
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 
 {literal}
@@ -257,7 +257,7 @@
 
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 
 
 

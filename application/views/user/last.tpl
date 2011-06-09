@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
@@ -63,4 +63,4 @@ var lastDataTable = new YAHOO.widget.DataTable( "lastContainer", lastColumnDefs,
 </div>
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
 
 <div class="yui-g" style="height: 600px">
 
@@ -11,7 +11,7 @@
 </table>
 
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id="ajaxMessage"></div>
 
@@ -150,4 +150,4 @@ instructionDialog.show();
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

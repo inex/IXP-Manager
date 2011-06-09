@@ -98,5 +98,5 @@
 </div>
 
 
-{include file="menu.tpl"}
+{tmplinclude file="menu.tpl"}
 

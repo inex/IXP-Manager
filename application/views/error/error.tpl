@@ -1,10 +1,10 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <div class="content">
 
 <h1>An error has occured</h1>
 	
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 {if not isset( $message )}
     <p>
@@ -20,4 +20,4 @@ occured and we will rectify it as soon as possible. Our support team can be reac
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

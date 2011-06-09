@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
@@ -128,4 +128,4 @@ designed and coded by the London Internet Exchange (LINX).
 </div>
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

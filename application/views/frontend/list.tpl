@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
 
 <script>
     YAHOO.namespace( 'IXP' );
@@ -78,7 +78,7 @@
 </tr>
 </table>
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id="ajaxMessage"></div>
 
@@ -237,7 +237,7 @@ YAHOO.util.Event.addListener( window, "load", function() {ldelim}
 
 
         {if $hasCustomContextMenu}
-            {include file=$hasCustomContextMenu}
+            {tmplinclude file=$hasCustomContextMenu}
         {else}
 
             {literal}
@@ -300,9 +300,9 @@ YAHOO.util.Event.addListener( window, "load", function() {ldelim}
 {/if}
 
 {if $hasPostContent}
-    {include file=$hasPostContent}
+    {tmplinclude file=$hasPostContent}
 {/if}
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

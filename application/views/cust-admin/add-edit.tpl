@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <table class="adminheading" border="0">
 <tr>
@@ -9,7 +9,7 @@
 </table>
 
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id="ajaxMessage"></div>
 
@@ -41,5 +41,5 @@ number provided and they will receive a welcome email to the email address provi
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 

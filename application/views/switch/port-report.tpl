@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g" style="margin-bottom: 70px;">
 
@@ -70,4 +70,4 @@
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

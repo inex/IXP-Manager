@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <div class="content">
 
@@ -15,7 +15,7 @@
 </table>
 
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id="ajaxMessage"></div>
 
@@ -33,5 +33,5 @@ patch panel will also have their co-location reference updated also.
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 

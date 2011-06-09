@@ -1,10 +1,10 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <div class="content">
 
 <h1>An error has occured</h1>
 	
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <dl>
     <dt>File</dt>
@@ -28,4 +28,4 @@
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

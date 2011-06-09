@@ -1,4 +1,4 @@
-{include file="header-full-width.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header-full-width.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
@@ -12,7 +12,7 @@
 </tr>
 </table>
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id='ajaxMessage'></div>
 
@@ -132,5 +132,5 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 <script type="text/javascript">
 </script>
 
-{include file="footer-full-width.tpl"}
+{tmplinclude file="footer-full-width.tpl"}
 

@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <script>
     YAHOO.namespace( 'IXP' );
@@ -76,7 +76,7 @@
     <h2>Create New Customer Interface  </h2>
 {/if}
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 
 {$form}
@@ -340,5 +340,5 @@
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 

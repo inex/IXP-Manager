@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
@@ -168,4 +168,4 @@ right click on the meeting you wish to compose a mail about and select <em>Compo
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

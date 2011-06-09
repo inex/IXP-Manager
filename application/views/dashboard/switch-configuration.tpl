@@ -1,8 +1,8 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id='ajaxMessage'></div>
 
@@ -116,5 +116,5 @@
 </script>
 {/literal}
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 

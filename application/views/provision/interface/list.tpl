@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Provision New Interface"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Provision New Interface"}
 
 <div class="yui-g">
 
@@ -10,7 +10,7 @@
     </tr>
 </table>
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id="ajaxMessage"></div>
 
@@ -153,4 +153,4 @@ YAHOO.util.Event.addListener( window, "load", function() {ldelim}
 
 </script>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: My Peering Manager"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: My Peering Manager"}
 
 <div class="yui-g">
 
@@ -44,7 +44,7 @@
 </form>
 </p>
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id='ajaxMessage'></div>
 
@@ -523,6 +523,6 @@ $().ready( function()
 
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 
 

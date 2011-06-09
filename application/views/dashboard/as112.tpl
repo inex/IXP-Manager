@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
@@ -12,7 +12,7 @@
 </tr>
 </table>
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id='ajaxMessage'></div>
 
@@ -120,4 +120,4 @@ on the AS112 project, <em>The Nameservers at the End of the Universe</em>.
 </div>
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: SEC Event Notification Config"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: SEC Event Notification Config"}
 
 <div class="yui-g">
 
@@ -12,7 +12,7 @@
 </tr>
 </table>
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div id='ajaxMessage'></div>
 
@@ -94,5 +94,5 @@ at your earliest convenience.
 </div>
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 

@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <!-- YAHOO Global Object source file --> 
 <script type="text/javascript" src="{$config->web->basepath}/css/yui/build/yahoo/yahoo-min.js" ></script>
@@ -58,5 +58,5 @@
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 

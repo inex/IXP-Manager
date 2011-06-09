@@ -1,4 +1,4 @@
-{include file="header-tiny.tpl" pageTitle="IXP Manager :: Help"}
+{tmplinclude file="header-tiny.tpl" pageTitle="IXP Manager :: Help"}
 
 <div class="yui-g">
 
@@ -165,4 +165,4 @@ system will automatically add the date and username to the note to help track wh
 your organisation are working with another member.
 </p>
 
-{include file="footer-tiny.tpl"}
+{tmplinclude file="footer-tiny.tpl"}

@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 
 <script>
@@ -81,7 +81,7 @@
 </tr>
 </table>
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 
 {literal}
@@ -158,4 +158,4 @@
 </div>
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

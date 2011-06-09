@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
@@ -160,4 +160,4 @@ When connected to the management port on the hosted device:
 
 </div>
 </div>
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

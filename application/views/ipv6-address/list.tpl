@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: IPv6 Addresses"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: IPv6 Addresses"}
 
 <div class="yui-g">
 
@@ -38,4 +38,4 @@
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

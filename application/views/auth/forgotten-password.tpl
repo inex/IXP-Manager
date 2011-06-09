@@ -1,6 +1,6 @@
-{include file="auth/header.tpl"}
+{tmplinclude file="auth/header.tpl"}
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 
 <div class="login">
@@ -33,4 +33,4 @@
 </div>
 
 
-{include file="auth/footer.tpl"}
+{tmplinclude file="auth/footer.tpl"}

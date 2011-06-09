@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
@@ -127,4 +127,4 @@ can be disabled on a per-interface basis using the following command:
 </div>
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

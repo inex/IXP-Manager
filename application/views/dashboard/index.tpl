@@ -1,13 +1,13 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
 <div id="content">
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 {if $meeting neq false}
-    {include file="dashboard/popups/meeting.tpl"}
+    {tmplinclude file="dashboard/popups/meeting.tpl"}
 {/if}
 
 <div id='ajaxMessage'></div>
@@ -33,24 +33,24 @@
         <div>
 
             <!-- Overview Tab -->
-            {include file="dashboard/index-tab-overview.tpl"}
+            {tmplinclude file="dashboard/index-tab-overview.tpl"}
 
         </div>
 
         {if $customer->isFullMember()}
 	        <div>
 	            <!-- Details Tab -->
-	            {include file="dashboard/index-tab-details.tpl"}
+	            {tmplinclude file="dashboard/index-tab-details.tpl"}
 
 	        </div>
 	        <div>
 	            <!-- Connections -->
-	            {include file="dashboard/index-tab-connections.tpl"}
+	            {tmplinclude file="dashboard/index-tab-connections.tpl"}
 
 	        </div>
 	        <div>
 	            <!-- Statistics -->
-	            {include file="dashboard/index-tab-statistics.tpl"}
+	            {tmplinclude file="dashboard/index-tab-statistics.tpl"}
 
 	        </div>
 	    {/if}
@@ -61,4 +61,4 @@
 
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 {assign var='_inc_file' value=$controller|cat:'/addEdit-preamble.tpl'}
 {include_if_exists file=$_inc_file}
@@ -19,5 +19,5 @@
 {assign var='_inc_file' value=$controller|cat:'/addEdit-postamble.tpl'}
 {include_if_exists file=$_inc_file}
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}
 

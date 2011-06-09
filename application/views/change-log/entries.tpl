@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g">
 
@@ -47,4 +47,4 @@ Log</em> link as updated.
 </div>
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

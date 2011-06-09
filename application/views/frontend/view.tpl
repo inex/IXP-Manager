@@ -6,7 +6,7 @@
 {/if}
 
 {if $perspective neq 'panel'}
-    {include file="header.tpl"}
+    {tmplinclude file="header.tpl"}
 
     <table class="adminheading" border="0">
     <tr>
@@ -82,7 +82,7 @@
 {if $perspective neq 'panel'}
     </div>
 
-    {include file="footer.tpl"}
+    {tmplinclude file="footer.tpl"}
 {else}
     </div>
     <div class="ft" id="viewPanelFooter">INEX IXP Manager</div>
