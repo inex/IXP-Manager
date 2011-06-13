@@ -31,7 +31,7 @@ shift
 if [ "X"${querytype} = "Xprefixlist" ]; then
 	echo "${query}" | \
 		peval $* | \
-		sed -e 1d  | \
+		grep '^({' |\
 		cut -d \{ -f2 | cut -d \} -f1 | \
 		perl -ne '
 			my @arr = split(/\s+/);
@@ -41,7 +41,7 @@ if [ "X"${querytype} = "Xprefixlist" ]; then
 elif [ "X"${querytype} = "Xasnlist" ]; then
 	echo "${query}" | \
 		peval -no-as $* | \
-		sed -e 1d  | \
+		grep '^((' |\
 		cut -d \( -f3 | cut -d \) -f1 | \
 		perl -ne '
 			s/AS//g;
