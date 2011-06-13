@@ -1,0 +1,9 @@
+MANIFEST
+MANIFEST.SKIP
+Makefile.PL
+lib/IXPManager/Config.pm
+lib/IXPManager/Const.pm
+lib/IXPManager/Utils.pm
+lib/IXPManager/Template/Plugin/IRRToolSetDispatch.pm
+lib/IXPManager/Template/Plugin/IRRToolSetBird.pm
+META.yml                                 Module meta-data (added by MakeMaker)

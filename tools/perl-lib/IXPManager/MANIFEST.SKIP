@@ -1,0 +1,8 @@
+^blib/
+~$
+^Makefile$
+^Makefile\.old$
+^log$
+^pm_to_blib$
+^t/config$
+\bCVS\b
