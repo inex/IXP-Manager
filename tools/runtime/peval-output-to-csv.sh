@@ -31,21 +31,23 @@ shift
 if [ "X"${querytype} = "Xprefixlist" ]; then
 	echo "${query}" | \
 		peval $* | \
-		tail +2  | \
+		sed -e 1d  | \
 		cut -d \{ -f2 | cut -d \} -f1 | \
-		fmt -1 | \
-		awk '{print $1}' | \
-		fmt -w 999999
+		perl -ne '
+			my @arr = split(/\s+/);
+			print join(" ", @arr)."\n";
+		'
+		
 elif [ "X"${querytype} = "Xasnlist" ]; then
 	echo "${query}" | \
 		peval -no-as $* | \
-		tail +2  | \
+		sed -e 1d  | \
 		cut -d \( -f3 | cut -d \) -f1 | \
-		sed -e 's/AS//g' | \
-		fmt -1 | \
-		awk '{print $1}' | \
-		fmt -w 999999 | \
-		sed -e 's/ /, /g'
+		perl -ne '
+			s/AS//g;
+			my @arr = split(/\s+/);
+			print join(", ", @arr)."\n";
+		'
 fi
 
 exit $?
