@@ -28,6 +28,7 @@ WriteMakefile(
 
 	PREREQ_PM	=> {
 		Config::General => '',
+		NetAddr::IP => '',
 		DBI => '',
 	},
 
