@@ -1,6 +1,7 @@
 MANIFEST
 MANIFEST.SKIP
 Makefile.PL
+ixpmanager.conf
 lib/IXPManager/Config.pm
 lib/IXPManager/Const.pm
 lib/IXPManager/Utils.pm
