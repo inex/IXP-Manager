@@ -148,7 +148,7 @@ protocol bgp pb_as[% asn %] {
 [% md5type = protocol _ 'bgpmd5secret' -%]
 [% bgpmd5secret = entries.$vid.$md5type -%]
 [% IF bgpmd5secret -%]
-	password [% bgpmd5secret %];
+	password "[% bgpmd5secret %]";
 [% END -%]
 	import all;
 	export all;
