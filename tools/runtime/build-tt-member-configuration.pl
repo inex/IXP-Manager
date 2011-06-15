@@ -45,6 +45,8 @@ my $tt = Template->new($ttconfig);
 
 my ($output, $vlan, $protocol, $routeserver, $debug, $shortname, $query, $vars);
 
+$debug = $ixpconfig->{ixp}->{debug};
+
 GetOptions (	"vlan=i" => \$vlan,
 		"protocol=s" => \$protocol,
 		"routeserver=i" => \$routeserver,
@@ -139,7 +141,7 @@ $query .= <<EOF;
 		autsys
 EOF
 
-print Dumper ($query) if ($debug);
+print STDERR Dumper ($query) if ($debug);
 
 if (!($sth = $dbh->prepare($query))) {
 	die "$dbh->errstr\n";
@@ -211,7 +213,7 @@ if ($protocol) {
 	$vars->{protocol} = 'ipv'.$protocol;
 }
 
-print Dumper ($vars) if ($debug);
+print STDERR Dumper ($vars) if ($debug);
 
 foreach my $input (@ARGV) {
 	$tt->process($input, $vars, \$output) || die $tt->error();
