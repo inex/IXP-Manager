@@ -74,5 +74,5 @@ for protocol in 4 6; do
 			fi
 		fi
 	fi
-	rm -f ${tmpfile}
+	rm -f ${tmpfile} ${rstmpfile}
 done
