@@ -50,7 +50,7 @@ for protocol in 4 6; do
 	build-tt-member-configuration.pl	\
 		--vlan 10			\
 		--protocol ${protocol}		\
-		--routeserver 1			\
+		--routeserver ${routeserver}	\
 		${sourcett}			> ${rstmpfile} 2> ${tmpfile}
 
 	if [ -s ${tmpfile} ]; then
