@@ -43,43 +43,35 @@ class INEX_Form_PhysicalInterface extends INEX_Form
     {
         parent::__construct( $options, $isEdit );
 
-        ////////////////////////////////////////////////
-        // Create and configure elements
-        ////////////////////////////////////////////////
+        
+        $switch = $this->createElement( 'select', 'switch_id' );
 
+        $maxSwitchId = $this->createSelectFromDatabaseTable( $switch, 'SwitchTable', 'id',
+            array( 'name' ),
+            'name'
+        );
+
+        $switch->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( 'Switch' )
+            ->addValidator( 'between', false, array( 1, $maxSwitchId ) )
+            ->setErrorMessages( array( 'Please select a switch' ) );
+
+        $this->addElement( $switch );
+
+        
+        
+        
         $switchPorts = $this->createElement( 'select', 'switchportid' );
 
-        $collection = Doctrine_Query::create()
-	        ->from( 'Switchport sp' )
-	        ->leftJoin( 'sp.SwitchTable s' )
-	        ->leftJoin( 'sp.Physicalinterface pi' )
-	        ->where( 'pi.id IS NULL' )
-	        ->orWhere( 'pi.id = ?', Zend_Controller_Front::getInstance()->getRequest()->getParam( 'id' ) )
-	        ->orderBy( 's.name ASC, sp.name ASC' )
-	        ->execute();
-
-        $options = array( '0' => '' );
-        $maxId = 0;
-
-        foreach( $collection as $c )
-        {
-            $options[ $c['id'] ] = "{$c['SwitchTable']['name']} - {$c['name']} - (" . Switchport::$TYPE_TEXT[$c['type']] . ')';
-
-            if( $c['id'] > $maxId ) $maxId = $c['id'];
-        }
-
-
-
-        $switchPorts->setMultiOptions( $options )
-            ->setRegisterInArrayValidator( true )
-            ->setRequired( true )
+        $switchPorts->setRequired( true )
+            ->setRegisterInArrayValidator( false )
             ->setLabel( 'Port' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a switch port' ) );
+            
         $this->addElement( $switchPorts );
-
-
-
+        
         $virtualInterface = $this->createElement( 'hidden', 'virtualinterfaceid' );
         $this->addElement( $virtualInterface );
 
@@ -140,7 +132,12 @@ class INEX_Form_PhysicalInterface extends INEX_Form
 
         $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
 
-
+        $preselectSwitchPort = $this->createElement( 'hidden', 'preselectSwitchPort' );
+        $this->addElement( $preselectSwitchPort );
+        
+        $preselectPhysicalInterface = $this->createElement( 'hidden', 'preselectPhysicalInterface' );
+        $this->addElement( $preselectPhysicalInterface );
+        
     }
 
 }
