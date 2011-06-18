@@ -210,6 +210,76 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             $form->getElement( 'virtualinterfaceid' )->setValue( $this->getRequest()->getParam( 'virtualinterfaceid' ) );
         }
     }
+    
+    
+    
+    
+    
+    protected function formPrevalidate( $form, $isEdit, $object )
+    {
+        // set the switch and port fields of the form if we're editing
+        if( $isEdit )
+        {
+            $form->getElement( 'vlanid')->setValue( $object['vlanid'] );
+            
+            $form->getElement( 'preselectIPv4Address' )->setValue( $object['ipv4addressid'] );
+            $form->getElement( 'preselectIPv6Address' )->setValue( $object['ipv6addressid'] );
+            
+            $form->getElement( 'preselectVlanInterface' )->setValue( $object['id'] );
+        }
+    }
+    
+    public function ajaxGetIpv4Action()
+    {
+        $vlan = Doctrine::getTable( 'Vlan' )->find( $this->_getParam( 'vlanid', null ) );
+
+        $ips = '';
+        
+        if( $vlan )
+        {
+            $ips = Doctrine_Query::create()
+                ->from( 'Ipv4address ip' )
+                ->leftJoin( 'ip.Vlaninterface vli' )
+                ->where( 'ip.vlanid = ?', $vlan['id'] )
+                ->andWhere( '( vli.id IS NULL OR vli.id = ? )', $this->_getParam( 'id' ) )
+                ->orderBy( 'ip.id' )
+                ->fetchArray();
+        }
+        
+        $this->getResponse()
+            ->setHeader('Content-Type', 'application/json')
+            ->setBody( Zend_Json::encode( $ips ) )
+            ->sendResponse();
+        exit();
+    }
+
+    public function ajaxGetIpv6Action()
+    {
+        $vlan = Doctrine::getTable( 'Vlan' )->find( $this->_getParam( 'vlanid', null ) );
+
+        $ips = '';
+        
+        if( $vlan )
+        {
+            $ips = Doctrine_Query::create()
+                ->from( 'Ipv6address ip' )
+                ->leftJoin( 'ip.Vlaninterface vli' )
+                ->where( 'ip.vlanid = ?', $vlan['id'] )
+                ->andWhere( '( vli.id IS NULL OR vli.id = ? )', $this->_getParam( 'id' ) )
+                ->orderBy( 'ip.id' )
+                ->fetchArray();
+        }
+        
+        $this->getResponse()
+            ->setHeader('Content-Type', 'application/json')
+            ->setBody( Zend_Json::encode( $ips ) )
+            ->sendResponse();
+        exit();
+    }
+
+    
+    
+    
 }
 
 ?>

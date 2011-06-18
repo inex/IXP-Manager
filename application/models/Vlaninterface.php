@@ -45,4 +45,7 @@ class Vlaninterface extends BaseVlaninterface
         $this->hasOne( 'Vlan',              array( 'local' => 'vlanid',              'foreign' => 'id') );
         $this->hasOne( 'Virtualinterface',  array( 'local' => 'virtualinterfaceid',  'foreign' => 'id') );
     }
+    
+    
+    
 }

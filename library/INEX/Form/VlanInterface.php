@@ -76,31 +76,11 @@ class INEX_Form_VlanInterface extends INEX_Form
 
         $ipv4addressid = $this->createElement( 'select', 'ipv4addressid' );
 
-        $collection = Doctrine_Query::create()
-        ->from( 'Ipv4address ipv4' )
-        ->leftJoin( 'ipv4.Vlaninterface vli' )
-        ->leftJoin( 'ipv4.Vlan v' )
-        ->where( 'vli.id IS NULL' )
-        ->orWhere( 'vli.id = ?', Zend_Controller_Front::getInstance()->getRequest()->getParam( 'id' ) )
-        ->orderBy( 'ipv4.address ASC, ipv4.vlanid ASC' )
-        ->execute();
-
-        $options = array( '0' => '' );
-        $maxId = 0;
-
-        foreach( $collection as $c )
-        {
-            $options[ $c['id'] ] = "VLAN {$c['Vlan']['number']} - {$c['address']}";
-
-            if( $c['id'] > $maxId ) $maxId = $c['id'];
-        }
-
-
-        $ipv4addressid->setMultiOptions( $options )
-        ->setRegisterInArrayValidator( true )
-        ->setLabel( 'IPv4 Address' )
-        ->addValidator( 'between', false, array( 0, $maxId ) )
-        ->setErrorMessages( array( 'Please select a IPv4 address' ) );
+        $ipv4addressid->setMultiOptions( array( '--select a VLAN --' ) )
+            ->setRegisterInArrayValidator( false )
+            ->setLabel( 'IPv4 Address' )
+            ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
+            ->setErrorMessages( array( 'Please select a IPv4 address' ) );
         $this->addElement( $ipv4addressid );
 
 
@@ -149,143 +129,134 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
 
-            $ipv6enabled = $this->createElement( 'checkbox', 'ipv6enabled' );
-            $ipv6enabled->setLabel( 'IPv6 Enabled?' )
-            ->setCheckedValue( '1' );
-            $this->addElement( $ipv6enabled );
+        $ipv6enabled = $this->createElement( 'checkbox', 'ipv6enabled' );
+        $ipv6enabled->setLabel( 'IPv6 Enabled?' )
+        ->setCheckedValue( '1' );
+        $this->addElement( $ipv6enabled );
 
 
 
 
-            $ipv6addressid = $this->createElement( 'select', 'ipv6addressid' );
 
-            $collection = Doctrine_Query::create()
-            ->from( 'Ipv6address ipv6' )
-            ->leftJoin( 'ipv6.Vlaninterface vli' )
-            ->leftJoin( 'ipv6.Vlan v' )
-            ->where( 'vli.id IS NULL' )
-            ->orWhere( 'vli.id = ?', Zend_Controller_Front::getInstance()->getRequest()->getParam( 'id' ) )
-            ->orderBy( 'ipv6.address ASC, ipv6.vlanid ASC' )
-            ->execute();
+        $ipv6addressid = $this->createElement( 'select', 'ipv6addressid' );
 
-            $options = array( '0' => '' );
-            $maxId = 0;
-
-            foreach( $collection as $c )
-            {
-                $options[ $c['id'] ] = "VLAN {$c['Vlan']['number']} - {$c['address']}";
-
-                if( $c['id'] > $maxId ) $maxId = $c['id'];
-            }
-
-
-            $ipv6addressid->setMultiOptions( $options )
-            ->setRegisterInArrayValidator( true )
+        $ipv6addressid->setMultiOptions( array( '--select a VLAN --' ) )
+            ->setRegisterInArrayValidator( false )
             ->setLabel( 'IPv6 Address' )
-            ->addValidator( 'between', false, array( 0, $maxId ) )
+            ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a IPv6 address' ) );
-            $this->addElement( $ipv6addressid );
+        $this->addElement( $ipv6addressid );
+        
+
+        $ipv6hostname = $this->createElement( 'text', 'ipv6hostname' );
+        $ipv6hostname->addValidator( 'stringLength', false, array( 1, 64 ) )
+        ->setLabel( 'IPv6 Hostname' )
+        ->addFilter( 'StringTrim' )
+        ->addFilter( new INEX_Filter_StripSlashes() );
+
+        $this->addElement( $ipv6hostname  );
+
+        $ipv6bgpmd5secret = $this->createElement( 'text', 'ipv6bgpmd5secret' );
+        $ipv6bgpmd5secret->addValidator( 'stringLength', false, array( 1, 64 ) )
+        ->setLabel( 'IPv6 BGP MD5 Secret' )
+        ->addFilter( 'StringTrim' )
+        ->addFilter( new INEX_Filter_StripSlashes() );
+
+        $this->addElement( $ipv6bgpmd5secret  );
 
 
 
-            $ipv6hostname = $this->createElement( 'text', 'ipv6hostname' );
-            $ipv6hostname->addValidator( 'stringLength', false, array( 1, 64 ) )
-            ->setLabel( 'IPv6 Hostname' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+        $ipv6canping = $this->createElement( 'checkbox', 'ipv6canping' );
+        $ipv6canping->setLabel( 'IPv6 Can Ping?' )
+        ->setCheckedValue( '1' );
+        $this->addElement( $ipv6canping );
 
-            $this->addElement( $ipv6hostname  );
+        $ipv6monitorrcbgp = $this->createElement( 'checkbox', 'ipv6monitorrcbgp' );
+        $ipv6monitorrcbgp->setLabel( 'IPv6 Monitor RC BGP?' )
+        ->setCheckedValue( '1' );
+        $this->addElement( $ipv6monitorrcbgp );
 
-            $ipv6bgpmd5secret = $this->createElement( 'text', 'ipv6bgpmd5secret' );
-            $ipv6bgpmd5secret->addValidator( 'stringLength', false, array( 1, 64 ) )
-            ->setLabel( 'IPv6 BGP MD5 Secret' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
-            $this->addElement( $ipv6bgpmd5secret  );
-
-
-
-            $ipv6canping = $this->createElement( 'checkbox', 'ipv6canping' );
-            $ipv6canping->setLabel( 'IPv6 Can Ping?' )
-            ->setCheckedValue( '1' );
-            $this->addElement( $ipv6canping );
-
-            $ipv6monitorrcbgp = $this->createElement( 'checkbox', 'ipv6monitorrcbgp' );
-            $ipv6monitorrcbgp->setLabel( 'IPv6 Monitor RC BGP?' )
-            ->setCheckedValue( '1' );
-            $this->addElement( $ipv6monitorrcbgp );
-
-            $this->addDisplayGroup(
-            array( 'ipv6enabled', 'ipv6addressid', 'ipv6hostname', 'ipv6bgpmd5secret', 'ipv6canping', 'ipv6monitorrcbgp' ),
-            'ipv6DisplayGroup'
-            );
-            $this->getDisplayGroup( 'ipv6DisplayGroup' )->setLegend( 'IPv6 Details' );
-
-
-
+        $this->addDisplayGroup(
+        array( 'ipv6enabled', 'ipv6addressid', 'ipv6hostname', 'ipv6bgpmd5secret', 'ipv6canping', 'ipv6monitorrcbgp' ),
+        'ipv6DisplayGroup'
+        );
+        $this->getDisplayGroup( 'ipv6DisplayGroup' )->setLegend( 'IPv6 Details' );
 
 
 
 
 
 
-            $mcastenabled = $this->createElement( 'checkbox', 'mcastenabled' );
-            $mcastenabled->setLabel( 'Multicast Enabled?' )
-            ->setCheckedValue( '1' );
-            $this->addElement( $mcastenabled );
+
+
+
+        $mcastenabled = $this->createElement( 'checkbox', 'mcastenabled' );
+        $mcastenabled->setLabel( 'Multicast Enabled?' )
+        ->setCheckedValue( '1' );
+        $this->addElement( $mcastenabled );
 
 
 
 
-            $maxbgpprefix = $this->createElement( 'text', 'maxbgpprefix' );
-            $maxbgpprefix->addValidator('int')
-            ->addValidator( 'greaterThan', false, array( -1 ) )
-            ->setRequired( false )
-            ->setLabel( 'Max BGP Prefixes' );
-            $this->addElement( $maxbgpprefix  );
+        $maxbgpprefix = $this->createElement( 'text', 'maxbgpprefix' );
+        $maxbgpprefix->addValidator('int')
+        ->addValidator( 'greaterThan', false, array( -1 ) )
+        ->setRequired( false )
+        ->setLabel( 'Max BGP Prefixes' );
+        $this->addElement( $maxbgpprefix  );
 
 
 
 
-            $rsclient = $this->createElement( 'checkbox', 'rsclient' );
-            $rsclient->setLabel( 'Route Server Client?' )
-            ->setCheckedValue( '1' );
-            $this->addElement( $rsclient );
+        $rsclient = $this->createElement( 'checkbox', 'rsclient' );
+        $rsclient->setLabel( 'Route Server Client?' )
+        ->setCheckedValue( '1' );
+        $this->addElement( $rsclient );
 
 
 
 
-            $as112client = $this->createElement( 'checkbox', 'as112client' );
-            $as112client->setLabel( 'AS112 Client?' )
-            ->setCheckedValue( '1' );
-            $this->addElement( $as112client );
+        $as112client = $this->createElement( 'checkbox', 'as112client' );
+        $as112client->setLabel( 'AS112 Client?' )
+        ->setCheckedValue( '1' );
+        $this->addElement( $as112client );
 
 
 
 
-            $busyhost = $this->createElement( 'checkbox', 'busyhost' );
-            $busyhost->setLabel( 'Busy host?' )
-            ->setCheckedValue( '1' );
-            $this->addElement( $busyhost );
+        $busyhost = $this->createElement( 'checkbox', 'busyhost' );
+        $busyhost->setLabel( 'Busy host?' )
+        ->setCheckedValue( '1' );
+        $this->addElement( $busyhost );
 
 
 
 
-            $notes = $this->createElement( 'textarea', 'notes' );
-            $notes->setLabel( 'Notes' )
-            ->setRequired( false )
-            ->addFilter( new INEX_Filter_StripSlashes() )
-            ->setAttrib( 'cols', 60 )
-            ->setAttrib( 'rows', 5 );
-            $this->addElement( $notes );
+        $notes = $this->createElement( 'textarea', 'notes' );
+        $notes->setLabel( 'Notes' )
+        ->setRequired( false )
+        ->addFilter( new INEX_Filter_StripSlashes() )
+        ->setAttrib( 'cols', 60 )
+        ->setAttrib( 'rows', 5 );
+        $this->addElement( $notes );
 
 
 
-            $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
-            . $cancelLocation . "'" ) );
+        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
+        . $cancelLocation . "'" ) );
 
-            $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
+        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
+
+            
+        $preselectIPv4Address = $this->createElement( 'hidden', 'preselectIPv4Address' );
+        $this->addElement( $preselectIPv4Address );
+        
+        $preselectIPv6Address = $this->createElement( 'hidden', 'preselectIPv6Address' );
+        $this->addElement( $preselectIPv6Address );
+        
+        $preselectVlanInterface = $this->createElement( 'hidden', 'preselectVlanInterface' );
+        $this->addElement( $preselectVlanInterface );
+            
     }
 
 }
