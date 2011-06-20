@@ -54,6 +54,13 @@ sub filter {
 	print Dumper ($args) if ($ixp->{ixp}->{debug});
 		
 	my $irrdbhash = $dbh->selectall_hashref('SELECT id, host, protocol, source FROM irrdbconfig', 'id');
+
+	# if the operator has not specified which IRRDB profile to use, then
+	# choose the one with lowest ID.
+	if (!defined ($irrdbhash->{$conf->{irrdb}})) {
+		my @keys = sort keys %{$irrdbhash};
+		$conf->{irrdb} = $keys[0];
+	}
 	my $irrconfig = $irrdbhash->{$conf->{irrdb}};
 
 	if ($irrconfig->{source} !~ /RIPE/) {
