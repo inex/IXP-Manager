@@ -10,6 +10,7 @@
 		See <a href="{genUrl controller='switch' action='port-report' id=$switchid}">port report</a>.&nbsp;&nbsp;&nbsp;&nbsp;
 	{/if}
 
+	[<a href="{genUrl controller='switch' action='add-ports'}">Add Ports</a>]&nbsp;&nbsp;&nbsp;&nbsp;
     <strong>Switch:</strong>&nbsp;
 
     <select

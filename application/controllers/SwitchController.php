@@ -162,6 +162,57 @@ class SwitchController extends INEX_Controller_FrontEnd
         $this->view->ports = $ports;
         $this->view->display( 'switch/port-report.tpl' );
     }
+    
+    
+    
+    public function addPortsAction()
+    {
+        $f = new INEX_Form_SwitchPort_AddPorts( null, false, '' );
+        
+        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/' . $this->getRequest()->getParam( 'controller' ) . "/add-ports" );
+ 
+        if( $this->inexGetPost( 'commit' ) !== null && $f->isValid( $_POST ) )
+        {
+            do
+            {
+                try
+                {
+                    $conn = Doctrine_Manager::connection();
+                    $conn->beginTransaction();
+
+                    for( $i = 0; $i < intval( $_POST['numports'] ); $i++ )
+                    {
+                        $sp = new Switchport();
+                        
+                        $sp['switchid'] = $f->getValue( 'switchid' );
+                        $sp['type']     = intval( $_POST[ 'np_type' . $i ] );
+                        $sp['name']     = trim( stripslashes( $_POST[ 'np_name' . $i ] ) );
+                        
+                        $sp->save();
+                    } 
+                    
+                    $conn->commit();
+                     
+                    $this->logger->notice( intval( $_POST['numports'] ) . ' new switch ports created' );
+                    $this->session->message = new INEX_Message( intval( $_POST['numports'] ) . ' new switch ports created', "success" );
+                    $this->_redirect( 'switch-port' );
+                }
+                catch( Exception $e )
+                {
+                    $conn->rollback();
+                    
+                    Zend_Registry::set( 'exception', $e );
+                    return( $this->_forward( 'error', 'error' ) );
+                }
+            }while( false );
+        }
+
+        $this->view->form   = $f->render( $this->view );
+
+        $this->view->display( 'switch-port/add-ports.tpl' );
+    }
+
+    
 }
 
 ?>
