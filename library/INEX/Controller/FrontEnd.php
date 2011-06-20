@@ -185,7 +185,7 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
 
         // optional extra pre-validation code
         if( method_exists( $this, 'formPrevalidate' ) )
-            $this->formPrevalidate( $form, $isEdit );
+            $this->formPrevalidate( $form, $isEdit, $object );
 
         if( $this->inexGetPost( 'commit' ) !== null && $form->isValid( $_POST ) )
         {
@@ -237,7 +237,7 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
         }
 
         if( method_exists( $this, 'addEditPreDisplay' ) )
-            $this->addEditPreDisplay( $form );
+            $this->addEditPreDisplay( $form, $object );
 
         $this->view->form   = $form->render( $this->view );
         $this->view->object = $object;

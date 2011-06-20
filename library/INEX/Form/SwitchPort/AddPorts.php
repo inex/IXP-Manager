@@ -32,12 +32,38 @@
 /**
  * @package INEX_Form
  */
-class INEX_Form_SwitchPort extends INEX_Form
+class INEX_Form_SwitchPort_AddPorts extends INEX_Form
 {
     public function __construct( $options = null, $isEdit = false, $cancelLocation )
     {
         parent::__construct( $options, $isEdit );
 
+        
+        $this->setAttrib( 'accept-charset', 'UTF-8' );
+        $this->setAttrib( 'class', 'form' );
+
+        $this->setDecorators( 
+            array( 
+                array( 
+                	'ViewScript', 
+                    array( 
+                    	'viewScript' => 'switch-port/add-ports-form.tpl' 
+             	   ) 
+         	   )     
+     	   ) 
+ 	   );
+        
+        
+        $this->setElementDecorators(
+            array(
+                'ViewHelper',
+                'Errors',
+                array( 'HtmlTag', array( 'tag' => 'dd' ) ),
+                array( 'Label', array( 'tag' => 'dt' ) ),
+            )
+        );
+
+        
 
         $switchid = $this->createElement( 'select', 'switchid' );
 
@@ -54,40 +80,25 @@ class INEX_Form_SwitchPort extends INEX_Form
 
         $this->addElement( $switchid );
         
+
+        $deftype = $this->createElement( 'select', 'deftype' );
+        $deftype->setMultiOptions( Switchport::$TYPE_TEXT )
+            ->setRegisterInArrayValidator( false )
+            ->setLabel( 'Default Type' );
+
+        $this->addElement( $deftype );
         
-        $name = $this->createElement( 'text', 'name',
-            array(
-            	'readonly' => 'readonly',
-                'size' => '50'
-            )
-        );
-        $name->setLabel( 'Name' );
-        $this->addElement( $name );
-
-
-        $type = $this->createElement( 'select', 'type' );
-        $type->setMultiOptions( Switchport::$TYPE_TEXT )
-            ->setRegisterInArrayValidator( true )
-            ->addValidator( 'greaterThan', true, array( 0 ) )
-            ->setLabel( 'Type' )
-            ->setErrorMessages( array( 'Please set the port type' ) );
-
-        $this->addElement( $type );
 
         $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
         . $cancelLocation . "'" ) );
 
         $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
 
-    }
-    
-    
-    public function addPortsAction()
-    {
+        $this->setElementDecorators( array( 'ViewHelper' ) );
         
-        $this->view->display( 'switch-port/add-ports.tpl' );
     }
-
+    
+    
 }
 
 ?>

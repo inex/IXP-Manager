@@ -95,7 +95,7 @@ class UserController extends INEX_Controller_FrontEnd
     /**
      * Checks / actions before we try and validate the form
      */
-    protected function formPrevalidate( $form, $isEdit )
+    protected function formPrevalidate( $form, $isEdit, $object )
     {
         // If we're a super user, then the length of the username is up to us
         if( $this->user['privs'] == User::AUTH_SUPERUSER )

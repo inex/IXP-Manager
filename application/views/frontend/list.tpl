@@ -210,10 +210,11 @@ YAHOO.util.Event.addListener( window, "load", function() {ldelim}
         {rdelim};
 
         var oConfigs = {ldelim}
-            paginator: new YAHOO.widget.Paginator({ldelim}
-                    rowsPerPage: 15
-            {rdelim}),
-
+	        {if !isset( $frontend.pagination ) or $frontend.pagination neq false}
+    	        paginator: new YAHOO.widget.Paginator({ldelim}
+        	            rowsPerPage: 15
+            	{rdelim}),
+        	{/if}
             {if isset( $frontend.columns.sortDefaults )}
                 sortedBy:{ldelim}key:"{$frontend.columns.sortDefaults.column}",dir:"{$frontend.columns.sortDefaults.order}"{rdelim}
             {/if}

@@ -108,117 +108,98 @@ class INEX_Controller_Action extends Zend_Controller_Action
      * @param object $response See Parent class constructer
      * @param object $invokeArgs See Parent class constructer
      */
-    public function __construct(
-            Zend_Controller_Request_Abstract  $request,
-            Zend_Controller_Response_Abstract $response,
-            array $invokeArgs = null )
+    public function __construct( Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = null )
     {
         // get the bootstrap object
-        $this->_bootstrap = $invokeArgs['bootstrap'];
-
+        $this->_bootstrap = $invokeArgs[ 'bootstrap' ];
+        
         // and from the bootstrap, we can get other resources:
+        
 
-        $this->config  = $this->_bootstrap->getApplication()->getOptions();
-
-        $this->logger  = $this->_bootstrap->getResource( 'logger' );
-
+        $this->config = $this->_bootstrap->getApplication()->getOptions();
+        
+        $this->logger = $this->_bootstrap->getResource( 'logger' );
+        
         // Smarty must be set during bootstrap
-        try
-        {
-            $this->view   = $this->_bootstrap->getResource( 'view' );
-
-            if( php_sapi_name() != 'cli' )
-            {
-                $this->view->pagebase   = 'http' . ( isset( $_SERVER['HTTPS'] ) ? 's' : '' ) . '://' . $_SERVER['SERVER_NAME']
-                    . Zend_Controller_Front::getInstance()->getBaseUrl();
+        try {
+            $this->view = $this->_bootstrap->getResource( 'view' );
+            
+            if( php_sapi_name() != 'cli' ) {
+                $this->view->pagebase = 'http' . (isset( $_SERVER[ 'HTTPS' ] ) ? 's' : '') . '://' . $_SERVER[ 'SERVER_NAME' ] . Zend_Controller_Front::getInstance()->getBaseUrl();
             }
+            
+            $this->view->basepath = Zend_Controller_Front::getInstance()->getBaseUrl();
+            
 
-            $this->view->basepath   = Zend_Controller_Front::getInstance()->getBaseUrl();
-
-
-            $this->auth             = $this->_bootstrap->getResource( 'auth' );
-
-            if( $this->auth->hasIdentity() )
-            {
+            $this->auth = $this->_bootstrap->getResource( 'auth' );
+            
+            if( $this->auth->hasIdentity() ) {
                 $this->identity = $this->auth->getIdentity();
-                $this->user     = Doctrine::getTable( 'User' )->find( $this->identity['user']['id'] );
-                $this->customer = Doctrine::getTable( 'Cust' )->find( $this->identity['user']['custid'] );
+                $this->user = Doctrine::getTable( 'User' )->find( $this->identity[ 'user' ][ 'id' ] );
+                $this->customer = Doctrine::getTable( 'Cust' )->find( $this->identity[ 'user' ][ 'custid' ] );
             }
-
-            $this->session           = $this->_bootstrap->getResource('namespace');
-
-            $this->view->auth        = $this->auth;
+            
+            $this->session = $this->_bootstrap->getResource( 'namespace' );
+            
+            $this->view->auth = $this->auth;
             $this->view->hasIdentity = $this->auth->hasIdentity();
-            $this->view->identity    = $this->identity;
-            $this->view->customer    = $this->customer;
-            $this->view->user        = $this->user;
-            $this->view->config      = $this->config;
-            $this->view->session     = $this->session;
-
+            $this->view->identity = $this->identity;
+            $this->view->customer = $this->customer;
+            $this->view->user = $this->user;
+            $this->view->config = $this->config;
+            $this->view->session = $this->session;
+            
             // pull a message from the session if it exists
             // (this is when we do a ->_redirect after an action)
-            if( isset( $this->session->message ) && $this->session->message !== null )
-            {
+            if( isset( $this->session->message ) && $this->session->message !== null ) {
                 $this->view->message = $this->session->message;
                 $this->session->message = null;
             }
-
+            
 
             // should we check the change log? (and if so, only once per session)
-            if( $this->config['change_log']['enabled'] && $this->auth->hasIdentity() )
-            {
-                if( isset( $this->session->change_log_has_updates ) )
-                {
+            if( $this->config[ 'change_log' ][ 'enabled' ] && $this->auth->hasIdentity() ) {
+                if( isset( $this->session->change_log_has_updates ) ) {
                     $this->view->change_log_has_updates = $this->session->change_log_has_updates;
                 }
-                else
-                {
+                else {
                     $lastSeen = $this->user->getPreference( 'change_log.last_seen' );
-
+                    
                     // don't alert past changes to new users
-                    if( $lastSeen === false )
-                    {
+                    if( $lastSeen === false ) {
                         $this->user->setPreference( 'change_log.last_seen', date( 'Y-m-d H:i:s' ) );
                         $lastSeen = date( 'Y-m-d H:i:s' );
                     }
-
-                    $this->session->change_log_has_updates
-                        = ChangeLogTable::hasUpdates( $this->user['privs'], $lastSeen );
+                    
+                    $this->session->change_log_has_updates = ChangeLogTable::hasUpdates( $this->user[ 'privs' ], $lastSeen );
                     $this->view->change_log_has_updates = $this->session->change_log_has_updates;
                 }
             }
         }
-        catch( Zend_Exception $e )
-        {
+        catch( Zend_Exception $e ) {
             echo "Caught exception: " . get_class( $e ) . "\n";
             echo "Message: " . $e->getMessage() . "\n";
-
+            
             die( "\n\nYou must set-up Smarty in the bootstrap code.\n\n" );
         }
-
+        
         // call the parent's version where all the Zend magic happens
         parent::__construct( $request, $response, $invokeArgs );
         $this->view->controller = $this->getRequest()->getParam( 'controller' );
-        $this->view->action     = $this->getRequest()->getParam( 'action'     );
-
+        $this->view->action = $this->getRequest()->getParam( 'action' );
+        
         // see if the user's session has timed out
-        if( $this->auth->hasIdentity() )
-        {
-            if( ( mktime() - $this->session->timeOfLastAction ) > $this->config['resources']['session']['remember_me_seconds'] )
-            {
+        if( $this->auth->hasIdentity() ) {
+            if( (mktime() - $this->session->timeOfLastAction) > $this->config[ 'resources' ][ 'session' ][ 'remember_me_seconds' ] ) {
                 $this->auth->clearIdentity();
-                $this->view->message = new INEX_Message(
-                        'To protect your account and information, you have been logged out automatically '
-                        . 'due to an extended period of inactivity. Please log in again below to continue.',
-                        INEX_Message::MESSAGE_TYPE_ALERT
-                );
-
+                $this->view->message = new INEX_Message( 'To protect your account and information, you have been logged out automatically ' . 'due to an extended period of inactivity. Please log in again below to continue.', INEX_Message::MESSAGE_TYPE_ALERT );
+                
                 Zend_Session::destroy( true, true );
                 $this->view->display( 'auth/login.tpl' );
                 ob_end_flush();
                 die();
             }
-
+            
             $this->session->timeOfLastAction = mktime();
         }
     }
@@ -233,18 +214,17 @@ class INEX_Controller_Action extends Zend_Controller_Action
      */
     public static function inexGetGet( $name, $trim = true )
     {
-        if( isset( $_GET[ $name ] ) )
-        {
+        if( isset( $_GET[ $name ] ) ) {
             if( $trim )
-            return trim( stripslashes( $_GET[ $name ] ) );
+                return trim( stripslashes( $_GET[ $name ] ) );
             else
-            return stripslashes( $_GET[ $name ] );
+                return stripslashes( $_GET[ $name ] );
         }
         else
-        return null;
+            return null;
     }
 
-
+    
     /**
      * A utility function to get parameters in $_POST. It strips the slashes
      * added by PHP as well as trimming the whitespace.
@@ -255,15 +235,14 @@ class INEX_Controller_Action extends Zend_Controller_Action
      */
     public static function inexGetPost( $name, $trim = true )
     {
-        if( isset( $_POST[ $name ] ) )
-        {
+        if( isset( $_POST[ $name ] ) ) {
             if( $trim )
-            return trim( stripslashes( $_POST[ $name ] ) );
+                return trim( stripslashes( $_POST[ $name ] ) );
             else
-            return stripslashes( $_GET[ $name ] );
+                return stripslashes( $_GET[ $name ] );
         }
         else
-        return null;
+            return null;
     }
 
     /**
@@ -278,10 +257,10 @@ class INEX_Controller_Action extends Zend_Controller_Action
      */
     public static function inexGetRequest( $name, $trim = true )
     {
-        if( ( $value = INEX_Controller_Action::inexGetPost( $name ) ) !== null )
-        return $value;
+        if( ($value = INEX_Controller_Action::inexGetPost( $name )) !== null )
+            return $value;
         else
-        return INEX_Controller_Action::inexGetGet( $name );
+            return INEX_Controller_Action::inexGetGet( $name );
     }
 
     /**
@@ -289,16 +268,10 @@ class INEX_Controller_Action extends Zend_Controller_Action
      */
     public function getSMS()
     {
-        if( $this->_sms === null )
-        {
-            $this->_sms = new INEX_SMS_Clickatell(
-                $this->config['sms']['clickatell']['username'],
-                $this->config['sms']['clickatell']['password'],
-                $this->config['sms']['clickatell']['api_id'],
-                $this->config['sms']['clickatell']['sender_id']
-            );
+        if( $this->_sms === null ) {
+            $this->_sms = new INEX_SMS_Clickatell( $this->config[ 'sms' ][ 'clickatell' ][ 'username' ], $this->config[ 'sms' ][ 'clickatell' ][ 'password' ], $this->config[ 'sms' ][ 'clickatell' ][ 'api_id' ], $this->config[ 'sms' ][ 'clickatell' ][ 'sender_id' ] );
         }
-
+        
         return $this->_sms;
     }
 

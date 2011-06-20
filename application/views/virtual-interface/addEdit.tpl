@@ -326,7 +326,7 @@
 		        <form action="{genUrl controller='vlan-interface' action='add'}" method="post" style="text-align: right">
 		            <input type="submit" name="submit" class="button" value="Add New" />
 		            <input type='hidden' name='virtualinterfaceid' value='{$object.id}' />
-		            <input type='hidden' name='return' value='{genUrl controller='virtual-interface' action='edit' id=$object.id}' />
+		            <input type='hidden' name='return' value='virtual-interface/edit/id/{$object.id}' />
 		        </form>
 			</td>
 		</tr>

@@ -724,7 +724,20 @@ h4 {
 .change_log_item td {
     background-color: #ffeeda;
 }
-    
+
+
+
+
+.list_preamble_container {
+    display: block;
+}
+
+.list_preamble {
+    display: block;
+    text-align: right;
+}
+
+
 
 .meetings {
     margin-left: 20px;

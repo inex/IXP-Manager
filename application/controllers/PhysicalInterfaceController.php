@@ -110,7 +110,7 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
      *
      * @param INEX_Form_PhysicalInterface The form object
      */
-    function addEditPreDisplay( $form )
+    function addEditPreDisplay( $form, $object )
     {
         // did we get a customer id from the provisioning controller?
         if( $this->_getParam( 'prov_virtualinterface_id', false ) )
@@ -148,6 +148,46 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
             }
         }
     }
+    
+    
+    protected function formPrevalidate( $form, $isEdit, $object )
+    {
+        // set the switch and port fields of the form if we're editing
+        if( $isEdit )
+        {
+            $form->getElement( 'switch_id')->setValue( $object->Switchport->SwitchTable['id'] );
+            $form->getElement( 'preselectSwitchPort' )->setValue( $object->Switchport['id'] );
+            $form->getElement( 'preselectPhysicalInterface' )->setValue( $object['id'] );
+        }
+    }
+    
+    public function ajaxGetPortsAction()
+    {
+        $switch = Doctrine::getTable( 'SwitchTable' )->find( $this->_getParam( 'switchid', null ) );
+
+        $ports = '';
+        
+        if( $switch )
+        {
+            $ports = Doctrine_Query::create()
+                ->from( 'Switchport sp' )
+                ->leftJoin( 'sp.Physicalinterface pi' )
+                ->where( 'sp.switchid = ?', $switch['id'] )
+                ->andWhere( '( pi.id IS NULL OR pi.id = ? )', $this->_getParam( 'id' ) )
+                ->orderBy( 'sp.id' )
+                ->fetchArray();
+                
+            foreach( $ports as $i => $p )
+                $ports[$i]['type'] = Switchport::$TYPE_TEXT[ $p['type'] ];
+        }
+        
+        $this->getResponse()
+            ->setHeader('Content-Type', 'application/json')
+            ->setBody( Zend_Json::encode( $ports ) )
+            ->sendResponse();
+        exit();
+    }
+
 }
 
 ?>

@@ -71,7 +71,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
 
 
     //addEditPreDisplay
-    function addEditPreDisplay( $form )
+    function addEditPreDisplay( $form, $object )
     {
         // did we get a customer id from the provisioning controller?
         if( $this->_getParam( 'prov_cust_id', false ) )
