@@ -38,6 +38,23 @@ class INEX_Form_SwitchPort extends INEX_Form
     {
         parent::__construct( $options, $isEdit );
 
+
+        $switchid = $this->createElement( 'select', 'switchid' );
+
+        $maxSwitchId = $this->createSelectFromDatabaseTable( $switchid, 'SwitchTable', 'id',
+            array( 'name' ),
+            'name'
+        );
+
+        $switchid->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( 'Switch' )
+            ->addValidator( 'between', false, array( 1, $maxSwitchId ) )
+            ->setErrorMessages( array( 'Please select a switch' ) );
+
+        $this->addElement( $switchid );
+        
+        
         $name = $this->createElement( 'text', 'name',
             array(
             	'readonly' => 'readonly',
@@ -50,15 +67,12 @@ class INEX_Form_SwitchPort extends INEX_Form
 
         $type = $this->createElement( 'select', 'type' );
         $type->setMultiOptions( Switchport::$TYPE_TEXT )
-        ->setRegisterInArrayValidator( true )
-        ->addValidator( 'greaterThan', true, array( 0 ) )
-        ->setLabel( 'Type' )
-        ->setErrorMessages( array( 'Please set the port type' ) );
+            ->setRegisterInArrayValidator( true )
+            ->addValidator( 'greaterThan', true, array( 0 ) )
+            ->setLabel( 'Type' )
+            ->setErrorMessages( array( 'Please set the port type' ) );
 
         $this->addElement( $type );
-
-        $switchid = $this->createElement( 'hidden', 'switchid' );
-        $this->addElement( $switchid );
 
         $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
         . $cancelLocation . "'" ) );
