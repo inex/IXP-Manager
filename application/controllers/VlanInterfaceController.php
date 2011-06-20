@@ -194,7 +194,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
 
 
     //addEditPreDisplay
-    function addEditPreDisplay( $form )
+    function addEditPreDisplay( $form, $object )
     {
         // did we get an id from the provisioning controller?
         if( $this->_getParam( 'prov_virtualinterface_id', false ) )

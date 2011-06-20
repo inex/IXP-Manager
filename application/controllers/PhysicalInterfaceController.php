@@ -110,7 +110,7 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
      *
      * @param INEX_Form_PhysicalInterface The form object
      */
-    function addEditPreDisplay( $form )
+    function addEditPreDisplay( $form, $object )
     {
         // did we get a customer id from the provisioning controller?
         if( $this->_getParam( 'prov_virtualinterface_id', false ) )
