@@ -140,20 +140,44 @@ int set allas;
 	if (bgp_path.first != [% asn %] ) then
 		reject;
 
-	allas = [ 
 [% afifilter = 'afi ' _ protocol _ '.unicast ' _ entries.$vid.peeringmacro -%]
-[% FILTER $IRRToolSetBird 'asnlist' afifilter irrdb = entries.$vid.irrdb %]
+[% PERL -%]
+	use IXPManager::Template::Plugin::IRRToolSetBird;
+
+	$stash->set (
+		afiresult => IXPManager::Template::Plugin::IRRToolSetBird->irrdbget ({
+			type	=> 'asnlist',
+			filter	=> '[% afifilter -%]',
+			irrdb	=> '[% entries.$vid.irrdb -%]',
+		})
+	);
+	$stash->set (
+		prefixresult => IXPManager::Template::Plugin::IRRToolSetBird->irrdbget ({
+			type	=> 'prefixlist',
+			filter	=> '[% afifilter -%]',
+			irrdb	=> '[% entries.$vid.irrdb -%]',
+		})
+	);
 [% END -%]
-	];
+[% IF afiresult != 'NOT ANY' -%]
+	allas = [ [% afiresult %] ];
+
 	if !(bgp_path.last ~ allas) then
 		reject;
-
-	allnet = [
-[% FILTER $IRRToolSetBird 'prefixlist' afifilter irrdb = entries.$vid.irrdb %]
+[% ELSE -%]
+	# Deny everything because the IRR database returned nothing
+	reject;
 [% END -%]
-	];
+
+[% IF prefixresult != 'NOT ANY' -%]
+	allnet = [ [% prefixresult %] ];
+
 	if ! (net ~ allnet) then
 		reject;
+[% ELSE -%]
+	# Deny everything because the IRR database returned nothing
+	reject;
+[% END -%]
 
 	accept;
 }

@@ -40,6 +40,7 @@ my $ttconfig = {
 	ABSOLUTE	=> 1,
 	RELATIVE	=> 1,
 	PLUGIN_BASE	=> 'IXPManager::Template::Plugin',
+	EVAL_PERL	=> 1,
 };
 my $tt = Template->new($ttconfig);
 

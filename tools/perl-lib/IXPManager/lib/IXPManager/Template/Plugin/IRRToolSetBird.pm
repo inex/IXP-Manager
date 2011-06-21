@@ -34,10 +34,11 @@ use IXPManager::Config;
 # We need this to be a dynamic filter
 our $DYNAMIC = 1;
 
-sub filter {
-	my ($self, $text, $args, $conf) = @_;
-	my ($tmpfile, $host, $sourcelist, $protocol, $prefixorasn, $peeringmacro);
-	my $returntext = '';
+sub irrdbget {
+	my ($self, $conf) = @_;
+	my ($tmpfile, $prefixorasn, $returntext);
+
+	print STDERR Dumper ($conf) if ($ixp->{ixp}->{debug});
 
 	my $ixp = new IXPManager::Config;
 	my $dbh = $ixp->{db};
@@ -48,31 +49,42 @@ sub filter {
 	# for compatibility with IRRToolSetDispatch which needs it for
 	# resolution of aut-num: objects in the RIPE region.
 
-	$prefixorasn = ($$args[0] eq 'asnlist') ? 'asnlist' : 'prefixlist';
-	$peeringmacro = $$args[1];
+	$prefixorasn = ($conf->{type} eq 'asnlist') ? 'asnlist' : 'prefixlist';
 
-	print Dumper ($args) if ($ixp->{ixp}->{debug});
-		
 	my $irrdbhash = $dbh->selectall_hashref('SELECT id, host, protocol, source FROM irrdbconfig', 'id');
+
+	# if the operator has not specified which IRRDB profile to use, then
+	# choose the one with lowest ID
+	if (!defined ($irrdbhash->{$conf->{irrdb}})) {
+		my @keys = sort keys %{$irrdbhash};
+		$conf->{irrdb} = $keys[0];
+	}
 	my $irrconfig = $irrdbhash->{$conf->{irrdb}};
 
 	if ($irrconfig->{source} !~ /RIPE/) {
 		$irrconfig->{source} = 'RIPE,'.$irrconfig->{source};
 	}
 
-	my $pipe = "$ixp->{ixp}->{rs_peval_bird} $prefixorasn '$peeringmacro'".
+	my $pipe = "$ixp->{ixp}->{rs_peval_bird} $prefixorasn '$conf->{filter}'".
 			" -h $irrconfig->{host} -protocol $irrconfig->{protocol} -s $irrconfig->{source}";
 
 	print STDERR "$pipe\n" if ($ixp->{ixp}->{debug});
 
 	open (INPUTPIPE, "$pipe |");
 	$returntext = <INPUTPIPE>;
+	chomp($returntext);
 	close (INPUTPIPE);
 
 	my $exitval = $? >> 8;
 	if ($exitval != 0) {
 		die ("ABORT: \"$ixp->{ixp}->{rs_peval_bird}\" returned %d after exiting...\n", $exitval);
 	}
+
+	if (!$returntext) {
+		$returntext = 'NOT ANY';
+	}
+
+	print STDERR "returntext: \"$returntext\"\n" if ($ixp->{ixp}->{debug});
 
 	return $returntext;
 }
