@@ -59,6 +59,8 @@
 	                                    null,'Members'   ],
 	                    ['<img src="{genUrl}/images/joomla-admin/menu/interface.png" />', 'Interfaces', '{genUrl controller="virtual-interface"}', null, 'Interfaces',
 
+		                        ['<img src="{genUrl}/images/joomla-admin/menu/interface.png" />','Quick Add...',  '{genUrl controller="vlan-interface" action="quick-add"}',
+                                    null, 'Quick Add...'   ],
 	                            ['<img src="{genUrl}/images/joomla-admin/menu/interface.png" />','Physical Interfaces',  '{genUrl controller="physical-interface"}',
 	                                        null, 'Physical Interfaces'   ],
 	                            ['<img src="{genUrl}/images/joomla-admin/menu/interface.png" />','Virtual Interfaces',  '{genUrl controller="virtual-interface"}',

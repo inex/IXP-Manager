@@ -40,7 +40,9 @@ class Vlan extends BaseVlan
     {
         parent::setUp();
          
-        $this->hasMany( 'Networkinfo', array( 'local' => 'id', 'foreign' => 'vlanid' ) );
+        $this->hasMany( 'Networkinfo',   array( 'local' => 'id', 'foreign' => 'vlanid' ) );
+        $this->hasMany( 'Vlaninterface', array( 'local' => 'id', 'foreign' => 'vlanid' ) );
+    
     }
 
 }

@@ -48,9 +48,9 @@ class INEX_Form_VirtualInterface extends INEX_Form
         ////////////////////////////////////////////////
 
         $dbCusts = Doctrine_Query::create()
-        ->from( 'Cust c' )
-        ->orderBy( 'c.name ASC' )
-        ->execute();
+            ->from( 'Cust c' )
+            ->orderBy( 'c.name ASC' )
+            ->execute();
 
         $custs = array( '0' => '' );
         $maxId = 0;
@@ -64,62 +64,68 @@ class INEX_Form_VirtualInterface extends INEX_Form
         $cust = $this->createElement( 'select', 'custid' );
         $cust->setMultiOptions( $custs );
         $cust->setRegisterInArrayValidator( true )
-        ->setRequired( true )
-        ->setLabel( 'Customer' )
-        ->addValidator( 'between', false, array( 1, $maxId ) )
-        ->setErrorMessages( array( 'Please select a customer' ) );
+            ->setRequired( true )
+            ->setLabel( 'Customer' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( 'Please select a customer' ) );
         $this->addElement( $cust );
 
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 0, 255 ) )
-        ->setRequired( false )
-        ->setLabel( 'Virtual Interface Name' )
-        ->addFilter( 'StringTrim' )
-        ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setRequired( false )
+            ->setLabel( 'Virtual Interface Name' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $name );
 
 
         $descr = $this->createElement( 'text', 'description' );
         $descr->setLabel( 'Description' )
-        ->addValidator( 'stringLength', false, array( 0, 255 ) )
-        ->setRequired( false )
-        ->addFilter( new INEX_Filter_StripSlashes() )
-        ->addFilter( 'StringTrim' );
+            ->addValidator( 'stringLength', false, array( 0, 255 ) )
+            ->setRequired( false )
+            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->addFilter( 'StringTrim' );
         $this->addElement( $descr );
 
 
         $channel = $this->createElement( 'text', 'channelgroup' );
         $channel->addValidator( 'int' )
-        ->setLabel( 'Channel Group Number' )
-        ->addFilter( 'StringTrim' )
-        ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setLabel( 'Channel Group Number' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $channel );
 
         $mtu = $this->createElement( 'text', 'mtu' );
         $mtu->addValidator( 'int' )
-        ->setLabel( 'MTU' )
-        ->addFilter( 'StringTrim' )
-        ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setLabel( 'MTU' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $mtu );
 
 
 
         $trunk = $this->createElement( 'checkbox', 'trunk' );
         $trunk->setLabel( 'Is 802.1q Trunk?' )
-        ->setCheckedValue( '1' );
+            ->setCheckedValue( '1' );
         $this->addElement( $trunk );
 
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
-        . $cancelLocation . "'" ) );
+        $this->addElement( 'button', 'cancel', 
+            array( 
+            	'label' => 'Cancel', 
+            	'onClick' => "parent.location='" . $cancelLocation . "'" 
+            ) 
+        );
 
         $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
 
 
         $this->addDisplayGroup(
-        array( 'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk', 'cancel', 'commit' ),
+        array( 
+        	'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk', 'cancel', 'commit' ),
             'virtualInterfaceDisplayGroup'
-            );
-            $this->getDisplayGroup( 'virtualInterfaceDisplayGroup' )->setLegend( 'Customer Connection Details' );
+        );
+            
+        $this->getDisplayGroup( 'virtualInterfaceDisplayGroup' )->setLegend( 'Customer Connection Details' );
 
     }
 

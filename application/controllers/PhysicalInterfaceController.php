@@ -172,9 +172,12 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
             $ports = Doctrine_Query::create()
                 ->from( 'Switchport sp' )
                 ->leftJoin( 'sp.Physicalinterface pi' )
-                ->where( 'sp.switchid = ?', $switch['id'] )
-                ->andWhere( '( pi.id IS NULL OR pi.id = ? )', $this->_getParam( 'id' ) )
-                ->orderBy( 'sp.id' )
+                ->where( 'sp.switchid = ?', $switch['id'] );
+                
+            if( $this->_getParam( 'id', null ) !== null )
+                $ports = $ports->andWhere( '( pi.id IS NULL OR pi.id = ? )', $this->_getParam( 'id' ) );
+                
+            $ports = $ports->orderBy( 'sp.id' )
                 ->fetchArray();
                 
             foreach( $ports as $i => $p )

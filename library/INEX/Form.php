@@ -70,13 +70,13 @@ class INEX_Form extends Zend_Form
         //$identity['user']['privs']
 
 
-        $columns = Doctrine::getTable( $controller->getModelName() )->getFieldNames();
+        $columns = Doctrine::getTable( get_class( $model ) )->getFieldNames();
 
         foreach( $this->getElements() as $elementName => $elementConfig )
         {
             if( in_array( $elementName, $columns ) )
             {
-                // don't remove centain elements on an edit
+                // don't remove certain elements on an edit
                 if( $isEdit and in_array( $elementName, $this->onEditSkipIfBlank ) and $this->getValue( $elementName ) == '' )
                     continue;
 

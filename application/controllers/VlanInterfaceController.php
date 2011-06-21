@@ -52,8 +52,8 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             ),
 
             'sortDefaults' => array(
-                'column' => 'Vlan.name',
-                'order'  => 'desc'
+                'column' => 'id',
+                'order'  => 'asc'
             ),
 
             'id' => array(
@@ -244,9 +244,12 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             $ips = Doctrine_Query::create()
                 ->from( 'Ipv4address ip' )
                 ->leftJoin( 'ip.Vlaninterface vli' )
-                ->where( 'ip.vlanid = ?', $vlan['id'] )
-                ->andWhere( '( vli.id IS NULL OR vli.id = ? )', $this->_getParam( 'id' ) )
-                ->orderBy( 'ip.id' )
+                ->where( 'ip.vlanid = ?', $vlan['id'] );
+                
+            if( $this->_getParam( 'id', null ) !== null )
+                $ips = $ips->andWhere( '( vli.id IS NULL OR vli.id = ? )', $this->_getParam( 'id' ) );
+                
+            $ips = $ips->orderBy( 'ip.id' )
                 ->fetchArray();
         }
         
@@ -268,9 +271,12 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             $ips = Doctrine_Query::create()
                 ->from( 'Ipv6address ip' )
                 ->leftJoin( 'ip.Vlaninterface vli' )
-                ->where( 'ip.vlanid = ?', $vlan['id'] )
-                ->andWhere( '( vli.id IS NULL OR vli.id = ? )', $this->_getParam( 'id' ) )
-                ->orderBy( 'ip.id' )
+                ->where( 'ip.vlanid = ?', $vlan['id'] );
+                
+            if( $this->_getParam( 'id', null ) !== null )
+                $ips = $ips->andWhere( '( vli.id IS NULL OR vli.id = ? )', $this->_getParam( 'id' ) );
+                
+            $ips = $ips->orderBy( 'ip.id' )
                 ->fetchArray();
         }
         
@@ -279,6 +285,84 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             ->setBody( Zend_Json::encode( $ips ) )
             ->sendResponse();
         exit();
+    }
+    
+    
+    
+    
+    public function quickAddAction()
+    {
+        $f = new INEX_Form_QuickAddInterface( null, false, 'virtual-interface' );
+
+        // Process a submitted form if it passes initial validation
+        if( $this->inexGetPost( 'commit' ) !== null && $f->isValid( $_POST ) )
+        {
+            do
+            {
+                // check customer information
+                if( !( $c = Doctrine_Core::getTable( 'Cust' )->find( $f->getValue( 'custid' ) ) ) ) 
+                {
+                    $f->getElement( 'custid' )->addError( 'Invalid customer' );
+                    break;
+                }
+                
+                // create the entities
+                $conn = Doctrine_Manager::connection();
+                $conn->beginTransaction();
+                
+                try
+                {
+                    // virtual interface
+                    $vi = new Virtualinterface();
+                    $f->assignFormToModel( $vi, $this, false );
+                    $vi->save();
+                    
+                    // and now a physical interface
+                    $pi                       = new Physicalinterface();
+                    
+                    $f->assignFormToModel( $pi, $this, false );
+
+                    $pi['virtualinterfaceid'] = $vi['id'];
+
+                    $nextMonitorIndex = Doctrine_Query::create()
+    	                ->select( 'MAX( pi.monitorindex )' )
+    	                ->from( 'Physicalinterface pi' )
+    	                ->leftJoin( 'pi.Virtualinterface vi' )
+    	                ->where( 'vi.custid = ?', $c['id'] )
+    	                ->execute()
+    	                ->toArray();
+
+                    $pi['monitorindex'] = $nextMonitorIndex[0]['MAX'] + 1;
+                    $pi->save();
+                    
+                    
+                    // and lastly, the VLAN interface
+                    $vli = new Vlaninterface();
+                    
+                    $f->assignFormToModel( $vli, $this, false );
+                    
+                    $vli['virtualinterfaceid'] = $vi['id'];
+
+                    $vli->save();
+                    
+                    $conn->commit();
+                }
+                catch( Exceltion $e )
+                {
+                    $conn->rollback();
+                }
+                
+                $this->logger->notice( 'New virtual, physical and VLAN interface created' );
+                $this->session->message = new INEX_Message( "New interface added", "success" );
+                $this->_redirect( 'virtual-interface/edit/id/' . $vi['id'] );
+                
+            }while( false );
+        }
+
+        $this->view->form   = $f->render( $this->view );
+
+        $this->view->display( 'vlan-interface' . DIRECTORY_SEPARATOR . 'quick-add.tpl' );
+        
     }
 
     
