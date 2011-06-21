@@ -112,6 +112,16 @@ abstract class BaseVlaninterface extends Doctrine_Record
              'notnull' => true,
              'autoincrement' => false,
              ));
+        $this->hasColumn( 'irrdbfilter', 'integer', 1, array(
+             'type' => 'integer',
+             'length' => 1,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             'default' => 1
+        ));
         $this->hasColumn('mcastenabled', 'integer', 1, array(
              'type' => 'integer',
              'length' => 1,

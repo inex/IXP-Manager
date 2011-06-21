@@ -45,7 +45,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             'viewPanelRows'  => array( 'custName', 'vlanName', 'vlanTag',
                 'ipv4enabled', 'ipv4Address', 'ipv4hostname',
                 'ipv6enabled', 'ipv6Address', 'ipv6hostname',
-                'mcastenabled',
+                'irrdbfilter', 'mcastenabled',
                 'bgpmd5secret', 'ipv4bgpmd5secret', 'ipv6bgpmd5secret', 'maxbgpprefix',
                 'rsclient', 'ipv4canping', 'ipv6canping',
                 'ipv4monitorrcbgp', 'ipv6monitorrcbgp', 'as112client', 'busyhost', 'notes'
@@ -133,6 +133,10 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
 
             'ipv6hostname' => array(
                 'label' => 'IPv6 Hostname'
+            ),
+
+            'irrdbfilter' => array(
+                'label' => 'Apply IRRDB Filter'
             ),
 
             'mcastenabled' => array(

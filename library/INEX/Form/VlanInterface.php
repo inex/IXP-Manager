@@ -187,7 +187,12 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
 
+        $irrdbfilter = $this->createElement( 'checkbox', 'irrdbfilter' );
+        $irrdbfilter->setLabel( 'Apply IRRDB Filtering?' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $irrdbfilter );
 
+        
 
 
         $mcastenabled = $this->createElement( 'checkbox', 'mcastenabled' );
