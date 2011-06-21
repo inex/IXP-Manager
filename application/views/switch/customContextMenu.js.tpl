@@ -33,6 +33,10 @@ var onContextMenuClick = function( p_sType, p_aArgs, p_myDataTable )
                     switch( task.index )
                     {
                         case 0:
+                            window.location.assign( {/literal}"{genUrl controller='switch-port' action='list' switchid=''}{literal}"  + oRecord.getData( 'id' ) );
+                            break;
+                            
+                        case 1:
                             window.location.assign( {/literal}"{genUrl controller=$controller action='port-report' id=''}{literal}"  + oRecord.getData( 'id' ) );
                             break;
                     }
@@ -50,6 +54,7 @@ var myContextMenu = new YAHOO.widget.ContextMenu( "mycontextmenu",
 myContextMenu.addItem("Edit", 0   );
 myContextMenu.addItem("Delete", 0 );
 
+myContextMenu.addItem("View / Edit Ports...", 1 );
 myContextMenu.addItem("View Port Report...", 1 );
 
 myContextMenu.render("myDatatable");

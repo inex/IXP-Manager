@@ -37,7 +37,9 @@
                     ['<img src="{genUrl}/images/joomla-admin/menu/switch.png" />',     'Switches',             '{genUrl controller="switch"}',
                                     null,'Switches',
                         ['<img src="{genUrl}/images/joomla-admin/menu/interface.png" />',  'Switch Ports',  '{genUrl controller="switch-port"}',
-                            null,'Switch Ports'   ]
+                            null,'Switch Ports'   ],
+	                    ['<img src="{genUrl}/images/joomla-admin/menu/interface.png" />',  'Add Ports',  '{genUrl controller="switch" action="add-ports"}',
+    		                null,'Add Ports'   ]
                     ],
                     ['<img src="{genUrl}/images/joomla-admin/menu/connection.png" />', 'Patch Panels',         '{genUrl controller="patch-panel"}',
                                      null,'Patch Panels',

@@ -195,7 +195,7 @@ class SwitchController extends INEX_Controller_FrontEnd
                      
                     $this->logger->notice( intval( $_POST['numports'] ) . ' new switch ports created' );
                     $this->session->message = new INEX_Message( intval( $_POST['numports'] ) . ' new switch ports created', "success" );
-                    $this->_redirect( 'switch-port' );
+                    $this->_redirect( 'switch-port/list/switchid/' . $f->getValue( 'switchid' ) );
                 }
                 catch( Exception $e )
                 {
