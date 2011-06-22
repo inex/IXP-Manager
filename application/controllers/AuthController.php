@@ -139,7 +139,7 @@ class AuthController extends INEX_Controller_Action
                         $this->config['sms']['clickatell']['sender_id']
                     );
 
-                    if( $sms->send( $user->authorisedMobile, "Your " . $this->_config['identity']['orgname']
+                    if( $sms->send( $user->authorisedMobile, "Your " . $this->config['identity']['orgname']
                             . " Members' area password is:\n\n" . $user->password . "\n" ) )
                     {
                         $this->view->message = new INEX_Message(
