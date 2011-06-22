@@ -41,6 +41,48 @@
 	                    ['<img src="{genUrl}/images/joomla-admin/menu/interface.png" />',  'Add Ports',  '{genUrl controller="switch" action="add-ports"}',
     		                null,'Add Ports'   ]
                     ],
+                    
+					['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'IP Addresses', null, null, 'IP Addresses',
+
+                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Add IP Addresses...',
+                      	    '{genUrl controller='ipv4-address' action='add-addresses'}', null, 'Add IP Addresses...'
+   					    ],
+
+   						['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />','IPv4 Addresses',  null, null, 'IPv4  Addresses',
+
+	                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Peering VLAN #1',
+		                        	'{genUrl controller='ipv4-address' action='list' vlan='10'}', null, 'Peering VLAN #1'
+							],
+	                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Peering VLAN #2',
+	                        	'{genUrl controller='ipv4-address' action='list' vlan='12'}', null, 'Peering VLAN #2'
+							],
+	                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'VoIP Peering VLAN #1',
+	                        	'{genUrl controller='ipv4-address' action='list' vlan='70'}', null, 'VoIP Peering VLAN #1'
+							],
+	                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'VoIP Peering VLAN #2',
+	                        	'{genUrl controller='ipv4-address' action='list' vlan='72'}', null, 'VoIP Peering VLAN #2'
+							]
+						],
+
+                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />','IPv6 Addresses',  null, null, 'IPv6  Addresses',
+					
+	                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Peering VLAN #1',
+		                        	'{genUrl controller='ipv6-address' action='list' vlan='10'}', null, 'Peering VLAN #1'
+							],
+	                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Peering VLAN #2',
+	                        	'{genUrl controller='ipv6-address' action='list' vlan='12'}', null, 'Peering VLAN #2'
+							],
+	                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'VoIP Peering VLAN #1',
+	                        	'{genUrl controller='ipv6-address' action='list' vlan='70'}', null, 'VoIP Peering VLAN #1'
+							],
+	                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'VoIP Peering VLAN #2',
+	                        	'{genUrl controller='ipv6-address' action='list' vlan='72'}', null, 'VoIP Peering VLAN #2'
+							]
+
+						],
+
+                    ],
+
                     ['<img src="{genUrl}/images/joomla-admin/menu/connection.png" />', 'Patch Panels',         '{genUrl controller="patch-panel"}',
                                      null,'Patch Panels',
                         ['<img src="{genUrl}/images/joomla-admin/menu/interface.png" />',  'Patch Panel Ports',  '{genUrl controller="patch-panel-port"}',
@@ -78,44 +120,6 @@
 	                                    null, 'Contacts'   ],
 	                    ['<img src="{genUrl}/images/joomla-admin/menu/system-users.png" />','Users',  '{genUrl controller="user"}',
 	                                    null, 'Users'   ],
-
-	            	    ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'IP Addresses', null, null, 'IP Addresses',
-
-	                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />','IPv4 Addresses',  null, null, 'IPv4  Addresses',
-
-		                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Peering VLAN #1',
-			                        	'{genUrl controller='ipv4-address' action='list' vlan='10'}', null, 'Peering VLAN #1'
-								],
-		                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Peering VLAN #2',
-		                        	'{genUrl controller='ipv4-address' action='list' vlan='12'}', null, 'Peering VLAN #2'
-								],
-		                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'VoIP Peering VLAN #1',
-		                        	'{genUrl controller='ipv4-address' action='list' vlan='70'}', null, 'VoIP Peering VLAN #1'
-								],
-		                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'VoIP Peering VLAN #2',
-		                        	'{genUrl controller='ipv4-address' action='list' vlan='72'}', null, 'VoIP Peering VLAN #2'
-								]
-							],
-
-	                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />','IPv6 Addresses',  null, null, 'IPv6  Addresses',
-
-		                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Peering VLAN #1',
-			                        	'{genUrl controller='ipv6-address' action='list' vlan='10'}', null, 'Peering VLAN #1'
-								],
-		                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Peering VLAN #2',
-		                        	'{genUrl controller='ipv6-address' action='list' vlan='12'}', null, 'Peering VLAN #2'
-								],
-		                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'VoIP Peering VLAN #1',
-		                        	'{genUrl controller='ipv6-address' action='list' vlan='70'}', null, 'VoIP Peering VLAN #1'
-								],
-		                        [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'VoIP Peering VLAN #2',
-		                        	'{genUrl controller='ipv6-address' action='list' vlan='72'}', null, 'VoIP Peering VLAN #2'
-								]
-
-							],
-
- 	                    ],
-
 
 	                    ['<img src="{genUrl}/images/joomla-admin/menu/drive-optical.png" />','Customer Kit',  '{genUrl controller="cust-kit"}',
 	                                    null, 'Customer Kit'   ],

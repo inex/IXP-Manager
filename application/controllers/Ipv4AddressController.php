@@ -92,6 +92,58 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
         $this->view->display( 'ipv4-address/list.tpl' );
     }
 
+    public function addAddressesAction()
+    {
+        $f = new INEX_Form_AddAddresses( null, false, '' );
+        
+        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/' 
+            . $this->getRequest()->getParam( 'controller' ) . "/add-addresses" );
+ 
+        if( $this->inexGetPost( 'commit' ) !== null && $f->isValid( $_POST ) )
+        {
+            do
+            {
+                try
+                {
+                    $addrfam = $f->getValue( 'type' );
+                    $conn = Doctrine_Manager::connection();
+                    $conn->beginTransaction();
+                    
+                    for( $i = 0; $i < intval( $_POST['numaddrs'] ); $i++ )
+                    {
+                        if( $addrfam == 'IPv4' )
+                            $ip = new Ipv4address();
+                        else if( $addrfam == 'IPv6' )
+                            $ip = new Ipv6address();
+                        else
+                            die( 'Invalid address family!' );
+
+                        $ip['vlanid']   = $f->getValue( 'vlanid' );
+                        $ip['address']  = trim( $_POST[ 'np_name' . $i ] );
+                        $ip->save();
+                    } 
+                    
+                    $conn->commit();
+                     
+                    $this->logger->notice( intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created' );
+                    $this->session->message = new INEX_Message(  intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created', "success" );
+                    //$this->_redirect( 'switch-port/list/switchid/' . $f->getValue( 'switchid' ) );
+                    $this->_redirect( 'index/index' );
+                }
+                catch( Exception $e )
+                {
+                    $conn->rollback();
+                    
+                    Zend_Registry::set( 'exception', $e );
+                    return( $this->_forward( 'error', 'error' ) );
+                }
+            }while( false );
+        }
+
+        $this->view->form   = $f->render( $this->view );
+
+        $this->view->display( 'ipv4-address/add-addresses.tpl' );
+    }
 }
 
 ?>
