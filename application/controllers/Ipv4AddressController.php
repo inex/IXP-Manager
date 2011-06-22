@@ -145,8 +145,13 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
                      
                     $this->logger->notice( intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created' );
                     $this->session->message = new INEX_Message(  intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created', "success" );
-                    //$this->_redirect( 'switch-port/list/switchid/' . $f->getValue( 'switchid' ) );
-                    $this->_redirect( 'index/index' );
+                    
+                    if( $addrfam == 'IPv4' )
+                        $redir = 'ipv4';
+                    else
+                        $redir = 'ipv6';
+
+                    $this->_redirect( "{$redir}-address/list/vlanid/" . $f->getValue( 'vlanid' ) );
                 }
                 catch( Exception $e )
                 {
