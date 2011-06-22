@@ -33,4 +33,4 @@
 </div>
 
 
-{tmplinclude file="auth/footer.tpl"}
+{tmplinclude file="footer.tpl"}

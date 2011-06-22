@@ -56,5 +56,5 @@ $application->bootstrap()
 
 if( APPLICATION_ENV != 'production' && !Zend_Auth::getInstance()->hasIdentity() )
 {
-    echo "<strong>THE IXP IS RUNNING IN NON-PRODUCTION MODE AND INFORMATION CAN BE LEAKED VIA DEBUGGING UTILITIES. ENSURE HTACCESS IS IN PLACE.</strong>";
+    echo "<p><br /><br /><strong>THE IXP IS RUNNING IN NON-PRODUCTION MODE AND INFORMATION CAN BE LEAKED VIA DEBUGGING UTILITIES. ENSURE HTACCESS IS IN PLACE.</strong></p>";
 }

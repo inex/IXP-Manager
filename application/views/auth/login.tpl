@@ -2,7 +2,6 @@
 
 {tmplinclude file="message.tpl"}
 
-
 <div class="login">
     <div class="login-form">
         <h1>Login</h1>
@@ -30,4 +29,4 @@
 </div>
 
 
-{tmplinclude file="auth/footer.tpl"}
+{tmplinclude file="footer.tpl"}

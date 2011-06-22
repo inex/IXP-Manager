@@ -405,10 +405,11 @@ h4 {
     }
 
 .inputbox {
-    width: 150px;
-    margin: 0 0 1em 0;
-    border: 1px solid #cccccc;
-    }
+    width: 200px;
+    margin: 4px 0 1em 0;
+    padding: 3px;
+    border: 1px solid #4FA500;
+}
 
 .clr {
     clear:both;
