@@ -76,19 +76,37 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
 
     public function listAction()
     {
-        $vlan = $this->_getParam( 'vlan', 10 );
-
+        $this->view->vlans = Doctrine_Query::create()
+            ->from( 'Vlan v' )
+            ->orderBy( 'v.name ASC' )
+            ->fetchArray();
+        
+        if( count( $this->view->vlans ) == 0 )
+        {
+            $this->session->message = new INEX_Message(  'You must first create a VLAN', "error" );
+            $this->_redirect( 'index/index' );
+        }
+            
+        $vlanid = $this->_getParam( 'vlanid', null );
+        
+        if( $vlanid === null )
+        {
+            $vlanid = $this->view->vlans[0]['id'];
+            $this->view->vlan = $this->view->vlans[0];
+        }
+        else
+            $this->view->vlan = Doctrine_Core::getTable( 'Vlan' )->find( $vlanid, Doctrine_Core::HYDRATE_ARRAY );
+        
         $this->view->ips = Doctrine_Query::create()
             ->from( 'Ipv4address ip' )
             ->leftJoin( 'ip.Vlaninterface vi' )
             ->leftJoin( 'vi.Virtualinterface virt' )
             ->leftJoin( 'virt.Cust c' )
             ->leftJoin( 'ip.Vlan v' )
-            ->where( 'v.number = ?', $vlan )
+            ->where( 'v.id = ?', $vlanid )
             ->orderBy( 'ip.id ASC' )
             ->fetchArray();
-
-        //INEX_Debug::dd( $this->view->ips, true );
+            
         $this->view->display( 'ipv4-address/list.tpl' );
     }
 
