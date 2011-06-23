@@ -129,44 +129,27 @@ class AuthController extends INEX_Controller_Action
             // does the username exist?
             if( $user = Doctrine_Core::getTable( 'User' )->findOneByUsername( $this->getRequest()->getParam( 'loginusername' ) ) )
             {
-                // sanity checks
-                if( is_numeric( $user->authorisedMobile ) && strlen( $user->authorisedMobile ) > 10 )
+                // generate a password change token
+                $chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                $token = substr( str_shuffle( $chars ), 0, 32 );
+                
+                $user->setPreference( 'pwreset.token', $token );
+                $user->setPreference( 'pwreset.timeout', mktime() + 86400 );
+                
+                $this->view->user  = $user; 
+                $this->view->token = $token;
+                
+                try 
                 {
-                    $sms = new INEX_SMS_Clickatell(
-                        $this->config['sms']['clickatell']['username'],
-                        $this->config['sms']['clickatell']['password'],
-                        $this->config['sms']['clickatell']['api_id'],
-                        $this->config['sms']['clickatell']['sender_id']
-                    );
+                    $mail = new Zend_Mail( );
+                    $mail->setBodyText( $this->view->render( 'auth/email/password-reset.tpl' ) )
+                        ->setFrom( $this->config['identity']['email'], $this->config['identity']['name'] )
+                         ->addTo( $user['email'] )
+                         ->setSubject( $this->config['identity']['ixp']['fullname'] . ' :: Password Reset' )
+                         ->send();
 
-                    if( $sms->send( $user->authorisedMobile, "Your " . $this->config['identity']['orgname']
-                            . " Members' area password is:\n\n" . $user->password . "\n" ) )
-                    {
-                        $this->view->message = new INEX_Message(
-                            'Your password has been sent to the authorised mobile ('
-                                . substr( $user->authorisedMobile, 0, 6 )
-                                . str_repeat( 'x', strlen( $user->authorisedMobile ) - 8 )
-                                . substr( $user->authorisedMobile, -2 ),
-                            'success'
-                        );
-
-                        $this->view->display( 'auth/login.tpl' );
-                        return true;
-                    }
-                    else
-		            {
-		                $this->view->message = new INEX_Message(
-		                	'We could not send the password by SMS due to an issue with our SMS provider. '
-		                    . 'Please contact us on ' . $this->_config['identity']['email'] . '.', 'error' );
-		            }
                 }
-                else
-                {
-                    $this->view->message = new INEX_Message(
-                        'We could not send the password by SMS as we do not have an authorised mobile number on file. '
-                        . 'Please contact us on <em>' . $this->_config['identity']['email'] . '</em> from an official '
-                        . 'company email address to provide a mobile number.', 'alert'
-                    );
+                catch( Zend_Exception $e ) {
                 }
             }
             else
