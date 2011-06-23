@@ -98,6 +98,18 @@ class SwitchPortController extends INEX_Controller_FrontEnd
         return $dataQuery->andWhere( 'x.switchid = ?', $this->_getParam( 'switchid', 0 ) );
     }
     
+    /**
+     * Hook function to set a customer return.
+     * 
+     * We want to display the ports of the switch which was added / edited.
+	 *
+     * @param INEX_Form_SwitchPort $f
+     * @param Switchport $o
+     */
+    protected function _addEditSetReturnOnSuccess( $f, $o )
+    {
+        return 'switch-port/list/switchid/' . $o['switchid'];
+    }
     
 }
 

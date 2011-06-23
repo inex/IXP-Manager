@@ -225,6 +225,8 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
 
                     if( $this->getRequest()->getParam( 'return' ) !== null )
                         $this->_redirect( $this->getRequest()->getParam( 'return' ) . '/objectid/' . $object['id'] );
+                    else if( method_exists( $this, '_addEditSetReturnOnSuccess' ) )
+                        $this->_redirect( $this->_addEditSetReturnOnSuccess( $form, $object ) );
                     else
                         $this->_redirect( $this->getRequest()->getParam( 'controller' ) );
                 }
