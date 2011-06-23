@@ -115,13 +115,10 @@
 	                        ['<img src="{genUrl}/images/joomla-admin/menu/php.png" />','PHP Info',  '{genUrl controller="utils" action="phpinfo"}',
 	                            null, 'PHP Info'   ],
 	                        ['<img src="{genUrl}/images/joomla-admin/menu/php.png" />','APC Info',  '{genUrl controller="utils" action="apcinfo"}',
-	                            null, 'APC Info'   ]
+	                            null, 'APC Info'   ],
+		                    ['<img src="{genUrl}/images/joomla-admin/menu/contents.png" />','SEC Events',  '{genUrl controller="sec-viewer"}',
+	                            null, 'SEC Events'   ]
 	                    ]
-                    ],
-                    _cmSplit,
-                    [null,'Monitoring',null,null,'Monitoring',
-                    ['<img src="{genUrl}/images/joomla-admin/menu/contents.png" />','SEC Events',  '{genUrl controller="sec-viewer"}',
-                                    null, 'SEC Events'   ]
                     ],
                     _cmSplit,
                 {/if}
@@ -266,6 +263,13 @@
                             null, 'SEC Event Notifications'   ]
                     ],
                 {/if}
+                {if $identity.user.privs eq 3}
+                	_cmSplit,
+                    [null, 'Help','{genUrl controller="index" action="help"}',null,'Help'],
+                {/if}
+            	_cmSplit,
+                [null, 'About','{genUrl controller="index" action="about"}',null,'About'],
+                _cmSplit,
                 {if isset( $session->switched_user_from ) and $session->switched_user_from}
                     [null,'[Switch Back]','{genUrl controller="auth" action="switch-back"}',null,'[Switch Back]']
                 {else}
