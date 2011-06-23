@@ -46,7 +46,8 @@ var dialogHandleFailure = function(o) {
 
 var sendSMSDialog = new YAHOO.widget.Dialog( "sendSMSDialog",
                     {
-                        width : "350px",
+                        width : "450px",
+                        height: "300px",
                         fixedcenter : true,
                         visible : false,
                         constraintoviewport : true,
@@ -141,7 +142,7 @@ var onContextMenuClick = function( p_sType, p_aArgs, p_myDataTable )
                             document.getElementById( "sendSMSDialog-id" ).value = oRecord.getData( 'id' );
                             document.getElementById( "sendSMSDialog-to" ).value = oRecord.getData( 'authorisedMobile' );
                             document.getElementById( "sendSMSDialog-message" ).value =
-                                "Your INEX Members' Area password is:\n\n" + oRecord.getData( 'password' ) + "\n\nSincerely,\nINEX Operations\noperations@inex.ie";
+                                "Your password for {/literal}{$config.identity.ixp.fullname} is:\n\n" + oRecord.getData( 'password' ) + "\n\nSincerely,\n{$config.identity.name}\n{$config.identity.email}"{literal};
                             document.getElementById( "sendSMSDialog-count" ).innerHTML =
                                 document.getElementById( "sendSMSDialog-message" ).value.length;
 
@@ -153,9 +154,10 @@ var onContextMenuClick = function( p_sType, p_aArgs, p_myDataTable )
                             document.getElementById( "sendEmailDialog-to" ).value = oRecord.getData( 'email' );
 
                             var loginDetailsString =
-                                "<p>Dear INEX Member,</p><p>Your INEX Members' Area username is:</p><p><code>" + oRecord.getData( 'username' )
-                                + "</code></p><p>We will send your password to the authorised mobile phone (" + oRecord.getData( 'authorisedMobile' ) + ") by SMS."
-                                + "</p><p>Sincerely,<br />INEX Operations<br /><a href=\"mailto:operations@inex.ie\">operations@inex.ie</a></p>";
+                                "<p>To whom it may concern,</p><p>Your username for {/literal}{$config.identity.ixp.fullname}{literal} is:</p><p><code>" + oRecord.getData( 'username' )
+                                + "</code></p><p>If you do not yet have a password (or have forgotten it) please use the forgotten password feature at "
+								+ {/literal}"<a href=\"{$config.identity.ixp.url}auth/forgotten-password\">{$config.identity.ixp.url}auth/forgotten-password</a>."
+                                + "</p><p>Sincerely,<br />{$config.identity.name}<br /><a href=\"mailto:{$config.identity.email}\">{$config.identity.email}{literal}</a></p>";
 
                             document.getElementById( "sendEmailDialog-message" ).value = loginDetailsString;
                             emailEditor.setEditorHTML( loginDetailsString );
