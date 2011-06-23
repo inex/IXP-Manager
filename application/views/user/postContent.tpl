@@ -15,7 +15,7 @@
 
             <tr>
                 <td colspan="2">
-                    <textarea id="sendSMSDialog-message" name="message" rows="3" cols="40"></textarea>
+                    <textarea id="sendSMSDialog-message" name="message" rows="8" cols="40"></textarea>
                 </td>
             </tr>
 
