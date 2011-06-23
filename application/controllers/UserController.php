@@ -224,6 +224,9 @@ class UserController extends INEX_Controller_FrontEnd
         $this->view->last = $last;
         $this->view->display( 'user/last.tpl' );
     }
+    
+    
+    
 }
 
 ?>
