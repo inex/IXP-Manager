@@ -40,7 +40,7 @@ You can login to it using the following details:
     <td width="50"></td>
     <td align="right"><strong>URL:</strong></td>
     <td width="20"></td>
-    <td align="left"><a href="https://www.inex.ie/ixp/">https://www.inex.ie/ixp/</a></td>
+    <td align="left"><a href="{$config.identity.ixp.url}">{$config.identity.ixp.url}</a></td>
 </tr>
 <tr>
     <td></td>
@@ -52,7 +52,7 @@ You can login to it using the following details:
     <td></td>
     <td align="right"><strong>Password:</strong></td>
     <td></td>
-    <td align="left"><em>(sent to {$u->authorisedMobile} by SMS)</em></td>
+    <td align="left"><em>(see below)</em></td>
 </tr>
 </table>
 
@@ -72,6 +72,19 @@ Once logged in, you will have access to a number of features including:
 <p>
 If you require any assistance, please contact INEX Operations on <a href="mailto:operations@inex.ie">operations@inex.ie</a>.
 </p>
+
+
+<h2>Getting Your Password</h2>
+
+<p>
+To get your new password, please use the forgotten password procedure by visiting
+the following link and entering your username:
+</p>
+
+<blockquote>
+<a href="{$config.identity.ixp.url}auth/forgotten-password">{$config.identity.ixp.url}auth/forgotten-password</a>
+</blockquote>
+
 
 <h2>Additional/Miscellaneous Benefits</h2>
 
@@ -123,8 +136,8 @@ encrypted using SSL.
 
 <p>
 Thanks and kind reagrds,<br />
-The INEX Operations Team.<br />
-<a href="mailto:operations@inex.ie">operations@inex.ie</a>.
+{$config.identity.name}<br />
+<a href="mailto:{$config.identity.email}">{$config.identity.email}</a>.
 </p>
 
 </body>
