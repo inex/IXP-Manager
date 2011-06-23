@@ -92,6 +92,18 @@ class User extends BaseUser
     }
 
     /**
+     * Delete a user preference
+     *
+     * @param $attribute string The preference name
+     * @return void 
+     */
+    public function deletePreference( $attribute )
+    {
+        if( $pref = $this->loadPreference( $attribute ) )
+            $pref->delete();
+    }
+    
+    /**
      * Get the named preference
      *
      * WARNING: Evaluate the return of this function using !== or === as a preference such as '0'
