@@ -8,7 +8,25 @@
 	</tr>
 </table>
 
-<p><br /></p>
+<div class="list_preamble_container">
+<div class="list_preamble">
+
+<p>
+<form name="switch_jumpto" class="form" method="post" action="{genUrl controller="switch" action="port-report}">
+    <strong>Switch:</strong>&nbsp;
+
+    <select onchange="document.switch_jumpto.submit()" name="id">
+
+        <option value="0"></option>
+        {foreach from=$switches item=s}
+            <option value="{$s.id}" {if isset( $switchid ) and $switchid eq $s.id}selected{/if}>{$s.name}</option>
+        {/foreach}
+
+    </select>
+</form>
+</p>
+</div>
+</div>
 
 
 <div id="portReportContainer">
