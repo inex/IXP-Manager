@@ -135,6 +135,8 @@ class SwitchController extends INEX_Controller_FrontEnd
             $this->view->message = new INEX_Message( 'Invalid switch', INEX_Message::MESSAGE_TYPE_ERROR );
             return( $this->_forward( 'list' ) );
         }
+        else
+            $this->view->switchid = $switch['id'];
 
         // load switch ports
         $ports = Doctrine_Query::create()
@@ -157,8 +159,14 @@ class SwitchController extends INEX_Controller_FrontEnd
             $ports[$i]['type'] = Switchport::$TYPE_TEXT[ $p['type'] ];
         }
 
-        //echo '<pre>'; print_r( $ports );die();
-
+        // add switch list
+        $this->view->switches = Doctrine_Query::create()
+            ->from( 'SwitchTable s' )
+            ->select( 's.id, s.name' )
+            ->where( 's.switchtype = ?', SwitchTable::SWITCHTYPE_SWITCH )
+            ->orderBy( 's.name' )
+            ->fetchArray();
+            
         $this->view->ports = $ports;
         $this->view->display( 'switch/port-report.tpl' );
     }
