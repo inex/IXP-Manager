@@ -130,34 +130,33 @@ class SwitchController extends INEX_Controller_FrontEnd
     {
         $switch = Doctrine_Core::getTable( 'SwitchTable' )->find( $this->_getParam( 'id' ) );
 
-        if( !$switch )
+        if( $switch )
         {
-            $this->view->message = new INEX_Message( 'Invalid switch', INEX_Message::MESSAGE_TYPE_ERROR );
-            return( $this->_forward( 'list' ) );
-        }
-        else
             $this->view->switchid = $switch['id'];
 
-        // load switch ports
-        $ports = Doctrine_Query::create()
-            ->from( 'Switchport sp' )
-            ->where( 'sp.switchid = ?', $switch['id'] )
-            ->orderBy( 'sp.id ASC' )
-            ->execute( null, Doctrine_Core::HYDRATE_ARRAY );
-
-        // add in customer details.
-        // FIXME: there a better way of doing this
-        foreach( $ports as $i => $p )
-        {
-            $ports[$i]['connection'] = Doctrine_Query::create()
-                ->from( 'Physicalinterface p' )
-                ->leftJoin( 'p.Virtualinterface v' )
-                ->leftJoin( 'v.Cust c' )
-                ->where( 'p.switchportid = ?', $p['id'] )
-                ->fetchOne( null, Doctrine_Core::HYDRATE_ARRAY );
-
-            $ports[$i]['type'] = Switchport::$TYPE_TEXT[ $p['type'] ];
+            // load switch ports
+            $ports = Doctrine_Query::create()
+                ->from( 'Switchport sp' )
+                ->where( 'sp.switchid = ?', $switch['id'] )
+                ->orderBy( 'sp.id ASC' )
+                ->execute( null, Doctrine_Core::HYDRATE_ARRAY );
+    
+            // add in customer details.
+            // FIXME: there a better way of doing this
+            foreach( $ports as $i => $p )
+            {
+                $ports[$i]['connection'] = Doctrine_Query::create()
+                    ->from( 'Physicalinterface p' )
+                    ->leftJoin( 'p.Virtualinterface v' )
+                    ->leftJoin( 'v.Cust c' )
+                    ->where( 'p.switchportid = ?', $p['id'] )
+                    ->fetchOne( null, Doctrine_Core::HYDRATE_ARRAY );
+    
+                $ports[$i]['type'] = Switchport::$TYPE_TEXT[ $p['type'] ];
+            }
         }
+        else
+            $ports = array();
 
         // add switch list
         $this->view->switches = Doctrine_Query::create()

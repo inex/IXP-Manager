@@ -172,6 +172,21 @@ END_JSON;
         echo $data;
 
     }
+    
+    
+    /**
+     * Hook function to set a customer return.
+     * 
+     * We want to display the virtual interface which was added / edited.
+	 *
+     * @param INEX_Form_SwitchPort $f
+     * @param Switchport $o
+     */
+    protected function _addEditSetReturnOnSuccess( $f, $o )
+    {
+        return 'virtual-interface/edit/id/' . $o['id'];
+    }
+    
 
 }
 
