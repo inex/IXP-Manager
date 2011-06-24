@@ -21,9 +21,87 @@
 <p>
 This help section is designed to show new users how to set up IXP Manager objects and
 work through normal day to day procedures. First time users setting up a new instance
-of IXP Manager should start with the <a href="#initial"><em>Initial Setup Tasks</em></a> section at the end.
+of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the end.
 </p>
 
+
+<h1>Day to Day Tasks</h1>
+
+<p>
+	The normal day to day tasks are provisioning new members / customers and interfaces.
+</p>
+
+<table width="100%">
+<tr>
+	<td>
+		<img src="{genUrl}/images/joomla-admin/user.png" width="48" height="48" alt="[Users]" title="Users" />
+		<br />
+		<strong><em>Members</em></strong>
+	</td>
+	<td>
+		<p>
+			Customers / members are those organisations who peer at your IXP. The first step in 
+			provisioning services for a new customer is to 
+			<a href="{genUrl controller="customer" action="add"}">add them</a>. You can also
+			<a href="{genUrl controller="customer" action="list"}">list existing customers</a>.  
+		</p>
+	</td>
+</tr>
+
+<table width="100%">
+<tr>
+	<td>
+		<img src="{genUrl}/images/joomla-admin/interface.png" width="48" height="48" alt="[Interfaces]" title="Interfaces" />
+		<br />
+		<strong><em>Interfaces</em></strong>
+	</td>
+	<td>
+		<p>
+			Customers are assigned an interface through which they get connectivity to the peering LAN(s).
+			The easiest way to set up a standard simple interface is to use the
+			<a href="{genUrl controller="vlan-interface" action="quick-add"}">Quick Add wizard</a>. 
+			The braver among you can use the more manual process which starts by 
+			<a href="{genUrl controller="virtual-interface" action="add"}">adding a virtual
+			interface</a>. You then need to add one (or more for port channel / trunk groups)
+			physical interfaces to this virtual interface followed by one or more VLAN interfaces.
+		</p>
+	</td>
+</tr>
+
+<table width="100%">
+<tr>
+	<td valign="top">
+		<img src="{genUrl}/images/joomla-admin/system-users.png" width="48" height="48" alt="[Users]" title="Users" />
+		<br />
+		<strong><em>Users</em></strong>
+	</td>
+	<td>
+		<p>
+			IXP Manager supports three types of users:
+			<dl>
+				<dt><strong>Superuser</strong></dt>
+				<dd>
+					These are IXP staff members such as yourself with full unrestricted administrative access.
+				</dd>
+				<dt><strong>Customer Superuser</strong></dt>
+				<dd>
+					Each customer gets a Customer Superuser account. This does not provide any access other than
+					to allow them to create and manage customer user accounts.
+				</dd>
+				<dt><strong>Customer User</strong></dt>
+				<dd>
+					Customer Users are customer portal accounts allowing them access to their dashboard,
+					statistics, peering manager and so forth.
+				</dd>
+			</dl>
+
+			You can <a href="{genUrl controller="user" action="add"}">add new users</a> and
+			<a href="{genUrl controller="user" action="list"}">list existing users</a>.  
+		</p>
+	</td>
+</tr>
+
+</table>
 
 <h1>Inital Setup Tasks</h1>
 
@@ -112,6 +190,41 @@ of IXP Manager should start with the <a href="#initial"><em>Initial Setup Tasks<
 			You can also <a href="{genUrl controller="switch-port" action="list"}">list ports by switch</a>
 			and <a href="{genUrl controller="switch" action="port-report"}">generate reports</a> of switch 
 			ports showing who is connected.  
+		</p>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<img src="{genUrl}/images/joomla-admin/vlan.png" width="48" height="48" alt="[VLANs]" title="VLANs" />
+		<br />
+		<strong><em>VLANs</em></strong>
+	</td>
+	<td>
+		<p>
+			Some IXPs have more than one peering LAN but all have at least one. Even if you only have
+			one peering LAN, you need to <a href="{genUrl controller="vlan" action="add"}">add a
+			VLAN</a>. You can also <a href="{genUrl controller="vlan" action="list"}">list existing
+			VLANs</a>.
+		</p>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<img src="{genUrl}/images/joomla-admin/kdmconfig.png" width="48" height="48" alt="[IP Addresses]" title="IP Addresses" />
+		<br />
+		<strong><em>Addresses</em></strong>
+	</td>
+	<td>
+		<p>
+			All IXP participants need an IP address for peering. Before you can provision customers,
+			you need to populate the database with IP addresses for your peering VLAN(s). We've made
+			this quite easy with our <a href="{genUrl controller="ipv4-address" action="add-addresses"}">IP 
+			address add wizard</a> (supporting IPv4 and IPv6 addresses). You can also list existing
+			<a href="{genUrl controller="ipv4-address" action="list"}">IPv4 addrseses</a> and
+			<a href="{genUrl controller="ipv6-address" action="list"}">IPv6 addrseses</a> (including
+			who they are assigned to).
 		</p>
 	</td>
 </tr>
