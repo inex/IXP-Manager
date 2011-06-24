@@ -865,3 +865,18 @@ h4 {
     vertical-align: middle;
 	float: left;
 }
+
+
+
+
+
+
+#documentation
+{
+	font-size: 116%;
+}
+
+#documentation h1 {
+    color: #4FA500;
+}
+

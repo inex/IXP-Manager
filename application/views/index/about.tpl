@@ -12,13 +12,15 @@
 </tr>
 </table>
 
+<div id="documentation">
+
 <p>
 <br />
 </p>
 
 <p>
 	<strong>IXP Manager</strong> is primarily a web application with associated 
-	scripts and utilities which will allow Internet Exchange Points (IXPs) to 
+	scripts and utilities which allows Internet Exchange Points (IXPs) to 
 	manage new members (or customers), provision new connections and services and 
 	monitor traffic usage. It also has a self contained customer portal allowing 
 	IXP members to view their IXP traffic statistics and a unique tool called 
@@ -27,7 +29,7 @@
 </p>
 
 <p>
-	IXP Manager is a web application built entirely in house by the INEX operations team
+	IXP Manager was built entirely in house by the INEX operations team
 	to support the running of the exchange. <a href="https://www.inex.ie/">INEX</a> 
 	(Internet Neutral Exchange Association) is Ireland's IP peering hub.
 </p>
@@ -42,9 +44,15 @@
 <p> 
 	IXP Manager is written in PHP using the Zend Framework, the Doctrine ORM and the 
 	Smarty templating engine. The project website and source code can be viewed at 
-	<a href="https://github.com/inex/IXP-Manager">https://github.com/inex/IXP-Manager</a>.
+	<a href="https://github.com/inex/IXP-Manager/wiki">https://github.com/inex/IXP-Manager</a>.
 </p>
 
+<p>
+	There is a mailing / discussion list for IXP Manager. You can join and view the 
+	archives at: <a href="https://www.inex.ie/mailman/listinfo/ixpmanager">https://www.inex.ie/mailman/listinfo/ixpmanager</a>.
+</p>
+
+</div>
 
 <h3>Software License</h3>
 
