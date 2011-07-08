@@ -46,7 +46,7 @@ CREATE VIEW view_vlaninterface_details_by_custid AS
 		vli.ipv4bgpmd5secret,
 		vli.ipv6bgpmd5secret,
 		vli.rsclient,
-		vli.irrdbconfig,
+		vli.irrdbfilter,
 		vli.busyhost,
 		vli.notes,
 		v4.address AS ipv4address,
