@@ -112,6 +112,7 @@ $query .= <<EOF;
 		vli.ipv6bgpmd5secret,
 		vli.virtualinterfaceid,
 		vli.rsclient,
+		vli.irrdbfilter,
 		vli.as112client,
 		sw.speed,
 		sw.switch,
