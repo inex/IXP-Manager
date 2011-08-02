@@ -139,7 +139,8 @@ int set allas;
 	# to collapse.  Recommend evasive manoeuvers.
 	if (bgp_path.first != [% asn %] ) then
 		reject;
-
+[%# Only do filtering if this is enabled per client -%]
+[% IF entries.$vid.irrdbfilter -%]
 [% afifilter = 'afi ' _ protocol _ '.unicast ' _ entries.$vid.peeringmacro -%]
 [% PERL -%]
 	use IXPManager::Template::Plugin::IRRToolSetBird;
@@ -174,11 +175,14 @@ int set allas;
 
 	if ! (net ~ allnet) then
 		reject;
-[% ELSE -%]
+[% ELSE %]
 	# Deny everything because the IRR database returned nothing
 	reject;
+[% END %]
+[%# IF entries.$vid.irrdbfilter -%]
+[% ELSE %]
+	# This ASN was configured not to use IRRDB filtering
 [% END -%]
-
 	accept;
 }
 

@@ -87,7 +87,6 @@ interface {$progress.Physicalinterface.Switchport.name}
  switchport
  switchport access vlan 30
  switchport mode access
- switchport block unicast
  switchport port-security
  switchport port-security aging time 5
  logging event link-status
