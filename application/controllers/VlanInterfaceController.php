@@ -248,6 +248,8 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
                 
             if( $this->_getParam( 'id', null ) !== null )
                 $ips = $ips->andWhere( '( vli.id IS NULL OR vli.id = ? )', $this->_getParam( 'id' ) );
+            else
+                $ips = $ips->andWhere( 'vli.id IS NULL' );
                 
             $ips = $ips->orderBy( 'ip.id' )
                 ->fetchArray();
@@ -275,6 +277,8 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
                 
             if( $this->_getParam( 'id', null ) !== null )
                 $ips = $ips->andWhere( '( vli.id IS NULL OR vli.id = ? )', $this->_getParam( 'id' ) );
+            else
+                $ips = $ips->andWhere( 'vli.id IS NULL' );
                 
             $ips = $ips->orderBy( 'ip.id' )
                 ->fetchArray();

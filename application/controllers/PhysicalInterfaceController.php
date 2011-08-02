@@ -176,6 +176,8 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
                 
             if( $this->_getParam( 'id', null ) !== null )
                 $ports = $ports->andWhere( '( pi.id IS NULL OR pi.id = ? )', $this->_getParam( 'id' ) );
+            else
+                $ports = $ports->andWhere( 'pi.id IS NULL' );
                 
             $ports = $ports->orderBy( 'sp.id' )
                 ->fetchArray();

@@ -92,10 +92,16 @@ class SwitchPortController extends INEX_Controller_FrontEnd
             ->orderBy( 's.name' )
             ->fetchArray();
             
-        $this->view->switchid = $this->_getParam( 'switchid', null );
-        
+        // we want post to trump get
+        if( isset( $_POST['switchid'] ) && is_numeric( $_POST['switchid'] ) )
+            $switchid = $_POST['switchid'];
+        else 
+            $switchid = $this->_getParam( 'switchid', null );
+        $this->view->switchid = $switchid;
+
         // and limit to a single switch
-        return $dataQuery->andWhere( 'x.switchid = ?', $this->_getParam( 'switchid', 0 ) );
+        return $dataQuery->andWhere( 'x.switchid = ?', $switchid );
+         
     }
     
     /**
