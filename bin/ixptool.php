@@ -1,4 +1,4 @@
-#! /usr/bin/php
+#! /usr/bin/env php
 <?php
 
 /*
@@ -45,8 +45,7 @@ ini_set( 'display_errors', true );
 defined( 'APPLICATION_PATH' ) || define( 'APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application' ) );
 
 // Define application environment
-define( 'APPLICATION_ENV', 'clidev' );
-//define( 'APPLICATION_ENV', 'production' );
+define( 'APPLICATION_ENV', 'productioncli' );
 
 defined( 'APPLICATION_ENV' ) || define( 'APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production' ) );
 
