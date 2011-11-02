@@ -45,7 +45,7 @@
 	</td>
     <td valign="top">
     	&nbsp;
-		<input name="numfirst" id="numfirst" type="text" size="6" maxlength="3" />
+		<input name="numfirst" id="numfirst" type="text" size="6" maxlength="4" />
     </td>
 </tr>
 
