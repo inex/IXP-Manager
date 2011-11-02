@@ -430,7 +430,7 @@ class AuthController extends INEX_Controller_Action
 
         if( $result->getCode() == Zend_Auth_Result::SUCCESS )
         {
-            $this->logger->notice( 'User ' . $ou['username'] . ' has switched back to user '
+            $this->logger->notice( 'User ' . $ou['username'] . ' has switched back from user '
                 . $this->user['username'] );
 
             $this->session->message = new INEX_Message(
