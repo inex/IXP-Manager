@@ -608,7 +608,13 @@ class DashboardController extends INEX_Controller_Action
 
         $this->session->myPeeringMatrixChecked = true;
     }
-
+    
+/*    public function myPeeringRegenAction()
+    {
+        $this->_generateOrUpdateMyPeeringMatrix( true );
+        $this->_forward( 'my-peering-matrix' );
+    }
+*/
     public function myPeeringMatrixAction()
     {
         // are we downloading in a non-html format?

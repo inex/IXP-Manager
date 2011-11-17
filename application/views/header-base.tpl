@@ -23,14 +23,14 @@
 
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/colorbox.css">
 
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/smoothness/jquery-ui-1.7.2.custom.css" />
+    <link rel="stylesheet" type="text/css" href="{genUrl}/css/smoothness/jquery.css" />
 
     <link href="{genUrl}/css/ixp-manager.css"         rel="stylesheet" type="text/css" />
     <link href="{genUrl}/css/joomla.css"              rel="stylesheet" type="text/css" />
 
 
-    <script type="text/javascript" src="{genUrl}/js/jquery/jquery-1.3.2.min.js"></script>
-    <script type="text/javascript" src="{genUrl}/js/jquery/jquery.colorbox-min.js"></script>
+    <script type="text/javascript" src="{genUrl}/js/jquery.js"></script>
+    <script type="text/javascript" src="{genUrl}/js/jquery.colorbox-min.js"></script>
     <script type="text/javascript" src="{genUrl}/js/jquery-ui.js"></script>
 
 
