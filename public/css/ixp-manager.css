@@ -585,6 +585,53 @@ h4 {
 }
 
 
+.ltbr2 {
+    background-color: #FFFFFF;
+    border: 1px solid #797979;
+    border-collapse: collapse;
+}
+
+.ltbr2 th {
+    background-color:#F2F2F9;
+    text-align: center;
+    padding: 1;
+}
+
+.ltbr2 td {
+    padding: 1;
+}
+
+.ltbr2_row {
+        font-weight:bold;
+}
+
+.ltbr2_even {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background-color:#F2F2F9;
+}
+
+.ltbr2_even td {
+        padding: 0;
+        margin: 1;
+        border: 0;
+        background-color:#F2F2F9;
+}
+
+.ltbr2_odd {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background-color:#FFFFFF;
+}
+
+.ltbr2_odd td {
+        padding: 0;
+        margin: 1;
+        border: 0;
+        background-color:#FFFFFF;
+}
 
 .tblist {
     background-color: #FFFFFF;

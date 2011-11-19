@@ -17,7 +17,8 @@
 <div id='ajaxMessage'></div>
 
 <div id="overviewMessage">
-    {if $rsSessionsEnabled}
+	{if $user.privs eq 3}
+    {elseif $rsSessionsEnabled}
         <div class="message message-success">
             You are now enabled to use INEX's robust route server cluster.<br />
             <br />
@@ -133,7 +134,8 @@ In order to use the service, you should first instruct the route servers to crea
 </p>
 
 <div id="overviewMessage">
-    {if not $rsEnabled}
+	{if $user.privs eq 3}
+    {elseif not $rsEnabled}
         <div class="message message-error">
             You are not enabled to use INEX's route server cluster.
             Please <a href="{genUrl controller="dashboard" action="enable-route-server"}">click here to have our provisioning system create sessions</a> for you.
@@ -152,49 +154,55 @@ IP addresses of the route servers are listed as follows:
 </p>
 
 <center>
-<div id="routeServerDetailsContainer">
-</div>
+
+<table class="ltbr2" cellspacing="0" border="0" width="700">
+<thead>
+    <tr>
+        <th width="30%">Peering LAN</th>
+        <th colspan="2">Route Server #1</th>
+        <th colspan="2">Route Server #2</th>
+    </tr>
+    <tr>
+        <th width="30%"></th>
+        <th>IPv4 Address</th>
+        <th>IPv6 Address</th>
+        <th>IPv4 Address</th>
+        <th>IPv6 Address</th>
+    </tr>
+</thead>
+<tbody>
+	<tr>
+		<td>Public Peering LAN #1</td>
+		<td>193.242.111.8</td>
+		<td>2001:7f8:18::8</td>
+		<td>193.242.111.9</td>
+		<td>2001:7f8:18::9</td>
+	</tr>
+	<tr>
+		<td>Public Peering LAN #2</td>
+		<td>194.88.240.8</td>
+		<td>2001:7f8:18:12::8</td>
+		<td>194.88.240.9</td>
+		<td>2001:7f8:18:12::9</td>
+	</tr>
+	<tr>
+		<td>VoIP Peering LAN #1</td>
+		<td>194.88.241.8</td>
+		<td>2001:7f8:18:70::8</td>
+		<td>194.88.241.9</td>
+		<td>2001:7f8:18:70::9</td>
+	</tr>
+	<tr>
+		<td>VoIP Peering LAN #2</td>
+		<td>194.88.241.72</td>
+		<td>2001:7f8:18:72::8</td>
+		<td>194.88.241.73</td>
+		<td>2001:7f8:18:72::9</td>
+	</tr>
+</tbody>
+</table>
+
 </center>
-
-<script type="text/javascript">
-{literal}
-data = {
-		rsipaddresses: [
-		    ["Public Peering LAN #1","193.242.111.8","2001:7f8:18::8","193.242.111.9","2001:7f8:18::9"],
-		    ["Public Peering LAN #2","194.88.240.8","2001:7f8:18:12::8","194.88.240.9","2001:7f8:18:12::9"],
-		    ["VoIP Peering LAN #1","194.88.241.8","2001:7f8:18:70::8","194.88.241.9","2001:7f8:18:70::9"],
-		    ["VoIP Peering LAN #2","194.88.241.72","2001:7f8:18:72::8","194.88.241.73","2001:7f8:18:72::9"]
-		]
-};
-
-YAHOO.util.Event.addListener(window, "load", function() {
-    rsServerTable = new function() {
-        var myColumnDefs = [
-            { key:"pl", label:"Peering LAN", sortable:true, resizeable:true },
-            { label:"Router Server #1", formatter:YAHOO.widget.DataTable.formatString, children: [
-                    { key:"rs1v4", label:"IPv4 Address",sortable:false, resizeable:true },
-                    { key:"rs1v6", label:"IPv6 Address",sortable:false, resizeable:true }
-                ]
-            },
-            { label:"Router Server #2", formatter:YAHOO.widget.DataTable.formatString, children: [
-                    { key:"rs2v4", label:"IPv4 Address",sortable:false, resizeable:true },
-                    { key:"rs2v6", label:"IPv6 Address",sortable:false, resizeable:true }
-                ]
-            }
-        ];
-
-        this.myDataSource = new YAHOO.util.DataSource( data.rsipaddresses );
-        this.myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
-        this.myDataSource.responseSchema = {
-            fields: ["pl","rs1v4","rs1v6","rs2v4","rs2v6"]
-        };
-
-        this.myDataTable = new YAHOO.widget.DataTable( "routeServerDetailsContainer", myColumnDefs, this.myDataSource );
-    };
-});
-
-{/literal}
-</script>
 
 <p>
 <br /><br />
@@ -243,56 +251,34 @@ The INEX route server system also provides well known communities to allow membe
 control the distribution of their prefixes. These communities are defined as follows:
 </p>
 
-<div id="communitiesContainer">
-    <table id="communitiesTable">
-        <thead>
-        <tr>
-            <th>Description</th>
-            <th>Community</th>
-        </tr>
-        </thead>
+<table class="ltbr2" cellspacing="0" border="0" width="500">
+    <thead>
+    <tr>
+        <th>Description</th>
+        <th>Community</th>
+    </tr>
+    </thead>
 
-        <tbody>
-        <tr>
-            <td>Prevent announcement of a prefix to a peer</td>
-            <td><code>0:peer-as</code></td>
-        </tr>
-        <tr>
-            <td>Announce a route to a certain peer</td>
-            <td><code>43760:peer-as</code></td>
-        </tr>
-        <tr>
-            <td>Prevent announcement of a prefix to all peers</td>
-            <td><code>0:43760</code></td>
-        </tr>
-        <tr>
-            <td>Announce a route to all peers</td>
-            <td><code>43760:43760</code></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <tbody>
+    <tr>
+        <td>Prevent announcement of a prefix to a peer</td>
+        <td><code>0:peer-as</code></td>
+    </tr>
+    <tr>
+        <td>Announce a route to a certain peer</td>
+        <td><code>43760:peer-as</code></td>
+    </tr>
+    <tr>
+        <td>Prevent announcement of a prefix to all peers</td>
+        <td><code>0:43760</code></td>
+    </tr>
+    <tr>
+        <td>Announce a route to all peers</td>
+        <td><code>43760:43760</code></td>
+    </tr>
+    </tbody>
+</table>
 
-<script type="text/javascript">
-{literal}
-var communitiesDataSource = new YAHOO.util.DataSource( YAHOO.util.Dom.get( "communitiesTable" ) );
-communitiesDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
-
-communitiesDataSource.responseSchema = {
-    fields: [
-        {key:'Description'},
-        {key:'Community'}
-    ]
-};
-
-var communitiesColumnDefs = [
-    {key:'Description'},
-    {key:'Community'}
-];
-
-var communitiesDataTable = new YAHOO.widget.DataTable( "communitiesContainer", communitiesColumnDefs, communitiesDataSource );
-{/literal}
-</script>
 
 <p>
 <br /><br />

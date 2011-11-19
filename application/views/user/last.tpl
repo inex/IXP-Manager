@@ -13,52 +13,40 @@
 </table>
 
 <center>
-<div id="lastContainer">
-    <table id="lastTable">
-        <thead>
-        <tr>
-            <th>Username</th>
-            <th>Customer</th>
-            <th>Last Login</th>
-        </tr>
-        </thead>
+<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
+    <thead>
+    <tr>
+        <th>Username</th>
+        <th>Customer</th>
+        <th>Last Login</th>
+    </tr>
+    </thead>
 
-        <tbody>
+    <tbody>
 
-        {foreach from=$last item=l}
-        <tr>
-            <td>{$l.u_username}</td>
-            <td>{$l.c_shortname}</td>
-            <td>{$l.up_value|date_format:"%Y-%m-%d %H:%M:%S"}</td>
-        </tr>
-        {/foreach}
-        </tbody>
-    </table>
-</div>
+    {foreach from=$last item=l}
+    <tr>
+        <td>{$l.u_username}</td>
+        <td>{$l.c_shortname}</td>
+        <td>{$l.up_value|date_format:"%Y-%m-%d %H:%M:%S"}</td>
+    </tr>
+    {/foreach}
+    </tbody>
+</table>
 </center>
 
-<script type="text/javascript">
 {literal}
-var lastDataSource = new YAHOO.util.DataSource( YAHOO.util.Dom.get( "lastTable" ) );
-lastDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
+<script type="text/javascript">
+	oTable = $('#ixpDataTable').dataTable({
+		"aaSorting": [[ 2, 'desc' ]],
+		"bJQueryUI": true,
+		"sPaginationType": "full_numbers",
+		"iDisplayLength": 25,
+	});
 
-lastDataSource.responseSchema = {
-    fields: [
-        {key:'Username'},
-        {key:'Shortname'},
-        {key:'Last Login At'}
-    ]
-};
-
-var lastColumnDefs = [
-        {key:'Username'},
-        {key:'Shortname'},
-        {key:'Last Login At'}
-];
-
-var lastDataTable = new YAHOO.widget.DataTable( "lastContainer", lastColumnDefs, lastDataSource );
-{/literal}
+	$('#ixpDataTable').show();
 </script>
+{/literal}
 
 </div>
 </div>
