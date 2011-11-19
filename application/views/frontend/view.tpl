@@ -21,7 +21,6 @@
 
     <div class="content">
 {else}
-    <div class="hd" id="viewPanelHeader">{$title}</div>
     <div class="bd" id="viewPanelBody">
 {/if}
 
@@ -62,12 +61,12 @@
         <tr>
             <td>
                 <form action="{genUrl controller=$frontend.controller action='edit' id=$object->id}" method="post">
-                    <input type="submit" name="submit" class="button" value="edit" />
+                    <input type="submit" name="submit" class="button" value="Edit" />
                 </form>
             </td>
             <td>
                 <form action="{genUrl controller=$frontend.controller action='delete' id=$object->id}" method="post">
-                    <input type="submit" name="submit" class="button" value="delete" 
+                    <input type="submit" name="submit" class="button" value="Delete" 
                         onClick="return confirm( 'Are you sure you want to delete this tuple?' );"
                     />
                 </form>
@@ -79,12 +78,8 @@
 
 </table>
 
-{if $perspective neq 'panel'}
-    </div>
+</div>
 
+{if $perspective neq 'panel'}
     {tmplinclude file="footer.tpl"}
-{else}
-    </div>
-    <div class="ft" id="viewPanelFooter">INEX IXP Manager</div>
-    <span class="container-close" id="view-container-close" href="{$smarty.server.HTTP_REFERER}#">Close</span>
 {/if}

@@ -228,6 +228,9 @@ h4 {
 }
 
 
+#ft {
+	margin-top: 60px;
+}
 
 #footer {
     position: fixed;
@@ -241,6 +244,7 @@ h4 {
     padding-bottom: 0px;
     padding-left: 0px;
     padding-right: 0px;
+    border-top: 10px solid #ffffff;
     clear: both;
     width: 974px;
     background-color:#2f2f2f;

@@ -346,7 +346,7 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
 
 
         if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu.js.tpl' ) )
-            $this->view->hasCustomContextMenu = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu.js.tpl';
+            $this->view->hasCustomContextMenu = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu';
 
         if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'postContent.tpl' ) )
             $this->view->hasPostContent = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'postContent.tpl';
@@ -435,6 +435,26 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
     protected function addEditPreSave( $object, $isEdit, $form )
     {}
 
+    
+    public function jqDatatableSortCommand()
+    {
+        $ret = '';
+        
+        if( isset( $this->frontend['columns']['sortDefaults'] ) )
+        {
+            $i = 0;
+            foreach( $this->frontend['columns']['displayColumns'] as $c )
+            {
+                if( $c == $this->frontend['columns']['sortDefaults']['column'] )
+                {
+                    $ret = "    \"aaSorting\": [[ $i, '{$this->frontend['columns']['sortDefaults']['order']}' ]],";
+                    break;
+                }
+            }
+        }
+        
+        return $ret;
+    }    
 
 }
 
