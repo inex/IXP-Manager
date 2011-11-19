@@ -436,26 +436,5 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
     {}
 
     
-    public function jqDatatableSortCommand()
-    {
-        $ret = '';
-        
-        if( isset( $this->frontend['columns']['sortDefaults'] ) )
-        {
-            $i = 0;
-            foreach( $this->frontend['columns']['displayColumns'] as $c )
-            {
-                if( $c == $this->frontend['columns']['sortDefaults']['column'] )
-                {
-                    $ret = "    \"aaSorting\": [[ $i, '{$this->frontend['columns']['sortDefaults']['order']}' ]],";
-                    break;
-                }
-            }
-        }
-        
-        return $ret;
-    }    
-
 }
 
-?>
