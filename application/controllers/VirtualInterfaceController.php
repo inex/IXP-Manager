@@ -169,7 +169,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     }
 
 
-    public function listAction()
+    public function _customlist()
     {
         $dataQuery = Doctrine_Query::create()
 	        ->from( 'Virtualinterface vi' )
@@ -212,9 +212,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
             $rows[] = $row;
         }
 
-        $this->view->rows = $rows;
-        
-        $this->view->display( 'frontend/list.tpl' );
+        return $rows;
     }
     
     
