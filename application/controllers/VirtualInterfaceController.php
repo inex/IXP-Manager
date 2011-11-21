@@ -38,6 +38,9 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
         $this->frontend['name']            = 'VirtualInterface';
         $this->frontend['pageTitle']       = 'Virtual Interfaces';
 
+        // add new button in postContent with QuickAdd
+        $this->frontend['disableAddNew']   = true;
+        
         $this->frontend[ 'columns' ] = array(
 
             'displayColumns' => array(
@@ -53,7 +56,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
 	        'sortDefaults' => array(
 	            'column' => 'member', 'order' => 'asc'
 	        ),
-
+	        
 	        'id' => array(
 	            'label' => 'ID', 'hidden' => true
 	        ),
