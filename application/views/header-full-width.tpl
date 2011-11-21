@@ -15,7 +15,7 @@
     <link href="{genUrl}/css/ixp-manager.css"         rel="stylesheet" type="text/css" />
     <link href="{genUrl}/css/joomla.css"              rel="stylesheet" type="text/css" />
 
-    <script type="text/javascript" src="{genUrl}/js/jquery/jquery.js"></script>
+    <script type="text/javascript" src="{genUrl}/js/jquery.js"></script>
 
     <script type="text/javascript" src="{genUrl}/js/oss_tooltip.js"></script>
     <script type="text/javascript" src="{genUrl}/js/JSCookMenu_mini.js"></script>

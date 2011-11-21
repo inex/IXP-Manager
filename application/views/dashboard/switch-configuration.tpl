@@ -36,41 +36,39 @@
 <tr>
 <td>
 
-<div id="mySwitchConfiguration">
-    <table id="mySwitchConfigurationTable">
-        <thead>
-            <tr>
-                <th>Member</th>
-                <th>Switch</th>
-                <th>Port</th>
-                <th>Speed</th>
-                <th>ASN</th>
-                <th>Route Server</th>
-                <th>IPv4 Address</th>
-                <th>IPv6 Address</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
+<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0">
+    <thead>
+        <tr>
+            <th>Member</th>
+            <th>Switch</th>
+            <th>Port</th>
+            <th>Speed</th>
+            <th>ASN</th>
+            <th>Route Server</th>
+            <th>IPv4 Address</th>
+            <th>IPv6 Address</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
 {foreach from=$swconf item=swc}
 
-            <tr>
-                <td><a href="{$swc.corpwww}">{$swc.name}</a></td>
-                <td>{$swc.ViewSwitchDetailsByCustid.switch}</td>
-                <td>{$swc.ViewSwitchDetailsByCustid.switchport}</td>
-                <td>{$swc.ViewSwitchDetailsByCustid.speed}Mbps</td>
-                <td>{$swc.autsys|asnumber}</td>
-                <td>{if $swc.ViewSwitchDetailsByCustid.ViewVlaninterfaceDetailsByCustid.rsclient}Yes{else}No{/if}</td>
-                <td>{$swc.ViewSwitchDetailsByCustid.ViewVlaninterfaceDetailsByCustid.ipv4address}</td>
-                <td>{$swc.ViewSwitchDetailsByCustid.ViewVlaninterfaceDetailsByCustid.ipv6address}</td>
-                <td>{$swc.ViewSwitchDetailsByCustid->getPhysicalInterfaceStatusString()}</td>
-            </tr>
+        <tr>
+            <td><a href="{$swc.corpwww}">{$swc.name}</a></td>
+            <td>{$swc.ViewSwitchDetailsByCustid.switch}</td>
+            <td>{$swc.ViewSwitchDetailsByCustid.switchport}</td>
+            <td>{$swc.ViewSwitchDetailsByCustid.speed}Mbps</td>
+            <td>{$swc.autsys|asnumber}</td>
+            <td>{if $swc.ViewSwitchDetailsByCustid.ViewVlaninterfaceDetailsByCustid.rsclient}Yes{else}No{/if}</td>
+            <td>{$swc.ViewSwitchDetailsByCustid.ViewVlaninterfaceDetailsByCustid.ipv4address}</td>
+            <td>{$swc.ViewSwitchDetailsByCustid.ViewVlaninterfaceDetailsByCustid.ipv6address}</td>
+            <td>{$swc.ViewSwitchDetailsByCustid->getPhysicalInterfaceStatusString()}</td>
+        </tr>
 
 {/foreach}
 
-        </tbody>
-    </table>
-</div>
+    </tbody>
+</table>
 
 </td>
 </tr>
@@ -81,37 +79,12 @@
 
 {literal}
 <script>
-
-	var myDataSource = new YAHOO.util.DataSource( YAHOO.util.Dom.get( "mySwitchConfigurationTable" ) );
-	myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
-
-	myDataSource.responseSchema = {
-	    fields: [
-	        { key: "Member" },
-	        { key: "Switch" },
-            { key: "Port" },
-            { key: "Speed" },
-            { key: "ASN" },
-            { key: "Route Server" },
-            { key: "IPv4 Address" },
-            { key: "IPv6 Address" },
-            { key: "Status" }
-	    ]
-	};
-
-	var myColumnDefs = [
-	    { key: "Member" },
-	    { key: "Switch" },
-	    { key: "Port" },
-        { key: "Speed" },
-        { key: "ASN" },
-        { key: "Route Server" },
-        { key: "IPv4 Address" },
-        { key: "IPv6 Address" },
-        { key: "Status" }
-	];
-
-	var myDataTable = new YAHOO.widget.DataTable( "mySwitchConfiguration", myColumnDefs, myDataSource);
+	
+oTable = $('#ixpDataTable').dataTable({
+	"bJQueryUI": true,
+	"sPaginationType": "full_numbers",
+	"iDisplayLength": 100
+});
 
 </script>
 {/literal}

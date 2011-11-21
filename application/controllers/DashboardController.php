@@ -608,7 +608,13 @@ class DashboardController extends INEX_Controller_Action
 
         $this->session->myPeeringMatrixChecked = true;
     }
-
+    
+/*    public function myPeeringRegenAction()
+    {
+        $this->_generateOrUpdateMyPeeringMatrix( true );
+        $this->_forward( 'my-peering-matrix' );
+    }
+*/
     public function myPeeringMatrixAction()
     {
         // are we downloading in a non-html format?
@@ -803,7 +809,7 @@ class DashboardController extends INEX_Controller_Action
         {
 
             $content = array(
-                'subject' => $this->_config['identity']['orgname'] . " Peering Request between AS" . $this->customer['autsys']
+                'subject' => $this->config['identity']['orgname'] . " Peering Request between AS" . $this->customer['autsys']
                                 . ' - AS' . $bcust['autsys'],
                 'to'      => $bcust['name'] . " Peering Team <" . $bcust['peeringemail'] . ">",
                 'from'    => $this->customer['name'] . " Peering Team <" . $this->customer['peeringemail'] . ">",
