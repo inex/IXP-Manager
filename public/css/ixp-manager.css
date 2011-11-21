@@ -683,65 +683,31 @@ h4 {
 }
 
 .ixptable thead {
-    background-color: #FFFFFF;
+    background-color: #EBECE4;
     border: 1px solid #797979;
     border-collapse: collapse;
 }
 
-.ixptable table th {
+.ixptable th {
     background-color:#F2F2F9;
     text-align: center;
     padding: 1;
 }
 
-.ixptable table tr {
-    background-color:#F2F2F9;
+.ixptable tr {
+    background-color:#fff;
+    padding: 1;
+}
+
+.ixptable td.center {
     text-align: center;
+}
+
+.ixptable td {
     padding: 1;
 }
 
-.ixptable table td {
-    padding: 1;
-}
 
-
-.tblist {
-    background-color: #FFFFFF;
-    border: none;
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
-}
-
-.tblist .pre {
-    font-family: monospace;
-}
-    
-.tblist th {
-    background-color:#F2F2F9;
-    text-align: left;
-    padding: 5px;
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
-}
-
-
-.tblist tr {
-    vertical-align: middle;
-}
-
-.tblist td {
-    padding: 5px;
-    padding-right: 10px;
-    vertical-align: middle;
-}
-
-.tblist_even {
-        background-color:#F6F6F9;
-}
-
-.tblist_odd {
-        background-color:#FFFFFF;
-}
 
 
 .pmbuilder_heading  {
