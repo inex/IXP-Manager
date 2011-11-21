@@ -20,7 +20,6 @@
 
 
 
-
 <table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
 
 <thead>
@@ -51,6 +50,20 @@
                                 {$row->$model->$field}
                             </span>
                         {/if}
+                    </td>
+                {elseif $frontend.columns.$col.type eq 'aHasOne'}
+                    {counter name='id' assign='idcount'}
+                    {assign var='model' value=$frontend.columns.$col.model}
+                    {assign var='field' value=$frontend.columns.$col.ifield}
+                    <td>
+                        <span id="viewPanel-{$frontend.columns.$col.controller}-{$row.$field}-{$idcount}" class="blueLink">
+                            <script>
+                        		$( '#viewPanel-{$frontend.columns.$col.controller}-{$row.$field}-{$idcount}' ).click( function() {ldelim}
+									ixpViewPanel( '{$frontend.columns.$col.label}', '{$frontend.columns.$col.controller}', {$row.$field} );
+								{rdelim} );
+                            </script>
+                            {$row.$col}
+                        </span>
                     </td>
                 {elseif $frontend.columns.$col.type eq 'l2HasOne'}
                     {assign var='l1model' value=$frontend.columns.$col.l1model}
