@@ -12,10 +12,6 @@
 
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/assets/skins/sam/skin.css">
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/assets/skins/sam/button.css">
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/autocomplete/assets/skins/sam/autocomplete.css" />
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/paginator/assets/skins/sam/paginator.css" />
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/datatable/assets/skins/sam/datatable.css">
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/menu/assets/skins/sam/menu.css">
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/container/assets/skins/sam/container.css">
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/tabview/assets/skins/sam/tabview.css">
 
@@ -44,25 +40,11 @@
     <script type="text/javascript" src="{genUrl}/css/yui/build/container/container_core-min.js"></script>
     <script type="text/javascript" src="{genUrl}/css/yui/build/animation/animation-min.js"></script>
 
-    <!-- OPTIONAL: JSON Utility (for DataSource) -->
-    <script type="text/javascript" src="{genUrl}/css/yui/build/json/json-min.js"></script>
-
-    <!-- OPTIONAL: Connection Manager (enables XHR for DataSource) -->
-    <script type="text/javascript" src="{genUrl}/css/yui/build/connection/connection-min.js"></script>
-
-    <!-- OPTIONAL: Get Utility (enables dynamic script nodes for DataSource) -->
-    <script type="text/javascript" src="{genUrl}/css/yui/build/get/get-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/autocomplete/autocomplete-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/paginator/paginator-min.js"></script>
-    <!-- OPTIONAL: Drag Drop (enables resizeable or reorderable columns) -->
-    <script type="text/javascript" src="{genUrl}/css/yui/build/dragdrop/dragdrop-min.js"></script>
 
     <!-- OPTIONAL: Calendar (enables calendar editors) -->
     <script type="text/javascript" src="{genUrl}/css/yui/build/calendar/calendar-min.js"></script>
 
     <!-- Source files -->
-    <script type="text/javascript" src="{genUrl}/css/yui/build/datatable/datatable-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/menu/menu-min.js"></script>
     <script type="text/javascript" src="{genUrl}/css/yui/build/button/button-min.js"></script>
     <script type="text/javascript" src="{genUrl}/css/yui/build/container/container-min.js"></script>
     <script type="text/javascript" src="{genUrl}/css/yui/build/editor/editor-min.js"></script>

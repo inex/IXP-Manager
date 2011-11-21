@@ -278,36 +278,6 @@ END_JSON;
     }
 
 
-    /**
-     * Function to allow members to alter their own details
-     */
-    public function updateAttributeAction()
-    {
-        // let's get the user's details sorted before everything else
-        $auth = Zend_Auth::getInstance();
-        $identity = $auth->getIdentity();
-        $customer = Doctrine::getTable( 'Cust' )->find( $identity['user']['custid'] );
-
-        if( in_array( $this->getRequest()->getParam( 'attribute' ), $this->frontend['columns']['updatableColumns'] ) )
-        {
-            try
-            {
-                $customer[$this->getRequest()->getParam( 'attribute' )] = stripslashes( trim( $this->getRequest()->getParam( 'newValue' ) ) );
-                $customer->save();
-                echo( '1:Member details sucessfully updated.' );
-            }
-            catch( DoctrineException $e )
-            {
-                echo( '0:Error updating member details. Please contact ' . $this->_config['identity']['email'] . '.' );
-            }
-        }
-        else
-        {
-            $this->logger->alert( "{$identity['user']['username']} tried to alter " . $this->getRequest()->getParam( 'attribute' ) . " via updateAttributeAction" );
-            echo( '0:Bad request. This action has been logged. Please contact ' . $this->_config['identity']['email'] . ' for assistance if necessary.' );
-        }
-
-    }
 
 
     /**
