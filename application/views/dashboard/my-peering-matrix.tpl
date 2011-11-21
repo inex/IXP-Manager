@@ -1,5 +1,22 @@
 {tmplinclude file="header.tpl" pageTitle="IXP Manager :: My Peering Manager"}
 
+<link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/autocomplete/assets/skins/sam/autocomplete.css" />
+<link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/paginator/assets/skins/sam/paginator.css" />
+<link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/datatable/assets/skins/sam/datatable.css">
+<link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/menu/assets/skins/sam/menu.css">
+<link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/datatable/assets/skins/sam/datatable.css">
+
+<script type="text/javascript" src="{genUrl}/css/yui/build/json/json-min.js"></script>
+<script type="text/javascript" src="{genUrl}/css/yui/build/connection/connection-min.js"></script>
+<script type="text/javascript" src="{genUrl}/css/yui/build/get/get-min.js"></script>
+<script type="text/javascript" src="{genUrl}/css/yui/build/autocomplete/autocomplete-min.js"></script>
+<script type="text/javascript" src="{genUrl}/css/yui/build/paginator/paginator-min.js"></script>
+<script type="text/javascript" src="{genUrl}/css/yui/build/dragdrop/dragdrop-min.js"></script>
+<script type="text/javascript" src="{genUrl}/css/yui/build/datatable/datatable-min.js"></script>
+<script type="text/javascript" src="{genUrl}/css/yui/build/menu/menu-min.js"></script>
+
+
+
 <div class="yui-g">
 
 <table class="adminheading" border="0">

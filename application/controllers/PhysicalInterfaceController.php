@@ -81,9 +81,9 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
 
             'status' => array(
                 'label' => 'Status',
-                'sortable' => false,
                 'type' => 'xlate',
-                'xlator' => Physicalinterface::$STATES_TEXT
+                'sortable' => true,
+            	'xlator' => Physicalinterface::$STATES_TEXT
             ),
 
             'speed' => array(
