@@ -147,7 +147,6 @@ class MyPeeringMatrixTable extends Doctrine_Table
                 
             if( !in_array( $vint->Virtualinterface->Cust['id'], $mypeers_custids ) )
             {
-                echo "Found {$vint->Virtualinterface->Cust['name']}<br />";
                 // found a missing / new peer
                 $mp = new MyPeeringMatrix();
                 $mp['custid'] = $custid;

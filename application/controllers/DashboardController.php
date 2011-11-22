@@ -597,7 +597,7 @@ class DashboardController extends INEX_Controller_Action
      *
      * @param bool $force Force the update even if it's already been done this session
      */
-    private function _generateOrUpdateMyPeeringMatrix( $vlan, $force = true )
+    private function _generateOrUpdateMyPeeringMatrix( $vlan, $force = false )
     {
         // we're only going to do the following once per session unless told otherwise
         if( !isset( $this->session->myPeeringMatrixChecked ) )
