@@ -63,6 +63,11 @@ class MyPeeringMatrix extends BaseMyPeeringMatrix
         parent::setUp();
         $this->actAs('SoftDelete');
 
+        $this->hasOne( 'Cust',             array( 'local' => 'custid',  'foreign' => 'id') );
+        $this->hasOne( 'Cust as Peer',     array( 'local' => 'peerid',  'foreign' => 'id') );
+
+        $this->hasMany( 'PeeringMatrix',   array( 'local' => 'custid',  'foreign' => 'x_custid') );
+        
         $this->hasOne( 'MyPeeringMatrixNotes',   array( 'local' => 'notes_id',  'foreign' => 'id' ) );
         // and for convenience:
         $this->hasOne( 'MyPeeringMatrixNotes as Notes',   array( 'local' => 'notes_id',  'foreign' => 'id' ) );

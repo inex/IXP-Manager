@@ -597,7 +597,7 @@ class DashboardController extends INEX_Controller_Action
      *
      * @param bool $force Force the update even if it's already been done this session
      */
-    private function _generateOrUpdateMyPeeringMatrix( $vlan, $force = false )
+    private function _generateOrUpdateMyPeeringMatrix( $vlan, $force = true )
     {
         // we're only going to do the following once per session unless told otherwise
         if( !isset( $this->session->myPeeringMatrixChecked ) )
@@ -640,21 +640,31 @@ class DashboardController extends INEX_Controller_Action
         // update the my peering table
         $this->_generateOrUpdateMyPeeringMatrix( $vlan );
 
-        $matrix = Doctrine_Query::create() 
-            ->from( 'PeeringMatrix pm' )
-            ->leftJoin( 'pm.X_Cust xc' )
-            ->leftJoin( 'pm.Y_Cust yc' )
-            ->leftJoin( 'pm.MyPeeringMatrix mpm' )
-            ->leftJoin( 'mpm.MyPeeringMatrixNotes mpmn' )
-            ->where( 'pm.x_custid = ?', $this->customer['id'] )
-            ->andWhere( 'pm.vlan = ?', $vlan )
+        $matrix = Doctrine_Query::create()
+            ->from( 'MyPeeringMatrix mpm' )
+            ->leftJoin( 'mpm.Cust as c' )
+            ->leftJoin( 'mpm.Peer as p' )
+            ->leftJoin( 'mpm.Notes mpmn' )
+            ->where( 'mpm.custid = ?', $this->customer['id'] )
             ->andWhere( 'mpm.vlan = ?', $vlan )
-            ->andWhere( 'pm.y_custid = mpm.peerid')
-            ->orderBy( 'pm.y_as ASC' )
+            ->orderBy( 'p.name ASC' )
             ->fetchArray();
-            
-        $this->view->matrix = $matrix;
 
+        $t_pmatrix = Doctrine_Query::create()
+            ->from( 'PeeringMatrix pm' )
+            ->leftJoin( 'pm.X_Cust as xc' )
+            ->leftJoin( 'pm.Y_Cust as yc' )
+            ->where( 'xc.id = ?', $this->customer['id'] )
+            ->andWhere( 'pm.vlan = ?', $vlan )
+            ->fetchArray();
+
+        $pmatrix = array();
+        foreach( $t_pmatrix as $pm )
+            $pmatrix[$pm['Y_Cust']['id']] = $pm;
+
+        $this->view->matrix  = $matrix;
+        $this->view->pmatrix = $pmatrix;
+        
         $this->view->ipv6     = ViewVlaninterfaceDetailsByCustidTable::getIPv6EnabledPerVLAN( $vlan );
         $this->view->rsclient = ViewVlaninterfaceDetailsByCustidTable::getRSClientEnabledPerVLAN( $vlan );
 
