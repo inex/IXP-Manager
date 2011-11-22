@@ -114,7 +114,7 @@ them to make maximum use of this application:
     <p>
     This column is based on BGP traffic snooping on the INEX peering LANs for IPv4 and route server states.
     It is <em>per peering LAN</em> and will reflect your peering status for the VLAN you have
-    selected.
+    selected. Some members have opted out of this and they will be shown as <em>N/A</em>.
     </p>
 </dd>
 
