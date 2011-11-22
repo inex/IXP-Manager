@@ -18,7 +18,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BasePatchPanelPort.php 130 2010-03-23 16:50:54Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BasePatchPanelPort extends Doctrine_Record
 {

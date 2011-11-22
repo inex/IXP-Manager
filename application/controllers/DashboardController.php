@@ -144,11 +144,13 @@ class DashboardController extends INEX_Controller_Action
         if( $this->customer->isFullMember() )
         {
 	        // Get peering stats as set by the member
-	        $this->_generateOrUpdateMyPeeringMatrix();
 	        $peering_stats = array();
 	        foreach( $this->config['peering_matrix']['public'] as $v )
+	        {
+	            $this->_generateOrUpdateMyPeeringMatrix( $v['number'] );
 	            $peering_stats[$v['name']] = MyPeeringMatrixTable::getStatesTotal( $this->customer['id'], $v['number'] );
-
+	        }
+	        
 	        $peering_stats['Total'] =  MyPeeringMatrixTable::getStatesTotal( $this->customer['id'] );
 	        $this->view->peering_stats = $peering_stats;
 
@@ -595,7 +597,7 @@ class DashboardController extends INEX_Controller_Action
      *
      * @param bool $force Force the update even if it's already been done this session
      */
-    private function _generateOrUpdateMyPeeringMatrix( $force = false)
+    private function _generateOrUpdateMyPeeringMatrix( $vlan, $force = false )
     {
         // we're only going to do the following once per session unless told otherwise
         if( !isset( $this->session->myPeeringMatrixChecked ) )
@@ -604,17 +606,11 @@ class DashboardController extends INEX_Controller_Action
         if( !$force && $this->session->myPeeringMatrixChecked )
             return;
 
-        MyPeeringMatrixTable::generateOrUpdateMyPeeringMatrix( $this->customer['id'] );
+        MyPeeringMatrixTable::generateOrUpdateMyPeeringMatrix( $this->customer['id'], $vlan );
 
         $this->session->myPeeringMatrixChecked = true;
     }
     
-/*    public function myPeeringRegenAction()
-    {
-        $this->_generateOrUpdateMyPeeringMatrix( true );
-        $this->_forward( 'my-peering-matrix' );
-    }
-*/
     public function myPeeringMatrixAction()
     {
         // are we downloading in a non-html format?
@@ -642,9 +638,9 @@ class DashboardController extends INEX_Controller_Action
         $this->view->vlan     = $vlan;
 
         // update the my peering table
-        $this->_generateOrUpdateMyPeeringMatrix();
+        $this->_generateOrUpdateMyPeeringMatrix( $vlan );
 
-        $matrix = Doctrine_Query::create()
+        $matrix = Doctrine_Query::create() 
             ->from( 'PeeringMatrix pm' )
             ->leftJoin( 'pm.X_Cust xc' )
             ->leftJoin( 'pm.Y_Cust yc' )
@@ -656,7 +652,7 @@ class DashboardController extends INEX_Controller_Action
             ->andWhere( 'pm.y_custid = mpm.peerid')
             ->orderBy( 'pm.y_as ASC' )
             ->fetchArray();
-
+            
         $this->view->matrix = $matrix;
 
         $this->view->ipv6     = ViewVlaninterfaceDetailsByCustidTable::getIPv6EnabledPerVLAN( $vlan );

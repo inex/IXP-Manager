@@ -13,7 +13,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseTraffic95thMonthly.php 143 2010-04-28 10:54:56Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseTraffic95thMonthly extends Doctrine_Record
 {

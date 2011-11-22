@@ -14,6 +14,7 @@
  * @property integer $ipv6addressid
  * @property string $ipv6hostname
  * @property integer $mcastenabled
+ * @property integer $irrdbfilter
  * @property string $bgpmd5secret
  * @property string $ipv4bgpmd5secret
  * @property string $ipv6bgpmd5secret
@@ -31,7 +32,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseVlaninterface.php 114 2010-03-15 12:49:13Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseVlaninterface extends Doctrine_Record
 {
@@ -112,16 +113,6 @@ abstract class BaseVlaninterface extends Doctrine_Record
              'notnull' => true,
              'autoincrement' => false,
              ));
-        $this->hasColumn( 'irrdbfilter', 'integer', 1, array(
-             'type' => 'integer',
-             'length' => 1,
-             'fixed' => false,
-             'unsigned' => false,
-             'primary' => false,
-             'notnull' => false,
-             'autoincrement' => false,
-             'default' => 1
-        ));
         $this->hasColumn('mcastenabled', 'integer', 1, array(
              'type' => 'integer',
              'length' => 1,
@@ -129,6 +120,16 @@ abstract class BaseVlaninterface extends Doctrine_Record
              'unsigned' => false,
              'primary' => false,
              'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('irrdbfilter', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'default' => '1',
+             'notnull' => true,
              'autoincrement' => false,
              ));
         $this->hasColumn('bgpmd5secret', 'string', 64, array(
