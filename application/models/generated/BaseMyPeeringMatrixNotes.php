@@ -14,7 +14,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseMyPeeringMatrixNotes.php 288 2010-06-24 08:18:19Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseMyPeeringMatrixNotes extends Doctrine_Record
 {

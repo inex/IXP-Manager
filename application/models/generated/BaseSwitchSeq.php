@@ -10,7 +10,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseSwitchSeq.php 114 2010-03-15 12:49:13Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseSwitchSeq extends Doctrine_Record
 {

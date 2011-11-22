@@ -16,7 +16,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseChangeLog.php 300 2010-07-01 15:10:52Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseChangeLog extends Doctrine_Record
 {
@@ -69,7 +69,7 @@ abstract class BaseChangeLog extends Doctrine_Record
              'type' => 'integer',
              'length' => 4,
              'fixed' => false,
-             'unsigned' => true,
+             'unsigned' => false,
              'primary' => false,
              'notnull' => true,
              'autoincrement' => false,

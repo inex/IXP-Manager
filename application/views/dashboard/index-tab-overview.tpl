@@ -34,6 +34,7 @@
                 <thead>
                     <tr>
                         <th></th>
+                        <th>Unknown</th>
                         <th>Peered</th>
                         <th>Not Peered</th>
                         <th>Awaiting Reply</th>
@@ -44,7 +45,8 @@
 
                 {foreach from=$peering_stats key=name item=peerings}
                 <tr>
-                    <td>{$name}</td>
+                    <td><strong>{$name}</strong></td>
+                    <td class="center">{if isset( $peerings.UNKNOWN )}{$peerings.UNKNOWN}{else}0{/if}</td>
                     <td class="center">{if isset( $peerings.YES     )}{$peerings.YES}{else}0{/if}</td>
                     <td class="center">{if isset( $peerings.NO      )}{$peerings.NO}{else}0{/if}</td>
                     <td class="center">{if isset( $peerings.WAITING )}{$peerings.WAITING}{else}0{/if}</td>

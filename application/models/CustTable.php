@@ -52,5 +52,24 @@ class CustTable extends Doctrine_Table
 
         return $a;
     }
+    
+    
+    /**
+     * Utility function to load all customers of a given type
+     * 
+     * @param array|int $type The customer type (see Cust::TYPE_*)
+     * @param int $hydration The Doctrine hydration method to use
+     * @return The resultset in the requested hydration
+     */
+    public static function getByType( $type, $hydration = Doctrine_Core::HYDRATE_RECORD )
+    {
+        if( !is_array( $type ) )
+            $type = array( $type );
+            
+        return Doctrine_Query::create()
+            ->from( 'Cust c' )
+            ->whereIn( 'c.type', $type )
+            ->execute( null, $hydration );
+    }
 
 }
