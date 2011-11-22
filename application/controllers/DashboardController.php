@@ -91,6 +91,30 @@ class DashboardController extends INEX_Controller_Action
     }
 
     /**
+     * Return a Doctrine result of the users VLANs.
+     */
+    private function _getVLANS( $cust = null )
+    {
+        if( $cust === null )
+            $cust = $this->_customer;
+
+        $vints = Doctrine_Query::create()
+            ->from( 'Vlaninterface vint' )
+            ->leftJoin( 'vint.Virtualinterface vi' )
+            ->leftJoin( 'vi.Cust c' )
+            ->where( 'c.id = ?', $cust['id'] )
+            ->execute();
+        $vlanids = array();
+        foreach( $vints as $v )
+            $vlanids[] = $v['vlanid'];
+            
+        return Doctrine_Query::create()
+            ->from( 'Vlan v' )
+            ->whereIn( 'v.id', $vlanids )
+            ->execute();
+    }
+
+    /**
      * Return a Doctrine result of a customer.
      */
     private function _getCustomerByShortname( $shortname = null )
@@ -637,6 +661,20 @@ class DashboardController extends INEX_Controller_Action
         $this->view->vlans    = $this->config['peering_matrix']['public'];
         $this->view->vlan     = $vlan;
 
+        // is the customer on the selected VLAN?
+        $cvlans = $this->_getVLANS()->toArray();
+        foreach( $cvlans as $k => $cv )
+        {
+            if( $cv['number'] != $vlan )
+                unset( $cvlans[$k] );
+        }
+        
+        if( !count( $cvlans ) )
+        {
+            $this->view->message = new INEX_Message( 'You do not have a connection on this LAN. Please '
+                . 'contact INEX Operations to arrange one if you wish.', INEX_Message::MESSAGE_TYPE_ALERT );
+        }
+        
         // update the my peering table
         $this->_generateOrUpdateMyPeeringMatrix( $vlan );
 
