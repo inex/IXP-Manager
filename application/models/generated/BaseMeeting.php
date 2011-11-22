@@ -23,7 +23,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseMeeting.php 341 2010-08-18 09:42:41Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseMeeting extends Doctrine_Record
 {

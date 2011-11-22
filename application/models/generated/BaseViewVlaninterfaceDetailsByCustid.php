@@ -27,6 +27,7 @@
  * @property string $ipv4bgpmd5secret
  * @property string $ipv6bgpmd5secret
  * @property integer $rsclient
+ * @property integer $irrdbfilter
  * @property integer $busyhost
  * @property string $notes
  * @property string $ipv4address
@@ -35,7 +36,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseViewVlaninterfaceDetailsByCustid.php 114 2010-03-15 12:49:13Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseViewVlaninterfaceDetailsByCustid extends Doctrine_Record
 {
@@ -244,6 +245,16 @@ abstract class BaseViewVlaninterfaceDetailsByCustid extends Doctrine_Record
              'unsigned' => false,
              'primary' => false,
              'default' => '0',
+             'notnull' => true,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('irrdbfilter', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'default' => '1',
              'notnull' => true,
              'autoincrement' => false,
              ));

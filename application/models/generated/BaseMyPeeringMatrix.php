@@ -12,6 +12,7 @@
  * @property enum $peered
  * @property integer $ipv6
  * @property integer $notes_id
+ * @property integer $dead
  * @property timestamp $deleted_at
  * @property timestamp $updated
  * @property timestamp $created
@@ -19,7 +20,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseMyPeeringMatrix.php 301 2010-07-01 15:26:21Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseMyPeeringMatrix extends Doctrine_Record
 {
@@ -72,6 +73,7 @@ abstract class BaseMyPeeringMatrix extends Doctrine_Record
               1 => 'NO',
               2 => 'WAITING',
               3 => 'NEVER',
+              4 => 'UNKNOWN',
              ),
              'primary' => false,
              'notnull' => true,
@@ -94,6 +96,16 @@ abstract class BaseMyPeeringMatrix extends Doctrine_Record
              'unsigned' => true,
              'primary' => false,
              'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('dead', 'integer', 1, array(
+             'type' => 'integer',
+             'length' => 1,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'default' => '0',
+             'notnull' => true,
              'autoincrement' => false,
              ));
         $this->hasColumn('deleted_at', 'timestamp', null, array(

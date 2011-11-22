@@ -28,7 +28,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseViewSwitchDetailsByCustid.php 414 2011-04-13 14:05:13Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseViewSwitchDetailsByCustid extends Doctrine_Record
 {
