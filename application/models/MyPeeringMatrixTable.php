@@ -74,7 +74,8 @@ class MyPeeringMatrixTable extends Doctrine_Table
             ->from( 'MyPeeringMatrix mpm' )
             ->select( 'mpm.peered' )
             ->addSelect( 'COUNT( mpm.peered ) as count' )
-            ->where( 'mpm.custid = ?', $custid );
+            ->where( 'mpm.custid = ?', $custid )
+            ->andWhere( 'mpm.dead = 0' );
 
         if( $vlan !== null )
             $q->andWhere( 'mpm.vlan = ?', $vlan );
