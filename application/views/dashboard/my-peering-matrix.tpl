@@ -83,22 +83,22 @@
 
 {foreach from=$matrix item=m}
 
-	{if $m.MyPeeringMatrix.0.dead eq 0}
+	{if $m.dead eq 0}
 	
         <tr>
             <td>
-                <a href="#s{$m.Y_Cust.id}" onClick="changeMyPeeredState( '{$m.Y_Cust.id}', {$vlan} ); return false;">
-                    <div id="myPeeredState-{$m.Y_Cust.id}">
-                        {if $m.MyPeeringMatrix.0.peered eq 'YES'}
+                <a href="#s{$m.Peer.id}" onClick="changeMyPeeredState( '{$m.Peer.id}', {$vlan} ); return false;">
+                    <div id="myPeeredState-{$m.Peer.id}">
+                        {if $m.peered eq 'YES'}
     		                <img src="{genUrl}/images/22x22/yes.png" alt="YES" title="Peered"
     		                    width="22" height="22" border="0" />
-    		            {elseif $m.MyPeeringMatrix.0.peered eq 'NO'}
+    		            {elseif $m.peered eq 'NO'}
     		                <img src="{genUrl}/images/22x22/no.png" alt="NO" title="Not peered"
     		                    width="22" height="22" border="0" />
-    		            {elseif $m.MyPeeringMatrix.0.peered eq 'WAITING'}
+    		            {elseif $m.peered eq 'WAITING'}
     		                <img src="{genUrl}/images/22x22/waiting.png" alt="Waiting"
     		                    title="WAITING" width="22" height="22" border="0" />
-    		            {elseif $m.MyPeeringMatrix.0.peered eq 'NEVER'}
+    		            {elseif $m.peered eq 'NEVER'}
     		                <img src="{genUrl}/images/22x22/never.png" alt="Never"
     		                    title="NEVER" width="22" height="22" border="0" />
     		            {else}
@@ -109,19 +109,26 @@
     		    </a>
             </td>
             <td>
-                {if $m.peering_status eq 'YES'}
-                    <img src="{genUrl}/images/yes.gif" alt="YES" title="Peered" width="21" height="21" border="0" />
-                {elseif $m.peering_status eq 'NO'}
-                    <img src="{genUrl}/images/no.gif" alt="NO" title="Not peered" width="21" height="21" border="0" />
-                {elseif $m.peering_status eq 'INCONSISTENT_X'}
-                    <img src="{genUrl}/images/inconsistent1.gif" alt="INCONSISTENT_X" title="INCONSISTENT_X" width="21" height="21" border="0" />
-                {elseif $m.peering_status eq 'YES'}
-                    <img src="{genUrl}/images/inconsistent2.gif" alt="INCONSISTENT_Y" title="INCONSISTENT_Y" width="21" height="21" border="0" />
-                {/if}
+            	{assign var='peerid' value=$m.Peer.id}
+            	
+            	{if $m.Peer.activepeeringmatrix and isset( $pmatrix.$peerid )}
+                    {if $pmatrix.$peerid.peering_status eq 'YES'}
+                        <img src="{genUrl}/images/yes.gif" alt="YES" title="Peered" width="21" height="21" border="0" />
+                    {elseif $pmatrix.$peerid.peering_status eq 'NO'}
+                        <img src="{genUrl}/images/no.gif" alt="NO" title="Not peered" width="21" height="21" border="0" />
+                    {elseif $pmatrix.$peerid.peering_status eq 'INCONSISTENT_X'}
+                        <img src="{genUrl}/images/inconsistent1.gif" alt="INCONSISTENT_X" title="INCONSISTENT_X" width="21" height="21" border="0" />
+                    {elseif $pmatrix.$peerid.peering_status eq 'INCONSISTENT_Y'}
+                        <img src="{genUrl}/images/inconsistent2.gif" alt="INCONSISTENT_Y" title="INCONSISTENT_Y" width="21" height="21" border="0" />
+                    {/if}
+                {elseif not $m.Peer.activepeeringmatrix}
+                	N/A
+            	{else}
+            	{/if}
             </td>
     
             <td>
-                {if $rsclient[$m.Y_Cust.id]}
+                {if $rsclient[$m.Peer.id]}
                     <img src="{genUrl}/images/22x22/im-user.png"          alt="Y" width="22" height="22" border="0" />
                 {else}
                      <img src="{genUrl}/images/22x22/im-user-offline.png" alt="N" width="22" height="22" border="0" />
@@ -131,10 +138,10 @@
             {* If I'm IPv6 enabled *}
             {if $ipv6[$customer.id]}
     	        <td>
-    	            {if $ipv6[$m.Y_Cust.id]}
-    	                <a href="#v6{$m.Y_Cust.id}" onClick="changeIPv6PeeredState( '{$m.Y_Cust.id}', {$vlan} ); return false;">
-                            <div id="ipv6PeeredState-{$m.Y_Cust.id}">
-        	                    {if $m.MyPeeringMatrix.0.ipv6}
+    	            {if $ipv6[$m.Peer.id]}
+    	                <a href="#v6{$m.Peer.id}" onClick="changeIPv6PeeredState( '{$m.Peer.id}', {$vlan} ); return false;">
+                            <div id="ipv6PeeredState-{$m.Peer.id}">
+        	                    {if $m.ipv6}
     	                            <img src="{genUrl}/images/22x22/face-smile-big.png" alt="PEERED OVER IPv6"      title="Peered over IPv6"     width="22" height="22" border="0" />
     	                        {else}
     	                            <img src="{genUrl}/images/22x22/face-crying.png"    alt="NOT PEERED OVER IPv6" title="Not peered over IPv6" width="22" height="22" border="0" />
@@ -145,19 +152,19 @@
     	        </td>
             {/if}
     
-            <td>{$m.Y_Cust.name}</td>
-            <td>{$m.y_as|asnumber}</td>
-            <td>{$m.Y_Cust.peeringpolicy}</td>
+            <td>{$m.Peer.name}</td>
+            <td>{$m.Peer.autsys|asnumber}</td>
+            <td>{$m.Peer.peeringpolicy}</td>
             <td>
-                <a href="#e{$m.Y_Cust.id}" onClick="showPeeringRequestDialog( '{$m.Y_Cust.id}' ); return false;">
-                    {$m.Y_Cust.peeringemail}
+                <a href="#e{$m.Peer.id}" onClick="showPeeringRequestDialog( '{$m.Peer.id}' ); return false;">
+                    {$m.Peer.peeringemail}
                 </a>
             </td>
-            <td>{$m.Y_Cust.datejoin}</td>
+            <td>{$m.Peer.datejoin}</td>
             <td>
-                <a href="#n{$m.Y_Cust.id}" onClick="editNotes( '{$m.Y_Cust.id}' ); return false;">
-                    <div id="myPeerNotes-{$m.Y_Cust.id}">
-                        {if $m.MyPeeringMatrix.0.notes_id neq null}
+                <a href="#n{$m.Peer.id}" onClick="editNotes( '{$m.Peer.id}' ); return false;">
+                    <div id="myPeerNotes-{$m.Peer.id}">
+                        {if $m.notes_id neq null}
                             <img src="{genUrl}/images/22x22/note.png" border="0" width="22" height="22" border="0" alt="Notes" />
                         {else}
                             <img src="{genUrl}/images/22x22/no-note.png" border="0" width="22" height="22" border="0" alt="Notes" />
@@ -216,7 +223,7 @@
     var myPeeringMatrixDataTable =
         new YAHOO.widget.DataTable(
         	    "myPeeringMatrixContainer", myPeeringMatrixColumnDefs, myPeeringMatrixDataSource,
-        	    { sortedBy: { key: 'ASN', dir: YAHOO.widget.DataTable.CLASS_ASC } }
+        	    { sortedBy: { key: 'Name', dir: YAHOO.widget.DataTable.CLASS_ASC } }
         );
 {/literal}
 </script>
@@ -234,7 +241,7 @@
                 </td>
                 <td>
                     <input id="sendPeeringRequestDialog-from" type="text" name="from"
-                        value="{$m.X_Cust.peeringemail}"
+                        value="{$m.Cust.peeringemail}"
                         maxlength="254" size="60"  readonly="1"
                     />
                 </td>
@@ -255,7 +262,7 @@
                 </td>
                 <td>
                     <input id="sendPeeringRequestDialog-bcc" type="text" name="bcc"
-                        value="{$m.X_Cust.peeringemail}"
+                        value="{$m.Cust.peeringemail}"
                         maxlength="254" size="60" readonly="1"
                     />
                 </td>
