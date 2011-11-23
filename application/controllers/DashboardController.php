@@ -807,9 +807,8 @@ class DashboardController extends INEX_Controller_Action
             $mail = new Zend_Mail();
             $mail->setFrom( $this->customer['peeringemail'], $this->customer['peeringemail'] . ' Peering Team' )
                  ->setSubject( stripslashes( $this->_request->getParam( 'subject' ) ) )
-                 ->addTo( 'barry@opensolutions.ie' )
-                 //->addTo( $bcust['peeringemail'], $bcust['name'] . ' Peering Team' )
-                 // FIXME ->addBcc( $this->customer['peeringemail'], $this->customer['peeringemail'] . ' Peering Team' )
+                 ->addTo( $bcust['peeringemail'], $bcust['name'] . ' Peering Team' )
+                 ->addBcc( $this->customer['peeringemail'], $this->customer['peeringemail'] . ' Peering Team' )
                  ->setBodyText( stripslashes( $this->_request->getParam( 'message' ) ) );
 
             try {
