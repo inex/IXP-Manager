@@ -621,7 +621,7 @@ class DashboardController extends INEX_Controller_Action
      *
      * @param bool $force Force the update even if it's already been done this session
      */
-    private function _generateOrUpdateMyPeeringMatrix( $vlan, $force = false )
+    private function _generateOrUpdateMyPeeringMatrix( $vlan, $force = true )
     {
         // we're only going to do the following once per session unless told otherwise
         if( !isset( $this->session->myPeeringMatrixChecked ) )
@@ -807,8 +807,9 @@ class DashboardController extends INEX_Controller_Action
             $mail = new Zend_Mail();
             $mail->setFrom( $this->customer['peeringemail'], $this->customer['peeringemail'] . ' Peering Team' )
                  ->setSubject( stripslashes( $this->_request->getParam( 'subject' ) ) )
-                 ->addTo( $bcust['peeringemail'], $bcust['name'] . ' Peering Team' )
-                 ->addBcc( $this->customer['peeringemail'], $this->customer['peeringemail'] . ' Peering Team' )
+                 ->addTo( 'barry@opensolutions.ie' )
+                 //->addTo( $bcust['peeringemail'], $bcust['name'] . ' Peering Team' )
+                 // FIXME ->addBcc( $this->customer['peeringemail'], $this->customer['peeringemail'] . ' Peering Team' )
                  ->setBodyText( stripslashes( $this->_request->getParam( 'message' ) ) );
 
             try {
@@ -906,6 +907,7 @@ class DashboardController extends INEX_Controller_Action
             try
             {
                 $myPeerRecord->updateNotes( stripslashes( $this->_request->getParam( 'notes' ) ) );
+                
                 $this->getResponse()
                     ->setBody( Zend_Json::encode(
                         array(
@@ -920,7 +922,7 @@ class DashboardController extends INEX_Controller_Action
                 $this->getResponse()
                     ->setBody( Zend_Json::encode(
                         array(
-                            'status' => '1',
+                            'status' => '0',
                             'message' => "Error: Sorry, we could not save your updated notes. Please contact support to report this issue."
                         ) ) )
                     ->sendResponse();

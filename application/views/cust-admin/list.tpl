@@ -15,9 +15,7 @@
 
 <div id="ajaxMessage"></div>
 
-<div id="myDatatable">
-
-<table id="myTable">
+<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
 
 <thead>
 <tr>
@@ -61,89 +59,46 @@
 
 </table>
 
-</div>
-
 <p>
     <form action="{genUrl controller='cust-admin' action='add-user'}" method="post">
         <input type="submit" name="submit" class="button" value="Add New User" />
     </form>
 </p>
 
-<div id="instructions"></div>
+<div id="instructions" title="IXP Manager - Instructions" style="display: hide;">
+	<p>
+		Welcome to INEX's IXP Manager!
+	</p>
+	<p>
+		This account is a customer admin account and it can only be 
+		used to create sub users. Those sub users can then access the 
+		full functionality of this system.
+	</p>
+</div>
 
 
 <script>
 
-YAHOO.util.Event.addListener( window, "load", function() {ldelim}
-    var TableGenerator = new function() {ldelim}
+$(document).ready(function() {ldelim}
 
-        var myColumnDefs = [
-            {ldelim} key:"username", label:"Username", sortable:true {rdelim},
-            {ldelim} key:"email",    label:"Email",    sortable:true {rdelim},
-            {ldelim} key:"mobile",   label:"Mobile",   sortable:true {rdelim},
-            {ldelim} key:"created",  label:"Created",  sortable:true {rdelim},
-            {ldelim} key:"disabled", label:"Enabled",  sortable:true {rdelim},
-            {ldelim} key:"edit", label:"Edit",  sortable:true {rdelim}
-        ];
+	oTable = $('#ixpDataTable').dataTable({ldelim}
 
-        this.myDataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get( "myTable" ) );
-        this.myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
-        this.myDataSource.responseSchema = {ldelim}
-            fields: [
-                     {ldelim} key:"username"{rdelim},
-                     {ldelim} key:"email"{rdelim},
-                     {ldelim} key:"mobile"{rdelim},
-                     {ldelim} key:"created"{rdelim},
-                     {ldelim} key:"disabled"{rdelim},
-                     {ldelim} key:"edit"{rdelim}
-            ]
-        {rdelim};
+        "aaSorting": [[ 0, 'asc' ]],
+		"bJQueryUI": true,
+		"sPaginationType": "full_numbers",
+		"iDisplayLength": 25,
+	{rdelim}).show();
 
-        var oConfigs = {ldelim}
-            paginator: new YAHOO.widget.Paginator({ldelim}
-                    rowsPerPage: 15
-            {rdelim}),
+	$( '#instructions' ).dialog({ldelim}
+		"autoOpen": false,
+		"model": true
+	{rdelim});
 
-            sortedBy: {ldelim}key:"username", dir:"ASC"{rdelim}
-        {rdelim};
-
-        this.myDataTable = new YAHOO.widget.DataTable( "myDatatable", myColumnDefs, this.myDataSource, oConfigs );
-
-        // Enable row highlighting
-        this.myDataTable.subscribe( "rowMouseoverEvent", this.myDataTable.onEventHighlightRow   );
-        this.myDataTable.subscribe( "rowMouseoutEvent",  this.myDataTable.onEventUnhighlightRow );
-
-    {rdelim};
-
+	{if not $skipInstructions}
+		$( '#instructions' ).dialog( 'open' );
+	{/if}
+		
 {rdelim});
-
-{if not $skipInstructions}
-//Define various event handlers for Dialog
-var handleYes = function() {ldelim}
-    this.hide();
-{rdelim};
-
-// Instantiate the Dialog
-var instructionDialog =
-    new YAHOO.widget.SimpleDialog( "instructionDialog",
-             {ldelim}
-               width: "500px",
-               fixedcenter: true,
-               visible: false,
-               draggable: false,
-               modal: true,
-               close: true,
-               text: "<p>Welcome to INEX's IXP Manager!</p><p>This account is a customer admin account and it can only be used to create sub users. Those sub users can then access the full functionality of this system.</p>",
-               icon: YAHOO.widget.SimpleDialog.ICON_HELP,
-               constraintoviewport: true,
-               buttons: [ {ldelim} text:"OK",  handler:handleYes, isDefault:true {rdelim} ]
-             {rdelim}
-    );
-
-instructionDialog.setHeader( "Welcome!" );
-instructionDialog.render( "instructions" );
-instructionDialog.show();
-{/if}
 
 </script>
 
