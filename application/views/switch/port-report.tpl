@@ -29,61 +29,59 @@
 </div>
 
 
-<div id="portReportContainer">
-    <table id="portReportTable">
-        <thead>
-            <tr>
-                <th>Port Name</th>
-                <th>Type</th>
-                <th>Speed/Duplex</th>
-                <th>Customer</th>
-            </tr>
-        </thead>
-        <tbody>
+<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Port Name</th>
+            <th>Type</th>
+            <th>Speed/Duplex</th>
+            <th>Customer</th>
+        </tr>
+    </thead>
+    <tbody>
 
-            {foreach from=$ports item=p}
+        {foreach from=$ports item=p}
 
-            <tr>
-            	<td>{$p.name}</td>
-            	<td>{$p.type}</td>
-            	{if $p.connection}
-            		<td>{$p.connection.speed}/{$p.connection.duplex}</td>
-            		<td>{$p.connection.Virtualinterface.Cust.name}</td>
-            	{else}
-            		<td></td>
-            		<td></td>
-            	{/if}
-            </tr>
+        <tr>
+        	<td>{$p.id}</td>
+        	<td>{$p.name}</td>
+        	<td>{$p.type}</td>
+        	{if $p.connection}
+        		<td>{$p.connection.speed}/{$p.connection.duplex}</td>
+        		<td>{$p.connection.Virtualinterface.Cust.name}</td>
+        	{else}
+        		<td></td>
+        		<td></td>
+        	{/if}
+        </tr>
 
-            {/foreach}
+        {/foreach}
 
-		</tbody>
-	</table>
-</div>
+	</tbody>
+</table>
 
 
 <script type="text/javascript">
-    {literal}
-    var portReportDataSource = new YAHOO.util.DataSource( YAHOO.util.Dom.get( "portReportTable" ) );
-    portReportDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
 
-    portReportDataSource.responseSchema = {
-        fields: [
-            {key:'Port Name'},
-            {key:'Type'},
-            {key:'Speed/Duplex'},
-            {key:'Customer'}        ]
-    };
+$(document).ready(function() {ldelim}
 
-    var portReportColumnDefs = [
-        {key:'Port Name'},
-        {key:'Type'},
-        {key:'Speed / Duplex'},
-        {key:'Customer'}
-    ];
+	oTable = $('#ixpDataTable').dataTable({ldelim}
 
-    var portReportDataTable = new YAHOO.widget.DataTable( "portReportContainer", portReportColumnDefs, portReportDataSource );
-    {/literal}
+        "aaSorting": [[ 0, 'asc' ]],
+		"bJQueryUI": true,
+		"sPaginationType": "full_numbers",
+		"iDisplayLength": 50,
+		"aoColumns": [
+        	{ldelim} "sWidth": "50px" {rdelim},
+           	{ldelim} "sWidth": "150px" {rdelim},
+           	{ldelim} "sWidth": "100px" {rdelim},
+           	{ldelim} "sWidth": "100px" {rdelim},
+    		null
+      	]
+	{rdelim}).show();
+
+{rdelim});
 </script>
 
 </div>
