@@ -416,9 +416,9 @@ END_JSON;
             'Average' => 'average'
         );
 
-        $metric = $this->_request->getParam( 'metric', $metrics['Data'] );
+        $metric = $this->_request->getParam( 'metric', $metrics['Total'] );
         if( !in_array( $metric, $metrics ) )
-            $metric = $metrics['Data'];
+            $metric = $metrics['Total'];
 
         $day = $this->_request->getParam( 'day', date( 'Y-m-d' ) );
         if( !Zend_Date::isDate( $day, 'Y-m-d' ) )
