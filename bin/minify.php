@@ -44,9 +44,9 @@ if( in_array( 'js', $argv ) && !in_array( 'css', $argv ) )
 
 if( in_array( $whatToCompress, array( 'all', 'js' ) ) )
 {
-    print "\n\nMinifying '../public/js' ";
+    print "\n\nMinifying '../public/js':\n\n";
 
-    $files = glob( APPLICATION_PATH . '/../public/js/*.js' );
+    $files = glob( APPLICATION_PATH . '/../public/js/[0-9][0-9][0-9]-*.js' );
     sort( $files, SORT_STRING );
 
     $numFiles = sizeof( $files );
@@ -56,44 +56,30 @@ if( in_array( $whatToCompress, array( 'all', 'js' ) ) )
     {
         $count++;
 
-        print '.';
+        print "    [{$count}] " . basename( $oneFileName ) . " => min." . basename( $oneFileName ) . "\n";
 
         exec(   "java -jar " . APPLICATION_PATH . "/../bin/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --warning_level QUIET" .
-                " --js {$oneFileName} --js_output_file " . APPLICATION_PATH . "/../public/js-min/" . basename( $oneFileName )
+                " --js {$oneFileName} --js_output_file " . APPLICATION_PATH . "/../public/js/min." . basename( $oneFileName )
         );
     }
 
     $mergedJs = '';
 
-    /* MAINTAIN THIS LIST AND MAKE SURE IT IS IN SYNC WITH HEADER_COMMON_BASE.PHTML */
-    $filesToMerge = array(
-                        'phpjs.js',
-                        'functions.js',
-                        'jquery.js',
-                        'jquery.datatables.js',
-                        'jquery.datatables.ext.js',
-                        'jquery.ui.js',
-                        'jquery.ui.stars.js',
-                        'jquery.colorbox.js',
-                        'oss_tooltip.js',
-                        'toggle_accordion.js'
-                    );
+    print "\n    Combining...";
+    foreach( $files as $fileName )
+        $mergedJs .= file_get_contents( "../public/js/min." . basename( $fileName) );
 
-    foreach( $filesToMerge as $fileName )
-        $mergedJs .= file_get_contents( "../public/js-min/{$fileName}" );
+    file_put_contents( '../public/js/min.bundle.js', $mergedJs );
 
-    file_put_contents( '../public/js-min/javascript.js', $mergedJs );
-
-    print ' done';
+    print " done\n\n";
 }
 
 if( in_array( $whatToCompress, array( 'all', 'css' ) ) )
 {
-    // --------- WINI CSS ---------
 
-    print "\nminifying '../public/css' ";
+    print "\nMinifying '../public/css':\n";
 
-    $files = glob( '../public/css/*.css' );
+    $files = glob( '../public/css/[0-9][0-9][0-9]-*.css' );
     sort( $files, SORT_STRING );
 
     $numFiles = sizeof( $files );
@@ -103,57 +89,20 @@ if( in_array( $whatToCompress, array( 'all', 'css' ) ) )
     {
         $count++;
 
-        print '.';
-
-        exec( "java -jar yuicompressor.jar {$oneFileName} -o ../public/css-min/" . basename( $oneFileName ) . " -v --charset utf-8" );
+        print "    [{$count}] " . basename( $oneFileName ) . " => min." . basename( $oneFileName ) . "\n";
+        
+        exec( "java -jar yuicompressor.jar {$oneFileName} -o ../public/css/min." . basename( $oneFileName ) . " -v --charset utf-8" );
     }
 
     $mergedCss = '';
 
-    /* MAINTAIN THIS LIST AND MAKE SURE IT IS IN SYNC WITH HEADER_COMMON_BASE.PHTML */
-    $filesToMerge = array(
-                        'oss.css',
-                        'jquery-ui.css',
-                        'colorbox.css',
-                        'oss_jquery_datatable.css',
-                        'sfmenu.css',
-                        'jquery.ui.stars.css',
-                        'frontend.css'
-                    );
+    print "\n    Combining...";
+    foreach( $files as $fileName )
+        $mergedCss .= file_get_contents( "../public/css/min." . basename( $fileName ) );
 
-    foreach( $filesToMerge as $fileName )
-        $mergedCss .= file_get_contents( "../public/css-min/{$fileName}" );
+    file_put_contents( '../public/css/min.bundle.css', $mergedCss );
 
-    file_put_contents( '../public/css-min/stylesheet.css', $mergedCss );
-
-    print ' done';
-
-    // --------- CSS subdirs ---------
-
-    $dirs = glob( '../public/css/*', GLOB_ONLYDIR );
-    sort( $dirs, SORT_STRING );
-
-    foreach( $dirs as $dirKey => $dirName )
-    {
-        print "\nminifying '{$dirName}' ";
-
-        $files = glob( "{$dirName}/*.css" );
-        sort( $files, SORT_STRING );
-
-        $numFiles = sizeof( $files );
-        $count = 0;
-
-        foreach( $files as $oneFileName )
-        {
-            $count++;
-
-            print '.';
-
-            exec( "java -jar yuicompressor.jar {$oneFileName} -o " . str_replace( '/css/', '/css-min/', $dirName ) . '/' . basename( $oneFileName ) . " -v --charset utf-8" );
-        }
-
-        print ' done';
-    }
+    print ' done\n\n';
 }
 
 print "\n\n";

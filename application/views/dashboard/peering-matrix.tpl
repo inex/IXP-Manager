@@ -1,6 +1,6 @@
 {tmplinclude file="header-full-width.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
-<div class="yui-g">
+<div class="yui-g" style="width: 100%">
 
 <br />
 
