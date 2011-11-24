@@ -330,12 +330,6 @@ div.inactive .ThemeOfficeMainItemHover, div.inactive .ThemeOfficeMainItemActive
 * software licenses. See COPYRIGHT.php for copyright notices and details.
 */
 
-table.menubar {
-    width: 100%;
-    margin-bottom: 0px;
-}
-
-
 /* header block */
 table.adminheading {
     background-color: #FFF;
@@ -442,11 +436,27 @@ table.adminheading th.Statistics {
     background: url(../images/joomla-admin/ksysguard.png) no-repeat left;
 }
 
-.menubackgr {
+
+div.menuwrapper {
     background: #F1F3F5;
     border-bottom: 1px solid #cccccc;
     border-right: 1px solid #cccccc;
     border-left: 1px solid #cccccc;
+    padding: 0px;
+	margin: 0px;
+    width: 100%;
+}
+
+table.menubar {
+    width: 974px;
+	margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding: 0px;
+}
+
+.menubackgr {
     padding: 0px;
 }
 

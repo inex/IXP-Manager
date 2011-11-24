@@ -2,7 +2,7 @@
 
 body {
     /* For breathing room between content and viewport. */
-    margin:10px;
+    margin: 0px;
 }
 
 h1 {
@@ -112,6 +112,19 @@ pre {
 }
 
 
+#bd {
+	margin-top: 10px;
+}
+
+#bd {
+    margin-top: 10px;
+}
+
+div.yui-g {
+    width: 974px;
+	margin-left: auto;
+	margin-right: auto;	
+}
 
 .content {
 	margin-bottom: 60px;
@@ -227,7 +240,9 @@ h4 {
     display:  none;
 }
 
-
+#ft {
+       margin-top: 60px;
+}
 
 #footer {
     position: fixed;
@@ -237,55 +252,42 @@ h4 {
     margin-right: auto;
     margin-top: 25px;
     margin-bottom: 0px;
-    padding-top: 0px;
+    padding-top: 10px;
     padding-bottom: 0px;
     padding-left: 0px;
     padding-right: 0px;
+    border-top: 10px solid #ffffff;
     clear: both;
-    width: 974px;
-    background-color:#2f2f2f;
-    text-align: center;
-    display: block;
-}
-
-#footer_full {
-    position: fixed;
-    bottom: 0;
-    z-index: 147483647;    
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: 25px;
-    margin-bottom: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 0px;
-    clear: both;
-    background-color:#2f2f2f;
-    text-align: center;
-    display: block;
     width: 100%;
+    background-color:#2f2f2f;
+    display: block;
 }
 
 
-#footer p, #footer_full p {
-    color:#FFFFFF;
-    padding: 5px;
-    text-align: center;
-        }
 
-#footer p a, #footer_full p a {
+#footer p {
+    width: 974px;
+    color:#FFFFFF;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 0px;
+    background-color:#2f2f2f;
+}
+
+#footer p a {
     color: #FFFFFF;
     background-color:#2f2f2f;
     font-weight:100;
     border-bottom: 1px dotted #FFFFFF;
-    }
+}
 
-#footer p a:hover, #footer_full p a:hover {
+#footer p a:hover {
     color: #FFFFFF;
     text-decoration: none;
     border-top: 1px dotted #FFFFFF;
     border-bottom: 1px dotted #FFFFFF;
-    }
+}
 
 
 
@@ -293,16 +295,17 @@ h4 {
 #wrapper {
         border: 0px;
         margin: 0px;
-        margin-left: auto;
-        margin-right: auto;
         padding: 0px;
-}
-
-#header {
         background-color: #FFF;
         background-position: right top;
         background: url(../images/joomla-admin/header_bg.png);
+}
+
+#header {
+        margin-left: auto;
+        margin-right: auto;
         border-bottom: 4px;
+        width: 974px;
 }
 
 #headertext {
@@ -334,6 +337,7 @@ h4 {
     background-image: url( ../images/inex-green-corner-153x168.gif );
     background-repeat: no-repeat;
     height: 167px;
+    margin-top: 10px;
 }
 
 .logo {
@@ -581,6 +585,53 @@ h4 {
 }
 
 
+.ltbr2 {
+    background-color: #FFFFFF;
+    border: 1px solid #797979;
+    border-collapse: collapse;
+}
+
+.ltbr2 th {
+    background-color:#F2F2F9;
+    text-align: center;
+    padding: 1;
+}
+
+.ltbr2 td {
+    padding: 1;
+}
+
+.ltbr2_row {
+        font-weight:bold;
+}
+
+.ltbr2_even {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background-color:#F2F2F9;
+}
+
+.ltbr2_even td {
+        padding: 0;
+        margin: 1;
+        border: 0;
+        background-color:#F2F2F9;
+}
+
+.ltbr2_odd {
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background-color:#FFFFFF;
+}
+
+.ltbr2_odd td {
+        padding: 0;
+        margin: 1;
+        border: 0;
+        background-color:#FFFFFF;
+}
 
 .tblist {
     background-color: #FFFFFF;
@@ -620,6 +671,41 @@ h4 {
         background-color:#FFFFFF;
 }
 
+
+
+
+
+
+.ixptable {
+    background-color: #FFFFFF;
+    border: 1px solid #797979;
+    border-collapse: collapse;
+}
+
+.ixptable thead {
+    background-color: #EBECE4;
+    border: 1px solid #797979;
+    border-collapse: collapse;
+}
+
+.ixptable th {
+    background-color:#F2F2F9;
+    text-align: center;
+    padding: 1;
+}
+
+.ixptable tr {
+    background-color:#fff;
+    padding: 1;
+}
+
+.ixptable td.center {
+    text-align: center;
+}
+
+.ixptable td {
+    padding: 1;
+}
 
 
 

@@ -38,8 +38,73 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
         $this->frontend['name']            = 'VirtualInterface';
         $this->frontend['pageTitle']       = 'Virtual Interfaces';
 
-        $this->frontend['columns'] = array( 'ignoreme' );
+        // add new button in postContent with QuickAdd
+        $this->frontend['disableAddNew']   = true;
+        
+        $this->frontend[ 'columns' ] = array(
 
+            'displayColumns' => array(
+                'id', 'member', 'shortname', 'location', 'switch', 'port', 'speed'
+            ),
+
+	        'viewPanelRows' => array(
+	            'member' //, 'name', 'description', 'mtu', 'trunk', 'channelgroup'
+	        ),
+
+	        'viewPanelTitle' => 'member',
+
+	        'sortDefaults' => array(
+	            'column' => 'member', 'order' => 'asc'
+	        ),
+	        
+	        'id' => array(
+	            'label' => 'ID', 'hidden' => true
+	        ),
+
+	        'member' => array(
+	            'type' => 'aHasOne', 
+	            'controller' => 'customer', 
+	            'ifield' => 'memberid', 
+	            'label' => 'Customer', 
+	            'sortable' => true
+	        ),
+	        
+	        'shortname' => array(
+	            'type' => 'aHasOne', 
+	            'controller' => 'customer', 
+	            'ifield' => 'memberid', 
+	            'label' => 'Shortname', 
+	            'sortable' => true
+	        ),
+
+	        'location' => array(
+	            'type' => 'aHasOne', 
+	            'controller' => 'location', 
+	            'ifield' => 'locationid', 
+	            'label' => 'Location', 
+	            'sortable' => true
+	        ),
+	        
+	        'switch' => array(
+	            'type' => 'aHasOne', 
+	            'controller' => 'switch', 
+	            'ifield' => 'switchid', 
+	            'label' => 'Switch', 
+	            'sortable' => true
+	        ),
+	        
+	        'port' => array(
+	            'label' => 'Port', 
+	            'sortable' => true
+	        ),
+	        
+	        'speed' => array(
+	            'label' => 'Speed', 
+	            'sortable' => true
+	        )
+        );
+
+        
         parent::feInit();
     }
 
@@ -107,11 +172,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     }
 
 
-    /**
-     * A generic action to list the elements of a database (as represented
-     * by a Doctrine model) via Smarty templates.
-     */
-    public function getDataAction()
+    public function _customlist()
     {
         $dataQuery = Doctrine_Query::create()
 	        ->from( 'Virtualinterface vi' )
@@ -123,54 +184,38 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
 	        ->leftJoin( 'cb.Location l' )
 	        ->orderBy( 'c.shortname ASC' );
 
-        if( $this->getRequest()->getParam( 'member' ) !== NULL )
-            $dataQuery->andWhere( 'c.name LIKE ?', $this->getRequest()->getParam( 'member' ) . '%' );
+        $results = $dataQuery->execute();
 
-        if( $this->getRequest()->getParam( 'shortname' ) !== NULL )
-            $dataQuery->andWhere( 'c.shortname LIKE ?', $this->getRequest()->getParam( 'shortname' ) . '%' );
-
-
-        $rows = $dataQuery->execute();
-
-        // FIXME :: below assumes a single physical interface for a virtual interface so port channels are not catered for
-
-        $count = 0;
-        $data = '';
-        foreach( $rows as $row )
+        $rows = array();
+        foreach( $results as $r )
         {
-            if( $count > 0 )
-                $data .= ',';
-
-            $count++;
-
-            $data .= <<<END_JSON
-    {
-        "member":"{$row['Cust']['name']}",
-        "memberid":"{$row['Cust']['id']}",
-        "id":"{$row['id']}",
-        "description":"{$row['description']}",
-        "shortname":"{$row['Cust']['shortname']}",
-        "location":"{$row['Physicalinterface'][0]['Switchport']['SwitchTable']['Cabinet']['Location']['name']}",
-        "locationid":"{$row['Physicalinterface'][0]['Switchport']['SwitchTable']['Cabinet']['Location']['id']}",
-        "switch":"{$row['Physicalinterface'][0]['Switchport']['SwitchTable']['name']}",
-        "switchid":"{$row['Physicalinterface'][0]['Switchport']['SwitchTable']['id']}",
-        "port":"{$row['Physicalinterface'][0]['Switchport']['name']}",
-        "speed":"{$row['Physicalinterface'][0]['speed']}",
-    }
-END_JSON;
-
+            $row = array();
+            
+            $row["member"]      = $r['Cust']['name'];
+            $row["memberid"]    = $r['Cust']['id'];
+            $row["id"]          = $r['id'];
+            $row["description"] = $r['description'];
+            $row["shortname"]   = $r['Cust']['shortname'];
+            $row["location"]    = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['Cabinet']['Location']['name'];
+            $row["locationid"]  = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['Cabinet']['Location']['id'];
+            $row["switch"]      = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['name'];
+            $row["switchid"]    = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['id'];
+            
+            if( count( $r['Physicalinterface'] ) > 1 )
+            {
+                $row["port"]        = '(trunk)';
+                $row["speed"]       = $r['Physicalinterface'][0]['speed'] * count( $r['Physicalinterface'] );
+            }
+            else
+            {
+                $row["port"]        = $r['Physicalinterface'][0]['Switchport']['name'];
+                $row["speed"]       = $r['Physicalinterface'][0]['speed'];
+            }
+               
+            $rows[] = $row;
         }
 
-        $data = <<<END_JSON
-{"ResultSet":{
-    "totalResultsAvailable":{$count},
-    "totalResultsReturned":{$count},
-    "firstResultPosition":0,
-    "Result":[{$data}]}}
-END_JSON;
-
-        echo $data;
-
+        return $rows;
     }
     
     

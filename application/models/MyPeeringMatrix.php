@@ -48,12 +48,14 @@ class MyPeeringMatrix extends BaseMyPeeringMatrix
     const PEERED_STATE_YES     = 'YES';
     const PEERED_STATE_WAITING = 'WAITING';
     const PEERED_STATE_NEVER   = 'NEVER';
-
+    const PEERED_STATE_UNKNOWN = 'UNKNOWN';
+    
     public static $PEERED_STATES = array(
         0 => MyPeeringMatrix::PEERED_STATE_NO,
         1 => MyPeeringMatrix::PEERED_STATE_YES,
         2 => MyPeeringMatrix::PEERED_STATE_WAITING,
-        3 => MyPeeringMatrix::PEERED_STATE_NEVER
+        3 => MyPeeringMatrix::PEERED_STATE_NEVER,
+        4 => MyPeeringMatrix::PEERED_STATE_UNKNOWN
     );
 
     public function setUp()
@@ -61,6 +63,11 @@ class MyPeeringMatrix extends BaseMyPeeringMatrix
         parent::setUp();
         $this->actAs('SoftDelete');
 
+        $this->hasOne( 'Cust',             array( 'local' => 'custid',  'foreign' => 'id') );
+        $this->hasOne( 'Cust as Peer',     array( 'local' => 'peerid',  'foreign' => 'id') );
+
+        $this->hasMany( 'PeeringMatrix',   array( 'local' => 'custid',  'foreign' => 'x_custid') );
+        
         $this->hasOne( 'MyPeeringMatrixNotes',   array( 'local' => 'notes_id',  'foreign' => 'id' ) );
         // and for convenience:
         $this->hasOne( 'MyPeeringMatrixNotes as Notes',   array( 'local' => 'notes_id',  'foreign' => 'id' ) );

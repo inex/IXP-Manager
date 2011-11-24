@@ -74,7 +74,8 @@ class MyPeeringMatrixTable extends Doctrine_Table
             ->from( 'MyPeeringMatrix mpm' )
             ->select( 'mpm.peered' )
             ->addSelect( 'COUNT( mpm.peered ) as count' )
-            ->where( 'mpm.custid = ?', $custid );
+            ->where( 'mpm.custid = ?', $custid )
+            ->andWhere( 'mpm.dead = 0' );
 
         if( $vlan !== null )
             $q->andWhere( 'mpm.vlan = ?', $vlan );
@@ -96,64 +97,82 @@ class MyPeeringMatrixTable extends Doctrine_Table
      *
      * @param int $custid The customer ID to generate / update for
      */
-    public function generateOrUpdateMyPeeringMatrix( $custid = false )
+    public function generateOrUpdateMyPeeringMatrix( $custid = false, $vlantag )
     {
         if( !$custid )
             throw new INEX_Exception( 'You must provide a customer id!' );
-
+            
+        if( !( $vlan = Doctrine_Core::getTable( 'Vlan' )->findOneByNumber( $vlantag ) ) )
+            throw new INEX_Exception( 'Invalid VLAN tag!' );
+            
         // let's create / update the users own peering matrix
         // we'll use the potential peers as given the the peering matrix table
 
-        $matrix = Doctrine_Query::create()
-            ->from( 'PeeringMatrix pm' )
-            ->where( 'pm.x_custid = ?', $custid )
-            ->fetchArray();
-
+        $custs_ints = Doctrine_Query::create()
+            ->from( 'Vlaninterface vint' )
+            ->leftJoin( 'vint.Virtualinterface vi')
+            ->leftJoin( 'vi.Cust c' )
+            ->whereIn( 'c.type', array( Cust::TYPE_PROBONO, Cust::TYPE_FULL ) )
+            ->andWhere( 'c.status = ?', Cust::STATUS_NORMAL )
+            ->andWhere( '( c.dateleave IS NULL OR c.dateleave = ? )', '0000-00-00' )
+            ->andWhere( 'vint.vlanid = ?', $vlan['id'] )
+            ->execute( null, Doctrine_Core::HYDRATE_RECORD );
+            
         $mypeers = Doctrine_Query::create()
             ->from( 'MyPeeringMatrix mpm' )
             ->where( 'mpm.custid = ?', $custid )
+            ->andWhere( 'mpm.vlan = ?', $vlan['number'] )
             ->execute( null, Doctrine_Core::HYDRATE_RECORD );
 
-        foreach( $matrix as $r )
+        $custs_ints_by_custids = array();
+
+        foreach( $custs_ints as $ci )
+            $custs_ints_by_custids[$ci->Virtualinterface->Cust['id']] = $ci;
+            
+        $custs_ints_custids = array_keys( $custs_ints_by_custids );
+            
+        $mypeers_by_custids = array();
+
+        foreach( $mypeers as $mp )
+            $mypeers_by_custids[$mp['peerid']] = $mp;
+        
+        $mypeers_custids = array_keys( $mypeers_by_custids );
+
+        // find new
+        foreach( $custs_ints as $vint )
         {
-            $found = false;
-            foreach( $mypeers as $index => $mp )
+            // skip myself:
+            if( $vint->Virtualinterface->Cust['id'] == $custid )
+                continue;
+                
+            if( !in_array( $vint->Virtualinterface->Cust['id'], $mypeers_custids ) )
             {
-                if( $mp['peerid'] == $r['y_custid'] && $mp['vlan'] == $r['vlan'] )
-                {
-                    unset( $mypeers[$index] );
-                    $found = true;
-                    continue;
-                }
+                // found a missing / new peer
+                $mp = new MyPeeringMatrix();
+                $mp['custid'] = $custid;
+                $mp['peerid'] = $vint->Virtualinterface->Cust['id'];
+                $mp['vlan']   = $vlan['number'];
+                $mp['peered'] = MyPeeringMatrix::PEERED_STATE_UNKNOWN;
+                $mp['ipv6']   = 0;
+                $mp->save();
             }
-
-            if( !$found )
+            else if( $mypeers_by_custids[$vint->Virtualinterface->Cust['id']]['dead'] == 1 )
             {
-                $newpeer = new MyPeeringMatrix();
-                $newpeer['custid']    = $custid;
-                $newpeer['peerid']    = $r['y_custid'];
-                $newpeer['vlan']      = $r['vlan'];
-                $newpeer['peered']    = 'NO';
-                $newpeer['ipv6']      = 0;
-                $newpeer['updated']   = date( 'Y-m-d H:i:s' );
-                $newpeer['created']   = date( 'Y-m-d H:i:s' );
-
-                // is there a pre-existing notes entry for these peers?
-                $n = Doctrine_Query::create()
-                    ->from( 'MyPeeringMatrixNotes n' )
-                    ->where( 'n.custid = ? and n.peerid = ?' )
-                    ->fetchOne( array( $custid, $r['y_custid'] ), Doctrine_Core::HYDRATE_RECORD );
-
-                if( $n )
-                    $newpeer['notes_id'] = $n['id'];
-
-                $newpeer->save();
+                // looks like a customer ressurected from the dead
+                $mypeers_by_custids[$vint->Virtualinterface->Cust['id']]['dead'] = 0;
+                $mypeers_by_custids[$vint->Virtualinterface->Cust['id']]->save();
             }
         }
 
-        // let's delete any members that no longer exist
+        // remove old
         foreach( $mypeers as $mp )
-            $mp->delete();
+        {
+            if( !in_array( $mp['peerid'], $custs_ints_custids ) )
+            {
+                $mp['dead'] = 1;
+                $mp->save();
+            }
+        }
     }
 
 }

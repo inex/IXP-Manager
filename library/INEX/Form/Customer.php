@@ -120,17 +120,6 @@ class INEX_Form_Customer extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Date Joined (YYYY-MM-DD)' )
             ->addFilter( 'StringTrim' )
-            ->addDecorators(
-                array(
-                    array( 'Callback',
-                        array(
-                            'callback'  => array( 'INEX_Form_Customer', 'addYUICalanderDiv' ),
-                            'placement' => 'append',
-                            'id'        => 'datejoinContainer'
-                        )
-                    )
-                )
-            )
             ->setAttrib( 'id', 'datejoin' );
         $this->addElement( $datejoin );
 
@@ -365,11 +354,6 @@ class INEX_Form_Customer extends INEX_Form
                 $this->getElement( $elementName )->setValue( $model->$elementName );
 
         return $this;
-    }
-
-    public static function addYUICalanderDiv( $content, $element, array $options )
-    {
-        return "<div class=\"yui-skin-sam\"><div id=\"{$options['id']}\"></div></div>";
     }
 
 }

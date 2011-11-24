@@ -132,5 +132,5 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 <script type="text/javascript">
 </script>
 
-{tmplinclude file="footer-full-width.tpl"}
+{tmplinclude file="footer.tpl"}
 

@@ -30,60 +30,32 @@
             overview:
             </p>
 
-            <div id="peeringOverviewContainer">
-                <table id="peeringOverviewTable">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Peered</th>
-                            <th>Not Peered</th>
-                            <th>Awaiting Reply</th>
-                            <th>Won't Peer</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    {foreach from=$peering_stats key=name item=peerings}
+            <table id="peeringOverviewTable" class="ixptable">
+                <thead>
                     <tr>
-                        <td>{$name}</td>
-                        <td>{if isset( $peerings.YES     )}{$peerings.YES}{else}0{/if}</td>
-                        <td>{if isset( $peerings.NO      )}{$peerings.NO}{else}0{/if}</td>
-                        <td>{if isset( $peerings.WAITING )}{$peerings.WAITING}{else}0{/if}</td>
-                        <td>{if isset( $peerings.NEVER   )}{$peerings.NEVER}{else}0{/if}</td>
+                        <th></th>
+                        <th>Unknown</th>
+                        <th>Peered</th>
+                        <th>Not Peered</th>
+                        <th>Awaiting Reply</th>
+                        <th>Won't Peer</th>
                     </tr>
-                    {/foreach}
+                </thead>
+                <tbody>
 
-                    </tbody>
-                </table>
-            </div>
+                {foreach from=$peering_stats key=name item=peerings}
+                <tr>
+                    <td><strong>{$name}</strong></td>
+                    <td class="center">{if isset( $peerings.UNKNOWN )}{$peerings.UNKNOWN}{else}0{/if}</td>
+                    <td class="center">{if isset( $peerings.YES     )}{$peerings.YES}{else}0{/if}</td>
+                    <td class="center">{if isset( $peerings.NO      )}{$peerings.NO}{else}0{/if}</td>
+                    <td class="center">{if isset( $peerings.WAITING )}{$peerings.WAITING}{else}0{/if}</td>
+                    <td class="center">{if isset( $peerings.NEVER   )}{$peerings.NEVER}{else}0{/if}</td>
+                </tr>
+                {/foreach}
 
-            <script type="text/javascript">
-                {literal}
-                var peeringOverviewDataSource = new YAHOO.util.DataSource( YAHOO.util.Dom.get( "peeringOverviewTable" ) );
-                peeringOverviewDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
-
-                peeringOverviewDataSource.responseSchema = {
-                    fields: [
-                        {key:'VLAN'},
-                        {key:'Peered'},
-                        {key:'Not Contacted'},
-                        {key:'Awaiting Reply'},
-                        {key:'Won\'t Peer'}
-                    ]
-                };
-
-                var peeringOverviewColumnDefs = [
-                    {key:'VLAN'},
-                    {key:'Peered'},
-                    {key:'Not Contacted'},
-                    {key:'Awaiting Reply'},
-                    {key:'Won\'t Peer'}
-                ];
-
-                var peeringOverviewDataTable = new YAHOO.widget.DataTable( "peeringOverviewContainer", peeringOverviewColumnDefs, peeringOverviewDataSource );
-                {/literal}
-            </script>
-
+                </tbody>
+            </table>
 
         {/if} {* END: if $customer->isFullMember() *}
 
@@ -92,60 +64,32 @@
 
             <p>Our three most recent members are listed below. {if $customer->isFullMember()}Have you arranged peering with them yet?{/if}</p>
 
-            <div id="recentMembersContainer">
-                <table id="recentMembersTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>AS Number</th>
-                            <th>Date Joined</th>
-                            {if $customer->isFullMember()}
-                                <th>Peering Contact</th>
-                            {/if}
-                        </tr>
-                    </thead>
-                    <tbody>
+            <table id="recentMembersTable" class="ixptable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>AS Number</th>
+                        <th>Date Joined</th>
+                        {if $customer->isFullMember()}
+                            <th>Peering Contact</th>
+                        {/if}
+                    </tr>
+                </thead>
+                <tbody>
 
-                    {foreach from=$recentMembers item=member}
-                        <tr>
-                            <td>{$member.name}</td>
-                            <td>{$member.autsys|asnumber}</td>
-                            <td>{$member.datejoin}</td>
-                            {if $customer->isFullMember()}
-                                <td><a href="{genUrl controller='dashboard' action='my-peering-matrix' email=$member.id}">{$member.peeringemail}</a></td>
-                            {/if}
-                        </tr>
-                    {/foreach}
+                {foreach from=$recentMembers item=member}
+                    <tr>
+                        <td>{$member.name}</td>
+                        <td>{$member.autsys|asnumber}</td>
+                        <td>{$member.datejoin}</td>
+                        {if $customer->isFullMember()}
+                            <td><a href="{genUrl controller='dashboard' action='my-peering-matrix' email=$member.id}">{$member.peeringemail}</a></td>
+                        {/if}
+                    </tr>
+                {/foreach}
 
-                    </tbody>
-                </table>
-            </div>
-
-            <script type="text/javascript">
-                {literal}
-                var recentMembersDataSource = new YAHOO.util.DataSource( YAHOO.util.Dom.get( "recentMembersTable" ) );
-                recentMembersDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
-
-                recentMembersDataSource.responseSchema = {
-                    fields: [
-                        {key:'Name'},
-                        {key:'AS Number'},
-                        {key:'Date Joined'},
-                        {/literal}{if $customer->isFullMember()}{ldelim}key:'Peering Contact'{rdelim}{/if}{literal}
-                    ]
-                };
-
-                var recentMembersColumnDefs = [
-                    {key:'Name'},
-                    {key:'AS Number'},
-                    {key:'Date Joined'},
-                    {/literal}{if $customer->isFullMember()}{ldelim}key:'Peering Contact'{rdelim}{/if}{literal}
-                ];
-
-                var recentMembersDataTable = new YAHOO.widget.DataTable( "recentMembersContainer", recentMembersColumnDefs, recentMembersDataSource );
-                {/literal}
-            </script>
-
+                </tbody>
+            </table>
 
         {if $customer->isFullMember()}
 

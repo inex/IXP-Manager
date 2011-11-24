@@ -53,9 +53,19 @@ them to make maximum use of this application:
     <tr>
         <td width="20"></td>
         <td width="22">
-            <img src="{genUrl}/images/22x22/no.png" width="22" height="22" alt="[NO]" />
+            <img src="{genUrl}/images/22x22/unknown.png" width="22" height="22" alt="[UNKNOWN]" />
         </td>
         <td width="10"></td>
+        <td>
+            Unknown - you have yet to set a status for this peer. 
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <img src="{genUrl}/images/22x22/no.png" width="22" height="22" alt="[NO]" />
+        </td>
+        <td></td>
         <td>
             I have not yet contacted this member in relation to this VLAN.
         </td>
@@ -94,7 +104,7 @@ them to make maximum use of this application:
 
     <p>
     <strong>If you are an existing member you will need to update this to reflect your current status
-    as they will all be set to <em>I have not yet contacted this member</em> by default.</strong>
+    as they will all be set to <em>unknown</em> by default.</strong>
     </p>
 </dd>
 
@@ -104,7 +114,7 @@ them to make maximum use of this application:
     <p>
     This column is based on BGP traffic snooping on the INEX peering LANs for IPv4 and route server states.
     It is <em>per peering LAN</em> and will reflect your peering status for the VLAN you have
-    selected.
+    selected. Some members have opted out of this and they will be shown as <em>N/A</em>.
     </p>
 </dd>
 

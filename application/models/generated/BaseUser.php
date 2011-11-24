@@ -25,7 +25,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: BaseUser.php 324 2010-07-21 07:38:01Z barryo $
+ * @version    SVN: $Id: Builder.php 7691 2011-02-04 15:43:29Z jwage $
  */
 abstract class BaseUser extends Doctrine_Record
 {

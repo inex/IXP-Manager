@@ -91,6 +91,30 @@ class DashboardController extends INEX_Controller_Action
     }
 
     /**
+     * Return a Doctrine result of the users VLANs.
+     */
+    private function _getVLANS( $cust = null )
+    {
+        if( $cust === null )
+            $cust = $this->_customer;
+
+        $vints = Doctrine_Query::create()
+            ->from( 'Vlaninterface vint' )
+            ->leftJoin( 'vint.Virtualinterface vi' )
+            ->leftJoin( 'vi.Cust c' )
+            ->where( 'c.id = ?', $cust['id'] )
+            ->execute();
+        $vlanids = array();
+        foreach( $vints as $v )
+            $vlanids[] = $v['vlanid'];
+            
+        return Doctrine_Query::create()
+            ->from( 'Vlan v' )
+            ->whereIn( 'v.id', $vlanids )
+            ->execute();
+    }
+
+    /**
      * Return a Doctrine result of a customer.
      */
     private function _getCustomerByShortname( $shortname = null )
@@ -144,11 +168,13 @@ class DashboardController extends INEX_Controller_Action
         if( $this->customer->isFullMember() )
         {
 	        // Get peering stats as set by the member
-	        $this->_generateOrUpdateMyPeeringMatrix();
 	        $peering_stats = array();
 	        foreach( $this->config['peering_matrix']['public'] as $v )
+	        {
+	            $this->_generateOrUpdateMyPeeringMatrix( $v['number'] );
 	            $peering_stats[$v['name']] = MyPeeringMatrixTable::getStatesTotal( $this->customer['id'], $v['number'] );
-
+	        }
+	        
 	        $peering_stats['Total'] =  MyPeeringMatrixTable::getStatesTotal( $this->customer['id'] );
 	        $this->view->peering_stats = $peering_stats;
 
@@ -595,7 +621,7 @@ class DashboardController extends INEX_Controller_Action
      *
      * @param bool $force Force the update even if it's already been done this session
      */
-    private function _generateOrUpdateMyPeeringMatrix( $force = false)
+    private function _generateOrUpdateMyPeeringMatrix( $vlan, $force = true )
     {
         // we're only going to do the following once per session unless told otherwise
         if( !isset( $this->session->myPeeringMatrixChecked ) )
@@ -604,11 +630,11 @@ class DashboardController extends INEX_Controller_Action
         if( !$force && $this->session->myPeeringMatrixChecked )
             return;
 
-        MyPeeringMatrixTable::generateOrUpdateMyPeeringMatrix( $this->customer['id'] );
+        MyPeeringMatrixTable::generateOrUpdateMyPeeringMatrix( $this->customer['id'], $vlan );
 
         $this->session->myPeeringMatrixChecked = true;
     }
-
+    
     public function myPeeringMatrixAction()
     {
         // are we downloading in a non-html format?
@@ -635,24 +661,48 @@ class DashboardController extends INEX_Controller_Action
         $this->view->vlans    = $this->config['peering_matrix']['public'];
         $this->view->vlan     = $vlan;
 
+        // is the customer on the selected VLAN?
+        $cvlans = $this->_getVLANS()->toArray();
+        foreach( $cvlans as $k => $cv )
+        {
+            if( $cv['number'] != $vlan )
+                unset( $cvlans[$k] );
+        }
+        
+        if( !count( $cvlans ) )
+        {
+            $this->view->message = new INEX_Message( 'You do not have a connection on this LAN. Please '
+                . 'contact INEX Operations to arrange one if you wish.', INEX_Message::MESSAGE_TYPE_ALERT );
+        }
+        
         // update the my peering table
-        $this->_generateOrUpdateMyPeeringMatrix();
+        $this->_generateOrUpdateMyPeeringMatrix( $vlan );
 
         $matrix = Doctrine_Query::create()
-            ->from( 'PeeringMatrix pm' )
-            ->leftJoin( 'pm.X_Cust xc' )
-            ->leftJoin( 'pm.Y_Cust yc' )
-            ->leftJoin( 'pm.MyPeeringMatrix mpm' )
-            ->leftJoin( 'mpm.MyPeeringMatrixNotes mpmn' )
-            ->where( 'pm.x_custid = ?', $this->customer['id'] )
-            ->andWhere( 'pm.vlan = ?', $vlan )
+            ->from( 'MyPeeringMatrix mpm' )
+            ->leftJoin( 'mpm.Cust as c' )
+            ->leftJoin( 'mpm.Peer as p' )
+            ->leftJoin( 'mpm.Notes mpmn' )
+            ->where( 'mpm.custid = ?', $this->customer['id'] )
             ->andWhere( 'mpm.vlan = ?', $vlan )
-            ->andWhere( 'pm.y_custid = mpm.peerid')
-            ->orderBy( 'pm.y_as ASC' )
+            ->orderBy( 'p.name ASC' )
             ->fetchArray();
 
-        $this->view->matrix = $matrix;
+        $t_pmatrix = Doctrine_Query::create()
+            ->from( 'PeeringMatrix pm' )
+            ->leftJoin( 'pm.X_Cust as xc' )
+            ->leftJoin( 'pm.Y_Cust as yc' )
+            ->where( 'xc.id = ?', $this->customer['id'] )
+            ->andWhere( 'pm.vlan = ?', $vlan )
+            ->fetchArray();
 
+        $pmatrix = array();
+        foreach( $t_pmatrix as $pm )
+            $pmatrix[$pm['Y_Cust']['id']] = $pm;
+
+        $this->view->matrix  = $matrix;
+        $this->view->pmatrix = $pmatrix;
+        
         $this->view->ipv6     = ViewVlaninterfaceDetailsByCustidTable::getIPv6EnabledPerVLAN( $vlan );
         $this->view->rsclient = ViewVlaninterfaceDetailsByCustidTable::getRSClientEnabledPerVLAN( $vlan );
 
@@ -803,7 +853,7 @@ class DashboardController extends INEX_Controller_Action
         {
 
             $content = array(
-                'subject' => $this->_config['identity']['orgname'] . " Peering Request between AS" . $this->customer['autsys']
+                'subject' => $this->config['identity']['orgname'] . " Peering Request between AS" . $this->customer['autsys']
                                 . ' - AS' . $bcust['autsys'],
                 'to'      => $bcust['name'] . " Peering Team <" . $bcust['peeringemail'] . ">",
                 'from'    => $this->customer['name'] . " Peering Team <" . $this->customer['peeringemail'] . ">",
@@ -856,6 +906,7 @@ class DashboardController extends INEX_Controller_Action
             try
             {
                 $myPeerRecord->updateNotes( stripslashes( $this->_request->getParam( 'notes' ) ) );
+                
                 $this->getResponse()
                     ->setBody( Zend_Json::encode(
                         array(
@@ -870,7 +921,7 @@ class DashboardController extends INEX_Controller_Action
                 $this->getResponse()
                     ->setBody( Zend_Json::encode(
                         array(
-                            'status' => '1',
+                            'status' => '0',
                             'message' => "Error: Sorry, we could not save your updated notes. Please contact support to report this issue."
                         ) ) )
                     ->sendResponse();

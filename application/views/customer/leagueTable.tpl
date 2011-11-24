@@ -47,22 +47,32 @@
 </form>
 </p>
 
-<div id="myLeagueTableDiv">
-
-<table id="myLeagueTable">
+<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
 
 <thead>
     <tr>
+        <th class="ui-state-default" ></th>
+        <th class="ui-state-default" ></th>
+        <th class="ui-state-default" colspan="3">Day</th>
+        <th class="ui-state-default" colspan="3">Week</th>
+        <th class="ui-state-default" colspan="3">Month</th>
+        <th class="ui-state-default" colspan="3">Year</th>
+    </tr>
+    <tr>
+        <th></th>
         <th>Member</th>
-        <th>A In</th>
-        <th>A Out</th>
-        <th>A Total</th>
-        <th>M In</th>
-        <th>M Out</th>
-        <th>M Total</th>
-        <th>T In</th>
-        <th>T Out</th>
-        <th>T Total</th>
+        <th>In</th>
+        <th>Out</th>
+        <th>Total</th>
+        <th>In</th>
+        <th>Out</th>
+        <th>Total</th>
+        <th>In</th>
+        <th>Out</th>
+        <th>Total</th>
+        <th>In</th>
+        <th>Out</th>
+        <th>Total</th>
     </tr>
 </thead>
 <tbody>
@@ -71,54 +81,54 @@
 
 {if $metric eq 'max'}
 	<tr>
-        <td>{$td.Cust.shortname}</td>
+        <td>{$td.Cust.shortname}</td> 
         <td>{$td.Cust.name}</td>
-	    <td>{$td.day_max_in}</td>
-	    <td>{$td.day_max_out}</td>
-	    <td>{$td.day_max_in+$td.day_max_out}</td>
-	    <td>{$td.week_max_in}</td>
-	    <td>{$td.week_max_out}</td>
-	    <td>{$td.week_max_in+$td.week_max_out}</td>
-	    <td>{$td.month_max_in}</td>
-	    <td>{$td.month_max_out}</td>
-	    <td>{$td.month_max_in+$td.month_max_out}</td>
-	    <td>{$td.year_max_in}</td>
-	    <td>{$td.year_max_out}</td>
-	    <td>{$td.year_max_in+$td.year_max_out}</td>
+	    <td align="right">{$td.day_max_in}</td>
+	    <td align="right">{$td.day_max_out}</td>
+	    <td align="right">{$td.day_max_in+$td.day_max_out}</td>
+	    <td align="right">{$td.week_max_in}</td>
+	    <td align="right">{$td.week_max_out}</td>
+	    <td align="right">{$td.week_max_in+$td.week_max_out}</td>
+	    <td align="right">{$td.month_max_in}</td>
+	    <td align="right">{$td.month_max_out}</td>
+	    <td align="right">{$td.month_max_in+$td.month_max_out}</td>
+	    <td align="right">{$td.year_max_in}</td>
+	    <td align="right">{$td.year_max_out}</td>
+	    <td align="right">{$td.year_max_in+$td.year_max_out}</td>
 	</tr>
 {elseif $metric eq 'average'}
 	<tr>
-        <td>{$td.Cust.shortname}</td>
+        <td>{$td.Cust.shortname}</td>  
 	    <td>{$td.Cust.name}</td>
-	    <td>{$td.day_avg_in}</td>
-	    <td>{$td.day_avg_out}</td>
-	    <td>{$td.day_avg_in+$td.day_avg_out}</td>
-	    <td>{$td.week_avg_in}</td>
-	    <td>{$td.week_avg_out}</td>
-	    <td>{$td.week_avg_in+$td.week_avg_out}</td>
-	    <td>{$td.month_avg_in}</td>
-	    <td>{$td.month_avg_out}</td>
-	    <td>{$td.month_avg_in+$td.month_avg_out}</td>
-	    <td>{$td.year_avg_in}</td>
-	    <td>{$td.year_avg_out}</td>
-	    <td>{$td.year_avg_in+$td.year_avg_out}</td>
+	    <td align="right">{$td.day_avg_in}</td>
+	    <td align="right">{$td.day_avg_out}</td>
+	    <td align="right">{$td.day_avg_in+$td.day_avg_out}</td>
+	    <td align="right">{$td.week_avg_in}</td>
+	    <td align="right">{$td.week_avg_out}</td>
+	    <td align="right">{$td.week_avg_in+$td.week_avg_out}</td>
+	    <td align="right">{$td.month_avg_in}</td>
+	    <td align="right">{$td.month_avg_out}</td>
+	    <td align="right">{$td.month_avg_in+$td.month_avg_out}</td>
+	    <td align="right">{$td.year_avg_in}</td>
+	    <td align="right">{$td.year_avg_out}</td>
+	    <td align="right">{$td.year_avg_in+$td.year_avg_out}</td>
 	</tr>
 {else}
 	<tr>
         <td>{$td.Cust.shortname}</td>
 	    <td>{$td.Cust.name}</td>
-	    <td>{$td.day_tot_in}</td>
-	    <td>{$td.day_tot_out}</td>
-	    <td>{$td.day_tot_in+$td.day_tot_out}</td>
-	    <td>{$td.week_tot_in}</td>
-	    <td>{$td.week_tot_out}</td>
-	    <td>{$td.week_tot_in+$td.week_tot_out}</td>
-	    <td>{$td.month_tot_in}</td>
-	    <td>{$td.month_tot_out}</td>
-	    <td>{$td.month_tot_in+$td.month_tot_out}</td>
-	    <td>{$td.year_tot_in}</td>
-	    <td>{$td.year_tot_out}</td>
-	    <td>{$td.year_tot_in+$td.year_tot_out}</td>
+	    <td align="right">{$td.day_tot_in}</td>
+	    <td align="right">{$td.day_tot_out}</td>
+	    <td align="right">{$td.day_tot_in+$td.day_tot_out}</td>
+	    <td align="right">{$td.week_tot_in}</td>
+	    <td align="right">{$td.week_tot_out}</td>
+	    <td align="right">{$td.week_tot_in+$td.week_tot_out}</td>
+	    <td align="right">{$td.month_tot_in}</td>
+	    <td align="right">{$td.month_tot_out}</td>
+	    <td align="right">{$td.month_tot_in+$td.month_tot_out}</td>
+	    <td align="right">{$td.year_tot_in}</td>
+	    <td align="right">{$td.year_tot_out}</td>
+	    <td align="right">{$td.year_tot_in+$td.year_tot_out}</td>
 	</tr>
 {/if}
 
@@ -127,7 +137,6 @@
 </tbody>
 </table>
 
-</div>
 
 </div>
 
@@ -144,8 +153,10 @@
 <script>
 
 //Define a custom format function for scale and type
-var myScale = function( elCell, oRecord, oColumn, oData )
+var myScale = function( data )
 {
+	oData = data['aData'][data['iDataColumn']];
+
     switch( "{/literal}{$category}{literal}" )
     {
         case 'bytes':
@@ -171,7 +182,7 @@ var myScale = function( elCell, oRecord, oColumn, oData )
     {
         if( ( oData / 1000 < 1 ) || ( strFormat.length == i + 1 ) )
         {
-            retString =  number_format( oData, 1 ) + '&nbsp;' + strFormat[i];
+            retString =  number_format( oData, 0 ) + '&nbsp;' + strFormat[i];
             break;
         }
         else
@@ -180,12 +191,14 @@ var myScale = function( elCell, oRecord, oColumn, oData )
         }
     }
 
-    elCell.innerHTML = retString;
+    return retString;
 };
 
-var myScaleTotal = function( elCell, oRecord, oColumn, oData )
+var myScaleTotal = function( data )
 {
-    switch( "{/literal}{$category}{literal}" )
+	oData = data['aData'][data['iDataColumn']];
+
+	switch( "{/literal}{$category}{literal}" )
     {
         case 'errs':
         case 'discs':
@@ -205,7 +218,7 @@ var myScaleTotal = function( elCell, oRecord, oColumn, oData )
     {
         if( ( oData / 1000 < 1 ) || ( strFormat.length == i + 1 ) )
         {
-            retString =  number_format( oData, 1 ) + strFormat[i];
+            retString =  number_format( oData, 0 ) + strFormat[i];
             break;
         }
         else
@@ -214,103 +227,51 @@ var myScaleTotal = function( elCell, oRecord, oColumn, oData )
         }
     }
 
-    elCell.innerHTML = retString;
+    return retString;
 };
 
-var myDataSource = new YAHOO.util.DataSource( YAHOO.util.Dom.get( "myLeagueTable" ) );
-myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
-myDataSource.responseSchema = {
-    fields: [
-        { key: "shortname" },
-        { key: "Member" },
-        { key: "D In",    parser: "number" },
-        { key: "D Out",   parser: "number" },
-        { key: "D Total", parser: "number" },
-        { key: "W In",    parser: "number" },
-        { key: "W Out",   parser: "number" },
-        { key: "W Total", parser: "number" },
-        { key: "M In",    parser: "number" },
-        { key: "M Out",   parser: "number" },
-        { key: "M Total", parser: "number" },
-        { key: "Y In",    parser: "number" },
-        { key: "Y Out",   parser: "number" },
-        { key: "Y Total", parser: "number" }
-    ]
-};
+{/literal}
 
-var myColumnDefs = [
-        { key: "shortname", hidden: true },
-        { key: "Member" },
+$(document).ready(function() {ldelim}
 
-        { key: "Day", children:
-	            [
-	                { key: "D In",    label: "In",    formatter: {/literal}{$scalefn}{literal}, sortable: true },
-	                { key: "D Out",   label: "Out",   formatter: {/literal}{$scalefn}{literal}, sortable: true },
-	                { key: "D Total", label: "Total", formatter: {/literal}{$scalefn}{literal}, sortable: true }
-	            ]
-	    },
+    oTable = $('#ixpDataTable').dataTable({ldelim}
 
-        { key: "Week", children:
-                [
-                    { key: "W In",    label: "In",    formatter: {/literal}{$scalefn}{literal}, sortable: true },
-                    { key: "W Out",   label: "Out",   formatter: {/literal}{$scalefn}{literal}, sortable: true },
-                    { key: "W Total", label: "Total", formatter: {/literal}{$scalefn}{literal}, sortable: true }
-                ]
-        },
+        "aaSorting": [[ 6, 'desc' ]],
+		"bJQueryUI": true,
+		"sPaginationType": "full_numbers",
+		"iDisplayLength": 100,
+		"aoColumnDefs": [ 	
+            {ldelim} "bVisible": false, "aTargets": [ 0 ] {rdelim},
+        	{ldelim} "fnRender": {$scalefn}, "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] {rdelim},
+        	{ldelim} "sType": "numeric", "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] {rdelim},
+        	{ldelim} "bUseRendered": false, "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] {rdelim}
+        ],
+        "fnRowCallback": function( nRow, aData, iDisplayIndex ) {ldelim}
+                $( nRow ).click( function(){ldelim}
+    	            $.fn.colorbox({ldelim}
+                        open: true,
+                        iframe: true,
+                        href: '{genUrl
+                                   controller='dashboard'
+                                   action='statistics-drilldown'
+                                   monitorindex='aggregate'
+                                   mini='1'
+                                   category=$category
+                               }/shortname/' + aData[0],
+                        transition: 'elastic',
+                        innerWidth: '650px',
+                        height: '80%'
+                    {rdelim});
+                {rdelim});
+                 
+      			return nRow;
+	  		{rdelim}
+	{rdelim}).show();
 
-        { key: "Month", children:
-                [
-	                { key: "M In",    label: "In",    formatter: {/literal}{$scalefn}{literal}, sortable: true },
-	                { key: "M Out",   label: "Out",   formatter: {/literal}{$scalefn}{literal}, sortable: true },
-	                { key: "M Total", label: "Total", formatter: {/literal}{$scalefn}{literal}, sortable: true }
-	            ]
-        },
-
-        { key: "Year", children:
-                [
-                    { key: "Y In",    label: "In",    formatter: {/literal}{$scalefn}{literal}, sortable: true },
-                    { key: "Y Out",   label: "Out",   formatter: {/literal}{$scalefn}{literal}, sortable: true },
-                    { key: "Y Total", label: "Total", formatter: {/literal}{$scalefn}{literal}, sortable: true }
-                ]
-        }
-];
-
-var myDataTable = new YAHOO.widget.DataTable(
-	"myLeagueTableDiv",
-	myColumnDefs,
-	myDataSource,
-	{}
-);
-
-// sort by month total by default
-myDataTable.sortColumn( myDataTable.getColumn( "M Total" ), YAHOO.widget.DataTable.CLASS_DESC );
-
-myDataTable.subscribe( 'rowClickEvent', function( oArgs )
-	{
-        var oRecord = this.getRecord( oArgs.target );
-        $.fn.colorbox(
-            {
-                open: true,
-                iframe: true,
-                href: '{/literal}{genUrl
-                        controller='dashboard'
-                        action='statistics-drilldown'
-                        monitorindex='aggregate'
-                        mini='1'
-                        category=$category
-                    }{literal}/shortname/' + oRecord.getData( 'shortname' ),
-                transition: 'elastic',
-                innerWidth: '650px',
-                height: '80%'
-            }
-        );
-        //alert( "shortname is:" + oRecord.getData( "shortname" ) );
-    }
-);
+{rdelim});
 
 </script>
 
-{/literal}
 
 
 {tmplinclude file="footer.tpl"}

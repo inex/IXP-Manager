@@ -324,21 +324,24 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
      */
     public function listAction()
     {
-        $dataQuery = Doctrine_Query::create()
-            ->from( $this->frontend['model'] . ' x' );
-
-        if( isset( $this->frontend['columns']['sortDefaults'] ) )
+        if( !( $this->view->rows = $this->_customList() ) )
         {
-            $order = '';
-            if( isset( $this->frontend['columns']['sortDefaults']['order'] ) )
-                $order = strtoupper( $this->frontend['columns']['sortDefaults']['order'] );
-
-            $dataQuery->orderBy( "{$this->frontend['columns']['sortDefaults']['column']} $order" );
-        }
-
-        $dataQuery = $this->_preList( $dataQuery );
-
-        $this->view->rows = $dataQuery->execute();
+            $dataQuery = Doctrine_Query::create()
+                ->from( $this->frontend['model'] . ' x' );
+    
+            if( isset( $this->frontend['columns']['sortDefaults'] ) )
+            {
+                $order = '';
+                if( isset( $this->frontend['columns']['sortDefaults']['order'] ) )
+                    $order = strtoupper( $this->frontend['columns']['sortDefaults']['order'] );
+    
+                $dataQuery->orderBy( "{$this->frontend['columns']['sortDefaults']['column']} $order" );
+            }
+    
+            $dataQuery = $this->_preList( $dataQuery );
+    
+            $this->view->rows = $dataQuery->execute();
+        }        
 
         $this->view->feSession  = $this->feSession;
 
@@ -346,7 +349,7 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
 
 
         if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu.js.tpl' ) )
-            $this->view->hasCustomContextMenu = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu.js.tpl';
+            $this->view->hasCustomContextMenu = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu';
 
         if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'postContent.tpl' ) )
             $this->view->hasPostContent = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'postContent.tpl';
@@ -358,6 +361,11 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
     }
 
 
+    protected function _customList()
+    {
+        return false;
+    }
+    
     /**
      * A function executed before the list action queries the database.
      *
@@ -435,7 +443,6 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
     protected function addEditPreSave( $object, $isEdit, $form )
     {}
 
-
+    
 }
 
-?>

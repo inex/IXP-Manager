@@ -8,21 +8,19 @@
 
     <title>{$pageTitle|default:"IXP Manager"}</title>
 
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/reset-fonts-grids/reset-fonts-grids.css">
-
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/assets/skins/sam/skin.css">
+    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui-reset-fonts-grids.css">
 
     <link href="{genUrl}/css/ixp-manager.css"         rel="stylesheet" type="text/css" />
     <link href="{genUrl}/css/joomla.css"              rel="stylesheet" type="text/css" />
 
-    <script type="text/javascript" src="{genUrl}/js/jquery/jquery.js"></script>
+    <script type="text/javascript" src="{genUrl}/js/jquery.js"></script>
 
     <script type="text/javascript" src="{genUrl}/js/oss_tooltip.js"></script>
     <script type="text/javascript" src="{genUrl}/js/JSCookMenu_mini.js"></script>
     <script type="text/javascript" src="{genUrl}/js/theme.js"></script>
 </head>
 
-<body class="yui-skin-sam">
+<body>
 
 <div id="doc3">
 
