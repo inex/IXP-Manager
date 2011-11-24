@@ -1,7 +1,8 @@
 
-<table width="100%" class="menubar" cellpadding="0" cellspacing="0" border="0">
+<div class="menuwrapper">
+<table class="menubar" cellpadding="0" cellspacing="0" border="0">
 <tr>
-    <td class="menubackgr" style="padding-left:5px;">
+    <td class="menubackgr">
         <div id="myMenuID"></div>
         <script language="JavaScript" type="text/javascript" charset="t" defer="u">
             var myMenu =
@@ -281,8 +282,8 @@
     </td>
 </tr>
 </table>
+</div>
 
 <div id="bd">
 
-<br />
 

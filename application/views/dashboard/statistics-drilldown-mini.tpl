@@ -5,8 +5,8 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset="utf8" />
 
-    <link rel="stylesheet" type="text/css" href="css/yui/build/reset-fonts-grids/reset-fonts-grids.css">
-    <link href="css/ixp-manager.css"         rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui-reset-fonts-grids.css">
+    <link href="{genUrl}/css/ixp-manager.css"         rel="stylesheet" type="text/css" />
 </head>
 
 <body>
