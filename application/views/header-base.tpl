@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
-    <base href="{genUrl}//index.php">
+    <base href="{genUrl}/index.php">
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 
@@ -31,25 +31,6 @@
     <script type="text/javascript" src="{genUrl}/js/jquery-ui.js"></script>
     <script type="text/javascript" src="{genUrl}/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="{genUrl}/js/jquery.contextMenu.js"></script>
-
-
-    <!-- Dependencies -->
-    <script type="text/javascript" src="{genUrl}/css/yui/build/yahoo-dom-event/yahoo-dom-event.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/element/element-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/datasource/datasource-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/container/container_core-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/animation/animation-min.js"></script>
-
-
-    <!-- OPTIONAL: Calendar (enables calendar editors) -->
-    <script type="text/javascript" src="{genUrl}/css/yui/build/calendar/calendar-min.js"></script>
-
-    <!-- Source files -->
-    <script type="text/javascript" src="{genUrl}/css/yui/build/button/button-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/container/container-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/editor/editor-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/editor/simpleeditor-min.js"></script>
-    <script type="text/javascript" src="{genUrl}/css/yui/build/tabview/tabview-min.js"></script>
 
     <script type="text/javascript" src="{genUrl}/js/JSCookMenu_mini.js"></script>
     <script type="text/javascript" src="{genUrl}/js/theme.js"></script>
