@@ -51,6 +51,10 @@ class MeetingItemController extends INEX_Controller_FrontEnd
 
             'viewPanelTitle' => 'title',
 
+	        'sortDefaults' => array(
+	            'column' => 'meeting_id', 'order' => 'desc'
+	        ),
+            
             'id' => array(
                 'label' => 'ID',
                 'hidden' => true
@@ -61,7 +65,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
                 'model' => 'Meeting',
                 'controller' => 'meeting',
                 'field' => 'date',
-                'label' => 'Meeting Date',
+                'label' => 'Meeting&nbsp;Date',
                 'sortable' => true
             ),
 

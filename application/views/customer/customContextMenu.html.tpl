@@ -20,6 +20,6 @@
     <li class="separator"></li>
     
     <li class="message">
-        <a href="#message">Send welcom email...</a>
+        <a href="#message">Send welcome email...</a>
     </li>
 </ul>
