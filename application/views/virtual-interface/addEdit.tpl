@@ -1,5 +1,7 @@
 {tmplinclude file="header.tpl"}
 
+<div class="yui-g">
+
 <div class="content">
 
 {if $isEdit}
@@ -55,13 +57,13 @@
                 </td>
                 <td>
                     <form action="{genUrl controller='physical-interface' action='edit' id=$int.id}" method="post">
-                        <input type='hidden' name='return' value="{genUrl controller='virtual-interface' action='edit'}{'/id/'|cat:$object.id}" />
+                        <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
                         <input type="submit" name="submit" class="button" value="edit" />
                     </form>
                 </td>
                 <td>
                     <form action="{genUrl controller='physical-interface' action='delete' id=$int.id}" method="post">
-                        <input type='hidden' name='return' value="{genUrl controller='virtual-interface' action='edit'}{'/id/'|cat:$object.id}" />
+                        <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
                         <input type="submit" name="submit" class="button" value="delete"
                             onClick="return confirm( 'Are you sure you want to delete this tuple?' );"
                         />
@@ -132,13 +134,13 @@
                 </td>
                 <td>
                     <form action="{genUrl controller='vlan-interface' action='edit' id=$int->id}" method="post">
-                        <input type='hidden' name='return' value="{genUrl controller='virtual-interface' action='edit'}{'/id/'|cat:$object.id}" />
+                        <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
                         <input type="submit" name="submit" class="button" value="edit" />
                     </form>
                 </td>
                 <td>
                     <form action="{genUrl controller='vlan-interface' action='delete' id=$int->id}" method="post">
-                        <input type='hidden' name='return' value="{genUrl controller='virtual-interface' action='edit'}{'/id/'|cat:$object.id}" />
+                        <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
                         <input type="submit" name="submit" class="button" value="delete"
                             onClick="return confirm( 'Are you sure you want to delete this tuple?' );"
                         />
@@ -164,6 +166,8 @@
     </dl>
 
 {/if}
+
+</div>
 
 </div>
 

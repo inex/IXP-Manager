@@ -1,5 +1,7 @@
 {tmplinclude file="header.tpl"}
 
+<div class="yui-g">
+
 {assign var='_inc_file' value=$controller|cat:'/addEdit-preamble.tpl'}
 {include_if_exists file=$_inc_file}
 
@@ -18,6 +20,8 @@
 
 {assign var='_inc_file' value=$controller|cat:'/addEdit-postamble.tpl'}
 {include_if_exists file=$_inc_file}
+
+</div>
 
 {tmplinclude file="footer.tpl"}
 
