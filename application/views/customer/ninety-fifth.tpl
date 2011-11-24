@@ -46,14 +46,15 @@
 <tr>
 <td>
 
-	<div id="myLeagueTableDiv">
-
-	<table id="myLeagueTable">
+	<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
 
 	<thead>
 	    <tr>
+	    	<th>Shortname>
 	        <th>Member</th>
 	        <th>95th Percentile</th>
+	        <th>Cost/M</th>
+	        <th>Cost/Y</th>
 	    </tr>
 	</thead>
 	<tbody>
@@ -62,9 +63,10 @@
 
 		<tr>
 	        <td>{$td.Cust.shortname}</td>
-	        <td>{$td.Cust.name}</td>
-		    <td>{$td.max_95th}</td>
-            <td>{$td.cost}</td>
+	        <td>{$td.Cust.name|truncate:30}</td>
+		    <td align="right">{$td.max_95th}</td>
+            <td align="right">{$td.cost}</td>
+            <td align="right">{$td.cost*12}</td>
 		</tr>
 
 	{/foreach}
@@ -75,16 +77,12 @@
 	</div>
 
 </td>
-<td width="50"></td>
-<td width="50%" valign="top" align="left">
+<td width="20"></td>
+<td width="40%" valign="top" align="left">
     <h3>Notes</h3>
 
     <p>
     Click on any row in the table on the right for traffic graphs.
-    </p>
-
-    <p>
-    Only values for May at the end of May should be considered completely accurate.
     </p>
 
     <p>
@@ -110,8 +108,8 @@
     </p>
 
     <p>
-    The 95th percentile is calculated by sampling maximum value of the member's traffic (the great of traffic
-    in and out) every five minutes. The then order these by value and throw away the top 5%. The greatest
+    The 95th percentile is calculated by sampling maximum value of the member's traffic (the greater of traffic
+    in and out) every five minutes. We then order these by value and throw away the top 5%. The greatest
     value remaining in then the 95th percentile.
     </p>
 </td>
@@ -124,8 +122,10 @@
 <script>
 
 //Define a custom format function for scale and type
-var myScale = function( elCell, oRecord, oColumn, oData )
+var myScale = function( data )
 {
+	oData = data['aData'][data['iDataColumn']];
+	
     // According to http://oss.oetiker.ch/mrtg/doc/mrtg-logfile.en.html, data is stored in bytes
     // BUT at point of data insertion to DB, we changed to bits
     var strFormat = new Array( "bps", "Kbps", "Mbps", "Gbps", "Tbps" );
@@ -145,68 +145,58 @@ var myScale = function( elCell, oRecord, oColumn, oData )
         }
     }
 
-    elCell.innerHTML = retString;
+    return retString;
 };
 
-var addEuro = function( elCell, oRecord, oColumn, oData )
+var addEuro = function( data )
 {
-    elCell.innerHTML = '&euro;' + oData;
+    return '&euro;' + number_format( data['aData'][data['iDataColumn']], 0 );
 };
 
+{/literal}
 
-var myDataSource = new YAHOO.util.DataSource( YAHOO.util.Dom.get( "myLeagueTable" ) );
-myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
-myDataSource.responseSchema = {
-    fields: [
-        { key: "shortname" },
-        { key: "Member" },
-        { key: "nfth",    parser: "number" },
-        { key: "cost",    parser: "currency" }
-    ]
-};
+$(document).ready(function() {ldelim}
 
-var myColumnDefs = [
-        { key: "shortname", hidden: true },
-        { key: "Member" },
-        { key: "nfth", label: "95th",    formatter: myScale, sortable: true },
-        { key: "cost", label: "Sample Cost/m",  formatter: addEuro },
-];
+    oTable = $('#ixpDataTable').dataTable({ldelim}
 
-var myDataTable = new YAHOO.widget.DataTable(
-	"myLeagueTableDiv",
-	myColumnDefs,
-	myDataSource,
-	{}
-);
+        "aaSorting": [[ 2, 'desc' ]],
+		"bJQueryUI": true,
+		"sPaginationType": "full_numbers",
+		"iDisplayLength": 100,
+		"aoColumnDefs": [ 	
+            {ldelim} "bVisible": false, "aTargets": [ 0 ] {rdelim},
+        	{ldelim} "fnRender": myScale, "aTargets": [ 2 ] {rdelim},
+        	{ldelim} "fnRender": addEuro, "aTargets": [ 3, 4 ] {rdelim},
+        	{ldelim} "sType": "numeric", "aTargets": [ 2, 3 ] {rdelim},
+        	{ldelim} "bUseRendered": false, "aTargets": [ 2, 3 ] {rdelim}
+        ],
+        "fnRowCallback": function( nRow, aData, iDisplayIndex ) {ldelim}
+                $( nRow ).click( function(){ldelim}
+    	            $.fn.colorbox({ldelim}
+                        open: true,
+                        iframe: true,
+                        href: '{genUrl
+                                   controller='dashboard'
+                                   action='statistics-drilldown'
+                                   monitorindex='aggregate'
+                                   mini='1'
+                                   category=$category
+                               }/shortname/' + aData[0],
+                        transition: 'elastic',
+                        innerWidth: '650px',
+                        height: '80%'
+                    {rdelim});
+                {rdelim});
+                 
+      			return nRow;
+	  		{rdelim}
+	{rdelim}).show();
 
+{rdelim});
 
-myDataTable.sortColumn( myDataTable.getColumn( "nfth" ), YAHOO.widget.DataTable.CLASS_DESC );
-
-myDataTable.subscribe( 'rowClickEvent', function( oArgs )
-	{
-        var oRecord = this.getRecord( oArgs.target );
-        $.fn.colorbox(
-            {
-                open: true,
-                iframe: true,
-                href: '{/literal}{genUrl
-                        controller='dashboard'
-                        action='statistics-drilldown'
-                        monitorindex='aggregate'
-                        mini='1'
-                        category=$category
-                    }{literal}/shortname/' + oRecord.getData( 'shortname' ),
-                transition: 'elastic',
-                innerWidth: '670px',
-                height: '80%'
-            }
-        );
-    }
-);
 
 </script>
 
-{/literal}
 
 
 {tmplinclude file="footer.tpl"}
