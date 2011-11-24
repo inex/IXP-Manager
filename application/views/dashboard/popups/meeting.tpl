@@ -1,15 +1,30 @@
 
+<div id="dialog-meeting" title="INEX Members' Meeting" style="display: none;">
+	<p>
+        The next INEX members' meeting is scheduled for {$meeting.date|date_format}. 
+        Please <a href="{genUrl controller='meeting' action='read'}">click here</a> 
+        for details or let us know if you can make it by choosing an option below.
+	</p>
+</div>
+
+<div id="dialog-meeting-skip" title="INEX Members' Meeting" style="display: none;">
+	<p>
+		We will not ask you to RSVP for this meeting again. However, you can always do 
+		this later via the menu option <em>Member Information -> Meetings</em>.	
+	</p>
+</div>
+
 {literal}
 
 <script type="text/javascript">
 
-YAHOO.util.Event.onDOMReady( function() {
+$(document).ready( function() {
 
 
 	// Define various event handlers for Dialog
 	var handleAttending = function() {
 
-        this.hide();
+    	$( "#dialog-meeting" ).dialog( 'close' );
 
 	    $.getJSON( "{/literal}{genUrl controller='meeting' action='rsvp'}/id/{$meeting.id}/answer/attend"{literal},
 	            function( data ) {
@@ -28,7 +43,7 @@ YAHOO.util.Event.onDOMReady( function() {
 	};
 
     var handleNotAttending = function() {
-        this.hide();
+    	$( "#dialog-meeting" ).dialog( 'close' );
 
         $.getJSON( "{/literal}{genUrl controller='meeting' action='rsvp'}/id/{$meeting.id}/answer/noattend"{literal},
                 function( data ) {
@@ -48,7 +63,7 @@ YAHOO.util.Event.onDOMReady( function() {
 
 
     var handleSkip = function() {
-        this.hide();
+    	$( "#dialog-meeting" ).dialog( 'close' );
 
         $.getJSON( "{/literal}{genUrl controller='meeting' action='rsvp'}/id/{$meeting.id}/answer/skip"{literal},
                     function( data ) {}
@@ -56,44 +71,40 @@ YAHOO.util.Event.onDOMReady( function() {
     };
 
     var handleDontAsk = function() {
-        this.hide();
+    	$( "#dialog-meeting" ).dialog( 'close' );
 
         $.getJSON( "{/literal}{genUrl controller='meeting' action='rsvp'}/id/{$meeting.id}/answer/dontask"{literal},
                     function( data ) {}
         );
 
-        alert( "We will not ask you to RSVP for this meeting again. However, you can always do this later via the menu option Member Information -> Meetings" );
+
+		$( "#dialog-meeting-skip" ).dialog( 'open' );
     };
 
 
-	// Instantiate the Dialog
-	IXP_Meeting_Dialog =
-	    new YAHOO.widget.SimpleDialog( "meetingDialog",
-	             {
-	               width: "500px",
-	               fixedcenter: true,
-	               visible: false,
-	               draggable: false,
-	               modal: true,
-	               close: false, {/literal}
-	               text: "The next INEX members' meeting is scheduled for {$meeting.date|date_format}. "
-		               + "Please <a href=\"{genUrl controller='meeting' action='read'}\">click here</a> "
-		               + "for details or let us know if you can make it by choosing an option below:", {literal}
-	               constraintoviewport: true,
-	               buttons: [ { text:"Don't Ask Again", handler:handleDontAsk },
-		      	              { text:"Attending", handler:handleAttending },
-	                          { text:"Not Attending",  handler:handleNotAttending },
-	                          { text:"Skip",  handler:handleSkip, isDefault:true } ]
-	             } );
-
-
-
-	IXP_Meeting_Dialog.setHeader("INEX Members' Meeting");
-
-	IXP_Meeting_Dialog.render( document.body );
-
-	IXP_Meeting_Dialog.show();
-
+	$( "#dialog-meeting" ).dialog({
+		resizable: false,
+		modal: true,
+		width: "500px",
+		buttons: {
+			"Don't Ask Again": handleDontAsk,
+			"Attending": handleAttending,
+			"Not Attending": handleNotAttending,
+			"Skip": handleSkip
+		}
+	}).show();
+	
+	$( "#dialog-meeting-skip" ).dialog({
+		autoOpen: false,
+		modal: true,
+		width: "400px",
+		buttons: {
+			Ok: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+	
 });
 
 

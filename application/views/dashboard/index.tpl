@@ -6,9 +6,9 @@
 
 {tmplinclude file="message.tpl"}
 
-{if $meeting neq false}
+{if $meeting neq false} 
     {tmplinclude file="dashboard/popups/meeting.tpl"}
-{/if}
+{/if} 
 
 <div id='ajaxMessage'></div>
 
