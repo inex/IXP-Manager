@@ -8,7 +8,7 @@
 
     <title>{$pageTitle|default:"IXP Manager"}</title>
 
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/reset-fonts-grids/reset-fonts-grids.css">
+    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui-reset-fonts-grids.css">
 
     <link href="{genUrl}/css/ixp-manager.css"         rel="stylesheet" type="text/css" />
 </head>
