@@ -8,21 +8,31 @@
 
     <title>{$pageTitle|default:"IXP Manager"}</title>
 
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/reset-fonts-grids/reset-fonts-grids.css">
+	{if $config.use_minified_css}
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.100-yui-reset-fonts-grids.css" />
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.400-joomla.css"               />
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.900-ixp-manager.css"               />
+	{else}
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/100-yui-reset-fonts-grids.css" />
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/400-joomla.css"               />
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/900-ixp-manager.css"               />
+	{/if}
 
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/assets/skins/sam/skin.css">
-
-    <link href="{genUrl}/css/ixp-manager.css"         rel="stylesheet" type="text/css" />
-    <link href="{genUrl}/css/joomla.css"              rel="stylesheet" type="text/css" />
-
-    <script type="text/javascript" src="{genUrl}/js/jquery.js"></script>
-
-    <script type="text/javascript" src="{genUrl}/js/oss_tooltip.js"></script>
-    <script type="text/javascript" src="{genUrl}/js/JSCookMenu_mini.js"></script>
-    <script type="text/javascript" src="{genUrl}/js/theme.js"></script>
+	{if $config.use_minified_js}
+        <script type="text/javascript" src="{genUrl}/js/min.200-jquery-1.7.js"></script>
+        <script type="text/javascript" src="{genUrl}/js/min.400-JSCookMenu_mini.js"></script>
+        <script type="text/javascript" src="{genUrl}/js/min.410-theme.js"></script>
+        <script type="text/javascript" src="{genUrl}/js/min.oss_tooltip.js"></script>
+	{else}
+        <script type="text/javascript" src="{genUrl}/js/200-jquery-1.7.js"></script>
+        <script type="text/javascript" src="{genUrl}/js/400-JSCookMenu_mini.js"></script>
+        <script type="text/javascript" src="{genUrl}/js/410-theme.js"></script>
+        <script type="text/javascript" src="{genUrl}/js/oss_tooltip.js"></script>
+	{/if}
+	
 </head>
 
-<body class="yui-skin-sam">
+<body>
 
 <div id="doc3">
 

@@ -8,9 +8,14 @@
 
     <title>{$pageTitle|default:"IXP Manager"}</title>
 
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/yui/build/reset-fonts-grids/reset-fonts-grids.css">
-
-    <link href="{genUrl}/css/ixp-manager.css"         rel="stylesheet" type="text/css" />
+	{if $config.use_minified_css}
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.100-yui-reset-fonts-grids.css" />
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.900-ixp-manager.css"               />
+	{else}
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/100-yui-reset-fonts-grids.css" />
+        <link rel="stylesheet" type="text/css" href="{genUrl}/css/900-ixp-manager.css"               />
+	{/if}
+	
 </head>
 
 <body>

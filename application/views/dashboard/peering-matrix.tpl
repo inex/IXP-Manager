@@ -1,6 +1,6 @@
 {tmplinclude file="header-full-width.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
-<div class="yui-g">
+<div class="yui-g" style="width: 100%">
 
 <br />
 
@@ -132,5 +132,5 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 <script type="text/javascript">
 </script>
 
-{tmplinclude file="footer-full-width.tpl"}
+{tmplinclude file="footer.tpl"}
 
