@@ -1,8 +1,9 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header-full-width.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
-<div class="yui-g">
+<div class="yui-g" style="width: 100%">
 
-<div id="content">
+<br />
+
 
 <table class="adminheading" border="0">
 <tr>
@@ -16,12 +17,14 @@
 
 <div id='ajaxMessage'></div>
 
+<div id="content">
+
 
 
 <iframe src="{$weathermap.url}" 
 		frameborder="0" 
 		scrolling="no" 
-		width="{$weathermap.width}" 
+		width="100%" 
 		height="{$weathermap.height}"
 		style="margin: 0; padding: 0; margin-left: auto; margin-right: auto;"
 	></iframe>
