@@ -52,5 +52,8 @@
 
 </div>
 
+{if isset( $header_full_inc_menu ) and $header_full_inc_menu} 	
+	{tmplinclude file="menu.tpl"}
+{/if}
 
 
