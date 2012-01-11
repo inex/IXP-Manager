@@ -195,12 +195,33 @@
                         ]
                     ],
                 {/if}
-                {if $identity.user.privs eq 3}
-                    [null,'Statistics','{genUrl controller="customer" action="statistics-overview"}',null,'Statistics',
+                [null,'Statistics','{genUrl controller="customer" action="statistics-overview"}',null,'Statistics',
+                    ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />','Overall Peering Statistics',  '{genUrl controller="dashboard" action="traffic-stats"}',
+                        null, 'Overall Peerings Statistics'   ],
+                    ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Trunk Graphs',  '{genUrl controller="dashboard" action="trunk-graphs"}',
+                         null, 'Trunk Graphs'   ],
+                    ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Switch Aggregate Graphs',  '{genUrl controller="dashboard" action="switch-graphs"}',
+                          null, 'Switch Aggregate Graphs'   ],
+
+                    {if isset( $config.weathermap )}
+                    
+                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />','Weathermaps', null, null, 'Weathermaps',
+                    
+                            {foreach from=$config.weathermap key=k item=w}
+                    
+                                [ '<img src="{genUrl}/images/joomla-admin/menu/rack.png" />',
+                                    '{$w.menu}', '{genUrl controller="dashboard" action="weathermap" id=$k}', null, '{$i.name}'
+                                ],
+                            {/foreach}
+                    
+                        ],
+                              
+                    {/if}
+                          
+                          
+	                {if $identity.user.privs eq 3}
                         ['<img src="{genUrl}/images/joomla-admin/menu/system-users.png" />', 'Last Logins',  '{genUrl controller="user" action="last"}',
                             null, 'Last Logins'   ],
-                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />','Overall Peering Statistics',  '{genUrl controller="dashboard" action="traffic-stats"}',
-                            null, 'Overall Peerings Statistics'   ],
                         ['<img src="{genUrl}/images/joomla-admin/menu/users.png" />','Member Statistics - Aggregate',  '{genUrl controller="customer" action="statistics-overview"}',
                             null, 'Member Statistics - Aggregate'   ],
                         ['<img src="{genUrl}/images/joomla-admin/menu/users.png" />','Member Statistics - By LAN', null, null, 'Member Statistics - By LAN',
@@ -216,27 +237,16 @@
                         ],
                         ['<img src="{genUrl}/images/joomla-admin/menu/users.png" />','List Members',  '{genUrl controller="customer" action="statistics-list"}',
                              null, 'List Members'   ],
-                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Trunk Graphs',  '{genUrl controller="dashboard" action="trunk-graphs"}',
-                             null, 'Trunk Graphs'   ],
-                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Switch Aggregate Graphs',  '{genUrl controller="dashboard" action="switch-graphs"}',
-                              null, 'Switch Aggregate Graphs'   ],
                         ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'League Table',  '{genUrl controller="customer" action="league-table"}',
                             null, 'League Table'   ],
                         ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', '95th Percentiles', '{genUrl controller="customer" action="ninety-fifth"}',
                              null, '95th Percentiles'   ]
-                    ],
-                {elseif $identity.user.privs eq 1 and $customer->isFullMember()}
-                    [null,'Statistics','{genUrl controller="dashboard" action="statistics"}',null,'Statistics',
-                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />','Overall Peering Statistics',  '{genUrl controller="dashboard" action="traffic-stats"}',
-                            null, 'Overall Peerings Statistics'   ],
+                        
+                    {elseif $identity.user.privs eq 1 and $customer->isFullMember()}
                         ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'My Statistics', '{genUrl controller="dashboard" action="statistics"}',
                             null, 'My Statistics'   ],
-                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Trunk Graphs',  '{genUrl controller="dashboard" action="trunk-graphs"}',
-                            null, 'Trunk Graphs'   ],
-                        ['<img src="{genUrl}/images/joomla-admin/menu/rack.png" />', 'Switch Aggregate Graphs',  '{genUrl controller="dashboard" action="switch-graphs"}',
-                            null, 'Switch Aggregate Graphs'   ]
+                    {/if}
                     ],
-                {/if}
                 _cmSplit,
                 {if $identity.user.privs eq 1}
                     [null, 'Support','{genUrl controller="dashboard" action="static" page="support"}',null,'Support'],
