@@ -1,4 +1,4 @@
-{tmplinclude file="header-full-width.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header-full-width.tpl" pageTitle="IXP Manager :: Member Dashboard" header_full_inc_menu=1}
 
 <div class="yui-g" style="width: 100%">
 
