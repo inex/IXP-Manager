@@ -205,14 +205,12 @@ menu.staff_links.ipplan.link = "https://www.example.com/ipplan/"
 weathermap.1.name = "Weathermap for Peering LAN 1"
 weathermap.1.menu = "Weathermap - LAN 1"
 weathermap.1.url  = "http://www.example.com/weathermap-lan1-plain.html"
-weathermap.1.width  = 800
-weathermap.1.height = 620
+weathermap.1.height = 1200
 
 weathermap.2.name = "Weathermap for Peering LAN 2"
 weathermap.2.menu = "Weathermap - LAN 2"
 weathermap.2.url  = "http://www.example.com/weathermap-lan2-plain.html"
-weathermap.2.width  = 800
-weathermap.2.height = 620
+weathermap.2.height = 1200
 
 
 
