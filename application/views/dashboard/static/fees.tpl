@@ -60,7 +60,7 @@ port charges.
 
 <tr>
     <td>10Mbit/s port</td>
-    <td>Waived for 2011 (prev. &euro;3,000 p.a.)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Waived for 2012&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>n/a</td>
     <td>n/a</td>
     <td>per annum</td>
@@ -68,25 +68,25 @@ port charges.
 
 <tr>
     <td>100Mbit/s port</td>
-    <td>&euro;4,500</td>
-    <td>Free&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>&euro;3,000</td>
+    <td>&euro;2,500</td>
+    <td>Free (on LAN2)&nbsp;</td>
+    <td>&euro;1,666</td>
     <td>per annum</td>
 </tr>
 
 <tr>
     <td>1Gbit/s port</td>
-    <td>&euro;6,600</td>
-    <td>&euro;4,400</td>
-    <td>&euro;4,400</td>
+    <td>&euro;6,000 (inc. free 100Mb on LAN2)</td>
+    <td>&euro;4,000</td>
+    <td>&euro;4,000</td>
     <td>per annum</td>
 </tr>
 
 <tr>
     <td>10Gbit/s port</td>
-    <td>&euro;18,000</td>
-    <td>&euro;12,000</td>
-    <td>&euro;12,000</td>
+    <td>&euro;16,500</td>
+    <td>&euro;27,500</td>
+    <td>&euro;11,000</td>
     <td>per annum</td>
 </tr>
 
@@ -119,7 +119,7 @@ port charges.
 </tr>
 
 <tr>
-    <td>Installation fee for long-haul (ZX) ten gigabit optical ethernet link</td>
+    <td>Installation fee for long-haul (ER) ten gigabit optical ethernet link</td>
     <td>&euro;4,500 once off</td>
 </tr>
 
@@ -142,8 +142,8 @@ port charges.
     <li> Free second 100Mbps port only applicable to connections to the secondary peering LAN. </li>
     <li> Private Interconnections may only be installed between INEX members. Each party is liable to the charge noted in the table above. </li>
     <li> Port and private interconnect charges are not applicable to Associate Members, as associate members have no connectivity entitlements. </li>
-    <li> There is no port connection charge, except for ZX gigabit and ten gigabit links </li>
-    <li> VAT is charged on invoices to Irish based companies at the prevailing rate at the time of invoice (from January 2010: 21%).
+    <li> There is no port connection charge, except for long haul links </li>
+    <li> VAT is charged on invoices to Irish based companies at the prevailing rate at the time of invoice (from January 2012: 23%).
 </li>
 
 </div>
