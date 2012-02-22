@@ -61,6 +61,7 @@ if( in_array( $whatToCompress, array( 'all', 'js' ) ) )
 
     $numFiles = sizeof( $files );
     $count = 0;
+    $jshdr = '';
 
     foreach( $files as $oneFileName )
     {
@@ -71,6 +72,8 @@ if( in_array( $whatToCompress, array( 'all', 'js' ) ) )
         exec(   "java -jar " . APPLICATION_PATH . "/../bin/compiler.jar --compilation_level WHITESPACE_ONLY --warning_level QUIET" .
                 " --js {$oneFileName} --js_output_file " . APPLICATION_PATH . "/../public/js/min." . basename( $oneFileName )
         );
+        
+        $jshdr .= "    <script type=\"text/javascript\" src=\"{genUrl}/js/" . basename( $oneFileName ) . "\"></script>\n";
     }
 
     $mergedJs = '';
@@ -84,6 +87,8 @@ if( in_array( $whatToCompress, array( 'all', 'js' ) ) )
     else
         file_put_contents( APPLICATION_PATH . "/../public/js/min.bundle.js", $mergedJs );
 
+    file_put_contents( APPLICATION_PATH . "/views/header-js.tpl", $jshdr );
+    
     print " done\n\n";
 }
 
@@ -97,6 +102,7 @@ if( in_array( $whatToCompress, array( 'all', 'css' ) ) )
 
     $numFiles = sizeof( $files );
     $count = 0;
+    $csshdr = '';
 
     foreach( $files as $oneFileName )
     {
@@ -105,6 +111,8 @@ if( in_array( $whatToCompress, array( 'all', 'css' ) ) )
         print "    [{$count}] " . basename( $oneFileName ) . " => min." . basename( $oneFileName ) . "\n";
 
         exec( "java -jar " . APPLICATION_PATH . "/../bin/yuicompressor.jar {$oneFileName} -o " . APPLICATION_PATH . "/../public/css/min." . basename( $oneFileName ) . " -v --charset utf-8" );
+    
+        $csshdr .= "    <link rel=\"stylesheet\" type=\"text/css\" href=\"{genUrl}/css/" . basename( $oneFileName ) . "\" />\n";
     }
 
     $mergedCss = '';
@@ -118,6 +126,8 @@ if( in_array( $whatToCompress, array( 'all', 'css' ) ) )
     else
         file_put_contents( APPLICATION_PATH . '/../public/css/min.bundle.css', $mergedCss );
 
+    file_put_contents( APPLICATION_PATH . "/views/header-css.tpl", $csshdr );
+    
     print ' done\n\n';
 }
 

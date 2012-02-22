@@ -64,7 +64,7 @@ class INEX_Resource_View extends Zend_Application_Resource_ResourceAbstract
             // Get session configuration options from the application.ini file
             $options = $this->getOptions();
 
-            require_once( 'Smarty.class.php' );
+            require_once( APPLICATION_PATH . '/../library/Smarty/Smarty.class.php' );
 
             // Initialize view
             $view = new INEX_View_Smarty( 

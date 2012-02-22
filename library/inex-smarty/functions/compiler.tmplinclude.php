@@ -20,18 +20,17 @@
     2   {include_if_exists file="foo.tpl" else="default.tpl"}
  * -------------------------------------------------------------
  */
-function smarty_compiler_tmplinclude( $tag_attrs, &$compiler )
+function smarty_compiler_tmplinclude( $params, $smarty )
 {
-    $_params = $compiler->_parse_attrs( $tag_attrs );
     $arg_list = array();
     
-    if( !isset( $_params['file'] ) ) 
+    if( !isset( $params['file'] ) ) 
     {
         $compiler->_syntax_error( "missing 'file' attribute in include_exists tag", E_USER_ERROR, __FILE__, __LINE__ );
         return;
     }
 
-    foreach( $_params as $arg_name => $arg_value ) 
+    foreach( $params as $arg_name => $arg_value ) 
     {
         if( $arg_name == 'file' ) 
         {
@@ -53,8 +52,8 @@ function smarty_compiler_tmplinclude( $tag_attrs, &$compiler )
     }
 
     $output = <<<MY_CODE
-if( isset( \$this->_tpl_vars['___SKIN'] ) )
-    \$skin = \$this->_tpl_vars['___SKIN'];
+if( isset( \$smarty->_tpl_vars['___SKIN'] ) )
+    \$skin = \$smarty->_tpl_vars['___SKIN'];
 else 
     \$skin = false;
 
@@ -62,11 +61,11 @@ else
     
 if( \$skin )
 {
-    if( \$this->template_exists( 'skins/' . \$skin . '/' . {$include_file} ) )
+    if( \$smarty->template_exists( 'skins/' . \$skin . '/' . {$include_file} ) )
         \$_include_file = 'skins/' . \$skin . '/' . {$include_file};
 }
 
-if( \$this->template_exists( \$_include_file ) ) {
+if( \$smarty->template_exists( \$_include_file ) ) {
 
 MY_CODE;
         
@@ -74,19 +73,19 @@ MY_CODE;
         $output .= "ob_start();\n";
     }
 
-    $output .= "\$_smarty_tpl_vars = \$this->_tpl_vars;\n";
+    $output .= "\$_smarty_tpl_vars = \$smarty->_tpl_vars;\n";
 
-    $params = "array('smarty_include_tpl_file' => \$_include_file, 'smarty_include_vars' => array(".implode(',', (array)$arg_list)."))";
+    $ps = "array('smarty_include_tpl_file' => \$_include_file, 'smarty_include_vars' => array(".implode(',', (array)$arg_list)."))";
 
-    $output .= "\$this->_smarty_include($params);\n" .
-        "\$this->_tpl_vars = \$_smarty_tpl_vars;\n" .
+    $output .= "\$smarty->_smarty_include($ps);\n" .
+        "\$smarty->_tpl_vars = \$_smarty_tpl_vars;\n" .
         "unset(\$_smarty_tpl_vars);\n";
 
     if(isset($assign_var)) {
-        $output .= "\$this->assign(" . $assign_var . ", ob_get_contents()); ob_end_clean();\n";
+        $output .= "\$smarty->assign(" . $assign_var . ", ob_get_contents()); ob_end_clean();\n";
     }
 
     $output .= "unset( \$_include_file );\n}\n";
 
-    return $output;
+    return "<?php\n$output\n?>";
 }

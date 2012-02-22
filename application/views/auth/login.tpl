@@ -1,32 +1,55 @@
-{tmplinclude file="auth/header.tpl"}
+{include file="header.tpl"}
 
-{tmplinclude file="message.tpl"}
+<div class="page-content">
 
-<div class="login">
-    <div class="login-form">
-        <h1>Login</h1>
-        <form action="{genUrl controller="auth" action="process"}" method="post" name="loginForm" id="loginForm">
-        <div class="form-block">
-            <div class="inputlabel">Username</div>
-
-            <div><input name="loginusername" autocomplete="off" type="text" class="inputbox" size="15" value="{if isset($username)}{$username}{/if}" /></div>
-            <div class="inputlabel">Password</div>
-            <div><input name="loginpassword" autocomplete="off" type="password" class="inputbox" size="15" /></div>
-            <div align="left">
-                <input type="submit" name="submit" class="button" value="Login" />
-                <a href="{genUrl controller="auth" action="forgotten-password"}">Forgotten Password?</a>
-            </div>
-        </div>
-        </form>
+    <div class="page-header">
+        <h1>Login to IXP Manager</h1>
     </div>
-    <div class="login-text">
 
-        <div class="ctr"><img src="{genUrl}/images/joomla-admin/security.png" width="64" height="64" alt="security" /></div>
-        <p><strong>Welcome to INEX's IXP Manager!</strong></p>
-        <p>For help please contact <br />{mailto address='operations@inex.ie' encode='javascript' note='the operations team'}.</p>
+
+{include file="message.tpl"}
+
+<div class="row">
+
+    <div class="span6 offset4">
+        <img src="{genUrl}{$config.identity.ixp.biglogo}" />
     </div>
-    <div class="clr"></div>
+    
 </div>
 
+<div class="row">
 
-{tmplinclude file="footer.tpl"}
+    <div class="span6 offset3">
+        <form class="form-horizontal" action="{genUrl controller="auth" action="process"}" method="post" name="loginForm" id="loginForm">
+
+        <fieldset class="control-group" id="div-form-username">
+            <label for="username" class="control-label">Username</label>
+            <div id="div-controls-username" class="controls">
+                <input id="username" name="loginusername" type="text" value="{if isset($username)}{$username}{/if}" />
+            </div>            
+        </fieldset>
+
+        <fieldset class="control-group" id="div-form-password">
+            <label for="password" class="control-label">Password</label>
+            <div id="div-controls-password" class="controls">
+                <input id="password" name="loginpassword" type="text" value="" />
+            </div>            
+        </fieldset>
+
+        <fieldset class="form-actions">
+            <input type="submit" name="submit" class="btn btn-success" value="Login" />
+            <a class="btn" href="{genUrl controller="auth" action="forgotten-password"}">Forgotten Password?</a>
+            <a class="btn" href="{genUrl controller="auth" action="forgotten-username"}">Forgotten Username?</a>
+        </fieldset>
+
+        </form>
+    </div>
+
+</div>
+
+<p align="center">
+    For help please contact {mailto address=$config.identity.email encode='javascript' text=$config.identity.name}.
+</p>
+
+
+{include file="footer.tpl"}

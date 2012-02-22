@@ -17,16 +17,15 @@
     2   {include_if_exists file="foo.tpl" else="default.tpl"}
  * -------------------------------------------------------------
  */
-function smarty_compiler_include_if_exists( $tag_attrs, &$compiler )
+function smarty_compiler_include_if_exists( $params, $smarty )
 {
-    $_params = $compiler->_parse_attrs($tag_attrs);
     $arg_list = array();
-    if(!isset($_params['file'])) {
+    if(!isset($params['file'])) {
         $compiler->_syntax_error("missing 'file' attribute in include_exists tag", E_USER_ERROR, __FILE__, __LINE__);
         return;
     }
 
-    foreach($_params as $arg_name => $arg_value) {
+    foreach($params as $arg_name => $arg_value) {
         if($arg_name == 'file') {
             $include_file = $arg_value;
             continue;
@@ -44,28 +43,28 @@ function smarty_compiler_include_if_exists( $tag_attrs, &$compiler )
     }
 
     if($include_file_else) {
-        $output = "\n\$_include_file = (\$this->template_exists({$include_file})) ? {$include_file} : {$include_file_else};\n";
+        $output = "\n\$_include_file = (\$smarty->template_exists({$include_file})) ? {$include_file} : {$include_file_else};\n";
     } else {
-        $output = "\nif(\$this->template_exists({$include_file})) {\n";
+        $output = "\nif(\$smarty->template_exists({$include_file})) {\n";
     }
 
     if(isset($assign_var)) {
         $output .= "ob_start();\n";
     }
 
-    $output .= "\$_smarty_tpl_vars = \$this->_tpl_vars;\n";
+    $output .= "\$_smarty_tpl_vars = \$smarty->_tpl_vars;\n";
 
     if($include_file_else) {
-        $params = "array('smarty_include_tpl_file' => \$_include_file, 'smarty_include_vars' => array(".implode(',', (array)$arg_list)."))";
+        $ps = "array('smarty_include_tpl_file' => \$_include_file, 'smarty_include_vars' => array(".implode(',', (array)$arg_list)."))";
     } else {
-        $params = "array('smarty_include_tpl_file' => {$include_file}, 'smarty_include_vars' => array(".implode(',', (array)$arg_list)."))";
+        $ps = "array('smarty_include_tpl_file' => {$include_file}, 'smarty_include_vars' => array(".implode(',', (array)$arg_list)."))";
     }
-    $output .= "\$this->_smarty_include($params);\n" .
-        "\$this->_tpl_vars = \$_smarty_tpl_vars;\n" .
+    $output .= "\$smarty->_smarty_include($s);\n" .
+        "\$smarty->_tpl_vars = \$_smarty_tpl_vars;\n" .
         "unset(\$_smarty_tpl_vars);\n";
 
     if(isset($assign_var)) {
-        $output .= "\$this->assign(" . $assign_var . ", ob_get_contents()); ob_end_clean();\n";
+        $output .= "\$smarty->assign(" . $assign_var . ", ob_get_contents()); ob_end_clean();\n";
     }
 
     if($include_file_else) {
@@ -74,5 +73,5 @@ function smarty_compiler_include_if_exists( $tag_attrs, &$compiler )
         $output .= "}\n";
     }
 
-    return $output;
+    return "<?php $output ?>";
 }

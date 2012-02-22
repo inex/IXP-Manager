@@ -4,21 +4,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -133,7 +133,8 @@ class INEX_Controller_Action extends Zend_Controller_Action
 
             $this->auth = $this->_bootstrap->getResource( 'auth' );
             
-            if( $this->auth->hasIdentity() ) {
+            if( $this->auth->hasIdentity() )
+            {
                 $this->identity = $this->auth->getIdentity();
                 $this->user = Doctrine::getTable( 'User' )->find( $this->identity[ 'user' ][ 'id' ] );
                 $this->customer = Doctrine::getTable( 'Cust' )->find( $this->identity[ 'user' ][ 'custid' ] );
@@ -296,4 +297,3 @@ class INEX_Controller_Action extends Zend_Controller_Action
     }
 }
 
-?>
