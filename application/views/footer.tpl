@@ -1,5 +1,5 @@
 
-{if $hasIdentity and $user.privs eq 3}
+{if isset( $hasIdentity ) and $hasIdentity and $user.privs eq 3}
 
         </div><!--/span-->
     </div><!--/row-->
@@ -49,7 +49,7 @@
         &nbsp;&nbsp;Are you?
     </p>
 
-    {if $smarty.const.APPLICATION_ENV != 'production' && !$hasIdentity}
+    {if $smarty.const.APPLICATION_ENV != 'production' and ( not isset( $hasIdentity ) or !$hasIdentity)}
         <p>
             <strong>
                 THE IXP IS RUNNING IN NON-PRODUCTION MODE AND INFORMATION CAN BE LEAKED VIA DEBUGGING

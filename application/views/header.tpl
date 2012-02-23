@@ -3,9 +3,9 @@
 
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
-        <div class="{if $hasIdentity and $identity.user.privs eq 3}container-fluid{else}container{/if}">
+        <div class="{if isset( $hasIdentity ) and $hasIdentity and $identity.user.privs eq 3}container-fluid{else}container{/if}">
             <a class="brand" href="{genUrl}">IXP Manager</a>
-            {if $hasIdentity}
+            {if isset( $hasIdentity ) and $hasIdentity}
                 <div class="nav-collapse">
                      <ul class="nav">
                         <li>
@@ -146,7 +146,7 @@
     </div>
 </div>
     
-{if $hasIdentity and $user.privs eq 3}
+{if isset( $hasIdentity ) and $hasIdentity and $user.privs eq 3}
     
     <div class="container-fluid">
 

@@ -44,8 +44,9 @@ class AuthController extends INEX_Controller_Action
 
     public function logoutAction()
     {
-        $this->view->clear_all_assign();
-
+        $this->view->clearVars();
+        $this->view->config = $this->config;
+       
         $auth = Zend_Auth::getInstance();
 
         if( $auth->hasIdentity() )
