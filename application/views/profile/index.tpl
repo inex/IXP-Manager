@@ -1,21 +1,9 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
+{include file="header.tpl"}
 
-<div class="yui-g" style="height: 600px">
+<h2>User Profile</h2>
 
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="profile">
-        User Profile
-    </th>
-</tr>
-</table>
-
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id="ajaxMessage"></div>
-
 
 <p>
 This is your INEX user profile where you can change you contact preferences and password.
@@ -29,7 +17,4 @@ in the format: <code>353861234567</code>.
 
 {$passwordForm}
 
-</div>
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

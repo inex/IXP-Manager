@@ -101,12 +101,46 @@
                                 {/if}
                             </ul>
                         </li>
-                          
+                        <li>
+                            <a href="{genUrl controller="dashboard" action="static" page="support"}">Support</a>
+                        </li>
+                        {if $user.privs eq 3 and isset( $config.menu.staff_links )}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Staff Links<b class="caret"></b></a>
+                                
+                                <ul class="dropdown-menu">
+                        
+                                    {foreach from=$config.menu.staff_links item=i}
+                                        <li>
+                                            <a href="{$i.link}">{$i.name}</a>
+                                        </li>
+                                    {/foreach}
+                                    
+                                </ul>
+                            </li>
+                        {/if}
+                        <li>
+                            <a href="{genUrl controller="profile"}">Profile</a>
+                        </li>
+                        
+                        {if $user.privs eq 3}
+                            <li>
+                                <a href="{genUrl controller="index" action="help"}">Help</a>
+                            </li>
+                        {/if}
+                        
+                        <li>
+                            <a href="{genUrl controller="index" action="about"}">About</a>
+                        </li>
                     </ul>
-                     <ul class="nav pull-right">
-                        <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>
-                     </ul>
-                 </div><!--/.nav-collapse -->
+                    <ul class="nav pull-right">
+                        {if isset( $session->switched_user_from ) and $session->switched_user_from}
+                            <li><a href="{genUrl controller="auth" action="switch-back"}">Switch Back</a></li>
+                        {else}
+                            <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>
+                        {/if}
+                    </ul>
+                </div><!--/.nav-collapse -->
             {/if}
         </div>
     </div>
