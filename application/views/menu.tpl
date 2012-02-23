@@ -133,7 +133,21 @@
         {* 95th Percentiles {genUrl controller="customer" action="ninety-fifth"} *}
         {* Last Logins      {genUrl controller="user" action="last"} *}
         
+
         
+    <li class="nav-header">IXP Utilities</li>
+        
+        <li {if $controller eq 'utils' and $action eq 'phpinfo'}class="active"{/if}>
+            <a href="{genUrl controller='utils' action='phpinfo'}">PHP Info</a>
+        </li>
+        <li {if $controller eq 'utils' and $action eq 'apcinfolist'}class="active"{/if}>
+            <a href="{genUrl controller='utils' action='apcinfo'}">APC Info</a>
+        </li>
+        <li {if $controller eq 'user' and $action eq 'last'}class="active"{/if}>
+            <a href="{genUrl controller='user' action='last'}">Last Logins</a>
+        </li>
+        
+                
     </ul>
     
 </div><!--/.well -->
