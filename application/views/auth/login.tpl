@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <div class="page-content">
 
@@ -32,7 +32,7 @@
         <fieldset class="control-group" id="div-form-password">
             <label for="password" class="control-label">Password</label>
             <div id="div-controls-password" class="controls">
-                <input id="password" name="loginpassword" type="text" value="" />
+                <input id="password" name="loginpassword" type="password" value="" />
             </div>            
         </fieldset>
 
@@ -52,4 +52,4 @@
 </p>
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

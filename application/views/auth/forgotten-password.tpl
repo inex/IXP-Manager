@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.tpl"}
 
 <div class="page-content">
 
@@ -6,7 +6,7 @@
         <h1>Forgotten Password</h1>
     </div>
 
-{include file="message.tpl"}
+{tmplinclude file="message.tpl"}
 
 <div class="row">
 
@@ -49,4 +49,4 @@
     For help please contact {mailto address=$config.identity.email encode='javascript' text=$config.identity.name}.
 </p>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.tpl"}

@@ -1,25 +1,4 @@
 <?php
-/**
- * TimeTracker / TimeTracker.ie
- *
- * This file is part of Open Solutions' TimeTracker web application.
- *
- * Open Source Solutions Limited T/A Open Solutions,
- *    147 Stepaside Park, Stepaside, Dublin 18, Ireland.
- *
- * Contact: Barry O'Donovan <barry@opensolutions.ie> +353 86 801 7669
- *
- * Copyright (c) 2012 Open Source Solutions Limited <http://www.opensolutions.ie/>
- * All rights reserved.
- *
- * Information in this file is strictly confidential and the property of
- * Open Source Solutions Limited and may not be extracted or distributed,
- * in whole or in part, for any purpose whatsoever, without the express
- * written consent from Open Source Solutions Limited.
- *
- * @copyright  Copyright (c) 2009 Open Source Solutions Limited. (http://www.opensolutions.ie)
- * @author Barry O'Donovan, Open Solutions <barry@opensolutions.ie>
- */
 
 class INEX_View_Smarty extends Zend_View_Abstract
 {
@@ -30,6 +9,12 @@ class INEX_View_Smarty extends Zend_View_Abstract
      */
     protected $_smarty;
 
+    /**
+     * Should we use a custom skin?
+     * @var string
+     */
+    protected $_skin = false;
+    
 
     /**
      * Is being cloned?
@@ -269,7 +254,7 @@ class INEX_View_Smarty extends Zend_View_Abstract
      */
     public function render($name)
     {
-        return $this->_smarty->fetch($name);
+        return $this->_smarty->fetch( $this->resolveTemplate( $name ) );
     }
 
 
@@ -281,20 +266,9 @@ class INEX_View_Smarty extends Zend_View_Abstract
      */
     public function display( $name )
     {
-        return $this->_smarty->display($name);
+        return $this->_smarty->display( $this->resolveTemplate( $name ) );
     }
 
-
-    /**
-     * Checks to see if the named template exists
-     *
-     * @param string $name The template to look for
-     * @return boolean
-     */
-    public function templateExists( $name )
-    {
-        return $this->_smarty->templateExists( $name );
-    }
 
 
     protected function _run()
@@ -322,4 +296,81 @@ class INEX_View_Smarty extends Zend_View_Abstract
         return true;
     }
 
+    public function templateExists( $name )
+    {
+        return $this->_smarty->templateExists( $this->resolveTemplate( $name ) );
+    }
+    
+    /**
+     * Checks to see if the named template exists in the current skin
+     *
+     * @param string $name The template to look for
+     * @return boolean
+     */
+    public function skinTemplateExists( $name )
+    {
+        if( $this->_skin && is_readable( $this->getTemplateDir() . '/skins/' . $this->_skin . '/' . $name ) )
+            return true;
+
+        return $this->templateExists( $name );
+    }
+
+    /**
+     * This function "resolves" a given template name into an appropriate
+     * template file depending on whether we're using skins or not.
+     *
+     * If we're using skins and if a template exists in the skin, then
+     * it'll be used. Otherwise we'll use the default templates.
+     *
+     *
+     * @param string $name The name of the template to use
+     * @return string The resolved template name
+     */
+    protected function resolveTemplate( $name )
+    {
+        // if we're using a skin see if a skin file exists.
+        // if so, use it, otherwise use the default skin files
+        if( $this->_skin && is_readable( $this->getTemplateDir() . '/skins/' . $this->_skin . '/' . $name ) )
+            return 'skins/' . $this->_skin . '/' . $name;
+
+        return $name;
+    }
+    
+    
+    public function getTemplateDir()
+    {
+        $a = $this->_smarty->getTemplateDir();
+        return $a[0];
+    }
+    
+    
+    /**
+     *
+     * Set the skin to use
+     * @param string $s The name of the skin
+     * @throws Exception
+     */
+     public function setSkin( $s )
+     {
+         // does the skin exist?
+         if( is_readable( $this->getTemplateDir() . "/skins/$s" ) )
+         {
+             $this->_skin = $s;
+             return true;
+         }
+             
+         throw new Exception( "Specified skin directory does not exist or is not readable ("
+             . $this->getTemplateDir() . "/skins/$s" . ")"
+         );
+     }
+     
+    /**
+     *
+     * Return the name of the skin in use or false if default.
+     * @return string The name of the skin in use or false if default.
+      */
+    public function getSkin()
+    {
+        return $this->_skin;
+    }
 }
