@@ -74,6 +74,34 @@
                             </ul>
                         </li>
 
+                        
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                {if $user.privs eq 1 and $customer->isFullMember()}
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="statistics"}">My Statistics</a>
+                                    </li>
+                                {/if}
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="traffic-stats"}">Overall Peering Statistics</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="trunk-graphs"}">Trunk Graphs</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="switch-graphs"}">Switch Aggregate Graphs</a>
+                                </li>
+                                {if isset( $config.weathermap )}
+                                    {foreach from=$config.weathermap key=k item=w}
+                                        <li>
+                                            <a href="{genUrl controller="dashboard" action="weathermap" id=$k}">Weathermap - {$w.menu}</a>
+                                        </li>
+                                    {/foreach}
+                                {/if}
+                            </ul>
+                        </li>
+                          
                     </ul>
                      <ul class="nav pull-right">
                         <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>

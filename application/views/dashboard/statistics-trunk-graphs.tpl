@@ -1,19 +1,8 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+<h2>Trunk Graphs :: {$graphs.$graph}</h2>
 
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Statistics">
-        Trunk Graphs :: {$graphs.$graph}
-    </th>
-</tr>
-</table>
-
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
 <p>
@@ -36,7 +25,7 @@
 
 {foreach from=$periods key=pname item=pvalue}
 
-<h2>{$pname} Graph</h2>
+<h3>{$pname} Graph</h3>
 
 <p>
     {genMrtgGraphBox
@@ -50,9 +39,5 @@
 
 {/foreach}
 
-
-</div>
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
 

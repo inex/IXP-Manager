@@ -7,7 +7,7 @@
 
     <li class="nav-header">IXP Customer Actions</li>
     
-        <li {if $controller eq 'customer'}class="active"{/if}>
+        <li {if $controller eq 'customer' and ( $action eq 'list' or $action eq 'add' or $action eq 'edit' )}class="active"{/if}>
             <a href="{genUrl controller='customer' action='list'}">Customers</a>
         </li>
         <li>
@@ -116,6 +116,24 @@
             <a href="{genUrl controller='vlan' action='list'}">VLANs</a>
         </li>
     
+        
+              
+    <li class="nav-header">IXP Statistics</li>
+        
+        <li {if $controller eq 'customer' and $action eq 'statistics-overview'}class="active"{/if}>
+            <a href="{genUrl controller='customer' action='statistics-overview'}">Member Statistics - Graphs</a>
+        </li>
+        <li {if $controller eq 'customer' and $action eq 'statistics-list'}class="active"{/if}>
+            <a href="{genUrl controller='customer' action='statistics-list'}">Member Statistics - List</a>
+        </li>
+        <li {if $controller eq 'customer' and $action eq 'league-table'}class="active"{/if}>
+            <a href="{genUrl controller='customer' action='league-table'}">League Table</a>
+        </li>
+                
+        {* 95th Percentiles {genUrl controller="customer" action="ninety-fifth"} *}
+        {* Last Logins      {genUrl controller="user" action="last"} *}
+        
+        
     </ul>
     
 </div><!--/.well -->
