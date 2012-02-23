@@ -1,21 +1,15 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
+{include file="header.tpl"}
 
-<div class="yui-g" style="height: 600px">
+<div class="page-content">
 
-<table class="adminheading" border="0">
-<tr>
-    <th class="User">
-        User Admin for {$customer.name}
-    </th>
-</tr>
-</table>
+    <div class="page-header">
+        <h1>User Admin for {$customer.name}</h1>
+    </div>
 
-
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id="ajaxMessage"></div>
 
-<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
+<table id="ixpDataTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0" style="display: none;">
 
 <thead>
 <tr>
@@ -60,9 +54,9 @@
 </table>
 
 <p>
-    <form action="{genUrl controller='cust-admin' action='add-user'}" method="post">
-        <input type="submit" name="submit" class="button" value="Add New User" />
-    </form>
+    <a class="btn btn-primary" href="{genUrl controller='cust-admin' action='add-user'}">
+        Add New User
+    </a>
 </p>
 
 <div id="instructions" title="IXP Manager - Instructions" style="display: hide;">
@@ -70,8 +64,8 @@
 		Welcome to INEX's IXP Manager!
 	</p>
 	<p>
-		This account is a customer admin account and it can only be 
-		used to create sub users. Those sub users can then access the 
+		This account is a customer admin account and it can only be
+		used to create sub users. Those sub users can then access the
 		full functionality of this system.
 	</p>
 </div>
@@ -83,9 +77,9 @@ $(document).ready(function() {ldelim}
 
 	oTable = $('#ixpDataTable').dataTable({ldelim}
 
+        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+     	"sPaginationType": "bootstrap",
         "aaSorting": [[ 0, 'asc' ]],
-		"bJQueryUI": true,
-		"sPaginationType": "full_numbers",
 		"iDisplayLength": 25,
 	{rdelim}).show();
 
@@ -103,6 +97,4 @@ $(document).ready(function() {ldelim}
 </script>
 
 
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
