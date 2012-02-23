@@ -1,21 +1,17 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Meeting Instructions
+    </li>
+</ul>
 
-<div id="content">
+{include file="message.tpl"}
 
-<table class="adminheading" border="0">
-<tr>
-    <th class="Meeting">
-        Instructions for Adding Meetings
-    </th>
-</tr>
-</table>
-
-<p>
-<br />
-To add new meetings, you must do two things:
-</p>
+<h4>To add new meetings, you must do two things:</h4>
 
 <ul>
     <li> add a new meeting via the menu <em>Admin->Meetings->Add / Edit</em>; and then </li>
@@ -35,28 +31,28 @@ entires required in the <em>Add New</em> meeting form to show how and where they
 </p>
 
 <div class="meeting" style="padding-left: 50px; padding-right: 150px;">
-
-<div class="meeting title">
-    <h1>[Title] &ndash; [Date]</h1>
-    <h4>In [Venue] at [Time]</h4>
-</div>
-
-<p>[Preamble]</p>
-
-<p>
-<em>List of Presentations</em>
-</p>
-
-<p>
-Other meeting content also includes:
-</p>
-
-<p>
-<em>List of Other Presentations</em>
-</p>
-
-<p>[Postamble]</p>
-
+    
+    <div class="meeting title">
+        <h1>[Title] &ndash; [Date]</h1>
+        <h4>In [Venue] at [Time]</h4>
+    </div>
+    
+    <p>[Preamble]</p>
+    
+    <p>
+    <em>List of Presentations</em>
+    </p>
+    
+    <p>
+    Other meeting content also includes:
+    </p>
+    
+    <p>
+    <em>List of Other Presentations</em>
+    </p>
+    
+    <p>[Postamble]</p>
+    
 </div>
 
 
@@ -83,35 +79,35 @@ from the form.
 
 <div class="meetingitem" style="padding-left: 50px; padding-right: 150px;">
 
-<dl>
-<dt>
-    <div class="meetingitem title">
-
-        <div class="meetingitem title icons">
-            <a href="#">
-                <img src="{genUrl}/images/22x22/presentation.png" width="22" height="22"
-                            alt="[PRESENTATION]" class="meetingitem title icons" />
-            </a>
-            <a href="#">
-                <img src="{genUrl}/images/22x22/video.png" width="22" height="22"
-                        alt="[VIDEO]" class="meetingitem title icons" />
-            </a>
-        </div>
-
-        <h1>
-            [Title] &ndash; [Name (with link to email address if provided]
-        </h1>
-
-        <h4>
-            [Role], [Company with link to site of URL provided]
-        </h4>
-    </div>
-</dt>
-<dd>
-[Summary, if provided]
-</dd>
-
-</dl>
+    <dl>
+        <dt>
+            <div class="meetingitem title">
+        
+                <div class="meetingitem title icons">
+                    <a href="#">
+                        <img src="{genUrl}/images/22x22/presentation.png" width="22" height="22"
+                                    alt="[PRESENTATION]" class="meetingitem title icons" />
+                    </a>
+                    <a href="#">
+                        <img src="{genUrl}/images/22x22/video.png" width="22" height="22"
+                                alt="[VIDEO]" class="meetingitem title icons" />
+                    </a>
+                </div>
+        
+                <h1>
+                    [Title] &ndash; [Name (with link to email address if provided]
+                </h1>
+        
+                <h4>
+                    [Role], [Company with link to site of URL provided]
+                </h4>
+            </div>
+        </dt>
+        <dd>
+            [Summary, if provided]
+        </dd>
+    
+    </dl>
 
 </div>
 
@@ -160,12 +156,4 @@ right click on the meeting you wish to compose a mail about and select <em>Compo
 
 
 
-
-
-
-
-</div>
-
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

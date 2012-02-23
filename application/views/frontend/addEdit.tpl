@@ -16,6 +16,9 @@
     </li>
 </ul>
 
+{if isset( $hasPreContent ) and $hasPreContent}
+    {include file=$hasPreContent}
+{/if}
 
 {$form}
 

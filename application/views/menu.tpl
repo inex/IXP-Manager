@@ -40,8 +40,22 @@
         <li {if $controller eq 'cust-kit'}class="active"{/if}>
             <a href="{genUrl controller='cust-kit' action='list'}">Colocated Equipment</a>
         </li>
-        <li {if $controller eq 'meeting'}class="active"{/if}>
+        
+        <li {if $controller eq 'meeting' and $controller neq 'meeting-item' and $action neq 'read'}class="active"{/if}>
             <a href="{genUrl controller='meeting' action='list'}">Meetings</a>
+            
+            {if $controller eq 'meeting' or $controller eq 'meeting-item'}
+                <ul class="nav nav-list">
+                    <li {if $controller eq 'meeting-item'}class="active"{/if}>
+                        <a href="{genUrl controller='meeting-item' action='list'}">Presentations</a>
+                    </li>
+                    <li {if $controller eq 'meeting' and $action eq 'read'}class="active"{/if}>
+                        <a href="{genUrl controller='meeting' action='read'}">Member View</a>
+                    </li>
+                    <a href="{genUrl controller='admin' action='static' page='instructions-meetings'}">Instructions</a>
+                </ul>
+            {/if}
+            
         </li>
         
               
