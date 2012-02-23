@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -62,44 +62,48 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
 	        ),
 
 	        'member' => array(
-	            'type' => 'aHasOne', 
-	            'controller' => 'customer', 
-	            'ifield' => 'memberid', 
-	            'label' => 'Customer', 
+	            'type' => 'aHasOne',
+	            'controller' => 'customer',
+	            'ifield' => 'memberid',
+	            'label' => 'Customer',
+	            'model' => 'Cust',
 	            'sortable' => true
 	        ),
 	        
 	        'shortname' => array(
-	            'type' => 'aHasOne', 
-	            'controller' => 'customer', 
-	            'ifield' => 'memberid', 
-	            'label' => 'Shortname', 
+	            'type' => 'aHasOne',
+	            'controller' => 'customer',
+	            'ifield' => 'memberid',
+	            'label' => 'Shortname',
+	            'model' => 'Cust',
 	            'sortable' => true
 	        ),
 
 	        'location' => array(
-	            'type' => 'aHasOne', 
-	            'controller' => 'location', 
-	            'ifield' => 'locationid', 
-	            'label' => 'Location', 
+	            'type' => 'aHasOne',
+	            'controller' => 'location',
+	            'ifield' => 'locationid',
+	            'label' => 'Location',
+	            'model' => 'Location',
 	            'sortable' => true
 	        ),
 	        
 	        'switch' => array(
-	            'type' => 'aHasOne', 
-	            'controller' => 'switch', 
-	            'ifield' => 'switchid', 
-	            'label' => 'Switch', 
+	            'type' => 'aHasOne',
+	            'controller' => 'switch',
+	            'ifield' => 'switchid',
+	            'label' => 'Switch',
+	            'model' => 'SwitchTable',
 	            'sortable' => true
 	        ),
 	        
 	        'port' => array(
-	            'label' => 'Port', 
+	            'label' => 'Port',
 	            'sortable' => true
 	        ),
 	        
 	        'speed' => array(
-	            'label' => 'Speed', 
+	            'label' => 'Speed',
 	            'sortable' => true
 	        )
         );
@@ -221,7 +225,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     
     /**
      * Hook function to set a customer return.
-     * 
+     *
      * We want to display the virtual interface which was added / edited.
 	 *
      * @param INEX_Form_SwitchPort $f

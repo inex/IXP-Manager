@@ -62,11 +62,13 @@
                     {assign var='field' value=$frontend.columns.$col.ifield}
                     <td>
                         <span id="viewPanel-{$frontend.columns.$col.controller}-{$row.$field}-{$idcount}" class="blueLink">
-                            <script>
-                        		$( '#viewPanel-{$frontend.columns.$col.controller}-{$row.$field}-{$idcount}' ).click( function() {ldelim}
-									ixpViewPanel( '{$frontend.columns.$col.label}', '{$frontend.columns.$col.controller}', {$row.$field} );
-								{rdelim} );
-                            </script>
+                            {if $row.$field}
+	                            <script>
+	                        		$( '#viewPanel-{$frontend.columns.$col.controller}-{$row.$field}-{$idcount}' ).click( function() {ldelim}
+										ixpViewPanel( '{$frontend.columns.$col.label}', '{$frontend.columns.$col.controller}', {$row.$field} );
+									{rdelim} );
+	                            </script>
+                            {/if}
                             {$row.$col}
                         </span>
                     </td>
@@ -111,7 +113,7 @@
 {/if}
 
 
-{if $hasCustomContextMenu}
+{if isset( $hasCustomContextMenu ) and $hasCustomContextMenu}
     {include file=$hasCustomContextMenu|cat:".html.tpl"}
 {else}
     <ul id="myMenu" class="contextMenu">
@@ -191,7 +193,7 @@ $(document).ready(function() {
 	
 	$( oTable.fnGetNodes() ).each( function( index, element ){
 		{/literal}
-		{if $hasCustomContextMenu}
+		{if isset( $hasCustomContextMenu ) and $hasCustomContextMenu}
 	    	{include file=$hasCustomContextMenu|cat:".js.tpl"}
 		{else}
 			{literal}

@@ -5,16 +5,16 @@
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
     <li>
-        <a href="{genUrl contoller="customer" action="list"}">Customers</a> <span class="divider">/</span>
+        <a href="{genUrl controller=$controller action="list"}">{$frontend.pageTitle}</a> <span class="divider">/</span>
     </li>
     <li class="active">
 		{if $isEdit}
 		    Edit
 		{else}
-		    Add New 
+		    Add New
 		{/if}
     </li>
-</ul>       
+</ul>
 
 
 {$form}
