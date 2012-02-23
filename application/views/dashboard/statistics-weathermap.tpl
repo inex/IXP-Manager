@@ -1,6 +1,21 @@
-{include file="header.tpl" mode='fluid'}
+{include file="header.tpl"}
 
-<h2>{$weathermap.name}</h2>
+{if $user.privs eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            {$weathermap.name}
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+    
+        <div class="page-header">
+            <h1>{$weathermap.name}</h1>
+        </div>
+{/if}
 
 {include file="message.tpl"}
 <div id='ajaxMessage'></div>

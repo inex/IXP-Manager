@@ -14,7 +14,7 @@
 
 {if $user.privs eq 1}
     <div id="overviewMessage">
-        {if $rsSessionsEnabled}
+        {if isset( $rsSessionsEnabled ) and $rsSessionsEnabled}
             <div class="alert alert-success">
                 You are now enabled to use INEX's robust route server cluster.<br />
                 <br />
@@ -24,7 +24,7 @@
                 <br />
                 Please see below for configuration details.
             </div>
-        {elseif not $rsEnabled}
+        {elseif not isset( $rsEnabled ) or not $rsEnabled}
             <div class="alert alert-error">
     	        You are not using INEX's robust route server cluster. Please <a href="{genUrl controller="dashboard" action="enable-route-server"}">click here to have our provisioning system create sessions</a> for you.
     	    </div>
