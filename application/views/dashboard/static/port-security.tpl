@@ -1,6 +1,15 @@
 {include file="header.tpl"}
 
-<h2>INEX Port Security Policies</h2>
+{if $user.privs eq 3}
+    <h2>INEX Port Security Policies</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>INEX Port Security Policies</h1>
+        </div>
+{/if}
+
+
 
 <p>For the purposes of ensuring layer 2 stability, INEX implements three
 port security policies.</p>

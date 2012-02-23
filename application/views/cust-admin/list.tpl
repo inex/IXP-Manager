@@ -9,6 +9,12 @@
 {include file="message.tpl"}
 <div id="ajaxMessage"></div>
 
+<div class="alert alert-block alert-info">
+    <h4 class="alert-heading">Remember! The customer admin account is only intended for creating users for your organisation.</h4>
+    For full IXP Manager functionality, graphs and member information, log in under one of your user accounts.
+</div>
+
+
 <table id="ixpDataTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0" style="display: none;">
 
 <thead>

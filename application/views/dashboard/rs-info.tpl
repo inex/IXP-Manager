@@ -1,6 +1,13 @@
 {include file="header.tpl"}
 
-<h2>INEX Route Server Details</h2>
+{if $user.privs eq 3}
+    <h2>INEX Route Server Details</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>INEX Route Server Details</h1>
+        </div>
+{/if}
 
 {include file="message.tpl"}
 <div id='ajaxMessage'></div>

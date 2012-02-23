@@ -1,14 +1,23 @@
 {include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
-<ul class="breadcrumb">
-    <li>
-        <a href="{genUrl}">Home</a> <span class="divider">/</span>
-    </li>
-    <li class="active">
-        Member Details
-    </li>
-</ul>
-
+{if $user.privs eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Member Details
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+    
+        <div class="page-header">
+            <h1>Member Details</h1>
+        </div>
+{/if}
+    
+    
 {include file="message.tpl"}
 <div id='ajaxMessage'></div>
 

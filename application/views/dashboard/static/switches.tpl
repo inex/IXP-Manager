@@ -1,6 +1,14 @@
 {include file="header.tpl"}
 
-<h2>Connecting Switches to INEX</h2>
+{if $user.privs eq 3}
+    <h2>Connecting Switches to INEX</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Connecting Switches to INEX</h1>
+        </div>
+{/if}
+
 
 <p>
 Many members choose to connect their INEX port to a layer 2 switch and then forward their peering

@@ -1,6 +1,13 @@
 {include file="header.tpl"}
 
-<h2>Membership Fees and Charges</h2>
+{if $user.privs eq 3}
+    <h2>Membership Fees and Charges</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Membership Fees and Charges</h1>
+        </div>
+{/if}
 
 <p>
 INEX is a member supported organisation and operates on a not-for-profit basis.

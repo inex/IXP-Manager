@@ -4,6 +4,8 @@
         </div><!--/span-->
     </div><!--/row-->
     
+{elseif isset( $mode ) and $mode eq 'fluid'}
+    
 {else}
 
     </div> <!-- </div class="container"> -->

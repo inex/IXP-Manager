@@ -107,5 +107,5 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 </ul>
 
 
-{include file="footer.tpl"}
+{include file="footer.tpl" mode='fluid'}
 

@@ -1,6 +1,13 @@
 {include file="header.tpl"}
 
-<h2>About IXP Manager</h2>
+{if $user.privs eq 3}
+    <h2>About IXP Manager</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>About IXP Manager</h1>
+        </div>
+{/if}
 
 <p>
 	<strong>IXP Manager</strong> is primarily a web application with associated

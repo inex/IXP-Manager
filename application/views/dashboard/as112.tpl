@@ -1,6 +1,14 @@
 {include file="header.tpl"}
 
-<h2>Details of the INEX AS112 Service</h2>
+{if $user.privs eq 3}
+    <h2>Details of the INEX AS112 Service</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Details of the INEX AS112 Service</h1>
+        </div>
+{/if}
+
 
 {include file="message.tpl"}
 

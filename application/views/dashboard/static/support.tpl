@@ -1,6 +1,13 @@
 {include file="header.tpl"}
 
-<h2>Technical Support</h2>
+{if $user.privs eq 3}
+    <h2>Technical Support</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Technical Support</h1>
+        </div>
+{/if}
 
 
 <p>

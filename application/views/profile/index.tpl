@@ -1,6 +1,13 @@
 {include file="header.tpl"}
 
-<h2>User Profile</h2>
+{if $user.privs eq 3}
+    <h2>User Profile</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>User Profile</h1>
+        </div>
+{/if}
 
 {include file="message.tpl"}
 <div id="ajaxMessage"></div>

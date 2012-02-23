@@ -1,14 +1,22 @@
 {include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
-<ul class="breadcrumb">
-    <li>
-        <a href="{genUrl}">Home</a> <span class="divider">/</span>
-    </li>
-    <li class="active">
-        Switch Configuration
-    </li>
-</ul>
-
+{if $user.privs eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Switch Configuration
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+    
+        <div class="page-header">
+            <h1>Switch Configuration</h1>
+        </div>
+{/if}
+    
 {include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
@@ -18,7 +26,7 @@
             <form id="vlan_jumpto" method="post">
                 <strong>Peering LAN:</strong>&nbsp;
             
-                <select onchange="document.vlan_jumpto.submit()" name="vlan">
+                <select onchange="$( '#vlan_jumpto' ).submit()" name="vlan">
                     <option value=""></option>
                     {foreach from=$vlans item=vlan}
                         <option value="{$vlan.number}" {if isset( $vlannum ) and $vlannum eq $vlan.number}selected{/if}>{$vlan.name}</option>

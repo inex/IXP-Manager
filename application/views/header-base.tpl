@@ -32,7 +32,7 @@
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     
-    {if not isset( $hasIdentity ) or not $hasIdentity or $user.privs neq 3}
+    {if ( not isset( $hasIdentity ) or not $hasIdentity or $user.privs neq 3 ) and ( not isset( $mode ) or $mode neq 'fluid' )}
         <style>
             html, body {
               background-color: #eee;

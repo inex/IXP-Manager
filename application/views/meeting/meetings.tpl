@@ -1,16 +1,24 @@
 {include file="header.tpl"}
 
-<ul class="breadcrumb">
-    <li>
-        <a href="{genUrl}">Home</a> <span class="divider">/</span>
-    </li>
-    <li>
-        <a href="{genUrl controller='meeting' action='list'}">Meetings</a> <span class="divider">/</span>
-    </li>
-    <li class="active">
-        Member View
-    </li>
-</ul>
+{if $user.privs eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            <a href="{genUrl controller='meeting' action='list'}">Meetings</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Member View
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+    
+        <div class="page-header">
+            <h1>Meetings</h1>
+        </div>
+{/if}
 
 {include file="message.tpl"}
 

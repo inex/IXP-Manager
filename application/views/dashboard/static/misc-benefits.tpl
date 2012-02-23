@@ -1,6 +1,13 @@
 {include file="header.tpl"}
 
-<h2>Miscellaneous Benefits</h2>
+{if $user.privs eq 3}
+    <h2>Miscellaneous Benefits</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Miscellaneous Benefits</h1>
+        </div>
+{/if}
 
 <h3>IRC Channel</h3>
 
