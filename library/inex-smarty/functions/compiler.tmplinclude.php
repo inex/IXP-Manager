@@ -22,7 +22,26 @@ function smarty_compiler_tmplinclude( $params, $smarty )
         }
     }
     
-    $params['file'] = str_replace( array( '\'', '"' ), '', $params['file'] );
+    if( substr( $params['file'], 0, 24 ) == '$_smarty_tpl->tpl_vars[\'' )
+    {
+        $params['file'] = substr( $params['file'], 24 );
+        $params['file'] = substr( $params['file'], 0, strpos( $params['file'], '\'' ) );
+        $params['file'] = $smarty->getTemplateVars( $params['file'] );
+    }
+    elseif( substr( $params['file'], 0, 24 ) == '($_smarty_tpl->tpl_vars[' )
+    {
+        $params['file'] = substr( $params['file'], 24 );
+        $params['file'] = substr( $params['file'], 0, strpos( $params['file'], ']' ) );
+        $params['file'] = $smarty->getTemplateVars( $params['file'] );
+    }
+    elseif( substr( $params['file'], 0, 23 ) == '$_smarty_tpl->tpl_vars[' )
+    {
+        $params['file'] = substr( $params['file'], 23 );
+        $params['file'] = substr( $params['file'], 0, strpos( $params['file'], ']' ) );
+        $params['file'] = $smarty->getTemplateVars( $params['file'] );
+    }
+    else
+        $params['file'] = str_replace( array( '\'', '"' ), '', $params['file'] );
 
     if( $smarty->getTemplateVars( '___SKIN' ) )
         $skin = $smarty->getTemplateVars( '___SKIN' );

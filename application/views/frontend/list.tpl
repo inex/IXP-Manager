@@ -1,26 +1,31 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
-		
-<div class="yui-g">
+{include file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
 
-<table class="adminheading" border="0" style="display: block;">
-<tr>
-    <th class="{$frontend.name}">
-        {$frontend.pageTitle}
-    </th>
-</tr>
-</table>
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        <a href="{genUrl controller=$controller action=$action}">{$frontend.pageTitle}</a>
+    </li>
+    <li class="pull-right">
+        {if not isset( $frontend.disableAddNew ) or not $frontend.disableAddNew}
+            <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
+        {/if}
+    </li>
+</ul>		
 
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <div id="ajaxMessage"></div>
 
 
-{assign var='_inc_file' value=$controller|cat:'/list-pretable.tpl'}
-{include_if_exists file=$_inc_file}
+{if isset( $hasPreContent ) and $hasPreContent}
+    {include file=$hasPreContent}
+{/if}
 
 
 
-<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
+<table id="ixpDataTable"  cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
 
 <thead>
 <tr>
@@ -100,24 +105,14 @@
 
 </table>
 
-{if not isset( $frontend.disableAddNew ) or not $frontend.disableAddNew}
 
-    <p>
-        <form action="{genUrl controller=$controller action='add'}" method="post">
-            <input type="submit" name="submit" class="button" value="Add New" />
-        </form>
-    </p>
-
+{if isset( $hasPostContent ) and $hasPostContent}
+    {include file=$hasPostContent}
 {/if}
 
-{if $hasPostContent}
-    {tmplinclude file=$hasPostContent}
-{/if}
-
-</div>
 
 {if $hasCustomContextMenu}
-    {tmplinclude file=$hasCustomContextMenu|cat:".html.tpl"}
+    {include file=$hasCustomContextMenu|cat:".html.tpl"}
 {else}
     <ul id="myMenu" class="contextMenu">
         <li class="edit">
@@ -165,10 +160,14 @@ $(document).ready(function() {
 		        {/if}
         	{/foreach}
 		{/if}
+		{if $hasIdentity and $user.privs eq 3}
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+	    {else}
+            "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+	    {/if}
 		{literal}
-		"bJQueryUI": true,
-		"sPaginationType": "full_numbers",
-		"iDisplayLength": 25,
+		"iDisplayLength": 10,
+		"sPaginationType": "bootstrap",
 		"aoColumns": [
               {/literal}
               {foreach from=$frontend.columns.displayColumns item=col name=items}
@@ -193,7 +192,7 @@ $(document).ready(function() {
 	$( oTable.fnGetNodes() ).each( function( index, element ){
 		{/literal}
 		{if $hasCustomContextMenu}
-	    	{tmplinclude file=$hasCustomContextMenu|cat:".js.tpl"}
+	    	{include file=$hasCustomContextMenu|cat:".js.tpl"}
 		{else}
 			{literal}
     		$( element ).contextMenu({
@@ -226,4 +225,4 @@ $(document).ready(function() {
 {/literal}
 </script>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

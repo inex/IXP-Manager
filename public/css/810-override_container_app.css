@@ -3,6 +3,10 @@
   text-align: center; /* center align it with the container */
 }
 
+.container-fluid > footer p {
+  text-align: center; /* center align it with the container */
+}
+
 /* The white background content wrapper */
 .page-content {
   background-color: #fff;

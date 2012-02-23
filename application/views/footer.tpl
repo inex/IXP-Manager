@@ -1,5 +1,15 @@
 
-</div>
+{if $hasIdentity and $user.privs eq 3}
+
+        </div><!--/span-->
+    </div><!--/row-->
+    
+{else}
+
+    </div> <!-- </div class="container"> -->
+
+{/if}
+
 
 <footer>
 
