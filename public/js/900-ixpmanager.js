@@ -18,6 +18,8 @@ $( 'document' ).ready( function(){
 			html: true
 		}
 	);
+	
+	$("[rel=tooltip]").tooltip();
 
 });
 

@@ -28,6 +28,52 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                {if $user.privs eq 1}
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="my-peering-matrix"}">My Peering Manager</a>
+                                    </li>
+                                {/if}
+                                {foreach from=$config.peering_matrix.public key=index item=lan}
+                                    <li>
+                                        <a target="_blank" href="{genUrl controller="dashboard" action="peering-matrix" lan=$index}">Matrix - {$lan.name}</a>
+                                    </li>
+                                {/foreach}
+                            </ul>
+                        </li>
+                        
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="static" page="fees"}">Fees and Charges</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="static" page="housing"}">Equipment Housing</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="static" page="misc-benefits"}">Miscellaneous Benefits</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="static" page="support"}">Technical Support</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="static" page="switches"}">Connecting Switches</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="static" page="port-security"}">Port Security Policies</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="as112"}">AS112 Service</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="rs-info"}">Route Servers</a>
+                                </li>
+                            </ul>
+                        </li>
+
                     </ul>
                      <ul class="nav pull-right">
                         <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>
@@ -44,6 +90,10 @@
 
     {include file="menu.tpl"}
     
+{elseif isset( $mode ) and $mode eq 'fluid'}
+
+    <div class="container-fluid">
+
 {else}
 
     <div class="container">

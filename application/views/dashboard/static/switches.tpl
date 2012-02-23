@@ -1,16 +1,6 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
-
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Document">
-        Connecting Switches to INEX
-    </th>
-</tr>
-</table>
+<h2>Connecting Switches to INEX</h2>
 
 <p>
 Many members choose to connect their INEX port to a layer 2 switch and then forward their peering
@@ -53,7 +43,7 @@ on the client-side of the switch port will have very poor quality connectivity, 
 packets will appear to be dropped without any apparent reason.
 </p>
 
-<h2>Recommended Cisco Configuration</h2>
+<h3>Recommended Cisco Configuration</h3>
 
 <p>
 By default, all Cisco switches will broadcast CDP, Spanning Tree Protocol and keepalive packets
@@ -83,7 +73,7 @@ spanning-tree bpduguard enable
 </pre>
 </p>
 
-<h2>Recommended Extreme Configuration</h2>
+<h3>Recommended Extreme Configuration</h3>
 
 <p>
 By default, Extreme switches will broadcast EDP on all ports. These packets can be disabled
@@ -106,7 +96,7 @@ If Spanning Tree Protocol is enabled on a particular port, it can be disabled us
 </pre>
 </p>
 
-<h2>Recommended Foundry Configuration</h2>
+<h3>Recommended Brocade / Foundry Configuration</h3>
 
 <p>
 On trunk ports, Foundry switches will broadcast FDP (Foundry Discovery protocol) and by
@@ -124,7 +114,4 @@ can be disabled on a per-interface basis using the following command:
 </p>
 
 
-</div>
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

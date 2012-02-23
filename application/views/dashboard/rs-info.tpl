@@ -1,44 +1,33 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+<h2>INEX Route Server Details</h2>
 
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Switch">
-        INEX Route Server Details
-    </th>
-</tr>
-</table>
-
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
-<div id="overviewMessage">
-	{if $user.privs eq 3}
-    {elseif $rsSessionsEnabled}
-        <div class="message message-success">
-            You are now enabled to use INEX's robust route server cluster.<br />
-            <br />
-            Please note that the provisioning system updates the route servers twice daily
-            so place allow up to twelve hours for your configuration to become active on
-            our systems.<br />
-            <br />
-            Please see below for configuration details.
-        </div>
-    {elseif not $rsEnabled}
-        <div class="message message-error">
-	        You are not using INEX's robust route server cluster. Please <a href="{genUrl controller="dashboard" action="enable-route-server"}">click here to have our provisioning system create sessions</a> for you.
-	    </div>
-    {else}
-	    <div class="message message-success">
-	        You are enabled to use INEX's robust route server cluster.
-	    </div>
-    {/if}
-</div>
-
+{if $user.privs eq 1}
+    <div id="overviewMessage">
+        {if $rsSessionsEnabled}
+            <div class="alert alert-success">
+                You are now enabled to use INEX's robust route server cluster.<br />
+                <br />
+                Please note that the provisioning system updates the route servers twice daily
+                so place allow up to twelve hours for your configuration to become active on
+                our systems.<br />
+                <br />
+                Please see below for configuration details.
+            </div>
+        {elseif not $rsEnabled}
+            <div class="alert alert-error">
+    	        You are not using INEX's robust route server cluster. Please <a href="{genUrl controller="dashboard" action="enable-route-server"}">click here to have our provisioning system create sessions</a> for you.
+    	    </div>
+        {else}
+    	    <div class="alert alert-success">
+    	        You are enabled to use INEX's robust route server cluster.
+    	    </div>
+        {/if}
+    </div>
+{/if}
 
 
 <h3>Overview</h3>
@@ -133,19 +122,20 @@ in production.
 In order to use the service, you should first instruct the route servers to create sessions for you:
 </p>
 
-<div id="overviewMessage">
-	{if $user.privs eq 3}
-    {elseif not $rsEnabled}
-        <div class="message message-error">
-            You are not enabled to use INEX's route server cluster.
-            Please <a href="{genUrl controller="dashboard" action="enable-route-server"}">click here to have our provisioning system create sessions</a> for you.
-        </div>
-    {else}
-        <div class="message message-success">
-            You are enabled to use INEX's robust route server cluster.
-        </div>
-    {/if}
-</div>
+{if $user.privs eq 1}
+    <div id="overviewMessage">
+        {if not $rsEnabled}
+            <div class="alert alert-error">
+                You are not enabled to use INEX's route server cluster.
+                Please <a href="{genUrl controller="dashboard" action="enable-route-server"}">click here to have our provisioning system create sessions</a> for you.
+            </div>
+        {else}
+            <div class="alert alert-success">
+                You are enabled to use INEX's robust route server cluster.
+            </div>
+        {/if}
+    </div>
+{/if}
 
 <p>
 If enabled, the route servers are set up to accept BGP connections from your router. Once this has
@@ -153,9 +143,7 @@ been done, you will need to configure a BGP peering session to the correct inter
 IP addresses of the route servers are listed as follows:
 </p>
 
-<center>
-
-<table class="ltbr2" cellspacing="0" border="0" width="700">
+<table class="table" cellspacing="0" border="0">
 <thead>
     <tr>
         <th width="30%">Peering LAN</th>
@@ -251,7 +239,7 @@ The INEX route server system also provides well known communities to allow membe
 control the distribution of their prefixes. These communities are defined as follows:
 </p>
 
-<table class="ltbr2" cellspacing="0" border="0" width="500">
+<table class="table" cellspacing="0" border="0" width="500">
     <thead>
     <tr>
         <th>Description</th>
@@ -292,7 +280,5 @@ Alternatively, to announce a prefix to all INEX members, excluding AS64333, the 
 should be tagged with community 0:64333.
 </p>
 
-</div>
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
