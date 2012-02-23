@@ -59,22 +59,65 @@
         </li>
         
               
-              
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-            </ul>
-            
-        </div><!--/.well -->
+    <li class="nav-header">IXP Admin Actions</li>
         
-    </div><!--/span-->
+        <li {if $controller eq 'location'}class="active"{/if}>
+            <a href="{genUrl controller='location' action='list'}">Locations</a>
+        </li>
 
-    <div class="span10">
+        <li {if $controller eq 'cabinet'}class="active"{/if}>
+            <a href="{genUrl controller='cabinet' action='list'}">Cabinets</a>
+        </li>
+        
+        <li {if $controller eq 'switch' and $action neq 'add-ports'}class="active"{/if}>
+            <a href="{genUrl controller='switch' action='list'}">Switches</a>
+            
+            {if $controller eq 'switch' or $controller eq 'switch-port'}
+                <ul class="nav nav-list">
+                    <li {if $controller eq 'switch-port'}class="active"{/if}>
+                        <a href="{genUrl controller='switch-port' action='list'}">Switch Ports</a>
+                    </li>
+                    <li {if $controller eq 'switch' and $action eq 'add-ports'}class="active"{/if}>
+                        <a href="{genUrl controller='switch' action='add-ports'}">Add Ports</a>
+                    </li>
+                </ul>
+            {/if}
+            
+        </li>
+        
+        <li>
+            <a href="{genUrl controller='ipv4-address' action='list'}">IP Addressing</a>
+            
+            {if $controller eq 'ipv4-address' or $controller eq 'ipv6-address'}
+                <ul class="nav nav-list">
+                    <li {if $controller eq 'ipv4-address' and $action neq 'add-addresses'}class="active"{/if}>
+                        <a href="{genUrl controller='ipv4-address' action='list'}">IPv4 Addresses</a>
+                    </li>
+                    <li {if $controller eq 'ipv6-address'}class="active"{/if}>
+                        <a href="{genUrl controller='ipv6-address' action='list'}">IPv6 Addresses</a>
+                    </li>
+                    <li {if $controller eq 'ipv4-address' and $action eq 'add-addresses'}class="active"{/if}>
+                        <a href="{genUrl controller='ipv4-address' action='add-addresses'}">Add New Addresses</a>
+                    </li>
+                </ul>
+            {/if}
+            
+        </li>
+        
+        <li {if $controller eq 'vendor'}class="active"{/if}>
+            <a href="{genUrl controller='vendor' action='list'}">Vendors</a>
+        </li>
+        
+        <li {if $controller eq 'console-server-connection'}class="active"{/if}>
+            <a href="{genUrl controller='console-server-connection' action='list'}">Console Server Connections</a>
+        </li>
+        
+        <li {if $controller eq 'vlan'}class="active"{/if}>
+            <a href="{genUrl controller='vlan' action='list'}">VLANs</a>
+        </li>
+    
+    </ul>
+    
+</div><!--/.well -->
+</div><!--/span-->
+<div class="span10">

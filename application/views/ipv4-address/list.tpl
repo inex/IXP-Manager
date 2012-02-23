@@ -1,40 +1,38 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: IPv4 Addresses"}
+{include file="header.tpl"}
 
-<div class="yui-g">
 
-<div id="content">
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        <a href="{genUrl controller=$controller action=$action}">{$frontend.pageTitle}</a>
+    </li>
+</ul>
+
+{include file="message.tpl"}
 
 <div class="list_preamble_container">
-<div class="list_preamble">
-
-<p>
-<form name="vlan_jumpto" class="form" method="post">
-    <strong>VLAN:</strong>&nbsp;
-
-    <select onchange="document.vlan_jumpto.submit()" name="vlanid">
-
-        <option value=""></option>
-        {foreach from=$vlans item=v}
-            <option value="{$v.id}" {if $vlan.id eq $v.id}selected{/if}>{$v.name}</option>
-        {/foreach}
-
-    </select>
-</form>
-</p>
+    <div class="list_preamble">
+        <p>
+            <form name="vlan_jumpto" class="form" method="post">
+                <strong>VLAN:</strong>&nbsp;
+            
+                <select onchange="document.vlan_jumpto.submit()" name="vlanid">
+            
+                    <option value=""></option>
+                    {foreach from=$vlans item=v}
+                        <option value="{$v.id}" {if $vlan.id eq $v.id}selected{/if}>{$v.name}</option>
+                    {/foreach}
+            
+                </select>
+            </form>
+        </p>
+    </div>
 </div>
-</div>
 
 
-<table class="adminheading" border="0" style="margin-top: -50px; margin-bottom: 20px;">
-<tr>
-    <th class="Document">
-        IPv4 Addresses :: {$vlan.name}
-    </th>
-</tr>
-</table>
-
-
-<table class="tblist">
+<table id="ixpDataTable" class="table table-striped table-bordered">
 
 <tr>
     <th>IPv4 Address</th>
@@ -44,7 +42,7 @@
 
 {foreach from=$ips item=ip}
 
-	<tr class="{cycle values="tblist_odd,tblist_even"}">
+	<tr>
 		<td class="pre">{$ip.address}</td>
 		<td class="pre">{$ip.Vlaninterface.ipv4hostname}</td>
 		<td>{$ip.Vlaninterface.Virtualinterface.Cust.name}</td>
@@ -54,9 +52,4 @@
 
 </table>
 
-
-</div>
-
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

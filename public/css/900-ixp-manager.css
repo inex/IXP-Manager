@@ -102,3 +102,15 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 .meeting.buttons {
         text-align: center;
 }
+
+.list_preamble_container {
+    display: block;
+}
+
+.list_preamble {
+    display: block;
+    text-align: right;
+}
+
+
+

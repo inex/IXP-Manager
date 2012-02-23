@@ -66,7 +66,7 @@
 <tr>
     <td align="right" valign="top">
     	<label for="numports">
-    		<code>printf</code> Format:
+    		<tt>printf</tt> Format:
 		</label>
 	</td>
     <td valign="top">
@@ -98,7 +98,7 @@
 
 
 {literal}
-<script type="text/javascript"> /* <![CDATA[ */ 
+<script type="text/javascript"> /* <![CDATA[ */
 
 $( "#spansubmit" ).hide();
 
@@ -128,11 +128,11 @@ $( function()
         
         for( var i = numfirstport; i < ( numfirstport + numports ); i++ )
         {
-			c += "<tr>\n    <td><strong>Name:</strong>&nbsp;<input name=\"np_name" 
-				+ ( i - numfirstport ) + "\" value=\"" 
+			c += "<tr>\n    <td><strong>Name:</strong>&nbsp;<input name=\"np_name"
+				+ ( i - numfirstport ) + "\" value=\""
 				+ sprintf( trim( $( "#prefix" ).val() ), i ) + "\" /></td>\n"
 				+ "\n    <td>&nbsp;&nbsp;&nbsp;&nbsp;<strong>Type:</strong>&nbsp;"
-				+ "<select id=\"np_type"+ ( i - numfirstport ) + "\" name=\"np_type" 
+				+ "<select id=\"np_type"+ ( i - numfirstport ) + "\" name=\"np_type"
 				+ ( i - numfirstport ) + "\"></select>"
 				+ "</td>\n</tr>\n";
         }
@@ -159,7 +159,7 @@ $(document).ready(function(){
 	$("#vlanid").trigger( 'change' );
 });
 	
-/* ]]> */ </script> 
+/* ]]> */ </script>
 {/literal}
 
 

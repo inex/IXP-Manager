@@ -8,15 +8,31 @@
             {if $hasIdentity}
                 <div class="nav-collapse">
                      <ul class="nav">
-                        
                         <li>
                             {if     $user.privs eq 3}<a href="{genUrl}">Home</a>
                             {elseif $user.privs eq 2}<a href="{genUrl controller="cust-admin"}">User Admin</a>
                             {elseif $user.privs eq 1}<a href="{genUrl controller="dashboard"}">Dashboard</a>
                             {/if}
                         </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="switch-configuration"}">Switch Configuration</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="dashboard" action="members-details-list"}">Member Details</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                     <ul class="nav pull-right">
+                        <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>
                      </ul>
-                </div><!--/.nav-collapse -->
+                 </div><!--/.nav-collapse -->
             {/if}
         </div>
     </div>

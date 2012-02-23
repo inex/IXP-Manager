@@ -1,42 +1,38 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
-<div class="yui-g">
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Switch Configuration
+    </li>
+</ul>
 
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
-<div id="content">
+<div class="list_preamble_container">
+    <div class="list_preamble">
+        <p>
+            <form id="vlan_jumpto" method="post">
+                <strong>Peering LAN:</strong>&nbsp;
+            
+                <select onchange="document.vlan_jumpto.submit()" name="vlan">
+                    <option value=""></option>
+                    {foreach from=$vlans item=vlan}
+                        <option value="{$vlan.number}" {if isset( $vlannum ) and $vlannum eq $vlan.number}selected{/if}>{$vlan.name}</option>
+                    {/foreach}
+                </select>
 
-<table>
-<tr>
-<td width="100%">
+            </form>
+        </p>
+    </div>
+</div>
 
-<table align="right">
-<tr>
-    <form method="post">
-       <td>
-	        <label for="dt_input">INEX Network: </label>
-	        <select id="dt_input" name="vlan">
-	            <option></option>
-	            {foreach from=$vlans item=vlan}
-	                <option value="{$vlan.number}" {if isset( $vlannum ) and $vlannum eq $vlan.number}selected{/if}>{$vlan.name}</option>
-	            {/foreach}
-	        </select>
-        </td>
-        <td>
-            <input type="submit" name="submit" class="button" value="Filter" />
-        </td>
-    </form>
-</tr>
-</table>
 
-</td>
-</tr>
-<tr>
-<td>
 
-<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0">
+<table id="ixpDataTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0">
     <thead>
         <tr>
             <th>Member</th>
@@ -70,24 +66,18 @@
     </tbody>
 </table>
 
-</td>
-</tr>
-</table>
-
-</div>
-</div>
-
-{literal}
 <script>
 	
-oTable = $('#ixpDataTable').dataTable({
-	"bJQueryUI": true,
-	"sPaginationType": "full_numbers",
-	"iDisplayLength": 100
-});
+    oTable = $('#ixpDataTable').dataTable({
+        {if $hasIdentity and $user.privs eq 3}
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+        {else}
+            "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        {/if}
+        "sPaginationType": "bootstrap",
+    	"iDisplayLength": 100
+    });
 
 </script>
-{/literal}
 
-{tmplinclude file="footer.tpl"}
-
+{include file="footer.tpl"}
