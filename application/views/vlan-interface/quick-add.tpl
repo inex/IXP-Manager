@@ -5,7 +5,7 @@
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
     <li>
-        <a href="{genUrl controller='virtual-interface' action='list'}">Virtual Interfaces</a>
+        <a href="{genUrl controller='vlan-interface' action='list'}">VLAN Interfaces</a> <span class="divider">/</span>
     </li>
     <li class="active">
         Quick Add
