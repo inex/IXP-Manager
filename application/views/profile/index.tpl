@@ -28,14 +28,18 @@ Please note that the mobile number is used to send you password reminders and sh
 in the format: <code>353861234567</code>.
 </p>
 
-<div class="row">
+<div class="row-fluid">
     <div class="span6">
 
+        <h3>Change Your Profile</h3>
+        
         {$profileForm}
         
     </div>
-    <div>
+    <div class="span6">
 
+        <h3>Change Your Password</h3>
+        
         {$passwordForm}
         
     </div>

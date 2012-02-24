@@ -43,8 +43,6 @@ class INEX_Form_Meeting extends INEX_Form
     {
         parent::__construct( $options );
 
-        $this->setAttrib( 'accept-charset', 'UTF-8' );
-        $this->setAttrib( 'class', 'form' );
 
         ////////////////////////////////////////////////
         // Create and configure title element

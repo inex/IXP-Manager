@@ -116,6 +116,10 @@
             <a href="{genUrl controller='vlan' action='list'}">VLANs</a>
         </li>
     
+        <li {if $controller eq 'irrdb-config'}class="active"{/if}>
+            <a href="{genUrl controller='irrdb-config' action='list'}">IRRDB Configuration</a>
+        </li>
+    
         
               
     <li class="nav-header">IXP Statistics</li>
