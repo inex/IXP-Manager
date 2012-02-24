@@ -2,91 +2,66 @@
 /*
  * Smarty plugin to include files based on INEX's IXP Manager
  * skin system.
- * 
- * -------------------------------------------------------------
- * Based On:
- * Author: Liu Song - loosen.copen@gmail.com
- * File: compiler.include_if_exists.php
- * Type: compiler
- * Name: include_if_exists
- * Version: 1.0.0
- * Source: http://code.google.com/p/smartyplugin-include-if-exists/
- * License: GNU LESSER GENERAL PUBLIC LICENSE
- * Purpose: Similar with "include" function, but only include the
-    template file when it exists. Otherwise, a default file passed
-    by parameter "else" will be included.
- * Example:
-    1   {include_if_exists file="foo.tpl" assign="foo"}
-    2   {include_if_exists file="foo.tpl" else="default.tpl"}
- * -------------------------------------------------------------
  */
-function smarty_compiler_tmplinclude( $tag_attrs, &$compiler )
+function smarty_compiler_tmplinclude( $params, $smarty )
 {
-    $_params = $compiler->_parse_attrs( $tag_attrs );
-    $arg_list = array();
+    if( !isset( $params['file'] ) )
+        throw new SmartyCompilerException( "Missing 'file' attribute in tmplinclude tag" );
+
+    $original_values = array();
     
-    if( !isset( $_params['file'] ) ) 
+    foreach( $params as $arg => $value )
     {
-        $compiler->_syntax_error( "missing 'file' attribute in include_exists tag", E_USER_ERROR, __FILE__, __LINE__ );
-        return;
-    }
-
-    foreach( $_params as $arg_name => $arg_value ) 
-    {
-        if( $arg_name == 'file' ) 
-        {
-            $include_file = $arg_value;
-            continue;
-        } 
-        else if( $arg_name == 'assign' ) 
-        {
-            $assign_var = $arg_value;
-            continue;
-        }
+        if( is_bool( $value ) )
+            $params[ $arg ] = $value ? 'true' : 'false';
         
-        if( is_bool( $arg_value ) ) 
+        if( !in_array( $arg, array( 'file', 'assign' ) ) )
         {
-            $arg_value = $arg_value ? 'true' : 'false';
+            $original_values[ $arg ] = $value;
+            $smarty->assign( $arg, $value );
         }
-        
-        $arg_list[] = "'$arg_name' => $arg_value";
     }
-
-    $output = <<<MY_CODE
-if( isset( \$this->_tpl_vars['___SKIN'] ) )
-    \$skin = \$this->_tpl_vars['___SKIN'];
-else 
-    \$skin = false;
-
-\$_include_file = {$include_file};
     
-if( \$skin )
-{
-    if( \$this->template_exists( 'skins/' . \$skin . '/' . {$include_file} ) )
-        \$_include_file = 'skins/' . \$skin . '/' . {$include_file};
-}
-
-if( \$this->template_exists( \$_include_file ) ) {
-
-MY_CODE;
-        
-    if(isset($assign_var)) {
-        $output .= "ob_start();\n";
+    if( substr( $params['file'], 0, 24 ) == '$_smarty_tpl->tpl_vars[\'' )
+    {
+        $params['file'] = substr( $params['file'], 24 );
+        $params['file'] = substr( $params['file'], 0, strpos( $params['file'], '\'' ) );
+        $params['file'] = $smarty->getTemplateVars( $params['file'] );
     }
-
-    $output .= "\$_smarty_tpl_vars = \$this->_tpl_vars;\n";
-
-    $params = "array('smarty_include_tpl_file' => \$_include_file, 'smarty_include_vars' => array(".implode(',', (array)$arg_list)."))";
-
-    $output .= "\$this->_smarty_include($params);\n" .
-        "\$this->_tpl_vars = \$_smarty_tpl_vars;\n" .
-        "unset(\$_smarty_tpl_vars);\n";
-
-    if(isset($assign_var)) {
-        $output .= "\$this->assign(" . $assign_var . ", ob_get_contents()); ob_end_clean();\n";
+    elseif( substr( $params['file'], 0, 24 ) == '($_smarty_tpl->tpl_vars[' )
+    {
+        $params['file'] = substr( $params['file'], 24 );
+        $params['file'] = substr( $params['file'], 0, strpos( $params['file'], ']' ) );
+        $params['file'] = $smarty->getTemplateVars( $params['file'] );
     }
+    elseif( substr( $params['file'], 0, 23 ) == '$_smarty_tpl->tpl_vars[' )
+    {
+        $params['file'] = substr( $params['file'], 23 );
+        $params['file'] = substr( $params['file'], 0, strpos( $params['file'], ']' ) );
+        $params['file'] = $smarty->getTemplateVars( $params['file'] );
+    }
+    else
+        $params['file'] = str_replace( array( '\'', '"' ), '', $params['file'] );
 
-    $output .= "unset( \$_include_file );\n}\n";
+    if( $smarty->getTemplateVars( '___SKIN' ) )
+        $skin = $smarty->getTemplateVars( '___SKIN' );
+    else
+        $skin = false;
+    
+    if( $skin && $smarty->templateExists( 'skins/' . $skin . '/' . $params['file'] ) )
+        $params['file'] = 'skins/' . $skin . '/' . $params['file'];
+    elseif( !$smarty->templateExists( $params['file'] ) )
+        throw new SmartyCompilerException( "Template file does not exist - [{$params['file']}]" );
+    
+    if( isset( $params['assign'] ) )
+        $smarty->assign( $params['assign'], $smarty->fetch( $params['file'] ) );
+    else
+        $output = $smarty->fetch( $params['file'] );
 
+    foreach( $original_values as $arg => $value )
+    {
+        $smarty->assign( $arg, $value );
+    }
+    
     return $output;
 }

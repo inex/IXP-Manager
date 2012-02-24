@@ -1,14 +1,9 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: My Peering Manager"}
+{include file="header.tpl" pageTitle="IXP Manager :: My Peering Manager"}
 
-<div class="yui-g">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Peering">
-        My Peering Manager
-    </th>
-</tr>
-</table>
+<div class="page-content">
+        <div class="page-header">
+            <h1>My Peering Manager</h1>
+        </div>
 
 <p>
 <form action="{genUrl controller="dashboard" action="my-peering-matrix"}" method="post">
@@ -44,11 +39,10 @@
 </form>
 </p>
 
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
-<table id="myPeeringMatrixTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display:none;">
+<table id="myPeeringMatrixTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0" style="display:none;">
 
     <thead>
     <tr>

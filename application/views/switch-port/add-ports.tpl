@@ -1,17 +1,18 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-{assign var='_inc_file' value=$controller|cat:'/addEdit-preamble.tpl'}
-{include_if_exists file=$_inc_file}
-
-<div class="content">
-
-<h2>Switch Ports :: Add New </h2>
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller=$controller action="list"}">{$frontend.pageTitle}</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Add New Ports
+    </li>
+</ul>
 
 {$form}
 
-</div>
 
-{assign var='_inc_file' value=$controller|cat:'/addEdit-postamble.tpl'}
-{include_if_exists file=$_inc_file}
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

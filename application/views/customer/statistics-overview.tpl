@@ -1,24 +1,23 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-<!-- <div class="yui-g" style="height: 600px"> -->
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Customer">
-        IXP Members :: Statistics Overview
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        Statistics <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Graphs
         (
          {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
         /
          {foreach from=$periods key=cname item=cvalue}{if $period eq $cvalue}{$cname}{/if}{/foreach}
         )
-    </th>
-</tr>
-</table>
+    </li>
+</ul>
 
-
-{tmplinclude file="message.tpl"}
-
-<div class="content">
+{include file="message.tpl"}
 
 <p>
 <form action="{genUrl controller="customer" action="statistics-overview"}" method="post">
@@ -57,7 +56,7 @@
 
 <td>
 
-<h3>{$cust.name}</h3>
+<h4>{$cust.name}</h4>
 
 <a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname monitorindex=aggregate category=$category}">
 	<img
@@ -68,7 +67,7 @@
 
 </td>
 
-{assign var='count' value="`$count+1`"}
+{assign var='count' value=$count+1}
 
 {if $count%3 eq 0}
 </tr><tr>
@@ -88,4 +87,4 @@
 
 </table>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

@@ -1,18 +1,8 @@
-{tmplinclude file="header-tiny.tpl" pageTitle="IXP Manager :: Help"}
+{include file="header-tiny.tpl" pageTitle="IXP Manager :: Help"}
 
-<div class="yui-g">
+<h2>My Peering Manager :: Instructions</h2>
 
-<table class="adminheading" border="0">
-<tr>
-    <th class="Peering">
-        My Peering Manager :: Instructions
-    </th>
-</tr>
-</table>
-
-<br />
-
-<h2>Introduction</h2>
+<h3>Introduction</h3>
 
 <p>
 Welcome to the INEX's Member Peering Manager. This tool will allow existing and new members alike
@@ -31,7 +21,7 @@ The features you can avail of in this application include:
     <li> Record notes to track your discussions with other members. </li>
 </ul>
 
-<h2>Important Concepts</h2>
+<h3>Important Concepts</h3>
 
 <p>
 You'll notice four icon columns to the left of the page and it's important to differentaite between
@@ -40,7 +30,7 @@ them to make maximum use of this application:
 
 <dl>
 
-<dt><strong>The <em>State</em> Column:</strong></dt>
+<dt>The <em>State</em> Column:</dt>
 
 <dd>
     <p>
@@ -57,7 +47,7 @@ them to make maximum use of this application:
         </td>
         <td width="10"></td>
         <td>
-            Unknown - you have yet to set a status for this peer. 
+            Unknown - you have yet to set a status for this peer.
         </td>
     </tr>
     <tr>
@@ -108,7 +98,7 @@ them to make maximum use of this application:
     </p>
 </dd>
 
-<dt><strong>The <em>PM</em> (Peering Matrix) Column:</strong></dt>
+<dt>The <em>PM</em> (Peering Matrix) Column:</dt>
 
 <dd>
     <p>
@@ -118,7 +108,7 @@ them to make maximum use of this application:
     </p>
 </dd>
 
-<dt><strong>The <em>RS</em> Column:</strong></dt>
+<dt>The <em>RS</em> Column:</dt>
 
 <dd>
     <p>
@@ -131,7 +121,7 @@ them to make maximum use of this application:
     </p>
 </dd>
 
-<dt><strong>The <em>IPv6</em> Column:</strong></dt>
+<dt>The <em>IPv6</em> Column:</dt>
 
 <dd>
     <p>
@@ -150,7 +140,7 @@ them to make maximum use of this application:
 </dd>
 
 
-<h2>Sending Peering Requests</h2>
+<h3>Sending Peering Requests</h3>
 
 <p>
 By clicking on the peering email of a member, a preformatted mail will appear which you are free to
@@ -162,7 +152,7 @@ fixed to the peering contact details of each member.
 A note is automatically added to your notes for that member's peering record when a mail is sent.
 </p>
 
-<h2>Notes</h2>
+<h3>Notes</h3>
 
 <p>
 The column on the right has a <em>notes</em> icon. It will be gray scale to indicate that no notes are
@@ -175,4 +165,4 @@ system will automatically add the date and username to the note to help track wh
 your organisation are working with another member.
 </p>
 
-{tmplinclude file="footer-tiny.tpl"}
+{include file="footer-tiny.tpl"}

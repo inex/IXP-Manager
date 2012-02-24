@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -44,8 +44,9 @@ class AuthController extends INEX_Controller_Action
 
     public function logoutAction()
     {
-        $this->view->clear_all_assign();
-
+        $this->view->clearVars();
+        $this->view->config = $this->config;
+       
         $auth = Zend_Auth::getInstance();
 
         if( $auth->hasIdentity() )
@@ -136,10 +137,10 @@ class AuthController extends INEX_Controller_Action
                 $user->setPreference( 'pwreset.token', $token );
                 $user->setPreference( 'pwreset.timeout', mktime() + 86400 );
                 
-                $this->view->user  = $user; 
+                $this->view->user  = $user;
                 $this->view->token = $token;
                 
-                try 
+                try
                 {
                     $mail = new Zend_Mail( );
                     $mail->setBodyText( $this->view->render( 'auth/email/password-reset.tpl' ) )
@@ -148,9 +149,9 @@ class AuthController extends INEX_Controller_Action
                          ->setSubject( $this->config['identity']['ixp']['fullname'] . ' :: Password Reset' )
                          ->send();
 
-                    $this->view->message = new INEX_Message( 
+                    $this->view->message = new INEX_Message(
                     	'We have sent you an email with further instructions.',
-                        INEX_Message::MESSAGE_TYPE_SUCCESS 
+                        INEX_Message::MESSAGE_TYPE_SUCCESS
                     );
 
                     return $this->_forward( 'login' );
@@ -177,9 +178,9 @@ class AuthController extends INEX_Controller_Action
 
             if( count( $users ) )
             {
-                $this->view->users  = $users; 
+                $this->view->users  = $users;
                 
-                try 
+                try
                 {
                     $mail = new Zend_Mail( );
                     $mail->setBodyText( $this->view->render( 'auth/email/forgotten-username.tpl' ) )
@@ -188,9 +189,9 @@ class AuthController extends INEX_Controller_Action
                          ->setSubject( $this->config['identity']['ixp']['fullname'] . ' :: Username(s) Reminder' )
                          ->send();
 
-                    $this->view->message = new INEX_Message( 
+                    $this->view->message = new INEX_Message(
                     	'We have sent you an email with further instructions.',
-                        INEX_Message::MESSAGE_TYPE_SUCCESS 
+                        INEX_Message::MESSAGE_TYPE_SUCCESS
                     );
 
                     return $this->_forward( 'login' );
@@ -221,19 +222,19 @@ class AuthController extends INEX_Controller_Action
                 
                 if( $this->view->username == '' || $this->view->token == '' || $pass1 == '' || $pass2 == '' )
                 {
-                    $this->view->message = new INEX_Message( 
-                        	'Please enter all details below!', INEX_Message::MESSAGE_TYPE_ERROR 
+                    $this->view->message = new INEX_Message(
+                        	'Please enter all details below!', INEX_Message::MESSAGE_TYPE_ERROR
                     );
                     break;
                 }
                 
                 // is the username and token valid?
                 if( !( $user = Doctrine_Core::getTable( 'User' )->findOneByUsername( $this->view->username ) )
-                    || $user->getPreference( 'pwreset.token' ) != $this->view->token 
+                    || $user->getPreference( 'pwreset.token' ) != $this->view->token
                 )
                 {
-                    $this->view->message = new INEX_Message( 
-                    	'Invalid username or token!', INEX_Message::MESSAGE_TYPE_ERROR 
+                    $this->view->message = new INEX_Message(
+                    	'Invalid username or token!', INEX_Message::MESSAGE_TYPE_ERROR
                     );
                     break;
                 }
@@ -241,22 +242,22 @@ class AuthController extends INEX_Controller_Action
                 // so, have valid user and matching token. Is the token in date?
                 if( mktime() - $user->getPreference( 'pwreset.timeout' ) > 0 )
                 {
-                    $this->session->message = new INEX_Message( 
+                    $this->session->message = new INEX_Message(
                     	'Reset tokens are only valid for 24 hours. Yours has expired. Please generate a new token below.',
-                        INEX_Message::MESSAGE_TYPE_ERROR 
+                        INEX_Message::MESSAGE_TYPE_ERROR
                     );
 
                     return $this->_redirect( 'auth/forgotten-password' );
                 }
                 
                 // do the passwords live up to requirements?
-                if( 
+                if(
                     !Zend_Validate::is( $pass1, 'StringLength', array( 8, 30 ) )
-                    || !Zend_Validate::is( $pass1, 'Regex', array( '/^[a-zA-Z0-9\!\£\$\%\^\&\*\(\)\-\=\_\+\{\}\[\]\;\'\#\:\@\~\,\.\/\<\>\?\|]+$/' ) ) 
+                    || !Zend_Validate::is( $pass1, 'Regex', array( '/^[a-zA-Z0-9\!\£\$\%\^\&\*\(\)\-\=\_\+\{\}\[\]\;\'\#\:\@\~\,\.\/\<\>\?\|]+$/' ) )
                 )
                 {
-                    $this->view->message = new INEX_Message( 
-                    	'Password must be between 8 and 30 characters in length and cannot contain the " character', INEX_Message::MESSAGE_TYPE_ERROR 
+                    $this->view->message = new INEX_Message(
+                    	'Password must be between 8 and 30 characters in length and cannot contain the " character', INEX_Message::MESSAGE_TYPE_ERROR
                     );
                     break;
                 }
@@ -264,8 +265,8 @@ class AuthController extends INEX_Controller_Action
                 // do the passwords match?
                 if( $pass1 !== $pass2 )
                 {
-                    $this->view->message = new INEX_Message( 
-                    	'Your new password and the confirmation password do not match', INEX_Message::MESSAGE_TYPE_ERROR 
+                    $this->view->message = new INEX_Message(
+                    	'Your new password and the confirmation password do not match', INEX_Message::MESSAGE_TYPE_ERROR
                     );
                     break;
                 }
@@ -277,7 +278,7 @@ class AuthController extends INEX_Controller_Action
                 $user->save();
                 
                 // send a confirmation email
-                try 
+                try
                 {
                     $mail = new Zend_Mail( );
                     $mail->setBodyText( $this->view->render( 'auth/email/password-reset-notice.tpl' ) )
@@ -286,9 +287,9 @@ class AuthController extends INEX_Controller_Action
                          ->setSubject( $this->config['identity']['ixp']['fullname'] . ' :: Password Reset Confirmation' )
                          ->send();
 
-                    $this->view->message = new INEX_Message( 
+                    $this->view->message = new INEX_Message(
                     	'Your password has been reset. You may now login below.',
-                        INEX_Message::MESSAGE_TYPE_SUCCESS 
+                        INEX_Message::MESSAGE_TYPE_SUCCESS
                     );
 
                     return $this->_forward( 'login' );
@@ -296,7 +297,7 @@ class AuthController extends INEX_Controller_Action
                 catch( Zend_Exception $e ) {
                 }
                 
-            }while( false );     
+            }while( false );
         }
         
         $this->view->display( 'auth/reset-password.tpl' );
@@ -429,7 +430,7 @@ class AuthController extends INEX_Controller_Action
 
         if( $result->getCode() == Zend_Auth_Result::SUCCESS )
         {
-            $this->logger->notice( 'User ' . $ou['username'] . ' has switched back to user '
+            $this->logger->notice( 'User ' . $ou['username'] . ' has switched back from user '
                 . $this->user['username'] );
 
             $this->session->message = new INEX_Message(

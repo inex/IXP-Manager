@@ -1,5 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <base href="{genUrl}//index.php">
@@ -9,18 +9,23 @@
     <title>{$pageTitle|default:"IXP Manager"}</title>
 
 	{if $config.use_minified_css}
-        <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.100-yui-reset-fonts-grids.css" />
-        <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.900-ixp-manager.css"               />
-	{else}
-        <link rel="stylesheet" type="text/css" href="{genUrl}/css/100-yui-reset-fonts-grids.css" />
-        <link rel="stylesheet" type="text/css" href="{genUrl}/css/900-ixp-manager.css"               />
+	    <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.bundle.css">
+    {else}
+        {include file="header-css.tpl"}
+	{/if}
+
+	{if $config.use_minified_js}
+    	<script type="text/javascript" src="{genUrl}/js/min.bundle.js"></script>
+    {else}
+        {include file="header-js.tpl"}
 	{/if}
 	
+	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    	
 </head>
 
 <body>
-
-<div id="doc3">
-
-<div id="hd">
 

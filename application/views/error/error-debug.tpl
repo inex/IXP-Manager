@@ -1,10 +1,8 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-<div class="content">
-
-<h1>An error has occured</h1>
+<h2>An error has occured</h2>
 	
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <dl>
     <dt>File</dt>
@@ -26,6 +24,5 @@
 {$errorException->getTraceAsString()}
 </pre>
 
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

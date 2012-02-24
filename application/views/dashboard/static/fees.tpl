@@ -1,16 +1,13 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
-
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Document">
-        Membership Fees and Charges
-    </th>
-</tr>
-</table>
+{if $user.privs eq 3}
+    <h2>Membership Fees and Charges</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Membership Fees and Charges</h1>
+        </div>
+{/if}
 
 <p>
 INEX is a member supported organisation and operates on a not-for-profit basis.
@@ -18,11 +15,16 @@ Revenue for the organisation comes from two primary sources, membership fees and
 port charges.
 </p>
 
-<h2>2011 Fees and Charges</h2>
+<h2>2012 Fees and Charges</h2>
 
+<br /><br />
 <h3>Membership Fees</h3>
+<br /><br />
 
-<table class="ltbr" cellspacing="0" border="0" width="50%">
+<div class="row">
+    <div class="span9">
+
+<table class="table">
 <tr>
     <th width="75%" >Description</th>
     <th>Charge</th>
@@ -43,13 +45,19 @@ port charges.
     <td>No charge</td>
 </tr>
 </table>
+</div>
+</div>
 
 
-
+<br /><br />
 
 <h3>Port Charges</h3>
+<br /><br />
 
-<table class="ltbr" cellspacing="0" border="0">
+<div class="row">
+    <div class="span9">
+
+<table class="table">
 <tr>
     <th width="30%">Description</th>
     <th>First Port</th>
@@ -92,12 +100,21 @@ port charges.
 
 </table>
 
+</div>
+</div>
 
+<br /><br />
 
 
 <h3>Miscellaneous Charges</h3>
 
-<table class="ltbr" cellspacing="0" border="0" width="70%">
+<br /><br />
+
+<div class="row">
+    <div class="span9">
+
+<table class="table">
+
 <tr>
     <th width="75%" >Description</th>
     <th>Charge</th>
@@ -133,21 +150,21 @@ port charges.
     <td>&euro;240 p.a. per party</td>
 </tr>
 
-</table>
+        </table>
+    </div>
+</div>
 
-
-<h3>Notes</h3>
-
+<br /><br />
+<h4>Notes</h4>
+<br /><br />
 <ul>
     <li> Free second 100Mbps port only applicable to connections to the secondary peering LAN. </li>
     <li> Private Interconnections may only be installed between INEX members. Each party is liable to the charge noted in the table above. </li>
     <li> Port and private interconnect charges are not applicable to Associate Members, as associate members have no connectivity entitlements. </li>
     <li> There is no port connection charge, except for long haul links </li>
     <li> VAT is charged on invoices to Irish based companies at the prevailing rate at the time of invoice (from January 2012: 23%).
-</li>
+</ul>
 
-</div>
 
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

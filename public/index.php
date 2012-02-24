@@ -21,6 +21,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+// let's time how long it takes to execute 
+define( 'APPLICATION_STARTTIME', microtime( true ) );
 
 // Define path to application directory
 defined('APPLICATION_PATH')
@@ -44,6 +46,8 @@ set_include_path(
 /** Zend_Application */
 require_once 'Zend/Application.php';
 
+require_once( APPLICATION_PATH . '/../library/INEX/Version.php' );
+
 
 // Create application, bootstrap, and run
 $application = new Zend_Application(
@@ -54,7 +58,3 @@ $application = new Zend_Application(
 $application->bootstrap()
             ->run();
 
-if( APPLICATION_ENV != 'production' && !Zend_Auth::getInstance()->hasIdentity() )
-{
-    echo "<p><br /><br /><strong>THE IXP IS RUNNING IN NON-PRODUCTION MODE AND INFORMATION CAN BE LEAKED VIA DEBUGGING UTILITIES. ENSURE HTACCESS IS IN PLACE.</strong></p>";
-}

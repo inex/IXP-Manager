@@ -1,13 +1,11 @@
 <style type="text/css">
-{literal}
 
 .contextMenu {
 	width: 220px;
 }
 
-.contextMenu LI.loginas A { background-image: url(../images/joomla-admin/menu/credits.png); }
+.contextMenu LI.loginas A { background-image: url({genUrl}/images/joomla-admin/menu/credits.png); }
 
-{/literal}
 </style>
 
 <ul id="myMenu" class="contextMenu">

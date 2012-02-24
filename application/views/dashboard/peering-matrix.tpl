@@ -1,27 +1,14 @@
-{tmplinclude file="header-full-width.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard" mode='fluid'}
 
-<div class="yui-g" style="width: 100%">
+<h3>Peering Matrix :: {$config.peering_matrix.public.$lan.name}</h3>
 
-<br />
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Peering">
-        Peering Matrix :: {$config.peering_matrix.public.$lan.name}
-    </th>
-</tr>
-</table>
-
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
-
-<div id="content">
 
 <p>
 Total potential sessions: {$potential}.
 Active peering sessions: {$active}.
-{assign var=active value=`$active*100`}
+{assign var=active value=$active*100}
 Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 </p>
 
@@ -35,12 +22,8 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
     {foreach from=$matrix key=x_as item=peers}
 
         <th class="pmbuilder_heading" align="center" style="text-align: center;">
-            {assign var=asn value=$x_as|string_format:'% 5s'}
-            {php}
-                $asn = $this->get_template_vars( 'asn' );
-                for( $i = 0; $i < 5; $i++ )
-                    echo substr( $asn, $i, 1 ) . '<br />';
-            {/php}
+            {assign var=asn value=$x_as|string_format:'% 6s'}
+            {$asn|pmasn}
         </th>
 
     {/foreach}
@@ -51,7 +34,7 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 {assign var=outer value=0}
 
 {foreach from=$matrix key=x_as item=peers}
-
+    
 
 	<tr>
 
@@ -68,22 +51,20 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 		            </td><td>
 		        {/if}
 
-		        {if $y.peering_status eq 'YES'}
-		            <img class="OSSTooltip" alt="Y" width="21" height="21" border="0"
-		                  src="http://static.inex.ie/sites/www.inex.ie/themes/inexbluey/images/ticks/yes.gif"
-		                  title="X: {$y.X_Cust.name} (AS{$y.x_as}) <br />
-		                         Y: {$y.Y_Cust.name} (AS{$y.y_as})"
-		            />
-		        {else if $row.peering_status eq 'NO'}
-		            <img class="OSSTooltip" alt="N" width="21" height="21" border="0"
-		                  src="http://static.inex.ie/sites/www.inex.ie/themes/inexbluey/images/ticks/no.gif"
-                          title="X: {$y.X_Cust.name} (AS{$y.x_as}) <br />
-                                 Y: {$y.Y_Cust.name} (AS{$y.y_as})"
-                    />
-		        {/if}
+	            <a href="#" rel="tooltip" title="X: {$y.X_Cust.name} (AS{$y.x_as})<br />Y: {$y.Y_Cust.name} (AS{$y.y_as})">
+	                {if $y.peering_status eq 'YES'}
+    		            <img alt="Y" width="21" height="21" border="0"
+    		                  src="http://static.inex.ie/sites/www.inex.ie/themes/inexbluey/images/ticks/yes.gif"
+    		            />
+		            {else if $y.peering_status eq 'NO'}
+		                <img alt="N" width="21" height="21" border="0"
+		                    src="http://static.inex.ie/sites/www.inex.ie/themes/inexbluey/images/ticks/no.gif"
+                        />
+                    {/if}
+                </a>
 		    </td>
 
-        {assign var=inner value=`$inner+1`}
+        {assign var=inner value=$inner+1}
 
         {* for the last cell of the last row, we add a empty cell *}
         {if $outer eq $peers|@count and $inner eq $peers|@count}
@@ -93,7 +74,7 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 
 	</tr>
 
-{assign var=outer value=`$outer+1`}
+{assign var=outer value=$outer+1}
 
 {/foreach}
 
@@ -125,12 +106,6 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
     </li>
 </ul>
 
-</div>
 
-</div>
-
-<script type="text/javascript">
-</script>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl" mode='fluid'}
 

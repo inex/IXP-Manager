@@ -1,23 +1,6 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
-
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Vendor">
-        IXP Manager Help
-    </th>
-</tr>
-</table>
-
-<div id="documentation">
-
-<p>
-<br />
-</p>
-
+<h2>IXP Manager Help</h2>
 <p>
 This help section is designed to show new users how to set up IXP Manager objects and
 work through normal day to day procedures. First time users setting up a new instance
@@ -25,7 +8,7 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 </p>
 
 
-<h1>Day to Day Tasks</h1>
+<h3>Day to Day Tasks</h3>
 
 <p>
 	The normal day to day tasks are provisioning new members / customers and interfaces.
@@ -40,10 +23,10 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 	</td>
 	<td>
 		<p>
-			Customers / members are those organisations who peer at your IXP. The first step in 
-			provisioning services for a new customer is to 
+			Customers / members are those organisations who peer at your IXP. The first step in
+			provisioning services for a new customer is to
 			<a href="{genUrl controller="customer" action="add"}">add them</a>. You can also
-			<a href="{genUrl controller="customer" action="list"}">list existing customers</a>.  
+			<a href="{genUrl controller="customer" action="list"}">list existing customers</a>.
 		</p>
 	</td>
 </tr>
@@ -59,8 +42,8 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 		<p>
 			Customers are assigned an interface through which they get connectivity to the peering LAN(s).
 			The easiest way to set up a standard simple interface is to use the
-			<a href="{genUrl controller="vlan-interface" action="quick-add"}">Quick Add wizard</a>. 
-			The braver among you can use the more manual process which starts by 
+			<a href="{genUrl controller="vlan-interface" action="quick-add"}">Quick Add wizard</a>.
+			The braver among you can use the more manual process which starts by
 			<a href="{genUrl controller="virtual-interface" action="add"}">adding a virtual
 			interface</a>. You then need to add one (or more for port channel / trunk groups)
 			physical interfaces to this virtual interface followed by one or more VLAN interfaces.
@@ -96,14 +79,14 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 			</dl>
 
 			You can <a href="{genUrl controller="user" action="add"}">add new users</a> and
-			<a href="{genUrl controller="user" action="list"}">list existing users</a>.  
+			<a href="{genUrl controller="user" action="list"}">list existing users</a>.
 		</p>
 	</td>
 </tr>
 
 </table>
 
-<h1>Inital Setup Tasks</h1>
+<h3>Inital Setup Tasks</h3>
 
 <p>
 	Welcome to your new IXP Manager! The following steps will walk you through the initial set up and
@@ -122,7 +105,7 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 			Locations are typically data centres / colocation facilities where you would put a rack / cabinet.
 			In IXP Manager, a location contains cabinets which in turn contain switches. Start by either
 			<a href="{genUrl controller="location" action="add"}">adding a new location</a> or
-			<a href="{genUrl controller="location" action="list"}">listing existing locations</a>.  
+			<a href="{genUrl controller="location" action="list"}">listing existing locations</a>.
 		</p>
 	</td>
 </tr>
@@ -138,7 +121,7 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 			Cabinets (or racks) are stored in <em>locations</em> as described above. You can create
 			one or more cabinets per location. Please
 			<a href="{genUrl controller="cabinet" action="add"}">add a new cabinet</a> or
-			<a href="{genUrl controller="cabinet" action="list"}">list existing cabinets</a>.  
+			<a href="{genUrl controller="cabinet" action="list"}">list existing cabinets</a>.
 		</p>
 	</td>
 </tr>
@@ -153,9 +136,9 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 		<p>
 			A vendor is simply a way to group switches by their manufacturer. This can be useful when, for
 			example, autogenerating configurations with systems such as Nagios. Before you can add a switch
-			to the IXP Manager, you must first <a href="{genUrl controller="vendor" action="add"}">add a 
-			vendor</a>. You can also <a href="{genUrl controller="vendor" action="list"}">list existing 
-			vendors</a>.  
+			to the IXP Manager, you must first <a href="{genUrl controller="vendor" action="add"}">add a
+			vendor</a>. You can also <a href="{genUrl controller="vendor" action="list"}">list existing
+			vendors</a>.
 		</p>
 	</td>
 </tr>
@@ -171,7 +154,7 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 			Switches are the key infrastructure elements of any IXP. In the IXP Manager, switches are
 			are stored in <em>cabinets</em> as described above. If you haven't already, you should
 			<a href="{genUrl controller="switch" action="add"}">add a new switch</a>. You can also
-			<a href="{genUrl controller="switch" action="list"}">list existing switches</a>.  
+			<a href="{genUrl controller="switch" action="list"}">list existing switches</a>.
 		</p>
 	</td>
 </tr>
@@ -186,10 +169,10 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 		<p>
 			Members / customers of an IXP connect through dedicated switch ports. In IXP Manager, you
 			need to add ports to switches. We make this easy by allowing you to add multiple ports
-			in one go via the <a href="{genUrl controller="switch" action="add-ports"}">add ports wizard</a>. 
+			in one go via the <a href="{genUrl controller="switch" action="add-ports"}">add ports wizard</a>.
 			You can also <a href="{genUrl controller="switch-port" action="list"}">list ports by switch</a>
-			and <a href="{genUrl controller="switch" action="port-report"}">generate reports</a> of switch 
-			ports showing who is connected.  
+			and <a href="{genUrl controller="switch" action="port-report"}">generate reports</a> of switch
+			ports showing who is connected.
 		</p>
 	</td>
 </tr>
@@ -220,7 +203,7 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 		<p>
 			All IXP participants need an IP address for peering. Before you can provision customers,
 			you need to populate the database with IP addresses for your peering VLAN(s). We've made
-			this quite easy with our <a href="{genUrl controller="ipv4-address" action="add-addresses"}">IP 
+			this quite easy with our <a href="{genUrl controller="ipv4-address" action="add-addresses"}">IP
 			address add wizard</a> (supporting IPv4 and IPv6 addresses). You can also list existing
 			<a href="{genUrl controller="ipv4-address" action="list"}">IPv4 addrseses</a> and
 			<a href="{genUrl controller="ipv6-address" action="list"}">IPv6 addrseses</a> (including
@@ -231,10 +214,5 @@ of IXP Manager should start with the <em>Initial Setup Tasks</em> section at the
 
 </table>
 
-</div>
 
-</div>
-
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

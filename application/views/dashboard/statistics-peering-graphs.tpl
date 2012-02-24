@@ -1,21 +1,10 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+<h2>INEX Public Traffic Statistics</h2>
 
-<div id="content">
+<h3>{$graphs.$graph} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
 
-<table class="adminheading" border="0">
-<tr>
-    <th class="Statistics">
-    INEX Public Traffic Statistics
-    </th>
-</tr>
-</table>
-
-<h2>{$graphs.$graph} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h2>
-
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
 <p>
@@ -47,7 +36,7 @@
 
 {foreach from=$periods key=pname item=pvalue}
 
-<h2>{$pname} Graph</h2>
+<h3>{$pname} Graph</h3>
 
 <p>
     {genMrtgGraphBox
@@ -63,8 +52,6 @@
 {/foreach}
 
 
-</div>
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
 

@@ -1,15 +1,12 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-<div class="content">
-
-<h1>Not Found - 404</h1>
+<h2>404 - Not Found</h2>
 	
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
-<p>
+<h3>
 The requested URL was not found on this server.
-</p>
+</h3>
 
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

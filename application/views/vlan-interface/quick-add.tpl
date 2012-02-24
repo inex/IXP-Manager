@@ -1,15 +1,22 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-<div class="content">
-
-<h2>Interface :: Quick Add</h2>
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller='vlan-interface' action='list'}">VLAN Interfaces</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Quick Add
+    </li>
+</ul>
 
 {$form}
 
-</div>
 
 {literal}
-<script type="text/javascript"> /* <![CDATA[ */ 
+<script type="text/javascript"> /* <![CDATA[ */
 
 
 $( function()
@@ -24,7 +31,7 @@ $( function()
 
         	var options = "<option value=\"\">- select -</option>\n";
 
-            for( var i = 0; i < j.length; i++ ) 
+            for( var i = 0; i < j.length; i++ )
             	options += "<option value=\"" + j[i].id + "\">" + j[i].name + " (" + j[i].type + ")</option>\n";
 
             $("#switchportid").html( options );
@@ -37,7 +44,7 @@ $( function()
         })
     })
     
-    $( "#switchportid" ).change( function() 
+    $( "#switchportid" ).change( function()
     {
     	$( "#preselectSwitchPort" ).val( $( "#switchportid" ).val() );
     });
@@ -53,7 +60,7 @@ $( function()
 
         	var options = "<option value=\"\">- select -</option>\n";
 
-            for( var i = 0; i < j.length; i++ ) 
+            for( var i = 0; i < j.length; i++ )
             	options += "<option value=\"" + j[i].id + "\">" + j[i].address + "</option>\n";
 
             $("#ipv4addressid").html( options );
@@ -69,7 +76,7 @@ $( function()
 
         	var options = "<option value=\"\">- select -</option>\n";
 
-            for( var i = 0; i < j.length; i++ ) 
+            for( var i = 0; i < j.length; i++ )
             	options += "<option value=\"" + j[i].id + "\">" + j[i].address + "</option>\n";
 
             $("#ipv6addressid").html( options );
@@ -85,12 +92,12 @@ $( function()
     });
 
 
-    $( "#ipv4addressid" ).change( function() 
+    $( "#ipv4addressid" ).change( function()
     {
     	$( "#preselectIPv4Address" ).val( $( "#ipv4addressid" ).val() );
     });
 
-    $( "#ipv6addressid" ).change( function() 
+    $( "#ipv6addressid" ).change( function()
 	{
     	$( "#preselectIPv6Address" ).val( $( "#ipv6addressid" ).val() );
     });
@@ -138,9 +145,9 @@ $(document).ready( function() {
     });
 });
 */
-/* ]]> */ </script> 
+/* ]]> */ </script>
 {/literal}
 
 
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

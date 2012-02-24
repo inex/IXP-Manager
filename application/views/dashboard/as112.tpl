@@ -1,48 +1,47 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+{if $user.privs eq 3}
+    <h2>Details of the INEX AS112 Service</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Details of the INEX AS112 Service</h1>
+        </div>
+{/if}
 
-<div id="content">
 
-<table class="adminheading" border="0">
-<tr>
-    <th class="Switch">
-        Details of the INEX AS112 Service
-    </th>
-</tr>
-</table>
-
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <div id='ajaxMessage'></div>
 
-<div id="overviewMessage">
-    {if isset( $as112JustEnabled ) and $as112JustEnabled}
-        <div class="message message-success">
-            New sessions for INEX's AS112 service will be enabled for you within the next 12 hours.
-            Please see configuration details below.
-        </div>
-    {elseif $as112Enabled}
-        <div class="message message-success">
-            You are enabled to use INEX's AS112 service. Please see configuration details below.
-        </div>
-    {elseif $rsEnabled and not $as112Enabled}
-        <div class="message message-info">
-	        There are no bilateral BGP sessions configured for you on the AS112 server. However, as
-	        you have route server sessions, you receive the AS112 prefixes via this. If you would like
-	        to additionally enable bilateral peering, please
-	        <a href="{genUrl controller="dashboard" action="as112" enable="1"}">click here to have
-	        our provisioning system create the sessions</a> for you.
-	    </div>
-    {else} *}
-	    <div class="message message-alert">
-	        You are not enabled to use INEX's AS112 service. Please
-            <a href="{genUrl controller="dashboard" action="as112" enable="1"}">click here to have
-            our provisioning system create the sessions</a> for you.
-	    </div>
-    {/if}
-</div>
-
+{if $user.privs eq 1}
+    <div id="overviewMessage">
+        {if isset( $as112JustEnabled ) and $as112JustEnabled}
+            <div class="alert alert-success">
+                New sessions for INEX's AS112 service will be enabled for you within the next 12 hours.
+                Please see configuration details below.
+            </div>
+        {elseif $as112Enabled}
+            <div class="alert alert-success">
+                You are enabled to use INEX's AS112 service. Please see configuration details below.
+            </div>
+        {elseif $rsEnabled and not $as112Enabled}
+            <div class="alert alert-info">
+    	        There are no bilateral BGP sessions configured for you on the AS112 server. However, as
+    	        you have route server sessions, you receive the AS112 prefixes via this. If you would like
+    	        to additionally enable bilateral peering, please
+    	        <a href="{genUrl controller="dashboard" action="as112" enable="1"}">click here to have
+    	        our provisioning system create the sessions</a> for you.
+    	    </div>
+        {else}
+    	    <div class="alert">
+    	        You are not enabled to use INEX's AS112 service. Please
+                <a href="{genUrl controller="dashboard" action="as112" enable="1"}">click here to have
+                our provisioning system create the sessions</a> for you.
+    	    </div>
+        {/if}
+    </div>
+{/if}
 
 
 <h3>Overview</h3>
@@ -117,7 +116,4 @@ Please see <a href="http://public.as112.net/">http://public.as112.net/</a> for m
 on the AS112 project, <em>The Nameservers at the End of the Universe</em>.
 </p>
 
-</div>
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

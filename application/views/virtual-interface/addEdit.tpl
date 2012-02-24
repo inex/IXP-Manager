@@ -1,109 +1,95 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller='virtual-interface' action='list'}">Virtual Interfaces</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        {if $isEdit}Edit{else}Create New Customer Interface{/if}
+    </li>
+</ul>
 
-<div class="content">
+{include file="message.tpl"}
 
-{if $isEdit}
-    <h2>{$frontend.pageTitle} :: Editing</h2>
-{else}
-    <h2>Create New Customer Interface  </h2>
-{/if}
-
-{tmplinclude file="message.tpl"}
-
-
+<div class="well">
 {$form}
+</div>
 
 {if $isEdit}
 
-    <dl>
-    <dt></dt>
+<div class="well">
 
-    <dd>
+    <h3>Physical Interfaces</h3>
 
-    <fieldset>
+    <table class="table table-striped table-bordered">
 
-        <legend>Physical Interfaces</legend>
+    <thead>
+    <tr>
+        <th>Location</th>
+        <th>Switch</th>
+        <th>Port</th>
+        <th>Speed/Duplex</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
 
-        <table class="ixptable">
+    <tbody>
+    {foreach from=$phyInts item=int}
 
-        <thead>
         <tr>
-            <th>Location</th>
-            <th>Switch</th>
-            <th>Port</th>
-            <th>Speed/Duplex</th>
-            <th></th>
-            <th></th>
+            <td>
+                {$int.Switchport.SwitchTable.Cabinet.Location.name}
+            </td>
+            <td>
+                {$int.Switchport.SwitchTable.name}
+            </td>
+            <td>
+                {$int.Switchport.name}
+            </td>
+            <td>
+                {$int.speed}/{$int.duplex}
+            </td>
+            <td>
+                <form action="{genUrl controller='physical-interface' action='edit' id=$int.id}" method="post">
+                    <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
+                    <input type="submit" name="submit" class="button" value="edit" />
+                </form>
+            </td>
+            <td>
+                <form action="{genUrl controller='physical-interface' action='delete' id=$int.id}" method="post">
+                    <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
+                    <input type="submit" name="submit" class="button" value="delete"
+                        onClick="return confirm( 'Are you sure you want to delete this tuple?' );"
+                    />
+                </form>
+            </td>
         </tr>
-        </thead>
 
-        <tbody>
-        {foreach from=$phyInts item=int}
+    {/foreach}
 
-            <tr>
-                <td>
-                    {$int.Switchport.SwitchTable.Cabinet.Location.name}
-                </td>
-                <td>
-                    {$int.Switchport.SwitchTable.name}
-                </td>
-                <td>
-                    {$int.Switchport.name}
-                </td>
-                <td>
-                    {$int.speed}/{$int.duplex}
-                </td>
-                <td>
-                    <form action="{genUrl controller='physical-interface' action='edit' id=$int.id}" method="post">
-                        <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
-                        <input type="submit" name="submit" class="button" value="edit" />
-                    </form>
-                </td>
-                <td>
-                    <form action="{genUrl controller='physical-interface' action='delete' id=$int.id}" method="post">
-                        <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
-                        <input type="submit" name="submit" class="button" value="delete"
-                            onClick="return confirm( 'Are you sure you want to delete this tuple?' );"
-                        />
-                    </form>
-                </td>
-            </tr>
+    </tbody>
 
-        {/foreach}
-
-        </tbody>
-
-        </table>
+    </table>
 
 
-        <form action="{genUrl controller='physical-interface' action='add'}" method="post" style="text-align: right">
-            <input type="submit" name="submit" class="button" value="Add New" />
-            <input type='hidden' name='virtualinterfaceid' value='{$object.id}' />
-            <input type='hidden' name='return' value="{'virtual-interface/edit/id/'|cat:$object.id}" />
-        </form>
+    <form action="{genUrl controller='physical-interface' action='add'}" method="post" style="text-align: right">
+        <input type="submit" name="submit" class="button" value="Add New" />
+        <input type='hidden' name='virtualinterfaceid' value='{$object.id}' />
+        <input type='hidden' name='return' value="{'virtual-interface/edit/id/'|cat:$object.id}" />
+    </form>
+
+</div>
 
 
-    </fieldset>
+<div class="well">
 
-    </dd>
-    </dl>
+    <h3>VLAN Interfaces</h3>
 
-
-
-
-
-    <dl class="zend_form">
-    <dt></dt>
-
-    <dd>
-
-    <fieldset>
-
-        <legend>VLAN Interfaces</legend>
-
-        <table class="ixptable" id="myVlanTable">
+    <table class="table table-striped table-bordered">
 
         <thead>
         <tr>
@@ -160,16 +146,10 @@
             <input type='hidden' name='return' value='virtual-interface/edit/id/{$object.id}' />
         </form>
 
-    </fieldset>
-
-    </dd>
-    </dl>
+</div>
 
 {/if}
 
-</div>
 
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
 

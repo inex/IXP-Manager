@@ -23,7 +23,7 @@
 </form>
 </p>
 
-<h2>Aggregate Traffic Statistics</h2>
+<h3>Aggregate Traffic Statistics</h3>
 
 <p>
 	<a href="{genUrl controller="dashboard" action="statistics-drilldown" shortname=$customer.shortname category='bits' monitorindex='aggregate'}">
@@ -34,12 +34,12 @@
 
 {foreach from=$connections item=connection}
 
-    <h2>
+    <h3>
         Connection:
                 {$connection.Physicalinterface.0.Switchport.SwitchTable.Cabinet.Location.name}
             / {$connection.Physicalinterface.0.Switchport.SwitchTable.name}
             / {$connection.Physicalinterface.0.Switchport.name} ({$connection.Physicalinterface.0.speed}Mb/s)
-    </h2>
+    </h3>
 
 
     <p>
