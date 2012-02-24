@@ -31,9 +31,15 @@ phpSettings.display_startup_errors = 0
 phpSettings.display_errors = 0
 
 includePaths.library = APPLICATION_PATH "/../library"
+includePaths.library = APPLICATION_PATH "/../library/Smarty"
 
 ; SETME!
 includePaths.doctrine = /path/to/Doctrine/lib
+
+includePaths.twitter = APPLICATION_PATH "/../library/Bootstrap-Zend-Framework/library"
+autoloaderNamespaces.Twitter = "Twitter_"
+
+
 
 pluginPaths.INEX_Resource = APPLICATION_PATH "/../library/INEX/Resource"
 
@@ -87,7 +93,8 @@ resources.view.compiled  = APPLICATION_PATH "/../var/templates_c"
 resources.view.cache     = APPLICATION_PATH "/../var/cache"
 resources.view.config    = APPLICATION_PATH "/configs/smarty"
 resources.view.plugins[] = APPLICATION_PATH "/../library/inex-smarty/functions"
-resources.view.plugins[] = "plugins"
+resources.view.plugins[] = APPLICATION_PATH "/../library/Smarty/plugins"
+resources.view.plugins[] = APPLICATION_PATH "/../library/Smarty/sysplugins"
 resources.view.debugging = 0
 
 
