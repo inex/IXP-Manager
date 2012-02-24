@@ -1,10 +1,8 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-<div class="content">
-
-<h1>An error has occured</h1>
+<h2>An error has occured</h2>
 	
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 {if not isset( $message )}
     <p>
@@ -15,9 +13,8 @@
 <p>
 Please mail our support team with a description of what you were doing when the error
 occured and we will rectify it as soon as possible. Our support team can be reached via
-{mailto address="operations@inex.ie" encode="javascript" subject="Unexpected web error report"}.
+{mailto address=$config.identity.email encode="javascript" subject="Unexpected web error report"}.
 </p>
 
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

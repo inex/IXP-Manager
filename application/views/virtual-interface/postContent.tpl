@@ -8,7 +8,7 @@
     </td>
     <td width="30"></td>
     <td>
-        <form action="{genUrl controller=vlan action='quick-add'}" method="post">
+        <form action="{genUrl controller='vlan-interface' action='quick-add'}" method="post">
             <input type="submit" name="submit" class="button" value="Quick Add" />
         </form>
     </td>

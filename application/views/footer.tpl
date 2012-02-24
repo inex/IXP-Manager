@@ -1,38 +1,67 @@
 
+{if isset( $hasIdentity ) and $hasIdentity and $user.privs eq 3}
 
-<!-- <div id="bd"> -->
-</div>
+        </div><!--/span-->
+    </div><!--/row-->
+    
+{elseif isset( $mode ) and $mode eq 'fluid'}
+    
+{else}
+
+    </div> <!-- </div class="container"> -->
+
+{/if}
 
 
-<div id="ft">
-    <div id="footer">
+<footer>
 
+    <p>
+        IXP Manager V{$smarty.const.APPLICATION_VERSION}
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        Copyright &copy; 2010 - 2012 Internet Neutral Exchange Association Ltd. - <a href="http://www.inex.ie/">http://www.inex.ie/</a>
+        &nbsp;|&nbsp;
+        {mailto address=$config.identity.email encode='javascript' text="Contact Us"}
+    </p>
+
+    <p>
+        Licensed under GPL v2.0.
+        &nbsp;|&nbsp;
+        This Program is provided AS IS, without warranty.
+        &nbsp;|&nbsp;
+        {assign var="ENDTIME" value=microtime(1)}
+        {assign var="RUNNINGTIME" value="`$ENDTIME-$smarty.const.APPLICATION_STARTTIME`"}
+        Generated in {$RUNNINGTIME|string_format:"%0.3f"} seconds
+    </p>
+    
+    <p>
+        Keep up with
+        <span class="label label-info">
+            <a class="aplain" href="http://www.inex.ie/">INEX</a>
+        </span>
+        &nbsp;|&nbsp;
+        Get the source at
+        <span class="label label-info">
+            <a class="aplain" href="https://github.com/inex/IXP-Manager">GitHub</a>
+        </span>
+        &nbsp;|&nbsp;
+        We're
+        <span class="label label-info">
+            <a class="aplain" href="http://www.ipv6ready.ie/">IPv6 Ready</a>
+        </span>
+        &nbsp;&nbsp;Are you?
+    </p>
+
+    {if $smarty.const.APPLICATION_ENV != 'production' and ( not isset( $hasIdentity ) or !$hasIdentity)}
         <p>
-            IXP Manager V.1.0
-            &nbsp;&nbsp;|&nbsp;&nbsp;
-            Your IP: {$smarty.server.REMOTE_ADDR}
-            {if isset( $session->last_login_from ) and $session->last_login_from neq ''}
-                Last login from {$session->last_login_from} at {$session->last_login_at|date_format:"%Y-%m-%d %H:%M:%S"}
-            {/if}
-
-            {if $hasIdentity and isset( $config.change_log.enabled ) and $config.change_log.enabled}
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                {if isset( $change_log_has_updates ) and $change_log_has_updates}
-                    <a href="{genUrl controller='change-log' action='read' items='new'}">Change Log</a> (<span style="color: red">{$change_log_has_updates} new</span>)
-                {else}
-                    <a href="{genUrl controller='change-log' action='read'}">Change Log</a>
-                {/if}
-            {/if}
-            <br />
-            Copyright &copy; Internet Neutral Exchange Association Ltd. 2009 - {$smarty.now|date_format:"%Y"}. Licensed under GPL v2.0. Find us on <a href="https://github.com/inex/">github.com/inex</a>.
-
+            <strong>
+                THE IXP IS RUNNING IN NON-PRODUCTION MODE AND INFORMATION CAN BE LEAKED VIA DEBUGGING
+                UTILITIES. ENSURE HTACCESS IS IN PLACE.
+            </strong>
         </p>
+    {/if}
 
-    </div>
-</div>
 
-<!-- <div id="doc4"> -->
-</div>
+</footer>
 
 </body>
 </html>

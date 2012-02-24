@@ -1,13 +1,20 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-{assign var='_inc_file' value=$controller|cat:'/addEdit-preamble.tpl'}
-{include_if_exists file=$_inc_file}
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        IP Addressing
+    </li>
+    <li class="active">
+        <a href="{genUrl controller='ipv4-address' action='add-addresses'}">Add Addresses</a>
+    </li>
+</ul>
 
-<div class="content">
+{include file="message.tpl"}
 
-<h2>IP Addresses :: Add New </h2>
-
-<strong>Please note:</strong>
+<h4>Please note:</h4>
 
 <ul>
 	<li> IPv6 addresses assume that the first address number is given in hex. IPv4 assume decimal. </li>
@@ -17,9 +24,5 @@
 
 {$form}
 
-</div>
 
-{assign var='_inc_file' value=$controller|cat:'/addEdit-postamble.tpl'}
-{include_if_exists file=$_inc_file}
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

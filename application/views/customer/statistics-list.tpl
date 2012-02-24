@@ -1,19 +1,19 @@
-{tmplinclude file="header.tpl"}
-
-<!-- <div class="yui-g" style="height: 600px"> -->
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Customer">
-        IXP Members :: Statistics
-    </th>
-</tr>
-</table>
+{include file="header.tpl"}
 
 
-{tmplinclude file="message.tpl"}
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        Statistics <span class="divider">/</span>
+    </li>
+    <li class="active">
+        List
+    </li>
+</ul>
 
-<div class="content">
+{include file="message.tpl"}
 
 <ul>
 
@@ -29,4 +29,4 @@
 
 </ul>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

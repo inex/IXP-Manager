@@ -1,14 +1,27 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
-<div class="yui-g">
-
-{tmplinclude file="message.tpl"}
-
+{if $user.privs eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Member Details
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+    
+        <div class="page-header">
+            <h1>Member Details</h1>
+        </div>
+{/if}
+    
+    
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
-<div id="content">
-
-<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0">
+<table id="ixpDataTable" class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>Member</th>
@@ -20,7 +33,8 @@
         </tr>
     </thead>
     <tbody>
-{foreach from=$memberDetails item=md}
+
+    {foreach from=$memberDetails item=md}
 
         <tr>
             <td><a href="{$md.corpwww}">{$md.name}</a></td>
@@ -31,25 +45,23 @@
             <td><a href="{genUrl controller=$controller action="member-details" id=$md.id}">view</a></td>
         </tr>
 
-{/foreach}
+    {/foreach}
 
     </tbody>
 </table>
 
-</div>
-
-</div>
-
-{literal}
 <script>
 
-oTable = $('#ixpDataTable').dataTable({
-	"bJQueryUI": true,
-	"sPaginationType": "full_numbers",
-	"iDisplayLength": 100
-});
+    oTable = $('#ixpDataTable').dataTable({
+        {if $hasIdentity and $user.privs eq 3}
+            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+        {else}
+            "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        {/if}
+        "sPaginationType": "bootstrap",
+    	"iDisplayLength": 100
+    });
 
 </script>
-{/literal}
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

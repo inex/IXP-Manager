@@ -1,19 +1,165 @@
-{tmplinclude file="header-base.tpl"}
+{include file="header-base.tpl"}
 
-<div id="hd">
 
-<div id="wrapper">
-
-    <div id="header">
-            <div id="headertext">
-            <strong>INEX :: IXP Manager</strong>
-            </div>
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="{if isset( $hasIdentity ) and $hasIdentity and $identity.user.privs eq 3}container-fluid{else}container{/if}">
+            <a class="brand" href="{genUrl}">IXP Manager</a>
+            {if isset( $hasIdentity ) and $hasIdentity}
+                <div class="nav-collapse">
+                     <ul class="nav">
+                        <li>
+                            {if     $user.privs eq 3}<a href="{genUrl}">Home</a>
+                            {elseif $user.privs eq 2}<a href="{genUrl controller="cust-admin"}">User Admin</a>
+                            {elseif $user.privs eq 1}<a href="{genUrl controller="dashboard"}">Dashboard</a>
+                            {/if}
+                        </li>
+                        {if $user.privs neq 2}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="switch-configuration"}">Switch Configuration</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="members-details-list"}">Member Details</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    {if $user.privs eq 1}
+                                        <li>
+                                            <a href="{genUrl controller="dashboard" action="my-peering-matrix"}">My Peering Manager</a>
+                                        </li>
+                                    {/if}
+                                    {foreach from=$config.peering_matrix.public key=index item=lan}
+                                        <li>
+                                            <a target="_blank" href="{genUrl controller="dashboard" action="peering-matrix" lan=$index}">Matrix - {$lan.name}</a>
+                                        </li>
+                                    {/foreach}
+                                </ul>
+                            </li>
+                            
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="static" page="fees"}">Fees and Charges</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="static" page="housing"}">Equipment Housing</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="static" page="misc-benefits"}">Miscellaneous Benefits</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="static" page="support"}">Technical Support</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="static" page="switches"}">Connecting Switches</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="static" page="port-security"}">Port Security Policies</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="as112"}">AS112 Service</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="rs-info"}">Route Servers</a>
+                                    </li>
+                                </ul>
+                            </li>
+    
+                            
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    {if $user.privs eq 1 and $customer->isFullMember()}
+                                        <li>
+                                            <a href="{genUrl controller="dashboard" action="statistics"}">My Statistics</a>
+                                        </li>
+                                    {/if}
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="traffic-stats"}">Overall Peering Statistics</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="trunk-graphs"}">Trunk Graphs</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="dashboard" action="switch-graphs"}">Switch Aggregate Graphs</a>
+                                    </li>
+                                    {if isset( $config.weathermap )}
+                                        {foreach from=$config.weathermap key=k item=w}
+                                            <li>
+                                                <a href="{genUrl controller="dashboard" action="weathermap" id=$k}">Weathermap - {$w.menu}</a>
+                                            </li>
+                                        {/foreach}
+                                    {/if}
+                                </ul>
+                            </li>
+                        {/if}
+                        <li>
+                            <a href="{genUrl controller="dashboard" action="static" page="support"}">Support</a>
+                        </li>
+                        {if $user.privs eq 3 and isset( $config.menu.staff_links )}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Staff Links<b class="caret"></b></a>
+                                
+                                <ul class="dropdown-menu">
+                        
+                                    {foreach from=$config.menu.staff_links item=i}
+                                        <li>
+                                            <a href="{$i.link}">{$i.name}</a>
+                                        </li>
+                                    {/foreach}
+                                    
+                                </ul>
+                            </li>
+                        {/if}
+                        <li>
+                            <a href="{genUrl controller="profile"}">Profile</a>
+                        </li>
+                        
+                        {if $user.privs eq 3}
+                            <li>
+                                <a href="{genUrl controller="index" action="help"}">Help</a>
+                            </li>
+                        {/if}
+                        
+                        <li>
+                            <a href="{genUrl controller="index" action="about"}">About</a>
+                        </li>
+                    </ul>
+                    <ul class="nav pull-right">
+                        {if isset( $session->switched_user_from ) and $session->switched_user_from}
+                            <li><a href="{genUrl controller="auth" action="switch-back"}">Switch Back</a></li>
+                        {else}
+                            <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>
+                        {/if}
+                    </ul>
+                </div><!--/.nav-collapse -->
+            {/if}
         </div>
     </div>
-
-
 </div>
+    
+{if isset( $hasIdentity ) and $hasIdentity and $user.privs eq 3}
+    
+    <div class="container-fluid">
 
+    {include file="menu.tpl"}
+    
+{elseif isset( $mode ) and $mode eq 'fluid'}
 
-{tmplinclude file="menu.tpl"}
+    <div class="container-fluid">
 
+{else}
+
+    <div class="container">
+
+{/if}

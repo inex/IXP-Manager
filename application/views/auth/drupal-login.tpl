@@ -1,47 +1,41 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Drupal Login"}
+{include file="header.tpl" pageTitle="IXP Manager :: Drupal Login"}
 
-<div class="yui-g">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Drupal">
-        Drupal Login
-    </th>
-</tr>
-</table>
-
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
+<div class="row">
 
-<div class="login">
-    <div class="login-form">
-        <h1>Drupal Login</h1>
-        <form action="https://www.inex.ie/user" method="post" name="loginForm" id="loginForm">
-        <div class="form-block">
-            <div class="inputlabel">Username</div>
+    <div class="span6 offset3">
 
-            <div><input name="name" autocomplete="off" type="text" class="inputbox" size="15" value="{$user->username}" readonly /></div>
-            <div class="inputlabel">Password</div>
-            <div><input name="pass" autocomplete="off" type="password" class="inputbox" size="15" /></div>
-            <div align="left">
-                <input type="hidden" name="form_id" id="edit-user-login" value="user_login" />
-                <input type="submit" name="op" class="button" value="Log in" />
+    <h2>Drupal Login</h2>
+    <p>Use this form to login to the INEX's Drupal content management system.</p>
+        <p>For security reasons, we require you to re-enter your password.</p>
+    
+        <form action="https://www.inex.ie/user" method="post" name="loginForm" id="loginForm" class="horizontal-form">
+
+        <fieldset class="control-group" id="div-form-name">
+            <label for="name" class="control-label">Username</label>
+            <div id="div-controls-name" class="controls">
+                <input id="name" name="name" type="text" value="{$user->username}" />
             </div>
-        </div>
+        </fieldset>
+
+        <fieldset class="control-group" id="div-form-pass">
+            <label for="pass" class="control-label">Password</label>
+            <div id="div-controls-pass" class="controls">
+                <input id="pass" name="pass" type="password" value="" />
+            </div>
+        </fieldset>
+
+
+        <fieldset class="form-actions">
+            <input type="hidden" name="form_id" id="edit-user-login" value="user_login" />
+            <input type="submit" name="op" class="btn btn-success" value="Log in" />
+        </fieldset>
+        
         </form>
     </div>
-    <div class="login-text">
-
-        <div class="ctr"><img src="{genUrl}/images/joomla-admin/security.png" width="64" height="64" alt="security" /></div>
-        <p>Use this form to login to the INEX's Drupal content management system.</p>
-        <p>For security reasons, we require you to re-enter your password.</p>
-    </div>
-    <div class="clr"></div>
-</div>
-
 </div>
 
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

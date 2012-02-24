@@ -1,18 +1,15 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+{if $user.privs eq 3}
+    <h2>Miscellaneous Benefits</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Miscellaneous Benefits</h1>
+        </div>
+{/if}
 
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Document">
-        Miscellaneous Benefits
-    </th>
-</tr>
-</table>
-
-<h2>IRC Channel</h2>
+<h3>IRC Channel</h3>
 
 
 <p>
@@ -44,7 +41,7 @@ and access to the server is encrypted using SSL.
 </table>
 
 
-<h2>Route Collector</h2>
+<h3>Route Collector</h3>
 
 <p>
 INEX runs a route collector, whose purpose is to allow exchange members to debug routing issues.
@@ -86,7 +83,7 @@ after a week or two.
 </p>
 
 
-<h2>Console Server</h2>
+<h3>Console Server</h3>
 
 <p>
 INEX can provide remote console access services for those members who house equipment
@@ -157,7 +154,4 @@ When connected to the management port on the hosted device:
 <ul>
     <li> &lt;ctrl-y&gt;, followed by <code>e</code> to go back to menu mode </li>
 </ul>
-
-</div>
-</div>
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

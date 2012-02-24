@@ -1,39 +1,54 @@
-{tmplinclude file="auth/header.tpl"}
+{include file="header.tpl"}
 
-{tmplinclude file="message.tpl"}
+<div class="page-content">
 
-
-<div class="login">
-    <div class="login-form">
+    <div class="page-header">
         <h1>Forgotten Username</h1>
-        <br /><br />
-        <form action="{genUrl controller="auth" action="forgotten-username"}" method="post" name="loginForm" id="loginForm">
-        <div class="form-block">
-            <div class="inputlabel">Email Address</div>
-            <div><input name="email" autocomplete="off" type="text" class="inputbox" size="15" value="" /></div>
-            <div align="left">
-                <input type="hidden" name="fpsubmitted" value="1" />
-                <input type="submit" name="submit" class="button" value="Submit" />
-                <a href="{genUrl controller="auth" action="forgotten-password"}">Forgotten Password?</a>
-            </div>
-        </div>
-        </form>
     </div>
-    <div class="login-text">
 
-        <div class="ctr"><img src="images/joomla-admin/security.png" width="64" height="64" alt="security" /></div>
-        <p>
-            Please enter your email address and we will send you all related usernames by email.
-        </p>
-        <p>
-            For help please contact <br />{mailto address='operations@inex.ie' encode='javascript' note='the operations team'}.
-        </p>
-        <p>
-        	<a href="{genUrl controller="auth"}">Return to Login Page</a>.
-    	</p>
+
+{include file="message.tpl"}
+
+
+<div class="row">
+
+    <div class="span6 offset4">
+        <img src="{genUrl}{$config.identity.ixp.biglogo}" />
     </div>
-    <div class="clr"></div>
+    
 </div>
 
+<div class="row">
 
-{tmplinclude file="footer.tpl"}
+    <div class="span6 offset3">
+    
+        <p align="center">
+            Please enter your email address and we will send you all related usernames by email.
+        </p>
+        
+        <form class="form-horizontal" action="{genUrl controller="auth" action="forgotten-username"}" method="post" name="loginForm" id="loginForm">
+
+        <fieldset class="control-group" id="div-form-email">
+            <label for="email" class="control-label">Email Address</label>
+            <div id="div-controls-username" class="controls">
+                <input id="email" name="email" type="text" value="" />
+            </div>
+        </fieldset>
+
+        <fieldset class="form-actions">
+            <input type="hidden" name="fpsubmitted" value="1" />
+
+            <input type="submit" name="submit" class="btn btn-success" value="Submit" />
+            <a class="btn" href="{genUrl controller="auth" action="forgotten-password"}">Forgotten Password?</a>
+            <a class="btn" href="{genUrl controller="auth" action="login"}">Return to Login</a>
+        </fieldset>
+
+        </form>
+    </div>
+</div>
+
+<p align="center">
+    For help please contact {mailto address=$config.identity.email encode='javascript' text=$config.identity.name}.
+</p>
+
+{include file="footer.tpl"}

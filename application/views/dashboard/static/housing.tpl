@@ -1,16 +1,13 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
-
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Document">
-        Equipment Housing at INEX Facilities
-    </th>
-</tr>
-</table>
+{if $user.privs eq 3}
+    <h2>Equipment Housing at INEX Facilities</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Equipment Housing at INEX Facilities</h1>
+        </div>
+{/if}
 
 <p>
 For members who do not have co-location space in any of INEX's locations and who use
@@ -111,8 +108,5 @@ housing for:
     </li>
 </ul>
 
-</div>
 
-</div>
-
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

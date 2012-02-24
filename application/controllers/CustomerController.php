@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -36,7 +36,7 @@ class CustomerController extends INEX_Controller_FrontEnd
         $this->frontend['defaultOrdering'] = 'name';
         $this->frontend['model']           = 'Cust';
         $this->frontend['name']            = 'Customer';
-        $this->frontend['pageTitle']       = 'IXP Members';
+        $this->frontend['pageTitle']       = 'Customers';
 
         $this->frontend['columns'] = array(
 
@@ -321,8 +321,8 @@ END_JSON;
 
         $form->getElement( 'cc' )->setValue( implode( ',', $userEmails ) );
 
-        $form->getElement( 'bcc' )->setValue( $this->_config['identity']['email'] );
-        $form->getElement( 'subject' )->setValue( $this->_config['identity']['name'] . ' :: Welcome Mail' );
+        $form->getElement( 'bcc' )->setValue( $this->config['identity']['email'] );
+        $form->getElement( 'subject' )->setValue( $this->config['identity']['name'] . ' :: Welcome Mail' );
 
         // Let's get the information we need for the welcome mail from the database.
 

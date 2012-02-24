@@ -11,6 +11,8 @@ library/Doctrine
 library/Zend
 library/ZFDebug
 library/smarty
+library/Smarty
+library/Bootstrap-Zend-Framework
 *~
 public/images/.directory
 public/images/joomla-admin/.directory
