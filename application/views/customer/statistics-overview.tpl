@@ -47,44 +47,51 @@
 </p>
 
 
-<table align="center" border="1">
-<tr>
+<div class="row-fluid">
 
 {assign var='count' value=0}
 {foreach from=$custs item=cust}
 
+    <div class="span3">
 
-<td>
+        <div class="well">
+            <h4>{$cust.name}</h4>
 
-<h4>{$cust.name}</h4>
+            <p>
+                <br />
+                <a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname monitorindex=aggregate category=$category}">
+                    <img
+                        src="{genMrtgImgUrl shortname=$cust.shortname category=$category period=$period monitorindex='aggregate'}"
+                        width="300"
+                    />
+                </a>
+            </p>
+        </div>
 
-<a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname monitorindex=aggregate category=$category}">
-	<img
-	    src="{genMrtgImgUrl shortname=$cust.shortname category=$category period=$period monitorindex='aggregate'}"
-	    width="300"
-	/>
-</a>
+    </div>
 
-</td>
+    {assign var='count' value=$count+1}
 
-{assign var='count' value=$count+1}
-
-{if $count%3 eq 0}
-</tr><tr>
-{/if}
+    {if $count%4 eq 0}
+        </div><br /><div class="row-fluid">
+    {/if}
 
 {/foreach}
 
-{if $count%3 neq 0}
-    <td></td>
-    {assign var='count' value="`$count+1`"}
-    {if $count%3 neq 0}
-    <td></td>
+{if $count%4 neq 0}
+    <div class="span3"></div>
+    {assign var='count' value=$count+1}
+    {if $count%4 neq 0}
+        <div class="span3"></div>
+        {assign var='count' value=$count+1}
+        {if $count%4 neq 0}
+            <div class="span3"></div>
+            {assign var='count' value=$count+1}
+        {/if}
     {/if}
 {/if}
 
-</tr>
+</div>
 
-</table>
 
 {include file="footer.tpl"}
