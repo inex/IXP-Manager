@@ -1,7 +1,14 @@
 {include file="header.tpl"}
 
 {if $user.privs eq 3}
-    <h2>About IXP Manager</h2>
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            About IXP Manager
+        </li>
+    </ul>
 {else}
     <div class="page-content">
         <div class="page-header">
