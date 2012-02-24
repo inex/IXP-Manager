@@ -1,7 +1,17 @@
 {include file="header.tpl"}
 
 {if $user.privs eq 3}
-    <h2>Membership Fees and Charges</h2>
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            Documentation <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Membership Fees and Charges
+        </li>
+    </ul>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -29,17 +39,17 @@ port charges.
             <th width="75%" >Description</th>
             <th>Charge</th>
         </tr>
-        
+
         <tr>
             <td>Associate Membership</td>
             <td>&euro;1,000 p.a.</td>
         </tr>
-        
+
         <tr>
             <td>Full Membership</td>
             <td>&euro;2,000 p.a.</td>
         </tr>
-        
+
         <tr>
             <td>Joining Fee</td>
             <td>No charge</td>
@@ -63,7 +73,7 @@ port charges.
                 <th>Subsequent Port&nbsp;&nbsp;&nbsp;&nbsp;</th>
                 <th>Term</th>
             </tr>
-            
+
             <tr>
                 <td>10Mbit/s port</td>
                 <td>Waived for 2012&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -71,7 +81,7 @@ port charges.
                 <td>n/a</td>
                 <td>per annum</td>
             </tr>
-            
+
             <tr>
                 <td>100Mbit/s port</td>
                 <td>&euro;2,500</td>
@@ -79,7 +89,7 @@ port charges.
                 <td>&euro;1,666</td>
                 <td>per annum</td>
             </tr>
-            
+
             <tr>
                 <td>1Gbit/s port</td>
                 <td>&euro;6,000 (inc. free 100Mb)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -87,7 +97,7 @@ port charges.
                 <td>&euro;4,000</td>
                 <td>per annum</td>
             </tr>
-            
+
             <tr>
                 <td>10Gbit/s port</td>
                 <td>&euro;16,500</td>
@@ -110,32 +120,32 @@ port charges.
                 <th width="75%" >Description</th>
                 <th>Charge</th>
             </tr>
-            
+
             <tr>
                 <td>Private Interconnection link within INEX Cage</td>
                 <td>&euro;120 p.a.</td>
             </tr>
-            
+
             <tr>
                 <td>Private Interconnection link to external cross-connect</td>
                 <td>&euro;250 p.a.</td>
             </tr>
-            
+
             <tr>
                 <td>Installation fee for long-haul (ZX) gigabit optical ethernet link</td>
                 <td>&euro;1,500 once off</td>
             </tr>
-            
+
             <tr>
                 <td>Installation fee for long-haul (ZX) ten gigabit optical ethernet link</td>
                 <td>&euro;4,500 once off</td>
             </tr>
-            
+
             <tr>
                 <td>Rack space in INEX colocation cages above 3U</td>
                 <td>&euro;250 p.a. per U</td>
             </tr>
-            
+
             <tr>
                 <td>Private VLAN between two members</td>
                 <td>&euro;240 p.a. per party</td>

@@ -1,6 +1,14 @@
 {include file="header.tpl"}
 
-<h2>IXP Manager Help</h2>
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        IXP Manager Help
+    </li>
+</ul>
+
 <p>
 This help section is designed to show new users how to set up IXP Manager objects and
 work through normal day to day procedures. First time users setting up a new instance

@@ -1,7 +1,17 @@
 {include file="header.tpl"}
 
 {if $user.privs eq 3}
-    <h2>Equipment Housing at INEX Facilities</h2>
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            Documentation <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Equipment Housing at INEX Facilities
+        </li>
+    </ul>
 {else}
     <div class="page-content">
         <div class="page-header">
