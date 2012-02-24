@@ -1,6 +1,23 @@
 {include file="header.tpl"}
 
-<h2>Trunk Graphs :: {$graphs.$graph}</h2>
+{if $user.privs eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            Trunk Graphs <span class="divider">/</span>
+        </li>
+        <li class="active">
+            {$graphs.$graph}
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            Trunk Graphs :: {$graphs.$graph}
+        </div>
+{/if}
 
 {include file="message.tpl"}
 <div id='ajaxMessage'></div>
@@ -23,21 +40,43 @@
 </form>
 </p>
 
-{foreach from=$periods key=pname item=pvalue}
+<div class="row-fluid">
 
-<h3>{$pname} Graph</h3>
+{assign var='count' value=0}
 
-<p>
-    {genMrtgGraphBox
-            shortname='X_Trunks'
-            period=$pvalue
-            values=$stats.$pvalue
-            graph=$graph
-    }
-</p>
 
+    {foreach from=$periods key=pname item=pvalue}
+
+    <div class="span6">
+
+        <div class="well">
+
+            <h3>{$pname} Graph</h3>
+
+            <p>
+                {genMrtgGraphBox
+                        shortname='X_Trunks'
+                        period=$pvalue
+                        values=$stats.$pvalue
+                        graph=$graph
+                }
+            </p>
+        </div>
+    </div>
+
+    {assign var='count' value=$count+1}
+
+    {if $count%2 eq 0}
+        </div><br /><div class="row-fluid">
+    {/if}
 
 {/foreach}
+
+{if $count%2 neq 0}
+    <div class="span3"></div>
+{/if}
+
+</div>
 
 {include file="footer.tpl"}
 

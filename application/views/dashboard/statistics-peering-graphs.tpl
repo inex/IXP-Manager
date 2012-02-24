@@ -1,6 +1,20 @@
 {include file="header.tpl"}
 
-<h2>INEX Public Traffic Statistics</h2>
+{if $user.privs eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            INEX Public Traffic Statistics
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>INEX Public Traffic Statistics</h1>
+        </div>
+{/if}
 
 <h3>{$graphs.$graph} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
 
@@ -34,23 +48,43 @@
 </form>
 </p>
 
+
+<div class="row-fluid">
+
+{assign var='count' value=0}
+
 {foreach from=$periods key=pname item=pvalue}
 
-<h3>{$pname} Graph</h3>
+    <div class="span6">
 
-<p>
-    {genMrtgGraphBox
-            shortname='X_Peering'
-            period=$pvalue
-            category=$category
-            values=$stats.$pvalue
-            graph=$graph
-    }
-</p>
+        <div class="well">
+            <h3>{$pname} Graph</h3>
 
+            <p>
+                {genMrtgGraphBox
+                        shortname='X_Peering'
+                        period=$pvalue
+                        category=$category
+                        values=$stats.$pvalue
+                        graph=$graph
+                }
+            </p>
+        </div>
+    </div>
+
+    {assign var='count' value=$count+1}
+
+    {if $count%2 eq 0}
+        </div><br /><div class="row-fluid">
+    {/if}
 
 {/foreach}
 
+{if $count%2 neq 0}
+    <div class="span3"></div>
+{/if}
+
+</div>
 
 
 {include file="footer.tpl"}
