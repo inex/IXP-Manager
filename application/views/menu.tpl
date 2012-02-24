@@ -31,7 +31,7 @@
             {/if}
             
         </li>
-        <li {if $controller eq 'user'}class="active"{/if}>
+        <li {if $controller eq 'user' and $action neq 'last'}class="active"{/if}>
             <a href="{genUrl controller='user' action='list'}">Users</a>
         </li>
         <li {if $controller eq 'contact'}class="active"{/if}>

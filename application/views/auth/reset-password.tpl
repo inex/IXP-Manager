@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
 <div class="page-content">
 
@@ -21,7 +21,7 @@
     <div class="span6 offset3">
     
         <p align="center">
-            Please enter your username, the token that was emailed to you and a new password:         
+            Please enter your username, the token that was emailed to you and a new password:
         </p>
         
         <form class="form-horizontal" action="{genUrl controller="auth" action="reset-password"}" method="post" name="loginForm" id="loginForm">
@@ -30,28 +30,28 @@
             <label for="username" class="control-label">Username</label>
             <div id="div-controls-username" class="controls">
                 <input id="email" name="username" type="text" value="{if isset($username)}{$username}{/if}" />
-            </div>            
+            </div>
         </fieldset>
 
         <fieldset class="control-group" id="div-form-token">
             <label for="token" class="control-label">Token</label>
             <div id="div-controls-token" class="controls">
                 <input id="token" name="token" type="text" value="{if isset($token)}{$token}{/if}" />
-            </div>            
+            </div>
         </fieldset>
 
         <fieldset class="control-group" id="div-form-pass1">
             <label for="pass1" class="control-label">Password</label>
             <div id="div-controls-pass1" class="controls">
                 <input id="pass1" name="pass1" type="password" value="" />
-            </div>            
+            </div>
         </fieldset>
 
         <fieldset class="control-group" id="div-form-pass2">
             <label for="pass2" class="control-label">Confirm Password</label>
             <div id="div-controls-pass2" class="controls">
                 <input id="pass2" name="pass2" type="password" value="" />
-            </div>            
+            </div>
         </fieldset>
 
         <fieldset class="form-actions">
@@ -70,4 +70,4 @@
 </p>
 
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

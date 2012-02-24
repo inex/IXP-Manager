@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
 <div class="page-content">
 
@@ -6,7 +6,7 @@
         <h1>Forgotten Password</h1>
     </div>
 
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <div class="row">
 
@@ -30,7 +30,7 @@
             <label for="username" class="control-label">Username</label>
             <div id="div-controls-username" class="controls">
                 <input id="username" name="loginusername" type="text" value="{if isset($username)}{$username}{/if}" />
-            </div>            
+            </div>
         </fieldset>
 
         <fieldset class="form-actions">
@@ -49,4 +49,4 @@
     For help please contact {mailto address=$config.identity.email encode='javascript' text=$config.identity.name}.
 </p>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

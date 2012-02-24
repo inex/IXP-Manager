@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
 <div class="page-content">
 
@@ -32,7 +32,7 @@
             <label for="email" class="control-label">Email Address</label>
             <div id="div-controls-username" class="controls">
                 <input id="email" name="email" type="text" value="" />
-            </div>            
+            </div>
         </fieldset>
 
         <fieldset class="form-actions">
@@ -51,4 +51,4 @@
     For help please contact {mailto address=$config.identity.email encode='javascript' text=$config.identity.name}.
 </p>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
