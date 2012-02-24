@@ -54,14 +54,19 @@
 
     <div class="span3">
 
-        <h4>{$cust.name}</h4>
+        <div class="well">
+            <h4>{$cust.name}</h4>
 
-        <a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname monitorindex=aggregate category=$category}">
-            <img
-                src="{genMrtgImgUrl shortname=$cust.shortname category=$category period=$period monitorindex='aggregate'}"
-                width="300"
-            />
-        </a>
+            <p>
+                <br />
+                <a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname monitorindex=aggregate category=$category}">
+                    <img
+                        src="{genMrtgImgUrl shortname=$cust.shortname category=$category period=$period monitorindex='aggregate'}"
+                        width="300"
+                    />
+                </a>
+            </p>
+        </div>
 
     </div>
 
