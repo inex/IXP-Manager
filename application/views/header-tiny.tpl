@@ -9,13 +9,13 @@
     <title>{$pageTitle|default:"IXP Manager"}</title>
 
 	{if $config.use_minified_css}
-	    <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.bundle.css">
+	    <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.bundle-v1.css">
     {else}
         {include file="header-css.tpl"}
 	{/if}
 
 	{if $config.use_minified_js}
-    	<script type="text/javascript" src="{genUrl}/js/min.bundle.js"></script>
+    	<script type="text/javascript" src="{genUrl}/js/min.bundle-v1.js"></script>
     {else}
         {include file="header-js.tpl"}
 	{/if}
