@@ -3,7 +3,7 @@
 $(document).ready( function(){
 
     {if isset( $email ) and $email}
-	    showPeeringRequestDialog( {$email} );
+        showPeeringRequestDialog( {$email} );
     {/if}
 
     // If the user has not been here before, show them the instructions
@@ -14,57 +14,57 @@ $(document).ready( function(){
         });
     {/if}
 
-    	
-	oTable = $('#myPeeringMatrixTable').dataTable({
+
+    oTable = $('#myPeeringMatrixTable').dataTable({
 
         "aaSorting": [[ {if $ipv6[$customer.id]}4{else}3{/if}, 'asc' ]],
         "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
         "bPaginate": false,
-		"aoColumns": [
-    		null,
-      		null,
-      		null,
+        "aoColumns": [
+            null,
+            null,
+            null,
             {if $ipv6[$customer.id]}null,{/if}
-      		null,
-      		null,
-      		null,
-        	{ "sWidth": "50px" },
-      		null,
-      		null
-    	]
-	}).show();
+            null,
+            null,
+            null,
+            { "sWidth": "50px" },
+            null,
+            null
+        ]
+    }).show();
 
-	// bind notes save to save action
-	$('#notes-save').click( saveNotes );
+    // bind notes save to save action
+    $('#notes-save').click( saveNotes );
 
-		
+
 });
 
 
 $( "#peeringNotesDialog" ).dialog({
-	width: 600,
-	autoOpen: false,
-	title: "Peering Notes",
-	modal: true
+    width: 600,
+    autoOpen: false,
+    title: "Peering Notes",
+    modal: true
 });
 
 $( "#sendPeeringRequestDialog" ).dialog({
-	width: 800,
-	autoOpen: false,
-	title: "Member to Member Peering Request",
-	modal: true,
-	buttons: {
-		"Send": sendPeeringRequest,
-		"Cancel": function() {
-			$( this ).dialog( "close" );
-		}
-	}
+    width: 800,
+    autoOpen: false,
+    title: "Member to Member Peering Request",
+    modal: true,
+    buttons: {
+        "Send": sendPeeringRequest,
+        "Cancel": function() {
+            $( this ).dialog( "close" );
+        }
+    }
 });
 
 
 function editNotes( pId )
 {
-	$( "#ajaxMessage" ).hide();
+    $( "#ajaxMessage" ).hide();
 
     // Render the Dialog
     $( "#peeringNotesDialog-id" ).val( 0 );
@@ -82,7 +82,7 @@ function editNotes( pId )
             }
     );
 
-	$( '#peeringNotesDialog' ).dialog( 'open' );
+    $( '#peeringNotesDialog' ).dialog( 'open' );
 
 }
 
@@ -93,13 +93,13 @@ function saveNotes()
 
     $( '#peeringNotesDialog-notes' ).hide();
     $( '#peeringNotesDialog-member' ).html( 'Saving...' );
-    
+
     $.post(
-		"{genUrl controller=dashboard action='my-peering-matrix-notes' save=1}",
-		$('#peeringNotesForm').serialize(), inexMessage, 'json'
+        "{genUrl controller=dashboard action='my-peering-matrix-notes' save=1}",
+        $('#peeringNotesForm').serialize(), inexMessage, 'json'
     );
-    
-	$( '#peeringNotesDialog' ).dialog( 'close' );
+
+    $( '#peeringNotesDialog' ).dialog( 'close' );
 
     return false;
 }
@@ -108,10 +108,10 @@ function saveNotes()
 
 function showPeeringRequestDialog( pId )
 {
-	$( "#ajaxMessage" ).hide();
+    $( "#ajaxMessage" ).hide();
 
-	// Render the Dialog
-	$( "#sendPeeringRequestThrobber" ).hide();
+    // Render the Dialog
+    $( "#sendPeeringRequestThrobber" ).hide();
     $( "#sendPeeringRequestDialog-id" ).val( 0 );
     $( "#sendPeeringRequestDialog-to" ).val( '...' );
     $( "#sendPeeringRequestDialog-from" ).val( '...' );
@@ -120,10 +120,10 @@ function showPeeringRequestDialog( pId )
     $( "#sendPeeringRequestDialog-message" ).val( 'Loading...' );
     $( "#sendPeeringRequestForm" ).show();
 
-	$.getJSON( "{genUrl controller='dashboard' action='my-peering-matrix-email'}/id/" + pId,
-	        function( data ) {
-		        $( "#sendPeeringRequestDialog-id" ).val( pId );
-		        $( "#sendPeeringRequestDialog-to" ).val( data['to'] );
+    $.getJSON( "{genUrl controller='dashboard' action='my-peering-matrix-email'}/id/" + pId,
+            function( data ) {
+                $( "#sendPeeringRequestDialog-id" ).val( pId );
+                $( "#sendPeeringRequestDialog-to" ).val( data['to'] );
                 $( "#sendPeeringRequestDialog-from" ).val( data['from'] );
                 $( "#sendPeeringRequestDialog-bcc" ).val( data['bcc'] );
                 $( "#sendPeeringRequestDialog-subject" ).val( data['subject'] );
@@ -131,7 +131,7 @@ function showPeeringRequestDialog( pId )
             }
     );
 
-	$('#sendPeeringRequestDialog').dialog( "open" );
+    $('#sendPeeringRequestDialog').dialog( "open" );
 
 }
 
@@ -139,13 +139,13 @@ function sendPeeringRequest()
 {
     $( "#sendPeeringRequestForm" ).hide();
     $( "#sendPeeringRequestThrobber" ).show();
-    
+
     $.post(
-		"{genUrl controller=dashboard action='my-peering-matrix-email' send=1}",
-		$('#sendPeeringRequestForm').serialize(), inexMessage, 'json'
+        "{genUrl controller=dashboard action='my-peering-matrix-email' send=1}",
+        $('#sendPeeringRequestForm').serialize(), inexMessage, 'json'
     );
-    
-	$( '#sendPeeringRequestDialog' ).dialog( 'close' );
+
+    $( '#sendPeeringRequestDialog' ).dialog( 'close' );
 
     return false;
 }
