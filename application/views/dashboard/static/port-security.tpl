@@ -1,14 +1,15 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+{if $user.privs eq 3}
+    <h2>INEX Port Security Policies</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>INEX Port Security Policies</h1>
+        </div>
+{/if}
 
-<div id="content">
 
-<table class="adminheading" border="0">
-	<tr>
-		<th class="Document">INEX Port Security Policies</th>
-	</tr>
-</table>
 
 <p>For the purposes of ensuring layer 2 stability, INEX implements three
 port security policies.</p>
@@ -95,7 +96,7 @@ port security policies.</p>
 </ul>
 
 
-<h2>Multicast PIM / IGMP snooping</h2>
+<h3>Multicast PIM / IGMP snooping</h3>
 
 <p>
 In order not to flood 3rd party ports with unnecessary multicast traffic,
@@ -105,7 +106,7 @@ receive specific multicast traffic flows. This policy increases both
 port security and link utilisation efficiency.
 </p>
 
-<h2>Broadcast Traffic Monitoring </h2>
+<h3>Broadcast Traffic Monitoring </h3>
 
 <p>
 For the purposes of ensuring that no unnecessary broadcast
@@ -125,7 +126,5 @@ Traffic monitoring is implemented using <code>ixpwatch</code>, a program
 designed and coded by the London Internet Exchange (LINX).
 </p>
 
-</div>
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

@@ -1,16 +1,14 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl"}
 
-<div class="yui-g">
+{if $user.privs eq 3}
+    <h2>Technical Support</h2>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Technical Support</h1>
+        </div>
+{/if}
 
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Document">
-        Technical Support
-    </th>
-</tr>
-</table>
 
 <p>
 Regular technical support at INEX is provided on an office hours basis from 09:00 to 18:00 GMT,
@@ -67,7 +65,5 @@ attended to immediately.
 </tr>
 </table>
 
-</div>
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

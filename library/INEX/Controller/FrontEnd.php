@@ -4,21 +4,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -84,7 +84,7 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
                 && !$this->config['controller'][$this->getRequest()->getParam( 'controller' )]['enabled'] )
         {
             return( $this->_forward( 'controller-disabled', 'index' ) );
-        } 
+        }
         
         if( $this->feAuthLevelRequired != User::AUTH_PUBLIC )
         {
@@ -244,6 +244,12 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
         $this->view->form   = $form->render( $this->view );
         $this->view->object = $object;
 
+        if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'addEdit-preamble.tpl' ) )
+            $this->view->hasPreContent = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'addEdit-preamble.tpl';
+        
+        if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'addEdit-postamble.tpl' ) )
+            $this->view->hasPostContent = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'addEdit-postamble.tpl';
+                
         if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'addEdit.tpl' ) )
             $this->view->display( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'addEdit.tpl' );
         else
@@ -341,7 +347,7 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
             $dataQuery = $this->_preList( $dataQuery );
     
             $this->view->rows = $dataQuery->execute();
-        }        
+        }
 
         $this->view->feSession  = $this->feSession;
 
@@ -351,6 +357,9 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
         if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu.js.tpl' ) )
             $this->view->hasCustomContextMenu = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu';
 
+        if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'list-pretable.tpl' ) )
+            $this->view->hasPreContent = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'list-pretable.tpl';
+        
         if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'postContent.tpl' ) )
             $this->view->hasPostContent = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'postContent.tpl';
 

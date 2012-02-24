@@ -1,22 +1,20 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-<!-- <div class="yui-g" style="height: 600px"> -->
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl contoller="customer" action="list"}">Customers</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Send Welcome Email
+    </li>
+</ul>       
 
-<table class="adminheading" border="0">
-<tr>
-    <th class="Customer">
-        IXP Members :: Send Welcome E-mail
-    </th>
-</tr>
-</table>
-
-
-{tmplinclude file="message.tpl"}
-
-<div class="content">
+{include file="message.tpl"}
 
 {$form}
 
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

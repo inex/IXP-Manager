@@ -22,7 +22,7 @@
 
 
 
-            <h2>My Peering Overview</h2>
+            <h3>My Peering Overview</h3>
 
             <p>
             As per your <a href="{genUrl controller='dashboard' action='my-peering-matrix'}">peering
@@ -30,7 +30,7 @@
             overview:
             </p>
 
-            <table id="peeringOverviewTable" class="ixptable">
+            <table id="peeringOverviewTable" class="table">
                 <thead>
                     <tr>
                         <th></th>
@@ -60,11 +60,11 @@
         {/if} {* END: if $customer->isFullMember() *}
 
 
-            <h2>Recent Members</h2>
+            <h3>Recent Members</h3>
 
             <p>Our three most recent members are listed below. {if $customer->isFullMember()}Have you arranged peering with them yet?{/if}</p>
 
-            <table id="recentMembersTable" class="ixptable">
+            <table id="recentMembersTable" class="table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -93,7 +93,7 @@
 
         {if $customer->isFullMember()}
 
-            <h2>Aggregate Traffic Statistics</h2>
+            <h3>Aggregate Traffic Statistics</h3>
 
             <p>
             	<a href="{genUrl controller="dashboard" action="statistics-drilldown" shortname=$customer.shortname category='bits' monitorindex='aggregate'}">

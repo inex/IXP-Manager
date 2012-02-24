@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -36,6 +36,7 @@
  */
 class INEX_Form_ProfilePassword extends INEX_Form
 {
+    
     /**
      * Constructor for a form with a 'Password' and 'Confirm' field.
      *
@@ -52,9 +53,9 @@ class INEX_Form_ProfilePassword extends INEX_Form
         ////////////////////////////////////////////////
 
         $oldpassword = $this->createElement( 'password', 'oldpassword' );
-        $oldpassword->addValidator( 'stringLength', false, array( 1, 30 ) )
+        $oldpassword->setLabel( 'Current Password' )
+            ->addValidator( 'stringLength', false, array( 1, 30 ) )
             ->setRequired( true )
-            ->setLabel( 'Current Password' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
 
@@ -80,20 +81,13 @@ class INEX_Form_ProfilePassword extends INEX_Form
 
         $this->addElement( $password2 );
 
+        
         $submit = $this->createElement( 'submit', 'submit', array( 'label' => 'Change' ) );
         $this->addElement( $submit );
 
-
-        $this->addDisplayGroup(
-            array( 'oldpassword', 'password1', 'password2', 'submit' ),
-            'passwordDisplayGroup'
-        );
-
-        $this->getDisplayGroup( 'passwordDisplayGroup' )->setLegend( 'Change Your Password' );
 
     }
 
 
 }
 
-?>

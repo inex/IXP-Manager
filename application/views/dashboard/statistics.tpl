@@ -1,19 +1,11 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
-<div class="yui-g">
+<div class="page-content">
+    <div class="page-header">
+        <h1>IXP Interface Statistics :: {$customer->name}</h1>
+    </div>
 
-<div id="content">
-
-<table class="adminheading" border="0">
-<tr>
-    <th class="Statistics">
-        IXP Interface Statistics :: {$customer->name}
-    </th>
-</tr>
-</table>
-
-{tmplinclude file="message.tpl"}
-
+{include file="message.tpl"}
 <div id='ajaxMessage'></div>
 
 
@@ -40,7 +32,7 @@ Click on a graph below for longer term statistics or change the graph time in th
 </form>
 </p>
 
-<h2>Aggregate Traffic Statistics</h2>
+<h3>Aggregate Traffic Statistics</h3>
 
             <p>
 		<a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category=$category shortname=$shortname}">
@@ -53,12 +45,12 @@ Click on a graph below for longer term statistics or change the graph time in th
 
     {foreach from=$connection.Physicalinterface item=pi}
 
-        <h2>
+        <h3>
             Connection:
                     {$pi.Switchport.SwitchTable.Cabinet.Location.name}
                 / {$pi.Switchport.SwitchTable.name}
                 / {$pi.Switchport.name} ({$pi.speed}Mb/s)
-        </h2>
+        </h3>
 
 
         <p>
@@ -71,8 +63,6 @@ Click on a graph below for longer term statistics or change the graph time in th
 
 {/foreach}
 
-</div>
-</div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
 

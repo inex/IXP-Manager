@@ -1,19 +1,19 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
-<!-- <div class="yui-g" style="height: 600px"> -->
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        Statistics <span class="divider">/</span>
+    </li>
+    <li class="active">
+        League Table ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
+    </li>
+</ul>
 
-<table class="adminheading" border="0">
-<tr>
-    <th class="Customer">
-        IXP Members :: League Table ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
-    </th>
-</tr>
-</table>
 
-
-{tmplinclude file="message.tpl"}
-
-<div class="content">
+{include file="message.tpl"}
 
 <p>
 <form action="{genUrl controller="customer" action="league-table"}" method="post">
@@ -47,7 +47,7 @@
 </form>
 </p>
 
-<table id="ixpDataTable" class="display" cellspacing="0" cellpadding="0" border="0" style="display: none;">
+<table id="ixpDataTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0">
 
 <thead>
     <tr>
@@ -81,7 +81,7 @@
 
 {if $metric eq 'max'}
 	<tr>
-        <td>{$td.Cust.shortname}</td> 
+        <td>{$td.Cust.shortname}</td>
         <td>{$td.Cust.name}</td>
 	    <td align="right">{$td.day_max_in}</td>
 	    <td align="right">{$td.day_max_out}</td>
@@ -98,7 +98,7 @@
 	</tr>
 {elseif $metric eq 'average'}
 	<tr>
-        <td>{$td.Cust.shortname}</td>  
+        <td>{$td.Cust.shortname}</td>
 	    <td>{$td.Cust.name}</td>
 	    <td align="right">{$td.day_avg_in}</td>
 	    <td align="right">{$td.day_avg_out}</td>
@@ -236,11 +236,11 @@ $(document).ready(function() {ldelim}
 
     oTable = $('#ixpDataTable').dataTable({ldelim}
 
+        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
         "aaSorting": [[ 6, 'desc' ]],
-		"bJQueryUI": true,
-		"sPaginationType": "full_numbers",
+		"sPaginationType": "bootstrap",
 		"iDisplayLength": 100,
-		"aoColumnDefs": [ 	
+		"aoColumnDefs": [
             {ldelim} "bVisible": false, "aTargets": [ 0 ] {rdelim},
         	{ldelim} "fnRender": {$scalefn}, "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] {rdelim},
         	{ldelim} "sType": "numeric", "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] {rdelim},
