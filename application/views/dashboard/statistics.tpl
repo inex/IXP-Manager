@@ -37,14 +37,16 @@
 
     <div class="span6">
 
-        <h3>Aggregate Traffic Statistics</h3>
+        <div class="well">
+            <h3>Aggregate Traffic Statistics</h3>
 
-        <p>
-            <br />
-            <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category=$category shortname=$shortname}">
-                {genMrtgImgUrlTag shortname=$shortname category=$category monitorindex='aggregate'}
-            </a>
-        </p>
+            <p>
+                <br />
+                <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category=$category shortname=$shortname}">
+                    {genMrtgImgUrlTag shortname=$shortname category=$category monitorindex='aggregate'}
+                </a>
+            </p>
+        </div>
 
     </div>
 
