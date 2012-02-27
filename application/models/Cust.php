@@ -72,6 +72,14 @@ class Cust extends BaseCust
         );
 
         $this->hasMany(
+            'Contact',
+            array(
+                'local' => 'id',
+                'foreign' => 'custid'
+            )
+        );
+
+        $this->hasMany(
             'ViewSwitchDetailsByCustid',
             array(
                 'local' => 'id',
@@ -203,6 +211,5 @@ class Cust extends BaseCust
     {
         return $this['type'] == self::TYPE_FULL || $this['type'] == self::TYPE_PROBONO;
     }
-
 
 }
