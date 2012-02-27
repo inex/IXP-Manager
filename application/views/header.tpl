@@ -136,6 +136,15 @@
                         </li>
                     </ul>
                     <ul class="nav pull-right">
+                        <form class="navbar-search pull-left">
+                            <select data-placeholder="View a Customer..." id="menu-select-customer" type="select" name="id" class="chzn-select">
+                                <option></option>
+                                {foreach from=$customers key=k item=i}
+                                    <option value="{$k}">{$i}</option>
+                                {/foreach}
+                            </select>
+                        </form>
+                    
                         {if isset( $session->switched_user_from ) and $session->switched_user_from}
                             <li><a href="{genUrl controller="auth" action="switch-back"}">Switch Back</a></li>
                         {else}

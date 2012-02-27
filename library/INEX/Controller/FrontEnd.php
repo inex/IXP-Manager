@@ -452,6 +452,5 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
     protected function addEditPreSave( $object, $isEdit, $form )
     {}
 
-    
 }
 

@@ -100,6 +100,13 @@ class INEX_Controller_Action extends Zend_Controller_Action
      */
     private $_sms = null;
 
+    
+    /**
+     * An array of id => cust.name for super users
+     * @var array
+     */
+    protected $_customers = null;
+    
     /**
      * Override the Zend_Controller_Action's constructor (which is called
      * at the very beginning of this function anyway).
@@ -203,6 +210,9 @@ class INEX_Controller_Action extends Zend_Controller_Action
             
             $this->session->timeOfLastAction = mktime();
         }
+        
+        if( $this->auth->hasIdentity() && $this->identity['user']['privs'] == 3 )
+            $this->superuserSetup();
     }
 
     /**
@@ -294,6 +304,20 @@ class INEX_Controller_Action extends Zend_Controller_Action
     protected function getLogger()
     {
         return $this->logger;
+    }
+
+    /**
+     * Set an array of customer id and names
+     *
+     * FIXME Move to central cache rather than per-user
+     */
+    private function superuserSetup()
+    {
+        // get an array of customer id => names
+        if( !isset( $this->session->ahome_customers ) )
+            $this->session->ahome_customers = CustTable::getAllNames();
+        
+        $this->view->customers = $this->_customers = $this->session->ahome_customers;
     }
 }
 
