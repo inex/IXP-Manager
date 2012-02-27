@@ -33,7 +33,7 @@
                 <a href="{$customer.corpwww}">{$customer.corpwww}</a>
                 -
                 {mailto address=$customer.peeringemail}
-                {if $customer.dateleave}
+                {if $customer.dateleave and $customer.dateleave neq '0000-00-00'}
                     - <strong>ACCOUNT CLOSED</strong>
                 {/if}
             </h3>
@@ -84,7 +84,7 @@
 
 
             
-            {if not $customer.dateleave}
+            {if not $customer.dateleave or $customer.dateleave eq '0000-00-00'}
             
                 <br />
                 <h3>Interfaces</h3>
@@ -220,7 +220,7 @@
 
     <div class="span6">
     
-        {if not $customer.dateleave}
+        {if not $customer.dateleave or $customer.dateleave eq '0000-00-00'}
     
                 <div class="row-fluid">
                 
