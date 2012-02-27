@@ -2,6 +2,7 @@
 public/.htaccess
 application/configs/application.ini
 application/configs/pp-application.ini*
+data/mrtg
 var/cache/*
 var/log/*
 var/meetings/*

@@ -4,21 +4,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -32,13 +32,13 @@ function smarty_function_genMrtgGraphBox( $params, &$smarty )
     $url = INEX_Mrtg::generateZendFrontendUrl( $params );
 
     $box = <<<END_BOX
-<table width="506" class="ltbr" cellspacing="1" cellpadding="1">
-<tr class="ltbr_row">
+<table width="506" cellspacing="1" cellpadding="1">
+<tr>
     <td colspan="8" style="width: 500; height: 135;">
         <img width="500" height="135" border="0" src="{$url}" />
     </td>
 </tr>
-<tr class="ltbr_even">
+<tr>
     <td width="10%">
     </td>
     <td width="25%" align="right">
@@ -52,7 +52,7 @@ function smarty_function_genMrtgGraphBox( $params, &$smarty )
     </td>
     <td width="15%"></td>
     </tr>
-<tr class="ltbr_odd">
+<tr>
     <td style="color: #00cc00; font-weight: bold;"  align="left">
         In
     </td>
@@ -67,7 +67,7 @@ function smarty_function_genMrtgGraphBox( $params, &$smarty )
     </td>
     <td></td>
 </tr>
-<tr class="ltbr_even">
+<tr>
     <td style="color: #0000ff; font-weight: bold;"  align="left">
         Out
     </td>
