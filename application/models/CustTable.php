@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -56,7 +56,7 @@ class CustTable extends Doctrine_Table
     
     /**
      * Utility function to load all customers of a given type
-     * 
+     *
      * @param array|int $type The customer type (see Cust::TYPE_*)
      * @param int $hydration The Doctrine hydration method to use
      * @return The resultset in the requested hydration
@@ -70,6 +70,32 @@ class CustTable extends Doctrine_Table
             ->from( 'Cust c' )
             ->whereIn( 'c.type', $type )
             ->execute( null, $hydration );
+    }
+
+    /**
+     * Utility function to provide a count of different customer types
+     *   as type => count
+     * where type is as defined in Cust::$CUST_TYPES_TEXT
+     *
+     * @return array
+     */
+    public static function getTypeCounts()
+    {
+        $q = Doctrine_Query::create()
+            ->from( 'ViewCustCurrentActive c' )
+            ->select( 'c.type' )
+            ->fetchArray();
+        
+        $types = array();
+        foreach( $q as $r )
+        {
+            if( !isset( $types[ $r['type'] ] ) )
+                $types[ $r['type'] ] = 1;
+            else
+                $types[ $r['type'] ]++;
+        }
+        
+        return $types;
     }
 
 }
