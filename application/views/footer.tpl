@@ -72,8 +72,8 @@
             document.location.href = '{genUrl controller="customer" action="dashboard"}/id/' + $( "#menu-select-customer" ).val();
         });
 
-        {if isset( $customer )}
-            $( "#menu-select-customer" ).val( {$customer.id} );
+        {if isset( $acust )}
+            $( "#menu-select-customer" ).val( {$acust.id} );
             $( "#menu-select-customer" ).trigger( "liszt:updated" );
         {/if}
     {/if}
