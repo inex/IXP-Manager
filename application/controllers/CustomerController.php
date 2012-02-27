@@ -574,6 +574,27 @@ END_JSON;
     }
 
 
+
+
+    /**
+     * The Customer Dashboard
+     *
+     */
+    public function dashboardAction()
+    {
+        // Is the customer ID valid?
+        if( !$this->getRequest()->getParam( 'id', false ) || !is_numeric( $this->getRequest()->getParam( 'id' ) )
+            || !( $customer = Doctrine::getTable( 'Cust' )->find( $this->getRequest()->getParam( 'id' ) ) ) )
+        {
+            $this->view->message = new INEX_Message( 'Invalid customer ID', "error" );
+            return( $this->_forward( 'list' ) );
+        }
+
+        $this->view->customer = $customer;
+        $this->view->connections = $customer->getConnections();
+        
+        
+        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'dashboard.tpl' );
+    }
 }
 
-?>

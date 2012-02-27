@@ -63,5 +63,16 @@
 
 </footer>
 
+
+<script>
+    $( ".chzn-select" ).chosen();
+
+    {if $user.privs eq 3}
+        $( "#menu-select-customer" ).chosen().change( function(){
+            document.location.href = '{genUrl controller="customer" action="dashboard"}/id/' + $( "#menu-select-customer" ).val();
+        });
+    {/if}
+</script>
+
 </body>
 </html>
