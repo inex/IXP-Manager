@@ -7,7 +7,7 @@
 
     <li class="nav-header">IXP Customer Actions</li>
     
-        <li {if $controller eq 'customer' and ( $action eq 'list' or $action eq 'add' or $action eq 'edit' )}class="active"{/if}>
+        <li {if $controller eq 'customer' and ( $action eq 'list' or $action eq 'add' or $action eq 'edit' or $action eq 'dashboard' )}class="active"{/if}>
             <a href="{genUrl controller='customer' action='list'}">Customers</a>
         </li>
         <li>

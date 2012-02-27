@@ -61,6 +61,7 @@ class AuthController extends INEX_Controller_Action
 
 
         Zend_Session::destroy( true, true );
+        $this->session = null;
         $this->view->display( 'auth/login.tpl' );
     }
 
