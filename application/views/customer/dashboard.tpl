@@ -33,6 +33,9 @@
                 <a href="{$customer.corpwww}">{$customer.corpwww}</a>
                 -
                 {mailto address=$customer.peeringemail}
+                {if $customer.dateleave}
+                    - <strong>ACCOUNT CLOSED</strong>
+                {/if}
             </h3>
             <br />
             
@@ -81,59 +84,63 @@
 
 
             
+            {if not $customer.dateleave}
             
-            <br />
-            <h3>Interfaces</h3>
-            
-            <table class="table">
-                <thead>
-                    <th>Infrastructure</th>
-                    <th>Location</th>
-                    <th>Switch</th>
-                    <th>Port</th>
-                    <th>Speed</th>
-                    <th></th>
-                </thead>
-                <tbody>
-
-                {foreach from=$connections item=c}
+                <br />
+                <h3>Interfaces</h3>
                 
-                    <tr>
+                <table class="table">
+                    <thead>
+                        <th>Infrastructure</th>
+                        <th>Location</th>
+                        <th>Switch</th>
+                        <th>Port</th>
+                        <th>Speed</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+    
+                    {foreach from=$connections item=c}
                     
-                        <td>LAN #{$c.Physicalinterface.0.Switchport.SwitchTable.infrastructure}</td>
-                        <td>{$c.Physicalinterface.0.Switchport.SwitchTable.Cabinet.Location.name}</td>
-                        <td>
-                            {foreach from=$c.Physicalinterface item=pi name=pis1}
-                                {$pi.Switchport.SwitchTable.name}{if not $smarty.foreach.pis1.last}<br />{/if}
-                            {/foreach}
-                        </td>
-                        <td>
-                            {foreach from=$c.Physicalinterface item=pi name=pis2}
-                                <a href="{genUrl controller='dashboard' action="statistics-drilldown" monitorindex=$pi.monitorindex category='bits' shortname=$customer.shortname}">
-                                    {$pi.Switchport.name}
-                                </a>{if not $smarty.foreach.pis2.last}<br />{/if}
-                            {/foreach}
-                        </td>
-                        <td>
-                            {foreach from=$c.Physicalinterface item=pi name=pis3}
-                                {$pi.speed}/{$pi.duplex}{if not $smarty.foreach.pis3.last}<br />{/if}
-                            {/foreach}
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <a class="btn btn-mini" href="{genUrl controller='virtual-interface' action="edit" id=$c.id}"><i class="icon-pencil"></i></a>
-                            </div>
-                        </td>
+                        <tr>
                         
-                    </tr>
+                            <td>LAN #{$c.Physicalinterface.0.Switchport.SwitchTable.infrastructure}</td>
+                            <td>{$c.Physicalinterface.0.Switchport.SwitchTable.Cabinet.Location.name}</td>
+                            <td>
+                                {foreach from=$c.Physicalinterface item=pi name=pis1}
+                                    {$pi.Switchport.SwitchTable.name}{if not $smarty.foreach.pis1.last}<br />{/if}
+                                {/foreach}
+                            </td>
+                            <td>
+                                {foreach from=$c.Physicalinterface item=pi name=pis2}
+                                    <a href="{genUrl controller='dashboard' action="statistics-drilldown" monitorindex=$pi.monitorindex category='bits' shortname=$customer.shortname}">
+                                        {$pi.Switchport.name}
+                                    </a>{if not $smarty.foreach.pis2.last}<br />{/if}
+                                {/foreach}
+                            </td>
+                            <td>
+                                {foreach from=$c.Physicalinterface item=pi name=pis3}
+                                    {$pi.speed}/{$pi.duplex}{if not $smarty.foreach.pis3.last}<br />{/if}
+                                {/foreach}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-mini" href="{genUrl controller='virtual-interface' action="edit" id=$c.id}"><i class="icon-pencil"></i></a>
+                                </div>
+                            </td>
+                            
+                        </tr>
+                        
+                    {/foreach}
                     
-                {/foreach}
-                
-                </tbody>
-                
-            </table>
+                    </tbody>
                     
-            
+                </table>
+                        
+                
+            {/if} {* end dateleave *}
+                
+                
             
             
             <br />
@@ -201,9 +208,9 @@
                     {/foreach}
                 </tbody>
             </table>
+                                
                             
-                            
-                            
+
                             
             
         </div>
@@ -213,53 +220,56 @@
 
     <div class="span6">
     
-        <div class="row-fluid">
-        
-            <div class="well">
-                <h3>Aggregate Traffic Statistics</h3>
-        
-                <p>
-                    <br />
-                    <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category='bits' shortname=$customer.shortname}">
-                        {genMrtgImgUrlTag shortname=$customer.shortname category='bits' monitorindex='aggregate'}
-                    </a>
-                </p>
-            </div>
-        
-        </div>
-
-
-        {foreach from=$connections item=connection}
-
-            {foreach from=$connection.Physicalinterface item=pi}
-
+        {if not $customer.dateleave}
+    
                 <div class="row-fluid">
                 
                     <div class="well">
-        
-                        <h4>
-                                {$pi.Switchport.SwitchTable.Cabinet.Location.name}
-                                / {$pi.Switchport.SwitchTable.name}
-                                / {$pi.Switchport.name} ({$pi.speed}Mb/s)
-                        </h4>
-        
-        
+                        <h3>Aggregate Traffic Statistics</h3>
+                
                         <p>
                             <br />
-                            <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex=$pi.monitorindex category='bits' shortname=$customer.shortname}">
-                                {genMrtgImgUrlTag shortname=$customer.shortname category='bits' monitorindex=$pi.monitorindex}
+                            <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category='bits' shortname=$customer.shortname}">
+                                {genMrtgImgUrlTag shortname=$customer.shortname category='bits' monitorindex='aggregate'}
                             </a>
                         </p>
-        
                     </div>
-
+                
                 </div>
+        
+        
+                {foreach from=$connections item=connection}
+        
+                    {foreach from=$connection.Physicalinterface item=pi}
+        
+                        <div class="row-fluid">
+                        
+                            <div class="well">
+                
+                                <h4>
+                                        {$pi.Switchport.SwitchTable.Cabinet.Location.name}
+                                        / {$pi.Switchport.SwitchTable.name}
+                                        / {$pi.Switchport.name} ({$pi.speed}Mb/s)
+                                </h4>
+                
+                
+                                <p>
+                                    <br />
+                                    <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex=$pi.monitorindex category='bits' shortname=$customer.shortname}">
+                                        {genMrtgImgUrlTag shortname=$customer.shortname category='bits' monitorindex=$pi.monitorindex}
+                                    </a>
+                                </p>
+                
+                            </div>
+        
+                        </div>
+        
+                    {/foreach}
+                    
+                {/foreach}
 
-            {/foreach}
-            
-        {/foreach}
 
-
+            {/if}  {* end dateleave *}
         
     </div>
 
