@@ -1,23 +1,15 @@
-<style type="text/css">
 
-.contextMenu {
-	width: 220px;
-}
+<div class="btn-group">
+    <a class="btn btn-mini" href="{genUrl controller=$controller action="edit" id=$row.id}"><i class="icon-pencil"></i></a>
+    <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller=$controller action="delete" id=$row.id}"><i class="icon-trash"></i></a>
 
-.contextMenu LI.message A { background-image: url({genUrl}/images/joomla-admin/menu/messaging.png); }
-
-</style>
-
-<ul id="myMenu" class="contextMenu">
-    <li class="edit">
-        <a href="#edit">Edit</a>
-    </li>
-    <li class="delete">
-        <a href="#delete">Delete</a>
-    </li>
-    <li class="separator"></li>
-    
-    <li class="message">
-        <a href="#message">Send welcome email...</a>
-    </li>
-</ul>
+    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+        More...
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{genUrl controller='customer' action='send-welcome-email' id=$row.id}">Send Welcome Email</a>
+        </li>
+    </ul>
+</div>
