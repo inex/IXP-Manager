@@ -8,13 +8,13 @@
         <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
     </li>
     <li class="active">
-        Dashboard for {$customer.name}
+        Dashboard for {$acust.name}
     </li>
     <li class="pull-right">
         <div class="btn-toolbar" style="display: inline;">
             <div class="btn-group">
-                <a class="btn btn-mini" href="{genUrl controller='customer' action="edit" id=$customer.id}"><i class="icon-pencil"></i></a>
-                <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller='customer' action="delete" id=$customer.id}"><i class="icon-trash"></i></a>
+                <a class="btn btn-mini" href="{genUrl controller='customer' action="edit" id=$acust.id}"><i class="icon-pencil"></i></a>
+                <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller='customer' action="delete" id=$acust.id}"><i class="icon-trash"></i></a>
             </div>
     
             <div class="btn-group">
@@ -25,7 +25,7 @@
                         {assign var=cidprev  value=$k}
                     {/if}
                     
-                    {if $k eq $customer.id}
+                    {if $k eq $acust.id}
                         {assign var=haveprev value=1}
                     {elseif $haveprev and not $havenext}
                         {assign var=havenext value=1}
@@ -43,7 +43,7 @@
                 {/foreach}
                 
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="dashboard" id=$cidprev}"><i class="icon-chevron-left"></i></a>
-                <a class="btn btn-mini" href="{genUrl controller='customer' action="dashboard" id=$customer.id}"><i class="icon-refresh"></i></a>
+                <a class="btn btn-mini" href="{genUrl controller='customer' action="dashboard" id=$acust.id}"><i class="icon-refresh"></i></a>
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="dashboard" id=$cidnext}"><i class="icon-chevron-right"></i></a>
             </div>
         </div>
@@ -60,14 +60,14 @@
         <div class="row-fluid">
         
             <h3>
-                {$customer.name}
-                {if $customer.dateleave and $customer.dateleave neq '0000-00-00'}
+                {$acust.name}
+                {if $acust.dateleave and $acust.dateleave neq '0000-00-00'}
                     - <strong>ACCOUNT CLOSED</strong>
                 {/if}
             </h3>
             <h4 style="padding-left: 30px;">
-                {if $customer.corpwww}<a href="{$customer.corpwww}">{$customer.corpwww}</a>{/if}
-                {if $customer.peeringemail} - {mailto address=$customer.peeringemail}{/if}
+                {if $acust.corpwww}<a href="{$acust.corpwww}">{$acust.corpwww}</a>{/if}
+                {if $acust.peeringemail} - {mailto address=$acust.peeringemail}{/if}
             </h4>
             <br />
             
@@ -76,38 +76,38 @@
                 
                         <tr>
                             <td><strong>Status</strong></td>
-                            <td>{Cust::$CUST_STATUS_TEXT[$customer.status]}</td>
+                            <td>{Cust::$CUST_STATUS_TEXT[$acust.status]}</td>
                             <td><strong>Joined</strong></td>
-                            <td>{$customer.datejoin}</td>
+                            <td>{$acust.datejoin}</td>
                         </tr>
                         <tr>
                             <td><strong>Type</strong></td>
-                            <td>{Cust::$CUST_TYPES_TEXT[$customer.type]}</td>
+                            <td>{Cust::$CUST_TYPES_TEXT[$acust.type]}</td>
                             <td><strong>Left</strong></td>
-                            <td>{$customer.dateleave}</td>
+                            <td>{$acust.dateleave}</td>
                         </tr>
                         <tr>
                             <td><strong>Peering Policy</strong></td>
-                            <td>{$customer.peeringpolicy}</td>
+                            <td>{$acust.peeringpolicy}</td>
                             <td><strong>ASN</strong></td>
-                            <td>{$customer.autsys|asnumber} {if $customer.peeringmacro}({$customer.peeringmacro}){/if}</td>
+                            <td>{$acust.autsys|asnumber} {if $acust.peeringmacro}({$acust.peeringmacro}){/if}</td>
                         </tr>
                         <tr>
                             <td><strong>NOC Details</strong></td>
                             <td>
-                                {if $customer.nochours}    {$customer.nochours}<br />    {/if}
-                                {if $customer.nocemail}    {mailto address=$customer.nocemail}<br />{/if}
-                                {if $customer.nocwww}      {$customer.nocwww}<br />      {/if}
-                                {if $customer.nocphone}    {$customer.nocphone}<br />    {/if}
-                                {if $customer.noc24hphone} {$customer.noc24hphone} (24h) {/if}
+                                {if $acust.nochours}    {$acust.nochours}<br />    {/if}
+                                {if $acust.nocemail}    {mailto address=$acust.nocemail}<br />{/if}
+                                {if $acust.nocwww}      {$acust.nocwww}<br />      {/if}
+                                {if $acust.nocphone}    {$acust.nocphone}<br />    {/if}
+                                {if $acust.noc24hphone} {$acust.noc24hphone} (24h) {/if}
                             </td>
                             <td><strong>Billing Details</strong></td>
                             <td>
-                                {if $customer.billingContact}    {$customer.billingContact}<br />    {/if}
-                                {if $customer.billingAddress1}    {$customer.billingAddress1}<br />    {/if}
-                                {if $customer.billingAddress2}    {$customer.billingAddress2}<br />    {/if}
-                                {if $customer.billingCity}    {$customer.billingCity}<br />    {/if}
-                                {if $customer.billingCountry}    {$customer.billingCountry}<br />    {/if}
+                                {if $acust.billingContact}    {$acust.billingContact}<br />    {/if}
+                                {if $acust.billingAddress1}    {$acust.billingAddress1}<br />    {/if}
+                                {if $acust.billingAddress2}    {$acust.billingAddress2}<br />    {/if}
+                                {if $acust.billingCity}    {$acust.billingCity}<br />    {/if}
+                                {if $acust.billingCountry}    {$acust.billingCountry}<br />    {/if}
                             </td>
                         </tr>
                         
@@ -116,7 +116,7 @@
 
 
             
-            {if not $customer.dateleave or $customer.dateleave eq '0000-00-00'}
+            {if $acust.type neq Cust::TYPE_INTERNAL and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
             
                 <br /><br />
                 <h3>Interfaces</h3>
@@ -147,7 +147,7 @@
                                 </td>
                                 <td>
                                     {foreach from=$c.Physicalinterface item=pi name=pis2}
-                                        <a href="{genUrl controller='dashboard' action="statistics-drilldown" monitorindex=$pi.monitorindex category='bits' shortname=$customer.shortname}">
+                                        <a href="{genUrl controller='dashboard' action="statistics-drilldown" monitorindex=$pi.monitorindex category='bits' shortname=$acust.shortname}">
                                             {$pi.Switchport.name}
                                         </a>{if not $smarty.foreach.pis2.last}<br />{/if}
                                     {/foreach}
@@ -185,7 +185,7 @@
             <br /><br />
             <h3>User Accounts</h3>
             
-            {if count( $customer->User )}
+            {if count( $acust->User )}
             
                 <table class="table">
                     <thead>
@@ -196,7 +196,7 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        {foreach from=$customer->User item=u}
+                        {foreach from=$acust->User item=u}
                             <tr>
                                 <td>{$u.username}</td>
                                 <td>{User::$PRIVILEGES[$u.privs]}</td>
@@ -230,7 +230,7 @@
             <h3>Contacts</h3>
 
             
-            {if count( $customer->Contact )}
+            {if count( $acust->Contact )}
             
                 <table class="table">
                     <thead>
@@ -241,7 +241,7 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        {foreach from=$customer->Contact item=c}
+                        {foreach from=$acust->Contact item=c}
                             <tr>
                                 <td>{$c.name}</td>
                                 <td>{$c.email}</td>
@@ -274,7 +274,7 @@
 
     <div class="span6">
     
-        {if $customer.type neq Cust::TYPE_ASSOCIATE and ( not $customer.dateleave or $customer.dateleave eq '0000-00-00' )}
+        {if $acust.type neq Cust::TYPE_ASSOCIATE and $acust.type neq Cust::TYPE_INTERNAL and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
     
                 <div class="row-fluid">
                 
@@ -283,8 +283,8 @@
                 
                         <p>
                             <br />
-                            <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category='bits' shortname=$customer.shortname}">
-                                {genMrtgImgUrlTag shortname=$customer.shortname category='bits' monitorindex='aggregate'}
+                            <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category='bits' shortname=$acust.shortname}">
+                                {genMrtgImgUrlTag shortname=$acust.shortname category='bits' monitorindex='aggregate'}
                             </a>
                         </p>
                     </div>
@@ -309,8 +309,8 @@
                 
                                 <p>
                                     <br />
-                                    <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex=$pi.monitorindex category='bits' shortname=$customer.shortname}">
-                                        {genMrtgImgUrlTag shortname=$customer.shortname category='bits' monitorindex=$pi.monitorindex}
+                                    <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex=$pi.monitorindex category='bits' shortname=$acust.shortname}">
+                                        {genMrtgImgUrlTag shortname=$acust.shortname category='bits' monitorindex=$pi.monitorindex}
                                     </a>
                                 </p>
                 

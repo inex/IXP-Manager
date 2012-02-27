@@ -590,7 +590,7 @@ END_JSON;
             return( $this->_forward( 'list' ) );
         }
 
-        $this->view->customer = $customer;
+        $this->view->acust = $customer;
         $this->view->connections = $customer->getConnections();
         
         
