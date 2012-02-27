@@ -1,29 +1,19 @@
-<style type="text/css">
-{literal}
 
-.contextMenu {
-	width: 220px;
-}
 
-.contextMenu LI.meetings A { background-image: url(../images/joomla-admin/menu/meetings.png); }
-.contextMenu LI.mail A { background-image: url(../images/joomla-admin/menu/messaging.png); }
+<div class="btn-group">
+    <a class="btn btn-mini" href="{genUrl controller=$controller action="edit" id=$row.id}"><i class="icon-pencil"></i></a>
+    <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller=$controller action="delete" id=$row.id}"><i class="icon-trash"></i></a>
 
-{/literal}
-</style>
-
-<ul id="myMenu" class="contextMenu">
-    <li class="edit">
-        <a href="#edit">Edit</a>
-    </li>
-    <li class="delete">
-        <a href="#delete">Delete</a>
-    </li>
-    <li class="separator"></li>
-    
-    <li class="meetings">
-        <a href="#meetings">Presentations...</a>
-    </li>
-    <li class="mail">
-        <a href="#mail">Compose email...</a>
-    </li>
-</ul>
+    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+        More...
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{genUrl controller='meeting-item' action='list' id=$row.id}">See Presentations...</a>
+        </li>
+        <li>
+            <a href="{genUrl controller='meeting' action='compose' id=$row.id}">Compose Email...</a>
+        </li>
+    </ul>
+</div>

@@ -1,23 +1,15 @@
-<style type="text/css">
 
-.contextMenu {
-	width: 220px;
-}
+<div class="btn-group">
+    <a class="btn btn-mini" href="{genUrl controller=$controller action="edit" id=$row.id}"><i class="icon-pencil"></i></a>
+    <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller=$controller action="delete" id=$row.id}"><i class="icon-trash"></i></a>
 
-.contextMenu LI.loginas A { background-image: url({genUrl}/images/joomla-admin/menu/credits.png); }
-
-</style>
-
-<ul id="myMenu" class="contextMenu">
-    <li class="edit">
-        <a href="#edit">Edit</a>
-    </li>
-    <li class="delete">
-        <a href="#delete">Delete</a>
-    </li>
-    <li class="separator"></li>
-    
-    <li class="loginas">
-        <a href="#loginas">Log in as...</a>
-    </li>
-</ul>
+    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+        More...
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{genUrl controller='auth' action='switch' id=$row.id}">Log in as...</a>
+        </li>
+    </ul>
+</div>

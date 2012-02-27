@@ -12,10 +12,9 @@
             <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
         {/if}
     </li>
-</ul>		
+</ul>
 
 {include file="message.tpl"}
-
 <div id="ajaxMessage"></div>
 
 
@@ -32,6 +31,7 @@
     {foreach from=$frontend.columns.displayColumns item=col}
         <th>{$frontend.columns.$col.label}</th>
     {/foreach}
+    <th></th>
 </tr>
 </thead>
 
@@ -98,6 +98,17 @@
                 <td>{$row.$col}</td>
             {/if}
         {/foreach}
+        
+        <td>
+            {if isset( $hasCustomContextMenu ) and $hasCustomContextMenu}
+                {include file=$hasCustomContextMenu|cat:".html.tpl"}
+            {else}
+                <div class="btn-group">
+                    <a class="btn btn-mini" href="{genUrl controller=$controller action="edit" id=$row.id}"><i class="icon-pencil"></i></a>
+                    <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller=$controller action="delete" id=$row.id}"><i class="icon-trash"></i></a>
+                </div>
+            {/if}
+        </td>
 
     </tr>
 
@@ -110,20 +121,6 @@
 
 {if isset( $hasPostContent ) and $hasPostContent}
     {include file=$hasPostContent}
-{/if}
-
-
-{if isset( $hasCustomContextMenu ) and $hasCustomContextMenu}
-    {include file=$hasCustomContextMenu|cat:".html.tpl"}
-{else}
-    <ul id="myMenu" class="contextMenu">
-        <li class="edit">
-            <a href="#edit">Edit</a>
-        </li>
-        <li class="delete">
-            <a href="#delete">Delete</a>
-        </li>
-    </ul>
 {/if}
 
 
@@ -183,46 +180,15 @@ $(document).ready(function() {
 	                      "bSortable": false,
                       {/if}
                       
-                  {rdelim}{if not $smarty.foreach.items.last},{/if}
+                  {rdelim},
               {/foreach}
+                	  { "bSortable": false, "sWidth": '150px' }
         	  {literal}
   		]
 	});
 
 	$('#ixpDataTable').show();
 	
-	$( oTable.fnGetNodes() ).each( function( index, element ){
-		{/literal}
-		{if isset( $hasCustomContextMenu ) and $hasCustomContextMenu}
-	    	{include file=$hasCustomContextMenu|cat:".js.tpl"}
-		{else}
-			{literal}
-    		$( element ).contextMenu({
-    
-    				menu: "myMenu"
-    			},
-    			function( action, el, pos ) {
-    
-    				var aData = oTable.fnGetData( index );
-    
-    				switch( action )
-    				{
-    		            case 'edit':
-    		                window.location.assign( "/ixp/{/literal}{$controller}{literal}/edit/id/"  + aData[0] );
-                    		break;
-    
-                        case 'delete':
-                            if( confirm( "Are you sure you want to delete this record?" ) )
-                                window.location.assign( "/ixp/{/literal}{$controller}{literal}/delete/id/"  + aData[0] );
-                            break;
-    				}
-    			}
-    		);
-    		{/literal}	
-		{/if}
-		{literal}		
-	});
-
 } );
 {/literal}
 </script>
