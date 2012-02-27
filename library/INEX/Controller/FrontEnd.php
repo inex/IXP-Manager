@@ -354,7 +354,7 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
         $this->view->frontend = $this->frontend;
 
 
-        if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu.js.tpl' ) )
+        if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu.html.tpl' ) )
             $this->view->hasCustomContextMenu = $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'customContextMenu';
 
         if( $this->view->templateExists( $this->getRequest()->getParam( 'controller' ) . DIRECTORY_SEPARATOR . 'list-pretable.tpl' ) )
