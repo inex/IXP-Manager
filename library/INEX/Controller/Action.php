@@ -126,10 +126,12 @@ class INEX_Controller_Action extends Zend_Controller_Action
         
         
         // Smarty must be set during bootstrap
-        try {
+        try
+        {
             $this->view = $this->_bootstrap->getResource( 'view' );
             
-            if( php_sapi_name() != 'cli' ) {
+            if( php_sapi_name() != 'cli' )
+            {
                 $this->view->pagebase = 'http' . (isset( $_SERVER[ 'HTTPS' ] ) ? 's' : '') . '://' . $_SERVER[ 'SERVER_NAME' ] . Zend_Controller_Front::getInstance()->getBaseUrl();
             }
             
@@ -157,14 +159,16 @@ class INEX_Controller_Action extends Zend_Controller_Action
             
             // pull a message from the session if it exists
             // (this is when we do a ->_redirect after an action)
-            if( isset( $this->session->message ) && $this->session->message !== null ) {
+            if( isset( $this->session->message ) && $this->session->message !== null )
+            {
                 $this->view->message = $this->session->message;
                 $this->session->message = null;
             }
             
 
             // should we check the change log? (and if so, only once per session)
-            if( $this->config[ 'change_log' ][ 'enabled' ] && $this->auth->hasIdentity() ) {
+            if( $this->config[ 'change_log' ][ 'enabled' ] && $this->auth->hasIdentity() )
+            {
                 if( isset( $this->session->change_log_has_updates ) ) {
                     $this->view->change_log_has_updates = $this->session->change_log_has_updates;
                 }
@@ -195,7 +199,8 @@ class INEX_Controller_Action extends Zend_Controller_Action
         $this->view->action = $this->getRequest()->getParam( 'action' );
         
         // see if the user's session has timed out
-        if( $this->auth->hasIdentity() ) {
+        if( $this->auth->hasIdentity() )
+        {
             if( (mktime() - $this->session->timeOfLastAction) > $this->config[ 'resources' ][ 'session' ][ 'remember_me_seconds' ] ) {
                 $this->auth->clearIdentity();
                 $this->view->message = new INEX_Message( 'To protect your account and information, you have been logged out automatically ' . 'due to an extended period of inactivity. Please log in again below to continue.', INEX_Message::MESSAGE_TYPE_ALERT );
