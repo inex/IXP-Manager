@@ -43,7 +43,7 @@
 </div>
 
 
-{tmplinclude file='meeting/core.tpl'}
+{include file='meeting/core.tpl'}
 
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
