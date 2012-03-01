@@ -143,12 +143,12 @@ class LogicalCircuitController extends INEX_Controller_FrontEnd
 
                     if( $isEdit )
                     {
-                        $this->logger->notice( $this->getName() . ' edited' );
+                        $this->getLogger()->notice( $this->getName() . ' edited' );
                         $this->view->message = new INEX_Message( $this->getName() . ' edited', "success" );
                     }
                     else
                     {
-                        $this->logger->notice( 'New ' . $this->getName() . ' created' );
+                        $this->getLogger()->notice( 'New ' . $this->getName() . ' created' );
                         $this->view->message = new INEX_Message( $this->getName() . ' added', "success" );
                     }
 

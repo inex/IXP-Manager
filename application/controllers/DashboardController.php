@@ -523,7 +523,7 @@ class DashboardController extends INEX_Controller_Action
 	            $interface->save();
             }
 
-        $this->logger->notice( "{$this->user->username} of {$this->customer->shortname} enabled route server sessions" );
+        $this->getLogger()->notice( "{$this->user->username} of {$this->customer->shortname} enabled route server sessions" );
         $this->view->rsSessionsEnabled = true;
         $this->_forward( 'rs-info' );
     }
@@ -840,7 +840,7 @@ class DashboardController extends INEX_Controller_Action
             }
             catch( Zend_Exception $e )
             {
-                $this->logger->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
+                $this->getLogger()->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
 
                 $this->getResponse()
                     ->setBody( Zend_Json::encode(

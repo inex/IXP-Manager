@@ -54,13 +54,6 @@ class MrtgController extends Zend_Controller_Action
     protected $config = null;
 
     /**
-     * A variable to hold an instance of the logger object
-     *
-     * @var object An instance of the logger object
-     */
-    protected $logger = null;
-
-    /**
      * A variable to hold the identity object
      *
      * @var object An instance of the user's identity or false
@@ -105,8 +98,6 @@ class MrtgController extends Zend_Controller_Action
         // and from the bootstrap, we can get other resources:
         $this->config  = $this->_bootstrap->getApplication()->getOptions();
         $this->_bootstrap->getResource( 'namespace' );
-        $this->logger  = $this->_bootstrap->getResource( 'logger' );
-
         $this->auth    = $this->_bootstrap->getResource( 'auth' );
 
         if( $this->auth->hasIdentity() )
@@ -142,7 +133,7 @@ class MrtgController extends Zend_Controller_Action
         $category     = $this->getRequest()->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
         $graph        = $this->getRequest()->getParam( 'graph', '' );
 
-        $this->logger->debug( "Request for $shortname-$monitorindex-$category-$period-$graph by {$this->user->username}" );
+        $this->getLogger()->debug( "Request for $shortname-$monitorindex-$category-$period-$graph by {$this->user->username}" );
 
         if( !$this->identity )
             exit(0);
@@ -174,13 +165,13 @@ class MrtgController extends Zend_Controller_Action
             );
         }
 
-        $this->logger->debug( "Serving $filename to {$this->user->username}" );
+        $this->getLogger()->debug( "Serving $filename to {$this->user->username}" );
 
         $stat = @readfile( $filename );
 
         if( $stat === false )
         {
-            $this->logger->err( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
+            $this->getLogger()->err( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
             echo readfile(
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR

@@ -143,7 +143,7 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
                     
                     $conn->commit();
                      
-                    $this->logger->notice( intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created' );
+                    $this->getLogger()->notice( intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created' );
                     $this->session->message = new INEX_Message(  intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created', "success" );
                     
                     if( $addrfam == 'IPv4' )

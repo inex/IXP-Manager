@@ -356,7 +356,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
                     $conn->rollback();
                 }
                 
-                $this->logger->notice( 'New virtual, physical and VLAN interface created' );
+                $this->getLogger()->notice( 'New virtual, physical and VLAN interface created' );
                 $this->session->message = new INEX_Message( "New interface added", "success" );
                 $this->_redirect( 'virtual-interface/edit/id/' . $vi['id'] );
                 

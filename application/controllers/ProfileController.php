@@ -87,7 +87,7 @@ class ProfileController extends INEX_Controller_Action
             }
             catch( Doctrine_Exception $e )
             {
-                $this->logger->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
+                $this->getLogger()->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
                     Zend_Log::CRIT
                 );
                 $this->view->message = new INEX_Message( 'Internal Error: Your profile could not be changed', 'error' );
@@ -138,7 +138,7 @@ class ProfileController extends INEX_Controller_Action
             }
             catch( Doctrine_Exception $e )
             {
-                $this->logger->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
+                $this->getLogger()->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
                     Zend_Log::CRIT
                 );
                 $this->view->message = new INEX_Message( 'Internal Error: Your password could not be changed', 'error' );

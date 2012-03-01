@@ -226,7 +226,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
             // lets make more memory available for large files
             ini_set( 'memory_limit', '128M' );
 
-            $this->logger->debug( 'Received upload of file: ' . $form->getValue( 'presentation' ) );
+            $this->getLogger()->debug( 'Received upload of file: ' . $form->getValue( 'presentation' ) );
 
             // Zend sticks the original filename in the form variable
             $row['filename'] = $form->getValue( 'presentation' );
@@ -239,7 +239,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
             // make sure meetings exists
             if( !is_dir( $root ) && !@mkdir( $root ) )
             {
-                $this->logger->crit( 'Could not create presentations directory.' );
+                $this->getLogger()->crit( 'Could not create presentations directory.' );
                 die( 'ERROR: Could not create the presentations root directory.' );
             }
 
@@ -248,7 +248,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
 
             if( !is_dir( $meeting_dir ) && !@mkdir( $meeting_dir ) )
             {
-                $this->logger->crit( 'Could not create meetings directory.' );
+                $this->getLogger()->crit( 'Could not create meetings directory.' );
                 die( 'ERROR: Could not create presentations directory.' );
             }
 
@@ -263,12 +263,12 @@ class MeetingItemController extends INEX_Controller_FrontEnd
             $row->save();
 
             $row['presentation'] = $row['id'] . $exten;
-            $this->logger->debug( 'Uploaded file will be saved as: ' . $row['presentation'] );
+            $this->getLogger()->debug( 'Uploaded file will be saved as: ' . $row['presentation'] );
 
             // delete an existing file in case we're updating
             if( file_exists( $meeting_dir . DIRECTORY_SEPARATOR . $row['presentation'] ) )
             {
-                $this->logger->debug( 'Pre-existing file exists so deleteing' );
+                $this->getLogger()->debug( 'Pre-existing file exists so deleteing' );
                 @unlink( $meeting_dir . DIRECTORY_SEPARATOR . $row['presentation'] );
             }
 

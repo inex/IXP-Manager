@@ -45,7 +45,7 @@ class UtilsController extends INEX_Controller_Action
                 INEX_Message::MESSAGE_TYPE_ERROR
             );
 
-            $this->logger->alert( $this->user->username . " tried to access utils without sufficient permissions" );
+            $this->getLogger()->alert( $this->user->username . " tried to access utils without sufficient permissions" );
 
             Zend_Session::destroy( true, true );
 

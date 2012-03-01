@@ -2,7 +2,7 @@
 
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -52,9 +52,10 @@ class INEX_Controller_Action extends Zend_Controller_Action
     /**
      * A variable to hold an instance of the logger object
      *
+     * @see getLogger()
      * @var object An instance of the logger object
      */
-    protected $logger = null;
+    private $_logger = null;
 
     /**
      * A variable to hold the identity object
@@ -121,11 +122,8 @@ class INEX_Controller_Action extends Zend_Controller_Action
         $this->_bootstrap = $invokeArgs[ 'bootstrap' ];
         
         // and from the bootstrap, we can get other resources:
-        
-
         $this->config = $this->_bootstrap->getApplication()->getOptions();
         
-        $this->logger = $this->_bootstrap->getResource( 'logger' );
         
         // Smarty must be set during bootstrap
         try {
@@ -297,15 +295,30 @@ class INEX_Controller_Action extends Zend_Controller_Action
     }
 
     /**
-     * Get the logger object
+     * Get the logger object (and bootstrap it if not already done)
      *
-     * @return Zend_Log The user object
+     * @return Zend_Log The log object
      */
     protected function getLogger()
     {
-        return $this->logger;
+        if( $this->_logger === null )
+            $this->_logger = $this->getBoostrap()->getResource( 'logger' );
+            
+        return $this->_logger;
     }
 
+    /**
+     * Get the bootstrap object
+     *
+     * @return Zend_Application_Bootstrap_Bootstrap object
+     */
+    protected function getBootstrap()
+    {
+        return $this->_bootstrap;
+    }
+    
+    
+    
     /**
      * Set an array of customer id and names
      *
