@@ -24,7 +24,7 @@
                             </li>
                         {/if}
                         {if $user.privs neq 2}
-                            <li class="dropdown">
+                            <li class="dropdown {if $action eq 'switch-configuration' or $action eq 'members-details-list' or ( $controller eq 'meeting' and $action eq 'read' )}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
@@ -54,7 +54,7 @@
                                 </ul>
                             </li>
                             
-                            <li class="dropdown">
+                            <li class="dropdown {if $controller eq 'dashboard' and $action eq 'static'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
@@ -85,7 +85,7 @@
                             </li>
     
                             
-                            <li class="dropdown">
+                            <li class="dropdown {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $action eq 'weathermap'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {if $user.privs eq 1 and $customer->isFullMember()}
@@ -130,17 +130,17 @@
                                 </ul>
                             </li>
                         {/if}
-                        <li>
+                        <li class="{if $controller eq 'profile'}active{/if}">
                             <a href="{genUrl controller="profile"}">Profile</a>
                         </li>
                         
                         {if $user.privs eq 3}
-                            <li>
+                            <li class="{if $controller eq 'index' and $action eq 'help'}active{/if}">
                                 <a href="{genUrl controller="index" action="help"}">Help</a>
                             </li>
                         {/if}
                         
-                        <li>
+                        <li class="{if $controller eq 'index' and $action eq 'about'}active{/if}">
                             <a href="{genUrl controller="index" action="about"}">About</a>
                         </li>
                     </ul>
