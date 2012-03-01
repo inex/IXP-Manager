@@ -1,52 +1,72 @@
 
 {foreach from=$connections item=connection}
 
-    <h3>Connection #{counter}</h3>
+<div class="row-fluid">
 
-    <table  cellpadding="5" cellspacing="5" border="0">
-    <tr>
-        <td>
-            <strong>Switch</strong>
-        </td>
-        <td>
-            {$connection.Physicalinterface.0.Switchport.SwitchTable.name}
-        </td>
-        <td width="50"></td>
-        <td>
-            <strong>Switch Port</strong>
-        </td>
-        <td>
-            {$connection.Physicalinterface.0.Switchport.name}
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Speed</strong>
-        </td>
-        <td>
-            {$connection.Physicalinterface.0.speed} Mbps"
-        </td>
-        <td></td>
-        <td>
-            <strong>Duplex</strong>
-        </td>
-        <td>
-            {$connection.Physicalinterface.0.duplex}
-        </td>
-    </tr>
-    </table>
+    <div class="span6">
+
+        <h3>Connection #{counter}</h3>
+
+        <br />
+        
+        <table class="table">
+            <tr>
+                <td>
+                    <strong>Location</strong>
+                </td>
+                <td>
+                    {$connection.Physicalinterface.0.Switchport.SwitchTable.Cabinet.Location.name}
+                </td>
+                <td width="50"></td>
+                <td>
+                    <strong>Cabinet</strong>
+                </td>
+                <td>
+                    {$connection.Physicalinterface.0.Switchport.SwitchTable.Cabinet.cololocation}
+                </td>
+            </tr>
+        <tr>
+                <td>
+                    <strong>Switch</strong>
+                </td>
+                <td>
+                    {$connection.Physicalinterface.0.Switchport.SwitchTable.name}
+                </td>
+                <td></td>
+                <td>
+                    <strong>Switch Port</strong>
+                </td>
+                <td>
+                    {$connection.Physicalinterface.0.Switchport.name}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Speed</strong>
+                </td>
+                <td>
+                    {$connection.Physicalinterface.0.speed} Mbps
+                </td>
+                <td></td>
+                <td>
+                    <strong>Duplex</strong>
+                </td>
+                <td>
+                    {$connection.Physicalinterface.0.duplex}
+                </td>
+            </tr>
+        </table>
 
 
-    {foreach from=$connection.Vlaninterface item=interface}
+        {foreach from=$connection.Vlaninterface item=interface}
+    
+            {assign var='vlanid' value=$interface.vlanid}
 
-        {assign var='vlanid' value=$interface.vlanid}
-
-            <div class="row">
-            <div class="span8 offset1">
+            <br />
+            <h4>{$interface.Vlan.name} - IP Details</h4>
+            <br />
             
-            <h4>Port {$connection.Physicalinterface.0.Switchport.SwitchTable.name}:{$connection.Physicalinterface.0.Switchport.name} - {$interface.Vlan.name}</h4>
-
-            <table  cellpadding="5" cellspacing="5" border="0">
+            <table  class="table table-condensed">
             <tr>
                 <td>
                     <strong>IPv4 Address</strong>
@@ -97,10 +117,22 @@
 
             </table>
             
-        </div>
-        </div>
+            <br /><br />
+        {/foreach}
 
-    {/foreach}
-
+    </div>
+    <div class="span6">
+        
+        <br /><br />
+        <div class="well">
+            <h4>Day Graph for {$connection.Physicalinterface.0.Switchport.SwitchTable.name} / {$connection.Physicalinterface.0.Switchport.name}</h4>
+            <br />
+        	<a href="{genUrl controller="dashboard" action="statistics-drilldown" shortname=$customer.shortname category='bits' monitorindex=$connection.Physicalinterface.0.monitorindex}">
+    	        {genMrtgImgUrlTag shortname=$customer.shortname monitorindex=$connection.Physicalinterface.0.monitorindex}
+            </a>
+        </div>
+        
+    </div>
+</div>
 
 {/foreach}

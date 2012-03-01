@@ -8,12 +8,21 @@
             {if isset( $hasIdentity ) and $hasIdentity}
                 <div class="nav-collapse">
                      <ul class="nav">
-                        <li>
-                            {if     $user.privs eq 3}<a href="{genUrl}">Home</a>
-                            {elseif $user.privs eq 2}<a href="{genUrl controller="cust-admin"}">User Admin</a>
-                            {elseif $user.privs eq 1}<a href="{genUrl controller="dashboard"}">Dashboard</a>
-                            {/if}
-                        </li>
+                        {if     $user.privs eq 3}
+                            <li>
+                                <a href="{genUrl}">Home</a>
+                            </li>
+                        {elseif $user.privs eq 2}
+                            <li>
+                                <a href="{genUrl controller="cust-admin"}">User Admin</a>
+                            </li>
+                        {elseif $user.privs eq 1}
+                            <li {if $controller eq 'dashboard' and $action eq 'index'}class="active"{/if}>
+                                <a href="{genUrl controller="dashboard"}">
+                                    Dashboard
+                                </a>
+                            </li>
+                        {/if}
                         {if $user.privs neq 2}
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>

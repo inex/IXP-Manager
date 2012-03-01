@@ -88,6 +88,37 @@ class INEX_Form extends Twitter_Form
         return $this;
     }
 
+    public function assignFromModel( $model )
+    {
+        $columns = $model->getTable()->getFieldNames();
+    
+        foreach( $this->getElements() as $elementName => $elementConfig )
+            if( in_array( $elementName, $columns ) )
+            $this->getElement( $elementName )->setValue( $model->$elementName );
+    
+        return $this;
+    }
+    
+    public function assignToModel( $model, $isEdit = true )
+    {
+        $columns = $model->getTable()->getFieldNames();
+    
+        foreach( $this->getElements() as $elementName => $elementConfig )
+        {
+            if( in_array( $elementName, $columns ) )
+            {
+                // don't remove certain elements on an edit
+                if( $isEdit and in_array( $elementName, $this->onEditSkipIfBlank ) and $this->getValue( $elementName ) == '' )
+                    continue;
+    
+                $model->$elementName = $this->getValue( $elementName );
+            }
+        }
+    
+        return $model;
+    }
+    
+    
     /**
      * Populate a Zend_Form SELECT element from a database table
      *

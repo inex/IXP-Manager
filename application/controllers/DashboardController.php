@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -186,6 +186,10 @@ class DashboardController extends INEX_Controller_Action
 
 	        $this->view->rsEnabled    = $this->customer->isRouteServerClient( $this->config['primary_peering_lan']['vlan_tag'] );
 	        $this->view->as112Enabled = $this->customer->isAS112Client();
+	        
+	        
+	        $this->view->nocDetails     = $this->_getNocDetailsForm();
+	        $this->view->billingDetails = $this->_getBillingDetailsForm();
         }
 
         $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'index.tpl' );
@@ -1074,5 +1078,56 @@ class DashboardController extends INEX_Controller_Action
         
         $this->view->weathermap = $this->config['weathermap'][$key];
         $this->view->display( 'dashboard/statistics-weathermap.tpl' );
+    }
+    
+    public function updateNocAction()
+    {
+        $f = $this->_getNocDetailsForm();
+        
+        if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
+        {
+            $f->assignToModel( $this->customer );
+            $this->customer->save();
+            
+            $this->view->message = new INEX_Message( 'Your NOC details have been updated',
+                INEX_Message::MESSAGE_TYPE_SUCCESS
+            );
+        }
+        
+        $this->_forward( 'index' );
+    }
+    
+    private function _getNocDetailsForm()
+    {
+        $f = new INEX_Form_Customer_NocDetails();
+        $f->assignFromModel( $this->customer );
+        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/dashboard/update-noc' );
+        return $f;
+    }
+
+
+    public function updateBillingAction()
+    {
+        $f = $this->_getBillingDetailsForm();
+        
+        if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
+        {
+            $f->assignToModel( $this->customer );
+            $this->customer->save();
+            
+            $this->view->message = new INEX_Message( 'Your billing details have been updated',
+                INEX_Message::MESSAGE_TYPE_SUCCESS
+            );
+        }
+        
+        $this->_forward( 'index' );
+    }
+    
+    private function _getBillingDetailsForm()
+    {
+        $f = new INEX_Form_Customer_BillingDetails();
+        $f->assignFromModel( $this->customer );
+        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/dashboard/update-billing' );
+        return $f;
     }
 }

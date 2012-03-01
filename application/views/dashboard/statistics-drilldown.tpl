@@ -28,31 +28,39 @@
 
 <div id='ajaxMessage'></div>
 
-{if $switchname eq ''}
-    <h2>Aggregate Statistics for All Ports</h2>
-{else}
-    <h2>Switch: {$switchname} &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; Port: {$portname}</h2>
-{/if}
 
-<p>
-<form action="{genUrl controller="dashboard" action="statistics-drilldown" shortname=$shortname monitorindex=$monitorindex}" method="post">
-<table>
-<tr>
-    <td width="20"></td>
-    <td valign="middle"><strong>Graph Type:</strong></td>
-    <td>
-        <select name="category" onchange="this.form.submit();">
-            {foreach from=$categories key=cname item=cvalue}
-                <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
-            {/foreach}
-        </select>
-    </td>
-</tr>
-</table>
-</form>
-</p>
+<div class="row-fluid">
 
+    <div class="span6">
 
+        {if $switchname eq ''}
+            <h2>Aggregate Statistics for All Ports</h2>
+        {else}
+            <h2>Port: {$switchname} / {$portname}</h2>
+        {/if}
+
+    </div>
+    <div class="span6">
+    
+        <form action="{genUrl controller="dashboard" action="statistics-drilldown" shortname=$shortname monitorindex=$monitorindex}" method="post" class="form form-inline">
+            
+            <strong>Graph Type:&nbsp;&nbsp;&nbsp;</strong>
+
+            <select name="category" onchange="this.form.submit();">
+                {foreach from=$categories key=cname item=cvalue}
+                    <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
+                {/foreach}
+            </select>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn" href="{genUrl controller="dashboard" action="statistics"}{if $user.privs eq 3}/shortname/{$shortname}{/if}">
+                Back to Overview
+            </a>
+            
+        </form>
+
+    </div>
+</div>
+    
 <div class="row-fluid">
 
 {assign var='count' value=0}
