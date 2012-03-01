@@ -25,8 +25,14 @@
 
     {foreach from=$last item=l}
     <tr>
-        <td>{$l.u_username}</td>
-        <td>{$l.c_shortname}</td>
+        <td>
+            {$l.u_username} ({$l.u_email})
+        </td>
+        <td>
+            <a href="{genUrl controller="customer" action="dashboard" id=$l.c_id}">
+                {$l.c_name}
+            </a>
+        </td>
         <td>{$l.up_value|date_format:"%Y-%m-%d %H:%M:%S"}</td>
     </tr>
     {/foreach}

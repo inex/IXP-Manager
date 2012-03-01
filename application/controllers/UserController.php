@@ -213,7 +213,7 @@ class UserController extends INEX_Controller_FrontEnd
     public function lastAction()
     {
         $last = Doctrine_Query::create()
-            ->select( 'up.attribute, up.value, u.username, c.shortname' )
+            ->select( 'up.attribute, up.value, u.username, u.email, c.name, c.id' )
             ->from( 'UserPref up' )
             ->leftJoin( 'up.User u' )
             ->leftJoin( 'u.Cust c' )
