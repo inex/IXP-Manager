@@ -11,6 +11,7 @@ var/templates_c/*
 library/Doctrine
 library/Zend
 library/ZFDebug
+library/Minify
 library/smarty
 library/Smarty
 library/Bootstrap-Zend-Framework

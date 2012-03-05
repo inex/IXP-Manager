@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 # This file will set up Git / SVN externals in library/
 
@@ -37,4 +37,12 @@ if [[ -e $LIBDIR/Bootstrap-Zend-Framework ]]; then
 else
     git clone git://github.com/inex/Bootstrap-Zend-Framework.git $LIBDIR/Bootstrap-Zend-Framework
 fi
+
+# Minifier
+if [[ -e $LIBDIR/Minify ]]; then
+    echo Minify exists - skipping!
+else
+    git clone git://github.com/opensolutions/Minify.git $LIBDIR/Minify
+fi
+
                             
