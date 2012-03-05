@@ -1,4 +1,4 @@
-{if $config.use_minified_js}
+{if isset( $config.use_minified_js ) and $config.use_minified_js}
     <script type="text/javascript" src="{genUrl}/js/min.bundle-v10.js"></script>
 {else}
     <script type="text/javascript" src="{genUrl}/js/200-jquery-1.7.js"></script>

@@ -1,4 +1,4 @@
-{if $config.use_minified_css}
+{if isset( $config.use_minified_css ) and $config.use_minified_css}
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.bundle-v10.css" />
 {else}
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/200-jquery-ui-1.8.16.custom.css" />

@@ -41,14 +41,14 @@ $whatToCompress = 'all';
 $verbose = true;
 
 // We use APPLICATION_PATH as per the Zend framework. Feel free to remove as it's only used for the paths defined below here
-defined( 'APPLICATION_PATH' ) || define( 'APPLICATION_PATH', realpath(dirname(__FILE__) . '/../../application' ) );
+defined( 'APPLICATION_PATH' ) || define( 'APPLICATION_PATH', realpath( SCRIPTDIR . '/../../application' ) );
 
 
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 //
 // JS Configuration
-$js_compiler = "java -jar " . dirname( __FILE__ ) . "/compiler.jar --compilation_level WHITESPACE_ONLY --warning_level QUIET";
+$js_compiler = "java -jar " . SCRIPTDIR . "/compiler.jar --compilation_level WHITESPACE_ONLY --warning_level QUIET";
 
 
 // JavaScript files to compress
@@ -73,8 +73,10 @@ $http_js = '{genUrl}/js';
 // var variable meaning we don't need to keep our list of JS files up to date manually
 // and also it means that versioned bundles get updated automatically.
 
-// define the var to be tested for 0 or 1:
-$mini_js_var = '$config.use_minified_js';
+$mini_js_conditional_if   = '{if isset( $config.use_minified_js ) and $config.use_minified_js}';
+$mini_js_conditional_else = '{else}';
+$mini_js_conditional_end  = '{/if}';
+
 
 //
 // set the following to false to not use this functionality and maintain it yourself
@@ -98,7 +100,7 @@ $del_old_js_bundles = true;
 /////////////////////////////////////////////////////////////////////////////////
 //
 // CSS Configuration
-$css_compiler = "java -jar " . dirname( __FILE__ ) . "/yuicompressor.jar -v --charset utf-8";
+$css_compiler = "java -jar " . SCRIPTDIR . "/yuicompressor.jar -v --charset utf-8";
 
 // JavaScript files to compress
 //
@@ -122,8 +124,9 @@ $http_css = '{genUrl}/css';
 // var variable meaning we don't need to keep our list of CSS files up to date manually
 // and also it means that versioned bundles get updated automatically.
 
-// define the var to be tested for 0 or 1:
-$mini_css_var = '$config.use_minified_css';
+$mini_css_conditional_if   = '{if isset( $config.use_minified_css ) and $config.use_minified_css}';
+$mini_css_conditional_else = '{else}';
+$mini_css_conditional_end  = '{/if}';
 
 //
 // set the following to false to not use this functionality and maintain it yourself
