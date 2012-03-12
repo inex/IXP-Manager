@@ -639,7 +639,7 @@ class DashboardController extends INEX_Controller_Action
         $this->session->myPeeringMatrixChecked = true;
     }
     
-    public function myPeeringMatrixAction()
+    public function myPeeringManagerAction()
     {
         // are we downloading in a non-html format?
         $dl_as = $this->_getParam( 'as', false );
@@ -751,10 +751,10 @@ class DashboardController extends INEX_Controller_Action
             $this->view->showInstructions = true;
         }
 
-        $this->view->display( 'dashboard/my-peering-matrix.tpl' );
+        $this->view->display( 'dashboard/my-peering-manager.tpl' );
     }
 
-    public function myPeeringMatrixEmailAction()
+    public function myPeeringManagerEmailAction()
     {
         $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', null ) );
 
@@ -875,7 +875,7 @@ class DashboardController extends INEX_Controller_Action
     }
 
 
-    public function myPeeringMatrixNotesAction()
+    public function myPeeringManagerNotesAction()
     {
         $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', null ) );
 
@@ -950,7 +950,7 @@ class DashboardController extends INEX_Controller_Action
     }
 
 
-    public function myPeeringMatrixPeeredStateAction()
+    public function myPeeringManagerPeeredStateAction()
     {
         $type  = $this->_request->getParam( 'type', 'state' );
 

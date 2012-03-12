@@ -1,5 +1,5 @@
 <div id="peeringNotesDialog" style="display: none">
-    <form class="form" id="peeringNotesForm" method="post" action="{genUrl controller=dashboard action='my-peering-matrix-notes' save=1}">
+    <form class="form" id="peeringNotesForm" method="post" action="{genUrl controller=dashboard action='my-peering-manager-notes' save=1}">
     <div>
 	    <h2>
 	    	<span id="peeringNotesDialog-member">Loading...</span>

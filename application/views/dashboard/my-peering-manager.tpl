@@ -6,7 +6,7 @@
         </div>
 
 <p>
-<form action="{genUrl controller="dashboard" action="my-peering-matrix"}" method="post">
+<form action="{genUrl controller="dashboard" action="my-peering-manager"}" method="post">
 <table>
 <tr>
     <td width="20"></td>
@@ -30,9 +30,9 @@
     </td>
     <td>
     Download as:
-        <a href="{genUrl controller="dashboard" action="my-peering-matrix" as="ascii" vlan=$vlan}">ASCII</a>
-        <a href="{genUrl controller="dashboard" action="my-peering-matrix" as="csv" vlan=$vlan}">CSV</a>
-        <a href="{genUrl controller="dashboard" action="my-peering-matrix" as="php" vlan=$vlan}">PHP</a>
+        <a href="{genUrl controller="dashboard" action="my-peering-manager" as="ascii" vlan=$vlan}">ASCII</a>
+        <a href="{genUrl controller="dashboard" action="my-peering-manager" as="csv" vlan=$vlan}">CSV</a>
+        <a href="{genUrl controller="dashboard" action="my-peering-manager" as="php" vlan=$vlan}">PHP</a>
     </td>
 </tr>
 </table>
