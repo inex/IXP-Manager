@@ -307,7 +307,7 @@ class INEX_Controller_Action extends Zend_Controller_Action
     protected function getLogger()
     {
         if( $this->_logger === null )
-            $this->_logger = $this->getBoostrap()->getResource( 'logger' );
+            $this->_logger = $this->getBootstrap()->getResource( 'logger' );
             
         return $this->_logger;
     }
