@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -99,7 +99,8 @@ class MrtgController extends Zend_Controller_Action
         $this->config  = $this->_bootstrap->getApplication()->getOptions();
         $this->_bootstrap->getResource( 'namespace' );
         $this->auth    = $this->_bootstrap->getResource( 'auth' );
-
+        $this->logger  = $this->_bootstrap->getResource( 'logger' );
+        
         if( $this->auth->hasIdentity() )
         {
             $this->identity = $this->auth->getIdentity();
@@ -133,7 +134,7 @@ class MrtgController extends Zend_Controller_Action
         $category     = $this->getRequest()->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
         $graph        = $this->getRequest()->getParam( 'graph', '' );
 
-        $this->getLogger()->debug( "Request for $shortname-$monitorindex-$category-$period-$graph by {$this->user->username}" );
+        $this->logger->debug( "Request for $shortname-$monitorindex-$category-$period-$graph by {$this->user->username}" );
 
         if( !$this->identity )
             exit(0);
@@ -165,13 +166,13 @@ class MrtgController extends Zend_Controller_Action
             );
         }
 
-        $this->getLogger()->debug( "Serving $filename to {$this->user->username}" );
+        $this->logger->debug( "Serving $filename to {$this->user->username}" );
 
         $stat = @readfile( $filename );
 
         if( $stat === false )
         {
-            $this->getLogger()->err( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
+            $this->logger->err( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
             echo readfile(
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
