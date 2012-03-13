@@ -45,4 +45,14 @@ else
     git clone git://github.com/opensolutions/Minify.git $LIBDIR/Minify
 fi
 
-                            
+
+# Zend
+
+if [[ -e $LIBDIR/Zend ]]; then
+    echo Zend exists - skipping!
+else 
+    svn co http://framework.zend.com/svn/framework/standard/branches/release-1.11/library/Zend/ $LIBDIR/Zend
+fi 
+        
+        
+                                    
