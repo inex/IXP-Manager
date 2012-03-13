@@ -86,6 +86,7 @@ try
             'action|a=s'    => 'Action to perform in format of module.controller.action',
             'verbose|v'     => 'Verbose messages will be dumped to the default output.',
             'development|d' => 'Enables development mode.',
+            'p1=s'          => 'Generic paramater #1 for various actions'
         )
     );
 
@@ -134,6 +135,9 @@ if( isset( $opts->a ) )
             $front->setParam( 'verbose', true );
         else
             $front->setParam( 'verbose', false );
+
+        if( $opts->p1 )
+            $front->setParam( 'param1', $opts->p1 );
 
         // $front->addModuleDirectory( APPLICATION_PATH . '/modules');
 
