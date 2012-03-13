@@ -721,6 +721,10 @@ END_BLOCK;
     
     private function _getMailingList()
     {
+        // do we have mailing lists defined?
+        if( !isset( $this->config['mailinglist']['enabled'] ) || !$this->config['mailinglist']['enabled'] )
+            die( "ERR: Mailing lists disabled in configuration( use: mailinglist.enabled = 1 to enabled)\n" );
+        
         if( !( $list = $this->getFrontController()->getParam( 'param1', false ) ) )
             die( "ERR: You must specify a list name (e.g. --p1 listname)\n" );
         
