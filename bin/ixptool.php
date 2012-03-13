@@ -37,17 +37,17 @@
 
 date_default_timezone_set( 'Europe/Dublin' );
 
+require_once( dirname( __FILE__ ) . '/utils.inc' );
+define( 'APPLICATION_ENV', scriptutils_get_application_env() );
+
+define( 'SCRIPT_NAME', 'ixptool - IXP Manager CLI Management Tool' );
+define( 'SCRIPT_COPY', '(c) Copyright 2010 - ' . date( 'Y' ) . ' Internet Neutral Exchange Association Ltd' );
+
 error_reporting( E_ALL|E_STRICT );
-//error_reporting( ( E_ALL | E_STRICT ) ^ E_NOTICE );
 
 ini_set( 'display_errors', true );
 
 defined( 'APPLICATION_PATH' ) || define( 'APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application' ) );
-
-// Define application environment
-define( 'APPLICATION_ENV', 'productioncli' );
-
-defined( 'APPLICATION_ENV' ) || define( 'APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production' ) );
 
 // Ensure library/ is on include_path
 set_include_path( implode( PATH_SEPARATOR,
@@ -98,6 +98,8 @@ catch( Zend_Console_Getopt_Exception $e )
 
 if( isset( $opts->h ) )
 {
+    echo SCRIPT_NAME . "\n" . SCRIPT_COPY . "\n\n";
+    
     echo $opts->getUsageMessage();
     exit;
 }
