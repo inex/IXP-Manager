@@ -129,10 +129,11 @@ class INEX_Controller_Action extends Zend_Controller_Action
         try
         {
             $this->view = $this->_bootstrap->getResource( 'view' );
-            
             if( php_sapi_name() != 'cli' )
             {
                 $this->view->pagebase = 'http' . (isset( $_SERVER[ 'HTTPS' ] ) ? 's' : '') . '://' . $_SERVER[ 'SERVER_NAME' ] . Zend_Controller_Front::getInstance()->getBaseUrl();
+                $this->session = $this->_bootstrap->getResource( 'namespace' );
+                $this->view->session = $this->session;
             }
             
             $this->view->basepath = Zend_Controller_Front::getInstance()->getBaseUrl();
@@ -147,7 +148,6 @@ class INEX_Controller_Action extends Zend_Controller_Action
                 $this->customer = Doctrine::getTable( 'Cust' )->find( $this->identity[ 'user' ][ 'custid' ] );
             }
             
-            $this->session = $this->_bootstrap->getResource( 'namespace' );
             
             $this->view->auth = $this->auth;
             $this->view->hasIdentity = $this->auth->hasIdentity();
@@ -155,7 +155,6 @@ class INEX_Controller_Action extends Zend_Controller_Action
             $this->view->customer = $this->customer;
             $this->view->user = $this->user;
             $this->view->config = $this->config;
-            $this->view->session = $this->session;
             
             // pull a message from the session if it exists
             // (this is when we do a ->_redirect after an action)
