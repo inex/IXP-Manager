@@ -62,6 +62,7 @@ resources.doctrine.migrations_path = APPLICATION_PATH "/../doctrine/migrations"
 resources.doctrine.sql_path = APPLICATION_PATH "/../doctrine/data/sql"                        
 resources.doctrine.yaml_schema_path = APPLICATION_PATH "/../doctrine/schema"                  
 resources.doctrine.generate_models_options.generateTableClasses = true
+resources.doctrine.usecache = true
 
 resources.logger.enabled = 1
 resources.logger.writers.email.from = ops-auto@example.com
