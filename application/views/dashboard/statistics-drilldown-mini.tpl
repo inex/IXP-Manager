@@ -5,7 +5,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset="utf8" />
 
-    <link href="{genUrl}/css/min.bundle-v1.css" rel="stylesheet" type="text/css" />
+    {include file="header-css.tpl"}
 </head>
 
 <body>

@@ -127,13 +127,13 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
 
         foreach( $vint->Physicalinterface as $pi )
         {
-            $this->logger->notice( "Deleting physical interface with id #{$pi->id} while deleting virtual interface #{$vint->id}" );
+            $this->getLogger()->notice( "Deleting physical interface with id #{$pi->id} while deleting virtual interface #{$vint->id}" );
             $pi->delete();
         }
 
         foreach( $vint->Vlaninterface as $vl )
         {
-            $this->logger->notice( "Deleting vlan interface with id #{$vl['id']} while deleting virtual interface #{$vint['id']}" );
+            $this->getLogger()->notice( "Deleting vlan interface with id #{$vl['id']} while deleting virtual interface #{$vint['id']}" );
             $vl->delete();
         }
     }

@@ -326,7 +326,7 @@ class AuthController extends INEX_Controller_Action
         // only super admins can switch user!
         if( $this->user['privs'] != User::AUTH_SUPERUSER )
         {
-            $this->logger->notice( 'User ' . $this->user['username'] . ' tried to switch to user with ID '
+            $this->getLogger()->notice( 'User ' . $this->user['username'] . ' tried to switch to user with ID '
                 . $this->_request->getParam( 'id', '[unknown]' ) );
             $this->session->message = new INEX_Message(
                 'You are not allowed to switch users! This attempt has been logged and the administrators notified.',
@@ -365,7 +365,7 @@ class AuthController extends INEX_Controller_Action
 
         if( $result->getCode() == Zend_Auth_Result::SUCCESS )
         {
-            $this->logger->notice( 'User ' . $this->user['username'] . ' has switched to user '
+            $this->getLogger()->notice( 'User ' . $this->user['username'] . ' has switched to user '
                 . $nu['username'] );
 
             $this->session->message = new INEX_Message(
@@ -374,7 +374,7 @@ class AuthController extends INEX_Controller_Action
         }
         else
         {
-            $this->logger->notice( 'User ' . $this->user['username'] . ' has failed to switch to user '
+            $this->getLogger()->notice( 'User ' . $this->user['username'] . ' has failed to switch to user '
                 . $nu['username'] );
 
             $this->session->message = new INEX_Message(
@@ -431,7 +431,7 @@ class AuthController extends INEX_Controller_Action
 
         if( $result->getCode() == Zend_Auth_Result::SUCCESS )
         {
-            $this->logger->notice( 'User ' . $ou['username'] . ' has switched back from user '
+            $this->getLogger()->notice( 'User ' . $ou['username'] . ' has switched back from user '
                 . $this->user['username'] );
 
             $this->session->message = new INEX_Message(

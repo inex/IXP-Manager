@@ -242,14 +242,14 @@ class ProvisionController extends INEX_Controller_Action
                 {
                     $progress['mail_sent'] = 1;
                     $progress->save();
-                    $this->logger->info( "Interface details email sent for {$progress['Cust']['name']}" );
+                    $this->getLogger()->info( "Interface details email sent for {$progress['Cust']['name']}" );
                     $this->session->message = new INEX_Message( "Interface email successfully sent to {$progress['Cust']['name']}", INEX_Message::MESSAGE_TYPE_SUCCESS );
                     $this->_redirect( 'provision/interface-overview/id/' . $progress['id'] );
                     return true;
                 }
                 else
                 {
-                    $this->logger->err( "Could not sent welcome email for {$progress['Cust']['name']}: " . print_r( $mail, true ) );
+                    $this->getLogger()->err( "Could not sent welcome email for {$progress['Cust']['name']}: " . print_r( $mail, true ) );
                     $this->session->message = new INEX_Message( "Welcome email could not be sent to {$progress['Cust']['name']}. Please see logs for more verbose output.", INEX_Message::MESSAGE_TYPE_ERROR );
                 }
 

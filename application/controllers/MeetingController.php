@@ -199,24 +199,24 @@ class MeetingController extends INEX_Controller_FrontEnd
         switch( $answer )
         {
             case 'skip':
-                $this->logger->debug( 'User skipped meeting RSVP request' );
+                $this->getLogger()->debug( 'User skipped meeting RSVP request' );
                 $this->session->dashboard_skip_meeting = true;
                 break;
 
             case 'dontask':
-                $this->logger->debug( 'User asked not to be asked to RSVP again' );
+                $this->getLogger()->debug( 'User asked not to be asked to RSVP again' );
                 $this->getUser()->setPreference( 'meeting.attending.' . $meeting['id'], 'DONT_ASK' );
                 break;
 
             case 'attend':
                 $msg = 'ATTEND';
-                $this->logger->debug( 'User will be attending this meeting' );
+                $this->getLogger()->debug( 'User will be attending this meeting' );
                 $this->getUser()->setPreference( 'meeting.attending.' . $meeting['id'], 'ATTENDING' );
                 break;
 
             case 'noattend':
                 $msg = 'NOT ATTEND';
-                $this->logger->debug( 'User will not be attending this meeting' );
+                $this->getLogger()->debug( 'User will not be attending this meeting' );
                 $this->getUser()->setPreference( 'meeting.attending.' . $meeting['id'], 'NOT_ATTENDING' );
                 break;
 

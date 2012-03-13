@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -52,13 +52,6 @@ class MrtgController extends Zend_Controller_Action
      * @var object An instance of the configuration object
      */
     protected $config = null;
-
-    /**
-     * A variable to hold an instance of the logger object
-     *
-     * @var object An instance of the logger object
-     */
-    protected $logger = null;
 
     /**
      * A variable to hold the identity object
@@ -105,10 +98,9 @@ class MrtgController extends Zend_Controller_Action
         // and from the bootstrap, we can get other resources:
         $this->config  = $this->_bootstrap->getApplication()->getOptions();
         $this->_bootstrap->getResource( 'namespace' );
-        $this->logger  = $this->_bootstrap->getResource( 'logger' );
-
         $this->auth    = $this->_bootstrap->getResource( 'auth' );
-
+        $this->logger  = $this->_bootstrap->getResource( 'logger' );
+        
         if( $this->auth->hasIdentity() )
         {
             $this->identity = $this->auth->getIdentity();

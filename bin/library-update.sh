@@ -25,6 +25,10 @@ cd $LIBDIR/Bootstrap-Zend-Framework
 git pull
 cd -
 
+cd $LIBDIR/Minify
+git pull
+cd -
+
 for name in Smarty; do
     echo -e "\n\n\n\n\n-------------\n\nUpdating $name..."
     cd $LIBDIR/$name

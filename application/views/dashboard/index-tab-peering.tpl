@@ -4,7 +4,7 @@
 
     <p>
     <br />
-    As per your <a href="{genUrl controller='dashboard' action='my-peering-matrix'}">peering
+    As per your <a href="{genUrl controller='dashboard' action='my-peering-manager'}">peering
     manager settings</a> (under the <em>member</em> column), the following is your peering
     overview:
     </p>

@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -588,7 +588,152 @@ class CliController extends INEX_Controller_Action
 
         echo $this->view->render( 'cli/nagios/switch-templates.tpl' );
     }
+    
+    
+    /**
+     * Mailing list initialisation script
+     *
+     * First sets a user preference for ALL users *WITHOUT* a mailing list sub for this list to unsub'd.
+     *
+     * Then takes a list of *existing* mailing list addresses from stdin and:
+     *   - is a user does not exist with same email, skips
+     *   - if a user does exist with same email, sets his mailing list preference
+     *
+     * NB: This function is NON-DESTRUCTIVE. It will *NOT* affect any users with *EXISTING* settings
+     * but set those without a setting to on / off as appropriate.
+     *
+     */
+    public function mailingListInitAction()
+    {
+        $list = $this->_getMailingList();
 
+        $stdin = fopen( "php://stdin","r" );
+        $addresses = array();
+        
+        while( $address = strtolower( trim( fgets( $stdin ) ) ) )
+            $addresses[] = $address;
+
+        fclose( $stdin );
+        
+        echo "Setting mailing list subscription for all users without a subscription setting...\n";
+        $users = Doctrine_Query::create()->from( 'User u' )->execute( null, Doctrine::HYDRATE_RECORD );
+
+        foreach( $users as $u )
+        {
+            if( $u->hasPreference( "mailinglist.{$list}.subscribed" ) )
+                continue;
+
+            if( in_array( $u['email'], $addresses ) )
+                $u->setPreference( "mailinglist.{$list}.subscribed", 1 );
+            else
+                $u->setPreference( "mailinglist.{$list}.subscribed", 0 );
+        }
+    }
+
+    /**
+     * Mailing list subscribed action - list all addresses subscribed to the given list
+     */
+    public function mailingListSubscribedAction()
+    {
+        $list = $this->_getMailingList();
+    
+        $users = Doctrine_Query::create()
+            ->select( 'u.email' )
+            ->from( 'User u' )
+            ->leftJoin( 'u.UserPref up' )
+            ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
+            ->andWhere( 'up.value = 1')
+            ->execute( null, Doctrine::HYDRATE_SINGLE_SCALAR );
+        
+        foreach( $users as $user )
+            echo "$user\n";
+    }
+    
+    /**
+     * Mailing list unsubscribed action - list all addresses not subscribed to the given list
+     */
+    public function mailingListUnsubscribedAction()
+    {
+        $list = $this->_getMailingList();
+    
+        $users = Doctrine_Query::create()
+        ->select( 'u.email' )
+        ->from( 'User u' )
+        ->leftJoin( 'u.UserPref up' )
+        ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
+        ->andWhere( 'up.value = 0')
+        ->execute( null, Doctrine::HYDRATE_SINGLE_SCALAR );
+    
+        foreach( $users as $user )
+            echo "$user\n";
+    }
+    
+    /**
+     * Mailing list syncronisation - generates a shell script for all mailing lists
+     */
+    public function mailingListSyncScriptAction()
+    {
+        // do we have mailing lists defined?
+        if( !isset( $this->config['mailinglists'] ) || !count( $this->config['mailinglists'] ) )
+            die( "ERR: No valid mailing lists defined in your application.ini\n" );
+        
+        $apppath = APPLICATION_PATH;
+        $date = date( 'Y-m-d H:i:s' );
+        
+        echo <<<END_BLOCK
+#! /bin/sh
+
+#
+# Script for syncronising subscriptions between mailing lists and IXP Manager.
+#
+# Does not affect any subscriptions with email addresses that do not match a user
+# in IXP Manager.
+#
+# Generated: {$date}
+#
+
+
+END_BLOCK;
+        
+        
+        foreach( $this->config['mailinglists'] as $name => $ml )
+        {
+            echo <<<END_BLOCK
+#######################################################################################################################################
+##
+## {$name} - {$ml['name']}
+##
+
+# Set default subsciption settings for any new IXP Manager users
+{$this->config['mailinglist']['cmd']['list_members']} {$name} | {$apppath}/../bin/ixptool.php -a cli.mailing-list-init --p1={$name}
+
+# Add new subscriptions to the list
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-subscribed --p1={$name} | {$this->config['mailinglist']['cmd']['add_members']} {$name}
+
+# Remove subscriptions from the list
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->config['mailinglist']['cmd']['remove_members']} {$name}
+
+
+END_BLOCK;
+        }
+    }
+    
+    
+    private function _getMailingList()
+    {
+        if( !( $list = $this->getFrontController()->getParam( 'param1', false ) ) )
+            die( "ERR: You must specify a list name (e.g. --p1 listname)\n" );
+        
+        // do we have mailing lists defined?
+        if( !isset( $this->config['mailinglists'] ) || !count( $this->config['mailinglists'] ) )
+            die( "ERR: No valid mailing lists defined in your application.ini\n" );
+        
+        // is it a valid list?
+        if( !isset( $this->config['mailinglists'][$list] ) )
+            die( "ERR: The specifed list ({$list}) is not defined in your application.ini\n" );
+        
+        return $list;
+    }
 }
 
 

@@ -157,6 +157,33 @@ primary_peering_lan.vlan_tag = 10
 change_log.enabled = 1
 
 
+
+;; Mailing List Subscription Management Facility
+;;
+;; Adds a form to user profile page allowing them to subscribe / unsubscribe from mailing lists
+;;
+;; See: https://github.com/inex/IXP-Manager/wiki/Mailing-List-Management
+
+
+mailinglist.enabled = 0
+
+mailinglists.listname.name    = "List Name"
+mailinglists.listname.desc    = "List Description"
+mailinglists.listname.email   = "Email Address for List"
+mailinglists.listname.archive = "https://www.example.com/mailman/private/listname/"
+
+mailinglists.listname2.name    = "Another List Name"
+mailinglists.listname2.desc    = "Another List Description"
+mailinglists.listname2.email   = "Email Address for Another List"
+mailinglists.listname2.archive = "https://www.example.com/mailman/private/listname2/"
+
+mailinglist.cmd.list_members   = "/usr/local/mailman/bin/list_members"
+mailinglist.cmd.add_members    = "/usr/local/mailman/bin/add_members -r - -w y -a y"
+mailinglist.cmd.remove_members = "/usr/local/mailman/bin/remove_members -f -"
+
+
+
+
 ;; IXP Tool / CLI Settings
 
 cli.traffic_differentials.stddev_calc_length = 60
