@@ -668,6 +668,56 @@ class CliController extends INEX_Controller_Action
             echo "$user\n";
     }
     
+    /**
+     * Mailing list syncronisation - generates a shell script for all mailing lists
+     */
+    public function mailingListSyncScriptAction()
+    {
+        // do we have mailing lists defined?
+        if( !isset( $this->config['mailinglists'] ) || !count( $this->config['mailinglists'] ) )
+            die( "ERR: No valid mailing lists defined in your application.ini\n" );
+        
+        $apppath = APPLICATION_PATH;
+        $date = date( 'Y-m-d H:i:s' );
+        
+        echo <<<END_BLOCK
+#! /bin/sh
+
+#
+# Script for syncronising subscriptions between mailing lists and IXP Manager.
+#
+# Does not affect any subscriptions with email addresses that do not match a user
+# in IXP Manager.
+#
+# Generated: {$date}
+#
+
+
+END_BLOCK;
+        
+        
+        foreach( $this->config['mailinglists'] as $name => $ml )
+        {
+            echo <<<END_BLOCK
+#######################################################################################################################################
+##
+## {$name} - {$ml['name']}
+##
+
+# Set default subsciption settings for any new IXP Manager users
+{$this->config['mailinglist']['cmd']['list_members']} {$name} | {$apppath}/../bin/ixptool.php -a cli.mailing-list-init --p1={$name}
+
+# Add new subscriptions to the list
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-subscribed --p1={$name} | {$this->config['mailinglist']['cmd']['add_members']} {$name}
+
+# Remove subscriptions from the list
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->config['mailinglist']['cmd']['remove_members']} {$name}
+
+
+END_BLOCK;
+        }
+    }
+    
     
     private function _getMailingList()
     {
