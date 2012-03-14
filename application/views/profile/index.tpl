@@ -52,9 +52,14 @@ in the format: <code>353861234567</code>.
             <p>
                 <br />
                 {$config.identity.orgname} operates the below mailing lists to help us interact with our
-                members and for our members to interact with each other. There are also links below to
-                the list archives - for which your username is {$user.email} and your password is the
-                same as your IXP Manager password (sync'd every 12 hours).
+                members and for our members to interact with each other.
+            </p>
+            <p>
+                There are also links below to the list archives - for which your username is
+                {$user.email} and your password is the same as your IXP Manager password.
+            </p>
+            <p>
+                The below are your subscriptions for <strong>{$user.email}</strong>.
             </p>
             <br />
             <form action="{genUrl controller="profile" action="update-mailing-lists"}" method="post" class="form">

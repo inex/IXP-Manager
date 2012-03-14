@@ -92,7 +92,7 @@ class ProfileController extends INEX_Controller_Action
         {
             // update the user
             $this->user['authorisedMobile'] = $this->_profileForm->getValue( 'mobile' );
-            $this->user['email']            = $this->_profileForm->getValue( 'email' );
+            // $this->user['email']            = $this->_profileForm->getValue( 'email' );
 
             try
             {
@@ -167,17 +167,22 @@ class ProfileController extends INEX_Controller_Action
     
     public function updateMailingListsAction()
     {
+        // need to capture all users with the given email
+        $users = Doctrine::getTable( 'User' )->findByEmail( $this->getUser()->email );
+        
         foreach( $this->_mailinglists as $name => $ml )
         {
             if( isset( $_POST["ml_{$name}"] ) && $_POST["ml_{$name}"] )
             {
                 $this->_mailinglists[$name]['subscribed'] = 1;
-                $this->getUser()->setPreference( "mailinglist.{$name}.subscribed", 1 );
+                foreach( $users as $u )
+                    $u->setPreference( "mailinglist.{$name}.subscribed", 1 );
             }
             else
             {
                 $this->_mailinglists[$name]['subscribed'] = 0;
-                $this->getUser()->setPreference( "mailinglist.{$name}.subscribed", 0 );
+                foreach( $users as $u )
+                    $u->setPreference( "mailinglist.{$name}.subscribed", 0 );
             }
         }
         

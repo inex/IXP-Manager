@@ -70,13 +70,18 @@ class INEX_Form_Profile extends INEX_Form
 
         $this->addElement( $mobile );
 
-        $email = $this->createElement( 'text', 'email' );
-        $email->addValidator( 'stringLength', false, array( 0, 255 ) )
-            ->addValidator( 'emailAddress', false, array( 'domain' => true, 'mx' => true ) )
-            ->setRequired( true )
-            ->setLabel( 'E-Mail' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+        $email = $this->createElement( 'text', 'email',
+            array(
+            	'readonly' => 'readonly'
+            )
+        );
+        $email->setLabel( 'E-Mail' );
+            //->addValidator( 'stringLength', false, array( 0, 255 ) )
+            //->addValidator( 'emailAddress', false, array( 'domain' => true, 'mx' => true ) )
+            //->setRequired( true )
+            //->addFilter( 'StringTrim' )
+            //->addFilter( 'StringToLower' )
+            //->addFilter( new INEX_Filter_StripSlashes() );
 
         $this->addElement( $email );
 
