@@ -76,6 +76,7 @@ class INEX_Form_Profile extends INEX_Form
             ->setRequired( true )
             ->setLabel( 'E-Mail' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StringToLower' )
             ->addFilter( new INEX_Filter_StripSlashes() );
 
         $this->addElement( $email );
