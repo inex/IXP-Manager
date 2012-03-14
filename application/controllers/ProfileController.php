@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -36,6 +36,15 @@ class ProfileController extends INEX_Controller_Action
      */
     protected $_profileForm;
 
+    /**
+     * Users mailing list subs as set via init() -> _initMailingListSubs()
+     *
+     * @var array
+     */
+    protected $_mailinglists;
+    
+    
+    
     public function init()
     {
         // Show the users details (if logged in)
@@ -59,12 +68,16 @@ class ProfileController extends INEX_Controller_Action
             . '/change-profile'
         );
 
+        // mailing list management
+        $this->_initMailingListSubs();
     }
 
     public function indexAction()
     {
         $this->view->profileForm  = $this->_profileForm->render( $this->view );
         $this->view->passwordForm = $this->_passwordForm->render( $this->view );
+        $this->view->mailinglists = $this->_mailinglists;
+        
         $this->view->display( 'profile/index.tpl' );
     }
 
@@ -79,7 +92,7 @@ class ProfileController extends INEX_Controller_Action
         {
             // update the user
             $this->user['authorisedMobile'] = $this->_profileForm->getValue( 'mobile' );
-            $this->user['email']            = $this->_profileForm->getValue( 'email' );
+            // $this->user['email']            = $this->_profileForm->getValue( 'email' );
 
             try
             {
@@ -87,7 +100,7 @@ class ProfileController extends INEX_Controller_Action
             }
             catch( Doctrine_Exception $e )
             {
-                $this->logger->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
+                $this->getLogger()->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
                     Zend_Log::CRIT
                 );
                 $this->view->message = new INEX_Message( 'Internal Error: Your profile could not be changed', 'error' );
@@ -138,7 +151,7 @@ class ProfileController extends INEX_Controller_Action
             }
             catch( Doctrine_Exception $e )
             {
-                $this->logger->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
+                $this->getLogger()->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
                     Zend_Log::CRIT
                 );
                 $this->view->message = new INEX_Message( 'Internal Error: Your password could not be changed', 'error' );
@@ -150,6 +163,54 @@ class ProfileController extends INEX_Controller_Action
         }
 
         $this->indexAction();
+    }
+    
+    public function updateMailingListsAction()
+    {
+        // need to capture all users with the given email
+        $users = Doctrine::getTable( 'User' )->findByEmail( $this->getUser()->email );
+        
+        foreach( $this->_mailinglists as $name => $ml )
+        {
+            if( isset( $_POST["ml_{$name}"] ) && $_POST["ml_{$name}"] )
+            {
+                $this->_mailinglists[$name]['subscribed'] = 1;
+                foreach( $users as $u )
+                    $u->setPreference( "mailinglist.{$name}.subscribed", 1 );
+            }
+            else
+            {
+                $this->_mailinglists[$name]['subscribed'] = 0;
+                foreach( $users as $u )
+                    $u->setPreference( "mailinglist.{$name}.subscribed", 0 );
+            }
+        }
+        
+        $this->view->message = new INEX_Message( 'Your mailing list subscriptions have been updated and will take effect within 12 hours.', 'success' );
+        
+        $this->_forward( 'index' );
+    }
+    
+    private function _initMailingListSubs()
+    {
+        // are we using mailing lists?
+        if( !isset( $this->config['mailinglist']['enabled'] ) || !$this->config['mailinglist']['enabled'] )
+        {
+            $this->view->mailinglist_enabled = false;
+            return;
+        }
+        
+        $this->view->mailinglist_enabled = true;
+        
+        if( !isset( $this->config['mailinglists'] ) )
+            return;
+        
+        $this->_mailinglists = $this->config['mailinglists'];
+        
+        foreach( $this->_mailinglists as $name => $ml )
+        {
+            $this->_mailinglists[$name]['subscribed'] = $this->getUser()->getPreference( "mailinglist.{$name}.subscribed" );
+        }
     }
 }
 

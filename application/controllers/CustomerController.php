@@ -345,7 +345,7 @@ END_JSON;
 	        ->execute()
 	        ->toArray( true );
 
-	    $this->logger->debug( print_r( $this->view->connections, true ) );
+	    $this->getLogger()->debug( print_r( $this->view->connections, true ) );
 
         $form->getElement( 'message' )->setValue( $this->view->render( 'customer' . DIRECTORY_SEPARATOR . 'welcomeEmail.tpl' ) );
 
@@ -388,14 +388,14 @@ END_JSON;
 
                 if( $mail->send() )
                 {
-                    $this->logger->info( "Welcome email sent for {$customer['name']}" );
+                    $this->getLogger()->info( "Welcome email sent for {$customer['name']}" );
                     $this->view->message = new INEX_Message( "Welcome email successfully sent to {$customer['name']}", "success" );
                     $this->_forward( 'list' );
                     return true;
                 }
                 else
                 {
-                    $this->logger->err( "Could not sent welcome email for {$customer['name']}: " . print_r( $mail, true ) );
+                    $this->getLogger()->err( "Could not sent welcome email for {$customer['name']}: " . print_r( $mail, true ) );
                     $this->view->message = new INEX_Message( "Welcome email could not be sent to {$customer['name']}. Please see logs for more verbose output.", "error" );
                 }
 

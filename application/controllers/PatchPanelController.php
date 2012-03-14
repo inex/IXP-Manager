@@ -142,7 +142,7 @@ class PatchPanelController extends INEX_Controller_FrontEnd
 	                    $ppform->assignFormToModel( $pp, $this, false );
 	                    $pp->save();
 
-                        $this->logger->notice( 'New patch panel created with ID: ' . $pp->id );
+                        $this->getLogger()->notice( 'New patch panel created with ID: ' . $pp->id );
 
                         if( $form->getSubForm( 'AutoGenForm' )->getElement( 'cb_autogen' )->isChecked() )
                         {
@@ -158,7 +158,7 @@ class PatchPanelController extends INEX_Controller_FrontEnd
                                     $mport->cable_type = $ppform->cable_type->getValue();
                                     $mport->PatchPanel = $pp;
                                     $mport->save();
-                                    $this->logger->notice( "New patch panel port created with ID {$mport->id} for patch panel #{$pp->id}" );
+                                    $this->getLogger()->notice( "New patch panel port created with ID {$mport->id} for patch panel #{$pp->id}" );
 					            }
 					        }
 
@@ -219,7 +219,7 @@ class PatchPanelController extends INEX_Controller_FrontEnd
             $ppform->assignFormToModel( $pp, $this, false );
             $pp->save();
 
-            $this->logger->notice( "Patch panel #{$pp->id} edited" );
+            $this->getLogger()->notice( "Patch panel #{$pp->id} edited" );
 
             if( $orig_colo_ref != $pp->colo_ref )
             {
@@ -229,7 +229,7 @@ class PatchPanelController extends INEX_Controller_FrontEnd
                     $port->colo_ref = "{$pp->colo_ref}.{$port->port}";
                     $port->save();
                 }
-                $this->logger->notice( "Patch panel #{$pp->id} has had it's colo-ref edited - ports have been updated also" );
+                $this->getLogger()->notice( "Patch panel #{$pp->id} has had it's colo-ref edited - ports have been updated also" );
                 $this->view->message = new INEX_Message( "Patch panel {$pp->name} edited and its ports colocation references have been updated", "success" );
             }
             else
@@ -299,7 +299,7 @@ class PatchPanelController extends INEX_Controller_FrontEnd
             $pp->getSubForm( 'PatchPanelForm' )->assignFormToModel( $pp_model, $this, false );
             $pp_model->save();
 
-            $this->logger->notice( 'New patch panel created with ID: ' . $pp_model->id );
+            $this->getLogger()->notice( 'New patch panel created with ID: ' . $pp_model->id );
 
             foreach( $ppps->getSubForms() as $fport )
             {
@@ -313,7 +313,7 @@ class PatchPanelController extends INEX_Controller_FrontEnd
                 $mport->save();
             }
 
-            $this->logger->notice( "New patch panel port created with ID {$mport->id} for patch panel #{$pp_model->id}" );
+            $this->getLogger()->notice( "New patch panel port created with ID {$mport->id} for patch panel #{$pp_model->id}" );
             $this->view->message = new INEX_Message( "The new patch panel and its ports have been added", "success" );
 
             return( $this->_forward( 'list' ) );

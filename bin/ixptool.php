@@ -37,17 +37,17 @@
 
 date_default_timezone_set( 'Europe/Dublin' );
 
+require_once( dirname( __FILE__ ) . '/utils.inc' );
+define( 'APPLICATION_ENV', scriptutils_get_application_env() );
+
+define( 'SCRIPT_NAME', 'ixptool - IXP Manager CLI Management Tool' );
+define( 'SCRIPT_COPY', '(c) Copyright 2010 - ' . date( 'Y' ) . ' Internet Neutral Exchange Association Ltd' );
+
 error_reporting( E_ALL|E_STRICT );
-//error_reporting( ( E_ALL | E_STRICT ) ^ E_NOTICE );
 
 ini_set( 'display_errors', true );
 
 defined( 'APPLICATION_PATH' ) || define( 'APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application' ) );
-
-// Define application environment
-define( 'APPLICATION_ENV', 'productioncli' );
-
-defined( 'APPLICATION_ENV' ) || define( 'APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production' ) );
 
 // Ensure library/ is on include_path
 set_include_path( implode( PATH_SEPARATOR,
@@ -86,6 +86,7 @@ try
             'action|a=s'    => 'Action to perform in format of module.controller.action',
             'verbose|v'     => 'Verbose messages will be dumped to the default output.',
             'development|d' => 'Enables development mode.',
+            'p1=s'          => 'Generic paramater #1 for various actions'
         )
     );
 
@@ -98,6 +99,8 @@ catch( Zend_Console_Getopt_Exception $e )
 
 if( isset( $opts->h ) )
 {
+    echo SCRIPT_NAME . "\n" . SCRIPT_COPY . "\n\n";
+    
     echo $opts->getUsageMessage();
     exit;
 }
@@ -109,13 +112,6 @@ if( isset( $opts->a ) )
         $reqRoute = array_reverse( explode( '.', $opts->a ) );
 
         @list( $action, $controller, $module ) = $reqRoute;
-
-        if( $opts->v )
-        {
-            echo "Action:     $action\n";
-            echo "Controller: $controller\n";
-            echo "Module:     $module\n\n";
-        }
 
         $front = $bootstrap->frontController;
 
@@ -132,6 +128,9 @@ if( isset( $opts->a ) )
             $front->setParam( 'verbose', true );
         else
             $front->setParam( 'verbose', false );
+
+        if( $opts->p1 )
+            $front->setParam( 'param1', $opts->p1 );
 
         // $front->addModuleDirectory( APPLICATION_PATH . '/modules');
 

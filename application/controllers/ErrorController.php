@@ -61,7 +61,7 @@ class ErrorController extends INEX_Controller_Action
                 if( isset( $exception ) )
                 {
                     // Log the exception:
-                    $this->logger->debug( $exception->getMessage() . "\n" .
+                    $this->getLogger()->debug( $exception->getMessage() . "\n" .
                     $exception->getTraceAsString()
                     );
 

@@ -59,7 +59,7 @@
                     <td>{$member.autsys|asnumber}</td>
                     <td>{$member.datejoin}</td>
                     {if $customer->isFullMember()}
-                        <td><a href="{genUrl controller='dashboard' action='my-peering-matrix' email=$member.id}">{$member.peeringemail}</a></td>
+                        <td><a href="{genUrl controller='dashboard' action='my-peering-manager' email=$member.id}">{$member.peeringemail}</a></td>
                     {/if}
                 </tr>
             {/foreach}

@@ -1,4 +1,5 @@
 .project
+bin/mailing-list-sync.sh
 public/.htaccess
 application/configs/application.ini
 application/configs/pp-application.ini*
@@ -11,6 +12,7 @@ var/templates_c/*
 library/Doctrine
 library/Zend
 library/ZFDebug
+library/Minify
 library/smarty
 library/Smarty
 library/Bootstrap-Zend-Framework

@@ -71,7 +71,7 @@ function editNotes( pId )
     $( "#peeringNotesDialog-member" ).html( 'Loading...' );
     $( "#peeringNotesDialog-notes" ).val( 'Loading...' ).show();
 
-    $.getJSON( "{genUrl controller='dashboard' action='my-peering-matrix-notes'}/id/" + pId,
+    $.getJSON( "{genUrl controller='dashboard' action='my-peering-manager-notes'}/id/" + pId,
             function( data ) {
                 $( "#peeringNotesDialog-id" ).val( pId );
                 $( "#peeringNotesDialog-member" ).html( data['name'] );
@@ -95,7 +95,7 @@ function saveNotes()
     $( '#peeringNotesDialog-member' ).html( 'Saving...' );
 
     $.post(
-        "{genUrl controller=dashboard action='my-peering-matrix-notes' save=1}",
+        "{genUrl controller=dashboard action='my-peering-manager-notes' save=1}",
         $('#peeringNotesForm').serialize(), inexMessage, 'json'
     );
 
@@ -120,7 +120,7 @@ function showPeeringRequestDialog( pId )
     $( "#sendPeeringRequestDialog-message" ).val( 'Loading...' );
     $( "#sendPeeringRequestForm" ).show();
 
-    $.getJSON( "{genUrl controller='dashboard' action='my-peering-matrix-email'}/id/" + pId,
+    $.getJSON( "{genUrl controller='dashboard' action='my-peering-manager-email'}/id/" + pId,
             function( data ) {
                 $( "#sendPeeringRequestDialog-id" ).val( pId );
                 $( "#sendPeeringRequestDialog-to" ).val( data['to'] );
@@ -141,7 +141,7 @@ function sendPeeringRequest()
     $( "#sendPeeringRequestThrobber" ).show();
 
     $.post(
-        "{genUrl controller=dashboard action='my-peering-matrix-email' send=1}",
+        "{genUrl controller=dashboard action='my-peering-manager-email' send=1}",
         $('#sendPeeringRequestForm').serialize(), inexMessage, 'json'
     );
 
@@ -178,7 +178,7 @@ function changeMyPeeredState( pId, pVlan )
         '<img src="{genUrl}/images/throbber-small.gif" width="16" height="16" border="0" alt="[...]" />'
     );
 
-    $.getJSON( "{genUrl controller='dashboard' action='my-peering-matrix-peered-state'}/id/" + pId + "/vlan/" + pVlan,
+    $.getJSON( "{genUrl controller='dashboard' action='my-peering-manager-peered-state'}/id/" + pId + "/vlan/" + pVlan,
             function( data ) {
                 $('#myPeeredState-' + pId).empty();
                 switch( data['newstate'] )
@@ -227,7 +227,7 @@ function changeIPv6PeeredState( pId, pVlan )
         '<img src="{genUrl}/images/throbber-small.gif" width="16" height="16" border="0" alt="[...]" />'
     );
 
-    $.getJSON( "{genUrl controller='dashboard' action='my-peering-matrix-peered-state'}/type/ipv6/id/" + pId + "/vlan/" + pVlan,
+    $.getJSON( "{genUrl controller='dashboard' action='my-peering-manager-peered-state'}/type/ipv6/id/" + pId + "/vlan/" + pVlan,
             function( data ) {
                 $('#ipv6PeeredState-' + pId).empty();
                 switch( data['newstate'] )

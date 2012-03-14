@@ -86,7 +86,6 @@ class SecController extends Zend_Controller_Action
 
         // and from the bootstrap, we can get other resources:
         $this->_config   = $this->_bootstrap->getApplication()->getOptions();
-        $this->_logger   = $this->_bootstrap->getResource( 'logger' );
         $this->_session  = $this->_bootstrap->getResource( 'namespace' );
         $this->_view     = $this->_bootstrap->getResource( 'view' );
 
@@ -120,7 +119,7 @@ class SecController extends Zend_Controller_Action
     {
 
         // Log the event
-        $this->_logger->notice( "{$this->_session->type} {$this->_session->cust['shortname']} - "
+        $this->getLogger()->notice( "{$this->_session->type} {$this->_session->cust['shortname']} - "
             . "{$this->_session->router} - {$this->_session->ip['address']}"
         );
 
@@ -179,13 +178,13 @@ class SecController extends Zend_Controller_Action
         // Log the event
         if( $this->_session->isCorePort )
         {
-            $this->_logger->notice( "{$this->_session->type} CORE LINK - "
+            $this->getLogger()->notice( "{$this->_session->type} CORE LINK - "
                 . "{$this->_session->switch['name']} - {$this->_session->port}"
             );
         }
         else
         {
-            $this->_logger->notice( "{$this->_session->type} {$this->_session->cust['shortname']} - "
+            $this->getLogger()->notice( "{$this->_session->type} {$this->_session->cust['shortname']} - "
                 . "{$this->_session->switch['name']} - {$this->_session->switchPort['name']} "
             );
         }
@@ -291,7 +290,7 @@ class SecController extends Zend_Controller_Action
 	    fclose( $fp );
 
         // Log the event
-        $this->_logger->notice( "SECURITY VIOLATION {$this->_session->cust['shortname']} - "
+        $this->getLogger()->notice( "SECURITY VIOLATION {$this->_session->cust['shortname']} - "
             . "{$this->_session->switch['name']} - {$this->_session->switchPort['name']} "
             . "MAC: {$this->_session->mac} Manufactur: $manufacturer"
         );
@@ -385,5 +384,19 @@ class SecController extends Zend_Controller_Action
 
         return $this->_clickatell;
     }
+    
+    /**
+     * Get the logger object (and bootstrap it if not already done)
+     *
+     * @return Zend_Log The log object
+     */
+    protected function getLogger()
+    {
+        if( $this->_logger === null )
+            $this->_logger = $this->_bootstrap->getResource( 'logger' );
+                                                                
+        return $this->_logger;
+    }
+                                                                                
 }
 

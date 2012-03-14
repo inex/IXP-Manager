@@ -46,7 +46,7 @@ class CustAdminController extends INEX_Controller_Action
 	            INEX_Message::MESSAGE_TYPE_ERROR
 	        );
 
-	        $this->logger->alert( $this->user->username . " tried to access dashboard/users without sufficient permissions" );
+	        $this->getLogger()->alert( $this->user->username . " tried to access dashboard/users without sufficient permissions" );
 
             Zend_Session::destroy( true, true );
 
@@ -113,7 +113,7 @@ class CustAdminController extends INEX_Controller_Action
 	        // now is the current CUSTADMIN user entitled to edit the specified user?
 	        if( $u->custid != $this->user->custid )
 	        {
-	            $this->logger->alert( "In cust-admin/toggle-enabled, user ($this->user->username} tried to illegally edit {$u->username}!" );
+	            $this->getLogger()->alert( "In cust-admin/toggle-enabled, user ($this->user->username} tried to illegally edit {$u->username}!" );
 	            $this->view->message = new INEX_Message( 'You have tried to edit a user that is not yours. Our administrators have been alerted and will act accordingly.', INEX_Message::MESSAGE_TYPE_ALERT );
 	            return( $this->_forward( 'users' ) );
 	        }
@@ -232,7 +232,7 @@ class CustAdminController extends INEX_Controller_Action
 	                    try { $mail->send(); }
 	                    catch( Zend_Mail_Exception $e ) { $mail_sent = false; }
 
-	                    $this->logger->notice( "New user created by {$this->user->username}: {$u->username}/{$u->email}" );
+	                    $this->getLogger()->notice( "New user created by {$this->user->username}: {$u->username}/{$u->email}" );
 
 	                    if( $mail_sent )
 	                    {
@@ -253,7 +253,7 @@ class CustAdminController extends INEX_Controller_Action
                     else
                     {
                         // $isEdit
-                        $this->logger->info( "cust-admin/edit-user User {$u->username} edited by {$this->user->username}" );
+                        $this->getLogger()->info( "cust-admin/edit-user User {$u->username} edited by {$this->user->username}" );
 
                         $this->session->message = new INEX_Message(
                             "User {$u->username} edited.",
@@ -290,7 +290,7 @@ class CustAdminController extends INEX_Controller_Action
         // now is the current CUSTADMIN user entitled to edit the specified user?
         if( $u->custid != $this->user->custid )
         {
-            $this->logger->alert( "In cust-admin/toggle-enabled, user ($this->user->username} tried to illegally edit {$u->username}!" );
+            $this->getLogger()->alert( "In cust-admin/toggle-enabled, user ($this->user->username} tried to illegally edit {$u->username}!" );
             $this->view->message = new INEX_Message( 'You have tried to edit a user that is not yours. Our administrators have been alerted and will act accordingly.', INEX_Message::MESSAGE_TYPE_ALERT );
             return( $this->_forward( 'users' ) );
         }
@@ -303,7 +303,7 @@ class CustAdminController extends INEX_Controller_Action
         else
             $this->session->message = new INEX_Message( "You have enabled user {$u->username}.", INEX_Message::MESSAGE_TYPE_SUCCESS );
 
-        $this->logger->info( "cust-admin/toggle-enabled: {$this->user->username} set disbaled flag of {$u->username} to {$u->disabled}" );
+        $this->getLogger()->info( "cust-admin/toggle-enabled: {$this->user->username} set disbaled flag of {$u->username} to {$u->disabled}" );
 
         $this->_redirect( 'cust-admin/users' );
     }

@@ -5,7 +5,7 @@
 			Sending peering request...
 		</p>
 	</div>
-    <form method="POST" id="sendPeeringRequestForm" action="{genUrl controller=dashboard action='my-peering-matrix-email' send=1}">
+    <form method="POST" id="sendPeeringRequestForm" action="{genUrl controller=dashboard action='my-peering-manager-email' send=1}">
 
         <table border="0">
         <tr>
