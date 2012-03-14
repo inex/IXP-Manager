@@ -697,7 +697,7 @@ class CliController extends INEX_Controller_Action
                 );
                 
                 if( $this->_verbose ) echo "$cmd\n";
-                //exec( $cmd );
+                exec( $cmd );
             }
         }
     }
@@ -747,6 +747,8 @@ END_BLOCK;
 # Remove subscriptions from the list
 {$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->config['mailinglist']['cmd']['remove_members']} {$name} >/dev/null
 
+# Sync passwords
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-password-sync --p1={$name} >/dev/null
 
 END_BLOCK;
         }
