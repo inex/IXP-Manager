@@ -615,7 +615,7 @@ class CliController extends INEX_Controller_Action
 
         fclose( $stdin );
         
-        echo "Setting mailing list subscription for all users without a subscription setting...\n";
+        if( $this->_verbose ) echo "Setting mailing list subscription for all users without a subscription setting...\n";
         $users = Doctrine_Query::create()->from( 'User u' )->execute( null, Doctrine::HYDRATE_RECORD );
 
         foreach( $users as $u )
@@ -708,10 +708,10 @@ END_BLOCK;
 {$this->config['mailinglist']['cmd']['list_members']} {$name} | {$apppath}/../bin/ixptool.php -a cli.mailing-list-init --p1={$name}
 
 # Add new subscriptions to the list
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-subscribed --p1={$name} | {$this->config['mailinglist']['cmd']['add_members']} {$name}
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-subscribed --p1={$name} | {$this->config['mailinglist']['cmd']['add_members']} {$name} >/dev/null
 
 # Remove subscriptions from the list
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->config['mailinglist']['cmd']['remove_members']} {$name}
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->config['mailinglist']['cmd']['remove_members']} {$name} >/dev/null
 
 
 END_BLOCK;

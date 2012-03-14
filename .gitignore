@@ -1,4 +1,5 @@
 .project
+bin/mailing-list-sync.sh
 public/.htaccess
 application/configs/application.ini
 application/configs/pp-application.ini*

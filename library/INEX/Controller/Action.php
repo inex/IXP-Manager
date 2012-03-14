@@ -158,7 +158,7 @@ class INEX_Controller_Action extends Zend_Controller_Action
             
             // pull a message from the session if it exists
             // (this is when we do a ->_redirect after an action)
-            if( isset( $this->session->message ) && $this->session->message !== null )
+            if( php_sapi_name() != 'cli' && isset( $this->session->message ) && $this->session->message !== null )
             {
                 $this->view->message = $this->session->message;
                 $this->session->message = null;
@@ -166,7 +166,7 @@ class INEX_Controller_Action extends Zend_Controller_Action
             
 
             // should we check the change log? (and if so, only once per session)
-            if( $this->config[ 'change_log' ][ 'enabled' ] && $this->auth->hasIdentity() )
+            if( php_sapi_name() != 'cli' && $this->config[ 'change_log' ][ 'enabled' ] && $this->auth->hasIdentity() )
             {
                 if( isset( $this->session->change_log_has_updates ) ) {
                     $this->view->change_log_has_updates = $this->session->change_log_has_updates;
@@ -198,7 +198,7 @@ class INEX_Controller_Action extends Zend_Controller_Action
         $this->view->action = $this->getRequest()->getParam( 'action' );
         
         // see if the user's session has timed out
-        if( $this->auth->hasIdentity() )
+        if( php_sapi_name() != 'cli' && $this->auth->hasIdentity() )
         {
             if( (mktime() - $this->session->timeOfLastAction) > $this->config[ 'resources' ][ 'session' ][ 'remember_me_seconds' ] ) {
                 $this->auth->clearIdentity();
