@@ -113,13 +113,6 @@ if( isset( $opts->a ) )
 
         @list( $action, $controller, $module ) = $reqRoute;
 
-        if( $opts->v )
-        {
-            echo "Action:     $action\n";
-            echo "Controller: $controller\n";
-            echo "Module:     $module\n\n";
-        }
-
         $front = $bootstrap->frontController;
 
         $front->throwExceptions( true );
