@@ -55,4 +55,11 @@ else
 fi 
         
         
-                                    
+# Doctrine
+if [[ -e $LIBDIR/Doctrine ]]; then
+    echo Doctrine exists - skipping!
+else
+    svn co http://svn.doctrine-project.org/branches/1.2/lib $LIBDIR/Doctrine
+fi
+        
+                                            

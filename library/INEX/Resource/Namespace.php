@@ -64,10 +64,14 @@ class INEX_Resource_Namespace extends Zend_Application_Resource_ResourceAbstract
     {
         if( null === $this->_namespace )
         {
-            $this->getBootstrap()->bootstrap( 'session' );
-
             // Get session configuration options from the application.ini file
             $options = $this->getOptions();
+            
+            if( isset( $options['enabled'] ) && !$options['enabled'] )
+                return null;
+            
+            $this->getBootstrap()->bootstrap( 'session' );
+
 
             $ApplicationNamespace = new Zend_Session_Namespace( 'Application' );
 
