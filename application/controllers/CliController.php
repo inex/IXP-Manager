@@ -669,6 +669,40 @@ class CliController extends INEX_Controller_Action
     }
     
     /**
+     * Mailing list password sync - create and execute commands to set mailing list p/w of subscribers
+     */
+    public function mailingListPasswordSyncAction()
+    {
+        $list = $this->_getMailingList();
+
+        // we'll sync by default so only if we're told not to will the following be true:
+        if( isset( $this->config['mailinglists'][$list]['syncpws'] ) && !$this->config['mailinglists'][$list]['syncpws'] )
+        {
+            if( $this->_verbose ) echo "{$list}: Password sync for the given mailing list is disabled";
+        }
+        else
+        {
+            $users = Doctrine_Query::create()
+                ->select( 'u.email, u.password' )
+                ->from( 'User u' )
+                ->leftJoin( 'u.UserPref up' )
+                ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
+                ->andWhere( 'up.value = 1')
+                ->execute( null, Doctrine::HYDRATE_ARRAY );
+            
+            foreach( $users as $user )
+            {
+                $cmd = sprintf( "{$this->config['mailinglist']['cmd']['changepw']} %s %s %s",
+                        escapeshellarg( $list ), escapeshellarg( $user['email'] ), escapeshellarg( $user['password'] )
+                );
+                
+                if( $this->_verbose ) echo "$cmd\n";
+                //exec( $cmd );
+            }
+        }
+    }
+    
+    /**
      * Mailing list syncronisation - generates a shell script for all mailing lists
      */
     public function mailingListSyncScriptAction()

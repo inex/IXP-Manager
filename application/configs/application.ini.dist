@@ -172,15 +172,18 @@ mailinglists.listname.name    = "List Name"
 mailinglists.listname.desc    = "List Description"
 mailinglists.listname.email   = "Email Address for List"
 mailinglists.listname.archive = "https://www.example.com/mailman/private/listname/"
+mailinglists.listname.syncpws = true
 
 mailinglists.listname2.name    = "Another List Name"
 mailinglists.listname2.desc    = "Another List Description"
 mailinglists.listname2.email   = "Email Address for Another List"
 mailinglists.listname2.archive = "https://www.example.com/mailman/private/listname2/"
+mailinglists.listname2.syncpws = false
 
 mailinglist.cmd.list_members   = "/usr/local/mailman/bin/list_members"
-mailinglist.cmd.add_members    = "/usr/local/mailman/bin/add_members -r - -w y -a y"
-mailinglist.cmd.remove_members = "/usr/local/mailman/bin/remove_members -f -"
+mailinglist.cmd.add_members    = "/usr/local/mailman/bin/add_members -r - -w n -a n"
+mailinglist.cmd.remove_members = "/usr/local/mailman/bin/remove_members -f - -n -N"
+mailinglist.cmd.changepw       = "/usr/local/mailman/bin/withlist -q -l -r changepw"
 
 
 
