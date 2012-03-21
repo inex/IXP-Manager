@@ -70,3 +70,5 @@
     </div>
 </div>
         
+{include file="dashboard/index-tab-overview-news.tpl"}
+        

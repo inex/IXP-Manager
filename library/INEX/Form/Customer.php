@@ -43,6 +43,17 @@ class INEX_Form_Customer extends INEX_Form
     {
         parent::__construct( $options );
 
+        $this->setDecorators(
+            array(
+                array(
+                    'ViewScript',
+                    array(
+                        'viewScript' => 'customer/forms/edit.tpl'
+                    )
+                )
+            )
+        );
+        
         ////////////////////////////////////////////////
         // Create and configure name element
         ////////////////////////////////////////////////
@@ -51,6 +62,7 @@ class INEX_Form_Customer extends INEX_Form
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
+            ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
 
@@ -61,18 +73,10 @@ class INEX_Form_Customer extends INEX_Form
         ////////////////////////////////////////////////
 
         $type = $this->createElement( 'select', 'type' );
-        $type->setMultiOptions(
-            array(
-                '0' => '',
-                '1' => 'Full Member',
-                '2' => 'Associate',
-                '3' => 'IXP Internal Infrastructure',
-                '4' => 'Pro-Bono Service'
-            )
-        );
-        $type->setRegisterInArrayValidator( true )
+        $type->setMultiOptions( array( '0' => '' ) + Cust::$CUST_TYPES_TEXT )
+            ->setRegisterInArrayValidator( true )
             ->setLabel( 'Type' )
-            ->addValidator( 'between', false, array( 1, 4 ) )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setErrorMessages( array( 'Please select a customer type' ) );
 
         $this->addElement( $type );
@@ -86,6 +90,7 @@ class INEX_Form_Customer extends INEX_Form
             ->addValidator('alnum')
             ->addValidator( 'regex', false, array('/^[a-z0-9]+/' ) )
             ->setRequired( true )
+            ->setAttrib( 'class', 'span2' )
             ->setLabel( 'Short Name' )
             ->addFilter( 'StringToLower' )
             ->addFilter( 'StringTrim' );
@@ -96,6 +101,7 @@ class INEX_Form_Customer extends INEX_Form
         $corpwww = $this->createElement( 'text', 'corpwww' );
         $corpwww->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
+            ->setAttrib( 'placeholder', 'http://www.example.com/' )
             ->setLabel( 'Corporate Website' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
@@ -105,7 +111,9 @@ class INEX_Form_Customer extends INEX_Form
         $datejoin->addValidator( 'stringLength', false, array( 10, 10 ) )
             ->addValidator( 'regex', false, array('/^\d\d\d\d-\d\d-\d\d/' ) )
             ->setRequired( false )
-            ->setLabel( 'Date Joined (YYYY-MM-DD)' )
+            ->setLabel( 'Date Joined' )
+            ->setAttrib( 'placeholder', 'YYYY-MM-DD' )
+            ->setAttrib( 'class', 'span2' )
             ->addFilter( 'StringTrim' )
             ->setAttrib( 'id', 'datejoin' );
         $this->addElement( $datejoin );
@@ -114,24 +122,18 @@ class INEX_Form_Customer extends INEX_Form
         $dateleave->addValidator( 'stringLength', false, array( 10, 10 ) )
             ->addValidator( 'regex', false, array('/^\d\d\d\d-\d\d-\d\d/' ) )
             ->setRequired( false )
-            ->setLabel( 'Date Left (YYYY-MM-DD)' )
+            ->setAttrib( 'placeholder', 'YYYY-MM-DD' )
+            ->setAttrib( 'class', 'span2' )
+            ->setLabel( 'Date Left' )
             ->addFilter( 'StringTrim' );
         $this->addElement( $dateleave );
 
         $status = $this->createElement( 'select', 'status' );
-        $status->setMultiOptions(
-            array(
-                '0' => '',
-                '1' => 'Normal',
-                '2' => 'Not Connected',
-                '3' => 'Suspended'
-            )
-        );
-
-        $status->setRegisterInArrayValidator( true )
+        $status->setMultiOptions( array( '0' => '' ) + Cust::$CUST_STATUS_TEXT )
+            ->setRegisterInArrayValidator( true )
             ->setLabel( 'Status' )
             ->setRequired( true )
-            ->addValidator( 'between', false, array( 1, 3 ) )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setErrorMessages( array( 'Please set the customer\'s status' ) );
         $this->addElement( $status );
 
@@ -141,6 +143,7 @@ class INEX_Form_Customer extends INEX_Form
         $autsys->addValidator('int')
             ->addValidator( 'greaterThan', false, array( -1 ) )
             ->setRequired( false )
+            ->setAttrib( 'class', 'span2' )
             ->setLabel( 'AS Number' );
         $this->addElement( $autsys  );
 
@@ -148,6 +151,7 @@ class INEX_Form_Customer extends INEX_Form
         $maxprefixes->addValidator('int')
             ->addValidator( 'greaterThan', false, array( -1 ) )
             ->setRequired( false )
+            ->setAttrib( 'class', 'span1' )
             ->setLabel( 'Max Prefixes' );
         $this->addElement( $maxprefixes  );
 
@@ -155,17 +159,20 @@ class INEX_Form_Customer extends INEX_Form
         $peeringemail->addValidator('emailAddress' )
             ->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setLabel( 'Peering E-Mail' );
+            ->setAttrib( 'placeholder', 'peering@example.com' )
+            ->setLabel( 'Email' );
         $this->addElement( $peeringemail );
 
-        $peeringpolicy = $this->createElement( 'text', 'peeringpolicy' );
-        $peeringpolicy->addValidator( 'stringLength', false, array( 0, 255 ) )
-            ->setRequired( false )
+        $peeringpolicy = $this->createElement( 'select', 'peeringpolicy' );
+        $peeringpolicy->setMultiOptions( array( 0 => '' ) + Cust::$PEERING_POLICIES )
+            ->setRegisterInArrayValidator( true )
             ->setLabel( 'Peering Policy' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setRequired( false )
+            ->setAttrib( 'class', 'chzn-select' );
+        
         $this->addElement( $peeringpolicy );
-
+        
+        
         $peeringmacro = $this->createElement( 'text', 'peeringmacro' );
         $peeringmacro->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
@@ -186,7 +193,7 @@ class INEX_Form_Customer extends INEX_Form
         $irrdb->setRegisterInArrayValidator( true )
             ->setRequired( false )
             ->setLabel( 'IRRDB' )
-            ->addValidator( 'between', false, array( 1, $maxIrrdbId ) )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setErrorMessages( array( 'Please select an IRRDB' ) );
 
         $this->addElement( $irrdb );
@@ -207,10 +214,14 @@ class INEX_Form_Customer extends INEX_Form
             );
         $this->getDisplayGroup( 'peeringDisplayGroup' )->setLegend( 'Peering Details' );
 
+        
+        
         $nocphone = $this->createElement( 'text', 'nocphone' );
         $nocphone->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC Phone' )
+            ->setLabel( 'Phone' )
+            ->setAttrib( 'placeholder', '+353 1 123 4567' )
+            ->setAttrib( 'class', 'span2' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $nocphone );
@@ -218,7 +229,9 @@ class INEX_Form_Customer extends INEX_Form
         $noc24hphone = $this->createElement( 'text', 'noc24hphone' );
         $noc24hphone->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC 24h Phone' )
+            ->setAttrib( 'placeholder', '+353 86 876 5432' )
+            ->setAttrib( 'class', 'span2' )
+            ->setLabel( '24h Phone' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $noc24hphone );
@@ -226,7 +239,9 @@ class INEX_Form_Customer extends INEX_Form
         $nocfax = $this->createElement( 'text', 'nocfax' );
         $nocfax->addValidator( 'stringLength', false, array( 0, 40 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC Fax' )
+            ->setLabel( 'Fax' )
+            ->setAttrib( 'placeholder', '+353 1 765 4321' )
+            ->setAttrib( 'class', 'span2' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $nocfax );
@@ -235,21 +250,24 @@ class INEX_Form_Customer extends INEX_Form
         $nocemail->addValidator('emailAddress' )
             ->addValidator( 'stringLength', false, array( 0, 40 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC E-Mail' );
+            ->setAttrib( 'placeholder', 'noc@example.com' )
+            ->setLabel( 'E-Mail' );
         $this->addElement( $nocemail );
 
-        $nochours = $this->createElement( 'text', 'nochours' );
-        $nochours->addValidator( 'stringLength', false, array( 0, 40 ) )
+        $nochours = $this->createElement( 'select', 'nochours' );
+        $nochours->setMultiOptions( array( '0' => '' ) + Cust::$NOC_HOURS )
+            ->setRegisterInArrayValidator( true )
+            ->setLabel( 'Hours' )
             ->setRequired( false )
-            ->setLabel( 'NOC Hours' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setAttrib( 'class', 'chzn-select' );
         $this->addElement( $nochours );
-
+        
+        
         $nocwww = $this->createElement( 'text', 'nocwww' );
         $nocwww->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC WWW' )
+            ->setLabel( 'Website' )
+            ->setAttrib( 'placeholder', 'http://www.noc.example.com/' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $nocwww );
@@ -260,10 +278,13 @@ class INEX_Form_Customer extends INEX_Form
         );
         $this->getDisplayGroup( 'nocDisplayGroup' )->setLegend( 'NOC Details' );
 
+        
+        
+        
         $billingContact = $this->createElement( 'text', 'billingContact' );
         $billingContact->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setLabel( 'Billing Contact' )
+            ->setLabel( 'Contact' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $billingContact );
@@ -271,7 +292,7 @@ class INEX_Form_Customer extends INEX_Form
         $billingAddress1 = $this->createElement( 'text', 'billingAddress1' );
         $billingAddress1->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setLabel( 'Billing Address (1)' )
+            ->setLabel( 'Address' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $billingAddress1 );
@@ -279,7 +300,7 @@ class INEX_Form_Customer extends INEX_Form
         $billingAddress2 = $this->createElement( 'text', 'billingAddress2' );
         $billingAddress2->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setLabel( 'Billing Address (2)' )
+            ->setLabel( '' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $billingAddress2 );
@@ -287,19 +308,26 @@ class INEX_Form_Customer extends INEX_Form
         $billingCity = $this->createElement( 'text', 'billingCity' );
         $billingCity->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setLabel( 'Billing City' )
+            ->setLabel( 'City' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() );
         $this->addElement( $billingCity );
 
-        $billingCountry = $this->createElement( 'text', 'billingCountry' );
-        $billingCountry->addValidator( 'stringLength', false, array( 0, 2 ) )
+        $billingCountry = $this->createElement( 'select', 'billingCountry' );
+        $billingCountry->setMultiOptions( INEX_Countries::getCountriesArray() )
+            ->setRegisterInArrayValidator( true )
+            ->setValue( 'IE' )
+            ->setLabel( 'Country' )
             ->setRequired( false )
-            ->setLabel( 'Billing Country' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setAttrib( 'class', 'chzn-select' );
+        
         $this->addElement( $billingCountry );
-
+        
+        
+        
+        
+        
+        
         $this->addDisplayGroup(
             array( 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry' ),
         	'billingDisplayGroup'
