@@ -374,7 +374,7 @@ END_JSON;
             {
                 $mail = new Zend_Mail();
                 $mail->setBodyText( $form->getValue( 'message' ) );
-                $mail->setFrom( $this->_config['identity']['email'], $this->_config['identity']['name'] );
+                $mail->setFrom( $this->config['identity']['email'], $this->config['identity']['name'] );
                 $mail->setSubject( $form->getValue( 'subject' ) );
 
                 foreach( array( 'To', 'Cc', 'Bcc' ) as $recipient )

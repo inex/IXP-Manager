@@ -109,7 +109,7 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
 
                 if( $this->identity['user']['privs'] < $authRequired )
                 {
-                    $this->logger->alert( "User {$this->identity['username']} was denied access to {$this->frontend['name']}" );
+                    $this->getLogger()->alert( "User {$this->identity['username']} was denied access to {$this->frontend['name']}" );
                     $this->view->message = new INEX_Message( "You are not authorised to view the requested page!", "alert" );
                     return( $this->_forward( 'index', 'index' ) );
                 }
@@ -214,12 +214,12 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
 
                     if( $isEdit )
                     {
-                        $this->logger->notice( $this->getName() . ' edited' );
+                        $this->getLogger()->notice( $this->getName() . ' edited' );
                         $this->session->message = new INEX_Message( $this->getName() . ' edited', "success" );
                     }
                     else
                     {
-                        $this->logger->notice( 'New ' . $this->getName() . ' created' );
+                        $this->getLogger()->notice( 'New ' . $this->getName() . ' created' );
                         $this->session->message = new INEX_Message( $this->getName() . ' added', "success" );
                     }
 
@@ -307,14 +307,14 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
 
         if( $object->delete() )
         {
-            $this->logger->notice( 'Object with ID: ' . $this->getRequest()->getParam( 'id' ) . " deleted from {$this->frontend['model']}" );
+            $this->getLogger()->notice( 'Object with ID: ' . $this->getRequest()->getParam( 'id' ) . " deleted from {$this->frontend['model']}" );
             $this->view->message = new INEX_Message( "Object with ID " . $this->getRequest()->getParam( 'id' ) . " deleted", "success" );
 
             $this->postDelete();
         }
         else
         {
-            $this->logger->error( "Object could not be deleted" );
+            $this->getLogger()->error( "Object could not be deleted" );
             $this->view->message = new INEX_Message( "Error deleting object", "error" );
         }
 
