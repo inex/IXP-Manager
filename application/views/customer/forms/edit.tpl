@@ -1,6 +1,12 @@
 
-<form class="form-horizontal" enctype="application/x-www-form-urlencoded" accept-charset="UTF-8" method="post" horizontal="1" action="{genUrl controller="customer" action="add"}">
-
+<form class="form-horizontal" enctype="application/x-www-form-urlencoded"
+        accept-charset="UTF-8" method="post" horizontal="1"
+        {if $isEdit}
+            action="{genUrl controller="customer" action="edit" id=$object.id}"
+        {else}
+            action="{genUrl controller="customer" action="add"}"
+        {/if}>
+            
 <div class="row-fluid">
 
     <div class="span6">
@@ -77,8 +83,8 @@
 
 <div class="form-actions">
 
-    <button name="cancel" id="cancel" type="button" onclick="parent.location='/ixp/customer/list'" class="btn">Cancel</button>
-    <input type="submit" name="commit" id="commit" value="Add New Customer" class="btn btn-primary">
+    <a class="btn" href="{genUrl controller="customer" action="list"}">Cancel</a>
+    <input type="submit" name="commit" id="commit" value="{if $isEdit}Save Changes{else}Add New Customer{/if}" class="btn btn-primary">
 
 </div>
 
