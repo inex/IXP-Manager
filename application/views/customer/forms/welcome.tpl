@@ -40,7 +40,18 @@
 
     <div class="span12">
 
-        {$element->message}
+    
+        <div class="control-group">
+        
+            <label for="message" class="control-label required">&nbsp;</label>
+
+            <div class="controls">
+            
+                <textarea style='font-family: Menlo, Monaco, "Courier New", monospace;' name="message" id="message" cols="80" rows="20" class="span12">{$element->message->getValue()}</textarea>
+
+            </div>
+            
+        </div>
         
     </div>
 </div>
@@ -54,6 +65,21 @@
 
     
 </form>
+
+
+<script type="text/javascript">
+
+$(document).ready( function(){
+
+    /* $( '#message' ).wysihtml5({
+
+    	'allowObjectResizing':  true
+    	    
+    }); */
+	
+});
+	
+</script>
 
 
 
