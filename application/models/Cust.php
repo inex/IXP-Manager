@@ -60,7 +60,26 @@ class Cust extends BaseCust
 	    Cust::STATUS_SUSPENDED        => 'Suspended',
     );
 
+    const PEERING_POLICY_OPEN       = 'open';
+    const PEERING_POLICY_SELECTIVE  = 'selective';
+    const PEERING_POLICY_CLOSED     = 'closed';
+    
+    public static $PEERING_POLICIES = array(
+        self::PEERING_POLICY_OPEN       => 'open',
+        self::PEERING_POLICY_SELECTIVE  => 'selective',
+        self::PEERING_POLICY_CLOSED     => 'closed'
+    );
+    
 
+    public static $NOC_HOURS = array(
+        '24x7' => '24x7',
+        '8x5'  => '8x5',
+        '8x7'  => '8x7',
+        '12x5' => '12x5',
+        '12x7' => '12x7'
+    );
+    
+    
     public function setUp()
     {
         $this->hasMany(
