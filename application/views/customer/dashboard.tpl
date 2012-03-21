@@ -61,8 +61,19 @@
         
             <h3>
                 {$acust.name}
+                {if $acust.type eq Cust::TYPE_ASSOCIATE}
+                    <span class="label label-warning">ASSOCIATE MEMBER</span>
+                {elseif $acust.type eq Cust::TYPE_PROBONO}
+                    <span class="label label-info">PROBONO MEMBER</span>
+                {elseif $acust.type eq Cust::TYPE_INTERNAL}
+                    <span class="label label-inverse">INTERNAL INFRASTRUCTURE</span>
+                {elseif $acust.type eq Cust::TYPE_FULL}
+                    <span class="label label-success">FULL MEMBER</span>
+                {else}
+                    <span class="label">UNKNOWN MEMBER TYPE</span>
+                {/if}
                 {if $acust.dateleave and $acust.dateleave neq '0000-00-00'}
-                    - <strong>ACCOUNT CLOSED</strong>
+                    <span class="label label-important">ACCOUNT CLOSED</span>
                 {/if}
             </h3>
             <h4 style="padding-left: 30px;">
@@ -116,7 +127,7 @@
 
 
             
-            {if $acust.type neq Cust::TYPE_INTERNAL and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
+            {if $acust.type neq Cust::TYPE_ASSOCIATE and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
             
                 <br /><br />
                 <h3>Interfaces</h3>

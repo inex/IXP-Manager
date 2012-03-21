@@ -23,7 +23,6 @@
 {/if}
 
 
-
 <table id="ixpDataTable"  cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
 
 <thead>
@@ -31,7 +30,7 @@
     {foreach from=$frontend.columns.displayColumns item=col}
         <th>{$frontend.columns.$col.label}</th>
     {/foreach}
-    <th></th>
+    <th>&nbsp;</th>
 </tr>
 </thead>
 
@@ -105,7 +104,7 @@
             {else}
                 <div class="btn-group">
                     <a class="btn btn-mini" href="{genUrl controller=$controller action="edit" id=$row.id}"><i class="icon-pencil"></i></a>
-                    <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller=$controller action="delete" id=$row.id}"><i class="icon-trash"></i></a>
+                    <a class="btn btn-mini" id="object-delete-{$row.id}"><i class="icon-trash"></i></a>
                 </div>
             {/if}
         </td>
@@ -118,7 +117,6 @@
 
 </table>
 
-
 {if isset( $hasPostContent ) and $hasPostContent}
     {include file=$hasPostContent}
 {/if}
@@ -128,12 +126,30 @@
 	<p>Loading...</p>
 </div>
 
+<div class="modal hide" id="modal-confirm">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>Are you sure?</h3>
+    </div>
+    <div class="modal-body">
+        <p>
+            Deletion is <strong>a permanent action</strong> and it cannot be undone.
+        </p>
+        <p>
+            Are you sure you want to delete this object?
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a data-dismiss="modal" class="btn btn-success">Cancel</a>
+        <a id="modal-confirm-action" href="{genUrl}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+
 <script>
-{literal}
 
 function ixpViewPanel( title, controller, id ) {
 	$.get(
-        "{/literal}{genUrl}{literal}/" + controller + "/view/id/" + id + "/perspective/panel",
+        "{genUrl}/" + controller + "/view/id/" + id + "/perspective/panel",
         function( data ){
         	$( '#dialog-viewpanel' ).html( data );
         	$( '#dialog-viewpanel' ).dialog( 'option', 'title', title );
@@ -149,6 +165,18 @@ $(document).ready(function() {
 		modal: true
 	});
 
+	$( "#modal-confirm" ).modal({
+		'show': false
+	});
+
+	$('a[id|="object-delete"]').click( function( event ){
+
+		var id = substr( $( this ).attr( 'id' ), 14 );
+		$( '#modal-confirm-action' ).attr( 'href', "{genUrl controller=$controller action="delete"}/id/" + id );
+		$( "#modal-confirm" ).modal( { 'show': true } );
+	});
+	
+	{literal}
 	oTable = $('#ixpDataTable').dataTable({
 
 		{/literal}
