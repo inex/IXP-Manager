@@ -71,7 +71,9 @@ $(document).ready( function(){
 
 	
 	$('#details').wysiwyg( {
-		css: '{genUrl}/css/800-bootstrap.css'
+		'css': '{genUrl}/css/800-bootstrap.css',
+		'html': 'INITIAL_CONTENT',
+		'initialContent': ''
 	} );
 
     $( '#livedate' ).datepicker({

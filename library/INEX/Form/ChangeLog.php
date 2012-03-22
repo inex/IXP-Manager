@@ -76,6 +76,7 @@ class INEX_Form_ChangeLog extends INEX_Form
             ->setRequired( false )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() )
+            ->setAttrib( 'placeholder', 'A more descriptive detail on the change log if a one line summary is not sufficient...' )
             ->setAttrib( 'cols', 100 )
             ->setAttrib( 'rows', 10 );
         $this->addElement( $details );
@@ -86,6 +87,7 @@ class INEX_Form_ChangeLog extends INEX_Form
         );
         $visibility->setRegisterInArrayValidator( true )
             ->setLabel( 'Visibility' )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setValue( User::AUTH_SUPERUSER )
             ->setErrorMessages( array( 'Please select the minimum privileges a user needs to see this change log' ) );
 
