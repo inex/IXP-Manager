@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Example: Basic - jWYSIWYG</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="../../jquery.wysiwyg.css" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		$("textarea").wysiwyg({
+			controls: {
+				html: {
+					visible: true
+				},
+				quote: {
+					visible: true
+				}
+			}
+		});
+
+		$("textarea").wysiwyg("addControl", "quote", {
+			icon: 'images/quote02.gif',
+			tooltip: 'Quote',
+			tags: ['blockquote'],
+			callback: function (e, range, editor, selection) {
+				var common = range.commonAncestorContainer;
+
+				// if a text node is selected, we want to make the wrap the whole element, not just some text
+				if (common.nodeType == 3) {
+					common = common.parentNode;
+				}
+				
+				// console.log(common.parentNode.nodeName);
+				
+				if(common.parentNode.nodeName == "BLOCKQUOTE" || (common.parentNode.nodeName == "BODY" && common.nodeName == "BLOCKQUOTE")) {
+					$(common).unwrap();
+				}
+				else {
+					$(common).wrap("<blockquote class='quote' />");
+				}
+			}
+		});
+	});
+})(jQuery);
+</script>
+<style type="text/css">
+textarea { width: 400px; height: 150px; }
+</style>
+</head>
+<body>
+  <h1>jWYSIWYG</h1>
+  <h2>Example: Custom Control</h2>
+  <div>
+    <textarea></textarea>
+  </div>
+</body>
+</html>

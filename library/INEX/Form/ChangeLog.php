@@ -44,6 +44,18 @@ class INEX_Form_ChangeLog extends INEX_Form
         parent::__construct( $options );
 
 
+        $this->setDecorators(
+            array(
+                array(
+                    'ViewScript',
+                    array(
+                        'viewScript' => 'change-log/forms/edit.tpl'
+                    )
+                )
+            )
+        );
+        
+        
         ////////////////////////////////////////////////
         // Create and configure title element
         ////////////////////////////////////////////////
@@ -52,19 +64,21 @@ class INEX_Form_ChangeLog extends INEX_Form
         $title->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Summary' )
+            ->setAttrib( 'placeholder', 'One line summary for display in a list of changes' )
             ->addFilter( 'StringTrim' )
+            ->setAttrib( 'class', 'span12' )
             ->addFilter( new INEX_Filter_StripSlashes() );
 
         $this->addElement( $title );
 
-        $change = $this->createElement( 'textarea', 'details' );
-        $change->setLabel( 'Details' )
+        $details = $this->createElement( 'textarea', 'details' );
+        $details->setLabel( 'Details' )
             ->setRequired( false )
             ->addFilter( 'StringTrim' )
             ->addFilter( new INEX_Filter_StripSlashes() )
             ->setAttrib( 'cols', 100 )
             ->setAttrib( 'rows', 10 );
-        $this->addElement( $change );
+        $this->addElement( $details );
 
         $visibility = $this->createElement( 'select', 'visibility' );
         $visibility->setMultiOptions(
@@ -82,6 +96,7 @@ class INEX_Form_ChangeLog extends INEX_Form
         $livedate->addValidator( 'stringLength', false, array( 10, 10 ) )
             ->addValidator( 'regex', false, array('/^\d\d\d\d-\d\d-\d\d/' ) )
             ->setRequired( true )
+            ->setAttrib( 'placeholder', 'YYYY-MM-DD' )
             ->setLabel( 'Live Date' )
             ->addFilter( 'StringTrim' );
         $this->addElement( $livedate );

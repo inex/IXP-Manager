@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Issue 016 - jWYSIWYG</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="../../jquery.wysiwyg.css" type="text/css"/>
+<link rel="stylesheet" href="../lib/ui/jquery.ui.all.css" type="text/css"/>
+<link rel="stylesheet" href="../lib/ui/jquery.ui.dialog.css" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript" src="../lib/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="../lib/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="../lib/ui/jquery.ui.position.js"></script>
+<script type="text/javascript" src="../lib/ui/jquery.ui.dialog.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.image.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.table.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.link.js"></script>
+
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		$('#wysiwyg').wysiwyg({
+			autoload: false,
+			controls: {
+			"html": {visible: true}
+			}
+		});
+	});
+})(jQuery);
+</script>
+
+</head>
+<body>
+<h1>jWYSIWYG</h1>
+<h2>Example: Basic</h2>
+<textarea name="wysiwyg" id="wysiwyg" rows="5" cols="47"></textarea>
+<div id="log"></div>
+</body>
+</html>

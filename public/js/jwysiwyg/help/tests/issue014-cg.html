@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Issue 14 (code.google) Testcase - jWYSIWYG</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="../../jquery.wysiwyg.css" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		$("textarea").wysiwyg({
+			css: './css/issue014-cg.css',
+			rmUnusedControls: true,
+			controls: {
+				h1: {visible: true},
+				h2: {visible: true},
+				h3: {visible: true},
+				html: {visible: true},
+				insertTable: {visible: true}
+			}});
+	});
+})(jQuery);
+</script>
+<style type="text/css">
+textarea { width: 400px; height: 100px; }
+dt { font-weight: bold; }
+</style>
+</head>
+<body>
+	<h2>jWYSIWYG - Issue 14 (code.google) Testcase</h2>
+
+	<dl>
+		<dt>Steps to reproduce:</dt>
+		<dd>
+			<ol>
+				<li>Nothing</li>
+			</ol>
+		</dd>
+
+		<dt>What expected:</dt>
+		<dd>Paragraphs must be red in all browsers.</dd>
+
+		<dt>Tested on:</dt>
+		<dd>
+			<ul>
+				<li>Firefox 3.6.8</li>
+				<li>Internet Explorer 7.0</li>
+				<li>Opera 11</li>
+			</ul>
+		</dd>
+	</dl>
+
+	<table>
+		<tr>
+			<td><textarea class="first">&lt;p>Lorem ipsum dolor sit amet</p></textarea></td>
+		</tr>
+	</table>
+
+	<hr/>
+	<a href="index.html">Index</a>
+</body>
+</html>

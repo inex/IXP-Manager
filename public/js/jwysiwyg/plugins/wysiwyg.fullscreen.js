@@ -23,7 +23,7 @@
 				element: {
 					width:	"100%",
 					height:	"100%",
-					position: "absolute",
+					position: "fixed",
 					left:	"0px",
 					top:	"0px",
 					background: "rgb(255, 255, 255)",
@@ -45,7 +45,7 @@
 				original: {
 					width:	"100%",
 					height:	"100%",
-					position: "absolute",
+					position: "fixed",
 					left:	"0px",
 					top:	"0px",
 					background: "rgb(255, 255, 255)",

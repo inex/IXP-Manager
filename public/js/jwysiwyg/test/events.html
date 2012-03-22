@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="keywords" content="<%= keywords %>"/>
+	<meta name="description" content=""/>
+	<!--[if lte IE 8]> 
+	<![endif]-->
+	<!--[if IE 8]> 
+	<![endif]-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../src/jquery.wysiwyg.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+	//<![CDATA[
+		$(document).ready(function(){
+			$('#editor').wysiwyg({
+				onInit: function(){ console.log('init!'); }, // Test init callback
+				beforeSave:function(e){ return false; } // Test ability to prevent event firing.
+			});
+		});
+	//]]>
+	</script>
+</head>
+<body>
+	<textarea id="editor"></textarea>
+</body>
+</html>

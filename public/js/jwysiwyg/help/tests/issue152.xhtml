@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Example: Basic - jWYSIWYG</title>
+		<link rel="stylesheet" type="text/css" href="../lib/blueprint/screen.css" media="screen, projection" />
+		<link rel="stylesheet" type="text/css" href="../lib/blueprint/print.css" media="print" />
+		<!--[if lt IE 8]><link rel="stylesheet" href="../lib/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+		<link rel="stylesheet" href="../../jquery.wysiwyg.css" type="text/css"/>
+		<script type="text/javascript" src="../lib/jquery.js"></script>
+		<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+		<script type="text/javascript" src="../../controls/wysiwyg.image.js"></script>
+		<script type="text/javascript" src="../../controls/wysiwyg.link.js"></script>
+		<script type="text/javascript" src="../../controls/wysiwyg.table.js"></script>
+		<script type="text/javascript">
+		(function($) {
+			$(document).ready(function() {
+				$('#wysiwyg').wysiwyg({
+					rmUnusedControls: true,
+					controls: { html: { visible: true } },
+					xhtml5: true,
+					unicode: 1
+				});
+			});
+		})(jQuery);
+		</script>
+	</head>
+	<body><div class="container">
+		<h1>jWYSIWYG</h1>
+		<h2>Example: Basic</h2>
+		<textarea id="wysiwyg" rows="5" cols="80"> <![CDATA['&invalid;' '&nbsp;' '&nbsp;']]> </textarea>
+
+		<hr/>
+
+		<div>
+			Copy and paste the bottom, then hit the view source '&lt; &gt;' icon to check it.
+			<br />
+			<iframe src="issue152_iframe.html"></iframe>
+		</div>
+
+		<a href="index.html">Index</a>
+	</div></body>
+</html>

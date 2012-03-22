@@ -18,6 +18,7 @@ library/Smarty
 library/Bootstrap-Zend-Framework
 library/bootstrap-wysihtml5
 library/wysihtml5
+library/jwysiwyg
 *~
 public/images/.directory
 public/images/joomla-admin/.directory

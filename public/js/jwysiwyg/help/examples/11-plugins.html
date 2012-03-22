@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Example: Test plugins - jWYSIWYG</title>
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/screen.css" media="screen, projection" />
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/print.css" media="print" />
+<!--[if lt IE 8]><link rel="stylesheet" href="../lib/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../lib/plugins/autoload/jquery.autoload.js"></script>
+<script type="text/javascript" src="../lib/plugins/farbtastic/farbtastic.js"></script>
+<!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script> -->
+<!-- <link rel="stylesheet" href="../lib/jquery.simplemodal.css" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery.simplemodal.js"></script> -->
+<link rel="stylesheet" href="../lib/plugins/farbtastic/css/farbtastic.css" type="text/css"/>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript" src="../../plugins/wysiwyg.autoload.js"></script>
+<script type="text/javascript" src="../../plugins/wysiwyg.fullscreen.js"></script>
+<script type="text/javascript" src="../../plugins/wysiwyg.i18n.js"></script>
+<script type="text/javascript" src="../../i18n/lang.cs.js"></script>
+<script type="text/javascript" src="../../i18n/lang.de.js"></script>
+<script type="text/javascript" src="../../i18n/lang.he.js"></script>
+<script type="text/javascript" src="../../i18n/lang.es.js"></script>
+<script type="text/javascript" src="../../i18n/lang.fr.js"></script>
+<script type="text/javascript" src="../../i18n/lang.it.js"></script>
+<script type="text/javascript" src="../../i18n/lang.ja.js"></script>
+<script type="text/javascript" src="../../i18n/lang.nl.js"></script>
+<script type="text/javascript" src="../../i18n/lang.pl.js"></script>
+<script type="text/javascript" src="../../i18n/lang.pt_br.js"></script>
+<script type="text/javascript" src="../../i18n/lang.ru.js"></script>
+<script type="text/javascript" src="../../i18n/lang.se.js"></script>
+<script type="text/javascript" src="../../i18n/lang.sl.js"></script>
+<script type="text/javascript" src="../../plugins/wysiwyg.rmFormat.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.colorpicker.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.image.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.link.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.table.js"></script>
+<script type="text/javascript">
+(function ($) {
+	$(document).ready(function () {
+		var global_i = 0;
+
+		$("textarea").each(function () {
+			global_i++;
+
+			$(this).wysiwyg({
+				plugins: {
+					autoload: true,
+					i18n: { lang: "en" },
+					rmFormat: { rmMsWordMarkup: true }
+				},
+
+				controls: {
+					html: {visible: true},
+					colorpicker: {
+						groupIndex: 11,
+						visible: true,
+						css: {
+							"color": function (cssValue, Wysiwyg) {
+								var document = Wysiwyg.innerDocument(),
+									defaultTextareaColor = $(document.body).css("color");
+
+								if (cssValue !== defaultTextareaColor) {
+									return true;
+								}
+
+								return false;
+							}
+						},
+						exec: function() {
+							if ($.wysiwyg.controls.colorpicker) {
+								$.wysiwyg.controls.colorpicker.init(this);
+							}
+						},
+						tooltip: "Colorpicker"
+					},
+					fullscreen: {
+						groupIndex: 12,
+						visible: true,
+						exec: function () {
+							if ($.wysiwyg.fullscreen) {
+								$.wysiwyg.fullscreen.init(this);
+							}
+						},
+						tooltip: "Fullscreen"
+					}
+				},
+
+				initialContent: function() {
+					var $get = [];
+					var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split("&amp;");
+
+					for (var i = 0; i < hashes.length; i++) {
+						var hash = hashes[i].split('=');
+						$get.push(hash[0]);
+						$get[hash[0]] = hash[1];
+					}
+
+					if ($get.text) {
+						return unescape($get.text.replace(/\+/g, "%20"));
+					}
+					return "<p>Initial Content " + global_i + "</p>";
+				}
+			});
+		});
+
+		$("select").change(function() {
+			var lang = $(this).find(":selected").val();
+			$("textarea[name=text]").wysiwyg("i18n.run", lang);
+		});
+	});
+})(jQuery);
+</script>
+</head>
+<body><div class="container">
+	<h1>jWYSIWYG</h1>
+	<h2>Example: Test Plugins &ndash; Image, Table, Colorpicker, i18n, autoload</h2>
+
+	<label>Choose language: <select name="i18n">
+		<option value="cs">Čeština</option>
+		<option value="he">עברית</option>
+		<option value="de">Deutsch</option>
+		<option value="en" selected="selected">English</option>
+		<option value="es">Español</option>
+		<option value="fr">Français</option>
+		<option value="it">Italiano</option>
+		<option value="ja">日本語</option>
+		<option value="nl">Dutch</option>
+		<option value="pl">Polish</option>
+		<option value="pt_br">Português Brasileiro</option>
+		<option value="ru">Русский</option>
+		<option value="se">Svenska</option>
+		<option value="sl">Slovenščina</option>
+	</select></label>
+
+	<form action="" method="get">
+	<textarea name="text"></textarea>
+	<hr/>
+	<textarea name="b"></textarea>
+	<input type="submit"/>
+	</form>
+
+	<hr/>
+	<a href="index.html">Index</a>
+</div></body>
+</html>
