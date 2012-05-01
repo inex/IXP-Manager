@@ -19,7 +19,7 @@
 
 .ltbr_row {
             font-weight:bold;
-}   
+}
 
 .ltbr_even {
         padding: 0;
@@ -54,7 +54,7 @@
 <p>
 Total potential sessions: {$potential}.
 Active peering sessions: {$active}.
-{assign var=active value=`$active*100`}
+{assign var=active value=$active*100}
 Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 </p>
 
@@ -69,11 +69,10 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 
         <th class="pmbuilder_heading" align="center" style="text-align: center;">
             {assign var=asn value=$x_as|string_format:'% 6s'}
-            {php}
-                $asn = $this->get_template_vars( 'asn' );
-                for( $i = 0; $i < 6; $i++ )
-                    echo substr( $asn, $i, 1 ) . '<br />';
-            {/php}
+            {for $pos=0 to strlen( $asn )}
+                {$asn|truncate:1:''}<br />
+                {assign var=asn value=substr( $asn, 1 )}
+            {/for}
         </th>
 
     {/foreach}
@@ -107,7 +106,7 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 		                  title="X: {$y.X_Cust.name} (AS{$y.x_as})
 Y: {$y.Y_Cust.name} (AS{$y.y_as})"
 		            />
-		        {else if $row.peering_status eq 'NO'}
+		        {else if !isset( $row.peering_status ) || $row.peering_status eq 'NO'}
 		            <img class="OSSTooltip" alt="N" width="21" height="21" border="0"
 		                  src="{genUrl}/images/no.gif"
                           title="X: {$y.X_Cust.name} (AS{$y.x_as})
@@ -116,7 +115,7 @@ Y: {$y.Y_Cust.name} (AS{$y.y_as})"
 		        {/if}
 		    </td>
 
-        {assign var=inner value=`$inner+1`}
+        {assign var=inner value=$inner+1}
 
         {* for the last cell of the last row, we add a empty cell *}
         {if $outer eq $peers|@count and $inner eq $peers|@count}
@@ -126,7 +125,7 @@ Y: {$y.Y_Cust.name} (AS{$y.y_as})"
 
 	</tr>
 
-{assign var=outer value=`$outer+1`}
+{assign var=outer value=$outer+1}
 
 {/foreach}
 
