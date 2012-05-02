@@ -94,25 +94,15 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 
 	    {foreach from=$peers item=y}
 
-		    <td >
+		    <td width="21" height="21" border="1" style="border: 1px solid black; background-color:
 		        {if $outer eq $inner}
-		            {* we're at the intersection of our AS on the x and y graph - stick in an empter cell *}
-		            </td><td>
-		        {/if}
-
-		        {if $y.peering_status eq 'YES'}
-		            <img class="OSSTooltip" alt="Y" width="21" height="21" border="0"
-		                  src="{genUrl}/images/yes.gif"
-		                  title="X: {$y.X_Cust.name} (AS{$y.x_as})
-Y: {$y.Y_Cust.name} (AS{$y.y_as})"
-		            />
+		            white
+		        {else if $y.peering_status eq 'YES'}
+		            lightgreen
 		        {else if !isset( $row.peering_status ) || $row.peering_status eq 'NO'}
-		            <img class="OSSTooltip" alt="N" width="21" height="21" border="0"
-		                  src="{genUrl}/images/no.gif"
-                          title="X: {$y.X_Cust.name} (AS{$y.x_as})
-Y: {$y.Y_Cust.name} (AS{$y.y_as})"
-                    />
+		            red
 		        {/if}
+		        ">
 		    </td>
 
         {assign var=inner value=$inner+1}

@@ -112,3 +112,15 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     text-align: right;
 }
 
+
+
+
+
+
+
+.table-pm th,
+.table-pm td {
+  padding: 0px 0px;
+}
+
+

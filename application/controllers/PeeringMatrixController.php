@@ -74,7 +74,7 @@ class PeeringMatrixController extends INEX_Controller_Action
         $this->view->matrix = $matrix;
         $this->view->display( 'peering-matrix/index.tpl' );
     }
-                                                                                                                                                                                                                                                                                                                                                                                                                            
+                 
 }
 
 
