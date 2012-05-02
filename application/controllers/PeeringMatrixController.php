@@ -74,6 +74,14 @@ class PeeringMatrixController extends INEX_Controller_Action
         $this->view->matrix = $matrix;
         $this->view->display( 'peering-matrix/index.tpl' );
     }
+
+    public function testAction()
+    {
+        echo '<pre>';
+
+        print_r( BgpsessiondataTable::getPeers( 12, Bgpsessiondata::PROTO_IPV4 ) );
+        die();
+    }
                  
 }
 
