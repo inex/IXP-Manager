@@ -1,5 +1,5 @@
 {if isset( $config.use_minified_css ) and $config.use_minified_css}
-    <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.bundle-v14.css" />
+    <link rel="stylesheet" type="text/css" href="{genUrl}/css/min.bundle-v15.css" />
 {else}
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/200-jquery-ui-1.8.16.custom.css" />
     <link rel="stylesheet" type="text/css" href="{genUrl}/css/220-jquery.contextMenu.css" />
