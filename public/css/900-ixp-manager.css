@@ -112,3 +112,141 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     text-align: right;
 }
 
+
+
+
+
+
+.pm-table {
+    margin-bottom: 18px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.pm-table th {
+    padding: 0px;
+	text-align: center;
+	vertical-align: bottom;
+    border: 1px solid #dddddd;
+    border-bottom-width: 2px;
+    border-top: none;
+	font-weight: bold;
+}
+
+.pm-table th:last-child {
+    border-right-width: 2px;
+}
+
+.pm-table td {
+	text-align: center;
+	vertical-align: top;
+	border: 1px solid #dddddd;
+}
+
+.pm-table td.zoom1 {
+    padding: 0px 1px;
+    font-size: 8px;
+    line-height: 12px;
+}
+
+.pm-table td.zoom2 {
+    padding: 2px 4px;
+    font-size: 11px;
+    line-height: 15px;
+}
+
+.pm-table td.zoom3 {
+    padding: 4px 8px;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.pm-table td.zoom4 {
+    padding: 6px 10px;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.pm-table td.zoom5 {
+    padding: 8px 12px;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.pm-table th.zoom1 {
+    font-size: 8px;
+    line-height: 12px;
+}
+
+.pm-table th.zoom2 {
+    font-size: 11px;
+    line-height: 15px;
+}
+
+.pm-table th.zoom3 {
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.pm-table th.zoom4 {
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.pm-table th.zoom5 {
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.pm-table td:last-child {
+    border-right-width: 2px;
+}
+
+
+
+.pm-table th.name {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
+.pm-table th.asn {
+    border-left: none;
+    border-top: none;
+    border-right-width: 2px;
+}
+
+.pm-table td.name {
+    text-align: left;
+    border-left: none;
+    border-right: none;
+    font-weight: bold;
+}
+
+.pm-table td.asn {
+    text-align: right;
+    border-left: none;
+    border-right-width: 2px;
+    font-weight: bold;
+}
+
+.pm-table tr:last-child {
+    border-bottom-width: 2px;
+}
+
+.pm-table td.peered {
+	background-color: #00cc00;
+    width: 10px;
+}
+
+.pm-table td.notpeered {
+    background-color: #d63030;
+    width: 10px;
+}
+
+
+.table tbody tr:hover td,
+.table tbody tr:hover th {
+  background-color: #f5f5f5;
+}

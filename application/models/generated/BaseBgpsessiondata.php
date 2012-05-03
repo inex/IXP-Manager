@@ -30,7 +30,7 @@ abstract class BaseBgpsessiondata extends Doctrine_Record
              'primary' => true,
              'autoincrement' => true,
              ));
-        $this->hasColumn('srcipv4addressid', 'integer', 4, array(
+        $this->hasColumn('srcipaddressid', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
              'fixed' => false,
@@ -39,7 +39,25 @@ abstract class BaseBgpsessiondata extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('dstipv4addressid', 'integer', 4, array(
+        $this->hasColumn('dstipaddressid', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => true,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('protocol', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
+             'fixed' => false,
+             'unsigned' => true,
+             'primary' => false,
+             'notnull' => false,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('vlan', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
              'fixed' => false,
