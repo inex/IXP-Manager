@@ -57,8 +57,8 @@ class PeeringMatrixController extends INEX_Controller_Action
         $this->view->lan = $lan;
         $this->view->proto = $proto;
                 
-        $this->view->sessions = BgpsessiondataTable::getPeers( $lan, $proto );
-        $this->view->custs    = VlaninterfaceTable::getForPeeringMatrix( $lan, $proto );
+        $this->view->sessions = $this->_getSessions( $lan, $proto );
+        $this->view->custs    = $this->_getCusts( $lan, $proto );
         
         $asns = array_keys( $this->view->custs );
         $maxLenOfASN = strlen( $asns[ count( $asns ) - 1 ] );
@@ -67,6 +67,32 @@ class PeeringMatrixController extends INEX_Controller_Action
         $this->view->display( 'peering-matrix/index.tpl' );
     }
                  
+    
+    private function _getSessions( $lan, $proto )
+    {
+        $key = "pm_sessions_{$lan}_{$proto}";
+        
+        if( !( $sessions = $this->apcFetch( $key ) ) )
+        {
+            $sessions = BgpsessiondataTable::getPeers( $lan, $proto );
+            $this->apcStore( $key, $sessions, 86400 );
+        }
+        
+        return $sessions;
+    }
+
+    private function _getCusts( $lan, $proto )
+    {
+        $key = "pm_custs_{$lan}_{$proto}";
+        
+        if( !( $custs = $this->apcFetch( $key ) ) )
+        {
+            $custs = VlaninterfaceTable::getForPeeringMatrix( $lan, $proto );
+            $this->apcStore( $key, $custs, 86400 );
+        }
+        
+        return $custs;
+    }
 }
 
 
