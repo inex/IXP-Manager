@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Issue 214 (google code) Testcase - jWYSIWYG</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="../../jquery.wysiwyg.css" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+</head>
+<body>
+	<h1>jWYSIWYG</h1>
+	<h2><a href="http://github.com/akzhan/jwysiwyg/issues/issue/29">Issue 29</a>: Testcase</h2>
+
+	<textarea name="wysiwyg" id="wysiwyg" rows="5" cols="47">ë or ç</textarea>
+
+    <input id="shower" value="Show content" type="button" />
+
+<script type="text/javascript">
+$(function () {
+	$('#wysiwyg').wysiwyg({
+		controls: {
+			html : { visible: true }
+		}
+	});
+
+	$('#shower').click(function (e) {
+		e.preventDefault();
+		var content = $.wysiwyg.utils.encodeEntities($('#wysiwyg').wysiwyg('getContent'));
+		alert($('#wysiwyg').wysiwyg('getContent') + "\n" + content);
+	});
+});
+</script>
+</body>
+</html>
+

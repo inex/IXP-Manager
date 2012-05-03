@@ -6,8 +6,10 @@
  * By: Esteban Beltran (academo) <sergies@gmail.com>
  */
 (function ($) {
+	"use strict";
+
 	if (undefined === $.wysiwyg) {
-		throw "wysiwyg.image.js depends on $.wysiwyg";
+		throw "wysiwyg.link.js depends on $.wysiwyg";
 	}
 
 	if (!$.wysiwyg.controls) {
@@ -20,32 +22,39 @@
 	$.wysiwyg.controls.link = {
 		init: function (Wysiwyg) {
 			var self = this, elements, dialog, url, a, selection,
-				formLinkHtml, formTextLegend, formTextUrl, formTextTitle, formTextTarget,
-				formTextSubmit, formTextReset,
-				baseUrl;
+				formLinkHtml, dialogReplacements, key, translation, regexp,
+				baseUrl, img;
 
-			formTextLegend  = "Insert Link";
-			formTextUrl     = "Link URL";
-			formTextTitle   = "Link Title";
-			formTextTarget  = "Link Target";
-			formTextSubmit  = "Insert Link";
-			formTextReset   = "Cancel";
+			dialogReplacements = {
+				legend: "Insert Link",
+				url   : "Link URL",
+				title : "Link Title",
+				target: "Link Target",
+				submit: "Insert Link",
+				reset: "Cancel"
+			};
 
-			if ($.wysiwyg.i18n) {
-				formTextLegend = $.wysiwyg.i18n.t(formTextLegend, "dialogs.link");
-				formTextUrl    = $.wysiwyg.i18n.t(formTextUrl, "dialogs.link");
-				formTextTitle  = $.wysiwyg.i18n.t(formTextTitle, "dialogs.link");
-				formTextTarget = $.wysiwyg.i18n.t(formTextTarget, "dialogs.link");
-				formTextSubmit = $.wysiwyg.i18n.t(formTextSubmit, "dialogs.link");
-				formTextReset  = $.wysiwyg.i18n.t(formTextReset, "dialogs");
+			formLinkHtml = '<form class="wysiwyg"><fieldset><legend>{legend}</legend>' +
+				'<label>{url}: <input type="text" name="linkhref" value=""/></label>' +
+				'<label>{title}: <input type="text" name="linktitle" value=""/></label>' +
+				'<label>{target}: <input type="text" name="linktarget" value=""/></label>' +
+				'<input type="submit" class="button" value="{submit}"/> ' +
+				'<input type="reset" value="{reset}"/></fieldset></form>';
+
+			for (key in dialogReplacements) {
+				if ($.wysiwyg.i18n) {
+					translation = $.wysiwyg.i18n.t(dialogReplacements[key], "dialogs.link");
+
+					if (translation === dialogReplacements[key]) { // if not translated search in dialogs 
+						translation = $.wysiwyg.i18n.t(dialogReplacements[key], "dialogs");
+					}
+
+					dialogReplacements[key] = translation;
+				}
+
+				regexp = new RegExp("{" + key + "}", "g");
+				formLinkHtml = formLinkHtml.replace(regexp, dialogReplacements[key]);
 			}
-
-			formLinkHtml = '<form class="wysiwyg"><fieldset><legend>' + formTextLegend + '</legend>' +
-				'<label>' + formTextUrl + ': <input type="text" name="linkhref" value=""/></label>' +
-				'<label>' + formTextTitle + ': <input type="text" name="linktitle" value=""/></label>' +
-				'<label>' + formTextTarget + ': <input type="text" name="linktarget" value=""/></label>' +
-				'<input type="submit" class="button" value="' + formTextSubmit + '"/> ' +
-				'<input type="reset" value="' + formTextReset + '"/></fieldset></form>';
 
 			a = {
 				self: Wysiwyg.dom.getElement("a"), // link to element node
@@ -67,7 +76,11 @@
 				elements.find("input[name=linktarget]").val(a.target);
 
 				if ($.browser.msie) {
-					dialog = elements.appendTo(Wysiwyg.editorDoc.body);
+					try {
+						dialog = elements.appendTo(Wysiwyg.editorDoc.body);
+					} catch (err) {
+						dialog = elements.appendTo("body");
+					}
 				} else {
 					dialog = elements.appendTo("body");
 				}
@@ -81,7 +94,8 @@
 							var url = $('input[name="linkhref"]', dialog).val(),
 								title = $('input[name="linktitle"]', dialog).val(),
 								target = $('input[name="linktarget"]', dialog).val(),
-								baseUrl;
+								baseUrl,
+								img;
 
 							if (Wysiwyg.options.controlLink.forceRelativeUrls) {
 								baseUrl = window.location.protocol + "//" + window.location.hostname;
@@ -145,6 +159,7 @@
 					},
 					close: function (ev, ui) {
 						dialog.dialog("destroy");
+						dialog.remove();
 					}
 				});
 			} else {
@@ -175,7 +190,7 @@
 							Wysiwyg.ui.focus();
 							Wysiwyg.editorDoc.execCommand("createLink", true, null);
 						} else {
-							url = window.prompt(formTextUrl, a.href);
+							url = window.prompt(dialogReplacements.url, a.href);
 
 							if (Wysiwyg.options.controlLink.forceRelativeUrls) {
 								baseUrl = window.location.protocol + "//" + window.location.hostname;
@@ -228,6 +243,7 @@
 			} else if (oWysiwyg.options.messages.nonSelection) {
 				window.alert(oWysiwyg.options.messages.nonSelection);
 			}
+			return this;
 		});
 	};
 })(jQuery);

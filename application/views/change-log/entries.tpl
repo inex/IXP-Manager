@@ -1,50 +1,92 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl" pageTitle="IXP Manager :: "|cat:$frontend.pageTitle}
 
-<div class="yui-g">
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="change-log"}">Change Log</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        <a href="{genUrl controller=$controller action='read'}">Entries</a>
+    </li>
+</ul>
 
-<table class="adminheading" border="0">
-	<tr>
-		<th class="ChangeLog">IXP Manager Change Log</th>
-	</tr>
-</table>
+{include file="message.tpl"}
+<div id="ajaxMessage"></div>
 
-<p>
-This page details updates to the IXP Manager. When you first log in, we'll also alert you
-to any new changes since the last time you opened this page by marking the <em>Change
-Log</em> link as updated.
-</p>
-
-{if $newOnly neq false}
-    <p>
-        NB: We are only showing new entries since your last visit. Please
-        <a href="{genUrl controller='change-log' action='read'}">click here to view all entries</a>.
-    </p>
-{/if}
-
-<div class="change_log">
+<dl>
 
 {foreach from=$entries item=e}
 
-    <div class="change_log_item">
+    {if !isset( $lastdate )}
+        <dt>{$e.livedate}</dt>
+        <dd>
+            <ul>
+            
+        {assign var=lastdate value=$e.livedate}
+    {/if}
+    
+    {if $lastdate neq $e.livedate}
+    
+            </ul>
+        </dd>
+        <dt>{$e.livedate}</dt>
+        <dd>
+            <ul>
+            
+        {assign var=lastdate value=$e.livedate}
+    {/if}
 
-        <table>
-        <tr>
-            <th>
-    	        {$e.livedate} ({$e.User.username}): {$e.title}
-            </th>
-        </tr>
-        <tr>
-            <td>
-    	        {$e.details}
-            </td>
-        </tr>
-	</table>
-
-    </div>
+    <li>
+        {$e.title}
+        
+        {if $e.details}
+            (<a id="more-info-{$e.id}">more</a>)
+        {/if}
+        
+        <div id="info-{$e.id}" class="hide">
+            <br />
+            <div  class="well">
+                {$e.details}
+            </div>
+        </div>
+    </li>
 
 {/foreach}
 
-</div>
+{if isset( $lastdate )}
+        </ul>
+    </dd>
+</dl>
+{/if}
 
 
-{tmplinclude file="footer.tpl"}
+<script>
+
+    $(document).ready(function() {
+        
+        $('a[id|="more-info"]').click( function( event ){
+
+    		var id = substr( $( this ).attr( 'id' ), 10 );
+    		
+    		if( $( '#info-' + id ).hasClass( 'hide' ) )
+    		{
+    			$( '#more-info-' + id ).html( 'less' );
+    			$( '#info-' + id ).slideDown( 'slow' );
+    			$( '#info-' + id ).removeClass( 'hide' )
+    		}
+    		else
+    		{
+    			$( '#more-info-' + id ).html( 'more' );
+    			$( '#info-' + id ).slideUp( 'fast' );
+    			$( '#info-' + id ).addClass( 'hide' )
+		    }
+    		
+	    });
+	    
+    } );
+
+</script>
+
+{include file="footer.tpl"}

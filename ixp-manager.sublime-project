@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": "application"
+		},
+		{
+			"path": "bin"
+		},
+		{
+			"path": "doctrine"
+		},
+		{
+			"path": "library"
+		},
+		{
+			"path": "tools"
+		},
+		{
+			"path": "public"
+		}
+	]
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Example: CSS Autoloading &amp; initialContent - jWYSIWYG</title>
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/screen.css" media="screen, projection" />
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/print.css" media="print" />
+<!--[if lt IE 8]><link rel="stylesheet" href="../lib/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript" src="../lib/plugins/autoload/jquery.autoload.js"></script>
+<script type="text/javascript" src="../../plugins/wysiwyg.autoload.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.image.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.link.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.table.js"></script>
+<script type="text/javascript">
+(function ($) {
+	$(document).ready(function () {
+		$("textarea").wysiwyg({
+			plugins: { autoload: true },
+			autoGrow: true,
+			maxHeight: 600,
+			initialContent: "Content"
+		});
+	});
+})(jQuery);
+</script>
+</head>
+<body><div class="container">
+	<h1>jWYSIWYG</h1>
+	<h2>Example: CSS Autoloading &amp; initialContent</h2>
+	
+	<p class="notice">If script will not be able to find or download CSS file you will see something like this:<br/>
+		# bold<br/>
+		# italic<br/>
+		# strikeThrough<br/>
+		# underline</p>
+
+	<textarea></textarea>
+
+	<hr/>
+	<a href="index.html">Index</a>
+</div></body>
+</html>

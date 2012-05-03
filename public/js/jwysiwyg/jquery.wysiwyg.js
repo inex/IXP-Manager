@@ -23,9 +23,14 @@
 			$.error(msg);
 		}
 	};
-	var supportsProp = (('prop' in $.fn) && ('removeProp' in $.fn));  // !(/^[01]\.[0-5](?:\.|$)/.test($.fn.jquery));
+	var supportsProp = (('prop' in $.fn) && ('removeProp' in $.fn));
 
 	function Wysiwyg() {
+		// - the item is added by this.ui.appendControls and then appendItem
+		// - click triggers this.triggerControl
+		// cmd or[key] - designMode exec function name
+		// tags - activates control for these tags (@see checkTargets)
+		// css - activates control if one of css is applied
 		this.controls = {
 			bold: {
 				groupIndex: 0,
@@ -61,6 +66,15 @@
 				},
 				tags: ["a"],
 				tooltip: "Create link"
+			},
+			
+			unLink : {
+				groupIndex: 6,
+				visible: true,
+				exec : function() {
+					this.editorDoc.execCommand("unlink", false, null);
+				},
+				tooltip: "Remove link"
 			},
 
 			cut: {
@@ -161,7 +175,7 @@
 						elementHeight = this.element.height();
 					}
 
-					if (this.viewHTML) {
+					if (this.viewHTML) { //textarea is shown
 						this.setContent(this.original.value);
 
 						$(this.original).hide();
@@ -187,7 +201,7 @@
 								li.removeClass('disabled');
 							}
 						});
-					} else {
+					} else { //wysiwyg is shown
 						this.saveContent();
 
 						$(this.original).css({
@@ -475,11 +489,21 @@
 						}
 					}
 				}
+			},
+			
+			cssWrap: {
+				visible : false,
+				groupIndex: 6,
+				tooltip: "CSS Wrapper",
+				exec: function () { 
+					$.wysiwyg.controls.cssWrap.init(this);
+				}
 			}
+			
 		};
 
 		this.defaults = {
-			html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body style="margin: 3px;">INITIAL_CONTENT</body></html>',
+html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" style="margin:0"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body style="margin:0;">INITIAL_CONTENT</body></html>',
 			debug: false,
 			controls: {},
 			css: {},
@@ -519,9 +543,12 @@
 				rmFormat: {
 					rmMsWordMarkup: false
 				}
-			}
+			},
+			
+			dialog : "default"
 		};
 
+		//these properties are set from control hashes
 		this.availableControlProperties = [
 			"arguments",
 			"callback",
@@ -538,7 +565,7 @@
 			"visible"
 		];
 
-		this.editor			= null;
+		this.editor			= null;  //jquery iframe holder
 		this.editorDoc		= null;
 		this.element		= null;
 		this.options		= {};
@@ -568,13 +595,25 @@
 
 		this.dom.getAncestor = function (element, filterTagName) {
 			filterTagName = filterTagName.toLowerCase();
-
-			while (element && "body" !== element.tagName.toLowerCase()) {
+			
+			while (element && typeof element.tagName != "undefined" && "body" !== element.tagName.toLowerCase()) {
 				if (filterTagName === element.tagName.toLowerCase()) {
 					return element;
 				}
 
 				element = element.parentNode;
+			}
+			if(!element.tagName && (element.previousSibling || element.nextSibling)) {
+				if(element.previousSibling) {
+					if(element.previousSibling.tagName.toLowerCase() == filterTagName) {
+						return element.previousSibling;
+					}
+				}	
+				if(element.nextSibling) {
+					if(element.nextSibling.tagName.toLowerCase() == filterTagName) {
+						return element.nextSibling;
+					}
+				}	
 			}
 
 			return null;
@@ -582,6 +621,8 @@
 
 		this.dom.getElement = function (filterTagName) {
 			var dom = this;
+			
+			filterTagName = filterTagName.toLowerCase();			
 
 			if (window.getSelection) {
 				return dom.w3c.getElement(filterTagName);
@@ -615,7 +656,7 @@
 			var dom		= this.parent,
 				range	= dom.parent.getInternalRange(),
 				element;
-
+				
 			if (!range) {
 				return null;
 			}
@@ -631,6 +672,19 @@
 			// startContainer and the boundary point of the Range
 			if (element === range.startContainer) {
 				element = element.childNodes[range.startOffset];
+			}
+			
+			if(!element.tagName && (element.previousSibiling || element.nextSibling)) {
+				if(element.previousSibiling) {
+					if(element.previousSibiling.tagName.toLowerCase() == filterTagName) {
+						return element.previousSibiling;
+					}
+				}	
+				if(element.nextSibling) {
+					if(element.nextSibling.tagName.toLowerCase() == filterTagName) {
+						return element.nextSibling;
+					}
+				}	
 			}
 
 			return dom.getAncestor(element, filterTagName);
@@ -649,7 +703,7 @@
 				controlsByGroup = {},
 				i,
 				currentGroupIndex, // jslint wants all vars at top of function
-				iterateGroup = function (controlName, control) {
+				iterateGroup = function (controlName, control) { //called for every group when adding
 					if (control.groupIndex && currentGroupIndex !== control.groupIndex) {
 						currentGroupIndex = control.groupIndex;
 						hasVisibleControls = false;
@@ -671,7 +725,7 @@
 					}
 				};
 
-			$.each(controls, function (name, c) {
+			$.each(controls, function (name, c) { //sort by groupIndex
 				var index = "empty";
 
 				if (undefined !== c.groupIndex) {
@@ -689,7 +743,7 @@
 				controlsByGroup[index][name] = c;
 			});
 
-			groups.sort(function (a, b) {
+			groups.sort(function (a, b) { //just sort group indexes by
 				if ("number" === typeof (a) && typeof (a) === typeof (b)) {
 					return (a - b);
 				} else {
@@ -727,13 +781,25 @@
 				.addClass(className)
 				.attr("title", tooltip)
 				.hover(this.addHoverClass, this.removeHoverClass)
-				.click(function () {
+				.click(function (event) {
 					if ($(this).hasClass("disabled")) {
 						return false;
 					}
 
 					self.triggerControl.apply(self, [name, control]);
 
+					/**
+					* @link https://github.com/akzhan/jwysiwyg/issues/219
+					*/
+					var $target = $(event.target);
+					for (var controlName in self.controls) {
+						if ($target.hasClass(controlName)) {
+							self.ui.toolbar.find("." + controlName).toggleClass("active");
+							self.editorDoc.rememberCommand = true;
+							break;
+						}
+					}
+                    
 					this.blur();
 					self.ui.returnRange();
 					self.ui.focus();
@@ -782,9 +848,11 @@
 			this.saveContent();
 		};
 
+		//called after click in wysiwyg "textarea"
 		this.ui.checkTargets = function (element) {
 			var self = this.self;
 
+			//activate controls
 			$.each(self.options.controls, function (name, control) {
 				var className = control.className || control.command || name || "empty",
 					tags,
@@ -810,6 +878,7 @@
 					self.ui.toolbar.find("." + className).removeClass("active");
 				}
 
+				//activate by allowed tags
 				if (control.tags || (control.options && control.options.tags)) {
 					tags = control.tags || (control.options && control.options.tags);
 
@@ -827,6 +896,7 @@
 					}
 				}
 
+				//activate by supposed css
 				if (control.css || (control.options && control.options.css)) {
 					css = control.css || (control.options && control.options.css);
 					el = $(element);
@@ -970,10 +1040,28 @@
 
 		this.increaseFontSize = function () {
 			if ($.browser.mozilla || $.browser.opera) {
-				this.editorDoc.execCommand('increaseFontSize', false, null);
-			} else if ($.browser.safari) {
-				var newNode = this.editorDoc.createElement('big');
-				this.getInternalRange().surroundContents(newNode);
+				this.editorDoc.execCommand("increaseFontSize", false, null);
+			} else if ($.browser.safari) {				
+				var Range = this.getInternalRange(),
+					Selection = this.getInternalSelection(),
+					newNode = this.editorDoc.createElement("big");
+
+				// If cursor placed on text node
+				if (true === Range.collapsed && 3 === Range.commonAncestorContainer.nodeType) {
+					var text = Range.commonAncestorContainer.nodeValue.toString(),
+						start = text.lastIndexOf(" ", Range.startOffset) + 1,
+						end = (-1 === text.indexOf(" ", Range.startOffset)) ? text : text.indexOf(" ", Range.startOffset);
+
+					Range.setStart(Range.commonAncestorContainer, start);
+					Range.setEnd(Range.commonAncestorContainer, end);
+
+					Range.surroundContents(newNode);
+					Selection.addRange(Range);
+				} else {
+					Range.surroundContents(newNode);
+					Selection.removeAllRanges();
+					Selection.addRange(Range);
+				}
 			} else {
 				console.error("Internet Explorer?");
 			}
@@ -981,16 +1069,37 @@
 
 		this.decreaseFontSize = function () {
 			if ($.browser.mozilla || $.browser.opera) {
-				this.editorDoc.execCommand('decreaseFontSize', false, null);
+				this.editorDoc.execCommand("decreaseFontSize", false, null);
 			} else if ($.browser.safari) {
-				var newNode = this.editorDoc.createElement('small');
-				this.getInternalRange().surroundContents(newNode);
+				var Range = this.getInternalRange(),
+					Selection = this.getInternalSelection(),
+					newNode = this.editorDoc.createElement("small");
+
+				// If cursor placed on text node
+				if (true === Range.collapsed && 3 === Range.commonAncestorContainer.nodeType) {
+					var text = Range.commonAncestorContainer.nodeValue.toString(),
+						start = text.lastIndexOf(" ", Range.startOffset) + 1,
+						end = (-1 === text.indexOf(" ", Range.startOffset)) ? text : text.indexOf(" ", Range.startOffset);
+	
+					Range.setStart(Range.commonAncestorContainer, start);
+					Range.setEnd(Range.commonAncestorContainer, end);
+	
+					Range.surroundContents(newNode);
+					Selection.addRange(Range);
+				} else {
+					Range.surroundContents(newNode);
+					Selection.removeAllRanges();
+					Selection.addRange(Range);
+				}
 			} else {
 				console.error("Internet Explorer?");
 			}
 		};
 
 		this.getContent = function () {
+			if (this.viewHTML) {
+				this.setContent(this.original.value);
+			}
 			return this.events.filter('getContent', this.editorDoc.body.innerHTML);
 		};
 		
@@ -1149,8 +1258,8 @@
 		this.init = function (element, options) {
 			var self = this,
 				$form = $(element).closest("form"),
-				newX = element.width || element.clientWidth || 0,
-				newY = element.height || element.clientHeight || 0
+				newX = (element.width || element.clientWidth || 0),
+				newY = (element.height || element.clientHeight || 0)
 				;
 
 			this.options	= this.extendOptions(options);
@@ -1182,6 +1291,17 @@
 					this.editor.css("height", newY.toString() + "px");
 				}
 			}
+			/** 
+			 * Automagically add id to iframe if textarea has its own when possible 
+			 * ( http://github.com/akzhan/jwysiwyg/issues/245 )
+			 */
+			if (element.id) {
+				var proposedId = element.id + '-wysiwyg-iframe';
+				if (! document.getElementById(proposedId)) {
+					this.editor.attr('id', proposedId);
+				}
+			}
+
 			/**
 			 * http://code.google.com/p/jwysiwyg/issues/detail?id=96
 			 */
@@ -1257,11 +1377,34 @@
 				self.ui.checkTargets(event.target ? event.target : event.srcElement);
 			});
 
+            /**
+             * @link https://github.com/akzhan/jwysiwyg/issues/251
+             */
+            setInterval(function () {
+                var offset = null;
+
+                try {
+                    var range = self.getInternalRange();
+                    if (range) {
+                        offset = {
+                            range: range,
+                            parent: $.browser.msie ? range.parentElement() : range.endContainer.parentNode,
+                            width: ($.browser.msie ? range.boundingWidth : range.startOffset - range.endOffset) || 0
+                        };
+                    }
+                }
+                catch (e) { console.error(e); }
+
+                if (offset && offset.width == 0 && !self.editorDoc.rememberCommand) {
+                    self.ui.checkTargets(offset.parent);
+                }
+            }, 400);
+            
 			/**
 			 * @link http://code.google.com/p/jwysiwyg/issues/detail?id=20
 			 */
 			$(self.original).focus(function () {
-				if ($(this).filter(":visible")) {
+				if ($(this).filter(":visible").length === 0) {
 					return;
 				}
 				self.ui.focus();
@@ -1276,6 +1419,8 @@
 						return false;
 					}
 				}
+                
+                self.editorDoc.rememberCommand = false;
 				return true;
 			});
 
@@ -1454,6 +1599,7 @@
 					});
 				});
 			}
+			$(self.original).trigger('ready.jwysiwyg', [self.editorDoc, self]);
 		};
 
 		this.innerDocument = function () {
@@ -1524,6 +1670,7 @@
 			return this;
 		};
 
+		//check allowed properties
 		this.parseControls = function () {
 			var self = this;
 
@@ -1535,7 +1682,7 @@
 				});
 			});
 
-			if (this.options.parseControls) {
+			if (this.options.parseControls) { //user callback
 				return this.options.parseControls.call(this);
 			}
 
@@ -1574,6 +1721,10 @@
 		};
 
 		this.saveContent = function () {
+			if (this.viewHTML)
+			{
+				return; // no need
+			}
 			if (this.original) {
 				var content, newContent;
 
@@ -1625,14 +1776,14 @@
 		};
 
 		this.triggerControl = function (name, control) {
-			var cmd = control.command || name,
+			var cmd = control.command || name,							//command directly for designMode=on iframe (this.editorDoc)
 				args = control["arguments"] || [];
 
 			if (control.exec) {
-				control.exec.apply(this);
+				control.exec.apply(this);  //custom exec function in control, allows DOM changing
 			} else {
 				this.ui.focus();
-				this.ui.withoutCss();
+				this.ui.withoutCss(); //disable style="" attr inserting in mozzila's designMode
 				// when click <Cut>, <Copy> or <Paste> got "Access to XPConnect service denied" code: "1011"
 				// in Firefox untrusted JavaScript is not allowed to access the clipboard
 				try {
@@ -1760,6 +1911,17 @@
 			}
 
 			return oWysiwyg.getContent();
+		},
+    
+    		getSelection: function (object) {
+  			// no chains because of return
+			var oWysiwyg = object.data("wysiwyg");
+
+			if (!oWysiwyg) {
+				return undefined;
+			}
+
+			return oWysiwyg.getRangeText();
 		},
 
 		init: function (object, options) {
@@ -1981,6 +2143,312 @@
 		}
 	};
 
+	/**
+	 * Unifies dialog methods to allow custom implementations
+	 * 
+	 * Events:
+	 *     * afterOpen
+	 *     * beforeShow
+	 *     * afterShow
+	 *     * beforeHide
+	 *     * afterHide
+	 *     * beforeClose
+	 *     * afterClose
+	 * 
+	 * Example:
+	 * var dialog = new ($.wysiwyg.dialog)($('#idToTextArea').data('wysiwyg'), {"title": "Test", "content": "form data, etc."});
+	 * 
+	 * dialog.bind("afterOpen", function () { alert('you should see a dialog behind this one!'); });
+	 * 
+	 * dialog.open();
+	 * 
+	 * 
+	 */
+	$.wysiwyg.dialog = function (jWysiwyg, opts) {
+		
+		var theme	= (jWysiwyg && jWysiwyg.options && jWysiwyg.options.dialog) ? jWysiwyg.options.dialog : (opts.theme ? opts.theme : "default"),
+			obj		= new $.wysiwyg.dialog.createDialog(theme),
+			that	= this,
+			$that	= $(that);
+				
+		this.options = {
+			"modal": true,
+			"draggable": true,
+			"title": "Title",
+			"content": "Content",
+			"width":  "auto",
+			"height": "auto",
+			"zIndex": 2000,
+			"open": false,
+			"close": false
+		};
+
+		this.isOpen = false;
+
+		$.extend(this.options, opts);
+
+		this.object = obj;
+
+		// Opens a dialog with the specified content
+		this.open = function () {
+			this.isOpen = true;
+
+			obj.init.apply(that, []);
+			var $dialog = obj.show.apply(that, []);
+
+			$that.trigger("afterOpen", [$dialog]);
+			
+		};
+
+		this.show = function () {
+			this.isOpen = true;
+			
+			$that.trigger("beforeShow");
+			
+			var $dialog = obj.show.apply(that, []);
+			
+			$that.trigger("afterShow");
+		};
+
+		this.hide = function () {
+			this.isOpen = false;
+			
+			$that.trigger("beforeHide");
+			
+			var $dialog = obj.hide.apply(that, []);
+			
+			$that.trigger("afterHide", [$dialog]);
+		};
+
+		// Closes the dialog window.
+		this.close = function () {
+			this.isOpen = false;
+						
+			var $dialog = obj.hide.apply(that, []);
+			
+			$that.trigger("beforeClose", [$dialog]);
+			
+			obj.destroy.apply(that, []);
+			
+			$that.trigger("afterClose", [$dialog]);
+			
+		};
+
+		if (this.options.open) {
+			$that.bind("afterOpen", this.options.open);
+		}
+		if (this.options.close) {
+			$that.bind("afterClose", this.options.close);
+		}
+
+		return this;
+	};
+
+	// "Static" Dialog methods.
+	$.extend(true, $.wysiwyg.dialog, {
+		_themes : {}, // sample {"Theme Name": object}
+		_theme : "", // the current theme
+
+		register : function(name, obj) {
+			$.wysiwyg.dialog._themes[name] = obj;
+		},
+
+		deregister : function (name) {
+			delete $.wysiwyg.dialog._themes[name];
+		},
+
+		createDialog : function (name) {
+			return new ($.wysiwyg.dialog._themes[name]);
+		},
+		
+		getDimensions : function () {
+			var width  = document.body.scrollWidth,
+				height = document.body.scrollHeight;
+
+			if ($.browser.opera) {
+				height = Math.max(
+					$(document).height(),
+					$(window).height(),
+					document.documentElement.clientHeight);
+			}
+
+			return [width, height];
+		}
+	});
+
+	$(function () { // need access to jQuery UI stuff.
+		if (jQuery.ui) {
+			$.wysiwyg.dialog.register("jqueryui", function () {
+				var that = this;
+
+				this._$dialog = null;
+
+				this.init = function() {
+					var abstractDialog	= this,
+						content 		= this.options.content;
+
+					if (typeof content === 'object') {
+						if (typeof content.html === 'function') {
+							content = content.html();
+						} else if(typeof content.toString === 'function') {
+							content = content.toString();
+						}
+					}
+
+					that._$dialog = $('<div></div>').attr('title', this.options.title).html(content);
+
+					var dialogHeight = this.options.height == 'auto' ? 300 : this.options.height,
+						dialogWidth = this.options.width == 'auto' ? 450 : this.options.width;
+
+					// console.log(that._$dialog);
+					
+					that._$dialog.dialog({
+						modal: this.options.modal,
+						draggable: this.options.draggable,
+						height: dialogHeight,
+						width: dialogWidth
+					});
+
+					return that._$dialog;
+				};
+
+				this.show = function () {
+					that._$dialog.dialog("open");
+					return that._$dialog;
+				};
+
+				this.hide = function () {
+					that._$dialog.dialog("close");
+					return that._$dialog;
+				};
+
+				this.destroy = function() {
+					that._$dialog.dialog("destroy");
+					return that._$dialog;
+				};
+			});
+		}
+
+		$.wysiwyg.dialog.register("default", function () {
+			var that = this;
+
+			this._$dialog = null;
+
+			this.init = function() {
+				var abstractDialog	= this,
+					content 		= this.options.content;
+
+				if (typeof content === 'object') {
+					if(typeof content.html === 'function') {
+						content = content.html();
+					}
+					else if(typeof content.toString === 'function') {
+						content = content.toString();
+					}
+				}
+
+				that._$dialog = $('<div class="wysiwyg-dialog"></div>').css({"z-index": this.options.zIndex});
+
+				var $topbar = $('<div class="wysiwyg-dialog-topbar"><div class="wysiwyg-dialog-close-wrapper"></div><div class="wysiwyg-dialog-title">'+this.options.title+'</div></div>');
+				var $link = $('<a href="#" class="wysiwyg-dialog-close-button">X</a>');
+
+				$link.click(function () {
+					abstractDialog.close(); // this is important it makes sure that is close from the abstract $.wysiwyg.dialog instace, not just locally 
+				});
+				
+				$topbar.find('.wysiwyg-dialog-close-wrapper').prepend($link);
+
+				var $dcontent = $('<div class="wysiwyg-dialog-content">'+content+'</div>');
+
+				that._$dialog.append($topbar).append($dcontent);
+				
+				// Set dialog's height & width, and position it correctly:
+				var dialogHeight = this.options.height == 'auto' ? 300 : this.options.height,
+					dialogWidth = this.options.width == 'auto' ? 450 : this.options.width;
+				that._$dialog.hide().css({
+					"width": dialogWidth,
+					"height": dialogHeight,
+					"left": (($(window).width() - dialogWidth) / 2),
+					"top": (($(window).height() - dialogHeight) / 3)
+				});
+
+				$("body").append(that._$dialog);
+
+				return that._$dialog;
+			};
+
+			this.show = function () {
+
+				// Modal feature:
+				if (this.options.modal) {
+					var dimensions = $.wysiwyg.dialog.getDimensions(),
+						wrapper    = $('<div class="wysiwyg-dialog-modal-div"></div>')
+						.css({"width": dimensions[0], "height": dimensions[1]});
+					that._$dialog.wrap(wrapper);
+				}
+				
+				// Draggable feature:
+				if (this.options.draggable) { 
+					
+					var mouseDown = false;
+					
+					that._$dialog.find("div.wysiwyg-dialog-topbar").bind("mousedown", function (e) {
+						e.preventDefault();
+						$(this).css({ "cursor": "move" });
+						var $topbar = $(this),
+							_dialog = $(this).parents(".wysiwyg-dialog"),
+							offsetX = (e.pageX - parseInt(_dialog.css("left"), 10)),
+							offsetY = (e.pageY - parseInt(_dialog.css("top"), 10));
+						mouseDown = true;
+						$(this).css({ "cursor": "move" });
+						
+						$(document).bind("mousemove", function (e) {
+							e.preventDefault();
+							if (mouseDown) {
+								_dialog.css({
+									"top": (e.pageY - offsetY),
+									"left": (e.pageX - offsetX)
+								});
+							}
+						}).bind("mouseup", function (e) {
+							e.preventDefault();
+							mouseDown = false;
+							$topbar.css({ "cursor": "auto" });
+							$(document).unbind("mousemove").unbind("mouseup");
+						});
+					
+					});
+				}
+				
+				that._$dialog.show();
+				return that._$dialog;
+
+			};
+
+			this.hide = function () {
+				that._$dialog.hide();
+				return that._$dialog;
+			};
+
+			this.destroy = function() {
+			
+				// Modal feature:
+				if (this.options.modal) { 
+					that._$dialog.unwrap();
+				}
+				
+				// Draggable feature:
+				if (this.options.draggable) { 
+					that._$dialog.find("div.wysiwyg-dialog-topbar").unbind("mousedown");
+				}
+				
+				that._$dialog.remove();
+				return that._$dialog;
+			};
+		});
+	});
+	// end Dialog
+
 	$.fn.wysiwyg = function (method) {
 		var args = arguments, plugin;
 
@@ -2001,6 +2469,6 @@
 	};
 	
 	$.fn.getWysiwyg = function () {
-		return $.data(this, "wysiwyg");
+		return this.data("wysiwyg");
 	};
 })(jQuery);

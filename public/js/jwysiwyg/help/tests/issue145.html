@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+<title>Issue 145 Testcase - jWYSIWYG</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/screen.css" media="screen, projection"/>
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/print.css" media="print"/>
+<!--[if lt IE 8]><link rel="stylesheet" href="../lib/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+<link rel="stylesheet" type="text/css" href="../../jquery.wysiwyg.css"/>
+<link type="text/css" href="../lib/ui/jquery.ui.all.css" rel="stylesheet"/>
+<link rel="stylesheet" type="text/css" href="./css/issue145.css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript" src="../lib/ui/jquery.ui.core.js"></script>
+<script type="text/javascript" src="../lib/ui/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="../lib/ui/jquery.ui.mouse.js"></script>
+<script type="text/javascript" src="../lib/ui/jquery.ui.resizable.js"></script>
+<script type="text/javascript">
+(function ($) {
+	$(document).ready(function () {
+ 		$("#id1").wysiwyg({
+			controls: {
+				html: { visible: true }
+			}
+		});
+
+		$("#id2").wysiwyg({
+			iFrameClass: "",
+			controls: {
+				html: { visible: true }
+			}
+		});
+
+		$("#id3").wysiwyg({
+			iFrameClass: "ifrm-id3",
+			controls: {
+				html: { visible: true }
+			}
+		});
+
+		$("#btn1").click(function () {
+			if ("destroy" === this.value) {
+				$("#id1").wysiwyg("destroy");
+				this.value = "create";
+			} else {
+				$("#id1").wysiwyg({
+					controls: {
+						html: { visible: true }
+					}
+				});
+				this.value = "destroy";
+			}
+		});
+
+		$("#btn2").click(function () {
+			if ("destroy" === this.value) {
+				$("#id2").wysiwyg("destroy");
+				this.value = "create";
+			} else {
+				$("#id2").wysiwyg({
+					controls: {
+						html: { visible: true }
+					}
+				});
+				this.value = "destroy";
+			}
+		});
+
+		$("#btn3").click(function () {
+			if ("destroy" === this.value) {
+				$("#id3").wysiwyg("destroy");
+				this.value = "create";
+			} else {
+				$("#id3").wysiwyg({
+					controls: {
+						html: { visible: true }
+					}
+				});
+				this.value = "destroy";
+			}
+		});
+
+		$("#res").resizable({
+			alsoResize: null
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body><div class="container">
+<h1>jWYSIWYG</h1>
+<h2><a href="http://github.com/akzhan/jwysiwyg/issues/145">Issue 145</a>: Testcase</h2>
+
+<div id="res" style="border: 1px solid blue; width: 100%;">
+<textarea id="id1">width=500px, wysiwyg not stretched</textarea> <input type="button" value="destroy" id="btn1"/><br/>
+<textarea id="id2">width=100%, wysiwyg not stretched&lt;br/>
+because jQuery cannot return values in percentage we can't do stretch without iFrameClass</textarea> <input type="button" value="destroy" id="btn2"/><br/>
+<textarea id="id3">width=100%, stretched</textarea> <input type="button" value="destroy" id="btn3"/><br/>
+<textarea id="id4">width=100%, stretched</textarea><br/>
+</div>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+</div></body>
+</html>

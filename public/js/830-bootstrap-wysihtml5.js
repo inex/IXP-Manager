@@ -35,9 +35,8 @@
 	var Wysihtml5 = function(el, options) {
 		this.el = el;
 		this.toolbar = this.createToolbar(el, options || defaultOptions);
-		this.editor =  new wysi.Editor(this.el.attr('id'), {
-    		toolbar: this.toolbar.attr('id')
-  		});
+		options['toolbar'] = this.toolbar.attr('id');
+		this.editor =  new wysi.Editor(this.el.attr('id'), options );
   		
   		$('iframe.wysihtml5-sandbox').each(function(i, el){
 			$(el.contentWindow).off('focus.wysihtml5').on({

@@ -37,4 +37,27 @@
 class Bgpsessiondata extends BaseBgpsessiondata
 {
 
+    const PROTO_IPV4 = 4;
+    const PROTO_IPV6 = 6;
+
+    public function setUp()
+    {
+        $this->hasOne(
+            'Vlaninterface as Src_Vlaninterface',
+            array(
+                'local' => 'srcipaddressid',
+                'foreign' => 'ipv4addressid'
+            )
+        );
+
+        $this->hasOne(
+            'Vlaninterface as Dst_Vlaninterface',
+            array(
+                'local' => 'dstipaddressid',
+                'foreign' => 'ipv4addressid'
+            )
+        );
+
+    }
+
 }

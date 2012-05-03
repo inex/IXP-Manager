@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Example: Ajax - jWYSIWYG</title>
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/screen.css" media="screen, projection" />
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/print.css" media="print" />
+<!--[if lt IE 8]><link rel="stylesheet" href="../lib/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+<link rel="stylesheet" href="../../jquery.wysiwyg.css" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+</head>
+<body><div class="container">
+	<h1>jWYSIWYG</h1>
+	<h2>Example: Ajax</h2>
+	<div id="ajaxtest"></div>
+	<p>Editor has been loaded through $(element).load()</p>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.image.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.link.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.table.js"></script>
+<script type="text/javascript">
+(function ($) {
+	$('#ajaxtest').load("jw_ajax.html", function () { $('#jw').wysiwyg(); });
+})(jQuery);
+</script>
+
+	<hr/>
+	<a href="index.html">Index</a>
+</div></body>
+</html>

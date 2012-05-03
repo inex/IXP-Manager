@@ -18,6 +18,7 @@
 			rules: {
 				heading: false,
 				table: false,
+				inlineCSS: false,
 				/*
 				 * rmAttr       - { "all" | object with names } remove all
 				 *                attributes or attributes with following names
@@ -138,6 +139,12 @@
 
 			return false;
 		},
+		
+		removeStyle: function(node) {
+		  if (this.options.rules.inlineCSS) {
+		    $(node).removeAttr('style');
+		  }
+		},
 
 		domTraversing: function (el, start, end, canRemove, cnt) {
 			if (null === canRemove) {
@@ -148,6 +155,8 @@
 
 			while (el) {
 				if (this.debug) { console.log(cnt, "canRemove=", canRemove); }
+				
+				this.removeStyle(el);
 
 				if (el.firstElementChild) {
 
