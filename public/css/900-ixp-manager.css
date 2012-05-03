@@ -144,6 +144,11 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 	border: 1px solid #dddddd;
 }
 
+.pm-table td.peering {
+     cursor: hand;
+     cursor: pointer;
+}
+
 .pm-table td.zoom1 {
     padding: 0px 1px;
     font-size: 8px;
@@ -246,7 +251,14 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 }
 
 
-.table tbody tr:hover td,
-.table tbody tr:hover th {
-  background-color: #f5f5f5;
+.pm-table tr.hover, .pm-table colgroup.hover { 
+	background-color: #eee;
+    border: 2px solid #555;
 }
+
+.pm-table th.highlight, .pm-table td.highlight { 
+    background-color: #fcf6cf;
+}
+
+
+

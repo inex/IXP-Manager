@@ -60,6 +60,9 @@ class PeeringMatrixController extends INEX_Controller_Action
         $this->view->sessions = $this->_getSessions( $lan, $proto );
         $this->view->custs    = $this->_getCusts( $lan, $proto );
         
+        $this->view->jsessions = json_encode( $this->view->sessions );
+        $this->view->jcusts    = json_encode( $this->view->custs );
+        
         $asns = array_keys( $this->view->custs );
         $maxLenOfASN = strlen( $asns[ count( $asns ) - 1 ] );
         $this->view->asnStringFormat = "% {$maxLenOfASN}s";
