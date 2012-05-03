@@ -246,7 +246,15 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 }
 
 
-.table tbody tr:hover td,
-.table tbody tr:hover th {
-  background-color: #f5f5f5;
+.pm-table tr.hover, .pm-table colgroup.hover { 
+	background-color: #eee;
+    border: 2px solid #555;
 }
+
+/*.pm-table tr.hover td { 
+    /* background-color: #eee; 
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+}*/
+
+

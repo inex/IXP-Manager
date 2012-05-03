@@ -51,7 +51,13 @@
 
 
 
-<table class="pm-table">
+<table id="table-pm" class="pm-table">
+
+<colgroup id="cg-name"></colgroup>
+<colgroup id="cg-asn"></colgroup>
+{foreach from=$custs key=x_as item=peers}
+    <colgroup id="cg-{$x_as}"></colgroup>
+{/foreach}
 
 <thead>
 
@@ -87,16 +93,16 @@
 {foreach from=$custs key=x_as item=x}
 
 
-	<tr>
+	<tr id="tr-name-{$x_as}">
 
-	    <td id="td-name-{$outer}" class="name zoom3">{$x.name}</td>
-	    <td id="td-asn-{$outer}" class="asn zoom3">{$x.autsys}</td>
+	    <td id="td-name-{$x_as}" class="name zoom3">{$x.name}</td>
+	    <td id="td-asn-{$x_as}" class="asn zoom3">{$x.autsys}</td>
 
         {assign var=inner value=0}
 
 	    {foreach from=$custs key=y_as item=y}
 
-		    <td id="td-{$outer}-{$inner}" class="
+		    <td id="td-{$x_as}-{$y_as}" class="
 		        {if $y.autsys eq $x.autsys}
 		        {else if isset( $sessions.$x_as.peers.$y_as )}
 		            peered
