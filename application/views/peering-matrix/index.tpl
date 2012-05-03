@@ -1,5 +1,8 @@
-
-{include file="header.tpl" mode="fluid" brand="INEX - Internet Neutral Exchange - Peering Matrix"}
+{if isset( $hasIdentity ) and $hasIdentity}
+    {include file="header.tpl" mode="fluid"}
+{else}
+    {include file="header.tpl" mode="fluid" brand="INEX - Internet Neutral Exchange - Peering Matrix"}
+{/if}
 
 <ul class="breadcrumb">
     <li>
@@ -122,6 +125,10 @@
 </tbody>
 
 </table>
+
+{if isset( $user.privs ) and $user.privs eq 3}
+</div>
+{/if}
 
 <script type="text/javascript">
 {include file="peering-matrix/index.js"}

@@ -46,11 +46,9 @@
                                             <a href="{genUrl controller="dashboard" action="my-peering-manager"}">My Peering Manager</a>
                                         </li>
                                     {/if}
-                                    {foreach from=$config.peering_matrix.public key=index item=lan}
-                                        <li>
-                                            <a target="_blank" href="{genUrl controller="dashboard" action="peering-matrix" lan=$index}">Matrix - {$lan.name}</a>
-                                        </li>
-                                    {/foreach}
+                                    <li>
+                                        <a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a>
+                                    </li>
                                 </ul>
                             </li>
                             

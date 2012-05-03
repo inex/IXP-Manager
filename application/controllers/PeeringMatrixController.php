@@ -43,13 +43,15 @@ class PeeringMatrixController extends INEX_Controller_Action
         if( !isset( $this->view->protos[$proto] ) )
             $proto = 4;
 
-        $this->view->lans = array(
-            10 => 'Primary Peering LAN',
-            12 => 'Secondary Peering LAN'
-        );
+        $lans = array();
+        
+        foreach( $this->config['peering_matrix']['public'] as $id => $pm )
+            $lans[ $pm['number'] ] = $pm['name'];
+
+        $this->view->lans = $lans;
         
         $lan = $this->_request->getParam( 'lan', 10 );
-        if( !isset( $this->view->lans[$lan] ) )
+        if( !isset( $lans[$lan] ) )
             $lan = 10;
         
         $this->view->lan = $lan;
