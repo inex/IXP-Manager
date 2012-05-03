@@ -62,7 +62,7 @@ class PeeringMatrixController extends INEX_Controller_Action
         $maxLenOfASN = strlen( $asns[ count( $asns ) - 1 ] );
         $this->view->asnStringFormat = "% {$maxLenOfASN}s";
         
-        $this->view->display( 'peering-matrix/pm.tpl' );
+        $this->view->display( 'peering-matrix/index.tpl' );
     }
                  
 }

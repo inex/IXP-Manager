@@ -139,10 +139,64 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 }
 
 .pm-table td {
-	padding: 4px 8px;
 	text-align: center;
 	vertical-align: top;
 	border: 1px solid #dddddd;
+}
+
+.pm-table td.zoom1 {
+    padding: 0px 1px;
+    font-size: 8px;
+    line-height: 12px;
+}
+
+.pm-table td.zoom2 {
+    padding: 2px 4px;
+    font-size: 11px;
+    line-height: 15px;
+}
+
+.pm-table td.zoom3 {
+    padding: 4px 8px;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.pm-table td.zoom4 {
+    padding: 6px 10px;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.pm-table td.zoom5 {
+    padding: 8px 12px;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.pm-table th.zoom1 {
+    font-size: 8px;
+    line-height: 12px;
+}
+
+.pm-table th.zoom2 {
+    font-size: 11px;
+    line-height: 15px;
+}
+
+.pm-table th.zoom3 {
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.pm-table th.zoom4 {
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.pm-table th.zoom5 {
+    font-size: 18px;
+    line-height: 24px;
 }
 
 .pm-table td:last-child {
