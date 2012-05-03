@@ -6,17 +6,31 @@ $( 'document' ).ready( function(){
 
 	//alert( custs['112']['shortname'] );
 	
-	$( "#table-pm" ).delegate( 'td', 'mouseover mouseout', function( event ) {
+	mouseLocked = false;
+	
+	$( "#table-pm" ).delegate( 'td', 'mouseover mouseout click', function( event ) {
 		
 		if( this.id.indexOf( 'td-asn-' ) == 0 ) return; 
 		if( this.id.indexOf( 'td-name-' ) == 0 ) return; 
 		
-		if( event.type == 'mouseover' ) 
+		
+		if( event.type == 'mouseover' && !mouseLocked) 
 		{
 		      $(this).parent().addClass( "hover" );
 		      $( "colgroup" ).eq( $(this ).index() ).addClass("hover");
 	    }
-	    else 
+		else if( event.type == 'click' )
+		{
+			if( mouseLocked )
+			{
+				 $("#tbody-pm").find( "tr" ).removeClass( "hover" );
+				 $("#table-pm").find( "colgroup" ).removeClass( "hover" );
+				 mouseLocked = false;
+			}
+			else
+				mouseLocked = true;
+		}
+		else if( event.type == 'mouseout' && !mouseLocked) 
 	    {
 		      $(this).parent().removeClass("hover");
 		      $("colgroup").eq($(this).index()).removeClass("hover");
