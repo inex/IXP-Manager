@@ -15,18 +15,37 @@
 
 {include file="message.tpl"}
 
-<ul>
+<div class="row-fluid">
 
-{foreach from=$custs item=cust}
+{assign var='count' value=0}
 
-	<li>
-		<a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname}">
-			{$cust.name}
-		</a>
-	</li>
+    <div class="span3">
 
-{/foreach}
+        <ul>
+        
+        {foreach from=$custs item=cust}
 
-</ul>
+            {if count( $custs ) > 12 and $count >= count( $custs )/4}
+            
+                </ul>
+                </div>
+                <div class="span3">
+                {assign var='count' value=0}
+            {/if}
+            
+        	<li>
+        		<a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname}">
+        			{$cust.name}
+        		</a>
+        	</li>
+
+        	{assign var='count' value=$count+1}
+        	
+    	{/foreach}
+
+    	</ul>
+
+	</div>
+</div>
 
 {include file="footer.tpl"}

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+<title>Issue 154 Testcase - jWYSIWYG</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/screen.css" media="screen, projection"/>
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/print.css" media="print"/>
+<!--[if lt IE 8]><link rel="stylesheet" href="../lib/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+<link rel="stylesheet" type="text/css" href="../../jquery.wysiwyg.css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript">
+(function ($) {
+	$(document).ready(function () {
+		$("textarea").wysiwyg({
+			controls: {
+				html: { visible: true }
+			},
+
+			events: {
+				click: function () {
+					console.log("click: this", this);
+					console.log("click: args", arguments);
+				}
+			}
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body><div class="container">
+<h1>jWYSIWYG</h1>
+<h2><a href="http://github.com/akzhan/jwysiwyg/issues/154">Issue 154</a>: Testcase</h2>
+
+<table>
+<tr>
+<td><textarea name="a">&lt;p>aaaa&lt;/p>&lt;p style="color: green">aaaa&lt;/p>&lt;p>a&lt;b>aa&lt;/b>a&lt;/p></textarea></td>
+</tr>
+</table>
+
+</div></body>
+</html>

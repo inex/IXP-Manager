@@ -116,6 +116,10 @@
             <a href="{genUrl controller='vlan' action='list'}">VLANs</a>
         </li>
     
+        <li {if $controller eq 'change-log'}class="active"{/if}>
+            <a href="{genUrl controller='change-log' action='list'}">Change Log</a>
+        </li>
+    
         <li {if $controller eq 'irrdb-config'}class="active"{/if}>
             <a href="{genUrl controller='irrdb-config' action='list'}">IRRDB Configuration</a>
         </li>

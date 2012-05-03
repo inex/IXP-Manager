@@ -12,7 +12,7 @@ Active peering sessions: {$active}.
 Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 </p>
 
-<table border="0" cellpadding="0" cellspacing="2" summary="" class="ltbr">
+<table border="0" cellpadding="0" cellspacing="2" summary="" class="table table-bordered table-pm">
 
 <tr>
 
@@ -45,7 +45,7 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 
 	    {foreach from=$peers item=y}
 
-		    <td >
+		    <td width="21" height="21" >
 		        {if $outer eq $inner}
 		            {* we're at the intersection of our AS on the x and y graph - stick in an empter cell *}
 		            </td><td>

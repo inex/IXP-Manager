@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC
+  "-//W3C//DTD HTML 4.01//EN"
+	  "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<TITLE> THIS IS AN IFRAME OF TRASH INPUT </TITLE>
+</HEAD>
+
+<BODY>
+
+<DIV id="foo">
+<H1> OWED TO 1992 </H1>
+
+<P>
+	<TT>'&nbsp;', '&nbsp;', '&NBSP;' '&NBSP;'</TT>  - THOSE ARE NBSPs
+	<BR>
+	THESE ARE ALSO NBSPs CHARACTERS: ' ', ' ', ' '
+	<BR>
+</P>
+
+<P>
+These elements are totally nonsense
+'&invalid;' '&fruitcake;'
+</P>
+
+<P>
+These two entities should look different '&delta;' '&Delta;'
+</P>
+
+<P>
+	<!-- *This might be transparently copied as unicode * -->
+	Other elements should also be transparently encoded into hex-refs or unicode
+	'&hearts;' '&copy;' '&uarr;' '&rarr;' '&kappa;'
+</P>
+
+<P>
+These elements should remain named because they're valid in both XML and HTML.
+'&lt;' '&gt;' '&quot;' '&amp;'
+</P>
+
+<P>
+This element is only valid in XML
+&apos;
+</P>
+</DIV>
+
+<BUTTON ONCLICK="javascript:alert(document.getElementById('foo').innerHTML)"> BOOM </BUTTON>
+
+</BODY>
+</HTML>

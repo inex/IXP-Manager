@@ -1,0 +1,4 @@
+source :rubygems
+
+gem 'yajl-ruby', '>= 0.7.8'
+gem 'fastercsv', :platforms => :ruby_18

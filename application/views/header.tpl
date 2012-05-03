@@ -4,7 +4,7 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="{if isset( $hasIdentity ) and $hasIdentity and $identity.user.privs eq 3}container-fluid{else}container{/if}">
-            <a class="brand" href="{genUrl}">IXP Manager</a>
+            <a class="brand" href="{genUrl}">{if isset( $brand )}{$brand}{else}IXP Manager{/if}</a>
             {if isset( $hasIdentity ) and $hasIdentity}
                 <div class="nav-collapse">
                      <ul class="nav">
@@ -46,11 +46,9 @@
                                             <a href="{genUrl controller="dashboard" action="my-peering-manager"}">My Peering Manager</a>
                                         </li>
                                     {/if}
-                                    {foreach from=$config.peering_matrix.public key=index item=lan}
-                                        <li>
-                                            <a target="_blank" href="{genUrl controller="dashboard" action="peering-matrix" lan=$index}">Matrix - {$lan.name}</a>
-                                        </li>
-                                    {/foreach}
+                                    <li>
+                                        <a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a>
+                                    </li>
                                 </ul>
                             </li>
                             

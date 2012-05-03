@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+<title>Jasmine Test Runner - jWYSIWYG</title>
+<!-- jasmine -->
+<link rel="stylesheet" type="text/css" href="../lib/jasmine/jasmine.css"/>
+<script type="text/javascript" src="../lib/jasmine/jasmine.js"></script>
+<script type="text/javascript" src="../lib/jasmine/jasmine-html.js"></script>
+<!-- wysiwyg -->
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/screen.css" media="screen, projection" />
+<link rel="stylesheet" type="text/css" href="../lib/blueprint/print.css" media="print" />
+<!--[if lt IE 8]><link rel="stylesheet" href="../lib/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+<link rel="stylesheet" href="../../jquery.wysiwyg.css" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript" src="../../plugins/wysiwyg.i18n.js"></script>
+<script type="text/javascript" src="../../plugins/wysiwyg.rmFormat.js"></script>
+<script type="text/javascript" src="../../i18n/lang.fr.js"></script>
+<script type="text/javascript" src="../../i18n/lang.ru.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.image.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.link.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.table.js"></script>
+<!-- include spec files here... -->
+<script type="text/javascript" src="./jasmine/helper.js"></script>
+<script type="text/javascript" src="./jasmine/jwysiwyg.spec.js"></script>
+<script type="text/javascript" src="./jasmine/functions/insertHtml.spec.js"></script>
+<script type="text/javascript" src="./jasmine/controls/html.spec.js"></script>
+<script type="text/javascript" src="./jasmine/plugins.spec.js"></script>
+<script type="text/javascript" src="./jasmine/plugins/i18n.spec.js"></script>
+<script type="text/javascript" src="./jasmine/plugins/rmFormat.spec.js"></script>
+<script type="text/javascript" src="./jasmine/154.spec.js"></script>
+<script type="text/javascript" src="./jasmine/159.spec.js"></script>
+</head>
+<body><div class="container">
+
+<script type="text/javascript">
+$(document).ready(function () {
+	jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+	jasmine.getEnv().execute();
+});
+</script>
+
+<div style="overflow: scroll; width: 100%; height: 100px;">
+<textarea id="id1"></textarea>
+<textarea id="id2"></textarea>
+</div>
+
+</div></body>
+</html>

@@ -4,6 +4,8 @@
  * Depends on jWYSIWYG, (farbtastic || other colorpicker plugins)
  */
 (function ($) {
+	"use strict";
+
 	if (undefined === $.wysiwyg) {
 		throw "wysiwyg.colorpicker.js depends on $.wysiwyg";
 	}
@@ -206,8 +208,8 @@
 						return false;
 					});
 					$("body").append(elements);
-					elements.click(function(e) {
-					  e.stopPropagation();
+					elements.click(function (e) {
+						e.stopPropagation();
 					});
 				}
 			}

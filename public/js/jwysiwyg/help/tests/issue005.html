@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Issue 5 Testcase - jWYSIWYG</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="../../jquery.wysiwyg.css" type="text/css"/>
+<script type="text/javascript" src="../lib/jquery.js"></script>
+<script type="text/javascript" src="../../jquery.wysiwyg.js"></script>
+<script type="text/javascript" src="../../controls/wysiwyg.table.js"></script>
+<script type="text/javascript" src="../../plugins/wysiwyg.rmFormat.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		$("textarea").wysiwyg({
+			rmUnusedControls: true,
+			controls: {
+				h1: {visible: true},
+				h2: {visible: true},
+				h3: {visible: true},
+				html: {visible: true},
+				insertTable: {visible: true}
+			}});
+
+		// removeFormat + uncomment line with remove headings
+		$.wysiwyg.removeFormat2 = function(object) {
+			return object.each(function() {
+				var oWysiwyg = $(this).data("wysiwyg");
+
+				if (!oWysiwyg) {
+					return this;
+				}
+
+				// Begin of oWysiwyg.removeFormat();
+				if ($.browser.msie) {
+					oWysiwyg.focus();
+				}
+
+				oWysiwyg.editorDoc.execCommand("formatBlock", false, "<p>"); // remove headings
+				oWysiwyg.editorDoc.execCommand("removeFormat", false, null);
+				oWysiwyg.editorDoc.execCommand("unlink", false, null);
+				// End of oWysiwyg.removeFormat();
+			});
+		};
+
+		$("#buttonRun").click(function() {
+			$.wysiwyg.removeFormat($("textarea.first"));
+
+			$.wysiwyg.removeFormat2($("textarea.second"));
+
+			$.wysiwyg.rmFormat.enabled = true;
+			$.wysiwyg.removeFormat($("textarea.third"));
+			$.wysiwyg.rmFormat.enabled = false;
+		});
+	});
+})(jQuery);
+</script>
+<style type="text/css">
+textarea { width: 400px; height: 100px; }
+dt { font-weight: bold; }
+</style>
+</head>
+<body>
+	<h2>jWYSIWYG - Issue 5 Testcase</h2>
+
+	<dl>
+		<dt>Steps to reproduce:</dt>
+		<dd>
+			<ol>
+				<li>Select all text in textareas</li>
+				<li>Click Run</li>
+			</ol>
+		</dd>
+
+		<dt>What expected:</dt>
+		<dd>Left textarea without changes.<br/>
+		Center textarea heading changed to formatBlock (&lt;p>), and table
+		fields wraps with formatBlock<br/>
+		Right textarea used new rmFormat plugin: heading changed to &lt;p> and
+		table should be removed</dd>
+
+		<dt>Tested on:</dt>
+		<dd>
+			<ul>
+				<li>Chromium (see annotation to domRemove in wysiwyg.rmFormat.js)</li>
+				<li>Firefox 3.6.8</li>
+				<li>Opera 10.63, 11</li>
+			</ul>
+		</dd>
+	</dl>
+
+	<input type="button" value="Run" id="buttonRun"/>
+
+	<table>
+		<tr>
+			<td><textarea class="first">&lt;h2>H2 heading&lt;/h2>
+					&lt;table border="1">&lt;tr>&lt;td>Text&lt;/td>&lt;td>Text&lt;/td>&lt;/tr>&lt;/table>&lt;p>Text</p></textarea></td>
+			<td><textarea class="second">&lt;h2>H2 heading&lt;/h2>
+					&lt;table border="1">&lt;tr>&lt;td>Text&lt;/td>&lt;td>Text&lt;/td>&lt;/tr>&lt;/table>&lt;p>Text</p></textarea></td>
+			<td><textarea class="third">&lt;h2>H2 heading&lt;/h2>
+					&lt;table border="1">&lt;tr>&lt;td>Text&lt;/td>&lt;td>Text&lt;/td>&lt;/tr>&lt;/table>&lt;p>Text</p></textarea></td>
+		</tr>
+	</table>
+
+	<hr/>
+	<a href="index.html">Index</a>
+</body>
+</html>

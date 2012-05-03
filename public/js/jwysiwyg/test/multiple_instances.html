@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="keywords" content="<%= keywords %>"/>
+	<meta name="description" content=""/>
+	<!--[if lte IE 8]> 
+	<![endif]-->
+	<!--[if IE 8]> 
+	<![endif]-->
+	<script src="../lib/jquery1.5.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../src/jquery.wysiwyg.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../src/controls/default.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+	//<![CDATA[
+		$(document).ready(function(){
+			$('#editor, #editor2').wysiwyg();
+		});
+	//]]>
+	</script>
+	<link rel="stylesheet" href="../jquery.wysiwyg.css" type="text/css" media="screen" charset="utf-8" />
+	<style type="text/css" media="screen">
+		#container{ width:750px; }
+		#container div{ width:350px; margin-right:25px; float:left; overflow:visible; }
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div>
+			<textarea id="editor"></textarea>
+		</div>
+		<div>
+			<textarea id="editor2"></textarea>
+		</div>
+	</div>
+</body>
+</html>

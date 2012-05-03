@@ -1,134 +1,138 @@
+{if isset( $hasIdentity ) and $hasIdentity}
+    {include file="header.tpl" mode="fluid"}
+{else}
+    {include file="header.tpl" mode="fluid" brand="INEX - Internet Neutral Exchange - Peering Matrix"}
+{/if}
 
-<style>
-{literal}
-.ltbr {
-    background-color: #FFFFFF;
-    border: 1px solid #797979;
-    border-collapse: collapse;
-}
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl}">Peering Matrices</a>
+    </li>
+    <li class="active">
+        for the {$lans.$lan} using {$protos.$proto}
+    </li>
 
-.ltbr th {
-    background-color:#F2F2F9;
-    text-align: left;
-    padding: 0;
-}
+    <li class="pull-right">
+        <div class="btn-toolbar" style="display: inline;">
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    {$lans.$lan}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    {foreach from=$lans key=id item=name}
+                        <li> <a href="{genUrl controller="peering-matrix" action="index" lan=$id proto=$proto}">{$name}</a> </li>
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    {$protos.$proto}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    {foreach from=$protos key=id item=name}
+                        <li> <a href="{genUrl controller="peering-matrix" action="index" lan=$lan proto=$id}">{$name}</a> </li>
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button id="btn-zoom-out" class="btn btn-mini"><i class="icon-zoom-out"></i></button>
+                <button id="btn-zoom-in"  class="btn btn-mini"><i class="icon-zoom-in"></i></button>
+            </div>
+        </div>
+    </li>
+</ul>
 
-.ltbr td {
-    padding: 0;
-}
+<div class="row-fluid">
 
-.ltbr_row {
-            font-weight:bold;
-}   
 
-.ltbr_even {
-        padding: 0;
-        margin: 0;
-        border: 0;
-            background-color:#F2F2F9;
-}
 
-.ltbr_even td {
-        padding: 0;
-        margin: 1;
-        border: 0;
-        background-color:#F2F2F9;
-}
+<table class="pm-table">
 
-.ltbr_odd {
-        padding: 0;
-        margin: 0;
-        border: 0;
-            background-color:#FFFFFF;
-}
+<thead>
 
-.ltbr_odd td {
-        padding: 0;
-        margin: 1;
-        border: 0;
-            background-color:#FFFFFF;
-}
-{/literal}
-</style>
+    <tr>
+    
+        <th id="th-name" class="name zoom3"></th>
+        <th id="th-asn" class="asn zoom3"></th>
+    
+        {assign var=cnt value=0}
+        {foreach from=$custs key=x_as item=peers}
+    
+            <th id="th-{$cnt}" class="zoom3">
+                {assign var=asn value=$x_as|string_format:$asnStringFormat}
+                {assign var=len value=strlen( $asn )}
+                {for $pos=0 to $len}
+                    {$asn|truncate:1:''}{if $pos < $len}<br />{/if}
+                    {assign var=asn value=substr( $asn, 1 )}
+                {/for}
+            </th>
+    
+            {assign var=cnt value=$cnt+1}
+    
+        {/foreach}
+    
+    </tr>
 
-<p>
-Total potential sessions: {$potential}.
-Active peering sessions: {$active}.
-{assign var=active value=`$active*100`}
-Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
-</p>
+</thead>
 
-<table border="0" cellpadding="0" cellspacing="2" summary="" class="ltbr">
-
-<tr>
-
-    <th class="pmbuilder_heading">&nbsp;</th>
-    <th class="pmbuilder_heading">&nbsp;</th>
-
-    {foreach from=$matrix key=x_as item=peers}
-
-        <th class="pmbuilder_heading" align="center" style="text-align: center;">
-            {assign var=asn value=$x_as|string_format:'% 6s'}
-            {php}
-                $asn = $this->get_template_vars( 'asn' );
-                for( $i = 0; $i < 6; $i++ )
-                    echo substr( $asn, $i, 1 ) . '<br />';
-            {/php}
-        </th>
-
-    {/foreach}
-
-</tr>
-
+<tbody>
 
 {assign var=outer value=0}
 
-{foreach from=$matrix key=x_as item=peers}
+{foreach from=$custs key=x_as item=x}
 
 
 	<tr>
 
-	    <td style="text-align: left" >{$peers[0].X_Cust.name}&nbsp;</td>
-	    <td style="text-align: right" >&nbsp;{$peers[0].x_as}&nbsp;</td>
+	    <td id="td-name-{$outer}" class="name zoom3">{$x.name}</td>
+	    <td id="td-asn-{$outer}" class="asn zoom3">{$x.autsys}</td>
 
         {assign var=inner value=0}
 
-	    {foreach from=$peers item=y}
+	    {foreach from=$custs key=y_as item=y}
 
-		    <td >
-		        {if $outer eq $inner}
-		            {* we're at the intersection of our AS on the x and y graph - stick in an empter cell *}
-		            </td><td>
+		    <td id="td-{$outer}-{$inner}" class="
+		        {if $y.autsys eq $x.autsys}
+		        {else if isset( $sessions.$x_as.peers.$y_as )}
+		            peered
+		        {else if $x.rsclient and $y.rsclient}
+		            peered
+	            {else}
+		            notpeered
 		        {/if}
-
-		        {if $y.peering_status eq 'YES'}
-		            <img class="OSSTooltip" alt="Y" width="21" height="21" border="0"
-		                  src="{genUrl}/images/yes.gif"
-		                  title="X: {$y.X_Cust.name} (AS{$y.x_as})
-Y: {$y.Y_Cust.name} (AS{$y.y_as})"
-		            />
-		        {else if $row.peering_status eq 'NO'}
-		            <img class="OSSTooltip" alt="N" width="21" height="21" border="0"
-		                  src="{genUrl}/images/no.gif"
-                          title="X: {$y.X_Cust.name} (AS{$y.x_as})
-Y: {$y.Y_Cust.name} (AS{$y.y_as})"
-                    />
-		        {/if}
+		         zoom3">
 		    </td>
 
-        {assign var=inner value=`$inner+1`}
+        {assign var=inner value=$inner+1}
 
         {* for the last cell of the last row, we add a empty cell *}
-        {if $outer eq $peers|@count and $inner eq $peers|@count}
+        {if $outer eq $custs|@count and $inner eq $custs|@count}
             <td></td>
         {/if}
 	    {/foreach}
 
 	</tr>
 
-{assign var=outer value=`$outer+1`}
+{assign var=outer value=$outer+1}
 
 {/foreach}
 
+</tbody>
+
 </table>
+
+{if isset( $user.privs ) and $user.privs eq 3}
+</div>
+{/if}
+
+<script type="text/javascript">
+{include file="peering-matrix/index.js"}
+</script>
+
+{include file="footer.tpl"}
 
