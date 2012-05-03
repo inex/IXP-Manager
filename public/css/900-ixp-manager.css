@@ -144,6 +144,11 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 	border: 1px solid #dddddd;
 }
 
+.pm-table td.peering {
+     cursor: hand;
+     cursor: pointer;
+}
+
 .pm-table td.zoom1 {
     padding: 0px 1px;
     font-size: 8px;

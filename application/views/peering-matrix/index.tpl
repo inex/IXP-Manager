@@ -102,7 +102,7 @@
 
 	    {foreach from=$custs key=y_as item=y}
 
-		    <td id="td-{$x_as}-{$y_as}" class="
+		    <td id="td-{$x_as}-{$y_as}" class="peering
 		        {if $y.autsys eq $x.autsys}
 		        {else if isset( $sessions.$x_as.peers.$y_as )}
 		            peered
