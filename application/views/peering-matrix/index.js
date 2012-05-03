@@ -14,7 +14,7 @@ $( 'document' ).ready( function(){
 
 		if( zoom != 0 )
 		{
-			var nzoom = ( event.target.id == 'btn-zoom-out' ) ? zoom - 1 : zoom + 1;
+			var nzoom = ( this.id == 'btn-zoom-out' ) ? zoom - 1 : zoom + 1;
 			if( nzoom > 5 ) nzoom = 5;
 			if( nzoom < 1 ) nzoom = 1;
 			
