@@ -66,10 +66,9 @@
         <th id="th-name" class="name zoom3"></th>
         <th id="th-asn" class="asn zoom3"></th>
     
-        {assign var=cnt value=0}
         {foreach from=$custs key=x_as item=peers}
     
-            <th id="th-{$cnt}" class="zoom3">
+            <th id="th-{$x_as}" class="zoom3">
                 {assign var=asn value=$x_as|string_format:$asnStringFormat}
                 {assign var=len value=strlen( $asn )}
                 {for $pos=0 to $len}
@@ -77,8 +76,6 @@
                     {assign var=asn value=substr( $asn, 1 )}
                 {/for}
             </th>
-    
-            {assign var=cnt value=$cnt+1}
     
         {/foreach}
     

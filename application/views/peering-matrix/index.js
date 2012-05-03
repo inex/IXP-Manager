@@ -4,8 +4,6 @@ custs = {$jcusts};
 
 $( 'document' ).ready( function(){
 
-	//alert( custs['112']['shortname'] );
-	
 	mouseLocked = false;
 	
 	$( "#table-pm" ).delegate( 'td', 'mouseover mouseout click', function( event ) {
@@ -18,6 +16,11 @@ $( 'document' ).ready( function(){
 		{
 		      $(this).parent().addClass( "hover" );
 		      $( "colgroup" ).eq( $(this ).index() ).addClass("hover");
+		      
+		      var yasn = this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
+		      $( '#td-name-' + yasn ).addClass( "highlight" );
+		      $( '#td-asn-' + yasn ).addClass( "highlight" );
+		      $( '#th-' + yasn ).addClass( "highlight" );
 	    }
 		else if( event.type == 'click' )
 		{
@@ -25,6 +28,9 @@ $( 'document' ).ready( function(){
 			{
 				 $("#tbody-pm").find( "tr" ).removeClass( "hover" );
 				 $("#table-pm").find( "colgroup" ).removeClass( "hover" );
+				 $( '[id|="td-name"]' ).removeClass( 'highlight' );
+				 $( '[id|="td-asn"]' ).removeClass( 'highlight' );
+				 $( '[id|="th"]' ).removeClass( 'highlight' );
 				 mouseLocked = false;
 			}
 			else
@@ -34,11 +40,16 @@ $( 'document' ).ready( function(){
 	    {
 		      $(this).parent().removeClass("hover");
 		      $("colgroup").eq($(this).index()).removeClass("hover");
+		      
+		      var yasn = this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
+		      $( '#td-name-' + yasn ).removeClass( "highlight" );
+		      $( '#td-asn-' + yasn ).removeClass( "highlight" );
+		      $( '#th-' + yasn ).removeClass( "highlight" );
 	    }		
 	});
 	
 	
-	$( '[id|="btn-zoom"]' ).on( "click", function( event ){
+	$( '[id|="btn-zoom"]' ).on( "click", function( e ){
 		var i, zoom = 0;
 		for( i = 1; i <= 5; i++ )
 		{

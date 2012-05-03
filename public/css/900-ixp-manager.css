@@ -256,10 +256,9 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     border: 2px solid #555;
 }
 
-/*.pm-table tr.hover td { 
-    /* background-color: #eee; 
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
-}*/
+.pm-table th.highlight, .pm-table td.highlight { 
+    background-color: #fcf6cf;
+}
+
 
 
