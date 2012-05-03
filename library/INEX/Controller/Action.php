@@ -336,5 +336,38 @@ class INEX_Controller_Action extends Zend_Controller_Action
         
         $this->view->customers = $this->_customers = $this->session->ahome_customers;
     }
+    
+    
+    /**
+     * Store a variable to the APC cache and ignore if APC is not available
+     *
+     * Mirrors the scalar version of apc_store
+     *
+     */
+    public function apcStore( $key, $var, $ttl = 0 )
+    {
+        if( !ini_get( 'apc.enabled' ) )
+            return false;
+        
+        return apc_store( $key, $var, $ttl );
+    }
+    
+    /**
+     * Store a variable to the APC cache and ignore if APC is not available
+     *
+     * Mirrors the scalar version of apc_store
+     *
+     */
+    public function apcFetch( $key )
+    {
+        if( !ini_get( 'apc.enabled' ) )
+            return false;
+    
+        return apc_fetch( $key );
+    }
+    
+    
+    
+    
 }
 
