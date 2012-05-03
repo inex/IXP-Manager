@@ -1,106 +1,99 @@
 
-<style>
-{literal}
-.ltbr {
-    background-color: #FFFFFF;
-    border: 1px solid #797979;
-    border-collapse: collapse;
-}
+{include file="header.tpl" mode="fluid" brand="INEX - Internet Neutral Exchange - Peering Matrix"}
 
-.ltbr th {
-    background-color:#F2F2F9;
-    text-align: left;
-    padding: 0;
-}
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl}">Peering Matrices</a>
+    </li>
+    <li class="active">
+        for the {$lans.$lan} using {$protos.$proto}
+    </li>
 
-.ltbr td {
-    padding: 0;
-}
+    <li class="pull-right">
+        <div class="btn-toolbar" style="display: inline;">
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    {$lans.$lan}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    {foreach from=$lans key=id item=name}
+                        <li> <a href="{genUrl controller="peering-matrix" action="index" lan=$id proto=$proto}">{$name}</a> </li>
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    {$protos.$proto}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    {foreach from=$protos key=id item=name}
+                        <li> <a href="{genUrl controller="peering-matrix" action="index" lan=$lan proto=$id}">{$name}</a> </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </li>
+</ul>
 
-.ltbr_row {
-            font-weight:bold;
-}
+<div class="row-fluid">
 
-.ltbr_even {
-        padding: 0;
-        margin: 0;
-        border: 0;
-            background-color:#F2F2F9;
-}
 
-.ltbr_even td {
-        padding: 0;
-        margin: 1;
-        border: 0;
-        background-color:#F2F2F9;
-}
 
-.ltbr_odd {
-        padding: 0;
-        margin: 0;
-        border: 0;
-            background-color:#FFFFFF;
-}
+<table class="pm-table">
 
-.ltbr_odd td {
-        padding: 0;
-        margin: 1;
-        border: 0;
-            background-color:#FFFFFF;
-}
-{/literal}
-</style>
+<thead>
 
-<p>
-Total potential sessions: {$potential}.
-Active peering sessions: {$active}.
-{assign var=active value=$active*100}
-Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
-</p>
+    <tr>
+    
+        <th class="name"></th>
+        <th class="asn"></th>
+    
+        {foreach from=$custs key=x_as item=peers}
+    
+            <th>
+                {assign var=asn value=$x_as|string_format:$asnStringFormat}
+                {assign var=len value=strlen( $asn )}
+                {for $pos=0 to $len}
+                    {$asn|truncate:1:''}{if $pos < $len}<br />{/if}
+                    {assign var=asn value=substr( $asn, 1 )}
+                {/for}
+            </th>
+    
+        {/foreach}
+    
+    </tr>
 
-<table border="0" cellpadding="0" cellspacing="2" summary="" class="ltbr">
+</thead>
 
-<tr>
-
-    <th class="pmbuilder_heading">&nbsp;</th>
-    <th class="pmbuilder_heading">&nbsp;</th>
-
-    {foreach from=$matrix key=x_as item=peers}
-
-        <th class="pmbuilder_heading" align="center" style="text-align: center;">
-            {assign var=asn value=$x_as|string_format:'% 6s'}
-            {for $pos=0 to strlen( $asn )}
-                {$asn|truncate:1:''}<br />
-                {assign var=asn value=substr( $asn, 1 )}
-            {/for}
-        </th>
-
-    {/foreach}
-
-</tr>
-
+<tbody>
 
 {assign var=outer value=0}
 
-{foreach from=$matrix key=x_as item=peers}
+{foreach from=$custs key=x_as item=x}
 
 
 	<tr>
 
-	    <td style="text-align: left" >{$peers[0].X_Cust.name}&nbsp;</td>
-	    <td style="text-align: right" >&nbsp;{$peers[0].x_as}&nbsp;</td>
+	    <td class="name">{$x.name}</td>
+	    <td class="asn">{$x.autsys}</td>
 
         {assign var=inner value=0}
 
-	    {foreach from=$peers item=y}
+	    {foreach from=$custs key=y_as item=y}
 
-		    <td width="21" height="21" border="1" style="border: 1px solid black; background-color:
-		        {if $outer eq $inner}
-		            white
-		        {else if $y.peering_status eq 'YES'}
-		            lightgreen
-		        {else if !isset( $row.peering_status ) || $row.peering_status eq 'NO'}
-		            red
+		    <td class="
+		        {if $y.autsys eq $x.autsys}
+		        {else if isset( $sessions.$x_as.peers.$y_as )}
+		            peered
+		        {else if $x.rsclient and $y.rsclient}
+		            peered
+	            {else}
+		            notpeered
 		        {/if}
 		        ">
 		    </td>
@@ -108,7 +101,7 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
         {assign var=inner value=$inner+1}
 
         {* for the last cell of the last row, we add a empty cell *}
-        {if $outer eq $peers|@count and $inner eq $peers|@count}
+        {if $outer eq $custs|@count and $inner eq $custs|@count}
             <td></td>
         {/if}
 	    {/foreach}
@@ -119,5 +112,10 @@ Percentage active peering sessions: {$active/$potential|string_format:'%d'}%
 
 {/foreach}
 
+</tbody>
+
 </table>
+
+
+{include file="footer.tpl"}
 

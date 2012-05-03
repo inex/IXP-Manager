@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -33,15 +33,22 @@
 class BgpsessiondataTable extends Doctrine_Table
 {
 
+    /**
+     * Get all BGP peers for all peers (or a specific ASN)
+     * @param int $vlan The VLAN tag of the LAN to query
+     * @param int $protocol The IP protocol to query
+     * @param int|null $asn Optional ASN to query peers for
+     * @return array Array of peerings.
+     */
     public static function getPeers( $vlan, $protocol, $asn = null )
     {
         $q = Doctrine_Query::create()
-                ->select( 'bs.*, 
-                        vlis.virtualinterfaceid, vis.custid, 
-                        cs.shortname, cs.name, cs.autsys, 
-                        vlid.virtualinterfaceid, vid.custid, 
-                        cd.shortname, cd.name, cd.autsys, 
-                        COUNT( bs.packetcount ) AS packetcount' ) //, MAX( bs.timestamp ) AS ts' ) 
+                ->select( 'bs.*,
+                        vlis.virtualinterfaceid, vis.custid,
+                        cs.shortname, cs.name, cs.autsys,
+                        vlid.virtualinterfaceid, vid.custid,
+                        cd.shortname, cd.name, cd.autsys,
+                        COUNT( bs.packetcount ) AS packetcount' ) //, MAX( bs.timestamp ) AS ts' )
                 ->from( 'Bgpsessiondata bs' )
                 ->leftJoin( 'bs.Src_Vlaninterface vlis' )
                 ->leftJoin( 'vlis.Virtualinterface vis' )
@@ -72,12 +79,12 @@ class BgpsessiondataTable extends Doctrine_Table
             if( !isset( $apeers[$s['autsys']] ) )
             {
                 $apeers[$s['autsys']] = array();
-                $apeers[$s['autsys']]['shortname'] = $s['shortname'];   
+                $apeers[$s['autsys']]['shortname'] = $s['shortname'];
                 $apeers[$s['autsys']]['name']      = $s['name'];
                 $apeers[$s['autsys']]['peers']     = array();
             }
 
-            $apeers[$s['autsys']]['peers'][ $d['autsys'] ] = 1;
+            $apeers[$s['autsys']]['peers'][ $d['autsys'] ] = $d['autsys'];
         }
 
         ksort( $apeers, SORT_NUMERIC );
