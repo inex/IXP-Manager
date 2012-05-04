@@ -56,7 +56,7 @@
 <colgroup id="cg-name"></colgroup>
 <colgroup id="cg-asn"></colgroup>
 {foreach from=$custs key=x_as item=peers}
-    <colgroup id="cg-{$x_as}"></colgroup>
+    <colgroup id="cg-as-{$x_as}"></colgroup>
 {/foreach}
 
 <thead>
@@ -68,7 +68,7 @@
     
         {foreach from=$custs key=x_as item=peers}
     
-            <th id="th-{$x_as}" class="zoom3">
+            <th id="th-as-{$x_as}" class="zoom3 asn">
                 {assign var=asn value=$x_as|string_format:$asnStringFormat}
                 {assign var=len value=strlen( $asn )}
                 {for $pos=0 to $len}
@@ -92,7 +92,7 @@
 
 	<tr id="tr-name-{$x_as}">
 
-	    <td id="td-name-{$x_as}" class="name zoom3">{$x.name}</td>
+	    <td id="td-name-{$x_as}" class="name zoom3">{$x.name|replace:" ":"&nbsp;"}</td>
 	    <td id="td-asn-{$x_as}" class="asn zoom3">{$x.autsys}</td>
 
         {assign var=inner value=0}
