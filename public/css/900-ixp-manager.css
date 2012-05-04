@@ -245,8 +245,9 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     border-bottom-width: 2px;
 }
 
+
 .pm-table td.peered {
-	background-color: #00cc00;
+    background-color: #00cc00;
     width: 10px;
 }
 
@@ -268,8 +269,7 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 }
 
 
-
-.pm-table tr.hover, .pm-table colgroup.hover { 
+.pm-table tr.hover, .pm-table colgroup.hover, .pm-table td.hover { 
 	background-color: #eee;
     border-left: 2px solid #555;
     border-right: 2px solid #555;

@@ -17,10 +17,6 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 
 $( 'document' ).ready( function(){
 
-	$( 'td.bilateral-rs' ).addClass( 'peered' );
-	$( 'td.bilateral-only' ).addClass( 'peered' );
-	$( 'td.rs-only' ).addClass( 'peered' );
-	
 	columnClicked = false;
 	mouseLocked = false;
 	
@@ -157,6 +153,12 @@ $( 'document' ).ready( function(){
 		}		
 	});
 
+	
+	$( 'td.bilateral-rs' ).addClass( 'peered' );
+	$( 'td.bilateral-only' ).addClass( 'peered' );
+	$( 'td.rs-only' ).addClass( 'peered' );
+	
+	
 	$( '[id|="peer-filter"]' ).on( "click", function( e ){
 		var filter = this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
 		
@@ -171,21 +173,27 @@ $( 'document' ).ready( function(){
 				$( 'td.bilateral-rs' ).addClass( 'peered' );
 				$( 'td.bilateral-only' ).addClass( 'peered' );
 				$( 'td.rs-only' ).addClass( 'peered' );
+				$( '#peer-dd-text' ).html( 'All Peerings' );
 				break;
 				
 			case 'bi':
 				$( 'td.bilateral-rs' ).addClass( 'peered' );
 				$( 'td.bilateral-only' ).addClass( 'peered' );
 				$( 'td.rs-only' ).addClass( 'not-peered' );
+				$( '#peer-dd-text' ).html( 'Bilateral Peerings' );
 				break;
 				
 			case 'rs':
 				$( 'td.bilateral-rs' ).addClass( 'peered' );
 				$( 'td.bilateral-only' ).addClass( 'not-peered' );
 				$( 'td.rs-only' ).addClass( 'peered' );
+				$( '#peer-dd-text' ).html( 'Route Server Peerings' );
 				break;
 				
 		}
+		
+		if( $( '#peer-dd-ul' ).isActive() )
+			$( '#peer-dd-ul' ).toggle();
 		
 		return false;
 	});

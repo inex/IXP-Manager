@@ -18,14 +18,14 @@
     <li class="pull-right">
         <div class="btn-toolbar" style="display: inline;">
             <div class="btn-group">
-                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                    All Peerings
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                    <span id="peer-dd-text">All Peerings</span>
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu">
-                    <li> <a id="peer-filter-all" href="#">All Peerings</a> </li>
-                    <li> <a id="peer-filter-bi" href="#">Bilateral Peerings</a> </li>
-                    <li> <a id="peer-filter-rs" href="#">Route Server Peerings</a> </li>
+                <ul id="peer-dd-ul" class="dropdown-menu">
+                    <li> <a id="peer-filter-all" >All Peerings</a> </li>
+                    <li> <a id="peer-filter-bi">Bilateral Peerings</a> </li>
+                    <li> <a id="peer-filter-rs">Route Server Peerings</a> </li>
                 </ul>
             </div>
             <div class="btn-group">
@@ -113,11 +113,11 @@
 		    <td id="td-{$x_as}-{$y_as}" class="peering
 		        {if $y.autsys neq $x.autsys}
     		        {if isset( $sessions.$x_as.peers.$y_as ) and $x.rsclient and $y.rsclient}
-    		            bilateral-rs
+    		            bilateral-rs peered
 		            {else if isset( $sessions.$x_as.peers.$y_as )}
-    		            bilateral-only
+    		            bilateral-only peered
     		        {else if $x.rsclient and $y.rsclient}
-    		            rs-only
+    		            rs-only peered
     	            {else}
     		            not-peered
     		        {/if}
