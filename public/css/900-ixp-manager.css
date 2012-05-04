@@ -134,6 +134,11 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 	font-weight: bold;
 }
 
+.pm-table th.asn {
+    cursor: hand;
+    cursor: pointer;
+}
+
 .pm-table th:last-child {
     border-right-width: 2px;
 }
@@ -253,11 +258,16 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 
 .pm-table tr.hover, .pm-table colgroup.hover { 
 	background-color: #eee;
-    border: 2px solid #555;
+    border-left: 2px solid #555;
+    border-right: 2px solid #555;
 }
 
 .pm-table th.highlight, .pm-table td.highlight { 
     background-color: #fcf6cf;
+}
+
+.pm-table th.highlight2, .pm-table td.highlight2 { 
+    background-color: #eee;
 }
 
 
