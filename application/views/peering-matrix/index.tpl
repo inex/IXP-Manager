@@ -19,6 +19,17 @@
         <div class="btn-toolbar" style="display: inline;">
             <div class="btn-group">
                 <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    All Peerings
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li> <a id="peer-filter-all" href="#">All Peerings</a> </li>
+                    <li> <a id="peer-filter-bi" href="#">Bilateral Peerings</a> </li>
+                    <li> <a id="peer-filter-rs" href="#">Route Server Peerings</a> </li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
                     {$lans.$lan}
                     <span class="caret"></span>
                 </a>
@@ -100,15 +111,18 @@
 	    {foreach from=$custs key=y_as item=y}
 
 		    <td id="td-{$x_as}-{$y_as}" class="peering
-		        {if $y.autsys eq $x.autsys}
-		        {else if isset( $sessions.$x_as.peers.$y_as )}
-		            peered
-		        {else if $x.rsclient and $y.rsclient}
-		            peered
-	            {else}
-		            notpeered
+		        {if $y.autsys neq $x.autsys}
+    		        {if isset( $sessions.$x_as.peers.$y_as ) and $x.rsclient and $y.rsclient}
+    		            bilateral-rs
+		            {else if isset( $sessions.$x_as.peers.$y_as )}
+    		            bilateral-only
+    		        {else if $x.rsclient and $y.rsclient}
+    		            rs-only
+    	            {else}
+    		            not-peered
+    		        {/if}
 		        {/if}
-		         zoom3">
+		        zoom3">
 		    </td>
 
         {assign var=inner value=$inner+1}

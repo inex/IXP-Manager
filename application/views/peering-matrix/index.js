@@ -17,6 +17,9 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 
 $( 'document' ).ready( function(){
 
+	$( 'td.bilateral-rs' ).addClass( 'peered' );
+	$( 'td.bilateral-only' ).addClass( 'peered' );
+	$( 'td.rs-only' ).addClass( 'peered' );
 	
 	columnClicked = false;
 	mouseLocked = false;
@@ -153,6 +156,40 @@ $( 'document' ).ready( function(){
 			$( '.zoom' + zoom ).removeClass( 'zoom' + zoom ).addClass( 'zoom' + nzoom );
 		}		
 	});
+
+	$( '[id|="peer-filter"]' ).on( "click", function( e ){
+		var filter = this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
+		
+		$( 'td.bilateral-rs' ).removeClass( 'peered' );
+		$( 'td.bilateral-only' ).removeClass( 'peered' );
+		$( 'td.rs-only' ).removeClass( 'peered' );
+		$( 'td.bilateral-only' ).removeClass( 'not-peered' );
+		$( 'td.rs-only' ).removeClass( 'not-peered' );
+		
+		switch( filter ) {
+			case 'all':
+				$( 'td.bilateral-rs' ).addClass( 'peered' );
+				$( 'td.bilateral-only' ).addClass( 'peered' );
+				$( 'td.rs-only' ).addClass( 'peered' );
+				break;
+				
+			case 'bi':
+				$( 'td.bilateral-rs' ).addClass( 'peered' );
+				$( 'td.bilateral-only' ).addClass( 'peered' );
+				$( 'td.rs-only' ).addClass( 'not-peered' );
+				break;
+				
+			case 'rs':
+				$( 'td.bilateral-rs' ).addClass( 'peered' );
+				$( 'td.bilateral-only' ).addClass( 'not-peered' );
+				$( 'td.rs-only' ).addClass( 'peered' );
+				break;
+				
+		}
+		
+		return false;
+	});
+	
 	
 });
 

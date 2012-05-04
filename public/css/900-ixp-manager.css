@@ -250,10 +250,23 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     width: 10px;
 }
 
-.pm-table td.notpeered {
+.pm-table td.not-peered {
     background-color: #d63030;
     width: 10px;
 }
+
+.pm-table td.bilateral-rs {
+    width: 10px;
+}
+
+.pm-table td.rs-only {
+    width: 10px;
+}
+
+.pm-table td.bilateral-only {
+    width: 10px;
+}
+
 
 
 .pm-table tr.hover, .pm-table colgroup.hover { 
