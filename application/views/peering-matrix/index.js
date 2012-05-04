@@ -137,7 +137,7 @@ $( 'document' ).ready( function(){
 		var i, zoom = 0;
 		for( i = 1; i <= 5; i++ )
 		{
-			if( $( '#td-0-0' ).hasClass( 'zoom' + i  ) )
+			if( $( '#tbody-pm' ).hasClass( 'zoom' + i  ) )
 			{
 				zoom = i;
 				break;
