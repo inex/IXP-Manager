@@ -83,7 +83,7 @@
 
 </thead>
 
-<tbody id="tbody-pm">
+<tbody id="tbody-pm" class="zoom3">
 
 {assign var=outer value=0}
 
