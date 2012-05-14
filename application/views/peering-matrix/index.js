@@ -34,6 +34,7 @@ $( 'document' ).ready( function(){
 		{
 		    //$(this).parent().addClass( "hover" );
 		    $( "colgroup" ).eq( $(this ).index() ).addClass("hover");
+		    $( '.col-yasn-' + yasn ).addClass( 'hover2' );
 		    
 			$( '#td-name-' + xasn ).addClass( "highlight2" );
 			$( '#td-asn-' + xasn ).addClass( "highlight2" );
@@ -48,6 +49,7 @@ $( 'document' ).ready( function(){
 			{
 				//$("#tbody-pm").find( "tr" ).removeClass( "hover" );
 				$("#table-pm").find( "colgroup" ).removeClass( "hover" );
+			    $( '.col-yasn-' + yasn ).removeClass( 'hover2' );
 				
 				$( '[id|="td-name"]' ).removeClass( 'highlight' );
 				$( '[id|="td-asn"]' ).removeClass( 'highlight' );
@@ -64,7 +66,9 @@ $( 'document' ).ready( function(){
 		      //$(this).parent().removeClass("hover");
 			
             $("colgroup").eq($(this).index()).removeClass("hover");
-		      
+
+		    $( '.col-yasn-' + yasn ).removeClass( 'hover2' );
+
 			$( '#td-name-' + xasn ).removeClass( "highlight2" );
 			$( '#td-asn-' + xasn ).removeClass( "highlight2" );
 			
@@ -154,11 +158,6 @@ $( 'document' ).ready( function(){
 	});
 
 	
-	$( 'td.bilateral-rs' ).addClass( 'peered' );
-	$( 'td.bilateral-only' ).addClass( 'peered' );
-	$( 'td.rs-only' ).addClass( 'peered' );
-	
-	
 	$( '[id|="peer-filter"]' ).on( "click", function( e ){
 		var filter = this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
 		
@@ -192,8 +191,7 @@ $( 'document' ).ready( function(){
 				
 		}
 		
-		if( $( '#peer-dd-ul' ).isActive() )
-			$( '#peer-dd-ul' ).toggle();
+		$( '#peer-btn-group' ).removeClass('open');
 		
 		return false;
 	});

@@ -17,8 +17,8 @@
 
     <li class="pull-right">
         <div class="btn-toolbar" style="display: inline;">
-            <div class="btn-group">
-                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+            <div class="btn-group" id="peer-btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="peer-dd" >
                     <span id="peer-dd-text">All Peerings</span>
                     <span class="caret"></span>
                 </a>
@@ -110,14 +110,14 @@
 
 	    {foreach from=$custs key=y_as item=y}
 
-		    <td id="td-{$x_as}-{$y_as}" class="peering
+		    <td id="td-{$x_as}-{$y_as}" class="col-yasn-{$y_as} peering
 		        {if $y.autsys neq $x.autsys}
     		        {if isset( $sessions.$x_as.peers.$y_as ) and $x.rsclient and $y.rsclient}
-    		            bilateral-rs peered
+    		             peered bilateral-rs
 		            {else if isset( $sessions.$x_as.peers.$y_as )}
-    		            bilateral-only peered
+    		             peered bilateral-only
     		        {else if $x.rsclient and $y.rsclient}
-    		            rs-only peered
+    		             peered rs-only
     	            {else}
     		            not-peered
     		        {/if}
