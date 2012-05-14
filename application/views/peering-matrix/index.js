@@ -17,7 +17,6 @@ jQuery.expr[':'].regex = function(elem, index, match) {
 
 $( 'document' ).ready( function(){
 
-	
 	columnClicked = false;
 	mouseLocked = false;
 	
@@ -35,6 +34,7 @@ $( 'document' ).ready( function(){
 		{
 		    //$(this).parent().addClass( "hover" );
 		    $( "colgroup" ).eq( $(this ).index() ).addClass("hover");
+		    $( '.col-yasn-' + yasn ).addClass( 'hover2' );
 		    
 			$( '#td-name-' + xasn ).addClass( "highlight2" );
 			$( '#td-asn-' + xasn ).addClass( "highlight2" );
@@ -49,6 +49,7 @@ $( 'document' ).ready( function(){
 			{
 				//$("#tbody-pm").find( "tr" ).removeClass( "hover" );
 				$("#table-pm").find( "colgroup" ).removeClass( "hover" );
+			    $( '.col-yasn-' + yasn ).removeClass( 'hover2' );
 				
 				$( '[id|="td-name"]' ).removeClass( 'highlight' );
 				$( '[id|="td-asn"]' ).removeClass( 'highlight' );
@@ -65,7 +66,9 @@ $( 'document' ).ready( function(){
 		      //$(this).parent().removeClass("hover");
 			
             $("colgroup").eq($(this).index()).removeClass("hover");
-		      
+
+		    $( '.col-yasn-' + yasn ).removeClass( 'hover2' );
+
 			$( '#td-name-' + xasn ).removeClass( "highlight2" );
 			$( '#td-asn-' + xasn ).removeClass( "highlight2" );
 			
@@ -137,7 +140,7 @@ $( 'document' ).ready( function(){
 		var i, zoom = 0;
 		for( i = 1; i <= 5; i++ )
 		{
-			if( $( '#td-0-0' ).hasClass( 'zoom' + i  ) )
+			if( $( '#tbody-pm' ).hasClass( 'zoom' + i  ) )
 			{
 				zoom = i;
 				break;
@@ -153,6 +156,46 @@ $( 'document' ).ready( function(){
 			$( '.zoom' + zoom ).removeClass( 'zoom' + zoom ).addClass( 'zoom' + nzoom );
 		}		
 	});
+
+	
+	$( '[id|="peer-filter"]' ).on( "click", function( e ){
+		var filter = this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
+		
+		$( 'td.bilateral-rs' ).removeClass( 'peered' );
+		$( 'td.bilateral-only' ).removeClass( 'peered' );
+		$( 'td.rs-only' ).removeClass( 'peered' );
+		$( 'td.bilateral-only' ).removeClass( 'not-peered' );
+		$( 'td.rs-only' ).removeClass( 'not-peered' );
+		
+		switch( filter ) {
+			case 'all':
+				$( 'td.bilateral-rs' ).addClass( 'peered' );
+				$( 'td.bilateral-only' ).addClass( 'peered' );
+				$( 'td.rs-only' ).addClass( 'peered' );
+				$( '#peer-dd-text' ).html( 'All Peerings' );
+				break;
+				
+			case 'bi':
+				$( 'td.bilateral-rs' ).addClass( 'peered' );
+				$( 'td.bilateral-only' ).addClass( 'peered' );
+				$( 'td.rs-only' ).addClass( 'not-peered' );
+				$( '#peer-dd-text' ).html( 'Bilateral Peerings' );
+				break;
+				
+			case 'rs':
+				$( 'td.bilateral-rs' ).addClass( 'peered' );
+				$( 'td.bilateral-only' ).addClass( 'not-peered' );
+				$( 'td.rs-only' ).addClass( 'peered' );
+				$( '#peer-dd-text' ).html( 'Route Server Peerings' );
+				break;
+				
+		}
+		
+		$( '#peer-btn-group' ).removeClass('open');
+		
+		return false;
+	});
+	
 	
 });
 

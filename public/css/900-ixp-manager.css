@@ -245,22 +245,41 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     border-bottom-width: 2px;
 }
 
+
 .pm-table td.peered {
-	background-color: #00cc00;
+    background-color: #00cc00;
     width: 10px;
 }
 
-.pm-table td.notpeered {
+.pm-table td.not-peered {
     background-color: #d63030;
     width: 10px;
 }
 
+.pm-table td.bilateral-rs {
+    width: 10px;
+}
 
-.pm-table tr.hover, .pm-table colgroup.hover { 
+.pm-table td.rs-only {
+    width: 10px;
+}
+
+.pm-table td.bilateral-only {
+    width: 10px;
+}
+
+
+.pm-table tr.hover, .pm-table colgroup.hover, .pm-table td.hover { 
 	background-color: #eee;
     border-left: 2px solid #555;
     border-right: 2px solid #555;
 }
+
+.pm-table td.hover2 { 
+    border-left: 1px solid #555;
+    border-right: 1px solid #555;
+}
+
 
 .pm-table th.highlight, .pm-table td.highlight { 
     background-color: #fcf6cf;
