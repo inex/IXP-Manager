@@ -143,6 +143,44 @@
 
 </table>
 
+<div class="row-fluid" style="margin-top: 40px;">
+
+    <div class="span2">&nbsp;</div>
+    
+    <div class="span8">
+
+        <div class="well">
+        
+            <h3>Notes on the Peering Matrix</h3>
+            
+            <ul>
+                <li>
+                    Clicking the AS number in the table header will isolate that column. Clicking individual
+                    cells in the body will freeze the dynamic highlighting.
+                </li>
+                <li>
+                    Where an INEX member is not listed on this peering matrix, it is because they are
+                    currently not actively peering at INEX, or because they have opted out of presenting
+                    their peering information in this database.
+                </li>
+                <li>
+                    This peering matrix is based on Netflow traffic accounting data from the INEX peering
+                    LANs and route server BGP peerings.
+                </li>
+                <li>
+                    This peering matrix only detects if there is bidirectional TCP flow between routers at
+                    INEX. It cannot detect whether there are actually prefixes swapped betwen routers.
+                </li>
+            </ul>
+        
+        </div>
+
+    </div>
+    
+    <div class="span2">&nbsp;</div>
+    
+</div>
+
 {if isset( $user.privs ) and $user.privs eq 3}
 </div>
 {/if}
