@@ -17,6 +17,17 @@
 
     <li class="pull-right">
         <div class="btn-toolbar" style="display: inline;">
+            <div class="btn-group" id="peer-btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="peer-dd" >
+                    <span id="peer-dd-text">All Peerings</span>
+                    <span class="caret"></span>
+                </a>
+                <ul id="peer-dd-ul" class="dropdown-menu">
+                    <li> <a id="peer-filter-all" >All Peerings</a> </li>
+                    <li> <a id="peer-filter-bi">Bilateral Peerings</a> </li>
+                    <li> <a id="peer-filter-rs">Route Server Peerings</a> </li>
+                </ul>
+            </div>
             <div class="btn-group">
                 <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
                     {$lans.$lan}
@@ -99,16 +110,19 @@
 
 	    {foreach from=$custs key=y_as item=y}
 
-		    <td id="td-{$x_as}-{$y_as}" class="peering
-		        {if $y.autsys eq $x.autsys}
-		        {else if isset( $sessions.$x_as.peers.$y_as )}
-		            peered
-		        {else if $x.rsclient and $y.rsclient}
-		            peered
-	            {else}
-		            notpeered
+		    <td id="td-{$x_as}-{$y_as}" class="col-yasn-{$y_as} peering
+		        {if $y.autsys neq $x.autsys}
+    		        {if isset( $sessions.$x_as.peers.$y_as ) and $x.rsclient and $y.rsclient}
+    		             peered bilateral-rs
+		            {else if isset( $sessions.$x_as.peers.$y_as )}
+    		             peered bilateral-only
+    		        {else if $x.rsclient and $y.rsclient}
+    		             peered rs-only
+    	            {else}
+    		            not-peered
+    		        {/if}
 		        {/if}
-		         zoom3">
+		        zoom3">
 		    </td>
 
         {assign var=inner value=$inner+1}
