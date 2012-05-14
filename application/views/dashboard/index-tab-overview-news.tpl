@@ -7,7 +7,12 @@
 
         <ul>
             <li>
-                You can now <strong>manage your mailing list subscriptions</strong> via
+                <strong>Peering matrices are now working again - with added IPv6 support - and lots
+                of new bells and whistles.
+                <a href="{genUrl controller="peering-matrix"}">Check them out here</a>.</strong>
+            </li>
+            <li>
+                You can now manage your mailing list subscriptions via
                 your <a href="{genUrl controller="profile"}">profile page</a>.
             </li>
             <li>
@@ -23,7 +28,6 @@
                 and <a href="{genUrl controller="dashboard" action="weathermap" id=2}">LAN 2</a> showing inter-PoP
                 trunk untilisation and other information based on feedback from members.
             </li>
-            <li> <a href="{genUrl controller="dashboard" action="static" page="fees"}">Fees and charges</a> updated for 2012. </li>
             
         </ul>
         
