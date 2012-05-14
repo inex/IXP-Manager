@@ -1,5 +1,6 @@
 
 sessions = {$jsessions};
+
 custs = {$jcusts};
 
 jQuery.expr[':'].regex = function(elem, index, match) {

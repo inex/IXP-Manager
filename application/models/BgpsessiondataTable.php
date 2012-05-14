@@ -49,13 +49,23 @@ class BgpsessiondataTable extends Doctrine_Table
                         vlid.virtualinterfaceid, vid.custid,
                         cd.shortname, cd.name, cd.autsys,
                         COUNT( bs.packetcount ) AS packetcount' ) //, MAX( bs.timestamp ) AS ts' )
-                ->from( 'Bgpsessiondata bs' )
-                ->leftJoin( 'bs.Src_Vlaninterface vlis' )
-                ->leftJoin( 'vlis.Virtualinterface vis' )
-                ->leftJoin( 'vis.Cust cs' )
-                ->leftJoin( 'bs.Dst_Vlaninterface vlid' )
-                ->leftJoin( 'vlid.Virtualinterface vid' )
-                ->leftJoin( 'vid.Cust cd' );
+                ->from( 'Bgpsessiondata bs' );
+        
+        if( $protocol == 4 )
+        {
+            $q->leftJoin( 'bs.Src_Vlaninterface vlis' )
+              ->leftJoin( 'bs.Dst_Vlaninterface vlid' );
+        }
+        else
+        {
+            $q->leftJoin( 'bs.Src_Vlan6interface vlis' )
+              ->leftJoin( 'bs.Dst_Vlan6interface vlid' );
+        }
+
+        $q->leftJoin( 'vlis.Virtualinterface vis' )
+            ->leftJoin( 'vis.Cust cs' )
+            ->leftJoin( 'vlid.Virtualinterface vid' )
+            ->leftJoin( 'vid.Cust cd' );
 
         $q->andWhere( 'bs.vlan = ?', $vlan );
         $q->andWhere( 'bs.protocol = ?', $protocol );
@@ -73,9 +83,17 @@ class BgpsessiondataTable extends Doctrine_Table
 
         foreach( $peers as $p )
         {
-            $s = $p['Src_Vlaninterface']['Virtualinterface']['Cust'];
-            $d = $p['Dst_Vlaninterface']['Virtualinterface']['Cust'];
-
+            if( $protocol == 4 )
+            {
+                $s = $p['Src_Vlaninterface']['Virtualinterface']['Cust'];
+                $d = $p['Dst_Vlaninterface']['Virtualinterface']['Cust'];
+            }
+            else
+            {
+                $s = $p['Src_Vlan6interface']['Virtualinterface']['Cust'];
+                $d = $p['Dst_Vlan6interface']['Virtualinterface']['Cust'];
+            }
+                
             if( !isset( $apeers[$s['autsys']] ) )
             {
                 $apeers[$s['autsys']] = array();
