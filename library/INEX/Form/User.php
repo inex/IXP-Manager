@@ -149,7 +149,7 @@ class INEX_Form_User extends INEX_Form
         $this->addElement( $cancel );
 
         $submit = $this->createElement( 'submit', 'submit' );
-        $submit->setLabel( 'Add' );
+        $submit->setLabel( $isEdit ? 'Save' : 'Add' );
         $this->addElement( $submit );
     }
 
