@@ -129,7 +129,15 @@
 
 <hr width="95%"></hr>
 
-<h3>Connection {counter name=numconnections}</h3>
+<h3>
+    Connection {counter name=numconnections}
+    <small>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Infrastructure {if $connection.Vlaninterface.0.Vlan.number % 10 == 0}1{else}2{/if}
+        {if count( $connection.Physicalinterface ) > 1}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
+        {/if}
+    </small>
+</h3>
 
 <table id="myDetailsTable">
 
@@ -138,7 +146,11 @@
     <td width="200" id="value">{$connection.Physicalinterface.0.Switchport.SwitchTable.name}.inex.ie</td>
     <td width="40"></td>
     <td width="200"><strong>Switch Port:</strong></td>
-    <td width="200" id="value">{$connection.Physicalinterface.0.Switchport.name}</td>
+    <td width="200" id="value">
+        {foreach from=$connection.Physicalinterface item=pi}
+            {$pi.Switchport.name}<br />
+        {/foreach}
+    </td>
 </tr>
 
 <tr>

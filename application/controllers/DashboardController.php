@@ -266,7 +266,7 @@ class DashboardController extends INEX_Controller_Action
             ->leftJoin( 's.Cabinet cb' )
             ->leftJoin( 'cb.Location l' )
             ->where( 'c.id = ?', (int)$custid )
-            ->orderBy( 'pi.monitorindex' )
+            ->orderBy( 'v.number' )
             ->execute()
             ->toArray( true );
 
