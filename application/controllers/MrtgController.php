@@ -172,7 +172,7 @@ class MrtgController extends Zend_Controller_Action
 
         if( $stat === false )
         {
-            $this->logger->err( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
+            $this->logger->debug( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
             echo readfile(
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
