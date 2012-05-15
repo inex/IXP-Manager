@@ -5,12 +5,15 @@
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
     <li>
-        <a href="{genUrl contoller="customer" action="list"}">Customers</a> <span class="divider">/</span>
+        <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="customer" action="dashboard" id=$customer.id}">{$customer.name}</a> <span class="divider">/</span>
     </li>
     <li class="active">
         Send Welcome Email
     </li>
-</ul>       
+</ul>
 
 {include file="message.tpl"}
 
