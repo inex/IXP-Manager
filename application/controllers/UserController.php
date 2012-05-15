@@ -101,12 +101,23 @@ class UserController extends INEX_Controller_FrontEnd
         if( $this->user['privs'] == User::AUTH_SUPERUSER )
             $form->getElement( 'username' )->removeValidator( 'stringLength' );
         
+        if( $cid = $this->_getParam( 'custid', false ) )
+            $form->getElement( 'custid' )->setValue( $cid );
+        
         // propose a random password to help the user out
         if( !$isEdit )
             $form->getElement( 'password' )->setValue( INEX_String::random() );
         
     }
 
+    protected function _addEditSetReturnOnSuccess( $form, $object )
+    {
+        if( $this->user['privs'] == User::AUTH_SUPERUSER )
+            return "customer/dashboard/id/{$object['custid']}";
+        else
+            return 'user';
+    }
+    
     /**
      * Additional checks when a new object is being added.
      */
