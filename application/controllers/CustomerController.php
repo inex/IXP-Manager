@@ -391,7 +391,7 @@ END_JSON;
                 {
                     $this->getLogger()->info( "Welcome email sent for {$customer['name']}" );
                     $this->view->message = new INEX_Message( "Welcome email successfully sent to {$customer['name']}", "success" );
-                    $this->_forward( 'list' );
+                    $this->_forward( 'dashboard' );
                     return true;
                 }
                 else

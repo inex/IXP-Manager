@@ -12,6 +12,19 @@
     </li>
     <li class="pull-right">
         <div class="btn-toolbar" style="display: inline;">
+        
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="icon-cog"></i>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{genUrl controller="customer" action="send-welcome-email" id=$acust.id}">Send Welcome Email...</a>
+                    </li>
+                </ul>
+            </div>
+        
             <div class="btn-group">
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="edit" id=$acust.id}"><i class="icon-pencil"></i></a>
                 <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller='customer' action="delete" id=$acust.id}"><i class="icon-trash"></i></a>
