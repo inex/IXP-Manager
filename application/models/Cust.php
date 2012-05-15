@@ -161,6 +161,20 @@ class Cust extends BaseCust
     }
 
     /**
+     * Return the first found and active CUSTADMIN user (or false)
+     */
+    public function getCustAdminUser()
+    {
+        foreach( $this['User'] as $u )
+        {
+            if( $u['privs'] == 2 && $u['disabled'] == 0 )
+                return $u;
+        }
+        
+        return false;
+    }
+
+    /**
      * Method to check if the customer is a route server client.
      *
      * @return bool True if the customer is a route server client

@@ -367,6 +367,24 @@ class INEX_Controller_Action extends Zend_Controller_Action
     }
     
     
+    /**
+     * Construct an IXP URL
+     */
+    function genUrl( $controller, $action = 'index', $params )
+    {
+        $url = Zend_Controller_Front::getInstance()->getBaseUrl();
+            
+        $url .= "/{$controller}/{$action}";
+                
+        foreach( $params as $var => $value )
+        {
+            if( $var != 'controller' && $var != 'action' )
+                $url .= "/$var/$value";
+        }
+        
+        return $url;
+    }
+        
     
     
 }

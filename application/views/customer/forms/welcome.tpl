@@ -1,7 +1,7 @@
 
 <form class="form-horizontal" enctype="application/x-www-form-urlencoded"
         accept-charset="UTF-8" method="post" horizontal="1"
-        {if $isEdit}
+        {if isset( $isEdit ) and $isEdit}
             action="{genUrl controller="customer" action="edit" id=$object.id}"
         {else}
             action="{genUrl controller="customer" action="add"}"
