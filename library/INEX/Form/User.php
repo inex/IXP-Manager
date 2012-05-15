@@ -76,6 +76,7 @@ class INEX_Form_User extends INEX_Form
         $privileges->setMultiOptions( User::$PRIVILEGES )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Privileges' )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setErrorMessages( array( 'Please select the users privilege level' ) );
 
         $this->addElement( $privileges );
@@ -125,6 +126,7 @@ class INEX_Form_User extends INEX_Form
         $cust->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( 'Customer' )
+            ->setAttrib( 'class', 'chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( 'Please select a customer' ) );
 
