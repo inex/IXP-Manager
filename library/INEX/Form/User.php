@@ -94,10 +94,11 @@ class INEX_Form_User extends INEX_Form
         $this->addElement( $email );
 
         $mobile = $this->createElement( 'text', 'authorisedMobile' );
-        $mobile->addValidator( 'stringLength', false, array( 1, 30 ) )
+        $mobile->addValidator( 'stringLength', false, array( 0, 30 ) )
                ->addValidator( 'regex', true, array( '/^[1-9]+[0-9]*$/' ) )
-               ->setRequired( true )
-               ->setLabel( 'Authorised Mobile (in the format: 353861234567)' )
+               ->setRequired( false )
+               ->setLabel( 'Mobile' )
+               ->setAttrib( 'placeholder', '353861234567' )
                ->addFilter( 'StringTrim' )
                ->addFilter( new INEX_Filter_StripSlashes() );
 
