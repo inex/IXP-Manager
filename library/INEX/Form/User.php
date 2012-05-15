@@ -76,6 +76,7 @@ class INEX_Form_User extends INEX_Form
         $privileges->setMultiOptions( User::$PRIVILEGES )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Privileges' )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setErrorMessages( array( 'Please select the users privilege level' ) );
 
         $this->addElement( $privileges );
@@ -94,10 +95,11 @@ class INEX_Form_User extends INEX_Form
         $this->addElement( $email );
 
         $mobile = $this->createElement( 'text', 'authorisedMobile' );
-        $mobile->addValidator( 'stringLength', false, array( 1, 30 ) )
+        $mobile->addValidator( 'stringLength', false, array( 0, 30 ) )
                ->addValidator( 'regex', true, array( '/^[1-9]+[0-9]*$/' ) )
-               ->setRequired( true )
-               ->setLabel( 'Authorised Mobile (in the format: 353861234567)' )
+               ->setRequired( false )
+               ->setLabel( 'Mobile' )
+               ->setAttrib( 'placeholder', '353861234567' )
                ->addFilter( 'StringTrim' )
                ->addFilter( new INEX_Filter_StripSlashes() );
 
@@ -124,6 +126,7 @@ class INEX_Form_User extends INEX_Form
         $cust->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( 'Customer' )
+            ->setAttrib( 'class', 'chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( 'Please select a customer' ) );
 
@@ -148,7 +151,7 @@ class INEX_Form_User extends INEX_Form
         $this->addElement( $cancel );
 
         $submit = $this->createElement( 'submit', 'submit' );
-        $submit->setLabel( 'Add' );
+        $submit->setLabel( $isEdit ? 'Save' : 'Add' );
         $this->addElement( $submit );
     }
 

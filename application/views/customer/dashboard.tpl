@@ -12,6 +12,19 @@
     </li>
     <li class="pull-right">
         <div class="btn-toolbar" style="display: inline;">
+        
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="icon-cog"></i>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{genUrl controller="customer" action="send-welcome-email" id=$acust.id}">Send Welcome Email...</a>
+                    </li>
+                </ul>
+            </div>
+        
             <div class="btn-group">
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="edit" id=$acust.id}"><i class="icon-pencil"></i></a>
                 <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller='customer' action="delete" id=$acust.id}"><i class="icon-trash"></i></a>
@@ -194,7 +207,7 @@
             
             
             <br /><br />
-            <h3>User Accounts</h3>
+            <h3>User Accounts <a class="btn btn-mini" href="{genUrl controller='user' action="add" custid=$acust.id}"><i class="icon-plus"></i></a></h3>
             
             {if count( $acust->User )}
             
@@ -217,12 +230,16 @@
                                     <div class="btn-group">
                                         <a class="btn btn-mini" href="{genUrl controller='user' action="edit" id=$u.id}"><i class="icon-pencil"></i></a>
                                         <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this user?' );" href="{genUrl controller='user' action="delete" id=$u.id}"><i class="icon-trash"></i></a>
+                                        <a class="btn btn-mini" href="{genUrl controller='auth' action="switch" id=$u.id}" rel="tooltip" title="Log in as this user..."><i class="icon-user"></i></a>
+                                        
+                                        {*
                                         <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <a href="{genUrl controller='auth' action='switch' id=$u.id}">Log in as...</a>
                                             </li>
                                         </ul>
+                                        *}
                                     </div>
                                 </td>
                             </tr>
@@ -238,7 +255,7 @@
                 
                             
             <br /><br />
-            <h3>Contacts</h3>
+            <h3>Contacts <a class="btn btn-mini" href="{genUrl controller='contact' action="add" custid=$acust.id}"><i class="icon-plus"></i></a></h3>
 
             
             {if count( $acust->Contact )}

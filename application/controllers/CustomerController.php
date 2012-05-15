@@ -303,7 +303,7 @@ END_JSON;
             return( $this->_forward( 'list' ) );
         }
         
-        $this->view->custadmin = $customer->getCustAdminUser();        
+        $this->view->custadmin = $customer->getCustAdminUser();
 
         $cancelLocation = 'http' . ( isset( $_SERVER['HTTPS'] ) ? 's' : '' ) . '://'
             . $_SERVER['SERVER_NAME'] . Zend_Controller_Front::getInstance()->getBaseUrl()
@@ -391,7 +391,7 @@ END_JSON;
                 {
                     $this->getLogger()->info( "Welcome email sent for {$customer['name']}" );
                     $this->view->message = new INEX_Message( "Welcome email successfully sent to {$customer['name']}", "success" );
-                    $this->_forward( 'list' );
+                    $this->_forward( 'dashboard' );
                     return true;
                 }
                 else
@@ -575,7 +575,13 @@ END_JSON;
     }
 
 
-
+    /**
+     * Set a custom return from an add / edit
+     */
+    public function _addEditSetReturnOnSuccess( $form, $object )
+    {
+        return 'customer/dashboard/id/' . $object['id'];
+    }
 
     /**
      * The Customer Dashboard

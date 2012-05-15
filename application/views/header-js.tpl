@@ -1,5 +1,5 @@
 {if isset( $config.use_minified_js ) and $config.use_minified_js}
-    <script type="text/javascript" src="{genUrl}/js/min.bundle-v17.js"></script>
+    <script type="text/javascript" src="{genUrl}/js/min.bundle-v18.js"></script>
 {else}
     <script type="text/javascript" src="{genUrl}/js/200-jquery-1.7.js"></script>
     <script type="text/javascript" src="{genUrl}/js/210-jquery-ui-1.8.16.custom.js"></script>

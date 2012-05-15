@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -98,6 +98,31 @@ class ContactController extends INEX_Controller_FrontEnd
         parent::feInit();
     }
 
-}
+    
+    
+    protected function formPrevalidate( $form, $isEdit, $object )
+    {
+        if( $cid = $this->_getParam( 'custid', false ) )
+        {
+            $form->getElement( 'custid' )->setValue( $cid );
+            $form->getElement( 'cancel' )->setAttrib( 'onClick', "parent.location='"
+                . $this->genUrl( 'customer', 'dashboard', array( 'id' => $cid ) ) . "'"
+            );
+        }
+        else if( $isEdit )
+        {
+            $form->getElement( 'cancel' )->setAttrib( 'onClick', "parent.location='"
+                . $this->genUrl( 'customer', 'dashboard', array( 'id' => $object['custid'] ) ) . "'"
+            );
+        }
+    }
 
-?>
+    
+    protected function _addEditSetReturnOnSuccess( $form, $object )
+    {
+        if( $this->user['privs'] == User::AUTH_SUPERUSER )
+            return "customer/dashboard/id/{$object['custid']}";
+        else
+            return 'contact';
+    }
+}
