@@ -100,6 +100,11 @@ class UserController extends INEX_Controller_FrontEnd
         // If we're a super user, then the length of the username is up to us
         if( $this->user['privs'] == User::AUTH_SUPERUSER )
             $form->getElement( 'username' )->removeValidator( 'stringLength' );
+        
+        // propose a random password to help the user out
+        if( !$isEdit )
+            $form->getElement( 'password' )->setValue( INEX_String::random() );
+        
     }
 
     /**
