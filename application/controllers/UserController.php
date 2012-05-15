@@ -102,8 +102,19 @@ class UserController extends INEX_Controller_FrontEnd
             $form->getElement( 'username' )->removeValidator( 'stringLength' );
         
         if( $cid = $this->_getParam( 'custid', false ) )
+        {
             $form->getElement( 'custid' )->setValue( $cid );
-        
+            $form->getElement( 'cancel' )->setAttrib( 'onClick', "parent.location='"
+                . $this->genUrl( 'customer', 'dashboard', array( 'id' => $cid ) ) . "'"
+            );
+        }
+        else if( $isEdit )
+        {
+            $form->getElement( 'cancel' )->setAttrib( 'onClick', "parent.location='"
+                . $this->genUrl( 'customer', 'dashboard', array( 'id' => $object['custid'] ) ) . "'"
+            );
+        }
+            
         // propose a random password to help the user out
         if( !$isEdit )
             $form->getElement( 'password' )->setValue( INEX_String::random() );
