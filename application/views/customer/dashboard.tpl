@@ -255,7 +255,7 @@
                 
                             
             <br /><br />
-            <h3>Contacts</h3>
+            <h3>Contacts <a class="btn btn-mini" href="{genUrl controller='contact' action="add" custid=$acust.id}"><i class="icon-plus"></i></a></h3>
 
             
             {if count( $acust->Contact )}
