@@ -13,7 +13,7 @@ Connection Details
 
 You have opted to connect to INEX using {$connections|@count} Ethernet ports.
 
-INEX operates multiple peering LANs (e.g. our primary LANs, dedicated VoIP peering LANs, etc). Unless you have been advised otherwise, you have been assigned an untagged port on the primary peering LAN(s). Please contact us for more information on the other LANs.
+Unless you have been advised otherwise, you have been assigned an untagged port on the primary peering LAN(s).
 
 We have assigned the following IP addresses and switch-ports for your exclusive use:
 
@@ -47,6 +47,27 @@ Your Input
 
 As a matter of policy, INEX hard-wires all switch ports to a specific speed and duplex setting.  Should you require a different duplex setting to the one specified above, or should you require your reverse DNS hostnames changed for either IPv4 or IPv6, please contact operations@inex.ie
 
+**If you are connecting to INEX via a switch using UTP, please ensure to use a cross over cable on your end.**
+
+
+Member Portal :: IXP Manager
+============================
+
+INEX provides a portal for members which provides traffic graphs for your ports, the ability to self-provision some services, the contact and peering details of all other members, a Peering Manager tool, documentation, support information, mailing list subscription management and much more.
+
+Every member is assigned an Administration account with which you then create individual user accounts. The Administration account is only meant for this purpose and as such, all functionality is only available through user accounts.
+
+{if $custadmin}
+We have created your administration account with the username: {$custadmin.username}
+
+The email associated with this is {$custadmin.email}. Please browse to the following page and use the 'Forgotten Password' facility to set a new password for this account.
+
+https://www.inex.ie/ixp/auth/forgotten-password
+{else}
+Please contact us for your account details at operations@inex.ie.
+{/if}
+
+
 
 Route Servers
 =============
@@ -63,11 +84,12 @@ If you don't have any good reasons not to use the route server cluster, you shou
 
 The service is designed to be reliable. It operates on two physical servers, each located in a different data centre. The service is available on all INEX networks (public peering lans #1 and #2, and voip peering lans #1 and #2), on both ipv4 and ipv6.  The route servers also filter inbound routing prefixes based on published RIPE IRR policies, which means that using the route servers for peering is generally much safer than peering directly with other members.
 
+See https://www.inex.ie/ixp/dashboard/rs-info for more information.
 
 Your Input
 ----------
 
-If you wish to use the INEX route server system, please email operations@inex.ie.
+If you wish to use the INEX route server system, please email operations@inex.ie or you can enable the sessions yourself via the IXP Manager.
 
 
 Hosting Routers in the INEX Cage
@@ -111,20 +133,17 @@ To encourage co-operation between INEX members, INEX provides mailing list servi
 
 Name:                   tech@inex.ie
 Purpose:                INEX technical discussion
-Subscription URL:       https://www.inex.ie/mailman/listinfo/tech/
 Subscription Policy:    individuals, roles, aliases,
                         no limit per organisation
 Distribution:           private
 
 Name:                   committee@inex.ie
 Purpose:                The INEX Executive Committee
-Subscription URL:       https://www.inex.ie/mailman/listinfo/committee/
 Subscription Policy:    elected committee members only
 Distribution:           private & confidential
 
 Name:                   members@inex.ie
 Purpose:                Non-technical discussions relevant to INEX
-Subscription URL:       https://www.inex.ie/mailman/listinfo/members/
 Subscription Policy:    individuals only, no limit per organisation
 Distribution:           private & confidential
 
@@ -132,7 +151,7 @@ Distribution:           private & confidential
 Your Input
 ----------
 
-Should you wish to subscribe to either or both mailing lists, please use the subscription URLs listed above.  Alternatively, please email operations@inex.ie with any change / addition / removal requests.
+Should you wish to subscribe to either or both mailing lists, please create a user account on the IXP Manager (as explained above) and then browse to the 'Profile' page where you can subscribe to the above and more mailing lists.
 
 ----------
 
@@ -142,7 +161,7 @@ INEX Operations
 
 Technical Operations for INEX are provided by Network Ability Ltd (with additional support from Open Source Solutions Ltd). Technical support contact details for INEX can be found at:
 
-        https://www.inex.ie/members/support
+        https://www.inex.ie/ixp/dashboard/static/page/support
 
 In general, the best way to contact INEX operations is by email at: operations@inex.ie.  If there is an emergency requiring immediate assistance, please contact one of us on the mobile phones listed on the web page.
 
@@ -152,9 +171,11 @@ Peering
 
 INEX facilitates peering between its members, but other than the minimum current peering requirements (4 members or 10%, whichever is larger) does not mandate peering with any particular member apart from INEX itself.
 
-You will find a full list of members on the INEX members web page, along with the correct email addresses to use for peering requests.
+You will find a full list of members on the IXP Manager, along with the correct email addresses to use for peering requests.
 
 When emailing other INEX members about peering requests, please include all technical details relevant to the peering session, including your IP address, your AS number, and an estimate of the number of prefixes you intend to announce to that candidate peer.  Several members require written legal contracts to be signed as a part of their peering procedures.  If you require a written contract, please specify this on your peering request; similarly, it may be often useful to indicate your willingness (or otherwise) to sign legal contracts when approaching other members about peering.
+
+The My Peering Manager tool in the IXP Manager will compose mails with the above details for you automatically.
 
 Please note that INEX members are required to reply to peering requests within a reasonable time frame.  If your emails to other INEX members about peering go unanswered, please let us know and we will do what we can.
 
@@ -191,9 +212,9 @@ INEX currently announces two prefixes over IPv4 and one prefix over IPv6 from AS
 NOC Details
 ===========
 
-For the convenience of its members, INEX maintains a list of NOC and peering contact details for its members.  These details are held on a private INEX database, and are available only from the following URL:
+For the convenience of its members, INEX maintains a list of NOC and peering contact details for its members.  These details are held on a private INEX database, and are available only from the IXP Manager on the following URL:
 
-        https://www.inex.ie/members/memberlist
+        https://www.inex.ie/ixp/dashboard/members-details-list
 
 This area of the INEX website is password protected and SSL secured. Passwords are only provided to current INEX members.  This information is considered private and will not be passed on to other third parties by INEX.
 
@@ -256,7 +277,7 @@ interface GigabitEthernetx/x
 
 For further details please see the following URL:
 
-        https://www.inex.ie/members/connectingswitches
+        https://www.inex.ie/ixp/dashboard/static/page/switches
 
 
 Monitoring
@@ -270,7 +291,7 @@ IRC
 
 INEX member staff and other INEX member employees may regularly be seen on irc.inex.ie (port 6697, SSL only), channel #inex-ops. This channel is password protected; the password for the channel may be found on the following web page:
 
-        https://www.inex.ie/members/miscbenefits
+        https://www.inex.ie/ixp/dashboard/static/page/misc-benefits
 
 Although this IRC server is secured with SSL, INEX does not recommend swapping passwords or any other private / confidential information on this facility.
 
@@ -280,13 +301,8 @@ AS112 Service
 
 For the benefit of its members, INEX hosts an AS112 nameserver which answers bogus requests to private IP address space.  This service is available as a regular peering host on both INEX peering LANs.  Its IP addreses are: 193.242.111.6 and 194.88.240.6.  Should you wish to peer directly with the AS112 server, please contact INEX operations, and we can set up a peering session on the unit.  Otherwise, AS112 is also visible on the INEX route server system.
 
+Please see https://www.inex.ie/ixp/dashboard/as112 for more details and further explanation.
 
-Access to INEX Web Site Members Area
-====================================
-
-INEX provides usernames and passwords to enable access to the members area of the INEX web site.  Your username is: "{$custdetails.shortname}".
-
-Please contact operations@inex.ie to securely obtain your password.  Our preferred communications medium for exchanging passwords is PGP email. However, if you do not support PGP, then SMS may also be used.
 
 
 PeeringDB
