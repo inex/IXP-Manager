@@ -389,11 +389,25 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             $loc = $this->genUrl( 'virtual-interface', 'list' );
         }
         
+        if( !$this->_getParam( 'commit', false ) )
+        {
+            // make BGP MD5 easy
+            $f->getElement( 'ipv4bgpmd5secret' )->setValue( INEX_String::random() );
+            $f->getElement( 'ipv6bgpmd5secret' )->setValue(  $f->getElement( 'ipv4bgpmd5secret' )->getValue() );
+            
+            if( $cid = $this->_getParam( 'custid', false ) )
+            {
+                $cust = Doctrine_Core::getTable( 'Cust' )->find( $cid );
+                $f->getElement( 'maxbgpprefix' )->setValue( $cust['maxprefixes'] );
+            }
+        }
+        
+        
         $f->getElement( 'cancel' )->setAttrib( 'onClick',
                 "parent.location='{$loc}'"
         );
 
-        $this->view->form   = $f->render( $this->view );
+        $this->view->form   = $f; //->render( $this->view );
 
         $this->view->display( 'vlan-interface' . DIRECTORY_SEPARATOR . 'quick-add.tpl' );
         

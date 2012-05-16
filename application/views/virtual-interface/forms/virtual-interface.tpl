@@ -46,10 +46,10 @@
 
 <div class="form-actions">
     {if isset( $cust )}
-        <a class="btn" href="{genUrl controller='customer' action='dashboard' id=$cust.id}">Cancel</a>
+        <a class="btn" href="{genUrl controller='customer' action='dashboard' id=$cust.id}">Return</a>
     {else}
         <a class="btn btn-success" href="{genUrl controller='vlan-interface' action='quick-add'}">Wizard Add</a>
-        <a class="btn" href="{genUrl controller="virtual-interface" action="list"}">Cancel</a>
+        <a class="btn" href="{genUrl controller="virtual-interface" action="list"}">Return</a>
     {/if}
 
     <button class="btn" id="btn-advanced-options">Advanced Options</button>

@@ -26,10 +26,11 @@ $( function()
             	} else {
                     tt_chosenSet( "#switchportid", options );
             	}
-            	
-                $("#switch_id").removeAttr( 'disabled' );
             });
         }
+        
+        $("#switch_id").removeAttr( 'disabled' );
+        
     });
 });
 
