@@ -35,11 +35,15 @@ class INEX_Form extends Twitter_Form
      * @var array
      */
     public $onEditSkipIfBlank = null;
+    
+    public $isEdit = false;
 
     public function __construct( $options = null, $isEdit = false )
     {
         parent::__construct( $options );
 
+        $this->isEdit = $isEdit;
+        
         $this->setAttrib( 'accept-charset', 'UTF-8' );
         $this->setMethod( 'post' );
         $this->setAttrib( "horizontal", true );

@@ -209,9 +209,24 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             );
         }
 
-        if( $this->getRequest()->getParam( 'virtualinterfaceid' ) !== null )
+        if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
         {
-            $form->getElement( 'virtualinterfaceid' )->setValue( $this->getRequest()->getParam( 'virtualinterfaceid' ) );
+            $form->getElement( 'virtualinterfaceid' )->setValue( $vid );
+            
+            if( !$form->isEdit )
+            {
+                // make BGP MD5 easy
+                $form->getElement( 'ipv4bgpmd5secret' )->setValue( INEX_String::random() );
+                $form->getElement( 'ipv6bgpmd5secret' )->setValue(  $form->getElement( 'ipv4bgpmd5secret' )->getValue() );
+                
+                $vint = Doctrine_Core::getTable( 'Virtualinterface' )->find( $vid );
+                $form->getElement( 'maxbgpprefix' )->setValue( $vint['Cust']['maxprefixes'] );
+            }
+        }
+        else
+        {
+            $this->session->message = new INEX_Message( 'Uexpected error - no virtual interface available', "error" );
+            $this->_redirect( '' );
         }
     }
     
