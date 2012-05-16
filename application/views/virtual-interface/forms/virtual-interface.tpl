@@ -45,10 +45,15 @@
 
 
 <div class="form-actions">
+    {if isset( $cust )}
+        <a class="btn" href="{genUrl controller='customer' action='dashboard' id=$cust.id}">Cancel</a>
+    {else}
+        <a class="btn btn-success" href="{genUrl controller='vlan-interface' action='quick-add'}">Wizard Add</a>
+        <a class="btn" href="{genUrl controller="virtual-interface" action="list"}">Cancel</a>
+    {/if}
 
-    <a class="btn" href="{genUrl controller="customer" action="list"}">Cancel</a>
     <button class="btn" id="btn-advanced-options">Advanced Options</button>
-    <input type="submit" name="commit" id="commit" value="{if $isEdit}Save Changes{else}Add New Customer{/if}" class="btn btn-primary">
+    <input type="submit" name="commit" id="commit" value="{if $isEdit}Save Changes{else}Add{/if}" class="btn btn-primary">
 
 </div>
 

@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -304,7 +304,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             do
             {
                 // check customer information
-                if( !( $c = Doctrine_Core::getTable( 'Cust' )->find( $f->getValue( 'custid' ) ) ) ) 
+                if( !( $c = Doctrine_Core::getTable( 'Cust' )->find( $f->getValue( 'custid' ) ) ) )
                 {
                     $f->getElement( 'custid' )->addError( 'Invalid customer' );
                     break;
@@ -361,17 +361,28 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
                 $this->_redirect( 'virtual-interface/edit/id/' . $vi['id'] );
                 
             }while( false );
+            
+            $loc = $this->genUrl( 'customer', 'dashboard', array( 'id' => $f->getElement( 'custid' )->getValue() ) );
         }
+        else if( $this->_getParam( 'commit', false ) === false && $cid = $this->_getParam( 'custid', false ) )
+        {
+            $f->getElement( 'custid' )->setValue( $cid );
+            $loc = $this->genUrl( 'customer', 'dashboard', array( 'id' => $cid ) );
+        }
+        else
+        {
+            $loc = $this->genUrl( 'virtual-interface', 'list' );
+        }
+        
+        $f->getElement( 'cancel' )->setAttrib( 'onClick',
+                "parent.location='{$loc}'"
+        );
 
         $this->view->form   = $f->render( $this->view );
 
         $this->view->display( 'vlan-interface' . DIRECTORY_SEPARATOR . 'quick-add.tpl' );
         
     }
-
-    
-    
     
 }
 
-?>
