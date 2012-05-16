@@ -201,5 +201,11 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
         
         return 'physical-interface/list';
     }
+    
+    protected function _addEditSetReturnOnSuccess( $form, $object )
+    {
+        return "virtual-interface/edit/id/{$object['virtualinterfaceid']}";
+    }
+    
 }
 

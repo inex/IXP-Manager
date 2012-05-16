@@ -392,5 +392,10 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
             return 'vlan-interface/list';
     }
     
+    protected function _addEditSetReturnOnSuccess( $form, $object )
+    {
+        return "virtual-interface/edit/id/{$object['virtualinterfaceid']}";
+    }
+    
 }
 
