@@ -64,7 +64,7 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        <a class="btn btn-mini" href="{genUrl controller='physical-interface' action="edit"   id=$int.id}"><i class="icon-pencil"></i></a>
+                        <a class="btn btn-mini" href="{genUrl controller='physical-interface' action="edit" id=$int.id virtualinterfaceid=$object.id}"><i class="icon-pencil"></i></a>
                         <a data-url="{genUrl controller="physical-interface" action="delete" id=$int.id virtualinterfaceid=$object.id}"
                             class="btn btn-mini" id="pi-object-delete-{$int.id}"><i class="icon-trash"></i></a>
                     </div>
@@ -130,7 +130,7 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action="edit"   id=$int.id}"><i class="icon-pencil"></i></a>
+                            <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action="edit" id=$int.id virtualinterfaceid=$object.id}"><i class="icon-pencil"></i></a>
                             <a data-url="{genUrl controller="vlan-interface" action="delete" id=$int.id virtualinterfaceid=$object.id}"
                                 class="btn btn-mini" id="vi-object-delete-{$int.id}"><i class="icon-trash"></i></a>
                         </div>

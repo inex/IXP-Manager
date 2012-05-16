@@ -207,5 +207,18 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
         return "virtual-interface/edit/id/{$object['virtualinterfaceid']}";
     }
     
+    
+    protected function getForm( $options = null, $isEdit = false )
+    {
+        $formName = "INEX_Form_{$this->frontend['name']}";
+    
+        if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
+            $cancelLocation = $this->genUrl( 'virtual-interface', 'edit', array( 'id' => $vid ) );
+        else
+            $cancelLocation = $this->genUrl( 'physical-interface', 'list' );
+    
+        return new $formName( $options, $isEdit, $cancelLocation );
+    }
+    
 }
 
