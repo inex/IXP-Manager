@@ -25,11 +25,15 @@
 
 {if $isEdit}
 
-<div class="well">
+<div>
 
-    <h3>Physical Interfaces</h3>
+    <h3>
+        Physical Interfaces
+        <a class="btn btn-mini"
+            href="{genUrl controller='physical-interface' action="add" virtualinterfaceid=$object.id}"><i class="icon-plus"></i></a>
+    </h3>
 
-    <table class="table table-striped table-bordered">
+    <table class="table">
 
     <thead>
     <tr>
@@ -37,7 +41,6 @@
         <th>Switch</th>
         <th>Port</th>
         <th>Speed/Duplex</th>
-        <th></th>
         <th></th>
     </tr>
     </thead>
@@ -59,18 +62,10 @@
                 {$int.speed}/{$int.duplex}
             </td>
             <td>
-                <form action="{genUrl controller='physical-interface' action='edit' id=$int.id}" method="post">
-                    <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
-                    <input type="submit" name="submit" class="button" value="edit" />
-                </form>
-            </td>
-            <td>
-                <form action="{genUrl controller='physical-interface' action='delete' id=$int.id}" method="post">
-                    <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
-                    <input type="submit" name="submit" class="button" value="delete"
-                        onClick="return confirm( 'Are you sure you want to delete this tuple?' );"
-                    />
-                </form>
+                <div class="btn-group">
+                    <a class="btn btn-mini" href="{genUrl controller='physical-interface' action="edit"   id=$int.id}"><i class="icon-pencil"></i></a>
+                    <a class="btn btn-mini" id="object-delete-{$int.id}" data-controller="physical-interface"><i class="icon-trash"></i></a>
+                </div>
             </td>
         </tr>
 
@@ -80,31 +75,29 @@
 
     </table>
 
-
-    <form action="{genUrl controller='physical-interface' action='add'}" method="post" style="text-align: right">
-        <input type="submit" name="submit" class="button" value="Add New" />
-        <input type='hidden' name='virtualinterfaceid' value='{$object.id}' />
-        <input type='hidden' name='return' value="{'virtual-interface/edit/id/'|cat:$object.id}" />
-    </form>
-
+    <br /><br />
 </div>
 
 
-<div class="well">
+<div>
 
-    <h3>VLAN Interfaces</h3>
+    <h3>
+        VLAN Interfaces
+        <a class="btn btn-mini"
+            href="{genUrl controller='vlan-interface' action="add" virtualinterfaceid=$object.id}"><i class="icon-plus"></i></a>
+    </h3>
 
-    <table class="table table-striped table-bordered">
+    
+    <table class="table">
 
         <thead>
-        <tr>
-            <th>VLAN Name</th>
-            <th>VLAN ID</th>
-            <th>IPv4 Address</th>
-            <th>IPv6 Address</th>
-            <th></th>
-            <th></th>
-        </tr>
+            <tr>
+                <th>VLAN Name</th>
+                <th>VLAN ID</th>
+                <th>IPv4 Address</th>
+                <th>IPv6 Address</th>
+                <th></th>
+            </tr>
         </thead>
 
         <tbody>
@@ -124,18 +117,10 @@
                     {$int.Ipv6address.address}
                 </td>
                 <td>
-                    <form action="{genUrl controller='vlan-interface' action='edit' id=$int->id}" method="post">
-                        <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
-                        <input type="submit" name="submit" class="button" value="edit" />
-                    </form>
-                </td>
-                <td>
-                    <form action="{genUrl controller='vlan-interface' action='delete' id=$int->id}" method="post">
-                        <input type='hidden' name='return' value="virtual-interface/edit{'/id/'|cat:$object.id}" />
-                        <input type="submit" name="submit" class="button" value="delete"
-                            onClick="return confirm( 'Are you sure you want to delete this tuple?' );"
-                        />
-                    </form>
+                    <div class="btn-group">
+                        <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action="edit"   id=$int.id}"><i class="icon-pencil"></i></a>
+                        <a class="btn btn-mini" id="object-delete-{$int.id}" data-controller="vlan-interface"><i class="icon-trash"></i></a>
+                    </div>
                 </td>
             </tr>
 
@@ -145,16 +130,11 @@
 
         </table>
 
-        <form action="{genUrl controller='vlan-interface' action='add'}" method="post" style="text-align: right">
-            <input type="submit" name="submit" class="button" value="Add New" />
-            <input type='hidden' name='virtualinterfaceid' value='{$object.id}' />
-            <input type='hidden' name='return' value='virtual-interface/edit/id/{$object.id}' />
-        </form>
-
 </div>
 
 {/if}
 
+{include file="confirm-dialog.tpl"}
 
 {include file="footer.tpl"}
 
