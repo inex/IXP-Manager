@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -35,14 +35,24 @@
  */
 class INEX_Form_VirtualInterface extends INEX_Form
 {
-    /**
-     *
-     *
-     */
+
     public function __construct( $options = null, $isEdit = false, $cancelLocation )
     {
         parent::__construct( $options, $isEdit );
 
+        
+        $this->setDecorators(
+            array(
+                array(
+                    'ViewScript',
+                    array(
+                        'viewScript' => 'virtual-interface/forms/virtual-interface.tpl'
+                    )
+                )
+            )
+        );
+        
+        
         ////////////////////////////////////////////////
         // Create and configure elements
         ////////////////////////////////////////////////
@@ -66,6 +76,7 @@ class INEX_Form_VirtualInterface extends INEX_Form
         $cust->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( 'Customer' )
+            ->setAttrib( 'class', 'chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( 'Please select a customer' ) );
         $this->addElement( $cust );
@@ -103,32 +114,31 @@ class INEX_Form_VirtualInterface extends INEX_Form
         $this->addElement( $mtu );
 
 
-
         $trunk = $this->createElement( 'checkbox', 'trunk' );
         $trunk->setLabel( 'Is 802.1q Trunk?' )
             ->setCheckedValue( '1' );
         $this->addElement( $trunk );
 
-        $this->addElement( 'button', 'cancel', 
-            array( 
-            	'label' => 'Cancel', 
-            	'onClick' => "parent.location='" . $cancelLocation . "'" 
-            ) 
-        );
-
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
-
 
         $this->addDisplayGroup(
-        array( 
-        	'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk', 'cancel', 'commit' ),
+            array(
+            	'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk'
+            ),
             'virtualInterfaceDisplayGroup'
         );
             
         $this->getDisplayGroup( 'virtualInterfaceDisplayGroup' )->setLegend( 'Customer Connection Details' );
 
+        
+        $this->addElement( 'button', 'cancel',
+            array(
+            	'label' => 'Cancel',
+            	'onClick' => "parent.location='" . $cancelLocation . "'"
+            )
+        );
+
+        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
     }
 
 }
 
-?>

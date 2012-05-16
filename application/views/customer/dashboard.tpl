@@ -143,7 +143,7 @@
             {if $acust.type neq Cust::TYPE_ASSOCIATE and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
             
                 <br /><br />
-                <h3>Interfaces</h3>
+                <h3>Interfaces <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action="quick-add" custid=$acust.id}"><i class="icon-plus"></i></a></h3>
                 
                 {if count( $connections )}
                 
