@@ -64,7 +64,8 @@
             <td>
                 <div class="btn-group">
                     <a class="btn btn-mini" href="{genUrl controller='physical-interface' action="edit"   id=$int.id}"><i class="icon-pencil"></i></a>
-                    <a class="btn btn-mini" id="object-delete-{$int.id}" data-controller="physical-interface"><i class="icon-trash"></i></a>
+                    <a data-url="{genUrl controller="physical-interface" action="delete" id=$int.id virtualinterfaceid=$object.id}"
+                        class="btn btn-mini" id="pi-object-delete-{$int.id}"><i class="icon-trash"></i></a>
                 </div>
             </td>
         </tr>
@@ -75,7 +76,7 @@
 
     </table>
 
-    <br /><br />
+    <br />
 </div>
 
 
@@ -119,7 +120,8 @@
                 <td>
                     <div class="btn-group">
                         <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action="edit"   id=$int.id}"><i class="icon-pencil"></i></a>
-                        <a class="btn btn-mini" id="object-delete-{$int.id}" data-controller="vlan-interface"><i class="icon-trash"></i></a>
+                        <a data-url="{genUrl controller="vlan-interface" action="delete" id=$int.id virtualinterfaceid=$object.id}"
+                            class="btn btn-mini" id="vi-object-delete-{$int.id}"><i class="icon-trash"></i></a>
                     </div>
                 </td>
             </tr>
@@ -135,6 +137,40 @@
 {/if}
 
 {include file="confirm-dialog.tpl"}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+	$('a[id|="pi-object-delete"]').click( function( event ){
+
+		var id = substr( $( this ).attr( 'id' ), 17 );
+
+		if( $( this ).attr( 'data-url' ) ) {
+		    $( '#modal-confirm-action' ).attr( 'href', $( this ).attr( 'data-url' ) );
+		} else {
+		    $( '#modal-confirm-action' ).attr( 'href', "{genUrl controller=$controller action="delete"}/id/" + id );
+	    }
+		
+		$( "#modal-confirm" ).modal( { 'show': true } );
+	});
+
+	$('a[id|="vi-object-delete"]').click( function( event ){
+
+		var id = substr( $( this ).attr( 'id' ), 17 );
+
+		if( $( this ).attr( 'data-url' ) ) {
+		    $( '#modal-confirm-action' ).attr( 'href', $( this ).attr( 'data-url' ) );
+		} else {
+		    $( '#modal-confirm-action' ).attr( 'href', "{genUrl controller=$controller action="delete"}/id/" + id );
+	    }
+		
+		$( "#modal-confirm" ).modal( { 'show': true } );
+	});
+
+});
+
+</script>
 
 {include file="footer.tpl"}
 

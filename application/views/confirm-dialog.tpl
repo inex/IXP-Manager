@@ -31,9 +31,8 @@ $(document).ready(function() {
 
 		var id = substr( $( this ).attr( 'id' ), 14 );
 
-		if( $( this ).attr( 'data-controller' ) ) {
-			var url = "{genUrl}/" + $( this ).attr( 'data-controller' ) + "/delete/id/" + id;
-		    $( '#modal-confirm-action' ).attr( 'href', url );
+		if( $( this ).attr( 'data-url' ) ) {
+		    $( '#modal-confirm-action' ).attr( 'href', $( this ).attr( 'data-url' ) );
 		} else {
 		    $( '#modal-confirm-action' ).attr( 'href', "{genUrl controller=$controller action="delete"}/id/" + id );
 	    }
