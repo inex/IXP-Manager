@@ -384,5 +384,13 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
         
     }
     
+    protected function _deleteSetReturnOnSuccess()
+    {
+        if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
+            return "virtual-interface/edit/id/{$vid}";
+    
+            return 'vlan-interface/list';
+    }
+    
 }
 
