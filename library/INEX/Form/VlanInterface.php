@@ -39,6 +39,17 @@ class INEX_Form_VlanInterface extends INEX_Form
     public function __construct( $options = null, $isEdit = false, $cancelLocation )
     {
         parent::__construct( $options, $isEdit );
+        
+        $this->setDecorators(
+            array(
+                array(
+                    'ViewScript',
+                    array(
+                        'viewScript' => 'vlan-interface/forms/vlan-interface.tpl'
+                    )
+                )
+            )
+        );
 
         ////////////////////////////////////////////////
         // Create and configure elements
@@ -65,7 +76,7 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $ipv4enabled = $this->createElement( 'checkbox', 'ipv4enabled' );
-        $ipv4enabled->setLabel( 'IPv4 Enabled?' )
+        $ipv4enabled->setLabel( 'IPv4 Enabled' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv4enabled );
 
@@ -102,17 +113,17 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $ipv4canping = $this->createElement( 'checkbox', 'ipv4canping' );
-        $ipv4canping->setLabel( 'IPv4 Can Ping?' )
+        $ipv4canping->setLabel( 'IPv4 Can Ping' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv4canping );
 
         $ipv4monitorrcbgp = $this->createElement( 'checkbox', 'ipv4monitorrcbgp' );
-        $ipv4monitorrcbgp->setLabel( 'IPv4 Monitor RC BGP?' )
+        $ipv4monitorrcbgp->setLabel( 'IPv4 Monitor RC BGP' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv4monitorrcbgp );
 
         $this->addDisplayGroup(
-            array( 'ipv4enabled', 'ipv4addressid', 'ipv4hostname', 'ipv4bgpmd5secret', 'ipv4canping', 'ipv4monitorrcbgp' ),
+            array( 'ipv4addressid', 'ipv4hostname', 'ipv4bgpmd5secret', 'ipv4canping', 'ipv4monitorrcbgp' ),
             'ipv4DisplayGroup'
         );
         $this->getDisplayGroup( 'ipv4DisplayGroup' )->setLegend( 'IPv4 Details' );
@@ -123,7 +134,7 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $ipv6enabled = $this->createElement( 'checkbox', 'ipv6enabled' );
-        $ipv6enabled->setLabel( 'IPv6 Enabled?' )
+        $ipv6enabled->setLabel( 'IPv6 Enabled' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv6enabled );
 
@@ -158,17 +169,17 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $ipv6canping = $this->createElement( 'checkbox', 'ipv6canping' );
-        $ipv6canping->setLabel( 'IPv6 Can Ping?' )
+        $ipv6canping->setLabel( 'IPv6 Can Ping' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv6canping );
 
         $ipv6monitorrcbgp = $this->createElement( 'checkbox', 'ipv6monitorrcbgp' );
-        $ipv6monitorrcbgp->setLabel( 'IPv6 Monitor RC BGP?' )
+        $ipv6monitorrcbgp->setLabel( 'IPv6 Monitor RC BGP' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv6monitorrcbgp );
 
         $this->addDisplayGroup(
-            array( 'ipv6enabled', 'ipv6addressid', 'ipv6hostname', 'ipv6bgpmd5secret', 'ipv6canping', 'ipv6monitorrcbgp' ),
+            array( 'ipv6addressid', 'ipv6hostname', 'ipv6bgpmd5secret', 'ipv6canping', 'ipv6monitorrcbgp' ),
             'ipv6DisplayGroup'
         );
         $this->getDisplayGroup( 'ipv6DisplayGroup' )->setLegend( 'IPv6 Details' );
@@ -179,7 +190,7 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $irrdbfilter = $this->createElement( 'checkbox', 'irrdbfilter' );
-        $irrdbfilter->setLabel( 'Apply IRRDB Filtering?' )
+        $irrdbfilter->setLabel( 'Apply IRRDB Filtering' )
             ->setCheckedValue( '1' );
         $this->addElement( $irrdbfilter );
 
@@ -187,7 +198,7 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $mcastenabled = $this->createElement( 'checkbox', 'mcastenabled' );
-        $mcastenabled->setLabel( 'Multicast Enabled?' )
+        $mcastenabled->setLabel( 'Multicast Enabled' )
             ->setCheckedValue( '1' );
         $this->addElement( $mcastenabled );
 
@@ -205,7 +216,7 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $rsclient = $this->createElement( 'checkbox', 'rsclient' );
-        $rsclient->setLabel( 'Route Server Client?' )
+        $rsclient->setLabel( 'Route Server Client' )
             ->setCheckedValue( '1' );
         $this->addElement( $rsclient );
 
@@ -213,7 +224,7 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $as112client = $this->createElement( 'checkbox', 'as112client' );
-        $as112client->setLabel( 'AS112 Client?' )
+        $as112client->setLabel( 'AS112 Client' )
             ->setCheckedValue( '1' );
         $this->addElement( $as112client );
 
@@ -221,7 +232,7 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
         $busyhost = $this->createElement( 'checkbox', 'busyhost' );
-        $busyhost->setLabel( 'Busy host?' )
+        $busyhost->setLabel( 'Busy host' )
             ->setCheckedValue( '1' );
         $this->addElement( $busyhost );
 

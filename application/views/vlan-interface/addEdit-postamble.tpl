@@ -51,12 +51,37 @@ $( function()
         $("#vlanid").removeAttr( 'disabled' );
         
     });
+
 });
 
 $(document).ready(function(){
 
 	// trigger a change on switch ID to populate ports
 	$("#vlanid").trigger( 'change' );
+
+	$( '#ipv4enabled' ).on( 'click', function( event ){
+
+		if( $( '#ipv4enabled' ).is(':checked') )
+		    $( '#ipv4details' ).slideDown();
+		else
+		    $( '#ipv4details' ).slideUp();
+	});
+	
+	$( '#ipv6enabled' ).on( 'click', function( event ){
+
+		if( $( '#ipv6enabled' ).is(':checked') )
+		    $( '#ipv6details' ).slideDown();
+		else
+		    $( '#ipv6details' ).slideUp();
+	});
+
+	if( $( '#ipv4enabled' ).is(':checked') )
+	    $( '#ipv4details' ).show();
+	
+	if( $( '#ipv6enabled' ).is(':checked') )
+	    $( '#ipv6details' ).show();
+	
+	
 });
 	
 /* ]]> */ </script>
