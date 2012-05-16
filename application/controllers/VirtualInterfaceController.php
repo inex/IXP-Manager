@@ -173,6 +173,9 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
 
         $this->view->vlanInts = $dataQuery2->execute();
 
+        if( count( $this->view->vlanInts ) )
+            $this->view->cust = Doctrine_Core::getTable( 'Cust' )->find( $this->view->vlanInts[0]['Virtualinterface']['custid'] );
+
     }
 
 

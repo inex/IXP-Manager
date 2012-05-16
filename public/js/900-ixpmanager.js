@@ -50,6 +50,12 @@ function tt_chosenClear( id ) {
     $( id ).trigger( "liszt:updated" );
 }
 
+//clear a chosen dropdown with a placeholder
+function tt_chosenClear( id, ph ) {
+    $( id ).html( ph ).val( "" );
+    $( id ).trigger( "liszt:updated" );
+}
+
 
 // set a chosen dropdown
 function tt_chosenSet( id, options, value ) {
