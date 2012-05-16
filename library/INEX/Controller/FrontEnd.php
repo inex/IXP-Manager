@@ -320,6 +320,8 @@ class INEX_Controller_FrontEnd extends INEX_Controller_Action
 
         if( $this->getRequest()->getParam( 'return' ) !== null )
             $this->_redirect( 'http' . ( isset( $_SERVER['HTTPS'] ) ? 's' : '' ) . '://' . $_SERVER['SERVER_NAME'] . $this->getRequest()->getParam( 'return' ) );
+        else if( method_exists( $this, '_deleteSetReturnOnSuccess' ) )
+            $this->_redirect( $this->_deleteSetReturnOnSuccess() );
         else
             return( $this->_forward( 'list' ) );
     }
