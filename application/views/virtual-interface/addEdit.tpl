@@ -4,6 +4,11 @@
     <li>
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
+    {if isset( $cust )}
+        <li>
+            <a href="{genUrl controller='customer' action='dashboard' id=$cust.id}">{$cust.name}</a> <span class="divider">/</span>
+        </li>
+    {/if}
     <li>
         <a href="{genUrl controller='virtual-interface' action='list'}">Virtual Interfaces</a> <span class="divider">/</span>
     </li>
