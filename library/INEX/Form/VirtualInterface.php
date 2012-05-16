@@ -40,6 +40,19 @@ class INEX_Form_VirtualInterface extends INEX_Form
     {
         parent::__construct( $options, $isEdit );
 
+        
+        $this->setDecorators(
+            array(
+                array(
+                    'ViewScript',
+                    array(
+                        'viewScript' => 'virtual-interface/forms/virtual-interface.tpl'
+                    )
+                )
+            )
+        );
+        
+        
         ////////////////////////////////////////////////
         // Create and configure elements
         ////////////////////////////////////////////////
