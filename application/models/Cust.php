@@ -108,6 +108,14 @@ class Cust extends BaseCust
             )
         );
 
+        $this->hasMany(
+            'Virtualinterface',
+            array(
+                'local' => 'id',
+                'foreign' => 'custid'
+            )
+        );
+        
         
         $this->hasOne(
             'Irrdbconfig',
