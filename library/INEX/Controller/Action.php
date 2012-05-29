@@ -299,6 +299,17 @@ class INEX_Controller_Action extends Zend_Controller_Action
     }
 
     /**
+     * Get the customer object
+     *
+     * @return Cust The cust object
+     */
+    protected function getCustomer()
+    {
+        return $this->customer;
+    }
+    
+    
+    /**
      * Get the logger object (and bootstrap it if not already done)
      *
      * @return Zend_Log The log object

@@ -98,4 +98,5 @@ class CustTable extends Doctrine_Table
         return $types;
     }
 
+    
 }
