@@ -10,6 +10,7 @@
  * @property blob $details
  * @property integer $visibility
  * @property date $livedate
+ * @property integer $version
  * @property integer $created_by
  * @property timestamp $created_at
  * 
@@ -59,6 +60,15 @@ abstract class BaseChangeLog extends Doctrine_Record
              ));
         $this->hasColumn('livedate', 'date', null, array(
              'type' => 'date',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => true,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('version', 'integer', 8, array(
+             'type' => 'integer',
+             'length' => 8,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
