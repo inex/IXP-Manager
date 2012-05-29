@@ -16,10 +16,10 @@
         <li class="active">
             <a href="#tab1" data-toggle="tab">Overview</a></li>
         {if $customer->isFullMember()}
-            <li><a href="#tab-peering" data-toggle="tab">Peering</a></li>
             <li><a href="#tab-details" data-toggle="tab">My Details</a></li>
             <li><a href="#tab3" data-toggle="tab">Ports</a></li>
-            <li><a href="{genUrl controller="dashboard" action="statistics"}">Statistics</a></li>
+            <li><a href="{genUrl controller="peering-manager"}">Peering Manager &raquo;</a></li>
+            <li><a href="{genUrl controller="dashboard" action="statistics"}">Statistics &raquo;</a></li>
         {/if}
     </ul>
     
@@ -28,10 +28,6 @@
         <div class="tab-pane active" id="tab1">
             <!-- Overview Tab -->
             {include file="dashboard/index-tab-overview.tpl"}
-        </div>
-
-        <div class="tab-pane" id="tab-peering">
-            {include file="dashboard/index-tab-peering.tpl"}
         </div>
 
         <div class="tab-pane" id="tab-details">

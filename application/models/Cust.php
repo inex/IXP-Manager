@@ -62,11 +62,13 @@ class Cust extends BaseCust
 
     const PEERING_POLICY_OPEN       = 'open';
     const PEERING_POLICY_SELECTIVE  = 'selective';
+    const PEERING_POLICY_MANDATORY  = 'mandatory';
     const PEERING_POLICY_CLOSED     = 'closed';
     
     public static $PEERING_POLICIES = array(
         self::PEERING_POLICY_OPEN       => 'open',
         self::PEERING_POLICY_SELECTIVE  => 'selective',
+        self::PEERING_POLICY_MANDATORY  => 'mandatory',
         self::PEERING_POLICY_CLOSED     => 'closed'
     );
     
@@ -106,6 +108,14 @@ class Cust extends BaseCust
             )
         );
 
+        $this->hasMany(
+            'Virtualinterface',
+            array(
+                'local' => 'id',
+                'foreign' => 'custid'
+            )
+        );
+        
         
         $this->hasOne(
             'Irrdbconfig',
