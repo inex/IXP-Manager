@@ -33,7 +33,7 @@
 	    <td><a href="{genUrl controller="customer" action="dashboard" id=$m.Virtualinterface.Cust.id}">{$m.Virtualinterface.Cust.name}</a></td>
 	    <td>
 	        {foreach $m.Virtualinterface.Physicalinterface as $pi}
-	            <a href="{genUrl controller="virtual-interface" action="edit" id=$vi.id}">{$pi.Switchport.SwitchTable.name} / {$pi.Switchport.name}</a>
+	            <a href="{genUrl controller="virtual-interface" action="edit" id=$m.Virtualinterface.id}">{$pi.Switchport.SwitchTable.name} / {$pi.Switchport.name}</a>
 	            {if not $pi@last}<br />{/if}
 	        {/foreach}
 	    </td>
