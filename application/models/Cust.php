@@ -124,6 +124,23 @@ class Cust extends BaseCust
                 'foreign' => 'id'
             )
         );
+        
+        $this->hasMany(
+            'PeeringManager',
+            array(
+                'local' => 'id',
+                'foreign' => 'custid'
+            )
+        );
+        
+        $this->hasMany(
+            'PeeringManager as PeeringManagerPeer',
+            array(
+                'local' => 'id',
+                'foreign' => 'peerid'
+            )
+        );
+        
     }
 
     /**
