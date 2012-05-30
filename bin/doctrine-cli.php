@@ -34,7 +34,8 @@
  */
 
 
-define('APPLICATION_ENV', 'production');
+require_once( dirname( __FILE__ ) . '/utils.inc' );
+define( 'APPLICATION_ENV', scriptutils_get_application_env() );
 
 define('APPLICATION_PATH', realpath( dirname(__FILE__) . '/../application' ) );
 
