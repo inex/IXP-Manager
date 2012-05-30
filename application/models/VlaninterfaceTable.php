@@ -86,7 +86,7 @@ class VlaninterfaceTable extends Doctrine_Table
     public static function getForPeeringManager()
     {
         $q = Doctrine_Query::create()
-            ->select( 'c.shortname, c.autsys, c.name, c.maxprefixes, c.peeringemail, c.peeringpolicy' )
+            ->select( 'c.shortname, c.autsys, c.name, c.maxprefixes, c.peeringemail, c.peeringpolicy, c.id' )
             ->addSelect( 'vi.id, vli.ipv4enabled, vli.ipv6enabled, vli.rsclient, v.number' )
             ->from( 'Cust c' )
             ->leftJoin( 'c.Virtualinterface vi' )
@@ -105,6 +105,7 @@ class VlaninterfaceTable extends Doctrine_Table
         {
             $custs[ $c['autsys'] ] = array();
             
+            $custs[ $c['autsys'] ]['id']            = $c['id'];
             $custs[ $c['autsys'] ]['name']          = $c['name'];
             $custs[ $c['autsys'] ]['shortname']     = $c['shortname'];
             $custs[ $c['autsys'] ]['autsys']        = $c['autsys'];

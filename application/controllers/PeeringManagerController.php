@@ -80,6 +80,8 @@ class PeeringManagerController extends INEX_Controller_Action
         
         foreach( $custs as $c )
         {
+            $custs[ $c['autsys' ] ]['ispotential'] = false;
+            
             foreach( $vlans as $vlan )
             {
                 if( isset( $me['vlaninterfaces'][$vlan] ) )
@@ -90,13 +92,18 @@ class PeeringManagerController extends INEX_Controller_Action
                         {
                             if( $me['vlaninterfaces'][$vlan][0]["ipv{$proto}enabled"] && $c['vlaninterfaces'][$vlan][0]["ipv{$proto}enabled"] )
                             {
-                                $custs[ $c['autsys'] ][$vlan][$proto] = 0;
-                                
-                                if( $me['vlaninterfaces'][$vlan][0]['rsclient'] && $c['vlaninterfaces'][$vlan][0]['rsclient'] )
-                                    $custs[ $c['autsys'] ][$vlan][$proto] = 1;
-                                
                                 if( in_array( $c['autsys'], $bilat[$vlan][4][$me['autsys']]['peers'] ) )
                                     $custs[ $c['autsys'] ][$vlan][$proto] = 2;
+                                else if( $me['vlaninterfaces'][$vlan][0]['rsclient'] && $c['vlaninterfaces'][$vlan][0]['rsclient'] )
+                                {
+                                    $custs[ $c['autsys'] ][$vlan][$proto] = 1;
+                                    $custs[ $c['autsys' ] ]['ispotential'] = true;
+                                }
+                                else
+                                {
+                                    $custs[ $c['autsys'] ][$vlan][$proto] = 0;
+                                    $custs[ $c['autsys' ] ]['ispotential'] = true;
+                                }
                             }
                         }
                     }

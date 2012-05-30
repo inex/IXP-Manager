@@ -36,5 +36,23 @@
 
 </div>
 
+
+<div class="modal hide" id="modal-peering-request">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Send Peering Request by Email</h3>
+    </div>
+    <div class="modal-body">
+        <p>One fine body…</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn">Close</a>
+        <a href="#" class="btn btn-primary">Send</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+{include file="peering-manager/index.js"}
+</script>
     
 {include file="footer.tpl"}
