@@ -36,5 +36,23 @@
 
 </div>
 
+
+<div class="modal hide" id="modal-peering-request" style="left: 45%; width: 760px;">
+    <div class="modal-header" id="modal-peering-request-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Send Peering Request by Email</h3>
+    </div>
+    <div class="modal-body" id="modal-peering-request-body" style="max-height: 600px;">
+        <p>Please wait... loading...</p>
+    </div>
+    <div class="modal-footer" id="modal-peering-request-footer">
+        <button id="modal-peering-request-footer-close" class="btn">Close</button>
+        <button id="modal-peering-request-footer-send" class="btn btn-primary">Send</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+{include file="peering-manager/index.js"}
+</script>
     
 {include file="footer.tpl"}

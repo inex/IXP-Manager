@@ -7,7 +7,7 @@
         <tr>
             <th>Member</th>
             <th>ASN</th>
-            <th>Peering</th>
+            <th>Policy</th>
             
             {if isset( $me.vlaninterfaces.10 )}
                 <th>LAN 1</th>
@@ -16,6 +16,8 @@
             {if isset( $me.vlaninterfaces.12 )}
                 <th>LAN 2</th>
             {/if}
+            
+            <th></th>
         </tr>
     </thead>
 
@@ -47,7 +49,12 @@
                         <td></td>
                     {/if}
                 {/foreach}
+                
+                <td>
+                    <button id="peering-request-{$c.id}" class="btn btn-mini {if not $c.ispotential}disabled{/if}"><i class="icon-envelope"></i> Request Peering</button>
+                </td>
             </tr>
+            
             
         {/foreach}
 

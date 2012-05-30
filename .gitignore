@@ -10,6 +10,7 @@ var/log/*
 var/meetings/*
 var/session/*
 var/templates_c/*
+library/Bootbox
 library/Doctrine
 library/Zend
 library/ZFDebug
@@ -18,6 +19,7 @@ library/smarty
 library/Smarty
 library/Bootstrap-Zend-Framework
 library/bootstrap-wysihtml5
+library/Throbber.js
 library/wysihtml5
 library/jwysiwyg
 *~
