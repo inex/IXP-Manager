@@ -10,6 +10,7 @@ var/log/*
 var/meetings/*
 var/session/*
 var/templates_c/*
+library/Bootbox
 library/Doctrine
 library/Zend
 library/ZFDebug

@@ -45,6 +45,13 @@ else
     git clone git://github.com/opensolutions/Minify.git $LIBDIR/Minify
 fi
 
+# Bootbox
+if [[ -e $LIBDIR/Bootbox ]]; then
+    echo Bootbox exists - skipping!
+else
+    git clone https://github.com/makeusabrew/bootbox.git $LIBDIR/Bootbox
+fi
+
 
 # Zend
 
