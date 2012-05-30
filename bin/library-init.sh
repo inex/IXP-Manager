@@ -52,6 +52,13 @@ else
     git clone https://github.com/makeusabrew/bootbox.git $LIBDIR/Bootbox
 fi
 
+# Throbber.js
+if [[ -e $LIBDIR/Throbber.js ]]; then
+    echo Throbber.js exists - skipping!
+else
+    git clone https://github.com/aino/throbber.js.git $LIBDIR/Throbber.js
+fi
+
 
 # Zend
 

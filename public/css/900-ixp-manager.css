@@ -10,6 +10,18 @@ body {
     padding: 9px 0;
 }
 
+.mono {	
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    /* font-size: 12px; */
+}
+
+.oss-overlay
+{
+    position: absolute;
+    z-index: 2000;
+    background-color:black;
+    opacity: 0.4;
+}
 
 a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     color: #fff;

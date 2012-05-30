@@ -33,6 +33,10 @@ cd $LIBDIR/Bootbox
 git pull
 cd -
 
+cd $LIBDIR/Throbber.js
+git pull
+cd -
+
 for name in Smarty Zend Doctrine; do
     echo -e "\n\n\n\n\n-------------\n\nUpdating $name..."
     cd $LIBDIR/$name

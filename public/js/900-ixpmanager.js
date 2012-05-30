@@ -97,6 +97,38 @@ function tt_throbber( size, lines, strokewidth, fallback )
     });
 }
 
+
+function tt_throbberWithOverlay( size, lines, strokewidth, selector, fallback )
+{
+    if( !fallback )
+        fallback = '../images/throbber_32px.gif';
+
+    var Throb = new Throbber({
+        "color": 'white',
+        "size": size,
+        "fade": 500, 
+        "fallback": fallback,
+        "rotationspeed": 0,  
+        "lines": lines,
+        "strokewidth": strokewidth,
+        "alpha": 1
+    });
+
+    $( selector ).prepend( '<div id="overlay" align="center" valign="middle" style="margin: -12px;"  class="oss-overlay hide"></div>' );
+
+    var height = $( selector ).height();
+    var padding = ( height - size ) / 2;
+
+    $("#overlay").css( 'padding-top', padding );
+
+    $("#overlay").height( $( selector ).height() + 23 - padding  ).width( $( selector ).width() + 23 );
+    $("#overlay").fadeIn( "slow" );
+    
+    Throb.appendTo( $( '#overlay' ).get(0) ).start();
+
+    return Throb;
+}
+
 /**
  * This function adding oss messages.
  *
