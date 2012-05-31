@@ -51,7 +51,9 @@
                 {/foreach}
                 
                 <td>
-                    <button id="peering-request-{$c.id}" class="btn btn-mini {if not $c.ispotential}disabled{/if}"><i class="icon-envelope"></i> Request Peering</button>
+                    <button id="peering-request-{$c.id}" class="btn btn-mini {if not $c.ispotential}disabled" disabled="disabled{/if}">
+                        <i class="{if isset( $peers[$c.id] ) and $peers[$c.id].emails_sent}icon-repeat{else}icon-envelope{/if}"></i> Request Peering
+                    </button>
                 </td>
             </tr>
             
