@@ -2,7 +2,7 @@
 
 <p>
     You currently do not exchange any routes in any way with the following members of the exchange
-    over the shown LAN(s) because:
+    <strong>over the highlighted - in red - protocol(s) and LAN(s)</strong> because:
 </p>
 
 <ul>
