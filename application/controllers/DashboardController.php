@@ -167,17 +167,6 @@ class DashboardController extends INEX_Controller_Action
 
         if( $this->customer->isFullMember() )
         {
-	        // Get peering stats as set by the member
-	        $peering_stats = array();
-	        foreach( $this->config['peering_matrix']['public'] as $v )
-	        {
-	            $this->_generateOrUpdateMyPeeringMatrix( $v['number'] );
-	            $peering_stats[$v['name']] = MyPeeringMatrixTable::getStatesTotal( $this->customer['id'], $v['number'] );
-	        }
-	        
-	        $peering_stats['Total'] =  MyPeeringMatrixTable::getStatesTotal( $this->customer['id'] );
-	        $this->view->peering_stats = $peering_stats;
-
 	        // Get the member's port and vlan details
 	        $this->view->networkInfo = Networkinfo::toStructuredArray();
 	        $this->view->connections = $this->customer->getConnections();
