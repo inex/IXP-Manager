@@ -7,9 +7,8 @@
 
         <ul>
             <li>
-                <strong>First pass of new Peering Manager available</strong>. The first pass is
-                static information only. Ability to send and manage peering requests will be added
-                back shortly.
+                <strong>New Peering Manager now available</strong>. 
+                All feed back greatly appreciated.
                 <a href="{genUrl controller="peering-manager"}">Check it out here</a>.
             </li>
             <li>
