@@ -45,6 +45,20 @@ else
     git clone git://github.com/opensolutions/Minify.git $LIBDIR/Minify
 fi
 
+# Bootbox
+if [[ -e $LIBDIR/Bootbox ]]; then
+    echo Bootbox exists - skipping!
+else
+    git clone https://github.com/makeusabrew/bootbox.git $LIBDIR/Bootbox
+fi
+
+# Throbber.js
+if [[ -e $LIBDIR/Throbber.js ]]; then
+    echo Throbber.js exists - skipping!
+else
+    git clone https://github.com/aino/throbber.js.git $LIBDIR/Throbber.js
+fi
+
 
 # Zend
 

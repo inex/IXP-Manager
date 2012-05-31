@@ -7,7 +7,7 @@
         <tr>
             <th>Member</th>
             <th>ASN</th>
-            <th>Peering</th>
+            <th>Policy</th>
             
             {if isset( $me.vlaninterfaces.10 )}
                 <th>LAN 1</th>
@@ -16,6 +16,8 @@
             {if isset( $me.vlaninterfaces.12 )}
                 <th>LAN 2</th>
             {/if}
+            
+            <th></th>
         </tr>
     </thead>
 
@@ -26,7 +28,7 @@
             {assign var=c value=$custs.$as}
         
             <tr>
-                <td>{$c.name}</td>
+                <td id="peer-name-{$c.id}"}>{$c.name}</td>
                 <td>{$c.autsys}</td>
                 <td>{$c.peeringpolicy}</td>
                 
@@ -47,7 +49,19 @@
                         <td></td>
                     {/if}
                 {/foreach}
+                
+                <td width="200px">
+                    <div class="btn-group">
+                        <button id="peering-request-{$c.id}" data-days="{if isset( $peers[$c.id] )}{$peers[$c.id].email_days}{else}-1{/if}" class="btn btn-mini {if not $c.ispotential}disabled" disabled="disabled{/if}">
+                            <i id="peering-request-icon-{$c.id}" class="{if isset( $peers[$c.id] ) and $peers[$c.id].emails_sent}icon-repeat{else}icon-envelope{/if}"></i> Request Peering
+                        </button>
+                        <button id="peering-notes-{$c.id}" class="btn btn-mini">
+                            <i id="peering-notes-icon-{$c.id}" class="{if isset( $peers[$c.id] ) and strlen( $peers[$c.id].notes )}icon-star{else}icon-star-empty{/if}"></i> Notes
+                        </button>
+                    </div>
+                </td>
             </tr>
+            
             
         {/foreach}
 

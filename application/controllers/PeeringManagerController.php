@@ -66,7 +66,16 @@ class PeeringManagerController extends INEX_Controller_Action
         
         $this->view->bilat = $bilat;
 
-        //echo '<pre>'; print_r( $bilat ); die();
+        // echo '<pre>'; print_r( $this->getCustomer()->PeeringManager->toArray() ); die();
+        
+        $peers = array();
+        foreach( $this->getCustomer()->PeeringManager->toArray() as $p )
+        {
+            $peers[ $p['peerid'] ] = $p;
+            // days since last peering request email sent
+            $peers[ $p['peerid'] ]['email_days'] = floor( ( time() - strtotime( $p['email_last_sent'] ) ) / 86400 );
+        }
+        $this->view->peers = $peers;
         
         $custs = VlaninterfaceTable::getForPeeringManager();
 
@@ -80,6 +89,8 @@ class PeeringManagerController extends INEX_Controller_Action
         
         foreach( $custs as $c )
         {
+            $custs[ $c['autsys' ] ]['ispotential'] = false;
+            
             foreach( $vlans as $vlan )
             {
                 if( isset( $me['vlaninterfaces'][$vlan] ) )
@@ -90,13 +101,18 @@ class PeeringManagerController extends INEX_Controller_Action
                         {
                             if( $me['vlaninterfaces'][$vlan][0]["ipv{$proto}enabled"] && $c['vlaninterfaces'][$vlan][0]["ipv{$proto}enabled"] )
                             {
-                                $custs[ $c['autsys'] ][$vlan][$proto] = 0;
-                                
-                                if( $me['vlaninterfaces'][$vlan][0]['rsclient'] && $c['vlaninterfaces'][$vlan][0]['rsclient'] )
-                                    $custs[ $c['autsys'] ][$vlan][$proto] = 1;
-                                
                                 if( in_array( $c['autsys'], $bilat[$vlan][4][$me['autsys']]['peers'] ) )
                                     $custs[ $c['autsys'] ][$vlan][$proto] = 2;
+                                else if( $me['vlaninterfaces'][$vlan][0]['rsclient'] && $c['vlaninterfaces'][$vlan][0]['rsclient'] )
+                                {
+                                    $custs[ $c['autsys'] ][$vlan][$proto] = 1;
+                                    $custs[ $c['autsys' ] ]['ispotential'] = true;
+                                }
+                                else
+                                {
+                                    $custs[ $c['autsys'] ][$vlan][$proto] = 0;
+                                    $custs[ $c['autsys' ] ]['ispotential'] = true;
+                                }
                             }
                         }
                     }
@@ -142,6 +158,8 @@ class PeeringManagerController extends INEX_Controller_Action
         
         //echo '<pre>'; print_r( $custs ); die();
         
+        $this->view->date = date( 'Y-m-d' );
+        
         $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'index.tpl' );
     }
 
@@ -173,312 +191,191 @@ class PeeringManagerController extends INEX_Controller_Action
     }
     
 
-    public function peeringMatrixAction()
+
+    public function peeringRequestAction()
     {
-        $lan = $this->_request->getParam( 'lan', 0 );
-
-        if( !isset( $this->config['peering_matrix']['public'][$lan] ) )
+        $TESTMODE = false;
+        
+        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+        
+        if( !$peer )
         {
-            $this->session->message = new INEX_Message(
-                            "Invalid peering matrix requested",
-                            INEX_Message::MESSAGE_TYPE_ERROR
-                        );
-
-            return( $this->_redirect( 'dashboard' ) );
+            echo "ERR:Could not find peer's information in the database. Please contact support.";
+            return true;
         }
-
-        $peering_states = Doctrine_Query::create()
-            ->select( 'pm.x_as, pm.y_as, pm.peering_status' )
-            ->addSelect( 'xc.name, xc.id, xc.peeringmacro, xc.peeringpolicy' )
-            ->addSelect( 'yc.name, yc.id, yc.peeringmacro, yc.peeringpolicy' )
-            ->from( 'PeeringMatrix pm' )
-            ->leftJoin( 'pm.X_Cust xc' )
-            ->leftJoin( 'pm.Y_Cust yc' )
-            ->where( 'pm.vlan = ?', $this->config['peering_matrix']['public'][$lan]['number'] )
-            ->orderBy( 'pm.x_as ASC, pm.y_as ASC' )
-            ->fetchArray();
-
-        // try and arrange the array as n x n keyed by x's as number
-        $matrix = array();
-
-        $potential = 0;
-        $active    = 0;
-
-        foreach( $peering_states as $pm )
-        {
-            $matrix[$pm['x_as']][] = $pm;
-
-            if( $pm['peering_status'] == 'YES' )
-                $active++;
-
-            $potential++;
-        }
-
-        $this->view->potential = $potential;
-        $this->view->active    = $active;
-
-        $this->view->lan    = $lan;
-        $this->view->matrix = $matrix;
-        $this->view->display( 'dashboard/peering-matrix.tpl' );
-    }
-
-    public function myPeeringManagerEmailAction()
-    {
-        $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', null ) );
-
-        $this->getResponse()
-            ->setHeader('Content-Type', 'text/html');
-
-        if( !$bcust && $this->_request->getParam( 'send' ) == '1' )
-        {
-            $this->getResponse()
-                 ->setBody( Zend_Json::encode(
-                    array(
-                        'status' => '0',
-                        'message' => "Error: Invalid parameters supplied"
-                  ) ) )
-            ->sendResponse();
-            exit;
-        }
-        else if( !$bcust )
-        {
-            echo '';
-            exit;
-        }
-
+        
+        $f = new INEX_Form_PeeringRequest();
+        
         // need to get VLAN interfaces in common for these two members
-        $aints = Doctrine_Core::getTable( 'ViewVlaninterfaceDetailsByCustid' )->findByCustid(
-            $this->customer['id'], Doctrine_Core::HYDRATE_ARRAY
+        $myints = Doctrine_Core::getTable( 'ViewVlaninterfaceDetailsByCustid' )->findByCustid(
+            $this->getCustomer()['id'], Doctrine_Core::HYDRATE_ARRAY
         );
-        $bints = Doctrine_Core::getTable( 'ViewVlaninterfaceDetailsByCustid' )->findByCustid(
-            $bcust['id'], Doctrine_Core::HYDRATE_ARRAY
+        
+        $pints = Doctrine_Core::getTable( 'ViewVlaninterfaceDetailsByCustid' )->findByCustid(
+            $peer['id'], Doctrine_Core::HYDRATE_ARRAY
         );
-
+        
         // potential peerings
-        $pp = array();
-        $count = 0;
-        foreach( $aints as $aint )
+        $pp = array(); $count = 0;
+        
+        foreach( $myints as $myint )
         {
             // does b member have one (or more than one)?
-            foreach( $bints as $bint )
+            foreach( $pints as $pint )
             {
-                if( $aint['vlanid'] == $bint['vlanid'] )
+                if( $myint['vlanid'] == $pint['vlanid'] )
                 {
-                    $pp[$count]['a'] = $aint;
-                    $pp[$count]['b'] = $bint;
+                    $pp[$count]['my']   = $myint;
+                    $pp[$count]['your'] = $pint;
                     $count++;
                 }
             }
         }
+        
+        // INEX_Debug::dd( $pp );
+        $this->view->pp = $pp;
+        
+        $f->getElement( 'to' )->setValue( $peer['peeringemail'] );
+        $f->getElement( 'cc' )->setValue( $this->getCustomer()['peeringemail'] );
 
-        $this->view->bcust  = $bcust;
-        $this->view->pp     = $pp;
-
-        if( $this->_request->getParam( 'send' ) == '1' )
+        if( $this->getRequest()->isPost() )
         {
-            $mail = new Zend_Mail();
-            $mail->setFrom( $this->customer['peeringemail'], $this->customer['peeringemail'] . ' Peering Team' )
-                 ->setSubject( stripslashes( $this->_request->getParam( 'subject' ) ) )
-                 ->addTo( $bcust['peeringemail'], $bcust['name'] . ' Peering Team' )
-                 ->addBcc( $this->customer['peeringemail'], $this->customer['peeringemail'] . ' Peering Team' )
-                 ->setBodyText( stripslashes( $this->_request->getParam( 'message' ) ) );
-
-            try {
-                $mail->send();
-
-                $myPeerRecord = Doctrine_Query::create()
-                    ->from( 'MyPeeringMatrix mpm' )
-                    ->where( 'mpm.custid = ?', $this->customer['id'] )
-                    ->andWhere( 'mpm.peerid = ?', $bcust['id'] )
-                    ->fetchOne( null, Doctrine_core::HYDRATE_RECORD );
-
-                $myPeerRecord->updateNotes( date( 'Y-m-d ' ) . $this->user['username']
-                        . ": Peering request sent by email via IXP Manager",
-                    true
-                );
-
-                $this->getResponse()
-                    ->setBody( Zend_Json::encode(
-                        array(
-                            'status' => '1',
-                            'message' => "Email successfully sent to the {$bcust['name']} Peering Team",
-                            'commentAdded' => '1', 'cid' => $bcust['id']
-                        ) ) )
-                    ->sendResponse();
-            }
-            catch( Zend_Exception $e )
+            if( $f->isValid( $_POST ) )
             {
-                $this->getLogger()->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
+                $sendtome = $f->getValue( 'sendtome' ) == '1' ? true : false;
+                $marksent = $f->getValue( 'marksent' ) == '1' ? true : false;
+                
+                $bccOk = true;
+                $bcc = array();
+                if( !$sendtome )
+                {
+                    if( strlen( $bccs = $f->getValue( 'bcc' ) ) )
+                    {
+                        foreach( explode( ',', $bccs ) as $b )
+                        {
+                            $b = trim( $b );
+                            if( !Zend_Validate::is( $b, 'EmailAddress' ) )
+                            {
+                                $f->getElement( 'bcc' )->addError( 'One or more email address(es) here are invalid' );
+                                $bccOk = false;
+                            }
+                            else
+                                $bcc[] = $b;
+                        }
+                    }
+                }
+                                
+                if( $bccOk )
+                {
+                
+                    $mail = new Zend_Mail();
+                    $mail->setFrom( 'no-reply@inex.ie', $this->getCustomer()['name'] . ' Peering Team' )
+                         ->setReplyTo( $this->getCustomer()['peeringemail'], $this->getCustomer()['name'] . ' Peering Team' )
+                         ->setSubject( $f->getValue( 'subject' ) )
+                         ->setBodyText( $f->getValue( 'message' ) );
 
-                $this->getResponse()
-                    ->setBody( Zend_Json::encode(
-                        array(
-                            'status' => '0',
-                            'message' => "Error: Sorry, we could not send the email. Please try later or send manually."
-                        ) ) )
-                    ->sendResponse();
+                    if( $sendtome )
+                    {
+                        $mail->addTo( $this->getUser()['email'] );
+                    }
+                    else
+                    {
+                        $mail->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer['peeringemail'], "{$peer['name']} Peering Team" )
+                             ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()['peeringemail'], "{$this->getCustomer()['name']} Peering Team" );
+                    }
+                    
+                    if( count( $bcc ) )
+                        foreach( $bcc as $b )
+                            $mail->addBcc( $b );
+                    
+                    try {
+                        if( !$marksent )
+                            $mail->send();
+                        
+                        if( !$sendtome )
+                        {
+                            // get this customer/peer peering manager table entry
+                            $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
+                            $pm['email_last_sent'] = date( 'Y-m-d' );
+                            $pm['emails_sent'] = $pm['emails_sent'] + 1;
+                            $pm['updated'] = date( 'Y-m-d H:i:s' );
+                            $pm['notes'] = date( 'Y-m-d' ) . " [{$this->getUser()['username']}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n";
+                            $pm->save();
+                        }
+                    }
+                    catch( Zend_Exception $e )
+                    {
+                        $this->getLogger()->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
+                        echo "ERR:Could not send the peering email. Please send manually yourself or contact support.";
+                        return true;
+                    }
+                    
+                    if( $sendtome )
+                        echo "OK:Peering request sample sent to your own email address ({$this->getUser()['email']}).";
+                    else if( $marksent )
+                        echo "OK:Peering request marked as sent in your Peering Manager.";
+                    else
+                        echo "OK:Peering request sent to {$peer['name']} Peering Team.";
+                    
+                    return true;
+                }
             }
-
-
         }
         else
         {
-
-            $content = array(
-                'subject' => $this->config['identity']['orgname'] . " Peering Request between AS" . $this->customer['autsys']
-                                . ' - AS' . $bcust['autsys'],
-                'to'      => $bcust['name'] . " Peering Team <" . $bcust['peeringemail'] . ">",
-                'from'    => $this->customer['name'] . " Peering Team <" . $this->customer['peeringemail'] . ">",
-                'bcc'     => $this->customer['name'] . " Peering Team <" . $this->customer['peeringemail'] . ">",
-                'message' => $this->view->render( 'dashboard/email/peering-request.tpl' )
-            );
-
-            $this->getResponse()
-                ->setHeader('Content-Type', 'text/html')
-                ->setBody( Zend_Json::encode( $content ) )
-                ->sendResponse();
+            $f->getElement( 'bcc' )->setValue( $this->getUser()['email'] );
+            $f->getElement( 'subject' )->setValue( "[INEX] Peering Request from {$this->getCustomer()['name']} (ASN{$this->getCustomer()['autsys']})" );
+            $f->getElement( 'message' )->setValue( $this->view->render( 'peering-manager' . DIRECTORY_SEPARATOR . 'peering-request-message.tpl' ) );
         }
+        
+        $this->view->form = $f;
 
-        exit();
+        $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'peering-request.tpl' );
     }
-
-
-    public function myPeeringManagerNotesAction()
+    
+    public function peeringNotesAction()
     {
-        $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', null ) );
-
-        $this->getResponse()
-            ->setHeader('Content-Type', 'text/html');
-
-        if( !$bcust && $this->_request->getParam( 'save' ) == '1' )
+        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+    
+        if( !$peer )
         {
-            $this->getResponse()
-                 ->setBody( Zend_Json::encode(
-                    array(
-                        'status' => '0',
-                        'message' => "Error: Invalid parameters supplied"
-                  ) ) )
-            ->sendResponse();
-            exit;
-        }
-        else if( !$bcust )
-        {
-            echo '';
-            exit;
+            echo "ERR:Could not find peer's information in the database. Please contact support.";
+            return true;
         }
 
-        $myPeerRecord = Doctrine_Query::create()
-            ->from( 'MyPeeringMatrix mpm' )
-            ->where( 'mpm.custid = ?', $this->customer['id'] )
-            ->andWhere( 'mpm.peerid = ?', $bcust['id'] )
-            ->fetchOne( null, Doctrine_core::HYDRATE_RECORD );
+        // get this customer/peer peering manager table entry
+        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
 
-        if( $this->_request->getParam( 'save' ) == '1' )
+        if( $this->getRequest()->isPost() )
         {
+            $pm['updated'] = date( 'Y-m-d H:i:s' );
+            
+            if( trim( stripslashes( $this->_getParam( 'message', '' ) ) ) )
+                $pm['notes'] = trim( stripslashes( $this->_getParam( 'message' ) ) );
+            
             try
             {
-                $myPeerRecord->updateNotes( stripslashes( $this->_request->getParam( 'notes' ) ) );
-                
-                $this->getResponse()
-                    ->setBody( Zend_Json::encode(
-                        array(
-                            'status' => '1',
-                            'message' => "Peering notes updated for {$bcust['name']}.",
-                            'commentAdded' => '1', 'cid' => $bcust['id']
-                        ) ) )
-                    ->sendResponse();
+                $pm->save();
             }
-            catch( Zend_Exception $e )
+            catch( Exception $e )
             {
-                $this->getResponse()
-                    ->setBody( Zend_Json::encode(
-                        array(
-                            'status' => '0',
-                            'message' => "Error: Sorry, we could not save your updated notes. Please contact support to report this issue."
-                        ) ) )
-                    ->sendResponse();
+                $this->getLogger()->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
+                echo "ERR:Could not update peering notes due to an unexpected error.";
+                return true;
             }
+            
+            echo "OK:Peering notes updated for {$peer['name']}.";
+            return true;
         }
         else
         {
-            $prefix = date( 'Y-m-d ' ) . $this->user['username'] . ": ";
-            $content = array(
-                'name'  => $bcust['name'],
-                'notes' => "$prefix\n\n" . $myPeerRecord->getNotes(),
-                'pos'   => strlen( $prefix )
-            );
-
-            $this->getResponse()
-                ->setHeader('Content-Type', 'text/html')
-                ->setBody( Zend_Json::encode( $content ) )
-                ->sendResponse();
+            echo 'OK:' . $pm['notes'];
         }
-
-        exit();
+        return true;
     }
-
-
-    public function myPeeringManagerPeeredStateAction()
-    {
-        $type  = $this->_request->getParam( 'type', 'state' );
-
-        $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', false ) );
-
-        if( !$bcust )
-            exit;
-
-        // do we have a VLAN and is it valid
-        $vlan = $this->_request->getParam( 'vlan', false );
-
-        // is it one of the allowed VLANs?
-        $vlan_valid = false;
-        foreach( $this->config['peering_matrix']['public'] as $v )
-        {
-            if( $v['number'] == $vlan )
-            {
-                $vlan_valid = true;
-                break;
-            }
-        }
-
-        // if it's not valid, just bounce them to the first default
-        if( !$vlan_valid )
-            exit;
-
-
-        $myPeeringMatrix = Doctrine_Query::create()
-            ->from( 'MyPeeringMatrix mpm' )
-            ->where( 'mpm.custid = ?', $this->customer['id'] )
-            ->andWhere( 'mpm.peerid = ?', $bcust['id'] )
-            ->andWhere( 'mpm.vlan = ?', $vlan )
-            ->fetchOne( null, Doctrine_Core::HYDRATE_RECORD );
-
-        if( !$myPeeringMatrix )
-            exit;
-
-        if( $type == 'ipv6' )
-        {
-            $myPeeringMatrix['ipv6'] = ( $myPeeringMatrix['ipv6'] + 1 ) % 2;
-            $newstate = $myPeeringMatrix['ipv6'];
-        }
-        else
-        {
-	        $newstate = ( array_search( $myPeeringMatrix['peered'], MyPeeringMatrix::$PEERED_STATES ) + 1 )
-	            % count( MyPeeringMatrix::$PEERED_STATES );
-
-	        $myPeeringMatrix['peered'] = MyPeeringMatrix::$PEERED_STATES[ $newstate ];
-        }
-
-        $myPeeringMatrix->save();
-
-        $content = array( 'newstate' => $newstate );
-
-        $this->getResponse()
-            ->setHeader('Content-Type', 'text/html')
-            ->setBody( Zend_Json::encode( $content ) )
-            ->sendResponse();
-        exit();
-    }
+    
+    
+    
 
 
 }

@@ -86,16 +86,16 @@ class VlaninterfaceTable extends Doctrine_Table
     public static function getForPeeringManager()
     {
         $q = Doctrine_Query::create()
-            ->select( 'c.shortname, c.autsys, c.name, c.maxprefixes, c.peeringemail, c.peeringpolicy' )
-            ->addSelect( 'vi.id, vli.ipv4enabled, vli.ipv6enabled, vli.rsclient, v.number' )
-            ->from( 'Cust c' )
-            ->leftJoin( 'c.Virtualinterface vi' )
-            ->leftJoin( 'vi.Vlaninterface vli' )
-            ->leftJoin( 'vli.Vlan v' )
-            //->andWhere( 'c.activepeeringmatrix = 1' );
-            ->andWhereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_PROBONO ) )
-            ->andWhere( '( c.dateleave IS NULL or c.dateleave = "0000-00-00" )' )
-            ->orderBy( 'c.name' );
+                ->select( 'c.shortname, c.autsys, c.name, c.maxprefixes, c.peeringemail, c.peeringpolicy, c.id' )
+                ->addSelect( 'vi.id, vli.ipv4enabled, vli.ipv6enabled, vli.rsclient, v.number' )
+                ->from( 'Cust c' )
+                ->leftJoin( 'c.Virtualinterface vi' )
+                ->leftJoin( 'vi.Vlaninterface vli' )
+                ->leftJoin( 'vli.Vlan v' )
+                //->andWhere( 'c.activepeeringmatrix = 1' );
+                ->andWhereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_PROBONO ) )
+                ->andWhere( '( c.dateleave IS NULL or c.dateleave = "0000-00-00" )' )
+                ->orderBy( 'c.name' );
     
         $acusts = $q->execute( null, Doctrine::HYDRATE_ARRAY );
     
@@ -105,6 +105,7 @@ class VlaninterfaceTable extends Doctrine_Table
         {
             $custs[ $c['autsys'] ] = array();
             
+            $custs[ $c['autsys'] ]['id']            = $c['id'];
             $custs[ $c['autsys'] ]['name']          = $c['name'];
             $custs[ $c['autsys'] ]['shortname']     = $c['shortname'];
             $custs[ $c['autsys'] ]['autsys']        = $c['autsys'];

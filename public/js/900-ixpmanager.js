@@ -97,6 +97,38 @@ function tt_throbber( size, lines, strokewidth, fallback )
     });
 }
 
+
+function tt_throbberWithOverlay( size, lines, strokewidth, selector, fallback )
+{
+    if( !fallback )
+        fallback = '../images/throbber_32px.gif';
+
+    var Throb = new Throbber({
+        "color": 'white',
+        "size": size,
+        "fade": 500, 
+        "fallback": fallback,
+        "rotationspeed": 0,  
+        "lines": lines,
+        "strokewidth": strokewidth,
+        "alpha": 1
+    });
+
+    $( selector ).prepend( '<div id="overlay" align="center" valign="middle" style="margin: -12px;"  class="oss-overlay hide"></div>' );
+
+    var height = $( selector ).height();
+    var padding = ( height - size ) / 2;
+
+    $("#overlay").css( 'padding-top', padding );
+
+    $("#overlay").height( $( selector ).height() + 23 - padding  ).width( $( selector ).width() + 23 );
+    $("#overlay").fadeIn( "slow" );
+    
+    Throb.appendTo( $( '#overlay' ).get(0) ).start();
+
+    return Throb;
+}
+
 /**
  * This function adding oss messages.
  *
@@ -450,3 +482,59 @@ $.extend( $.fn.dataTableExt.oPagination, {
 		}
 	}
 } );
+
+//Set caret position easily in jQuery
+//Written by and Copyright of Luke Morton, 2011
+//Licensed under MIT
+(function ($) {
+ // Behind the scenes method deals with browser
+ // idiosyncrasies and such
+ $.caretTo = function (el, index) {
+     if (el.createTextRange) { 
+         var range = el.createTextRange(); 
+         range.move("character", index); 
+         range.select(); 
+     } else if (el.selectionStart != null) { 
+         el.focus(); 
+         el.setSelectionRange(index, index); 
+     }
+ };
+
+ // The following methods are queued under fx for more
+ // flexibility when combining with $.fn.delay() and
+ // jQuery effects.
+
+ // Set caret to a particular index
+ $.fn.caretTo = function (index, offset) {
+     return this.queue(function (next) {
+         if (isNaN(index)) {
+             var i = $(this).val().indexOf(index);
+             
+             if (offset === true) {
+                 i += index.length;
+             } else if (offset) {
+                 i += offset;
+             }
+             
+             $.caretTo(this, i);
+         } else {
+             $.caretTo(this, index);
+         }
+         
+         next();
+     });
+ };
+
+ // Set caret to beginning of an element
+ $.fn.caretToStart = function () {
+     return this.caretTo(0);
+ };
+
+ // Set caret to the end of an element
+ $.fn.caretToEnd = function () {
+     return this.queue(function (next) {
+         $.caretTo(this, $(this).val().length);
+         next();
+     });
+ };
+}(jQuery));
