@@ -59,6 +59,17 @@ class INEX_Form_PeeringRequest extends INEX_Form
             ->setAttrib( 'id', 'peering-request-form-custid' );
         $this->addElement( $custid );
         
+        $marksent = $this->createElement( 'hidden', 'marksent' )
+            ->setValue( '0' )
+            ->setAttrib( 'id', 'peering-request-form-marksent' );
+        $this->addElement( $marksent );
+        
+        $sendtome = $this->createElement( 'hidden', 'sendtome' )
+            ->setValue( '0' )
+            ->setAttrib( 'id', 'peering-request-form-sendtome' );
+        $this->addElement( $sendtome );
+        
+                
         $to = $this->createElement( 'text', 'to' );
         $to->addValidator( 'stringLength', false, array( 1, 4096 ) )
             ->setRequired( true )

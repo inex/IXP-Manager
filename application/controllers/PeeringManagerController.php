@@ -72,6 +72,8 @@ class PeeringManagerController extends INEX_Controller_Action
         foreach( $this->getCustomer()->PeeringManager->toArray() as $p )
         {
             $peers[ $p['peerid'] ] = $p;
+            // days since last peering request email sent
+            $peers[ $p['peerid'] ]['email_days'] = floor( ( time() - strtotime( $p['email_last_sent'] ) ) / 86400 );
         }
         $this->view->peers = $peers;
         
@@ -156,6 +158,8 @@ class PeeringManagerController extends INEX_Controller_Action
         
         //echo '<pre>'; print_r( $custs ); die();
         
+        $this->view->date = date( 'Y-m-d' );
+        
         $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'index.tpl' );
     }
 
@@ -190,7 +194,7 @@ class PeeringManagerController extends INEX_Controller_Action
 
     public function peeringRequestAction()
     {
-        $TESTMODE = true;
+        $TESTMODE = false;
         
         $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
         
@@ -238,23 +242,29 @@ class PeeringManagerController extends INEX_Controller_Action
         {
             if( $f->isValid( $_POST ) )
             {
+                $sendtome = $f->getValue( 'sendtome' ) == '1' ? true : false;
+                $marksent = $f->getValue( 'marksent' ) == '1' ? true : false;
+                
                 $bccOk = true;
                 $bcc = array();
-                if( strlen( $bccs = $f->getValue( 'bcc' ) ) )
+                if( !$sendtome )
                 {
-                    foreach( explode( ',', $bccs ) as $b )
+                    if( strlen( $bccs = $f->getValue( 'bcc' ) ) )
                     {
-                        $b = trim( $b );
-                        if( !Zend_Validate::is( $b, 'EmailAddress' ) )
+                        foreach( explode( ',', $bccs ) as $b )
                         {
-                            $f->getElement( 'bcc' )->addError( 'One or more email address(es) here are invalid' );
-                            $bccOk = false;
+                            $b = trim( $b );
+                            if( !Zend_Validate::is( $b, 'EmailAddress' ) )
+                            {
+                                $f->getElement( 'bcc' )->addError( 'One or more email address(es) here are invalid' );
+                                $bccOk = false;
+                            }
+                            else
+                                $bcc[] = $b;
                         }
-                        else
-                            $bcc[] = $b;
                     }
                 }
-                
+                                
                 if( $bccOk )
                 {
                 
@@ -262,23 +272,36 @@ class PeeringManagerController extends INEX_Controller_Action
                     $mail->setFrom( 'no-reply@inex.ie', $this->getCustomer()['name'] . ' Peering Team' )
                          ->setReplyTo( $this->getCustomer()['peeringemail'], $this->getCustomer()['name'] . ' Peering Team' )
                          ->setSubject( $f->getValue( 'subject' ) )
-                         ->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer['peeringemail'], "{$peer['name']} Peering Team" )
-                         ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()['peeringemail'], "{$this->getCustomer()['name']} Peering Team" )
                          ->setBodyText( $f->getValue( 'message' ) );
 
+                    if( $sendtome )
+                    {
+                        $mail->addTo( $this->getUser()['email'] );
+                    }
+                    else
+                    {
+                        $mail->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer['peeringemail'], "{$peer['name']} Peering Team" )
+                             ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()['peeringemail'], "{$this->getCustomer()['name']} Peering Team" );
+                    }
+                    
                     if( count( $bcc ) )
                         foreach( $bcc as $b )
                             $mail->addBcc( $b );
                     
                     try {
-                        $mail->send();
+                        if( !$marksent )
+                            $mail->send();
                         
-                        // get this customer/peer peering manager table entry
-                        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
-                        $pm['email_last_sent'] = date( 'Y-m-d' );
-                        $pm['emails_sent'] = $pm['emails_sent'] + 1;
-                        $pm['updated'] = date( 'Y-m-d H:i:s' );
-                        $pm->save();
+                        if( !$sendtome )
+                        {
+                            // get this customer/peer peering manager table entry
+                            $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
+                            $pm['email_last_sent'] = date( 'Y-m-d' );
+                            $pm['emails_sent'] = $pm['emails_sent'] + 1;
+                            $pm['updated'] = date( 'Y-m-d H:i:s' );
+                            $pm['notes'] = date( 'Y-m-d' ) . " [{$this->getUser()['username']}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n";
+                            $pm->save();
+                        }
                     }
                     catch( Zend_Exception $e )
                     {
@@ -287,7 +310,13 @@ class PeeringManagerController extends INEX_Controller_Action
                         return true;
                     }
                     
-                    echo "OK:Peering request sent.";
+                    if( $sendtome )
+                        echo "OK:Peering request sample sent to your own email address ({$this->getUser()['email']}).";
+                    else if( $marksent )
+                        echo "OK:Peering request marked as sent in your Peering Manager.";
+                    else
+                        echo "OK:Peering request sent to {$peer['name']} Peering Team.";
+                    
                     return true;
                 }
             }
@@ -304,143 +333,49 @@ class PeeringManagerController extends INEX_Controller_Action
         $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'peering-request.tpl' );
     }
     
-
-    public function myPeeringManagerNotesAction()
+    public function peeringNotesAction()
     {
-        $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', null ) );
-
-        $this->getResponse()
-            ->setHeader('Content-Type', 'text/html');
-
-        if( !$bcust && $this->_request->getParam( 'save' ) == '1' )
+        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+    
+        if( !$peer )
         {
-            $this->getResponse()
-                 ->setBody( Zend_Json::encode(
-                    array(
-                        'status' => '0',
-                        'message' => "Error: Invalid parameters supplied"
-                  ) ) )
-            ->sendResponse();
-            exit;
-        }
-        else if( !$bcust )
-        {
-            echo '';
-            exit;
+            echo "ERR:Could not find peer's information in the database. Please contact support.";
+            return true;
         }
 
-        $myPeerRecord = Doctrine_Query::create()
-            ->from( 'MyPeeringMatrix mpm' )
-            ->where( 'mpm.custid = ?', $this->customer['id'] )
-            ->andWhere( 'mpm.peerid = ?', $bcust['id'] )
-            ->fetchOne( null, Doctrine_core::HYDRATE_RECORD );
+        // get this customer/peer peering manager table entry
+        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
 
-        if( $this->_request->getParam( 'save' ) == '1' )
+        if( $this->getRequest()->isPost() )
         {
+            $pm['updated'] = date( 'Y-m-d H:i:s' );
+            
+            if( trim( stripslashes( $this->_getParam( 'message', '' ) ) ) )
+                $pm['notes'] = trim( stripslashes( $this->_getParam( 'message' ) ) );
+            
             try
             {
-                $myPeerRecord->updateNotes( stripslashes( $this->_request->getParam( 'notes' ) ) );
-                
-                $this->getResponse()
-                    ->setBody( Zend_Json::encode(
-                        array(
-                            'status' => '1',
-                            'message' => "Peering notes updated for {$bcust['name']}.",
-                            'commentAdded' => '1', 'cid' => $bcust['id']
-                        ) ) )
-                    ->sendResponse();
+                $pm->save();
             }
-            catch( Zend_Exception $e )
+            catch( Exception $e )
             {
-                $this->getResponse()
-                    ->setBody( Zend_Json::encode(
-                        array(
-                            'status' => '0',
-                            'message' => "Error: Sorry, we could not save your updated notes. Please contact support to report this issue."
-                        ) ) )
-                    ->sendResponse();
+                $this->getLogger()->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
+                echo "ERR:Could not update peering notes due to an unexpected error.";
+                return true;
             }
+            
+            echo "OK:Peering notes updated for {$peer['name']}.";
+            return true;
         }
         else
         {
-            $prefix = date( 'Y-m-d ' ) . $this->user['username'] . ": ";
-            $content = array(
-                'name'  => $bcust['name'],
-                'notes' => "$prefix\n\n" . $myPeerRecord->getNotes(),
-                'pos'   => strlen( $prefix )
-            );
-
-            $this->getResponse()
-                ->setHeader('Content-Type', 'text/html')
-                ->setBody( Zend_Json::encode( $content ) )
-                ->sendResponse();
+            echo 'OK:' . $pm['notes'];
         }
-
-        exit();
+        return true;
     }
-
-
-    public function myPeeringManagerPeeredStateAction()
-    {
-        $type  = $this->_request->getParam( 'type', 'state' );
-
-        $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', false ) );
-
-        if( !$bcust )
-            exit;
-
-        // do we have a VLAN and is it valid
-        $vlan = $this->_request->getParam( 'vlan', false );
-
-        // is it one of the allowed VLANs?
-        $vlan_valid = false;
-        foreach( $this->config['peering_matrix']['public'] as $v )
-        {
-            if( $v['number'] == $vlan )
-            {
-                $vlan_valid = true;
-                break;
-            }
-        }
-
-        // if it's not valid, just bounce them to the first default
-        if( !$vlan_valid )
-            exit;
-
-
-        $myPeeringMatrix = Doctrine_Query::create()
-            ->from( 'MyPeeringMatrix mpm' )
-            ->where( 'mpm.custid = ?', $this->customer['id'] )
-            ->andWhere( 'mpm.peerid = ?', $bcust['id'] )
-            ->andWhere( 'mpm.vlan = ?', $vlan )
-            ->fetchOne( null, Doctrine_Core::HYDRATE_RECORD );
-
-        if( !$myPeeringMatrix )
-            exit;
-
-        if( $type == 'ipv6' )
-        {
-            $myPeeringMatrix['ipv6'] = ( $myPeeringMatrix['ipv6'] + 1 ) % 2;
-            $newstate = $myPeeringMatrix['ipv6'];
-        }
-        else
-        {
-	        $newstate = ( array_search( $myPeeringMatrix['peered'], MyPeeringMatrix::$PEERED_STATES ) + 1 )
-	            % count( MyPeeringMatrix::$PEERED_STATES );
-
-	        $myPeeringMatrix['peered'] = MyPeeringMatrix::$PEERED_STATES[ $newstate ];
-        }
-
-        $myPeeringMatrix->save();
-
-        $content = array( 'newstate' => $newstate );
-
-        $this->getResponse()
-            ->setHeader('Content-Type', 'text/html')
-            ->setBody( Zend_Json::encode( $content ) )
-            ->sendResponse();
-        exit();
-    }
+    
+    
+    
 
 
 }
