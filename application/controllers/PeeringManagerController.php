@@ -265,6 +265,13 @@ class PeeringManagerController extends INEX_Controller_Action
                     
                     try {
                         $mail->send();
+                        
+                        // get this customer/peer peering manager table entry
+                        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
+                        $pm['email_last_sent'] = date( 'Y-m-d' );
+                        $pm['emails_sent'] = $pm['emails_sent'] + 1;
+                        $pm['updated'] = date( 'Y-m-d H:i:s' );
+                        $pm->save();
                     }
                     catch( Zend_Exception $e )
                     {
