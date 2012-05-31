@@ -10,7 +10,7 @@
  * @property integer $custid
  * @property string $prefix
  * @property integer $protocol
- * @property integer $seen_irrdb
+ * @property integer $irrdb
  * @property integer $rs_origin
  * 
  * @package    ##PACKAGE##
@@ -66,7 +66,7 @@ abstract class BaseRsDroppedPrefixes extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('seen_irrdb', 'integer', 4, array(
+        $this->hasColumn('irrdb', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
              'fixed' => false,

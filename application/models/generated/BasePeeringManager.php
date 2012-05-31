@@ -12,6 +12,7 @@
  * @property integer $emails_sent
  * @property integer $peered
  * @property integer $rejected
+ * @property string $notes
  * @property timestamp $created
  * @property timestamp $updated
  * 
@@ -86,6 +87,14 @@ abstract class BasePeeringManager extends Doctrine_Record
              'unsigned' => false,
              'primary' => false,
              'default' => '0',
+             'notnull' => true,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('notes', 'string', null, array(
+             'type' => 'string',
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
              'notnull' => true,
              'autoincrement' => false,
              ));
