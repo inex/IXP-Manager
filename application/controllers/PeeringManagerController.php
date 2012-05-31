@@ -194,7 +194,7 @@ class PeeringManagerController extends INEX_Controller_Action
 
     public function peeringRequestAction()
     {
-        $TESTMODE = true;
+        $TESTMODE = false;
         
         $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
         
@@ -376,69 +376,6 @@ class PeeringManagerController extends INEX_Controller_Action
     
     
     
-
-
-    public function myPeeringManagerPeeredStateAction()
-    {
-        $type  = $this->_request->getParam( 'type', 'state' );
-
-        $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', false ) );
-
-        if( !$bcust )
-            exit;
-
-        // do we have a VLAN and is it valid
-        $vlan = $this->_request->getParam( 'vlan', false );
-
-        // is it one of the allowed VLANs?
-        $vlan_valid = false;
-        foreach( $this->config['peering_matrix']['public'] as $v )
-        {
-            if( $v['number'] == $vlan )
-            {
-                $vlan_valid = true;
-                break;
-            }
-        }
-
-        // if it's not valid, just bounce them to the first default
-        if( !$vlan_valid )
-            exit;
-
-
-        $myPeeringMatrix = Doctrine_Query::create()
-            ->from( 'MyPeeringMatrix mpm' )
-            ->where( 'mpm.custid = ?', $this->customer['id'] )
-            ->andWhere( 'mpm.peerid = ?', $bcust['id'] )
-            ->andWhere( 'mpm.vlan = ?', $vlan )
-            ->fetchOne( null, Doctrine_Core::HYDRATE_RECORD );
-
-        if( !$myPeeringMatrix )
-            exit;
-
-        if( $type == 'ipv6' )
-        {
-            $myPeeringMatrix['ipv6'] = ( $myPeeringMatrix['ipv6'] + 1 ) % 2;
-            $newstate = $myPeeringMatrix['ipv6'];
-        }
-        else
-        {
-	        $newstate = ( array_search( $myPeeringMatrix['peered'], MyPeeringMatrix::$PEERED_STATES ) + 1 )
-	            % count( MyPeeringMatrix::$PEERED_STATES );
-
-	        $myPeeringMatrix['peered'] = MyPeeringMatrix::$PEERED_STATES[ $newstate ];
-        }
-
-        $myPeeringMatrix->save();
-
-        $content = array( 'newstate' => $newstate );
-
-        $this->getResponse()
-            ->setHeader('Content-Type', 'text/html')
-            ->setBody( Zend_Json::encode( $content ) )
-            ->sendResponse();
-        exit();
-    }
 
 
 }
