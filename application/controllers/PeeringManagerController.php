@@ -158,6 +158,8 @@ class PeeringManagerController extends INEX_Controller_Action
         
         //echo '<pre>'; print_r( $custs ); die();
         
+        $this->view->date = date( 'Y-m-d' );
+        
         $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'index.tpl' );
     }
 
@@ -297,7 +299,7 @@ class PeeringManagerController extends INEX_Controller_Action
                             $pm['email_last_sent'] = date( 'Y-m-d' );
                             $pm['emails_sent'] = $pm['emails_sent'] + 1;
                             $pm['updated'] = date( 'Y-m-d H:i:s' );
-                            $pm['notes'] = date( 'Y-m-d' ) . ": peering request " . ( $marksent ? 'marked ' : '' ) . "sent by {$this->getUser()['username']}\n\n";
+                            $pm['notes'] = date( 'Y-m-d' ) . " [{$this->getUser()['username']}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n";
                             $pm->save();
                         }
                     }

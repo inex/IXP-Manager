@@ -150,6 +150,14 @@ $(document).ready( function() {
 				$( '#modal-peering-notes-message' ).val( substr( data, 3 ) );
 			else
 				$( '#modal-peering-notes-message' ).val( '' );
+
+			$( '#modal-peering-notes-message' ).off( 'focus' );
+			$( '#modal-peering-notes-message' ).one( 'focus', function( event ){
+				var prmt = '{$date} [{$user.username}]: ';
+				$( '#modal-peering-notes-message' ).val( prmt + "\n\n"  + $( '#modal-peering-notes-message' ).val() );
+			    $( '#modal-peering-notes-message' ).caretTo( strlen( prmt ) );		
+			});
+
 			
 			$( '#modal-peering-notes-custid' ).val( custid );
 			$( '#modal-peering-notes-message' ).removeAttr( 'disabled' ).removeClass( 'disabled' );
@@ -215,4 +223,5 @@ $(document).ready( function() {
 		ixpSendPeeringRequest( event );
 	}); 
 	
+
 });
