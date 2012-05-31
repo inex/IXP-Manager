@@ -65,6 +65,7 @@ function ixpSendPeeringRequest( event ) {
 			if( $( '#peering-request-form-sendtome' ).val() == '0' ) {
 				$( '#peering-request-' + custid ).attr( 'data-days', 0 );
 				$( '#peering-request-icon-' + custid ).attr( 'class', 'icon-repeat' );
+				$( '#peering-notes-icon-' + custid ).attr( 'class', 'icon-star' );
 			}
 			
 			bootbox.alert( substr( data, 3 ) );
