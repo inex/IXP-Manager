@@ -240,23 +240,29 @@ class PeeringManagerController extends INEX_Controller_Action
         {
             if( $f->isValid( $_POST ) )
             {
+                $sendtome = $f->getValue( 'sendtome' ) == '1' ? true : false;
+                $marksent = $f->getValue( 'marksent' ) == '1' ? true : false;
+                
                 $bccOk = true;
                 $bcc = array();
-                if( strlen( $bccs = $f->getValue( 'bcc' ) ) )
+                if( !$sendtome )
                 {
-                    foreach( explode( ',', $bccs ) as $b )
+                    if( strlen( $bccs = $f->getValue( 'bcc' ) ) )
                     {
-                        $b = trim( $b );
-                        if( !Zend_Validate::is( $b, 'EmailAddress' ) )
+                        foreach( explode( ',', $bccs ) as $b )
                         {
-                            $f->getElement( 'bcc' )->addError( 'One or more email address(es) here are invalid' );
-                            $bccOk = false;
+                            $b = trim( $b );
+                            if( !Zend_Validate::is( $b, 'EmailAddress' ) )
+                            {
+                                $f->getElement( 'bcc' )->addError( 'One or more email address(es) here are invalid' );
+                                $bccOk = false;
+                            }
+                            else
+                                $bcc[] = $b;
                         }
-                        else
-                            $bcc[] = $b;
                     }
                 }
-                
+                                
                 if( $bccOk )
                 {
                 
@@ -264,23 +270,35 @@ class PeeringManagerController extends INEX_Controller_Action
                     $mail->setFrom( 'no-reply@inex.ie', $this->getCustomer()['name'] . ' Peering Team' )
                          ->setReplyTo( $this->getCustomer()['peeringemail'], $this->getCustomer()['name'] . ' Peering Team' )
                          ->setSubject( $f->getValue( 'subject' ) )
-                         ->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer['peeringemail'], "{$peer['name']} Peering Team" )
-                         ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()['peeringemail'], "{$this->getCustomer()['name']} Peering Team" )
                          ->setBodyText( $f->getValue( 'message' ) );
 
+                    if( $sendtome )
+                    {
+                        $mail->addTo( $this->getUser()['email'] );
+                    }
+                    else
+                    {
+                        $mail->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer['peeringemail'], "{$peer['name']} Peering Team" )
+                             ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()['peeringemail'], "{$this->getCustomer()['name']} Peering Team" );
+                    }
+                    
                     if( count( $bcc ) )
                         foreach( $bcc as $b )
                             $mail->addBcc( $b );
                     
                     try {
-                        $mail->send();
+                        if( !$marksent )
+                            $mail->send();
                         
-                        // get this customer/peer peering manager table entry
-                        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
-                        $pm['email_last_sent'] = date( 'Y-m-d' );
-                        $pm['emails_sent'] = $pm['emails_sent'] + 1;
-                        $pm['updated'] = date( 'Y-m-d H:i:s' );
-                        $pm->save();
+                        if( !$sendtome )
+                        {
+                            // get this customer/peer peering manager table entry
+                            $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
+                            $pm['email_last_sent'] = date( 'Y-m-d' );
+                            $pm['emails_sent'] = $pm['emails_sent'] + 1;
+                            $pm['updated'] = date( 'Y-m-d H:i:s' );
+                            $pm->save();
+                        }
                     }
                     catch( Zend_Exception $e )
                     {
@@ -289,7 +307,13 @@ class PeeringManagerController extends INEX_Controller_Action
                         return true;
                     }
                     
-                    echo "OK:Peering request sent.";
+                    if( $sendtome )
+                        echo "OK:Peering request sample sent to your own email address ({$this->getUser()['email']}).";
+                    else if( $marksent )
+                        echo "OK:Peering request marked as sent in your Peering Manager.";
+                    else
+                        echo "OK:Peering request sent to {$peer['name']} Peering Team.";
+                    
                     return true;
                 }
             }

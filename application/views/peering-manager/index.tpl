@@ -47,7 +47,11 @@
     </div>
     <div class="modal-footer" id="modal-peering-request-footer">
         <button id="modal-peering-request-footer-close" class="btn">Close</button>
-        <button id="modal-peering-request-footer-send" class="btn btn-primary">Send</button>
+        <button id="modal-peering-request-footer-marksent" rel="tooltip"
+            title="Don't send this email but mark it as sent - useful if you are sending requests manually but want to track them here." class="btn btn-primary">Mark Sent</button>
+        <button id="modal-peering-request-footer-sendtome" rel="tooltip"
+            title="Just send this email to me so I can see how it looks." class="btn btn-primary">Send to Me</button>
+        <button id="modal-peering-request-footer-send" class="btn btn-danger">Send</button>
     </div>
 </div>
 
