@@ -86,6 +86,7 @@ class PeeringManagerController extends INEX_Controller_Action
         $potential       = array();
         $potential_bilat = array();
         $peered          = array();
+        $rejected        = array();
         
         foreach( $custs as $c )
         {
@@ -125,6 +126,7 @@ class PeeringManagerController extends INEX_Controller_Action
             $peered[ $c['autsys' ] ] = false;
             $potential_bilat[ $c['autsys' ] ] = false;
             $potential[ $c['autsys' ] ] = false;
+            $rejected[ $c['autsys' ] ] = false;
             
             foreach( $vlans as $vlan )
             {
@@ -161,6 +163,14 @@ class PeeringManagerController extends INEX_Controller_Action
                 if( $peers[ $c['id'] ]['peered'] )
                 {
                     $peered[ $c['autsys' ] ] = true;
+                    $rejected[ $c['autsys' ] ] = false;
+                    $potential[ $c['autsys' ] ] = false;
+                    $potential_bilat[ $c['autsys' ] ] = false;
+                }
+                else if( $peers[ $c['id'] ]['rejected'] )
+                {
+                    $peered[ $c['autsys' ] ] = false;
+                    $rejected[ $c['autsys' ] ] = true;
                     $potential[ $c['autsys' ] ] = false;
                     $potential_bilat[ $c['autsys' ] ] = false;
                 }
@@ -172,6 +182,7 @@ class PeeringManagerController extends INEX_Controller_Action
         $this->view->potential       = $potential;
         $this->view->potential_bilat = $potential_bilat;
         $this->view->peered          = $peered;
+        $this->view->rejected        = $rejected;
         
         //echo '<pre>'; print_r( $custs ); die();
         
@@ -418,6 +429,33 @@ class PeeringManagerController extends INEX_Controller_Action
     }
     
     
-
+    public function markRejectedAction()
+    {
+        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+    
+        if( !$peer )
+        {
+            $this->view->message = new INEX_Message( 'Invalid / unknown peer specified', INEX_Message::MESSAGE_TYPE_ERROR );
+            return $this->_forward( 'index' );
+        }
+    
+        // get this customer/peer peering manager table entry
+        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
+    
+        $pm['rejected'] = $pm['rejected'] ? 0 : 1;
+        if( $pm['peered'] && $pm['rejected'] )
+            $pm['peered'] = 0;
+    
+        $pm->save();
+    
+        $this->session->message = new INEX_Message( "Ignored / rejected flag " . ( $pm['rejected'] ? 'set' : 'cleared' ) . " for {$peer['name']}.",
+            INEX_Message::MESSAGE_TYPE_SUCCESS
+        );
+        return $this->_redirect( 'peering-manager/index' );
+    }
+    
+    
+    
+    
 
 }

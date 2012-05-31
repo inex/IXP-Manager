@@ -72,7 +72,15 @@
                                     {/if}
                                 </a>
                             </li>
-                            <li><a href="{genUrl controller="peering-manager" action="mark-ignored" custid=$c.id}">Move to Ignored / Rejected Tab</a></li>
+                            <li>
+                                <a href="{genUrl controller="peering-manager" action="mark-rejected" custid=$c.id}">
+                                    {if isset( $peers[$c.id] ) and $peers[$c.id].rejected}
+                                        Unmark as Rejected / Ignored
+                                    {else}
+                                        Move to Rejected / Ignored
+                                    {/if}
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </td>

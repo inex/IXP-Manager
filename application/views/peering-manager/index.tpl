@@ -14,10 +14,10 @@
         <a href="#potential" data-toggle="tab">Potential Peers</a></li>
         <li><a href="#potential-bilat" data-toggle="tab">Potential Bilateral Peers</a></li>
         <li><a href="#peers" data-toggle="tab">Peers</a></li>
-        <!--  li><a href="#rejected" data-toggle="tab">Rejected Peers</a></li -->
+        <li><a href="#rejected" data-toggle="tab">Rejected / Ignored Peers</a></li>
 </ul>
 
-<div class="tab-content">
+<div class="tab-content" style="min-height: 400px;">
 
     <div class="tab-pane active" id="potential">
         {include file="peering-manager/index-potential.tpl"}
@@ -31,8 +31,9 @@
         {include file="peering-manager/index-peers.tpl"}
     </div>
     
-    <!-- div class="tab-pane" id="rejected">
-    </div -->
+    <div class="tab-pane" id="rejected">
+        {include file="peering-manager/index-rejected.tpl"}
+    </div>
 
 </div>
 
