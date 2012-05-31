@@ -72,6 +72,8 @@ class PeeringManagerController extends INEX_Controller_Action
         foreach( $this->getCustomer()->PeeringManager->toArray() as $p )
         {
             $peers[ $p['peerid'] ] = $p;
+            // days since last peering request email sent
+            $peers[ $p['peerid'] ]['email_days'] = floor( ( time() - strtotime( $p['email_last_sent'] ) ) / 86400 );
         }
         $this->view->peers = $peers;
         
