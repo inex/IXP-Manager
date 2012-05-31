@@ -122,6 +122,10 @@ class PeeringManagerController extends INEX_Controller_Action
         
         foreach( $custs as $c )
         {
+            $peered[ $c['autsys' ] ] = false;
+            $potential_bilat[ $c['autsys' ] ] = false;
+            $potential[ $c['autsys' ] ] = false;
+            
             foreach( $vlans as $vlan )
             {
                 foreach( $protos as $proto )
@@ -150,6 +154,19 @@ class PeeringManagerController extends INEX_Controller_Action
             }
         }
 
+        foreach( $custs as $c )
+        {
+            if( isset( $peers[ $c['id'] ] ) )
+            {
+                if( $peers[ $c['id'] ]['peered'] )
+                {
+                    $peered[ $c['autsys' ] ] = true;
+                    $potential[ $c['autsys' ] ] = false;
+                    $potential_bilat[ $c['autsys' ] ] = false;
+                }
+            }
+        }
+        
         $this->view->custs = $custs;
         
         $this->view->potential       = $potential;
@@ -374,6 +391,31 @@ class PeeringManagerController extends INEX_Controller_Action
         return true;
     }
     
+    
+    public function markPeeredAction()
+    {
+        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+    
+        if( !$peer )
+        {
+            $this->view->message = new INEX_Message( 'Invalid / unknown peer specified', INEX_Message::MESSAGE_TYPE_ERROR );
+            return $this->_forward( 'index' );
+        }
+
+        // get this customer/peer peering manager table entry
+        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
+    
+        $pm['peered'] = $pm['peered'] ? 0 : 1;
+        if( $pm['peered'] && $pm['rejected'] )
+            $pm['rejected'] = 0;
+        
+        $pm->save();
+        
+        $this->session->message = new INEX_Message( "Peered flag " . ( $pm['peered'] ? 'set' : 'cleared' ) . " for {$peer['name']}.",
+            INEX_Message::MESSAGE_TYPE_SUCCESS
+        );
+        return $this->_redirect( 'peering-manager/index' );
+    }
     
     
 
