@@ -28,7 +28,7 @@
             {assign var=c value=$custs.$as}
         
             <tr>
-                <td>{$c.name}</td>
+                <td id="peer-name-{$c.id}"}>{$c.name}</td>
                 <td>{$c.autsys}</td>
                 <td>{$c.peeringpolicy}</td>
                 

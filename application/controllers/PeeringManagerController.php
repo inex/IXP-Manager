@@ -331,80 +331,49 @@ class PeeringManagerController extends INEX_Controller_Action
         $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'peering-request.tpl' );
     }
     
-
-    public function myPeeringManagerNotesAction()
+    public function peeringNotesAction()
     {
-        $bcust = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'id', null ) );
-
-        $this->getResponse()
-            ->setHeader('Content-Type', 'text/html');
-
-        if( !$bcust && $this->_request->getParam( 'save' ) == '1' )
+        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+    
+        if( !$peer )
         {
-            $this->getResponse()
-                 ->setBody( Zend_Json::encode(
-                    array(
-                        'status' => '0',
-                        'message' => "Error: Invalid parameters supplied"
-                  ) ) )
-            ->sendResponse();
-            exit;
-        }
-        else if( !$bcust )
-        {
-            echo '';
-            exit;
+            echo "ERR:Could not find peer's information in the database. Please contact support.";
+            return true;
         }
 
-        $myPeerRecord = Doctrine_Query::create()
-            ->from( 'MyPeeringMatrix mpm' )
-            ->where( 'mpm.custid = ?', $this->customer['id'] )
-            ->andWhere( 'mpm.peerid = ?', $bcust['id'] )
-            ->fetchOne( null, Doctrine_core::HYDRATE_RECORD );
+        // get this customer/peer peering manager table entry
+        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
 
-        if( $this->_request->getParam( 'save' ) == '1' )
+        if( $this->getRequest()->isPost() )
         {
+            $pm['updated'] = date( 'Y-m-d H:i:s' );
+            
+            if( trim( stripslashes( $this->_getParam( 'message', '' ) ) ) )
+                $pm['notes'] = trim( stripslashes( $this->_getParam( 'message' ) ) );
+            
             try
             {
-                $myPeerRecord->updateNotes( stripslashes( $this->_request->getParam( 'notes' ) ) );
-                
-                $this->getResponse()
-                    ->setBody( Zend_Json::encode(
-                        array(
-                            'status' => '1',
-                            'message' => "Peering notes updated for {$bcust['name']}.",
-                            'commentAdded' => '1', 'cid' => $bcust['id']
-                        ) ) )
-                    ->sendResponse();
+                $pm->save();
             }
-            catch( Zend_Exception $e )
+            catch( Exception $e )
             {
-                $this->getResponse()
-                    ->setBody( Zend_Json::encode(
-                        array(
-                            'status' => '0',
-                            'message' => "Error: Sorry, we could not save your updated notes. Please contact support to report this issue."
-                        ) ) )
-                    ->sendResponse();
+                $this->getLogger()->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
+                echo "ERR:Could not update peering notes due to an unexpected error.";
+                return true;
             }
+            
+            echo "OK:Peering notes updated for {$peer['name']}.";
+            return true;
         }
         else
         {
-            $prefix = date( 'Y-m-d ' ) . $this->user['username'] . ": ";
-            $content = array(
-                'name'  => $bcust['name'],
-                'notes' => "$prefix\n\n" . $myPeerRecord->getNotes(),
-                'pos'   => strlen( $prefix )
-            );
-
-            $this->getResponse()
-                ->setHeader('Content-Type', 'text/html')
-                ->setBody( Zend_Json::encode( $content ) )
-                ->sendResponse();
+            echo 'OK:' . $pm['notes'];
         }
-
-        exit();
+        return true;
     }
+    
+    
+    
 
 
     public function myPeeringManagerPeeredStateAction()
