@@ -43,7 +43,7 @@
                                 <ul class="dropdown-menu">
                                     {if $user.privs eq 1}
                                         <li>
-                                            <a href="{genUrl controller="dashboard" action="my-peering-manager"}">My Peering Manager</a>
+                                            <a href="{genUrl controller="peering-manager"}">Peering Manager</a>
                                         </li>
                                     {/if}
                                     <li>

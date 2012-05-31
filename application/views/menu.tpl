@@ -104,6 +104,10 @@
             
         </li>
         
+        <li {if $controller eq 'mac-address'}class="active"{/if}>
+            <a href="{genUrl controller='mac-address' action='list'}">MAC Addresses</a>
+        </li>
+        
         <li {if $controller eq 'vendor'}class="active"{/if}>
             <a href="{genUrl controller='vendor' action='list'}">Vendors</a>
         </li>

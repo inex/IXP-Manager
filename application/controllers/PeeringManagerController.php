@@ -1,0 +1,381 @@
+<?php
+
+/*
+ * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+
+/*
+ * http://www.inex.ie/
+ * (c) Internet Neutral Exchange Association Ltd
+ */
+
+class PeeringManagerController extends INEX_Controller_Action
+{
+
+    public function preDispatch()
+    {
+        // let's get the user's details sorted before everything else
+        if( !$this->auth->hasIdentity() )
+        {
+            // record the page we wanted
+            $this->session->postAuthRedirect = $this->_request->getPathInfo();
+            $this->_redirect( 'auth/login' );
+        }
+        
+        // we should only be available to CUSTUSERs
+        if( $this->getUser()->privs != User::AUTH_CUSTUSER )
+        {
+            $this->session->message = new INEX_Message(
+                "You must be logged in as a standard user to access the peering manager.",
+                INEX_Message::MESSAGE_TYPE_ERROR
+            );
+            $this->_forward( 'index', 'index' );
+        }
+    }
+    
+
+    public function indexAction()
+    {
+        //echo '<pre>'; print_r( VlaninterfaceTable::getForPeeringManager() ); die();
+        
+        $this->view->vlans  = $vlans  = [ 10, 12 ];
+        $this->view->protos = $protos = [ 4, 6 ];
+        
+        $bilat = array();
+        foreach( $vlans as $vlan )
+            foreach( $protos as $proto )
+                $bilat[$vlan][$proto ] = $this->_getSessions( $vlan, $proto );
+        
+        $this->view->bilat = $bilat;
+
+        // echo '<pre>'; print_r( $this->getCustomer()->PeeringManager->toArray() ); die();
+        
+        $peers = array();
+        foreach( $this->getCustomer()->PeeringManager->toArray() as $p )
+        {
+            $peers[ $p['peerid'] ] = $p;
+            // days since last peering request email sent
+            $peers[ $p['peerid'] ]['email_days'] = floor( ( time() - strtotime( $p['email_last_sent'] ) ) / 86400 );
+        }
+        $this->view->peers = $peers;
+        
+        $custs = VlaninterfaceTable::getForPeeringManager();
+
+        $this->view->me = $me = $custs[ $this->getCustomer()->autsys ];
+        $this->view->myasn = $this->getCustomer()->autsys;
+        unset( $custs[ $this->getCustomer()->autsys ] );
+        
+        $potential       = array();
+        $potential_bilat = array();
+        $peered          = array();
+        
+        foreach( $custs as $c )
+        {
+            $custs[ $c['autsys' ] ]['ispotential'] = false;
+            
+            foreach( $vlans as $vlan )
+            {
+                if( isset( $me['vlaninterfaces'][$vlan] ) )
+                {
+                    if( isset( $c['vlaninterfaces'][$vlan] ) )
+                    {
+                        foreach( $protos as $proto )
+                        {
+                            if( $me['vlaninterfaces'][$vlan][0]["ipv{$proto}enabled"] && $c['vlaninterfaces'][$vlan][0]["ipv{$proto}enabled"] )
+                            {
+                                if( in_array( $c['autsys'], $bilat[$vlan][4][$me['autsys']]['peers'] ) )
+                                    $custs[ $c['autsys'] ][$vlan][$proto] = 2;
+                                else if( $me['vlaninterfaces'][$vlan][0]['rsclient'] && $c['vlaninterfaces'][$vlan][0]['rsclient'] )
+                                {
+                                    $custs[ $c['autsys'] ][$vlan][$proto] = 1;
+                                    $custs[ $c['autsys' ] ]['ispotential'] = true;
+                                }
+                                else
+                                {
+                                    $custs[ $c['autsys'] ][$vlan][$proto] = 0;
+                                    $custs[ $c['autsys' ] ]['ispotential'] = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        foreach( $custs as $c )
+        {
+            foreach( $vlans as $vlan )
+            {
+                foreach( $protos as $proto )
+                {
+                    if( isset( $c[$vlan][$proto] ) )
+                    {
+                        switch( $c[$vlan][$proto] )
+                        {
+                            case 2:
+                                $peered[ $c['autsys' ] ] = true;
+                                break;
+                                
+                            case 1:
+                                $peered[ $c['autsys' ] ] = true;
+                                $potential_bilat[ $c['autsys' ] ] = true;
+                                break;
+                                
+                            case 0:
+                                $potential[ $c['autsys' ] ] = true;
+                                $potential_bilat[ $c['autsys' ] ] = true;
+                                break;
+                                
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->view->custs = $custs;
+        
+        $this->view->potential       = $potential;
+        $this->view->potential_bilat = $potential_bilat;
+        $this->view->peered          = $peered;
+        
+        //echo '<pre>'; print_r( $custs ); die();
+        
+        $this->view->date = date( 'Y-m-d' );
+        
+        $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'index.tpl' );
+    }
+
+
+    private function _getSessions( $lan, $proto )
+    {
+        $key = "pm_sessions_{$lan}_{$proto}";
+    
+        if( !( $sessions = $this->apcFetch( $key ) ) )
+        {
+            $sessions = BgpsessiondataTable::getPeers( $lan, $proto );
+            $this->apcStore( $key, $sessions, 86400 );
+        }
+    
+        return $sessions;
+    }
+    
+    private function _getCusts( $lan, $proto )
+    {
+        $key = "pm_custs_{$lan}_{$proto}";
+    
+        if( !( $custs = $this->apcFetch( $key ) ) )
+        {
+            $custs = VlaninterfaceTable::getForPeeringMatrix( $lan, $proto );
+            $this->apcStore( $key, $custs, 86400 );
+        }
+    
+        return $custs;
+    }
+    
+
+
+    public function peeringRequestAction()
+    {
+        $TESTMODE = false;
+        
+        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+        
+        if( !$peer )
+        {
+            echo "ERR:Could not find peer's information in the database. Please contact support.";
+            return true;
+        }
+        
+        $f = new INEX_Form_PeeringRequest();
+        
+        // need to get VLAN interfaces in common for these two members
+        $myints = Doctrine_Core::getTable( 'ViewVlaninterfaceDetailsByCustid' )->findByCustid(
+            $this->getCustomer()['id'], Doctrine_Core::HYDRATE_ARRAY
+        );
+        
+        $pints = Doctrine_Core::getTable( 'ViewVlaninterfaceDetailsByCustid' )->findByCustid(
+            $peer['id'], Doctrine_Core::HYDRATE_ARRAY
+        );
+        
+        // potential peerings
+        $pp = array(); $count = 0;
+        
+        foreach( $myints as $myint )
+        {
+            // does b member have one (or more than one)?
+            foreach( $pints as $pint )
+            {
+                if( $myint['vlanid'] == $pint['vlanid'] )
+                {
+                    $pp[$count]['my']   = $myint;
+                    $pp[$count]['your'] = $pint;
+                    $count++;
+                }
+            }
+        }
+        
+        // INEX_Debug::dd( $pp );
+        $this->view->pp = $pp;
+        
+        $f->getElement( 'to' )->setValue( $peer['peeringemail'] );
+        $f->getElement( 'cc' )->setValue( $this->getCustomer()['peeringemail'] );
+
+        if( $this->getRequest()->isPost() )
+        {
+            if( $f->isValid( $_POST ) )
+            {
+                $sendtome = $f->getValue( 'sendtome' ) == '1' ? true : false;
+                $marksent = $f->getValue( 'marksent' ) == '1' ? true : false;
+                
+                $bccOk = true;
+                $bcc = array();
+                if( !$sendtome )
+                {
+                    if( strlen( $bccs = $f->getValue( 'bcc' ) ) )
+                    {
+                        foreach( explode( ',', $bccs ) as $b )
+                        {
+                            $b = trim( $b );
+                            if( !Zend_Validate::is( $b, 'EmailAddress' ) )
+                            {
+                                $f->getElement( 'bcc' )->addError( 'One or more email address(es) here are invalid' );
+                                $bccOk = false;
+                            }
+                            else
+                                $bcc[] = $b;
+                        }
+                    }
+                }
+                                
+                if( $bccOk )
+                {
+                
+                    $mail = new Zend_Mail();
+                    $mail->setFrom( 'no-reply@inex.ie', $this->getCustomer()['name'] . ' Peering Team' )
+                         ->setReplyTo( $this->getCustomer()['peeringemail'], $this->getCustomer()['name'] . ' Peering Team' )
+                         ->setSubject( $f->getValue( 'subject' ) )
+                         ->setBodyText( $f->getValue( 'message' ) );
+
+                    if( $sendtome )
+                    {
+                        $mail->addTo( $this->getUser()['email'] );
+                    }
+                    else
+                    {
+                        $mail->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer['peeringemail'], "{$peer['name']} Peering Team" )
+                             ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()['peeringemail'], "{$this->getCustomer()['name']} Peering Team" );
+                    }
+                    
+                    if( count( $bcc ) )
+                        foreach( $bcc as $b )
+                            $mail->addBcc( $b );
+                    
+                    try {
+                        if( !$marksent )
+                            $mail->send();
+                        
+                        if( !$sendtome )
+                        {
+                            // get this customer/peer peering manager table entry
+                            $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
+                            $pm['email_last_sent'] = date( 'Y-m-d' );
+                            $pm['emails_sent'] = $pm['emails_sent'] + 1;
+                            $pm['updated'] = date( 'Y-m-d H:i:s' );
+                            $pm['notes'] = date( 'Y-m-d' ) . " [{$this->getUser()['username']}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n";
+                            $pm->save();
+                        }
+                    }
+                    catch( Zend_Exception $e )
+                    {
+                        $this->getLogger()->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
+                        echo "ERR:Could not send the peering email. Please send manually yourself or contact support.";
+                        return true;
+                    }
+                    
+                    if( $sendtome )
+                        echo "OK:Peering request sample sent to your own email address ({$this->getUser()['email']}).";
+                    else if( $marksent )
+                        echo "OK:Peering request marked as sent in your Peering Manager.";
+                    else
+                        echo "OK:Peering request sent to {$peer['name']} Peering Team.";
+                    
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            $f->getElement( 'bcc' )->setValue( $this->getUser()['email'] );
+            $f->getElement( 'subject' )->setValue( "[INEX] Peering Request from {$this->getCustomer()['name']} (ASN{$this->getCustomer()['autsys']})" );
+            $f->getElement( 'message' )->setValue( $this->view->render( 'peering-manager' . DIRECTORY_SEPARATOR . 'peering-request-message.tpl' ) );
+        }
+        
+        $this->view->form = $f;
+
+        $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'peering-request.tpl' );
+    }
+    
+    public function peeringNotesAction()
+    {
+        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+    
+        if( !$peer )
+        {
+            echo "ERR:Could not find peer's information in the database. Please contact support.";
+            return true;
+        }
+
+        // get this customer/peer peering manager table entry
+        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
+
+        if( $this->getRequest()->isPost() )
+        {
+            $pm['updated'] = date( 'Y-m-d H:i:s' );
+            
+            if( trim( stripslashes( $this->_getParam( 'message', '' ) ) ) )
+                $pm['notes'] = trim( stripslashes( $this->_getParam( 'message' ) ) );
+            
+            try
+            {
+                $pm->save();
+            }
+            catch( Exception $e )
+            {
+                $this->getLogger()->err( $e->getMessage() . "\n\n" . $e->getTraceAsString() );
+                echo "ERR:Could not update peering notes due to an unexpected error.";
+                return true;
+            }
+            
+            echo "OK:Peering notes updated for {$peer['name']}.";
+            return true;
+        }
+        else
+        {
+            echo 'OK:' . $pm['notes'];
+        }
+        return true;
+    }
+    
+    
+    
+
+
+}

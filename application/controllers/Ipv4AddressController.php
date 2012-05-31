@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -78,7 +78,7 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
     {
         $this->view->vlans = Doctrine_Query::create()
             ->from( 'Vlan v' )
-            ->orderBy( 'v.name ASC' )
+            ->orderBy( 'v.number ASC' )
             ->fetchArray();
         
         if( count( $this->view->vlans ) == 0 )
@@ -114,7 +114,7 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
     {
         $f = new INEX_Form_AddAddresses( null, false, '' );
         
-        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/' 
+        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/'
             . $this->getRequest()->getParam( 'controller' ) . "/add-addresses" );
  
         if( $this->inexGetPost( 'commit' ) !== null && $f->isValid( $_POST ) )
@@ -139,7 +139,7 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
                         $ip['vlanid']   = $f->getValue( 'vlanid' );
                         $ip['address']  = trim( $_POST[ 'np_name' . $i ] );
                         $ip->save();
-                    } 
+                    }
                     
                     $conn->commit();
                      
