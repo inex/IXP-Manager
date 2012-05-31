@@ -66,7 +66,14 @@ class PeeringManagerController extends INEX_Controller_Action
         
         $this->view->bilat = $bilat;
 
-        //echo '<pre>'; print_r( $bilat ); die();
+        // echo '<pre>'; print_r( $this->getCustomer()->PeeringManager->toArray() ); die();
+        
+        $peers = array();
+        foreach( $this->getCustomer()->PeeringManager->toArray() as $p )
+        {
+            $peers[ $p['peerid'] ] = $p;
+        }
+        $this->view->peers = $peers;
         
         $custs = VlaninterfaceTable::getForPeeringManager();
 
