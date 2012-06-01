@@ -56,7 +56,7 @@ class INEX_Form_User extends INEX_Form
             ->addFilter( new INEX_Filter_StripSlashes() )
             ->addFilter( 'StringToLower' )
             ->addValidator( 'stringLength', false, array( 6, 30 ) )
-            ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9]+$/' ) );
+            ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\-_\.]+$/' ) );
 
         $this->addElement( $username );
 

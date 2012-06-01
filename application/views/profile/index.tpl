@@ -66,15 +66,18 @@ in the format: <code>353861234567</code>.
             <fieldset>
 
                 {foreach from=$mailinglists key=name item=ml}
-                
-                    <div class="control-group">
-                        <label class="checkbox">
-                            <input type="checkbox" name="ml_{$name}" value="1" {if $ml.subscribed}checked="checked"{/if}>
-                                <strong>{$ml.name}</strong> - {$ml.desc}
-                                ({if $ml.email}{mailto address=$ml.email} - {/if}<a href="{$ml.archive}">archives</a>)
-                        </label>
-                    </div>
-                    
+
+	            {if $customer.type neq Cust::TYPE_ASSOCIATE or ( isset( $ml.associates ) and $ml.associates )}
+
+                        <div class="control-group">
+                            <label class="checkbox">
+                                <input type="checkbox" name="ml_{$name}" value="1" {if $ml.subscribed}checked="checked"{/if}>
+                                    <strong>{$ml.name}</strong> - {$ml.desc}
+                                    ({if $ml.email}{mailto address=$ml.email} - {/if}<a href="{$ml.archive}">archives</a>)
+                            </label>
+                        </div>
+                    {/if}
+
                 {/foreach}
             
                 <div class="form-actions">
