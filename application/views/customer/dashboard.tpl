@@ -110,20 +110,24 @@
                             <td><strong>Left</strong></td>
                             <td>{$acust.dateleave}</td>
                         </tr>
+                        {if $acust.type neq Cust::TYPE_ASSOCIATE}
+                            <tr>
+                                <td><strong>Peering Policy</strong></td>
+                                <td>{$acust.peeringpolicy}</td>
+                                <td><strong>ASN</strong></td>
+                                <td>{$acust.autsys|asnumber} {if $acust.peeringmacro}({$acust.peeringmacro}){/if}</td>
+                            </tr>
+                        {/if}
                         <tr>
-                            <td><strong>Peering Policy</strong></td>
-                            <td>{$acust.peeringpolicy}</td>
-                            <td><strong>ASN</strong></td>
-                            <td>{$acust.autsys|asnumber} {if $acust.peeringmacro}({$acust.peeringmacro}){/if}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>NOC Details</strong></td>
+                            <td>{if $acust.type neq Cust::TYPE_ASSOCIATE}<strong>NOC Details</strong>{/if}</td>
                             <td>
-                                {if $acust.nochours}    {$acust.nochours}<br />    {/if}
-                                {if $acust.nocemail}    {mailto address=$acust.nocemail}<br />{/if}
-                                {if $acust.nocwww}      {$acust.nocwww}<br />      {/if}
-                                {if $acust.nocphone}    {$acust.nocphone}<br />    {/if}
-                                {if $acust.noc24hphone} {$acust.noc24hphone} (24h) {/if}
+				{if $acust.type neq Cust::TYPE_ASSOCIATE}
+                                    {if $acust.nochours}    {$acust.nochours}<br />    {/if}
+                                    {if $acust.nocemail}    {mailto address=$acust.nocemail}<br />{/if}
+                                    {if $acust.nocwww}      {$acust.nocwww}<br />      {/if}
+                                    {if $acust.nocphone}    {$acust.nocphone}<br />    {/if}
+                                    {if $acust.noc24hphone} {$acust.noc24hphone} (24h) {/if}
+                                {/if}
                             </td>
                             <td><strong>Billing Details</strong></td>
                             <td>
