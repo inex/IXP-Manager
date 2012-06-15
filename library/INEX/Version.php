@@ -3,5 +3,5 @@
 # Basic version information
 #
 
-define( 'APPLICATION_VERSION', '2.4.2' );
-define( 'APPLICATION_VERDATE', '20120531135700' );
+define( 'APPLICATION_VERSION', '2.5.0' );
+define( 'APPLICATION_VERDATE', '20120615150500' );
