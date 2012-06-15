@@ -20,6 +20,7 @@
             <li><a href="#tab3" data-toggle="tab">Ports</a></li>
             <li><a href="{genUrl controller="peering-manager"}">Peering Manager &raquo;</a></li>
             <li><a href="{genUrl controller="dashboard" action="statistics"}">Statistics &raquo;</a></li>
+            <li><a href="{genUrl controller="dashboard" action="p2p"}">Peer to Peer Traffic &raquo;</a></li>
         {/if}
     </ul>
     
