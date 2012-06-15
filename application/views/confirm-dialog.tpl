@@ -21,25 +21,21 @@
 
 <script type="text/javascript">
 
-$(document).ready(function() {
+$( "#modal-confirm" ).modal({
+	'show': false
+});
 
-	$( "#modal-confirm" ).modal({
-		'show': false
-	});
+$('a[id|="object-delete"]').click( function( event ){
 
-	$('a[id|="object-delete"]').click( function( event ){
+	var id = substr( $( this ).attr( 'id' ), 14 );
 
-		var id = substr( $( this ).attr( 'id' ), 14 );
-
-		if( $( this ).attr( 'data-url' ) ) {
-		    $( '#modal-confirm-action' ).attr( 'href', $( this ).attr( 'data-url' ) );
-		} else {
-		    $( '#modal-confirm-action' ).attr( 'href', "{genUrl controller=$controller action="delete"}/id/" + id );
-	    }
-		
-		$( "#modal-confirm" ).modal( { 'show': true } );
-	});
-
+	if( $( this ).attr( 'data-url' ) ) {
+	    $( '#modal-confirm-action' ).attr( 'href', $( this ).attr( 'data-url' ) );
+	} else {
+	    $( '#modal-confirm-action' ).attr( 'href', "{genUrl controller=$controller action="delete"}/id/" + id );
+    }
+	
+	$( "#modal-confirm" ).modal( { 'show': true } );
 });
 
 </script>

@@ -26,7 +26,8 @@
     <td width="20"></td>
     <td valign="middle"><strong>Graph Type:</strong></td>
     <td>
-        <select name="category" onchange="this.form.submit();">
+        &nbsp;
+        <select name="category" class="chzn-select" onchange="this.form.submit();">
             {foreach from=$categories key=cname item=cvalue}
                 <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
             {/foreach}
@@ -35,7 +36,8 @@
     <td width="20"></td>
     <td valign="middle"><strong>Period:</strong></td>
     <td>
-        <select name="period" onchange="this.form.submit();">
+        &nbsp;
+        <select name="period" class="chzn-select" onchange="this.form.submit();">
             {foreach from=$periods key=cname item=cvalue}
                 <option value="{$cvalue}" {if $period eq $cvalue}selected{/if}>{$cname}</option>
             {/foreach}
@@ -55,7 +57,14 @@
     <div class="span3">
 
         <div class="well">
-            <h4>{$cust.name}</h4>
+            <h4 style="vertical-align: middle">
+                {$cust.name}
+                {if $category eq 'bits' or $category eq 'pkts'}
+                    <span class="btn btn-mini" style="float: right">
+                        <a href="{genUrl controller="dashboard" action="p2p" shortname=$cust.shortname category=$category period=$period}"><i class="icon-random"></i></a>
+                    </span>
+                {/if}
+            </h4>
 
             <p>
                 <br />

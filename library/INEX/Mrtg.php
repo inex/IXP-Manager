@@ -4,21 +4,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -133,7 +133,46 @@ class INEX_Mrtg
         'Packets'  => INEX_Mrtg::CATEGORY_PACKETS
     );
 
-
+    /**
+     * Protocols for MRTG data and graphs
+     */
+    const PROTOCOL_IPV4 = 4;
+    
+    /**
+     * Protocols for MRTG data and graphs
+     */
+    const PROTOCOL_IPV6 = 6;
+    
+    /**
+     * Array of valid protocols
+     */
+    public static $PROTOCOLS = array(
+        'IPv4'     => INEX_Mrtg::PROTOCOL_IPV4,
+        'IPv6'     => INEX_Mrtg::PROTOCOL_IPV6
+    );
+    
+    
+    /**
+     * Infrastructures for MRTG data and graphs
+     */
+    const INFRASTRUCTURE_PRIMARY = 1;
+    
+    /**
+     * Infrastructures for MRTG data and graphs
+     */
+    const INFRASTRUCTURE_SECONDARY = 2;
+    
+    
+    /**
+     * Array of valid infrastructures
+     */
+    public static $INFRASTRUCTURES = array(
+        'Primary'     => INEX_Mrtg::INFRASTRUCTURE_PRIMARY,
+        'Secondary'   => INEX_Mrtg::INFRASTRUCTURE_SECONDARY
+    );
+    
+    
+    
     /**
      * Class constructor.
      *
@@ -202,6 +241,37 @@ class INEX_Mrtg
     }
 
     /**
+     * Returns the full absolute path to an MRTG P2P graph file.
+     *
+     * This function assumes appropriate values and it is expected that
+     * you have already sanitised these.
+     *
+     * @param $mrtgPath The base path on the filesystem to the MRTG files.
+     * @param $svid Integer representing the virtual interface of the source virtual interface
+     * @param $dvid Integer representing the virtual interface of the dest virtual interface
+     * @param $category A value from INEX_Mrtg::$CATEGORIES
+     * @param $period A value from INEX_Mrtg::$PERIODS
+     * @param $proto A value from INEX_Mrtg::$PROTOCOLS
+     * @return string The full absolute path and filename
+     */
+    static function getMrtgP2pFilePath( $mrtgPath,
+            $svid,
+            $dvid,
+            $category = 'bits',
+            $period = 'day',
+            $proto = 4
+        )
+    {
+        // sanitise these things carefully
+        return $mrtgPath
+            . "?srcvid={$svid}"
+            . "&dstvid={$dvid}"
+            . "&protocol={$proto}"
+            . "&type={$category}"
+            . "&period={$period}";
+    }
+
+    /**
      * Utility function to generate URLs for grabbing graph images.
      *
      * FIXME This isn't the right place for this but I'm not sure what is
@@ -212,15 +282,19 @@ class INEX_Mrtg
      */
     public static function generateZendFrontendUrl( $params )
     {
-        $url = Zend_Controller_Front::getInstance()->getBaseUrl()
-            . '/mrtg/retrieve-image';
+        $url = Zend_Controller_Front::getInstance()->getBaseUrl();
+        
+        if( isset( $params['p2p'] ) && $params['p2p'] )
+            $url .= '/mrtg/retrieve-p2p-image';
+        else
+            $url .= '/mrtg/retrieve-image';
 
         if( isset( $params['shortname'] ) )
             $url .= "/shortname/{$params['shortname']}";
 
         if( isset( $params['monitorindex'] ) )
             $url .= "/monitorindex/{$params['monitorindex']}";
-        else
+        else if( !isset( $params['p2p'] ) || !$params['p2p'] )
             $url .= "/monitorindex/aggregate";
 
         if( isset( $params['period'] ) )
@@ -233,6 +307,29 @@ class INEX_Mrtg
         else
             $url .= "/category/bits";
 
+        if( isset( $params['p2p'] ) && $params['p2p'] )
+        {
+            if( isset( $params['svid'] ) )
+                $url .= "/svid/{$params['svid']}";
+            else
+                die();
+            
+            if( isset( $params['dvid'] ) )
+                $url .= "/dvid/{$params['dvid']}";
+            else
+                die();
+            
+            if( isset( $params['proto'] ) )
+                $url .= "/proto/{$params['proto']}";
+            else
+                $url .= "/proto/4";
+            
+            if( isset( $params['infra'] ) )
+                $url .= "/infra/{$params['infra']}";
+            else
+                $url .= "/infra/1";
+        }
+        
         if( isset( $params['graph'] ) )
             $url .= "/graph/{$params['graph']}";
 
