@@ -371,7 +371,12 @@ class DashboardController extends INEX_Controller_Action
     public function p2pAction()
     {
         if( $this->user['privs'] < User::AUTH_SUPERUSER )
+        {
+            if( $this->getRequest()->getParam( 'shortname' ) != $this->customer['shortname'] )
+                $this->getLogger()->alert( $this->customer['shortname'] . " requested shortname " . $this->getRequest()->getParam( 'shortname' ) . " in p2p" );
+                
             $shortname = $this->customer['shortname'];
+        }
         else
             $shortname = $this->getRequest()->getParam( 'shortname', $this->customer['shortname'] );
 
@@ -476,107 +481,6 @@ class DashboardController extends INEX_Controller_Action
             $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'p2p-single.tpl' );
         else
             $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'p2p.tpl' );
-    }
-
-
-    /**
-     * sFlow Peer to Peer statistics
-     */
-    public function p2pSingleAction()
-    {
-        if( $this->user['privs'] < User::AUTH_SUPERUSER )
-            $shortname = $this->customer['shortname'];
-        else
-            $shortname = $this->getRequest()->getParam( 'shortname', $this->customer['shortname'] );
-
-        $cust = $this->_getCustomerByShortname( $shortname );
-
-        // is there a category selected?
-        $this->view->category = $category = $this->getRequest()->getParam( 'category', INEX_Mrtg::$CATEGORIES_AGGREGATE['Bits'] );
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES_AGGREGATE ) )
-            $this->view->category = $category = INEX_Mrtg::$CATEGORIES_AGGREGATE['Bits'];
-
-        // is there a period selected?
-        $this->view->period = $period = $this->getRequest()->getParam( 'period', INEX_Mrtg::$PERIODS['Day'] );
-        if( !in_array( $period, INEX_Mrtg::$PERIODS ) )
-            $this->view->period = $period = INEX_Mrtg::$PERIODS['Day'];
-
-        // is there an infrastructure selected?
-        $infra = $this->view->infra = $this->getRequest()->getParam( 'infra', 1 );
-        if( !in_array( $infra, INEX_Mrtg::$INFRASTRUCTURES ) )
-            $infra = $this->view->infra = INEX_Mrtg::INFRASTRUCTURE_PRIMARY;
-
-        // is there an protocol selected?
-        $proto = $this->view->proto = $this->getRequest()->getParam( 'proto', 4 );
-        if( !in_array( $proto, INEX_Mrtg::$PROTOCOLS ) )
-            $proto = $this->view->proto = INEX_Mrtg::PROTOCOL_IPV4;
-
-        // find the virtual interfaces that this customer has
-
-        // TODO customer has multiple virtual interfaces?
-        
-        // find the possible virtual interfaces that this customer peers with
-        $this->view->customersVirtualInterfaces = Doctrine_Query::create()
-            ->select( '
-                c.id, c.name, c.shortname, vi.id, pi.id, vint.id, sp.id, s.id
-                ' )
-            ->from( 'Cust c' )
-            ->leftJoin( 'c.Virtualinterface vi' )
-            ->leftJoin( 'vi.Physicalinterface pi' )
-            ->leftJoin( 'vi.Vlaninterface vint' )
-            ->leftJoin( 'pi.Switchport sp' )
-            ->leftJoin( 'sp.SwitchTable s' )
-            ->where( 's.infrastructure = ?', $infra )
-            ->andWhere( 'vint.ipv' . $proto . 'enabled = 1' )
-            ->andWhere( 'c.shortname = ?', $shortname )
-            ->fetchOne( null, Doctrine_Core::HYDRATE_ARRAY );
-
-        if( isset( $this->view->customersVirtualInterfaces['Virtualinterface'] ) and count( $this->view->customersVirtualInterfaces['Virtualinterface'] ) )
-        {
-            if( count( $this->view->customersVirtualInterfaces['Virtualinterface'] ) > 1 )
-            {
-                $interfaces = array();
-                foreach( $this->view->customersVirtualInterfaces['Virtualinterface'] as $vint )
-                    $interfaces[] = $vint['id'];
-                
-                $interface = $this->view->interface = $this->getRequest()->getParam( 'interface', $interfaces[0] );
-                if( !in_array( $interface, $interfaces ) )
-                    $interface = $this->view->interface = $interfaces[0];
-                
-                $this->view->svid = $interface;
-            }
-            else
-                $this->view->svid = $this->view->customersVirtualInterfaces['Virtualinterface'][0]['id'];
-            
-            // find the possible virtual interfaces that this customer peers with
-            $this->view->customersWithVirtualInterfaces = Doctrine_Query::create()
-                ->select( '
-                    c.id, c.name, c.shortname, vi.id, pi.id, vint.id, sp.id, s.id
-                    ' )
-                ->from( 'Cust c' )
-                ->leftJoin( 'c.Virtualinterface vi' )
-                ->leftJoin( 'vi.Physicalinterface pi' )
-                ->leftJoin( 'vi.Vlaninterface vint' )
-                ->leftJoin( 'pi.Switchport sp' )
-                ->leftJoin( 'sp.SwitchTable s' )
-                ->where( 's.infrastructure = ?', $infra )
-                ->andWhere( 'vint.ipv' . $proto . 'enabled = 1' )
-                ->andWhere( 'c.shortname != ?', $shortname )
-                ->andWhere( 'c.type != ?', Cust::TYPE_INTERNAL )
-                ->orderBy( 'c.name ASC' )
-                ->fetchArray();
-        }
-        
-        $this->view->categories      = INEX_Mrtg::$CATEGORIES_AGGREGATE;
-        $this->view->periods         = INEX_Mrtg::$PERIODS;
-        $this->view->infrastructures = INEX_Mrtg::$INFRASTRUCTURES;
-        $this->view->protocols       = INEX_Mrtg::$PROTOCOLS;
-        
-        $this->view->shortname = $shortname;
-
-        $this->view->customer = $cust;
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'p2p.tpl' );
     }
 
 

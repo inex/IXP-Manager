@@ -176,7 +176,7 @@
                             <a href="{genUrl controller="dashboard" action="p2p" shortname=$customer.shortname svid=$svid dvid=$vint.id category=$category period=$period proto=$proto infra=$infra}">
                                 <img
                                     src="{genMrtgP2pImgUrl shortname=$customer.shortname svid=$svid dvid=$vint.id category=$category proto=$proto period=$period infra=$infra}"
-                                    width="300"
+                                    width="600"
                                 />
                             </a>
                         </p>
@@ -206,7 +206,7 @@
 {else} {* customer has an interface for given infra and proto *}
 
     <div class="alert alert-info">
-        <h4 class="alert-heading">Uh oh! You do not have any ports for the select infrastructure and / or protocol.</h4>
+        <h4 class="alert-heading">Uh oh! You (or your peer(s)) do not have any ports for the select infrastructure and / or protocol.</h4>
         If you'd like to take to us about enabling IPv6 or getting a port on the secondary infrastructure, please
         <a href="{genUrl controller="dashboard" action="static" page="support"}">contact us</a>.
     </div>

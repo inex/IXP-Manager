@@ -54,6 +54,7 @@
             {/foreach}
         </select>
     </td>
+    {*
     <td width="20"></td>
     <td valign="middle"><strong>Infrastructure:</strong></td>
     <td>
@@ -64,6 +65,7 @@
             {/foreach}
         </select>
     </td>
+    *}
     {if count( $customersVirtualInterfaces.Virtualinterface ) > 1}
         <td width="20"></td>
         <td valign="middle"><strong>Interface:</strong></td>
@@ -79,6 +81,8 @@
     <td width="20"></td>
     <td valign="middle">
         <input type="hidden" name="shortname" value="{$shortname}" />
+	{if isset( $dvid )}<input type="hidden" name="dvid" value="{$dvid}" />{/if}
+        <input type="hidden" name="infra" value="{$infra}" />
         <input class="btn" type="submit" value="Submit &raquo;" />
     </td>
     </tr>
@@ -112,7 +116,7 @@
                     <br />
                     <img
                         src="{genMrtgP2pImgUrl shortname=$customer.shortname svid=$svid dvid=$dvid category=$category proto=$proto period=$pid infra=$infra}"
-                        width="300"
+                        width="600"
                     />
                 </p>
             </div>
@@ -137,7 +141,7 @@
 {else} {* customer has an interface for given infra and proto *}
 
     <div class="alert alert-info">
-        <h4 class="alert-heading">Uh oh! You do not have any ports for the select infrastructure and / or protocol.</h4>
+        <h4 class="alert-heading">Uh oh! You or your peer do not have any ports for the selected infrastructure and / or protocol.</h4>
         If you'd like to take to us about enabling IPv6 or getting a port on the secondary infrastructure, please
         <a href="{genUrl controller="dashboard" action="static" page="support"}">contact us</a>.
     </div>
