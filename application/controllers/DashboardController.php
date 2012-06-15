@@ -452,7 +452,10 @@ class DashboardController extends INEX_Controller_Action
                 ->where( 's.infrastructure = ?', $infra )
                 ->andWhere( 'vint.ipv' . $proto . 'enabled = 1' )
                 ->andWhere( 'c.shortname != ?', $shortname )
-                ->andWhere( 'c.type != ?', Cust::TYPE_INTERNAL )
+                ->andWhereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_PROBONO ) )
+                ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
+                ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
+                ->andWhere( 'pi.status = ?', Physicalinterface::STATUS_CONNECTED )
                 ->orderBy( 'c.name ASC' );
 
             if( $dvid )
