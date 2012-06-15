@@ -280,15 +280,15 @@ class MrtgController extends Zend_Controller_Action
 
         $this->logger->info( "P2P request for {$shortname}-{$dshortname}-{$category}-{$period}-ipv{$proto} by {$this->user->username}" );
         
-        $stat = false; //@readfile( $filename );
+        $stat = @readfile( $filename );
 
-        if( $stat === false )
+        if( !$stat )
         {
             $this->logger->debug( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
-            echo readfile(
+            readfile(
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
-                    . 'image-missing.png'
+                    . '300x1.png'
             );
         }
     }

@@ -371,7 +371,12 @@ class DashboardController extends INEX_Controller_Action
     public function p2pAction()
     {
         if( $this->user['privs'] < User::AUTH_SUPERUSER )
+        {
+            if( $this->getRequest()->getParam( 'shortname' ) != $this->customer['shortname'] )
+                $this->getLogger()->alert( $this->customer['shortname'] . " requested shortname " . $this->getRequest()->getParam( 'shortname' ) . " in p2p" );
+                
             $shortname = $this->customer['shortname'];
+        }
         else
             $shortname = $this->getRequest()->getParam( 'shortname', $this->customer['shortname'] );
 
