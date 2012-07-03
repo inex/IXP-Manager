@@ -2,15 +2,14 @@
 IXP Manager
 =======================================
 
-INEX are pleased to to be able to release "IXP Manager" under
-an open source license (the GNU Public License V2) which we hope will
-benefit the wider IXP community, and especially new and small IXPs
-looking to expand. IXP Manager is a web application built entirely in 
-house by the INEX operations team.
+INEX are pleased to release "IXP Manager" under an open source license (the
+GNU Public License V2) which we hope will benefit the wider IXP community,
+and especially new and small IXPs looking to expand.  IXP Manager is a web
+application built entirely in-house by the INEX operations team.
 
 IXP Manager is primarily a web application with associated scripts and
 utilities which will allow IXPs to manage new customers, provision new
-connections and services and monitor traffic usage. It also has a self
+connections / services and monitor traffic usage. It also has a self
 contained customer portal allowing IXP members to view their IXP traffic
 statistics and a unique tool called My Peering Manager enabling IXP
 members to request, manage and track peerings with other members.
