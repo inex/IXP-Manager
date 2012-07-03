@@ -1,104 +1,52 @@
 <form action="{$element->getAction()}" method="{$element->getMethod()}" enctype="{$element->getAttrib('enctype')}" id="{$element->getId()}" {if $element->getName() != ''}name="{$element->getName()}"{/if} {if $element->getAttrib('target')}target="{$element->getAttrib('target')}"{/if} class="form">
 
-<table>
-<tr>
-    <td align="right" valign="top">
-    	<label for="{$element->vlanid->getId()}">
-    		{$element->vlanid->getLabel()}:
-		</label>
-	</td>
-    <td valign="top">
-    	&nbsp;
-        {$element->vlanid}
-
-        {if $element->vlanid->getMessages()}
-            <ul class="errors">
-                {foreach from=$element->vlanid->getMessages() item=messages}
-                    {foreach from=$messages item=msg}
-                        <li>{$msg}</li>
-                    {/foreach}
-                {/foreach}
-            </ul>
-        {/if}
-    </td>
-</tr>
+    {$element->vlanid}
+    {$element->type}
 
 
-<tr>
-    <td align="right" valign="top">
-    	<label for="{$element->type->getId()}">
-    		{$element->type->getLabel()}:
-		</label>
-	</td>
-    <td valign="top">
-    	&nbsp;
-        {$element->type}
-    </td>
-</tr>
-
-
-<tr>
-    <td align="right" valign="top">
-    	<label for="numfirst">
-    		Last Section of First Address:
-		</label>
-	</td>
-    <td valign="top">
-    	&nbsp;
+<div class="control-group">
+    <label class="control-label required" for="numfirst">Last Section of First Address</label>
+    
+    <div class="controls">
 		<input name="numfirst" id="numfirst" type="text" size="6" maxlength="4" />
-    </td>
-</tr>
-
-
-<tr>
-    <td align="right" valign="top">
-    	<label for="numaddrs">
-    		Number of Addresses:
-		</label>
-	</td>
-    <td valign="top">
-    	&nbsp;
+	</div>
+</div>
+		
+<div class="control-group">
+    <label class="control-label required" for="numaddrs">Number of Addresses</label>
+    
+    <div class="controls">
 		<input name="numaddrs" id="numaddrs" type="text" size="6" maxlength="3" />
-    </td>
-</tr>
+	</div>
+</div>
 
-
-<tr>
-    <td align="right" valign="top">
-    	<label for="prefix">
-    		Start of Address:
-		</label>
-	</td>
-    <td valign="top">
-    	&nbsp;
+<div class="control-group">
+    <label class="control-label required" for="prefix">Start of Address</label>
+    
+    <div class="controls">
 		<input name="prefix" id="prefix" type="text" size="20" maxlength="60" /> (e.g. <code>192.0.2.</code> or <code>2001:db8:85a3::370:</code>)
-    </td>
-</tr>
+	</div>
+</div>
 
-<tr>
-    <td align="right" valign="top">
-	</td>
-    <td valign="top">
-    	&nbsp;
-		<button id="genbutton" type="button">Generate</button>
-		&nbsp;&nbsp;&nbsp;&nbsp;
-		<span id="spansubmit">{$element->commit}</span>
-    </td>
-</tr>
-
-
-
-</table>
-
+<div class="control-group">
+    <label class="control-label" for="genbutton"></label>
+    <div class="controls">
+        <button class="btn btn-primary" id="genbutton">Generate</button>
+    </div>
+</div>
 
 <div id="gendiv"></div>
 
+<div id="spansubmit" class="form-actions hide">
+
+    <a href="{genUrl}" class="btn">Cancel</a>
+    <input type="submit" class="btn btn-primary" name="commit" value="Generate" />
+
+</div>
+
 </form>
 
-
-
-{literal}
-<script type="text/javascript"> /* <![CDATA[ */ 
+<script type="text/javascript">
 
 $( "#spansubmit" ).hide();
 
@@ -128,32 +76,30 @@ $( function()
             return false;
         }
 
-        var c = "<h3>The following " + $( "#type" ).val() + " addresses will be created:</h3>\n\n<table>\n";
+        var c = "<h3>The following " + $( "#type" ).val() + " addresses will be created:</h3>\n\n"
+
+            + "<table class=\"table\">\n"
+            + "<thead><tr><th></th><th>Address</th></thead><tbody>"
         
         for( var i = numfirst; i < ( numfirst + numaddrs ); i++ )
         {
-			c += "<tr>\n    <td><strong>Address:</strong>&nbsp;<input name=\"np_name" 
-				+ ( i - numfirst ) + "\" value=\"" 
+			c += "<tr>\n    <td><strong>Address:</strong></td><td><input name=\"np_name"
+				+ ( i - numfirst ) + "\" value=\""
 				+ trim( $( "#prefix" ).val() )
-				+ ( $( "#type" ).val() == 'IPv6' ? i.toString( 16 ) : i ) 
+				+ ( $( "#type" ).val() == 'IPv6' ? i.toString( 16 ) : i )
 				+ "\" /></td>\n"
 				+ "</tr>\n";
         }
 
-        c += "</table>\n";
+        c += "</tbody></table>\n";
 
         $( "#gendiv" ).html( c );
 
         $( '#spansubmit' ).show();
+
+        return false;
     });
 });
-
-$(document).ready(function(){
-
-	// trigger a change on switch ID to populate ports
-	$("#vlanid").trigger( 'change' );
-});
-
 
 function h2d( h )
 {
@@ -166,12 +112,5 @@ function d2h( d )
 }
 	
 
-/* ]]> */ </script> 
-{/literal}
-
-
-
-
-
-
+</script>
 
