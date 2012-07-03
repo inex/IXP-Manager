@@ -154,7 +154,7 @@ class MrtgController extends Zend_Controller_Action
         else if( $shortname == 'X_Peering' )
         {
             $filename = $this->config['mrtg']['path']
-                . '/../inex_peering-' . $graph . '-'
+                . '/../ixp_peering-' . $graph . '-'
                 . $category . '-' . $period . '.png';
         }
         else
