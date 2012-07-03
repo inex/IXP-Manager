@@ -514,7 +514,7 @@ class DashboardController extends INEX_Controller_Action
             $mrtg = new INEX_Mrtg(
                 $this->config['mrtg']['path']
                     . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-                    . 'inex_peering-' . $graph . '-' . $category . '.log'
+                    . 'ixp_peering-' . $graph . '-' . $category . '.log'
             );
 
             $stats[$period] = $mrtg->getValues( $period, $category );

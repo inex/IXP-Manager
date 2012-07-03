@@ -91,7 +91,7 @@ class AdminController extends INEX_Controller_Action
                 $mrtg = new INEX_Mrtg(
                     $this->config['mrtg']['path']
                         . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-                        . 'inex_peering-' . $p[0] . '-' . INEX_Mrtg::CATEGORY_BITS . '.log'
+                        . 'ixp_peering-' . $p[0] . '-' . INEX_Mrtg::CATEGORY_BITS . '.log'
                 );
                 
                 $stats[$p[0]] = $mrtg->getValues( INEX_Mrtg::PERIOD_MONTH, INEX_Mrtg::CATEGORY_BITS );
