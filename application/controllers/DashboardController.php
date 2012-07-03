@@ -569,7 +569,7 @@ class DashboardController extends INEX_Controller_Action
     {
         // get the available graphs
         $_switches = Doctrine_Query::create()
-            ->select( 'sw.name' )
+            ->select( 'sw.id, c.id, l.id, sw.name' )
             ->addSelect( 'sw.model' )
             ->addSelect( 'l.name AS location' )
             ->from( 'Switchtable sw' )
