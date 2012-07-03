@@ -39,9 +39,9 @@
                             {foreach from=$protos item=proto}
                                 {if isset( $c.$vlan.$proto )}
                                     {if $c.$vlan.$proto}
-                                        <span class="badge badge-success">IPv4</span>
+                                        <span class="badge badge-success">IPv{$proto}</span>
                                     {else}
-                                        <span class="badge badge-important">IPv4</span>
+                                        <span class="badge badge-important">IPv{$proto}</span>
                                     {/if}
                                 {/if}
                             {/foreach}

@@ -7,14 +7,18 @@
 
         <ul>
             <li>
-                <strong>New Peering Manager now available</strong>. 
+                <strong>Peer to peer (member to member) traffic graphs are now available.</strong>. 
                 All feed back greatly appreciated.
+                <a href="{genUrl controller="dashboard" action="p2p"}">Check yours out here</a>.
+            </li>
+            <li>
+                <strong>New Peering Manager now available</strong>. 
                 <a href="{genUrl controller="peering-manager"}">Check it out here</a>.
             </li>
             <li>
-                <strong>Peering matrices are now working again - with added IPv6 support - and lots
+                Peering matrices are now working again - with added IPv6 support - and lots
                 of new bells and whistles.
-                <a href="{genUrl controller="peering-matrix"}">Check them out here</a>.</strong>
+                <a href="{genUrl controller="peering-matrix"}">Check them out here</a>.
             </li>
             <li>
                 You can now manage your mailing list subscriptions via

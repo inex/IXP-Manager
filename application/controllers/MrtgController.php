@@ -76,6 +76,7 @@ class MrtgController extends Zend_Controller_Action
      */
     protected $user = null;
 
+    protected $logger = null;
 
     protected $_flock = null;
 
@@ -119,7 +120,7 @@ class MrtgController extends Zend_Controller_Action
 
     private function checkShortname( $shortname )
     {
-        return Doctrine::getTable( 'Cust' )->findByShortname( $shortname );
+        return Doctrine::getTable( 'Cust' )->findOneByShortname( $shortname );
     }
 
 
@@ -177,6 +178,117 @@ class MrtgController extends Zend_Controller_Action
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
                     . 'image-missing.png'
+            );
+        }
+    }
+
+
+    function retrieveP2pImageAction()
+    {
+        //header( 'Content-Type: image/png' );
+        header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
+
+        $period       = $this->getRequest()->getParam( 'period',    INEX_Mrtg::$PERIODS['Day'] );
+        $shortname    = $this->getRequest()->getParam( 'shortname', false );
+        $svid         = $this->getRequest()->getParam( 'svid',      false );
+        $dvid         = $this->getRequest()->getParam( 'dvid',      false );
+        $category     = $this->getRequest()->getParam( 'category',  INEX_Mrtg::$CATEGORIES['Bits'] );
+        $proto        = $this->getRequest()->getParam( 'proto',     INEX_Mrtg::PROTOCOL_IPV4 );
+        $infra        = $this->getRequest()->getParam( 'infra',     INEX_Mrtg::INFRASTRUCTURE_PRIMARY );
+        $period       = $this->getRequest()->getParam( 'period',    INEX_Mrtg::PERIOD_DAY );
+        
+        if( !$this->identity )
+            exit(0);
+
+        $_cust = $this->checkShortname( $shortname );
+        
+        if( $this->user['privs'] < User::AUTH_SUPERUSER || !$_cust )
+        {
+            $shortname = $this->customer['shortname'];
+            $_cust = $this->customer;
+        }
+        
+        // make sure the svid and dvid is valid
+        if( !$svid || !$dvid )
+        {
+            $this->logger->alert( "P2P file request with svid={$svid} and pvid={$pvid}" );
+            die();
+        }
+        
+        $svidOk = false;
+        foreach( $_cust->Virtualinterface as $vint )
+        {
+            if( $vint['id'] == $svid )
+            {
+                $svidOk = true;
+                break;
+            }
+        }
+
+        // make sure the svid and dvid is valid
+        if( !$svidOk )
+        {
+            $this->logger->alert( "P2P file request with illegal svid={$svid} for {$shortname}" );
+            die();
+        }
+        
+        // find the possible virtual interfaces that this customer peers with
+        $dvidOk = false;
+        $dshortname = '';
+        $customersWithVirtualInterfaces = Doctrine_Query::create()
+        ->select( '
+                c.id, c.name, c.shortname, vi.id, pi.id, vint.id, sp.id, s.id
+                ' )
+        ->from( 'Cust c' )
+        ->leftJoin( 'c.Virtualinterface vi' )
+        ->leftJoin( 'vi.Physicalinterface pi' )
+        ->leftJoin( 'vi.Vlaninterface vint' )
+        ->leftJoin( 'pi.Switchport sp' )
+        ->leftJoin( 'sp.SwitchTable s' )
+        ->where( 's.infrastructure = ?', $infra )
+        ->andWhere( 'vint.ipv' . $proto . 'enabled = 1' )
+        ->andWhere( 'c.shortname != ?', $shortname )
+        ->andWhere( 'c.type != ?', Cust::TYPE_INTERNAL )
+        ->orderBy( 'c.name ASC' )
+        ->fetchArray();
+        
+        foreach( $customersWithVirtualInterfaces as $c )
+        {
+            foreach( $c['Virtualinterface'] as $cvint )
+            {
+                if( $cvint['id'] == $dvid )
+                {
+                    $dshortname = $c['shortname'];
+                    $dvidOk = true;
+                    break 2;
+                }
+            }
+        }
+        
+        // make sure the svid and dvid is valid
+        if( !$dvidOk )
+        {
+            $this->logger->alert( "P2P file request with illegal pvid={$dvid} for {$shortname}" );
+            die();
+        }
+        
+        $filename = INEX_Mrtg::getMrtgP2pFilePath( $this->config['mrtg']['p2ppath'],
+            $svid, $dvid, $category, $period, $proto
+        );
+        
+        $this->logger->debug( "Serving $filename to {$this->user->username}" );
+
+        $this->logger->info( "P2P request for {$shortname}-{$dshortname}-{$category}-{$period}-ipv{$proto} by {$this->user->username}" );
+        
+        $stat = @readfile( $filename );
+
+        if( !$stat )
+        {
+            $this->logger->debug( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
+            readfile(
+                APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                    . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
+                    . '300x1.png'
             );
         }
     }
