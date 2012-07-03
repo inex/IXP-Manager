@@ -51,7 +51,17 @@ class INEX_Form_AddAddresses extends INEX_Form
         );
 
         
-
+        $this->setDecorators(
+        array(
+        array(
+        'ViewScript',
+        array(
+        'viewScript' => 'ipv4-address/add-addresses-form.tpl'
+        )
+        )
+        )
+        );
+        
         $vlanid = $this->createElement( 'select', 'vlanid' );
 
         $maxVlanId = $this->createSelectFromDatabaseTable( $vlanid, 'Vlan', 'id',
@@ -61,6 +71,7 @@ class INEX_Form_AddAddresses extends INEX_Form
 
         $vlanid->setRegisterInArrayValidator( true )
             ->setRequired( true )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setLabel( 'VLAN' )
             ->addValidator( 'between', false, array( 1, $maxVlanId ) )
             ->setErrorMessages( array( 'Please select a VLAN' ) );
@@ -71,6 +82,7 @@ class INEX_Form_AddAddresses extends INEX_Form
         $type = $this->createElement( 'select', 'type' );
         $type->setMultiOptions( array( 'IPv4' => 'IPv4', 'IPv6' => 'IPv6' ) )
             ->setRegisterInArrayValidator( true )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setLabel( 'Address Family' );
 
         $this->addElement( $type );
@@ -81,11 +93,9 @@ class INEX_Form_AddAddresses extends INEX_Form
 
         $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
 
-        $this->setElementDecorators( array( 'ViewHelper' ) );
         
     }
     
     
 }
 
-?>
