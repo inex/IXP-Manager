@@ -49,6 +49,11 @@
             <a class="aplain" href="http://www.ipv6ready.ie/">IPv6 Ready</a>
         </span>
         &nbsp;&nbsp;Are you?
+        &nbsp;|&nbsp;
+        Join the
+        <span class="label label-info">
+            <a class="aplain" href="http://www.linkedin.com/groups?gid=1853398">LinkedIn Group</a>
+        </span>
     </p>
 
     {if $smarty.const.APPLICATION_ENV != 'production' and ( not isset( $hasIdentity ) or !$hasIdentity)}
