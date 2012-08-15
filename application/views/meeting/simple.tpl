@@ -130,5 +130,5 @@
     </em>
 </p>
 
-{tmplinclude file='meeting/core.tpl'}
+{include file='meeting/core.tpl'}
 

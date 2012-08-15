@@ -1,16 +1,16 @@
 
 <div id="dialog-meeting" title="INEX Members' Meeting" style="display: none;">
 	<p>
-        The next INEX members' meeting is scheduled for {$meeting.date|date_format}. 
-        Please <a href="{genUrl controller='meeting' action='read'}">click here</a> 
+        The next INEX members' meeting is scheduled for {$meeting.date|date_format}.
+        Please <a href="{genUrl controller='meeting' action='read'}">click here</a>
         for details or let us know if you can make it by choosing an option below.
 	</p>
 </div>
 
 <div id="dialog-meeting-skip" title="INEX Members' Meeting" style="display: none;">
 	<p>
-		We will not ask you to RSVP for this meeting again. However, you can always do 
-		this later via the menu option <em>Member Information -> Meetings</em>.	
+		We will not ask you to RSVP for this meeting again. However, you can always do
+		this later via the menu option <em>Member Information -> Meetings</em>.
 	</p>
 </div>
 

@@ -1,10 +1,10 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
 <div class="content">
 
 <h1>Controller Disabled</h1>
 	
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <p>
 The administrators have disabled the requested controller.
@@ -12,4 +12,4 @@ The administrators have disabled the requested controller.
 
 </div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

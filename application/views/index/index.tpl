@@ -1,8 +1,8 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager"}
+{include file="header.tpl" pageTitle="IXP Manager"}
 
 <div class="yui-g" style="height: 600px">
 
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <h1>Welcome to the INEX IXP Manager</h1>
 
@@ -24,4 +24,4 @@ Pellentesque euismod consequat odio, quis hendrerit libero sodales condimentum. 
 
 </div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

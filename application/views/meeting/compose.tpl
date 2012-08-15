@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
 
 <div class="yui-g" style="margin-bottom: 70px;">
 
@@ -8,7 +8,7 @@
 	</tr>
 </table>
 
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <div class="content">
 
@@ -109,4 +109,4 @@ When you're happy with the result, you can send it to <code>members@inex.ie</cod
 </div>
 
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

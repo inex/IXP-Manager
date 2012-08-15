@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: SEC Event Notification Config"}
+{include file="header.tpl" pageTitle="IXP Manager :: SEC Event Notification Config"}
 
 <div class="yui-g">
 
@@ -12,7 +12,7 @@
 </tr>
 </table>
 
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <div id='ajaxMessage'></div>
 
@@ -66,5 +66,5 @@ action='sec-event-email-config'}">here</a>.
 {/literal}
 </script>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
 

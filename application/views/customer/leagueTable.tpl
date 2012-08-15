@@ -274,4 +274,4 @@ $(document).ready(function() {ldelim}
 
 
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

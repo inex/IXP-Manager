@@ -6,7 +6,7 @@
 {/if}
 
 {if $perspective neq 'panel'}
-    {tmplinclude file="header.tpl"}
+    {include file="header.tpl"}
 
     <table class="adminheading" border="0">
     <tr>
@@ -81,5 +81,5 @@
 </div>
 
 {if $perspective neq 'panel'}
-    {tmplinclude file="footer.tpl"}
+    {include file="footer.tpl"}
 {/if}
