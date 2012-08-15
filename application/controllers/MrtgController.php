@@ -185,7 +185,7 @@ class MrtgController extends Zend_Controller_Action
 
     function retrieveP2pImageAction()
     {
-        //header( 'Content-Type: image/png' );
+        header( 'Content-Type: image/png' );
         header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
 
         $period       = $this->getRequest()->getParam( 'period',    INEX_Mrtg::$PERIODS['Day'] );
