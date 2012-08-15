@@ -24,13 +24,15 @@
     </p>
     
     <p>
-    Your new user's password will be sent by SMS to the mobile
-    number provided and they will receive a welcome email to the email address provided.
+    Your new user's account will be locked until they set their password via the forgotten password
+    procedure (available on the login page and instructions included in the welcome email which
+    will be sent on completion of the below form).
     </p>
 
 {/if}
 
-
+<br />
+<br />
 {$form}
 
 

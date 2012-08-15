@@ -39,7 +39,7 @@ class INEX_Form_User extends INEX_Form
      *
      *
      */
-    public function __construct( $options = null, $isEdit = false, $cancelLocation )
+    public function __construct( $options = null, $isEdit = false, $cancelLocation, $isCustAdmin = false )
     {
         parent::__construct( $options, $isEdit );
 
@@ -47,6 +47,19 @@ class INEX_Form_User extends INEX_Form
         // Create and configure elements
         ////////////////////////////////////////////////
 
+        if( $isCustAdmin && !$isEdit )
+        {
+            // let's capture the user's name and add them to the contact table also
+            $name = $this->createElement( 'text', 'name' );
+            $name->addValidator( 'stringLength', false, array( 2, 64 ) )
+                ->setRequired( true )
+                ->setAttrib( 'size', 50 )
+                ->setLabel( 'Name' )
+                ->addFilter( 'StringTrim' )
+                ->addFilter( new INEX_Filter_StripSlashes() );
+            $this->addElement( $name );
+        }
+        
         $username = $this->createElement( 'text', 'username' );
         $username->addValidator( 'stringLength', false, array( 2, 30 ) )
             ->setRequired( true )
@@ -58,29 +71,34 @@ class INEX_Form_User extends INEX_Form
             ->addValidator( 'stringLength', false, array( 6, 30 ) )
             ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\-_\.]+$/' ) );
 
+        if( $isCustAdmin && $isEdit )
+            $username->setAttrib( 'readonly', '1' );
+        
         $this->addElement( $username );
 
-        $password = $this->createElement( 'text', 'password' );
-        $password->addValidator( 'stringLength', false, array( 8, 30 ) )
-            ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\!\£\$\%\^\&\*\(\)\-\=\_\+\{\}\[\]\;\'\#\:\@\~\,\.\/\<\>\?\|]+$/' ) )
-            ->setRequired( true )
-            ->setLabel( 'Password' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() )
-            ->setErrorMessages( array( 'The password must between 8 and 30 characters and cannot contain a double quote - " - character.' ) );
-
-        $this->addElement( $password );
-
-
-        $privileges = $this->createElement( 'select', 'privs' );
-        $privileges->setMultiOptions( User::$PRIVILEGES )
-            ->setRegisterInArrayValidator( true )
-            ->setLabel( 'Privileges' )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setErrorMessages( array( 'Please select the users privilege level' ) );
-
-        $this->addElement( $privileges );
-
+        if( !$isCustAdmin )
+        {
+            $password = $this->createElement( 'text', 'password' );
+            $password->addValidator( 'stringLength', false, array( 8, 30 ) )
+                ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\!\£\$\%\^\&\*\(\)\-\=\_\+\{\}\[\]\;\'\#\:\@\~\,\.\/\<\>\?\|]+$/' ) )
+                ->setRequired( true )
+                ->setLabel( 'Password' )
+                ->addFilter( 'StringTrim' )
+                ->addFilter( new INEX_Filter_StripSlashes() )
+                ->setErrorMessages( array( 'The password must between 8 and 30 characters and cannot contain a double quote - " - character.' ) );
+    
+            $this->addElement( $password );
+    
+    
+            $privileges = $this->createElement( 'select', 'privs' );
+            $privileges->setMultiOptions( User::$PRIVILEGES )
+                ->setRegisterInArrayValidator( true )
+                ->setLabel( 'Privileges' )
+                ->setAttrib( 'class', 'chzn-select' )
+                ->setErrorMessages( array( 'Please select the users privilege level' ) );
+    
+            $this->addElement( $privileges );
+        }
 
         $email = $this->createElement( 'text', 'email' );
         $email->addValidator( 'stringLength', false, array( 1, 255 ) )
@@ -96,44 +114,42 @@ class INEX_Form_User extends INEX_Form
 
         $mobile = $this->createElement( 'text', 'authorisedMobile' );
         $mobile->addValidator( 'stringLength', false, array( 0, 30 ) )
-               ->addValidator( 'regex', true, array( '/^[1-9]+[0-9]*$/' ) )
                ->setRequired( false )
                ->setLabel( 'Mobile' )
-               ->setAttrib( 'placeholder', '353861234567' )
+               ->setAttrib( 'placeholder', '+353 86 123 4567' )
                ->addFilter( 'StringTrim' )
                ->addFilter( new INEX_Filter_StripSlashes() );
 
         $this->addElement( $mobile );
 
 
-
-        $dbCusts = Doctrine_Query::create()
-            ->from( 'Cust c' )
-            ->orderBy( 'c.name ASC' )
-            ->execute();
-
-        $custs = array( '0' => '' );
-        $maxId = 0;
-
-        foreach( $dbCusts as $c )
+        if( !$isCustAdmin )
         {
-            $custs[ $c['id'] ] = "{$c['name']}";
-            if( $c['id'] > $maxId ) $maxId = $c['id'];
+            $dbCusts = Doctrine_Query::create()
+                ->from( 'Cust c' )
+                ->orderBy( 'c.name ASC' )
+                ->execute();
+    
+            $custs = array( '0' => '' );
+            $maxId = 0;
+    
+            foreach( $dbCusts as $c )
+            {
+                $custs[ $c['id'] ] = "{$c['name']}";
+                if( $c['id'] > $maxId ) $maxId = $c['id'];
+            }
+    
+            $cust = $this->createElement( 'select', 'custid' );
+            $cust->setMultiOptions( $custs );
+            $cust->setRegisterInArrayValidator( true )
+                ->setRequired( true )
+                ->setLabel( 'Customer' )
+                ->setAttrib( 'class', 'chzn-select' )
+                ->addValidator( 'between', false, array( 1, $maxId ) )
+                ->setErrorMessages( array( 'Please select a customer' ) );
+    
+            $this->addElement( $cust );
         }
-
-        $cust = $this->createElement( 'select', 'custid' );
-        $cust->setMultiOptions( $custs );
-        $cust->setRegisterInArrayValidator( true )
-            ->setRequired( true )
-            ->setLabel( 'Customer' )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( array( 'Please select a customer' ) );
-
-        $this->addElement( $cust );
-
-
-
 
 
         $disabled = $this->createElement( 'checkbox', 'disabled' );
@@ -141,20 +157,24 @@ class INEX_Form_User extends INEX_Form
             ->setCheckedValue( '1' );
         $this->addElement( $disabled );
 
+        
+        
         $commit = $this->createElement( 'hidden', 'commit' );
         $commit->setValue( '1' );
         $this->addElement( $commit );
 
+        
+        
+        $submit = $this->createElement( 'submit', 'submit' );
+        $submit->setLabel( $isEdit ? 'Save' : 'Add' );
+        $this->addElement( $submit );
+        
         $cancel = $this->createElement( 'button', 'cancel' );
         $cancel->setLabel( 'Cancel' )
                ->setAttrib( 'onClick', "parent.location='{$cancelLocation}'" );
         $this->addElement( $cancel );
 
-        $submit = $this->createElement( 'submit', 'submit' );
-        $submit->setLabel( $isEdit ? 'Save' : 'Add' );
-        $this->addElement( $submit );
     }
 
 }
 
-?>

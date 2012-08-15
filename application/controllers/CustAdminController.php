@@ -3,21 +3,21 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -119,7 +119,8 @@ class CustAdminController extends INEX_Controller_Action
 	        }
 
             $form = new INEX_Form_User( null, $isEdit,
-                Zend_Controller_Front::getInstance()->getBaseUrl() . "/cust-admin"
+                Zend_Controller_Front::getInstance()->getBaseUrl() . "/cust-admin",
+                true
             );
 
             if( $this->_request->getParam( 'commit', null ) != 1 )
@@ -131,8 +132,6 @@ class CustAdminController extends INEX_Controller_Action
 	                $form->getElement( 'disabled' )->setChecked( true );
             }
 
-            $form->getElement( 'username'         )->setAttrib( 'readonly', '1' );
-
             $form->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . "/cust-admin/edit-user/id/" . $u->id );
             $form->getElement( 'submit' )->setLabel( 'Save Changes' );
         }
@@ -141,23 +140,10 @@ class CustAdminController extends INEX_Controller_Action
             $isEdit = false;
 
             $form = new INEX_Form_User( null, $isEdit,
-                Zend_Controller_Front::getInstance()->getBaseUrl() . "/cust-admin"
+                Zend_Controller_Front::getInstance()->getBaseUrl() . "/cust-admin",
+                true
             );
             $form->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . "/cust-admin/add-user" );
-
-            // let's capture the user's name and add them to the contact table also
-            $name = $form->createElement( 'text', 'name' );
-            $name->addValidator( 'stringLength', false, array( 2, 64 ) )
-                ->setRequired( true )
-                ->setAttrib( 'size', 50 )
-                ->setLabel( 'Name' )
-                ->addFilter( 'StringTrim' )
-                ->addFilter( new INEX_Filter_StripSlashes() );
-
-            $elements = $form->getElements();
-            $form->clearElements();
-            $form->addElement( $name );
-            $form->addElements( $elements );
         }
 
         $form->removeElement( 'privs' );

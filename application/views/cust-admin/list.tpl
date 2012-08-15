@@ -10,12 +10,12 @@
 <div id="ajaxMessage"></div>
 
 <div class="alert alert-block alert-info">
-    <h4 class="alert-heading">Remember! The customer admin account is only intended for creating users for your organisation.</h4>
+    <h4 class="alert-heading">Remember! The admin account is only intended for creating users for your organisation.</h4>
     For full IXP Manager functionality, graphs and member information, log in under one of your user accounts.
 </div>
 
 
-<table id="ixpDataTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0" style="display: none;">
+<table id="ixpDataTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0">
 
 <thead>
 <tr>
@@ -40,15 +40,15 @@
         <td align="center">
             <a href="{genUrl controller="cust-admin" action="toggle-enabled" id=$u->id}">
             {if $u->disabled}
-                <img src="{genUrl}/images/icon_no.png" width="16" height="16" alt="[DISABLED]" title="Disabled - click to enable" />
+                <i class="icon-remove"></i>
             {else}
-                <img src="{genUrl}/images/icon_yes.png" width="16" height="16" alt="[ENABLED]" title="Enabled - click to disable" />
+                <i class="icon-ok"></i>
             {/if}
             </a>
         </td>
         <td>
-            <a href="{genUrl controller="cust-admin" action="edit-user" id=$u->id}">
-                <img src="{genUrl}/images/joomla-admin/menu/edit.png" width="16" height="16" alt="[EDIT]" title="Click to edit" />
+            <a class="btn btn-mini" href="{genUrl controller="cust-admin" action="edit-user" id=$u->id}">
+                <i class="icon-pencil"></i>
             </a>
         </td>
     </tr>
@@ -60,45 +60,29 @@
 </table>
 
 <p>
+    <br />
     <a class="btn btn-primary" href="{genUrl controller='cust-admin' action='add-user'}">
         Add New User
     </a>
 </p>
 
-<div id="instructions" title="IXP Manager - Instructions" style="display: hide;">
-	<p>
-		Welcome to INEX's IXP Manager!
-	</p>
-	<p>
-		This account is a customer admin account and it can only be
-		used to create sub users. Those sub users can then access the
-		full functionality of this system.
-	</p>
-</div>
 
 
 <script>
 
-$(document).ready(function() {ldelim}
-
-	oTable = $('#ixpDataTable').dataTable({ldelim}
-
-        "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-     	"sPaginationType": "bootstrap",
-        "aaSorting": [[ 0, 'asc' ]],
-		"iDisplayLength": 25,
-	{rdelim}).show();
-
-	$( '#instructions' ).dialog({ldelim}
-		"autoOpen": false,
-		"model": true
-	{rdelim});
+$(document).ready(function() {
 
 	{if not $skipInstructions}
-		$( '#instructions' ).dialog( 'open' );
+		bootbox.alert(
+			"<p><strong>Welcome to IXP Manager!</strong></p>"
+
+			+ "<p>This account is an admin account and it can only be "
+			+ "used to create user accounts for use within your organisation. "
+			+ "Those users can then access the full functionality of this system."
+		);
 	{/if}
 		
-{rdelim});
+});
 
 </script>
 
