@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
 <div class="content">
 
@@ -11,7 +11,7 @@
 </table>
 
 
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <div id="ajaxMessage"></div>
 
@@ -21,5 +21,5 @@
 
 </div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
 

@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl" pageTitle="IXP Manager :: Provision New Interface"}
+{include file="header.tpl" pageTitle="IXP Manager :: Provision New Interface"}
 
 <div class="yui-g">
 
@@ -11,7 +11,7 @@
 </table>
 
 
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <div id="ajaxMessage"></div>
 
@@ -215,4 +215,4 @@
 </div> <!-- content -->
 </div> <!--  yui-g -->
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}

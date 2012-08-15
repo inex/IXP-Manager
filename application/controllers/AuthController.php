@@ -419,6 +419,9 @@ class AuthController extends INEX_Controller_Action
             }
         }
 
+        // record current user customer ID
+        $custid = $this->getUser()->custid;
+        
         // does the original user exist
         $ou = Doctrine_Core::getTable( 'User' )->find( $this->session->switched_user_from );
 
@@ -431,7 +434,7 @@ class AuthController extends INEX_Controller_Action
 
         if( $result->getCode() == Zend_Auth_Result::SUCCESS )
         {
-            $this->getLogger()->notice( 'User ' . $ou['username'] . ' has switched back from user '
+            $this->getLogger()->info( 'User ' . $ou['username'] . ' has switched back from user '
                 . $this->user['username'] );
 
             $this->session->message = new INEX_Message(
@@ -442,7 +445,7 @@ class AuthController extends INEX_Controller_Action
             die( 'Could not switch back!!' );
 
         unset( $this->session->switched_user_from );
-        $this->_redirect( 'user' );
+        $this->_redirect( 'customer/dashboard/id/' . $custid );
     }
 
     /**

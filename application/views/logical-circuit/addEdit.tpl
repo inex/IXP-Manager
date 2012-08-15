@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
 
 <table class="adminheading" border="0">
@@ -15,5 +15,5 @@
 
 </div>
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
 

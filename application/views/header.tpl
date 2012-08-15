@@ -13,7 +13,7 @@
                                 <a href="{genUrl}">Home</a>
                             </li>
                         {elseif $user.privs eq 2}
-                            <li>
+                            <li {if $controller eq 'cust-admin'}class="active"{/if}>
                                 <a href="{genUrl controller="cust-admin"}">User Admin</a>
                             </li>
                         {elseif $user.privs eq 1}

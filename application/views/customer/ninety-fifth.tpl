@@ -1,4 +1,4 @@
-{tmplinclude file="header.tpl"}
+{include file="header.tpl"}
 
 <!-- <div class="yui-g" style="height: 600px"> -->
 
@@ -11,7 +11,7 @@
 </table>
 
 
-{tmplinclude file="message.tpl"}
+{include file="message.tpl"}
 
 <div class="content">
 
@@ -199,4 +199,4 @@ $(document).ready(function() {ldelim}
 
 
 
-{tmplinclude file="footer.tpl"}
+{include file="footer.tpl"}
