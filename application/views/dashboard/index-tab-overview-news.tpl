@@ -24,11 +24,6 @@
                 You can now manage your mailing list subscriptions via
                 your <a href="{genUrl controller="profile"}">profile page</a>.
             </li>
-            <li>
-                There are issues with the peering matrices (which also affect your
-                <a href="{genUrl controller="dashboard" action="my-peering-manager"}">Peering Manager</a>).
-                We are aware of this and are working on a fix.
-            </li>
             <li> Redesigned <a href="{genUrl controller="dashboard" action="statistics"}">statistics pages</a> making them clearer and more intuitive. </li>
             <li>
                 Added weather maps for peering <a href="{genUrl controller="dashboard" action="weathermap" id=1}">LAN 1</a>
