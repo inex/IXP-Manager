@@ -1,4 +1,6 @@
 .project
+.buildpath
+.settings/
 ixp-manager.sublime-workspace
 bin/mailing-list-sync.sh
 public/.htaccess
