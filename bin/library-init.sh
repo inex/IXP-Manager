@@ -65,15 +65,11 @@ fi
 if [[ -e $LIBDIR/Zend ]]; then
     echo Zend exists - skipping!
 else 
-    svn co http://framework.zend.com/svn/framework/standard/branches/release-1.11/library/Zend/ $LIBDIR/Zend
+    svn co http://framework.zend.com/svn/framework/standard/branches/release-1.12/library/Zend/ $LIBDIR/Zend
 fi 
         
         
-# Doctrine
-if [[ -e $LIBDIR/Doctrine ]]; then
-    echo Doctrine exists - skipping!
-else
-    svn co http://svn.doctrine-project.org/branches/1.2/lib $LIBDIR/Doctrine
-fi
-        
-                                            
+# Doctrine2
+
+# INSTALL VIA PEAR - http://www.doctrine-project.org/projects/orm.html
+

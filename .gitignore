@@ -24,6 +24,8 @@ library/bootstrap-wysihtml5
 library/Throbber.js
 library/wysihtml5
 library/jwysiwyg
+library/OSS
+library/wiki/
 *~
 public/images/.directory
 public/images/joomla-admin/.directory
