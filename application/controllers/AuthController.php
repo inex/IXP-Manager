@@ -33,28 +33,6 @@ class AuthController extends INEX_Controller_Action
 {
     use OSS_Controller_Trait_Auth;
 
-    public function logoutAction()
-    {
-        $this->view->clearVars();
-        $this->view->config = $this->config;
-       
-        $auth = Zend_Auth::getInstance();
-
-        if( $auth->hasIdentity() )
-        {
-            $auth->clearIdentity();
-            $this->view->message = new INEX_Message( 'You have been logged out', INEX_Message::MESSAGE_TYPE_INFO );
-        }
-
-        if( $this->_request->getParam( 'auto', 0 ) == 1 )
-            $this->view->message = new INEX_Message( 'To protect your account and its information, '
-                . 'you have been logged out automatically.', INEX_Message::MESSAGE_TYPE_ALERT );
-
-
-        Zend_Session::destroy( true, true );
-        $this->session = null;
-        $this->view->display( 'auth/login.tpl' );
-    }
 
 
     public function forgottenPasswordAction()

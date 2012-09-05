@@ -82,7 +82,7 @@ class INEX_Controller_Action extends OSS_Controller_Action
         parent::__construct( $request, $response, $invokeArgs );
 
         
-            
+        /*
         if( in_array( 'OSS_Controller_Action_Trait_Auth', get_declared_traits() ) )
         {
             if( $this->getAuth()->hasIdentity() )
@@ -92,7 +92,7 @@ class INEX_Controller_Action extends OSS_Controller_Action
         }
         
         if( $this->getAuth()->hasIdentity() && $this->getUser()['privs'] == 3 )
-            $this->superuserSetup();
+            $this->superuserSetup(); */
     }
 
     /**

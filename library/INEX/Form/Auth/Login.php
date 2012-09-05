@@ -33,30 +33,11 @@ class INEX_Form_Auth_Login extends INEX_Form
 
         $this->addElement( OSS_Form_Auth_Login::createUsernameElement() );
         $this->addElement( OSS_Form_Auth_Login::createPasswordElement() );
-        $this->addElement( OSS_Form_Auth_Login::createRememberMeElement() );
+        //$this->addElement( OSS_Form_Auth_Login::createRememberMeElement() );
         
-
-/*        $lost_pswd = $this->createElement( "button", "lost_pswd", [
-            "label" => "Lost Password",
-            "class" => "have-link",
-            "attribs" => [
-                "data-href" => OSS_Utils::genUrl( "login", "lost-password" )
-            ]
-        ] );
-
-        $lost_usrn = $this->createElement( "button", "lost_usrn", [
-            "label" => "Lost Username",
-            "class" => "have-link",
-            "attribs" => [
-                "data-href" => OSS_Utils::genUrl( "login", "lost-username" )
-            ]
-        ] );
-*/
         $this->addElement( "submit", "Login" );
-        
-        //    ->addElement( $lost_pswd )
-        //    ->addElement( $lost_usrn );
-
+        $this->addElement( OSS_Form_Auth_Login::createLostPasswordElement() );
+        $this->addElement( OSS_Form_Auth_Login::createLostUsernameElement() );
     }
 
 }
