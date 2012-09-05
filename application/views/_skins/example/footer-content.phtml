@@ -1,19 +1,15 @@
 
-</div>
-
 <footer>
 
-    <p> 
-        EXAMPLE SKIN!
-        &nbsp;&nbsp;|&nbsp;&nbsp;
+    <p>
         IXP Manager V{$smarty.const.APPLICATION_VERSION}
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        Copyright &copy; 2010 - 2012 Internet Neutral Exchange Association Ltd. - <a href="http://www.inex.ie/">http://www.inex.ie/</a>
+        Copyright &copy; 2010 - {$smarty.now|date_format:'%Y'} Internet Neutral Exchange Association Ltd. - <a href="http://www.inex.ie/">http://www.inex.ie/</a>
         &nbsp;|&nbsp;
-        {mailto address=$config.identity.email encode='javascript' text="Contact Us"}
+        {mailto address=$options.identity.email encode='javascript' text="Contact Us"}
     </p>
 
-    <p> 
+    <p>
         Licensed under GPL v2.0.
         &nbsp;|&nbsp;
         This Program is provided AS IS, without warranty.
@@ -23,7 +19,7 @@
         Generated in {$RUNNINGTIME|string_format:"%0.3f"} seconds
     </p>
     
-    <p> 
+    <p>
         Keep up with
         <span class="label label-info">
             <a class="aplain" href="http://www.inex.ie/">INEX</a>
@@ -34,24 +30,15 @@
             <a class="aplain" href="https://github.com/inex/IXP-Manager">GitHub</a>
         </span>
         &nbsp;|&nbsp;
-        We're 
+        We're
         <span class="label label-info">
             <a class="aplain" href="http://www.ipv6ready.ie/">IPv6 Ready</a>
         </span>
-        Are you?
+        &nbsp;Are you?
+        &nbsp;|&nbsp;
+        Join the
+        <span class="label label-info">
+            <a class="aplain" href="http://www.linkedin.com/groups?gid=1853398">LinkedIn Group</a>
+        </span>
     </p>
-
-    {if $smarty.const.APPLICATION_ENV != 'production' && !$hasIdentity}
-        <p>
-            <strong>
-                THE IXP IS RUNNING IN NON-PRODUCTION MODE AND INFORMATION CAN BE LEAKED VIA DEBUGGING 
-                UTILITIES. ENSURE HTACCESS IS IN PLACE.
-            </strong>
-        </p>
-    {/if}
-
-
 </footer>
-
-</body>
-</html>

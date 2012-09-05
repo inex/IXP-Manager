@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -39,7 +39,6 @@ class AuthController extends INEX_Controller_Action
 
     public function loginAction()
     {
-        $this->view->display( 'auth/login.tpl' );
     }
 
     public function logoutAction()
