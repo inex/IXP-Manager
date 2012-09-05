@@ -3,13 +3,6 @@
 
         </div><!--/span-->
     </div><!--/row-->
-    
-{elseif isset( $mode ) and $mode eq 'fluid'}
-    
-{else}
-
-    </div> <!-- </div class="container"> -->
-
 {/if}
 
 
@@ -18,9 +11,9 @@
     <p>
         IXP Manager V{$smarty.const.APPLICATION_VERSION}
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        Copyright &copy; 2010 - 2012 Internet Neutral Exchange Association Ltd. - <a href="http://www.inex.ie/">http://www.inex.ie/</a>
+        Copyright &copy; 2010 - {$smarty.now|date_format:'%Y'} Internet Neutral Exchange Association Ltd. - <a href="http://www.inex.ie/">http://www.inex.ie/</a>
         &nbsp;|&nbsp;
-        {mailto address=$config.identity.email encode='javascript' text="Contact Us"}
+        {mailto address=$options.identity.email encode='javascript' text="Contact Us"}
     </p>
 
     <p>
@@ -67,6 +60,12 @@
 
 
 </footer>
+
+{if !isset( $mode ) or $mode neq 'fluid'}
+    
+    </div> <!-- </div class="container"> -->
+
+{/if}
 
 
 <script>
