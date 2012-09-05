@@ -31,13 +31,13 @@ class INEX_Form_Auth_Login extends INEX_Form
         $this->setAttrib( 'id', 'auth_login' )
             ->setAttrib( 'name', 'auth_login' );
 
-        $this->addElement( OSS_Form_Auth_Login::createUsernameElement() );
-        $this->addElement( OSS_Form_Auth_Login::createPasswordElement() );
-        //$this->addElement( OSS_Form_Auth_Login::createRememberMeElement() );
+        $this->addElement( OSS_Form_Auth::createUsernameElement() );
+        $this->addElement( OSS_Form_Auth::createPasswordElement() );
+        //$this->addElement( OSS_Form_Auth::createRememberMeElement() );
         
-        $this->addElement( "submit", "Login" );
-        $this->addElement( OSS_Form_Auth_Login::createLostPasswordElement() );
-        $this->addElement( OSS_Form_Auth_Login::createLostUsernameElement() );
+        $this->addElement( "submit", _( 'Login' ) );
+        $this->addElement( OSS_Form_Auth::createLostPasswordElement() );
+        $this->addElement( OSS_Form_Auth::createLostUsernameElement() );
     }
 
 }
