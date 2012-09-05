@@ -31,15 +31,7 @@
 
 class AuthController extends INEX_Controller_Action
 {
-
-    public function indexAction()
-    {
-        $this->_forward( 'login' );
-    }
-
-    public function loginAction()
-    {
-    }
+    use OSS_Controller_Trait_Auth;
 
     public function logoutAction()
     {
@@ -64,64 +56,6 @@ class AuthController extends INEX_Controller_Action
         $this->view->display( 'auth/login.tpl' );
     }
 
-    public function processAction()
-    {
-        $auth = Zend_Auth::getInstance();
-
-        try
-        {
-            $authAdapter = new INEX_Auth_DoctrineAdapter(
-                mb_strtolower( $this->getRequest()->getParam( 'loginusername' ) ),
-                $this->getRequest()->getParam( 'loginpassword' )
-            );
-        }
-        catch( Zend_Auth_Adapter_Exception $e )
-        {
-            $this->view->message = new INEX_Message( $e->getMessage(), 'error' );
-            $this->view->display( 'auth/login.tpl' );
-            return false;
-        }
-
-        $result = $auth->authenticate( $authAdapter );
-
-        switch( $result->getCode() )
-        {
-            case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:
-            case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
-                $this->view->message = new INEX_Message( implode( "<br />\n", $result->getMessages() ), 'error' );
-                $this->view->display( 'auth/login.tpl' );
-                return false;
-                break;
-
-            case Zend_Auth_Result::SUCCESS:
-                $identity = $auth->getIdentity();
-                $user = Doctrine::getTable( 'User' )->find( $identity['user']['id'] );
-
-                // record the last login IP address
-                if( $ip = $user->hasPreference( 'auth.last_login_from' ) )
-                {
-                    $this->session->last_login_from = $ip;
-                    $this->session->last_login_at   = $user->getPreference( 'auth.last_login_at' );
-                }
-                else
-                    $this->session->last_login_from = '';
-
-                $user->setPreference( 'auth.last_login_from', $_SERVER['REMOTE_ADDR'] );
-                $user->setPreference( 'auth.last_login_at',   mktime()                );
-
-                // set the timeout
-                $this->session->timeOfLastAction = mktime();
-
-                if( isset( $this->session->postAuthRedirect ) )
-                    $this->_redirect( $this->session->postAuthRedirect );
-                else
-                    $this->_redirect( '' );
-                break;
-
-            default:
-                break;
-        }
-    }
 
     public function forgottenPasswordAction()
     {
