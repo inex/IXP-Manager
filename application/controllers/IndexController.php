@@ -32,29 +32,16 @@ class IndexController extends INEX_Controller_Action
 
     public function indexAction()
     {
-        // We lose the message when redirected back here and then onwards from here. Fix:
-        if( ( $m = $this->view->message ) !== null )
-            $this->session->message = $m;
-
-        $auth = Zend_Auth::getInstance();
-        if( !$auth->hasIdentity() )
-            $this->_forward( 'login', 'auth' );
+        if( !$this->getAuth()->hasIdentity() )
+            $this->_redirect( 'auth/login' );
         else
         {
-            $identity = $auth->getIdentity();
-
-            if( $identity['user']['privs'] == User::AUTH_SUPERUSER )
-            {
-                $this->_forward( 'index', 'admin' );
-            }
-            else if( $identity['user']['privs'] == User::AUTH_CUSTADMIN )
-            {
+            if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+                $this->_redirect( 'admin/index' );
+            else if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
                 $this->_redirect( 'cust-admin/users' );
-            }
             else
-            {
                 $this->_redirect( 'dashboard' );
-            }
         }
     }
 

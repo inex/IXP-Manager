@@ -31,8 +31,6 @@
 
 class CustAdminController extends INEX_Controller_Action
 {
-
-
     public function preDispatch()
     {
         // let's get the user's details sorted before everything else

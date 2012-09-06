@@ -11,6 +11,24 @@ class User
 {
     use \OSS_Doctrine2_WithPreferences;
     
+    const AUTH_PUBLIC    = 0;
+    const AUTH_CUSTUSER  = 1;
+    const AUTH_CUSTADMIN = 2;
+    const AUTH_SUPERUSER = 3;
+    
+    public static $PRIVILEGES = array(
+        User::AUTH_CUSTUSER  => 'CUSTUSER',
+        User::AUTH_CUSTADMIN => 'CUSTADMIN',
+        User::AUTH_SUPERUSER => 'SUPERUSER'
+    );
+    
+    public static $PRIVILEGES_TEXT = array(
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Superuser',
+        User::AUTH_SUPERUSER => 'Superuser'
+    );
+    
+    
     /**
      * @var string $username
      */

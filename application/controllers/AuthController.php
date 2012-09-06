@@ -229,5 +229,3 @@ class AuthController extends INEX_Controller_Action
     }
 
 }
-
-?>
