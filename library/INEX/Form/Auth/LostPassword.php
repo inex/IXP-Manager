@@ -38,7 +38,7 @@ class INEX_Form_Auth_LostPassword extends INEX_Form
             ->setAttrib( 'name', 'auth_lost_password' );
 
         $this->addElement( OSS_Form_Auth::createUsernameElement() );
-        $this->addElement( "submit", _( 'Reset Password' ) );
+        $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Reset Password' ) ) );
         $this->addElement( OSS_Form_Auth::createReturnToLoginElement() );
     }
 

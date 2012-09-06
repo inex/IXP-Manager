@@ -57,46 +57,15 @@ class AuthController extends INEX_Controller_Action
         return new INEX_Form_Auth_ResetPassword();
     }
     
-    
-    public function forgottenUsernameAction()
+    /**
+     * Return the appropriate lost username form for your application
+     */
+    protected function _getFormLostUsername()
     {
-        if( $this->getRequest()->getParam( 'fpsubmitted', false ) )
-        {
-            $email = stripslashes( trim( $this->_getParam( 'email' ) ) );
-            // does the email exist?
-            $users = Doctrine_Core::getTable( 'User' )->findByEmail( $email, Doctrine_Core::HYDRATE_ARRAY );
-
-            if( count( $users ) )
-            {
-                $this->view->users  = $users;
-                
-                try
-                {
-                    $mail = new Zend_Mail( );
-                    $mail->setBodyText( $this->view->render( 'auth/email/forgotten-username.tpl' ) )
-                        ->setFrom( $this->config['identity']['email'], $this->config['identity']['name'] )
-                         ->addTo( $users[0]['email'] )
-                         ->setSubject( $this->config['identity']['ixp']['fullname'] . ' :: Username(s) Reminder' )
-                         ->send();
-
-                    $this->view->message = new INEX_Message(
-                    	'We have sent you an email with further instructions.',
-                        INEX_Message::MESSAGE_TYPE_SUCCESS
-                    );
-
-                    return $this->_forward( 'login' );
-                }
-                catch( Zend_Exception $e ) {
-                }
-            }
-            else
-            {
-                $this->view->message = new INEX_Message( 'The email address ' . $email . ' does not exist', 'error' );
-            }
-        }
-
-        $this->view->display( 'auth/forgotten-username.tpl' );
+        return new INEX_Form_Auth_LostUsername();
     }
+    
+    
     
     
     /**

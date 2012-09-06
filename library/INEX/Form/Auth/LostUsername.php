@@ -21,7 +21,7 @@
  */
 
 /**
- * Login form
+ * Lost Username form
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   INEX
@@ -29,20 +29,17 @@
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Limited
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2
  */
-class INEX_Form_Auth_Login extends INEX_Form
+class INEX_Form_Auth_LostUsername extends INEX_Form
 {
 
     public function init()
     {
-        $this->setAttrib( 'id', 'auth_login' )
-            ->setAttrib( 'name', 'auth_login' );
+        $this->setAttrib( 'id', 'auth_lost_username' )
+            ->setAttrib( 'name', 'auth_lost_username' );
 
-        $this->addElement( OSS_Form_Auth::createUsernameElement() );
-        $this->addElement( OSS_Form_Auth::createPasswordElement() );
-        //$this->addElement( OSS_Form_Auth::createRememberMeElement() );
-        $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Login' ) ) );
-        $this->addElement( OSS_Form_Auth::createLostPasswordElement() );
-        $this->addElement( OSS_Form_Auth::createLostUsernameElement() );
+        $this->addElement( OSS_Form_User::createEmailElement() );
+        $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Find Username(s)' ) ) );
+        $this->addElement( OSS_Form_Auth::createReturnToLoginElement() );
     }
 
 }
