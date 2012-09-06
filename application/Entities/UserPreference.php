@@ -136,4 +136,60 @@ class UserPreference
     {
         return $this->User;
     }
+    /**
+     * @var integer $ix
+     */
+    private $ix;
+
+
+    /**
+     * Set ix
+     *
+     * @param integer $ix
+     * @return UserPreference
+     */
+    public function setIx($ix)
+    {
+        $this->ix = $ix;
+    
+        return $this;
+    }
+
+    /**
+     * Get ix
+     *
+     * @return integer 
+     */
+    public function getIx()
+    {
+        return $this->ix;
+    }
+    /**
+     * @var integer $expire
+     */
+    private $expire;
+
+
+    /**
+     * Set expire
+     *
+     * @param integer $expire
+     * @return UserPreference
+     */
+    public function setExpire($expire)
+    {
+        $this->expire = $expire;
+    
+        return $this;
+    }
+
+    /**
+     * Get expire
+     *
+     * @return integer 
+     */
+    public function getExpire()
+    {
+        return $this->expire;
+    }
 }

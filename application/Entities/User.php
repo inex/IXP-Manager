@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User
 {
+    use \OSS_Doctrine2_WithPreferences;
+    
     /**
      * @var string $username
      */
@@ -120,7 +122,7 @@ class User
     /**
      * Get username
      *
-     * @return string 
+     * @return string
      */
     public function getUsername()
     {
@@ -143,7 +145,7 @@ class User
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -166,7 +168,7 @@ class User
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -189,7 +191,7 @@ class User
     /**
      * Get authorisedMobile
      *
-     * @return string 
+     * @return string
      */
     public function getAuthorisedMobile()
     {
@@ -212,7 +214,7 @@ class User
     /**
      * Get uid
      *
-     * @return integer 
+     * @return integer
      */
     public function getUid()
     {
@@ -235,7 +237,7 @@ class User
     /**
      * Get privs
      *
-     * @return integer 
+     * @return integer
      */
     public function getPrivs()
     {
@@ -258,7 +260,7 @@ class User
     /**
      * Get disabled
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getDisabled()
     {
@@ -281,7 +283,7 @@ class User
     /**
      * Get lastupdated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastupdated()
     {
@@ -304,7 +306,7 @@ class User
     /**
      * Get lastupdatedby
      *
-     * @return integer 
+     * @return integer
      */
     public function getLastupdatedby()
     {
@@ -327,7 +329,7 @@ class User
     /**
      * Get creator
      *
-     * @return string 
+     * @return string
      */
     public function getCreator()
     {
@@ -350,7 +352,7 @@ class User
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -360,7 +362,7 @@ class User
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -393,7 +395,7 @@ class User
     /**
      * Get Parent
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getParent()
     {
@@ -426,7 +428,7 @@ class User
     /**
      * Get Preferences
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getPreferences()
     {
@@ -459,7 +461,7 @@ class User
     /**
      * Get ChangeLogs
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getChangeLogs()
     {
@@ -482,7 +484,7 @@ class User
     /**
      * Get Customer
      *
-     * @return Entities\Customer 
+     * @return Entities\Customer
      */
     public function getCustomer()
     {
@@ -505,7 +507,7 @@ class User
     /**
      * Get Children
      *
-     * @return Entities\User 
+     * @return Entities\User
      */
     public function getChildren()
     {

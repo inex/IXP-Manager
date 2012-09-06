@@ -99,10 +99,34 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
         return parent::getUser();
     }
 
+    public function setIx($ix)
+    {
+        $this->__load();
+        return parent::setIx($ix);
+    }
+
+    public function getIx()
+    {
+        $this->__load();
+        return parent::getIx();
+    }
+
+    public function setExpire($expire)
+    {
+        $this->__load();
+        return parent::setExpire($expire);
+    }
+
+    public function getExpire()
+    {
+        $this->__load();
+        return parent::getExpire();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'attribute', 'op', 'value', 'id', 'User');
+        return array('__isInitialized__', 'attribute', 'ix', 'op', 'value', 'expire', 'id', 'User');
     }
 
     public function __clone()

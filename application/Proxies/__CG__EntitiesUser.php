@@ -261,6 +261,66 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::getChildren();
     }
 
+    public function loadPreference($attribute, $index = 0, $includeExpired = false)
+    {
+        $this->__load();
+        return parent::loadPreference($attribute, $index, $includeExpired);
+    }
+
+    public function hasPreference($attribute, $index = 0, $includeExpired = false)
+    {
+        $this->__load();
+        return parent::hasPreference($attribute, $index, $includeExpired);
+    }
+
+    public function getPreference($attribute, $index = 0, $includeExpired = false)
+    {
+        $this->__load();
+        return parent::getPreference($attribute, $index, $includeExpired);
+    }
+
+    public function setPreference($attribute, $value, $operator = '=', $expires = 0, $index = 0)
+    {
+        $this->__load();
+        return parent::setPreference($attribute, $value, $operator, $expires, $index);
+    }
+
+    public function addIndexedPreference($attribute, $value, $operator = '=', $expires = 0, $max = 0)
+    {
+        $this->__load();
+        return parent::addIndexedPreference($attribute, $value, $operator, $expires, $max);
+    }
+
+    public function cleanExpiredPreferences($asOf = NULL, $attribute = NULL)
+    {
+        $this->__load();
+        return parent::cleanExpiredPreferences($asOf, $attribute);
+    }
+
+    public function deletePreference($attribute, $index = NULL)
+    {
+        $this->__load();
+        return parent::deletePreference($attribute, $index);
+    }
+
+    public function getIndexedPreference($attribute, $withIndex = false, $ignoreExpired = true)
+    {
+        $this->__load();
+        return parent::getIndexedPreference($attribute, $withIndex, $ignoreExpired);
+    }
+
+    public function getAssocPreference($attribute, $index = NULL, $ignoreExpired = true)
+    {
+        $this->__load();
+        return parent::getAssocPreference($attribute, $index, $ignoreExpired);
+    }
+
+    public function deleteAssocPreference($attribute, $index = false)
+    {
+        $this->__load();
+        return parent::deleteAssocPreference($attribute, $index);
+    }
+
 
     public function __sleep()
     {

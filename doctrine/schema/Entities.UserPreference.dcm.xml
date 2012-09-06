@@ -5,8 +5,10 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="attribute" type="string" length="255" nullable="true"/>
+    <field name="ix" type="integer" nullable="false"/>
     <field name="op" type="string" length="2" nullable="true"/>
     <field name="value" type="text" nullable="true"/>
+    <field name="expire" type="bigint" nullable="false"/>
     <unique-constraints>
       <unique-constraint name="IX_UserPreference_1" columns="user_id,attribute,op"/>
     </unique-constraints>
