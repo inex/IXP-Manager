@@ -261,6 +261,12 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::getChildren();
     }
 
+    public function getFormattedName()
+    {
+        $this->__load();
+        return parent::getFormattedName();
+    }
+
     public function loadPreference($attribute, $index = 0, $includeExpired = false)
     {
         $this->__load();

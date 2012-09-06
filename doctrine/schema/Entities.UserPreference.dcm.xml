@@ -10,7 +10,7 @@
     <field name="value" type="text" nullable="true"/>
     <field name="expire" type="bigint" nullable="false"/>
     <unique-constraints>
-      <unique-constraint name="IX_UserPreference_1" columns="user_id,attribute,op"/>
+      <unique-constraint name="IX_UserPreference_1" columns="user_id,attribute,op,ix"/>
     </unique-constraints>
     <many-to-one field="User" target-entity="Entities\User" inversed-by="Preferences">
       <join-columns>

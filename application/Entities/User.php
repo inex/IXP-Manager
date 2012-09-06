@@ -513,4 +513,18 @@ class User
     {
         return $this->Children;
     }
+
+
+
+
+    /**
+     * Get Formatted Name - utility function required by OSS library
+     *
+     *
+     * @return string
+     */
+    public function getFormattedName()
+    {
+        return $this->getUsername();
+    }
 }
