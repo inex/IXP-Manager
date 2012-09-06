@@ -21,7 +21,7 @@
  */
 
 /**
- * Login form
+ * Reset Password form
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   INEX
@@ -29,21 +29,20 @@
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Limited
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2
  */
-class INEX_Form_Auth_Login extends INEX_Form
+class INEX_Form_Auth_ResetPassword extends INEX_Form
 {
 
     public function init()
     {
-        $this->setAttrib( 'id', 'auth_login' )
-            ->setAttrib( 'name', 'auth_login' );
+        $this->setAttrib( 'id', 'auth_reset_password' )
+            ->setAttrib( 'name', 'auth_reset_password' );
 
         $this->addElement( OSS_Form_Auth::createUsernameElement() );
+        $this->addElement( OSS_Form_Auth::createPasswordResetTokenElement() );
         $this->addElement( OSS_Form_Auth::createPasswordElement() );
-        //$this->addElement( OSS_Form_Auth::createRememberMeElement() );
-        
-        $this->addElement( "submit", _( 'Login' ) );
-        $this->addElement( OSS_Form_Auth::createLostPasswordElement() );
-        $this->addElement( OSS_Form_Auth::createLostUsernameElement() );
+        $this->addElement( OSS_Form_Auth::createPasswordConfirmElement() );
+        $this->addElement( "submit", _( 'Reset Password' ) );
+        $this->addElement( OSS_Form_Auth::createReturnToLoginElement() );
     }
 
 }

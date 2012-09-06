@@ -49,7 +49,15 @@ class AuthController extends INEX_Controller_Action
         return new INEX_Form_Auth_LostPassword();
     }
 
-
+    /**
+     * Return the appropriate reset password form for your application
+     */
+    protected function _getFormResetPassword()
+    {
+        return new INEX_Form_Auth_ResetPassword();
+    }
+    
+    
     public function forgottenUsernameAction()
     {
         if( $this->getRequest()->getParam( 'fpsubmitted', false ) )

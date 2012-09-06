@@ -21,7 +21,13 @@
  */
 
 /**
- * The Login Form
+ * Lost Password form
+ *
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Limited
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2
  */
 class INEX_Form_Auth_LostPassword extends INEX_Form
 {
