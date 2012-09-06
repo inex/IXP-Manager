@@ -33,52 +33,22 @@ class AuthController extends INEX_Controller_Action
 {
     use OSS_Controller_Trait_Auth;
 
-
-
-    public function forgottenPasswordAction()
+    /**
+     * Return the appropriate login form for your application
+     */
+    protected function _getFormLogin()
     {
-        if( $this->getRequest()->getParam( 'fpsubmitted', false ) )
-        {
-            // does the username exist?
-            if( $user = Doctrine_Core::getTable( 'User' )->findOneByUsername( $this->getRequest()->getParam( 'loginusername' ) ) )
-            {
-                // generate a password change token
-                $chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                $token = substr( str_shuffle( $chars ), 0, 32 );
-                
-                $user->setPreference( 'pwreset.token', $token );
-                $user->setPreference( 'pwreset.timeout', mktime() + 86400 );
-                
-                $this->view->user  = $user;
-                $this->view->token = $token;
-                
-                try
-                {
-                    $mail = new Zend_Mail( );
-                    $mail->setBodyText( $this->view->render( 'auth/email/password-reset.tpl' ) )
-                        ->setFrom( $this->config['identity']['email'], $this->config['identity']['name'] )
-                         ->addTo( $user['email'] )
-                         ->setSubject( $this->config['identity']['ixp']['fullname'] . ' :: Password Reset' )
-                         ->send();
-
-                    $this->view->message = new INEX_Message(
-                    	'We have sent you an email with further instructions.',
-                        INEX_Message::MESSAGE_TYPE_SUCCESS
-                    );
-
-                    return $this->_forward( 'login' );
-                }
-                catch( Zend_Exception $e ) {
-                }
-            }
-            else
-            {
-                $this->view->message = new INEX_Message( 'That username does not exist', 'error' );
-            }
-        }
-
-        $this->view->display( 'auth/forgotten-password.tpl' );
+        return new INEX_Form_Auth_Login();
     }
+
+    /**
+     * Return the appropriate lost password form for your application
+     */
+    protected function _getFormLostPassword()
+    {
+        return new INEX_Form_Auth_LostPassword();
+    }
+
 
     public function forgottenUsernameAction()
     {
@@ -120,100 +90,6 @@ class AuthController extends INEX_Controller_Action
         $this->view->display( 'auth/forgotten-username.tpl' );
     }
     
-    public function resetPasswordAction()
-    {
-        $this->view->username = trim( stripslashes( $this->_getParam( 'username', '' ) ) );
-        $this->view->token    = trim( stripslashes( $this->_getParam( 'token', '' ) ) );
-        
-        if( $this->_getParam( 'fpsubmitted', false ) )
-        {
-            $pass1 = trim( stripslashes( $this->_getParam( 'pass1', '' ) ) );
-            $pass2 = trim( stripslashes( $this->_getParam( 'pass2', '' ) ) );
-            
-            do{
-                
-                if( $this->view->username == '' || $this->view->token == '' || $pass1 == '' || $pass2 == '' )
-                {
-                    $this->view->message = new INEX_Message(
-                        	'Please enter all details below!', INEX_Message::MESSAGE_TYPE_ERROR
-                    );
-                    break;
-                }
-                
-                // is the username and token valid?
-                if( !( $user = Doctrine_Core::getTable( 'User' )->findOneByUsername( $this->view->username ) )
-                    || $user->getPreference( 'pwreset.token' ) != $this->view->token
-                )
-                {
-                    $this->view->message = new INEX_Message(
-                    	'Invalid username or token!', INEX_Message::MESSAGE_TYPE_ERROR
-                    );
-                    break;
-                }
-                
-                // so, have valid user and matching token. Is the token in date?
-                if( mktime() - $user->getPreference( 'pwreset.timeout' ) > 0 )
-                {
-                    $this->session->message = new INEX_Message(
-                    	'Reset tokens are only valid for 24 hours. Yours has expired. Please generate a new token below.',
-                        INEX_Message::MESSAGE_TYPE_ERROR
-                    );
-
-                    return $this->_redirect( 'auth/forgotten-password' );
-                }
-                
-                // do the passwords live up to requirements?
-                if(
-                    !Zend_Validate::is( $pass1, 'StringLength', array( 8, 30 ) )
-                    || !Zend_Validate::is( $pass1, 'Regex', array( '/^[a-zA-Z0-9\!\£\$\%\^\&\*\(\)\-\=\_\+\{\}\[\]\;\'\#\:\@\~\,\.\/\<\>\?\|]+$/' ) )
-                )
-                {
-                    $this->view->message = new INEX_Message(
-                    	'Password must be between 8 and 30 characters in length and cannot contain the " character', INEX_Message::MESSAGE_TYPE_ERROR
-                    );
-                    break;
-                }
-                
-                // do the passwords match?
-                if( $pass1 !== $pass2 )
-                {
-                    $this->view->message = new INEX_Message(
-                    	'Your new password and the confirmation password do not match', INEX_Message::MESSAGE_TYPE_ERROR
-                    );
-                    break;
-                }
-                
-                // all okay, change password!
-                $user->deletePreference( 'pwreset.token' );
-                $user->deletePreference( 'pwreset.timeout' );
-                $user['password'] = $pass1;
-                $user->save();
-                
-                // send a confirmation email
-                try
-                {
-                    $mail = new Zend_Mail( );
-                    $mail->setBodyText( $this->view->render( 'auth/email/password-reset-notice.tpl' ) )
-                        ->setFrom( $this->config['identity']['email'], $this->config['identity']['name'] )
-                         ->addTo( $user['email'] )
-                         ->setSubject( $this->config['identity']['ixp']['fullname'] . ' :: Password Reset Confirmation' )
-                         ->send();
-
-                    $this->view->message = new INEX_Message(
-                    	'Your password has been reset. You may now login below.',
-                        INEX_Message::MESSAGE_TYPE_SUCCESS
-                    );
-
-                    return $this->_forward( 'login' );
-                }
-                catch( Zend_Exception $e ) {
-                }
-                
-            }while( false );
-        }
-        
-        $this->view->display( 'auth/reset-password.tpl' );
-    }
     
     /**
      * Create a Drupal login button for admin users

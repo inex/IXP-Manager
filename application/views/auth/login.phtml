@@ -10,7 +10,7 @@
 
 <div class="row">
 
-    {if !isset( $options.identity.ixp.biglogo )}
+    {if !isset( $options.identity.biglogo )}
         <div class="span12">
             <h2 align="center">[Your Logo Here]</h2>
             <p align="center">
@@ -20,7 +20,7 @@
     {else}
         <div class="span6 offset4">
             <p align="center">
-                <img src="{genUrl}{$options.identity.ixp.biglogo}" />
+                <img src="{$options.identity.biglogo}" />
             </p>
     {/if}
     </div>
