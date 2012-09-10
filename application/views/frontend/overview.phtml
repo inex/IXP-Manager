@@ -1,0 +1,97 @@
+{include file="header.phtml"}
+
+<div class="page-content" >
+
+    <div class="page-header" >
+        <h1 style="display: inline;">{$feParams->titleSingular} {if isset( $overviewPostTitle )}<small><em>{$overviewPostTitle}</em></small>{/if}</h1>
+        
+        <span style="float: right; margin-top: -10px;">
+            {* do we have a custom page header toolbar? *}
+            {if $overviewToolbar}
+                {include file=$overviewToolbar}
+            {else}
+                <div class="btn-toolbar">
+                	<div class="btn-group">
+                        <a class="btn have-tooltip-below" title="Add {$feParams->nameSingular}" href="{genUrl controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                    </div>
+                </div>
+            {/if}
+        </span>
+    </div>
+    
+    {OSS_Message}
+
+    {* do we have any additional text to put before the view? *}
+    {if $overviewPreamble}{include file=$overviewPreamble}{/if}
+
+    {assign var="cnt" value=0}
+    {assign var="per_row" value=$feParams->overviewSpans}
+    {foreach $feParams->overviewSections as $name=>$section }
+        {if $section@index == 0 }
+            <div class="row-fluid" id="row_0">
+        {else if ( $section@index % $per_row ) == 0 }
+            {assign var="cnt" value=0}
+            </div>
+            <div class="row-fluid" id="row_{$section@index / $per_row}" >
+        {/if}
+        {assign var="cnt" value=$cnt+1}
+        <div class="span{12 / $per_row}">
+            {if not is_array( $section )}
+                <h2>{$section}</h2>
+            {else}
+                {if $section.haveMenu}
+                    <div style="float: right;">
+                        {if isset( $section.menu ) && $section.menu }
+                            {include file=$row.menu}
+                        {else}
+                            <div class="btn-toolbar">
+                                <div class="btn-group">
+                                    {if isset( $section.wideModal ) && $section.wideModal }
+                                        <a class="btn btn-mini" id="modal-dialog-wide_{$section.controller}" href="{genUrl controller=$section.controller action='modal-add' cid=$object->getId()}"><i class="icon-plus"></i></a>
+                                    {else}
+                                        <a class="btn btn-mini" id="modal-dialog-{$section.controller}" href="{genUrl controller=$section.controller action='modal-add' cid=$object->getId()}"><i class="icon-plus"></i></a>
+                                    {/if}
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
+                {/if}
+                <h2>{$section.label}</h2>
+            {/if}
+            <ul style="margin-top: 3px">
+                {if isset( $data.$name ) }
+                    {foreach $data.$name as $row}
+                    <li style="line-height: 22px;">
+                        {if not is_array( $row ) }
+                            {$row}
+                        {else}
+                            {if isset( $row.menu )}<div style="float: right;">{include file=$row.menu}</div>{/if}
+                            {if isset( $row.label) }
+                                <strong>{$row.label}: </strong>
+                            {/if}
+                            {$row.preview}
+                        {/if}
+                    </li>
+                    {/foreach}
+                {/if}
+            </ul>
+        </div>
+    {/foreach}
+
+
+    {if $cnt > 0 && $cnt < $per_row}
+        <div class="span{12 - (12 / $per_row * $cnt)}"></div>
+        </div>
+    {else}
+        {assign var="cnt" value=0}
+        </div>
+    {/if}
+    
+    {* do we have any additional text to put after the view? *}
+    {if $overviewPostamble}{include file=$overviewPostamble}{/if}
+    
+</div>
+
+
+{if $overviewScript}<script>{include file=$overviewScript}</script>{/if}
+{include file="footer.phtml"}

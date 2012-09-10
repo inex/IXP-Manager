@@ -1,0 +1,60 @@
+{include file="header.phtml"}
+
+<div class="page-content" >
+
+    <div class="page-header" >
+        <h1 style="display: inline;">{$feParams->pagetitle}</h1>
+        
+        <span style="float: right; margin-top: -10px;">
+            {* do we have a custom page header toolbar? *}
+            {if $viewToolbar}
+                {include file=$viewToolbar}
+            {else}
+                <div class="btn-toolbar">
+                	<div class="btn-group">
+                        <a class="btn" href="{genUrl controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                    </div>
+                </div>
+            {/if}
+        </span>
+    </div>
+    
+    {OSS_Message}
+
+    {* do we have any additional text to put before the view? *}
+    {if $viewPreamble}{include file=$viewPreamble}{/if}
+
+    <dl>
+        {foreach $feParams->viewColumns as $col => $cconf}
+            {if not is_array( $cconf ) or not isset( $cconf.display ) or $cconf.display}
+                <dt>
+                    {if not is_array( $cconf )}{$cconf}{else}{$cconf.title}{/if}
+                </dt>
+                <dd>
+                    {if not is_array( $cconf )}
+                        {$object.$col}
+                    {elseif isset( $cconf.type )}
+                        {if $cconf.type eq $FE_COL_TYPES.HAS_ONE}
+                            {assign var=hasOneId value=$cconf.idField}
+                            <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$object.$hasOneId}">{$object.$col}</a>
+                        {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
+                            {$object.$col|date_format:'%Y-%m-%d %H:%M:%S'}
+                        {else}
+                            Type?
+                        {/if}
+                    {else}
+                        {$object.$col}
+                    {/if}
+                </dd>
+            {/if}
+        {/foreach}
+    </dl>
+    
+    {* do we have any additional text to put after the view? *}
+    {if $viewPostamble}{include file=$viewPostamble}{/if}
+    
+</div>
+
+
+{if $viewScript}<script>{include file=$viewScript}</script>{/if}
+{include file="footer.phtml"}

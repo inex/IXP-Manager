@@ -1,0 +1,45 @@
+{include file="header.phtml"}
+
+<div class="page-content" >
+
+    <div class="page-header" >
+        <h1 style="display: inline;">
+            {$feParams->pagetitle}&nbsp;&nbsp;
+            <small>{if $isEdit}Edit{else}Add New {$feParams->titleSingular}{/if}</small>
+        </h1>
+        
+        <span style="float: right; margin-top: -10px;">
+            {* do we have a customer page header toolbar? *}
+            {if $addToolbar}
+                {include file=$addToolbar}
+            {else if $module != "index"}
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                    </div>
+                </div>
+            {else}
+                <div class="btn-toolbar">
+                	<div class="btn-group">
+                        <a class="btn" href="{genUrl controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                    </div>
+                </div>
+            {/if}
+        </span>
+    </div>
+    
+    {OSS_Message}
+
+    {* do we have any additional text to put before the table? *}
+    {if $addPreamble}{include file=$addPreamble}{/if}
+
+    {$form}
+    
+    {* do we have any additional text to put after the table? *}
+    {if $addPostamble}{include file=$addPostamble}{/if}
+    
+</div>
+
+
+{if $addScript}<script>{include file=$addScript}</script>{/if}
+{include file="footer.phtml"}
