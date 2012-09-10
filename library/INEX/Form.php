@@ -28,12 +28,13 @@
  */
 class INEX_Form extends Twitter_Form
 {
-    /**
-     * Where to go it the add / edit is cancelled.
-     * @var string Where to go it the add / edit is cancelled.
-     */
-    public $cancelLocation = '';
-    
+    use OSS_Form_Trait;
+    use OSS_Form_Trait_CancelLocation;
+    use OSS_Form_Trait_IsEdit;
+    use OSS_Form_Trait_GenericElements;
+    use OSS_Form_Trait_InsertElementFns;
+    // use OSS_Form_Trait_Doctrine1Mapping;
+    use OSS_Form_Trait_Doctrine2Mapping;
     
     /**
      * A list of elements we should not update on an edit
@@ -42,18 +43,8 @@ class INEX_Form extends Twitter_Form
      */
     public $onEditSkipIfBlank = null;
     
-    /**
-     * If true, we are editing an existing object. Otherwise we are adding a new object.
-     * @var bool If true, we are editing an existing object. Otherwise we are adding a new object.
-     */
-    public $isEdit = false;
-
-    public function __construct( $options = null, $isEdit = false, $cancelLocation = '' )
+    public function __construct( $options = null )
     {
-        $this->isEdit = $isEdit;
-        
-        $this->cancelLocation = $cancelLocation;
-        
         $this->setAttrib( 'accept-charset', 'UTF-8' );
         $this->setMethod( 'post' );
         $this->setAttrib( "horizontal", true );
@@ -64,24 +55,10 @@ class INEX_Form extends Twitter_Form
         $this->addElementPrefixPath( 'OSS_Validate', 'OSS/Validate/', 'validate' );
         
         parent::__construct( $options );
+        
+        if( method_exists( $this, 'initialiseTraits' ) )
+            $this->initialiseTraits( $options );
     }
     
-    /**
-     * A utility function for creating a standard cancel button for forms.
-     *
-     * @param string $name The element name
-     * @param string $cancelLocation The cancel location URL
-     * @return Zend_Form_Element_Submit The cancel element
-     */
-    public function createCancelElement( $name = 'cancel', $cancelLocation = null )
-    {
-        if( $cancelLocation === null )
-            $cancelLocation = $this->cancelLocation;
-        
-        $cancel = new OSS_Form_Element_Buttonlink( $name );
-        
-        return $cancel->setAttrib( 'href', $cancelLocation )
-            ->setAttrib( 'label', _( 'Cancel' ) );
-    }
 }
 

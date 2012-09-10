@@ -37,7 +37,7 @@ class INEX_Form_User extends INEX_Form
 {
     public $isCustAdmin = false;
     
-    public function __construct( $options = null, $isEdit = false, $cancelLocation = '', $isCustAdmin = false )
+    public function __construct( $options = null, $isCustAdmin = false )
     {
         $this->isCustAdmin = $isCustAdmin;
         
@@ -138,7 +138,7 @@ class INEX_Form_User extends INEX_Form
         $this->addElement( $disabled );
 
         
-        $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
         
     }

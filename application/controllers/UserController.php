@@ -142,9 +142,9 @@ class UserController extends INEX_Controller_FrontEnd
      */
     protected function getForm( $isEdit, $object, $options = null, $cancelLocation = null )
     {
-        if( $cancelLocation === null )
-            $cancelLocation = $this->_getBaseUrl() . '/index';
-    
+        $options['cancelLocation'] = $cancelLocation === null ? $this->_getBaseUrl() . '/index' : $cancelLocation;
+        $options['isEdit'] = $isEdit;
+        
         $formName = $this->feGetParam( 'form' );
         $form = new $formName( $options, $isEdit, $cancelLocation, $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN  );
         return $this->formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null );
