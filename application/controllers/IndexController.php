@@ -39,7 +39,7 @@ class IndexController extends INEX_Controller_Action
             if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
                 $this->_redirect( 'admin/index' );
             else if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
-                $this->_redirect( 'cust-admin/users' );
+                $this->_redirect( 'user/list' );
             else
                 $this->_redirect( 'dashboard' );
         }

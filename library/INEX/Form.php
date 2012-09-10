@@ -28,7 +28,13 @@
  */
 class INEX_Form extends Twitter_Form
 {
-
+    /**
+     * Where to go it the add / edit is cancelled.
+     * @var string Where to go it the add / edit is cancelled.
+     */
+    public $cancelLocation = '';
+    
+    
     /**
      * A list of elements we should not update on an edit
      * if the submitted data is an empty string.
@@ -36,13 +42,17 @@ class INEX_Form extends Twitter_Form
      */
     public $onEditSkipIfBlank = null;
     
+    /**
+     * If true, we are editing an existing object. Otherwise we are adding a new object.
+     * @var bool If true, we are editing an existing object. Otherwise we are adding a new object.
+     */
     public $isEdit = false;
 
-    public function __construct( $options = null, $isEdit = false )
+    public function __construct( $options = null, $isEdit = false, $cancelLocation = '' )
     {
-        parent::__construct( $options );
-
         $this->isEdit = $isEdit;
+        
+        $this->cancelLocation = $cancelLocation;
         
         $this->setAttrib( 'accept-charset', 'UTF-8' );
         $this->setMethod( 'post' );
@@ -52,7 +62,26 @@ class INEX_Form extends Twitter_Form
         
         $this->addElementPrefixPath( 'OSS_Filter',   'OSS/Filter/',   'filter' );
         $this->addElementPrefixPath( 'OSS_Validate', 'OSS/Validate/', 'validate' );
+        
+        parent::__construct( $options );
     }
     
+    /**
+     * A utility function for creating a standard cancel button for forms.
+     *
+     * @param string $name The element name
+     * @param string $cancelLocation The cancel location URL
+     * @return Zend_Form_Element_Submit The cancel element
+     */
+    public function createCancelElement( $name = 'cancel', $cancelLocation = null )
+    {
+        if( $cancelLocation === null )
+            $cancelLocation = $this->cancelLocation;
+        
+        $cancel = new OSS_Form_Element_Buttonlink( $name );
+        
+        return $cancel->setAttrib( 'href', $cancelLocation )
+            ->setAttrib( 'label', _( 'Cancel' ) );
+    }
 }
 

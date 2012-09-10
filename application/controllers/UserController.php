@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,66 +32,126 @@
 class UserController extends INEX_Controller_FrontEnd
 {
 
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend[ 'defaultOrdering' ] = 'name';
-        $this->frontend[ 'model' ] = 'User';
-        $this->frontend[ 'name' ] = 'User';
-        $this->frontend[ 'pageTitle' ] = 'Users';
-
-        $this->frontend[ 'columns' ] = array(
-
-            'displayColumns' => array(
-                'id', 'username', 'email', 'authorisedMobile', 'custid', 'privs', 'disabled'
-            ),
-
-	        'viewPanelRows' => array(
-	            'username', 'email', 'authorisedMobile', 'custid', 'privs', 'disabled'
-	        ),
-
-	        'viewPanelTitle' => 'username',
-
-	        'sortDefaults' => array(
-	            'column' => 'username', 'order' => 'asc'
-	        ),
-
-	        'id' => array(
-	            'label' => 'ID', 'hidden' => true
-	        ),
-
-
-	        'username' => array(
-	            'label' => 'Username', 'sortable' => true
-	        ),
-
-	        'password' => array(
-	            'label' => 'Password', 'sortable' => true
-	        ),
-
-	        'email' => array(
-	            'label' => 'E-mail', 'sortable' => true
-	        ),
-
-	        'authorisedMobile' => array(
-	            'label' => 'Authorised Mobile', 'sortable' => false
-	        ),
-
-	        'custid' => array(
-	            'type' => 'hasOne', 'model' => 'Cust', 'controller' => 'customer', 'field' => 'name', 'label' => 'Customer', 'sortable' => true
-	        ),
-
-	        'privs' => array(
-	            'label' => 'Privileges', 'sortable' => true, 'type' => 'xlate', 'xlator' => User::$PRIVILEGES_TEXT
-	        ),
-
-	        'disabled' => array(
-	            'label' => 'Disabled', 'sortable' => true
-	        )
-        );
-
-        parent::feInit();
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\User',
+            'form'          => 'INEX_Form_User',
+            'pagetitle'     => 'Users',
+        
+            'titleSingular' => 'User',
+            'nameSingular'  => 'a user',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+        
+            'listColumns' => [
+                'id' => [ 'title' => 'UID', 'display' => false ],
+                'username'   => 'Username',
+                'email'      => 'Email'
+            ],
+        
+            'listOrderBy'    => 'username',
+            'listOrderByDir' => 'ASC',
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->pagetitle = 'Customer Users';
+    
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+    
+                    'customer'  => [
+                        'title'      => 'Customer',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'custid'
+                    ],
+                    'username'      => 'Userame',
+                    'email'         => 'Email'
+                ];
+                break;
+                
+            case \Entities\User::AUTH_CUSTADMIN:
+                $this->_feParams->pagetitle = 'User Admin for ' . $this->getUser()->getCustomer()->getName();
+    
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+                    'username'      => 'Userame',
+                    'email'         => 'Email',
+                    'created'       => [
+                        'title'     => 'Created',
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ]
+                ];
+                break;
+                
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
+                 
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
+                
+    
 
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'u.id as id, u.username as username, u.email as email,
+                    u.created as created, c.id as custid, c.name as customer' )
+            ->from( '\\Entities\\User', 'u' )
+            ->leftJoin( 'u.Customer', 'c' );
+
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+        {
+            $qb->where( 'u.Customer = ?1' )
+                ->setParameter( 1, $this->getUser()->getCustomer() );
+        }
+        
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'u.id = ?2' )->setParameter( 2, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    /**
+     * Get the `Zend_Form` object for adding / editing actions with some processing.
+     *
+     * We shouldn't override this but I've changed the constructor...
+     *
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return Zend_Form
+     */
+    protected function getForm( $isEdit, $object, $options = null, $cancelLocation = null )
+    {
+        if( $cancelLocation === null )
+            $cancelLocation = $this->_getBaseUrl() . '/index';
+    
+        $formName = $this->feGetParam( 'form' );
+        $form = new $formName( $options, $isEdit, $cancelLocation, $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN  );
+        return $this->formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null );
+    }
+    
+    
+    
     /**
      * Checks / actions before we try and validate the form
      */

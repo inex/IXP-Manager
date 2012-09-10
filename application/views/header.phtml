@@ -1,29 +1,28 @@
-{include file="header-base.tpl"}
-
+{tmplinclude file="header-base.phtml"}
 
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
-        <div class="{if isset( $hasIdentity ) and $hasIdentity and $identity.user.privs eq 3}container-fluid{else}container{/if}">
-            <a class="brand" href="{genUrl}">{if isset( $brand )}{$brand}{else}IXP Manager{/if}</a>
+        <div class="{if isset( $hasIdentity ) and $hasIdentity and $user->getPrivs() eq 3}container-fluid{else}container{/if}">
+            <a class="brand" href="{genUrl}">{$options.identity.sitename}</a>
             {if isset( $hasIdentity ) and $hasIdentity}
                 <div class="nav-collapse">
                      <ul class="nav">
-                        {if     $user.privs eq 3}
+                        {if $user->getPrivs() eq 3}
                             <li>
                                 <a href="{genUrl}">Home</a>
                             </li>
-                        {elseif $user.privs eq 2}
-                            <li {if $controller eq 'cust-admin'}class="active"{/if}>
+                        {elseif $user->getPrivs() eq 2}
+                            <li {if $controller eq 'user'}class="active"{/if}>
                                 <a href="{genUrl controller="cust-admin"}">User Admin</a>
                             </li>
-                        {elseif $user.privs eq 1}
+                        {else}
                             <li {if $controller eq 'dashboard' and $action eq 'index'}class="active"{/if}>
                                 <a href="{genUrl controller="dashboard"}">
                                     Dashboard
                                 </a>
                             </li>
                         {/if}
-                        {if $user.privs neq 2}
+                        {if $user->getPrivs() neq 2}
                             <li class="dropdown {if $action eq 'switch-configuration' or $action eq 'members-details-list' or ( $controller eq 'meeting' and $action eq 'read' )}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
@@ -41,7 +40,7 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    {if $user.privs eq 1}
+                                    {if $user->getPrivs() eq 1}
                                         <li>
                                             <a href="{genUrl controller="peering-manager"}">Peering Manager</a>
                                         </li>
@@ -86,7 +85,7 @@
                             <li class="dropdown {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $action eq 'weathermap'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    {if $user.privs eq 1 and $customer->isFullMember()}
+                                    {if $user->getPrivs() eq 1 and $customer->isFullMember()}
                                         <li>
                                             <a href="{genUrl controller="dashboard" action="statistics"}">My Statistics</a>
                                         </li>
@@ -113,7 +112,7 @@
                         <li>
                             <a href="{genUrl controller="dashboard" action="static" page="support"}">Support</a>
                         </li>
-                        {if $user.privs eq 3 and isset( $config.menu.staff_links )}
+                        {if $user->getPrivs() eq 3 and isset( $config.menu.staff_links )}
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Staff Links<b class="caret"></b></a>
                                 
@@ -132,7 +131,7 @@
                             <a href="{genUrl controller="profile"}">Profile</a>
                         </li>
                         
-                        {if $user.privs eq 3}
+                        {if $user->getPrivs() eq 3}
                             <li class="{if $controller eq 'index' and $action eq 'help'}active{/if}">
                                 <a href="{genUrl controller="index" action="help"}">Help</a>
                             </li>
@@ -143,7 +142,7 @@
                         </li>
                     </ul>
                     <ul class="nav pull-right">
-                        {if $user.privs eq 3}
+                        {if $user->getPrivs() eq 3}
                             <form class="navbar-search pull-left">
                                 <select data-placeholder="View a Customer..." id="menu-select-customer" type="select" name="id" class="chzn-select">
                                     <option></option>
@@ -166,11 +165,11 @@
     </div>
 </div>
     
-{if isset( $hasIdentity ) and $hasIdentity and $user.privs eq 3}
+{if isset( $hasIdentity ) and $hasIdentity and $user->getPrivs() eq 3}
     
     <div class="container-fluid">
 
-    {include file="menu.tpl"}
+    {tmplinclude file="menu.phtml"}
     
 {elseif isset( $mode ) and $mode eq 'fluid'}
 

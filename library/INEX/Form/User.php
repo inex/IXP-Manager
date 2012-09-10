@@ -1,7 +1,7 @@
 <?php
 
-/*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+/**
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +23,7 @@
 
 
 /*
- *
+ * Form for adding / editing users
  *
  * http://www.inex.ie/
  * (c) Internet Neutral Exchange Association Ltd
@@ -35,19 +35,22 @@
  */
 class INEX_Form_User extends INEX_Form
 {
-    /**
-     *
-     *
-     */
-    public function __construct( $options = null, $isEdit = false, $cancelLocation, $isCustAdmin = false )
+    public $isCustAdmin = false;
+    
+    public function __construct( $options = null, $isEdit = false, $cancelLocation = '', $isCustAdmin = false )
     {
-        parent::__construct( $options, $isEdit );
-
+        $this->isCustAdmin = $isCustAdmin;
+        
+        parent::__construct( $options );
+    }
+    
+    public function init()
+    {
         ////////////////////////////////////////////////
         // Create and configure elements
         ////////////////////////////////////////////////
 
-        if( $isCustAdmin && !$isEdit )
+        if( $this->isCustAdmin && !$this->isEdit )
         {
             // let's capture the user's name and add them to the contact table also
             $name = $this->createElement( 'text', 'name' );
@@ -56,42 +59,27 @@ class INEX_Form_User extends INEX_Form
                 ->setAttrib( 'size', 50 )
                 ->setLabel( 'Name' )
                 ->addFilter( 'StringTrim' )
-                ->addFilter( new INEX_Filter_StripSlashes() );
+                ->addFilter( new OSS_Filter_StripSlashes() );
             $this->addElement( $name );
         }
         
-        $username = $this->createElement( 'text', 'username' );
+        $username = OSS_Form_Auth::createUsernameElement();
+        
         $username->addValidator( 'stringLength', false, array( 2, 30 ) )
-            ->setRequired( true )
-            ->setAttrib( 'size', 30 )
-            ->setLabel( 'Username' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() )
-            ->addFilter( 'StringToLower' )
-            ->addValidator( 'stringLength', false, array( 6, 30 ) )
             ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\-_\.]+$/' ) );
 
-        if( $isCustAdmin && $isEdit )
+        if( $this->isCustAdmin && $this->isEdit )
             $username->setAttrib( 'readonly', '1' );
         
         $this->addElement( $username );
 
-        if( !$isCustAdmin )
+        
+        if( !$this->isCustAdmin )
         {
-            $password = $this->createElement( 'text', 'password' );
-            $password->addValidator( 'stringLength', false, array( 8, 30 ) )
-                ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\!\£\$\%\^\&\*\(\)\-\=\_\+\{\}\[\]\;\'\#\:\@\~\,\.\/\<\>\?\|]+$/' ) )
-                ->setRequired( true )
-                ->setLabel( 'Password' )
-                ->addFilter( 'StringTrim' )
-                ->addFilter( new INEX_Filter_StripSlashes() )
-                ->setErrorMessages( array( 'The password must between 8 and 30 characters and cannot contain a double quote - " - character.' ) );
-    
-            $this->addElement( $password );
-    
+            $this->addElement( OSS_Form_Auth::createPasswordElement() );
     
             $privileges = $this->createElement( 'select', 'privs' );
-            $privileges->setMultiOptions( User::$PRIVILEGES )
+            $privileges->setMultiOptions( \Entities\User::$PRIVILEGES_TEXT )
                 ->setRegisterInArrayValidator( true )
                 ->setLabel( 'Privileges' )
                 ->setAttrib( 'class', 'chzn-select' )
@@ -100,31 +88,22 @@ class INEX_Form_User extends INEX_Form
             $this->addElement( $privileges );
         }
 
-        $email = $this->createElement( 'text', 'email' );
-        $email->addValidator( 'stringLength', false, array( 1, 255 ) )
-              ->addValidator( 'emailAddress', false, array( 'mx' => true, 'deep' => true, 'domain' => true ) )
-              ->setRequired( true )
-              ->setLabel( 'E-mail' )
-              ->addFilter( 'StringTrim' )
-              ->addFilter( 'StringToLower' )
-              ->setAttrib( 'size', 60 )
-              ->addFilter( new INEX_Filter_StripSlashes() );
-
-        $this->addElement( $email );
-
+        $this->addElement( OSS_Form_User::createEmailElement() );
+        
         $mobile = $this->createElement( 'text', 'authorisedMobile' );
         $mobile->addValidator( 'stringLength', false, array( 0, 30 ) )
                ->setRequired( false )
                ->setLabel( 'Mobile' )
                ->setAttrib( 'placeholder', '+353 86 123 4567' )
                ->addFilter( 'StringTrim' )
-               ->addFilter( new INEX_Filter_StripSlashes() );
+               ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $mobile );
 
 
-        if( !$isCustAdmin )
+        if( !$this->isCustAdmin )
         {
+            /*
             $dbCusts = Doctrine_Query::create()
                 ->from( 'Cust c' )
                 ->orderBy( 'c.name ASC' )
@@ -149,6 +128,7 @@ class INEX_Form_User extends INEX_Form
                 ->setErrorMessages( array( 'Please select a customer' ) );
     
             $this->addElement( $cust );
+            */
         }
 
 
@@ -158,22 +138,9 @@ class INEX_Form_User extends INEX_Form
         $this->addElement( $disabled );
 
         
+        $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
         
-        $commit = $this->createElement( 'hidden', 'commit' );
-        $commit->setValue( '1' );
-        $this->addElement( $commit );
-
-        
-        
-        $submit = $this->createElement( 'submit', 'submit' );
-        $submit->setLabel( $isEdit ? 'Save' : 'Add' );
-        $this->addElement( $submit );
-        
-        $cancel = $this->createElement( 'button', 'cancel' );
-        $cancel->setLabel( 'Cancel' )
-               ->setAttrib( 'onClick', "parent.location='{$cancelLocation}'" );
-        $this->addElement( $cancel );
-
     }
 
 }

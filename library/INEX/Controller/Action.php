@@ -36,11 +36,11 @@ class INEX_Controller_Action extends OSS_Controller_Action
 
     // traits we want to use
     use OSS_Controller_Action_Trait_Namespace;
+    use OSS_Controller_Action_Trait_Doctrine2User;
     use OSS_Controller_Action_Trait_Auth;
     // use OSS_Controller_Action_Trait_AuthRequired;
     use OSS_Controller_Action_Trait_Doctrine2Cache;
     use OSS_Controller_Action_Trait_Doctrine2;
-    use OSS_Controller_Action_Trait_Doctrine2User;
     use OSS_Controller_Action_Trait_Mailer;
     // use OSS_Controller_Action_Trait_License;
     use OSS_Controller_Action_Trait_Logger;
