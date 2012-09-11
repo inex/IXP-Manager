@@ -56,4 +56,23 @@ class Customer extends EntityRepository
     }
     
     
+    /**
+     * Return an array of all customer names where the array key is the customer id.
+     *
+     * @return array An array of all customer names with the customer id as the key.
+     */
+    public function getNames()
+    {
+        $acusts = $this->getEntityManager()->createQuery(
+            "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c"
+        )->getResult();
+        
+        $customers = [];
+        foreach( $acusts as $c )
+            $customers[ $c['id'] ] = $c['name'];
+        
+        return $customers;
+    }
+    
+    
 }

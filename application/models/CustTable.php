@@ -34,27 +34,6 @@ class CustTable extends Doctrine_Table
 {
 
     /**
-     * Return an array of all customer names where the array key is the customer id.
-     *
-     * @return array An array of all customer names with the customer id as the key.
-     */
-    public static function getAllNames()
-    {
-        $names = Doctrine_Query::create()
-            ->select( 'id, name' )
-            ->from( 'Cust c' )
-            ->orderBy( 'name ASC' )
-            ->fetchArray();
-
-        $a = array();
-        foreach( $names as $n )
-            $a[$n['id']] = $n['name'];
-
-        return $a;
-    }
-    
-    
-    /**
      * Utility function to load all customers of a given type
      *
      * @param array|int $type The customer type (see Cust::TYPE_*)
