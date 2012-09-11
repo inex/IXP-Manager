@@ -12,4 +12,41 @@ use Doctrine\ORM\EntityRepository;
  */
 class CustomerRepository extends EntityRepository
 {
+    /**
+     * DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
+     *
+     * @var string DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
+     */
+    const DQL_CUST_CURRENT = "c.datejoin <= CURRENT_DATE() AND ( c.dateleave IS NULL OR c.dateleave = '0000-00-00' OR c.dateleave >= CURRENT_DATE() )";
+    
+    /**
+     * DQL for selecting customers that are active (i.e. not suspended)
+     *
+     * @var string DQL for selecting customers that are active (i.e. not suspended)
+     */
+    const DQL_CUST_ACTIVE = "c.status IN ( 1, 2 )";
+    
+    
+    /**
+     * Utility function to provide a count of different customer types as `type => count`
+     * where type is as defined in Entities\Customer::$CUST_TYPES_TEXT
+     *
+     * @return array Number of customers of each customer type as `[type] => count`
+     */
+    public function getTypeCounts()
+    {
+        $atypes = $this->getEntityManager()->createQuery(
+            "SELECT c.type AS ctype, COUNT( c.type ) AS cnt FROM Entities\\Customer c
+                WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_ACTIVE . "
+                GROUP BY c.type"
+        )->getArrayResult();
+        
+        $types = [];
+        foreach( $atypes as $t )
+            $types[ $t['ctype'] ] = $t['cnt'];
+    
+        return $types;
+    }
+    
+    
 }
