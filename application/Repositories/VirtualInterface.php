@@ -12,4 +12,26 @@ use Doctrine\ORM\EntityRepository;
  */
 class VirtualInterface extends EntityRepository
 {
+    
+    /**
+     * Utility function to provide a count of different customer types as `type => count`
+     * where type is as defined in Entities\Customer::$CUST_TYPES_TEXT
+     *
+     * @return array Number of customers of each customer type as `[type] => count`
+     */
+    public function getByLocation()
+    {
+        return $ints = $this->getEntityManager()->createQuery(
+            "SELECT vi.id AS id, pi.speed AS speed, sw.infrastructure AS infrastructure, l.name AS locationname
+                FROM Entities\\VirtualInterface vi
+                    JOIN vi.Customer c
+                    JOIN vi.PhysicalInterfaces pi
+                    JOIN pi.SwitchPort sp
+                    JOIN sp.Switcher sw
+                    JOIN sw.Cabinet ca
+                    JOIN ca.Location l
+                WHERE
+                    " . CustomerRepository::DQL_CUST_EXTERNAL
+        )->getArrayResult();
+    }
 }

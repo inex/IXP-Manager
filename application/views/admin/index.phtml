@@ -43,15 +43,15 @@
                 <tr>
                     <th>Location</th>
                     
-                    {* foreach from=$speeds key=k item=i}
+                    {foreach from=$speeds key=k item=i}
                         <th>{$k}</th>
-                    {/foreach *}
+                    {/foreach}
                     
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody>
-                {* assign var=colcount value=0}
+                {assign var=colcount value=0}
                 {foreach from=$bylocation key=n item=spds}
                     {assign var=rowcount value=0}
                 
@@ -82,7 +82,6 @@
                     {/foreach}
                     <td><strong>{$colcount}</strong></td>
                 </tr>
-                *}
             </tbody>
             
         </table>
@@ -90,7 +89,7 @@
 
     <br />
     <h3>Customer Ports by Infrastructure</h3>
-    {*
+    
     <div class="row-fluid">
         <table class="table  table-bordered table-striped">
             <thead>
@@ -141,8 +140,6 @@
             
         </table>
     </div>
-    *}
-
     
 </div>
 

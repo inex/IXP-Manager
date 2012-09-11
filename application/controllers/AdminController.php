@@ -102,13 +102,11 @@ class AdminController extends INEX_Controller_AuthRequiredAction
     private function _dashboardStats()
     {
         // only do this once every 60 minutes
-        //$admin_home_ctypes = [];
         if( !$admin_home_ctypes = $this->getD2Cache()->fetch( 'admin_home_ctypes' ) )
         {
             $admin_home_ctypes['types'] = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getTypeCounts();
             
-            /*
-            $ints = LocationTable::getInterfacesByLocation();
+            $ints = $this->getD2EM()->getRepository( 'Entities\\VirtualInterface' )->getByLocation();
             
             $speeds = array();
             $bylocation = array();
@@ -138,10 +136,9 @@ class AdminController extends INEX_Controller_AuthRequiredAction
             }
             
             ksort( $speeds, SORT_NUMERIC );
-            $this->view->speeds      = $this->session->ahome_ctypes['speeds']      = $speeds;
-            $this->view->bylocation  = $this->session->ahome_ctypes['bylocation']  = $bylocation;
-            $this->view->bylan       = $this->session->ahome_ctypes['bylan']       = $bylan;
-            */
+            $this->view->speeds      = $admin_home_ctypes['speeds']      = $speeds;
+            $this->view->bylocation  = $admin_home_ctypes['bylocation']  = $bylocation;
+            $this->view->bylan       = $admin_home_ctypes['bylan']       = $bylan;
             
             $this->getD2Cache()->save( 'admin_home_cstats', $admin_home_ctypes, 3600 );
         }

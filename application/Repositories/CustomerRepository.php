@@ -26,6 +26,13 @@ class CustomerRepository extends EntityRepository
      */
     const DQL_CUST_ACTIVE = "c.status IN ( 1, 2 )";
     
+    /**
+     * DQL for selecting all customers except for internal / dummy customers
+     *
+     * @var string DQL for selecting all customers except for internal / dummy customers
+     */
+    const DQL_CUST_EXTERNAL = "c.type != 3";
+    
     
     /**
      * Utility function to provide a count of different customer types as `type => count`
