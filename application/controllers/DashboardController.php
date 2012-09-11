@@ -27,43 +27,8 @@
  * (c) Internet Neutral Exchange Association Ltd
  */
 
-class DashboardController extends INEX_Controller_Action
+class DashboardController extends INEX_Controller_AuthRequiredAction
 {
-
-    /**
-     * The Identity Object
-     */
-    protected $_identity;
-
-    /**
-     * The User Object
-     */
-    protected $_user;
-
-    /**
-     * The Customer Object
-     */
-    protected $_customer;
-
-
-    public function preDispatch()
-    {
-        // let's get the user's details sorted before everything else
-        $auth = Zend_Auth::getInstance();
-        if( !$auth->hasIdentity() )
-        {
-            // record the page we wanted
-            $this->session->postAuthRedirect = $this->_request->getPathInfo();
-            $this->_redirect( 'auth/login' );
-        }
-        else
-        {
-            $this->_identity = $auth->getIdentity();
-            $this->_customer = Doctrine::getTable( 'Cust' )->find( $this->_identity['user']['custid'] );
-
-            $this->view->customer = $this->_customer;
-        }
-    }
 
     /**
      * Return a Doctrine result of the users IXP connections.
