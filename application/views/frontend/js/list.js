@@ -30,7 +30,9 @@ $(document).ready(function() {
                     $.jsonCookie( 'oss_prefs', oss_prefs, oss_cookie_options );
                 }
             },
-        'iDisplayLength': oss_prefs != undefined && 'iLength' in oss_prefs ? oss_prefs['iLength'] : {$options.defaults.table.entries},
+        'iDisplayLength': ( typeof oss_prefs != 'undefined' && 'iLength' in oss_prefs ) 
+        		? oss_prefs['iLength'] 
+            	: {if isset( $options.defaults.table.entries )}{$options.defaults.table.entries}{else}10{/if},
         "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
         "sPaginationType": "bootstrap",
         'aoColumns': [
