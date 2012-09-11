@@ -42,6 +42,8 @@ class AdminController extends INEX_Controller_AuthRequiredAction
 	        $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
 	    }
 
+        // we need this for access to class constants in the template
+        $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
     }
 
 
@@ -50,9 +52,8 @@ class AdminController extends INEX_Controller_AuthRequiredAction
      */
     public function indexAction()
     {
-        //LocationTable::getInterfacesByLocation();
         $this->_publicPeeringGraphs();
-        //$this->_dashboardStats();
+        $this->_dashboardStats();
     }
 
     
@@ -97,17 +98,16 @@ class AdminController extends INEX_Controller_AuthRequiredAction
     /**
      * Get type counts
      *
-     * FIXME On move to Doctrine2, use central cache rather than per user session cache
      */
     private function _dashboardStats()
     {
-        // only do this once every 30 minutes
-        if( !isset( $this->session->ahome_ctypes ) || $this->session->ahome_ctypes['gen_at'] < ( time() - 1800 ) )
+        // only do this once every 60 minutes
+        //$admin_home_ctypes = [];
+        if( !$admin_home_ctypes = $this->getD2Cache()->fetch( 'admin_home_ctypes' ) )
         {
-            $this->session->ahome_ctypes = array();
-            $this->session->ahome_ctypes['gen_at'] = time();
-            $this->view->ctypes = $this->session->ahome_ctypes['types'] = CustTable::getTypeCounts();
+            $admin_home_ctypes['types'] = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getTypeCounts();
             
+            /*
             $ints = LocationTable::getInterfacesByLocation();
             
             $speeds = array();
@@ -141,15 +141,15 @@ class AdminController extends INEX_Controller_AuthRequiredAction
             $this->view->speeds      = $this->session->ahome_ctypes['speeds']      = $speeds;
             $this->view->bylocation  = $this->session->ahome_ctypes['bylocation']  = $bylocation;
             $this->view->bylan       = $this->session->ahome_ctypes['bylan']       = $bylan;
+            */
             
+            $this->getD2Cache()->save( 'admin_home_cstats', $admin_home_ctypes, 3600 );
         }
-        else
-        {
-            $this->view->ctypes      = $this->session->ahome_ctypes['types'];
-            $this->view->speeds      = $this->session->ahome_ctypes['speeds'];
-            $this->view->bylocation  = $this->session->ahome_ctypes['bylocation'];
-            $this->view->bylan       = $this->session->ahome_ctypes['bylan'];
-        }
+        
+        $this->view->ctypes      = $admin_home_ctypes['types'];
+        $this->view->speeds      = $admin_home_ctypes['speeds'];
+        $this->view->bylocation  = $admin_home_ctypes['bylocation'];
+        $this->view->bylan       = $admin_home_ctypes['bylan'];
     }
     
     public function staticAction()

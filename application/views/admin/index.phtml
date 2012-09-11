@@ -21,14 +21,14 @@
                 </tr>
             </thead>
             <tbody>
-                {* foreach from=$ctypes key=t item=c}
+                {foreach from=$ctypes key=t item=c}
                 
                     <tr>
-                        <td>{Cust::$CUST_TYPES_TEXT.$t}</td>
+                        <td>{CUSTOMER::$CUST_TYPES_TEXT.$t}</td>
                         <td>{$c}</td>
                     </tr>
                 
-                {/foreach *}
+                {/foreach}
             </tbody>
             
         </table>
