@@ -102,7 +102,7 @@ class AdminController extends INEX_Controller_AuthRequiredAction
     private function _dashboardStats()
     {
         // only do this once every 60 minutes
-        if( !$admin_home_ctypes = $this->getD2Cache()->fetch( 'admin_home_ctypes' ) )
+        if( !( $admin_home_ctypes = $this->getD2Cache()->fetch( 'admin_home_ctypes' ) ) )
         {
             $admin_home_ctypes['types'] = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getTypeCounts();
             

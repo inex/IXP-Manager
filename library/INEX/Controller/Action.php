@@ -81,76 +81,38 @@ class INEX_Controller_Action extends OSS_Controller_Action
         // call the parent's version where all the Zend magic happens
         parent::__construct( $request, $response, $invokeArgs );
 
-        
-        /*
-        if( in_array( 'OSS_Controller_Action_Trait_Auth', get_declared_traits() ) )
-        {
-            if( $this->getAuth()->hasIdentity() )
-                $this->_customer = Doctrine::getTable( 'Cust' )->find( $this->identity[ 'user' ][ 'custid' ] );
-            
-            $this->view->customer = $this->_customer;
-        }
-        
-        if( $this->getAuth()->hasIdentity() && $this->getUser()['privs'] == 3 )
-            $this->superuserSetup(); */
+        if( $this->getAuth()->hasIdentity() && $this->getUser()->getPrivs() == Entities\User::AUTH_SUPERUSER )
+            $this->superUserSetup();
     }
 
     /**
      * Get the customer object
      *
-     * @return Cust The cust object
+     * @return Entities\Customer The customer object for the current user
      */
     protected function getCustomer()
     {
-        return $this->_customer;
+        return $this->getUser()->getCustomer();
     }
     
 
     
     
     /**
-     * Set an array of customer id and names
+     * Perform some setup functions for super users
      *
-     * FIXME Move to central cache rather than per-user
      */
-    private function superuserSetup()
+    private function superUserSetup()
     {
         // get an array of customer id => names
-        if( !isset( $this->session->ahome_customers ) )
-            $this->session->ahome_customers = CustTable::getAllNames();
+        if( !( $this->_customers = $this->getD2Cache()->fetch( 'admin_home_customers' ) ) )
+        {
+            $this->_customers = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getNames();
+            $this->getD2Cache()->save( 'admin_home_customers', $this->_customers, 3600 );
+        }
         
-        $this->view->customers = $this->_customers = $this->session->ahome_customers;
+        $this->view->customers = $this->_customers;
     }
-    
-    
-    /**
-     * Store a variable to the APC cache and ignore if APC is not available
-     *
-     * Mirrors the scalar version of apc_store
-     *
-     */
-    public function apcStore( $key, $var, $ttl = 0 )
-    {
-        if( !ini_get( 'apc.enabled' ) )
-            return false;
-        
-        return apc_store( $key, $var, $ttl );
-    }
-    
-    /**
-     * Store a variable to the APC cache and ignore if APC is not available
-     *
-     * Mirrors the scalar version of apc_store
-     *
-     */
-    public function apcFetch( $key )
-    {
-        if( !ini_get( 'apc.enabled' ) )
-            return false;
-    
-        return apc_fetch( $key );
-    }
-    
     
 }
 
