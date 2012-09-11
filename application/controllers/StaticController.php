@@ -57,6 +57,9 @@ class StaticController extends INEX_Controller_Action
     
     public function supportAction()
     {}
+
+    public function exampleAction()
+    {}
 }
 
 
