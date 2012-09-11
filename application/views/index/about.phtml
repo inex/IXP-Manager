@@ -1,6 +1,6 @@
 {tmplinclude file="header.phtml"}
 
-{if $user->getPrivs() eq 3}
+{if isset( $user ) and $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>

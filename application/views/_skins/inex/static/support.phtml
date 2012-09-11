@@ -1,6 +1,6 @@
 {tmplinclude file="header.phtml"}
 
-{if $user->getPrivs() eq 3}
+{if isset( $user ) and $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -21,18 +21,18 @@
 
 <div class="alert alert-info">
 <h3 align="center">
-    Techical Support: {mailto address="operations@inex.ie"}
+    Techical Support: {mailto address="operations@inex.ie" encode="javascript"}
     &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-    Billing / Accounts: {mailto address="accounts@inex.ie"}
+    Billing / Accounts: {mailto address="accounts@inex.ie" encode="javascript"}
     &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-    Sales / Marketing: {mailto address="sales@inex.ie"}
+    Sales / Marketing: {mailto address="sales@inex.ie" encode="javascript"}
 </h3>
 </div>
 
 <p>
 Regular technical support at INEX is provided on an office hours basis from 08:00 to 18:00 GMT,
 Monday through Friday. The normal communications channel for technical support is email to
-<a href="operations@inex.ie">operations@inex.ie</a>. INEX aims for 4 hour turnaround on all
+{mailto address="operations@inex.ie" encode="javascript"}. INEX aims for 4 hour turnaround on all
 email support requests. INEX operations staff are also available by telephone on +353 1 6169698
 and +353 1 685 4220.
 <br /><br />
@@ -69,7 +69,7 @@ attended to immediately.
         <td></td>
         <td align="right"><strong>Email:</strong></td>
         <td></td>
-        <td align="left"><a href="mailto:operations@inex.ie">operations@inex.ie</a></td>
+        <td align="left">{mailto address="operations@inex.ie" encode="javascript"}</td>
     </tr>
     <tr>
         <td></td>
