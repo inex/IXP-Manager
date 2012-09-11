@@ -547,4 +547,40 @@ class User
 
 
 
+
+    /**
+     * Add Children
+     *
+     * @param Entities\User $children
+     * @return User
+     */
+    public function addChildren(\Entities\User $children)
+    {
+        $this->Children[] = $children;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Children
+     *
+     * @param Entities\User $children
+     */
+    public function removeChildren(\Entities\User $children)
+    {
+        $this->Children->removeElement($children);
+    }
+
+    /**
+     * Set Parent
+     *
+     * @param Entities\User $parent
+     * @return User
+     */
+    public function setParent(\Entities\User $parent = null)
+    {
+        $this->Parent = $parent;
+    
+        return $this;
+    }
 }

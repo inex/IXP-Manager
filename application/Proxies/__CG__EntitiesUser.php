@@ -267,6 +267,24 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::getFormattedName();
     }
 
+    public function addChildren(\Entities\User $children)
+    {
+        $this->__load();
+        return parent::addChildren($children);
+    }
+
+    public function removeChildren(\Entities\User $children)
+    {
+        $this->__load();
+        return parent::removeChildren($children);
+    }
+
+    public function setParent(\Entities\User $parent = NULL)
+    {
+        $this->__load();
+        return parent::setParent($parent);
+    }
+
     public function loadPreference($attribute, $index = 0, $includeExpired = false)
     {
         $this->__load();
@@ -330,7 +348,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Parent', 'Preferences', 'ChangeLogs', 'Customer', 'Children');
+        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Children', 'Preferences', 'ChangeLogs', 'Customer', 'Parent');
     }
 
     public function __clone()
