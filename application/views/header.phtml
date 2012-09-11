@@ -13,7 +13,7 @@
                             </li>
                         {elseif $user->getPrivs() eq 2}
                             <li {if $controller eq 'user'}class="active"{/if}>
-                                <a href="{genUrl controller="cust-admin"}">User Admin</a>
+                                <a href="{genUrl controller="user" action="list"}">User Admin</a>
                             </li>
                         {else}
                             <li {if $controller eq 'dashboard' and $action eq 'index'}class="active"{/if}>
