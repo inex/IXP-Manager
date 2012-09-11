@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,72 +22,41 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
  * A form to allow a user to change his password
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class INEX_Form_ProfilePassword extends INEX_Form
+class INEX_Form_ChangePassword extends INEX_Form
 {
-    
-    /**
-     * Constructor for a form with a 'Password' and 'Confirm' field.
-     *
-     * @param array $options See Zend_From
-     * @param bool $isEdit Not used but inherited
-     * @param string $cancelLocation Not used but inherited
-     */
-    public function __construct( $options = null, $isEdit = false, $cancelLocation = '' )
+    public function init()
     {
-        parent::__construct( $options, $isEdit );
+        $this->setAttrib( 'id', 'change_password' )
+            ->setAttrib( 'name', 'change_password' )
+            ->setAction( OSS_Utils::genUrl( 'profile', 'change-password' ) );
 
-        ////////////////////////////////////////////////
-        // Create and configure elements
-        ////////////////////////////////////////////////
-
-        $oldpassword = $this->createElement( 'password', 'oldpassword' );
-        $oldpassword->setLabel( 'Current Password' )
-            ->addValidator( 'stringLength', false, array( 1, 30 ) )
-            ->setRequired( true )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
-        $this->addElement( $oldpassword );
-
-        $password1 = $this->createElement( 'password', 'password1' );
-        $password1->addValidator( 'stringLength', false, array( 8, 30 ) )
-            ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\!\£\$\%\^\&\*\(\)\-\=\_\+\{\}\[\]\;\'\#\:\@\~\,\.\/\<\>\?\|]+$/' ) )
-            ->setRequired( true )
-            ->setLabel( 'New Password' )
-            ->setErrorMessages( array( 'The password must between 8 and 30 characters and cannot contain a double quote - " - character.' ) )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
-        $this->addElement( $password1 );
-
-        $password2 = $this->createElement( 'password', 'password2' );
-        $password2->addValidator( 'stringLength', false, array( 8, 30 ) )
-            ->setRequired( true )
-            ->setLabel( 'Confirm New Password' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
-        $this->addElement( $password2 );
-
+        $this->addElement(
+            OSS_Form_Auth::createPasswordElement( 'current_password' )
+                ->setLabel( _( 'Current Password' ) )
+                ->setAttrib( 'class', 'span6' )
+        );
         
-        $submit = $this->createElement( 'submit', 'submit', array( 'label' => 'Change' ) );
-        $this->addElement( $submit );
-
-
+        $this->addElement(
+            OSS_Form_Auth::createPasswordElement( 'new_password' )
+                ->setLabel( _( 'New Password' ) )
+                ->setAttrib( 'class', 'span6' )
+        );
+        
+        $this->addElement(
+            OSS_Form_Auth::createPasswordConfirmElement( 'confirm_password', 'new_password' )
+                ->setAttrib( 'class', 'span6' )
+        );
+        
+        $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Change Password' ) ) );
     }
-
-
 }
 

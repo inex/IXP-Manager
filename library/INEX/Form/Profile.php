@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,74 +22,40 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
  * A form to allow a user to change their profile.
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_Profile extends INEX_Form
 {
-    /**
-     * Constructor for a form with a 'Password' and 'Confirm' field.
-     *
-     * @param array $options See Zend_From
-     * @param bool $isEdit Not used but inherited
-     * @param string $cancelLocation Not used but inherited
-     */
-    public function __construct( $options = null, $isEdit = false, $cancelLocation = '' )
+    public function init()
     {
-        parent::__construct( $options, $isEdit );
-
-        ////////////////////////////////////////////////
-        // Create and configure elements
-        ////////////////////////////////////////////////
-
-        $username = $this->createElement( 'text', 'username',
-            array(
-            	'readonly' => 'readonly'
-            )
-        );
-        $username->setLabel( 'Username' );
-
+        $this->setAttrib( 'id', 'profile' )
+            ->setAttrib( 'name', 'profile' );
+        
+        $username = OSS_Form_Auth::createUsernameElement();
+        $username->setAttrib( 'readonly', 'readonly' )
+                 ->setAttrib( 'class', 'span6' );
         $this->addElement( $username );
 
-        $mobile = $this->createElement( 'text', 'mobile' );
-        $mobile->addValidator( 'stringLength', false, array( 9, 30 ) )
-            ->addValidator( 'digits', false )
-            ->setRequired( true )
-            ->setLabel( 'Mobile Number' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+        
+        $mobile = INEX_Form_User::createMobileElement()
+                    ->setAttrib( 'class', 'span6' );
         $this->addElement( $mobile );
 
-        $email = $this->createElement( 'text', 'email',
-            array(
-            	'readonly' => 'readonly'
-            )
-        );
-        $email->setLabel( 'E-Mail' );
-            //->addValidator( 'stringLength', false, array( 0, 255 ) )
-            //->addValidator( 'emailAddress', false, array( 'domain' => true, 'mx' => true ) )
-            //->setRequired( true )
-            //->addFilter( 'StringTrim' )
-            //->addFilter( 'StringToLower' )
-            //->addFilter( new INEX_Filter_StripSlashes() );
-
+        
+        $email = OSS_Form_User::createEmailElement();
+        $email->setAttrib( 'readonly', 'readonly' )
+                 ->setAttrib( 'class', 'span9' );
         $this->addElement( $email );
 
-        $submit = $this->createElement( 'submit', 'submit', array( 'label' => 'Change' ) );
-        $this->addElement( $submit );
-
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Update' ) ) );
     }
-
 
 }
 
