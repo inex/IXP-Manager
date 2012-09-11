@@ -31,7 +31,7 @@ class VirtualInterface extends EntityRepository
                     JOIN sw.Cabinet ca
                     JOIN ca.Location l
                 WHERE
-                    " . CustomerRepository::DQL_CUST_EXTERNAL
+                    " . Customer::DQL_CUST_EXTERNAL
         )->getArrayResult();
     }
 }
