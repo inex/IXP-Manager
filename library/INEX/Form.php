@@ -34,7 +34,7 @@ class INEX_Form extends Twitter_Form
     use OSS_Form_Trait_GenericElements;
     use OSS_Form_Trait_InsertElementFns;
     // use OSS_Form_Trait_Doctrine1Mapping;
-    use OSS_Form_Trait_Doctrine2Mapping;
+    use OSS_Form_Trait_Doctrine2;
     
     /**
      * A list of elements we should not update on an edit
@@ -54,10 +54,10 @@ class INEX_Form extends Twitter_Form
         $this->addElementPrefixPath( 'OSS_Filter',   'OSS/Filter/',   'filter' );
         $this->addElementPrefixPath( 'OSS_Validate', 'OSS/Validate/', 'validate' );
         
-        parent::__construct( $options );
-        
         if( method_exists( $this, 'initialiseTraits' ) )
             $this->initialiseTraits( $options );
+        
+        parent::__construct( $options );
     }
     
 }
