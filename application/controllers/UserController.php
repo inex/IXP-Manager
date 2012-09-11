@@ -126,7 +126,7 @@ class UserController extends INEX_Controller_FrontEnd
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
     
         if( $id !== null )
-            $qb->andWhere( 'u.id = ?2' )->setParameter( 2, $id );
+            $qb->andWhere( 'u.id = ?3' )->setParameter( 3, $id );
     
         return $qb->getQuery()->getResult();
     }
@@ -281,79 +281,6 @@ class UserController extends INEX_Controller_FrontEnd
     }
       
 
-    /**
-     * Send the user a message by SMS
-     */
-    protected function sendSmsAction()
-    {
-        $options = $this->_bootstrap->getApplication()->getOptions();
-
-        if( $this->getRequest()->getParam( 'id' ) !== NULL && is_numeric( $this->getRequest()->getParam( 'id' ) ) ) {
-            // is the ID valid?
-            if( !($object = Doctrine::getTable( $this->frontend[ 'model' ] )->find( $this->getRequest()->getParam( 'id' ) )) ) {
-                echo "0:Err:No entry with ID: " . $this->getRequest()->getParam( 'id' );
-                return false;
-            }
-
-            // we actually don't use the ID at all in the end!
-            if( $this->getRequest()->getParam( 'to' ) !== NULL && is_numeric( $this->getRequest()->getParam( 'to' ) ) && $this->getRequest()->getParam( 'message' ) !== NULL && strlen( $this->getRequest()->getParam( 'message' ) ) > 5 )
-            {
-
-                $sms = new INEX_SMS_Clickatell(
-                        $options['sms']['clickatell']['username'],
-                        $options['sms']['clickatell']['password'],
-                        $options['sms']['clickatell']['api_id'],
-                        $options['sms']['clickatell']['sender_id']
-                );
-
-                if( $sms->send( $this->getRequest()->getParam( 'to' ), stripslashes( $this->getRequest()->getParam( 'message' ) ) ) )
-                    echo "1:SMS successfully sent ({$sms->apiResponse})";
-                else
-                    echo "0:{$sms->apiResponse}";
-            }
-            else {
-                echo '0:Err:One or more of your submitted parameters were incorrect.';
-            }
-
-        }
-    }
-
-    /**
-     * Send the user an email by SMS
-     */
-    protected function sendEmailAction()
-    {
-        $options = $this->_bootstrap->getApplication()->getOptions();
-
-        if( $this->getRequest()->getParam( 'id' ) !== NULL && is_numeric( $this->getRequest()->getParam( 'id' ) ) ) {
-            // is the ID valid?
-            if( !($object = Doctrine::getTable( $this->frontend[ 'model' ] )->find( $this->getRequest()->getParam( 'id' ) )) ) {
-                echo "0:Err:No entry with ID: " . $this->getRequest()->getParam( 'id' );
-                return false;
-            }
-
-            // we actually don't use the ID at all in the end!
-            if( $this->getRequest()->getParam( 'to' ) !== NULL && $this->getRequest()->getParam( 'message' ) !== NULL && strlen( $this->getRequest()->getParam( 'message' ) ) > 5 ) {
-                try {
-                    $mail = new Zend_Mail( );
-                    $mail->setBodyHtml( stripslashes( $this->getRequest()->getParam( 'message' ) ) )
-                         ->setFrom( $options['identity']['email'], $options['identity']['name'] )
-                         ->addTo( $this->getRequest()->getParam( 'to' ) )
-                         ->setSubject( $this->getRequest()->getParam( 'to' ) )
-                         ->send();
-
-                    echo "1:Email successfully sent";
-                }
-                catch( Zend_Exception $e ) {
-                    echo '0:' . $e->getMessage();
-                }
-            }
-            else {
-                echo '0:Err:One or more of your submitted parameters were incorrect.<pre>' . $this->getRequest()->getParam( 'message' ) . '</pre>';
-            }
-
-        }
-    }
 
     /**
      * Show the last users to login
@@ -380,4 +307,3 @@ class UserController extends INEX_Controller_FrontEnd
     
 }
 
-?>
