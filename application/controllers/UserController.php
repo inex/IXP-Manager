@@ -41,30 +41,24 @@ class UserController extends INEX_Controller_FrontEnd
             'entity'        => '\\Entities\\User',
             'form'          => 'INEX_Form_User',
             'pagetitle'     => 'Users',
-        
+
             'titleSingular' => 'User',
             'nameSingular'  => 'a user',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
-            'listColumns' => [
-                'id' => [ 'title' => 'UID', 'display' => false ],
-                'username'   => 'Username',
-                'email'      => 'Email'
-            ],
-        
+
             'listOrderBy'    => 'username',
             'listOrderByDir' => 'ASC',
         ];
-    
+
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $this->_feParams->pagetitle = 'Customer Users';
-    
+
                 $this->_feParams->listColumns = [
                     'id' => [ 'title' => 'UID', 'display' => false ],
-    
+
                     'customer'  => [
                         'title'      => 'Customer',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -72,34 +66,67 @@ class UserController extends INEX_Controller_FrontEnd
                         'action'     => 'overview',
                         'idField'    => 'custid'
                     ],
-                    'username'      => 'Userame',
-                    'email'         => 'Email'
-                ];
-                break;
-                
-            case \Entities\User::AUTH_CUSTADMIN:
-                $this->_feParams->pagetitle = 'User Admin for ' . $this->getUser()->getCustomer()->getName();
-    
-                $this->_feParams->listColumns = [
-                    'id' => [ 'title' => 'UID', 'display' => false ],
+
                     'username'      => 'Userame',
                     'email'         => 'Email',
+
                     'created'       => [
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ]
                 ];
                 break;
-                
+
+            case \Entities\User::AUTH_CUSTADMIN:
+                $this->_feParams->pagetitle = 'User Admin for ' . $this->getUser()->getCustomer()->getName();
+
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+                    'username'      => 'Userame',
+                    'email'         => 'Email',
+
+                    'enabled'       => [
+                        'title'         => 'Enabled',
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'        => 'user/list-column-enabled.phtml'
+                    ],
+
+                    'created'       => [
+                        'title'         => 'Created',
+                        'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ]
+                ];
+                break;
+
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
-                 
+
         // display the same information in the view as the list
         $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
-                
+
     
+    
+    protected function listPreamble()
+    {
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+        {
+            if( !isset( $this->getSessionNamespace()->custadminInstructions ) || !$this->getSessionNamespace()->custadminInstructions )
+            {
+                $this->getSessionNamespace()->custadminInstructions = true;
+                
+                $this->addMessage(
+                    "<p><strong>Remember! This admin account is only intended for creating users for your organisation.</strong></p>"
+                        . "<p>For full IXP Manager functionality, graphs and member information, log in under one of your user accounts</p>",
+                    OSS_Message::INFO,
+                    OSS_Message::TYPE_BLOCK
+                );
+            }
+        }
+    }
+        
+
 
     /**
      * Provide array of users for the listAction and viewAction
@@ -110,7 +137,7 @@ class UserController extends INEX_Controller_FrontEnd
     {
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'u.id as id, u.username as username, u.email as email,
-                    u.created as created, c.id as custid, c.name as customer' )
+                    u.created as created, u.disabled as disabled, c.id as custid, c.name as customer' )
             ->from( '\\Entities\\User', 'u' )
             ->leftJoin( 'u.Customer', 'c' );
 
@@ -121,16 +148,16 @@ class UserController extends INEX_Controller_FrontEnd
                ->setParameter( 1, $this->getUser()->getCustomer() )
                ->setParameter( 2, \Entities\User::AUTH_CUSTUSER );
         }
-        
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $id !== null )
             $qb->andWhere( 'u.id = ?3' )->setParameter( 3, $id );
-    
+
         return $qb->getQuery()->getResult();
     }
-    
+
 
     /**
      *
@@ -149,7 +176,7 @@ class UserController extends INEX_Controller_FrontEnd
                 if( !$isEdit && !$this->isPost() )
                     $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
                 break;
-                
+
             case \Entities\User::AUTH_CUSTADMIN:
                 $form->removeElement( 'password' );
                 $form->removeElement( 'privs' );
@@ -164,7 +191,7 @@ class UserController extends INEX_Controller_FrontEnd
             default:
                 throw new OSS_Exception( 'Unhandled user type' );
         }
-        
+
         if( !$isEdit )
         {
             $form->getElement( 'username' )->addValidator( 'OSSDoctrine2Uniqueness', true,
@@ -172,8 +199,8 @@ class UserController extends INEX_Controller_FrontEnd
             );
         }
     }
-    
-    
+
+
     /**
      *
      * @param INEX_Form_User $form The form object
@@ -193,10 +220,10 @@ class UserController extends INEX_Controller_FrontEnd
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      *
      * @param INEX_Form_User $form The form object
@@ -215,14 +242,14 @@ class UserController extends INEX_Controller_FrontEnd
         {
             $object->setCreated( new DateTime() );
             $object->setCreator( $this->getUser()->getUsername() );
-            
+
             if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
             {
                 $object->setCustomer( $this->getUser()->getCustomer() );
                 $object->setParent( $this->getUser() );
                 $object->setPrivs( \Entities\User::AUTH_CUSTUSER );
                 $object->setPassword( OSS_String::random( 16 ) );
-                
+
                 $c = new \Entities\Contact();
                 $c->setCustomer( $this->getUser()->getCustomer() );
                 $c->setName( $form->getElement( 'name' )->getValue() );
@@ -244,7 +271,7 @@ class UserController extends INEX_Controller_FrontEnd
                 );
             }
         }
-        
+
         return true;
     }
 
@@ -261,7 +288,7 @@ class UserController extends INEX_Controller_FrontEnd
         if( !$isEdit )
         {
             $this->view->newuser = $object;
-            
+
             try
             {
                 $mail = $this->getMailer();
@@ -276,10 +303,10 @@ class UserController extends INEX_Controller_FrontEnd
                 $this->getLogger()->alert( "Could not send welcome email for new user!\n\n" . $e->toString() );
             }
         }
-        
+
         return true;
     }
-      
+
 
 
     /**
@@ -302,8 +329,8 @@ class UserController extends INEX_Controller_FrontEnd
         $this->view->last = $last;
         $this->view->display( 'user/last.tpl' );
     }
-    
-    
-    
+
+
+
 }
 
