@@ -31,7 +31,7 @@
     {if $listPreamble}{include file=$listPreamble}{/if}
 
     {if count( $data )}
-    <table id='frontend-list-table' class="table">
+    <table id='frontend-list-table' class="table hide">
     
     <thead>
         <tr>
@@ -99,4 +99,5 @@
 
 
 {if $listScript}<script>{include file=$listScript}</script>{/if}
+{if $listAddonScript}<script>{include file=$listAddonScript}</script>{/if}
 {include file="footer.phtml"}
