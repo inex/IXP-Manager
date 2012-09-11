@@ -89,6 +89,8 @@ This is your IXP Manager user profile where you can change you contact preferenc
     </div>
 {/if}
 
-</div>
+{if not isset( $user ) or $user->getPrivs() neq 3}
+    </div>
+{/if}
 
 {tmplinclude file="footer.phtml"}

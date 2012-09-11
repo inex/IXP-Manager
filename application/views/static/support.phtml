@@ -20,13 +20,13 @@
 {/if}
 
 <div class="alert alert-info">
-<h3 align="center">
-    Techical Support: {mailto address="email@example.com" encode="javascript"}
-    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-    Billing / Accounts: {mailto address="email@example.com" encode="javascript"}
-    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-    Sales / Marketing: {mailto address="email@example.com" encode="javascript"}
-</h3>
+    <h3 align="center">
+        Techical Support: {mailto address="email@example.com" encode="javascript"}
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+        Billing / Accounts: {mailto address="email@example.com" encode="javascript"}
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+        Sales / Marketing: {mailto address="email@example.com" encode="javascript"}
+    </h3>
 </div>
 
 <p>
@@ -76,6 +76,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam 
     </table>
 </div>
 
-</div>
+{if not isset( $user ) or $user->getPrivs() neq 3}
+    </div>
+{/if}
 
 {tmplinclude file="footer.phtml"}

@@ -56,8 +56,6 @@ class IndexController extends INEX_Controller_Action
     {}
 
     public function helpAction()
-    {
-        $this->view->display( 'index/help.tpl' );
-    }
+    {}
     
 }

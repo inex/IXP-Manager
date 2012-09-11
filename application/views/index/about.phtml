@@ -73,6 +73,8 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 more details.
 </pre>
 
-</div>
+{if not isset( $user ) or $user->getPrivs() neq 3}
+    </div>
+{/if}
 
 {tmplinclude file="footer.phtml"}
