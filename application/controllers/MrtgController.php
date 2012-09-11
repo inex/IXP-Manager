@@ -22,14 +22,16 @@
  */
 
 
-/*
+/**
+ * Controller: Retrive MRTG images
  *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
-class MrtgController extends Zend_Controller_Action
+class MrtgController extends INEX_Controller_AuthRequiredAction
 {
 
     public static $GRAPH_CATEGORIES = array (
@@ -39,84 +41,13 @@ class MrtgController extends Zend_Controller_Action
         'discs' => 'Discards',
     );
 
-    /**
-     * A variable to hold an instance of the bootstrap object
-     *
-     * @var object An instance of the bootstrap object
-     */
-    protected $_bootstrap;
-
-    /**
-     * A variable to hold an instance of the configuration object
-     *
-     * @var object An instance of the configuration object
-     */
-    protected $config = null;
-
-    /**
-     * A variable to hold the identity object
-     *
-     * @var object An instance of the user's identity or false
-     */
-    protected $auth = null;
-
-    /**
-     * A variable to hold an identify of the user
-     *
-     * Will be !false if there is a valid identity
-     *
-     * @var object An instance of the user's identity or false
-     */
-    protected $identity = false;
-
-    /**
-     * A variable to hold the user record
-     *
-     * @var object An instance of the user record
-     */
-    protected $user = null;
-
-    protected $logger = null;
-
     protected $_flock = null;
 
-    /**
-     * Override the Zend_Controller_Action's constructor (which is called
-     * at the very beginning of this function anyway).
-     *
-     * @param object $request See Parent class constructer
-     * @param object $response See Parent class constructer
-     * @param object $invokeArgs See Parent class constructer
-     */
-    public function __construct(
-            Zend_Controller_Request_Abstract  $request,
-            Zend_Controller_Response_Abstract $response,
-            array $invokeArgs = null )
+    
+    public function preDispatch()
     {
-        // get the bootstrap object
-        $this->_bootstrap = $invokeArgs['bootstrap'];
-
-        // and from the bootstrap, we can get other resources:
-        $this->config  = $this->_bootstrap->getApplication()->getOptions();
-        $this->_bootstrap->getResource( 'namespace' );
-        $this->auth    = $this->_bootstrap->getResource( 'auth' );
-        $this->logger  = $this->_bootstrap->getResource( 'logger' );
-        
-        if( $this->auth->hasIdentity() )
-        {
-            $this->identity = $this->auth->getIdentity();
-            $this->user     = Doctrine::getTable( 'User' )->find( $this->identity['user']['id'] );
-            $this->customer = Doctrine::getTable( 'Cust' )->find( $this->identity['user']['custid'] );
-        }
-        else
-        {
-            die();
-        }
-
-        // call the parent's version where all the Zend magic happens
-        parent::__construct( $request, $response, $invokeArgs );
+        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
     }
-
 
     private function checkShortname( $shortname )
     {
@@ -135,26 +66,23 @@ class MrtgController extends Zend_Controller_Action
         $category     = $this->getRequest()->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
         $graph        = $this->getRequest()->getParam( 'graph', '' );
 
-        $this->logger->debug( "Request for $shortname-$monitorindex-$category-$period-$graph by {$this->user->username}" );
-
-        if( !$this->identity )
-            exit(0);
+        $this->getLogger()->debug( "Request for {$shortname}-{$monitorindex}-{$category}-{$period}-{$graph} by {$this->getUser()->getUsername()}" );
 
         if( $shortname == 'X_Trunks' )
         {
-            $filename = $this->config['mrtg']['path']
-                . '/../trunks/' . $graph . '-' . $period . '.png';
+            $filename = $this->_options['mrtg']['path']
+                . '/trunks/' . $graph . '-' . $period . '.png';
         }
         else if( $shortname == 'X_SwitchAggregate' )
         {
-            $filename = $this->config['mrtg']['path']
-                . '/../switches/switch-aggregate-' . $graph . '-'
+            $filename = $this->_options['mrtg']['path']
+                . '/switches/switch-aggregate-' . $graph . '-'
                 . $category . '-' . $period . '.png';
         }
         else if( $shortname == 'X_Peering' )
         {
-            $filename = $this->config['mrtg']['path']
-                . '/../ixp_peering-' . $graph . '-'
+            $filename = $this->_options['mrtg']['path']
+                . '/ixp_peering-' . $graph . '-'
                 . $category . '-' . $period . '.png';
         }
         else
@@ -162,18 +90,18 @@ class MrtgController extends Zend_Controller_Action
             if( $this->user['privs'] < User::AUTH_SUPERUSER || !$this->checkShortname( $shortname ) )
                 $shortname = $this->customer['shortname'];
 
-            $filename = INEX_Mrtg::getMrtgFilePath( $this->config['mrtg']['path'], 'PNG',
+            $filename = INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members'    , 'PNG',
                 $monitorindex, $category, $shortname, $period
             );
         }
 
-        $this->logger->debug( "Serving $filename to {$this->user->username}" );
+        $this->getLogger()->debug( "Serving {$filename} to {$this->getUser()->getUsername()}" );
 
         $stat = @readfile( $filename );
 
         if( $stat === false )
         {
-            $this->logger->debug( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
+            $this->getLogger()->debug( "Could not load {$filename} for mrtg/retrieveImageAction" );
             echo readfile(
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
@@ -272,7 +200,7 @@ class MrtgController extends Zend_Controller_Action
             die();
         }
         
-        $filename = INEX_Mrtg::getMrtgP2pFilePath( $this->config['mrtg']['p2ppath'],
+        $filename = INEX_Mrtg::getMrtgP2pFilePath( $this->_options['mrtg']['p2ppath'],
             $svid, $dvid, $category, $period, $proto
         );
         

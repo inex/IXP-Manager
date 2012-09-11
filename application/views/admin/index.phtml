@@ -1,13 +1,12 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Administrator's Home"}
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Administrator's Home"}
 
 <ul class="breadcrumb">
     <li class="active">
-        <a href="{genUrl}">Home</a>
+        <a href="{genUrl controller='admin' action='index'}">Home</a>
     </li>
 </ul>
 
-{include file="message.tpl"}
-<div id="ajaxMessage"></div>
+{OSS_Message}
 
 <div class="row-fluid">
 
@@ -22,14 +21,14 @@
                 </tr>
             </thead>
             <tbody>
-                {foreach from=$ctypes key=t item=c}
+                {* foreach from=$ctypes key=t item=c}
                 
                     <tr>
                         <td>{Cust::$CUST_TYPES_TEXT.$t}</td>
                         <td>{$c}</td>
                     </tr>
                 
-                {/foreach}
+                {/foreach *}
             </tbody>
             
         </table>
@@ -44,15 +43,15 @@
                 <tr>
                     <th>Location</th>
                     
-                    {foreach from=$speeds key=k item=i}
+                    {* foreach from=$speeds key=k item=i}
                         <th>{$k}</th>
-                    {/foreach}
+                    {/foreach *}
                     
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody>
-                {assign var=colcount value=0}
+                {* assign var=colcount value=0}
                 {foreach from=$bylocation key=n item=spds}
                     {assign var=rowcount value=0}
                 
@@ -83,7 +82,7 @@
                     {/foreach}
                     <td><strong>{$colcount}</strong></td>
                 </tr>
-                
+                *}
             </tbody>
             
         </table>
@@ -91,7 +90,7 @@
 
     <br />
     <h3>Customer Ports by Infrastructure</h3>
-    
+    {*
     <div class="row-fluid">
         <table class="table  table-bordered table-striped">
             <thead>
@@ -142,7 +141,7 @@
             
         </table>
     </div>
-
+    *}
 
     
 </div>
@@ -175,4 +174,4 @@
 
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
