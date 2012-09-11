@@ -51,9 +51,7 @@ class IndexController extends INEX_Controller_Action
     }
 
     public function aboutAction()
-    {
-        $this->view->display( 'index/about.tpl' );
-    }
+    {}
 
     public function helpAction()
     {

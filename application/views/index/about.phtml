@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -22,7 +22,7 @@
 	manage new members (or customers), provision new connections and services and
 	monitor traffic usage. It also has a self contained customer portal allowing
 	IXP members to view their IXP traffic statistics and a unique tool called
-	<em>My Peering Manager</em> enabling IXP members to request, manage and track
+	<em>Peering Manager</em> enabling IXP members to request, manage and track
 	peerings with other members.
 </p>
 
@@ -40,8 +40,11 @@
 </p>
 
 <p>
-	IXP Manager is written in PHP using the Zend Framework, the Doctrine ORM and the
-	Smarty templating engine. The project website and source code can be viewed at
+	IXP Manager is written in PHP using the Zend Framework, the Doctrine ORM, the
+	Smarty templating engine, <a href="http://www.opensolutions.ie/">Open Solutions</a>'
+	extensions to Zend - <a href="https://github.com/opensolutions/OSS-Framework/wiki">the
+	OSS Framework</a>, JQuery and many other smaller components. The project website
+	and source code can be viewed at
 	<a href="https://github.com/inex/IXP-Manager/wiki">https://github.com/inex/IXP-Manager</a>.
 </p>
 
@@ -70,5 +73,6 @@ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 more details.
 </pre>
 
+</div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
