@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -92,5 +92,6 @@ attended to immediately.
     </table>
 </div>
 
+</div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

@@ -1,0 +1,81 @@
+{tmplinclude file="header.phtml"}
+
+{if $user->getPrivs() eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            Documentation <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Technical Support and Contact Information
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Technical Support</h1>
+        </div>
+{/if}
+
+<div class="alert alert-info">
+<h3 align="center">
+    Techical Support: {mailto address="email@example.com" encode="javascript"}
+    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    Billing / Accounts: {mailto address="email@example.com" encode="javascript"}
+    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    Sales / Marketing: {mailto address="email@example.com" encode="javascript"}
+</h3>
+</div>
+
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam pretium ipsum fermentum ut sollicitudin mauris blandit. Mauris luctus, ipsum id feugiat bibendum, felis nulla dignissim sem, vehicula sollicitudin tortor turpis ut eros. Sed sit amet orci arcu, et varius velit. Vestibulum et nulla tortor, quis tincidunt augue. Vestibulum fringilla tempus faucibus. Donec non mauris neque. Nam urna odio, facilisis id tincidunt eu, dictum sed sapien. Pellentesque porttitor viverra nunc a porttitor. Fusce tempor, elit tempus dignissim accumsan, nisi metus eleifend ipsum, vel pellentesque lectus dolor at orci. Suspendisse potenti.
+<br /><br />
+</p>
+
+<h3>Emergency 24x7x365 Support</h3>
+
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam pretium ipsum fermentum ut sollicitudin mauris blandit. Mauris luctus, ipsum id feugiat bibendum, felis nulla dignissim sem, vehicula sollicitudin tortor turpis ut eros. Sed sit amet orci arcu, et varius velit. Vestibulum et nulla tortor, quis tincidunt augue. Vestibulum fringilla tempus faucibus. Donec non mauris neque. Nam urna odio, facilisis id tincidunt eu, dictum sed sapien. Pellentesque porttitor viverra nunc a porttitor. Fusce tempor, elit tempus dignissim accumsan, nisi metus eleifend ipsum, vel pellentesque lectus dolor at orci. Suspendisse potenti.
+</p>
+
+<br /><br />
+
+<div class="well">
+
+    <table border="0" align="center">
+    <tr>
+        <td width="20"></td>
+        <td colspan="3"><h3>Technical Support Summary</h3></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td align="right"><strong>Email:</strong></td>
+        <td></td>
+        <td align="left">{mailto address="email@example.com" encode="javascript"}</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td align="right"><strong>Phone:</strong></td>
+        <td></td>
+        <td align="left">+353 1 123 4567</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td align="right"><strong>Hours:</strong></td>
+        <td></td>
+        <td align="left">09:00 to 18:00 GMT, Monday to Friday</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td align="right"><strong>24h Emergency:</strong></td>
+        <td></td>
+        <td align="left">+353 1 987 6541</td>
+    </tr>
+    </table>
+</div>
+
+</div>
+
+{tmplinclude file="footer.phtml"}

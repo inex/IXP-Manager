@@ -110,7 +110,7 @@
                             </li>
                         {/if}
                         <li>
-                            <a href="{genUrl controller="dashboard" action="static" page="support"}">Support</a>
+                            <a href="{genUrl controller="static" action="support"}">Support</a>
                         </li>
                         {if $user->getPrivs() eq 3 and isset( $config.menu.staff_links )}
                             <li class="dropdown">
