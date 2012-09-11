@@ -52,6 +52,9 @@ class INEX_Form_User extends INEX_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name );
         
+        
+        
+        
         $username = OSS_Form_Auth::createUsernameElement();
         
         $username->addValidator( 'stringLength', false, array( 2, 30 ) )
@@ -60,8 +63,13 @@ class INEX_Form_User extends INEX_Form
         $this->addElement( $username );
 
         
+        
+        
         $this->addElement( OSS_Form_Auth::createPasswordElement() );
 
+        
+        
+        
         $privileges = $this->createElement( 'select', 'privs' );
         $privileges->setMultiOptions( \Entities\User::$PRIVILEGES_TEXT )
             ->setRegisterInArrayValidator( true )
@@ -71,18 +79,16 @@ class INEX_Form_User extends INEX_Form
 
         $this->addElement( $privileges );
 
+        
+        
         $this->addElement( OSS_Form_User::createEmailElement() );
         
-        $mobile = $this->createElement( 'text', 'authorisedMobile' );
-        $mobile->addValidator( 'stringLength', false, array( 0, 30 ) )
-               ->setRequired( false )
-               ->setLabel( 'Mobile' )
-               ->setAttrib( 'placeholder', '+353 86 123 4567' )
-               ->addFilter( 'StringTrim' )
-               ->addFilter( new OSS_Filter_StripSlashes() );
+        
+        
+        $this->addElement( self::createMobileElement( 'authorisedMobile' ) );
 
-        $this->addElement( $mobile );
-
+        
+        
         $cust = $this->createElement( 'select', 'custid' );
         $maxId = $this->populateSelectFromDatabase( $cust, '\\Entities\\Customer', 'id', 'name', 'name', 'ASC' );
 
@@ -107,5 +113,19 @@ class INEX_Form_User extends INEX_Form
         
     }
 
+    
+    public static function createMobileElement( $name = 'mobile' )
+    {
+        $mobile = new Zend_Form_Element_Text( $name );
+        
+        $mobile->addValidator( 'stringLength', false, array( 0, 30 ) )
+               ->setRequired( false )
+               ->setLabel( 'Mobile' )
+               ->setAttrib( 'placeholder', '+353 86 123 4567' )
+               ->addFilter( 'StringTrim' )
+               ->addFilter( new OSS_Filter_StripSlashes() );
+    
+        return $mobile;
+    }
 }
 
