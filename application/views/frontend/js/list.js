@@ -24,13 +24,13 @@ $(document).ready(function() {
 	
 	oDataTable = $( '#frontend-list-table' ).dataTable({
         'fnDrawCallback': function() {
-                if( pbx_prefs['iLength'] !=  $( "select[name='frontend-list-table_length']" ).val() )
+                if( oss_prefs != undefined && 'iLength' in oss_prefs && oss_prefs['iLength'] != $( "select[name='frontend-list-table_length']" ).val() )
                 {
-                    pbx_prefs['iLength'] = parseInt( $( "select[name='frontend-list-table_length']" ).val() );
-                    $.jsonCookie( 'pbx_prefs', pbx_prefs, pbx_cookie_options );
+                    oss_prefs['iLength'] = parseInt( $( "select[name='frontend-list-table_length']" ).val() );
+                    $.jsonCookie( 'oss_prefs', oss_prefs, oss_cookie_options );
                 }
             },
-        'iDisplayLength': pbx_prefs['iLength']? pbx_prefs['iLength']: {$options.defaults.table.entries},
+        'iDisplayLength': oss_prefs != undefined && 'iLength' in oss_prefs ? oss_prefs['iLength'] : {$options.defaults.table.entries},
         "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
         "sPaginationType": "bootstrap",
         'aoColumns': [
