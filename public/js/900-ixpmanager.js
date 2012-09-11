@@ -21,6 +21,7 @@ $( 'document' ).ready( function(){
 	
 	$("[rel=tooltip]").tooltip();
 
+	$(".chzn-select").chosen();
 });
 
 
