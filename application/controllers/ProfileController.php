@@ -21,6 +21,15 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+/**
+ * Controller: User profile
+ *
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 
 class ProfileController extends INEX_Controller_AuthRequiredAction
 {

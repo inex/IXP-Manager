@@ -3,32 +3,34 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 
-/*
+/**
+ * Controller: Manage switch ports
  *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class SwitchPortController extends INEX_Controller_FrontEnd
 {
     public function init()
@@ -95,7 +97,7 @@ class SwitchPortController extends INEX_Controller_FrontEnd
         // we want post to trump get
         if( isset( $_POST['switchid'] ) && is_numeric( $_POST['switchid'] ) )
             $switchid = $_POST['switchid'];
-        else 
+        else
             $switchid = $this->_getParam( 'switchid', null );
         $this->view->switchid = $switchid;
 
@@ -106,7 +108,7 @@ class SwitchPortController extends INEX_Controller_FrontEnd
     
     /**
      * Hook function to set a customer return.
-     * 
+     *
      * We want to display the ports of the switch which was added / edited.
 	 *
      * @param INEX_Form_SwitchPort $f
@@ -119,4 +121,3 @@ class SwitchPortController extends INEX_Controller_FrontEnd
     
 }
 
-?>

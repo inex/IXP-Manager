@@ -22,13 +22,15 @@
  */
 
 
-/*
+/**
+ * Controller: Manage contacts
  *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class ContactController extends INEX_Controller_FrontEnd
 {
     public function init()
