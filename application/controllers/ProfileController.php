@@ -22,20 +22,10 @@
  */
 
 
-class ProfileController extends INEX_Controller_Action
+class ProfileController extends INEX_Controller_AuthRequiredAction
 {
-    /**
-     *
-     * @var INEX_Form_ProfilePassword
-     */
-    protected $_passwordForm;
-
-    /**
-     *
-     * @var INEX_Form_Profile
-     */
-    protected $_profileForm;
-
+    use OSS_Controller_Trait_Profile;
+    
     /**
      * Users mailing list subs as set via init() -> _initMailingListSubs()
      *
@@ -43,21 +33,20 @@ class ProfileController extends INEX_Controller_Action
      */
     protected $_mailinglists;
     
+
+    /**
+     * Return the appropriate change password form for your application
+     */
+    protected function _getFormChangePassword()
+    {
+        return new INEX_Form_ChangePassword();
+    }
     
     
     public function init()
     {
-        // Show the users details (if logged in)
-        if( !$this->auth->hasIdentity() )
-            $this->_forward( 'index', 'auth' );
 
-        $this->_passwordForm = new INEX_Form_ProfilePassword();
-        $this->_passwordForm->setAction(
-            Zend_Controller_Front::getInstance()->getBaseUrl()
-            . '/' . $this->getRequest()->getParam( 'controller' )
-            . '/change-password'
-        );
-
+        /*
         $this->_profileForm = new INEX_Form_Profile();
         $this->_profileForm->getElement( 'username' )->setValue( $this->user['username'] );
         $this->_profileForm->getElement( 'email' )->setValue( $this->user['email'] );
@@ -67,18 +56,20 @@ class ProfileController extends INEX_Controller_Action
             . '/' . $this->getRequest()->getParam( 'controller' )
             . '/change-profile'
         );
-
+        */
         // mailing list management
         $this->_initMailingListSubs();
     }
 
     public function indexAction()
     {
-        $this->view->profileForm  = $this->_profileForm->render( $this->view );
-        $this->view->passwordForm = $this->_passwordForm->render( $this->view );
-        $this->view->mailinglists = $this->_mailinglists;
+        $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
+        $this->view->profileForm  = new INEX_Form_Profile();
         
-        $this->view->display( 'profile/index.tpl' );
+        if( !isset( $this->view->passwordForm ) )
+            $this->view->passwordForm = $this->_getFormChangePassword();
+        
+        $this->view->mailinglists = $this->_mailinglists;
     }
 
 
@@ -115,55 +106,6 @@ class ProfileController extends INEX_Controller_Action
     }
 
 
-    /**
-     * Action to allow a user to change their password
-     *
-     */
-    public function changePasswordAction()
-    {
-        if( $this->_passwordForm->isValid( $_POST ) )
-        {
-            // let's do some suplementary checks
-            if( $this->_passwordForm->getValue( 'password1' ) != $this->_passwordForm->getValue( 'password2' ) )
-            {
-                $this->_passwordForm->getElement( 'password2' )->addError(
-                	'Your passwords do not match'
-                );
-                return( $this->indexAction() );
-            }
-
-            if( $this->_passwordForm->getValue( 'oldpassword' ) != $this->user->password )
-            {
-                $this->_passwordForm->getElement( 'oldpassword' )->addError(
-                    'You have entered an incorrect current password'
-                );
-                return( $this->indexAction() );
-            }
-
-            // update the users password
-            $this->user['password'] = $this->_passwordForm->getValue( 'password1' );
-
-            $this->_passwordForm->reset();
-
-            try
-            {
-                $this->user->save();
-            }
-            catch( Doctrine_Exception $e )
-            {
-                $this->getLogger()->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
-                    Zend_Log::CRIT
-                );
-                $this->view->message = new INEX_Message( 'Internal Error: Your password could not be changed', 'error' );
-                return( $this->indexAction() );
-            }
-
-            $this->view->message = new INEX_Message( 'Your password has been changed', 'success' );
-
-        }
-
-        $this->indexAction();
-    }
     
     public function updateMailingListsAction()
     {

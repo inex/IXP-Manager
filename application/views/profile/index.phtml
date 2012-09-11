@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -16,30 +16,24 @@
         </div>
 {/if}
 
-{include file="message.tpl"}
-<div id="ajaxMessage"></div>
+{OSS_Message}
 
 <p>
-This is your INEX user profile where you can change you contact preferences and password.
-</p>
-
-<p>
-Please note that the mobile number is used to send you password reminders and should contain the country code
-in the format: <code>353861234567</code>.
+This is your IXP Manager user profile where you can change you contact preferences and password.
 </p>
 
 <div class="row-fluid">
     <div class="span6">
 
         <h3>Change Your Profile</h3>
-        
+        <br />
         {$profileForm}
         
     </div>
     <div class="span6">
 
         <h3>Change Your Password</h3>
-        
+        <br />
         {$passwordForm}
         
     </div>
@@ -51,15 +45,15 @@ in the format: <code>353861234567</code>.
             <h3>Your Mailing List Subscriptions</h3>
             <p>
                 <br />
-                {$config.identity.orgname} operates the below mailing lists to help us interact with our
+                {$options.identity.orgname} operates the below mailing lists to help us interact with our
                 members and for our members to interact with each other.
             </p>
             <p>
                 There are also links below to the list archives - for which your username is
-                {$user.email} and your password is the same as your IXP Manager password.
+                {$user->getEmail()} and your password is the same as your IXP Manager password.
             </p>
             <p>
-                The below are your subscriptions for <strong>{$user.email}</strong>.
+                The below are your subscriptions for <strong>{$user->getEmail()}</strong>.
             </p>
             <br />
             <form action="{genUrl controller="profile" action="update-mailing-lists"}" method="post" class="form">
@@ -67,7 +61,7 @@ in the format: <code>353861234567</code>.
 
                 {foreach from=$mailinglists key=name item=ml}
 
-	            {if $customer.type neq Cust::TYPE_ASSOCIATE or ( isset( $ml.associates ) and $ml.associates )}
+	            {if $user->getCustomer()->getType() neq CUSTOMER::TYPE_ASSOCIATE or ( isset( $ml.associates ) and $ml.associates )}
 
                         <div class="control-group">
                             <label class="checkbox">
@@ -95,4 +89,6 @@ in the format: <code>353861234567</code>.
     </div>
 {/if}
 
-{include file="footer.tpl"}
+</div>
+
+{tmplinclude file="footer.phtml"}
