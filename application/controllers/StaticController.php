@@ -60,6 +60,31 @@ class StaticController extends INEX_Controller_Action
 
     public function exampleAction()
     {}
+
+    public function feesAction()
+    {
+        $this->_requireAuth();
+    }
+
+    public function housingAction()
+    {
+        $this->_requireAuth();
+    }
+
+    public function miscBenefitsAction()
+    {
+        $this->_requireAuth();
+    }
+
+    public function switchesAction()
+    {
+        $this->_requireAuth();
+    }
+
+    public function portSecurityAction()
+    {
+        $this->_requireAuth();
+    }
 }
 
 

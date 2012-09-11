@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -12,6 +12,8 @@
             Port Security
         </li>
     </ul>
+    
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -136,5 +138,6 @@ Traffic monitoring is implemented using <code>ixpwatch</code>, a program
 designed and coded by the London Internet Exchange (LINX).
 </p>
 
+</div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}#

@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -12,6 +12,8 @@
             Equipment Housing at INEX Facilities
         </li>
     </ul>
+    
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -118,5 +120,6 @@ housing for:
     </li>
 </ul>
 
+</div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

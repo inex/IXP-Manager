@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -12,6 +12,8 @@
             Miscellaneous Benefits
         </li>
     </ul>
+    
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -164,4 +166,7 @@ When connected to the management port on the hosted device:
 <ul>
     <li> &lt;ctrl-y&gt;, followed by <code>e</code> to go back to menu mode </li>
 </ul>
-{include file="footer.tpl"}
+
+</div>
+
+{tmplinclude file="footer.phtml"}

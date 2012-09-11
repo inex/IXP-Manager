@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -12,6 +12,8 @@
             Connecting Switches
         </li>
     </ul>
+    
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -131,5 +133,6 @@ can be disabled on a per-interface basis using the following command:
 </pre>
 </p>
 
+</div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

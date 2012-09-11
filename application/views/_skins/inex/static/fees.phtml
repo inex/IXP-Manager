@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -12,6 +12,8 @@
             Membership Fees and Charges
         </li>
     </ul>
+    
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -32,7 +34,7 @@ port charges.
 
 <br /><br />
 
-<div class="row">
+<div class="row-fluid">
     <div class="span9">
         <table class="table">
         <tr>
@@ -63,7 +65,7 @@ port charges.
 <h4>Port Charges</h4>
 <br /><br />
 
-<div class="row">
+<div class="row-fluid">
     <div class="span9">
         <table class="table">
             <tr>
@@ -113,7 +115,7 @@ port charges.
 <h4>Miscellaneous Charges</h4>
 <br /><br />
 
-<div class="row">
+<div class="row-fluid">
     <div class="span9">
         <table class="table">
             <tr>
@@ -168,8 +170,9 @@ port charges.
 
 
 
+</div>
 
 
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
