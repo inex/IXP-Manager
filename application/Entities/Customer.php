@@ -9,6 +9,51 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Customer
 {
+    const TYPE_FULL       = 1;
+    const TYPE_ASSOCIATE  = 2;
+    const TYPE_INTERNAL   = 3;
+    const TYPE_PROBONO    = 4;
+    
+    public static $CUST_TYPES_TEXT = array(
+        self::TYPE_FULL      => 'Full',
+        self::TYPE_ASSOCIATE => 'Associate',
+        self::TYPE_INTERNAL  => 'Internal',
+        self::TYPE_PROBONO   => 'Pro-bono'
+    );
+    
+    
+    const STATUS_NORMAL       = 1;
+    const STATUS_NOTCONNECTED = 2;
+    const STATUS_SUSPENDED    = 3;
+    
+    public static $CUST_STATUS_TEXT = array(
+        self::STATUS_NORMAL           => 'Normal',
+        self::STATUS_NOTCONNECTED     => 'Not Connected',
+        self::STATUS_SUSPENDED        => 'Suspended',
+    );
+    
+    const PEERING_POLICY_OPEN       = 'open';
+    const PEERING_POLICY_SELECTIVE  = 'selective';
+    const PEERING_POLICY_MANDATORY  = 'mandatory';
+    const PEERING_POLICY_CLOSED     = 'closed';
+    
+    public static $PEERING_POLICIES = array(
+        self::PEERING_POLICY_OPEN       => 'open',
+        self::PEERING_POLICY_SELECTIVE  => 'selective',
+        self::PEERING_POLICY_MANDATORY  => 'mandatory',
+        self::PEERING_POLICY_CLOSED     => 'closed'
+    );
+    
+    
+    public static $NOC_HOURS = array(
+        '24x7' => '24x7',
+        '8x5'  => '8x5',
+        '8x7'  => '8x7',
+        '12x5' => '12x5',
+        '12x7' => '12x7'
+    );
+    
+    
     /**
      * @var string $name
      */
@@ -265,7 +310,7 @@ class Customer
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -288,7 +333,7 @@ class Customer
     /**
      * Get type
      *
-     * @return integer 
+     * @return integer
      */
     public function getType()
     {
@@ -311,7 +356,7 @@ class Customer
     /**
      * Get shortname
      *
-     * @return string 
+     * @return string
      */
     public function getShortname()
     {
@@ -334,7 +379,7 @@ class Customer
     /**
      * Get autsys
      *
-     * @return integer 
+     * @return integer
      */
     public function getAutsys()
     {
@@ -357,7 +402,7 @@ class Customer
     /**
      * Get maxprefixes
      *
-     * @return integer 
+     * @return integer
      */
     public function getMaxprefixes()
     {
@@ -380,7 +425,7 @@ class Customer
     /**
      * Get peeringemail
      *
-     * @return string 
+     * @return string
      */
     public function getPeeringemail()
     {
@@ -403,7 +448,7 @@ class Customer
     /**
      * Get nocphone
      *
-     * @return string 
+     * @return string
      */
     public function getNocphone()
     {
@@ -426,7 +471,7 @@ class Customer
     /**
      * Get noc24hrphone
      *
-     * @return string 
+     * @return string
      */
     public function getNoc24hrphone()
     {
@@ -449,7 +494,7 @@ class Customer
     /**
      * Get nocfax
      *
-     * @return string 
+     * @return string
      */
     public function getNocfax()
     {
@@ -472,7 +517,7 @@ class Customer
     /**
      * Get nocemail
      *
-     * @return string 
+     * @return string
      */
     public function getNocemail()
     {
@@ -495,7 +540,7 @@ class Customer
     /**
      * Get nochours
      *
-     * @return string 
+     * @return string
      */
     public function getNochours()
     {
@@ -518,7 +563,7 @@ class Customer
     /**
      * Get nocwww
      *
-     * @return string 
+     * @return string
      */
     public function getNocwww()
     {
@@ -541,7 +586,7 @@ class Customer
     /**
      * Get irrdb
      *
-     * @return integer 
+     * @return integer
      */
     public function getIrrdb()
     {
@@ -564,7 +609,7 @@ class Customer
     /**
      * Get peeringmacro
      *
-     * @return string 
+     * @return string
      */
     public function getPeeringmacro()
     {
@@ -587,7 +632,7 @@ class Customer
     /**
      * Get peeringpolicy
      *
-     * @return string 
+     * @return string
      */
     public function getPeeringpolicy()
     {
@@ -610,7 +655,7 @@ class Customer
     /**
      * Get billingContact
      *
-     * @return string 
+     * @return string
      */
     public function getBillingContact()
     {
@@ -633,7 +678,7 @@ class Customer
     /**
      * Get billingAddress1
      *
-     * @return string 
+     * @return string
      */
     public function getBillingAddress1()
     {
@@ -656,7 +701,7 @@ class Customer
     /**
      * Get billingAddress2
      *
-     * @return string 
+     * @return string
      */
     public function getBillingAddress2()
     {
@@ -679,7 +724,7 @@ class Customer
     /**
      * Get billingCity
      *
-     * @return string 
+     * @return string
      */
     public function getBillingCity()
     {
@@ -702,7 +747,7 @@ class Customer
     /**
      * Get billingCountry
      *
-     * @return string 
+     * @return string
      */
     public function getBillingCountry()
     {
@@ -725,7 +770,7 @@ class Customer
     /**
      * Get corpwww
      *
-     * @return string 
+     * @return string
      */
     public function getCorpwww()
     {
@@ -748,7 +793,7 @@ class Customer
     /**
      * Get datejoin
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDatejoin()
     {
@@ -771,7 +816,7 @@ class Customer
     /**
      * Get dateleave
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDateleave()
     {
@@ -794,7 +839,7 @@ class Customer
     /**
      * Get status
      *
-     * @return integer 
+     * @return integer
      */
     public function getStatus()
     {
@@ -817,7 +862,7 @@ class Customer
     /**
      * Get activepeeringmatrix
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getActivepeeringmatrix()
     {
@@ -840,7 +885,7 @@ class Customer
     /**
      * Get notes
      *
-     * @return string 
+     * @return string
      */
     public function getNotes()
     {
@@ -863,7 +908,7 @@ class Customer
     /**
      * Get lastupdated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastupdated()
     {
@@ -886,7 +931,7 @@ class Customer
     /**
      * Get lastupdatedby
      *
-     * @return integer 
+     * @return integer
      */
     public function getLastupdatedby()
     {
@@ -909,7 +954,7 @@ class Customer
     /**
      * Get creator
      *
-     * @return string 
+     * @return string
      */
     public function getCreator()
     {
@@ -932,7 +977,7 @@ class Customer
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -942,7 +987,7 @@ class Customer
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -975,7 +1020,7 @@ class Customer
     /**
      * Get VirtualInterfaces
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getVirtualInterfaces()
     {
@@ -1008,7 +1053,7 @@ class Customer
     /**
      * Get Contacts
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getContacts()
     {
@@ -1041,7 +1086,7 @@ class Customer
     /**
      * Get ConsoleServerConnections
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getConsoleServerConnections()
     {
@@ -1074,7 +1119,7 @@ class Customer
     /**
      * Get CustomerEquipment
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getCustomerEquipment()
     {
@@ -1107,7 +1152,7 @@ class Customer
     /**
      * Get Peers
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getPeers()
     {
@@ -1140,7 +1185,7 @@ class Customer
     /**
      * Get PeersWith
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getPeersWith()
     {
@@ -1173,7 +1218,7 @@ class Customer
     /**
      * Get XCusts
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getXCusts()
     {
@@ -1206,7 +1251,7 @@ class Customer
     /**
      * Get YCusts
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getYCusts()
     {
@@ -1239,7 +1284,7 @@ class Customer
     /**
      * Get RSDroppedPrefixes
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getRSDroppedPrefixes()
     {
@@ -1272,7 +1317,7 @@ class Customer
     /**
      * Get Users
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
@@ -1305,7 +1350,7 @@ class Customer
     /**
      * Get Traffic95ths
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getTraffic95ths()
     {
@@ -1338,7 +1383,7 @@ class Customer
     /**
      * Get Traffic95thMonthlys
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getTraffic95thMonthlys()
     {
@@ -1371,7 +1416,7 @@ class Customer
     /**
      * Get TrafficDailies
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getTrafficDailies()
     {
@@ -1399,7 +1444,7 @@ class Customer
     /**
      * Get noc24hphone
      *
-     * @return string 
+     * @return string
      */
     public function getNoc24hphone()
     {
@@ -1437,7 +1482,7 @@ class Customer
     /**
      * Get SecEvents
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getSecEvents()
     {
