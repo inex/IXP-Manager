@@ -36,7 +36,8 @@ class INEX_Form_Profile extends INEX_Form
     public function init()
     {
         $this->setAttrib( 'id', 'profile' )
-            ->setAttrib( 'name', 'profile' );
+            ->setAttrib( 'name', 'profile' )
+            ->setAction( OSS_Utils::genUrl( 'profile', 'change-profile' ) );
         
         $username = OSS_Form_Auth::createUsernameElement();
         $username->setAttrib( 'readonly', 'readonly' )

@@ -42,29 +42,34 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
         return new INEX_Form_ChangePassword();
     }
     
+    /**
+     * Return the appropriate change profile form for your application
+     */
+    protected function _getFormProfile()
+    {
+        $pf = new INEX_Form_Profile();
+        
+        $pf->getElement( 'username' )->setValue( $this->getUser()->getUsername() );
+        $pf->getElement( 'mobile'   )->setValue( $this->getUser()->getAuthorisedMobile() );
+        $pf->getElement( 'email'    )->setValue( $this->getUser()->getEmail() );
+        
+        return $pf;
+    }
+    
+    
     
     public function init()
     {
-
-        /*
-        $this->_profileForm = new INEX_Form_Profile();
-        $this->_profileForm->getElement( 'username' )->setValue( $this->user['username'] );
-        $this->_profileForm->getElement( 'email' )->setValue( $this->user['email'] );
-        $this->_profileForm->getElement( 'mobile' )->setValue( $this->user['authorisedMobile'] );
-        $this->_profileForm->setAction(
-            Zend_Controller_Front::getInstance()->getBaseUrl()
-            . '/' . $this->getRequest()->getParam( 'controller' )
-            . '/change-profile'
-        );
-        */
-        // mailing list management
         $this->_initMailingListSubs();
     }
 
     public function indexAction()
     {
+        // we need this for access to class constants in the template
         $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
-        $this->view->profileForm  = new INEX_Form_Profile();
+
+        if( !isset( $this->view->profileForm ) )
+            $this->view->profileForm = $this->_getFormProfile();
         
         if( !isset( $this->view->passwordForm ) )
             $this->view->passwordForm = $this->_getFormChangePassword();
@@ -79,32 +84,24 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
      */
     public function changeProfileAction()
     {
-        if( $this->_profileForm->isValid( $_POST ) )
+        $this->view->profileForm = $form = $this->_getFormProfile();
+        
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
-            // update the user
-            $this->user['authorisedMobile'] = $this->_profileForm->getValue( 'mobile' );
-            // $this->user['email']            = $this->_profileForm->getValue( 'email' );
-
-            try
-            {
-                $this->user->save();
-            }
-            catch( Doctrine_Exception $e )
-            {
-                $this->getLogger()->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
-                    Zend_Log::CRIT
-                );
-                $this->view->message = new INEX_Message( 'Internal Error: Your profile could not be changed', 'error' );
-                return( $this->indexAction() );
-            }
-
-            $this->view->message = new INEX_Message( 'Your profile has been changed', 'success' );
-
+            // update the users profile
+            $this->getUser()->setAuthorisedMobile( $form->getValue( 'mobile' ) );
+            $this->getUser()->setLastUpdated( new DateTime() );
+            $this->getUser()->setLastUpdatedBy( $this->getUser()->getId() );
+            $this->getD2EM()->flush();
+    
+            $this->getLogger()->info( "User {$this->getUser()->getUsername()} updated own profile" );
+            $this->addMessage( _( 'Your profile has been changed.' ), OSS_Message::SUCCESS );
+            $this->redirect( 'profile/index' );
         }
-
-        $this->indexAction();
+    
+        $this->forward( 'index' );
     }
-
+    
 
     
     public function updateMailingListsAction()
