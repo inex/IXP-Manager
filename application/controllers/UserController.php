@@ -117,7 +117,9 @@ class UserController extends INEX_Controller_FrontEnd
         if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
         {
             $qb->where( 'u.Customer = ?1' )
-                ->setParameter( 1, $this->getUser()->getCustomer() );
+               ->andWhere( 'u.privs = ?2' )
+               ->setParameter( 1, $this->getUser()->getCustomer() )
+               ->setParameter( 2, \Entities\User::AUTH_CUSTUSER );
         }
         
         if( isset( $this->_feParams->listOrderBy ) )
@@ -129,94 +131,155 @@ class UserController extends INEX_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
     
+
     /**
-     * Get the `Zend_Form` object for adding / editing actions with some processing.
      *
-     * We shouldn't override this but I've changed the constructor...
-     *
+     * @param INEX_Form_User $form The form object
+     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
-     * @param object $object The Doctrine2 entity (being edited or blank for add)
-     * @param array $options Options passed onto Zend_Form
-     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
-     * @return Zend_Form
+     * @return void
      */
-    protected function getForm( $isEdit, $object, $options = null, $cancelLocation = null )
+    protected function formPostProcess( $form, $object, $isEdit )
     {
-        $options['cancelLocation'] = $cancelLocation === null ? $this->_getBaseUrl() . '/index' : $cancelLocation;
-        $options['isEdit'] = $isEdit;
-        
-        $formName = $this->feGetParam( 'form' );
-        $form = new $formName( $options, $isEdit, $cancelLocation, $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN  );
-        return $this->formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null );
-    }
-    
-    
-    
-    /**
-     * Checks / actions before we try and validate the form
-     */
-    protected function formPrevalidate( $form, $isEdit, $object )
-    {
-        // If we're a super user, then the length of the username is up to us
-        if( $this->user['privs'] == User::AUTH_SUPERUSER )
-            $form->getElement( 'username' )->removeValidator( 'stringLength' );
-        
-        if( $cid = $this->_getParam( 'custid', false ) )
+        switch( $this->getUser()->getPrivs() )
         {
-            $form->getElement( 'custid' )->setValue( $cid );
-            $form->getElement( 'cancel' )->setAttrib( 'onClick', "parent.location='"
-                . $this->genUrl( 'customer', 'dashboard', array( 'id' => $cid ) ) . "'"
-            );
+            case \Entities\User::AUTH_SUPERUSER:
+                $form->removeElement( 'name' );
+                $form->getElement( 'username' )->removeValidator( 'stringLength' );
+                if( !$isEdit && !$this->isPost() )
+                    $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
+                break;
+                
+            case \Entities\User::AUTH_CUSTADMIN:
+                $form->removeElement( 'password' );
+                $form->removeElement( 'privs' );
+                $form->removeElement( 'custid' );
+                if( $isEdit )
+                {
+                    $form->removeElement( 'name' );
+                    $form->getElement( 'username' )->setAttrib( 'readonly', 'readonly' );
+                }
+                break;
+
+            default:
+                throw new OSS_Exception( 'Unhandled user type' );
         }
-        else if( $isEdit )
-        {
-            $form->getElement( 'cancel' )->setAttrib( 'onClick', "parent.location='"
-                . $this->genUrl( 'customer', 'dashboard', array( 'id' => $object['custid'] ) ) . "'"
-            );
-        }
-            
-        // propose a random password to help the user out
+        
         if( !$isEdit )
-            $form->getElement( 'password' )->setValue( INEX_String::random() );
-        
+        {
+            $form->getElement( 'username' )->addValidator( 'OSSDoctrine2Uniqueness', true,
+                [ 'entity' => '\\Entities\\User', 'property' => 'username' ]
+            );
+        }
     }
-
-    protected function _addEditSetReturnOnSuccess( $form, $object )
+    
+    
+    /**
+     *
+     * @param INEX_Form_User $form The form object
+     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return bool
+     */
+    protected function addPreValidate( $form, $object, $isEdit )
     {
-        if( $this->user['privs'] == User::AUTH_SUPERUSER )
-            return "customer/dashboard/id/{$object['custid']}";
-        else
-            return 'user';
+        // is this user allowed to edit this object?
+        if( $isEdit && $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        {
+            if( $this->getUser()->getCustomer() != $object->getCustomer() )
+            {
+                $this->addMessage( 'Illegal attempt to edit a user not under your control. The security team have been notified.' );
+                $this->getLogger()->alert( "User {$this->getUser()->getUsername()} illegally tried to edit {$object->getUsername()}" );
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     /**
-     * Additional checks when a new object is being added.
+     *
+     * @param INEX_Form_User $form The form object
+     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
      */
-    protected function formValidateForAdd( $form )
+    protected function addPostValidate( $form, $object, $isEdit )
     {
-
-        // is there already a user with this username?
-        if( Doctrine::getTable( $this->getModelName() )->findOneByUsername( $form->getValue( 'username' ) ) ) {
-            $form->getElement( 'username' )->addError( 'This username is not available' );
-            return false;
+        if( $isEdit )
+        {
+            $object->setLastupdated( new DateTime() );
+            $object->setLastupdatedby( $this->getUser()->getId() );
         }
-
-
+        else
+        {
+            $object->setCreated( new DateTime() );
+            $object->setCreator( $this->getUser()->getUsername() );
+            
+            if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+            {
+                $object->setCustomer( $this->getUser()->getCustomer() );
+                $object->setParent( $this->getUser() );
+                $object->setPrivs( \Entities\User::AUTH_CUSTUSER );
+                $object->setPassword( OSS_String::random( 16 ) );
+                
+                $c = new \Entities\Contact();
+                $c->setCustomer( $this->getUser()->getCustomer() );
+                $c->setName( $form->getElement( 'name' )->getValue() );
+                $c->setEmail( $form->getElement( 'email' )->getValue() );
+                $c->setMobile( $form->getElement( 'authorisedMobile' )->getValue() );
+                $c->setCreator( $this->getUser()->getUsername() );
+                $c->setCreated( new DateTime() );
+                $this->getD2EM()->persist( $c );
+            }
+            else
+            {
+                $object->setParent(
+                    $this->getD2EM()->createQuery(
+                        'SELECT u FROM Entities\User u WHERE u.privs = ?1 AND u.custid = ?2 LIMIT 1'
+                    )
+                    ->setParameter( ':p1', \Entities\User::AUTH_CUSTADMIN )
+                    ->setParameter( ':p2', $form->getElement( 'custid' )->getValue() )
+                    ->getScalarResult()
+                );
+            }
+        }
+        
+        return true;
     }
 
 
     /**
-     * If we're adding or editing a user, set the parent_id accordingly
      *
-     * @param Doctrine_Record $object The object being built for adding or edited
-     * @param bool $isEdit True if this is an edit, false if it's an add
-     * @param Zend_Form $form The submitted add / edit form
+     * @param INEX_Form_User $form The form object
+     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
      */
-    protected function addEditPreSave( $object, $isEdit, $form )
+    protected function addPostFlush( $form, $object, $isEdit )
     {
-        if( $object['privs'] == User::AUTH_CUSTUSER && $user = Doctrine::getTable( 'User' )->findOneByCustidAndPrivs( $form->getValue( 'custid' ), User::AUTH_CUSTADMIN ) )
-            $object['Parent'] = $user;
+        if( !$isEdit )
+        {
+            $this->view->newuser = $object;
+            
+            try
+            {
+                $mail = $this->getMailer();
+                $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
+                     ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Your Access Details' ) )
+                     ->addTo( $object->getEmail(), $form->getElement( 'name' )->getValue() )
+                     ->setBodyHtml( $this->view->render( 'user/email/html/welcome.phtml' ) )
+                     ->send();
+            }
+            catch( Zend_Mail_Exception $e )
+            {
+                $this->getLogger()->alert( "Could not send welcome email for new user!\n\n" . $e->toString() );
+            }
+        }
+        
+        return true;
     }
+      
 
     /**
      * Send the user a message by SMS
