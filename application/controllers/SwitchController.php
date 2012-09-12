@@ -33,100 +33,135 @@
  */
 class SwitchController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'SwitchTable';
-        $this->frontend['name']            = 'Switch';
-        $this->frontend['pageTitle']       = 'Switches';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'name', 'switchtype', 'cabinet', 'infrastructure', 'ipv4addr', 'vendorid', 'model', 'active' ),
-
-            'viewPanelRows'  => array( 'name', 'cabinet', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'switchtype', 'vendorid', 'model', 'active', 'notes' ),
-            'viewPanelTitle' => 'name',
-
-            'sortDefaults' => array(
-                'column' => 'name',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-
-            'name' => array(
-                'label' => 'Name',
-                'sortable' => 'true',
-            ),
-
-            'cabinet' => array(
-                'type' => 'hasOne',
-                'model' => 'Cabinet',
-                'controller' => 'cabinet',
-                'field' => 'name',
-                'label' => 'Cabinet',
-                'sortable' => true
-            ),
-
-            'infrastructure' => array(
-                'label' => 'Infrastructure',
-                'sortable' => true
-            ),
-
-            'ipv4addr' => array(
-                'label' => 'IPv4 Address',
-                'sortable' => true
-            ),
-
-            'ipv6addr' => array(
-                'label' => 'IPv6 Address',
-                'sortable' => true
-            ),
-
-            'snmppasswd' => array(
-                'label' => 'SNMP Password',
-                'sortable' => false
-            ),
-
-            'switchtype' => array(
-                'label' => 'Switch Type',
-                'sortable' => true,
-                'type' => 'xlate',
-                'xlator' => SwitchTable::$SWITCHTYPES_TEXT
-            ),
-
-            'vendorid' => array(
-                'type' => 'hasOne',
-                'model' => 'Vendor',
-                'controller' => 'vendor',
-                'field' => 'name',
-                'label' => 'Vendor',
-                'sortable' => true
-            ),
-
-            'model' => array(
-                'label' => 'Model',
-                'sortable' => true
-            ),
-
-            'active' => array(
-                'label' => 'Active',
-                'sortable' => true
-            ),
-
-            'notes' => array(
-                'label' => 'Notes',
-                'sortable' => false
-            )
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+    
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\Switcher',
+            'form'          => 'INEX_Form_Switch',
+            'pagetitle'     => 'Switches',
+        
+            'titleSingular' => 'Switch',
+            'nameSingular'  => 'a switch',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+        
+            'listOrderBy'    => 'name',
+            'listOrderByDir' => 'ASC',
+        
+            'listColumns'    => [
+        
+                'id'        => [ 'title' => 'UID', 'display' => false ],
+                'name'           => 'Name',
+                
+                'cabinet'  => [
+                    'title'      => 'Cabinet',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'cabinet',
+                    'action'     => 'view',
+                    'idField'    => 'cabinetid'
+                ],
+            
+                'vendor'  => [
+                    'title'      => 'Vendor',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'vendor',
+                    'action'     => 'view',
+                    'idField'    => 'vendorid'
+                ],
+                
+                'model'          => 'Model',
+                'ipv4addr'       => 'IPv4 Address',
+                'infrastructure' => 'Infrastructure',
+                'active'         => 'Active'
+            ]
+        ];
+    
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = array_merge(
+            $this->_feParams->listColumns,
+            [
+                'ipv6addr'       => 'IPv6 Address',
+                'snmppasswd'     => 'SNMP Community',
+                'switchtype'     => 'Type',
+                'notes'          => 'Notes'
+            ]
         );
-
-        parent::feInit();
     }
-
+    
+    
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+        ->select( 's.id AS id, s.name AS name,
+            s.ipv4addr AS ipv4addr, s.ipv6addr AS ipv6addr, s.snmppasswd AS snmppasswd,
+            s.infrastructure AS infrastructure, s.switchtype AS switchtype, s.model AS model,
+            s.active AS active, s.notes AS notes,
+            v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
+        )
+        ->from( '\\Entities\\Switcher', 's' )
+        ->leftJoin( 's.Cabinet', 'c' )
+        ->leftJoin( 's.Vendor', 'v' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 's.id = ?1' )->setParameter( 1, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Cabinet $form The form object
+     * @param \Entities\Cabinet $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+    {
+        if( $isEdit )
+        {
+            $form->getElement( 'cabinetid' )->setValue( $object->getCabinet()->getId() );
+            $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
+        }
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Cabinet $form The form object
+     * @param \Entities\Cabinet $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        $object->setCabinet(
+            $this->getD2EM()->getRepository( '\\Entities\\Cabinet' )->find( $form->getElement( 'cabinetid' )->getValue() )
+        );
+    
+        $object->setVendor(
+            $this->getD2EM()->getRepository( '\\Entities\\Vendor' )->find( $form->getElement( 'vendorid' )->getValue() )
+        );
+    
+        return true;
+    }
+    
+    
 
     function portReportAction()
     {

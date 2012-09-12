@@ -9,6 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Switcher
 {
+    const TYPE_SWITCH        = 1;
+    const TYPE_CONSOLESERVER = 2;
+    
+    
+    public static $TYPES = [
+        self::TYPE_SWITCH        => 'Switch',
+        self::TYPE_CONSOLESERVER => 'Console Server'
+    ];
+    
+    
     /**
      * @var string $name
      */
@@ -104,7 +114,7 @@ class Switcher
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -127,7 +137,7 @@ class Switcher
     /**
      * Get ipv4addr
      *
-     * @return string 
+     * @return string
      */
     public function getIpv4addr()
     {
@@ -150,7 +160,7 @@ class Switcher
     /**
      * Get ipv6addr
      *
-     * @return string 
+     * @return string
      */
     public function getIpv6addr()
     {
@@ -173,7 +183,7 @@ class Switcher
     /**
      * Get snmppasswd
      *
-     * @return string 
+     * @return string
      */
     public function getSnmppasswd()
     {
@@ -196,7 +206,7 @@ class Switcher
     /**
      * Get infrastructure
      *
-     * @return integer 
+     * @return integer
      */
     public function getInfrastructure()
     {
@@ -219,7 +229,7 @@ class Switcher
     /**
      * Get switchtype
      *
-     * @return integer 
+     * @return integer
      */
     public function getSwitchtype()
     {
@@ -242,7 +252,7 @@ class Switcher
     /**
      * Get model
      *
-     * @return string 
+     * @return string
      */
     public function getModel()
     {
@@ -265,7 +275,7 @@ class Switcher
     /**
      * Get actrive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getActrive()
     {
@@ -288,7 +298,7 @@ class Switcher
     /**
      * Get notes
      *
-     * @return string 
+     * @return string
      */
     public function getNotes()
     {
@@ -298,7 +308,7 @@ class Switcher
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -331,7 +341,7 @@ class Switcher
     /**
      * Get Ports
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getPorts()
     {
@@ -364,7 +374,7 @@ class Switcher
     /**
      * Get ConsoleServerConnections
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getConsoleServerConnections()
     {
@@ -387,7 +397,7 @@ class Switcher
     /**
      * Get Cabinet
      *
-     * @return Entities\Cabinet 
+     * @return Entities\Cabinet
      */
     public function getCabinet()
     {
@@ -410,7 +420,7 @@ class Switcher
     /**
      * Get Vendor
      *
-     * @return Entities\Vendor 
+     * @return Entities\Vendor
      */
     public function getVendor()
     {
@@ -448,7 +458,7 @@ class Switcher
     /**
      * Get SecEvents
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getSecEvents()
     {
@@ -476,7 +486,7 @@ class Switcher
     /**
      * Get active
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getActive()
     {
