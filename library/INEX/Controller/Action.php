@@ -99,7 +99,29 @@ class INEX_Controller_Action extends OSS_Controller_Action
     }
     
 
-    
+    /**
+     * Assertion function for ensuring user permissions.
+     *
+     * This redirects to an insufficient perms page and issues a log if the
+     * assertion fails.
+     *
+     * @param $priv int The \Entities\User::AUTH_XXX permission to ensure the user has
+     * @param $exact bool If true, match the permission exactly rather than 'at least'
+     * @return bool True if okay, redirects on insufficient permissions
+     */
+    protected function assertPrivilege( $priv, $exact = true )
+    {
+        if( !$this->getAuth()->hasIdentity() )
+            $this->redirectAndEnsureDie( 'auth/login' );
+        
+        if( ( $exact && $this->getUser()->getPrivs() != $priv ) || ( !$exact && $this->getUser()->getPrivs() < $priv ) )
+        {
+            $this->getLogger()->notice( "{$this->getUser()->getUsername()} illegally tried to access {$this->getRequest()->getRequestUri()}" );
+            $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
+        
+        return true;
+    }
     
     /**
      * Perform some setup functions for super users
