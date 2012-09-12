@@ -165,46 +165,52 @@ class SwitchController extends INEX_Controller_FrontEnd
 
     function portReportAction()
     {
-        $switch = Doctrine_Core::getTable( 'SwitchTable' )->find( $this->_getParam( 'id' ) );
+        $this->view->switch = $switch = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->find( $this->getParam( 'id', 0 ) );
 
-        if( $switch )
+        if( $switch === null )
         {
-            $this->view->switch = $switch;
-
-            // load switch ports
-            $ports = Doctrine_Query::create()
-                ->from( 'Switchport sp' )
-                ->where( 'sp.switchid = ?', $switch['id'] )
-                ->orderBy( 'sp.id ASC' )
-                ->execute( null, Doctrine_Core::HYDRATE_ARRAY );
-    
-            // add in customer details.
-            // FIXME: there a better way of doing this
-            foreach( $ports as $i => $p )
-            {
-                $ports[$i]['connection'] = Doctrine_Query::create()
-                    ->from( 'Physicalinterface p' )
-                    ->leftJoin( 'p.Virtualinterface v' )
-                    ->leftJoin( 'v.Cust c' )
-                    ->where( 'p.switchportid = ?', $p['id'] )
-                    ->fetchOne( null, Doctrine_Core::HYDRATE_ARRAY );
-    
-                $ports[$i]['type'] = Switchport::$TYPE_TEXT[ $p['type'] ];
-            }
+            $this->addMessage( 'Unknown switch.', OSS_Message::ERROR );
+            return $this->redirect( 'switch/list' );
         }
-        else
-            $ports = array();
-
-        // add switch list
-        $this->view->switches = Doctrine_Query::create()
-            ->from( 'SwitchTable s' )
-            ->select( 's.id, s.name' )
-            ->where( 's.switchtype = ?', SwitchTable::SWITCHTYPE_SWITCH )
-            ->orderBy( 's.name' )
-            ->fetchArray();
+        
+        $allports = $this->getD2EM()->createQuery(
+                'SELECT sp.id AS spid, sp.name AS portname, sp.type AS porttype
+                FROM \\Entities\\SwitchPort sp
+                WHERE sp.Switcher = ?1
+                ORDER BY spid ASC'
+            )
+            ->setParameter( 1, $switch )
+            ->getResult();
+        
+        $ports = $this->getD2EM()->createQuery(
+                'SELECT sp.id AS spid, sp.name AS portname, sp.type AS porttype,
+                        pi.speed AS speed, pi.duplex AS duplex, c.name AS custname
             
-        $this->view->ports = $ports;
-        $this->view->display( 'switch/port-report.tpl' );
+                FROM \\Entities\\SwitchPort sp
+                    JOIN sp.PhysicalInterface pi
+                    JOIN pi.VirtualInterface vi
+                    JOIN vi.Customer c
+            
+                WHERE sp.Switcher = ?1
+        
+                ORDER BY spid ASC'
+            )
+            ->setParameter( 1, $switch )
+            ->getArrayResult();
+            
+        foreach( $allports as $id => $port )
+        {
+            if( isset( $ports[0] ) && $ports[0][ 'portname' ] == $port[ 'portname' ] )
+                $allports[ $port[ 'portname' ] ] = array_shift( $ports );
+            else
+                $allports[ $port[ 'portname' ] ] = $port;
+            
+            $allports[ $port[ 'portname' ] ]['porttype'] = \Entities\SwitchPort::$TYPES[ $allports[ $port[ 'portname' ] ]['porttype'] ];
+            
+            unset( $allports[ $id ] );
+        }
+        
+        $this->view->ports = $allports;
     }
     
     
