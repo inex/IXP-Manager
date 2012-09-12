@@ -320,6 +320,36 @@ class UserController extends INEX_Controller_FrontEnd
     }
 
 
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * @param \Entities\User $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        // if I'm not an admin, then make sure I have permission!
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        {
+            if( $object->getCustomer() != $this->getUser()->getCustomer() )
+            {
+                $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to delete other customer user {$object->getUsername()}" );
+                $this->addMessage( 'You are not authorised to delete this user. The administrators have been notified.' );
+                return false;
+            }
+        }
+        
+        // now delete all the users privileges also
+        foreach( $object->getPreferences() as $pref )
+        {
+            $object->removePreference( $pref );
+            $this->getD2EM()->remove( $pref );
+        }
+        
+        $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$object->getUsername()}" );
+        return true;
+    }
+    
 
     /**
      * Show the last users to login
