@@ -22,16 +22,14 @@
  */
 
 
-/*
- * Form for adding / editing users
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing users
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_User extends INEX_Form
 {
@@ -95,19 +93,7 @@ class INEX_Form_User extends INEX_Form
         
         $this->addElement( self::createMobileElement( 'authorisedMobile' ) );
 
-        
-        
-        $cust = $this->createElement( 'select', 'custid' );
-        $maxId = $this->populateSelectFromDatabase( $cust, '\\Entities\\Customer', 'id', 'name', 'name', 'ASC' );
-
-        $cust->setRegisterInArrayValidator( true )
-            ->setRequired( true )
-            ->setLabel( 'Customer' )
-            ->setAttrib( 'class', 'span3 chzn-select' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( array( 'Please select a customer' ) );
-
-        $this->addElement( $cust );
+        $this->addElement( INEX_Form_Customer::getPopulatedSelect( 'custid' ) );
 
 
         $disabled = $this->createElement( 'checkbox', 'disabled' );

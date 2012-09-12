@@ -349,26 +349,22 @@ class INEX_Form_Customer extends INEX_Form
 
     }
 
-    public function assignFormToModel( $model )
+
+    
+    public static function getPopulatedSelect( $name = 'custid' )
     {
-        $columns = Doctrine::getTable( "Cust" )->getFieldNames();
-
-        foreach( $this->getElements() as $elementName => $elementConfig )
-            if( in_array( $elementName, $columns ) )
-                $model->$elementName = $this->getValue( $elementName );
-
-        return $model;
-    }
-
-    public function assignModelToForm( $model )
-    {
-        $columns = Doctrine::getTable( "Cust" )->getFieldNames();
-
-        foreach( $this->getElements() as $elementName => $elementConfig )
-            if( in_array( $elementName, $columns ) )
-                $this->getElement( $elementName )->setValue( $model->$elementName );
-
-        return $this;
+        $cust = new Zend_Form_Element_Select( $name );
+        
+        $maxId = self::populateSelectFromDatabase( $cust, '\\Entities\\Customer', 'id', 'name', 'name', 'ASC' );
+        
+        $cust->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Customer' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a customer' ) ) );
+        
+        return $cust;
     }
 
 }
