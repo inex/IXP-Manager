@@ -68,8 +68,12 @@
                         {if $cconf.type eq $FE_COL_TYPES.HAS_ONE}
                             {assign var=hasOneId value=$cconf.idField}
                             <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$object.$hasOneId}">{$object.$col}</a>
+                        {elseif $cconf.type eq $FE_COL_TYPES.XLATE}
+                                {$cconf.xlator[ $object.$col ]}
                         {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
                             {$object.$col|date_format:'%Y-%m-%d %H:%M:%S'}
+                        {elseif $cconf.type eq $FE_COL_TYPES.SCRIPT}
+                            {tmplinclude file=$cconf.script}
                         {else}
                             Type?
                         {/if}

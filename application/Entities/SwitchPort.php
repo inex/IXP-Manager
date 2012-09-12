@@ -9,6 +9,23 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SwitchPort
 {
+    
+    const TYPE_UNSET          = 0;
+    const TYPE_PEERING        = 1;
+    const TYPE_MONITOR        = 2;
+    const TYPE_CORE           = 3;
+    const TYPE_OTHER          = 4;
+    const TYPE_MANAGEMENT     = 5;
+    
+    public static $TYPES = array(
+        self::TYPE_UNSET      => 'Unset / Unknown',
+        self::TYPE_PEERING    => 'Peering',
+        self::TYPE_MONITOR    => 'Monitor',
+        self::TYPE_CORE       => 'Core',
+        self::TYPE_OTHER      => 'Other',
+        self::TYPE_MANAGEMENT => 'Management'
+    );
+    
     /**
      * @var integer $type
      */
@@ -51,7 +68,7 @@ class SwitchPort
     /**
      * Get type
      *
-     * @return integer 
+     * @return integer
      */
     public function getType()
     {
@@ -74,7 +91,7 @@ class SwitchPort
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -84,7 +101,7 @@ class SwitchPort
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -107,7 +124,7 @@ class SwitchPort
     /**
      * Get PhysicalInterface
      *
-     * @return Entities\PhysicalInterface 
+     * @return Entities\PhysicalInterface
      */
     public function getPhysicalInterface()
     {
@@ -130,7 +147,7 @@ class SwitchPort
     /**
      * Get Switcher
      *
-     * @return Entities\Switcher 
+     * @return Entities\Switcher
      */
     public function getSwitcher()
     {
@@ -175,7 +192,7 @@ class SwitchPort
     /**
      * Get SecEvents
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getSecEvents()
     {

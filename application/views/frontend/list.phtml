@@ -76,6 +76,10 @@
                                 {assign var=hasOneId value=$cconf.idField}
                                 <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$row.$hasOneId}">{$row.$col}</a>
                             </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.XLATE}
+                            <td>
+                                {$cconf.xlator[ $row.$col ]}
+                            </td>
                         {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
                             <td>
                                 {$row.$col|date_format:'%Y-%m-%d %H:%M:%S'}

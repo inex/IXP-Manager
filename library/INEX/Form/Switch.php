@@ -121,5 +121,28 @@ class INEX_Form_Switch extends INEX_Form
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
+    
+    /**
+     * Create a SELECT / dropdown element of all switch names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'switchid' )
+    {
+        $sw = new Zend_Form_Element_Select( $name );
+    
+        $maxId = self::populateSelectFromDatabase( $sw, '\\Entities\\Switcher', 'id', 'name', 'name', 'ASC' );
+    
+        $sw->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Switch' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a switch' ) ) );
+    
+        return $sw;
+    }
+    
 
 }

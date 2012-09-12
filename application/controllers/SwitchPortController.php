@@ -33,58 +33,112 @@
  */
 class SwitchPortController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'id';
-        $this->frontend['model']           = 'Switchport';
-        $this->frontend['name']            = 'SwitchPort';
-        $this->frontend['pageTitle']       = 'Switch Ports';
-
-        $this->frontend['pagination']       = false;
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+    
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\SwitchPort',
+            'form'          => 'INEX_Form_SwitchPort',
+            'pagetitle'     => 'Switch Ports',
         
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'name', 'type', 'switchid' ),
-
-            'viewPanelRows'  => array( 'name', 'type', 'switchid' ),
-            'viewPanelTitle' => 'name',
-
-            'sortDefaults' => array(
-                'column' => 'id',
-                'order'  => 'asc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'name' => array(
-                'label' => 'Name',
-                'sortable' => 'true',
-            ),
-
-            'type' => array(
-                'label' => 'Type',
-                'sortable' => true,
-                'type' => 'xlate',
-                'xlator' => Switchport::$TYPE_TEXT
-            ),
-
-            'switchid' => array(
-                'type' => 'hasOne',
-                'model' => 'SwitchTable',
-                'controller' => 'switch',
-                'field' => 'name',
-                'label' => 'Switch',
-                'sortable' => true
-            )
-
-        );
-
-        parent::feInit();
+            'titleSingular' => 'Switch Port',
+            'nameSingular'  => 'a switch port',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+        
+            'listOrderBy'    => 'name',
+            'listOrderByDir' => 'ASC',
+        
+            'listColumns'    => [
+        
+                'id'        => [ 'title' => 'UID', 'display' => false ],
+                
+                'switch'  => [
+                    'title'      => 'Switch',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'switch',
+                    'action'     => 'view',
+                    'idField'    => 'switchid'
+                ],
+            
+                'name'           => 'Name',
+                
+                'type'  => [
+                    'title'    => 'Type',
+                    'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'   => \Entities\SwitchPort::$TYPES
+                ]
+            ]
+        ];
+    
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
-
+    
+    
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+        ->select( 'sp.id AS id, sp.name AS name,
+            sp.type AS type, s.name AS switch, s.id AS switchid'
+        )
+        ->from( '\\Entities\\SwitchPort', 'sp' )
+        ->leftJoin( 'sp.Switcher', 's' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'sp.id = ?1' )->setParameter( 1, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_SwitchPort $form The form object
+     * @param \Entities\SwitchPort $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+    {
+        if( $isEdit )
+        {
+            $form->getElement( 'switchid' )->setValue( $object->getSwitcher()->getId() );
+            $form->getElement( 'name' )->setAttrib( 'readonly', 'readonly' );
+        }
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_SwitchPort $form The form object
+     * @param \Entities\SwitchPort $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        $object->setSwitcher(
+            $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->find( $form->getElement( 'switchid' )->getValue() )
+        );
+    
+        return true;
+    }
+    
     
     protected function _preList( $dataQuery )
     {
