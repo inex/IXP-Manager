@@ -219,7 +219,7 @@ class UserController extends INEX_Controller_FrontEnd
             {
                 $this->addMessage( 'Illegal attempt to edit a user not under your control. The security team have been notified.' );
                 $this->getLogger()->alert( "User {$this->getUser()->getUsername()} illegally tried to edit {$object->getUsername()}" );
-                return false;
+                $this->redirect( 'user/list' );
             }
         }
 
