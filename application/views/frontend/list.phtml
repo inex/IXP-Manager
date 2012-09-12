@@ -15,7 +15,7 @@
         <li class="pull-right">
             {* do we have a custom page header toolbar? *}
             {if $listToolbar}
-                {include file=$listToolbar}
+                {tmplinclude file=$listToolbar}
             {else}
                 <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
             {/if}
@@ -32,7 +32,7 @@
             <span style="float: right; margin-top: -10px;">
                 {* do we have a custom page header toolbar? *}
                 {if $listToolbar}
-                    {include file=$listToolbar}
+                    {tmplinclude file=$listToolbar}
                 {else}
                     <div class="btn-toolbar">
                         <div class="btn-group">
@@ -47,7 +47,7 @@
     {OSS_Message}
 
     {* do we have any additional text to put before the table? *}
-    {if $listPreamble}{include file=$listPreamble}{/if}
+    {if $listPreamble}{tmplinclude file=$listPreamble}{/if}
 
     {if count( $data )}
     <table id='frontend-list-table' class="table hide">
@@ -99,7 +99,7 @@
                         <a class="btn btn-mini have-tooltip-below" id='list-delete-{$row.id}' href="{genUrl module=$module controller=$controller action='delete' id=$row.id}" title="Delete"><i class="icon-trash"></i></a>
                     </div>
                 {else}
-                    {include file=$listRowMenu}
+                    {tmplinclude file=$listRowMenu}
                 {/if}
             </td>
         </tr>
@@ -114,7 +114,7 @@
     {/if} {* end if count( $data ) *}
     
     {* do we have any additional text to put after the table? *}
-    {if $listPostamble}{include file=$listPostamble}{/if}
+    {if $listPostamble}{tmplinclude file=$listPostamble}{/if}
     
 </div>
 
