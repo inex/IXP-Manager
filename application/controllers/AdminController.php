@@ -140,7 +140,7 @@ class AdminController extends INEX_Controller_AuthRequiredAction
             $this->view->bylocation  = $admin_home_ctypes['bylocation']  = $bylocation;
             $this->view->bylan       = $admin_home_ctypes['bylan']       = $bylan;
             
-            $this->getD2Cache()->save( 'admin_home_cstats', $admin_home_ctypes, 3600 );
+            $this->getD2Cache()->save( 'admin_home_ctypes', $admin_home_ctypes, 3600 );
         }
         
         $this->view->ctypes      = $admin_home_ctypes['types'];

@@ -305,6 +305,11 @@ class UserController extends INEX_Controller_FrontEnd
                 $this->getLogger()->alert( "Could not send welcome email for new user!\n\n" . $e->toString() );
             }
         }
+        else
+        {
+            // users are cached so we should delete any existing cache entry for an edited user
+            $this->getD2Cache()->delete( 'ixp_user_' . $object->getId() );
+        }
 
         return true;
     }

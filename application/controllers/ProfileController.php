@@ -86,7 +86,11 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
         $this->view->mailinglists = $this->_mailinglists;
     }
 
-
+    protected function changePasswordPostFlush()
+    {
+        $this->getD2Cache()->delete( 'ixp_user_' . $this->getUser()->getId() );
+    }
+    
     /**
      * Action to allow a user to change their profile
      *
@@ -102,7 +106,8 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
             $this->getUser()->setLastUpdated( new DateTime() );
             $this->getUser()->setLastUpdatedBy( $this->getUser()->getId() );
             $this->getD2EM()->flush();
-    
+            $this->getD2Cache()->delete( 'ixp_user_' . $this->getUser()->getId() );
+            
             $this->getLogger()->info( "User {$this->getUser()->getUsername()} updated own profile" );
             $this->addMessage( _( 'Your profile has been changed.' ), OSS_Message::SUCCESS );
             $this->redirect( 'profile/index' );
