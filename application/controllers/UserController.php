@@ -177,6 +177,8 @@ class UserController extends INEX_Controller_FrontEnd
                 $form->getElement( 'username' )->removeValidator( 'stringLength' );
                 if( !$isEdit && !$this->getRequest()->isPost() )
                     $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
+                if( $isEdit )
+                    $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
                 break;
 
             case \Entities\User::AUTH_CUSTADMIN:
@@ -235,6 +237,14 @@ class UserController extends INEX_Controller_FrontEnd
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
+        
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+        {
+            $object->setCustomer(
+                $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
+            );
+        }
+                
         if( $isEdit )
         {
             $object->setLastupdated( new DateTime() );
@@ -263,10 +273,6 @@ class UserController extends INEX_Controller_FrontEnd
             }
             else
             {
-                $object->setCustomer(
-                    $this->getD2EM()->getRepository( 'Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
-                );
-                
                 $object->setParent(
                     $this->getD2EM()->createQuery(
                         'SELECT u FROM \\Entities\\User u WHERE u.privs = ?1 AND u.Customer = ?2'
