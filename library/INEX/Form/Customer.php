@@ -351,6 +351,12 @@ class INEX_Form_Customer extends INEX_Form
 
 
     
+    /**
+     * Create a SELECT / dropdown element of all customer names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
     public static function getPopulatedSelect( $name = 'custid' )
     {
         $cust = new Zend_Form_Element_Select( $name );
