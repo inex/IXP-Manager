@@ -81,6 +81,9 @@ class INEX_Controller_Action extends OSS_Controller_Action
         // call the parent's version where all the Zend magic happens
         parent::__construct( $request, $response, $invokeArgs );
 
+        // we need this for access to class constants in the template
+        $this->view->registerClass( 'USER', '\\Entities\\User' );
+        
         if( $this->getAuth()->hasIdentity() && $this->getUser()->getPrivs() == Entities\User::AUTH_SUPERUSER )
             $this->superUserSetup();
     }

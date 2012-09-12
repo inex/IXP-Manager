@@ -1,29 +1,48 @@
 {include file="header.phtml"}
 
-<div class="page-content" >
-
-    <div class="page-header" >
-        <h1 style="display: inline;">{$feParams->pagetitle}</h1>
+{if isset( $user ) and $user->getPrivs() eq USER::AUTH_SUPERUSER}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            <a href="{genUrl controller=$controller action="list"}">{$feParams->pagetitle}</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            List
+        </li>
         
-        <span style="float: right; margin-top: -10px;">
-            {* do we have a customer page header toolbar? *}
+        <li class="pull-right">
+            {* do we have a custom page header toolbar? *}
             {if $listToolbar}
                 {include file=$listToolbar}
-           {else if $module != "index"}
-                <div class="btn-toolbar">
-                    <div class="btn-group">
-                        <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
-                    </div>
-                </div>
             {else}
-                <div class="btn-toolbar">
-                    <div class="btn-group">
-                        <a class="btn" href="{genUrl controller=$controller action='add'}"><i class="icon-plus"></i></a>
-                    </div>
-                </div>
+                <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
             {/if}
-        </span>
-    </div>
+        </li>
+    </ul>
+
+    <div>
+{else}
+    <div class="page-content" >
+    
+        <div class="page-header" >
+            <h1 style="display: inline;">{$feParams->pagetitle}</h1>
+            
+            <span style="float: right; margin-top: -10px;">
+                {* do we have a custom page header toolbar? *}
+                {if $listToolbar}
+                    {include file=$listToolbar}
+                {else}
+                    <div class="btn-toolbar">
+                        <div class="btn-group">
+                            <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                        </div>
+                    </div>
+                {/if}
+            </span>
+        </div>
+{/if}
     
     {OSS_Message}
 
