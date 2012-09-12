@@ -164,16 +164,18 @@ class UserController extends INEX_Controller_FrontEnd
      * @param INEX_Form_User $form The form object
      * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
      * @return void
      */
-    protected function formPostProcess( $form, $object, $isEdit )
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $form->removeElement( 'name' );
                 $form->getElement( 'username' )->removeValidator( 'stringLength' );
-                if( !$isEdit && !$this->isPost() )
+                if( !$isEdit && !$this->getRequest()->isPost() )
                     $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
                 break;
 
@@ -261,13 +263,18 @@ class UserController extends INEX_Controller_FrontEnd
             }
             else
             {
+                $object->setCustomer(
+                    $this->getD2EM()->getRepository( 'Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
+                );
+                
                 $object->setParent(
                     $this->getD2EM()->createQuery(
-                        'SELECT u FROM Entities\User u WHERE u.privs = ?1 AND u.custid = ?2 LIMIT 1'
+                        'SELECT u FROM \\Entities\\User u WHERE u.privs = ?1 AND u.Customer = ?2'
                     )
-                    ->setParameter( ':p1', \Entities\User::AUTH_CUSTADMIN )
-                    ->setParameter( ':p2', $form->getElement( 'custid' )->getValue() )
-                    ->getScalarResult()
+                    ->setParameter( 1, \Entities\User::AUTH_CUSTADMIN )
+                    ->setParameter( 2, $object->getCustomer() )
+                    ->setMaxResults( 1 )
+                    ->getSingleResult()
                 );
             }
         }
@@ -294,7 +301,7 @@ class UserController extends INEX_Controller_FrontEnd
                 $mail = $this->getMailer();
                 $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
                      ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Your Access Details' ) )
-                     ->addTo( $object->getEmail(), $form->getElement( 'name' )->getValue() )
+                     ->addTo( $object->getEmail(), ( $form->getElement( 'name' ) ? $form->getElement( 'name' )->getValue() : $object->getUsername() ) )
                      ->setBodyHtml( $this->view->render( 'user/email/html/welcome.phtml' ) )
                      ->send();
             }

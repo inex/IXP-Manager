@@ -65,7 +65,15 @@ class INEX_Form_User extends INEX_Form
         
         
         
-        $this->addElement( OSS_Form_Auth::createPasswordElement() );
+        $password = $this->createElement( 'text', 'password' );
+        $password->addValidator( 'stringLength', false, array( 8, 30 ) )
+            ->setRequired( true )
+            ->setAttrib( 'class', 'span3' )
+            ->setLabel( 'Password' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $password );
+        
 
         
         

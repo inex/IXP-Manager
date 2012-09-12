@@ -1,46 +1,74 @@
-{include file="header.phtml"}
+{tmplinclude file="header.phtml"}
 
-<div class="page-content" >
-
-    <div class="page-header" >
-        <h1 style="display: inline;">
-            {$feParams->pagetitle}&nbsp;&nbsp;
-            <small>{if $isEdit}Edit{else}Add New {$feParams->titleSingular}{/if}</small>
-        </h1>
+{if isset( $user ) and $user->getPrivs() eq USER::AUTH_SUPERUSER}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            <a href="{genUrl controller=$controller action="list"}">{$feParams->pagetitle}</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            {if $isEdit}Edit{else}Add New{/if} {$feParams->titleSingular}
+        </li>
         
-        <span style="float: right; margin-top: -10px;">
-            {* do we have a customer page header toolbar? *}
+        <li class="pull-right">
+            {* do we have a custom page header toolbar? *}
             {if $addToolbar}
-                {include file=$addToolbar}
-            {else if $module != "index"}
-                <div class="btn-toolbar">
-                    <div class="btn-group">
-                        <a class="btn" href="{genUrl controller=$controller action='list'}"><i class="icon-list"></i></a>
-                        <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
-                    </div>
-                </div>
+                {tmplinclude file=$addToolbar}
             {else}
-                <div class="btn-toolbar">
-                	<div class="btn-group">
-                        <a class="btn" href="{genUrl controller=$controller action='add'}"><i class="icon-plus"></i></a>
-                    </div>
+                <div class="btn-group">
+                    <a class="btn btn-mini" href="{genUrl module=$module controller=$controller action='list'}"><i class="icon-list"></i></a>
+                    <a class="btn btn-mini" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
                 </div>
             {/if}
-        </span>
-    </div>
+        </li>
+    </ul>
+
+    <div>
+{else}
+    <div class="page-content" >
+    
+        <div class="page-header" >
+            <h1 style="display: inline;">
+                {$feParams->pagetitle}&nbsp;&nbsp;
+                <small>{if $isEdit}Edit{else}Add New {$feParams->titleSingular}{/if}</small>
+            </h1>
+            
+            <span style="float: right; margin-top: -10px;">
+                {* do we have a customer page header toolbar? *}
+                {if $addToolbar}
+                    {tmplinclude file=$addToolbar}
+                {else if $module != "index"}
+                    <div class="btn-toolbar">
+                        <div class="btn-group">
+                            <a class="btn" href="{genUrl module=$module controller=$controller action='list'}"><i class="icon-list"></i></a>
+                            <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                        </div>
+                    </div>
+                {else}
+                    <div class="btn-toolbar">
+                    	<div class="btn-group">
+                            <a class="btn" href="{genUrl controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                        </div>
+                    </div>
+                {/if}
+            </span>
+        </div>
+{/if}
     
     {OSS_Message}
 
     {* do we have any additional text to put before the table? *}
-    {if $addPreamble}{include file=$addPreamble}{/if}
+    {if $addPreamble}{tmplinclude file=$addPreamble}{/if}
 
     {$form}
     
     {* do we have any additional text to put after the table? *}
-    {if $addPostamble}{include file=$addPostamble}{/if}
+    {if $addPostamble}{tmplinclude file=$addPostamble}{/if}
     
 </div>
 
 
-{if $addScript}<script>{include file=$addScript}</script>{/if}
-{include file="footer.phtml"}
+{if $addScript}<script>{tmplinclude file=$addScript}</script>{/if}
+{tmplinclude file="footer.phtml"}
