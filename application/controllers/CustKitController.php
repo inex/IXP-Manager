@@ -33,60 +33,125 @@
  */
 class CustKitController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Custkit';
-        $this->frontend['name']            = 'CustKit';
-        $this->frontend['pageTitle']       = 'Customer Kit';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'name', 'custid', 'cabinetid' ),
-
-            'sortDefaults' => array(
-                'column' => 'name',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-
-            'name' => array(
-                'label' => 'Name',
-                'sortable' => 'true',
-            ),
-
-            'custid' => array(
-                'type' => 'hasOne',
-                'model' => 'Cust',
-                'controller' => 'customer',
-                'field' => 'name',
-                'label' => 'Customer',
-                'sortable' => true
-            ),
-
-            'cabinetid' => array(
-                'type' => 'hasOne',
-                'model' => 'Cabinet',
-                'controller' => 'cabinet',
-                'field' => 'name',
-                'label' => 'Cabinet',
-                'sortable' => true
-            ),
-
-            'descr' => array(
-                'label' => 'Description',
-                'sortable' => false
-            )
-
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+    
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\CustomerEquipment',
+            'form'          => 'INEX_Form_CustKit',
+            'pagetitle'     => 'Customer Equipment',
+        
+            'titleSingular' => 'Customer Equipment',
+            'nameSingular'  => 'customer equipment',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+        
+            'listOrderBy'    => 'name',
+            'listOrderByDir' => 'ASC',
+        
+            'listColumns'    => [
+        
+                'id'        => [ 'title' => 'UID', 'display' => false ],
+            
+                'customer'  => [
+                    'title'      => 'Customer',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'customer',
+                    'action'     => 'overview',
+                    'idField'    => 'custid'
+                ],
+            
+                'cabinet'  => [
+                    'title'      => 'Cabinet',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'cabinet',
+                    'action'     => 'view',
+                    'idField'    => 'cabinetid'
+                ],
+            
+                'name'      => 'Name'
+            ]
+        ];
+    
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = array_merge(
+            $this->_feParams->listColumns,
+            [
+                'descr'      => 'Description'
+            ]
         );
-
-        parent::feInit();
     }
-
+    
+    
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'ck.id AS id, ck.name AS name, ck.descr AS descr,
+                c.name AS customer, c.id AS custid,
+                cab.name AS cabinet, cab.id AS cabinetid'
+            )
+            ->from( '\\Entities\\CustomerEquipment', 'ck' )
+            ->leftJoin( 'ck.Customer', 'c' )
+            ->leftJoin( 'ck.Cabinet', 'cab' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'ck.id = ?1' )->setParameter( 1, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Contact $form The form object
+     * @param \Entities\Contact $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+    {
+        if( $isEdit )
+        {
+            $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
+            $form->getElement( 'cabinetid' )->setValue( $object->getCabinet()->getId() );
+        }
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Contact $form The form object
+     * @param \Entities\Contact $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        $object->setCustomer(
+            $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
+        );
+        
+        $object->setCabinet(
+            $this->getD2EM()->getRepository( '\\Entities\\Cabinet' )->find( $form->getElement( 'cabinetid' )->getValue() )
+        );
+    
+        return true;
+    }
+    
+    
 }
 
