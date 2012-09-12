@@ -164,30 +164,4 @@ class ContactController extends INEX_Controller_FrontEnd
     }
     
     
-    /*
-    protected function formPrevalidate( $form, $isEdit, $object )
-    {
-        if( $cid = $this->_getParam( 'custid', false ) )
-        {
-            $form->getElement( 'custid' )->setValue( $cid );
-            $form->getElement( 'cancel' )->setAttrib( 'onClick', "parent.location='"
-                . $this->genUrl( 'customer', 'dashboard', array( 'id' => $cid ) ) . "'"
-            );
-        }
-        else if( $isEdit )
-        {
-            $form->getElement( 'cancel' )->setAttrib( 'onClick', "parent.location='"
-                . $this->genUrl( 'customer', 'dashboard', array( 'id' => $object['custid'] ) ) . "'"
-            );
-        }
-    }
-
-    
-    protected function _addEditSetReturnOnSuccess( $form, $object )
-    {
-        if( $this->user['privs'] == User::AUTH_SUPERUSER )
-            return "customer/dashboard/id/{$object['custid']}";
-        else
-            return 'contact';
-    } */
 }
