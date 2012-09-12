@@ -22,8 +22,8 @@
  */
 
 
-/**age cabinets (racks)
- * Controller: Man
+/**
+ * Controller: Manage cabinets (racks)
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   INEX
@@ -33,62 +33,110 @@
  */
 class CabinetController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Cabinet';
-        $this->frontend['name']            = 'Cabinet';
-        $this->frontend['pageTitle']       = 'Cabinets';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'name', 'cololocation', 'height', 'type', 'location' ),
-
-            'viewPanelRows'  => array( 'name', 'cololocation', 'height', 'type', 'location' ),
-            'viewPanelTitle' => 'name',
-
-            'sortDefaults' => array(
-                'column' => 'name',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'name' => array(
-                'label' => 'Name',
-                'sortable' => 'true',
-            ),
-
-            'cololocation' => array(
-                'label' => 'Colo Location',
-                'sortable' => true
-            ),
-
-            'height' => array(
-                'label' => 'Height',
-                'sortable' => true
-            ),
-
-            'type' => array(
-                'label' => 'Type',
-                'sortable' => true
-            ),
-
-            'location' => array(
-                'type' => 'hasOne',
-                'model' => 'Location',
-                'controller' => 'location',
-                'field' => 'name',
-                'label' => 'Location',
-                'sortable' => true
-            )
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+    
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\Cabinet',
+            'form'          => 'INEX_Form_Cabinet',
+            'pagetitle'     => 'Cabinets',
+        
+            'titleSingular' => 'Cabinet',
+            'nameSingular'  => 'a cabinet',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+        
+            'listOrderBy'    => 'name',
+            'listOrderByDir' => 'ASC',
+        
+            'listColumns'    => [
+            
+                'id'        => [ 'title' => 'UID', 'display' => false ],
+            
+                'location'  => [
+                    'title'      => 'Location',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'location',
+                    'action'     => 'view',
+                    'idField'    => 'locationid'
+                ],
+            
+                'name'         => 'Name',
+                'cololocation' => 'Colo Location',
+                'height'       => 'Height'
+            ]
+        ];
+    
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = array_merge(
+            $this->_feParams->listColumns,
+            [
+                'type'       => 'Type',
+                'notes'      => 'Notes'
+            ]
         );
-
-        parent::feInit();
     }
-
+    
+    
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'c.id as id, c.name as name, c.cololocation as cololocation, c.height AS height,
+                c.type AS type, c.notes AS notes, l.id AS locationid, l.name AS location'
+            )
+        ->from( '\\Entities\\Cabinet', 'c' )
+        ->leftJoin( 'c.Location', 'l' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'c.id = ?1' )->setParameter( 1, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Cabinet $form The form object
+     * @param \Entities\Cabinet $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+    {
+        if( $isEdit )
+            $form->getElement( 'locationid' )->setValue( $object->getLocation()->getId() );
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Cabinet $form The form object
+     * @param \Entities\Cabinet $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        $object->setLocation(
+            $this->getD2EM()->getRepository( '\\Entities\\Location' )->find( $form->getElement( 'locationid' )->getValue() )
+        );
+    
+        return true;
+    }
+    
 }
 

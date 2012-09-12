@@ -142,5 +142,28 @@ class INEX_Form_Location extends INEX_Form
         $this->addElement( $this->createCancelElement() );
     }
 
+
+
+    /**
+     * Create a SELECT / dropdown element of all location names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'locationid' )
+    {
+        $loc = new Zend_Form_Element_Select( $name );
+        
+        $maxId = self::populateSelectFromDatabase( $loc, '\\Entities\\Location', 'id', 'name', 'name', 'ASC' );
+        
+        $loc->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Location' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a location' ) ) );
+        
+        return $loc;
+    }
 }
 
