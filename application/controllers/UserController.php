@@ -295,20 +295,7 @@ class UserController extends INEX_Controller_FrontEnd
         if( !$isEdit )
         {
             $this->view->newuser = $object;
-
-            try
-            {
-                $mail = $this->getMailer();
-                $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
-                     ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Your Access Details' ) )
-                     ->addTo( $object->getEmail(), ( $form->getElement( 'name' ) ? $form->getElement( 'name' )->getValue() : $object->getUsername() ) )
-                     ->setBodyHtml( $this->view->render( 'user/email/html/welcome.phtml' ) )
-                     ->send();
-            }
-            catch( Zend_Mail_Exception $e )
-            {
-                $this->getLogger()->alert( "Could not send welcome email for new user!\n\n" . $e->toString() );
-            }
+            $this->sendWelcomeEmail( $object );
         }
         else
         {
@@ -363,6 +350,69 @@ class UserController extends INEX_Controller_FrontEnd
     }
 
 
+    public function welcomeEmailAction()
+    {
+        $query = 'SELECT u FROM \\Entities\\User u WHERE u.id = ?1';
+        
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+            $query .= ' AND u.Customer = ?2 AND u.privs = ?3';
 
+        $q = $this->getD2EM()->createQuery( $query )
+                ->setParameter( 1, $this->getParam( 'id', 0 ) );
+        
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+        {
+            $q->setParameter( 2, $this->getUser()->getCustomer() )
+              ->setParameter( 3, \Entities\User::AUTH_CUSTUSER );
+        }
+
+        try
+        {
+            $user = $q->getSingleResult();
+        }
+        catch( Doctrine\ORM\NoResultException $e )
+        {
+            $this->addMessage( "Unknown or invalid user.", OSS_Message::ERROR );
+            return $this->_forward( 'list' );
+        }
+
+        $this->view->resend  = true;
+        $this->view->newuser = $user;
+        
+        if( $this->sendWelcomeEmail( $user ) )
+            $this->addMessage( "Welcome email has been resent to {$user->getEmail()}", OSS_Message::SUCCESS );
+        else
+            $this->addMessage( "Due to a system error, we could not resend the welcome email to {$user->getEmail()}", OSS_Message::ERROR );
+        
+        $this->redirect( 'user/list' );
+    }
+    
+    
+    /**
+     * Send a welcome email to a new user
+     *
+     * @param \Entities\User $user The recipient of the email
+     * @return bool True if the mail was sent successfully
+     */
+    private function sendWelcomeEmail( $user )
+    {
+        try
+        {
+            $mail = $this->getMailer();
+            $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
+                ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Your Access Details' ) )
+                ->addTo( $user->getEmail(), $user->getUsername() )
+                ->setBodyHtml( $this->view->render( 'user/email/html/welcome.phtml' ) )
+                ->send();
+        }
+        catch( Zend_Mail_Exception $e )
+        {
+            $this->getLogger()->alert( "Could not send welcome email for new user!\n\n" . $e->toString() );
+            return false;
+        }
+        
+        return true;
+    }
+    
 }
 

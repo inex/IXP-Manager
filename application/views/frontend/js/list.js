@@ -41,7 +41,7 @@ $(document).ready(function() {
                     null,
                 {/if}
             {/foreach}
-            { 'bSortable': false, "bSearchable": false }
+            { 'bSortable': false, "bSearchable": false, "sWidth": "150px" }
         ]
     });
     $( '#frontend-list-table' ).show();

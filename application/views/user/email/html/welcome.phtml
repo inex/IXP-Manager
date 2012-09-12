@@ -9,12 +9,20 @@
 To whom it may concern,
 </p>
 
+{if isset( $resend ) and $resend}
+    <p>
+        <strong>This email is being sent to you because either you requested a reminder of
+        your account details or an administrator thought it appropriate to send you a
+        reminder.</strong>
+    </p>
+{else}
+    <p>
+    A new user account has been created for you on the {$options.identity.sitename}.
+    </p>
+{/if}
+    
 <p>
-A new user account has been created for you on the {$options.identity.sitename}.
-</p>
-
-<p>
-You can login to it using the following details:
+You can login to your account using the following details:
 </p>
 
 <table border="0">
