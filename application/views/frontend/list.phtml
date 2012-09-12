@@ -1,4 +1,4 @@
-{include file="header.phtml"}
+{tmplinclude file="header.phtml"}
 
 {if isset( $user ) and $user->getPrivs() eq USER::AUTH_SUPERUSER}
     <ul class="breadcrumb">
@@ -119,6 +119,6 @@
 </div>
 
 
-{if $listScript}<script>{include file=$listScript}</script>{/if}
-{if $listAddonScript}<script>{include file=$listAddonScript}</script>{/if}
-{include file="footer.phtml"}
+{if $listScript}<script>{tmplinclude file=$listScript}</script>{/if}
+{if $listAddonScript}<script>{tmplinclude file=$listAddonScript}</script>{/if}
+{tmplinclude file="footer.phtml"}
