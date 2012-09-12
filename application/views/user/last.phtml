@@ -1,11 +1,11 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Member Dashboard"}
 
 <ul class="breadcrumb">
     <li>
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
     <li>
-        <a href="{genUrl controller=$controller action="list"}">{$frontend.pageTitle}</a> <span class="divider">/</span>
+        <a href="{genUrl controller=$controller action="list"}">{$feParams->pagetitle}</a> <span class="divider">/</span>
     </li>
     <li class="active">
         Last Logins
@@ -26,20 +26,19 @@
     {foreach from=$last item=l}
     <tr>
         <td>
-            {$l.u_username} ({$l.u_email})
+            {$l.username} ({$l.email})
         </td>
         <td>
-            <a href="{genUrl controller="customer" action="dashboard" id=$l.c_id}">
-                {$l.c_name}
+            <a href="{genUrl controller="customer" action="dashboard" id=$l.cust_id}">
+                {$l.cust_name}
             </a>
         </td>
-        <td>{$l.up_value|date_format:"%Y-%m-%d %H:%M:%S"}</td>
+        <td>{$l.lastlogin|date_format:"%Y-%m-%d %H:%M:%S"}</td>
     </tr>
     {/foreach}
     </tbody>
 </table>
 
-{literal}
 <script type="text/javascript">
 	oTable = $('#ixpDataTable').dataTable({
 		"aaSorting": [[ 2, 'desc' ]],
@@ -50,7 +49,6 @@
 
 	$('#ixpDataTable').show();
 </script>
-{/literal}
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

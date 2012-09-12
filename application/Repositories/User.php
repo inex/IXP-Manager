@@ -12,4 +12,41 @@ use Doctrine\ORM\EntityRepository;
  */
 class User extends EntityRepository
 {
+    
+    /**
+     * Return an array of users with their last login time ordered from most recent to oldest.
+     *
+     * As an example, an element of the returned array contains:
+     *
+     *     [0] => array(6) {
+     *         ["attribute"] => string(18) "auth.last_login_at"
+     *         ["lastlogin"] => string(10) "1338329771"
+     *         ["username"]  => string(4) "auser"
+     *         ["email"]     => string(12) "auser@example.com"
+     *         ["cust_name"] => string(4) "INEX"
+     *         ["cust_id"]   => string(2) "15"
+     *     }
+     *
+     *
+     * @param int $limit Set this to limit the results to the last `$limit` users
+     * @return array Users with their last login time ordered from most recent to oldest.
+     */
+    public function getLastLogins( $limit = null )
+    {
+        $q = $this->getEntityManager()->createQuery(
+                "SELECT up.attribute AS attribute, up.value AS lastlogin, u.username AS username,
+                        u.email AS email, c.name AS cust_name, c.id AS cust_id
+                    FROM \\Entities\\UserPreference up
+                        JOIN up.User u
+                        JOIN u.Customer c
+                    WHERE up.attribute = ?1
+                    ORDER BY up.value DESC"
+            )
+            ->setParameter( 1, 'auth.last_login_at' );
+        
+        if( $limit != null && is_numeric( $limit ) && $limit > 0 )
+            $q->setMaxResults( $limit );
+        
+        return $q->getScalarResult();
+    }
 }

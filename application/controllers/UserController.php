@@ -56,8 +56,6 @@ class UserController extends INEX_Controller_FrontEnd
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
-                $this->_feParams->pagetitle = 'Customer Users';
-
                 $this->_feParams->listColumns = [
                     'id' => [ 'title' => 'UID', 'display' => false ],
 
@@ -323,18 +321,7 @@ class UserController extends INEX_Controller_FrontEnd
      */
     public function lastAction()
     {
-        $last = Doctrine_Query::create()
-            ->select( 'up.attribute, up.value, u.username, u.email, c.name, c.id' )
-            ->from( 'UserPref up' )
-            ->leftJoin( 'up.User u' )
-            ->leftJoin( 'u.Cust c' )
-            ->where( 'up.attribute = ?', 'auth.last_login_at' )
-            ->orderBy( 'up.value DESC' )
-            ->limit( 100 )
-            ->execute( null, Doctrine_Core::HYDRATE_SCALAR );
-
-        $this->view->last = $last;
-        $this->view->display( 'user/last.tpl' );
+        $this->view->last = $this->getD2EM()->getRepository( '\\Entities\\User' )->getLastLogins( 100 );
     }
 
 
