@@ -33,84 +33,99 @@
  */
 class MacAddressController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Macaddress';
-        $this->frontend['name']            = 'MAC Address';
-        $this->frontend['pageTitle']       = 'MAC Addresses';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'firstseen', 'lastseen', 'virtualinterfaceid', 'mac' ),
-
-            'viewPanelRows'  => array( 'firstseen', 'lastseen', 'virtualinterfaceid', 'mac' ),
-            'viewPanelTitle' => 'MAC Address',
-
-            'sortDefaults' => array(
-                'column' => 'mac',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'firstseen' => array(
-                'label' => 'First Seen',
-                'sortable' => 'true'
-            ),
-
-            'lastseen' => array(
-                'label' => 'First Seen',
-                'sortable' => 'true'
-            ),
-
-            'virtualinterfaceid' => array(
-                'type' => 'hasOne',
-                'model' => 'Virtualinterface',
-                'controller' => 'virtual-interface',
-                'field' => 'custid',
-                'label' => 'Virtual Interface',
-                'sortable' => true
-            )
-
-        );
-
-        parent::feInit();
-    }
-
-    public function listAction()
-    {
-        $this->view->vlans = Doctrine_Query::create()
-            ->from( 'Vlan v' )
-            ->orderBy( 'v.number ASC' )
-            ->fetchArray();
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+    
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\MacAddress',
+            'pagetitle'     => 'Known MAC Addresses',
+    
+            'titleSingular' => 'MAC Address',
+            'nameSingular'  => 'a MAC address',
+    
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
         
-        $this->view->macs = Doctrine_Query::create()
-            ->select( 'c.name, c.id, m.*, vi.id, ip4.address, ip6.address, m.mac, vli.id, ip4.id, ip6.id' )
-            ->addSelect( 'pi.id, sp.id, s.id, sp.name, s.name' )
-            ->from( 'Macaddress m' )
-            ->leftJoin( 'm.Virtualinterface vi' )
-            ->leftJoin( 'vi.Cust c' )
-            ->leftJoin( 'vi.Vlaninterface vli' )
-            ->leftJoin( 'vi.Physicalinterface pi' )
-            ->leftJoin( 'pi.Switchport sp' )
-            ->leftJoin( 'sp.SwitchTable s' )
-            ->leftJoin( 'vli.Ipv4address ip4' )
-            ->leftJoin( 'vli.Ipv6address ip6' )
-            ->leftJoin( 'vli.Vlan v' )
-            ->orderBy( 'c.name ASC' )
-            ->fetchArray();
-
-/*
-        echo '<pre>';
-        echo "COUNT: " . count( $this->view->macs ) . "\n\n\n";
-        print_r( $this->view->macs ); die();
-  */
-        $this->view->display( 'mac-address/list.tpl' );
+            'readonly'      => true,
+            
+            'listOrderBy'    => 'customer',
+            'listOrderByDir' => 'ASC',
+        
+            'listColumns'    => [
+                'id'        => [ 'title' => 'UID', 'display' => false ],
+                
+                'customer'  => [
+                    'title'      => 'Customer',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'customer',
+                    'action'     => 'view',
+                    'idField'    => 'customerid'
+                ],
+                                
+                'interface'  => [
+                    'title'      => 'Interface',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'virtual-interface',
+                    'action'     => 'edit',
+                    'idField'    => 'interfaceid'
+                ],
+                
+                'ipv4'           => 'IPv4',
+                'ipv6'           => 'IPv6',
+                'mac'            => 'MAC Address',
+                
+                'firstseen'      => [
+                    'title'          => 'First Seen',
+                    'type'           => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                
+                'lastseen'      => [
+                    'title'          => 'Last Seen',
+                    'type'           => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ]
+            ]
+        ];
+    
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
 
+    /**
+     * Provide array of MAC addresses for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select(
+                'm.id AS id, m.firstseen AS firstseen, m.lastseen AS lastseen, m.mac AS mac,
+                c.id AS customerid, c.name AS customer,
+                vi.id AS interfaceid,
+                CONCAT( CONCAT( s.name, \' - \' ),  sp.name ) AS interface,
+                ip4.address AS ipv4, ip6.address AS ipv6'
+            )
+            ->from( '\\Entities\\MACAddress', 'm' )
+            ->join( 'm.VirtualInterface', 'vi' )
+            ->join( 'vi.VlanInterfaces', 'vli' )
+            ->join( 'vli.IPv4Address', 'ip4' )
+            ->join( 'vli.IPv6Address', 'ip6' )
+            ->join( 'vi.Customer', 'c' )
+            ->join( 'vi.PhysicalInterfaces', 'pi' )
+            ->join( 'pi.SwitchPort', 'sp' )
+            ->join( 'sp.Switcher', 's' );
+            
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'm.id = ?1' )->setParameter( 1, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
 }
 
