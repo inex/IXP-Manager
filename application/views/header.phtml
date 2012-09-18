@@ -127,7 +127,7 @@
                         {/if}
                             
                         {if isset( $session->switched_user_from ) and $session->switched_user_from}
-                            <li><a href="{genUrl controller="auth" action="switch-back"}">Switch Back</a></li>
+                            <li><a href="{genUrl controller="auth" action="switch-user-back"}">Switch Back</a></li>
                         {else}
                             <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>
                         {/if}
