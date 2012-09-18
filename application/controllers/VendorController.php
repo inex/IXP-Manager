@@ -33,39 +33,54 @@
  */
 class VendorController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Vendor';
-        $this->frontend['name']            = 'Vendor';
-        $this->frontend['pageTitle']       = 'Vendors';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'name' ),
-
-            'viewPanelRows'  => array(),
-            'viewPanelTitle' => 'name',
-
-            'sortDefaults' => array(
-                'column' => 'name',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'name' => array(
-                'label' => 'Name',
-                'sortable' => 'true',
-            )
-        );
-
-        parent::feInit();
-
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+    
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\Vendor',
+            'form'          => 'INEX_Form_Vendor',
+            'pagetitle'     => 'Vendors',
+        
+            'titleSingular' => 'Vendor',
+            'nameSingular'  => 'a vendor',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+        
+            'listOrderBy'    => 'name',
+            'listOrderByDir' => 'ASC',
+        
+            'listColumns'    => [
+                'id'        => [ 'title' => 'UID', 'display' => false ],
+                'name'      => 'Name'
+            ]
+        ];
+    
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
 
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'v.id AS id, v.name AS name' )
+            ->from( '\\Entities\\Vendor', 'v' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'v.id = ?1' )->setParameter( 1, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
 }
 

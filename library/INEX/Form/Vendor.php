@@ -22,46 +22,31 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing vendors
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_Vendor extends INEX_Form
 {
-    /**
-     *
-     *
-     */
-    public function __construct( $options = null, $isEdit = false, $cancelLocation )
+    public function init()
     {
-        parent::__construct( $options, $isEdit );
-
-        ////////////////////////////////////////////////
-        // Create and configure elements
-        ////////////////////////////////////////////////
-
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
-        ->setRequired( true )
-        ->setLabel( 'Name' )
-        ->addFilter( 'StringTrim' )
-        ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setRequired( true )
+            ->setAttrib( 'class', 'span3' )
+            ->setLabel( 'Name' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $name );
 
-
-
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
-        . $cancelLocation . "'" ) );
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
-
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
     }
 
     /**
