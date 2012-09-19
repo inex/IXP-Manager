@@ -74,4 +74,27 @@ class INEX_Form_VLAN extends INEX_Form
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
+
+    /**
+     * Create a SELECT / dropdown element of all VLAN names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'vlanid' )
+    {
+        $vlan = new Zend_Form_Element_Select( $name );
+    
+        $maxId = self::populateSelectFromDatabase( $vlan, '\\Entities\\Vlan', 'id', 'name', 'name', 'ASC' );
+    
+        $vlan->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'VLAN' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a VLAN' ) ) );
+    
+        return $vlan;
+    }
+    
 }
