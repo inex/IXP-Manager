@@ -93,12 +93,11 @@ class VlanController extends INEX_Controller_FrontEnd
     
     /**
      * Clear the cache after a change to a VLAN
-     * @param INEX_Form_VLAN $form
+     *
      * @param \Entities\Vlan $object
-     * @param bool $isEdit
      * @return boolean
      */
-    protected function addPostFlush( $form, $object, $isEdit )
+    protected function postFlush( $object )
     {
         // this is created in Repositories\Vlan::getNames()
         $this->getD2Cache()->delete( \Repositories\Vlan::ALL_CACHE_KEY );
