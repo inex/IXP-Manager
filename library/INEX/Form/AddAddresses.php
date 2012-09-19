@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,80 +22,30 @@
  */
 
 
-/*
- * A form for editing switch ports.
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
- * @package INEX_Form
+ * Form: adding / editing IP addresses
+ *
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_AddAddresses extends INEX_Form
 {
-    public function __construct( $options = null, $isEdit = false, $cancelLocation )
+    public function init()
     {
-        parent::__construct( $options, $isEdit );
-
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'ipv4-address/forms/add-addresses.phtml' ] ] ] );
         
-        
-        
-        $this->setElementDecorators(
-            array(
-                'ViewHelper',
-                'Errors',
-                array( 'HtmlTag', array( 'tag' => 'dd' ) ),
-                array( 'Label', array( 'tag' => 'dt' ) ),
-            )
-        );
-
-        
-        $this->setDecorators(
-        array(
-        array(
-        'ViewScript',
-        array(
-        'viewScript' => 'ipv4-address/add-addresses-form.tpl'
-        )
-        )
-        )
-        );
-        
-        $vlanid = $this->createElement( 'select', 'vlanid' );
-
-        $maxVlanId = $this->createSelectFromDatabaseTable( $vlanid, 'Vlan', 'id',
-            array( 'name' ),
-            'name'
-        );
-
-        $vlanid->setRegisterInArrayValidator( true )
-            ->setRequired( true )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setLabel( 'VLAN' )
-            ->addValidator( 'between', false, array( 1, $maxVlanId ) )
-            ->setErrorMessages( array( 'Please select a VLAN' ) );
-
-        $this->addElement( $vlanid );
-        
+        $this->addElement( INEX_Form_VLAN::getPopulatedSelect( 'vlanid' ) );
+                
 
         $type = $this->createElement( 'select', 'type' );
-        $type->setMultiOptions( array( 'IPv4' => 'IPv4', 'IPv6' => 'IPv6' ) )
+        $type->setMultiOptions( [ 'ipv4' => 'IPv4', 'ipv6' => 'IPv6' ] )
             ->setRegisterInArrayValidator( true )
-            ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'class', 'span3 chzn-select' )
             ->setLabel( 'Address Family' );
-
         $this->addElement( $type );
-        
-
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
-        . $cancelLocation . "'" ) );
-
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
-
-        
     }
-    
-    
 }
 

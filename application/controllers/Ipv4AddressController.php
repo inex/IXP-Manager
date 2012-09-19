@@ -130,12 +130,12 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
     
     public function addAddressesAction()
     {
-        $f = new INEX_Form_AddAddresses( null, false, '' );
+        $this->view->form = $f = new INEX_Form_AddAddresses( null, false, '' );
         
         $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/'
             . $this->getRequest()->getParam( 'controller' ) . "/add-addresses" );
  
-        if( $this->inexGetPost( 'commit' ) !== null && $f->isValid( $_POST ) )
+        if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
         {
             do
             {
@@ -180,10 +180,6 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
                 }
             }while( false );
         }
-
-        $this->view->form   = $f->render( $this->view );
-
-        $this->view->display( 'ipv4-address/add-addresses.tpl' );
     }
 }
 

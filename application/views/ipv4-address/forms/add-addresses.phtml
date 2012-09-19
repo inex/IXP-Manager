@@ -1,14 +1,30 @@
-<form action="{$element->getAction()}" method="{$element->getMethod()}" enctype="{$element->getAttrib('enctype')}" id="{$element->getId()}" {if $element->getName() != ''}name="{$element->getName()}"{/if} {if $element->getAttrib('target')}target="{$element->getAttrib('target')}"{/if} class="form">
+<form action="{$element->getAction()}" method="{$element->getMethod()}"
+        enctype="{$element->getAttrib('enctype')}"
+        id="{$element->getId()}"
+        {if $element->getName() != ''}name="{$element->getName()}"{/if}
+        {if $element->getAttrib('target')}target="{$element->getAttrib('target')}"{/if}
+        class="form">
 
     {$element->vlanid}
     {$element->type}
 
+<div class="control-group">
+    <label class="control-label required" for="prefix">Start of Address</label>
+    
+    <div class="controls">
+		<input name="prefix" id="prefix" type="text" maxlength="3" class="span2" style="display: inline-block;" />
+		<span id="popover_prefix" rel="popover" class="label"
+		    data-content="<code>192.0.2.</code> or <code>2001:db8:85a3::370:</code>"
+		    data-original-title="Start of Address"
+	    >?</span>
+	</div>
+</div>
 
 <div class="control-group">
     <label class="control-label required" for="numfirst">Last Section of First Address</label>
     
     <div class="controls">
-		<input name="numfirst" id="numfirst" type="text" size="6" maxlength="4" />
+		<input name="numfirst" id="numfirst" type="text" size="6" maxlength="4" class="span3" />
 	</div>
 </div>
 		
@@ -16,17 +32,10 @@
     <label class="control-label required" for="numaddrs">Number of Addresses</label>
     
     <div class="controls">
-		<input name="numaddrs" id="numaddrs" type="text" size="6" maxlength="3" />
+		<input name="numaddrs" id="numaddrs" type="text" size="6" maxlength="3" class="span3" />
 	</div>
 </div>
 
-<div class="control-group">
-    <label class="control-label required" for="prefix">Start of Address</label>
-    
-    <div class="controls">
-		<input name="prefix" id="prefix" type="text" size="20" maxlength="60" /> (e.g. <code>192.0.2.</code> or <code>2001:db8:85a3::370:</code>)
-	</div>
-</div>
 
 <div class="control-group">
     <label class="control-label" for="genbutton"></label>
