@@ -12,4 +12,24 @@ use Doctrine\ORM\EntityRepository;
  */
 class Vlan extends EntityRepository
 {
+    /**
+     * Return an array of all VLAN names where the array key is the VLAN id (**not tag**).
+     *
+     * @return array An array of all VLAN names with the vlan id as the key.
+     */
+    public function getNames()
+    {
+        $arr = $this->getEntityManager()->createQuery(
+                "SELECT v.id AS id, v.name AS name FROM Entities\\Vlan v"
+            )
+            ->useResultCache( true, 3600, 'inex_repo_vlan_get_names' )
+            ->getResult();
+    
+        $vlans = [];
+        foreach( $arr as $a )
+            $vlans[ $a['id'] ] = $a['name'];
+    
+        return $vlans;
+    }
+    
 }

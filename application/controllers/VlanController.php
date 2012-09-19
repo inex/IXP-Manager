@@ -91,5 +91,19 @@ class VlanController extends INEX_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
     
+    /**
+     * Clear the cache after a change to a VLAN
+     * @param INEX_Form_VLAN $form
+     * @param \Entities\Vlan $object
+     * @param bool $isEdit
+     * @return boolean
+     */
+    protected function addPostFlush( $form, $object, $isEdit )
+    {
+        // this is created in Repositories\Vlan::getNames()
+        $this->getD2Cache()->delete( 'inex_repo_vlan_get_names' );
+        return true;
+    }
+    
 }
 
