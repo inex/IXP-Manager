@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,85 +33,97 @@
  */
 class Ipv4AddressController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Ipv4address';
-        $this->frontend['name']            = 'IPv4 Address';
-        $this->frontend['pageTitle']       = 'IPv4 Addresses';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'address', 'vlanid' ),
-
-            'viewPanelRows'  => array( 'address', 'vlanid' ),
-            'viewPanelTitle' => 'address',
-
-            'sortDefaults' => array(
-                'column' => 'address',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'address' => array(
-                'label' => 'Ipv4 Address',
-                'sortable' => 'true',
-            ),
-
-            'vlanid' => array(
-                'type' => 'hasOne',
-                'model' => 'Vlan',
-                'controller' => 'vlan',
-                'field' => 'name',
-                'label' => 'Vlan',
-                'sortable' => true
-            )
-
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+    
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\IPv4Address',
+            'pagetitle'     => 'IPv4 Addresses',
+        
+            'titleSingular' => 'IPv4 Address',
+            'nameSingular'  => 'an IPv4 address',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+            
+            'readonly'      => true,
+        
+            'listOrderBy'    => 'id',
+            'listOrderByDir' => 'ASC',
+        
+            'listColumns'    => [
+        
+                'id'        => [ 'title' => 'UID', 'display' => false ],
+                'address'   => 'Address',
+                'hostname'  => 'Hostname',
+                'customer'  => [
+                    'title'      => 'Customer',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'customer',
+                    'action'     => 'view',
+                    'idField'    => 'customerid'
+                ],
+            ]
+        ];
+            
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = array_merge(
+            $this->_feParams->listColumns,
+            [
+                'vlan'  => [
+                    'title'      => 'VLAN',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'vlan',
+                    'action'     => 'view',
+                    'idField'    => 'vlanid'
+                ]
+            ]
         );
-
-        parent::feInit();
     }
-
-    public function listAction()
+    
+    
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
     {
-        $this->view->vlans = Doctrine_Query::create()
-            ->from( 'Vlan v' )
-            ->orderBy( 'v.number ASC' )
-            ->fetchArray();
+        $this->view->vlans = $vlans = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getNames();
         
-        if( count( $this->view->vlans ) == 0 )
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'ip.id as id, ip.address as address,
+                v.name AS vlan,
+                vli.ipv4hostname hostname,
+                c.name AS customer, c.id AS customerid'
+            )
+            ->from( '\\Entities\\IPv4Address', 'ip' )
+            ->leftJoin( 'ip.Vlan', 'v' )
+            ->leftJoin( 'ip.VlanInterface', 'vli' )
+            ->leftJoin( 'vli.VirtualInterface', 'vi' )
+            ->leftJoin( 'vi.Customer', 'c' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'ip.id = ?1' )->setParameter( 1, $id );
+    
+        if( ( $vid = $this->getParam( 'vlan', false ) ) && isset( $vlans[$vid] ) )
         {
-            $this->session->message = new INEX_Message(  'You must first create a VLAN', "error" );
-            $this->_redirect( 'index/index' );
+            $this->view->vid = $vid;
+            $qb->where( 'v.id = ?2' )->setParameter( 2, $vid );
         }
-            
-        $vlanid = $this->_getParam( 'vlanid', null );
+        else if( isset( $this->_options['identity']['vlans']['default'] ) )
+            $this->view->vid = $this->_options['identity']['vlans']['default'];
         
-        if( $vlanid === null )
-        {
-            $vlanid = $this->view->vlans[0]['id'];
-            $this->view->vlan = $this->view->vlans[0];
-        }
-        else
-            $this->view->vlan = Doctrine_Core::getTable( 'Vlan' )->find( $vlanid, Doctrine_Core::HYDRATE_ARRAY );
-        
-        $this->view->ips = Doctrine_Query::create()
-            ->from( 'Ipv4address ip' )
-            ->leftJoin( 'ip.Vlaninterface vi' )
-            ->leftJoin( 'vi.Virtualinterface virt' )
-            ->leftJoin( 'virt.Cust c' )
-            ->leftJoin( 'ip.Vlan v' )
-            ->where( 'v.id = ?', $vlanid )
-            ->orderBy( 'ip.id ASC' )
-            ->fetchArray();
-            
-        $this->view->display( 'ipv4-address/list.tpl' );
+        //OSS_Debug::dd( $qb->getQuery()->getResult() );
+        return $qb->getQuery()->getResult();
     }
-
+    
     public function addAddressesAction()
     {
         $f = new INEX_Form_AddAddresses( null, false, '' );
