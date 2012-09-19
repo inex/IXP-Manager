@@ -41,7 +41,7 @@ class INEX_Form_AddAddresses extends INEX_Form
                 
 
         $type = $this->createElement( 'select', 'type' );
-        $type->setMultiOptions( [ 'ipv4' => 'IPv4', 'ipv6' => 'IPv6' ] )
+        $type->setMultiOptions( [ 'IPv4' => 'IPv4', 'IPv6' => 'IPv6' ] )
             ->setRegisterInArrayValidator( true )
             ->setAttrib( 'class', 'span3 chzn-select' )
             ->setLabel( 'Address Family' );

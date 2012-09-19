@@ -128,57 +128,45 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
     
-    public function addAddressesAction()
+    public function addAction()
     {
-        $this->view->form = $f = new INEX_Form_AddAddresses( null, false, '' );
+        $this->view->form = $form = new INEX_Form_AddAddresses();
         
-        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/'
-            . $this->getRequest()->getParam( 'controller' ) . "/add-addresses" );
- 
-        if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
-            do
+            $addrfam = $form->getValue( 'type' );
+            $numaddrs = intval( $_POST['numaddrs'] );
+            
+            if( !( $vlan = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getValue( 'vlanid' ) ) ) )
+                throw new INEX_Exception( 'Unknown VLAN in request' );
+            
+            for( $i = 0; $i < $numaddrs; $i++ )
             {
-                try
-                {
-                    $addrfam = $f->getValue( 'type' );
-                    $conn = Doctrine_Manager::connection();
-                    $conn->beginTransaction();
-                    
-                    for( $i = 0; $i < intval( $_POST['numaddrs'] ); $i++ )
-                    {
-                        if( $addrfam == 'IPv4' )
-                            $ip = new Ipv4address();
-                        else if( $addrfam == 'IPv6' )
-                            $ip = new Ipv6address();
-                        else
-                            die( 'Invalid address family!' );
+                if( $addrfam == 'IPv4' )
+                    $ip = new \Entities\IPv4Address();
+                else if( $addrfam == 'IPv6' )
+                    $ip = new \Entities\IPv6Address();
+                else
+                    throw new INEX_Exception( 'Invalid address family' );
 
-                        $ip['vlanid']   = $f->getValue( 'vlanid' );
-                        $ip['address']  = trim( $_POST[ 'np_name' . $i ] );
-                        $ip->save();
-                    }
-                    
-                    $conn->commit();
-                     
-                    $this->getLogger()->notice( intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created' );
-                    $this->session->message = new INEX_Message(  intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created', "success" );
-                    
-                    if( $addrfam == 'IPv4' )
-                        $redir = 'ipv4';
-                    else
-                        $redir = 'ipv6';
+                $ip->setVlan( $vlan );
+                $ip->setAddress( trim( $_POST[ 'np_name' . $i ] ) );
+                
+                $this->getD2EM()->persist( $ip );
+            }
+            
+            $this->getD2EM()->flush();
+                             
+            $msg = "{$numaddrs} new {$addrfam} addresses created for VLAN {$vlan->getName()}.";
+            $this->getLogger()->info( $msg );
+            $this->addMessage( $msg, OSS_Message::SUCCESS );
+            
+            if( $addrfam == 'IPv4' )
+                $redir = 'ipv4';
+            else
+                $redir = 'ipv6';
 
-                    $this->_redirect( "{$redir}-address/list/vlanid/" . $f->getValue( 'vlanid' ) );
-                }
-                catch( Exception $e )
-                {
-                    $conn->rollback();
-                    
-                    Zend_Registry::set( 'exception', $e );
-                    return( $this->_forward( 'error', 'error' ) );
-                }
-            }while( false );
+            $this->redirect( strtolower( $addrfam ) . '-address/list/vlan/' . $vlan->getId() );
         }
     }
 }

@@ -46,5 +46,10 @@ class Ipv6AddressController extends Ipv4AddressController
         $this->_feParams->titleSingular = 'IPv6 Address';
         $this->_feParams->nameSingular  = 'an IPv6 address';
     }
+    
+    public function addAction()
+    {
+        $this->forward( 'add', 'ipv4-address' );
+    }
 }
 
