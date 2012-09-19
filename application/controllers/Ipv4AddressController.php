@@ -93,14 +93,14 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $this->view->vlans = $vlans = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getNames();
-        
+
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'ip.id as id, ip.address as address,
                 v.name AS vlan,
-                vli.ipv4hostname hostname,
+                vli.' . ( $this->_feParams->entity == '\\Entities\\IPv4Address' ? 'ipv4' : 'ipv6' ) . 'hostname AS hostname,
                 c.name AS customer, c.id AS customerid'
             )
-            ->from( '\\Entities\\IPv4Address', 'ip' )
+            ->from( $this->_feParams->entity, 'ip' )
             ->leftJoin( 'ip.Vlan', 'v' )
             ->leftJoin( 'ip.VlanInterface', 'vli' )
             ->leftJoin( 'vli.VirtualInterface', 'vi' )
@@ -112,15 +112,19 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
         if( $id !== null )
             $qb->andWhere( 'ip.id = ?1' )->setParameter( 1, $id );
     
-        if( ( $vid = $this->getParam( 'vlan', false ) ) && isset( $vlans[$vid] ) )
+        $vid = false;
+        if( !( ( $vid = $this->getParam( 'vlan', false ) ) && isset( $vlans[$vid] ) ) )
+        {
+            if( isset( $this->_options['identity']['vlans']['default'] ) && isset( $vlans[ $this->_options['identity']['vlans']['default'] ] ) )
+                $vid = $this->_options['identity']['vlans']['default'];
+        }
+        
+        if( $vid )
         {
             $this->view->vid = $vid;
             $qb->where( 'v.id = ?2' )->setParameter( 2, $vid );
         }
-        else if( isset( $this->_options['identity']['vlans']['default'] ) )
-            $this->view->vid = $this->_options['identity']['vlans']['default'];
         
-        //OSS_Debug::dd( $qb->getQuery()->getResult() );
         return $qb->getQuery()->getResult();
     }
     
