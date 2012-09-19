@@ -128,11 +128,19 @@ class INEX_Form_Switch extends INEX_Form
      * @param string $name The element name
      * @return Zend_Form_Element_Select The select element
      */
-    public static function getPopulatedSelect( $name = 'switchid' )
+    public static function getPopulatedSelect( $name = 'switchid', $type = null )
     {
         $sw = new Zend_Form_Element_Select( $name );
-    
-        $maxId = self::populateSelectFromDatabase( $sw, '\\Entities\\Switcher', 'id', 'name', 'name', 'ASC' );
+
+        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
+            ->select( 'e.id AS id, e.name AS name' )
+            ->from( '\\Entities\\Switcher', 'e' )
+            ->orderBy( "e.name", 'ASC' );
+        
+        if( $type !== null )
+            $qb->where( 'e.switchtype = ?1' )->setParameter( 1, $type );
+        
+        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\Switcher', 'id', 'name', 'name', 'ASC' );
     
         $sw->setRegisterInArrayValidator( true )
             ->setRequired( true )
