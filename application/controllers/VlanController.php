@@ -101,7 +101,7 @@ class VlanController extends INEX_Controller_FrontEnd
     protected function addPostFlush( $form, $object, $isEdit )
     {
         // this is created in Repositories\Vlan::getNames()
-        $this->getD2Cache()->delete( 'inex_repo_vlan_get_names' );
+        $this->getD2Cache()->delete( \Repositories\Vlan::ALL_CACHE_KEY );
         return true;
     }
     

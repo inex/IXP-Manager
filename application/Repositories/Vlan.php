@@ -13,21 +13,35 @@ use Doctrine\ORM\EntityRepository;
 class Vlan extends EntityRepository
 {
     /**
+     * The cache key for all VLAN objects
+     * @var string The cache key for all VLAN objects
+     */
+    const ALL_CACHE_KEY = 'inex_vlans';
+    
+    /**
+     * Return an array of all VLAN objects from the database with caching
+     *
+     * @return array An array of all VLAN objects
+     */
+    public function getAndCache()
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT v FROM Entities\\Vlan v"
+            )
+            ->useResultCache( true, 3600, self::ALL_CACHE_KEY )
+            ->getResult();
+    }
+    
+    /**
      * Return an array of all VLAN names where the array key is the VLAN id (**not tag**).
      *
      * @return array An array of all VLAN names with the vlan id as the key.
      */
     public function getNames()
     {
-        $arr = $this->getEntityManager()->createQuery(
-                "SELECT v.id AS id, v.name AS name FROM Entities\\Vlan v"
-            )
-            ->useResultCache( true, 3600, 'inex_repo_vlan_get_names' )
-            ->getResult();
-    
         $vlans = [];
-        foreach( $arr as $a )
-            $vlans[ $a['id'] ] = $a['name'];
+        foreach( $this->getAndCache() as $a )
+            $vlans[ $a->getId() ] = $a->getName();
     
         return $vlans;
     }
