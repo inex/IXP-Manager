@@ -17,7 +17,9 @@
             {if $listToolbar}
                 {tmplinclude file=$listToolbar}
             {else}
-                <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
+                {if !isset( $feParams->readonly ) or !$feParams->readonly}
+                    <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
+                {/if}
             {/if}
         </li>
     </ul>
@@ -36,7 +38,9 @@
                 {else}
                     <div class="btn-toolbar">
                         <div class="btn-group">
-                            <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                            {if !isset( $feParams->readonly ) or !$feParams->readonly}
+                                <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                            {/if}
                         </div>
                     </div>
                 {/if}
@@ -99,8 +103,10 @@
                 {if not $listRowMenu}
                     <div class="btn-group">
                         <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='view' id=$row.id}" title="Preview"><i class="icon-eye-open"></i></a>
-                        <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='edit' id=$row.id}" title="Edit"><i class="icon-pencil"></i></a>
-                        <a class="btn btn-mini have-tooltip-below" id='list-delete-{$row.id}' href="{genUrl module=$module controller=$controller action='delete' id=$row.id}" title="Delete"><i class="icon-trash"></i></a>
+                        {if !isset( $feParams->readonly ) or !$feParams->readonly}
+                            <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='edit' id=$row.id}" title="Edit"><i class="icon-pencil"></i></a>
+                            <a class="btn btn-mini have-tooltip-below" id='list-delete-{$row.id}' href="{genUrl module=$module controller=$controller action='delete' id=$row.id}" title="Delete"><i class="icon-trash"></i></a>
+                        {/if}
                     </div>
                 {else}
                     {tmplinclude file=$listRowMenu}
