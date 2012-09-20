@@ -177,7 +177,8 @@ class SwitchController extends INEX_Controller_FrontEnd
 
     function portReportAction()
     {
-        $this->view->switch = $switch = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->find( $this->getParam( 'id', 0 ) );
+        $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
+        $this->view->switch   = $switch   = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->find( $this->getParam( 'id', 0 ) );
 
         if( $switch === null )
         {
