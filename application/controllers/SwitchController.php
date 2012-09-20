@@ -161,6 +161,18 @@ class SwitchController extends INEX_Controller_FrontEnd
         return true;
     }
     
+    /**
+     * Clear the cache after a change to a switch
+     *
+     * @param \Entities\Switcher $object
+     * @return boolean
+     */
+    protected function postFlush( $object )
+    {
+        // this is created in Repositories\Switcher::getAndCache()
+        $this->getD2Cache()->delete( \Repositories\Switcher::ALL_CACHE_KEY );
+        return true;
+    }
     
 
     function portReportAction()

@@ -12,4 +12,37 @@ use Doctrine\ORM\EntityRepository;
  */
 class Switcher extends EntityRepository
 {
+    /**
+     * The cache key for all switch objects
+     * @var string The cache key for all switch objects
+     */
+    const ALL_CACHE_KEY = 'inex_switches';
+    
+    /**
+     * Return an array of all switch objects from the database with caching
+     *
+     * @return array An array of all switch objects
+     */
+    public function getAndCache()
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT s FROM Entities\\Switcher s"
+            )
+            ->useResultCache( true, 3600, self::ALL_CACHE_KEY )
+            ->getResult();
+    }
+    
+    /**
+     * Return an array of all switch names where the array key is the switch id
+     *
+     * @return array An array of all switch names with the switch id as the key.
+     */
+    public function getNames()
+    {
+        $switches = [];
+        foreach( $this->getAndCache() as $a )
+            $switches[ $a->getId() ] = $a->getName();
+    
+        return $switches;
+    }
 }
