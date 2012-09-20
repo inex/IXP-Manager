@@ -1,0 +1,95 @@
+{tmplinclude file="header.phtml"}
+
+{if isset( $user ) and $user->getPrivs() eq USER::AUTH_SUPERUSER}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            <a href="{genUrl controller="switch" action="list"}">Switches</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Configuration
+        </li>
+        
+        <li class="pull-right">
+            <form class="form-inline" method="post">
+                <select data-placeholder="Limit to switch..." class="chzn-select-deselect" name="sid">
+                    <option></option>
+                    {foreach $switches as $sid => $sname}
+                        <option value="{$sid}" {if isset( $switchid ) and $switchid eq $sid}selected="selected"{/if}>{$sname}</option>
+                    {/foreach}
+                </select>
+                <select data-placeholder="Limit to peering LAN..." class="chzn-select-deselect" name="vid">
+                    <option></option>
+                    {foreach $vlans as $vid => $vname}
+                        <option value="{$vid}" {if isset( $vlanid ) and $vlanid eq $vid}selected="selected"{/if}>{$vname}</option>
+                    {/foreach}
+                </select>
+                <button type="submit" class="btn btn-small" style="display: inline-block; position: relative; margin-top: -15px;" >Update</button>
+            </form>
+        </li>
+    </ul>
+
+    <div>
+{else}
+    <div class="page-content" >
+    
+        <div class="page-header" >
+            <h1 style="display: inline;">{$feParams->pagetitle}</h1>
+            
+            <span style="float: right; margin-top: -10px;">
+                {* do we have a custom page header toolbar? *}
+                {if $listToolbar}
+                    {tmplinclude file=$listToolbar}
+                {else}
+                    <div class="btn-toolbar">
+                        <div class="btn-group">
+                            {if !isset( $feParams->readonly ) or !$feParams->readonly}
+                                <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                            {/if}
+                        </div>
+                    </div>
+                {/if}
+            </span>
+        </div>
+{/if}
+    
+    {OSS_Message}
+
+    <table id='frontend-list-table' class="table ">
+    
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Switch</th>
+            <th>Port</th>
+            <th>Speed</th>
+            <th>ASN</th>
+            <th>Route Server</th>
+            <th>IPv4 Address</th>
+            <th>IPv6 Address</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {foreach $config as $idx => $row}
+            <tr>
+                <td><a href="{genUrl controller="customer" action="view" id=$row.custid}">{$row.customer}</a></td>
+                <td><a href="{genUrl controller="switch" action="port-report" id=$row.switchid}">{$row.switchname}</a></td>
+                <td>{$row.portname}</td>
+                <td>{$row.speed}</td>
+                <td>{$row.asn|asnumber}</td>
+                <td>{if $row.rsclient}Yes{else}No{/if}</td>
+                <td>{$row.ipv4address}</td>
+                <td>{$row.ipv6address}</td>
+                <td>{if isset( PHYSICALINTERFACE::$STATES[ $row.portstatus ] )}{PHYSICALINTERFACE::$STATES[ $row.portstatus ]}{/if}</td>
+            </tr>
+        {/foreach}
+    </tbody>
+    
+    </table>
+</div>
+
+{tmplinclude file="footer.phtml"}

@@ -154,33 +154,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
     }
 
 
-    public function switchConfigurationAction()
-    {
-        $q = Doctrine_Query::create()
-            ->from( 'ViewCustCurrentActive vca' )
-            ->leftJoin( 'vca.ViewSwitchDetailsByCustid vsd' )
-            ->leftJoin( 'vsd.ViewVlaninterfaceDetailsByCustid vvid' )
-            ->whereIn( 'vca.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->groupBy( 'vvid.virtualinterfaceid' )
-            ->orderBy( 'name' );
-
-        $this->view->vlans = Doctrine::getTable( 'Vlan' )->findAll();
-
-        if( ( $vlan = (int)$this->getRequest()->getParam( 'vlan', null ) ) != null )
-        {
-            if( is_integer( $vlan ) && Doctrine::getTable( 'Vlan' )->findByNumber( $vlan ) )
-            {
-                $q->andWhere( 'vvid.vlan = ?', $vlan );
-                $this->view->vlannum = $vlan;
-            }
-        }
-
-        $this->view->swconf = $q->execute();
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'switch-configuration.tpl' );
-    }
-
-
     public function membersDetailsListAction()
     {
         $this->view->memberDetails = Doctrine_Query::create()

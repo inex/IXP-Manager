@@ -38,8 +38,6 @@ class SwitchController extends INEX_Controller_FrontEnd
      */
     protected function _feInit()
     {
-        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-    
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Switcher',
             'form'          => 'INEX_Form_Switch',
@@ -48,51 +46,62 @@ class SwitchController extends INEX_Controller_FrontEnd
             'titleSingular' => 'Switch',
             'nameSingular'  => 'a switch',
         
-            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
             'listOrderBy'    => 'name',
-            'listOrderByDir' => 'ASC',
-        
-            'listColumns'    => [
-        
-                'id'        => [ 'title' => 'UID', 'display' => false ],
-                'name'           => 'Name',
-                
-                'cabinet'  => [
-                    'title'      => 'Cabinet',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'cabinet',
-                    'action'     => 'view',
-                    'idField'    => 'cabinetid'
-                ],
-            
-                'vendor'  => [
-                    'title'      => 'Vendor',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'vendor',
-                    'action'     => 'view',
-                    'idField'    => 'vendorid'
-                ],
-                
-                'model'          => 'Model',
-                'ipv4addr'       => 'IPv4 Address',
-                'infrastructure' => 'Infrastructure',
-                'active'         => 'Active'
-            ]
+            'listOrderByDir' => 'ASC'
         ];
+        
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id'        => [ 'title' => 'UID', 'display' => false ],
+                    'name'           => 'Name',
+                    
+                    'cabinet'  => [
+                        'title'      => 'Cabinet',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'cabinet',
+                        'action'     => 'view',
+                        'idField'    => 'cabinetid'
+                    ],
+                
+                    'vendor'  => [
+                        'title'      => 'Vendor',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'vendor',
+                        'action'     => 'view',
+                        'idField'    => 'vendorid'
+                    ],
+                    
+                    'model'          => 'Model',
+                    'ipv4addr'       => 'IPv4 Address',
+                    'infrastructure' => 'Infrastructure',
+                    'active'         => 'Active'
+                ];
     
-        // display the same information in the view as the list
-        $this->_feParams->viewColumns = array_merge(
-            $this->_feParams->listColumns,
-            [
-                'ipv6addr'       => 'IPv6 Address',
-                'snmppasswd'     => 'SNMP Community',
-                'switchtype'     => 'Type',
-                'notes'          => 'Notes'
-            ]
-        );
+                // display the same information in the view as the list
+                $this->_feParams->viewColumns = array_merge(
+                    $this->_feParams->listColumns,
+                    [
+                        'ipv6addr'       => 'IPv6 Address',
+                        'snmppasswd'     => 'SNMP Community',
+                        'switchtype'     => 'Type',
+                        'notes'          => 'Notes'
+                    ]
+                );
+                
+                $this->_feParams->defaultAction = 'list';
+                break;
+                
+            case \Entities\User::AUTH_CUSTUSER:
+                $this->_feParams->allowedActions = [ 'configuration' ];
+                $this->_feParams->defaultAction = 'configuration';
+                break;
+                
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
     }
-    
     
     /**
      * Provide array of users for the listAction and viewAction
@@ -102,15 +111,15 @@ class SwitchController extends INEX_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-        ->select( 's.id AS id, s.name AS name,
-            s.ipv4addr AS ipv4addr, s.ipv6addr AS ipv6addr, s.snmppasswd AS snmppasswd,
-            s.infrastructure AS infrastructure, s.switchtype AS switchtype, s.model AS model,
-            s.active AS active, s.notes AS notes,
-            v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
-        )
-        ->from( '\\Entities\\Switcher', 's' )
-        ->leftJoin( 's.Cabinet', 'c' )
-        ->leftJoin( 's.Vendor', 'v' );
+            ->select( 's.id AS id, s.name AS name,
+                s.ipv4addr AS ipv4addr, s.ipv6addr AS ipv6addr, s.snmppasswd AS snmppasswd,
+                s.infrastructure AS infrastructure, s.switchtype AS switchtype, s.model AS model,
+                s.active AS active, s.notes AS notes,
+                v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
+            )
+            ->from( '\\Entities\\Switcher', 's' )
+            ->leftJoin( 's.Cabinet', 'c' )
+            ->leftJoin( 's.Vendor', 'v' );
     
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
@@ -226,6 +235,18 @@ class SwitchController extends INEX_Controller_FrontEnd
         $this->view->ports = $allports;
     }
     
+    public function configurationAction()
+    {
+        $this->view->registerClass( 'PHYSICALINTERFACE', '\\Entities\\PhysicalInterface' );
+        
+        $this->view->vlans    = $vlans    = $this->getD2EM()->getRepository( '\\Entities\\Vlan'     )->getNames();
+        $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
+        
+        $this->view->switchid = $sid = ( isset( $_POST['sid'] ) && isset( $switches[ $_POST['sid'] ] ) ) ? $_POST['sid'] : null;
+        $this->view->vlanid   = $vid = ( isset( $_POST['vid'] ) && isset( $vlans[    $_POST['vid'] ] ) ) ? $_POST['vid'] : null;
+        
+        $this->view->config = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getConfiguration( $sid, $vid );
+    }
     
     
 }

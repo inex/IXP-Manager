@@ -45,4 +45,40 @@ class Switcher extends EntityRepository
     
         return $switches;
     }
+    
+    
+    public function getConfiguration( $switchid = null, $vlanid = null )
+    {
+        $q =
+            "SELECT s.name AS switchname, s.id AS switchid,
+                    sp.name AS portname,
+                    pi.speed AS speed, pi.duplex AS duplex, pi.status AS portstatus,
+                    c.name AS customer, c.id AS custid, c.autsys AS asn,
+                    vli.rsclient AS rsclient,
+                    v.name AS vlan,
+                    ipv4.address AS ipv4address, ipv6.address AS ipv6address
+        
+            FROM \\Entities\\VlanInterface vli
+                JOIN vli.IPv4Address ipv4
+                LEFT JOIN vli.IPv6Address ipv6
+                LEFT JOIN vli.Vlan v
+                LEFT JOIN vli.VirtualInterface vi
+                LEFT JOIN vi.Customer c
+                LEFT JOIN vi.PhysicalInterfaces pi
+                LEFT JOIN pi.SwitchPort sp
+                LEFT JOIN sp.Switcher s
+            
+            WHERE 1=1 ";
+        
+        if( $switchid !== null )
+            $q .= 'AND s.id = ' . intval( $switchid ) . ' ';
+        
+        if( $vlanid !== null )
+            $q .= 'AND v.id = ' . intval( $vlanid ) . ' ';
+                            
+        $q .= "ORDER BY customer ASC";
+        
+        return $this->getEntityManager()->createQuery( $q )->getArrayResult();
+    }
+    
 }

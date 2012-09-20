@@ -33,6 +33,13 @@ class Customer extends EntityRepository
      */
     const DQL_CUST_EXTERNAL = "c.type != 3";
     
+    /**
+     * DQL for selecting all trafficing customers
+     *
+     * @var string DQL for selecting all trafficing customers
+     */
+    const DQL_CUST_TRAFFICING = "c.type != 2";
+    
     
     /**
      * Utility function to provide a count of different customer types as `type => count`

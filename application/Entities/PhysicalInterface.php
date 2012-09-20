@@ -9,6 +9,33 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PhysicalInterface
 {
+    const STATUS_CONNECTED       = 1;
+    const STATUS_DISABLED        = 2;
+    const STATUS_NOTCONNECTED    = 3;
+    const STATUS_XCONNECT        = 4;
+    const STATUS_QUARANTINE      = 5;
+    
+    public static $STATES = array(
+        self::STATUS_CONNECTED    => 'Connected',
+        self::STATUS_DISABLED     => 'Disabled',
+        self::STATUS_NOTCONNECTED => 'Not Connected',
+        self::STATUS_XCONNECT     => 'Awaiting X-Connect',
+        self::STATUS_QUARANTINE   => 'Quarantine'
+    );
+    
+    public static $SPEED = array(
+        10    => '10 Mbps',
+        100   => '100 Mbps',
+        1000  => '1 Gbps',
+        10000 => '10 Gbps'
+    );
+    
+    public static $DUPLEX = array(
+        'full'   => 'full',
+        'half'   => 'half'
+    );
+    
+    
     /**
      * @var integer $status
      */
@@ -66,7 +93,7 @@ class PhysicalInterface
     /**
      * Get status
      *
-     * @return integer 
+     * @return integer
      */
     public function getStatus()
     {
@@ -89,7 +116,7 @@ class PhysicalInterface
     /**
      * Get speed
      *
-     * @return integer 
+     * @return integer
      */
     public function getSpeed()
     {
@@ -112,7 +139,7 @@ class PhysicalInterface
     /**
      * Get duplex
      *
-     * @return string 
+     * @return string
      */
     public function getDuplex()
     {
@@ -135,7 +162,7 @@ class PhysicalInterface
     /**
      * Get monitorindex
      *
-     * @return integer 
+     * @return integer
      */
     public function getMonitorindex()
     {
@@ -158,7 +185,7 @@ class PhysicalInterface
     /**
      * Get notes
      *
-     * @return string 
+     * @return string
      */
     public function getNotes()
     {
@@ -168,7 +195,7 @@ class PhysicalInterface
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -191,7 +218,7 @@ class PhysicalInterface
     /**
      * Get SwitchPort
      *
-     * @return Entities\SwitchPort 
+     * @return Entities\SwitchPort
      */
     public function getSwitchPort()
     {
@@ -214,7 +241,7 @@ class PhysicalInterface
     /**
      * Get VirtualInterface
      *
-     * @return Entities\VirtualInterface 
+     * @return Entities\VirtualInterface
      */
     public function getVirtualInterface()
     {
