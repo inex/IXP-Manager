@@ -57,14 +57,15 @@
     
     {OSS_Message}
 
-    <table id='frontend-list-table' class="table ">
+    <table id='frontend-list-table' class="table table-bordered">
     
     <thead>
         <tr>
             <th>Customer</th>
-            <th>Switch</th>
+            {if not isset( $switchid )}<th>Switch</th>{/if}
             <th>Port</th>
             <th>Speed</th>
+            {if not isset( $vlanid )}<th>Peering LAN</th>{/if}
             <th>ASN</th>
             <th>Route Server</th>
             <th>IPv4 Address</th>
@@ -77,9 +78,10 @@
         {foreach $config as $idx => $row}
             <tr>
                 <td><a href="{genUrl controller="customer" action="view" id=$row.custid}">{$row.customer}</a></td>
-                <td><a href="{genUrl controller="switch" action="port-report" id=$row.switchid}">{$row.switchname}</a></td>
+                {if not isset( $switchid )}<td><a href="{genUrl controller="switch" action="port-report" id=$row.switchid}">{$row.switchname}</a></td>{/if}
                 <td>{$row.portname}</td>
                 <td>{$row.speed}</td>
+                {if not isset( $vlanid )}<td>{$row.vlan}</td>{/if}
                 <td>{$row.asn|asnumber}</td>
                 <td>{if $row.rsclient}Yes{else}No{/if}</td>
                 <td>{$row.ipv4address}</td>
@@ -92,4 +94,7 @@
     </table>
 </div>
 
+<script type="text/javascript">
+{tmplinclude file="switch/js/configuration.js"}
+</script>
 {tmplinclude file="footer.phtml"}
