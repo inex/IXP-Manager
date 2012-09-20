@@ -87,6 +87,8 @@ class SwitchPortController extends INEX_Controller_FrontEnd
      */
     protected function listGetData( $id = null )
     {
+        $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
+        
         $qb = $this->getD2EM()->createQueryBuilder()
         ->select( 'sp.id AS id, sp.name AS name,
             sp.type AS type, s.name AS switch, s.id AS switchid'
@@ -100,6 +102,12 @@ class SwitchPortController extends INEX_Controller_FrontEnd
         if( $id !== null )
             $qb->andWhere( 'sp.id = ?1' )->setParameter( 1, $id );
     
+        if( ( $sid = $this->getParam( 'switch', false ) ) && isset( $switches[$sid] ) )
+        {
+            $this->view->sid = $sid;
+            $qb->where( 's.id = ?2' )->setParameter( 2, $sid );
+        }
+        
         return $qb->getQuery()->getResult();
     }
     

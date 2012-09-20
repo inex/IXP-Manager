@@ -1,0 +1,18 @@
+<div class="btn-toolbar" style="display: inline;">
+
+    <div class="btn-group" id="switch-btn-group">
+        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="switch-dd">
+            <span id="switch-dd-text">{if isset( $sid ) and $sid}{$switches.$sid}{else}Limit to switch...{/if}</span>
+            <span class="caret"></span>
+        </a>
+        <ul id="switch-dd-ul" class="dropdown-menu">
+            {foreach $switches as $sid => $sname}
+                <li> <a id="switch-{$sid}" href="{genUrl controller='switch-port' action='list' switch=$sid}">{$sname}</a> </li>
+            {/foreach}
+        </ul>
+    </div>
+
+    <div class="btn-group">
+        <a class="btn btn-mini pull-right" href="{genUrl controller='switch-port' action="add"}"><i class="icon-plus"></i></a>
+    </div>
+</div>
