@@ -77,9 +77,6 @@
                     <li {if $controller eq 'switch-port'}class="active"{/if}>
                         <a href="{genUrl controller='switch-port' action='list'}">Switch Ports</a>
                     </li>
-                    <li {if $controller eq 'switch' and $action eq 'add-ports'}class="active"{/if}>
-                        <a href="{genUrl controller='switch' action='add-ports'}">Add Ports</a>
-                    </li>
                 </ul>
             {/if}
             

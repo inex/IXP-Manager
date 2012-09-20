@@ -42,7 +42,7 @@ class SwitchPortController extends INEX_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\SwitchPort',
-            'form'          => 'INEX_Form_SwitchPort',
+            'form'          => 'INEX_Form_Switch_Port',
             'pagetitle'     => 'Switch Ports',
         
             'titleSingular' => 'Switch Port',
@@ -181,5 +181,36 @@ class SwitchPortController extends INEX_Controller_FrontEnd
         return 'switch-port/list/switchid/' . $o['switchid'];
     }
     
+    
+    public function addAction()
+    {
+        $this->view->form = $form = new INEX_Form_Switch_AddPorts();
+    
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
+        {
+            if( !( $switch = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->find( $form->getValue( 'switchid' ) ) ) )
+                throw new INEX_Exception( 'Unknown switch in request' );
+            
+            for( $i = 0; $i < $form->getValue( 'numports' ); $i++ )
+            {
+                $sp = new \Entities\SwitchPort();
+                $sp->setSwitcher( $switch );
+                $sp->setType( intval( $_POST[ 'np_type' . $i ] ) );
+                $sp->setName( trim( stripslashes( $_POST[ 'np_name' . $i ] ) ) );
+                $this->getD2EM()->persist( $sp );
+            }
+
+            $this->getD2EM()->flush();
+
+            
+            $msg = "{$form->getValue( 'numports' )} new ports created for switch {$switch->getName()}.";
+            $this->getLogger()->info( $msg );
+            $this->addMessage( $msg, OSS_Message::SUCCESS );
+            
+            $this->redirect( 'switch-port/list/switch/' . $switch->getId() );
+        }
+    }
 }
+
+
 

@@ -33,7 +33,8 @@ $( 'document' ).ready( function(){
 	$("[rel=popover]").popover(
 		{
 			offset: 10,
-			html: true
+			html: true,
+			trigger: "hover"
 		}
 	);
 	

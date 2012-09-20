@@ -31,7 +31,7 @@
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class INEX_Form_SwitchPort extends INEX_Form
+class INEX_Form_Switch_Port extends INEX_Form
 {
     public function init()
     {

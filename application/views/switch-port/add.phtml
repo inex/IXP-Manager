@@ -1,11 +1,11 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
 <ul class="breadcrumb">
     <li>
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
     <li>
-        <a href="{genUrl controller=$controller action="list"}">{$frontend.pageTitle}</a> <span class="divider">/</span>
+        <a href="{genUrl controller='switch' action='list'}">Switches</a> <span class="divider">/</span>
     </li>
     <li class="active">
         Add New Ports
@@ -15,4 +15,4 @@
 {$form}
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
