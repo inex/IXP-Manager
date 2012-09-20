@@ -1,6 +1,6 @@
 {tmplinclude file="header-base.phtml"}
 
-<div class="navbar navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="{if isset( $hasIdentity ) and $hasIdentity and $user->getPrivs() eq 3}container-fluid{else}container{/if}">
             <a class="brand" href="{genUrl}">{$options.identity.sitename}</a>

@@ -303,3 +303,10 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 
 
 
+/* Bootstrap Dropdowns in Breadcrumbs:
+       http://stackoverflow.com/questions/12194573/bootstrap-dropdown-within-breadcrumb */
+.dropdown-menu li {
+  display: block;
+}
+
+

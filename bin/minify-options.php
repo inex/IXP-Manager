@@ -83,7 +83,7 @@ $mini_js_conditional_end  = '{/if}';
 
 // $js_header_file = false;
 
-$js_header_file = APPLICATION_PATH . '/views/header-js.tpl';
+$js_header_file = APPLICATION_PATH . '/views/header-js.phtml';
 
 // We create a minified version of each JS file found. These can safely be deleted:
 $del_mini_js = true;
@@ -133,7 +133,7 @@ $mini_css_conditional_end  = '{/if}';
 
 // $css_header_file = false;
 
-$css_header_file = APPLICATION_PATH . '/views/header-css.tpl';
+$css_header_file = APPLICATION_PATH . '/views/header-css.phtml';
 
 // We create a minified version of each CSS file found. These can safely be deleted:
 $del_mini_css = true;
