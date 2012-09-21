@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,80 +33,110 @@
  */
 class PhysicalInterfaceController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Physicalinterface';
-        $this->frontend['name']            = 'PhysicalInterface';
-        $this->frontend['pageTitle']       = 'Physical Interfaces';
-
-        $this->frontend['disableAddNew']   = true;
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'switch', 'switchport', 'status', 'speed', 'duplex' ),
-
-
-            'viewPanelRows'  => array( 'switch', 'switchport', 'status', 'speed', 'duplex', 'monitorindex', 'notes' ),
-
-
-            'sortDefaults' => array(
-                'column' => 'status',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-
-            'switch' => array(
-                'type' => 'l2HasOne',
-                'l1model' => 'Switchport',
-                'l1controller' => 'switchport',
-                'l2model' => 'SwitchTable',
-                'l2controller' => 'switch',
-                'field' => 'name',
-                'label' => 'Switch',
-                'sortable' => true
-            ),
-
-            'switchport' => array(
-                'type' => 'hasOne',
-                'model' => 'Switchport',
-                'controller' => 'switch-port',
-                'field' => 'name',
-                'label' => 'Port',
-                'sortable' => true
-            ),
-
-            'status' => array(
-                'label' => 'Status',
-                'type' => 'xlate',
-                'sortable' => true,
-            	'xlator' => Physicalinterface::$STATES_TEXT
-            ),
-
-            'speed' => array(
-                'label' => 'Speed',
-                'sortable' => true,
-            ),
-
-            'duplex' => array(
-                'label' => 'Duplex',
-                'sortable' => true
-            ),
-
-            'monitorindex' => array(
-                'label' => 'Monitor Index'
-            )
-
-        );
-
-        parent::feInit();
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\PhysicalInterface',
+            'form'          => 'INEX_Form_Interface_Physical',
+            'pagetitle'     => 'Physical Interfaces',
+        
+            'titleSingular' => 'Physical Interface',
+            'nameSingular'  => 'a physical interface',
+        
+            'defaultAction' => 'list',
+        
+            'listOrderBy'    => 'customer',
+            'listOrderByDir' => 'ASC',
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+        
+                    'customer'  => [
+                        'title'      => 'Customer',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'custid'
+                    ],
+        
+                    'location'  => [
+                        'title'      => 'Location',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'location',
+                        'action'     => 'view',
+                        'idField'    => 'locid'
+                    ],
+        
+                    'switch'  => [
+                        'title'      => 'Switch',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'switch',
+                        'action'     => 'view',
+                        'idField'    => 'switchid'
+                    ],
+                    
+                    'port'          => 'Port',
+                    
+                    'status'        => [
+                        'title'          => 'Status',
+                        'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
+                        'xlator'         => \Entities\PhysicalInterface::$STATES
+                    ],
+                    
+        
+                    //'location'      => 'Location',
+                    //'switch'        => 'Switch',
+                    'speed'         => 'Speed',
+                    'duplex'        => 'Duplex'
+                ];
+                break;
+    
+            case \Entities\User::AUTH_CUSTADMIN:
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
+    
     }
-
+    
+    
+    
+    /**
+     * Provide array of virtual interfaces for the listAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+        ->select(
+                'pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
+                c.name AS customer, c.id AS custid,
+                s.name AS switch, s.id AS switchid,
+                sp.name AS port, l.id AS locid, l.name AS location'
+            )
+        ->from( '\\Entities\\PhysicalInterface', 'pi' )
+        ->leftJoin( 'pi.VirtualInterface', 'vi' )
+        ->leftJoin( 'vi.Customer', 'c' )
+        ->leftJoin( 'pi.SwitchPort', 'sp' )
+        ->leftJoin( 'sp.Switcher', 's' )
+        ->leftJoin( 's.Cabinet', 'cab' )
+        ->leftJoin( 'cab.Location', 'l' );
+    
+        return $qb->getQuery()->getArrayResult();
+    }
+    
+    
+    
+    
+    
+    
     /**
      * addEditPreDisplay
      *
@@ -195,32 +225,5 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
         exit();
     }
 
-    
-    protected function _deleteSetReturnOnSuccess()
-    {
-        if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
-            return "virtual-interface/edit/id/{$vid}";
-        
-        return 'physical-interface/list';
-    }
-    
-    protected function _addEditSetReturnOnSuccess( $form, $object )
-    {
-        return "virtual-interface/edit/id/{$object['virtualinterfaceid']}";
-    }
-    
-    
-    protected function getForm( $options = null, $isEdit = false )
-    {
-        $formName = "INEX_Form_{$this->frontend['name']}";
-    
-        if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
-            $cancelLocation = $this->genUrl( 'virtual-interface', 'edit', array( 'id' => $vid ) );
-        else
-            $cancelLocation = $this->genUrl( 'physical-interface', 'list' );
-    
-        return new $formName( $options, $isEdit, $cancelLocation );
-    }
-    
 }
 
