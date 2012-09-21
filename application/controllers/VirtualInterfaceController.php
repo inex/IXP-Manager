@@ -41,7 +41,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\VirtualInterface',
             'form'          => 'INEX_Form_Interface_Virtual',
-            'pagetitle'     => 'Interfaces',
+            'pagetitle'     => '(Virtual) Interfaces',
         
             'titleSingular' => 'Virtual Interface',
             'nameSingular'  => 'a virtual interface',
