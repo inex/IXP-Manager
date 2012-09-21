@@ -43,8 +43,8 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
             'form'          => 'INEX_Form_Interface_Virtual',
             'pagetitle'     => 'Interfaces',
         
-            'titleSingular' => 'Interface',
-            'nameSingular'  => 'an interface',
+            'titleSingular' => 'Virtual Interface',
+            'nameSingular'  => 'a virtual interface',
         
             'defaultAction' => 'list',
         
@@ -99,7 +99,8 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     {
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select(
-                    'c.name AS customer, c.shortname AS shortname,
+                    'vi.id,
+                    c.name AS customer, c.shortname AS shortname,
                     l.name AS location, s.name AS switch,
                     sp.name AS port, SUM( pi.speed ) AS speed'
                  )
@@ -121,30 +122,36 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
      * If deleting a virtual interface, we should also the delete the physical and vlan interfaces
      * if they exist.
      *
-     *
-    protected function preDelete( $object = null )
+     * @param \Entities\VirtualInterface $vi The virtual interface to delete
+     */
+    protected function preDelete( $vi )
     {
-        if( ( $oid = $this->getRequest()->getParam( 'id', null ) ) === null )
-            return false;
-
-        if( !( $vint = Doctrine::getTable( $this->getModelName() )->find( $oid ) ) )
-            return false;
-
-        foreach( $vint->Physicalinterface as $pi )
+        foreach( $vi->getPhysicalInterfaces() as $pi )
         {
-            $this->getLogger()->notice( "Deleting physical interface with id #{$pi->id} while deleting virtual interface #{$vint->id}" );
-            $pi->delete();
+            $this->getLogger()->info( "Deleting physical interface with id #{$pi->getId()} while deleting virtual interface #{$vi->getId()}" );
+            $vi->removePhysicalInterface( $pi );
+            $this->getD2EM()->remove( $pi );
         }
-
-        foreach( $vint->Vlaninterface as $vl )
+        
+        foreach( $vi->getVlanInterfaces() as $vli )
         {
-            $this->getLogger()->notice( "Deleting vlan interface with id #{$vl['id']} while deleting virtual interface #{$vint['id']}" );
-            $vl->delete();
+            $this->getLogger()->info( "Deleting VLAN interface with id #{$vli->getId()} while deleting virtual interface #{$vi->getId()}" );
+            $vi->removeVlanInterface( $vli );
+            $this->getD2EM()->remove( $vli );
         }
-    }*
+        
+        foreach( $vi->getMACAddresses() as $ma )
+        {
+            $this->getLogger()->info( "Deleting MAC Address record #{$ma->getMac()} while deleting virtual interface #{$vi->getId()}" );
+            $vi->removeMACAddresse( $ma );
+            $this->getD2EM()->remove( $ma );
+        }
+        
+        return true;
+    }
 
 
-    
+    /*
     public function _customlist()
     {
         $dataQuery = Doctrine_Query::create()
