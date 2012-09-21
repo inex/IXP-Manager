@@ -66,7 +66,7 @@ class BGPSessionData
     /**
      * Get srcipaddressid
      *
-     * @return integer 
+     * @return integer
      */
     public function getSrcipaddressid()
     {
@@ -89,7 +89,7 @@ class BGPSessionData
     /**
      * Get desipaddressid
      *
-     * @return integer 
+     * @return integer
      */
     public function getDesipaddressid()
     {
@@ -112,7 +112,7 @@ class BGPSessionData
     /**
      * Get protocol
      *
-     * @return integer 
+     * @return integer
      */
     public function getProtocol()
     {
@@ -135,7 +135,7 @@ class BGPSessionData
     /**
      * Get vlan
      *
-     * @return integer 
+     * @return integer
      */
     public function getVlan()
     {
@@ -158,7 +158,7 @@ class BGPSessionData
     /**
      * Get packetcount
      *
-     * @return integer 
+     * @return integer
      */
     public function getPacketcount()
     {
@@ -181,7 +181,7 @@ class BGPSessionData
     /**
      * Get timestamp
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getTimestamp()
     {
@@ -204,7 +204,7 @@ class BGPSessionData
     /**
      * Get source
      *
-     * @return string 
+     * @return string
      */
     public function getSource()
     {
@@ -214,7 +214,7 @@ class BGPSessionData
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -242,7 +242,7 @@ class BGPSessionData
     /**
      * Get dstipaddressid
      *
-     * @return integer 
+     * @return integer
      */
     public function getDstipaddressid()
     {

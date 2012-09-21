@@ -147,41 +147,7 @@ class SwitchPortController extends INEX_Controller_FrontEnd
         return true;
     }
     
-    
-    protected function _preList( $dataQuery )
-    {
-        // load switch names
-        $this->view->switches = Doctrine_Query::create()
-            ->from( 'SwitchTable s' )
-            ->orderBy( 's.name' )
-            ->fetchArray();
-            
-        // we want post to trump get
-        if( isset( $_POST['switchid'] ) && is_numeric( $_POST['switchid'] ) )
-            $switchid = $_POST['switchid'];
-        else
-            $switchid = $this->_getParam( 'switchid', null );
-        $this->view->switchid = $switchid;
-
-        // and limit to a single switch
-        return $dataQuery->andWhere( 'x.switchid = ?', $switchid );
-         
-    }
-    
-    /**
-     * Hook function to set a customer return.
-     *
-     * We want to display the ports of the switch which was added / edited.
-	 *
-     * @param INEX_Form_SwitchPort $f
-     * @param Switchport $o
-     */
-    protected function _addEditSetReturnOnSuccess( $f, $o )
-    {
-        return 'switch-port/list/switchid/' . $o['switchid'];
-    }
-    
-    
+        
     public function addAction()
     {
         $this->view->form = $form = new INEX_Form_Switch_AddPorts();

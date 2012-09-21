@@ -1,7 +1,7 @@
 {if isset( $hasIdentity ) and $hasIdentity}
-    {include file="header.tpl" mode="fluid"}
+    {tmplinclude file="header.phtml" mode="fluid"}
 {else}
-    {include file="header.tpl" mode="fluid" brand="INEX - Internet Neutral Exchange - Peering Matrix"}
+    {tmplinclude file="header.phtml" mode="fluid" brand="INEX - Internet Neutral Exchange - Peering Matrix"}
 {/if}
 
 <ul class="breadcrumb">
@@ -12,11 +12,11 @@
         <a href="{genUrl}">Peering Matrices</a>
     </li>
     <li class="active">
-        for the {$lans.$lan} using {$protos.$proto}
+        for the {$vlans.$vid} using {$protos.$proto}
     </li>
 
     <li class="pull-right">
-        <div class="btn-toolbar" style="display: inline;">
+        <div class="btn-toolbar" style="display: inline; margin-top: -12px;">
             <div class="btn-group" id="peer-btn-group">
                 <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="peer-dd" >
                     <span id="peer-dd-text">All Peerings</span>
@@ -30,12 +30,12 @@
             </div>
             <div class="btn-group">
                 <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                    {$lans.$lan}
+                    {$vlans.$vid}
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    {foreach from=$lans key=id item=name}
-                        <li> <a href="{genUrl controller="peering-matrix" action="index" lan=$id proto=$proto}">{$name}</a> </li>
+                    {foreach $vlans as $id => $vname}
+                        <li> <a href="{genUrl controller="peering-matrix" action="index" vid=$id proto=$proto}">{$vname}</a> </li>
                     {/foreach}
                 </ul>
             </div>
@@ -46,7 +46,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     {foreach from=$protos key=id item=name}
-                        <li> <a href="{genUrl controller="peering-matrix" action="index" lan=$lan proto=$id}">{$name}</a> </li>
+                        <li> <a href="{genUrl controller="peering-matrix" action="index" vid=$vid proto=$id}">{$name}</a> </li>
                     {/foreach}
                 </ul>
             </div>
@@ -181,13 +181,13 @@
     
 </div>
 
-{if isset( $user.privs ) and $user.privs eq 3}
+{if isset( $user ) and $user->getPrivs() eq 3}
 </div>
 {/if}
 
 <script type="text/javascript">
-{include file="peering-matrix/index.js"}
+{tmplinclude file="peering-matrix/index.js"}
 </script>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
 
