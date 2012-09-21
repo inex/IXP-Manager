@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,92 +33,95 @@
  */
 class VirtualInterfaceController extends INEX_Controller_FrontEnd
 {
-    public function init()
-    {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Virtualinterface';
-        $this->frontend['name']            = 'VirtualInterface';
-        $this->frontend['pageTitle']       = 'Virtual Interfaces';
-
-        // add new button in postContent with QuickAdd
-        $this->frontend['disableAddNew']   = true;
-        
-        $this->frontend[ 'columns' ] = array(
-
-            'displayColumns' => array(
-                'id', 'member', 'shortname', 'location', 'switch', 'port', 'speed'
-            ),
-
-	        'viewPanelRows' => array(
-	            'member' //, 'name', 'description', 'mtu', 'trunk', 'channelgroup'
-	        ),
-
-	        'viewPanelTitle' => 'member',
-
-	        'sortDefaults' => array(
-	            'column' => 'member', 'order' => 'asc'
-	        ),
-	        
-	        'id' => array(
-	            'label' => 'ID', 'hidden' => true
-	        ),
-
-	        'member' => array(
-	            'type' => 'aHasOne',
-	            'controller' => 'customer',
-	            'ifield' => 'memberid',
-	            'label' => 'Customer',
-	            'model' => 'Cust',
-	            'sortable' => true
-	        ),
-	        
-	        'shortname' => array(
-	            'type' => 'aHasOne',
-	            'controller' => 'customer',
-	            'ifield' => 'memberid',
-	            'label' => 'Shortname',
-	            'model' => 'Cust',
-	            'sortable' => true
-	        ),
-
-	        'location' => array(
-	            'type' => 'aHasOne',
-	            'controller' => 'location',
-	            'ifield' => 'locationid',
-	            'label' => 'Location',
-	            'model' => 'Location',
-	            'sortable' => true
-	        ),
-	        
-	        'switch' => array(
-	            'type' => 'aHasOne',
-	            'controller' => 'switch',
-	            'ifield' => 'switchid',
-	            'label' => 'Switch',
-	            'model' => 'SwitchTable',
-	            'sortable' => true
-	        ),
-	        
-	        'port' => array(
-	            'label' => 'Port',
-	            'sortable' => true
-	        ),
-	        
-	        'speed' => array(
-	            'label' => 'Speed',
-	            'sortable' => true
-	        )
-        );
-
-        
-        parent::feInit();
-    }
-
     /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
+    {
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\VirtualInterface',
+            'form'          => 'INEX_Form_Interface_Virtual',
+            'pagetitle'     => 'Interfaces',
+        
+            'titleSingular' => 'Interface',
+            'nameSingular'  => 'an interface',
+        
+            'defaultAction' => 'list',
+        
+            'listOrderBy'    => 'customer',
+            'listOrderByDir' => 'ASC',
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+        
+                    'customer'  => [
+                        'title'      => 'Customer',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'custid'
+                    ],
+    
+                    'shortname'  => [
+                        'title'      => 'Shortname',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'custid'
+                    ],
+    
+                    'location'      => 'Location',
+                    'switch'        => 'Switch',
+                    'port'          => 'Port',
+                    'speed'         => 'Speed'
+                ];
+                break;
+    
+            case \Entities\User::AUTH_CUSTADMIN:
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
+    
+    }
+    
+    
+    
+    /**
+     * Provide array of virtual interfaces for the listAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select(
+                    'c.name AS customer, c.shortname AS shortname,
+                    l.name AS location, s.name AS switch,
+                    sp.name AS port, SUM( pi.speed ) AS speed'
+                 )
+            ->from( '\\Entities\\VirtualInterface', 'vi' )
+            ->leftJoin( 'vi.Customer', 'c' )
+            ->leftJoin( 'vi.PhysicalInterfaces', 'pi' )
+            ->leftJoin( 'pi.SwitchPort', 'sp' )
+            ->leftJoin( 'sp.Switcher', 's' )
+            ->leftJoin( 's.Cabinet', 'cab' )
+            ->leftJoin( 'cab.Location', 'l' )
+            ->groupBy( 'vi' );
+    
+        return $qb->getQuery()->getArrayResult();
+    }
+    
+    
+
+    /*
      * If deleting a virtual interface, we should also the delete the physical and vlan interfaces
      * if they exist.
      *
-     */
+     *
     protected function preDelete( $object = null )
     {
         if( ( $oid = $this->getRequest()->getParam( 'id', null ) ) === null )
@@ -138,49 +141,10 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
             $this->getLogger()->notice( "Deleting vlan interface with id #{$vl['id']} while deleting virtual interface #{$vint['id']}" );
             $vl->delete();
         }
-    }
+    }*
 
 
-    //addEditPreDisplay
-    function addEditPreDisplay( $form, $object )
-    {
-        // did we get a customer id from the provisioning controller?
-        if( $this->_getParam( 'prov_cust_id', false ) )
-        {
-            $form->getElement( 'custid' )->setValue( $this->_getParam( 'prov_cust_id' ) );
-
-            $form->getElement( 'cancel' )->setAttrib( 'onClick',
-                "parent.location='" . $this->config['identity']['ixp']['url']
-                    . '/provision/interface-overview/id/' . $this->session->provisioning_interface_active_id . "'"
-            );
-        }
-
-        $dataQuery1 = Doctrine_Query::create()
-	        ->from( 'Physicalinterface pi' )
-	        ->leftJoin( 'pi.Switchport sp' )
-	        ->leftJoin( 'sp.SwitchTable s' )
-	        ->leftJoin( 's.Cabinet cb' )
-	        ->leftJoin( 'cb.Location l' )
-	        ->where( 'pi.Virtualinterface.id = ?', $this->getRequest()->getParam( 'id' ) );
-
-        $this->view->phyInts = $dataQuery1->execute();
-
-        $dataQuery2 = Doctrine_Query::create()
-	        ->from( 'Vlaninterface vli' )
-	        ->leftJoin( 'vli.Virtualinterface vi' )
-	        ->leftJoin( 'vli.Ipv4address v4' )
-	        ->leftJoin( 'vli.Ipv6address v6' )
-	        ->leftJoin( 'vli.Vlan v' )
-	        ->where( 'vi.id = ?', $this->getRequest()->getParam( 'id' ) );
-
-        $this->view->vlanInts = $dataQuery2->execute();
-
-        if( count( $this->view->vlanInts ) )
-            $this->view->cust = Doctrine_Core::getTable( 'Cust' )->find( $this->view->vlanInts[0]['Virtualinterface']['custid'] );
-
-    }
-
-
+    
     public function _customlist()
     {
         $dataQuery = Doctrine_Query::create()
@@ -225,22 +189,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
         }
 
         return $rows;
-    }
+    }*/
     
-    
-    /**
-     * Hook function to set a customer return.
-     *
-     * We want to display the virtual interface which was added / edited.
-	 *
-     * @param INEX_Form_SwitchPort $f
-     * @param Switchport $o
-     */
-    protected function _addEditSetReturnOnSuccess( $f, $o )
-    {
-        return 'virtual-interface/edit/id/' . $o['id'];
-    }
-    
-
 }
 
