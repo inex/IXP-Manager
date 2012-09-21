@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,171 +33,86 @@
  */
 class VlanInterfaceController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Vlaninterface';
-        $this->frontend['name']            = 'VlanInterface';
-        $this->frontend['pageTitle']       = 'VLAN Interfaces';
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\VlanInterface',
+            'form'          => 'INEX_Form_Interface_Vlan',
+            'pagetitle'     => 'VLAN Interfaces',
+        
+            'titleSingular' => 'VLAN Interface',
+            'nameSingular'  => 'a VLAN interface',
+        
+            'defaultAction' => 'list',
+        
+            'listOrderBy'    => 'customer',
+            'listOrderByDir' => 'ASC',
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+        
+                    'customer'  => [
+                        'title'      => 'Customer',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'custid'
+                    ],
+        
+                    'vlan'  => [
+                        'title'      => 'VLAN Name',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'vlan',
+                        'action'     => 'list',
+                        'idField'    => 'vlanid'
+                    ],
 
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'vlanName', 'vlanTag', 'ipv4Address', 'ipv6Address', 'custShortname' ),
-
-            'viewPanelRows'  => array( 'custName', 'vlanName', 'vlanTag',
-                'ipv4enabled', 'ipv4Address', 'ipv4hostname',
-                'ipv6enabled', 'ipv6Address', 'ipv6hostname',
-                'irrdbfilter', 'mcastenabled',
-                'bgpmd5secret', 'ipv4bgpmd5secret', 'ipv6bgpmd5secret', 'maxbgpprefix',
-                'rsclient', 'ipv4canping', 'ipv6canping',
-                'ipv4monitorrcbgp', 'ipv6monitorrcbgp', 'as112client', 'busyhost', 'notes'
-            ),
-
-            'sortDefaults' => array(
-                'column' => 'id',
-                'order'  => 'asc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'vlanName' => array(
-                'type' => 'hasOne',
-                'model' => 'Vlan',
-                'controller' => 'vlan',
-                'field' => 'name',
-                'label' => 'VLAN Name',
-                'sortable' => true
-            ),
-
-            'vlanTag' => array(
-                'type' => 'hasOne',
-                'model' => 'Vlan',
-                'controller' => 'vlan',
-                'field' => 'number',
-                'label' => 'VLAN Tag',
-                'sortable' => true
-            ),
-
-            'ipv4Address' => array(
-                'type' => 'hasOne',
-                'model' => 'Ipv4address',
-                'controller' => 'ipv4-address',
-                'field' => 'address',
-                'label' => 'IPv4 Address',
-                'sortable' => true
-            ),
-
-            'ipv6Address' => array(
-                'type' => 'hasOne',
-                'model' => 'Ipv6address',
-                'controller' => 'ipv6-address',
-                'field' => 'address',
-                'label' => 'IPv6 Address',
-                'sortable' => true
-            ),
-
-            'custShortname' => array(
-                'type' => 'l2HasOne',
-                'l1model' => 'Virtualinterface',
-                'l1controller' => 'virtual-interface',
-                'l2model' => 'Cust',
-                'l2controller' => 'customer',
-                'field' => 'shortname',
-                'label' => 'Member',
-                'sortable' => true
-            ),
-
-            'custName' => array(
-                'type' => 'l2HasOne',
-                'l1model' => 'Virtualinterface',
-                'l1controller' => 'virtual-interface',
-                'l2model' => 'Cust',
-                'l2controller' => 'customer',
-                'field' => 'name',
-                'label' => 'Member',
-                'sortable' => true
-            ),
-
-            'ipv4enabled' => array(
-                'label' => 'IPv4 Enabled'
-            ),
-
-            'ipv4hostname' => array(
-                'label' => 'IPv4 Hostname'
-            ),
-
-            'ipv6enabled' => array(
-                'label' => 'IPv6 Enabled'
-            ),
-
-            'ipv6hostname' => array(
-                'label' => 'IPv6 Hostname'
-            ),
-
-            'irrdbfilter' => array(
-                'label' => 'Apply IRRDB Filter'
-            ),
-
-            'mcastenabled' => array(
-                'label' => 'Multicast Enabled'
-            ),
-
-            'bgpmd5secret' => array(
-                'label' => 'BGP MD5 Secret'
-            ),
-
-            'ipv6bgpmd5secret' => array(
-                'label' => 'IPv6 BGP MD5 Secret'
-            ),
-
-            'ipv4bgpmd5secret' => array(
-                'label' => 'IPv4 BGP MD5 Secret'
-            ),
-
-            'maxbgpprefix' => array(
-                'label' => 'Max BGP Prefix'
-            ),
-
-            'rsclient' => array(
-                'label' => 'Route Server Client'
-            ),
-
-            'ipv4canping' => array(
-                'label' => 'IPv4 Can Ping?'
-            ),
-
-            'ipv6canping' => array(
-                'label' => 'IPv6 Can Ping?'
-            ),
-
-            'ipv4monitorrcbgp' => array(
-                'label' => 'IPv4 Monitor RC BGP'
-            ),
-
-            'ipv6monitorrcbgp' => array(
-                'label' => 'IPv6 Monitor RC BGP'
-            ),
-
-            'as112client' => array(
-                'label' => 'AS112 Client'
-            ),
-
-            'busyhost' => array(
-                'label' => 'Busy host'
-            ),
-
-            'notes' => array(
-                'label' => 'Notes'
+                    'rsclient'      => 'Route Server',
+                    'ipv4'          => 'ipv4',
+                    'ipv6'          => 'ipv6'
+                ];
+                break;
+    
+            case \Entities\User::AUTH_CUSTADMIN:
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
+    
+    }
+    
+    
+    
+    /**
+     * Provide array of virtual interfaces for the listAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select(
+                'vli.id AS id, ip4.address AS ipv4, ip6.address AS ipv6,
+                vli.rsclient AS rsclient, v.id AS vlanid, v.name AS vlan,
+                c.name AS customer, c.id AS custid'
             )
-
-        );
-
-        parent::feInit();
+            ->from( '\\Entities\\VlanInterface', 'vli' )
+            ->leftJoin( 'vli.VirtualInterface', 'vi' )
+            ->leftJoin( 'vli.Vlan', 'v' )
+            ->leftJoin( 'vli.IPv4Address', 'ip4' )
+            ->leftJoin( 'vli.IPv6Address', 'ip6' )
+            ->leftJoin( 'vi.Customer', 'c' );
+    
+        return $qb->getQuery()->getArrayResult();
     }
 
+    /*
 
     //addEditPreDisplay
     function addEditPreDisplay( $form, $object )
@@ -439,6 +354,6 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
     
         return new $formName( $options, $isEdit, $cancelLocation );
     }
-    
+    */
 }
 
