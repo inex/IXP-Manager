@@ -39,6 +39,7 @@ class INEX_Form_Interface_Virtual extends INEX_Form
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'virtual-interface/forms/virtual-interface.phtml' ] ] ] );
         
         $this->addElement( INEX_Form_Customer::getPopulatedSelect( 'custid' ) );
+        $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span6' );
         
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 0, 255 ) )

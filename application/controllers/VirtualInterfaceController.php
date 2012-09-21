@@ -149,54 +149,39 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
         
         return true;
     }
-
-
-    /*
-    public function _customlist()
+    
+    
+    /**
+     * @param INEX_Form_Interface_Virtual $form The form object
+     * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
-        $dataQuery = Doctrine_Query::create()
-	        ->from( 'Virtualinterface vi' )
-	        ->leftJoin( 'vi.Cust c' )
-	        ->leftJoin( 'vi.Physicalinterface pi' )
-	        ->leftJoin( 'pi.Switchport sp' )
-	        ->leftJoin( 'sp.SwitchTable s' )
-	        ->leftJoin( 's.Cabinet cb' )
-	        ->leftJoin( 'cb.Location l' )
-	        ->orderBy( 'c.shortname ASC' );
+        if( $isEdit )
+            $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
+    }
+    
+    
+    /**
+     * @param INEX_Form_Interface_Virtual $form The form object
+     * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        $object->setCustomer(
+            $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
+        );
+    
+        return true;
+    }
+    
 
-        $results = $dataQuery->execute();
-
-        $rows = array();
-        foreach( $results as $r )
-        {
-            $row = array();
-            
-            $row["member"]      = $r['Cust']['name'];
-            $row["memberid"]    = $r['Cust']['id'];
-            $row["id"]          = $r['id'];
-            $row["description"] = $r['description'];
-            $row["shortname"]   = $r['Cust']['shortname'];
-            $row["location"]    = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['Cabinet']['Location']['name'];
-            $row["locationid"]  = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['Cabinet']['Location']['id'];
-            $row["switch"]      = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['name'];
-            $row["switchid"]    = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['id'];
-            
-            if( count( $r['Physicalinterface'] ) > 1 )
-            {
-                $row["port"]        = '(trunk)';
-                $row["speed"]       = $r['Physicalinterface'][0]['speed'] * count( $r['Physicalinterface'] );
-            }
-            else
-            {
-                $row["port"]        = $r['Physicalinterface'][0]['Switchport']['name'];
-                $row["speed"]       = $r['Physicalinterface'][0]['speed'];
-            }
-               
-            $rows[] = $row;
-        }
-
-        return $rows;
-    }*/
     
 }
 
