@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,95 +22,53 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing VLAN interfaces
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class INEX_Form_VlanInterface extends INEX_Form
+class INEX_Form_Interface_Vlan extends INEX_Form
 {
 
-    public function __construct( $options = null, $isEdit = false, $cancelLocation )
+    public function init()
     {
-        parent::__construct( $options, $isEdit );
-        
-        $this->setDecorators(
-            array(
-                array(
-                    'ViewScript',
-                    array(
-                        'viewScript' => 'vlan-interface/forms/vlan-interface.tpl'
-                    )
-                )
-            )
-        );
-
-        ////////////////////////////////////////////////
-        // Create and configure elements
-        ////////////////////////////////////////////////
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'vlan-interface/forms/vlan-interface.phtml' ] ] ] );
 
         $virtualInterface = $this->createElement( 'hidden', 'virtualinterfaceid' );
         $this->addElement( $virtualInterface );
 
-
-        $vlan = $this->createElement( 'select', 'vlanid' );
-        $maxId = $this->createSelectFromDatabaseTable( $vlan, 'Vlan', 'id', array( 'name', 'number' ), 'name', 'ASC' );
-
-        $vlan->setRegisterInArrayValidator( true )
-            ->setRequired( true )
-            ->setLabel( 'VLAN' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setErrorMessages( array( 'Please select a VLAN' ) );
-        $this->addElement( $vlan );
-
-
-
-
-
-
+        $this->addElement( INEX_Form_VLAN::getPopulatedSelect( 'vlanid' ) );
+        
         $ipv4enabled = $this->createElement( 'checkbox', 'ipv4enabled' );
         $ipv4enabled->setLabel( 'IPv4 Enabled' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv4enabled );
 
-
-
-
         $ipv4addressid = $this->createElement( 'select', 'ipv4addressid' );
-
         $ipv4addressid->setRegisterInArrayValidator( false )
-            ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'class', 'chzn-select span3' )
             ->setLabel( 'IPv4 Address' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a IPv4 address' ) );
         $this->addElement( $ipv4addressid );
 
-
-
         $ipv4hostname = $this->createElement( 'text', 'ipv4hostname' );
         $ipv4hostname->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv4 Hostname' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv4hostname  );
 
         $ipv4bgpmd5secret = $this->createElement( 'text', 'ipv4bgpmd5secret' );
         $ipv4bgpmd5secret->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv4 BGP MD5 Secret' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv4bgpmd5secret  );
-
-
 
         $ipv4canping = $this->createElement( 'checkbox', 'ipv4canping' );
         $ipv4canping->setLabel( 'IPv4 Can Ping' )
@@ -123,13 +81,10 @@ class INEX_Form_VlanInterface extends INEX_Form
         $this->addElement( $ipv4monitorrcbgp );
 
         $this->addDisplayGroup(
-            array( 'ipv4addressid', 'ipv4hostname', 'ipv4bgpmd5secret', 'ipv4canping', 'ipv4monitorrcbgp' ),
+            [ 'ipv4addressid', 'ipv4hostname', 'ipv4bgpmd5secret', 'ipv4canping', 'ipv4monitorrcbgp' ],
             'ipv4DisplayGroup'
         );
         $this->getDisplayGroup( 'ipv4DisplayGroup' )->setLegend( 'IPv4 Details' );
-
-
-
 
 
 
@@ -138,10 +93,7 @@ class INEX_Form_VlanInterface extends INEX_Form
             ->setCheckedValue( '1' );
         $this->addElement( $ipv6enabled );
 
-
-
         $ipv6addressid = $this->createElement( 'select', 'ipv6addressid' );
-
         $ipv6addressid->setRegisterInArrayValidator( false )
             ->setLabel( 'IPv6 Address' )
             ->setAttrib( 'class', 'chzn-select' )
@@ -149,23 +101,19 @@ class INEX_Form_VlanInterface extends INEX_Form
             ->setErrorMessages( array( 'Please select a IPv6 address' ) );
         $this->addElement( $ipv6addressid );
         
-
         $ipv6hostname = $this->createElement( 'text', 'ipv6hostname' );
         $ipv6hostname->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv6 Hostname' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv6hostname  );
 
         $ipv6bgpmd5secret = $this->createElement( 'text', 'ipv6bgpmd5secret' );
         $ipv6bgpmd5secret->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv6 BGP MD5 Secret' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv6bgpmd5secret  );
-
 
 
         $ipv6canping = $this->createElement( 'checkbox', 'ipv6canping' );
@@ -186,24 +134,15 @@ class INEX_Form_VlanInterface extends INEX_Form
 
 
 
-
-
-
         $irrdbfilter = $this->createElement( 'checkbox', 'irrdbfilter' );
         $irrdbfilter->setLabel( 'Apply IRRDB Filtering' )
             ->setCheckedValue( '1' );
         $this->addElement( $irrdbfilter );
 
-        
-
-
         $mcastenabled = $this->createElement( 'checkbox', 'mcastenabled' );
         $mcastenabled->setLabel( 'Multicast Enabled' )
             ->setCheckedValue( '1' );
         $this->addElement( $mcastenabled );
-
-
-
 
         $maxbgpprefix = $this->createElement( 'text', 'maxbgpprefix' );
         $maxbgpprefix->addValidator('int')
@@ -212,48 +151,32 @@ class INEX_Form_VlanInterface extends INEX_Form
             ->setLabel( 'Max BGP Prefixes' );
         $this->addElement( $maxbgpprefix  );
 
-
-
-
         $rsclient = $this->createElement( 'checkbox', 'rsclient' );
         $rsclient->setLabel( 'Route Server Client' )
             ->setCheckedValue( '1' );
         $this->addElement( $rsclient );
-
-
-
 
         $as112client = $this->createElement( 'checkbox', 'as112client' );
         $as112client->setLabel( 'AS112 Client' )
             ->setCheckedValue( '1' );
         $this->addElement( $as112client );
 
-
-
-
         $busyhost = $this->createElement( 'checkbox', 'busyhost' );
         $busyhost->setLabel( 'Busy host' )
             ->setCheckedValue( '1' );
         $this->addElement( $busyhost );
 
-
-
-
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
             ->setRequired( false )
-            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 60 )
             ->setAttrib( 'rows', 5 );
         $this->addElement( $notes );
-
-
-
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
-            . $cancelLocation . "'" ) );
-
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
-
+        
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
             
         $preselectIPv4Address = $this->createElement( 'hidden', 'preselectIPv4Address' );
         $this->addElement( $preselectIPv4Address );

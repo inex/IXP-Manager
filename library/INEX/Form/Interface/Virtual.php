@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,71 +22,30 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing virtual interfaces
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class INEX_Form_VirtualInterface extends INEX_Form
+class INEX_Form_Interface_Virtual extends INEX_Form
 {
 
-    public function __construct( $options = null, $isEdit = false, $cancelLocation )
+    public function init()
     {
-        parent::__construct( $options, $isEdit );
-
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'virtual-interface/forms/virtual-interface.phtml' ] ] ] );
         
-        $this->setDecorators(
-            array(
-                array(
-                    'ViewScript',
-                    array(
-                        'viewScript' => 'virtual-interface/forms/virtual-interface.tpl'
-                    )
-                )
-            )
-        );
+        $this->addElement( INEX_Form_Customer::getPopulatedSelect( 'custid' ) );
         
-        
-        ////////////////////////////////////////////////
-        // Create and configure elements
-        ////////////////////////////////////////////////
-
-        $dbCusts = Doctrine_Query::create()
-            ->from( 'Cust c' )
-            ->orderBy( 'c.name ASC' )
-            ->execute();
-
-        $custs = array( '0' => '' );
-        $maxId = 0;
-
-        foreach( $dbCusts as $c )
-        {
-            $custs[ $c['id'] ] = "{$c['name']}";
-            if( $c['id'] > $maxId ) $maxId = $c['id'];
-        }
-
-        $cust = $this->createElement( 'select', 'custid' );
-        $cust->setMultiOptions( $custs );
-        $cust->setRegisterInArrayValidator( true )
-            ->setRequired( true )
-            ->setLabel( 'Customer' )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( array( 'Please select a customer' ) );
-        $this->addElement( $cust );
-
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
             ->setLabel( 'Virtual Interface Name' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name );
 
 
@@ -94,7 +53,7 @@ class INEX_Form_VirtualInterface extends INEX_Form
         $descr->setLabel( 'Description' )
             ->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
-            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->addFilter( new OSS_Filter_StripSlashes() )
             ->addFilter( 'StringTrim' );
         $this->addElement( $descr );
 
@@ -103,14 +62,14 @@ class INEX_Form_VirtualInterface extends INEX_Form
         $channel->addValidator( 'int' )
             ->setLabel( 'Channel Group Number' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $channel );
 
         $mtu = $this->createElement( 'text', 'mtu' );
         $mtu->addValidator( 'int' )
             ->setLabel( 'MTU' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $mtu );
 
 
@@ -121,23 +80,15 @@ class INEX_Form_VirtualInterface extends INEX_Form
 
 
         $this->addDisplayGroup(
-            array(
-            	'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk'
-            ),
+            [ 'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk' ],
             'virtualInterfaceDisplayGroup'
         );
             
         $this->getDisplayGroup( 'virtualInterfaceDisplayGroup' )->setLegend( 'Customer Connection Details' );
 
         
-        $this->addElement( 'button', 'cancel',
-            array(
-            	'label' => 'Cancel',
-            	'onClick' => "parent.location='" . $cancelLocation . "'"
-            )
-        );
-
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
     }
 
 }
