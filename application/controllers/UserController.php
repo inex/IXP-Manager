@@ -69,6 +69,12 @@ class UserController extends INEX_Controller_FrontEnd
 
                     'username'      => 'Userame',
                     'email'         => 'Email',
+                    
+                    'privileges'    => [
+                        'title'     => 'Privileges',
+                        'type'      => self::$FE_COL_TYPES[ 'XLATE' ],
+                        'xlator'    => \Entities\User::$PRIVILEGES_TEXT
+                    ],
 
                     'created'       => [
                         'title'     => 'Created',
@@ -136,7 +142,7 @@ class UserController extends INEX_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-            ->select( 'u.id as id, u.username as username, u.email as email,
+            ->select( 'u.id as id, u.username as username, u.email as email, u.privs AS privileges,
                     u.created as created, u.disabled as disabled, c.id as custid, c.name as customer' )
             ->from( '\\Entities\\User', 'u' )
             ->leftJoin( 'u.Customer', 'c' );
