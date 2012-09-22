@@ -133,33 +133,56 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
     }
     
     
-    
-    
+    /**
+     * @param INEX_Form_Interface_Physical $form The form object
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+    {
+        if( $isEdit )
+        {
+            $form->getElement( 'switchid' )->setValue( $object->getSwitchPort()->getSwitcher()->getId() );
+            $form->getElement( 'switchportid' )->setValue( $object->getSwitchPort()->getId() );
+            $form->getElement( 'preselectSwitchPort' )->setValue( $object->getSwitchPort()->getId() );
+            $form->getElement( 'preselectPhysicalInterface' )->setValue( $object->getId() );
+        }
+    }
     
     
     /**
-     * addEditPreDisplay
-     *
-     * @param INEX_Form_PhysicalInterface The form object
+     * @param INEX_Form_Interface_Physical $form The form object
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
      */
-    function addEditPreDisplay( $form, $object )
+    protected function addPostValidate( $form, $object, $isEdit )
     {
-        // did we get a customer id from the provisioning controller?
-        if( $this->_getParam( 'prov_virtualinterface_id', false ) )
+        $object->setSwitchPort(
+            $this->getD2EM()->getRepository( '\\Entities\\SwitchPort' )->find( $form->getElement( 'switchportid' )->getValue() )
+        );
+
+        return true;
+    }
+    
+    
+    /**
+     * Preparation hook that can be overridden by subclasses for add and edit.
+     *
+     * @param INEX_Form_Interface_Physical $form The form object
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     *
+    protected function addPrepare( $form, $object, $isEdit )
+    {
+        if( !$object->getMonitorindex() )
         {
-            $form->getElement( 'cancel' )->setAttrib( 'onClick',
-                "parent.location='" . $this->config['identity']['ixp']['url']
-                    . '/provision/interface-overview/id/' . $this->session->provisioning_interface_active_id . "'"
-            );
+            foreach( $this-)
         }
-
-        // if provisioning and we're creating an interface:
-        if( $this->_getParam( 'prov_physicalinterface_id' ) !== null )
-        {
-            $form->getElement( 'status' )->setValue( Physicalinterface::STATUS_XCONNECT );
-        }
-
-
+        /*
         if( $this->getRequest()->getParam( 'virtualinterfaceid' ) !== null )
         {
             $form->getElement( 'virtualinterfaceid' )->setValue( $this->getRequest()->getParam( 'virtualinterfaceid' ) );
@@ -178,52 +201,8 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
 
                 $form->getElement( 'monitorindex' )->setValue( $nextMonitorIndex[0]['MAX'] + 1 );
             }
-        }
-    }
+        }*
+    }*/
     
-    
-    protected function formPrevalidate( $form, $isEdit, $object )
-    {
-        // set the switch and port fields of the form if we're editing
-        if( $isEdit )
-        {
-            $form->getElement( 'switch_id')->setValue( $object->Switchport->SwitchTable['id'] );
-            $form->getElement( 'preselectSwitchPort' )->setValue( $object->Switchport['id'] );
-            $form->getElement( 'preselectPhysicalInterface' )->setValue( $object['id'] );
-        }
-    }
-    
-    public function ajaxGetPortsAction()
-    {
-        $switch = Doctrine::getTable( 'SwitchTable' )->find( $this->_getParam( 'switchid', null ) );
-
-        $ports = '';
-        
-        if( $switch )
-        {
-            $ports = Doctrine_Query::create()
-                ->from( 'Switchport sp' )
-                ->leftJoin( 'sp.Physicalinterface pi' )
-                ->where( 'sp.switchid = ?', $switch['id'] );
-                
-            if( $this->_getParam( 'id', null ) !== null )
-                $ports = $ports->andWhere( '( pi.id IS NULL OR pi.id = ? )', $this->_getParam( 'id' ) );
-            else
-                $ports = $ports->andWhere( 'pi.id IS NULL' );
-                
-            $ports = $ports->orderBy( 'sp.id' )
-                ->fetchArray();
-                
-            foreach( $ports as $i => $p )
-                $ports[$i]['type'] = Switchport::$TYPE_TEXT[ $p['type'] ];
-        }
-        
-        $this->getResponse()
-            ->setHeader('Content-Type', 'application/json')
-            ->setBody( Zend_Json::encode( $ports ) )
-            ->sendResponse();
-        exit();
-    }
-
 }
 

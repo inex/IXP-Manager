@@ -88,7 +88,10 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     
     }
     
-    
+    public function viewAction()
+    {
+        $this->forward( 'add' );
+    }
     
     /**
      * Provide array of virtual interfaces for the listAction
@@ -162,7 +165,12 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
         if( $isEdit )
+        {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
+
+            $this->view->physInts = $object->getPhysicalInterfaces();
+            $this->view->vlanInts = $object->getVlanInterfaces();
+        }
     }
     
     

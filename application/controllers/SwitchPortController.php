@@ -176,6 +176,45 @@ class SwitchPortController extends INEX_Controller_FrontEnd
             $this->redirect( 'switch-port/list/switch/' . $switch->getId() );
         }
     }
+    
+    
+    
+    public function ajaxGetAction()
+    {
+        $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
+                    FROM \\Entities\\SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN sp.PhysicalInterface pi
+                    WHERE
+                        s.id = ?1 ";
+        
+        if( $this->getParam( 'id', null ) !== null )
+            $dql .= 'AND ( pi.id IS NULL OR pi.id = ?2 )';
+        else
+            $dql .= 'AND pi.id IS NULL';
+
+        $dql .= " ORDER BY sp.id ASC";
+        
+        $query = $this->getD2EM()->createQuery( $dql );
+        $query->setParameter( 1, $this->getParam( 'switchid', 0 ) );
+        
+        if( $this->getParam( 'id', null ) !== null )
+            $query->setParameter( 2, $this->getParam( 'id' ) );
+        
+        $ports = $query->getArrayResult();
+    
+        foreach( $ports as $id => $port )
+            $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+    
+        $this->getResponse()
+            ->setHeader('Content-Type', 'application/json')
+            ->setBody( Zend_Json::encode( $ports ) )
+            ->sendResponse();
+        
+        die(); //FIXME I shouldn't have to die() here...
+    }
+    
+    
 }
 
 
