@@ -182,17 +182,9 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
             
             if( !$object->getMonitorindex() )
             {
-                $maxMonIndex = 0;
-                foreach( $vint->getCustomer()->getVirtualInterfaces() as $vi )
-                {
-                    foreach( $vi->getPhysicalInterfaces() as $pi )
-                    {
-                        if( $pi->getMonitorIndex() > $maxMonIndex )
-                            $maxMonIndex = $pi->getMonitorIndex();
-                    }
-                }
-                
-                $form->getElement( 'monitorindex' )->setValue( $maxMonIndex + 1 );
+                $form->getElement( 'monitorindex' )->setValue(
+                    $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $vint->getCustomer() )
+                );
             }
         }
     }

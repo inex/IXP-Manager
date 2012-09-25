@@ -1,0 +1,19 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller='virtual-interface' action='list'}">(Virtual) Interfaces</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Add Interface Wizard
+    </li>
+</ul>
+
+{$form}
+
+<script type="text/javascript">{tmplinclude file="virtual-interface/js/add-wizard.js"}</script>
+
+{tmplinclude file="footer.phtml"}
