@@ -149,6 +149,34 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
             $form->getElement( 'switchportid' )->setValue( $object->getSwitchPort()->getId() );
             $form->getElement( 'preselectSwitchPort' )->setValue( $object->getSwitchPort()->getId() );
             $form->getElement( 'preselectPhysicalInterface' )->setValue( $object->getId() );
+            $form->getElement( 'virtualinterfaceid' )->setValue( $object->getVirtualInterface()->getId() );
+        }
+        else // not editing
+        {
+            if( $this->getRequest()->isPost() && ( $vintid = ( isset( $_POST['virtualinterfaceid'] ) && $_POST['virtualinterfaceid'] ) ) )
+                $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $_POST['virtualinterfaceid'] );
+            else if( ( $vintid = $this->getRequest()->getParam( 'vintid' ) ) !== null )
+                $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $vintid );
+            
+            if( !isset( $vint ) || !$vint )
+                throw new INEX_Exception( 'Not sure how you would add a physical interface without a containing virtual interface');
+            
+            $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
+
+            if( !$object->getMonitorindex() )
+            {
+                $maxMonIndex = 0;
+                foreach( $vint->getCustomer()->getVirtualInterfaces() as $vi )
+                {
+                    foreach( $vi->getPhysicalInterfaces() as $pi )
+                    {
+                        if( $pi->getMonitorIndex() > $maxMonIndex )
+                            $maxMonIndex = $pi->getMonitorIndex();
+                    }
+                }
+                
+                $form->getElement( 'monitorindex' )->setValue( $maxMonIndex + 1 );
+            }
         }
     }
     
@@ -164,45 +192,33 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
         $object->setSwitchPort(
             $this->getD2EM()->getRepository( '\\Entities\\SwitchPort' )->find( $form->getElement( 'switchportid' )->getValue() )
         );
+        
+        $object->setVirtualInterface(
+            $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $form->getElement( 'virtualinterfaceid' )->getValue() )
+        );
 
         return true;
     }
     
-    
     /**
-     * Preparation hook that can be overridden by subclasses for add and edit.
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful add / edit operation.
      *
      * @param INEX_Form_Interface_Physical $form The form object
      * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
-     * @param bool $isEdit True if we are editing, otherwise false
-     *
-    protected function addPrepare( $form, $object, $isEdit )
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
-        if( !$object->getMonitorindex() )
-        {
-            foreach( $this-)
-        }
-        /*
-        if( $this->getRequest()->getParam( 'virtualinterfaceid' ) !== null )
-        {
-            $form->getElement( 'virtualinterfaceid' )->setValue( $this->getRequest()->getParam( 'virtualinterfaceid' ) );
-
-            if( $form->getElement( 'monitorindex' )->getValue() == '' )
-            {
-                $virtualInterface = Doctrine::getTable( 'Virtualinterface' )->find( $this->getRequest()->getParam( 'virtualinterfaceid' ) );
-
-                $nextMonitorIndex = Doctrine_Query::create()
-	                ->select( 'MAX( pi.monitorindex )' )
-	                ->from( 'Physicalinterface pi' )
-	                ->leftJoin( 'pi.Virtualinterface vi' )
-	                ->where( 'vi.custid = ?', $virtualInterface['custid'] )
-	                ->execute()
-	                ->toArray();
-
-                $form->getElement( 'monitorindex' )->setValue( $nextMonitorIndex[0]['MAX'] + 1 );
-            }
-        }*
-    }*/
+        $this->addMessage(
+            'Physical interface successfuly ' . ( $isEdit ? 'edited.' : 'added.' ), OSS_Message::SUCCESS
+        );
+        
+        $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $object->getVirtualInterface()->getId() );
+    }
+    
+    
     
 }
 
