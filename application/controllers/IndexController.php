@@ -55,7 +55,4 @@ class IndexController extends INEX_Controller_Action
     public function aboutAction()
     {}
 
-    public function helpAction()
-    {}
-    
 }
