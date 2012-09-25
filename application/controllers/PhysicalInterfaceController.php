@@ -237,7 +237,23 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
         $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $object->getVirtualInterface()->getId() );
     }
     
-    
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful deletion operation.
+     *
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function deleteDestinationOnSuccess()
+    {
+        if( $this->getParam( 'rtn', false ) == 'pi' )
+            return false;
+        
+        $this->addMessage(
+            'Physical interface deleted successfuly.', OSS_Message::SUCCESS
+        );
+        
+        $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $this->getParam( 'vintid' ) );
+    }
     
 }
 
