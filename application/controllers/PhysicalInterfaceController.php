@@ -164,6 +164,8 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
             
             if( $this->getParam( 'rtn', false ) == 'pi' )
                 $form->setAction( OSS_Utils::genUrl( 'physical-interface', 'edit', false, [ 'id' => $object->getId(), 'rtn' => 'pi' ] ) );
+            else
+                $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $object->getVirtualInterface()->getId() ] ) );
         }
         else // not editing
         {
