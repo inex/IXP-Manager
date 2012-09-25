@@ -196,11 +196,9 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     }
     
 
-    /*
-    
-    public function quickAddAction()
+    public function addWizadAction()
     {
-    $f = new INEX_Form_QuickAddInterface( null, false, 'virtual-interface' );
+        $form = new INEX_Form_Interface_AddWizard();
     
     // Process a submitted form if it passes initial validation
     if( $this->inexGetPost( 'commit' ) !== null && $f->isValid( $_POST ) )
