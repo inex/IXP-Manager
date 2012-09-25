@@ -96,6 +96,11 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
                     'speed'         => 'Speed',
                     'duplex'        => 'Duplex'
                 ];
+                
+                $this->_feParams->viewColumns = array_merge(
+                    $this->_feParams->listColumns,
+                    [ 'monitorindex' => 'Monitor Index', 'notes' => 'Notes' ]
+                );
                 break;
     
             case \Entities\User::AUTH_CUSTADMIN:
@@ -115,20 +120,25 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-        ->select(
-                'pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
-                c.name AS customer, c.id AS custid,
-                s.name AS switch, s.id AS switchid,
-                sp.name AS port, l.id AS locid, l.name AS location'
-            )
-        ->from( '\\Entities\\PhysicalInterface', 'pi' )
-        ->leftJoin( 'pi.VirtualInterface', 'vi' )
-        ->leftJoin( 'vi.Customer', 'c' )
-        ->leftJoin( 'pi.SwitchPort', 'sp' )
-        ->leftJoin( 'sp.Switcher', 's' )
-        ->leftJoin( 's.Cabinet', 'cab' )
-        ->leftJoin( 'cab.Location', 'l' );
-    
+            ->select(
+                    'pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
+                    pi.monitorindex AS monitorindex, pi.notes AS notes,
+                    c.name AS customer, c.id AS custid,
+                    s.name AS switch, s.id AS switchid,
+                    sp.name AS port, l.id AS locid, l.name AS location'
+                )
+            ->from( '\\Entities\\PhysicalInterface', 'pi' )
+            ->leftJoin( 'pi.VirtualInterface', 'vi' )
+            ->leftJoin( 'vi.Customer', 'c' )
+            ->leftJoin( 'pi.SwitchPort', 'sp' )
+            ->leftJoin( 'sp.Switcher', 's' )
+            ->leftJoin( 's.Cabinet', 'cab' )
+            ->leftJoin( 'cab.Location', 'l' );
+
+        
+        if( $id !== null )
+            $qb->where( 'pi.id = ' . intval( $id ) );
+        
         return $qb->getQuery()->getArrayResult();
     }
     
