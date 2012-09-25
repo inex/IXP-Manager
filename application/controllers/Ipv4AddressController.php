@@ -169,5 +169,48 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
             $this->redirect( strtolower( $addrfam ) . '-address/list/vlan/' . $vlan->getId() );
         }
     }
+
+    public function ajaxGetForVlanAction()
+    {
+        if( $this->getRequest()->getControllerName() == 'ipv6-address' )
+        {
+            $af = 'ipv6'; $entity = 'IPv6Address';
+        }
+        else
+        {
+            $af = 'ipv4'; $entity = 'IPv4Address';
+        }
+        
+        $dql = "SELECT {$af}.id AS id, {$af}.address AS address
+                    FROM \\Entities\\{$entity} {$af}
+                        LEFT JOIN {$af}.Vlan v
+                        LEFT JOIN {$af}.VlanInterface vli
+                    WHERE
+                        v.id = ?1 ";
+    
+        if( $this->getParam( 'vliid', null ) !== null )
+            $dql .= 'AND ( vli.id IS NULL OR vli.id = ?2 )';
+        else
+            $dql .= 'AND vli.id IS NULL';
+    
+        $dql .= " ORDER BY {$af}.id ASC";
+    
+        $query = $this->getD2EM()->createQuery( $dql );
+        $query->setParameter( 1, $this->getParam( 'vlanid', 0 ) );
+    
+        if( $this->getParam( 'vliid', null ) !== null )
+            $query->setParameter( 2, $this->getParam( 'vliid' ) );
+    
+        $ips = $query->getArrayResult();
+
+        $this->getResponse()
+            ->setHeader('Content-Type', 'application/json')
+            ->setBody( Zend_Json::encode( $ips ) )
+            ->sendResponse();
+    
+        die(); //FIXME I shouldn't have to die() here...
+    }
+    
+
 }
 
