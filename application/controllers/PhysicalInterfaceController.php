@@ -125,6 +125,7 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
                     pi.monitorindex AS monitorindex, pi.notes AS notes,
                     c.name AS customer, c.id AS custid,
                     s.name AS switch, s.id AS switchid,
+                    vi.id AS vintid,
                     sp.name AS port, l.id AS locid, l.name AS location'
                 )
             ->from( '\\Entities\\PhysicalInterface', 'pi' )
@@ -160,6 +161,9 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
             $form->getElement( 'preselectSwitchPort' )->setValue( $object->getSwitchPort()->getId() );
             $form->getElement( 'preselectPhysicalInterface' )->setValue( $object->getId() );
             $form->getElement( 'virtualinterfaceid' )->setValue( $object->getVirtualInterface()->getId() );
+            
+            if( $this->getParam( 'rtn', false ) == 'pi' )
+                $form->setAction( OSS_Utils::genUrl( 'physical-interface', 'edit', false, [ 'id' => $object->getId(), 'rtn' => 'pi' ] ) );
         }
         else // not editing
         {
@@ -221,6 +225,9 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
      */
     protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
+        if( $this->getParam( 'rtn', false ) == 'pi' )
+            return false;
+        
         $this->addMessage(
             'Physical interface successfuly ' . ( $isEdit ? 'edited.' : 'added.' ), OSS_Message::SUCCESS
         );
