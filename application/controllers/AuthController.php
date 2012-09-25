@@ -76,10 +76,8 @@ class AuthController extends INEX_Controller_Action
     protected function drupalLoginAction()
     {
         // let's be clear - you have to be an INEX member to access this!
-        if( $this->identity['user']['privs'] == User::AUTH_SUPERUSER )
-            $this->view->display( 'auth/drupal-login.tpl' );
-        else
-            $this->_forward( 'index', 'dashboard' );
+        if( !$this->getAuth()->hasIdentity() || $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $this->redirectAndEnsureDie( 'error/insufficient-privileges' );
     }
 
     
