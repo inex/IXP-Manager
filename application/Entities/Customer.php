@@ -1488,4 +1488,10 @@ class Customer
     {
         return $this->SecEvents;
     }
+    
+    
+    public function hasLeft()
+    {
+        return $this->getDateleave() != null;
+    }
 }

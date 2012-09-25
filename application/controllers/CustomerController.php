@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,184 +33,169 @@
  */
 class CustomerController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Cust';
-        $this->frontend['name']            = 'Customer';
-        $this->frontend['pageTitle']       = 'Customers';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array(
-                'id', 'name', 'autsys', 'shortname', 'peeringemail', 'nocphone'
-            ),
-
-            // Customer can update:
-            'updatableColumns' => array( 'peeringemail', 'noc24hphone', 'nocphone', 'nocemail', 'nocfax', 'nochours', 'nocwww',
-                'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww'
-            ),
-
-            'viewPanelRows'  => array( 'name', 'type', 'status', 'shortname', 'autsys', 'peeringemail', 'nocphone', 'nocemail', 'noc24hphone', 'nocfax',
-                'nochours', 'nocwww', 'irrdb', 'peeringmacro', 'peeringpolicy', 'maxprefixes',
-                'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry',
-                'corpwww', 'datejoin', 'dateleave', 'activepeeringmatrix', 'notes'
-            ),
-
-            'viewPanelTitle' => 'name',
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-
-            'name' => array(
-                'label' => 'Member',
-                'sortable' => true,
-                'searchable' => true,
-                'search' => array(
-                    'type' => 'text',
-                    'beginsWith' => true
-                )
-            ),
-
-            'type' => array(
-                'label' => 'Type',
-                'sortable' => false,
-                'type' => 'xlate',
-                'xlator' => Cust::$CUST_TYPES_TEXT
-            ),
-
-            'status' => array(
-                'label' => 'Status',
-                'sortable' => false,
-                'type' => 'xlate',
-                'xlator' => Cust::$CUST_STATUS_TEXT
-            ),
-
-            'shortname' => array(
-                'label' => 'Short Name',
-                'sortable' => true,
-                'searchable' => true,
-                'search' => array(
-                    'type' => 'text',
-                    'beginsWith' => true
-                )
-            ),
-
-            'autsys' => array(
-                'label' => 'AS',
-                'sortable' => true,
-                'searchable' => true,
-                'search' => array(
-                    'type' => 'text',
-                    'beginsWith' => true
-                )
-            ),
-
-            'peeringemail' => array(
-                'label' => 'Peering E-Mail',
-                'sortable' => false
-            ),
-
-            'nocphone' => array(
-                'label' => 'NOC Phone'
-            ),
-
-            'noc24hphone' => array(
-                'label' => 'NOC 24hr Phone'
-            ),
-
-            'nocemail' => array(
-                'label' => 'NOC E-mail'
-            ),
-
-            'nocfax' => array(
-                'label' => 'NOC Fax'
-            ),
-
-            'nochours' => array(
-                'label' => 'NOC Hours'
-            ),
-
-            'nocwww' => array(
-                'label' => 'NOC Website'
-            ),
-
-            'irrdb' => array(
-                'type' => 'hasOne',
-                'model' => 'Irrdbconfig',
-                'controller' => 'irrdb-config',
-                'field' => 'source',
-                'label' => 'IRRDB',
-                'sortable' => true
-            ),
-
-            'peeringmacro' => array(
-                'label' => 'Peering Macro'
-            ),
-
-            'peeringpolicy' => array(
-                'label' => 'Peering Policy'
-            ),
-
-            'maxprefixes' => array(
-                'label' => 'Max Prefixes'
-            ),
-
-            'billingContact' => array(
-                'label' => 'Billing Contact'
-            ),
-
-            'billingAddress1' => array(
-                'label' => 'Billing Address 1'
-            ),
-
-            'billingAddress2' => array(
-                'label' => 'Billing Address 2'
-            ),
-
-            'billingCity' => array(
-                'label' => 'Billing City'
-            ),
-
-            'billingCountry' => array(
-                'label' => 'Billing Country'
-            ),
-
-            'corpwww' => array(
-                'label' => 'Corporate Website'
-            ),
-
-            'datejoin' => array(
-                'label' => 'Date Joined'
-            ),
-
-            'dateleave' => array(
-                'label' => 'Date Left'
-            ),
-
-            'activepeeringmatrix' => array(
-                'label' => 'Active Peering Matrix'
-            ),
-
-            'notes' => array(
-                'label' => 'Notes'
-            )
-
+        $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
+        
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\Customer',
+            'form'          => 'INEX_Form_Customer',
+            'pagetitle'     => 'Customers',
+        
+            'titleSingular' => 'Customer',
+            'nameSingular'  => 'a customer',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+        
+            'listOrderBy'    => 'c.name',
+            'listOrderByDir' => 'ASC',
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+        
+                    'name'        => [
+                        'title'      => 'Name',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'id'
+                    ],
+        
+                    'autsys'      => 'AS',
+                    
+                    'shortname'   => [
+                        'title'      => 'Shortname',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'id'
+                    ],
+                    
+                    'peeringemail'   => 'Peering Email',
+                    'noc24hphone'    => 'NOC 24h Phone',
+                    
+                    'datejoin'       => [
+                        'title'     => 'Joined',
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ]
+                ];
+                break;
+    
+            case \Entities\User::AUTH_CUSTADMIN:
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
+    
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = array_merge(
+            $this->_feParams->listColumns,
+            [
+                'type'            => [
+                    'title'         => 'Type',
+                    'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT
+                ],
+                'maxprefixes'     => 'Max Prefixes',
+                'nocphone'        => 'NOC Phone',
+                'nocfax'          => 'NOC Fax',
+                'nochours'        => 'NOC Hours',
+                'nocemail'        => 'NOC Email',
+                'nocwww'          => 'NOC WWW',
+                'irrdb'           => 'IRRDB',
+                'status'          => [
+                    'title'         => 'Status',
+                    'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'        => \Entities\Customer::$CUST_STATUS_TEXT
+                ],
+                'activepeeringmatrix' => 'Active Peering Matrix',
+                'peeringmacro'    => 'Peering Macro',
+                'peeringpolicy'   => 'Peering Policy',
+                'billingContact'  => 'Billing Contact',
+                'billingAddress1' => 'Billing Address1',
+                'billingAddress2' => 'Billing Address2',
+                'billingCity'     => 'Billing City',
+                'billingCountry'  => 'Billing Country',
+                'corpwww'         => 'Corporate WWW',
+                'dateleave'       => [
+                        'title'     => 'Left',
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'notes'           => 'Notes',
+                'lastupdated'     => 'Last Updated',
+                'lastupdatedby'   => 'Last Updated By',
+                'creator'         => 'Created By',
+                'created'         => 'Created'
+            ]
         );
-
-
-        // Override global auth level requirement for specific actions
-        $this->frontend['authLevels'] = array(
-            'update-attribute' => User::AUTH_CUSTUSER
-        );
-
-        parent::feInit();
+    }
+    
+    
+    
+    
+    /**
+     * Provide array of customers for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+                ->select( 'c.id AS id, c.name AS name, c.shortname AS shortname, c.type AS type,
+                            c.autsys AS autsys, c.maxprefixes AS maxprefixes, c.peeringemail AS peeringemail,
+                            c.nocphone AS nocphone, c.noc24hphone AS noc24hphone, c.nocfax AS nocfax,
+                            c.nochours AS nochours, c.nocemail AS nocemail, c.nocwww AS nocwww,
+                            c.irrdb AS irrdb, c.status AS status, c.activepeeringmatrix AS activepeeringmatrix,
+                            c.peeringmacro AS peeringmacro, c.peeringpolicy AS peeringpolicy,
+                            c.billingContact AS billingContact, c.billingAddress1 AS billingAddress1,
+                            c.billingAddress2 AS billingAddress2, c.billingCity AS billingCity, c.billingCountry AS billingCountry,
+                            c.corpwww AS corpwww, c.datejoin AS datejoin, c.dateleave AS dateleave,
+                            c.notes AS notes, c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby,
+                            c.creator AS creator, c.created AS created'
+                        )
+                ->from( '\\Entities\\Customer', 'c' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'c.id = ?3' )->setParameter( 3, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    
+    public function viewAction()
+    {
+        $this->forward( 'overview' );
     }
 
+    
+    /**
+     * The Customer Overview
+     */
+    public function overviewAction()
+    {
+        // Is the customer ID valid?
+        if( !$this->getRequest()->getParam( 'id', false ) )
+            return $this->forward( 'list' );
+        
+        $this->view->cust = $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getRequest()->getParam( 'id' ) );
 
+        if( !$cust )
+        {
+            $this->addMessage( 'Invalid customer ID', OSS_Message::ERROR );
+            return( $this->forward( 'list' ) );
+        }
+    }
+    
+    
     /**
      * Additional checks when a new object is being added.
      */
@@ -585,25 +570,5 @@ END_JSON;
         return 'customer/dashboard/id/' . $object['id'];
     }
 
-    /**
-     * The Customer Dashboard
-     *
-     */
-    public function dashboardAction()
-    {
-        // Is the customer ID valid?
-        if( !$this->getRequest()->getParam( 'id', false ) || !is_numeric( $this->getRequest()->getParam( 'id' ) )
-            || !( $customer = Doctrine::getTable( 'Cust' )->find( $this->getRequest()->getParam( 'id' ) ) ) )
-        {
-            $this->view->message = new INEX_Message( 'Invalid customer ID', "error" );
-            return( $this->_forward( 'list' ) );
-        }
-
-        $this->view->acust = $customer;
-        $this->view->connections = $customer->getConnections();
-        
-        
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'dashboard.tpl' );
-    }
 }
 

@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Administrator's Home"}
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Administrator's Home"}
 
 <ul class="breadcrumb">
     <li>
@@ -8,7 +8,7 @@
         <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
     </li>
     <li class="active">
-        Dashboard for {$acust.name}
+        Overview for {$cust->getName()}
     </li>
     <li class="pull-right">
         <div class="btn-toolbar" style="display: inline;">
@@ -20,14 +20,14 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="{genUrl controller="customer" action="send-welcome-email" id=$acust.id}">Send Welcome Email...</a>
+                        <a href="{genUrl controller="customer" action="send-welcome-email" id=$cust->getId()}">Send Welcome Email...</a>
                     </li>
                 </ul>
             </div>
         
             <div class="btn-group">
-                <a class="btn btn-mini" href="{genUrl controller='customer' action="edit" id=$acust.id}"><i class="icon-pencil"></i></a>
-                <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller='customer' action="delete" id=$acust.id}"><i class="icon-trash"></i></a>
+                <a class="btn btn-mini" href="{genUrl controller='customer' action="edit" id=$cust->getId()}"><i class="icon-pencil"></i></a>
+                <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this record?' );" href="{genUrl controller='customer' action="delete" id=$cust->getId()}"><i class="icon-trash"></i></a>
             </div>
     
             <div class="btn-group">
@@ -38,7 +38,7 @@
                         {assign var=cidprev  value=$k}
                     {/if}
                     
-                    {if $k eq $acust.id}
+                    {if $k eq $cust->getId()}
                         {assign var=haveprev value=1}
                     {elseif $haveprev and not $havenext}
                         {assign var=havenext value=1}
@@ -56,15 +56,14 @@
                 {/foreach}
                 
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="dashboard" id=$cidprev}"><i class="icon-chevron-left"></i></a>
-                <a class="btn btn-mini" href="{genUrl controller='customer' action="dashboard" id=$acust.id}"><i class="icon-refresh"></i></a>
+                <a class="btn btn-mini" href="{genUrl controller='customer' action="dashboard" id=$cust->getId()}"><i class="icon-refresh"></i></a>
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="dashboard" id=$cidnext}"><i class="icon-chevron-right"></i></a>
             </div>
         </div>
     </li>
 </ul>
 
-{include file="message.tpl"}
-<div id="ajaxMessage"></div>
+{OSS_Message}
 
 <div class="row-fluid">
 
@@ -73,25 +72,25 @@
         <div class="row-fluid">
         
             <h3>
-                {$acust.name}
-                {if $acust.type eq Cust::TYPE_ASSOCIATE}
+                {$cust->getName()}
+                {if $cust->getType() eq CUSTOMER::TYPE_ASSOCIATE}
                     <span class="label label-warning">ASSOCIATE MEMBER</span>
-                {elseif $acust.type eq Cust::TYPE_PROBONO}
+                {elseif $cust->getType() eq CUSTOMER::TYPE_PROBONO}
                     <span class="label label-info">PROBONO MEMBER</span>
-                {elseif $acust.type eq Cust::TYPE_INTERNAL}
+                {elseif $cust->getType() eq CUSTOMER::TYPE_INTERNAL}
                     <span class="label label-inverse">INTERNAL INFRASTRUCTURE</span>
-                {elseif $acust.type eq Cust::TYPE_FULL}
+                {elseif $cust->getType() eq CUSTOMER::TYPE_FULL}
                     <span class="label label-success">FULL MEMBER</span>
                 {else}
                     <span class="label">UNKNOWN MEMBER TYPE</span>
                 {/if}
-                {if $acust.dateleave and $acust.dateleave neq '0000-00-00'}
+                {if $cust->hasLeft()}
                     <span class="label label-important">ACCOUNT CLOSED</span>
                 {/if}
             </h3>
             <h4 style="padding-left: 30px;">
-                {if $acust.corpwww}<a href="{$acust.corpwww}">{$acust.corpwww}</a>{/if}
-                {if $acust.peeringemail} - {mailto address=$acust.peeringemail}{/if}
+                {if $cust->getCorpwww()}<a href="{$cust->getCorpwww()}">{$cust->getCorpwww()}</a>{/if}
+                {if $cust->getPeeringemail()} - {mailto address=$cust->getPeeringemail()}{/if}
             </h4>
             <br />
             
@@ -100,42 +99,42 @@
                 
                         <tr>
                             <td><strong>Status</strong></td>
-                            <td>{Cust::$CUST_STATUS_TEXT[$acust.status]}</td>
+                            <td>{CUSTOMER::$CUST_STATUS_TEXT[$cust->getStatus()]}</td>
                             <td><strong>Joined</strong></td>
-                            <td>{$acust.datejoin}</td>
+                            <td>{$cust->getDatejoin()->format( 'Y-m-d' )}</td>
                         </tr>
                         <tr>
                             <td><strong>Type</strong></td>
-                            <td>{Cust::$CUST_TYPES_TEXT[$acust.type]}</td>
+                            <td>{CUSTOMER::$CUST_TYPES_TEXT[$cust->getType()]}</td>
                             <td><strong>Left</strong></td>
-                            <td>{$acust.dateleave}</td>
+                            <td>{if $cust->hasLeft()}{$cust->getDateleave()->format( 'Y-m-d' )}{/if}</td>
                         </tr>
-                        {if $acust.type neq Cust::TYPE_ASSOCIATE}
+                        {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE}
                             <tr>
                                 <td><strong>Peering Policy</strong></td>
-                                <td>{$acust.peeringpolicy}</td>
+                                <td>{$cust->getPeeringpolicy()}</td>
                                 <td><strong>ASN</strong></td>
-                                <td>{$acust.autsys|asnumber} {if $acust.peeringmacro}({$acust.peeringmacro}){/if}</td>
+                                <td>{$cust->getAutsys()|asnumber} {if $cust->getPeeringmacro()}({$cust->getPeeringmacro()}){/if}</td>
                             </tr>
                         {/if}
                         <tr>
-                            <td>{if $acust.type neq Cust::TYPE_ASSOCIATE}<strong>NOC Details</strong>{/if}</td>
+                            <td>{if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE}<strong>NOC Details</strong>{/if}</td>
                             <td>
-				{if $acust.type neq Cust::TYPE_ASSOCIATE}
-                                    {if $acust.nochours}    {$acust.nochours}<br />    {/if}
-                                    {if $acust.nocemail}    {mailto address=$acust.nocemail}<br />{/if}
-                                    {if $acust.nocwww}      {$acust.nocwww}<br />      {/if}
-                                    {if $acust.nocphone}    {$acust.nocphone}<br />    {/if}
-                                    {if $acust.noc24hphone} {$acust.noc24hphone} (24h) {/if}
+                                {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE}
+                                    {if $cust->getNochours()}    {$cust->getNochours()}<br />    {/if}
+                                    {if $cust->getNocemail()}    {mailto address=$cust->getNocemail()}<br />{/if}
+                                    {if $cust->getNocwww()}      {$cust->getNocwww()}<br />      {/if}
+                                    {if $cust->getNocphone()}    {$cust->getNocphone()}<br />    {/if}
+                                    {if $cust->getNoc24hphone()} {$cust->getNoc24hphone()} (24h) {/if}
                                 {/if}
                             </td>
                             <td><strong>Billing Details</strong></td>
                             <td>
-                                {if $acust.billingContact}    {$acust.billingContact}<br />    {/if}
-                                {if $acust.billingAddress1}    {$acust.billingAddress1}<br />    {/if}
-                                {if $acust.billingAddress2}    {$acust.billingAddress2}<br />    {/if}
-                                {if $acust.billingCity}    {$acust.billingCity}<br />    {/if}
-                                {if $acust.billingCountry}    {$acust.billingCountry}<br />    {/if}
+                                {if $cust->getBillingContact()}    {$cust->getBillingContact()}<br />     {/if}
+                                {if $cust->getBillingAddress1()}   {$cust->getBillingAddress1()}<br />    {/if}
+                                {if $cust->getBillingAddress2()}   {$cust->getBillingAddress2()}<br />    {/if}
+                                {if $cust->getBillingCity()}       {$cust->getBillingCity()}<br />        {/if}
+                                {if $cust->getBillingCountry()}    {$cust->getBillingCountry()}<br />     {/if}
                             </td>
                         </tr>
                         
@@ -144,12 +143,12 @@
 
 
             
-            {if $acust.type neq Cust::TYPE_ASSOCIATE and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
+            {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
             
                 <br /><br />
-                <h3>Interfaces <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action="quick-add" custid=$acust.id}"><i class="icon-plus"></i></a></h3>
+                <h3>Interfaces <a class="btn btn-mini" href="{genUrl controller='virtual-interface' action="add-wizard" custid=$cust->getId()}"><i class="icon-plus"></i></a></h3>
                 
-                {if count( $connections )}
+                {if count( $cust->getVirtualInterfaces() )}
                 
                     <table class="table">
                         <thead>
@@ -162,32 +161,37 @@
                         </thead>
                         <tbody>
         
-                        {foreach from=$connections item=c}
+                        {foreach $cust->getVirtualInterfaces() as $vi}
+                        
+                            {assign var="pis" value=$vi->getPhysicalinterfaces()}
                         
                             <tr>
                             
-                                <td>LAN #{$c.Physicalinterface.0.Switchport.SwitchTable.infrastructure}</td>
-                                <td>{$c.Physicalinterface.0.Switchport.SwitchTable.Cabinet.Location.name}</td>
                                 <td>
-                                    {foreach from=$c.Physicalinterface item=pi name=pis1}
-                                        {$pi.Switchport.SwitchTable.name}{if not $smarty.foreach.pis1.last}<br />{/if}
+                                    LAN #{$pis[0]->getSwitchPort()->getSwitcher()->getInfrastructure()}
+                                </td>
+                                <td>
+                                    {$pis[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}</td>
+                                <td>
+                                    {foreach from=$pis item=pi name=pis1}
+                                        {$pi->getSwitchPort()->getSwitcher()->getName()}{if not $smarty.foreach.pis1.last}<br />{/if}
                                     {/foreach}
                                 </td>
                                 <td>
-                                    {foreach from=$c.Physicalinterface item=pi name=pis2}
-                                        <a href="{genUrl controller='dashboard' action="statistics-drilldown" monitorindex=$pi.monitorindex category='bits' shortname=$acust.shortname}">
-                                            {$pi.Switchport.name}
+                                    {foreach from=$pis item=pi name=pis2}
+                                        <a href="{genUrl controller='dashboard' action="statistics-drilldown" monitorindex=$pi->getMonitorindex() category='bits' shortname=$cust->getShortname()}">
+                                            {$pi->getSwitchPort()->getName()}
                                         </a>{if not $smarty.foreach.pis2.last}<br />{/if}
                                     {/foreach}
                                 </td>
                                 <td>
-                                    {foreach from=$c.Physicalinterface item=pi name=pis3}
-                                        {$pi.speed}/{$pi.duplex}{if not $smarty.foreach.pis3.last}<br />{/if}
+                                    {foreach from=$pis item=pi name=pis3}
+                                        {$pi->getSpeed()}/{$pi->getDuplex()}{if not $smarty.foreach.pis3.last}<br />{/if}
                                     {/foreach}
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-mini" href="{genUrl controller='virtual-interface' action="edit" id=$c.id}"><i class="icon-eye-open"></i></a>
+                                        <a class="btn btn-mini" href="{genUrl controller='virtual-interface' action="edit" id=$vi->getId()}"><i class="icon-eye-open"></i></a>
                                     </div>
                                 </td>
                                 
@@ -211,9 +215,9 @@
             
             
             <br /><br />
-            <h3>User Accounts <a class="btn btn-mini" href="{genUrl controller='user' action="add" custid=$acust.id}"><i class="icon-plus"></i></a></h3>
+            <h3>User Accounts <a class="btn btn-mini" href="{genUrl controller='user' action="add" custid=$cust->getId()}"><i class="icon-plus"></i></a></h3>
             
-            {if count( $acust->User )}
+            {if count( $cust->getUsers() )}
             
                 <table class="table">
                     <thead>
@@ -224,26 +228,17 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        {foreach from=$acust->User item=u}
+                        {foreach $cust->getUsers() as $u}
                             <tr>
-                                <td>{$u.username}</td>
-                                <td>{User::$PRIVILEGES[$u.privs]}</td>
-                                <td>{$u.email}</td>
-                                <td>{$u.authorisedMobile}</td>
+                                <td>{$u->getUsername()}</td>
+                                <td>{USER::$PRIVILEGES[$u->getPrivs()]}</td>
+                                <td>{$u->getEmail()}</td>
+                                <td>{$u->getAuthorisedMobile()}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-mini" href="{genUrl controller='user' action="edit" id=$u.id}"><i class="icon-pencil"></i></a>
-                                        <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this user?' );" href="{genUrl controller='user' action="delete" id=$u.id}"><i class="icon-trash"></i></a>
-                                        <a class="btn btn-mini" href="{genUrl controller='auth' action="switch" id=$u.id}" rel="tooltip" title="Log in as this user..."><i class="icon-user"></i></a>
-                                        
-                                        {*
-                                        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="{genUrl controller='auth' action='switch' id=$u.id}">Log in as...</a>
-                                            </li>
-                                        </ul>
-                                        *}
+                                        <a class="btn btn-mini" href="{genUrl controller='user' action="edit" id=$u->getId()}"><i class="icon-pencil"></i></a>
+                                        <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this user?' );" href="{genUrl controller='user' action="delete" id=$u->getId()}"><i class="icon-trash"></i></a>
+                                        <a class="btn btn-mini" href="{genUrl controller='auth' action="switch-user" id=$u->getId()}" rel="tooltip" title="Log in as this user..."><i class="icon-user"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -262,7 +257,7 @@
             <h3>Contacts <a class="btn btn-mini" href="{genUrl controller='contact' action="add" custid=$acust.id}"><i class="icon-plus"></i></a></h3>
 
             
-            {if count( $acust->Contact )}
+            {if count( $cust->getContacts() )}
             
                 <table class="table">
                     <thead>
@@ -273,16 +268,16 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        {foreach from=$acust->Contact item=c}
+                        {foreach $cust->getContacts() as $c}
                             <tr>
-                                <td>{$c.name}</td>
-                                <td>{$c.email}</td>
-                                <td>{$c.phone}</td>
-                                <td>{$c.mobile}</td>
+                                <td>{$c->getName()}</td>
+                                <td>{$c->getEmail()}</td>
+                                <td>{$c->getPhone()}</td>
+                                <td>{$c->getMobile()}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-mini" href="{genUrl controller='contact' action="edit" id=$c.id}"><i class="icon-pencil"></i></a>
-                                        <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this user?' );" href="{genUrl controller='contact' action="delete" id=$c.id}"><i class="icon-trash"></i></a>
+                                        <a class="btn btn-mini" href="{genUrl controller='contact' action="edit" id=$c->getId()}"><i class="icon-pencil"></i></a>
+                                        <a class="btn btn-mini" onclick="return confirm( 'Are you sure you want to delete this user?' );" href="{genUrl controller='contact' action="delete" id=$c->getId()}"><i class="icon-trash"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -306,7 +301,7 @@
 
     <div class="span6">
     
-        {if $acust.type neq Cust::TYPE_ASSOCIATE and $acust.type neq Cust::TYPE_INTERNAL and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
+        {if $cust.type neq Cust::TYPE_ASSOCIATE and $acust.type neq Cust::TYPE_INTERNAL and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
     
                 <div class="row-fluid">
                 
@@ -367,4 +362,4 @@
 
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
