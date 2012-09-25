@@ -1,0 +1,7 @@
+<td>
+    {if $row.ports gt 1}
+        <em>LAG with {$row.ports} ports</em>
+    {else}
+        {$row.port}
+    {/if}
+</td>

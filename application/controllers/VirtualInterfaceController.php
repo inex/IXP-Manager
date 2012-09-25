@@ -76,7 +76,13 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     
                     'location'      => 'Location',
                     'switch'        => 'Switch',
-                    'port'          => 'Port',
+                    
+                    'port'       => [
+                        'title'         => 'Port',
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'        => 'virtual-interface/list-column-port.phtml'
+                    ],
+
                     'speed'         => 'Speed'
                 ];
                 break;
@@ -103,9 +109,9 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select(
                     'vi.id,
-                    c.name AS customer, c.shortname AS shortname,
+                    c.name AS customer, c.id AS custid, c.shortname AS shortname,
                     l.name AS location, s.name AS switch,
-                    sp.name AS port, SUM( pi.speed ) AS speed'
+                    sp.name AS port, SUM( pi.speed ) AS speed, COUNT( pi.id ) AS ports'
                  )
             ->from( '\\Entities\\VirtualInterface', 'vi' )
             ->leftJoin( 'vi.Customer', 'c' )
