@@ -196,6 +196,138 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     }
     
 
+    /*
+    
+    public function quickAddAction()
+    {
+    $f = new INEX_Form_QuickAddInterface( null, false, 'virtual-interface' );
+    
+    // Process a submitted form if it passes initial validation
+    if( $this->inexGetPost( 'commit' ) !== null && $f->isValid( $_POST ) )
+    {
+    do
+    {
+    // check customer information
+    if( !( $c = Doctrine_Core::getTable( 'Cust' )->find( $f->getValue( 'custid' ) ) ) )
+    {
+    $f->getElement( 'custid' )->addError( 'Invalid customer' );
+    break;
+    }
+    
+    // create the entities
+    $conn = Doctrine_Manager::connection();
+    $conn->beginTransaction();
+    
+    try
+    {
+    // virtual interface
+    $vi = new Virtualinterface();
+    $f->assignFormToModel( $vi, $this, false );
+    $vi->save();
+    
+    // and now a physical interface
+    $pi                       = new Physicalinterface();
+    
+    $f->assignFormToModel( $pi, $this, false );
+    
+    $pi['virtualinterfaceid'] = $vi['id'];
+    
+    $nextMonitorIndex = Doctrine_Query::create()
+    ->select( 'MAX( pi.monitorindex )' )
+    ->from( 'Physicalinterface pi' )
+    ->leftJoin( 'pi.Virtualinterface vi' )
+    ->where( 'vi.custid = ?', $c['id'] )
+    ->execute()
+    ->toArray();
+    
+    $pi['monitorindex'] = $nextMonitorIndex[0]['MAX'] + 1;
+    $pi->save();
+    
+    
+    // and lastly, the VLAN interface
+    $vli = new Vlaninterface();
+    
+    $f->assignFormToModel( $vli, $this, false );
+    
+    $vli['virtualinterfaceid'] = $vi['id'];
+    
+    $vli->save();
+    
+    $conn->commit();
+    }
+    catch( Exceltion $e )
+    {
+    $conn->rollback();
+    }
+    
+    $this->getLogger()->notice( 'New virtual, physical and VLAN interface created' );
+    $this->session->message = new INEX_Message( "New interface added", "success" );
+    $this->_redirect( 'virtual-interface/edit/id/' . $vi['id'] );
+    
+    }while( false );
+    
+    $loc = $this->genUrl( 'customer', 'dashboard', array( 'id' => $f->getElement( 'custid' )->getValue() ) );
+    }
+    else if( $this->_getParam( 'commit', false ) === false && $cid = $this->_getParam( 'custid', false ) )
+    {
+    $f->getElement( 'custid' )->setValue( $cid );
+    $loc = $this->genUrl( 'customer', 'dashboard', array( 'id' => $cid ) );
+    }
+    else
+    {
+    $loc = $this->genUrl( 'virtual-interface', 'list' );
+    }
+    
+    if( !$this->_getParam( 'commit', false ) )
+    {
+    // make BGP MD5 easy
+    $f->getElement( 'ipv4bgpmd5secret' )->setValue( INEX_String::random() );
+    $f->getElement( 'ipv6bgpmd5secret' )->setValue(  $f->getElement( 'ipv4bgpmd5secret' )->getValue() );
+    
+    if( $cid = $this->_getParam( 'custid', false ) )
+    {
+    $cust = Doctrine_Core::getTable( 'Cust' )->find( $cid );
+    $f->getElement( 'maxbgpprefix' )->setValue( $cust['maxprefixes'] );
+    }
+    }
+    
+    
+    $f->getElement( 'cancel' )->setAttrib( 'onClick',
+    "parent.location='{$loc}'"
+    );
+    
+    $this->view->form   = $f; //->render( $this->view );
+    
+    $this->view->display( 'vlan-interface' . DIRECTORY_SEPARATOR . 'quick-add.tpl' );
+    
+    }
+    
+    protected function _deleteSetReturnOnSuccess()
+    {
+    if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
+        return "virtual-interface/edit/id/{$vid}";
+    
+    return 'vlan-interface/list';
+    }
+    
+    protected function _addEditSetReturnOnSuccess( $form, $object )
+    {
+    return "virtual-interface/edit/id/{$object['virtualinterfaceid']}";
+    }
+    
+    protected function getForm( $options = null, $isEdit = false )
+    {
+    $formName = "INEX_Form_{$this->frontend['name']}";
+    
+    if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
+        $cancelLocation = $this->genUrl( 'virtual-interface', 'edit', array( 'id' => $vid ) );
+    else
+        $cancelLocation = $this->genUrl( 'vlan-interface', 'list' );
+    
+    return new $formName( $options, $isEdit, $cancelLocation );
+    }
+    */
+    
     
 }
 
