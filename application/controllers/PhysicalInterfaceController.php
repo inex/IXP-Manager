@@ -178,7 +178,8 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
                 throw new INEX_Exception( 'Not sure how you would add a physical interface without a containing virtual interface');
             
             $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
-
+            $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $vint->getId() ] ) );
+            
             if( !$object->getMonitorindex() )
             {
                 $maxMonIndex = 0;

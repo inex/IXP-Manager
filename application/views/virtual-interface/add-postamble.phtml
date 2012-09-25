@@ -63,7 +63,7 @@
         
             <p>
                 There are no physical interfaces defined for this virtual interface.
-                <a href="{genUrl controller="physical-interface" action="add" virtualinterfaceid=$object.id}">Add one now...</a>
+                <a href="{genUrl controller="physical-interface" action="add" vintid=$object->getId()}">Add one now...</a>
             </p>
             
         {/if}
@@ -109,16 +109,20 @@
                         {$int->getVlan()->getNumber()}
                     </td>
                     <td>
-                        {$int->getIPv4Address()->getAddress()}
+                        {if $int->getIPv4Address()}
+                            {$int->getIPv4Address()->getAddress()}
+                        {/if}
                     </td>
                     <td>
-                        {$int->getIPv6Address()->getAddress()}
+                        {if $int->getIPv6Address()}
+                            {$int->getIPv6Address()->getAddress()}
+                        {/if}
                     </td>
                     <td>
                         <div class="btn-group">
                             <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action='edit' id=$int->getId() vintid=$object->getId()}"><i class="icon-pencil"></i></a>
                             <a data-url="{genUrl controller='vlan-interface' action='delete' id=$int->getId() vintid=$object->getId()}"
-                                class="btn btn-mini" id="vi-object-delete-{$int->getId()}"><i class="icon-trash"></i></a>
+                                class="btn btn-mini" id="object-delete-{$int->getId()}"><i class="icon-trash"></i></a>
                         </div>
                     </td>
                 </tr>

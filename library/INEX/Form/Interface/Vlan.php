@@ -41,7 +41,8 @@ class INEX_Form_Interface_Vlan extends INEX_Form
         $virtualInterface = $this->createElement( 'hidden', 'virtualinterfaceid' );
         $this->addElement( $virtualInterface );
 
-        $this->addElement( INEX_Form_VLAN::getPopulatedSelect( 'vlanid' ) );
+        $this->addElement( INEX_Form_Vlan::getPopulatedSelect( 'vlanid' ) );
+        $this->getElement( 'vlanid' )->setAttrib( 'class', 'chzn-select span6' );
         
         $ipv4enabled = $this->createElement( 'checkbox', 'ipv4enabled' );
         $ipv4enabled->setLabel( 'IPv4 Enabled' )
@@ -50,7 +51,7 @@ class INEX_Form_Interface_Vlan extends INEX_Form
 
         $ipv4addressid = $this->createElement( 'select', 'ipv4addressid' );
         $ipv4addressid->setRegisterInArrayValidator( false )
-            ->setAttrib( 'class', 'chzn-select span3' )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setLabel( 'IPv4 Address' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a IPv4 address' ) );
