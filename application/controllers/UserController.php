@@ -76,6 +76,12 @@ class UserController extends INEX_Controller_FrontEnd
                         'xlator'    => \Entities\User::$PRIVILEGES_TEXT
                     ],
 
+                    'enabled'       => [
+                        'title'         => 'Enabled',
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'        => 'user/list-column-enabled.phtml'
+                    ],
+
                     'created'       => [
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
