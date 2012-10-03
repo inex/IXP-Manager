@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
 <ul class="breadcrumb">
     <li>
@@ -8,16 +8,16 @@
         <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
     </li>
     <li>
-        <a href="{genUrl controller="customer" action="dashboard" id=$customer.id}">{$customer.name}</a> <span class="divider">/</span>
+        <a href="{genUrl controller="customer" action="overview" id=$customer->getId()}">{$customer->getName()}</a> <span class="divider">/</span>
     </li>
     <li class="active">
         Send Welcome Email
     </li>
 </ul>
 
-{include file="message.tpl"}
+{OSS_Message}
 
 {$form}
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

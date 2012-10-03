@@ -322,113 +322,63 @@ END_JSON;
         }
 
         $this->view->customer = $c;
-        
         $this->view->admins = $c->getAdminUsers();
+        $this->view->form = $form = new INEX_Form_Customer_SendEmail();
         
-        OSS_Debug::dd( $c->getAdminUsers() );
-        die();
+        $form->getElement( 'to' )->setValue( $c->getNocemail() );
+
+        $emails = array();
+        foreach( $c->getUsers() as $user )
+            if( Zend_Validate::is( $user->getEmail(), 'EmailAddress' ) )
+                $emails[] = $user->getEmail();
+
+        $form->getElement( 'cc' )->setValue( implode( ',', $emails ) );
+        $form->getElement( 'bcc' )->setValue( $this->_options['identity']['email'] );
+        $form->getElement( 'subject' )->setValue( $this->_options['identity']['name'] . ' :: Welcome Mail' );
+        $form->getElement( 'message' )->setValue( $this->view->render( "customer/email/welcome-email.phtml" ) );
         
-        $cancelLocation = 'http' . ( isset( $_SERVER['HTTPS'] ) ? 's' : '' ) . '://'
-            . $_SERVER['SERVER_NAME'] . Zend_Controller_Front::getInstance()->getBaseUrl()
-            . '/' . $this->getRequest()->getParam( 'controller' ) . '/list';
-
-        $form = new INEX_Form_Customer_SendWelcomeEmail( null, false, $cancelLocation );
-
-        $form->getElement( 'to' )->setValue( $customer['nocemail'] );
-
-        $userEmails = array();
-        foreach( $customer['User'] as $user )
-        {
-            if( Zend_Validate::is( $user['email'], 'EmailAddress' ) )
-                $userEmails[] = $user['email'];
-        }
-
-        $form->getElement( 'cc' )->setValue( implode( ',', $userEmails ) );
-
-        $form->getElement( 'bcc' )->setValue( $this->config['identity']['email'] );
-        $form->getElement( 'subject' )->setValue( $this->config['identity']['name'] . ' :: Welcome Mail' );
-
         // Let's get the information we need for the welcome mail from the database.
-
-        $this->view->networkInfo = Networkinfo::toStructuredArray();
-
-        $this->view->connections = Doctrine_Query::create()
-	        ->from( 'Virtualinterface vi' )
-	        ->leftJoin( 'vi.Cust c' )
-	        ->leftJoin( 'vi.Physicalinterface pi' )
-	        ->leftJoin( 'vi.Vlaninterface vli' )
-	        ->leftJoin( 'vli.Ipv4address v4' )
-	        ->leftJoin( 'vli.Ipv6address v6' )
-	        ->leftJoin( 'vli.Vlan v' )
-	        ->leftJoin( 'pi.Switchport sp' )
-	        ->leftJoin( 'sp.SwitchTable s' )
-	        ->leftJoin( 's.Cabinet cb' )
-	        ->leftJoin( 'cb.Location l' )
-	        ->where( 'c.id = ?', $customer['id'] )
-	        ->orderBy( 'pi.monitorindex' )
-	        ->execute()
-	        ->toArray( true );
-
-	    $this->getLogger()->debug( print_r( $this->view->connections, true ) );
-
-        $form->getElement( 'message' )->setValue( $this->view->render( 'customer' . DIRECTORY_SEPARATOR . 'welcomeEmail.tpl' ) );
-
-
+        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+        
         // Process a submitted form if it passes initial validation
-        if( $this->inexGetPost( 'commit' ) !== null && $form->isValid( $_POST ) )
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
-            $validForm = true;
+            $emailsOkay = null;
+            $mail = $this->getMailer();
             // Validate all e-mail addresses
-            foreach( array( 'to', 'cc', 'bcc' ) as $recipient )
+            foreach( [ 'to' => 'To', 'cc' => 'Cc', 'bcc' => 'Bcc' ] as $element => $function )
             {
-                if( $form->getValue( $recipient ) != '' )
+                if( $form->getValue( $element ) != '' )
                 {
-	                foreach( explode( ',', $form->getElement( $recipient )->getValue() ) as $email )
+	                foreach( explode( ',', $form->getElement( $element )->getValue() ) as $email )
 	                {
 	                    if( !Zend_Validate::is( $email, 'EmailAddress' ) )
 	                    {
-	                        $form->getElement( $recipient )->addError( 'Invalid e-mail address: ' . $email );
-	                        $validForm = false;
+	                        $form->getElement( $element )->addError( 'Invalid e-mail address: ' . $email );
+	                        $emailsOkay = false;
+	                    }
+	                    else if( $emailsOkay === null || $emailsOkay === true )
+	                    {
+	                        $fn = "add{$function}";
+	                        $mail->$fn( $email );
+	                        $emailsOkay = true;
 	                    }
 	                }
                 }
             }
 
-            if( $validForm )
+            if( $emailsOkay === true )
             {
-                $mail = new Zend_Mail();
                 $mail->setBodyText( $form->getValue( 'message' ) );
-                $mail->setFrom( $this->config['identity']['email'], $this->config['identity']['name'] );
+                $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] );
                 $mail->setSubject( $form->getValue( 'subject' ) );
+                $mail->send();
 
-                foreach( array( 'To', 'Cc', 'Bcc' ) as $recipient )
-                    if( $form->getValue( strtolower( $recipient ) ) != '' )
-                        foreach( explode( ',', $form->getElement( strtolower( $recipient ) )->getValue() ) as $email )
-	                        if( Zend_Validate::is( $email, 'EmailAddress' ) )
-	                        {
-	                            $fn = "add$recipient";
-                                $mail->$fn( $email );
-	                        }
-
-                if( $mail->send() )
-                {
-                    $this->getLogger()->info( "Welcome email sent for {$customer['name']}" );
-                    $this->view->message = new INEX_Message( "Welcome email successfully sent to {$customer['name']}", "success" );
-                    $this->_forward( 'dashboard' );
-                    return true;
-                }
-                else
-                {
-                    $this->getLogger()->err( "Could not sent welcome email for {$customer['name']}: " . print_r( $mail, true ) );
-                    $this->view->message = new INEX_Message( "Welcome email could not be sent to {$customer['name']}. Please see logs for more verbose output.", "error" );
-                }
-
+                $this->getLogger()->info( "Welcome email sent for {$c->getName()}" );
+                $this->addMessage( "Welcome email successfully sent to {$c->getName()}", OSS_Message::SUCCESS );
+                return $this->redirect( 'customer/overview/id/' . $c->getId() );
             }
         }
-
-        $this->view->form   = $form->render( $this->view );
-
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'sendWelcomeEmail.tpl' );
     }
 
 

@@ -44,7 +44,7 @@ class INEX_Form_Customer_SendEmail extends INEX_Form
         $to->addValidator( 'stringLength', false, array( 1, 4096 ) )
             ->setRequired( true )
             ->setLabel( 'To' )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span9' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $to );
@@ -53,7 +53,7 @@ class INEX_Form_Customer_SendEmail extends INEX_Form
         $cc->addValidator( 'stringLength', false, array( 1, 4096 ) )
             ->setRequired( false )
             ->setLabel( 'CC' )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span9' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $cc );
@@ -62,7 +62,7 @@ class INEX_Form_Customer_SendEmail extends INEX_Form
         $bcc->addValidator( 'stringLength', false, array( 1, 4096 ) )
             ->setRequired( false )
             ->setLabel( 'BCC' )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span9' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $bcc );
@@ -71,17 +71,18 @@ class INEX_Form_Customer_SendEmail extends INEX_Form
         $subject->addValidator( 'stringLength', false, array( 1, 4096 ) )
             ->setRequired( true )
             ->setLabel( 'Subject' )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span9' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $subject );
 
 
-        $message = $this->createElement( 'textarea', 'message', [ 'cols' => 80, 'rows' => 12 ] );
+        $message = $this->createElement( 'textarea', 'message', [ 'cols' => 80, 'rows' => 20 ] );
         $message->addValidator( 'stringLength', false, array( 1, 40960 ) )
             ->setRequired( true )
             ->setLabel( 'Message' )
-            ->setAttrib( 'class', 'span11' )
+            ->setAttrib( 'class', 'span9' )
+            ->setAttrib( 'style', 'font-family: Menlo, Monaco, "Courier New", monospace;' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $message );
