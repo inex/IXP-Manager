@@ -88,7 +88,11 @@ class CustomerController extends INEX_Controller_FrontEnd
                 ];
                 break;
     
-            case \Entities\User::AUTH_CUSTADMIN:
+            case \Entities\User::AUTH_CUSTUSER:
+                $this->_feParams->allowedActions = [ 'details' ];
+                $this->_feParams->defaultAction = 'details';
+                break;
+                
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
@@ -516,6 +520,48 @@ END_JSON;
     }
 
 
+    
+    public function detailsAction()
+    {
+        $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true );
+    }
+        
+        
+        
+        /*
+        if( ( $custid = $this->getRequest()->getParam( 'id', null ) ) === null
+        || !( $this->view->cust = Doctrine::getTable( 'Cust' )->find( (int)$custid ) ) )
+        {
+            $this->_forward( 'members-details-list' );
+            return;
+        }
+    
+        // Let's get the information we need for the welcome mail from the database.
+    
+        $this->view->networkInfo = Networkinfo::toStructuredArray();
+    
+        $this->view->connections = Doctrine_Query::create()
+        ->from( 'Virtualinterface vi' )
+        ->leftJoin( 'vi.Cust c' )
+        ->leftJoin( 'vi.Physicalinterface pi' )
+        ->leftJoin( 'vi.Vlaninterface vli' )
+        ->leftJoin( 'vli.Ipv4address v4' )
+        ->leftJoin( 'vli.Ipv6address v6' )
+        ->leftJoin( 'vli.Vlan v' )
+        ->leftJoin( 'pi.Switchport sp' )
+        ->leftJoin( 'sp.SwitchTable s' )
+        ->leftJoin( 's.Cabinet cb' )
+        ->leftJoin( 'cb.Location l' )
+        ->where( 'c.id = ?', (int)$custid )
+        ->orderBy( 'v.number' )
+        ->execute()
+        ->toArray( true );
+        
+            $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'member-details.tpl' );
+    }
+        */
+        
+    
     /**
      * Load a customer from the database with the given ID (or ID in request) but
      * redirect to `customer/list` if no ID or no such customer.

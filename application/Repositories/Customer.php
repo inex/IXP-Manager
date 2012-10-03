@@ -64,6 +64,24 @@ class Customer extends EntityRepository
     
     
     /**
+     * Utility function to provide a array of all active and current customers.
+     *
+     * @param bool $asArray If `true`, return an associative array, else an array of Customer objects
+     * @return array
+     */
+    public function getCurrentActive( $asArray = false )
+    {
+        $custs = $this->getEntityManager()->createQuery(
+                "SELECT c FROM \\Entities\\Customer c
+                WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_ACTIVE . "
+                ORDER BY c.name ASC"
+        );
+        
+        return $asArray ? $custs->getArrayResult() : $custs->getResult();
+    }
+    
+    
+    /**
      * Return an array of all customer names where the array key is the customer id.
      *
      * @return array An array of all customer names with the customer id as the key.

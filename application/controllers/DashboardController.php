@@ -154,55 +154,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
     }
 
 
-    public function membersDetailsListAction()
-    {
-        $this->view->memberDetails = Doctrine_Query::create()
-            ->from( 'ViewCustCurrentActive vca' )
-            ->leftJoin( 'vca.ViewVlaninterfaceDetailsByCustid vvid' )
-            ->whereIn( 'vca.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->groupBy( 'vvid.virtualinterfaceid' )
-            ->orderBy( 'name' )
-            ->execute();
-
-        #echo '<pre>';
-        #print_r( $q->execute()->toArray(true) );
-        #die();
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'members-details-list.tpl' );
-    }
-
-    public function memberDetailsAction()
-    {
-        if( ( $custid = $this->getRequest()->getParam( 'id', null ) ) === null
-            || !( $this->view->cust = Doctrine::getTable( 'Cust' )->find( (int)$custid ) ) )
-        {
-            $this->_forward( 'members-details-list' );
-            return;
-        }
-
-        // Let's get the information we need for the welcome mail from the database.
-
-        $this->view->networkInfo = Networkinfo::toStructuredArray();
-
-        $this->view->connections = Doctrine_Query::create()
-            ->from( 'Virtualinterface vi' )
-            ->leftJoin( 'vi.Cust c' )
-            ->leftJoin( 'vi.Physicalinterface pi' )
-            ->leftJoin( 'vi.Vlaninterface vli' )
-            ->leftJoin( 'vli.Ipv4address v4' )
-            ->leftJoin( 'vli.Ipv6address v6' )
-            ->leftJoin( 'vli.Vlan v' )
-            ->leftJoin( 'pi.Switchport sp' )
-            ->leftJoin( 'sp.SwitchTable s' )
-            ->leftJoin( 's.Cabinet cb' )
-            ->leftJoin( 'cb.Location l' )
-            ->where( 'c.id = ?', (int)$custid )
-            ->orderBy( 'v.number' )
-            ->execute()
-            ->toArray( true );
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'member-details.tpl' );
-    }
 
     public function statisticsAction()
     {
