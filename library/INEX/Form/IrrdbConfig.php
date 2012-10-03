@@ -74,4 +74,27 @@ class INEX_Form_IrrdbConfig extends INEX_Form
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
+    
+    /**
+     * Create a SELECT / dropdown element of all IRRDB names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'irrdb' )
+    {
+        $e = new Zend_Form_Element_Select( $name );
+    
+        $maxId = self::populateSelectFromDatabase( $e, '\\Entities\\IRRDBConfig', 'id', 'source', 'source', 'ASC' );
+    
+        $e->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'IRRDB Source' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select an IRRDB source' ) ) );
+    
+        return $e;
+    }
+    
 }

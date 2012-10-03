@@ -2,7 +2,7 @@
 <form class="form-horizontal" enctype="application/x-www-form-urlencoded"
         accept-charset="UTF-8" method="post" horizontal="1"
         {if $isEdit}
-            action="{genUrl controller="customer" action="edit" id=$object.id}"
+            action="{genUrl controller="customer" action="edit" id=$object->getId()}"
         {else}
             action="{genUrl controller="customer" action="add"}"
         {/if}>
@@ -44,7 +44,7 @@
     
 </div>
         
-<div id="full-member-details" class="row-fluid {if $isEdit and $object.type eq '2'}hide{/if}">
+<div id="full-member-details" class="row-fluid {if $isEdit and $object->getType() eq 2}hide{/if}">
 
     <div class="span6">
     
@@ -107,6 +107,12 @@ $(document).ready( function(){
         changeYear: true,
         dateFormat: 'yy-mm-dd'
     });
+
+    if( $('#datejoin').val().length > 10 )
+        $('#datejoin').val( $('#datejoin').val().substr( 0, 10 ) );
+
+    if( $('#dateleave').val().length > 10 )
+        $('#dateleave').val( $('#dateleave').val().substr( 0, 10 ) );
 
     $( '#type' ).bind( 'change', function( event ){
         if( $( '#type' ).val() == 2 )  // associate member

@@ -197,19 +197,58 @@ class CustomerController extends INEX_Controller_FrontEnd
     
     
     /**
-     * Additional checks when a new object is being added.
+     *
+     * @param INEX_Form_Customer $form The Send form object
+     * @param \Entities\Customer $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not processed
      */
-    protected function formValidateForAdd( $form )
+    protected function addPostValidate( $form, $object, $isEdit )
     {
-
-        if( Doctrine::getTable( $this->getModelName() )->findOneByShortname( $form->getValue( 'shortname' ) ) )
+        if( !$isEdit && $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $form->getValue( 'shortname' ) ] ) )
         {
-            $form->getElement( 'shortname' )->addError( 'This short name is not available' );
+            $form->getElement( 'shortname' )->addError( 'This shortname is not available' );
             return false;
         }
+            
+        if( $isEdit )
+        {
+            $object->setLastupdated( new DateTime() );
+            $object->setLastupdatedby( $this->getUser()->getId() );
+        }
+        else
+        {
+            $object->setCreated( new DateTime() );
+            $object->setCreator( $this->getUser()->getUsername() );
+        }
+        
+        return true;
     }
 
-
+    /**
+     *
+     * @param INEX_Form_Customer $form The Send form object
+     * @param \Entities\Customer $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not processed
+     */
+    protected function addPreFlush( $form, $object, $isEdit )
+    {
+        
+        if( !( $object->getDatejoin() instanceof DateTime ) )
+            $object->setDatejoin( new DateTime( $form->getValue( 'datejoin' ) ) );
+        
+        if( !( $object->getDateleave() instanceof DateTime ) )
+        {
+            if( !$form->getValue( 'dateleave' ) )
+                $object->setDateleave( null );
+            else
+                $object->setDateleave( new DateTime( $form->getValue( 'dateleave' ) ) );
+        }
+            
+        return true;
+    }
+    
 
     /**
      * A generic action to list the elements of a database (as represented
