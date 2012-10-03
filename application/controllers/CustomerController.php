@@ -548,13 +548,5 @@ END_JSON;
     }
 
 
-    /**
-     * Set a custom return from an add / edit
-     */
-    public function _addEditSetReturnOnSuccess( $form, $object )
-    {
-        return 'customer/dashboard/id/' . $object['id'];
-    }
-
 }
 
