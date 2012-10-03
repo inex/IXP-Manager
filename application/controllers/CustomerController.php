@@ -310,27 +310,24 @@ END_JSON;
      * Send the member an operations welcome mail
      *
      */
-    public function sendWelcomeEmailAction()
+    public function welcomeEmailAction()
     {
         // Is the customer ID valid?
-        if( $this->getRequest()->getParam( 'id' ) !== NULL && is_numeric( $this->getRequest()->getParam( 'id' ) ) )
+        if( !$this->getParam( 'id', false )
+                || !( $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'id' ) ) )
+        )
         {
-            if( !( $customer = Doctrine::getTable( 'Cust' )->find( $this->getRequest()->getParam( 'id' ) ) ) )
-            {
-                $this->view->message = new INEX_Message( 'Invalid Member ID', "error" );
+                $this->addMessage( 'Invalid customer ID', OSS_Message::ERROR );
                 return( $this->_forward( 'list' ) );
-            }
+        }
 
-            $this->view->customer = $customer;
-        }
-        else
-        {
-            $this->view->message = new INEX_Message( 'Invalid Member ID', "error" );
-            return( $this->_forward( 'list' ) );
-        }
+        $this->view->customer = $c;
         
-        $this->view->custadmin = $customer->getCustAdminUser();
-
+        $this->view->admins = $c->getAdminUsers();
+        
+        OSS_Debug::dd( $c->getAdminUsers() );
+        die();
+        
         $cancelLocation = 'http' . ( isset( $_SERVER['HTTPS'] ) ? 's' : '' ) . '://'
             . $_SERVER['SERVER_NAME'] . Zend_Controller_Front::getInstance()->getBaseUrl()
             . '/' . $this->getRequest()->getParam( 'controller' ) . '/list';

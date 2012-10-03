@@ -1494,4 +1494,21 @@ class Customer
     {
         return $this->getDateleave() != null;
     }
+    
+    
+    /**
+     * Find all users of privilege CUSTADMIN for this customer
+     *
+     * @return \Entities\User[] Array of CUSTADMIN users
+     */
+    public function getAdminUsers()
+    {
+        $ausers = [];
+        
+        foreach( $this->getUsers() as $u )
+            if( $u->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+                $ausers[] = $u;
+        
+        return $ausers;
+    }
 }
