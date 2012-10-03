@@ -312,16 +312,7 @@ END_JSON;
      */
     public function welcomeEmailAction()
     {
-        // Is the customer ID valid?
-        if( !$this->getParam( 'id', false )
-                || !( $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'id' ) ) )
-        )
-        {
-                $this->addMessage( 'Invalid customer ID', OSS_Message::ERROR );
-                return( $this->_forward( 'list' ) );
-        }
-
-        $this->view->customer = $c;
+        $this->view->customer = $c = $this->_loadCustomer();
         $this->view->admins = $c->getAdminUsers();
         $this->view->form = $form = new INEX_Form_Customer_SendEmail();
         
@@ -343,31 +334,8 @@ END_JSON;
         // Process a submitted form if it passes initial validation
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
-            $emailsOkay = null;
-            $mail = $this->getMailer();
-            // Validate all e-mail addresses
-            foreach( [ 'to' => 'To', 'cc' => 'Cc', 'bcc' => 'Bcc' ] as $element => $function )
-            {
-                if( $form->getValue( $element ) != '' )
-                {
-	                foreach( explode( ',', $form->getElement( $element )->getValue() ) as $email )
-	                {
-	                    if( !Zend_Validate::is( $email, 'EmailAddress' ) )
-	                    {
-	                        $form->getElement( $element )->addError( 'Invalid e-mail address: ' . $email );
-	                        $emailsOkay = false;
-	                    }
-	                    else if( $emailsOkay === null || $emailsOkay === true )
-	                    {
-	                        $fn = "add{$function}";
-	                        $mail->$fn( $email );
-	                        $emailsOkay = true;
-	                    }
-	                }
-                }
-            }
-
-            if( $emailsOkay === true )
+            $mail = $this->_processSendEmailForm( $form );
+            if( $mail )
             {
                 $mail->setBodyText( $form->getValue( 'message' ) );
                 $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] );
@@ -548,5 +516,66 @@ END_JSON;
     }
 
 
+    /**
+     * Load a customer from the database with the given ID (or ID in request) but
+     * redirect to `customer/list` if no ID or no such customer.
+     *
+     * @param int|bool $id The customer `$id` to load (or, if false, look for an ID parameter)
+     * @return \Entities\Customer The customer object
+     */
+    protected function _loadCustomer( $id = false )
+    {
+        if( $id === false )
+            $id = $this->getParam( 'id', false );
+        
+        if( $id )
+            $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $id );
+        
+        if( !$id || !$c )
+        {
+            $this->addMessage( 'Invalid customer ID', OSS_Message::ERROR );
+            $this->redirect( 'customer/list' );
+        }
+        
+        return $c;
+    }
+    
+    /**
+     * A utility function to process the To / CC / BCC fields of the Send Email
+     * form and return a populated Zend_Mail object.
+     *
+     * @see welcomeEmailAction() for an example
+     * @param INEX_Form_Customer_SendEmail $form The Send Email form
+     * @return Zend_Mail|bool The Zend_Mail object on success
+     */
+    protected function _processSendEmailForm( $form )
+    {
+        $emailsOkay = null;
+        $mail = $this->getMailer();
+        // Validate all e-mail addresses
+        foreach( [ 'to' => 'To', 'cc' => 'Cc', 'bcc' => 'Bcc' ] as $element => $function )
+        {
+            if( ( $v = $form->getValue( $element ) ) != '' )
+            {
+                foreach( explode( ',', $v ) as $email )
+                {
+                    if( !Zend_Validate::is( $email, 'EmailAddress' ) )
+                    {
+                        $form->getElement( $element )->addError( 'Invalid e-mail address: ' . $email );
+                        $emailsOkay = false;
+                    }
+                    else if( $emailsOkay === null || $emailsOkay === true )
+                    {
+                        $fn = "add{$function}";
+                        $mail->$fn( $email );
+                        $emailsOkay = true;
+                    }
+                }
+            }
+        }
+        
+        return $emailsOkay ? $mail : false;
+    }
+    
 }
 
