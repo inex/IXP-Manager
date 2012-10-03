@@ -174,6 +174,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
 
+            $this->view->cust     = $object->getCustomer();
             $this->view->physInts = $object->getPhysicalInterfaces();
             $this->view->vlanInts = $object->getVlanInterfaces();
         }
@@ -246,24 +247,42 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
                 
                 $this->getLogger()->info( 'New virtual, physical and VLAN interface created for ' . $cust->getName() );
                 $this->addMessage( "New interface created!", OSS_Message::SUCCESS );
+                
+                
+                if( $this->getParam( 'rtn', false ) == 'ov' )
+                    $this->_redirect( 'customer/view/id/' . $cust->getId() );
+                
                 $this->_redirect( 'virtual-interface/edit/id/' . $vi->getId() );
             }
         }
-        else // no post, just displaying the default form
+        
+        if( !isset( $cust ) && ( $cid = $this->getParam( 'custid', false ) ) )
+            $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $cid );
+        
+        if( !$this->getRequest()->isPost() )
         {
             // make BGP MD5 easy
             $form->getElement( 'ipv4bgpmd5secret' )->setValue( OSS_String::random() );
             $form->getElement( 'ipv6bgpmd5secret' )->setValue(  $form->getElement( 'ipv4bgpmd5secret' )->getValue() );
             
-            if( ( $cid = $this->getParam( 'custid', false ) ) )
+            if( isset( $cust ) )
             {
-                $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $cid );
+                $form->getElement( 'custid' )->setValue( $cust->getId() );
                 $form->getElement( 'maxbgpprefix' )->setValue( $cust->getMaxprefixes() );
             }
         }
-        
-        $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'list' ) );
-        
+                
+        if( $this->getParam( 'rtn', false ) == 'ov' )
+        {
+            $form->getElement( 'custid' )->setAttrib( 'disabled', 'disabled' );
+            $form->getElement( 'cancel' )->setAttrib( 'href',
+                OSS_Utils::genUrl( 'customer', 'view', false, [ 'id' =>  $this->getParam( 'custid' ) ] )
+            );
+        }
+        else
+        {
+            $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'list' ) );
+        }
     }
         
 }

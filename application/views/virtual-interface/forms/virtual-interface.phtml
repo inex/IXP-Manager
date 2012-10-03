@@ -1,6 +1,6 @@
 
 <form class="form-horizontal" enctype="application/x-www-form-urlencoded"
-        accept-charset="UTF-8" method="post" 
+        accept-charset="UTF-8" method="post"
         >
             
 <div class="row-fluid">
@@ -43,7 +43,7 @@
 <div class="form-actions">
     <input type="submit" name="commit" id="commit" value="{if $isEdit}Save Changes{else}Add{/if}" class="btn btn-primary">
     {if isset( $cust )}
-        <a class="btn" href="{genUrl controller='customer' action='dashboard' id=$cust.id}">Return</a>
+        <a class="btn" href="{genUrl controller='customer' action='view' id=$cust->getId()}">Return</a>
     {else}
         <a class="btn btn-success" href="{genUrl controller='vlan-interface' action='quick-add'}">Wizard Add</a>
         <a class="btn" href="{genUrl controller="virtual-interface" action="list"}">Return</a>

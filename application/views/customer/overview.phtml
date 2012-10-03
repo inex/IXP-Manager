@@ -146,7 +146,7 @@
             {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
             
                 <br /><br />
-                <h3>Interfaces <a class="btn btn-mini" href="{genUrl controller='virtual-interface' action="add-wizard" custid=$cust->getId()}"><i class="icon-plus"></i></a></h3>
+                <h3>Interfaces <a class="btn btn-mini" href="{genUrl controller='virtual-interface' action="add-wizard" custid=$cust->getId() rtn="ov"}"><i class="icon-plus"></i></a></h3>
                 
                 {if count( $cust->getVirtualInterfaces() )}
                 
