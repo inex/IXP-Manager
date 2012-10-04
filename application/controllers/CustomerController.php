@@ -186,17 +186,7 @@ class CustomerController extends INEX_Controller_FrontEnd
      */
     public function overviewAction()
     {
-        // Is the customer ID valid?
-        if( !$this->getRequest()->getParam( 'id', false ) )
-            return $this->forward( 'list' );
-        
-        $this->view->cust = $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getRequest()->getParam( 'id' ) );
-
-        if( !$cust )
-        {
-            $this->addMessage( 'Invalid customer ID', OSS_Message::ERROR );
-            return( $this->forward( 'list' ) );
-        }
+        $this->view->cust = $cust = $this->_loadCustomer();
     }
     
     
@@ -356,38 +346,29 @@ END_JSON;
 
     public function leagueTableAction()
     {
-        $metrics = array(
+        $this->view->metrics = $metrics = [
             'Total'   => 'data',
             'Max'     => 'max',
             'Average' => 'average'
-        );
+        ];
 
-        $metric = $this->_request->getParam( 'metric', $metrics['Total'] );
+        $metric = $this->getParam( 'metric', $metrics['Total'] );
         if( !in_array( $metric, $metrics ) )
             $metric = $metrics['Total'];
-
-        $day = $this->_request->getParam( 'day', date( 'Y-m-d' ) );
+        $this->view->metric     = $metric;
+        
+        $day = $this->getParam( 'day', date( 'Y-m-d' ) );
         if( !Zend_Date::isDate( $day, 'Y-m-d' ) )
             $day = date( 'Y-m-d' );
-
-        $category = $this->_request->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
-
+        $this->view->day = $day = new \DateTime( $day );
+        
+        $this->view->categories = INEX_Mrtg::$CATEGORIES;
+        $category = $this->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
         if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
             $category = INEX_Mrtg::$CATEGORIES['Bits'];
-
-        // load values from the database
-        $this->view->trafficDaily = Doctrine_Query::create()
-            ->from( 'TrafficDaily td' )
-            ->where( 'day = ?', $day )
-            ->andWhere( 'category = ?', $category )
-            ->execute();
-
-        $this->view->day        = $day;
         $this->view->category   = $category;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        $this->view->metric     = $metric;
-        $this->view->metrics    = $metrics;
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'leagueTable.tpl' );
+        
+        $this->view->trafficDaily = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->load( $day, $category );
     }
 
     public function ninetyFifthAction()

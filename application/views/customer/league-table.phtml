@@ -1,27 +1,28 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
 <ul class="breadcrumb">
     <li>
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
     <li>
-        Statistics <span class="divider">/</span>
+        <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
     </li>
     <li class="active">
         League Table ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
     </li>
 </ul>
 
+<div>
 
-{include file="message.tpl"}
+{OSS_Message}
 
 <p>
-<form action="{genUrl controller="customer" action="league-table"}" method="post">
+<form action="{genUrl controller="customer" action="league-table"}" method="post" class="form-horizontal">
 <table>
 <tr>
     <td valign="middle"><strong>Metric:</strong></td>
     <td valign="middle">
-        <select name="metric">
+        <select class="chzn-select" name="metric">
             {foreach from=$metrics key=cname item=cvalue}
                 <option value="{$cvalue}" {if $metric eq $cvalue}selected{/if}>{$cname}</option>
             {/foreach}
@@ -30,7 +31,7 @@
     <td width="20"></td>
     <td valign="middle"><strong>Statistics Type:</strong></td>
     <td>
-        <select name="category">
+        <select class="chzn-select" name="category">
             {foreach from=$categories key=cname item=cvalue}
                 <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
             {/foreach}
@@ -38,9 +39,10 @@
     </td>
     <td width="20"></td>
     <td valign="middle"><strong>Day:</strong></td>
-    <td valign="middle"><input type="text" name="day" value="{$day}" size="10" maxlength="10" /></td>
-    <td width="20">
-        <input type="submit" name="submit" class="button" value="submit" />
+    <td valign="middle"><input type="text" name="day" value="{$day->format( 'Y-m-d' )}" size="10" maxlength="10" /></td>
+    <td width="20"></td>
+    <td>
+        <input type="submit" name="submit" class="btn" value="Submit" />
     </td>
 </tr>
 </table>
@@ -79,58 +81,50 @@
 
 {foreach from=$trafficDaily item=td}
 
-{if $metric eq 'max'}
 	<tr>
-        <td>{$td.Cust.shortname}</td>
-        <td>{$td.Cust.name}</td>
-	    <td align="right">{$td.day_max_in}</td>
-	    <td align="right">{$td.day_max_out}</td>
-	    <td align="right">{$td.day_max_in+$td.day_max_out}</td>
-	    <td align="right">{$td.week_max_in}</td>
-	    <td align="right">{$td.week_max_out}</td>
-	    <td align="right">{$td.week_max_in+$td.week_max_out}</td>
-	    <td align="right">{$td.month_max_in}</td>
-	    <td align="right">{$td.month_max_out}</td>
-	    <td align="right">{$td.month_max_in+$td.month_max_out}</td>
-	    <td align="right">{$td.year_max_in}</td>
-	    <td align="right">{$td.year_max_out}</td>
-	    <td align="right">{$td.year_max_in+$td.year_max_out}</td>
+        <td>{$td.Customer.shortname}</td>
+        <td>{$td.Customer.name}</td>
+        {if $metric eq 'max'}
+            <td align="right">{$td.day_max_in}</td>
+            <td align="right">{$td.day_max_out}</td>
+            <td align="right">{$td.day_max_in+$td.day_max_out}</td>
+            <td align="right">{$td.week_max_in}</td>
+            <td align="right">{$td.week_max_out}</td>
+            <td align="right">{$td.week_max_in+$td.week_max_out}</td>
+            <td align="right">{$td.month_max_in}</td>
+            <td align="right">{$td.month_max_out}</td>
+            <td align="right">{$td.month_max_in+$td.month_max_out}</td>
+            <td align="right">{$td.year_max_in}</td>
+            <td align="right">{$td.year_max_out}</td>
+            <td align="right">{$td.year_max_in+$td.year_max_out}</td>
+        {elseif $metric eq 'average'}
+            <td align="right">{$td.day_avg_in}</td>
+            <td align="right">{$td.day_avg_out}</td>
+            <td align="right">{$td.day_avg_in+$td.day_avg_out}</td>
+            <td align="right">{$td.week_avg_in}</td>
+            <td align="right">{$td.week_avg_out}</td>
+            <td align="right">{$td.week_avg_in+$td.week_avg_out}</td>
+            <td align="right">{$td.month_avg_in}</td>
+            <td align="right">{$td.month_avg_out}</td>
+            <td align="right">{$td.month_avg_in+$td.month_avg_out}</td>
+            <td align="right">{$td.year_avg_in}</td>
+            <td align="right">{$td.year_avg_out}</td>
+            <td align="right">{$td.year_avg_in+$td.year_avg_out}</td>
+        {else}
+            <td align="right">{$td.day_tot_in}</td>
+            <td align="right">{$td.day_tot_out}</td>
+            <td align="right">{$td.day_tot_in+$td.day_tot_out}</td>
+            <td align="right">{$td.week_tot_in}</td>
+            <td align="right">{$td.week_tot_out}</td>
+            <td align="right">{$td.week_tot_in+$td.week_tot_out}</td>
+            <td align="right">{$td.month_tot_in}</td>
+            <td align="right">{$td.month_tot_out}</td>
+            <td align="right">{$td.month_tot_in+$td.month_tot_out}</td>
+            <td align="right">{$td.year_tot_in}</td>
+            <td align="right">{$td.year_tot_out}</td>
+            <td align="right">{$td.year_tot_in+$td.year_tot_out}</td>
+        {/if}
 	</tr>
-{elseif $metric eq 'average'}
-	<tr>
-        <td>{$td.Cust.shortname}</td>
-	    <td>{$td.Cust.name}</td>
-	    <td align="right">{$td.day_avg_in}</td>
-	    <td align="right">{$td.day_avg_out}</td>
-	    <td align="right">{$td.day_avg_in+$td.day_avg_out}</td>
-	    <td align="right">{$td.week_avg_in}</td>
-	    <td align="right">{$td.week_avg_out}</td>
-	    <td align="right">{$td.week_avg_in+$td.week_avg_out}</td>
-	    <td align="right">{$td.month_avg_in}</td>
-	    <td align="right">{$td.month_avg_out}</td>
-	    <td align="right">{$td.month_avg_in+$td.month_avg_out}</td>
-	    <td align="right">{$td.year_avg_in}</td>
-	    <td align="right">{$td.year_avg_out}</td>
-	    <td align="right">{$td.year_avg_in+$td.year_avg_out}</td>
-	</tr>
-{else}
-	<tr>
-        <td>{$td.Cust.shortname}</td>
-	    <td>{$td.Cust.name}</td>
-	    <td align="right">{$td.day_tot_in}</td>
-	    <td align="right">{$td.day_tot_out}</td>
-	    <td align="right">{$td.day_tot_in+$td.day_tot_out}</td>
-	    <td align="right">{$td.week_tot_in}</td>
-	    <td align="right">{$td.week_tot_out}</td>
-	    <td align="right">{$td.week_tot_in+$td.week_tot_out}</td>
-	    <td align="right">{$td.month_tot_in}</td>
-	    <td align="right">{$td.month_tot_out}</td>
-	    <td align="right">{$td.month_tot_in+$td.month_tot_out}</td>
-	    <td align="right">{$td.year_tot_in}</td>
-	    <td align="right">{$td.year_tot_out}</td>
-	    <td align="right">{$td.year_tot_in+$td.year_tot_out}</td>
-	</tr>
-{/if}
 
 {/foreach}
 
@@ -149,7 +143,6 @@
 {/if}
 
 
-{literal}
 <script>
 
 //Define a custom format function for scale and type
@@ -157,7 +150,7 @@ var myScale = function( data )
 {
 	oData = data['aData'][data['iDataColumn']];
 
-    switch( "{/literal}{$category}{literal}" )
+    switch( "{$category}" )
     {
         case 'bytes':
             var strFormat = new Array( "Bytes", "KBytes", "MBytes", "GBytes", "TBytes" );
@@ -198,7 +191,7 @@ var myScaleTotal = function( data )
 {
 	oData = data['aData'][data['iDataColumn']];
 
-	switch( "{/literal}{$category}{literal}" )
+	switch( "{$category}" )
     {
         case 'errs':
         case 'discs':
@@ -230,25 +223,23 @@ var myScaleTotal = function( data )
     return retString;
 };
 
-{/literal}
+$(document).ready(function() {
 
-$(document).ready(function() {ldelim}
-
-    oTable = $('#ixpDataTable').dataTable({ldelim}
+    oTable = $('#ixpDataTable').dataTable({
 
         "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
         "aaSorting": [[ 6, 'desc' ]],
 		"sPaginationType": "bootstrap",
 		"iDisplayLength": 100,
 		"aoColumnDefs": [
-            {ldelim} "bVisible": false, "aTargets": [ 0 ] {rdelim},
-        	{ldelim} "fnRender": {$scalefn}, "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] {rdelim},
-        	{ldelim} "sType": "numeric", "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] {rdelim},
-        	{ldelim} "bUseRendered": false, "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] {rdelim}
+            { "bVisible": false, "aTargets": [ 0 ] },
+        	{ "fnRender": {$scalefn}, "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] },
+        	{ "sType": "numeric", "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] },
+        	{ "bUseRendered": false, "aTargets": [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ] }
         ],
-        "fnRowCallback": function( nRow, aData, iDisplayIndex ) {ldelim}
-                $( nRow ).click( function(){ldelim}
-    	            $.fn.colorbox({ldelim}
+        "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+                $( nRow ).click( function(){
+    	            $.fn.colorbox({
                         open: true,
                         iframe: true,
                         href: '{genUrl
@@ -261,17 +252,15 @@ $(document).ready(function() {ldelim}
                         transition: 'elastic',
                         innerWidth: '650px',
                         height: '80%'
-                    {rdelim});
-                {rdelim});
+                    });
+                });
                  
       			return nRow;
-	  		{rdelim}
-	{rdelim}).show();
+	  		}
+	}).show();
 
-{rdelim});
+});
 
 </script>
 
-
-
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
