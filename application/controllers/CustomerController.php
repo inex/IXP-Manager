@@ -89,7 +89,7 @@ class CustomerController extends INEX_Controller_FrontEnd
                 break;
     
             case \Entities\User::AUTH_CUSTUSER:
-                $this->_feParams->allowedActions = [ 'details' ];
+                $this->_feParams->allowedActions = [ 'details', 'detail' ];
                 $this->_feParams->defaultAction = 'details';
                 break;
                 
@@ -526,40 +526,11 @@ END_JSON;
         $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true );
     }
         
-        
-        
-        /*
-        if( ( $custid = $this->getRequest()->getParam( 'id', null ) ) === null
-        || !( $this->view->cust = Doctrine::getTable( 'Cust' )->find( (int)$custid ) ) )
-        {
-            $this->_forward( 'members-details-list' );
-            return;
-        }
-    
-        // Let's get the information we need for the welcome mail from the database.
-    
-        $this->view->networkInfo = Networkinfo::toStructuredArray();
-    
-        $this->view->connections = Doctrine_Query::create()
-        ->from( 'Virtualinterface vi' )
-        ->leftJoin( 'vi.Cust c' )
-        ->leftJoin( 'vi.Physicalinterface pi' )
-        ->leftJoin( 'vi.Vlaninterface vli' )
-        ->leftJoin( 'vli.Ipv4address v4' )
-        ->leftJoin( 'vli.Ipv6address v6' )
-        ->leftJoin( 'vli.Vlan v' )
-        ->leftJoin( 'pi.Switchport sp' )
-        ->leftJoin( 'sp.SwitchTable s' )
-        ->leftJoin( 's.Cabinet cb' )
-        ->leftJoin( 'cb.Location l' )
-        ->where( 'c.id = ?', (int)$custid )
-        ->orderBy( 'v.number' )
-        ->execute()
-        ->toArray( true );
-        
-            $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'member-details.tpl' );
+    public function detailAction()
+    {
+        $this->view->cust = $c = $this->_loadCustomer( $this->getParam( 'id', null ), 'customer/details' );
+        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
     }
-        */
         
     
     /**
@@ -567,9 +538,10 @@ END_JSON;
      * redirect to `customer/list` if no ID or no such customer.
      *
      * @param int|bool $id The customer `$id` to load (or, if false, look for an ID parameter)
+     * @param string $redirect Alternative location to redirect to
      * @return \Entities\Customer The customer object
      */
-    protected function _loadCustomer( $id = false )
+    protected function _loadCustomer( $id = false, $redirect = null )
     {
         if( $id === false )
             $id = $this->getParam( 'id', false );
@@ -580,7 +552,7 @@ END_JSON;
         if( !$id || !$c )
         {
             $this->addMessage( 'Invalid customer ID', OSS_Message::ERROR );
-            $this->redirect( 'customer/list' );
+            $this->redirect( $redirect === null ? 'customer/list' : $redirect );
         }
         
         return $c;
