@@ -345,6 +345,12 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::deleteAssocPreference($attribute, $index);
     }
 
+    public function _getPreferences()
+    {
+        $this->__load();
+        return parent::_getPreferences();
+    }
+
 
     public function __sleep()
     {

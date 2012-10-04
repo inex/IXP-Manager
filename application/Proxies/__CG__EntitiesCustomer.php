@@ -675,6 +675,18 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getSecEvents();
     }
 
+    public function hasLeft()
+    {
+        $this->__load();
+        return parent::hasLeft();
+    }
+
+    public function getAdminUsers()
+    {
+        $this->__load();
+        return parent::getAdminUsers();
+    }
+
 
     public function __sleep()
     {
