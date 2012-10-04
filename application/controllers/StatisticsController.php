@@ -162,6 +162,26 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, true, true );
     }
     
+    public function memberAction()
+    {
+        if( $this->getUser()->getPrivs() < \Entities\User::AUTH_SUPERUSER )
+            $shortname = $this->getCustomer()->getShortname();
+        else
+            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
+    
+        $this->view->cust = $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
+        
+        if( !$cust )
+        {
+            $this->addMessage( 'Unknown customer' );
+            $this->_redirect( 'error/error' );
+        }
+    
+        $this->_setCategory();
+    }
+    
+    
+    
     
     /**
      * Utility function to extract, validate (and default if necessary) a

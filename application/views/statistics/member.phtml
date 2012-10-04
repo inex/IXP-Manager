@@ -1,6 +1,6 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Member Dashboard"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -9,7 +9,7 @@
             <a href="{genUrl controller='customer' action='list'}">Customers</a> <span class="divider">/</span>
         </li>
         <li>
-             {$customer->name} <span class="divider">/</span>
+             {$cust->getName()} <span class="divider">/</span>
         </li>
         <li class="active">
             Statistics
@@ -25,13 +25,11 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Interface Statistics :: {$customer->name}</h1>
+            <h1>IXP Interface Statistics :: {$cust->getName()}</h1>
         </div>
 {/if}
 
-{include file="message.tpl"}
-<div id='ajaxMessage'></div>
-
+{OSS_Message}
 
 <div class="row-fluid">
 
@@ -42,8 +40,8 @@
 
             <p>
                 <br />
-                <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category=$category shortname=$shortname}">
-                    {genMrtgImgUrlTag shortname=$shortname category=$category monitorindex='aggregate'}
+                <a href="{genUrl controller='statistics' action='member-drilldown' monitorindex='aggregate' category=$category shortname=$cust->getShortname()}">
+                    {genMrtgImgUrlTag shortname=$cust->getShortname() category=$category monitorindex='aggregate'}
                 </a>
             </p>
         </div>
@@ -57,10 +55,10 @@
         Click on a graphs for longer term statistics or change the graph time in the drop down below.
         </p>
 
-        <form action="{genUrl controller="dashboard" action="statistics"}" method="post" class="well inline">
-            <input type="hidden" name="shortname" value="{$customer.shortname}" />
+        <form action="{genUrl controller="statistics" action="member"}" method="post" class="well form-inline">
+            <input type="hidden" name="shortname" value="{$cust->getShortname()}" />
             <strong>Graph Type:</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-            <select name="category" onchange="this.form.submit();">
+            <select name="category" onchange="this.form.submit();" class="chzn-select">
                 {foreach from=$categories key=cname item=cvalue}
                     <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
                 {/foreach}
@@ -76,25 +74,25 @@
 
 {assign var='count' value=0}
 
-{foreach from=$connections item=connection}
+{foreach $cust->getVirtualInterfaces() as $vi}
 
-    {foreach from=$connection.Physicalinterface item=pi}
+    {foreach $vi->getPhysicalInterfaces() as $pi}
 
         <div class="span6">
 
             <div class="well">
 
                 <h4>
-                        {$pi.Switchport.SwitchTable.Cabinet.Location.name}
-                        / {$pi.Switchport.SwitchTable.name}
-                        / {$pi.Switchport.name} ({$pi.speed}Mb/s)
+                        {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
+                        / {$pi->getSwitchPort()->getSwitcher()->getName()}
+                        / {$pi->getSwitchPort()->getName()} ({$pi->getSpeed()}Mbps)
                 </h4>
 
 
                 <p>
                     <br />
-                    <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex=$pi.monitorindex category=$category shortname=$shortname}">
-                        {genMrtgImgUrlTag shortname=$shortname category=$category monitorindex=$pi.monitorindex}
+                    <a href="{genUrl controller='statistics' action='member-drilldown' monitorindex=$pi->getMonitorindex() category=$category shortname=$cust->getShortname()}">
+                        {genMrtgImgUrlTag shortname=$cust->getShortname() category=$category monitorindex=$pi->getMonitorindex()}
                     </a>
                 </p>
 
@@ -119,5 +117,5 @@
 </div>
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
 

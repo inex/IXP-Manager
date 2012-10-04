@@ -154,35 +154,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
 
 
 
-    public function statisticsAction()
-    {
-        if( $this->user['privs'] < User::AUTH_SUPERUSER )
-            $shortname = $this->customer['shortname'];
-        else
-            $shortname = $this->getRequest()->getParam( 'shortname', $this->customer['shortname'] );
-
-        $cust = $this->_getCustomerByShortname( $shortname );
-
-        // get the connections
-        $this->view->connections = $this->_getConnections( $cust );
-
-        // is there a category selected?
-        $category = $this->getRequest()->getParam( 'category', false );
-        if( $category === false )
-            $this->view->category = INEX_Mrtg::$CATEGORIES['Bits'];
-        else if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
-            $this->view->category = INEX_Mrtg::$CATEGORIES['Bits'];
-        else
-            $this->view->category = $category;
-
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        $this->view->shortname = $shortname;
-
-        $this->view->customer = $cust;
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'statistics.tpl' );
-    }
-
 
     public function statisticsDrilldownAction()
     {
