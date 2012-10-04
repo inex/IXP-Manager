@@ -64,12 +64,8 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
             $day = date( 'Y-m-d' );
         $this->view->day = $day = new \DateTime( $day );
         
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        $category = $this->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
-            $category = INEX_Mrtg::$CATEGORIES['Bits'];
-        $this->view->category   = $category;
-        
+        $category = $this->_setCategory();
+                
         $this->view->trafficDaily = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->load( $day, $category );
     }
     
@@ -90,11 +86,7 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
             $graph = $images[0];
         $this->view->graph      = $graph;
         
-        // is there a category selected?
-        $category = $this->getParam( 'category', INEX_Mrtg::CATEGORY_BITS );
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES_AGGREGATE ) )
-            $category = INEX_Mrtg::CATEGORY_BITS;
-        $this->view->category = $category;
+        $category = $this->_setCategory();
     
         $stats = array();
         foreach( INEX_Mrtg::$PERIODS as $period )
@@ -105,7 +97,6 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $this->view->stats      = $stats;
         
         $this->view->periods    = INEX_Mrtg::$PERIODS;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES_AGGREGATE;
     }
     
     public function trunksAction()
@@ -145,12 +136,8 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
             $switch = array_keys( $switches )[0];
         $this->view->switch     = $switch;
         
-        // is there a category selected?
-        $category = $this->getParam( 'category', INEX_Mrtg::CATEGORY_BITS );
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES_AGGREGATE ) )
-            $category = INEX_Mrtg::CATEGORY_BITS;
-        $this->view->category = $category;
-    
+        $category = $this->_setCategory();
+            
         $stats = array();
         foreach( INEX_Mrtg::$PERIODS as $period )
         {
@@ -163,8 +150,6 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         }
         $this->view->stats      = $stats;
         
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES_AGGREGATE;
     }
     
     
@@ -172,21 +157,51 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
         
-        $category = $this->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
+        $this->_setCategory();
+        $this->_setPeriod();
+        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, true, true );
+    }
+    
+    
+    /**
+     * Utility function to extract, validate (and default if necessary) a
+     * category from request parameters.
+     *
+     * Sets the view variables `$category` to the chosen / defaulted category
+     * and `$categories` to all available categories.
+     *
+     * @param string $pname The name of the parameter to extract the category from
+     * @return string The chosen / defaulted category
+     */
+    protected function _setCategory( $pname = 'category' )
+    {
+        $category = $this->getParam( $pname, INEX_Mrtg::$CATEGORIES['Bits'] );
         if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
             $category = INEX_Mrtg::$CATEGORIES['Bits'];
         $this->view->category   = $category;
         $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        
-        $period = $this->_request->getParam( 'period', INEX_Mrtg::$PERIODS['Day'] );
+        return $category;
+    }
+    
+    /**
+     * Utility function to extract, validate (and default if necessary) a
+     * period from request parameters.
+     *
+     * Sets the view variables `$period` to the chosen / defaulted category
+     * and `$periods` to all available periods.
+     *
+     * @param string $pname The name of the parameter to extract the period from
+     * @return string The chosen / defaulted period
+     */
+    protected function _setPeriod( $pname = 'period' )
+    {
+        $period = $this->getParam( $pname, INEX_Mrtg::$PERIODS['Day'] );
         if( !in_array( $period, INEX_Mrtg::$PERIODS ) )
             $period = INEX_Mrtg::$PERIODS['Day'];
         $this->view->period     = $period;
         $this->view->periods    = INEX_Mrtg::$PERIODS;
-        
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, true, true );
+        return $period;
     }
-    
     
     
     /*
