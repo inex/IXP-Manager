@@ -21,7 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 /**
  * Controller: Customer user dashboard and actions
  *
