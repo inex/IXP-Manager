@@ -382,57 +382,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
 
 
 
-    public function switchGraphsAction()
-    {
-        // get the available graphs
-        $_switches = Doctrine_Query::create()
-            ->select( 'sw.id, c.id, l.id, sw.name' )
-            ->addSelect( 'sw.model' )
-            ->addSelect( 'l.name AS location' )
-            ->from( 'Switchtable sw' )
-            ->leftJoin( 'sw.Cabinet c' )
-            ->leftJoin( 'c.Location l' )
-            ->where( 'sw.active = 1' )
-            ->andWhere( 'sw.switchtype = ?', SwitchTable::SWITCHTYPE_SWITCH )
-            ->orderBy( 'l.name, sw.name' )
-            ->fetchArray();
-
-        foreach( $_switches as $s )
-            $switches[$s['id']] = $s;
-
-        $switch = $this->_request->getParam( 'switch', $_switches[0]['id'] );
-        if( !in_array( $switch, array_keys( $switches ) ) )
-            $switch = $_switches[0]['id'];
-
-        // is there a category selected?
-        $category = $this->getRequest()->getParam( 'category', INEX_Mrtg::CATEGORY_BITS );
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES_AGGREGATE ) )
-            $this->view->category = INEX_Mrtg::CATEGORY_BITS;
-        else
-            $this->view->category = $category;
-
-        $stats = array();
-        foreach( INEX_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new INEX_Mrtg(
-                $this->config['mrtg']['path']
-                    . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-                    . 'switches' . DIRECTORY_SEPARATOR . 'switch-aggregate-'
-                    . $switches[$switch]['name'] . '-' . $category . '.log'
-            );
-
-            $stats[$period] = $mrtg->getValues( $period, $category );
-        }
-
-        $this->view->switches   = $switches;
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
-        $this->view->switch     = $switch;
-        $this->view->stats      = $stats;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES_AGGREGATE;
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'statistics-switch-graphs.tpl' );
-    }
-
 
 
     public function rsInfoAction()

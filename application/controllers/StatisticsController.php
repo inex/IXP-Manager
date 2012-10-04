@@ -135,6 +135,39 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $this->view->periods = INEX_Mrtg::$PERIODS;
     }
     
+    public function switchesAction()
+    {
+        $switches = $this->view->switches
+            = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames( true, \Entities\Switcher::TYPE_SWITCH );
+    
+        $switch = $this->getParam( 'switch', array_keys( $switches )[0] );
+        if( !in_array( $switch, array_keys( $switches ) ) )
+            $switch = array_keys( $switches )[0];
+        $this->view->switch     = $switch;
+        
+        // is there a category selected?
+        $category = $this->getParam( 'category', INEX_Mrtg::CATEGORY_BITS );
+        if( !in_array( $category, INEX_Mrtg::$CATEGORIES_AGGREGATE ) )
+            $category = INEX_Mrtg::CATEGORY_BITS;
+        $this->view->category = $category;
+    
+        $stats = array();
+        foreach( INEX_Mrtg::$PERIODS as $period )
+        {
+            $mrtg = new INEX_Mrtg(
+                $this->_options['mrtg']['path'] . '/switches/' . 'switch-aggregate-'
+                    . $switches[$switch] . '-' . $category . '.log'
+            );
+    
+            $stats[$period] = $mrtg->getValues( $period, $category );
+        }
+        $this->view->stats      = $stats;
+        
+        $this->view->periods    = INEX_Mrtg::$PERIODS;
+        $this->view->categories = INEX_Mrtg::$CATEGORIES_AGGREGATE;
+    }
+    
+    
     
     
     /*
