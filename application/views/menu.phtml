@@ -123,8 +123,8 @@
         <li {if $controller eq 'customer' and $action eq 'statistics-list'}class="active"{/if}>
             <a href="{genUrl controller='customer' action='statistics-list'}">Member Statistics - List</a>
         </li>
-        <li {if $controller eq 'customer' and $action eq 'league-table'}class="active"{/if}>
-            <a href="{genUrl controller='customer' action='league-table'}">League Table</a>
+        <li {if $controller eq 'statistics' and $action eq 'league-table'}class="active"{/if}>
+            <a href="{genUrl controller='statistics' action='league-table'}">League Table</a>
         </li>
                 
         {* 95th Percentiles {genUrl controller="customer" action="ninety-fifth"} *}
