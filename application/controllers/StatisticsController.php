@@ -234,6 +234,112 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         }
     }
     
+    /**
+     * sFlow Peer to Peer statistics
+     */
+    public function p2pAction()
+    {
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $shortname = $this->getCustomer()->getShortname();
+        else
+            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
+    
+        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
+
+        $category = $this->_setCategory();
+        $period   = $this->_setPeriod();
+        $infra    = $this->_setInfrastructure();
+        $proto    = $this->_setProtocol();
+        $dvid     = $this->view->dvid = $this->getParam( 'dvid', false );
+    
+        // find the possible virtual interfaces that this customer peers with
+        $vints = [];
+        foreach( $this->getCustomer()->getVirtualInterfaces() as $vi )
+        {
+            $enabled = false;
+            foreach( $vi->getVlanInterfaces() as $vli )
+            {
+                $fn = "getIpv{$proto}enabled";
+                if( $vli->$fn() )
+                {
+                    $enabled = true;
+                    break;
+                }
+            }
+            
+            if( !$enabled )
+                continue;
+            
+            foreach( $vi->getPhysicalInterfaces() as $pi )
+            {
+                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure() == $infra )
+                    $vints[ $vi->getId() ] = $vi;
+            }
+        }
+            
+        $this->view->vints = $vints;
+    
+        if( count( $vints ) )
+        {
+            if( count( $vints ) > 1 )
+            {
+                $interfaces = array();
+                foreach( $vints as $vi )
+                    $interfaces[] = $vi->getId();
+    
+                $interface = $this->view->interface = $this->getParam( 'interface', $interfaces[0] );
+                if( !in_array( $interface, $interfaces ) )
+                    $interface = $this->view->interface = $interfaces[0];
+    
+                $this->view->svid = $interface;
+            }
+            else
+                $this->view->svid = $vints[ ( array_keys( $vints )[0] ) ]->getId();
+    
+            // find the possible virtual interfaces that this customer peers with
+            $dql = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname,
+                        vi.id AS viid, pi.id AS piid, vli.id AS vlidid, sp.id AS spid, s.id AS sid
+            
+                    FROM \\Entities\\Customer c
+                        LEFT JOIN c.VirtualInterfaces vi
+                        LEFT JOIN vi.PhysicalInterfaces pi
+                        LEFT JOIN vi.VlanInterfaces vli
+                        LEFT JOIN pi.SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        
+                    WHERE
+                        s.infrastructure = {$infra}
+                        AND vli.ipv{$proto}enabled = 1
+                        AND c.shortname != ?1
+                        AND c.type IN ( " . \Entities\Customer::TYPE_FULL . ", " . \Entities\Customer::TYPE_PROBONO . " )
+                        AND c.status = " . \Entities\Customer::STATUS_NORMAL . "
+                        AND ( c.dateleave IS NULL OR c.dateleave = '0000-00-00' )
+                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
+                        
+            
+    
+            if( $dvid )
+                $dql .= " AND WHERE vi.id = {$dvid}";
+            
+            $dql .= "  ORDER BY c.name";
+            
+           
+            $q  = $this->getD2EM()->createQuery( $dql )->setParameter( 1, $shortname );
+            
+            $this->view->customersWithVirtualInterfaces = $q->getArrayResult();
+            //OSS_Debug::dd( $this->view->customersWithVirtualInterfaces );
+        }
+    
+    
+        if( $dvid )
+        {
+            Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+            $this->view->display( 'statistics/p2p-single.phtml' );
+        }
+    }
+    
+    
+    
     
     
     /**
@@ -274,6 +380,51 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $this->view->period     = $period;
         $this->view->periods    = INEX_Mrtg::$PERIODS;
         return $period;
+    }
+    
+    /**
+     * Utility function to extract, validate (and default if necessary) an
+     * infrastructure from request parameters.
+     *
+     * Sets the view variables `$infra` to the chosen / defaulted infrastructure
+     * and `$infrastructures` to all available infrastructures.
+     *
+     * @param string $pname The name of the parameter to extract the infrastructure from
+     * @return string The chosen / defaulted infrastructure
+     */
+    protected function _setInfrastructure( $pname = 'infra' )
+    {
+        $infra = $this->view->infra = $this->getParam( $pname, 1 );
+        if( !in_array( $infra, INEX_Mrtg::$INFRASTRUCTURES ) )
+            $infra = INEX_Mrtg::INFRASTRUCTURE_PRIMARY;
+        
+        $this->view->infra      = $infra;
+        $this->view->infrastructures = INEX_Mrtg::$INFRASTRUCTURES;
+        
+        return $infra;
+    }
+    
+    
+    /**
+     * Utility function to extract, validate (and default if necessary) a
+     * protocol from request parameters.
+     *
+     * Sets the view variables `$proto` to the chosen / defaulted protocol
+     * and `$protocols` to all available protocols.
+     *
+     * @param string $pname The name of the parameter to extract the protocol from
+     * @return string The chosen / defaulted protocol
+     */
+    protected function _setProtocol( $pname = 'proto' )
+    {
+        $proto = $this->getParam( $pname, 4 );
+        if( !in_array( $proto, INEX_Mrtg::$PROTOCOLS ) )
+            $proto = INEX_Mrtg::PROTOCOL_IPV4;
+        
+        $this->view->proto     = $proto;
+        $this->view->protocols = INEX_Mrtg::$PROTOCOLS;
+            
+        return $proto;
     }
     
     

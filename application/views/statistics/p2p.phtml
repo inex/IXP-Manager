@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -9,7 +9,7 @@
             <a href="{genUrl controller='customer' action='list'}">Customers</a> <span class="divider">/</span>
         </li>
         <li>
-             {$customer->name} <span class="divider">/</span>
+             {$cust->getName()} <span class="divider">/</span>
         </li>
         <li class="active">
             Peer to Peer Statistics
@@ -25,13 +25,14 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Peer to Peer Statistics :: {$customer->name}</h1>
+            <h1>IXP Peer to Peer Statistics :: {$cust->getName()}</h1>
         </div>
 {/if}
-{include file="message.tpl"}
+
+{OSS_Message}
 
 <p>
-<form action="{genUrl controller="dashboard" action="p2p"}" method="post">
+<form action="{genUrl controller="statistics" action="p2p"}" method="post">
 <table>
 <tr>
     <td width="20"></td>
@@ -74,21 +75,21 @@
             {/foreach}
         </select>
     </td>
-    {if count( $customersVirtualInterfaces.Virtualinterface ) > 1}
+    {if count( $vints ) > 1}
         <td width="20"></td>
         <td valign="middle"><strong>Interface:</strong></td>
         <td>
             &nbsp;
             <select name="interface" style="width: 100px;">
-                {foreach from=$customersVirtualInterfaces.Virtualinterface key=cnt item=ivalue}
-                    <option value="{$ivalue.id}" {if isset( $interface ) and $interface eq $ivalue.id}selected="selected"{/if}>{$cnt+1}</option>
+                {foreach $vints as $id => $vi}
+                    <option value="{$id}" {if isset( $interface ) and $interface eq $id}selected="selected"{/if}>{$id}</option>
                 {/foreach}
             </select>
         </td>
     {/if}
     <td width="20"></td>
     <td valign="middle">
-        <input type="hidden" name="shortname" value="{$shortname}" />
+        <input type="hidden" name="shortname" value="{$cust->getShortname()}" />
         <input class="btn" type="submit" value="Submit &raquo;" />
     </td>
     </tr>
@@ -97,7 +98,7 @@
 </p>
 
 
-{if count( $customersVirtualInterfaces.Virtualinterface ) > 1}
+{if count( $vints ) > 1}
     <div class="alert alert-info">
         <h4 class="alert-heading">Multiple Interfaces on this Infrastructure Found</h4>
         We've detected that you have multiple interfaces on this infrastructure. You can view you other
@@ -105,43 +106,39 @@
     </div>
 {/if}
 
-{if isset( $customersWithVirtualInterfaces ) and is_array( $customersWithVirtualInterfaces )}
+{if isset( $vints ) and is_array( $vints )}
     <div class="row-fluid">
     
     {assign var='count' value=0}
-    {if $user.privs eq 3}
+    {if $user->getPrivs() eq 3}
     
     
-        {foreach from=$customersWithVirtualInterfaces key="vcustid" item="vcust"}
-            {foreach from=$vcust.Virtualinterface key="dvid" item="vint"}
+        {foreach $customersWithVirtualInterfaces as $vcust}
+            <div class="span3">
         
-                <div class="span3">
-            
-                    <div class="well">
-                        <h4 style="vertical-align: middle">
-                            {$vcust.name}
-                        </h4>
-            
-                        <p>
-                            <br />
-                            <a href="{genUrl controller="dashboard" action="p2p" shortname=$customer.shortname svid=$svid dvid=$vint.id category=$category period=$period proto=$proto infra=$infra}">
-                                <img
-                                    src="{genMrtgP2pImgUrl shortname=$customer.shortname svid=$svid dvid=$vint.id category=$category proto=$proto period=$period infra=$infra}"
-                                    width="300"
-                                />
-                            </a>
-                        </p>
-                    </div>
-            
+                <div class="well">
+                    <h4 style="vertical-align: middle">
+                        {$vcust.cname}
+                    </h4>
+        
+                    <p>
+                        <br />
+                        <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname() svid=$svid dvid=$vcust.viid category=$category period=$period proto=$proto infra=$infra}">
+                            <img
+                                src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$vcust.viid category=$category proto=$proto period=$period infra=$infra}"
+                                width="300"
+                            />
+                        </a>
+                    </p>
                 </div>
-            
-                {assign var='count' value=$count+1}
-            
-                {if $count%4 eq 0}
-                    </div><br /><div class="row-fluid">
-                {/if}
         
-            {/foreach}
+            </div>
+        
+            {assign var='count' value=$count+1}
+        
+            {if $count%4 eq 0}
+                </div><br /><div class="row-fluid">
+            {/if}
         {/foreach}
         
         {if $count%4 neq 0}
@@ -173,9 +170,9 @@
             
                         <p>
                             <br />
-                            <a href="{genUrl controller="dashboard" action="p2p" shortname=$customer.shortname svid=$svid dvid=$vint.id category=$category period=$period proto=$proto infra=$infra}">
+                            <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname() svid=$svid dvid=$vint.id category=$category period=$period proto=$proto infra=$infra}">
                                 <img
-                                    src="{genMrtgP2pImgUrl shortname=$customer.shortname svid=$svid dvid=$vint.id category=$category proto=$proto period=$period infra=$infra}"
+                                    src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$vint.id category=$category proto=$proto period=$period infra=$infra}"
                                     width="600"
                                 />
                             </a>
@@ -208,9 +205,9 @@
     <div class="alert alert-info">
         <h4 class="alert-heading">Uh oh! You (or your peer(s)) do not have any ports for the select infrastructure and / or protocol.</h4>
         If you'd like to take to us about enabling IPv6 or getting a port on the secondary infrastructure, please
-        <a href="{genUrl controller="dashboard" action="static" page="support"}">contact us</a>.
+        <a href="{genUrl controller="static" action="static" page="support"}">contact us</a>.
     </div>
 
 {/if} {* customer has an interface for given infra and proto *}
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

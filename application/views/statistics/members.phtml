@@ -51,7 +51,7 @@
                 {$cust.name}
                 {if $category eq 'bits' or $category eq 'pkts'}
                     <span class="btn btn-mini" style="float: right">
-                        <a href="{genUrl controller="dashboard" action="p2p" shortname=$cust.shortname category=$category period=$period}"><i class="icon-random"></i></a>
+                        <a href="{genUrl controller="statistics" action="p2p" shortname=$cust.shortname category=$category period=$period}"><i class="icon-random"></i></a>
                     </span>
                 {/if}
             </h4>
