@@ -345,7 +345,6 @@ END_JSON;
     }
 
 
-
     public function statisticsOverviewAction()
     {
         $category = $this->_request->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );

@@ -74,6 +74,39 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     }
     
     
+    public function publicAction()
+    {
+        // get the available graphs
+        foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
+        {
+            $p = explode( '::', $g );
+            $graphs[$p[0]] = $p[1];
+            $images[]      = $p[0];
+        }
+        $this->view->graphs     = $graphs;
+        
+        $graph = $this->getParam( 'graph', $images[0] );
+        if( !in_array( $graph, $images ) )
+            $graph = $images[0];
+        $this->view->graph      = $graph;
+        
+        // is there a category selected?
+        $category = $this->getParam( 'category', INEX_Mrtg::CATEGORY_BITS );
+        if( !in_array( $category, INEX_Mrtg::$CATEGORIES_AGGREGATE ) )
+            $category = INEX_Mrtg::CATEGORY_BITS;
+        $this->view->category = $category;
+    
+        $stats = array();
+        foreach( INEX_Mrtg::$PERIODS as $period )
+        {
+            $mrtg = new INEX_Mrtg( $this->_options['mrtg']['path'] . '/ixp_peering-' . $graph . '-' . $category . '.log' );
+            $stats[$period] = $mrtg->getValues( $period, $category );
+        }
+        $this->view->stats      = $stats;
+        
+        $this->view->periods    = INEX_Mrtg::$PERIODS;
+        $this->view->categories = INEX_Mrtg::$CATEGORIES_AGGREGATE;
+    }
     
     /*
     public function ninetyFifthAction()

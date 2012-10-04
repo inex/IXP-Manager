@@ -379,47 +379,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
     }
 
 
-    public function trafficStatsAction()
-    {
-        // get the available graphs
-        foreach( $this->config['mrtg']['traffic_graphs'] as $g )
-        {
-            $p = explode( '::', $g );
-            $graphs[$p[0]] = $p[1];
-            $images[]      = $p[0];
-        }
-
-        $graph = $this->_request->getParam( 'graph', $images[0] );
-        if( !in_array( $graph, $images ) )
-            $graph = $images[0];
-
-        // is there a category selected?
-        $category = $this->getRequest()->getParam( 'category', INEX_Mrtg::CATEGORY_BITS );
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES_AGGREGATE ) )
-            $this->view->category = INEX_Mrtg::CATEGORY_BITS;
-        else
-            $this->view->category = $category;
-
-        $stats = array();
-        foreach( INEX_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new INEX_Mrtg(
-                $this->config['mrtg']['path']
-                    . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-                    . 'ixp_peering-' . $graph . '-' . $category . '.log'
-            );
-
-            $stats[$period] = $mrtg->getValues( $period, $category );
-        }
-
-        $this->view->graphs     = $graphs;
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES_AGGREGATE;
-        $this->view->graph      = $graph;
-        $this->view->stats      = $stats;
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'statistics-peering-graphs.tpl' );
-    }
 
 
     public function trunkGraphsAction()

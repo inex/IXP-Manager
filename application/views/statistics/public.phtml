@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -18,17 +18,16 @@
 
 <h3>{$graphs.$graph} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
 
-{include file="message.tpl"}
-<div id='ajaxMessage'></div>
+{OSS_Message}
 
 <p>
-<form action="{genUrl controller="dashboard" action="traffic-stats"}" method="post">
+<form action="{genUrl controller="statistics" action="public"}" method="post" class="form-horizontal">
 <table>
 <tr>
     <td width="20"></td>
     <td valign="middle"><strong>Select Infrastructure:</strong></td>
     <td>
-        <select name="graph" onchange="this.form.submit();">
+        <select name="graph" class="chzn-select" onchange="this.form.submit();">
             {foreach from=$graphs key=id item=name}
                 <option value="{$id}" {if $graph eq $id}selected{/if}>{$name}</option>
             {/foreach}
@@ -37,7 +36,7 @@
     <td width="20"></td>
     <td valign="middle"><strong>Category:</strong></td>
     <td>
-        <select name="category" onchange="this.form.submit();">
+        <select name="category" class="chzn-select" onchange="this.form.submit();">
             {foreach from=$categories key=cname item=cval}
                 <option value="{$cval}" {if $category eq $cval}selected{/if}>{$cname}</option>
             {/foreach}
@@ -87,5 +86,5 @@
 </div>
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
 
