@@ -345,36 +345,6 @@ END_JSON;
     }
 
 
-    public function statisticsOverviewAction()
-    {
-        $category = $this->_request->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
-
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
-            $category = INEX_Mrtg::$CATEGORIES['Bits'];
-
-        $period = $this->_request->getParam( 'period', INEX_Mrtg::$PERIODS['Day'] );
-
-        if( !in_array( $period, INEX_Mrtg::$PERIODS ) )
-            $period = INEX_Mrtg::$PERIODS['Day'];
-
-        $this->view->custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->orderBy( 'c.name' )
-            ->fetchArray();
-
-        $this->view->category   = $category;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        $this->view->period     = $period;
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'statistics-overview.tpl' );
-    }
-
     public function statisticsByLanAction()
     {
         $category = $this->_request->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );

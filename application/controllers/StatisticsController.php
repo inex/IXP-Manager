@@ -168,6 +168,25 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     }
     
     
+    public function membersAction()
+    {
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+        
+        $category = $this->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
+        if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
+            $category = INEX_Mrtg::$CATEGORIES['Bits'];
+        $this->view->category   = $category;
+        $this->view->categories = INEX_Mrtg::$CATEGORIES;
+        
+        $period = $this->_request->getParam( 'period', INEX_Mrtg::$PERIODS['Day'] );
+        if( !in_array( $period, INEX_Mrtg::$PERIODS ) )
+            $period = INEX_Mrtg::$PERIODS['Day'];
+        $this->view->period     = $period;
+        $this->view->periods    = INEX_Mrtg::$PERIODS;
+        
+        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, true, true );
+    }
+    
     
     
     /*

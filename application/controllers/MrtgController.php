@@ -51,7 +51,7 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
 
     private function checkShortname( $shortname )
     {
-        return Doctrine::getTable( 'Cust' )->findOneByShortname( $shortname );
+        return $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
     }
 
 
@@ -87,8 +87,8 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
         }
         else
         {
-            if( $this->user['privs'] < User::AUTH_SUPERUSER || !$this->checkShortname( $shortname ) )
-                $shortname = $this->customer['shortname'];
+            if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER || !$this->checkShortname( $shortname ) )
+                $shortname = $this->getCustomer()->getShortname();
 
             $filename = INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members'    , 'PNG',
                 $monitorindex, $category, $shortname, $period

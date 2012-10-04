@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
 <ul class="breadcrumb">
     <li>
@@ -17,36 +17,26 @@
     </li>
 </ul>
 
-{include file="message.tpl"}
+{OSS_Message}
 
-<p>
-<form action="{genUrl controller="customer" action="statistics-overview"}" method="post">
-<table>
-<tr>
-    <td width="20"></td>
-    <td valign="middle"><strong>Graph Type:</strong></td>
-    <td>
-        &nbsp;
-        <select name="category" class="chzn-select" onchange="this.form.submit();">
-            {foreach from=$categories key=cname item=cvalue}
-                <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
-            {/foreach}
-        </select>
-    </td>
-    <td width="20"></td>
-    <td valign="middle"><strong>Period:</strong></td>
-    <td>
-        &nbsp;
-        <select name="period" class="chzn-select" onchange="this.form.submit();">
-            {foreach from=$periods key=cname item=cvalue}
-                <option value="{$cvalue}" {if $period eq $cvalue}selected{/if}>{$cname}</option>
-            {/foreach}
-        </select>
-    </td>
-</tr>
-</table>
-</form>
-</p>
+<div class="row-fluid">
+    <div class="span12">
+        <form action="{genUrl controller="statistics" action="members"}" method="post" class="form-horizontal">
+            <strong>Graph Type:</strong>
+            <select name="category" class="chzn-select" onchange="this.form.submit();">
+                {foreach from=$categories key=cname item=cvalue}
+                    <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
+                {/foreach}
+            </select>
+            <strong>Period:</strong>
+            <select name="period" class="chzn-select" onchange="this.form.submit();">
+                {foreach from=$periods key=cname item=cvalue}
+                    <option value="{$cvalue}" {if $period eq $cvalue}selected{/if}>{$cname}</option>
+                {/foreach}
+            </select>
+        </form>
+    </div>
+</div>
 
 
 <div class="row-fluid">
@@ -68,7 +58,7 @@
 
             <p>
                 <br />
-                <a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname monitorindex=aggregate category=$category}">
+                <a href="{genUrl controller="statistics" action="member" shortname=$cust.shortname monitorindex=aggregate category=$category}">
                     <img
                         src="{genMrtgImgUrl shortname=$cust.shortname category=$category period=$period monitorindex='aggregate'}"
                         width="300"
@@ -103,4 +93,4 @@
 </div>
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
