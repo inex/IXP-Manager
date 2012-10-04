@@ -21,26 +21,48 @@ class Switcher extends EntityRepository
     /**
      * Return an array of all switch objects from the database with caching
      *
+     * @param bool $active If `true`, return only active switches
+     * @param int $type If `0`, all types otherwise limit to specific type
      * @return array An array of all switch objects
      */
-    public function getAndCache()
+    public function getAndCache( $active = false, $type = 0 )
     {
-        return $this->getEntityManager()->createQuery(
-                "SELECT s FROM Entities\\Switcher s"
-            )
-            ->useResultCache( true, 3600, self::ALL_CACHE_KEY )
+        $dql = "SELECT s FROM Entities\\Switcher s WHERE 1=1";
+        
+        $key = self::ALL_CACHE_KEY;
+        
+        if( $active )
+        {
+            $dql .= " AND s.active = 1";
+            $key .= '-active';
+        }
+        else
+            $key .= '-all';
+        
+        if( $type )
+        {
+            $dql .= " AND s.switchtype = " . intval( $type );
+            $key .= '-' . intval( $type );
+        }
+        else
+            $key .= '-all';
+            
+        return $this->getEntityManager()->createQuery( $dql )
+            ->useResultCache( true, 3600, $key )
             ->getResult();
     }
     
     /**
      * Return an array of all switch names where the array key is the switch id
      *
+     * @param bool $active If `true`, return only active switches
+     * @param int $type If `0`, all types otherwise limit to specific type
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getNames()
+    public function getNames( $active = false, $type = 0 )
     {
         $switches = [];
-        foreach( $this->getAndCache() as $a )
+        foreach( $this->getAndCache( $active, $type ) as $a )
             $switches[ $a->getId() ] = $a->getName();
     
         return $switches;
