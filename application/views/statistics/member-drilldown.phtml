@@ -1,6 +1,6 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Member Dashboard"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -9,7 +9,7 @@
             <a href="{genUrl controller='customer' action='list'}">Customers</a> <span class="divider">/</span>
         </li>
         <li>
-             {$customer.name} <span class="divider">/</span>
+             {$cust->getName()} <span class="divider">/</span>
         </li>
         <li class="active">
             Statistics
@@ -19,15 +19,12 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Interface Statistics :: {$customer->name} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})</h1>
+            <h1>IXP Interface Statistics :: {$cust->getName()} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})</h1>
         </div>
 {/if}
 
 
-{include file="message.tpl"}
-
-<div id='ajaxMessage'></div>
-
+{OSS_Message}
 
 <div class="row-fluid">
 
@@ -42,17 +39,17 @@
     </div>
     <div class="span6">
     
-        <form action="{genUrl controller="dashboard" action="statistics-drilldown" shortname=$shortname monitorindex=$monitorindex}" method="post" class="form form-inline">
+        <form action="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() monitorindex=$monitorindex}" method="post" class="form-horizontal">
             
             <strong>Graph Type:&nbsp;&nbsp;&nbsp;</strong>
 
-            <select name="category" onchange="this.form.submit();">
+            <select name="category" onchange="this.form.submit();" class="chzn-select">
                 {foreach from=$categories key=cname item=cvalue}
                     <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
                 {/foreach}
             </select>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a class="btn" href="{genUrl controller="dashboard" action="statistics"}{if $user.privs eq 3}/shortname/{$shortname}{/if}">
+            <a class="btn" href="{genUrl controller="statistics" action="member"}{if $user->getPrivs() eq 3}/shortname/{$cust->getShortname()}{/if}">
                 Back to Overview
             </a>
             
@@ -75,7 +72,7 @@
 
             <p>
                 {genMrtgGraphBox
-                        shortname=$customer->shortname
+                        shortname=$cust->getShortname()
                         category=$category
                         monitorindex=$monitorindex
                         period=$pvalue
@@ -102,5 +99,5 @@
 </div>
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
 

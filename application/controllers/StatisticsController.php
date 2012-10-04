@@ -169,17 +169,70 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         else
             $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
     
-        $this->view->cust = $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
+        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
         
-        if( !$cust )
-        {
-            $this->addMessage( 'Unknown customer' );
-            $this->_redirect( 'error/error' );
-        }
-    
         $this->_setCategory();
     }
     
+    public function memberDrilldownAction()
+    {
+        $category = $this->_setCategory();
+        $this->view->monitorindex = $monitorindex = $this->getParam( 'monitorindex', 1 );
+        
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $shortname = $this->getCustomer()->getShortname();
+        else
+            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
+    
+        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
+    
+        if( $monitorindex != 'aggregate' )
+        {
+            $vint = false;
+            $pi = null;
+            foreach( $this->getCustomer()->getVirtualInterfaces() as $vi )
+            {
+                foreach( $vi->getPhysicalInterfaces() as $pi )
+                {
+                    if( $pi->getMonitorindex() == $monitorindex )
+                    {
+                        $vint = $vi;
+                        break 2;
+                    }
+                }
+            }
+            
+            if( !$vint )
+                throw new INEX_Exception( 'Member statistics drilldown requested for unknown monitor index' );
+    
+            $this->view->switchname = $pi->getSwitchPort()->getSwitcher()->getName();
+            $this->view->portname   = $pi->getSwitchPort()->getName();
+        }
+        else
+        {
+            $this->view->switchname = '';
+            $this->view->portname   = '';
+        }
+    
+        $this->view->periods      = INEX_Mrtg::$PERIODS;
+    
+        $stats = array();
+        foreach( INEX_Mrtg::$PERIODS as $period )
+        {
+            $mrtg = new INEX_Mrtg(
+                INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
+            );
+    
+            $stats[$period] = $mrtg->getValues( $period, $this->view->category );
+        }
+        $this->view->stats     = $stats;
+    
+        if( $this->_request->getParam( 'mini', false ) )
+        {
+            Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+            $this->view->display( 'statistics/member-drilldown-mini.phtml' );
+        }
+    }
     
     
     

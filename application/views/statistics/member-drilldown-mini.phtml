@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <base href="{$pagebase}/index.php">
-
+    <base href="{genUrl}">
     <meta http-equiv="Content-Type" content="text/html; charset="utf8" />
-
-    {include file="header-css.tpl"}
+    {tmplinclude file="header-css.phtml"}
 </head>
 
 <body>
 
 <center>
-<h3>IXP Interface Statistics :: {$customer.name} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
+<h3>IXP Interface Statistics :: {$cust->getName()} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
 
 {foreach from=$periods key=pname item=pvalue}
 
@@ -19,7 +17,7 @@
 
 <p align="center">
     {genMrtgGraphBox
-            shortname=$customer->shortname
+            shortname=$cust->getShortname()
             category=$category
             monitorindex=$monitorindex
             period=$pvalue

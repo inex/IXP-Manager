@@ -34,5 +34,33 @@
 class INEX_Controller_AuthRequiredAction extends INEX_Controller_Action
 {
     use OSS_Controller_Action_Trait_AuthRequired;
+    
+    
+    /**
+     * Load a customer from the database by shortname but redirect to `error/error` if no such customer.
+     *
+     * Will use 'shortname' parameter is no shortname provided
+     *
+     * @param string|bool $shortname The customer shortname to load (or, if false, look for `shortname` parameter)
+     * @param string $redirect Alternative location to redirect to
+     * @return \Entities\Customer The customer object
+     */
+    protected function loadCustomerByShortname( $shortname = false, $redirect = null )
+    {
+        if( $shortname === false )
+            $shortname = $this->getParam( 'shortname', false );
+    
+        if( $shortname )
+            $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
+    
+        if( !$shortname || !$c )
+        {
+            $this->addMessage( 'Invalid customer', OSS_Message::ERROR );
+            $this->redirect( $redirect === null ? 'error/error' : $redirect );
+        }
+    
+        return $c;
+    }
+    
 }
 
