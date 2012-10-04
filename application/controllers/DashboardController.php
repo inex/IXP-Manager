@@ -381,40 +381,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
 
 
 
-    public function trunkGraphsAction()
-    {
-        // get the available graphs
-        foreach( $this->config['mrtg']['trunk_graphs'] as $g )
-        {
-            $p = explode( '::', $g );
-            $graphs[$p[0]] = $p[1];
-            $images[]      = $p[0];
-        }
-
-        $graph = $this->_request->getParam( 'trunk', $images[0] );
-        if( !in_array( $graph, $images ) )
-            $graph = $images[0];
-
-        $stats = array();
-        foreach( INEX_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new INEX_Mrtg(
-                $this->config['mrtg']['path']
-                    . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-                    . 'trunks' . DIRECTORY_SEPARATOR . $graph . '.log'
-            );
-
-            $stats[$period] = $mrtg->getValues( $period, INEX_Mrtg::CATEGORY_BITS );
-        }
-
-        $this->view->graphs  = $graphs;
-        $this->view->periods = INEX_Mrtg::$PERIODS;
-        $this->view->graph   = $graph;
-        $this->view->stats   = $stats;
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'statistics-trunk-graphs.tpl' );
-    }
-
 
     public function switchGraphsAction()
     {

@@ -108,6 +108,35 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $this->view->categories = INEX_Mrtg::$CATEGORIES_AGGREGATE;
     }
     
+    public function trunksAction()
+    {
+        // get the available graphs
+        foreach( $this->_options['mrtg']['trunk_graphs'] as $g )
+        {
+            $p = explode( '::', $g );
+            $graphs[$p[0]] = $p[1];
+            $images[]      = $p[0];
+        }
+        $this->view->graphs  = $graphs;
+        
+        $graph = $this->getParam( 'trunk', $images[0] );
+        if( !in_array( $graph, $images ) )
+            $graph = $images[0];
+        $this->view->graph   = $graph;
+        
+        $stats = array();
+        foreach( INEX_Mrtg::$PERIODS as $period )
+        {
+            $mrtg = new INEX_Mrtg( $this->_options['mrtg']['path'] . '/trunks/' . $graph . '.log' );
+            $stats[$period] = $mrtg->getValues( $period, INEX_Mrtg::CATEGORY_BITS );
+        }
+        $this->view->stats   = $stats;
+        
+        $this->view->periods = INEX_Mrtg::$PERIODS;
+    }
+    
+    
+    
     /*
     public function ninetyFifthAction()
     {
