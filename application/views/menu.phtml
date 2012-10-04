@@ -120,8 +120,8 @@
         <li {if $controller eq 'customer' and $action eq 'statistics-overview'}class="active"{/if}>
             <a href="{genUrl controller='customer' action='statistics-overview'}">Member Statistics - Graphs</a>
         </li>
-        <li {if $controller eq 'customer' and $action eq 'statistics-list'}class="active"{/if}>
-            <a href="{genUrl controller='customer' action='statistics-list'}">Member Statistics - List</a>
+        <li {if $controller eq 'statistics' and $action eq 'list'}class="active"{/if}>
+            <a href="{genUrl controller='statistics' action='list'}">Member Statistics - List</a>
         </li>
         <li {if $controller eq 'statistics' and $action eq 'league-table'}class="active"{/if}>
             <a href="{genUrl controller='statistics' action='league-table'}">League Table</a>

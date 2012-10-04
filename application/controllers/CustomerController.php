@@ -81,6 +81,12 @@ class CustomerController extends INEX_Controller_FrontEnd
                     'peeringemail'   => 'Peering Email',
                     'noc24hphone'    => 'NOC 24h Phone',
                     
+                    'type'            => [
+                        'title'         => 'Type',
+                        'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
+                        'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT
+                    ],
+                    
                     'datejoin'       => [
                         'title'     => 'Joined',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -101,11 +107,6 @@ class CustomerController extends INEX_Controller_FrontEnd
         $this->_feParams->viewColumns = array_merge(
             $this->_feParams->listColumns,
             [
-                'type'            => [
-                    'title'         => 'Type',
-                    'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT
-                ],
                 'maxprefixes'     => 'Max Prefixes',
                 'nocphone'        => 'NOC Phone',
                 'nocfax'          => 'NOC Fax',
@@ -344,45 +345,6 @@ END_JSON;
     }
 
 
-    public function ninetyFifthAction()
-    {
-        $month = $this->_request->getParam( 'month', date( 'Y-m-01' ) );
-
-        $cost = $this->_request->getParam( 'cost', "20.00" );
-        if( !is_numeric( $cost ) )
-            $cost = "20.00";
-        $this->view->cost = $cost;
-
-        $months = array();
-        for( $year = 2010; $year <= date( 'Y' ); $year++ )
-            for( $mth = ( $year == 2010 ? 4 : 1 ); $mth <= ( $year == 2010 ? date('n') : 12 ); $mth++ )
-            {
-                $ts = mktime( 0, 0, 0, $mth, 1, $year );
-                $months[date( 'M Y', $ts )] = date( 'Y-m-01', $ts );
-            }
-
-        $this->view->months = $months;
-
-        if( in_array( $month, array_values( $months ) ) )
-            $this->view->month = $month;
-        else
-            $this->view->month = date( 'Y-m-01' );
-
-        // load values from the database
-        $traffic95thMonthly = Doctrine_Query::create()
-            ->from( 'Traffic95thMonthly tf' )
-            ->leftJoin( 'tf.Cust c' )
-            ->where( 'month = ?', $month )
-            ->execute()
-            ->toArray();
-
-        foreach( $traffic95thMonthly as $index => $row )
-            $traffic95thMonthly[$index]['cost'] = sprintf( "%0.2f", $row['max_95th'] / 1024 / 1024 * $cost );
-
-        $this->view->traffic95thMonthly = $traffic95thMonthly;
-
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'ninety-fifth.tpl' );
-    }
 
     public function statisticsOverviewAction()
     {
@@ -456,23 +418,6 @@ END_JSON;
         $this->view->periods    = INEX_Mrtg::$PERIODS;
         $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'statistics-by-lan.tpl' );
     }
-
-    public function statisticsListAction()
-    {
-        $this->view->custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->orderBy( 'c.name' )
-            ->fetchArray();
-
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'statistics-list.tpl' );
-    }
-
 
     
     public function detailsAction()

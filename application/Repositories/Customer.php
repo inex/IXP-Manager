@@ -67,15 +67,24 @@ class Customer extends EntityRepository
      * Utility function to provide a array of all active and current customers.
      *
      * @param bool $asArray If `true`, return an associative array, else an array of Customer objects
+     * @param bool $trafficing If `true`, only include trafficing customers (i.e. no associates)
+     * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
      * @return array
      */
-    public function getCurrentActive( $asArray = false )
+    public function getCurrentActive( $asArray = false, $trafficing = false, $externalOnly = false )
     {
-        $custs = $this->getEntityManager()->createQuery(
-                "SELECT c FROM \\Entities\\Customer c
-                WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_ACTIVE . "
-                ORDER BY c.name ASC"
-        );
+        $dql = "SELECT c FROM \\Entities\\Customer c
+                WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_ACTIVE;
+
+        if( $trafficing )
+            $dql .= " AND " . self::DQL_CUST_TRAFFICING;
+        
+        if( $externalOnly )
+            $dql .= " AND " . self::DQL_CUST_EXTERNAL;
+            
+        $dql .= " ORDER BY c.name ASC";
+        
+        $custs = $this->getEntityManager()->createQuery( $dql );
         
         return $asArray ? $custs->getArrayResult() : $custs->getResult();
     }

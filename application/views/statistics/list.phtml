@@ -1,4 +1,4 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
 
 <ul class="breadcrumb">
@@ -13,7 +13,8 @@
     </li>
 </ul>
 
-{include file="message.tpl"}
+
+{OSS_Message}
 
 <div class="row-fluid">
 
@@ -23,7 +24,7 @@
 
         <ul>
         
-        {foreach from=$custs item=cust}
+        {foreach $custs as $cust}
 
             {if count( $custs ) > 12 and $count >= count( $custs )/4}
             
@@ -48,4 +49,4 @@
 	</div>
 </div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
