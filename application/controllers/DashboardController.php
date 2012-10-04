@@ -34,31 +34,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
 {
 
     /**
-     * Return a Doctrine result of the users IXP connections.
-     */
-    private function _getConnections( $cust = null )
-    {
-        if( $cust === null )
-            $cust = $this->_customer;
-
-        return Doctrine_Query::create()
-            ->from( 'Virtualinterface vi' )
-            ->leftJoin( 'vi.Cust c' )
-            ->leftJoin( 'vi.Physicalinterface pi' )
-            ->leftJoin( 'vi.Vlaninterface vli' )
-            ->leftJoin( 'vli.Ipv4address v4' )
-            ->leftJoin( 'vli.Ipv6address v6' )
-            ->leftJoin( 'vli.Vlan v' )
-            ->leftJoin( 'pi.Switchport sp' )
-            ->leftJoin( 'sp.SwitchTable s' )
-            ->leftJoin( 's.Cabinet cb' )
-            ->leftJoin( 'cb.Location l' )
-            ->where( 'c.id = ?', $cust['id'] )
-            ->orderBy( 'pi.monitorindex' )
-            ->execute();
-    }
-
-    /**
      * Return a Doctrine result of the users VLANs.
      */
     private function _getVLANS( $cust = null )
@@ -82,19 +57,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
             ->execute();
     }
 
-    /**
-     * Return a Doctrine result of a customer.
-     */
-    private function _getCustomerByShortname( $shortname = null )
-    {
-        if( $shortname === null || $shortname == $this->_customer->shortname )
-            return $this->_customer;
-
-        if( $cust = Doctrine::getTable( 'Cust' )->findOneByShortname( $shortname ) )
-            return $cust;
-
-        return $this->_customer;
-    }
 
     public function indexAction()
     {
