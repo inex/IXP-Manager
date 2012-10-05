@@ -23,7 +23,7 @@
 
 
 /**
- * Controller: Misc utils
+ * Controller: Statistics / graphs
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   INEX
