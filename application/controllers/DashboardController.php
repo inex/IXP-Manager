@@ -163,32 +163,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
         $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'as112.tpl' );
     }
 
-    public function staticAction()
-    {
-        $page = $this->_request->getParam( 'page', null );
-
-        if( $page == null )
-            return( $this->_redirect( 'dashboard/index' ) );
-
-        // does the requested static page exist? And if so, display it
-        if( preg_match( '/^[a-zA-Z0-9\-]+$/', $page ) > 0
-                && file_exists( APPLICATION_PATH . "/views/dashboard/static/{$page}.tpl" ) )
-        {
-            $this->view->display( "dashboard/static/{$page}.tpl" );
-        }
-        else
-        {
-            $this->view->message = new INEX_Message(
-                "The requested page was not found.",
-                INEX_Message::MESSAGE_TYPE_ERROR
-            );
-            $this->_forward( 'index' );
-        }
-    }
-
-
-
-
     /**
      * Allow users to set the member preferences for delivery of various SEC event
      * notifications.
