@@ -338,10 +338,6 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         }
     }
     
-    
-    
-    
-    
     /**
      * Utility function to extract, validate (and default if necessary) a
      * category from request parameters.
