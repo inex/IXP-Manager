@@ -130,39 +130,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
         $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'rs-info.tpl' );
     }
 
-    public function enableRouteServerAction()
-    {
-        foreach( $this->customer->getConnections() as $connection )
-            foreach( $connection->Vlaninterface as $interface )
-            {
-                $interface['rsclient'] = 1;
-	            $interface->save();
-            }
-
-        $this->getLogger()->notice( "{$this->user->username} of {$this->customer->shortname} enabled route server sessions" );
-        $this->view->rsSessionsEnabled = true;
-        $this->_forward( 'rs-info' );
-    }
-
-    public function as112Action()
-    {
-        if( $this->_request->getParam( 'enable', 0 ) )
-        {
-	        foreach( $this->customer->getConnections() as $connection )
-	            foreach( $connection->Vlaninterface as $interface )
-	            {
-	                $interface['as112client'] = 1;
-	                $interface->save();
-	            }
-	        $this->view->as112JustEnabled = true;
-        }
-
-        $this->view->as112Enabled = $this->customer->isAS112Client();
-        $this->view->rsEnabled    = $this->customer->isRouteServerClient( $this->config['primary_peering_lan']['vlan_tag'] );
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'as112.tpl' );
-    }
-
     /**
      * Allow users to set the member preferences for delivery of various SEC event
      * notifications.
