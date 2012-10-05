@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -12,6 +12,7 @@
             INEX Route Server Details
         </li>
     </ul>
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -19,24 +20,15 @@
         </div>
 {/if}
 
-{include file="message.tpl"}
-<div id='ajaxMessage'></div>
+{OSS_Message}
 
-{if $user.privs eq 1}
+{if $user->getPrivs() eq 1}
     <div id="overviewMessage">
-        {if isset( $rsSessionsEnabled ) and $rsSessionsEnabled}
-            <div class="alert alert-success">
-                You are now enabled to use INEX's robust route server cluster.<br />
-                <br />
-                Please note that the provisioning system updates the route servers twice daily
-                so place allow up to twelve hours for your configuration to become active on
-                our systems.<br />
-                <br />
-                Please see below for configuration details.
-            </div>
-        {elseif not isset( $rsEnabled ) or not $rsEnabled}
+        {if not $rsclient}
             <div class="alert alert-error">
-    	        You are not using INEX's robust route server cluster. Please <a href="{genUrl controller="dashboard" action="enable-route-server"}">click here to have our provisioning system create sessions</a> for you.
+    	        You are not using INEX's robust route server cluster.
+    	        Please <a href="{genUrl controller="static" action="contact"}">contact INEX Operations</a>
+    	        to have this service enabled.
     	    </div>
         {else}
     	    <div class="alert alert-success">
@@ -134,25 +126,6 @@ in production.
 
 
 <h3>How do I use the service?</h3>
-
-<p>
-In order to use the service, you should first instruct the route servers to create sessions for you:
-</p>
-
-{if $user.privs eq 1}
-    <div id="overviewMessage">
-        {if not $rsEnabled}
-            <div class="alert alert-error">
-                You are not enabled to use INEX's route server cluster.
-                Please <a href="{genUrl controller="dashboard" action="enable-route-server"}">click here to have our provisioning system create sessions</a> for you.
-            </div>
-        {else}
-            <div class="alert alert-success">
-                You are enabled to use INEX's robust route server cluster.
-            </div>
-        {/if}
-    </div>
-{/if}
 
 <p>
 If enabled, the route servers are set up to accept BGP connections from your router. Once this has
@@ -297,5 +270,6 @@ Alternatively, to announce a prefix to all INEX members, excluding AS64333, the 
 should be tagged with community 0:64333.
 </p>
 
+</div>
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

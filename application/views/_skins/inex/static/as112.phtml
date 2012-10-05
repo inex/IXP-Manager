@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq 3}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -12,6 +12,7 @@
             Details of the INEX AS112 Service
         </li>
     </ul>
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -20,34 +21,26 @@
 {/if}
 
 
-{include file="message.tpl"}
+{OSS_Message}
 
-<div id='ajaxMessage'></div>
-
-{if $user.privs eq 1}
+{if $user->getPrivs() eq 1}
     <div id="overviewMessage">
-        {if isset( $as112JustEnabled ) and $as112JustEnabled}
-            <div class="alert alert-success">
-                New sessions for INEX's AS112 service will be enabled for you within the next 12 hours.
-                Please see configuration details below.
-            </div>
-        {elseif $as112Enabled}
+        {if $as112}
             <div class="alert alert-success">
                 You are enabled to use INEX's AS112 service. Please see configuration details below.
             </div>
-        {elseif $rsEnabled and not $as112Enabled}
+        {elseif $rsclient and not $as112}
             <div class="alert alert-info">
     	        There are no bilateral BGP sessions configured for you on the AS112 server. However, as
     	        you have route server sessions, you receive the AS112 prefixes via this. If you would like
     	        to additionally enable bilateral peering, please
-    	        <a href="{genUrl controller="dashboard" action="as112" enable="1"}">click here to have
-    	        our provisioning system create the sessions</a> for you.
+    	        <a href="{genUrl controller="static" action="contact"}">contact INEX Operations</a>.
     	    </div>
         {else}
     	    <div class="alert">
     	        You are not enabled to use INEX's AS112 service. Please
-                <a href="{genUrl controller="dashboard" action="as112" enable="1"}">click here to have
-                our provisioning system create the sessions</a> for you.
+                <a href="{genUrl controller="static" action="contact"}">contact INEX Operations</a>
+                to enable the AS112 service.
     	    </div>
         {/if}
     </div>
@@ -126,4 +119,6 @@ Please see <a href="http://public.as112.net/">http://public.as112.net/</a> for m
 on the AS112 project, <em>The Nameservers at the End of the Universe</em>.
 </p>
 
-{include file="footer.tpl"}
+</div>
+
+{tmplinclude file="footer.phtml"}

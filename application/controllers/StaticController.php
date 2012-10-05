@@ -85,6 +85,38 @@ class StaticController extends INEX_Controller_Action
     {
         $this->_requireAuth();
     }
+    
+    public function routeServersAction()
+    {
+        $this->_requireAuth();
+        
+        // just find out if the user has route servers enabled or not
+        $this->view->rsclient = false;
+        foreach( $this->getCustomer()->getVirtualInterfaces() as $vi )
+            foreach( $vi->getVlanInterfaces() as $vli )
+                if( $vli->getRsclient() )
+                    $this->view->rsclient = true;
+    }
+    
+    public function as112Action()
+    {
+        $this->_requireAuth();
+        
+        // just find out if the user AS112 enabled or not
+        $this->view->as112 = false;
+        $this->view->rsclient = false;
+        foreach( $this->getCustomer()->getVirtualInterfaces() as $vi )
+        {
+            foreach( $vi->getVlanInterfaces() as $vli )
+            {
+                if( $vli->getAs112client() )
+                    $this->view->as112 = true;
+                if( $vli->getRsclient() )
+                    $this->view->rsclient = true;
+            }
+        }
+    }
+    
 }
 
 
