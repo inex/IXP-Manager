@@ -187,54 +187,6 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
     }
 
 
-    public function peeringMatrixAction()
-    {
-        $lan = $this->_request->getParam( 'lan', 0 );
-
-        if( !isset( $this->config['peering_matrix']['public'][$lan] ) )
-        {
-            $this->session->message = new INEX_Message(
-                            "Invalid peering matrix requested",
-                            INEX_Message::MESSAGE_TYPE_ERROR
-                        );
-
-            return( $this->_redirect( 'dashboard' ) );
-        }
-
-        $peering_states = Doctrine_Query::create()
-            ->select( 'pm.x_as, pm.y_as, pm.peering_status' )
-            ->addSelect( 'xc.name, xc.id, xc.peeringmacro, xc.peeringpolicy' )
-            ->addSelect( 'yc.name, yc.id, yc.peeringmacro, yc.peeringpolicy' )
-            ->from( 'PeeringMatrix pm' )
-            ->leftJoin( 'pm.X_Cust xc' )
-            ->leftJoin( 'pm.Y_Cust yc' )
-            ->where( 'pm.vlan = ?', $this->config['peering_matrix']['public'][$lan]['number'] )
-            ->orderBy( 'pm.x_as ASC, pm.y_as ASC' )
-            ->fetchArray();
-
-        // try and arrange the array as n x n keyed by x's as number
-        $matrix = array();
-
-        $potential = 0;
-        $active    = 0;
-
-        foreach( $peering_states as $pm )
-        {
-            $matrix[$pm['x_as']][] = $pm;
-
-            if( $pm['peering_status'] == 'YES' )
-                $active++;
-
-            $potential++;
-        }
-
-        $this->view->potential = $potential;
-        $this->view->active    = $active;
-
-        $this->view->lan    = $lan;
-        $this->view->matrix = $matrix;
-        $this->view->display( 'dashboard/peering-matrix.tpl' );
-    }
 
 
     /**
