@@ -254,7 +254,7 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     
         // find the possible virtual interfaces that this customer peers with
         $vints = [];
-        foreach( $this->getCustomer()->getVirtualInterfaces() as $vi )
+        foreach( $cust->getVirtualInterfaces() as $vi )
         {
             $enabled = false;
             foreach( $vi->getVlanInterfaces() as $vli )
@@ -278,7 +278,8 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         }
             
         $this->view->vints = $vints;
-    
+        $this->view->customersWithVirtualInterfaces = false;
+        
         if( count( $vints ) )
         {
             if( count( $vints ) > 1 )
@@ -327,7 +328,6 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
             $q  = $this->getD2EM()->createQuery( $dql )->setParameter( 1, $shortname );
             
             $this->view->customersWithVirtualInterfaces = $q->getArrayResult();
-            //OSS_Debug::dd( $this->view->customersWithVirtualInterfaces );
         }
     
     

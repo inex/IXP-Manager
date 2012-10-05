@@ -9,7 +9,7 @@
             <a href="{genUrl controller='customer' action='list'}">Customers</a> <span class="divider">/</span>
         </li>
         <li>
-             {$cust->getName()} <span class="divider">/</span>
+             <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
             Peer to Peer Statistics
@@ -39,7 +39,7 @@
     <td valign="middle"><strong>Graph Type:</strong></td>
     <td>
         &nbsp;
-        <select name="category" style="width: 100px;">
+        <select name="category" style="width: 100px;" class="chzn-select">
             {foreach from=$categories key=cname item=cvalue}
                 <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
             {/foreach}
@@ -49,7 +49,7 @@
     <td valign="middle"><strong>Period:</strong></td>
     <td>
         &nbsp;
-        <select name="period" style="width: 100px;">
+        <select name="period" style="width: 100px;" class="chzn-select">
             {foreach from=$periods key=cname item=cvalue}
                 <option value="{$cvalue}" {if $period eq $cvalue}selected{/if}>{$cname}</option>
             {/foreach}
@@ -59,7 +59,7 @@
     <td valign="middle"><strong>Protocol:</strong></td>
     <td>
         &nbsp;
-        <select name="proto" style="width: 100px;">
+        <select name="proto" style="width: 100px;" class="chzn-select">
             {foreach from=$protocols key=pname item=pvalue}
                 <option value="{$pvalue}" {if $proto eq $pvalue}selected="selected"{/if}>{$pname}</option>
             {/foreach}
@@ -69,7 +69,7 @@
     <td valign="middle"><strong>Infrastructure:</strong></td>
     <td>
         &nbsp;
-        <select name="infra" style="width: 150px;">
+        <select name="infra" style="width: 150px;" class="chzn-select">
             {foreach from=$infrastructures key=iname item=ivalue}
                 <option value="{$ivalue}" {if $infra eq $ivalue}selected="selected"{/if}>{$iname}</option>
             {/foreach}
@@ -80,7 +80,7 @@
         <td valign="middle"><strong>Interface:</strong></td>
         <td>
             &nbsp;
-            <select name="interface" style="width: 100px;">
+            <select name="interface" style="width: 100px;" class="chzn-select">
                 {foreach $vints as $id => $vi}
                     <option value="{$id}" {if isset( $interface ) and $interface eq $id}selected="selected"{/if}>{$id}</option>
                 {/foreach}
@@ -106,7 +106,7 @@
     </div>
 {/if}
 
-{if isset( $vints ) and is_array( $vints )}
+{if isset( $vints ) and is_array( $vints ) and count( $vints )}
     <div class="row-fluid">
     
     {assign var='count' value=0}
@@ -203,9 +203,9 @@
 {else} {* customer has an interface for given infra and proto *}
 
     <div class="alert alert-info">
-        <h4 class="alert-heading">Uh oh! You (or your peer(s)) do not have any ports for the select infrastructure and / or protocol.</h4>
+        <h4 class="alert-heading">Uh oh! You (or your peer(s)) do not have any ports for the selected infrastructure and / or protocol.</h4>
         If you'd like to take to us about enabling IPv6 or getting a port on the secondary infrastructure, please
-        <a href="{genUrl controller="static" action="static" page="support"}">contact us</a>.
+        <a href="{genUrl controller="static" action="support"}">contact us</a>.
     </div>
 
 {/if} {* customer has an interface for given infra and proto *}
