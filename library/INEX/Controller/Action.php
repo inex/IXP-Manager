@@ -82,7 +82,8 @@ class INEX_Controller_Action extends OSS_Controller_Action
         parent::__construct( $request, $response, $invokeArgs );
 
         // we need this for access to class constants in the template
-        $this->view->registerClass( 'USER', '\\Entities\\User' );
+        $this->view->registerClass( 'USER',     '\\Entities\\User' );
+        $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
         
         if( $this->getAuth()->hasIdentity() && $this->getUser()->getPrivs() == Entities\User::AUTH_SUPERUSER )
             $this->superUserSetup();

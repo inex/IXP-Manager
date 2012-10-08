@@ -44,7 +44,7 @@ class IndexController extends INEX_Controller_Action
         else if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
             $this->_redirect( 'user/list' );
         else
-            $this->_redirect( 'dashboard' );
+            $this->forward( 'index', 'dashboard' );
     }
 
     public function controllerDisabledAction()

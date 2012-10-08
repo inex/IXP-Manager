@@ -1492,6 +1492,14 @@ class Customer
     
     public function hasLeft()
     {
+        // sigh. Using a date field to determine if an account is closed or not is a
+        // very bad idea and should be changed => FIXME
+        //
+        // on 64bit system, MySQL's '0000-00-00' is in range and evaluates as a non-zero
+        // date - see: https://bugs.php.net/bug.php?id=60257
+        if( $this->getDateleave()->format( 'Y-m-d' ) == '-0001-11-30' )  // 0000-00-00 on 64bit systems
+            return false;
+        
         return $this->getDateleave() != null;
     }
     
@@ -1510,5 +1518,41 @@ class Customer
                 $ausers[] = $u;
         
         return $ausers;
+    }
+    
+    /**
+     * Check if this customer is of the named type
+     * @return boolean
+     */
+    public function isTypeFull()
+    {
+        return $this->getType() == self::TYPE_FULL;
+    }
+
+    /**
+     * Check if this customer is of the named type
+     * @return boolean
+     */
+    public function isTypeAssociate()
+    {
+        return $this->getType() == self::TYPE_ASSOCIATE;
+    }
+
+    /**
+     * Check if this customer is of the named type
+     * @return boolean
+     */
+    public function isTypeInternal()
+    {
+        return $this->getType() == self::TYPE_INTERNAL;
+    }
+
+    /**
+     * Check if this customer is of the named type
+     * @return boolean
+     */
+    public function isTypeProBono()
+    {
+        return $this->getType() == self::TYPE_PROBONO;
     }
 }

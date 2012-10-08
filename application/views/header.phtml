@@ -58,7 +58,7 @@
                             <li class="dropdown {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    {if $user->getPrivs() eq 1 and $customer->isFullMember()}
+                                    {if $user->getPrivs() eq 1 and $user->getCustomer()->getType() eq CUSTOMER::TYPE_FULL}
                                         <li>
                                             <a href="{genUrl controller="dashboard" action="statistics"}">My Statistics</a>
                                         </li>
@@ -85,7 +85,9 @@
                         <li class="{if $controller eq 'static' and $action eq 'support'}active{/if}">
                             <a href="{genUrl controller="static" action="support"}">Support</a>
                         </li>
-                        {tmplinclude file="staff-links.phtml"}
+                        {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                            {tmplinclude file="staff-links.phtml"}
+                        {/if}
                         <li class="{if $controller eq 'profile'}active{/if}">
                             <a href="{genUrl controller="profile"}">Profile</a>
                         </li>

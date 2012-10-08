@@ -237,8 +237,6 @@ class SwitchController extends INEX_Controller_FrontEnd
     
     public function configurationAction()
     {
-        $this->view->registerClass( 'PHYSICALINTERFACE', '\\Entities\\PhysicalInterface' );
-        
         $this->view->vlans    = $vlans    = $this->getD2EM()->getRepository( '\\Entities\\Vlan'     )->getNames();
         $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
         

@@ -41,9 +41,6 @@ class AdminController extends INEX_Controller_AuthRequiredAction
 	        $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to access the admin controller without sufficient permissions" );
 	        $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
 	    }
-
-        // we need this for access to class constants in the template
-        $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
     }
 
 

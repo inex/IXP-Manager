@@ -74,9 +74,6 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
 
     public function indexAction()
     {
-        // we need this for access to class constants in the template
-        $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
-
         if( !isset( $this->view->profileForm ) )
             $this->view->profileForm = $this->_getFormProfile();
         

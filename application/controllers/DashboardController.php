@@ -32,197 +32,113 @@
  */
 class DashboardController extends INEX_Controller_AuthRequiredAction
 {
-
-    /**
-     * Return a Doctrine result of the users VLANs.
-     */
-    private function _getVLANS( $cust = null )
+    
+    public function preDispatch()
     {
-        if( $cust === null )
-            $cust = $this->_customer;
-
-        $vints = Doctrine_Query::create()
-            ->from( 'Vlaninterface vint' )
-            ->leftJoin( 'vint.Virtualinterface vi' )
-            ->leftJoin( 'vi.Cust c' )
-            ->where( 'c.id = ?', $cust['id'] )
-            ->execute();
-        $vlanids = array();
-        foreach( $vints as $v )
-            $vlanids[] = $v['vlanid'];
-            
-        return Doctrine_Query::create()
-            ->from( 'Vlan v' )
-            ->whereIn( 'v.id', $vlanids )
-            ->execute();
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_CUSTUSER )
+            $this->_redirect( '' );
     }
-
-
+    
     public function indexAction()
     {
         // Get the three most recent members
-        $this->view->recentMembers = Doctrine_Query::create()
-            ->from( 'Cust c' )
-            ->where( 'c.type != ?', Cust::TYPE_ASSOCIATE )
-            ->orderBy( 'c.datejoin DESC' )
-            ->limit( 3 )
-            ->execute()
-            ->toArray();
+        $this->view->recentMembers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getRecent( 3 );
 
-        // is there a meeting available to register for?
-        $this->view->meeting = false;
-
-        if( ( $meeting = MeetingTable::getUpcomingMeeting() ) !== false
-            && ( !isset( $this->session->dashboard_skip_meeting ) || !$this->session->dashboard_skip_meeting )
-        )
-        {
-            $rsvp = $this->getUser()->hasPreference( 'meeting.attending.' . $meeting['id'] );
-
-            if( $rsvp === false )
+        /*
+            // is there a meeting available to register for?
+            $this->view->meeting = false;
+    
+            if( ( $meeting = MeetingTable::getUpcomingMeeting() ) !== false
+                && ( !isset( $this->session->dashboard_skip_meeting ) || !$this->session->dashboard_skip_meeting )
+            )
             {
-                $this->view->meeting = $meeting;
-                $this->view->meeting_pref = $rsvp;
+                $rsvp = $this->getUser()->hasPreference( 'meeting.attending.' . $meeting['id'] );
+    
+                if( $rsvp === false )
+                {
+                    $this->view->meeting = $meeting;
+                    $this->view->meeting_pref = $rsvp;
+                }
             }
-        }
+        */
 
-
-        $this->view->recentMembers = Doctrine_Query::create()
-            ->from( 'Cust c' )
-            ->where( 'c.type != ?', Cust::TYPE_ASSOCIATE )
-            ->orderBy( 'c.datejoin DESC' )
-            ->limit( 3 )
-            ->execute()
-            ->toArray();
-
-
-        if( $this->customer->isFullMember() )
+        if( !$this->getCustomer()->isTypeAssociate() )
         {
-	        // Get the member's port and vlan details
-	        $this->view->networkInfo = Networkinfo::toStructuredArray();
-	        $this->view->connections = $this->customer->getConnections();
-
+            $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
 	        $this->view->categories = INEX_Mrtg::$CATEGORIES;
 
-	        $this->view->rsEnabled    = $this->customer->isRouteServerClient( $this->config['primary_peering_lan']['vlan_tag'] );
-	        $this->view->as112Enabled = $this->customer->isAS112Client();
-	        
-	        
-	        $this->view->nocDetails     = $this->_getNocDetailsForm();
-	        $this->view->billingDetails = $this->_getBillingDetailsForm();
+	        $this->getNocDetailsForm();
+	        $this->getBillingDetailsForm();
         }
-
-        $this->view->display( 'dashboard' . DIRECTORY_SEPARATOR . 'index.tpl' );
-    }
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Allow users to set the member preferences for delivery of various SEC event
-     * notifications.
-     */
-    public function secEventEmailConfigAction()
-    {
-        // possible events that can be set with default values
-        $events = SecEvent::$TYPES_DEFAULTS;
-
-        // are we updating the preferences?
-        if( $this->_request->getParam( 'update', false ) )
-        {
-            // get existing preferences, if any
-            foreach( $events as $name => $value )
-            {
-                if( $this->_request->getParam( $name, 0 ) )
-                {
-                    $this->user->Parent->setPreference( 'sec.notification.' . $name, 1 );
-                    $events[$name] = 1;
-                }
-                else
-                {
-                    $this->user->Parent->setPreference( 'sec.notification.' . $name, 0 );
-                    $events[$name] = 0;
-                }
-            }
-
-            $this->view->message = new INEX_Message( 'SEC Notification preferecnces updated',
-                INEX_Message::MESSAGE_TYPE_SUCCESS
-            );
-        }
-        else
-        {
-            // get existing preferences, if any
-            foreach( $events as $name => $value )
-            {
-                $pref = $this->user->Parent->getPreference( 'sec.notification.' . $name );
-
-                if( $pref === false ) // not set
-                    $this->user->Parent->setPreference( 'sec.notification.' . $name, 1 );
-                else
-                    $events[$name] = $pref;
-            }
-        }
-
-        $this->view->assign( 'events', $events );
-        $this->view->display( 'dashboard/sec-event-email-config.tpl' );
     }
     
     
     
     public function updateNocAction()
     {
-        $f = $this->_getNocDetailsForm();
+        $form = $this->getNocDetailsForm();
         
-        if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
+        if( $this->getRequest()->isPost() )
         {
-            $f->assignToModel( $this->customer );
-            $this->customer->save();
-            
-            $this->view->message = new INEX_Message( 'Your NOC details have been updated',
-                INEX_Message::MESSAGE_TYPE_SUCCESS
-            );
+            if( $form->isValid( $_POST ) )
+            {
+                $form->assignFormToEntity( $this->getCustomer(), $this, true );
+                $this->getD2EM()->flush();
+                $this->addMessage( 'Your NOC details have been updated', OSS_Message::SUCCESS );
+            }
+            else
+            {
+                $this->addMessage( 'There was an error updating your NOC details', OSS_Message::ERROR );
+            }
         }
         
-        $this->_forward( 'index' );
+        $this->forward( 'index' );
     }
     
-    private function _getNocDetailsForm()
+    protected function getNocDetailsForm()
     {
-        $f = new INEX_Form_Customer_NocDetails();
-        $f->assignFromModel( $this->customer );
-        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/dashboard/update-noc' );
-        return $f;
+        $form = new INEX_Form_Customer_NocDetails();
+        $form->assignEntityToForm( $this->getCustomer(), $this, true );
+        $form->setAction( OSS_Utils::genUrl( 'dashboard', 'update-noc' ) );
+        
+        if( !isset( $this->view->nocDetails ) )
+            $this->view->nocDetails = $form;
+        
+        return $form;
     }
 
 
     public function updateBillingAction()
     {
-        $f = $this->_getBillingDetailsForm();
+        $form = $this->getBillingDetailsForm();
         
-        if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
+        if( $this->getRequest()->isPost() )
         {
-            $f->assignToModel( $this->customer );
-            $this->customer->save();
-            
-            $this->view->message = new INEX_Message( 'Your billing details have been updated',
-                INEX_Message::MESSAGE_TYPE_SUCCESS
-            );
+            if( $form->isValid( $_POST ) )
+            {
+                $form->assignFormToEntity( $this->getCustomer(), $this, true );
+                $this->getD2EM()->flush();
+                $this->addMessage( 'Your billing details have been updated', OSS_Message::SUCCESS );
+            }
+            else
+            {
+                $this->addMessage( 'There was an error updating your billing details', OSS_Message::ERROR );
+            }
         }
         
-        $this->_forward( 'index' );
+        $this->forward( 'index' );
     }
     
-    private function _getBillingDetailsForm()
+    protected function getBillingDetailsForm()
     {
-        $f = new INEX_Form_Customer_BillingDetails();
-        $f->assignFromModel( $this->customer );
-        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/dashboard/update-billing' );
-        return $f;
+        $form = new INEX_Form_Customer_BillingDetails();
+        
+        if( !isset( $this->view->billingDetails ) )
+            $this->view->billingDetails = $form;
+        
+        $form->assignEntityToForm( $this->getCustomer(), $this, true );
+        $form->setAction( OSS_Utils::genUrl( 'dashboard', 'update-billing' ) );
+        return $form;
     }
 }
 

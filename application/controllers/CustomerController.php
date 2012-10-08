@@ -38,8 +38,6 @@ class CustomerController extends INEX_Controller_FrontEnd
      */
     protected function _feInit()
     {
-        $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
-        
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Customer',
             'form'          => 'INEX_Form_Customer',
