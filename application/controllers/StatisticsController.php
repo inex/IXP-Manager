@@ -137,7 +137,8 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $this->view->switch     = $switch;
         
         $category = $this->_setCategory();
-            
+        $this->_setPeriod();
+        
         $stats = array();
         foreach( INEX_Mrtg::$PERIODS as $period )
         {
@@ -329,7 +330,6 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
             
             $this->view->customersWithVirtualInterfaces = $q->getArrayResult();
         }
-    
     
         if( $dvid )
         {

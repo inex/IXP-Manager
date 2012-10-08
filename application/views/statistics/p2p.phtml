@@ -1,6 +1,6 @@
 {tmplinclude file="header.phtml"}
 
-{if $user->getPrivs() eq 3}
+{if $user->getPrivs() eq USER::AUTH_SUPERUSER}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -22,6 +22,7 @@
             )
         </li>
     </ul>
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -110,7 +111,7 @@
     <div class="row-fluid">
     
     {assign var='count' value=0}
-    {if $user->getPrivs() eq 3}
+    {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
     
     
         {foreach $customersWithVirtualInterfaces as $vcust}
@@ -158,36 +159,34 @@
     {else}
     
     
-        {foreach from=$customersWithVirtualInterfaces key="vcustid" item="vcust"}
-            {foreach from=$vcust.Virtualinterface key="dvid" item="vint"}
+        {foreach $customersWithVirtualInterfaces as $vcust}
         
-                <div class="span6">
-            
-                    <div class="well">
-                        <h4 style="vertical-align: middle">
-                            {$vcust.name}
-                        </h4>
-            
-                        <p>
-                            <br />
-                            <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname() svid=$svid dvid=$vint.id category=$category period=$period proto=$proto infra=$infra}">
-                                <img
-                                    src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$vint.id category=$category proto=$proto period=$period infra=$infra}"
-                                    width="600"
-                                />
-                            </a>
-                        </p>
-                    </div>
-            
+            <div class="span6">
+        
+                <div class="well">
+                    <h4 style="vertical-align: middle">
+                        {$vcust.cname}
+                    </h4>
+        
+                    <p>
+                        <br />
+                        <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname() svid=$svid dvid=$vcust.viid category=$category period=$period proto=$proto infra=$infra}">
+                            <img
+                                src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$vcust.viid category=$category proto=$proto period=$period infra=$infra}"
+                                width="600"
+                            />
+                        </a>
+                    </p>
                 </div>
-            
-                {assign var='count' value=$count+1}
-            
-                {if $count%2 eq 0}
-                    </div><br /><div class="row-fluid">
-                {/if}
         
-            {/foreach}
+            </div>
+        
+            {assign var='count' value=$count+1}
+        
+            {if $count%2 eq 0}
+                </div><br /><div class="row-fluid">
+            {/if}
+    
         {/foreach}
         
         {if $count%2 neq 0}
@@ -209,5 +208,7 @@
     </div>
 
 {/if} {* customer has an interface for given infra and proto *}
+
+</div>
 
 {tmplinclude file="footer.phtml"}

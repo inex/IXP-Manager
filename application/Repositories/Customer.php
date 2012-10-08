@@ -125,6 +125,7 @@ class Customer extends EntityRepository
                 ORDER BY c.datejoin DESC"
             )
             ->setMaxResults( $limit )
+            ->useResultCache( true, 3600 )
             ->getResult();
     }
     

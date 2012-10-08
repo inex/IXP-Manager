@@ -58,10 +58,14 @@
                             <li class="dropdown {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    {if $user->getPrivs() eq 1 and $user->getCustomer()->getType() eq CUSTOMER::TYPE_FULL}
+                                    {if $user->getPrivs() eq USER::AUTH_CUSTUSER and not $user->getCustomer()->isTypeAssociate()}
                                         <li>
-                                            <a href="{genUrl controller="dashboard" action="statistics"}">My Statistics</a>
+                                            <a href="{genUrl controller="statistics" action="member"}">My Statistics</a>
                                         </li>
+                                        <li>
+                                            <a href="{genUrl controller="dashboard" action="statistics"}">My Peer to Peer Traffic</a>
+                                        </li>
+                                        <li class="divider"></li>
                                     {/if}
                                     <li>
                                         <a href="{genUrl controller="statistics" action="public"}">Overall Peering Statistics</a>
