@@ -16,6 +16,7 @@
             ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
         </li>
     </ul>
+    <div>
 {else}
     <div class="page-content">
         <div class="page-header">
@@ -97,7 +98,7 @@
 {/if}
 
 </div>
-
+</div>
 
 {tmplinclude file="footer.phtml"}
 
