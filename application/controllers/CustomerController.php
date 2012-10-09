@@ -244,62 +244,6 @@ class CustomerController extends INEX_Controller_FrontEnd
     
 
     /**
-     * A generic action to list the elements of a database (as represented
-     * by a Doctrine model) via Smarty templates.
-     */
-    public function getDataAction()
-    {
-        $dataQuery = Doctrine_Query::create()
-        ->from( $this->getModelName() . ' x' )
-        ->orderBy( 'x.shortname ASC' );
-
-        if( $this->getRequest()->getParam( 'member' ) !== NULL )
-        $dataQuery->andWhere( 'x.name LIKE ?', $this->getRequest()->getParam( 'member' ) . '%' );
-
-        if( $this->getRequest()->getParam( 'shortname' ) !== NULL )
-        $dataQuery->andWhere( 'x.shortname LIKE ?', $this->getRequest()->getParam( 'shortname' ) . '%' );
-
-
-        $rows = $dataQuery->execute();
-
-        $count = 0;
-        $data = '';
-        foreach( $rows as $row )
-        {
-            if( $count > 0 )
-            $data .= ',';
-
-            $count++;
-
-            $data .= <<<END_JSON
-    {
-        "member":"{$row['name']}",
-        "id":"{$row['id']}",
-        "autsys":"{$row['autsys']}",
-        "shortname":"{$row['shortname']}",
-        "peeringemail":"{$row['peeringemail']}",
-        "nocphone":"{$row['nocphone']}"
-    }
-END_JSON;
-
-        }
-
-        $data = <<<END_JSON
-{"ResultSet":{
-    "totalResultsAvailable":{$count},
-    "totalResultsReturned":{$count},
-    "firstResultPosition":0,
-    "Result":[{$data}]}}
-END_JSON;
-
-        echo $data;
-
-    }
-
-
-
-
-    /**
      * Send the member an operations welcome mail
      *
      */
@@ -342,49 +286,6 @@ END_JSON;
         }
     }
 
-
-    public function statisticsByLanAction()
-    {
-        $category = $this->_request->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
-
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
-            $category = INEX_Mrtg::$CATEGORIES['Bits'];
-
-        $period = $this->_request->getParam( 'period', INEX_Mrtg::$PERIODS['Day'] );
-
-        if( !in_array( $period, INEX_Mrtg::$PERIODS ) )
-            $period = INEX_Mrtg::$PERIODS['Day'];
-
-        $lanTag = $this->_request->getParam( 'lan', 10 );
-
-        $lan = Doctrine_Core::getTable( 'Vlan' )->findOneByNumber( $lanTag );
-
-        if( !$lan )
-            $lan = Doctrine_Core::getTable( 'Vlan' )->findOneByNumber( 10 );
-
-        $this->view->lan = $lan;
-
-        $this->view->ints = Doctrine_Query::create()
-            ->from( 'Vlaninterface vl' )
-            ->leftJoin( 'vl.Virtualinterface vi' )
-            ->leftJoin( 'vi.Cust c' )
-            ->leftJoin( 'vi.Physicalinterface pi' )
-            ->leftJoin( 'pi.Switchport sp' )
-            ->leftJoin( 'sp.SwitchTable s' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhere( 'vl.vlanid = ?', $lan['id'] )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->orderBy( 'c.name' )
-            ->fetchArray();
-
-        $this->view->category   = $category;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        $this->view->period     = $period;
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'statistics-by-lan.tpl' );
-    }
 
     
     public function detailsAction()

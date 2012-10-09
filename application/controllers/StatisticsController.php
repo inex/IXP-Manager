@@ -158,9 +158,15 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
         
+        $this->view->infras = $infras = INEX_Mrtg::$INFRASTRUCTURES_TEXT;
+        $this->view->infra  = $infra  = $this->getParam( 'infra', 'aggregate' );
+
+        if( $infra != 'aggregate' && !in_array( $infra, $infras ) )
+            $infra = 'aggregate';
+        
         $this->_setCategory();
         $this->_setPeriod();
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, true, true );
+        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
     }
     
     public function memberAction()

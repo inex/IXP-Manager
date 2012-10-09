@@ -171,6 +171,14 @@ class INEX_Mrtg
         'Secondary'   => INEX_Mrtg::INFRASTRUCTURE_SECONDARY
     );
     
+    /**
+     * Infrastructures
+     */
+    public static $INFRASTRUCTURES_TEXT = array(
+        self::INFRASTRUCTURE_PRIMARY     => 'Primary Infrastructure',
+        self::INFRASTRUCTURE_SECONDARY   => 'Secondary Infrastructure'
+    );
+    
     
     
     /**
