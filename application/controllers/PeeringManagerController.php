@@ -31,27 +31,18 @@
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PeeringManagerController extends INEX_Controller_Action
+class PeeringManagerController extends INEX_Controller_AuthRequiredAction
 {
 
     public function preDispatch()
     {
-        // let's get the user's details sorted before everything else
-        if( !$this->auth->hasIdentity() )
-        {
-            // record the page we wanted
-            $this->session->postAuthRedirect = $this->_request->getPathInfo();
-            $this->_redirect( 'auth/login' );
-        }
-        
         // we should only be available to CUSTUSERs
-        if( $this->getUser()->privs != User::AUTH_CUSTUSER )
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_CUSTUSER )
         {
-            $this->session->message = new INEX_Message(
-                "You must be logged in as a standard user to access the peering manager.",
-                INEX_Message::MESSAGE_TYPE_ERROR
+            $this->addMessage( "You must be logged in as a standard user to access the peering manager.",
+                OSS_Message::ERROR
             );
-            $this->_forward( 'index', 'index' );
+            $this->_redirect( '' );
         }
     }
     
