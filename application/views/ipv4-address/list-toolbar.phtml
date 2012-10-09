@@ -6,7 +6,7 @@
             <span id="vlan-dd-text">{if isset( $vid ) and $vid}{$vlans.$vid}{else}Limit to VLAN...{/if}</span>
             <span class="caret"></span>
         </a>
-        <ul id="vlan-dd-ul" class="dropdown-menu">
+        <ul id="vlan-dd-ul" class="dropdown-menu pull-right">
             {foreach $vlans as $vid => $vname}
                 <li> <a id="vlan-{$vid}" href="{genUrl controller=$controller action='list' vlan=$vid}">{$vname}</a> </li>
             {/foreach}
@@ -18,3 +18,5 @@
     </div>
 </div>
 </li>
+
+
