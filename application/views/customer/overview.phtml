@@ -300,7 +300,7 @@
 
     <div class="span6">
     
-        {if $cust.type neq Cust::TYPE_ASSOCIATE and $acust.type neq Cust::TYPE_INTERNAL and ( not $acust.dateleave or $acust.dateleave eq '0000-00-00' )}
+        {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and not $cust->hasLeft()}
     
                 <div class="row-fluid">
                 
@@ -309,8 +309,8 @@
                 
                         <p>
                             <br />
-                            <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex='aggregate' category='bits' shortname=$acust.shortname}">
-                                {genMrtgImgUrlTag shortname=$acust.shortname category='bits' monitorindex='aggregate'}
+                            <a href="{genUrl controller='statistics' action='member-drilldown' monitorindex='aggregate' category='bits' shortname=$cust->getShortname()}">
+                                {genMrtgImgUrlTag shortname=$cust->getShortname() category='bits' monitorindex='aggregate'}
                             </a>
                         </p>
                     </div>
@@ -318,25 +318,25 @@
                 </div>
         
         
-                {foreach from=$connections item=connection}
+                {foreach $cust->getVirtualInterfaces() as $vi}
         
-                    {foreach from=$connection.Physicalinterface item=pi}
+                    {foreach $vi->getPhysicalInterfaces() as $pi}
         
                         <div class="row-fluid">
                         
                             <div class="well">
                 
                                 <h4>
-                                        {$pi.Switchport.SwitchTable.Cabinet.Location.name}
-                                        / {$pi.Switchport.SwitchTable.name}
-                                        / {$pi.Switchport.name} ({$pi.speed}Mb/s)
+                                        {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
+                                        / {$pi->getSwitchPort()->getSwitcher()->getName()}
+                                        / {$pi->getSwitchPort()->getName()} ({$pi->getSpeed()}Mbps)
                                 </h4>
                 
                 
                                 <p>
                                     <br />
-                                    <a href="{genUrl controller='dashboard' action='statistics-drilldown' monitorindex=$pi.monitorindex category='bits' shortname=$acust.shortname}">
-                                        {genMrtgImgUrlTag shortname=$acust.shortname category='bits' monitorindex=$pi.monitorindex}
+                                    <a href="{genUrl controller='statistics' action='member-drilldown' monitorindex=$pi->getMonitorindex() category='bits' shortname=$cust->getShortname()}">
+                                        {genMrtgImgUrlTag shortname=$cust->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}
                                     </a>
                                 </p>
                 
