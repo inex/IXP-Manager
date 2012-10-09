@@ -130,7 +130,7 @@ class AuthController extends INEX_Controller_Action
         // record current user customer ID
         $custid = $this->getUser()->custid;
         
-        $params['url'] = 'customer/dashboard/id/' . $subUser->getCustomer()->getId();
+        $params['url'] = 'customer/overview/id/' . $subUser->getCustomer()->getId();
         
         return $params;
     }
