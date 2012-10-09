@@ -129,58 +129,82 @@ class Customer extends EntityRepository
             ->getResult();
     }
     
+    /**
+     * Return an array of the customer's peers as listed in the `PeeringManager`
+     * table.
+     *
+     * @param $cid int The customer ID
+     * @return array An array of all the customer's PeeringManager entries
+     */
+    public function getPeers( $cid )
+    {
+        return $this->getEntityManager()->createQuery(
+            "SELECT pm.id AS id, c.id AS custid, p.id AS peerid,
+                pm.email_last_sent AS email_last_sent, pm.emails_sent AS emails_sent,
+                pm.peered AS peered, pm.rejected AS rejected, pm.notes AS notes,
+                pm.created AS created, pm.updated AS updated
+        
+             FROM \\Entities\\PeeringManager pm
+                 LEFT JOIN pm.Customer c
+                 LEFT JOIN pm.Peer p
+        
+             WHERE c.id = ?1"
+        )
+        ->setParameter( 1, $cid )
+        ->getArrayResult();
+    }
+    
     
     /**
      * Utility function to load all customers suitable for inclusion in the peering manager
      *
      */
-    public static function getForPeeringManager()
+    public function getForPeeringManager()
     {
-        $q = Doctrine_Query::create()
-        ->select( 'c.shortname, c.autsys, c.name, c.maxprefixes, c.peeringemail, c.peeringpolicy, c.id' )
-        ->addSelect( 'vi.id, vli.ipv4enabled, vli.ipv6enabled, vli.rsclient, v.number' )
-        ->from( 'Cust c' )
-        ->leftJoin( 'c.Virtualinterface vi' )
-        ->leftJoin( 'vi.Vlaninterface vli' )
-        ->leftJoin( 'vli.Vlan v' )
-        //->andWhere( 'c.activepeeringmatrix = 1' );
-        ->andWhereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_PROBONO ) )
-        ->andWhere( '( c.dateleave IS NULL or c.dateleave = "0000-00-00" )' )
-        ->orderBy( 'c.name' );
-    
-        $acusts = $q->execute( null, Doctrine::HYDRATE_ARRAY );
+        $customers = $this->getEntityManager()->createQuery(
+                "SELECT c
+        
+                 FROM \\Entities\\Customer c
+
+                 WHERE " . self::DQL_CUST_ACTIVE . " AND " . self::DQL_CUST_CURRENT . "
+                     AND " . self::DQL_CUST_EXTERNAL . " AND " . self::DQL_CUST_TRAFFICING . "
+
+                ORDER BY c.name ASC"
+        
+            )->getResult();
+        
     
         $custs = array();
     
-        foreach( $acusts as $c )
+        foreach( $customers as $c )
         {
-            $custs[ $c['autsys'] ] = array();
+            $custs[ $c->getAutsys() ] = [];
     
-            $custs[ $c['autsys'] ]['id']            = $c['id'];
-            $custs[ $c['autsys'] ]['name']          = $c['name'];
-            $custs[ $c['autsys'] ]['shortname']     = $c['shortname'];
-            $custs[ $c['autsys'] ]['autsys']        = $c['autsys'];
-            $custs[ $c['autsys'] ]['maxprefixes']   = $c['maxprefixes'];
-            $custs[ $c['autsys'] ]['peeringemail']  = $c['peeringemail'];
-            $custs[ $c['autsys'] ]['peeringpolicy'] = $c['peeringpolicy'];
+            $custs[ $c->getAutsys() ]['id']            = $c->getId();
+            $custs[ $c->getAutsys() ]['name']          = $c->getName();
+            $custs[ $c->getAutsys() ]['shortname']     = $c->getShortname();
+            $custs[ $c->getAutsys() ]['autsys']        = $c->getAutsys();
+            $custs[ $c->getAutsys() ]['maxprefixes']   = $c->getMaxprefixes();
+            $custs[ $c->getAutsys() ]['peeringemail']  = $c->getPeeringemail();
+            $custs[ $c->getAutsys() ]['peeringpolicy'] = $c->getPeeringpolicy();
     
-            $custs[ $c['autsys'] ]['vlaninterfaces'] = array();
+            $custs[ $c->getAutsys() ]['vlaninterfaces'] = array();
     
-            foreach( $c['Virtualinterface'] as $vi )
+            foreach( $c->getVirtualInterfaces() as $vi )
             {
-                foreach( $vi['Vlaninterface'] as $vli )
+                foreach( $vi->getVlanInterfaces() as $vli )
                 {
-                    if( !isset( $custs[ $c['autsys'] ]['vlaninterfaces'][ $vli['Vlan']['number'] ] ) )
+                    if( !isset( $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ] ) )
                     {
-                        $custs[ $c['autsys'] ]['vlaninterfaces'][ $vli['Vlan']['number'] ] = array();
+                        $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ] = [];
                         $cnt = 0;
                     }
                     else
-                        $cnt = count( $custs[ $c['autsys'] ]['vlaninterfaces'][ $vli['Vlan']['number'] ] );
+                        $cnt = count( $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ] );
                         
-                    $custs[ $c['autsys'] ]['vlaninterfaces'][ $vli['Vlan']['number'] ][ $cnt ]['ipv4enabled'] = $vli['ipv4enabled'];
-                    $custs[ $c['autsys'] ]['vlaninterfaces'][ $vli['Vlan']['number'] ][ $cnt ]['ipv6enabled'] = $vli['ipv6enabled'];
-                    $custs[ $c['autsys'] ]['vlaninterfaces'][ $vli['Vlan']['number'] ][ $cnt ]['rsclient']    = $vli['rsclient'];
+                    $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ][ $cnt ]['ipv4enabled'] = $vli->getIpv4enabled();
+                    $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ][ $cnt ]['ipv6enabled'] = $vli->getIpv6enabled();
+                    $custs[ $c->getAutsys() ]['vlaninterfaces'][ $vli->getVlan()->getNumber() ][ $cnt ]['rsclient']    = $vli->getRsclient();
                 }
             }
                          

@@ -1,4 +1,4 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Peering Manager"}
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Peering Manager"}
 
 <style>
     body{ overflow-y: scroll; }
@@ -6,8 +6,7 @@
 
 <div class="page-content">
 
-{include file="message.tpl"}
-<div id='ajaxMessage'></div>
+{OSS_Message}
 
 <ul class="nav nav-tabs">
     <li class="active">
@@ -20,19 +19,19 @@
 <div class="tab-content" style="min-height: 400px;">
 
     <div class="tab-pane active" id="potential">
-        {include file="peering-manager/index-potential.tpl"}
+        {tmplinclude file="peering-manager/index-potential.phtml"}
     </div>
 
     <div class="tab-pane" id="potential-bilat">
-        {include file="peering-manager/index-potential-bilateral.tpl"}
+        {tmplinclude file="peering-manager/index-potential-bilateral.phtml"}
     </div>
 
     <div class="tab-pane" id="peers">
-        {include file="peering-manager/index-peers.tpl"}
+        {tmplinclude file="peering-manager/index-peers.phtml"}
     </div>
     
     <div class="tab-pane" id="rejected">
-        {include file="peering-manager/index-rejected.tpl"}
+        {tmplinclude file="peering-manager/index-rejected.phtml"}
     </div>
 
 </div>
@@ -75,7 +74,7 @@
 </div>
 
 <script type="text/javascript">
-{include file="peering-manager/index.js"}
+{tmplinclude file="peering-manager/js/index.js"}
 </script>
     
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

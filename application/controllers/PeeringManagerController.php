@@ -49,39 +49,37 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
 
     public function indexAction()
     {
-        //echo '<pre>'; print_r( VlaninterfaceTable::getForPeeringManager() ); die();
-        
-        $this->view->vlans  = $vlans  = [ 10, 12 ];
+        $this->view->vlans  = $vlans  = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getPeeringVLANs();
         $this->view->protos = $protos = [ 4, 6 ];
         
         $bilat = array();
         foreach( $vlans as $vlan )
             foreach( $protos as $proto )
-                $bilat[$vlan][$proto ] = $this->_getSessions( $vlan, $proto );
+                $bilat[ $vlan->getNumber() ][$proto ] = $this->getD2EM()->getRepository( '\\Entities\\BGPSessionData' )->getPeers( $vlan->getId(), $proto );
         
         $this->view->bilat = $bilat;
 
-        // echo '<pre>'; print_r( $this->getCustomer()->PeeringManager->toArray() ); die();
-        
-        $peers = array();
-        foreach( $this->getCustomer()->PeeringManager->toArray() as $p )
+        $peers = [];
+        foreach( $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getPeers( $this->getCustomer()->getId() ) as $p )
         {
-            $peers[ $p['peerid'] ] = $p;
             // days since last peering request email sent
-            $peers[ $p['peerid'] ]['email_days'] = floor( ( time() - strtotime( $p['email_last_sent'] ) ) / 86400 );
+            if( !$p['email_last_sent'] )
+                $peers[ $p['peerid'] ]['email_days'] = 0;
+            else
+                $peers[ $p['peerid'] ]['email_days'] = floor( ( time() - $p->getEmailLastSent()->getTimestamp() ) / 86400 );
         }
         $this->view->peers = $peers;
         
-        $custs = VlaninterfaceTable::getForPeeringManager();
+        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getForPeeringManager();
 
-        $this->view->me = $me = $custs[ $this->getCustomer()->autsys ];
-        $this->view->myasn = $this->getCustomer()->autsys;
-        unset( $custs[ $this->getCustomer()->autsys ] );
+        $this->view->me = $me = $custs[ $this->getCustomer()->getAutsys() ];
+        $this->view->myasn = $this->getCustomer()->getAutsys();
+        unset( $custs[ $this->getCustomer()->getAutsys() ] );
         
-        $potential       = array();
-        $potential_bilat = array();
-        $peered          = array();
-        $rejected        = array();
+        $potential       = [];
+        $potential_bilat = [];
+        $peered          = [];
+        $rejected        = [];
         
         foreach( $custs as $c )
         {
@@ -89,24 +87,24 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
             
             foreach( $vlans as $vlan )
             {
-                if( isset( $me['vlaninterfaces'][$vlan] ) )
+                if( isset( $me['vlaninterfaces'][ $vlan->getNumber() ] ) )
                 {
-                    if( isset( $c['vlaninterfaces'][$vlan] ) )
+                    if( isset( $c['vlaninterfaces'][$vlan->getNumber()] ) )
                     {
                         foreach( $protos as $proto )
                         {
-                            if( $me['vlaninterfaces'][$vlan][0]["ipv{$proto}enabled"] && $c['vlaninterfaces'][$vlan][0]["ipv{$proto}enabled"] )
+                            if( $me['vlaninterfaces'][$vlan->getNumber()][0]["ipv{$proto}enabled"] && $c['vlaninterfaces'][$vlan->getNumber()][0]["ipv{$proto}enabled"] )
                             {
-                                if( in_array( $c['autsys'], $bilat[$vlan][4][$me['autsys']]['peers'] ) )
-                                    $custs[ $c['autsys'] ][$vlan][$proto] = 2;
-                                else if( $me['vlaninterfaces'][$vlan][0]['rsclient'] && $c['vlaninterfaces'][$vlan][0]['rsclient'] )
+                                if( in_array( $c['autsys'], $bilat[$vlan->getNumber()][4][$me['autsys']]['peers'] ) )
+                                    $custs[ $c['autsys'] ][$vlan->getNumber()][$proto] = 2;
+                                else if( $me['vlaninterfaces'][$vlan->getNumber()][0]['rsclient'] && $c['vlaninterfaces'][$vlan->getNumber()][0]['rsclient'] )
                                 {
-                                    $custs[ $c['autsys'] ][$vlan][$proto] = 1;
+                                    $custs[ $c['autsys'] ][$vlan->getNumber()][$proto] = 1;
                                     $custs[ $c['autsys' ] ]['ispotential'] = true;
                                 }
                                 else
                                 {
-                                    $custs[ $c['autsys'] ][$vlan][$proto] = 0;
+                                    $custs[ $c['autsys'] ][$vlan->getNumber()][$proto] = 0;
                                     $custs[ $c['autsys' ] ]['ispotential'] = true;
                                 }
                             }
@@ -118,30 +116,30 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
         
         foreach( $custs as $c )
         {
-            $peered[ $c['autsys' ] ] = false;
+            $peered[          $c['autsys' ] ] = false;
             $potential_bilat[ $c['autsys' ] ] = false;
-            $potential[ $c['autsys' ] ] = false;
-            $rejected[ $c['autsys' ] ] = false;
+            $potential[       $c['autsys' ] ] = false;
+            $rejected[        $c['autsys' ] ] = false;
             
             foreach( $vlans as $vlan )
             {
                 foreach( $protos as $proto )
                 {
-                    if( isset( $c[$vlan][$proto] ) )
+                    if( isset( $c[$vlan->getNumber()][$proto] ) )
                     {
-                        switch( $c[$vlan][$proto] )
+                        switch( $c[$vlan->getNumber()][$proto] )
                         {
                             case 2:
                                 $peered[ $c['autsys' ] ] = true;
                                 break;
                                 
                             case 1:
-                                $peered[ $c['autsys' ] ] = true;
+                                $peered[          $c['autsys' ] ] = true;
                                 $potential_bilat[ $c['autsys' ] ] = true;
                                 break;
                                 
                             case 0:
-                                $potential[ $c['autsys' ] ] = true;
+                                $potential[       $c['autsys' ] ] = true;
                                 $potential_bilat[ $c['autsys' ] ] = true;
                                 break;
                                 
@@ -155,14 +153,14 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
         {
             if( isset( $peers[ $c['id'] ] ) )
             {
-                if( $peers[ $c['id'] ]['peered'] )
+                if( isset( $peers[ $c['id'] ]['peered'] ) && $peers[ $c['id'] ]['peered'] )
                 {
                     $peered[ $c['autsys' ] ] = true;
                     $rejected[ $c['autsys' ] ] = false;
                     $potential[ $c['autsys' ] ] = false;
                     $potential_bilat[ $c['autsys' ] ] = false;
                 }
-                else if( $peers[ $c['id'] ]['rejected'] )
+                else if( isset( $peers[ $c['id'] ]['rejected'] ) && $peers[ $c['id'] ]['rejected'] )
                 {
                     $peered[ $c['autsys' ] ] = false;
                     $rejected[ $c['autsys' ] ] = true;
@@ -182,37 +180,9 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
         //echo '<pre>'; print_r( $custs ); die();
         
         $this->view->date = date( 'Y-m-d' );
-        
-        $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'index.tpl' );
     }
 
 
-    private function _getSessions( $lan, $proto )
-    {
-        $key = "pm_sessions_{$lan}_{$proto}";
-    
-        if( !( $sessions = $this->apcFetch( $key ) ) )
-        {
-            $sessions = BgpsessiondataTable::getPeers( $lan, $proto );
-            $this->apcStore( $key, $sessions, 86400 );
-        }
-    
-        return $sessions;
-    }
-    
-    private function _getCusts( $lan, $proto )
-    {
-        $key = "pm_custs_{$lan}_{$proto}";
-    
-        if( !( $custs = $this->apcFetch( $key ) ) )
-        {
-            $custs = VlaninterfaceTable::getForPeeringMatrix( $lan, $proto );
-            $this->apcStore( $key, $custs, 86400 );
-        }
-    
-        return $custs;
-    }
-    
 
 
     public function peeringRequestAction()

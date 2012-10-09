@@ -171,4 +171,25 @@ class Vlan extends EntityRepository
             
         return $custs;
     }
+    
+    /**
+     * Tempory INEX function until I have a better way of doing this. Used by the
+     * `PeeringManagerController`. FIXME.
+     */
+    public function getPeeringVLANs()
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT v
+         
+                    FROM \\Entities\\Vlan v
+            
+                    WHERE
+            
+                        v.number IN ( 10, 12 )
+    
+                ORDER BY v.number ASC"
+            )
+            ->getResult();
+    }
+    
 }
