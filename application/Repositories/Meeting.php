@@ -12,4 +12,23 @@ use Doctrine\ORM\EntityRepository;
  */
 class Meeting extends EntityRepository
 {
+    /*
+     * OLD DOCTRINE1 CODE FOR POSSIBLE PORTING
+    
+     * Return the futuremost available meeting as an array
+     *
+     * This is essentially a search for an upcoming meeting and returns it if found.
+     *
+     * @return array|bool The Meeting object array or false
+     *
+    public static function getUpcomingMeeting()
+    {
+        return Doctrine_Query::create()
+                 ->from( 'Meeting m' )
+                 ->where( 'm.date > ?', date( 'Y-m-d' ) )
+                 ->orderBy( 'm.date DESC' )
+                 ->setHydrationMode( Doctrine_Core::HYDRATE_ARRAY )
+                 ->fetchOne();
+    }
+     */
 }

@@ -9,6 +9,18 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SecEvent
 {
+
+    const TYPE_SECURITY_VIOLATION     = 'SECURITY_VIOLATION';
+    const TYPE_PORT_UPDOWN            = 'PORT_UPDOWN';
+    const TYPE_LINEPROTO_UPDOWN       = 'LINEPROTO_UPDOWN';
+    const TYPE_BGP_AUTH               = 'BGP_AUTH';
+                
+    public static $TYPES_DEFAULTS = array(
+        self::TYPE_BGP_AUTH           => 1,
+        self::TYPE_PORT_UPDOWN        => 1,
+        self::TYPE_SECURITY_VIOLATION => 1
+    );
+
     /**
      * @var string $type
      */
