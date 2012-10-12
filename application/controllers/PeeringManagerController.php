@@ -59,17 +59,17 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
         
         $this->view->bilat = $bilat;
 
-        $peers = [];
-        foreach( $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getPeers( $this->getCustomer()->getId() ) as $p )
+        $peers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getPeers( $this->getCustomer()->getId() );
+        foreach( $peers as $i => $p )
         {
             // days since last peering request email sent
             if( !$p['email_last_sent'] )
-                $peers[ $p['peerid'] ]['email_days'] = 0;
+                $peers[ $i ]['email_days'] = 0;
             else
-                $peers[ $p['peerid'] ]['email_days'] = floor( ( time() - $p->getEmailLastSent()->getTimestamp() ) / 86400 );
+                $peers[ $i ]['email_days'] = floor( ( time() - $p->getEmailLastSent()->getTimestamp() ) / 86400 );
         }
         $this->view->peers = $peers;
-        
+
         $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getForPeeringManager();
 
         $this->view->me = $me = $custs[ $this->getCustomer()->getAutsys() ];

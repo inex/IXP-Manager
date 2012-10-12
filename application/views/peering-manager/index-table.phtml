@@ -26,14 +26,16 @@
         {foreach from=$listOfCusts key=as item=p}
         
             {assign var=c value=$custs.$as}
+            {assign var=cid value=$c.id}
         
             {if $p}
             <tr>
-                <td id="peer-name-{$c.id}"}>{$c.name}</td>
+                <td id="peer-name-{$cid}">{$c.name}</td>
                 <td>{$c.autsys}</td>
                 <td>{$c.peeringpolicy}</td>
                 
-                {foreach from=$vlans item=vlan}
+                {foreach $vlans as $avlan}
+                    {$vlan = $avlan->getNumber()}
                     {if isset( $c.$vlan )}
                         <td>
                             {foreach from=$protos item=proto}
@@ -53,19 +55,22 @@
                 
                 <td width="220px">
                     <div class="btn-group">
-                        <button id="peering-request-{$c.id}" data-days="{if isset( $peers[$c.id] )}{$peers[$c.id].email_days}{else}-1{/if}" class="btn btn-mini {if not $c.ispotential}disabled" disabled="disabled{/if}">
-                            <i id="peering-request-icon-{$c.id}" class="{if isset( $peers[$c.id] ) and $peers[$c.id].emails_sent}icon-repeat{else}icon-envelope{/if}"></i> Request Peering
+                        <button id="peering-request-{$cid}"
+                                data-days="{if isset( $peers.$cid )}{$peers.$cid.email_days}{else}-1{/if}"
+                                class="btn btn-mini {if not $c.ispotential}disabled" disabled="disabled{/if}">
+                            <i id="peering-request-icon-{$cid}"
+                                class="{if isset( $peers.$cid.emails_sent ) and $peers.$cid.emails_sent}icon-repeat{else}icon-envelope{/if}"></i> Request Peering
                         </button>
-                        <button id="peering-notes-{$c.id}" class="btn btn-mini">
-                            <i id="peering-notes-icon-{$c.id}" class="{if isset( $peers[$c.id] ) and strlen( $peers[$c.id].notes )}icon-star{else}icon-star-empty{/if}"></i> Notes
+                        <button id="peering-notes-{$cid}" class="btn btn-mini">
+                            <i id="peering-notes-icon-{$cid}" class="{if isset( $peers.$cid.notes ) and strlen( $peers.$cid.notes )}icon-star{else}icon-star-empty{/if}"></i> Notes
                         </button>
-                        <button class="btn btn-mini {if isset( $peers[$c.id] ) and ( $peers[$c.id].peered or $peers[$c.id].rejected )}btn-info{/if} dropdown-toggle" data-toggle="dropdown">
+                        <button class="btn btn-mini {if isset( $peers.$cid ) and ( $peers.$cid.peered or $peers.$cid.rejected )}btn-info{/if} dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="{genUrl controller="peering-manager" action="mark-peered" custid=$c.id}">
-                                    {if isset( $peers[$c.id] ) and $peers[$c.id].peered}
+                                <a href="{genUrl controller="peering-manager" action="mark-peered" custid=$cid}">
+                                    {if isset( $peers.$cid ) and $peers.$cid.peered}
                                         Unmark as Peered
                                     {else}
                                         Move to Peered
@@ -73,8 +78,8 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{genUrl controller="peering-manager" action="mark-rejected" custid=$c.id}">
-                                    {if isset( $peers[$c.id] ) and $peers[$c.id].rejected}
+                                <a href="{genUrl controller="peering-manager" action="mark-rejected" custid=$cid}">
+                                    {if isset( $peers.$cid ) and $peers.$cid.rejected}
                                         Unmark as Rejected / Ignored
                                     {else}
                                         Move to Rejected / Ignored
