@@ -153,7 +153,7 @@ $(document).ready( function() {
 
 			$( '#modal-peering-notes-message' ).off( 'focus' );
 			$( '#modal-peering-notes-message' ).one( 'focus', function( event ){
-				var prmt = '{$date} [{$user.username}]: ';
+				var prmt = '{$date} [{$user->getUsername()}]: ';
 				$( '#modal-peering-notes-message' ).val( prmt + "\n\n"  + $( '#modal-peering-notes-message' ).val() );
 			    $( '#modal-peering-notes-message' ).caretTo( strlen( prmt ) );		
 			});

@@ -187,9 +187,9 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
 
     public function peeringRequestAction()
     {
-        $TESTMODE = false;
+        $TESTMODE = true;
         
-        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
+        $this->view->peer = $peer = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid', null ) );
         
         if( !$peer )
         {
@@ -199,28 +199,25 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
         
         $f = new INEX_Form_PeeringRequest();
         
-        // need to get VLAN interfaces in common for these two members
-        $myints = Doctrine_Core::getTable( 'ViewVlaninterfaceDetailsByCustid' )->findByCustid(
-            $this->getCustomer()['id'], Doctrine_Core::HYDRATE_ARRAY
-        );
-        
-        $pints = Doctrine_Core::getTable( 'ViewVlaninterfaceDetailsByCustid' )->findByCustid(
-            $peer['id'], Doctrine_Core::HYDRATE_ARRAY
-        );
-        
         // potential peerings
         $pp = array(); $count = 0;
         
-        foreach( $myints as $myint )
+        foreach( $this->getCustomer()->getVirtualInterfaces() as $myvis )
         {
-            // does b member have one (or more than one)?
-            foreach( $pints as $pint )
+            foreach( $myvis->getVlanInterfaces() as $myvli )
             {
-                if( $myint['vlanid'] == $pint['vlanid'] )
+                // does b member have one (or more than one)?
+                foreach( $peer->getVirtualInterfaces() as $pvis )
                 {
-                    $pp[$count]['my']   = $myint;
-                    $pp[$count]['your'] = $pint;
-                    $count++;
+                    foreach( $pvis->getVlanInterfaces() as $pvli )
+                    {
+                        if( $myvli->getVlan()->getId() == $pvli->getVlan()->getId() )
+                        {
+                            $pp[$count]['my']   = $myvli;
+                            $pp[$count]['your'] = $pvli;
+                            $count++;
+                        }
+                    }
                 }
             }
         }
@@ -228,8 +225,8 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
         // INEX_Debug::dd( $pp );
         $this->view->pp = $pp;
         
-        $f->getElement( 'to' )->setValue( $peer['peeringemail'] );
-        $f->getElement( 'cc' )->setValue( $this->getCustomer()['peeringemail'] );
+        $f->getElement( 'to' )->setValue( $peer->getPeeringemail() );
+        $f->getElement( 'cc' )->setValue( $this->getCustomer()->getPeeringemail() );
 
         if( $this->getRequest()->isPost() )
         {
@@ -239,7 +236,7 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
                 $marksent = $f->getValue( 'marksent' ) == '1' ? true : false;
                 
                 $bccOk = true;
-                $bcc = array();
+                $bcc = [];
                 if( !$sendtome )
                 {
                     if( strlen( $bccs = $f->getValue( 'bcc' ) ) )
@@ -262,19 +259,19 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
                 {
                 
                     $mail = new Zend_Mail();
-                    $mail->setFrom( 'no-reply@inex.ie', $this->getCustomer()['name'] . ' Peering Team' )
-                         ->setReplyTo( $this->getCustomer()['peeringemail'], $this->getCustomer()['name'] . ' Peering Team' )
+                    $mail->setFrom( 'no-reply@inex.ie', $this->getCustomer()->getName() . ' Peering Team' )
+                         ->setReplyTo( $this->getCustomer()->getPeeringemail(), $this->getCustomer()->getName() . ' Peering Team' )
                          ->setSubject( $f->getValue( 'subject' ) )
                          ->setBodyText( $f->getValue( 'message' ) );
 
                     if( $sendtome )
                     {
-                        $mail->addTo( $this->getUser()['email'] );
+                        $mail->addTo( $this->getUser()->getEmail() );
                     }
                     else
                     {
-                        $mail->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer['peeringemail'], "{$peer['name']} Peering Team" )
-                             ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()['peeringemail'], "{$this->getCustomer()['name']} Peering Team" );
+                        $mail->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer->getPeeringemail(), "{$peer->getName()} Peering Team" )
+                             ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()->getPeeringemail(), "{$this->getCustomer()->getName()} Peering Team" );
                     }
                     
                     if( count( $bcc ) )
@@ -288,12 +285,29 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
                         if( !$sendtome )
                         {
                             // get this customer/peer peering manager table entry
-                            $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
-                            $pm['email_last_sent'] = date( 'Y-m-d' );
-                            $pm['emails_sent'] = $pm['emails_sent'] + 1;
-                            $pm['updated'] = date( 'Y-m-d H:i:s' );
-                            $pm['notes'] = date( 'Y-m-d' ) . " [{$this->getUser()['username']}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n";
-                            $pm->save();
+                            $pm = $this->getD2EM()->getRepository( '\\Entities\\PeeringManager' )->findOneBy(
+                                [ 'Customer' => $this->getCustomer(), 'Peer' => $peer ]
+                            );
+                            
+                            if( !$pm )
+                            {
+                                $pm = new \Entities\PeeringManager();
+                                $pm->setCustomer( $this->getCustomer() );
+                                $pm->setPeer( $peer );
+                                $pm->setCreated( new DateTime() );
+                                $pm->setPeered( false );
+                                $pm->setRejected( false );
+                                $this->getD2EM()->persist( $pm );
+                            }
+                            
+                            $pm->setEmailLastSent( new DateTime() );
+                            $pm->setEmailsSent( $pm->getEmailsSent() + 1 );
+                            $pm->setUpdated( new DateTime() );
+                            $pm->setNotes(
+                                date( 'Y-m-d' ) . " [{$this->getUser()->getUsername()}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n" . $pm->getNotes()
+                            );
+                                                                
+                            $this->getD2EM()->flush();
                         }
                     }
                     catch( Zend_Exception $e )
@@ -304,11 +318,11 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
                     }
                     
                     if( $sendtome )
-                        echo "OK:Peering request sample sent to your own email address ({$this->getUser()['email']}).";
+                        echo "OK:Peering request sample sent to your own email address ({$this->getUser()->getEmail()}).";
                     else if( $marksent )
                         echo "OK:Peering request marked as sent in your Peering Manager.";
                     else
-                        echo "OK:Peering request sent to {$peer['name']} Peering Team.";
+                        echo "OK:Peering request sent to {$peer->getName()} Peering Team.";
                     
                     return true;
                 }
@@ -316,14 +330,12 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
         }
         else
         {
-            $f->getElement( 'bcc' )->setValue( $this->getUser()['email'] );
-            $f->getElement( 'subject' )->setValue( "[INEX] Peering Request from {$this->getCustomer()['name']} (ASN{$this->getCustomer()['autsys']})" );
-            $f->getElement( 'message' )->setValue( $this->view->render( 'peering-manager' . DIRECTORY_SEPARATOR . 'peering-request-message.tpl' ) );
+            $f->getElement( 'bcc' )->setValue( $this->getUser()->getEmail() );
+            $f->getElement( 'subject' )->setValue( "[INEX] Peering Request from {$this->getCustomer()->getName()} (ASN{$this->getCustomer()->getAutsys()})" );
+            $f->getElement( 'message' )->setValue( $this->view->render( 'peering-manager/peering-request-message.phtml' ) );
         }
         
         $this->view->form = $f;
-
-        $this->view->display( 'peering-manager' . DIRECTORY_SEPARATOR . 'peering-request.tpl' );
     }
     
     public function peeringNotesAction()
