@@ -1,6 +1,6 @@
 
 
-<h2>{$cust.name}</h2>
+<h2>{$cust->getName()}</h2>
 
 {if $dIn gt $threasholdIn}
 <p>
@@ -34,8 +34,8 @@
 {/if}
 
 <p>
-<a href="{$config.identity.ixp.url}/dashboard/statistics/shortname/{$cust.shortname}">
-	<img src="cid:{$cust.shortname}" alt="[{$cust.shortname}]" />
+<a href="{genUrl controller="statistics" action="member" shortname=$cust->getShortname()}">
+	<img src="cid:{$cust->getShortname()}" alt="[{$cust->getShortname()}]" />
 </a>
 </p>
 

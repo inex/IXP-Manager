@@ -1,6 +1,6 @@
 
 
-<h2>{$cust.name} :: {$switchport}</h2>
+<h2>{$cust->getName()} :: {$switchport}</h2>
 
 {if $utilIn gt $threshold}
 <p>
@@ -15,8 +15,8 @@
 {/if}
 
 <p>
-<a href="{$config.identity.ixp.url}/dashboard/statistics/shortname/{$cust.shortname}">
-	<img src="cid:{$cust.shortname}" alt="[{$cust.shortname}]" />
+<a href="{genUrl controller="statistics" action="member" shortname=$cust->getShortname()}">
+    <img src="cid:{$cust->getShortname()}" alt="[{$cust->getShortname()}]" />
 </a>
 </p>
 
