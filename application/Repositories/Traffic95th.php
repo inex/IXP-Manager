@@ -12,4 +12,52 @@ use Doctrine\ORM\EntityRepository;
  */
 class Traffic95th extends EntityRepository
 {
+
+    /**
+     *
+     * MIGRATED FROM DOCTRINE1 BUT UNCONVERTED AS YET
+     *
+     *
+     *
+     * Function to calculate the 95th percentile for a given data range.
+     *
+     * @param unknown_type $custid The ID of the customer to calculate for
+     * @param unknown_type $start Start of period to calculcate for (Y-m-d H:i:s)
+         * @param unknown_type $end End of period to calculcate for (Y-m-d H:i:s)
+         * @return int The 95th percentile in bits.
+     *
+    public static function get95thPercentile( $custid, $start, $end )
+    {
+        // how many datapoints do we have?
+        $count = Doctrine_Query::create()
+        ->from( 'Traffic95th tm')
+        ->select( 'COUNT( tm.datetime )' )
+        ->where( "tm.datetime >= ?" )
+        ->andWhere( "tm.datetime < ?" )
+        ->andWhere( 'tm.cust_id = ?' )
+        ->execute( array( $start, $end, $custid ), Doctrine_Core::HYDRATE_SINGLE_SCALAR );
+    
+        if( $count > 20 )
+        {
+            // we want the 95% percentile
+            $index = (int)floor( $count * 0.05 );
+    
+            return Doctrine_Query::create()
+            ->from( 'Traffic95TH tm' )
+            ->select( 'tm.max' )
+            ->where( "tm.datetime >= ?", $start )
+            ->andWhere( "tm.datetime < ?", $end )
+            ->andWhere( 'tm.cust_id = ?', $custid )
+            ->limit( 1 )
+            ->offset( $index )
+            ->orderBy( 'tm.datetime DESC' )
+            ->execute( null, Doctrine_Core::HYDRATE_SINGLE_SCALAR );
+    
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    */
 }
