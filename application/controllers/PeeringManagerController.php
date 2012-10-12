@@ -66,10 +66,10 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
             if( !$p['email_last_sent'] )
                 $peers[ $i ]['email_days'] = 0;
             else
-                $peers[ $i ]['email_days'] = floor( ( time() - $p->getEmailLastSent()->getTimestamp() ) / 86400 );
+                $peers[ $i ]['email_days'] = floor( ( time() - $p['email_last_sent']->getTimestamp() ) / 86400 );
         }
         $this->view->peers = $peers;
-
+        
         $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getForPeeringManager();
 
         $this->view->me = $me = $custs[ $this->getCustomer()->getAutsys() ];
@@ -187,16 +187,9 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
 
     public function peeringRequestAction()
     {
-        $TESTMODE = true;
+        $TESTMODE = false;
         
-        $this->view->peer = $peer = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid', null ) );
-        
-        if( !$peer )
-        {
-            echo "ERR:Could not find peer's information in the database. Please contact support.";
-            return true;
-        }
-        
+        $peer = $this->_loadPeer( $this->getParam( 'custid', null ) );
         $f = new INEX_Form_PeeringRequest();
         
         // potential peerings
@@ -285,21 +278,7 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
                         if( !$sendtome )
                         {
                             // get this customer/peer peering manager table entry
-                            $pm = $this->getD2EM()->getRepository( '\\Entities\\PeeringManager' )->findOneBy(
-                                [ 'Customer' => $this->getCustomer(), 'Peer' => $peer ]
-                            );
-                            
-                            if( !$pm )
-                            {
-                                $pm = new \Entities\PeeringManager();
-                                $pm->setCustomer( $this->getCustomer() );
-                                $pm->setPeer( $peer );
-                                $pm->setCreated( new DateTime() );
-                                $pm->setPeered( false );
-                                $pm->setRejected( false );
-                                $this->getD2EM()->persist( $pm );
-                            }
-                            
+                            $pm = $this->_loadPeeringManagerEntry( $this->getCustomer(), $peer );
                             $pm->setEmailLastSent( new DateTime() );
                             $pm->setEmailsSent( $pm->getEmailsSent() + 1 );
                             $pm->setUpdated( new DateTime() );
@@ -340,27 +319,21 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
     
     public function peeringNotesAction()
     {
-        $this->view->peer = $peer = Doctrine_Core::getTable( 'Cust' )->find( $this->_request->getParam( 'custid', null ) );
-    
-        if( !$peer )
-        {
-            echo "ERR:Could not find peer's information in the database. Please contact support.";
-            return true;
-        }
-
-        // get this customer/peer peering manager table entry
-        $pm = PeeringManagerTable::getEntry( $this->getCustomer()['id'], $peer['id'] );
-
+        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+        
+        $peer = $this->_loadPeer( $this->getParam( 'custid', null ) );
+        $pm = $this->_loadPeeringManagerEntry( $this->getCustomer(), $peer );
+        
         if( $this->getRequest()->isPost() )
         {
-            $pm['updated'] = date( 'Y-m-d H:i:s' );
+            $pm->setUpdated( new DateTime() );
             
-            if( trim( stripslashes( $this->_getParam( 'message', '' ) ) ) )
-                $pm['notes'] = trim( stripslashes( $this->_getParam( 'message' ) ) );
+            if( trim( stripslashes( $this->getParam( 'message', '' ) ) ) )
+                $pm->setNotes( trim( stripslashes( $this->getParam( 'message' ) ) ) );
             
             try
             {
-                $pm->save();
+                $this->getD2EM()->flush();
             }
             catch( Exception $e )
             {
@@ -369,14 +342,12 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
                 return true;
             }
             
-            echo "OK:Peering notes updated for {$peer['name']}.";
-            return true;
+            echo "OK:Peering notes updated for {$peer->getName()}.";
         }
         else
         {
-            echo 'OK:' . $pm['notes'];
+            echo 'OK:' . $pm->getNotes();
         }
-        return true;
     }
     
     
@@ -432,7 +403,51 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
     }
     
     
+    /**
+     * Utility function to load a peer from a submitted ID and issue an error and die() if not found.
+     *
+     * @return \Entities\Customer
+     */
+    private function _loadPeer()
+    {
+        $this->view->peer = $peer = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid', null ) );
+        
+        if( !$peer )
+        {
+            echo "ERR:Could not find peer's information in the database. Please contact support.";
+            die;
+        }
+        
+        return $peer;
+    }
+
     
-    
+    /**
+     * Utility function to load a PeeringManager entity and initialise one if not found
+     *
+     * @return \Entities\PeeringManager
+     */
+    private function _loadPeeringManagerEntry( $cust, $peer )
+    {
+        // get this customer/peer peering manager table entry
+        $pm = $this->getD2EM()->getRepository( '\\Entities\\PeeringManager' )->findOneBy(
+            [ 'Customer' => $cust, 'Peer' => $peer ]
+        );
+        
+        if( !$pm )
+        {
+            $pm = new \Entities\PeeringManager();
+            $pm->setCustomer( $cust );
+            $pm->setPeer( $peer );
+            $pm->setCreated( new DateTime() );
+            $pm->setPeered( false );
+            $pm->setRejected( false );
+            $pm->setNotes( '' );
+            $this->getD2EM()->persist( $pm );
+            $this->getD2EM()->flush();
+        }
+        
+        return $pm;
+    }
 
 }

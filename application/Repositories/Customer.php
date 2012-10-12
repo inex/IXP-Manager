@@ -138,7 +138,7 @@ class Customer extends EntityRepository
      */
     public function getPeers( $cid )
     {
-        return $this->getEntityManager()->createQuery(
+        $tmpPeers = $this->getEntityManager()->createQuery(
             "SELECT pm.id AS id, c.id AS custid, p.id AS peerid,
                 pm.email_last_sent AS email_last_sent, pm.emails_sent AS emails_sent,
                 pm.peered AS peered, pm.rejected AS rejected, pm.notes AS notes,
@@ -152,6 +152,12 @@ class Customer extends EntityRepository
         )
         ->setParameter( 1, $cid )
         ->getArrayResult();
+
+        $peers = [];
+        foreach( $tmpPeers as $p )
+            $peers[ $p['peerid'] ] = $p;
+        
+        return $peers;
     }
     
     
