@@ -35,7 +35,7 @@ class INEX_Form_Customer extends INEX_Form
 {
     public function init()
     {
-        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'customer/forms/edit.tpl' ] ] ] );
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'customer/forms/edit.phtml' ] ] ] );
         
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
