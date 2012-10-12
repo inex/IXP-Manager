@@ -93,6 +93,7 @@ class CustomerController extends INEX_Controller_FrontEnd
                 break;
     
             case \Entities\User::AUTH_CUSTUSER:
+                $this->_feParams->listColumns = [];
                 $this->_feParams->allowedActions = [ 'details', 'detail' ];
                 $this->_feParams->defaultAction = 'details';
                 break;

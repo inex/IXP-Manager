@@ -36,21 +36,24 @@
     <div class="page-content" >
     
         <div class="page-header" >
-            <h1 style="display: inline;">{$feParams->pagetitle}</h1>
+            <h1 style="display: inline;">Switch Configuration</h1>
             
             <span style="float: right; margin-top: -10px;">
-                {* do we have a custom page header toolbar? *}
-                {if $listToolbar}
-                    {tmplinclude file=$listToolbar}
-                {else}
-                    <div class="btn-toolbar">
-                        <div class="btn-group">
-                            {if !isset( $feParams->readonly ) or !$feParams->readonly}
-                                <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
-                            {/if}
-                        </div>
-                    </div>
-                {/if}
+                <form class="form-inline" method="post">
+                    <select data-placeholder="Limit to switch..." class="chzn-select-deselect" name="sid">
+                        <option></option>
+                        {foreach $switches as $sid => $sname}
+                            <option value="{$sid}" {if isset( $switchid ) and $switchid eq $sid}selected="selected"{/if}>{$sname}</option>
+                        {/foreach}
+                    </select>
+                    <select data-placeholder="Limit to peering LAN..." class="chzn-select-deselect" name="vid">
+                        <option></option>
+                        {foreach $vlans as $vid => $vname}
+                            <option value="{$vid}" {if isset( $vlanid ) and $vlanid eq $vid}selected="selected"{/if}>{$vname}</option>
+                        {/foreach}
+                    </select>
+                    <button type="submit" class="btn btn-small" style="display: inline-block; position: relative; margin-top: -15px;" >Update</button>
+                </form>
             </span>
         </div>
 {/if}
@@ -86,7 +89,7 @@
                 <td>{if $row.rsclient}Yes{else}No{/if}</td>
                 <td>{$row.ipv4address}</td>
                 <td>{$row.ipv6address}</td>
-                <td>{if isset( PHYSICALINTERFACE::$STATES[ $row.portstatus ] )}{PHYSICALINTERFACE::$STATES[ $row.portstatus ]}{/if}</td>
+                <td>{if isset( $states[ $row.portstatus ] )}{$states[ $row.portstatus ]}{/if}</td>
             </tr>
         {/foreach}
     </tbody>
