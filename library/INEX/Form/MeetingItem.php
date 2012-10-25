@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,56 +22,27 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing meeting presentations
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_MeetingItem extends INEX_Form
 {
-    /**
-     *
-     *
-     */
-    public function __construct( $options = null, $isEdit = false )
+    public function init()
     {
-        parent::__construct( $options );
-
-
-
-        ////////////////////////////////////////////////
-        // Create and configure title element
-        ////////////////////////////////////////////////
-
-        $meeting = $this->createElement( 'select', 'meeting_id' );
-
-        $maxMeetingId = $this->createSelectFromDatabaseTable( $meeting, 'Meeting', 'id',
-            array( 'title', 'date' ),
-            'date'
-        );
-
-        $meeting->setRegisterInArrayValidator( true )
-            ->setRequired( true )
-            ->setLabel( 'Meeting' )
-            ->addValidator( 'between', false, array( 1, $maxMeetingId ) )
-            ->setErrorMessages( array( 'Please select a meeting' ) );
-
-        $this->addElement( $meeting );
-
+        $this->addElement( INEX_Form_Meeting::getPopulatedSelect( 'meeting_id' ) );
 
         $title = $this->createElement( 'text', 'title', array( 'size' => '100' ) );
         $title->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Title' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $title );
 
         $name = $this->createElement( 'text', 'name', array( 'size' => '100' ) );
@@ -79,8 +50,7 @@ class INEX_Form_MeetingItem extends INEX_Form
             ->setRequired( true )
             ->setLabel( 'Name' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name );
 
         $role = $this->createElement( 'text', 'role', array( 'size' => '100' ) );
@@ -88,8 +58,7 @@ class INEX_Form_MeetingItem extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Role' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $role );
 
         $email = $this->createElement( 'text', 'email', array( 'size' => '100' ) );
@@ -97,8 +66,7 @@ class INEX_Form_MeetingItem extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'E-Mail' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $email );
 
         $company = $this->createElement( 'text', 'company', array( 'size' => '100' ) );
@@ -106,8 +74,7 @@ class INEX_Form_MeetingItem extends INEX_Form
             ->setRequired( true )
             ->setLabel( 'Company' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $company );
 
         $company_url = $this->createElement( 'text', 'company_url', array( 'size' => '100' ) );
@@ -115,8 +82,7 @@ class INEX_Form_MeetingItem extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Company URL' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $company_url );
 
 
@@ -124,7 +90,7 @@ class INEX_Form_MeetingItem extends INEX_Form
         $summary->setLabel( 'Summary' )
             ->setRequired( false )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 100 )
             ->setAttrib( 'rows', 10 );
         $this->addElement( $summary );
@@ -139,8 +105,7 @@ class INEX_Form_MeetingItem extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Video' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $video_url );
 
 
@@ -149,10 +114,9 @@ class INEX_Form_MeetingItem extends INEX_Form
             ->setRequired( false );
         $this->addElement( $other_content );
 
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='" . Zend_Controller_Front::getInstance()->getBaseUrl() . "/customer/list'" ) );
-
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
-
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
+        
         // we shouldn't update the presentation file on an edit if it's blank
         $this->onEditSkipIfBlank = array( 'presentation' );
 
@@ -160,4 +124,3 @@ class INEX_Form_MeetingItem extends INEX_Form
 
 }
 
-?>

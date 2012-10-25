@@ -106,4 +106,27 @@ class INEX_Form_Meeting extends INEX_Form
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
+    
+    /**
+     * Create a SELECT / dropdown element of all meetings indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'meeting_id' )
+    {
+        $e = new Zend_Form_Element_Select( $name );
+    
+        $maxId = self::populateSelectFromDatabase( $e, '\\Entities\\Meeting', 'id', 'title', 'title', 'ASC' );
+    
+        $e->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Meeting' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a meeting' ) ) );
+    
+        return $e;
+    }
+    
 }
