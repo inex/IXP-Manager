@@ -117,7 +117,7 @@ class INEX_Form_Meeting extends INEX_Form
     {
         $e = new Zend_Form_Element_Select( $name );
     
-        $maxId = self::populateSelectFromDatabase( $e, '\\Entities\\Meeting', 'id', 'title', 'title', 'ASC' );
+        $maxId = self::populateSelectFromDatabase( $e, '\\Entities\\Meeting', 'id', [ 'title' => [ 'type' => 'STRING' ], 'date' => [ 'type' => 'DATE', 'format' => 'Y-m-d' ] ], 'title', 'ASC' );
     
         $e->setRegisterInArrayValidator( true )
             ->setRequired( true )

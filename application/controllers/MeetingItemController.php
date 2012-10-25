@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,7 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 /**
  * Controller: Manage meeting presentations
  *
@@ -33,132 +32,89 @@
  */
 class MeetingItemController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'date';
-        $this->frontend['model']           = 'MeetingItem';
-        $this->frontend['name']            = 'MeetingItem';
-        $this->frontend['pageTitle']       = 'Meeting Item';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array(
-                'id', 'meeting_id', 'title', 'name', 'company'
-            ),
-
-            'viewPanelRows'  => array( 'meeting_id', 'title', 'name', 'role', 'email',
-                'company', 'company_url', 'summary', 'presentation', 'video_url', 'other_content',
-                'created_by', 'created_at', 'updated_by', 'updated_at'
-            ),
-
-            'viewPanelTitle' => 'title',
-
-	        'sortDefaults' => array(
-	            'column' => 'meeting_id', 'order' => 'desc'
-	        ),
-            
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'meeting_id' => array(
-                'type' => 'hasOne',
-                'model' => 'Meeting',
-                'controller' => 'meeting',
-                'field' => 'date',
-                'label' => 'Meeting&nbsp;Date',
-                'sortable' => true
-            ),
-
-            'title' => array(
-                'label' => 'Title',
-                'sortable' => false
-            ),
-
-            'name' => array(
-                'label' => 'Name',
-                'sortable' => false
-            ),
-
-            'role' => array(
-                'label' => 'Role',
-                'sortable' => false
-            ),
-
-            'email' => array(
-                'label' => 'E-Mail',
-                'sortable' => false
-            ),
-
-            'company' => array(
-                'label' => 'Company',
-                'sortable' => false
-            ),
-
-            'company' => array(
-                'label' => 'Company URL',
-                'sortable' => false
-            ),
-
-            'summary' => array(
-                'label' => 'Summary',
-                'sortable' => false
-            ),
-
-            'presentation' => array(
-                'label' => 'Presentation',
-                'sortable' => false
-            ),
-
-            'video_url' => array(
-                'label' => 'Video',
-                'sortable' => false
-            ),
-
-            'other_content' => array(
-                'label' => 'Other Content?',
-                'sortable' => true
-            ),
-
-            'created_by' => array(
-                'type' => 'hasOne',
-                'model' => 'User',
-                'controller' => 'user',
-                'field' => 'username',
-                'label' => 'Created By',
-                'sortable' => true
-            ),
-
-            'created_at' => array(
-                'label' => 'Created At'
-            ),
-
-            'updated_by' => array(
-                'type' => 'hasOne',
-                'model' => 'User',
-                'controller' => 'user',
-                'field' => 'username',
-                'label' => 'Updated By',
-                'sortable' => true
-            ),
-
-            'updated_at' => array(
-                'label' => 'Created At'
-            )
-
-
-        );
-
-        // Override global auth level requirement for specific actions
-        $this->frontend['authLevels'] = array(
-            'get-presentation' => User::AUTH_CUSTUSER
-        );
-
-        parent::feInit();
-
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\MeetingItem',
+            'form'          => 'INEX_Form_Meeting_Item',
+            'pagetitle'     => 'Presentations',
+        
+            'titleSingular' => 'Presentation',
+            'nameSingular'  => 'a presentation',
+        
+            'listOrderBy'    => 'name',
+            'listOrderByDir' => 'DESC'
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id'        => [ 'title' => 'UID', 'display' => false ],
+                    'title'     => 'Title',
+                    'name'      => 'Name',
+                    'company'   => 'Company',
+                    
+                    'mtitle'  => [
+                        'title'      => 'Meeting',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'meeting',
+                        'action'     => 'view',
+                        'idField'    => 'mid'
+                    ]
+                ];
+                $this->_feParams->defaultAction = 'list';
+                break;
+    
+            case \Entities\User::AUTH_CUSTUSER:
+                $this->_feParams->allowedActions = [ 'get-presentation' ];
+                break;
+    
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+                break;
+        }
     }
 
+
+    /**
+     * Provide array of presentations
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $this->view->meetings = $meetings = $this->getD2EM()->getRepository( '\\Entities\\Meeting' )->getTitles();
+        
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'mi.id AS id, mi.title AS title, mi.name AS name, mi.role AS role,
+                        mi.email AS email, mi.company AS company, mi.company_url AS company_url,
+                        mi.summary AS summary, mi.presentation AS presentation, mi.filename AS filename,
+                        mi.created_by AS created_by, mi.created_at AS created_at,
+                        mi.updated_by AS updated_by, mi.updated_at AS updated_at,
+                        m.id AS mid, m.title AS mtitle'
+        )
+        ->from( '\\Entities\\MeetingItem', 'mi' )
+        ->leftJoin( 'mi.Meeting', 'm' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'mi.id = ?1' )->setParameter( 1, $id );
+    
+        if( ( $mid = $this->getParam( 'mid', false ) ) && isset( $meetings[$mid] ) )
+        {
+            $this->view->mid = $mid;
+            $qb->where( 'm.id = ?2' )->setParameter( 2, $mid );
+        }
+        
+        return $qb->getQuery()->getResult();
+    }
+    
     /**
      * Return the presentation file
      */
@@ -208,109 +164,143 @@ class MeetingItemController extends INEX_Controller_FrontEnd
         echo @file_get_contents( $file );
     }
 
-    /**
-     * Before we save, set the created by field.
-     *
-     * @param unknown_type $log The Change Log object
-     * @param unknown_type $isEdit True if the log is being edited, flase if it's being added
-     * @param unknown_type $form The submitted form object
-     */
-    protected function addEditPreSave( $row, $isEdit, $form )
-    {
-        $row['updated_by'] = $this->user;
 
+    /**
+     *
+     * @param INEX_Form_Meeting_Item $form
+     * @param \Entities\MeetingItem $object
+     * @param bool $isEdit
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+    {
+        if( $isEdit )
+            $form->getElement( 'meeting_id' )->setValue( $object->getMeeting()->getId() );
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Meeting_Item $form
+     * @param \Entities\MeetingItem $object
+     * @param bool $isEdit
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        $object->setMeeting(
+            $this->getD2EM()->getRepository( '\\Entities\\Meeting' )->find( $form->getElement( 'meeting_id' )->getValue() )
+        );
+    
+        return true;
+    }
+    
+    /**
+     *
+     * @param INEX_Form_Meeting_Item $form
+     * @param \Entities\MeetingItem $object
+     * @param bool $isEdit
+     */
+    protected function addPreFlush( $form, $object, $isEdit )
+    {
+        $object->setUpdatedBy( $this->getUser()->getId() );
+        $object->setUpdatedAt( new DateTime() );
+        
         if( !$isEdit )
-            $row['created_by'] = $this->user;
+        {
+            $object->setCreatedBy( $this->getUser()->getId() );
+            $object->setCreatedAt( new DateTime() );
+        }
 
         // is there a file upload?
         if( $form->getValue( 'presentation' ) != '' )
         {
             // lets make more memory available for large files
-            ini_set( 'memory_limit', '128M' );
+            ini_set( 'memory_limit', '512M' );
 
             $this->getLogger()->debug( 'Received upload of file: ' . $form->getValue( 'presentation' ) );
 
             // Zend sticks the original filename in the form variable
-            $row['filename'] = $form->getValue( 'presentation' );
-
-            // We're going to store presentations in the var directory under meetings.
-
-            $root = APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-                    . 'var' . DIRECTORY_SEPARATOR . 'meetings';
+            $object->setFilename( $form->getValue( 'presentation' ) );
 
             // make sure meetings exists
-            if( !is_dir( $root ) && !@mkdir( $root ) )
+            if( !is_dir( self::getMeetingsDirectory() ) && !@mkdir( self::getMeetingsDirectory() ) )
             {
                 $this->getLogger()->crit( 'Could not create presentations directory.' );
-                die( 'ERROR: Could not create the presentations root directory.' );
+                throw new INEX_Exception( 'Presentations directory does not exist and could not be created.' );
             }
 
             // now, create a directory for this meeting if it does not already exists
-            $meeting_dir = $root . DIRECTORY_SEPARATOR . $row['meeting_id'];
+            $meeting_dir = self::getMeetingsDirectory() . DIRECTORY_SEPARATOR . $object->getMeeting()->getId();
 
             if( !is_dir( $meeting_dir ) && !@mkdir( $meeting_dir ) )
             {
-                $this->getLogger()->crit( 'Could not create meetings directory.' );
-                die( 'ERROR: Could not create presentations directory.' );
+                $this->getLogger()->crit( 'Could not create meeting directory.' );
+                throw new INEX_Exception( 'Meeting directory does not exist and could not be created.' );
             }
 
             // get the extension for this presentation
 
-            if( strrpos( $row['filename'], '.' ) === false )
+            if( strrpos( $object->getFilename(), '.' ) === false )
                 $exten = '';
             else
-                $exten = substr( $row['filename'], strrpos( $row['filename'], '.' ) );
+                $exten = substr( $object->getFilename(), strrpos( $object->getFilename(), '.' ) );
 
             // we need the row ID so we'll do a save
-            $row->save();
-
-            $row['presentation'] = $row['id'] . $exten;
-            $this->getLogger()->debug( 'Uploaded file will be saved as: ' . $row['presentation'] );
+            if( !$isEdit )
+                $this->getD2EM()->persist( $object );
+            $this->getD2EM()->flush();
+            
+            $object->setPresentation( $object->getId() . $exten );
+            $this->getLogger()->debug( 'Uploaded file will be saved as: ' . $object->getPresentation() );
 
             // delete an existing file in case we're updating
-            if( file_exists( $meeting_dir . DIRECTORY_SEPARATOR . $row['presentation'] ) )
+            $ePres = $meeting_dir . DIRECTORY_SEPARATOR . $object->getPresentation();
+            if( @file_exists( $ePres ) )
             {
                 $this->getLogger()->debug( 'Pre-existing file exists so deleteing' );
-                @unlink( $meeting_dir . DIRECTORY_SEPARATOR . $row['presentation'] );
+                @unlink( $ePres );
             }
 
-            @rename( $form->presentation->getFilename(), $meeting_dir . DIRECTORY_SEPARATOR . $row['presentation'] );
+            @rename( $form->getElement( 'presentation' )->getFilename(), $ePres );
         }
+        
+        return true;
     }
 
     /**
      * Before deleting a meeting, delete meeting items.
+     *
+     * @param \Entities\MeetingItem $object
      */
-    protected function preDelete( $object = null )
+    protected function preDelete( $object )
     {
-        Doctrine_Core::getTable( 'MeetingItem' )->findByMeetingId(
-                $object['id']
-        )->delete();
+        // if a presentation exists, remove it
+        $dir = self::getMeetingsDirectory() . DIRECTORY_SEPARATOR . $object->getMeeting()->getId();
+        
+        $file = $dir . DIRECTORY_SEPARATOR . $object->getPresentation();
+        
+        if( file_exists( $file ) )
+            @unlink( $file );
+        
+        // remove the directory also if it is empty
+        if( count( @scandir( $dir ) ) == 2 )
+            @rmdir( $dir );
+        
+        return true;
     }
-
-
+    
+    
     /**
-     * Add a filter to the list
+     * Return the path where meeting presentations are stored
+     * @return string The path where meeting presentations are stored
      */
-    protected function _preList( $dataQuery )
+    public static function getMeetingsDirectory()
     {
-        // assign the filterable items to the view
-        $this->view->entries  = Doctrine_Query::create()
-            ->select( 'm.id, m.title, m.date' )
-            ->from( 'Meeting m' )
-            ->orderBy( 'm.date DESC' )
-            ->execute( null, Doctrine_Core::HYDRATE_ARRAY );
-
-        // did the user specify a specific meeting?
-        if( ( $id = $this->_request->getParam( 'meeting_id', 0 ) ) )
-        {
-            $dataQuery->leftJoin( 'x.Meeting m' )
-                ->andWhere( 'm.id = ?', $id );
-
-            $this->view->filter_id = $id;
-        }
-
-        return $dataQuery;
+        // We're going to store presentations in the var directory under meetings.
+        return APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                . 'var' . DIRECTORY_SEPARATOR . 'meetings';
     }
 }
-

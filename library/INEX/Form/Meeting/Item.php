@@ -31,16 +31,18 @@
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class INEX_Form_MeetingItem extends INEX_Form
+class INEX_Form_Meeting_Item extends INEX_Form
 {
     public function init()
     {
         $this->addElement( INEX_Form_Meeting::getPopulatedSelect( 'meeting_id' ) );
-
+        $this->getElement( 'meeting_id' )->setAttrib( 'class', 'chzn-select span6' );
+        
         $title = $this->createElement( 'text', 'title', array( 'size' => '100' ) );
         $title->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Title' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $title );
@@ -48,6 +50,7 @@ class INEX_Form_MeetingItem extends INEX_Form
         $name = $this->createElement( 'text', 'name', array( 'size' => '100' ) );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
+            ->setAttrib( 'class', 'span6' )
             ->setLabel( 'Name' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -56,6 +59,7 @@ class INEX_Form_MeetingItem extends INEX_Form
         $role = $this->createElement( 'text', 'role', array( 'size' => '100' ) );
         $role->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
             ->setLabel( 'Role' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -65,6 +69,7 @@ class INEX_Form_MeetingItem extends INEX_Form
         $email->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( false )
             ->setLabel( 'E-Mail' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $email );
@@ -73,6 +78,7 @@ class INEX_Form_MeetingItem extends INEX_Form
         $company->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Company' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $company );
@@ -81,6 +87,7 @@ class INEX_Form_MeetingItem extends INEX_Form
         $company_url->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( false )
             ->setLabel( 'Company URL' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $company_url );
@@ -91,12 +98,13 @@ class INEX_Form_MeetingItem extends INEX_Form
             ->setRequired( false )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() )
-            ->setAttrib( 'cols', 100 )
+            ->setAttrib( 'class', 'span6' )
             ->setAttrib( 'rows', 10 );
         $this->addElement( $summary );
 
         $presentation = $this->createElement( 'file', 'presentation' );
         $presentation->setLabel( 'Attach Presentation' )
+            ->setAttrib( 'class', 'span6' )
             ->setRequired( false );
         $this->addElement( $presentation );
 
@@ -104,6 +112,7 @@ class INEX_Form_MeetingItem extends INEX_Form
         $video_url->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( false )
             ->setLabel( 'Video' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $video_url );

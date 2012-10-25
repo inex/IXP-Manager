@@ -418,29 +418,6 @@ class MeetingItem
     }
 
     /**
-     * Set updated_ar
-     *
-     * @param \DateTime $updatedAr
-     * @return MeetingItem
-     */
-    public function setUpdatedAr($updatedAr)
-    {
-        $this->updated_ar = $updatedAr;
-    
-        return $this;
-    }
-
-    /**
-     * Get updated_ar
-     *
-     * @return \DateTime 
-     */
-    public function getUpdatedAr()
-    {
-        return $this->updated_ar;
-    }
-
-    /**
      * Get id
      *
      * @return integer 
