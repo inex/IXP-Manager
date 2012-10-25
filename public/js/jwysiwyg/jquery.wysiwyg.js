@@ -674,10 +674,10 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 				element = element.childNodes[range.startOffset];
 			}
 			
-			if(!element.tagName && (element.previousSibiling || element.nextSibling)) {
-				if(element.previousSibiling) {
-					if(element.previousSibiling.tagName.toLowerCase() == filterTagName) {
-						return element.previousSibiling;
+			if(!element.tagName && (element.previousSibling || element.nextSibling)) {
+				if(element.previousSibling) {
+					if(element.previousSibling.tagName.toLowerCase() == filterTagName) {
+						return element.previousSibling;
 					}
 				}	
 				if(element.nextSibling) {
@@ -1285,7 +1285,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 				this.editor.css({
 					minHeight: (newY - 6).toString() + "px",
 					// fix for issue 12 ( http://github.com/akzhan/jwysiwyg/issues/issue/12 )
-					width: (newX > 50) ? (newX - 8).toString() + "px" : ""
+					width: (newX > 50) ? newX.toString() + "px" : ""
 				});
 				if ($.browser.msie && parseInt($.browser.version, 10) < 7) {
 					this.editor.css("height", newY.toString() + "px");
@@ -1388,8 +1388,8 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
                     if (range) {
                         offset = {
                             range: range,
-                            parent: $.browser.msie ? range.parentElement() : range.endContainer.parentNode,
-                            width: ($.browser.msie ? range.boundingWidth : range.startOffset - range.endOffset) || 0
+                            parent: "endContainer" in range ? range.endContainer.parentNode : range.parentElement(),
+                            width: ("startOffset" in range ? (range.startOffset - range.endOffset) : range.boundingWidth) || 0
                         };
                     }
                 }
@@ -1402,9 +1402,10 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
             
 			/**
 			 * @link http://code.google.com/p/jwysiwyg/issues/detail?id=20
+			 * @link https://github.com/akzhan/jwysiwyg/issues/330
 			 */
 			$(self.original).focus(function () {
-				if ($(this).filter(":visible").length === 0) {
+				if ($(this).filter(":visible").length === 0 || $.browser.opera) {
 					return;
 				}
 				self.ui.focus();
@@ -1423,34 +1424,70 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
                 self.editorDoc.rememberCommand = false;
 				return true;
 			});
-
+			
 			if (!$.browser.msie) {
 				$(self.editorDoc).keydown(function (event) {
 					var controlName;
+                    			var control;
 
 					/* Meta for Macs. tom@punkave.com */
 					if (event.ctrlKey || event.metaKey) {
-						for (controlName in self.controls) {
-							if (self.controls[controlName].hotkey && self.controls[controlName].hotkey.ctrl) {
-								if (event.keyCode === self.controls[controlName].hotkey.key) {
-									self.triggerControl.apply(self, [controlName, self.controls[controlName]]);
+						for (controlName in self.options.controls) {
+                            				control = self.options.controls[controlName];
+							if (control.hotkey && control.hotkey.ctrl) {
+								if (event.keyCode === control.hotkey.key) {
+									self.triggerControl.apply(self, [controlName, control]);
 
 									return false;
 								}
 							}
 						}
 					}
-
 					return true;
 				});
-			} else if (self.options.brIE) {
+			} 
+			
+			if (self.options.brIE) {
 				$(self.editorDoc).keydown(function (event) {
 					if (event.keyCode === 13) {
-						var rng = self.getRange();
-						rng.pasteHTML("<br/>");
-						rng.collapse(false);
-						rng.select();
+						
+						if ($.browser.msie || $.browser.opera) {
+							var rng = self.getRange();
+							if (rng) {
+								rng.pasteHTML("<br/>");
+								rng.collapse(false);
+								rng.select();
+							} else {
+								self.insertHtml('<br/>');
+							}						
+						} else {
+							var sel = self.editorDoc.getSelection();
+							if (sel && sel.getRangeAt && sel.rangeCount) {
+								var range = sel.getRangeAt(0);
+								if (!range)
+									return true;
+								range.deleteContents();
 
+								var el = document.createElement("div");
+								el.innerHTML = "<br/>";
+								var frag = document.createDocumentFragment(), node, lastNode;
+								while ( (node = el.firstChild) ) {
+									lastNode = frag.appendChild(node);
+								}
+								range.insertNode(frag);
+
+								// Preserve the selection
+								if (lastNode) {
+									range = range.cloneRange();
+									range.setStartAfter(lastNode);
+									range.collapse(true);
+									sel.removeAllRanges();
+									sel.addRange(range);
+								}
+							} else
+								return true;
+
+						}
 						return false;
 					}
 
@@ -1758,7 +1795,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 					content = newContent.html();
 				}
 
-				$(this.original).val(content);
+				$(this.original).val(content).change();
 
 				if (this.options.events && this.options.events.save) {
 					this.options.events.save.call(this);
@@ -1820,15 +1857,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 		};
 
 		this.wrapInitialContent = function () {
-			var content = this.initialContent,
-				found = content.match(/<\/?p>/gi);
-
-			if (!found) {
-				return "<p>" + content + "</p>";
-			} else {
-				// :TODO: checking/replacing
-			}
-
+			var content = this.initialContent;
 			return content;
 		};
 	}
@@ -2231,7 +2260,8 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 			obj.destroy.apply(that, []);
 			
 			$that.trigger("afterClose", [$dialog]);
-			
+
+			jWysiwyg.ui.focus();
 		};
 
 		if (this.options.open) {
