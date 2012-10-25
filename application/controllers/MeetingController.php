@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,122 +33,156 @@
  */
 class MeetingController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'date';
-        $this->frontend['model']           = 'Meeting';
-        $this->frontend['name']            = 'Meeting';
-        $this->frontend['pageTitle']       = 'Meetings';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array(
-                'id', 'title', 'date', 'time', 'created_by', 'created_at'
-            ),
-
-            'viewPanelRows'  => array( 'title', 'before_text', 'after_text', 'date', 'time', 'venue', 'venue_url', 'created_by', 'created_at', 'updated_by', 'updated_at' ),
-
-            'viewPanelTitle' => 'title',
-
-            'sortDefaults' => array(
-                'column' => 'date', 'order' => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'title' => array(
-                'label' => 'Title',
-                'sortable' => false
-            ),
-
-            'date' => array(
-                'label' => 'Date',
-                'sortable' => true
-            ),
-
-            'time' => array(
-                'label' => 'Time',
-                'sortable' => false
-            ),
-
-            'venue' => array(
-                'label' => 'Venue',
-                'sortable' => true
-            ),
-
-            'venue_url' => array(
-                'label' => 'Venue URL',
-                'sortable' => false
-            ),
-
-            'before_text' => array(
-                'label' => 'Preamble'
-            ),
-
-            'after_text' => array(
-                'label' => 'Postamble'
-            ),
-
-            'created_by' => array(
-                'type' => 'hasOne',
-                'model' => 'User',
-                'controller' => 'user',
-                'field' => 'username',
-                'label' => 'Created By',
-                'sortable' => true
-            ),
-
-            'created_at' => array(
-                'label' => 'Created At'
-            ),
-
-            'updated_by' => array(
-                'type' => 'hasOne',
-                'model' => 'User',
-                'controller' => 'user',
-                'field' => 'username',
-                'label' => 'Updated By',
-                'sortable' => true
-            ),
-
-            'updated_at' => array(
-                'label' => 'Created At'
-            )
-
-
-        );
-
-        // Override global auth level requirement for specific actions
-        $this->frontend['authLevels'] = array(
-            'read'   => User::AUTH_CUSTUSER,
-            'rsvp'   => User::AUTH_CUSTUSER,
-            'simple' => User::AUTH_PUBLIC
-        );
-
-        parent::feInit();
-
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\Meeting',
+            'form'          => 'INEX_Form_Meeting',
+            'pagetitle'     => 'Meetings',
+        
+            'titleSingular' => 'Meeting',
+            'nameSingular'  => 'a meeting',
+        
+            'listOrderBy'    => 'date',
+            'listOrderByDir' => 'DESC'
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id'        => [ 'title' => 'UID', 'display' => false ],
+                    
+                    'title'     => 'Title',
+        
+                    'date'      => [
+                        'title'     => 'Date',
+                        'type'      => self::$FE_COL_TYPES[ 'DATE' ]
+                    ],
+                    
+                    'time'      => [
+                        'title'     => 'Time',
+                        'type'      => self::$FE_COL_TYPES[ 'TIME' ]
+                    ],
+                    
+                    'created_by'  => [
+                        'title'      => 'Created By',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'userid'
+                    ]
+                ];
+    
+                $this->_feParams->defaultAction = 'list';
+                break;
+    
+            case \Entities\User::AUTH_CUSTUSER:
+                $this->_feParams->allowedActions = [ 'read', 'rsvp' ];
+                $this->_feParams->defaultAction = 'read';
+                break;
+    
+            default:
+                $this->_feParams->allowedActions = [ 'simple' ];
+                $this->_feParams->defaultAction = 'simple';
+                break;
+        }
     }
-
+    
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'm.id AS id, m.title AS title, m.date AS date, m.time AS time,
+                        m.before_text AS before_text, m.after_text AS after_text,
+                        m.venue AS venue, m.venue_url AS venue_url, m.created_at AS created_at,
+                        m.updated_at AS updated_at,
+                        u.id AS userid, u.username AS created_by'
+            )
+            ->from( '\\Entities\\Meeting', 'm' )
+            ->leftJoin( 'm.CreatedBy', 'u' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'm.id = ?1' )->setParameter( 1, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
 
     /**
-     * Before we save, set the created by field.
+     * Preparation hook that can be overridden by subclasses for add and edit.
      *
-     * @param unknown_type $log The Change Log object
-     * @param unknown_type $isEdit True if the log is being edited, flase if it's being added
-     * @param unknown_type $form The submitted form object
+     * This is called just before we process a possible POST / submission and
+     * will allow us to change / alter the form or object.
+     *
+     * @param INEX_Form_Meeting $form The Send form object
+     * @param \Entities\Meeting $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
      */
-    protected function addEditPreSave( $row, $isEdit, $form )
+    protected function addPrepare( $form, $object, $isEdit )
     {
-        $row['updated_by'] = $this->user;
-
-        if( !$isEdit )
-            $row['created_by'] = $this->user;
+        if( $isEdit )
+        {
+            $form->getElement( 'date' )->setValue( $object->getDate()->format( 'Y-m-d' ) );
+            $form->getElement( 'time' )->setValue( $object->getTime()->format( 'H:i' ) );
+        }
+        
+        return true;
     }
-
-
+    
+    /**
+     *
+     * @param INEX_Form_Meeting $form The form object
+     * @param \Entities\Meeting $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        $object->setUpdatedBy( $this->getUser()->getId() );
+        $object->setUpdatedAt( new DateTime() );
+        
+        if( !$isEdit )
+        {
+            $object->setCreatedBy( $this->getUser() );
+            $object->setCreatedAt( new DateTime() );
+        }
+            
+        return true;
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Meeting $form The form object
+     * @param \Entities\Meeting $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not processed
+     */
+    protected function addPreFlush( $form, $object, $isEdit )
+    {
+    
+        if( !( $object->getDate() instanceof DateTime ) )
+            $object->setDate( new DateTime( $form->getValue( 'date' ) ) );
+    
+        if( !( $object->getTime() instanceof DateTime ) )
+            $object->setTime( new DateTime( $form->getValue( 'time' ) ) );
+    
+        return true;
+    }
+    
+    
     public function readAction()
     {
         $entries = Doctrine_Query::create()
