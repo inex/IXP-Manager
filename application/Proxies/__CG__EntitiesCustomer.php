@@ -711,46 +711,10 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::isTypeProBono();
     }
 
-    public function addMeeting(\Entities\Meeting $meetings)
-    {
-        $this->__load();
-        return parent::addMeeting($meetings);
-    }
-
-    public function removeMeeting(\Entities\Meeting $meetings)
-    {
-        $this->__load();
-        return parent::removeMeeting($meetings);
-    }
-
-    public function getMeetings()
-    {
-        $this->__load();
-        return parent::getMeetings();
-    }
-
-    public function addMeetingsUpdated(\Entities\Meeting $meetingsUpdated)
-    {
-        $this->__load();
-        return parent::addMeetingsUpdated($meetingsUpdated);
-    }
-
-    public function removeMeetingsUpdated(\Entities\Meeting $meetingsUpdated)
-    {
-        $this->__load();
-        return parent::removeMeetingsUpdated($meetingsUpdated);
-    }
-
-    public function getMeetingsUpdated()
-    {
-        $this->__load();
-        return parent::getMeetingsUpdated();
-    }
-
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'irrdb', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'notes', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Meetings', 'MeetingsUpdated', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSDroppedPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'irrdb', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'notes', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSDroppedPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents');
     }
 
     public function __clone()

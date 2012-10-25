@@ -138,16 +138,16 @@ class Meeting extends \Entities\Meeting implements \Doctrine\ORM\Proxy\Proxy
         return parent::getCreatedAt();
     }
 
-    public function setCreatedBy($createdBy)
+    public function setUpdatedBy($updatedBy)
     {
         $this->__load();
-        return parent::setCreatedBy($createdBy);
+        return parent::setUpdatedBy($updatedBy);
     }
 
-    public function getCreatedBy()
+    public function getUpdatedBy()
     {
         $this->__load();
-        return parent::getCreatedBy();
+        return parent::getUpdatedBy();
     }
 
     public function setUpdatedAt($updatedAt)
@@ -160,18 +160,6 @@ class Meeting extends \Entities\Meeting implements \Doctrine\ORM\Proxy\Proxy
     {
         $this->__load();
         return parent::getUpdatedAt();
-    }
-
-    public function setUpdatedBy($updatedBy)
-    {
-        $this->__load();
-        return parent::setUpdatedBy($updatedBy);
-    }
-
-    public function getUpdatedBy()
-    {
-        $this->__load();
-        return parent::getUpdatedBy();
     }
 
     public function getId()
@@ -201,10 +189,22 @@ class Meeting extends \Entities\Meeting implements \Doctrine\ORM\Proxy\Proxy
         return parent::getMeetingItems();
     }
 
+    public function setCreatedBy(\Entities\User $createdBy = NULL)
+    {
+        $this->__load();
+        return parent::setCreatedBy($createdBy);
+    }
+
+    public function getCreatedBy()
+    {
+        $this->__load();
+        return parent::getCreatedBy();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'title', 'before_text', 'after_text', 'date', 'time', 'venue', 'venue_url', 'created_at', 'updated_at', 'id', 'MeetingItems', 'CreatedBy', 'UpdatedBy');
+        return array('__isInitialized__', 'title', 'before_text', 'after_text', 'date', 'time', 'venue', 'venue_url', 'created_at', 'updated_by', 'updated_at', 'id', 'MeetingItems', 'CreatedBy');
     }
 
     public function __clone()

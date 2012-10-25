@@ -285,6 +285,24 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::setParent($parent);
     }
 
+    public function addMeeting(\Entities\Meeting $meetings)
+    {
+        $this->__load();
+        return parent::addMeeting($meetings);
+    }
+
+    public function removeMeeting(\Entities\Meeting $meetings)
+    {
+        $this->__load();
+        return parent::removeMeeting($meetings);
+    }
+
+    public function getMeetings()
+    {
+        $this->__load();
+        return parent::getMeetings();
+    }
+
     public function loadPreference($attribute, $index = 0, $includeExpired = false)
     {
         $this->__load();
@@ -360,7 +378,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Children', 'Preferences', 'ChangeLogs', 'Customer', 'Parent');
+        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Meetings', 'Children', 'Preferences', 'ChangeLogs', 'Customer', 'Parent');
     }
 
     public function __clone()
