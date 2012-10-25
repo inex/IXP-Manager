@@ -1,6 +1,6 @@
-{include file="header.tpl"}
+{tmplinclude file="header.phtml"}
 
-{if $user.privs eq 3}
+{if $user->getPrivs() eq USER::AUTH_SUPERUSER}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -20,7 +20,7 @@
         </div>
 {/if}
 
-{include file="message.tpl"}
+{OSS_Message}
 
 <div class="meetings_index">
     <p>
@@ -34,7 +34,7 @@
         
                 <option></option>
                 {foreach from=$entries item=e}
-                    <option value="#{$e.id}">{$e.date|date_format:"%A, %B %e, %Y"}</option>
+                    <option value="#{$e->getId()}">{$e->getDate()->format( "Y-m-d" )}</option>
                 {/foreach}
         
             </select>
@@ -43,7 +43,7 @@
 </div>
 
 
-{include file='meeting/core.tpl'}
+{tmplinclude file='meeting/core.phtml'}
 
 
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}

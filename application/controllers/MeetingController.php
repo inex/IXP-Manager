@@ -185,15 +185,12 @@ class MeetingController extends INEX_Controller_FrontEnd
     
     public function readAction()
     {
-        $entries = Doctrine_Query::create()
-            ->from( 'Meeting m' )
-            ->leftJoin( 'm.MeetingItem mi' )
-            ->orderBy( 'm.date DESC, mi.other_content ASC' )
-            ->execute( null, Doctrine_Core::HYDRATE_ARRAY );
+        $this->view->entries = $this->getD2EM()->createQuery(
+                'SELECT m, mi FROM \\Entities\\Meeting m LEFT JOIN m.MeetingItems mi ORDER BY m.date DESC, mi.other_content ASC'
+            )
+            ->execute();
 
-        $this->view->entries = $entries;
         $this->view->simple  = false;
-        $this->view->display( 'meeting/meetings.tpl' );
     }
 
     /**

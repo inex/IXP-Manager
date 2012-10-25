@@ -120,48 +120,47 @@ class MeetingItemController extends INEX_Controller_FrontEnd
      */
     protected function getPresentationAction()
     {
-        if( !( $pres = Doctrine_Core::getTable( 'MeetingItem' )->find( $this->_request->getParam( 'id', null ) ) ) )
+        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+        
+        if( !( $pres = $this->getD2EM()->getRepository( '\\Entities\\MeetingItem' )->find( $this->getParam( 'id', null ) ) ) )
         {
-            $this->session->message = new INEX_Message(
-                'The request presentation does not exist or does not have an associated file attached to it.',
-                INEX_Message::MESSAGE_TYPE_ERROR
+            $this->addMessage(
+                'The requested presentation does not exist or does not have an associated file attached to it.',
+                OSS_Message::ERROR
             );
-            $this->_redirect( 'meeting/read' );
+            $this->redirect( 'meeting/read' );
         }
 
-        $fn = "INEX_Members_Meeting_" . $pres['Meeting']['date'] . "_(" . $pres['id'] . ').';
+        $fn = "INEX_Members_Meeting_{$pres->getMeeting()->getDate()}_({$pres->getId()}).";
 
         // What kind of file do we have?
-        if( preg_match( '/pdf$/i', $pres['filename'] ) ) {
+        if( preg_match( '/pdf$/i', $pres->getFilename() ) ) {
             header('Content-type: application/pdf');
             $fn .= 'pdf';
         }
-        else if( preg_match( '/ppt$/i', $pres['filename'] ) ) {
+        else if( preg_match( '/ppt$/i', $pres->getFilename() ) ) {
             header('Content-type: application/vnd.ms-powerpoint');
             $fn .= 'ppt';
         }
-        else if( preg_match( '/pps$/i', $pres['filename'] ) ) {
+        else if( preg_match( '/pps$/i', $pres->getFilename() ) ) {
             header('Content-type: application/vnd.ms-powerpoint');
             $fn .= 'pps';
         }
-        else if( preg_match( '/pptx$/i', $pres['filename'] ) ) {
+        else if( preg_match( '/pptx$/i', $pres->getFilename() ) ) {
             header( 'Content-type: application/vnd.ms-powerpoint' );
             $fn .= 'pptx';
         }
         else {
             header( 'Content-type: application/octet-stream' );
-            $fn .= substr( $pres['filename'], strrpos( $pres['filename'], '.' ) );
+            $fn .= substr( $pres->getFilename(), strrpos( $pres->getFilename(), '.' ) );
         }
 
 
-        // It will be called downloaded.pdf
-        header('Content-Disposition: attachment; filename="' . $fn . '"');
+        header( 'Content-Disposition: attachment; filename="' . $fn . '"' );
 
-        $file = APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-                    . 'var' . DIRECTORY_SEPARATOR . 'meetings' . DIRECTORY_SEPARATOR
-                    . $pres['meeting_id'] . DIRECTORY_SEPARATOR . $pres['presentation'];
-
-        echo @file_get_contents( $file );
+        echo @file_get_contents( self::getMeetingsDirectory() . DIRECTORY_SEPARATOR
+                . $pres->getMeeting()->getId() . DIRECTORY_SEPARATOR . $pres->getPresentation()
+        );
     }
 
 
