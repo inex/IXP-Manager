@@ -377,4 +377,15 @@ class Meeting
     {
         return $this->MeetingItems;
     }
+    /**
+     * @var Entities\Customer
+     */
+    private $CreatedBy;
+
+    /**
+     * @var Entities\Customer
+     */
+    private $UpdatedBy;
+
+
 }

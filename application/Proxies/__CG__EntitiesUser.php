@@ -327,6 +327,12 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::deletePreference($attribute, $index);
     }
 
+    public function expungePreferences()
+    {
+        $this->__load();
+        return parent::expungePreferences();
+    }
+
     public function getIndexedPreference($attribute, $withIndex = false, $ignoreExpired = true)
     {
         $this->__load();

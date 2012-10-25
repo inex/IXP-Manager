@@ -12,9 +12,17 @@
     <field name="venue" type="string" length="255" nullable="true"/>
     <field name="venue_url" type="string" length="255" nullable="true"/>
     <field name="created_at" type="datetime" nullable="true"/>
-    <field name="created_by" type="integer" nullable="true"/>
     <field name="updated_at" type="datetime" nullable="true"/>
-    <field name="updated_by" type="integer" nullable="true"/>
+    <many-to-one field="CreatedBy" target-entity="Entities\Customer" inversed-by="Meetings">
+      <join-columns>
+        <join-column name="created_by" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="UpdatedBy" target-entity="Entities\Customer" inversed-by="MeetingsUpdated">
+      <join-columns>
+        <join-column name="updated_by" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
     <one-to-many field="MeetingItems" target-entity="Entities\MeetingItem" mapped-by="Meeting"/>
   </entity>
 </doctrine-mapping>

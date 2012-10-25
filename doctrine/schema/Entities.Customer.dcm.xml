@@ -38,6 +38,8 @@
     <one-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Customer"/>
     <one-to-many field="ConsoleServerConnections" target-entity="Entities\ConsoleServerConnection" mapped-by="Customer"/>
     <one-to-many field="CustomerEquipment" target-entity="Entities\CustomerEquipment" mapped-by="Customer"/>
+    <one-to-many field="Meetings" target-entity="Entities\Meeting" mapped-by="CreatedBy"/>
+    <one-to-many field="MeetingsUpdated" target-entity="Entities\Meeting" mapped-by="UpdatedBy"/>
     <one-to-many field="Peers" target-entity="Entities\PeeringManager" mapped-by="Customer"/>
     <one-to-many field="PeersWith" target-entity="Entities\PeeringManager" mapped-by="Peer"/>
     <one-to-many field="XCusts" target-entity="Entities\PeeringMatrix" mapped-by="XCustomer"/>

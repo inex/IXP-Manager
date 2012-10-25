@@ -204,7 +204,7 @@ class Meeting extends \Entities\Meeting implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'title', 'before_text', 'after_text', 'date', 'time', 'venue', 'venue_url', 'created_at', 'created_by', 'updated_at', 'updated_by', 'id', 'MeetingItems');
+        return array('__isInitialized__', 'title', 'before_text', 'after_text', 'date', 'time', 'venue', 'venue_url', 'created_at', 'updated_at', 'id', 'MeetingItems', 'CreatedBy', 'UpdatedBy');
     }
 
     public function __clone()
