@@ -41,9 +41,9 @@ class StaticController extends INEX_Controller_Action
             $this->_requireAuth();
     }
     
-    private function _requireAuth()
+    private function _requireAuth( $priv = \Entities\User::AUTH_CUSTUSER )
     {
-        if( !$this->getAuth()->hasIdentity() )
+        if( !$this->getAuth()->hasIdentity() || $this->getUser()->getPrivs() < $priv )
         {
             if( $this->traitIsInitialised( 'OSS_Controller_Action_Trait_Messages' ) )
                 $this->addMessage( "Please login below.", OSS_Message::ERROR );
@@ -53,6 +53,8 @@ class StaticController extends INEX_Controller_Action
         
             $this->redirectAndEnsureDie( 'auth/login' );
         }
+        
+        
     }
     
     public function supportAction()
@@ -71,6 +73,11 @@ class StaticController extends INEX_Controller_Action
         $this->_requireAuth();
     }
 
+    public function meetingsInstructionsAction()
+    {
+        $this->_requireAuth();
+    }
+    
     public function miscBenefitsAction()
     {
         $this->_requireAuth();
