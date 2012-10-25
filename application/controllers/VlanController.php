@@ -42,7 +42,7 @@ class VlanController extends INEX_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Vlan',
-            'form'          => 'INEX_Form_VLAN',
+            'form'          => 'INEX_Form_Vlan',
             'pagetitle'     => 'VLANs',
         
             'titleSingular' => 'VLAN',
