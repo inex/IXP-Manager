@@ -286,33 +286,24 @@ class MeetingController extends INEX_Controller_FrontEnd
 
     public function composeAction()
     {
-        $meeting = Doctrine_Query::create()
-            ->from( 'Meeting m' )
-            ->where( 'm.id = ?', $this->_request->getParam( 'id', null ) )
-            ->leftJoin( 'm.MeetingItem mi' )
-            ->orderBy( 'm.date DESC, mi.other_content ASC' )
-            ->fetchOne( null, Doctrine_Core::HYDRATE_ARRAY );
-
+        $this->view->meeting = $meeting = $this->getD2EM()->getRepository( '\\Entities\\Meeting' )->find( $this->getParam( 'id' ) );
+        
         if( !$meeting )
         {
-            $this->session->message = new INEX_Message(
-                "Invalid meeting selected", INEX_Message::MESSAGE_TYPE_ERROR
-            );
-            return( $this->_redirect( 'meeting/list' ) );
+            $this->addMessage( "Invalid meeting selected", OSS_Message::ERROR );
+            $this->redirectAndEnsureDie( 'meeting/list' );
         }
-
-        $this->view->meeting = $meeting;
 
         do
         {
 
-	        if( $this->_getParam( 'send', 0 ) == 1 )
+	        if( $this->getParam( 'send', 0 ) == 1 )
 	        {
-                $this->view->to      = $this->_getParam( 'to' );
-                $this->view->from    = $this->_getParam( 'from' );
-                $this->view->bcc     = $this->_getParam( 'bcc' );
-                $this->view->subject = trim( stripslashes( $this->_getParam( 'subject' ) ) );
-                $this->view->body    = trim( stripslashes( $this->_getParam( 'body' ) ) );
+                $this->view->to      = $this->getParam( 'to' );
+                $this->view->from    = $this->getParam( 'from' );
+                $this->view->bcc     = $this->getParam( 'bcc' );
+                $this->view->subject = trim( stripslashes( $this->getParam( 'subject' ) ) );
+                $this->view->body    = trim( stripslashes( $this->getParam( 'body' ) ) );
 
 	            foreach( array( 'to', 'from', 'bcc' ) as $p )
 	            {
@@ -323,33 +314,29 @@ class MeetingController extends INEX_Controller_FrontEnd
 
 	                if( !Zend_Validate::is( $v, 'EmailAddress' ) )
 	                {
-	                    $this->view->message = new INEX_Message( "Invalid email address in the '$p' field",
-	                           INEX_Message::MESSAGE_TYPE_ERROR
-	                    );
+	                    $this->addMessage( "Invalid email address in the '$p' field", OSS_Message::ERROR );
 	                    break 2;
 	                }
 	            }
 
-                $mail = new Zend_Mail();
+                $mail = $this->getMailer();
                 $mail->addTo( $to );
                 $mail->setFrom( $from );
                 if( $bcc != '' ) $mail->addBcc( $bcc );
-                $mail->setSubject( trim( stripslashes( $this->_getParam( 'subject' ) ) ) );
-                $mail->setBodyHtml( $this->view->render( 'meeting/email/meeting.tpl' ), 'utf8' );
+                $mail->setSubject( trim( stripslashes( $this->getParam( 'subject' ) ) ) );
+                $mail->setBodyHtml( $this->view->render( 'meeting/email/meeting.phtml' ), 'utf8' );
 
 	            try {
 	                $mail->send();
-	                $this->view->message = new INEX_Message( "Email sent successfully", INEX_Message::MESSAGE_TYPE_SUCCESS );
+	                $this->addMessage( "Email sent successfully", OSS_Message::SUCCESS );
 	            } catch( Zend_Mail_Exception $e ) {
-                    $this->view->message = new INEX_Message( "Error: Could not send email.", INEX_Message::MESSAGE_TYPE_ERROR );
+                    $thisaddMessage( "Error: Could not send email.", OSS_Message::ERROR );
 	                $this->getLogger()->err( $e->getMessage() );
 	            }
 
 	        }
 
         }while( false );
-
-        $this->view->display( 'meeting/compose.tpl' );
     }
 
 }

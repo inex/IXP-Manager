@@ -5,8 +5,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 
 	<style>
-	{literal}
-
 		body {
 		    margin:10px;
 		}
@@ -124,7 +122,6 @@
 		    text-align: center;
 		}
 
-	{/literal}
 	</style>
 
 
@@ -139,7 +136,7 @@
 <div class="meeting content">{$body}<br /></div>
 
 <div class="meeting title">
-    <h1>{$meeting.title} &ndash; {$meeting.date|date_format:"%A, %B %e, %Y"}</h1>
+    <h1>{$meeting->getTitle()} &ndash; {$meeting.date|date_format:"%A, %B %e, %Y"}</h1>
     <h4>
         In <a href="{$meeting.venue_url}" target="_blank">{$meeting.venue}</a> at {$meeting.time|date_format:"%H:%M"}
     </h4>

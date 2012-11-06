@@ -1,18 +1,20 @@
-{include file="header.tpl" pageTitle="IXP Manager :: Member Dashboard"}
+{tmplinclude file="header.phtml"}
 
-<div class="yui-g" style="margin-bottom: 70px;">
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="meeting"}">Meetings</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Compose Email Notification
+    </li>
+</ul>
 
-<table class="adminheading" border="0">
-	<tr>
-		<th class="Meeting">INEX Members' Meetings :: Compose Mail Notification</th>
-	</tr>
-</table>
+{OSS_Message}
 
-{include file="message.tpl"}
-
-<div class="content">
-
-<h3>Composing Email for Members' Meeting of {$meeting.date|strtotime|date_format}</h3>
+<h3>Composing Email for Members' Meeting of {$meeting->getDate()->format( 'Y-m-d H:i' )}</h3>
 
 <p>
 The form below allows you to enter some <strong>pre-amble</strong> to the email detailing
@@ -26,7 +28,7 @@ When you're happy with the result, you can send it to <code>members@inex.ie</cod
 
 <div id="email_dialog">
 
-<form method="post" action="{genUrl controller=meeting action='compose' id=$meeting.id}">
+<form method="post" action="{genUrl controller="meeting" action='compose' id=$meeting->getId()}">
 
 <table border="0">
 
@@ -36,7 +38,7 @@ When you're happy with the result, you can send it to <code>members@inex.ie</cod
 	</td>
 	<td>
 	    <input id="from" type="text" name="from"
-	        value="{if isset( $from )}{$from}{else}{$user.email}{/if}" maxlength="254" size="60"
+	        value="{if isset( $from )}{$from}{else}{$user->getEmail()}{/if}" maxlength="254" size="60"
 	    />
 	</td>
 </tr>
@@ -47,7 +49,7 @@ When you're happy with the result, you can send it to <code>members@inex.ie</cod
     </td>
     <td>
         <input id="to" type="text" name="to"
-            value="{if isset( $to )}{$to}{else}{$user.email}{/if}" maxlength="254" size="60"
+            value="{if isset( $to )}{$to}{else}{$user->getEmail()}{/if}" maxlength="254" size="60"
         />
     </td>
 </tr>
@@ -58,7 +60,7 @@ When you're happy with the result, you can send it to <code>members@inex.ie</cod
     </td>
     <td>
         <input id="bcc" type="text" name="bcc"
-            value="{if isset( $bcc )}{$bcc}{else}{$user.email}{/if}" maxlength="254" size="60"
+            value="{if isset( $bcc )}{$bcc}{else}{$user->getEmail()}{/if}" maxlength="254" size="60"
         />
     </td>
 </tr>
@@ -69,7 +71,7 @@ When you're happy with the result, you can send it to <code>members@inex.ie</cod
     </td>
     <td>
         <input id="subject" type="text" name="subject"
-            value="{if isset( $subject )}{$subject}{else}INEX Members' Meeting - {$meeting.date|strtotime|date_format}{/if}"
+            value="{if isset( $subject )}{$subject}{else}INEX Members' Meeting - {$meeting->getDate()->format( 'Y-m-d H:i' )}{/if}"
             maxlength="254" size="60"
         />
     </td>
@@ -77,13 +79,13 @@ When you're happy with the result, you can send it to <code>members@inex.ie</cod
 
 <tr>
     <td align="center" colspan="2">
-        <textarea id="message" name="body" cols="78" rows="10">{if isset( $body )}{$body}{/if}</textarea>
+        <textarea id="message" name="body" cols="78" rows="15" class="span9 offset3">{if isset( $body )}{$body}{/if}</textarea>
     </td>
 </tr>
 
 <tr>
     <td align="right" colspan="2">
-        <input type="submit" name="submit" value="Send" />
+        <input type="submit" name="submit" value="Send" class="btn btn-success" />
     </td>
 </tr>
 
@@ -106,7 +108,5 @@ When you're happy with the result, you can send it to <code>members@inex.ie</cod
 </script>
 
 
-</div>
 
-
-{include file="footer.tpl"}
+{tmplinclude file="footer.phtml"}
