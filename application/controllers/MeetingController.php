@@ -198,19 +198,20 @@ class MeetingController extends INEX_Controller_FrontEnd
      */
     public function simpleAction()
     {
-        $entries = Doctrine_Query::create()
-            ->from( 'Meeting m' )
-            ->leftJoin( 'm.MeetingItem mi' )
-            ->orderBy( 'm.date DESC, mi.other_content ASC' )
-            ->execute( null, Doctrine_Core::HYDRATE_ARRAY );
-
-        $this->view->entries = $entries;
+        $this->view->entries = $this->getD2EM()->createQuery(
+                'SELECT m, mi FROM \\Entities\\Meeting m LEFT JOIN m.MeetingItems mi ORDER BY m.date DESC, mi.other_content ASC'
+            )
+            ->execute();
+        
         $this->view->simple  = true;
 
-        if( $this->_request->getParam( 'nostyle', false ) )
-            $this->view->display( 'meeting/simple2.tpl' );
+        if( $this->getParam( 'nostyle', false ) )
+        {
+            Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+            $this->view->display( 'meeting/simple2.phtml' );
+        }
         else
-            $this->view->display( 'meeting/simple.tpl' );
+            $this->view->display( 'meeting/simple.phtml' );
     }
 
 

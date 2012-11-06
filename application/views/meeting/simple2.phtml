@@ -1,0 +1,64 @@
+<p>
+    <em>
+        This is public list of INEX Members' Meetings. INEX members should log into the IXP Manager
+        where they can download presentations and view recorded presentations that were requested
+        to not be made public as well as access speaker contact details.
+    </em>
+</p>
+
+
+
+{foreach from=$entries item=e}
+
+<h1>{$e->getTitle()} &ndash; {$e->getDate()->format( 'l, F jS, Y' )}</h1>
+
+<h4>In {if $e->getVenueUrl() neq ''}<a href="{$e->getVenueUrl()}">{$e->getVenue()}</a>{else}{$e->getVenue()}{/if} at {$e->getTime()->format( 'H:i' )}</h4>
+
+<div>{$e->getBeforeText()}</div>
+
+<dl>
+
+    {assign var='inOtherContent' value=0}
+
+    {foreach $e->getMeetingItems() as $id => $mi}
+
+    {if $mi->getOtherContent() and not $inOtherContent}
+        </dl>
+
+        <p>
+        Other meeting content also includes:
+        </p>
+
+        <dl>
+
+        {assign var='inOtherContent' value=1}
+    {/if}
+
+    <dt>
+	    <h3>
+	        {$mi->getName()}: {if $mi->getRole() neq ''}{$mi->getRole()}, {/if}{if $mi->getCompanyUrl() neq ''}<a href="{$mi->getCompanyUrl()}">{$mi->getCompany()}</a>{else}{$mi->getCompany()}{/if}
+        </h3>
+    </dt>
+
+    <dd>
+        {$mi->getTitle()}
+
+        {if $mi->getPresentation() neq ''}
+            &nbsp;&nbsp;&nbsp;&nbsp;[<a href="{genUrl controller='meeting-item' action='get-presentation' id=$mi->getId()}">PRES</a>]
+        {/if}
+        {if $mi->getVideoUrl() neq ''}
+            &nbsp;&nbsp;&nbsp;&nbsp;[<a href="{$mi->getVideoUrl()}">VIDEO</a>]
+        {/if}
+            
+        {if $mi->getSummary() neq ''} <em>{$mi->getSummary()}</em>{/if}
+    </dd>
+
+    {/foreach}
+
+</dl>
+
+
+<div>{$e->getAfterText()}</div>
+
+{/foreach}
+

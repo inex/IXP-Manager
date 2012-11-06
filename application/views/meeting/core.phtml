@@ -7,11 +7,11 @@
     <div class="meeting">
     
         <div class="meeting title">
-            <h1>{$e->getTitle()} &ndash; {$e.date|date_format:"%A, %B %e, %Y"}</h1>
+            <h1>{$e->getTitle()} &ndash; {$e->getDate()->format( 'l, F jS, Y' )}</h1>
             <h4>
-                In {if $e.venue_url neq ''}<a href="{$e.venue_url}">{$e.venue}</a>{else}{$e.venue}{/if} at {$e.time|date_format:"%H:%M"}
-                {if not $simple and $e.venue_url neq ''}
-                    &nbsp;&nbsp;<a href="{$e.venue_url}" target="_blank">
+                In {if $e->getVenueUrl() neq ''}<a href="{$e->getVenueUrl()}">{$e->getVenue()}</a>{else}{$e->getVenue()}{/if} at {$e->getTime()->format( 'H:i' )}
+                {if not $simple and $e->getVenueUrl() neq ''}
+                    &nbsp;&nbsp;<a href="{$e->getVenueUrl()}" target="_blank">
                         <img width="16" height="16" border="0" alt="[LINK]"
                             title="Visit venue site" src="{genUrl}/images/joomla-admin/menu/globe1.png" />
                     </a>
@@ -19,7 +19,7 @@
             </h4>
         </div>
     
-        <div class="meeting content">{$e.before_text}</div>
+        <div class="meeting content">{$e->getBeforeText()}</div>
     
         <div class="meetingitem">
     
@@ -27,9 +27,9 @@
             
                 {assign var='inOtherContent' value=0}
             
-                {foreach from=$e.MeetingItem key=id item=mi}
+                {foreach $e->getMeetingItems() as $id => $mi}
             
-                {if $mi.other_content and not $inOtherContent}
+                {if $mi->getOtherContent() and not $inOtherContent}
                     </dl>
             
                     <p>
@@ -47,14 +47,14 @@
             
             		    <div class="meetingitem title icons">
             		    {if not $simple}
-                            {if $mi.presentation neq ''}
-                                <a href="{genUrl controller='meeting-item' action='get-presentation' id=$mi.id}">
+                            {if $mi->getPresentation() neq ''}
+                                <a href="{genUrl controller='meeting-item' action='get-presentation' id=$mi->getId()}">
                                     <img src="{genUrl}/images/22x22/presentation.png" width="22" height="22"
                                             alt="[VIDEO]" class="meetingitem title icons" />
                                 </a>
                             {/if}
-                            {if $mi.video_url neq ''}
-                                <a href="{$mi.video_url}">
+                            {if $mi->getVideoUrl() neq ''}
+                                <a href="{$mi->getVideoUrl()}">
                                     <img src="{genUrl}/images/22x22/video.png" width="22" height="22"
                                             alt="[VIDEO]" class="meetingitem title icons" />
                                 </a>
@@ -63,21 +63,21 @@
             		    </div>
             
             		    <h1>
-            		        {$mi.title} &ndash;
+            		        {$mi->getTitle()} &ndash;
             
-            		        {if not $simple and $mi.email neq ''}
-            		            {mailto address=$mi.email encode='javascript' text=$mi.name}
+            		        {if not $simple and $mi->getEmail() neq ''}
+            		            {mailto address=$mi->getEmail() encode='javascript' text=$mi->getName()}
             		        {else}
-            		            {$mi.name}
+            		            {$mi->getName()}
             		        {/if}
             		    </h1>
             
             		    <h4>
-            		        {if $mi.role neq ''}{$mi.role}, {/if}
-            		        {if $mi.company_url neq ''}
-            		            <a href="{$mi.company_url}">{$mi.company}</a>
+            		        {if $mi->getRole() neq ''}{$mi->getRole()}, {/if}
+            		        {if $mi->getCompanyUrl() neq ''}
+            		            <a href="{$mi->getCompanyUrl()}">{$mi->getCompany()}</a>
             		        {else}
-                		        {$mi.company}
+                		        {$mi->getCompany()}
                 		    {/if}
             		    </h4>
             		</div>
@@ -85,7 +85,7 @@
                 </dt>
             
                 <dd>
-                    {$mi.summary}
+                    {$mi->getSummary()}
                 </dd>
             
                 {/foreach}
@@ -94,74 +94,30 @@
     
         </div>
     
-        <div class="meeting content">{$e.after_text}</div>
+        <div class="meeting content">{$e->getAfterText()}</div>
     
-        {if not $simple and $smarty.now < strtotime( $e.date ) and $user.privs eq 1}
-            <div class="meeting buttons" id="rsvp_div_{$e.id}">
+        {if not $simple and $smarty.now < $e->getDate()->format( 'U' ) and $user->getPrivs() eq 1}
+            <div class="meeting buttons" id="rsvp_div_{$e->getId()}">
         
-                {if $user->getPreference( 'meeting.attending.'|cat:$e.id ) eq 'ATTENDING'
-                        or $user->getPreference( 'meeting.attending.'|cat:$e.id ) eq 'NOT_ATTENDING'}
+                {if $user->getPreference( 'meeting.attending.'|cat:$e->getId() ) eq 'ATTENDING'
+                        or $user->getPreference( 'meeting.attending.'|cat:$e->getId() ) eq 'NOT_ATTENDING'}
                     <p>
                     You have already RSVP'd for this meeting and told us that you will
-                    {if $user->getPreference( 'meeting.attending.'|cat:$e.id ) eq 'NOT_ATTENDING'}not{/if}
+                    {if $user->getPreference( 'meeting.attending.'|cat:$e->getId() ) eq 'NOT_ATTENDING'}not{/if}
                     be attending. Please email
                     {mailto text=$config.meeting.rsvp_to_name address=$config.meeting.rsvp_to_email}
                     directly to change this.
                     </p>
                 {else}
                     <p>
-            	    Please RSVP for this meeting:
-        	        <button id="rsvp_attending_{$e.id}"     name="Attending" value="Attending" type="button">Attending</button>
-        	        <button id="rsvp_not_attending_{$e.id}" name="Not Attending" value="Not Attending" type="button">Not Attending</button>
+                	    Please RSVP for this meeting:
+            	        <button id="rsvp_attending_{$e->getId()}"     name="Attending" value="Attending" type="button">Attending</button>
+            	        <button id="rsvp_not_attending_{$e->getId()}" name="Not Attending" value="Not Attending" type="button">Not Attending</button>
         	        </p>
         	    {/if}
             </div>
         
-            <script type="text/javascript">
-            {literal}
-    
-                $( '#rsvp_attending_{/literal}{$e.id}{literal}' ).click( function() {
-    
-                    $( '#rsvp_div_{/literal}{$e.id}{literal}' ).hide( 400 );
-                	$( '#rsvp_div_{/literal}{$e.id}{literal}' ).html('');
-    
-                    $.getJSON( "{/literal}{genUrl controller='meeting' action='rsvp'}/id/{$e.id}/answer/attend"{literal},
-                            function( data ) {
-                                switch( data['response'] )
-                                {
-                                    case 1:
-                                        alert( "We have recorded your intention to attend this meeting. Thanks!" );
-                                        break;
-                                    case 0:
-                                        alert( {/literal}"ERROR: We could no record your intention to attend this meeting. Please email {$config.meeting.rsvp_to_name} directly at {$config.meeting.rsvp_to_email}."{literal} );
-                                        break;
-                                }
-                            }
-                    );
-                });
-    
-                $( '#rsvp_not_attending_{/literal}{$e.id}{literal}' ).click( function() {
-    
-                    $( '#rsvp_div_{/literal}{$e.id}{literal}' ).hide( 400 );
-                    $( '#rsvp_div_{/literal}{$e.id}{literal}' ).html('');
-    
-                    $.getJSON( "{/literal}{genUrl controller='meeting' action='rsvp'}/id/{$e.id}/answer/noattend"{literal},
-                            function( data ) {
-                                switch( data['response'] )
-                                {
-                                    case 1:
-                                        alert( "We have recorded your intention to not attend this meeting. We hope you can make the next one." );
-                                        break;
-                                    case 0:
-                                        alert( {/literal}"ERROR: We could no record your intention to not attend this meeting. Please email {$config.meeting.rsvp_to_name} directly at {$config.meeting.rsvp_to_email}."{literal} );
-                                        break;
-                                }
-                            }
-                    );
-                });
-    
-            {/literal}
-            </script>
+            <script type="text/javascript">{tmplinclude file="meetings/js/core.js"}</script>
             
         {/if}
 
