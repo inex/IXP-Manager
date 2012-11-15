@@ -1,46 +1,46 @@
 
-{foreach from=$locations item=loc key=name}
+{foreach $locations as $name => $switches}
 
-define hostgroup {ldelim}
+define hostgroup {
         hostgroup_name          INEX-Switches-{$name}
         alias                   INEX Switches at {$name}
-        members                 {php}echo implode( ', ', $this->get_template_vars( 'loc') );{/php}
+        members                 {$switches}
 
-{rdelim}
+}
 
 {/foreach}
 
 
-define hostgroup {ldelim}
+define hostgroup {
         hostgroup_name          INEX-Production-Switches
         alias                   INEX Production Switches (all)
-        members                 {php}echo implode( ', ', $this->get_template_vars( 'all') );{/php}
+        members                 {$all}
 
-{rdelim}
+}
 
 
-define hostgroup {ldelim}
+define hostgroup {
         hostgroup_name          INEX-Switches-Brocade
         alias                   INEX Brocade Switches
-        members                 {php}echo implode( ', ', $this->get_template_vars( 'vendor_brocade') );{/php}
+        members                 {$vendor_brocade}
 
-{rdelim}
+}
 
 
-define hostgroup {ldelim}
+define hostgroup {
         hostgroup_name          INEX-Switches-Cisco
         alias                   INEX Cisco Switches
-        members                 {php}echo implode( ', ', $this->get_template_vars( 'vendor_cisco') );{/php}
+        members                 {$vendor_cisco}
 
-{rdelim}
+}
 
 
-define hostgroup {ldelim}
+define hostgroup {
         hostgroup_name          INEX-Switches-MRV
         alias                   INEX MRV Switches
-        members                 {php}echo implode( ', ', $this->get_template_vars( 'vendor_mrv') );{/php}
+        members                 {$vendor_mrv}
 
-{rdelim}
+}
 
 
 

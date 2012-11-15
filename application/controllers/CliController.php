@@ -344,61 +344,53 @@ class CliController extends INEX_Controller_Action
      */
     public function generateNagiosConfigAction()
     {
+        $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getAndCache( true );
+        
+        echo $this->view->render( 'cli/nagios/switch-definitions.phtml' );
 
-        $switches = Doctrine_Query::create()
-            ->from( 'SwitchTable s' )
-            ->leftJoin( 's.Vendor v' )
-            ->leftJoin( 's.Cabinet c' )
-            ->leftJoin( 'c.Location l' )
-            ->where( 's.active = 1' )
-            ->fetchArray();
-
-        #print_r( $switches );
-        #exit;
-
-        echo $this->view->render( 'cli/nagios/switch-definitions.tpl' );
-
-        $all     = array();
         $brocade = array();
         $cisco   = array();
         $mrv     = array();
 
-        $locations = array();
+        $all     = [];
 
         foreach( $switches as $s )
         {
             $this->view->sw = $s;
-            echo $this->view->render( 'cli/nagios/switch-hosts.tpl' );
+            echo $this->view->render( 'cli/nagios/switch-hosts.phtml' );
 
-            switch( $s['Vendor']['name'] )
+            switch( $s->getVendor()->getName() )
             {
                 case 'Foundry Networks':
-                    $brocade[] = $s['name'];
+                    $brocade[] = $s->getName();
                     break;
 
                 case 'Cisco Systems':
-                    $cisco[] = $s['name'];
+                    $cisco[] = $s->getName();
                     break;
 
                 case 'MRV':
-                    $mrv[] = $s['name'];
+                    $mrv[] = $s->getName();
                     break;
             }
 
-            $all[] = $s['name'];
+            $all[] = $s->getName();
 
-            $locations[$s['Cabinet']['Location']['shortname']][] = $s['name'];
+            if( isset( $locations[ $s->getCabinet()->getLocation()->getShortname() ] ) )
+                $locations[ $s->getCabinet()->getLocation()->getShortname() ] .= ", " . $s->getName();
+            else
+                $locations[ $s->getCabinet()->getLocation()->getShortname() ] = $s->getName();
         }
 
-        $this->view->all = $all;
+        $this->view->all = implode( ', ', $all );
 
         $this->view->locations = $locations;
+        
+        $this->view->vendor_brocade = implode( ', ', $brocade );
+        $this->view->vendor_cisco   = implode( ', ', $cisco   );
+        $this->view->vendor_mrv     = implode( ', ', $mrv     );
 
-        $this->view->vendor_brocade = $brocade;
-        $this->view->vendor_cisco   = $cisco;
-        $this->view->vendor_mrv     = $mrv;
-
-        echo $this->view->render( 'cli/nagios/switch-templates.tpl' );
+        echo $this->view->render( 'cli/nagios/switch-templates.phtml' );
     }
     
     
