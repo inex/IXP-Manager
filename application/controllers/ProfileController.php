@@ -79,8 +79,6 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
         
         if( !isset( $this->view->passwordForm ) )
             $this->view->passwordForm = $this->_getFormChangePassword();
-        
-        $this->view->mailinglists = $this->_mailinglists;
     }
 
     protected function changePasswordPostFlush()
@@ -118,49 +116,35 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
     public function updateMailingListsAction()
     {
         // need to capture all users with the given email
-        $users = Doctrine::getTable( 'User' )->findByEmail( $this->getUser()->email );
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->findBy( [ 'email' => $this->getUser()->getEmail() ] );
         
-        foreach( $this->_mailinglists as $name => $ml )
+        foreach( $this->_options['mailinglists'] as $name => $ml )
         {
             if( isset( $_POST["ml_{$name}"] ) && $_POST["ml_{$name}"] )
-            {
-                $this->_mailinglists[$name]['subscribed'] = 1;
                 foreach( $users as $u )
                     $u->setPreference( "mailinglist.{$name}.subscribed", 1 );
-            }
             else
-            {
-                $this->_mailinglists[$name]['subscribed'] = 0;
                 foreach( $users as $u )
                     $u->setPreference( "mailinglist.{$name}.subscribed", 0 );
-            }
         }
         
-        $this->view->message = new INEX_Message( 'Your mailing list subscriptions have been updated and will take effect within 12 hours.', 'success' );
-        
-        $this->_forward( 'index' );
+        $this->getD2EM()->flush();
+        $this->addMessage( 'Your mailing list subscriptions have been updated and will take effect within 12 hours.', OSS_Message::SUCCESS );
+        $this->redirect( 'profile/index' );
     }
     
     private function _initMailingListSubs()
     {
         // are we using mailing lists?
-        if( !isset( $this->config['mailinglist']['enabled'] ) || !$this->config['mailinglist']['enabled'] )
-        {
-            $this->view->mailinglist_enabled = false;
-            return;
-        }
-        
-        $this->view->mailinglist_enabled = true;
-        
-        if( !isset( $this->config['mailinglists'] ) )
+        if( !isset( $this->_options['mailinglist']['enabled'] ) || !$this->_options['mailinglist']['enabled'] )
             return;
         
-        $this->_mailinglists = $this->config['mailinglists'];
+        $mlsubs = [];
         
-        foreach( $this->_mailinglists as $name => $ml )
-        {
-            $this->_mailinglists[$name]['subscribed'] = $this->getUser()->getPreference( "mailinglist.{$name}.subscribed" );
-        }
+        foreach( $this->_options['mailinglists'] as $name => $ml )
+            $mlsubs[$name] = $this->getUser()->getPreference( "mailinglist.{$name}.subscribed" );
+        
+        $this->view->mlsubs = $mlsubs;
     }
 }
 
