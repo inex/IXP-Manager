@@ -71,20 +71,9 @@ class CliController extends INEX_Controller_Action
         // This should only be done once a day and if values already exist for 'today',
         // just delete them.
         $day = date( 'Y-m-d' );
-        Doctrine_Query::create()
-            ->delete( 'TrafficDaily' )
-            ->where( 'day = ?', $day )
-            ->execute();
+        $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->deleteForDay( $day );
 
-        $custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->fetchArray();
+        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
 
         foreach( $custs as $cust )
         {
@@ -93,32 +82,32 @@ class CliController extends INEX_Controller_Action
             foreach( INEX_Mrtg::$CATEGORIES as $category )
             {
 	            $mrtg = new INEX_Mrtg(
-	                            INEX_Mrtg::getMrtgFilePath( $this->config['mrtg']['path'],
-	                                'LOG', 'aggregate', $category,
-	                                $cust['shortname']
-	                            )
+                    INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
+                        'LOG', 'aggregate', $category,
+                        $cust->getShortname()
+                    )
 	            );
 
-                $td = new TrafficDaily();
-                $td['day']      = $day;
-                $td['category'] = $category;
-                $td['cust_id']  = $cust['id'];
+                $td = new \Entities\TrafficDaily();
+                $td->setDay( new DateTime( $day ) );
+                $td->setCategory( $category );
+                $td->setCustomer( $cust );
 
-                foreach( INEX_Mrtg::$PERIODS as $period )
+                foreach( INEX_Mrtg::$PERIODS as $name => $period )
                 {
                     $stats = $mrtg->getValues( $period, $category, false );
 
-                    $td["{$period}_avg_in"]  = $stats['averagein'];
-                    $td["{$period}_avg_out"] = $stats['averageout'];
-                    $td["{$period}_max_in"]  = $stats['maxin'];
-                    $td["{$period}_max_out"] = $stats['maxout'];
-                    $td["{$period}_tot_in"]  = $stats['totalin'];
-                    $td["{$period}_tot_out"] = $stats['totalout'];
-
+                    $fn = "set{$name}AvgIn";  $td->$fn( $stats['averagein']  );
+                    $fn = "set{$name}AvgOut"; $td->$fn( $stats['averageout'] );
+                    $fn = "set{$name}MaxIn";  $td->$fn( $stats['maxin']      );
+                    $fn = "set{$name}MaxOut"; $td->$fn( $stats['maxout']     );
+                    $fn = "set{$name}TotIn";  $td->$fn( $stats['totalin']    );
+                    $fn = "set{$name}TotOut"; $td->$fn( $stats['totalout']   );
                 }
 
-                $td->save();
+                $this->getD2EM()->persist( $td );
             }
+            $this->getD2EM()->flush();
         }
     }
 

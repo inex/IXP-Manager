@@ -64,4 +64,20 @@ class TrafficDaily extends EntityRepository
             ->getArrayResult();
     }
     
+    
+
+    /**
+     * Delete all entries for a given day
+     *
+     * @param string $day The day to delete all entries for
+     * @return int The number of entries removed
+     */
+    public function deleteForDay( $day )
+    {
+        return $this->getEntityManager()->createQuery( "DELETE \\Entities\\TrafficDaily td WHERE td.day = ?1" )
+            ->setParameter( 1, $day )
+            ->execute();
+    }
+    
+    
 }
