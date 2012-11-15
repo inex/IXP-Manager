@@ -1,0 +1,20 @@
+
+Potential Todo / Feature Ideas
+------------------------------
+
+
+
+* INEX require that members peer "with at least the greater of 4 other 
+  Members, or 10% of other Members". A tool to list members failing this
+  requirement would be useful.
+
+* Email members on >80% of port utilisation
+
+* Show who a member peers with (or not) on the overview page
+
+* Show if a member is on the route server or not
+
+* Member audit - port states, errors / discards, route collector session
+  status, route server session status, etc.
+
+
