@@ -499,47 +499,10 @@ class CliController extends INEX_Controller_Action
         if( !isset( $this->_options['mailinglists'] ) || !count( $this->_options['mailinglists'] ) )
             die( "ERR: No valid mailing lists defined in your application.ini\n" );
         
-        $apppath = APPLICATION_PATH;
-        $date = date( 'Y-m-d H:i:s' );
-        
-        echo <<<END_BLOCK
-#! /bin/sh
+        $this->view->apppath = APPLICATION_PATH;
+        $this->view->date = date( 'Y-m-d H:i:s' );
 
-#
-# Script for syncronising subscriptions between mailing lists and IXP Manager.
-#
-# Does not affect any subscriptions with email addresses that do not match a user
-# in IXP Manager.
-#
-# Generated: {$date}
-#
-
-
-END_BLOCK;
-        
-        
-        foreach( $this->_options['mailinglists'] as $name => $ml )
-        {
-            echo <<<END_BLOCK
-#######################################################################################################################################
-##
-## {$name} - {$ml['name']}
-##
-
-# Set default subsciption settings for any new IXP Manager users
-{$this->_options['mailinglist']['cmd']['list_members']} {$name} | {$apppath}/../bin/ixptool.php -a cli.mailing-list-init --p1={$name}
-
-# Add new subscriptions to the list
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-subscribed --p1={$name} | {$this->_options['mailinglist']['cmd']['add_members']} {$name} >/dev/null
-
-# Remove subscriptions from the list
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->_options['mailinglist']['cmd']['remove_members']} {$name} >/dev/null
-
-# Sync passwords
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-password-sync --p1={$name} >/dev/null
-
-END_BLOCK;
-        }
+        echo $this->view->render( 'cli/mailing-list-sync-script.sh' );
     }
     
     
