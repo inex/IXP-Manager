@@ -126,8 +126,8 @@ class CliController extends INEX_Controller_Action
              ->setSubject( $this->_options['cli']['traffic_differentials']['subject'] )
              ->setType( Zend_Mime::MULTIPART_RELATED );
 
-        #foreach( $this->_options['cli']['traffic_differentials']['recipients'] as $r )
-            $mail->addTo( 'barryo@inex.ie' ); //$r );
+        foreach( $this->_options['cli']['traffic_differentials']['recipients'] as $r )
+            $mail->addTo( $r );
 
         $mailHtml = $this->view->render( 'customer/email/diff-header.phtml' );
 
