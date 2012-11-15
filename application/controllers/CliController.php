@@ -250,52 +250,33 @@ class CliController extends INEX_Controller_Action
      */
     public function examinePortUtilisationAction()
     {
-
-        $custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->fetchArray();
-
-        $mail = new Zend_Mail();
-        $mail->setFrom( $this->config['cli']['port_utilisation']['from_email'], $this->config['cli']['traffic_differentials']['from_name'] )
-             ->setSubject( $this->config['cli']['port_utilisation']['subject'] )
+        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, false );
+        
+        $mail = $this->getMailer();
+        $mail->setFrom( $this->_options['cli']['port_utilisation']['from_email'], $this->_options['cli']['traffic_differentials']['from_name'] )
+             ->setSubject( $this->_options['cli']['port_utilisation']['subject'] )
              ->setType( Zend_Mime::MULTIPART_RELATED );
 
-        foreach( $this->config['cli']['port_utilisation']['recipients'] as $r )
+        foreach( $this->_options['cli']['port_utilisation']['recipients'] as $r )
             $mail->addTo( $r );
 
-        $this->view->threshold = $this->config['cli']['port_utilisation']['threshold'];
-        $mailHtml = $this->view->render( 'customer/mail/util-header.tpl' );
+        $this->view->threshold = $this->_options['cli']['port_utilisation']['threshold'];
+        $mailHtml = $this->view->render( 'customer/email/util-header.phtml' );
 
         $numIntsWithExcessUtil = 0;
 
         foreach( $custs as $c )
         {
-            $interfaces = Doctrine_Query::create()
-                ->from( 'Virtualinterface vi' )
-                ->leftJoin( 'vi.Physicalinterface pi' )
-                ->leftJoin( 'pi.Switchport sp' )
-                ->leftJoin( 'sp.SwitchTable s' )
-                ->where( 'vi.custid = ?', $c['id'] )
-                ->orderBy( 'pi.monitorindex' )
-                ->fetchArray();
-
-
-            foreach( $interfaces as $i )
+            foreach( $c->getVirtualInterfaces() as $vi )
             {
-                foreach( $i['Physicalinterface'] as $pi )
+                foreach( $vi->getPhysicalInterfaces() as $pi )
                 {
-                    $speed = $pi['speed'] * 1024 * 1024;
+                    $speed = $pi->getSpeed() * 1024 * 1024;
 
                     $mrtg = new INEX_Mrtg(
-                        INEX_Mrtg::getMrtgFilePath( $this->config['mrtg']['path'],
-                            'LOG', $pi['monitorindex'], INEX_Mrtg::CATEGORY_BITS,
-                            $c['shortname']
+                        INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
+                            'LOG', $pi->getMonitorindex(), INEX_Mrtg::CATEGORY_BITS,
+                            $c->getShortname()
                         )
                     );
 
@@ -304,12 +285,18 @@ class CliController extends INEX_Controller_Action
                     $maxIn  = $stats['maxin'] * 8.0;
                     $maxOut = $stats['maxout'] * 8.0;
 
-                    $switch_port = $pi['Switchport']['SwitchTable']['name'] . ' :: ' . $pi['Switchport']['name'];
+                    $switch_port = $pi->getSwitchport()->getSwitcher()->getName() . ' :: ' . $pi->getSwitchport()->getName();
 
                     $utilIn  = $maxIn  / $speed;
                     $utilOut = $maxOut / $speed;
 
-	                if( $utilIn > $this->config['cli']['port_utilisation']['threshold'] || $utilOut > $this->config['cli']['port_utilisation']['threshold'] )
+                    if( $this->_verbose )
+                    {
+                        echo $c->getName() . "\n";
+                        printf( "\tIN %0.2f%%\tOUT: %0.2f%%\n", $utilIn * 100.0, $utilOut * 100.0 );
+                    }
+                    
+	                if( $utilIn > $this->_options['cli']['port_utilisation']['threshold'] || $utilOut > $this->_options['cli']['port_utilisation']['threshold'] )
 	                {
 	                    $this->view->cust       = $c;
 	                    $this->view->utilIn     = $utilIn;
@@ -319,23 +306,23 @@ class CliController extends INEX_Controller_Action
 		                $mrtg = $mail->createAttachment(
 		                    file_get_contents(
 		                       INEX_Mrtg::getMrtgFilePath(
-		                            $this->config['mrtg']['path'],
+		                            $this->_options['mrtg']['path'] . '/members',
 		                            'PNG',
-		                            $pi['monitorindex'],
+		                            $pi->getMonitorindex(),
 		                            INEX_Mrtg::CATEGORY_BITS,
-		                            $c['shortname'],
+		                            $c->getShortname(),
 		                            INEX_Mrtg::PERIOD_WEEK
 		                        )
 		                    ),
 		                    "image/png",
 		                    Zend_Mime::DISPOSITION_INLINE,
 		                    Zend_Mime::ENCODING_BASE64,
-		                    $c['shortname'] . ".png"
+		                    $c->getShortname() . ".png"
 		                );
 
-	                    $mrtg->id = $c['shortname'];
+	                    $mrtg->id = $c->getShortname();
 
-	                    $mailHtml .= $this->view->render( 'customer/mail/util-member.tpl' );
+	                    $mailHtml .= $this->view->render( 'customer/email/util-member.phtml' );
 
 	                    $numIntsWithExcessUtil++;
 	                }
@@ -345,7 +332,7 @@ class CliController extends INEX_Controller_Action
 
         $this->view->numWithExcessUtil = $numIntsWithExcessUtil;
 
-        $mailHtml .= $this->view->render( 'customer/mail/util-footer.tpl' );
+        $mailHtml .= $this->view->render( 'customer/email/util-footer.phtml' );
 
         $mail->setBodyHtml( $mailHtml  );
         $mail->send();
