@@ -34,7 +34,7 @@
 {/if}
 
 <p>
-<a href="{genUrl controller="statistics" action="member" shortname=$cust->getShortname()}">
+<a href="{$options.identity.url}statistics/member/shortname/{$cust->getShortname()}">
 	<img src="cid:{$cust->getShortname()}" alt="[{$cust->getShortname()}]" />
 </a>
 </p>

@@ -80,4 +80,27 @@ class TrafficDaily extends EntityRepository
     }
     
     
+    /**
+     * Get the given number of recent traffic stats for a given customer
+     *
+     * @param \Entities\Customer $customer The customer to get entries for
+     * @param int $rows The number of entries for fetch
+     * @param string $category The traffic category (bits, packets, etc)
+     * @return array The entries found
+     */
+    public function getAsArray( $customer, $rows, $category )
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT td
+                 FROM Entities\\TrafficDaily td
+                 WHERE td.Customer = ?1 AND td.category = ?2
+                 ORDER BY td.day DESC"
+            )
+            ->setParameter( 1, $customer )
+            ->setParameter( 2, $category )
+            ->setMaxResults( $rows )
+            ->getArrayResult();
+    }
+    
+    
 }

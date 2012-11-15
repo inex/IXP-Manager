@@ -111,154 +111,6 @@ class CliController extends INEX_Controller_Action
         }
     }
 
-    public function updateTraffic95thPercentileDbAction()
-    {
-        $tstart = mktime(  0,  0,  0, date('m'), date('j')-1, date('Y') );
-        $tend   = mktime( 23, 59, 59, date('m'), date('j')-1, date('Y') );
-
-        if( $this->_verbose )
-        {
-            echo "\n\nupdateTraffic95thPercentileDbAction()\n\n";
-            echo "Updating traffic statistics and 95th percentiles...\n\n";
-            echo "START: $tstart " . date( 'Y-m-d H:i:s', $tstart ) . "\n";
-            echo "END:   $tend "   . date( 'Y-m-d H:i:s', $tend   ) . "\n";
-            echo "Deleting pre-existing records for the period of they exist...\n\n";
-        }
-
-        // This should only be done once a day and if values already exist for 'today',
-        // just delete them.
-        Doctrine_Query::create()
-            ->delete( 'Traffic95th' )
-            ->where( 'datetime >= ?', date( 'Y-m-d H:i:s', $tstart ) )
-            ->andWhere( 'datetime <= ?', date( 'Y-m-d H:i:s', $tend ) )
-            ->execute();
-
-        $custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->fetchArray();
-
-
-        $percentiles = array();
-        foreach( $custs as $cust )
-        {
-            if( $this->_verbose )
-            {
-                echo "\n${cust['name']} (${cust['shortname']} - #${cust['id']})\n";
-                echo "\tGathering statistics from MRTG files...\n";
-            }
-
-            $stats = array();
-
-            $mrtg = new INEX_Mrtg(
-                            INEX_Mrtg::getMrtgFilePath( $this->config['mrtg']['path'],
-                                'LOG', 'aggregate', 'bits',
-                                $cust['shortname']
-                            )
-            );
-
-            $dataPoints = $mrtg->getArray();
-
-            unset( $mrtg );
-
-            $qualifyingDataPointCount = 0;
-
-            foreach( $dataPoints as $dp )
-            {
-                if( $dp[0] >= $tstart && $dp[0] <= $tend )
-                {
-                    $t95th = new Traffic95th();
-                    $t95th['cust_id']  = $cust['id'];
-                    $t95th['datetime'] = date( 'Y-m-d H:i:s', $dp[0] );
-
-                    list( $intTime, $avgratein, $avgrateout, $peakratein, $peakrateout ) = $dp;
-
-                    if( $avgratein > $avgrateout )
-                        $t95th['average'] = $avgratein;
-                    else
-                        $t95th['average'] = $avgrateout;
-
-                    if( $peakratein > $peakrateout )
-                        $t95th['max'] = $peakratein;
-                    else
-                        $t95th['max'] = $peakrateout;
-
-                    $t95th->save();
-                    $t95th->free( true ); // memory management
-
-                    ++$qualifyingDataPointCount;
-                }
-            }
-
-            unset( $dataPoints );
-
-            if( $this->_verbose )
-                echo "\tInserted " . $qualifyingDataPointCount . " qualifying data points into database...\n";
-
-
-            // calculate the 95th for the current month or the overall for the last month
-            if( date( 'j') == '1' )
-            {
-	            if( $this->_verbose )
-	                echo "\tCalculating 95th percentile for last month...\n";
-
-                $tend2   = date( 'Y-m-d H:i:s', mktime( 23, 59, 59, date( 'm' ), date('j')-1, date( 'Y' ) ) );
-                $tstart2 = mktime( 0,  0,  0, date( 'm', $tend2 ), 1, date( 'Y', $tend2 ) );
-                $month2  = date( 'Y-m-d', $tstart2 );
-                $tstart2 = date( 'Y-m-d H:i:s', $tstart2 );
-            }
-            else
-            {
-                if( $this->_verbose )
-                    echo "\tCalculating 95th percentile for this month to date...\n";
-
-                $tend2   = date( 'Y-m-d H:i:s', mktime( 23, 59, 59, date( 'm' ), date('j')-1, date( 'Y' ) ) );
-                $tstart2 = mktime( 0,  0,  0,  date( 'm' ), 1, date( 'Y' ) );
-                $month2  = date( 'Y-m-d', $tstart2 );
-                $tstart2 = date( 'Y-m-d H:i:s', $tstart2 );
-            }
-
-            if( $percentiles[$cust['shortname']] = Traffic95thTable::get95thPercentile( $cust['id'], $tstart2, $tend2 ) )
-            {
-	            if( $this->_verbose )
-	                echo "\tFound 95th percentile: ${percentiles[$cust['shortname']]}\n";
-
-                if( count( $entry = Doctrine_Core::getTable( 'Traffic95thMonthly' )
-                        ->findByDql( 'cust_id = ? AND month = ?', array( $cust['id'], $month2 ) ) ) )
-                {
-                    if( $this->_verbose )
-                        echo "\tUpdating value for this month to 95th traffic table...\n";
-
-                    // there should only be one of these (unique index on cust_id and month)!
-                    $entry[0]['max_95th'] = $percentiles[$cust['shortname']] * 8;
-                    $entry[0]->save();
-                    $entry->free();
-                }
-                else
-                {
-                    if( $this->_verbose )
-	                echo "\tAdding first value for this month to 95th traffic table...\n";
-
-                    $entry = new Traffic95thMonthly();
-                    $entry['cust_id']  = $cust['id'];
-                    $entry['month']    = $month2;
-                    $entry['max_95th'] = $percentiles[$cust['shortname']] * 8;
-                    $entry->save();
-                    $entry->free();
-                }
-
-            }
-
-        }
-
-    }
-
-
 
 
     /**
@@ -267,38 +119,24 @@ class CliController extends INEX_Controller_Action
      */
     public function examineTrafficDeltasAction()
     {
-
-        $custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->fetchArray();
-
-        $mail = new Zend_Mail();
-        $mail->setFrom( $this->config['cli']['traffic_differentials']['from_email'], $this->config['cli']['traffic_differentials']['from_name'] )
-             ->setSubject( $this->config['cli']['traffic_differentials']['subject'] )
+        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
+        
+        $mail = $this->getMailer();
+        $mail->setFrom( $this->_options['cli']['traffic_differentials']['from_email'], $this->_options['cli']['traffic_differentials']['from_name'] )
+             ->setSubject( $this->_options['cli']['traffic_differentials']['subject'] )
              ->setType( Zend_Mime::MULTIPART_RELATED );
 
-        foreach( $this->config['cli']['traffic_differentials']['recipients'] as $r )
-            $mail->addTo( $r );
+        #foreach( $this->_options['cli']['traffic_differentials']['recipients'] as $r )
+            $mail->addTo( 'barryo@inex.ie' ); //$r );
 
-        $mailHtml = $this->view->render( 'customer/mail/diff-header.tpl' );
+        $mailHtml = $this->view->render( 'customer/email/diff-header.phtml' );
 
         $numWithExceededThreshold = 0;
 
         foreach( $custs as $c )
         {
-            $tds = Doctrine_Query::create()
-	               ->from( 'TrafficDaily td' )
-	               ->where( 'td.category = ?', 'bits' )
-	               ->andWhere( 'td.cust_id = ?', $c['id'] )
-	               ->orderBy( 'td.day DESC' )
-	               ->limit( $this->config['cli']['traffic_differentials']['stddev_calc_length'] + 1 )
-	               ->fetchArray();
+            $tds = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )
+                ->getAsArray( $c, $this->_options['cli']['traffic_differentials']['stddev_calc_length'] + 1, INEX_Mrtg::CATEGORY_BITS );
 
     	    $firstDone = false;
             $meanIn  = 0.0; $stddevIn  = 0.0;
@@ -346,7 +184,7 @@ class CliController extends INEX_Controller_Action
 
             if( $this->_verbose )
             {
-	            echo $c['name'] . "\n";
+	            echo $c->getName() . "\n";
 	            printf( "\tIN  M: %d\tSD: %d\tDiff: %d\tT: %d\tR: %s\n",
 	                intval( $meanIn ), intval( $stddevIn ), intval( $dIn ), $thresholdIn, ( $dIn > $thresholdIn ? 'OUT' : 'IN' )
 	            );
@@ -372,27 +210,27 @@ class CliController extends INEX_Controller_Action
                 $this->view->threasholdOut = $thresholdOut;
                 $this->view->percentIn     = $meanIn  ? intval( ( $dIn  / $meanIn  ) * 100 ) : 'NONE';
                 $this->view->percentOut    = $meanOut ? intval( ( $dOut / $meanOut ) * 100 ) : 'NONE';
-                $this->view->days          = $this->config['cli']['traffic_differentials']['stddev_calc_length'];
+                $this->view->days          = $this->_options['cli']['traffic_differentials']['stddev_calc_length'];
 
                 $mrtg = $mail->createAttachment(
                     @file_get_contents(
                         INEX_Mrtg::getMrtgFilePath(
-                            $this->config['mrtg']['path'],
+                            $this->_options['mrtg']['path'] . '/members',
                             'PNG',
                             'aggregate',
                             'bits',
-                            $c['shortname'],
+                            $c->getShortname(),
                             'month'
                         )
                     ),
                     "image/png",
                     Zend_Mime::DISPOSITION_INLINE,
                     Zend_Mime::ENCODING_BASE64,
-                    $c['shortname'] . ".png"
+                    $c->getShortname() . ".png"
                 );
-                $mrtg->id = $c['shortname'];
+                $mrtg->id = $c->getShortname();
 
-                $mailHtml .= $this->view->render( 'customer/mail/diff-member.tpl' );
+                $mailHtml .= $this->view->render( 'customer/email/diff-member.phtml' );
 
                 $numWithExceededThreshold++;
             }
@@ -401,7 +239,7 @@ class CliController extends INEX_Controller_Action
 
         $this->view->numWithExceededThreshold = $numWithExceededThreshold;
 
-        $mailHtml .= $this->view->render( 'customer/mail/diff-footer.tpl' );
+        $mailHtml .= $this->view->render( 'customer/email/diff-footer.phtml' );
 
         $mail->setBodyHtml( $mailHtml  );
         $mail->send();
