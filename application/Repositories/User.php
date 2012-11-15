@@ -49,4 +49,25 @@ class User extends EntityRepository
         
         return $q->getScalarResult();
     }
+
+
+
+    /**
+     * Return an array of users subscribed (or not) to a given mailing list
+     *
+     * @param string $list The mailing list handle
+     * @param int Set to '0' to get a list of users not subscribed
+     * @return array Array of array of emails
+     */
+    public function getMailingListSubscribers( $list, $subscribed = 1 )
+    {
+        $sql = "SELECT u.email AS email, u.password AS password
+                    FROM \\Entities\\User u LEFT JOIN u.Preferences up
+                    WHERE up.attribute = ?1 AND up.value = ?2";
+        
+        return $this->getEntityManager()->createQuery( $sql )
+            ->setParameter( 1, "mailinglist.{$list}.subscribed" )
+            ->setParameter( 2, $subscribed )
+            ->getScalarResult();
+    }
 }

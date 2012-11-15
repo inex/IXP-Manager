@@ -420,18 +420,20 @@ class CliController extends INEX_Controller_Action
         fclose( $stdin );
         
         if( $this->_verbose ) echo "Setting mailing list subscription for all users without a subscription setting...\n";
-        $users = Doctrine_Query::create()->from( 'User u' )->execute( null, Doctrine::HYDRATE_RECORD );
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->findAll();
 
         foreach( $users as $u )
         {
             if( $u->hasPreference( "mailinglist.{$list}.subscribed" ) )
                 continue;
 
-            if( in_array( $u['email'], $addresses ) )
+            if( in_array( $u->getEmail(), $addresses ) )
                 $u->setPreference( "mailinglist.{$list}.subscribed", 1 );
             else
                 $u->setPreference( "mailinglist.{$list}.subscribed", 0 );
         }
+        
+        $this->getD2EM()->flush();
     }
 
     /**
@@ -440,17 +442,11 @@ class CliController extends INEX_Controller_Action
     public function mailingListSubscribedAction()
     {
         $list = $this->_getMailingList();
-    
-        $users = Doctrine_Query::create()
-            ->select( 'u.email' )
-            ->from( 'User u' )
-            ->leftJoin( 'u.UserPref up' )
-            ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
-            ->andWhere( 'up.value = 1')
-            ->execute( null, Doctrine::HYDRATE_SINGLE_SCALAR );
-        
+
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->getMailingListSubscribers( $list, 1 );
+
         foreach( $users as $user )
-            echo "$user\n";
+            echo "{$user['email']}\n";
     }
     
     /**
@@ -459,17 +455,11 @@ class CliController extends INEX_Controller_Action
     public function mailingListUnsubscribedAction()
     {
         $list = $this->_getMailingList();
-    
-        $users = Doctrine_Query::create()
-        ->select( 'u.email' )
-        ->from( 'User u' )
-        ->leftJoin( 'u.UserPref up' )
-        ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
-        ->andWhere( 'up.value = 0')
-        ->execute( null, Doctrine::HYDRATE_SINGLE_SCALAR );
-    
+
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->getMailingListSubscribers( $list, 0 );
+
         foreach( $users as $user )
-            echo "$user\n";
+            echo "{$user['email']}\n";
     }
     
     /**
@@ -480,29 +470,23 @@ class CliController extends INEX_Controller_Action
         $list = $this->_getMailingList();
 
         // we'll sync by default so only if we're told not to will the following be true:
-        if( isset( $this->config['mailinglists'][$list]['syncpws'] ) && !$this->config['mailinglists'][$list]['syncpws'] )
+        if( isset( $this->_options['mailinglists'][$list]['syncpws'] ) && !$this->_options['mailinglists'][$list]['syncpws'] )
         {
-            if( $this->_verbose ) echo "{$list}: Password sync for the given mailing list is disabled";
+            if( $this->_verbose )
+                die( "{$list}: Password sync for the given mailing list is disabled" );
+            die();
         }
-        else
-        {
-            $users = Doctrine_Query::create()
-                ->select( 'u.email, u.password' )
-                ->from( 'User u' )
-                ->leftJoin( 'u.UserPref up' )
-                ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
-                ->andWhere( 'up.value = 1')
-                ->execute( null, Doctrine::HYDRATE_ARRAY );
-            
-            foreach( $users as $user )
-            {
-                $cmd = sprintf( "{$this->config['mailinglist']['cmd']['changepw']} %s %s %s",
-                        escapeshellarg( $list ), escapeshellarg( $user['email'] ), escapeshellarg( $user['password'] )
-                );
+
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->getMailingListSubscribers( $list, 1 );
                 
-                if( $this->_verbose ) echo "$cmd\n";
-                exec( $cmd );
-            }
+        foreach( $users as $user )
+        {
+            $cmd = sprintf( "{$this->_options['mailinglist']['cmd']['changepw']} %s %s %s",
+                    escapeshellarg( $list ), escapeshellarg( $user['email'] ), escapeshellarg( $user['password'] )
+            );
+            
+            if( $this->_verbose ) echo "$cmd\n";
+            exec( $cmd );
         }
     }
     
@@ -512,7 +496,7 @@ class CliController extends INEX_Controller_Action
     public function mailingListSyncScriptAction()
     {
         // do we have mailing lists defined?
-        if( !isset( $this->config['mailinglists'] ) || !count( $this->config['mailinglists'] ) )
+        if( !isset( $this->_options['mailinglists'] ) || !count( $this->_options['mailinglists'] ) )
             die( "ERR: No valid mailing lists defined in your application.ini\n" );
         
         $apppath = APPLICATION_PATH;
@@ -534,7 +518,7 @@ class CliController extends INEX_Controller_Action
 END_BLOCK;
         
         
-        foreach( $this->config['mailinglists'] as $name => $ml )
+        foreach( $this->_options['mailinglists'] as $name => $ml )
         {
             echo <<<END_BLOCK
 #######################################################################################################################################
@@ -543,13 +527,13 @@ END_BLOCK;
 ##
 
 # Set default subsciption settings for any new IXP Manager users
-{$this->config['mailinglist']['cmd']['list_members']} {$name} | {$apppath}/../bin/ixptool.php -a cli.mailing-list-init --p1={$name}
+{$this->_options['mailinglist']['cmd']['list_members']} {$name} | {$apppath}/../bin/ixptool.php -a cli.mailing-list-init --p1={$name}
 
 # Add new subscriptions to the list
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-subscribed --p1={$name} | {$this->config['mailinglist']['cmd']['add_members']} {$name} >/dev/null
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-subscribed --p1={$name} | {$this->_options['mailinglist']['cmd']['add_members']} {$name} >/dev/null
 
 # Remove subscriptions from the list
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->config['mailinglist']['cmd']['remove_members']} {$name} >/dev/null
+{$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->_options['mailinglist']['cmd']['remove_members']} {$name} >/dev/null
 
 # Sync passwords
 {$apppath}/../bin/ixptool.php -a cli.mailing-list-password-sync --p1={$name} >/dev/null
@@ -562,20 +546,20 @@ END_BLOCK;
     private function _getMailingList()
     {
         // do we have mailing lists defined?
-        if( !isset( $this->config['mailinglist']['enabled'] ) || !$this->config['mailinglist']['enabled'] )
+        if( !isset( $this->_options['mailinglist']['enabled'] ) || !$this->_options['mailinglist']['enabled'] )
             die( "ERR: Mailing lists disabled in configuration( use: mailinglist.enabled = 1 to enabled)\n" );
         
         if( !( $list = $this->getFrontController()->getParam( 'param1', false ) ) )
             die( "ERR: You must specify a list name (e.g. --p1 listname)\n" );
         
         // do we have mailing lists defined?
-        if( !isset( $this->config['mailinglists'] ) || !count( $this->config['mailinglists'] ) )
+        if( !isset( $this->_options['mailinglists'] ) || !count( $this->_options['mailinglists'] ) )
             die( "ERR: No valid mailing lists defined in your application.ini\n" );
         
         // is it a valid list?
-        if( !isset( $this->config['mailinglists'][$list] ) )
+        if( !isset( $this->_options['mailinglists'][$list] ) )
             die( "ERR: The specifed list ({$list}) is not defined in your application.ini\n" );
-        
+
         return $list;
     }
 }
