@@ -430,47 +430,6 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     }
     
     
-    /*
-    public function ninetyFifthAction()
-    {
-        $month = $this->_request->getParam( 'month', date( 'Y-m-01' ) );
-    
-        $cost = $this->_request->getParam( 'cost', "20.00" );
-        if( !is_numeric( $cost ) )
-            $cost = "20.00";
-        $this->view->cost = $cost;
-    
-        $months = array();
-        for( $year = 2010; $year <= date( 'Y' ); $year++ )
-            for( $mth = ( $year == 2010 ? 4 : 1 ); $mth <= ( $year == 2010 ? date('n') : 12 ); $mth++ )
-            {
-                $ts = mktime( 0, 0, 0, $mth, 1, $year );
-                $months[date( 'M Y', $ts )] = date( 'Y-m-01', $ts );
-            }
-    
-            $this->view->months = $months;
-    
-            if( in_array( $month, array_values( $months ) ) )
-                $this->view->month = $month;
-            else
-                $this->view->month = date( 'Y-m-01' );
-    
-            // load values from the database
-            $traffic95thMonthly = Doctrine_Query::create()
-            ->from( 'Traffic95thMonthly tf' )
-            ->leftJoin( 'tf.Cust c' )
-            ->where( 'month = ?', $month )
-            ->execute()
-            ->toArray();
-    
-            foreach( $traffic95thMonthly as $index => $row )
-                $traffic95thMonthly[$index]['cost'] = sprintf( "%0.2f", $row['max_95th'] / 1024 / 1024 * $cost );
-    
-            $this->view->traffic95thMonthly = $traffic95thMonthly;
-    
-            $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'ninety-fifth.tpl' );
-    }
-    */
 
 }
 
