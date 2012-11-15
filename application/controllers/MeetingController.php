@@ -217,6 +217,8 @@ class MeetingController extends INEX_Controller_FrontEnd
 
     public function rsvpAction()
     {
+        die( "Needs update to IXP V2 Rewrite with Doctrine2" );
+        /*
         $meeting = Doctrine_Core::getTable( 'Meeting' )->find( $this->_request->getParam( 'id', null ) );
 
         if( !$meeting )
@@ -281,6 +283,7 @@ class MeetingController extends INEX_Controller_FrontEnd
             ->sendResponse();
 
         exit;
+        */
     }
 
 
@@ -297,7 +300,7 @@ class MeetingController extends INEX_Controller_FrontEnd
         do
         {
 
-	        if( $this->getParam( 'send', 0 ) == 1 )
+	        if( $this->getParam( 'send', false ) )
 	        {
                 $this->view->to      = $this->getParam( 'to' );
                 $this->view->from    = $this->getParam( 'from' );

@@ -136,13 +136,13 @@
 <div class="meeting content">{$body}<br /></div>
 
 <div class="meeting title">
-    <h1>{$meeting->getTitle()} &ndash; {$meeting.date|date_format:"%A, %B %e, %Y"}</h1>
+    <h1>{$meeting->getTitle()} &ndash; {$meeting->getDate()->format( 'l, F jS, Y' )}</h1>
     <h4>
-        In <a href="{$meeting.venue_url}" target="_blank">{$meeting.venue}</a> at {$meeting.time|date_format:"%H:%M"}
+        In <a href="{$meeting->getVenueUrl()}" target="_blank">{$meeting->getVenue()}</a> at {$meeting->getTime()->format( 'H:i' )}
     </h4>
 </div>
 
-<div class="meeting content">{$meeting.before_text}</div>
+<div class="meeting content">{$meeting->getBeforeText()}</div>
 
 <div class="meetingitem">
 
@@ -150,9 +150,9 @@
 
     {assign var='inOtherContent' value=0}
 
-    {foreach from=$meeting.MeetingItem key=id item=mi}
+    {foreach $meeting->getMeetingItems() as $mi}
 
-    {if $mi.other_content and not $inOtherContent}
+    {if $mi->getOtherContent() and not $inOtherContent}
         </dl>
 
         <p>
@@ -172,21 +172,21 @@
 		    </div>
 
 		    <h1>
-		        {$mi.title} &ndash;
+		        {$mi->getTitle()} &ndash;
 
-		        {if $mi.email neq ''}
-		            {mailto address=$mi.email encode='none' text=$mi.name}
+		        {if $mi->getEmail() neq ''}
+		            {mailto address=$mi->getEmail() encode='none' text=$mi->getName()}
 		        {else}
-		            {$mi.name}
+		            {$mi->getName()}
 		        {/if}
 		    </h1>
 
 		    <h4>
-		        {if $mi.role neq ''}{$mi.role}, {/if}
-		        {if $mi.company_url neq ''}
-		            <a href="{$mi.company_url}">{$mi.company}</a>
+		        {if $mi->getRole() neq ''}{$mi->getRole()}, {/if}
+		        {if $mi->getCompanyUrl() neq ''}
+		            <a href="{$mi->getCompanyUrl()}">{$mi->getCompany()}</a>
 		        {else}
-    		        {$mi.company}
+    		        {$mi->getCompany()}
     		    {/if}
 		    </h4>
 		</div>
@@ -194,7 +194,7 @@
     </dt>
 
     <dd>
-        {$mi.summary}
+        {$mi->getSummary()}
     </dd>
 
     {/foreach}
@@ -203,7 +203,7 @@
 
 </div>
 
-<div class="meeting content">{$meeting.after_text}</div>
+<div class="meeting content">{$meeting->getAfterText()}</div>
 
 
 </div>
