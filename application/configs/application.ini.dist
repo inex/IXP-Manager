@@ -1,9 +1,8 @@
-;
-; Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+; Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
 ; All Rights Reserved.
-; 
+;
 ; This file is part of IXP Manager.
-; 
+;
 ; IXP Manager is free software: you can redistribute it and/or modify it
 ; under the terms of the GNU General Public License as published by the Free
 ; Software Foundation, version v2.0 of the License.
@@ -12,295 +11,406 @@
 ; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 ; more details.
-; 
+;
 ; You should have received a copy of the GNU General Public License v2.0
 ; along with IXP Manager.  If not, see:
-; 
+;
 ; http://www.gnu.org/licenses/gpl-2.0.html
+;
+
+;
+; For more information on IXP Manager, please see:
+;    https://github.com/inex/IXP-Manager/wiki
+;
+; For installation information, please see:
+;    https://github.com/inex/IXP-Manager/wiki/Installation
+;
+; For information on this particular file, please see:
+;    https://github.com/inex/IXP-Manager/wiki/Installation-04-Configuration
+;
+
+
+;
+; This is a Zend Framework configuration file for the MVC Zend_Application.
+; It is parsed by http://framework.zend.com/manual/1.12/en/zend.config.adapters.ini.html
+; See http://php.net/manual/en/function.parse-ini-file.php for syntax.
+;
+
+
+;
+; The following section ([production]) matches the APPLICATION_ENV setting in
+; the Apache virtual host config (or public/.htaccess).
+;
 
 [production]
 
-use_minified_js = 1
-use_minified_css = 1
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Bootstrap Options                         
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bootstrap Options
+;;
+;; None of the following need to be changed
+;;
 
 phpSettings.display_startup_errors = 0
 phpSettings.display_errors = 0
 
-includePaths.library = APPLICATION_PATH "/../library"
-includePaths.library = APPLICATION_PATH "/../library/Smarty"
+includePaths.library    = APPLICATION_PATH "/../library"
+includePaths.osslibrary = APPLICATION_PATH "/../library/OSS-Framework.git"
 
-; SETME!
-includePaths.doctrine = /path/to/Doctrine/lib
+bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
+bootstrap.class = "Bootstrap"
 
 includePaths.twitter = APPLICATION_PATH "/../library/Bootstrap-Zend-Framework/library"
 autoloaderNamespaces.Twitter = "Twitter_"
 
-
-
+pluginPaths.OSS_Resource = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Resource"
 pluginPaths.INEX_Resource = APPLICATION_PATH "/../library/INEX/Resource"
 
-bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
-bootstrap.class = "Bootstrap"                     
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Resources                                 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; We use Minify to bundle and compress CSS and JS in
+;; production environments.
+;;
+;; See FIXME for details.
+;;
+;; These minimised bundles and included with the source so
+;; you can leave the following set as is to avoid loading
+;; ~30 JS / CSS files rather than two.
+;;
+
+mini_js = 1
+mini_css = 1
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Resources
+;;
+;; Read through comments below which will guide you as to what can / should be changed.
+;; If there are no comments, then you can safely leave as is.
+;;
+
 
 resources.frontController.controllerDirectory = APPLICATION_PATH "/controllers"
-resources.frontController.params.noViewRenderer = 1
+resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
+resources.modules[] =
 
-resources.auth = 1
 
-resources.doctrine.connection_string = "mysql://user:pass@host/database"
-resources.doctrine.data_fixtures_path = APPLICATION_PATH "/../doctrine/data/fixtures"         
-resources.doctrine.models_path = APPLICATION_PATH "/models"                                   
-resources.doctrine.migrations_path = APPLICATION_PATH "/../doctrine/migrations"               
-resources.doctrine.sql_path = APPLICATION_PATH "/../doctrine/data/sql"                        
-resources.doctrine.yaml_schema_path = APPLICATION_PATH "/../doctrine/schema"                  
-resources.doctrine.generate_models_options.generateTableClasses = true
-resources.doctrine.usecache = true
+resources.auth.enabled = 1
+resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
+resources.auth.oss.pwhash  = "plaintext"
+;resources.auth.oss.hash_cost  = 9
+resources.auth.oss.entity  = "\\Entities\\User"
 
-resources.logger.enabled = 1
-resources.logger.writers.email.from = ops-auto@example.com
-resources.logger.writers.email.to = ops-auto@example.com
-resources.logger.writers.email.prefix = IXP_ERROR
-resources.logger.writers.email.level = 3
-resources.logger.writers.stream.level = 7
-resources.logger.writers.stream.path = APPLICATION_PATH "/../var/log"
-resources.logger.writers.stream.owner = www
-resources.logger.writers.stream.group = www
 
-resources.namespace.checkip = 1
+;; You'll want to allow your users find their usernames and reset
+;; their passwords so leave these as is
+;resources.auth.oss.disabled.lost-username = 1
+;resources.auth.oss.disabled.lost-password = 1
+
+
+;;
+;; This is the Doctrine database configuration. You **NEED** to fill in some details here!
+
+;;
+;; First up, Doctrine and IXP Manager requires Memcache to operate efficiently. Without it,
+;; page loads will take longer and many unneccessary database queries will be repeated on
+;; each impression.
+;;
+
+
+;; Set this to wherever PEAR installed Doctrine. The given example is typical
+;; for Ubuntu. For FreeBSD, try "/usr/local/share/pear/Doctrine/ORM"
+resources.doctrine2cache.path               = "/usr/share/php/Doctrine/ORM"
+resources.doctrine2cache.autoload_method    = "pear"
+; resources.doctrine2cache.type                               = 'ArrayCache'
+resources.doctrine2cache.type                               = 'MemcacheCache'
+resources.doctrine2cache.memcache.servers.0.host       = '127.0.0.1'
+resources.doctrine2cache.memcache.servers.0.port       = '11211'
+; resources.doctrine2cache.memcache.servers.0.persistent = false
+; resources.doctrine2cache.memcache.servers.0.weight     = 1
+; resources.doctrine2cache.memcache.servers.0.timeout    = 1
+; resources.doctrine2cache.memcache.servers.0.retry_int  = 15
+; resources.doctrine2cache.memcache.servers.1.host       = 'xxx'
+; resources.doctrine2cache.memcache.servers.2.host       = 'yyy'
+
+
+;;
+;; Now the database details and location of schema files
+;;
+
+resources.doctrine2.models_path            = APPLICATION_PATH
+resources.doctrine2.proxies_path           = APPLICATION_PATH "/Proxies"
+resources.doctrine2.repositories_path      = APPLICATION_PATH
+resources.doctrine2.xml_schema_path        = APPLICATION_PATH "/../doctrine/schema"
+resources.doctrine2.autogen_proxies        = 0
+resources.doctrine2.logger                 = 1
+resources.doctrine2.models_namespace       = "Entities"
+resources.doctrine2.proxies_namespace      = "Proxies"
+resources.doctrine2.repositories_namespace = "Repositories"
+
+resources.doctrine2.connection.options.driver   = 'pdo_mysql'
+resources.doctrine2.connection.options.dbname   = 'ixp'
+resources.doctrine2.connection.options.user     = 'ixp'
+resources.doctrine2.connection.options.password = 'password'
+resources.doctrine2.connection.options.host     = '127.0.0.1'
+
+
+
+;;
+;; We use Zend_Logger for logging various events to file and / or email.
+;;
+;; The email.level and stream.level are the minimum level required for a log
+;; message to be emailed / written. 7 is DEBUG, 3 is ERROR. These are standard
+;; UNIX log levels - see http://framework.zend.com/manual/1.12/en/zend.log.overview.html
+;; and https://github.com/opensolutions/OSS-Framework/wiki/OSS_Logger
+;;
+
+ondemand_resources.logger.enabled = 1
+ondemand_resources.logger.writers.email.from   = ixp-logger@example.com
+ondemand_resources.logger.writers.email.to     = ixp-notify-list@example.com
+ondemand_resources.logger.writers.email.prefix = 'IXP_ERROR'
+ondemand_resources.logger.writers.email.level  = 3
+ondemand_resources.logger.writers.stream.level = 7
+ondemand_resources.logger.writers.stream.path  = APPLICATION_PATH "/../var/log"
+;; For FreeBSD, use "www" below
+ondemand_resources.logger.writers.stream.owner = www-data
+ondemand_resources.logger.writers.stream.group = www-data
+
+
+;; Set to 1 if you want the session manager to ensure same IP addresses for a user session.
+;; This will cause issues for users in IPv6 with Pricacy Extensions (http://tools.ietf.org/html/rfc4941)
+resources.namespace.checkip = 0
 resources.namespace.timeout = 3600
 
 resources.session.save_path = APPLICATION_PATH "/../var/session"
 resources.session.use_only_cookies = true
 resources.session.remember_me_seconds = 3600
-resources.session.name = INEX_IXP
+resources.session.name = IXP_Manager
 
-resources.mailer.smtphost = mail.example.com
-; resources.mailer.username = 
-; resources.mailer.password = 
-; resources.mailer.auth = login | plain | cram-md5
-
-; We use Smarty as the templating engine for IXP
-resources.view.templates = APPLICATION_PATH "/views"
-;resources.view.skin      = "skinname"
-resources.view.compiled  = APPLICATION_PATH "/../var/templates_c"
-resources.view.cache     = APPLICATION_PATH "/../var/cache"
-resources.view.config    = APPLICATION_PATH "/configs/smarty"
-resources.view.plugins[] = APPLICATION_PATH "/../library/inex-smarty/functions"
-resources.view.plugins[] = APPLICATION_PATH "/../library/Smarty/plugins"
-resources.view.plugins[] = APPLICATION_PATH "/../library/Smarty/sysplugins"
-resources.view.debugging = 0
+;; Put your email relay host here
+ondemand_resources.mailer.smtphost = "127.0.0.1"
+; ondemand_resources.mailer.username =
+; ondemand_resources.mailer.password =
+; ondemand_resources.mailer.auth = login | plain | cram-md5
 
 
-; enable zfdebug plugin
-resources.zfdebug.enabled = false
-resources.zfdebug.plugins[] = "Variables"
-resources.zfdebug.plugins.File.base_path = APPLICATION_PATH "/../"
-resources.zfdebug.plugins[] = "Database"
-resources.zfdebug.plugins[] = "Memory"
-resources.zfdebug.plugins[] = "Time"
-resources.zfdebug.plugins[] = "Registry"
-resources.zfdebug.plugins[] = "Exception"
-resources.zfdebug.users[] = "user1"
-resources.zfdebug.users[] = "user2"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Smarty View
+;;
+
+resources.smarty.enabled   = 1
+resources.smarty.templates = APPLICATION_PATH "/views"
+
+;; See https://github.com/inex/IXP-Manager/wiki/Skinning
+;; resources.smarty.skin      = ""
+resources.smarty.compiled  = APPLICATION_PATH "/../var/templates_c"
+
+resources.smarty.cache     = APPLICATION_PATH "/../var/cache"
+resources.smarty.config    = APPLICATION_PATH "/configs/smarty"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/inex-smarty/functions"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Smarty/functions"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/Smarty/plugins"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/Smarty/sysplugins"
+resources.smarty.debugging = 0
 
 
-; Individual controllers (those extending FrontEnd) can be disabled via:
-; controller.sec-viewer.enabled = 0
-; which will display an appropriate message (index/controller-disabled.tpl) 
+
+;;
+;; Any controller extending INEX_Controller_FrontEnd can be disabled by setting it to '1' below
+;;
+; controller.XXX.enabled = 0
 
 
-identity.orgname  = "An IXP"
-identity.name  = "Another IXP Operations"
-identity.email = "operations@example.com"
-identity.testemail = "x@example.com"
-identity.autobot.name  = "IXP Ops Autobot"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Organisational Details
+;;
+;; Set you organisation details below
+;;
+;; Hints are given to demonstrate their use
+;;
+
+;; e.g. we use "INEX" here
+identity.orgname  = "XXX"
+
+;; e.g. we use "INEX Operations" here
+identity.name  = "XXX Operations"
+
+;; e.g. we use "operations@example.com" here
+identity.email = "operations@inex.ie"
+
+;; e.g. we use "INEX Ops Autobot"
+identity.autobot.name  = "XXX Ops Autobot"
+
+;; e.g. we use "ops-auto@inex.ie"
 identity.autobot.email = "ops-auto@example.com"
-identity.ixp.fullname = "Another IXP's Manager"
-identity.ixp.url = "https://www.example.com/ixp/"
-identity.ixp.logo = APPLICATION_PATH "/../public/images/mylogo.jpg
+
+;; e.g. we use "INEX Autobot" here
+identity.mailer.name   = "XXX Autobot"
+
+;; e.g. we use "do-not-reply@example.com" here
+identity.mailer.email  = "do-not-reply@example.com"
+
+;; e.g. we use "INEX IXP Manager" here
+identity.sitename = "XXX IXP Manager"
+
+;; e.g. we use "https://www.inex.ie/ixp/" here
+identity.url = "https://www.example.com/ixp/"
+
+;; PLEASE USE YOU OWN LOGO HERE!!!
+identity.logo = APPLICATION_PATH "/../public/images/inex-logo-150x73.jpg"
+
+;; PLEASE USE YOU OWN LOGO HERE!!!
+identity.biglogo = "https://www.inex.ie/ixp/images/inex-logo-600x165.gif"
+
+;; We have a miscellaneous benefits page which includes details for an
+;; operations IRC channel including a password:
+identity.misc.irc_password = "xxx"
 
 
-sms.clickatell.username = "user"
-sms.clickatell.password = "pass"
-sms.clickatell.api_id = "appid"
-sms.clickatell.sender_id = "IXP_NAME"
+;; INEX has a primary and a secondary peering LAN as well as other LANs. This option
+;; defines the default LAN on some pages and reflects the id column of the vlan table.
+identity.vlans.default = 1
 
 
-; MRTG Parameters
-mrtg.path = http://www.example.com/mrtg/members
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; MRTG Details
+;;
+;; This is poorly documented but we will endeavour to do a better
+;; job of ut
+;;
+
+;; For displaying graphs, we normally get the PNG (or RRD) file from a
+;; secure backend server using HTTP. We use file_get_contents() so you
+;; can use various URIs here including local file system:
+
+;; This is for standard interface graphs
+mrtg.path = http://mrtg.example.com/mrtg
+
+;; This is for P2P graphs (which are a work in progress)
+mrtg.p2ppath = http://mrtg.example.com/sflow/sflow-graph.php
+
+;; We have publically available overall graphs which are defined here
+;; FIXME Documentation needed..
 mrtg.traffic_graphs[] = "aggregate::Aggregate Graphs"
-mrtg.traffic_graphs[] = "network1::IXP Infrastructure #1"
-mrtg.traffic_graphs[] = "network2::IXP Infrastructure #2"
+mrtg.traffic_graphs[] = "network1::Infrastructure #1"
+mrtg.traffic_graphs[] = "network2::Infrastructure #2"
 
-mrtg.trunk_graphs[] = "core-pop1-pop2-lan1::PoP 1 to PoP 2 (LAN1)"
+;; We also show intra-switch graphs
+;; FIXME Documentation needed..
+mrtg.trunk_graphs[] = "core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
+mrtg.trunk_graphs[] = "core-sw1-sw3-lan1::PoP 1 to PoP 3 (LAN1)"
+;; ...
 
-; LANs for public and 'my' peering matric.
+
+;; LANs available for public and member's own peering matrix.
+
 peering_matrix.public.0.name   = "Public Peering LAN #1"
-peering_matrix.public.0.number = 10
-peering_matrix.public.0.table  = "/path/to/peering-matrix/public-vlan10-ipv4.html"
+;; the vlan tag as entered in the 'number' colume in the vlan table
+peering_matrix.public.0.number = 100
+
 peering_matrix.public.1.name   = "Public Peering LAN #2"
-peering_matrix.public.1.number = 12
-peering_matrix.public.1.table  = "/path/to/peering-matrix/public-vlan12-ipv4.html"
+peering_matrix.public.1.number = 120
 
 ; details for the primary / only / main peering LAN
-primary_peering_lan.vlan_tag = 10
-
-; Change Log Facility
-change_log.enabled = 1
+primary_peering_lan.vlan_tag = 100
 
 
 
 ;; Mailing List Subscription Management Facility
 ;;
-;; Adds a form to user profile page allowing them to subscribe / unsubscribe from mailing lists
-;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/Mailing-List-Management
-
+;;
+;; Allows users to manage their own mailing list subscriptions
 
 mailinglist.enabled = 0
 
-mailinglists.listname.name    = "List Name"
-mailinglists.listname.desc    = "List Description"
-mailinglists.listname.email   = "Email Address for List"
-mailinglists.listname.archive = "https://www.example.com/mailman/private/listname/"
-mailinglists.listname.syncpws = true
+mailinglists.xxx.name    = "xxx"
+mailinglists.xxx.desc    = "xxx xxx xxx"
+mailinglists.xxx.email   = ""
+mailinglists.xxx.archive = "https://www.example.com/mailman/private/xxx/"
 
-mailinglists.listname2.name    = "Another List Name"
-mailinglists.listname2.desc    = "Another List Description"
-mailinglists.listname2.email   = "Email Address for Another List"
-mailinglists.listname2.archive = "https://www.example.com/mailman/private/listname2/"
-mailinglists.listname2.syncpws = false
+; mailinglists.yyy.name    = "yyy
+; ...
 
+;; location of the required mailman commands (these are correct for FreeBSD)
 mailinglist.cmd.list_members   = "/usr/local/mailman/bin/list_members"
 mailinglist.cmd.add_members    = "/usr/local/mailman/bin/add_members -r - -w n -a n"
 mailinglist.cmd.remove_members = "/usr/local/mailman/bin/remove_members -f - -n -N"
 mailinglist.cmd.changepw       = "/usr/local/mailman/bin/withlist -q -l -r changepw"
 
 
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; IXP Tool / CLI Settings
+;;
+;; We have a few useful tools which also need better documentation.
+;;
 
 cli.traffic_differentials.stddev_calc_length = 60
 cli.traffic_differentials.from_email = "ops@example.com"
-cli.traffic_differentials.from_name  = "Another IXP Operations"
-cli.traffic_differentials.subject = "Another IXP Traffic Differentials"
-cli.traffic_differentials.recipients[] = "user1@example.com"
-cli.traffic_differentials.recipients[] = "user2@example.com"
+cli.traffic_differentials.from_name  = "XXX Operations"
+cli.traffic_differentials.subject = "XXX Traffic Differentials"
+cli.traffic_differentials.recipients[] = "someone@example.com"
+cli.traffic_differentials.recipients[] = "someone-else@example.com"
 
 cli.port_utilisation.threshold = 0.8
 cli.port_utilisation.from_email = "ops@example.com"
-cli.port_utilisation.from_name  = "Another IXP Operations"
-cli.port_utilisation.subject = "IXP Port Utilisation Report"
-cli.port_utilisation.recipients[] = "user1@example.com"
-cli.port_utilisation.recipients[] = "user2@example.com"
+cli.port_utilisation.from_name  = "XXX Operations"
+cli.port_utilisation.subject = "XXX Port Utilisation Report"
+cli.port_utilisation.recipients[] = "someone@example.com"
+cli.port_utilisation.recipients[] = "someone-else@example.com"
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 ;; Meeting RSVP Handler
+;;
+;; Members can RSVP for meetings via IXP Manager but this is currently
+;; broken and on the todo list;
+;;
+
 meeting.rsvp_to_email = "rsvp@example.com"
-meeting.rsvp_to_name  = "Meeting Administrator"
+meeting.rsvp_to_name  = "Person Who Looks After This Stuff"
 
 
 
-;; SEC (Simple Event Correlator) Handler Settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; We use PHP-Weathermap which is publically available. Our true settings
+;; are commented out, please replace with your own
+;;
 
-sec.pagers[] = "353861234567"
-sec.pagers[] = "353871234567"
-
-
-; alert_customers must be true for cc_opsauto to have an effect
-sec.bgp_auth.alert_customers  = true 
-sec.bgp_auth.cc_opsauto       = false  
-sec.bgp_auth.alert_operations = false  
-
-; alert_customers must be true for cc_opsauto to have an effect
-sec.port_updown.alert_customers  = true 
-sec.port_updown.cc_opsauto       = false  
-sec.port_updown.alert_operations = false
-
-; alert_customers must be true for cc_opsauto to have an effect
-sec.security_violation.alert_customers  = true  
-sec.security_violation.cc_opsauto       = false  
-sec.security_violation.alert_operations = false  
-
-
-
-menu.staff_links.cacti.name = "Cacti"
-menu.staff_links.cacti.link = "https://www.example.com/cacti/"
-
-menu.staff_links.ipplan.name = "IP Plan"
-menu.staff_links.ipplan.link = "https://www.example.com/ipplan/"
-
-
-weathermap.1.name = "Weathermap for Peering LAN 1"
-weathermap.1.menu = "Weathermap - LAN 1"
-weathermap.1.url  = "http://www.example.com/weathermap-lan1-plain.html"
+weathermap.1.name   = "Weathermap for Peering LAN 1"
+weathermap.1.menu   = "Weathermap - LAN 1"
+; weathermap.1.url    = "https://www.inex.ie/noncms/weathermap-lan1-plain.html"
+weathermap.1.url    = "https://www.example.com/weathermap-lan1-plain.html"
+weathermap.1.width  = 900
 weathermap.1.height = 1200
 
-weathermap.2.name = "Weathermap for Peering LAN 2"
-weathermap.2.menu = "Weathermap - LAN 2"
-weathermap.2.url  = "http://www.example.com/weathermap-lan2-plain.html"
-weathermap.2.height = 1200
+; weathermap.2.name = "Weathermap for Peering LAN 2"
+; ...
 
 
 
 [staging : production]
 
+;; if you want to set up a staging environment with a different database.
 
 [testing : production]
 
 phpSettings.display_startup_errors = 1
 phpSettings.display_errors = 1
 
-resources.logger.writers.firebug.enabled = 1
-resources.logger.writers.firebug.level = 7
-
-
-
-
-
-
 
 [development : production]
 
-phpSettings.display_startup_errors = 1
-phpSettings.display_errors = 1
-
-includePaths.doctrine = APPLICATION_PATH "/../library/Doctrine"
-
-
-resources.doctrine.connection_string = "mysql://user:pass@host/database"
-
-
-resources.logger.writers.firebug.enabled = 1
-resources.logger.writers.firebug.level = 7
-resources.logger.writers.stream.owner = www-data
-resources.logger.writers.stream.group = www-data
-
-resources.mailer.smtphost = "mail.example.com"
-
-resources.view.debugging = 0
-
-resources.namespace.timeout = 3000
-resources.session.remember_me_seconds = 3000
-
-identity.ixp.url = "http://127.0.0.1/ixp/"
-
-[clidev : development]
-
-resources.zfdebug.enabled = false
-
-[productioncli : production]
-
-resources.zfdebug.enabled = false
+mini_js = 1
+mini_css = 1
 
 phpSettings.display_startup_errors = 1
 phpSettings.display_errors = 1

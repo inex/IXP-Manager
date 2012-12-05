@@ -18,7 +18,7 @@ vlan, but no-one else can.
 
 * Put a frontend on the new RIB database table(s)
 
-* INEX require that members peer "with at least the greater of 4 other 
+* INEX require that members peer "with at least the greater of 4 other
   Members, or 10% of other Members". A tool to list members failing this
   requirement would be useful.
 
@@ -31,4 +31,7 @@ vlan, but no-one else can.
 * Member audit - port states, errors / discards, route collector session
   status, route server session status, etc.
 
+
+* Go through application/config/application.ini.dist and fix FIXMEs and add new
+  documentation where indicated
 
