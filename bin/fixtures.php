@@ -61,7 +61,7 @@ echo "Installing fixtures\n";
 
 #####################################################################
 ###
-### ADD YOUR FIXTURES HERE
+### MODIFY YOUR FIXTURES HERE
 ###
 ###
 ### First you need a "customer" object for your own IXP.
@@ -126,6 +126,8 @@ $em->flush();
 #####################################################################
 ###
 ### OTHER RECOMMENDED FIXTURES
+###
+### No need to edit beyond this point
 ###
 
 
