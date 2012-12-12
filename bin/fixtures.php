@@ -105,7 +105,7 @@ $em->persist( $c );
 $u = new \Entities\User();
 
 $u->setUsername( 'username' );
-$u->setPassword( 'letmein' );         // if you're not using plaintext passwords, put anything here and
+$u->setPassword( 'letmein1' );        // if you're not using plaintext passwords, put anything here and
                                       // use the forgotten password facility
 $u->setEmail( 'username@siep.com' );
 $u->setPrivs( \Entities\User::AUTH_SUPERUSER );
