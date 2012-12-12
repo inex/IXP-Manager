@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\ConsoleServerConnection" table="consoleserverconnection" repository-class="Repositories\ConsoleServerConnection" tableName="consoleserverconnection">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="description" type="string" length="255" nullable="true"/>
+    <field name="port" type="string" length="255" nullable="true"/>
+    <field name="speed" type="integer" nullable="true"/>
+    <field name="parity" type="integer" nullable="true"/>
+    <field name="stopbits" type="integer" nullable="true"/>
+    <field name="flowcontrol" type="integer" nullable="true"/>
+    <field name="autobaud" type="boolean" nullable="true"/>
+    <field name="notes" type="text" nullable="true"/>
+    <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="ConsoleServerConnections">
+      <join-columns>
+        <join-column name="custid" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="Switcher" target-entity="Entities\Switcher" inversed-by="ConsoleServerConnections">
+      <join-columns>
+        <join-column name="switchid" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

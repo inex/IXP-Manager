@@ -112,6 +112,7 @@ function json_response ($json, $exit = true) {
 		$json = json_encode($json);
 	}
 	header("Content-type: application/json; charset=utf-8");
+	header("Cache-Control: no-cache, must-revalidate");
 	echo $json;
 
 	if($exit) {

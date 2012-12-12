@@ -1,0 +1,23 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="customer" action="overview" id=$customer->getId()}">{$customer->getName()}</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Send Welcome Email
+    </li>
+</ul>
+
+{OSS_Message}
+
+{$form}
+
+
+{tmplinclude file="footer.phtml"}

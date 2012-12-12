@@ -1,0 +1,172 @@
+{tmplinclude file="header.phtml"}
+
+{if $user->getPrivs() eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            Documentation <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Miscellaneous Benefits
+        </li>
+    </ul>
+    
+    <div>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Miscellaneous Benefits</h1>
+        </div>
+{/if}
+
+<h3>IRC Channel</h3>
+
+
+<p>
+Members of the INEX operations team, along with many NOC personnel from INEX member organisations
+can often be found on the #inex-ops IRC channel. This facility has proved itself to be a useful
+communications medium for operational matters. The #inex-ops IRC channel is password protected
+and access to the server is encrypted using SSL.
+</p>
+
+<table border="0">
+<tr>
+    <td width="50"></td>
+    <td align="right"><strong>Server name:</strong></td>
+    <td width="20"></td>
+    <td align="left"><code>irc.inex.ie</code>, port 6697, SSL enabled</td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Channel:</strong></td>
+    <td></td>
+    <td align="left"><code>#inex-ops</code></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Password:</strong></td>
+    <td></td>
+    <td align="left"><code>pixiedust</code></td>
+</tr>
+</table>
+
+
+<h3>Route Collector</h3>
+
+<p>
+INEX runs a route collector, whose purpose is to allow exchange members to debug routing issues.
+While there is public access to the route collector available on the INEX looking glass, INEX
+members have CLI access to the route-collector.
+</p>
+
+<table border="0">
+<tr>
+    <td width="50"></td>
+    <td align="right"><strong>Server name:</strong></td>
+    <td width="20"></td>
+    <td align="left"><code>route-collector.inex.ie</code></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Access protocol:</strong></td>
+    <td></td>
+    <td align="left"><code>SSH1</code></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Username:</strong></td>
+    <td></td>
+    <td align="left"><em>Your IXP Manager username</em></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Password:</strong></td>
+    <td></td>
+    <td align="left"><em>Your IXP Manager password</em></td>
+</tr>
+</table>
+
+<p>
+Please note that all commands issued to the INEX route collector are temporarily logged
+for security purposes. These logs are not archived into long term storage, but are deleted
+after a week or two.
+</p>
+
+
+<h3>Console Server</h3>
+
+<p>
+INEX can provide remote console access services for those members who house equipment
+within INEX's facilities. These console servers provide access to housed equipment
+using RS-232 serial ports. Access to the servers are provided on a per-port, per-user,
+password-authenticated basis, thereby providing secure emergency management access.
+</p>
+
+<p>
+Access to the servers is available using the following parameters:
+</p>
+
+
+<table border="0">
+<tr>
+    <td width="50"></td>
+    <td align="right"><strong>Server name:</strong></td>
+    <td width="20"></td>
+    <td align="left">
+        <code>conserver-tcy1.inex.ie</code> (Telecity)<br />
+        <code>conserver-deg1.inex.ie</code> (DEG Kilcarbery)<br />
+        <code>conserver-ixdub1-1.inex.ie</code> (Interxion DUB1)<br />
+        <code>conserver-ixdub2-1.inex.ie</code> (Interxion DUB2)
+    </td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Access protocol:</strong></td>
+    <td></td>
+    <td align="left"><code>SSH2</code></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Username:</strong></td>
+    <td></td>
+    <td align="left"><em>Your IXP Manager username</em></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Password:</strong></td>
+    <td></td>
+    <td align="left"><em>Your IXP Manager password</em></td>
+</tr>
+</table>
+
+<p>
+Only INEX members with equipment hosted at INEX have access to these servers.
+</p>
+
+<p>
+When connected to a console server, the commands are:
+</p>
+
+<p>
+Menu mode:
+</p>
+
+<ul>
+    <li> <code>&lt;arrow-up&gt;</code> and <code>&lt;arrow-down&gt;</code> to select which device you want to connect to; </li>
+    <li> <code>&lt;cr&gt;</code> to connect to your switch; </li>
+    <li> <code>Q</code> (i.e. upper case q) to disconnect from the console server</li>
+</ul>
+
+<p>
+When connected to the management port on the hosted device:
+</p>
+
+<ul>
+    <li> &lt;ctrl-y&gt;, followed by <code>e</code> to go back to menu mode </li>
+</ul>
+
+</div>
+
+{tmplinclude file="footer.phtml"}

@@ -1,0 +1,52 @@
+{tmplinclude file="header.phtml"}
+
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        Statistics <span class="divider">/</span>
+    </li>
+    <li class="active">
+        List
+    </li>
+</ul>
+
+
+{OSS_Message}
+
+<div class="row-fluid">
+
+{assign var='count' value=0}
+
+    <div class="span3">
+
+        <ul>
+        
+        {foreach $custs as $cust}
+
+            {if count( $custs ) > 12 and $count >= count( $custs )/4}
+            
+                </ul>
+                </div>
+                <div class="span3">
+                {assign var='count' value=0}
+            {/if}
+            
+        	<li>
+        		<a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname}">
+        			{$cust.name}
+        		</a>
+        	</li>
+
+        	{assign var='count' value=$count+1}
+        	
+    	{/foreach}
+
+    	</ul>
+
+	</div>
+</div>
+
+{tmplinclude file="footer.phtml"}

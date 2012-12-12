@@ -55,7 +55,8 @@
 			dialogReplacements = {
 				legend: "Colorpicker",
 				color: "Color",
-				submit: "Apply",
+				applyForeColor: "Set Text",
+				applyBgColor: "Set Background",
 				reset: "Cancel"
 			};
 
@@ -63,7 +64,8 @@
 				'<ul class="palette"></ul>' +
 				'<label>{color}: <input type="text" name="color" value="#123456"/></label>' +
 				'<div class="wheel"></div>' +
-				'<input type="submit" class="button" value="{submit}"/> ' +
+				'<input type="button" class="button applyForeColor" value="{applyForeColor}"/> ' +
+				'<input type="button" class="button applyBgColor" value="{applyBgColor}"/> ' +
 				'<input type="reset" value="{reset}"/></fieldset></form>';
 
 			for (key in dialogReplacements) {
@@ -134,11 +136,22 @@
 				}
 
 				dialog = elements.appendTo("body");
+				var buttonSetup = {};
+				buttonSetup[ dialogReplacements['applyForeColor'] ] = function() {
+					dialog.find('input.applyForeColor').click();
+				};
+				buttonSetup[ dialogReplacements['applyBgColor'] ] = function() {
+					dialog.find('input.applyBgColor').click();
+				};
+				buttonSetup[ dialogReplacements['reset'] ] = function() {
+					dialog.find('input:reset').click();
+				};
+				
 				dialog.dialog({
 					modal: true,
-
 					open: function (event, ui) {
-						$("input:submit", elements).click(function (e) {
+						$("input:button,input:reset", elements).hide();
+						$("input.applyForeColor,input.applyBgColor", elements).click(function (e) {
 							var color = $('input[name="color"]', dialog).val();
 							self.color.fore.prev = color;
 							self.addColorToPalette("fore", color);
@@ -147,7 +160,15 @@
 								Wysiwyg.ui.returnRange();
 							}
 
-							Wysiwyg.editorDoc.execCommand('ForeColor', false, color);
+							if ($(this).hasClass('applyForeColor')) {
+								Wysiwyg.editorDoc.execCommand('ForeColor', false, color);
+							} else {
+								if ($.browser.msie)
+									Wysiwyg.editorDoc.execCommand('BackColor', false, color);
+								else
+									Wysiwyg.editorDoc.execCommand('hilitecolor',false,color);							
+							}							
+							
 							$(dialog).dialog("close");
 							return false;
 						});
@@ -163,7 +184,7 @@
 							e.stopPropagation();
 						});
 					},
-
+					buttons : buttonSetup,
 					close: function (event, ui) {
 						$.wysiwyg.controls.colorpicker.modalOpen = false;
 						dialog.dialog("destroy");
@@ -182,7 +203,7 @@
 					this.renderPalette(elements, "fore");
 					elements.find("input[name=color]").val(self.color.fore.prev);
 					elements.find(".wheel").farbtastic(elements.find("input:text"));
-					$("input:submit", elements).click(function (event) {
+					$("input.applyForeColor,input.applyBgColor", elements).click(function (event) {
 						var color = $('input[name="color"]', elements).val();
 						self.color.fore.prev = color;
 						self.addColorToPalette("fore", color);
@@ -191,7 +212,14 @@
 							Wysiwyg.ui.returnRange();
 						}
 
-						Wysiwyg.editorDoc.execCommand('ForeColor', false, color);
+						if ($(this).hasClass('applyForeColor')) {
+							Wysiwyg.editorDoc.execCommand('ForeColor', false, color);
+						} else {
+							if ($.browser.msie)
+								Wysiwyg.editorDoc.execCommand('BackColor', false, color);
+							else
+								Wysiwyg.editorDoc.execCommand('hilitecolor',false,color);							
+						}
 
 						$(elements).remove();
 						$.wysiwyg.controls.colorpicker.modalOpen = false;
@@ -239,7 +267,7 @@
 				});
 
 				colorSelect = $("<li>" + this.color[type].palette[i] + "</li>")
-					.css({"float": "left", "list-style": "none"})
+					.css({"cursor": "pointer", "list-style": "none"})
 					.append(colorExample)
 					.bind("click.wysiwyg", bind);
 

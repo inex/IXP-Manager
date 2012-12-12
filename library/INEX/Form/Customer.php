@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,79 +22,47 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing customers
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_Customer extends INEX_Form
 {
-    /**
-     *
-     *
-     */
-    public function __construct( $options = null, $isEdit = false )
+    public function init()
     {
-        parent::__construct( $options );
-
-        $this->setDecorators(
-            array(
-                array(
-                    'ViewScript',
-                    array(
-                        'viewScript' => 'customer/forms/edit.tpl'
-                    )
-                )
-            )
-        );
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'customer/forms/edit.phtml' ] ] ] );
         
-        ////////////////////////////////////////////////
-        // Create and configure name element
-        ////////////////////////////////////////////////
-
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
-            ->setAttrib( 'class', 'span3' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name  );
 
-        ////////////////////////////////////////////////
-        // Create and configure type element
-        ////////////////////////////////////////////////
-
         $type = $this->createElement( 'select', 'type' );
-        $type->setMultiOptions( array( '0' => '' ) + Cust::$CUST_TYPES_TEXT )
+        $type->setMultiOptions( [ '0' => '' ] + \Entities\Customer::$CUST_TYPES_TEXT )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Type' )
-            ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'class', 'chzn-select span6' )
             ->setErrorMessages( array( 'Please select a customer type' ) );
-
         $this->addElement( $type );
-
-        ////////////////////////////////////////////////
-        // Create and configure shortname element
-        ////////////////////////////////////////////////
 
         $shortname = $this->createElement( 'text', 'shortname' );
         $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->addValidator('alnum')
+            ->addValidator( 'alnum' )
             ->addValidator( 'regex', false, array('/^[a-z0-9]+/' ) )
             ->setRequired( true )
-            ->setAttrib( 'class', 'span2' )
+            ->setAttrib( 'class', 'span4' )
             ->setLabel( 'Short Name' )
             ->addFilter( 'StringToLower' )
             ->addFilter( 'StringTrim' );
-
         $this->addElement( $shortname  );
 
 
@@ -102,9 +70,10 @@ class INEX_Form_Customer extends INEX_Form
         $corpwww->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', 'http://www.example.com/' )
+            ->setAttrib( 'class', 'span6' )
             ->setLabel( 'Corporate Website' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $corpwww );
 
         $datejoin = $this->createElement( 'text', 'datejoin' );
@@ -113,7 +82,7 @@ class INEX_Form_Customer extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Date Joined' )
             ->setAttrib( 'placeholder', 'YYYY-MM-DD' )
-            ->setAttrib( 'class', 'span2' )
+            ->setAttrib( 'class', 'span4' )
             ->addFilter( 'StringTrim' )
             ->setAttrib( 'id', 'datejoin' );
         $this->addElement( $datejoin );
@@ -123,27 +92,26 @@ class INEX_Form_Customer extends INEX_Form
             ->addValidator( 'regex', false, array('/^\d\d\d\d-\d\d-\d\d/' ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', 'YYYY-MM-DD' )
-            ->setAttrib( 'class', 'span2' )
+            ->setAttrib( 'class', 'span4' )
             ->setLabel( 'Date Left' )
             ->addFilter( 'StringTrim' );
         $this->addElement( $dateleave );
 
         $status = $this->createElement( 'select', 'status' );
-        $status->setMultiOptions( array( '0' => '' ) + Cust::$CUST_STATUS_TEXT )
+        $status->setMultiOptions( [ '0' => '' ] + \Entities\Customer::$CUST_STATUS_TEXT )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Status' )
             ->setRequired( true )
-            ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'class', 'chzn-select span6' )
             ->setErrorMessages( array( 'Please set the customer\'s status' ) );
         $this->addElement( $status );
-
 
 
         $autsys = $this->createElement( 'text', 'autsys' );
         $autsys->addValidator('int')
             ->addValidator( 'greaterThan', false, array( -1 ) )
             ->setRequired( false )
-            ->setAttrib( 'class', 'span2' )
+            ->setAttrib( 'class', 'span4' )
             ->setLabel( 'AS Number' );
         $this->addElement( $autsys  );
 
@@ -151,7 +119,7 @@ class INEX_Form_Customer extends INEX_Form
         $maxprefixes->addValidator('int')
             ->addValidator( 'greaterThan', false, array( -1 ) )
             ->setRequired( false )
-            ->setAttrib( 'class', 'span1' )
+            ->setAttrib( 'class', 'span2' )
             ->setLabel( 'Max Prefixes' );
         $this->addElement( $maxprefixes  );
 
@@ -159,16 +127,17 @@ class INEX_Form_Customer extends INEX_Form
         $peeringemail->addValidator('emailAddress' )
             ->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
             ->setAttrib( 'placeholder', 'peering@example.com' )
             ->setLabel( 'Email' );
         $this->addElement( $peeringemail );
 
         $peeringpolicy = $this->createElement( 'select', 'peeringpolicy' );
-        $peeringpolicy->setMultiOptions( array( 0 => '' ) + Cust::$PEERING_POLICIES )
+        $peeringpolicy->setMultiOptions( [ 0 => '' ] + \Entities\Customer::$PEERING_POLICIES )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Peering Policy' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select' );
+            ->setAttrib( 'class', 'chzn-select span6' );
         
         $this->addElement( $peeringpolicy );
         
@@ -178,25 +147,12 @@ class INEX_Form_Customer extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Peering Macro' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setAttrib( 'class', 'span4' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $peeringmacro );
 
 
-
-        $irrdb = $this->createElement( 'select', 'irrdb' );
-
-        $maxIrrdbId = $this->createSelectFromDatabaseTable( $irrdb, 'Irrdbconfig', 'id',
-            array( 'source', 'host' ),
-            'source'
-        );
-
-        $irrdb->setRegisterInArrayValidator( true )
-            ->setRequired( false )
-            ->setLabel( 'IRRDB' )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setErrorMessages( array( 'Please select an IRRDB' ) );
-
-        $this->addElement( $irrdb );
+        $this->addElement( INEX_Form_IrrdbConfig::getPopulatedSelect() );
 
 
 
@@ -207,11 +163,9 @@ class INEX_Form_Customer extends INEX_Form
 
 
         $this->addDisplayGroup(
-            array(
-            	'autsys', 'maxprefixes', 'peeringemail', 'peeringmacro', 'peeringpolicy', 'irrdb', 'activepeeringmatrix'
-            ),
+            [ 'autsys', 'maxprefixes', 'peeringemail', 'peeringmacro', 'peeringpolicy', 'irrdb', 'activepeeringmatrix' ],
     		'peeringDisplayGroup'
-            );
+        );
         $this->getDisplayGroup( 'peeringDisplayGroup' )->setLegend( 'Peering Details' );
 
         
@@ -221,19 +175,19 @@ class INEX_Form_Customer extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Phone' )
             ->setAttrib( 'placeholder', '+353 1 123 4567' )
-            ->setAttrib( 'class', 'span2' )
+            ->setAttrib( 'class', 'span4' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocphone );
 
         $noc24hphone = $this->createElement( 'text', 'noc24hphone' );
         $noc24hphone->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', '+353 86 876 5432' )
-            ->setAttrib( 'class', 'span2' )
+            ->setAttrib( 'class', 'span4' )
             ->setLabel( '24h Phone' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $noc24hphone );
 
         $nocfax = $this->createElement( 'text', 'nocfax' );
@@ -241,25 +195,26 @@ class INEX_Form_Customer extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Fax' )
             ->setAttrib( 'placeholder', '+353 1 765 4321' )
-            ->setAttrib( 'class', 'span2' )
+            ->setAttrib( 'class', 'span4' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocfax );
 
         $nocemail = $this->createElement( 'text', 'nocemail' );
         $nocemail->addValidator('emailAddress' )
             ->addValidator( 'stringLength', false, array( 0, 40 ) )
             ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
             ->setAttrib( 'placeholder', 'noc@example.com' )
             ->setLabel( 'E-Mail' );
         $this->addElement( $nocemail );
 
         $nochours = $this->createElement( 'select', 'nochours' );
-        $nochours->setMultiOptions( array( '0' => '' ) + Cust::$NOC_HOURS )
+        $nochours->setMultiOptions( [ '0' => '' ] + \Entities\Customer::$NOC_HOURS )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Hours' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select' );
+            ->setAttrib( 'class', 'chzn-select span6' );
         $this->addElement( $nochours );
         
         
@@ -268,8 +223,9 @@ class INEX_Form_Customer extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Website' )
             ->setAttrib( 'placeholder', 'http://www.noc.example.com/' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocwww );
 
         $this->addDisplayGroup(
@@ -286,40 +242,44 @@ class INEX_Form_Customer extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Contact' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setAttrib( 'class', 'span6' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingContact );
 
         $billingAddress1 = $this->createElement( 'text', 'billingAddress1' );
         $billingAddress1->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
             ->setLabel( 'Address' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress1 );
 
         $billingAddress2 = $this->createElement( 'text', 'billingAddress2' );
         $billingAddress2->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
             ->setLabel( '' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress2 );
 
         $billingCity = $this->createElement( 'text', 'billingCity' );
         $billingCity->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
+            ->setAttrib( 'class', 'span4' )
             ->setLabel( 'City' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingCity );
 
         $billingCountry = $this->createElement( 'select', 'billingCountry' );
-        $billingCountry->setMultiOptions( INEX_Countries::getCountriesArray() )
+        $billingCountry->setMultiOptions( OSS_Countries::getCountriesArray() )
             ->setRegisterInArrayValidator( true )
             ->setValue( 'IE' )
             ->setLabel( 'Country' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select' );
+            ->setAttrib( 'class', 'chzn-select span6' );
         
         $this->addElement( $billingCountry );
         
@@ -329,46 +289,48 @@ class INEX_Form_Customer extends INEX_Form
         
         
         $this->addDisplayGroup(
-            array( 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry' ),
+            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry' ],
         	'billingDisplayGroup'
         );
         $this->getDisplayGroup( 'billingDisplayGroup' )->setLegend( 'Billing Details' );
 
 
+        
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
+            ->setAttrib( 'class', 'span3' )
             ->setRequired( false )
-            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 60 )
             ->setAttrib( 'rows', 5 );
         $this->addElement( $notes );
-
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='" . Zend_Controller_Front::getInstance()->getBaseUrl() . "/customer/list'" ) );
-
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add New Customer' ) );
-
+        
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
     }
 
-    public function assignFormToModel( $model )
+
+    
+    /**
+     * Create a SELECT / dropdown element of all customer names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'custid' )
     {
-        $columns = Doctrine::getTable( "Cust" )->getFieldNames();
-
-        foreach( $this->getElements() as $elementName => $elementConfig )
-            if( in_array( $elementName, $columns ) )
-                $model->$elementName = $this->getValue( $elementName );
-
-        return $model;
-    }
-
-    public function assignModelToForm( $model )
-    {
-        $columns = Doctrine::getTable( "Cust" )->getFieldNames();
-
-        foreach( $this->getElements() as $elementName => $elementConfig )
-            if( in_array( $elementName, $columns ) )
-                $this->getElement( $elementName )->setValue( $model->$elementName );
-
-        return $this;
+        $cust = new Zend_Form_Element_Select( $name );
+        
+        $maxId = self::populateSelectFromDatabase( $cust, '\\Entities\\Customer', 'id', 'name', 'name', 'ASC' );
+        
+        $cust->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Customer' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a customer' ) ) );
+        
+        return $cust;
     }
 
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\PhysicalInterface" table="physicalinterface" repository-class="Repositories\PhysicalInterface" tableName="physicalinterface">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="status" type="integer" nullable="true"/>
+    <field name="speed" type="integer" nullable="true"/>
+    <field name="duplex" type="string" length="16" nullable="true"/>
+    <field name="monitorindex" type="integer" nullable="true"/>
+    <field name="notes" type="text" nullable="true"/>
+    <one-to-one field="SwitchPort" target-entity="Entities\SwitchPort" inversed-by="PhysicalInterface">
+      <join-columns>
+        <join-column name="switchportid" referenced-column-name="id" unique="true"/>
+      </join-columns>
+    </one-to-one>
+    <many-to-one field="VirtualInterface" target-entity="Entities\VirtualInterface" inversed-by="PhysicalInterfaces">
+      <join-columns>
+        <join-column name="virtualinterfaceid" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

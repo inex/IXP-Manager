@@ -1,0 +1,33 @@
+
+{if isset( $hasIdentity ) and $hasIdentity and $user->getPrivs() eq 3}
+
+        </div><!--/span-->
+    </div><!--/row-->
+{/if}
+
+{tmplinclude file='footer-content.phtml'}
+
+{if !isset( $mode ) or $mode neq 'fluid'}
+    
+    </div> <!-- </div class="container"> -->
+
+{/if}
+
+
+<script>
+    $( ".chzn-select" ).chosen();
+
+    {if $user->getPrivs() eq 3}
+        $( "#menu-select-customer" ).chosen().change( function(){
+            document.location.href = '{genUrl controller="customer" action="overview"}/id/' + $( "#menu-select-customer" ).val();
+        });
+
+        {if isset( $acust )}
+            $( "#menu-select-customer" ).val( {$acust.id} );
+            $( "#menu-select-customer" ).trigger( "liszt:updated" );
+        {/if}
+    {/if}
+</script>
+
+</body>
+</html>

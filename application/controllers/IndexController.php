@@ -22,40 +22,29 @@
  */
 
 
-/*
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
+/**
+ * Controller: Index controller
+ *
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class IndexController extends INEX_Controller_Action
 {
 
     public function indexAction()
     {
-        // We lose the message when redirected back here and then onwards from here. Fix:
-        if( ( $m = $this->view->message ) !== null )
-            $this->session->message = $m;
-
-        $auth = Zend_Auth::getInstance();
-        if( !$auth->hasIdentity() )
-            $this->_forward( 'login', 'auth' );
+        if( !$this->getAuth()->hasIdentity() )
+            $this->redirectAndEnsureDie( 'auth/login' );
+        
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+            $this->_redirect( 'admin/index' );
+        else if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+            $this->_redirect( 'user/list' );
         else
-        {
-            $identity = $auth->getIdentity();
-
-            if( $identity['user']['privs'] == User::AUTH_SUPERUSER )
-            {
-                $this->_forward( 'index', 'admin' );
-            }
-            else if( $identity['user']['privs'] == User::AUTH_CUSTADMIN )
-            {
-                $this->_redirect( 'cust-admin/users' );
-            }
-            else
-            {
-                $this->_redirect( 'dashboard' );
-            }
-        }
+            $this->forward( 'index', 'dashboard' );
     }
 
     public function controllerDisabledAction()
@@ -64,13 +53,6 @@ class IndexController extends INEX_Controller_Action
     }
 
     public function aboutAction()
-    {
-        $this->view->display( 'index/about.tpl' );
-    }
+    {}
 
-    public function helpAction()
-    {
-        $this->view->display( 'index/help.tpl' );
-    }
-    
 }

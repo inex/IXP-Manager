@@ -1,0 +1,41 @@
+<div class="modal-header">
+        <a href="#" class="close" data-dismiss="modal">&times;</a>
+           <h1>{$feParams->pagetitle}</h1>
+    </div>
+<div class="modal-body" style="min-height: 200px;">
+
+    
+    {OSS_Message}
+
+    {* do we have any additional text to put before the view? *}
+    {if $viewPreamble}{include file=$viewPreamble}{/if}
+
+    <dl>
+        {foreach $feParams->viewColumns as $col => $cconf}
+            {if not is_array( $cconf ) or not isset( $cconf.display ) or $cconf.display}
+                <dt>
+                    {if not is_array( $cconf )}{$cconf}{else}{$cconf.title}{/if}
+                </dt>
+                <dd>
+                    {if not is_array( $cconf )}
+                        {$object.$col}
+                    {elseif isset( $cconf.type )}
+                        {if $cconf.type eq $FE_COL_TYPES.HAS_ONE}
+                            {assign var=hasOneId value=$cconf.idField}
+                            <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$object.$hasOneId}">{$object.$col}</a>
+                        {else}
+                            Type?
+                        {/if}
+                    {else}
+                        {$object.$col}
+                    {/if}
+                </dd>
+            {/if}
+        {/foreach}
+    </dl>
+    
+    {* do we have any additional text to put after the view? *}
+    {if $viewPostamble}{include file=$viewPostamble}{/if}
+
+{if $viewScript}<script>{include file=$viewScript}</script>{/if}
+</div>

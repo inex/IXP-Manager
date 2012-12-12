@@ -21,21 +21,20 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+/**
+ * Controller: User profile
+ *
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 
-class ProfileController extends INEX_Controller_Action
+class ProfileController extends INEX_Controller_AuthRequiredAction
 {
-    /**
-     *
-     * @var INEX_Form_ProfilePassword
-     */
-    protected $_passwordForm;
-
-    /**
-     *
-     * @var INEX_Form_Profile
-     */
-    protected $_profileForm;
-
+    use OSS_Controller_Trait_Profile;
+    
     /**
      * Users mailing list subs as set via init() -> _initMailingListSubs()
      *
@@ -43,174 +42,109 @@ class ProfileController extends INEX_Controller_Action
      */
     protected $_mailinglists;
     
+
+    /**
+     * Return the appropriate change password form for your application
+     */
+    protected function _getFormChangePassword()
+    {
+        return new INEX_Form_ChangePassword();
+    }
+    
+    /**
+     * Return the appropriate change profile form for your application
+     */
+    protected function _getFormProfile()
+    {
+        $pf = new INEX_Form_Profile();
+        
+        $pf->getElement( 'username' )->setValue( $this->getUser()->getUsername() );
+        $pf->getElement( 'mobile'   )->setValue( $this->getUser()->getAuthorisedMobile() );
+        $pf->getElement( 'email'    )->setValue( $this->getUser()->getEmail() );
+        
+        return $pf;
+    }
+    
     
     
     public function init()
     {
-        // Show the users details (if logged in)
-        if( !$this->auth->hasIdentity() )
-            $this->_forward( 'index', 'auth' );
-
-        $this->_passwordForm = new INEX_Form_ProfilePassword();
-        $this->_passwordForm->setAction(
-            Zend_Controller_Front::getInstance()->getBaseUrl()
-            . '/' . $this->getRequest()->getParam( 'controller' )
-            . '/change-password'
-        );
-
-        $this->_profileForm = new INEX_Form_Profile();
-        $this->_profileForm->getElement( 'username' )->setValue( $this->user['username'] );
-        $this->_profileForm->getElement( 'email' )->setValue( $this->user['email'] );
-        $this->_profileForm->getElement( 'mobile' )->setValue( $this->user['authorisedMobile'] );
-        $this->_profileForm->setAction(
-            Zend_Controller_Front::getInstance()->getBaseUrl()
-            . '/' . $this->getRequest()->getParam( 'controller' )
-            . '/change-profile'
-        );
-
-        // mailing list management
         $this->_initMailingListSubs();
     }
 
     public function indexAction()
     {
-        $this->view->profileForm  = $this->_profileForm->render( $this->view );
-        $this->view->passwordForm = $this->_passwordForm->render( $this->view );
-        $this->view->mailinglists = $this->_mailinglists;
+        if( !isset( $this->view->profileForm ) )
+            $this->view->profileForm = $this->_getFormProfile();
         
-        $this->view->display( 'profile/index.tpl' );
+        if( !isset( $this->view->passwordForm ) )
+            $this->view->passwordForm = $this->_getFormChangePassword();
     }
 
-
+    protected function changePasswordPostFlush()
+    {
+        $this->clearUserFromCache();
+    }
+    
     /**
      * Action to allow a user to change their profile
      *
      */
     public function changeProfileAction()
     {
-        if( $this->_profileForm->isValid( $_POST ) )
+        $this->view->profileForm = $form = $this->_getFormProfile();
+        
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
-            // update the user
-            $this->user['authorisedMobile'] = $this->_profileForm->getValue( 'mobile' );
-            // $this->user['email']            = $this->_profileForm->getValue( 'email' );
-
-            try
-            {
-                $this->user->save();
-            }
-            catch( Doctrine_Exception $e )
-            {
-                $this->getLogger()->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
-                    Zend_Log::CRIT
-                );
-                $this->view->message = new INEX_Message( 'Internal Error: Your profile could not be changed', 'error' );
-                return( $this->indexAction() );
-            }
-
-            $this->view->message = new INEX_Message( 'Your profile has been changed', 'success' );
-
+            // update the users profile
+            $this->getUser()->setAuthorisedMobile( $form->getValue( 'mobile' ) );
+            $this->getUser()->setLastUpdated( new DateTime() );
+            $this->getUser()->setLastUpdatedBy( $this->getUser()->getId() );
+            $this->getD2EM()->flush();
+            $this->clearUserFromCache();
+            
+            $this->getLogger()->info( "User {$this->getUser()->getUsername()} updated own profile" );
+            $this->addMessage( _( 'Your profile has been changed.' ), OSS_Message::SUCCESS );
+            $this->redirect( 'profile/index' );
         }
-
-        $this->indexAction();
+    
+        $this->forward( 'index' );
     }
+    
 
-
-    /**
-     * Action to allow a user to change their password
-     *
-     */
-    public function changePasswordAction()
-    {
-        if( $this->_passwordForm->isValid( $_POST ) )
-        {
-            // let's do some suplementary checks
-            if( $this->_passwordForm->getValue( 'password1' ) != $this->_passwordForm->getValue( 'password2' ) )
-            {
-                $this->_passwordForm->getElement( 'password2' )->addError(
-                	'Your passwords do not match'
-                );
-                return( $this->indexAction() );
-            }
-
-            if( $this->_passwordForm->getValue( 'oldpassword' ) != $this->user->password )
-            {
-                $this->_passwordForm->getElement( 'oldpassword' )->addError(
-                    'You have entered an incorrect current password'
-                );
-                return( $this->indexAction() );
-            }
-
-            // update the users password
-            $this->user['password'] = $this->_passwordForm->getValue( 'password1' );
-
-            $this->_passwordForm->reset();
-
-            try
-            {
-                $this->user->save();
-            }
-            catch( Doctrine_Exception $e )
-            {
-                $this->getLogger()->log( 'Doctrine save() error: ' . $e->getMessage() . ' in Profile/ChangePassword',
-                    Zend_Log::CRIT
-                );
-                $this->view->message = new INEX_Message( 'Internal Error: Your password could not be changed', 'error' );
-                return( $this->indexAction() );
-            }
-
-            $this->view->message = new INEX_Message( 'Your password has been changed', 'success' );
-
-        }
-
-        $this->indexAction();
-    }
     
     public function updateMailingListsAction()
     {
         // need to capture all users with the given email
-        $users = Doctrine::getTable( 'User' )->findByEmail( $this->getUser()->email );
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->findBy( [ 'email' => $this->getUser()->getEmail() ] );
         
-        foreach( $this->_mailinglists as $name => $ml )
+        foreach( $this->_options['mailinglists'] as $name => $ml )
         {
             if( isset( $_POST["ml_{$name}"] ) && $_POST["ml_{$name}"] )
-            {
-                $this->_mailinglists[$name]['subscribed'] = 1;
                 foreach( $users as $u )
                     $u->setPreference( "mailinglist.{$name}.subscribed", 1 );
-            }
             else
-            {
-                $this->_mailinglists[$name]['subscribed'] = 0;
                 foreach( $users as $u )
                     $u->setPreference( "mailinglist.{$name}.subscribed", 0 );
-            }
         }
         
-        $this->view->message = new INEX_Message( 'Your mailing list subscriptions have been updated and will take effect within 12 hours.', 'success' );
-        
-        $this->_forward( 'index' );
+        $this->getD2EM()->flush();
+        $this->addMessage( 'Your mailing list subscriptions have been updated and will take effect within 12 hours.', OSS_Message::SUCCESS );
+        $this->redirect( 'profile/index' );
     }
     
     private function _initMailingListSubs()
     {
         // are we using mailing lists?
-        if( !isset( $this->config['mailinglist']['enabled'] ) || !$this->config['mailinglist']['enabled'] )
-        {
-            $this->view->mailinglist_enabled = false;
-            return;
-        }
-        
-        $this->view->mailinglist_enabled = true;
-        
-        if( !isset( $this->config['mailinglists'] ) )
+        if( !isset( $this->_options['mailinglist']['enabled'] ) || !$this->_options['mailinglist']['enabled'] )
             return;
         
-        $this->_mailinglists = $this->config['mailinglists'];
+        $mlsubs = [];
         
-        foreach( $this->_mailinglists as $name => $ml )
-        {
-            $this->_mailinglists[$name]['subscribed'] = $this->getUser()->getPreference( "mailinglist.{$name}.subscribed" );
-        }
+        foreach( $this->_options['mailinglists'] as $name => $ml )
+            $mlsubs[$name] = $this->getUser()->getPreference( "mailinglist.{$name}.subscribed" );
+        
+        $this->view->mlsubs = $mlsubs;
     }
 }
 

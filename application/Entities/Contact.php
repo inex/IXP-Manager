@@ -1,0 +1,335 @@
+<?php
+
+namespace Entities;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Entities\Contact
+ */
+class Contact
+{
+    /**
+     * @var string $name
+     */
+    private $name;
+
+    /**
+     * @var string $email
+     */
+    private $email;
+
+    /**
+     * @var string $phone
+     */
+    private $phone;
+
+    /**
+     * @var string $mobile
+     */
+    private $mobile;
+
+    /**
+     * @var integer $facilityaccess
+     */
+    private $facilityaccess;
+
+    /**
+     * @var boolean $mayauthorize
+     */
+    private $mayauthorize;
+
+    /**
+     * @var \DateTime $lastupdated
+     */
+    private $lastupdated;
+
+    /**
+     * @var integer $lastupdatedby
+     */
+    private $lastupdatedby;
+
+    /**
+     * @var string $creator
+     */
+    private $creator;
+
+    /**
+     * @var \DateTime $created
+     */
+    private $created;
+
+    /**
+     * @var integer $id
+     */
+    private $id;
+
+    /**
+     * @var Entities\Customer
+     */
+    private $Customer;
+
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Contact
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return Contact
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     * @return Contact
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    
+        return $this;
+    }
+
+    /**
+     * Get phone
+     *
+     * @return string 
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set mobile
+     *
+     * @param string $mobile
+     * @return Contact
+     */
+    public function setMobile($mobile)
+    {
+        $this->mobile = $mobile;
+    
+        return $this;
+    }
+
+    /**
+     * Get mobile
+     *
+     * @return string 
+     */
+    public function getMobile()
+    {
+        return $this->mobile;
+    }
+
+    /**
+     * Set facilityaccess
+     *
+     * @param integer $facilityaccess
+     * @return Contact
+     */
+    public function setFacilityaccess($facilityaccess)
+    {
+        $this->facilityaccess = $facilityaccess;
+    
+        return $this;
+    }
+
+    /**
+     * Get facilityaccess
+     *
+     * @return integer 
+     */
+    public function getFacilityaccess()
+    {
+        return $this->facilityaccess;
+    }
+
+    /**
+     * Set mayauthorize
+     *
+     * @param boolean $mayauthorize
+     * @return Contact
+     */
+    public function setMayauthorize($mayauthorize)
+    {
+        $this->mayauthorize = $mayauthorize;
+    
+        return $this;
+    }
+
+    /**
+     * Get mayauthorize
+     *
+     * @return boolean 
+     */
+    public function getMayauthorize()
+    {
+        return $this->mayauthorize;
+    }
+
+    /**
+     * Set lastupdated
+     *
+     * @param \DateTime $lastupdated
+     * @return Contact
+     */
+    public function setLastupdated($lastupdated)
+    {
+        $this->lastupdated = $lastupdated;
+    
+        return $this;
+    }
+
+    /**
+     * Get lastupdated
+     *
+     * @return \DateTime 
+     */
+    public function getLastupdated()
+    {
+        return $this->lastupdated;
+    }
+
+    /**
+     * Set lastupdatedby
+     *
+     * @param integer $lastupdatedby
+     * @return Contact
+     */
+    public function setLastupdatedby($lastupdatedby)
+    {
+        $this->lastupdatedby = $lastupdatedby;
+    
+        return $this;
+    }
+
+    /**
+     * Get lastupdatedby
+     *
+     * @return integer 
+     */
+    public function getLastupdatedby()
+    {
+        return $this->lastupdatedby;
+    }
+
+    /**
+     * Set creator
+     *
+     * @param string $creator
+     * @return Contact
+     */
+    public function setCreator($creator)
+    {
+        $this->creator = $creator;
+    
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return string 
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Contact
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+    
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set Customer
+     *
+     * @param Entities\Customer $customer
+     * @return Contact
+     */
+    public function setCustomer(\Entities\Customer $customer = null)
+    {
+        $this->Customer = $customer;
+    
+        return $this;
+    }
+
+    /**
+     * Get Customer
+     *
+     * @return Entities\Customer 
+     */
+    public function getCustomer()
+    {
+        return $this->Customer;
+    }
+}

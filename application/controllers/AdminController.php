@@ -23,37 +23,24 @@
 
 
 /**
- * CustAdminController
+ * Controller: Default controller for AUTH_SUPERUSER / admins
  *
- * @author
- * @version
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
-class AdminController extends INEX_Controller_Action
+class AdminController extends INEX_Controller_AuthRequiredAction
 {
-
 
     public function preDispatch()
     {
-        // let's get the user's details sorted before everything else
-        if( !$this->identity )
-            $this->_redirect( 'auth/login' );
-        else if( $this->user->privs != User::AUTH_SUPERUSER )
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
 	    {
-	        $this->view->message = new INEX_Message(
-	            "You must be an administrator to access this page. This attempt to access private and "
-	            . "secure sections of the site has been recorded and our administrators alerted.",
-	            INEX_Message::MESSAGE_TYPE_ERROR
-	        );
-
-	        $this->getLogger()->alert( $this->user->username . " tried to access the admin controller without sufficient permissions" );
-
-            Zend_Session::destroy( true, true );
-
-	        $this->_forward( 'login', 'auth' );
-	        return false;
+	        $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to access the admin controller without sufficient permissions" );
+	        $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
 	    }
-
     }
 
 
@@ -62,66 +49,61 @@ class AdminController extends INEX_Controller_Action
      */
     public function indexAction()
     {
-        LocationTable::getInterfacesByLocation();
         $this->_publicPeeringGraphs();
         $this->_dashboardStats();
-        $this->view->display( 'admin/index.tpl' );
     }
 
     
     /**
      * Get public peering graphs
      *
-     * FIXME On move to Doctrine2, use central cache rather than per user session cache
      */
     private function _publicPeeringGraphs()
     {
         // only do this once every five minutes
-        if( !isset( $this->session->ahome_stats ) || $this->session->ahome_stats['gen_at'] < ( time() - 300 ) )
+        if( $admin_home_stats = $this->getD2Cache()->fetch( 'admin_home_stats' ) )
         {
-            $this->session->ahome_stats = array();
-            $this->session->ahome_stats['gen_at'] = time();
+            $this->view->graphs = $admin_home_stats['graphs'];
+            $this->view->stats  = $admin_home_stats['stats'];
+        }
+        else
+        {
+            $admin_home_stats = [];
             
-            foreach( $this->config['mrtg']['traffic_graphs'] as $g )
+            foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
             {
                 $p = explode( '::', $g );
                 $graphs[$p[0]] = $p[1];
                 $images[]      = $p[0];
                 
                 $mrtg = new INEX_Mrtg(
-                    $this->config['mrtg']['path']
-                        . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-                        . 'ixp_peering-' . $p[0] . '-' . INEX_Mrtg::CATEGORY_BITS . '.log'
+                    $this->_options['mrtg']['path']
+                        . DIRECTORY_SEPARATOR . 'ixp_peering-' . $p[0]
+                        . '-' . INEX_Mrtg::CATEGORY_BITS . '.log'
                 );
                 
                 $stats[$p[0]] = $mrtg->getValues( INEX_Mrtg::PERIOD_MONTH, INEX_Mrtg::CATEGORY_BITS );
             }
             
-            $this->session->ahome_stats['graphs'] = $this->view->graphs     = $graphs;
-            $this->session->ahome_stats['stats']  = $this->view->stats      = $stats;
-        }
-        else
-        {
-            $this->view->graphs = $this->session->ahome_stats['graphs'];
-            $this->view->stats  = $this->session->ahome_stats['stats'];
+            $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
+            $admin_home_stats['stats']  = $this->view->stats      = $stats;
+            
+            $this->getD2Cache()->save( 'admin_home_stats', $admin_home_stats, 300 );
         }
     }
 
     /**
      * Get type counts
      *
-     * FIXME On move to Doctrine2, use central cache rather than per user session cache
      */
     private function _dashboardStats()
     {
-        // only do this once every 30 minutes
-        if( !isset( $this->session->ahome_ctypes ) || $this->session->ahome_ctypes['gen_at'] < ( time() - 1800 ) )
+        // only do this once every 60 minutes
+        if( !( $admin_home_ctypes = $this->getD2Cache()->fetch( 'admin_home_ctypes' ) ) )
         {
-            $this->session->ahome_ctypes = array();
-            $this->session->ahome_ctypes['gen_at'] = time();
-            $this->view->ctypes = $this->session->ahome_ctypes['types'] = CustTable::getTypeCounts();
+            $admin_home_ctypes['types'] = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getTypeCounts();
             
-            $ints = LocationTable::getInterfacesByLocation();
+            $ints = $this->getD2EM()->getRepository( 'Entities\\VirtualInterface' )->getByLocation();
             
             $speeds = array();
             $bylocation = array();
@@ -151,18 +133,17 @@ class AdminController extends INEX_Controller_Action
             }
             
             ksort( $speeds, SORT_NUMERIC );
-            $this->view->speeds      = $this->session->ahome_ctypes['speeds']      = $speeds;
-            $this->view->bylocation  = $this->session->ahome_ctypes['bylocation']  = $bylocation;
-            $this->view->bylan       = $this->session->ahome_ctypes['bylan']       = $bylan;
+            $this->view->speeds      = $admin_home_ctypes['speeds']      = $speeds;
+            $this->view->bylocation  = $admin_home_ctypes['bylocation']  = $bylocation;
+            $this->view->bylan       = $admin_home_ctypes['bylan']       = $bylan;
             
+            $this->getD2Cache()->save( 'admin_home_ctypes', $admin_home_ctypes, 3600 );
         }
-        else
-        {
-            $this->view->ctypes      = $this->session->ahome_ctypes['types'];
-            $this->view->speeds      = $this->session->ahome_ctypes['speeds'];
-            $this->view->bylocation  = $this->session->ahome_ctypes['bylocation'];
-            $this->view->bylan       = $this->session->ahome_ctypes['bylan'];
-        }
+        
+        $this->view->ctypes      = $admin_home_ctypes['types'];
+        $this->view->speeds      = $admin_home_ctypes['speeds'];
+        $this->view->bylocation  = $admin_home_ctypes['bylocation'];
+        $this->view->bylan       = $admin_home_ctypes['bylan'];
     }
     
     public function staticAction()

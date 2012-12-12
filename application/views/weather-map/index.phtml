@@ -1,0 +1,46 @@
+{tmplinclude file="header.phtml"}
+
+{if isset( $user ) and $user->getPrivs() eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            {if $weathermap}{$weathermap.name}{else}Weather Maps{/if}
+        </li>
+    </ul>
+    <div>
+{else}
+    <div class="page-content">
+    
+        <div class="page-header">
+            <h1>{if $weathermap}{$weathermap.name}{else}Weather Maps{/if}</h1>
+        </div>
+        
+{/if}
+
+{OSS_Message}
+
+{if $weathermap}
+    <iframe src="{$weathermap.url}"
+    		frameborder="0"
+    		scrolling="no"
+    		width="100%"
+    		height="{$weathermap.height}"
+    		style="margin: 0; padding: 0; margin-left: auto; margin-right: auto;"
+    	></iframe>
+{/if}
+
+{if isset( $weathermaps ) and is_array( $weathermaps )}
+    <h3>Available Weathermaps</h3>
+    
+    <ul>
+        {foreach $weathermaps as $id => $wp}
+            <li> <a href="{genUrl controller="weather-map" action="index" id=$id}">{$wp.name}</a> </li>
+        {/foreach}
+    </ul>
+{/if}
+
+</div>
+
+{tmplinclude file="footer.phtml"}

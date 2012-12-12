@@ -23,61 +23,75 @@
 
 
 /**
+ * Form: editing NOC details
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_Customer_NocDetails extends INEX_Form
 {
 
-    public function __construct( $options = null, $isEdit = false )
+    public function init()
     {
-        parent::__construct( $options );
-
         $nocphone = $this->createElement( 'text', 'nocphone' );
         $nocphone->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC Phone' )
+            ->setLabel( 'Phone' )
+            ->setAttrib( 'placeholder', '+353 1 123 4567' )
+            ->setAttrib( 'class', 'span4' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocphone );
 
         $noc24hphone = $this->createElement( 'text', 'noc24hphone' );
         $noc24hphone->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC 24h Phone' )
+            ->setAttrib( 'placeholder', '+353 86 876 5432' )
+            ->setAttrib( 'class', 'span4' )
+            ->setLabel( '24h Phone' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $noc24hphone );
 
         $nocfax = $this->createElement( 'text', 'nocfax' );
         $nocfax->addValidator( 'stringLength', false, array( 0, 40 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC Fax' )
+            ->setLabel( 'Fax' )
+            ->setAttrib( 'placeholder', '+353 1 765 4321' )
+            ->setAttrib( 'class', 'span4' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocfax );
 
         $nocemail = $this->createElement( 'text', 'nocemail' );
         $nocemail->addValidator('emailAddress' )
             ->addValidator( 'stringLength', false, array( 0, 40 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC E-Mail' );
+            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'placeholder', 'noc@example.com' )
+            ->setLabel( 'E-Mail' );
         $this->addElement( $nocemail );
 
-        $nochours = $this->createElement( 'text', 'nochours' );
-        $nochours->addValidator( 'stringLength', false, array( 0, 40 ) )
+        $nochours = $this->createElement( 'select', 'nochours' );
+        $nochours->setMultiOptions( [ '0' => '' ] + \Entities\Customer::$NOC_HOURS )
+            ->setRegisterInArrayValidator( true )
+            ->setLabel( 'Hours' )
             ->setRequired( false )
-            ->setLabel( 'NOC Hours' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setAttrib( 'class', 'chzn-select span6' );
         $this->addElement( $nochours );
-
+        
+        
         $nocwww = $this->createElement( 'text', 'nocwww' );
         $nocwww->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
-            ->setLabel( 'NOC WWW' )
+            ->setLabel( 'Website' )
+            ->setAttrib( 'placeholder', 'http://www.noc.example.com/' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocwww );
 
         $this->addDisplayGroup(
@@ -86,7 +100,7 @@ class INEX_Form_Customer_NocDetails extends INEX_Form
         );
         $this->getDisplayGroup( 'nocDisplayGroup' )->setLegend( 'NOC Details' );
 
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Update' ) );
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Update' ) ) );
     }
 
 }

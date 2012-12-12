@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,31 +22,19 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing meetings
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_Meeting extends INEX_Form
 {
-    /**
-     *
-     *
-     */
-    public function __construct( $options = null, $isEdit = false )
+    public function init()
     {
-        parent::__construct( $options );
-
-
-        ////////////////////////////////////////////////
-        // Create and configure title element
-        ////////////////////////////////////////////////
 
         $title = $this->createElement( 'text', 'title', array( 'size' => '100' ) );
         $title->addValidator( 'stringLength', false, array( 1, 255 ) )
@@ -54,15 +42,14 @@ class INEX_Form_Meeting extends INEX_Form
             ->setLabel( 'Title' )
             ->setValue( 'Members\' Meeting' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $title );
 
         $before_text = $this->createElement( 'textarea', 'before_text' );
         $before_text->setLabel( 'Preamble' )
             ->setRequired( false )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 120 )
             ->setAttrib( 'class', 'span9' )
             ->setAttrib( 'rows', 10 );
@@ -72,7 +59,7 @@ class INEX_Form_Meeting extends INEX_Form
         $after_text->setLabel( 'Postamble' )
             ->setRequired( false )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 120 )
             ->setAttrib( 'class', 'span9' )
             ->setAttrib( 'rows', 10 );
@@ -101,7 +88,7 @@ class INEX_Form_Meeting extends INEX_Form
             ->setRequired( true )
             ->setLabel( 'Venue' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $venue );
 
@@ -110,18 +97,36 @@ class INEX_Form_Meeting extends INEX_Form
             ->setRequired( false )
             ->setLabel( 'Venue URL' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->addFilter( new OSS_Filter_StripSlashes() )
             ->setValue( '' );
 
         $this->addElement( $venue_url );
 
 
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='" . Zend_Controller_Front::getInstance()->getBaseUrl() . "/customer/list'" ) );
-
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
-
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
     }
-
+    
+    /**
+     * Create a SELECT / dropdown element of all meetings indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'meeting_id' )
+    {
+        $e = new Zend_Form_Element_Select( $name );
+    
+        $maxId = self::populateSelectFromDatabase( $e, '\\Entities\\Meeting', 'id', [ 'title' => [ 'type' => 'STRING' ], 'date' => [ 'type' => 'DATE', 'format' => 'Y-m-d' ] ], 'title', 'ASC' );
+    
+        $e->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Meeting' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a meeting' ) ) );
+    
+        return $e;
+    }
+    
 }
-
-?>

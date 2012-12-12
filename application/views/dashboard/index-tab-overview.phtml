@@ -1,0 +1,53 @@
+
+<div class="row-fluid">
+
+    <div class="span6">
+        <h3>Aggregate Traffic Statistics</h3>
+        <br />
+        <div class="well">
+        	<a href="{genUrl controller="statistics" action="drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex='aggregate'}">
+                {genMrtgImgUrlTag shortname=$user->getCustomer()->getShortname() category='bits' monitorindex='aggregate'}
+            </a>
+        </div>
+    </div>
+    
+    <div class="span6">
+
+        <h3>Recent Members</h3>
+
+        <p>Our three most recent members are listed below. {if not $user->getCustomer()->isTypeAssociate()}Have you arranged peering with them yet?{/if}</p>
+
+        <table id="recentMembersTable" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>AS Number</th>
+                    <th>Date Joined</th>
+                    {if not $user->getCustomer()->isTypeAssociate()}
+                        <th>Peering Contact</th>
+                    {/if}
+                </tr>
+            </thead>
+            <tbody>
+
+            {foreach $recentMembers as $rm}
+                <tr>
+                    <td>{$rm->getName()}</td>
+                    <td>{$rm->getAutsys()|asnumber}</td>
+                    <td>{$rm->getDatejoin()->format( 'Y-m-d' )}</td>
+                    {if not $user->getCustomer()->isTypeAssociate()}
+                        <td>
+                            <a href="mailto:{$rm->getPeeringemail()}">{$rm->getPeeringemail()}</a>
+                        </td>
+                    {/if}
+                </tr>
+            {/foreach}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+        
+{tmplinclude file="dashboard/index-tab-overview-news.phtml"}
+        

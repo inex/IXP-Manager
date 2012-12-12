@@ -1,4 +1,6 @@
 .project
+.buildpath
+.settings/
 ixp-manager.sublime-workspace
 bin/mailing-list-sync.sh
 public/.htaccess
@@ -22,6 +24,9 @@ library/bootstrap-wysihtml5
 library/Throbber.js
 library/wysihtml5
 library/jwysiwyg
+library/OSS
+library/OSS-Framework.git
+library/wiki/
 *~
 public/images/.directory
 public/images/joomla-admin/.directory

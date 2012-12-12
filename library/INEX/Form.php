@@ -28,7 +28,14 @@
  */
 class INEX_Form extends Twitter_Form
 {
-
+    use OSS_Form_Trait;
+    use OSS_Form_Trait_CancelLocation;
+    use OSS_Form_Trait_IsEdit;
+    use OSS_Form_Trait_GenericElements;
+    use OSS_Form_Trait_InsertElementFns;
+    // use OSS_Form_Trait_Doctrine1Mapping;
+    use OSS_Form_Trait_Doctrine2;
+    
     /**
      * A list of elements we should not update on an edit
      * if the submitted data is an empty string.
@@ -36,142 +43,22 @@ class INEX_Form extends Twitter_Form
      */
     public $onEditSkipIfBlank = null;
     
-    public $isEdit = false;
-
-    public function __construct( $options = null, $isEdit = false )
+    public function __construct( $options = null )
     {
-        parent::__construct( $options );
-
-        $this->isEdit = $isEdit;
-        
         $this->setAttrib( 'accept-charset', 'UTF-8' );
         $this->setMethod( 'post' );
         $this->setAttrib( "horizontal", true );
         
         $this->onEditSkipIfBlank = array();
-    }
-
-    public function assignFormToModel( $model, $controller, $isEdit )
-    {
-
-        // For logic to decide what non super users can edit:
-        //         $auth = Zend_Auth::getInstance();
-        //         if( $auth->hasIdentity() )
-        //             $identity = $auth->getIdentity();
-        //         else
-        //             return false;
-
-        //$identity['user']['privs']
-
-
-        $columns = Doctrine::getTable( get_class( $model ) )->getFieldNames();
-
-        foreach( $this->getElements() as $elementName => $elementConfig )
-        {
-            if( in_array( $elementName, $columns ) )
-            {
-                // don't remove certain elements on an edit
-                if( $isEdit and in_array( $elementName, $this->onEditSkipIfBlank ) and $this->getValue( $elementName ) == '' )
-                    continue;
-
-                $model->$elementName = $this->getValue( $elementName );
-            }
-        }
-
-        return $model;
-    }
-
-    public function assignModelToForm( $model, $controller )
-    {
-        $columns = Doctrine::getTable( $controller->getModelName() )->getFieldNames();
-
-        foreach( $this->getElements() as $elementName => $elementConfig )
-            if( in_array( $elementName, $columns ) )
-                $this->getElement( $elementName )->setValue( $model->$elementName );
-
-        return $this;
-    }
-
-    public function assignFromModel( $model )
-    {
-        $columns = $model->getTable()->getFieldNames();
-    
-        foreach( $this->getElements() as $elementName => $elementConfig )
-            if( in_array( $elementName, $columns ) )
-            $this->getElement( $elementName )->setValue( $model->$elementName );
-    
-        return $this;
+        
+        $this->addElementPrefixPath( 'OSS_Filter',   'OSS/Filter/',   'filter' );
+        $this->addElementPrefixPath( 'OSS_Validate', 'OSS/Validate/', 'validate' );
+        
+        if( method_exists( $this, 'initialiseTraits' ) )
+            $this->initialiseTraits( $options );
+        
+        parent::__construct( $options );
     }
     
-    public function assignToModel( $model, $isEdit = true )
-    {
-        $columns = $model->getTable()->getFieldNames();
-    
-        foreach( $this->getElements() as $elementName => $elementConfig )
-        {
-            if( in_array( $elementName, $columns ) )
-            {
-                // don't remove certain elements on an edit
-                if( $isEdit and in_array( $elementName, $this->onEditSkipIfBlank ) and $this->getValue( $elementName ) == '' )
-                    continue;
-    
-                $model->$elementName = $this->getValue( $elementName );
-            }
-        }
-    
-        return $model;
-    }
-    
-    
-    /**
-     * Populate a Zend_Form SELECT element from a database table
-     *
-     *
-     * @param Form_Element $element The form element to populate
-     * @param string $model The model to select items from
-     * @param string $indexElement The element with which to set the select value attributes with
-     * @param string|array $displayElements If a string, then the element to show in the select, if an array, a list of elements concatenated with dashes
-     * @param string $orderBy The element to order by
-     * @param string $orderDir The order direction
-     * @return int The maximum value of the $indexElement (asuming integer!)
-     */
-    public static function createSelectFromDatabaseTable( $element, $model, $indexElement, $displayElements, $orderBy = null, $orderDir = 'ASC' )
-    {
-        $query = Doctrine_Query::create()
-            ->from( "$model m" );
-
-        if( $orderBy !== null )
-            $query->orderBy( "m.{$orderBy} {$orderDir}" );
-
-        $collection = $query->execute();
-
-        $options = array( '0' => '' );
-        $maxId = 0;
-
-        foreach( $collection as $c )
-        {
-            $value = '';
-
-            if( is_array( $displayElements ) )
-            {
-                foreach( $displayElements as $e )
-                $value .= "{$c[$e]} - ";
-
-                $value = substr( $value, 0, strlen( $value ) - 2 );
-            }
-            else
-                $value = $c[$displayElements];
-
-            $options[ $c[$indexElement] ] = $value;
-
-            if( $c[$indexElement] > $maxId ) $maxId = $c[$indexElement];
-        }
-
-        $element->setMultiOptions( $options );
-
-        return( $maxId );
-    }
-
 }
 
-?>

@@ -1,0 +1,53 @@
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Member Dashboard"}
+
+<div class="page-content">
+
+{OSS_Message}
+
+{* if $meeting neq false}
+    {include file="dashboard/popups/meeting.tpl"}
+{/if *}
+
+
+
+{if not $user->getCustomer()->isTypeAssociate()}
+
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#tab1" data-toggle="tab">Overview</a></li>
+            <li><a href="#tab-details" data-toggle="tab">My Details</a></li>
+            <li><a href="#tab3" data-toggle="tab">Ports</a></li>
+            <li><a href="{genUrl controller="peering-manager"}">Peering Manager &raquo;</a></li>
+            <li><a href="{genUrl controller="statistics" action="member"}">Statistics &raquo;</a></li>
+            <li><a href="{genUrl controller="statistics" action="p2p"}">Peer to Peer Traffic &raquo;</a></li>
+    </ul>
+    
+    <div class="tab-content">
+    
+        <div class="tab-pane active" id="tab1">
+            <!-- Overview Tab -->
+            {tmplinclude file="dashboard/index-tab-overview.phtml"}
+        </div>
+
+        <div class="tab-pane" id="tab-details">
+            <!-- Details Tab -->
+            {tmplinclude file="dashboard/index-tab-details.phtml"}
+    
+        </div>
+        <div class="tab-pane" id="tab3">
+            <!-- Connections -->
+            {tmplinclude file="dashboard/index-tab-connections.phtml"}
+    
+        </div>
+
+    </div>
+
+{else}
+
+    {tmplinclude file="dashboard/index-tab-associate.phtml"}
+    
+{/if}
+
+</div>
+    
+{tmplinclude file="footer.phtml"}

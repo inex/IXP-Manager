@@ -1,0 +1,6 @@
+<div class="btn-group">
+    <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller='virtual-interface' action='edit' id=$row.vintid}" title="Interface Overview"><i class="icon-filter"></i></a>
+    <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='view' id=$row.id}" title="Preview"><i class="icon-eye-open"></i></a>
+    <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='edit' id=$row.id rtn='vli'}" title="Edit"><i class="icon-pencil"></i></a>
+    <a class="btn btn-mini have-tooltip-below" id='list-delete-{$row.id}' href="{genUrl module=$module controller=$controller action='delete' id=$row.id rtn='vli'}" title="Delete"><i class="icon-trash"></i></a>
+</div>

@@ -1,0 +1,125 @@
+{tmplinclude file="header.phtml"}
+
+{if $user->getPrivs() eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            Documentation <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Equipment Housing at INEX Facilities
+        </li>
+    </ul>
+    
+    <div>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Equipment Housing at INEX Facilities</h1>
+        </div>
+{/if}
+
+<p>
+For members who do not have co-location space in any of INEX's locations and who use
+traditional leased circuits for remote connectivity, INEX can host routers / switches
+within INEX cages. We provide a number of facilities for members who avail of this option.
+</p>
+
+<h3>Inbound Connectivity</h3>
+
+<p>
+INEX supports inbound leased circuits which can use either UTP or single mode fibre.
+This means that the following circuit types are supported:
+</p>
+
+<ul>
+    <li> PSTN – regular phone lines for remote console connectivity</li>
+    <li> E1 – 2Mb circuits</li>
+    <li> STM-1 – 155Mb/s</li>
+    <li> STM-4 – 622Mb/s</li>
+    <li> STM-16 – 2.5Gb/s</li>
+    <li> Metro Ethernet over UTP – 10Mb/s or 100Mb/s carrier</li>
+    <li> Metro Ethernet over fibre – 1Gb/s or 10Gb/s carrier</li>
+</ul>
+
+<p>
+In practice, we do not encourage E1 connections, as there is no logical upgrade path and
+they require extra termination equipment. INEX also does not support connections which
+require co-axial cabling (i.e. E3). We would encourage members who require connectivity
+slower than STM-1 to use metro ethernet connectivity. Fibre cables at INEX cages are
+terminated as SC/PC. We support single mode and 50μ multi mode connections.
+</p>
+
+<h3>Console Connectivity</h3>
+
+<p>
+INEX uses MRV console servers for its own management purposes and if required can
+provide password controlled secure access to members' console ports using this equipment.
+Should you require this service, please contact <a href="mailto:operations@inex.ie">operations@inex.ie</a>.
+</p>
+
+
+<h3>Access to Equipment</h3>
+
+<p>
+INEX members who host equipment in INEX cages may nominate up to 5 individuals who will be
+given emergency grade 24x7x365 access to INEX facilities without prior notification to INEX
+staff. INEX operations can also authorise access to INEX cage facilities on a next-day basis
+for non-emergency works. Should you require routine access to an INEX cage, please email
+<a href="mailto:operations@inex.ie">operations@inex.ie</a>. Please note that all INEX
+co-location providers require photo identity. Member employees who fail to produce photo ID
+will be denied access to the co-location floor.
+</p>
+
+<h3>Space Allocation</h3>
+
+<p>
+Members who house equipment in INEX cages are allocated 3U by default. More space can be
+allocated on request, although this may require moving the equipment to a different rack
+location or splitting the equipment between two locations. Please see the INEX pricing
+information page for details on pricing for more than 3U.
+</p>
+
+<h3>Power Supply</h3>
+
+<p>
+INEX provides A+B power at 220VAC, 50Hz, with 13A 3-prong UK+Ireland style sockets.
+</p>
+
+
+<h3>Private Interconnections</h3>
+
+
+<p>
+Members who house equipment in INEX cages are entitled to order and use cross-connects
+to other INEX members, both inside and outside INEX cages. Please see the INEX pricing
+information page for further details.
+</p>
+
+<h3>Limitations</h3>
+
+<p>
+INEX provides router/switch housing facilities to its members for the purposes of
+connecting to the INEX peering LAN. We are unable to permit members to use INEX
+housing for:
+</p>
+
+<ul>
+    <li>
+        Connecting their customers (unless providing transit over the INEX peering LAN, or
+        unless using the INEX private interconnection service to another INEX member)
+    </li>
+    <li>
+        Connecting to upstream service providers, where these providers are not members of INEX
+    </li>
+    <li>
+        Hosting general servers (although specific exclusions apply for root, TLD and ENUM tier 1
+        DNS servers).
+    </li>
+</ul>
+
+</div>
+
+{tmplinclude file="footer.phtml"}

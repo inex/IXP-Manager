@@ -3,182 +3,154 @@
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing switches
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_Switch extends INEX_Form
 {
-    /**
-     *
-     *
-     */
-    public function __construct( $options = null, $isEdit = false, $cancelLocation )
+    public function init()
     {
-        parent::__construct( $options, $isEdit );
-
-        ////////////////////////////////////////////////
-        // Create and configure elements
-        ////////////////////////////////////////////////
 
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'Name' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name );
 
         $switchtype = $this->createElement( 'select', 'switchtype' );
-        $switchtype->setMultiOptions( SwitchTable::$SWITCHTYPES_TEXT )
+        $switchtype->setMultiOptions( \Entities\Switcher::$TYPES )
+            ->setAttrib( 'class', 'span3 chzn-select' )
             ->setRegisterInArrayValidator( true )
             ->addValidator( 'greaterThan', true, array( 0 ) )
             ->setLabel( 'Type' )
             ->setErrorMessages( array( 'Please set the switch type' ) );
-
         $this->addElement( $switchtype );
 
-
-
-
-
-        $dbCabinets = Doctrine_Query::create()
-            ->from( 'Cabinet' )
-            ->execute();
-
-        $cabinets = array( '0' => '' );
-        $maxId = 0;
-
-        foreach( $dbCabinets as $c )
-        {
-            $cabinets[ $c['id'] ] = "{$c->Location->name} :: {$c['name']}";
-            if( $c['id'] > $maxId ) $maxId = $c['id'];
-        }
-
-        $cabinet = $this->createElement( 'select', 'cabinetid' );
-        $cabinet->setMultiOptions( $cabinets );
-        $cabinet->setRegisterInArrayValidator( true )
-            ->setLabel( 'Cabinet' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( array( 'Please select a cabinet' ) );
-
-        $this->addElement( $cabinet );
-
+        $this->addElement( INEX_Form_Cabinet::getPopulatedSelect( 'cabinetid' ) );
 
         $infrastructre = $this->createElement( 'text', 'infrastructure' );
         $infrastructre->setLabel( 'Infrastructure' )
+            ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $infrastructre );
-
 
 
         $ipv4addr = $this->createElement( 'text', 'ipv4addr' );
         $ipv4addr->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'IPv4 Address' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv4addr );
 
         $ipv6addr = $this->createElement( 'text', 'ipv6addr' );
         $ipv6addr->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setAttrib( 'class', 'span3' )
             ->setLabel( 'IPv6 Address' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv6addr );
 
         $snmppasswd = $this->createElement( 'text', 'snmppasswd' );
         $snmppasswd->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->setLabel( 'SNMP Password' )
+            ->setAttrib( 'class', 'span3' )
+            ->setLabel( 'SNMP Community' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $snmppasswd );
 
-
-
-
-
-        $dbVendors = Doctrine_Query::create()
-            ->from( 'Vendor' )
-            ->execute();
-
-        $vendors = array( '0' => '' );
-        $maxId = 0;
-
-        foreach( $dbVendors as $v )
-        {
-            $vendors[ $v['id'] ] = "{$v['name']}";
-            if( $v['id'] > $maxId ) $maxId = $v['id'];
-        }
-
-        $vendor = $this->createElement( 'select', 'vendorid' );
-        $vendor->setMultiOptions( $vendors );
-        $vendor->setRegisterInArrayValidator( true )
-            ->setLabel( 'Vendor' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( array( 'Please select a vendor' ) );
-
-        $this->addElement( $vendor );
-
-
-
+        $this->addElement( INEX_Form_Vendor::getPopulatedSelect( 'vendorid' ) );
+        
 
         $model = $this->createElement( 'text', 'model' );
         $model->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setLabel( 'Model' )
+            ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $model );
 
 
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
+            ->setAttrib( 'class', 'span3' )
             ->setRequired( false )
-            ->addFilter( new INEX_Filter_StripSlashes() )
+            ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 60 )
             ->setAttrib( 'rows', 5 );
         $this->addElement( $notes );
+        
+        $active = $this->createElement( 'checkbox', 'active' );
+        $active->setLabel( 'Active?' )
+            ->setCheckedValue( '1' )
+            ->setUncheckedValue( '0' )
+            ->setValue( '1' );
+        $this->addElement( $active );
+        
 
-
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
-        . $cancelLocation . "'" ) );
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Add' ) );
-
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
     }
+    
+    /**
+     * Create a SELECT / dropdown element of all switch names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'switchid', $type = null )
+    {
+        $sw = new Zend_Form_Element_Select( $name );
+
+        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
+            ->select( 'e.id AS id, e.name AS name' )
+            ->from( '\\Entities\\Switcher', 'e' )
+            ->orderBy( "e.name", 'ASC' );
+        
+        if( $type !== null )
+            $qb->where( 'e.switchtype = ?1' )->setParameter( 1, $type );
+        
+        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\Switcher', 'id', 'name', 'name', 'ASC' );
+    
+        $sw->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Switch' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a switch' ) ) );
+    
+        return $sw;
+    }
+    
 
 }
-
-?>

@@ -21,76 +21,74 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
 /**
+ * Form: editing billing details
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_Customer_BillingDetails extends INEX_Form
 {
-    public function __construct( $options = null, $isEdit = false )
+    public function init()
     {
-        parent::__construct( $options );
-
         $billingContact = $this->createElement( 'text', 'billingContact' );
         $billingContact->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setLabel( 'Billing Contact' )
+            ->setLabel( 'Contact' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setAttrib( 'class', 'span6' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingContact );
 
         $billingAddress1 = $this->createElement( 'text', 'billingAddress1' );
         $billingAddress1->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setLabel( 'Billing Address' )
+            ->setLabel( 'Address' )
+            ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress1 );
 
         $billingAddress2 = $this->createElement( 'text', 'billingAddress2' );
         $billingAddress2->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
             ->setLabel( '' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress2 );
 
         $billingCity = $this->createElement( 'text', 'billingCity' );
         $billingCity->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setLabel( '' )
+            ->setAttrib( 'class', 'span4' )
+            ->setLabel( 'City' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingCity );
 
-        $billingCountry = $this->createElement( 'text', 'billingCountry' );
-        $billingCountry->addValidator( 'stringLength', false, array( 0, 2 ) )
-            ->setRequired( false )
-            ->setLabel( 'Country' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-        $this->addElement( $billingCountry );
-
         $billingCountry = $this->createElement( 'select', 'billingCountry' );
-        $billingCountry->setMultiOptions(
-            array( '' => '' ) + INEX_Countries::getCountriesArray()
-        );
-        $billingCountry->setRegisterInArrayValidator( true )
+        $billingCountry->setMultiOptions( [ '' => '' ] + OSS_Countries::getCountriesArray() )
+            ->setRegisterInArrayValidator( true )
+            ->setValue( 'IE' )
             ->setLabel( 'Country' )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setErrorMessages( array( 'Please select a country' ) );
+            ->setRequired( false )
+            ->setAttrib( 'style', 'width: 150px;' )
+            ->setAttrib( 'class', 'chzn-select' );
         
         $this->addElement( $billingCountry );
+        
         
         $this->addDisplayGroup(
-            array( 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry' ),
+            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry' ],
         	'billingDisplayGroup'
         );
         $this->getDisplayGroup( 'billingDisplayGroup' )->setLegend( 'Billing Details' );
 
-
-        $this->addElement( 'submit', 'commit', array( 'label' => 'Update' ) );
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Update' ) ) );
     }
 
 }

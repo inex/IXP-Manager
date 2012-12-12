@@ -1,0 +1,142 @@
+{tmplinclude file="header.phtml"}
+
+{if isset( $user ) and $user->getPrivs() eq USER::AUTH_SUPERUSER}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            <a href="{genUrl controller=$controller action="list"}">{$feParams->pagetitle}</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            List
+        </li>
+        
+        {* do we have a custom page header toolbar? *}
+        {if $listToolbar}
+            {tmplinclude file=$listToolbar}
+        {else}
+            <li class="pull-right"> 
+                {if !isset( $feParams->readonly ) or !$feParams->readonly}
+                    <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
+                {/if}
+            </li>
+        {/if}
+    </ul>
+
+    <div>
+{else}
+    <div class="page-content" >
+    
+        <div class="page-header" >
+            <h1 style="display: inline;">{$feParams->pagetitle}</h1>
+            
+            <span style="float: right; margin-top: -10px;">
+                {* do we have a custom page header toolbar? *}
+                {if $listToolbar}
+                    {tmplinclude file=$listToolbar}
+                {else}
+                    <div class="btn-toolbar">
+                        <div class="btn-group">
+                            {if !isset( $feParams->readonly ) or !$feParams->readonly}
+                                <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+                            {/if}
+                        </div>
+                    </div>
+                {/if}
+            </span>
+        </div>
+{/if}
+    
+    {OSS_Message}
+
+    {* do we have any additional text to put before the table? *}
+    {if $listPreamble}{tmplinclude file=$listPreamble}{/if}
+
+    {if count( $data )}
+    <table id='frontend-list-table' class="table hide">
+    
+    <thead>
+        <tr>
+            {foreach $feParams->listColumns as $col => $cconf}
+                {if not is_array( $cconf ) or not isset( $cconf.display ) or $cconf.display}
+                    <th>{if is_array( $cconf )}{$cconf.title}{else}{$cconf}{/if}</th>
+                {/if}
+            {/foreach}
+            <th></th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {foreach $data as $idx => $row}
+        <tr>
+            {foreach $feParams->listColumns as $col => $cconf}
+                {if not is_array( $cconf )}
+                    <td>{$row.$col}</td>
+                {elseif not isset( $cconf.display ) or $cconf.display}
+                    {if isset( $cconf.type )}
+                        {if $cconf.type eq $FE_COL_TYPES.HAS_ONE}
+                            <td>
+                                {assign var=hasOneId value=$cconf.idField}
+                                <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$row.$hasOneId}">{$row.$col}</a>
+                            </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.XLATE}
+                            <td>
+                                {$cconf.xlator[ $row.$col ]}
+                            </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
+                            <td>
+                                {$row.$col|date_format:'%Y-%m-%d %H:%M:%S'}
+                            </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.DATE}
+                            <td>
+                                {$row.$col|date_format:'%Y-%m-%d'}
+                            </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.TIME}
+                            <td>
+                                {$row.$col|date_format:'%H:%M:%S'}
+                            </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.SCRIPT}
+                            {tmplinclude file=$cconf.script}
+                        {else}
+                            <td>Type?</td>
+                        {/if}
+                    {else}
+                        <td>{$row.$col}</td>
+                    {/if}
+                {/if}
+            {/foreach}
+            <td>
+                {* do we have a custom menu defined for this table? *}
+                {if not $listRowMenu}
+                    <div class="btn-group">
+                        <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='view' id=$row.id}" title="Preview"><i class="icon-eye-open"></i></a>
+                        {if !isset( $feParams->readonly ) or !$feParams->readonly}
+                            <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='edit' id=$row.id}" title="Edit"><i class="icon-pencil"></i></a>
+                            <a class="btn btn-mini have-tooltip-below" id='list-delete-{$row.id}' href="{genUrl module=$module controller=$controller action='delete' id=$row.id}" title="Delete"><i class="icon-trash"></i></a>
+                        {/if}
+                    </div>
+                {else}
+                    {tmplinclude file=$listRowMenu}
+                {/if}
+            </td>
+        </tr>
+        {/foreach}
+    </tbody>
+    
+    </table>
+    {else}
+        <p>
+            There are no entries.{if !isset( $feParams->addWhenEmpty ) || $feParams->addWhenEmpty } Do you want to <a href="{genUrl controller=$controller action='add'}">add one...</a>{/if}
+        </p>
+    {/if} {* end if count( $data ) *}
+    
+    {* do we have any additional text to put after the table? *}
+    {if $listPostamble}{tmplinclude file=$listPostamble}{/if}
+    
+</div>
+
+
+{if $listScript}<script>{tmplinclude file=$listScript}</script>{/if}
+{if $listAddonScript}<script>{tmplinclude file=$listAddonScript}</script>{/if}
+{tmplinclude file="footer.phtml"}

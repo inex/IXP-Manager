@@ -1,0 +1,6 @@
+<div class="btn-group">
+    <a class="btn btn-mini" href="{genUrl controller=$controller action='list'}"><i class="icon-list"></i></a>
+    {if !isset( $feParams->readonly ) or !$feParams->readonly}
+        <a class="btn btn-mini" href="{genUrl controller=$controller action='edit' id=$object.id}"><i class="icon-pencil"></i></a>
+    {/if}
+</div>

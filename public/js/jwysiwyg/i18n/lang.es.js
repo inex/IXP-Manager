@@ -54,40 +54,40 @@
 
 		dialogs: {
 			// for all
-			"Apply": "",
-			"Cancel": "",
+			"Apply": "Aplicar",
+			"Cancel": "Cancelar",
 
 			colorpicker: {
-				"Colorpicker": "",
-				"Color": ""
+				"Colorpicker": "Selector de color",
+				"Color": "Color"
 			},
 
 			image: {
-				"Insert Image": "",
-				"Preview": "",
-				"URL": "",
-				"Title": "",
-				"Description": "",
-				"Width": "",
-				"Height": "",
-				"Original W x H": "",
-				"Float": "",
-				"None": "",
-				"Left": "",
-				"Right": ""
+				"Insert Image": "Insertar imagen",
+				"Preview": "Vista previa",
+				"URL": "URL",
+				"Title": "Título",
+				"Description": "Descripción",
+				"Width": "Ancho",
+				"Height": "Alto",
+				"Original W x H": "Original Al X An",
+				"Float": "Flotación",
+				"None": "Ninguna",
+				"Left": "Izquierda",
+				"Right": "Derecha"
 			},
 
 			link: {
-				"Insert Link": "",
-				"Link URL": "",
-				"Link Title": "",
-				"Link Target": ""
+				"Insert Link": "Insertar Link",
+				"Link URL": "URL del link",
+				"Link Title": "Título del link",
+				"Link Target": "Target del Link"
 			},
 
 			table: {
-				"Insert table": "",
-				"Count of columns": "",
-				"Count of rows": ""
+				"Insert table": "Insertar tabla",
+				"Count of columns": "Cuenta de columnas",
+				"Count of rows": "Cuenta de filas"
 			}
 		}
 	};

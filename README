@@ -2,6 +2,24 @@
 IXP Manager
 =======================================
 
+
+**WORK IN PROGRESS - COMMITS TO DATE ARE MORE FOR BACKUP PURPOSES THAN USABLE CODE**
+
+**WE WILL RELEASE AS SOON AS WE HAVE A STABLE IXP Manager V2**
+
+
+IXP V2 will primarily be about:
+
+* code refactoring 
+* migration to Doctrine2
+* removal of all non JQuery JS libraries
+* better library consistancy and API interfaces
+* security audit
+
+
+---
+
+
 INEX are pleased to release "IXP Manager" under an open source license (the
 GNU Public License V2) which we hope will benefit the wider IXP community,
 and especially new and small IXPs looking to expand.  IXP Manager is a web

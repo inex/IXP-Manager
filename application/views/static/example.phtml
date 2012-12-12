@@ -1,0 +1,39 @@
+{tmplinclude file="header.phtml"}
+
+{if isset( $user ) and $user->getPrivs() eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            Documentation <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Example
+        </li>
+    </ul>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Example Documenation Page</h1>
+        </div>
+{/if}
+
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam pretium ipsum fermentum ut sollicitudin mauris blandit. Mauris luctus, ipsum id feugiat bibendum, felis nulla dignissim sem, vehicula sollicitudin tortor turpis ut eros. Sed sit amet orci arcu, et varius velit. Vestibulum et nulla tortor, quis tincidunt augue. Vestibulum fringilla tempus faucibus. Donec non mauris neque. Nam urna odio, facilisis id tincidunt eu, dictum sed sapien. Pellentesque porttitor viverra nunc a porttitor. Fusce tempor, elit tempus dignissim accumsan, nisi metus eleifend ipsum, vel pellentesque lectus dolor at orci. Suspendisse potenti.
+</p>
+
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam pretium ipsum fermentum ut sollicitudin mauris blandit. Mauris luctus, ipsum id feugiat bibendum, felis nulla dignissim sem, vehicula sollicitudin tortor turpis ut eros. Sed sit amet orci arcu, et varius velit. Vestibulum et nulla tortor, quis tincidunt augue. Vestibulum fringilla tempus faucibus. Donec non mauris neque. Nam urna odio, facilisis id tincidunt eu, dictum sed sapien. Pellentesque porttitor viverra nunc a porttitor. Fusce tempor, elit tempus dignissim accumsan, nisi metus eleifend ipsum, vel pellentesque lectus dolor at orci. Suspendisse potenti.
+</p>
+
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam pretium ipsum fermentum ut sollicitudin mauris blandit. Mauris luctus, ipsum id feugiat bibendum, felis nulla dignissim sem, vehicula sollicitudin tortor turpis ut eros. Sed sit amet orci arcu, et varius velit. Vestibulum et nulla tortor, quis tincidunt augue. Vestibulum fringilla tempus faucibus. Donec non mauris neque. Nam urna odio, facilisis id tincidunt eu, dictum sed sapien. Pellentesque porttitor viverra nunc a porttitor. Fusce tempor, elit tempus dignissim accumsan, nisi metus eleifend ipsum, vel pellentesque lectus dolor at orci. Suspendisse potenti.
+</p>
+
+
+{if not isset( $user ) or $user->getPrivs() neq 3}
+    </div>
+{/if}
+
+{tmplinclude file="footer.phtml"}

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,151 +22,195 @@
  */
 
 
-/*
+/**
+ * Controller: Manage IPv4 Addresses
  *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class Ipv4AddressController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Ipv4address';
-        $this->frontend['name']            = 'IPv4 Address';
-        $this->frontend['pageTitle']       = 'IPv4 Addresses';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'address', 'vlanid' ),
-
-            'viewPanelRows'  => array( 'address', 'vlanid' ),
-            'viewPanelTitle' => 'address',
-
-            'sortDefaults' => array(
-                'column' => 'address',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-            'address' => array(
-                'label' => 'Ipv4 Address',
-                'sortable' => 'true',
-            ),
-
-            'vlanid' => array(
-                'type' => 'hasOne',
-                'model' => 'Vlan',
-                'controller' => 'vlan',
-                'field' => 'name',
-                'label' => 'Vlan',
-                'sortable' => true
-            )
-
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+    
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\IPv4Address',
+            'pagetitle'     => 'IPv4 Addresses',
+        
+            'titleSingular' => 'IPv4 Address',
+            'nameSingular'  => 'an IPv4 address',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+            
+            'readonly'      => true,
+        
+            'listOrderBy'    => 'id',
+            'listOrderByDir' => 'ASC',
+        
+            'listColumns'    => [
+        
+                'id'        => [ 'title' => 'UID', 'display' => false ],
+                'address'   => 'Address',
+                'hostname'  => 'Hostname',
+                'customer'  => [
+                    'title'      => 'Customer',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'customer',
+                    'action'     => 'view',
+                    'idField'    => 'customerid'
+                ],
+            ]
+        ];
+            
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = array_merge(
+            $this->_feParams->listColumns,
+            [
+                'vlan'  => [
+                    'title'      => 'VLAN',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'vlan',
+                    'action'     => 'view',
+                    'idField'    => 'vlanid'
+                ]
+            ]
         );
+    }
+    
+    
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $this->view->vlans = $vlans = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getNames();
 
-        parent::feInit();
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'ip.id as id, ip.address as address,
+                v.name AS vlan,
+                vli.' . ( $this->_feParams->entity == '\\Entities\\IPv4Address' ? 'ipv4' : 'ipv6' ) . 'hostname AS hostname,
+                c.name AS customer, c.id AS customerid'
+            )
+            ->from( $this->_feParams->entity, 'ip' )
+            ->leftJoin( 'ip.Vlan', 'v' )
+            ->leftJoin( 'ip.VlanInterface', 'vli' )
+            ->leftJoin( 'vli.VirtualInterface', 'vi' )
+            ->leftJoin( 'vi.Customer', 'c' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'ip.id = ?1' )->setParameter( 1, $id );
+    
+        $vid = false;
+        if( !( ( $vid = $this->getParam( 'vlan', false ) ) && isset( $vlans[$vid] ) ) )
+        {
+            if( isset( $this->_options['identity']['vlans']['default'] ) && isset( $vlans[ $this->_options['identity']['vlans']['default'] ] ) )
+                $vid = $this->_options['identity']['vlans']['default'];
+        }
+        
+        if( $vid )
+        {
+            $this->view->vid = $vid;
+            $qb->where( 'v.id = ?2' )->setParameter( 2, $vid );
+        }
+        
+        return $qb->getQuery()->getResult();
+    }
+    
+    public function addAction()
+    {
+        $this->view->form = $form = new INEX_Form_AddAddresses();
+        
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
+        {
+            $addrfam = $form->getValue( 'type' );
+            $numaddrs = intval( $_POST['numaddrs'] );
+            
+            if( !( $vlan = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getValue( 'vlanid' ) ) ) )
+                throw new INEX_Exception( 'Unknown VLAN in request' );
+            
+            for( $i = 0; $i < $numaddrs; $i++ )
+            {
+                if( $addrfam == 'IPv4' )
+                    $ip = new \Entities\IPv4Address();
+                else if( $addrfam == 'IPv6' )
+                    $ip = new \Entities\IPv6Address();
+                else
+                    throw new INEX_Exception( 'Invalid address family' );
+
+                $ip->setVlan( $vlan );
+                $ip->setAddress( trim( $_POST[ 'np_name' . $i ] ) );
+                
+                $this->getD2EM()->persist( $ip );
+            }
+            
+            $this->getD2EM()->flush();
+                             
+            $msg = "{$numaddrs} new {$addrfam} addresses created for VLAN {$vlan->getName()}.";
+            $this->getLogger()->info( $msg );
+            $this->addMessage( $msg, OSS_Message::SUCCESS );
+            
+            if( $addrfam == 'IPv4' )
+                $redir = 'ipv4';
+            else
+                $redir = 'ipv6';
+
+            $this->redirect( strtolower( $addrfam ) . '-address/list/vlan/' . $vlan->getId() );
+        }
     }
 
-    public function listAction()
+    public function ajaxGetForVlanAction()
     {
-        $this->view->vlans = Doctrine_Query::create()
-            ->from( 'Vlan v' )
-            ->orderBy( 'v.number ASC' )
-            ->fetchArray();
-        
-        if( count( $this->view->vlans ) == 0 )
+        if( $this->getRequest()->getControllerName() == 'ipv6-address' )
         {
-            $this->session->message = new INEX_Message(  'You must first create a VLAN', "error" );
-            $this->_redirect( 'index/index' );
-        }
-            
-        $vlanid = $this->_getParam( 'vlanid', null );
-        
-        if( $vlanid === null )
-        {
-            $vlanid = $this->view->vlans[0]['id'];
-            $this->view->vlan = $this->view->vlans[0];
+            $af = 'ipv6'; $entity = 'IPv6Address';
         }
         else
-            $this->view->vlan = Doctrine_Core::getTable( 'Vlan' )->find( $vlanid, Doctrine_Core::HYDRATE_ARRAY );
-        
-        $this->view->ips = Doctrine_Query::create()
-            ->from( 'Ipv4address ip' )
-            ->leftJoin( 'ip.Vlaninterface vi' )
-            ->leftJoin( 'vi.Virtualinterface virt' )
-            ->leftJoin( 'virt.Cust c' )
-            ->leftJoin( 'ip.Vlan v' )
-            ->where( 'v.id = ?', $vlanid )
-            ->orderBy( 'ip.id ASC' )
-            ->fetchArray();
-            
-        $this->view->display( 'ipv4-address/list.tpl' );
-    }
-
-    public function addAddressesAction()
-    {
-        $f = new INEX_Form_AddAddresses( null, false, '' );
-        
-        $f->setAction( Zend_Controller_Front::getInstance()->getBaseUrl() . '/'
-            . $this->getRequest()->getParam( 'controller' ) . "/add-addresses" );
- 
-        if( $this->inexGetPost( 'commit' ) !== null && $f->isValid( $_POST ) )
         {
-            do
-            {
-                try
-                {
-                    $addrfam = $f->getValue( 'type' );
-                    $conn = Doctrine_Manager::connection();
-                    $conn->beginTransaction();
-                    
-                    for( $i = 0; $i < intval( $_POST['numaddrs'] ); $i++ )
-                    {
-                        if( $addrfam == 'IPv4' )
-                            $ip = new Ipv4address();
-                        else if( $addrfam == 'IPv6' )
-                            $ip = new Ipv6address();
-                        else
-                            die( 'Invalid address family!' );
-
-                        $ip['vlanid']   = $f->getValue( 'vlanid' );
-                        $ip['address']  = trim( $_POST[ 'np_name' . $i ] );
-                        $ip->save();
-                    }
-                    
-                    $conn->commit();
-                     
-                    $this->getLogger()->notice( intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created' );
-                    $this->session->message = new INEX_Message(  intval( $_POST['numaddrs'] ) . ' new ' . $addrfam . ' addresses created', "success" );
-                    
-                    if( $addrfam == 'IPv4' )
-                        $redir = 'ipv4';
-                    else
-                        $redir = 'ipv6';
-
-                    $this->_redirect( "{$redir}-address/list/vlanid/" . $f->getValue( 'vlanid' ) );
-                }
-                catch( Exception $e )
-                {
-                    $conn->rollback();
-                    
-                    Zend_Registry::set( 'exception', $e );
-                    return( $this->_forward( 'error', 'error' ) );
-                }
-            }while( false );
+            $af = 'ipv4'; $entity = 'IPv4Address';
         }
+        
+        $dql = "SELECT {$af}.id AS id, {$af}.address AS address
+                    FROM \\Entities\\{$entity} {$af}
+                        LEFT JOIN {$af}.Vlan v
+                        LEFT JOIN {$af}.VlanInterface vli
+                    WHERE
+                        v.id = ?1 ";
+    
+        if( $this->getParam( 'vliid', null ) !== null )
+            $dql .= 'AND ( vli.id IS NULL OR vli.id = ?2 )';
+        else
+            $dql .= 'AND vli.id IS NULL';
+    
+        $dql .= " ORDER BY {$af}.id ASC";
+    
+        $query = $this->getD2EM()->createQuery( $dql );
+        $query->setParameter( 1, $this->getParam( 'vlanid', 0 ) );
+    
+        if( $this->getParam( 'vliid', null ) !== null )
+            $query->setParameter( 2, $this->getParam( 'vliid' ) );
+    
+        $ips = $query->getArrayResult();
 
-        $this->view->form   = $f->render( $this->view );
-
-        $this->view->display( 'ipv4-address/add-addresses.tpl' );
+        $this->getResponse()
+            ->setHeader('Content-Type', 'application/json')
+            ->setBody( Zend_Json::encode( $ips ) )
+            ->sendResponse();
+    
+        die(); //FIXME I shouldn't have to die() here...
     }
+    
+
 }
 
-?>

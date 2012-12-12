@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,223 +22,268 @@
  */
 
 
-/*
+/**
+ * Controller: Manage virtual interfaces
  *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class VirtualInterfaceController extends INEX_Controller_FrontEnd
 {
-    public function init()
-    {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Virtualinterface';
-        $this->frontend['name']            = 'VirtualInterface';
-        $this->frontend['pageTitle']       = 'Virtual Interfaces';
-
-        // add new button in postContent with QuickAdd
-        $this->frontend['disableAddNew']   = true;
-        
-        $this->frontend[ 'columns' ] = array(
-
-            'displayColumns' => array(
-                'id', 'member', 'shortname', 'location', 'switch', 'port', 'speed'
-            ),
-
-	        'viewPanelRows' => array(
-	            'member' //, 'name', 'description', 'mtu', 'trunk', 'channelgroup'
-	        ),
-
-	        'viewPanelTitle' => 'member',
-
-	        'sortDefaults' => array(
-	            'column' => 'member', 'order' => 'asc'
-	        ),
-	        
-	        'id' => array(
-	            'label' => 'ID', 'hidden' => true
-	        ),
-
-	        'member' => array(
-	            'type' => 'aHasOne',
-	            'controller' => 'customer',
-	            'ifield' => 'memberid',
-	            'label' => 'Customer',
-	            'model' => 'Cust',
-	            'sortable' => true
-	        ),
-	        
-	        'shortname' => array(
-	            'type' => 'aHasOne',
-	            'controller' => 'customer',
-	            'ifield' => 'memberid',
-	            'label' => 'Shortname',
-	            'model' => 'Cust',
-	            'sortable' => true
-	        ),
-
-	        'location' => array(
-	            'type' => 'aHasOne',
-	            'controller' => 'location',
-	            'ifield' => 'locationid',
-	            'label' => 'Location',
-	            'model' => 'Location',
-	            'sortable' => true
-	        ),
-	        
-	        'switch' => array(
-	            'type' => 'aHasOne',
-	            'controller' => 'switch',
-	            'ifield' => 'switchid',
-	            'label' => 'Switch',
-	            'model' => 'SwitchTable',
-	            'sortable' => true
-	        ),
-	        
-	        'port' => array(
-	            'label' => 'Port',
-	            'sortable' => true
-	        ),
-	        
-	        'speed' => array(
-	            'label' => 'Speed',
-	            'sortable' => true
-	        )
-        );
-
-        
-        parent::feInit();
-    }
-
     /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
+    {
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\VirtualInterface',
+            'form'          => 'INEX_Form_Interface_Virtual',
+            'pagetitle'     => '(Virtual) Interfaces',
+        
+            'titleSingular' => 'Virtual Interface',
+            'nameSingular'  => 'a virtual interface',
+        
+            'defaultAction' => 'list',
+        
+            'listOrderBy'    => 'customer',
+            'listOrderByDir' => 'ASC',
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+        
+                    'customer'  => [
+                        'title'      => 'Customer',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'custid'
+                    ],
+    
+                    'shortname'  => [
+                        'title'      => 'Shortname',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'custid'
+                    ],
+    
+                    'location'      => 'Location',
+                    'switch'        => 'Switch',
+                    
+                    'port'       => [
+                        'title'         => 'Port',
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'        => 'virtual-interface/list-column-port.phtml'
+                    ],
+
+                    'speed'         => 'Speed'
+                ];
+                break;
+    
+            case \Entities\User::AUTH_CUSTADMIN:
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
+    
+    }
+    
+    public function viewAction()
+    {
+        $this->forward( 'add' );
+    }
+    
+    /**
+     * Provide array of virtual interfaces for the listAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select(
+                    'vi.id,
+                    c.name AS customer, c.id AS custid, c.shortname AS shortname,
+                    l.name AS location, s.name AS switch,
+                    sp.name AS port, SUM( pi.speed ) AS speed, COUNT( pi.id ) AS ports'
+                 )
+            ->from( '\\Entities\\VirtualInterface', 'vi' )
+            ->leftJoin( 'vi.Customer', 'c' )
+            ->leftJoin( 'vi.PhysicalInterfaces', 'pi' )
+            ->leftJoin( 'pi.SwitchPort', 'sp' )
+            ->leftJoin( 'sp.Switcher', 's' )
+            ->leftJoin( 's.Cabinet', 'cab' )
+            ->leftJoin( 'cab.Location', 'l' )
+            ->groupBy( 'vi' );
+    
+        return $qb->getQuery()->getArrayResult();
+    }
+    
+    
+
+    /*
      * If deleting a virtual interface, we should also the delete the physical and vlan interfaces
      * if they exist.
      *
+     * @param \Entities\VirtualInterface $vi The virtual interface to delete
      */
-    protected function preDelete( $object = null )
+    protected function preDelete( $vi )
     {
-        if( ( $oid = $this->getRequest()->getParam( 'id', null ) ) === null )
-            return false;
-
-        if( !( $vint = Doctrine::getTable( $this->getModelName() )->find( $oid ) ) )
-            return false;
-
-        foreach( $vint->Physicalinterface as $pi )
+        foreach( $vi->getPhysicalInterfaces() as $pi )
         {
-            $this->getLogger()->notice( "Deleting physical interface with id #{$pi->id} while deleting virtual interface #{$vint->id}" );
-            $pi->delete();
+            $this->getLogger()->info( "Deleting physical interface with id #{$pi->getId()} while deleting virtual interface #{$vi->getId()}" );
+            $vi->removePhysicalInterface( $pi );
+            $this->getD2EM()->remove( $pi );
         }
-
-        foreach( $vint->Vlaninterface as $vl )
+        
+        foreach( $vi->getVlanInterfaces() as $vli )
         {
-            $this->getLogger()->notice( "Deleting vlan interface with id #{$vl['id']} while deleting virtual interface #{$vint['id']}" );
-            $vl->delete();
+            $this->getLogger()->info( "Deleting VLAN interface with id #{$vli->getId()} while deleting virtual interface #{$vi->getId()}" );
+            $vi->removeVlanInterface( $vli );
+            $this->getD2EM()->remove( $vli );
         }
-    }
-
-
-    //addEditPreDisplay
-    function addEditPreDisplay( $form, $object )
-    {
-        // did we get a customer id from the provisioning controller?
-        if( $this->_getParam( 'prov_cust_id', false ) )
+        
+        foreach( $vi->getMACAddresses() as $ma )
         {
-            $form->getElement( 'custid' )->setValue( $this->_getParam( 'prov_cust_id' ) );
-
-            $form->getElement( 'cancel' )->setAttrib( 'onClick',
-                "parent.location='" . $this->config['identity']['ixp']['url']
-                    . '/provision/interface-overview/id/' . $this->session->provisioning_interface_active_id . "'"
-            );
+            $this->getLogger()->info( "Deleting MAC Address record #{$ma->getMac()} while deleting virtual interface #{$vi->getId()}" );
+            $vi->removeMACAddresse( $ma );
+            $this->getD2EM()->remove( $ma );
         }
-
-        $dataQuery1 = Doctrine_Query::create()
-	        ->from( 'Physicalinterface pi' )
-	        ->leftJoin( 'pi.Switchport sp' )
-	        ->leftJoin( 'sp.SwitchTable s' )
-	        ->leftJoin( 's.Cabinet cb' )
-	        ->leftJoin( 'cb.Location l' )
-	        ->where( 'pi.Virtualinterface.id = ?', $this->getRequest()->getParam( 'id' ) );
-
-        $this->view->phyInts = $dataQuery1->execute();
-
-        $dataQuery2 = Doctrine_Query::create()
-	        ->from( 'Vlaninterface vli' )
-	        ->leftJoin( 'vli.Virtualinterface vi' )
-	        ->leftJoin( 'vli.Ipv4address v4' )
-	        ->leftJoin( 'vli.Ipv6address v6' )
-	        ->leftJoin( 'vli.Vlan v' )
-	        ->where( 'vi.id = ?', $this->getRequest()->getParam( 'id' ) );
-
-        $this->view->vlanInts = $dataQuery2->execute();
-
-        if( count( $this->view->vlanInts ) )
-            $this->view->cust = Doctrine_Core::getTable( 'Cust' )->find( $this->view->vlanInts[0]['Virtualinterface']['custid'] );
-
-    }
-
-
-    public function _customlist()
-    {
-        $dataQuery = Doctrine_Query::create()
-	        ->from( 'Virtualinterface vi' )
-	        ->leftJoin( 'vi.Cust c' )
-	        ->leftJoin( 'vi.Physicalinterface pi' )
-	        ->leftJoin( 'pi.Switchport sp' )
-	        ->leftJoin( 'sp.SwitchTable s' )
-	        ->leftJoin( 's.Cabinet cb' )
-	        ->leftJoin( 'cb.Location l' )
-	        ->orderBy( 'c.shortname ASC' );
-
-        $results = $dataQuery->execute();
-
-        $rows = array();
-        foreach( $results as $r )
-        {
-            $row = array();
-            
-            $row["member"]      = $r['Cust']['name'];
-            $row["memberid"]    = $r['Cust']['id'];
-            $row["id"]          = $r['id'];
-            $row["description"] = $r['description'];
-            $row["shortname"]   = $r['Cust']['shortname'];
-            $row["location"]    = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['Cabinet']['Location']['name'];
-            $row["locationid"]  = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['Cabinet']['Location']['id'];
-            $row["switch"]      = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['name'];
-            $row["switchid"]    = $r['Physicalinterface'][0]['Switchport']['SwitchTable']['id'];
-            
-            if( count( $r['Physicalinterface'] ) > 1 )
-            {
-                $row["port"]        = '(trunk)';
-                $row["speed"]       = $r['Physicalinterface'][0]['speed'] * count( $r['Physicalinterface'] );
-            }
-            else
-            {
-                $row["port"]        = $r['Physicalinterface'][0]['Switchport']['name'];
-                $row["speed"]       = $r['Physicalinterface'][0]['speed'];
-            }
-               
-            $rows[] = $row;
-        }
-
-        return $rows;
+        
+        return true;
     }
     
     
     /**
-     * Hook function to set a customer return.
-     *
-     * We want to display the virtual interface which was added / edited.
-	 *
-     * @param INEX_Form_SwitchPort $f
-     * @param Switchport $o
+     * @param INEX_Form_Interface_Virtual $form The form object
+     * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
      */
-    protected function _addEditSetReturnOnSuccess( $f, $o )
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
-        return 'virtual-interface/edit/id/' . $o['id'];
+        if( $isEdit )
+        {
+            $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
+
+            $this->view->cust     = $object->getCustomer();
+            $this->view->physInts = $object->getPhysicalInterfaces();
+            $this->view->vlanInts = $object->getVlanInterfaces();
+        }
+    }
+    
+    
+    /**
+     * @param INEX_Form_Interface_Virtual $form The form object
+     * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        $object->setCustomer(
+            $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
+        );
+    
+        return true;
     }
     
 
+    public function addWizardAction()
+    {
+        $this->view->form = $form = new INEX_Form_Interface_AddWizard();
+    
+        // Process a submitted form if it passes initial validation
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
+        {
+            // check customer information
+            if( !( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getValue( 'custid' ) ) ) )
+            {
+                $form->getElement( 'custid' )->addError( 'Invalid customer' );
+            }
+            else
+            {
+                $vi = new \Entities\VirtualInterface();
+                $form->assignFormToEntity( $vi, $this, false );
+                $vi->setCustomer( $cust );
+                $this->getD2EM()->persist( $vi );
+    
+                $pi = new \Entities\PhysicalInterface();
+                $form->assignFormToEntity( $pi, $this, false );
+                $pi->setVirtualInterface( $vi );
+                $pi->setSwitchPort(
+                    $this->getD2EM()->getRepository( '\\Entities\\SwitchPort' )->find( $form->getValue( 'switchportid' ) )
+                );
+                $pi->setMonitorindex(
+                    $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $cust )
+                );
+                $this->getD2EM()->persist( $pi );
+                
+    
+                
+                $vli = new \Entities\VlanInterface();
+                $form->assignFormToEntity( $vli, $this, false );
+                $vli->setIPv4Address(
+                    $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->find( $form->getElement( 'ipv4addressid' )->getValue() )
+                );
+                $vli->setIPv6Address(
+                    $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->find( $form->getElement( 'ipv6addressid' )->getValue() )
+                );
+                $vli->setVlan(
+                    $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
+                );
+                $vli->setVirtualInterface( $vi );
+                $this->getD2EM()->persist( $vli );
+                
+                $this->getD2EM()->flush();
+                
+                $this->getLogger()->info( 'New virtual, physical and VLAN interface created for ' . $cust->getName() );
+                $this->addMessage( "New interface created!", OSS_Message::SUCCESS );
+                
+                
+                if( $this->getParam( 'rtn', false ) == 'ov' )
+                    $this->_redirect( 'customer/view/id/' . $cust->getId() );
+                
+                $this->_redirect( 'virtual-interface/edit/id/' . $vi->getId() );
+            }
+        }
+        
+        if( !isset( $cust ) && ( $cid = $this->getParam( 'custid', false ) ) )
+            $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $cid );
+        
+        if( !$this->getRequest()->isPost() )
+        {
+            // make BGP MD5 easy
+            $form->getElement( 'ipv4bgpmd5secret' )->setValue( OSS_String::random() );
+            $form->getElement( 'ipv6bgpmd5secret' )->setValue(  $form->getElement( 'ipv4bgpmd5secret' )->getValue() );
+            
+            if( isset( $cust ) )
+            {
+                $form->getElement( 'custid' )->setValue( $cust->getId() );
+                $form->getElement( 'maxbgpprefix' )->setValue( $cust->getMaxprefixes() );
+            }
+        }
+                
+        if( $this->getParam( 'rtn', false ) == 'ov' )
+        {
+            $form->getElement( 'custid' )->setAttrib( 'disabled', 'disabled' );
+            $form->getElement( 'cancel' )->setAttrib( 'href',
+                OSS_Utils::genUrl( 'customer', 'view', false, [ 'id' =>  $this->getParam( 'custid' ) ] )
+            );
+        }
+        else
+        {
+            $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'list' ) );
+        }
+    }
+        
 }
 

@@ -23,37 +23,23 @@
 
 
 /**
+ * A form for creating peering requests
  *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- *
- * @package INEX_Form
- * @subpackage Customer
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_PeeringRequest extends INEX_Form
 {
 
-    public function __construct( $options = null, $isEdit = false, $cancelLocation = null )
+    public function init()
     {
-        parent::__construct( $options );
-
-        $this->setMethod( 'post' )
-            ->setAttrib( 'id', 'peering-request-form' )
+        $this->setAttrib( 'id', 'peering-request-form' )
             ->setAttrib( 'name', 'peering-request-form' );
         
-
-        $this->setDecorators(
-            array(
-                array(
-                    'ViewScript',
-                    array(
-                        'viewScript' => 'peering-manager/peering-request-form.tpl'
-                    )
-                )
-            )
-        );
-        
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'peering-manager/peering-request-form.phtml' ] ] ] );
 
         $custid = $this->createElement( 'hidden', 'custid' )
             ->setAttrib( 'id', 'peering-request-form-custid' );
@@ -77,7 +63,7 @@ class INEX_Form_PeeringRequest extends INEX_Form
             ->setAttrib( 'class', 'span5' )
             ->setAttrib( 'readonly', 'readonly' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $to );
 
@@ -88,7 +74,7 @@ class INEX_Form_PeeringRequest extends INEX_Form
             ->setAttrib( 'class', 'span5' )
             ->setAttrib( 'readonly', 'readonly' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $cc );
 
@@ -98,7 +84,7 @@ class INEX_Form_PeeringRequest extends INEX_Form
             ->setLabel( 'BCC' )
             ->setAttrib( 'class', 'span5' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $bcc );
 
@@ -108,16 +94,13 @@ class INEX_Form_PeeringRequest extends INEX_Form
             ->setLabel( 'Subject' )
             ->setAttrib( 'class', 'span5' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $subject );
 
 
         $message = $this->createElement( 'textarea', 'message',
-            array(
-                'cols' => 50,
-                'rows' => 8
-            )
+            [ 'cols' => 50, 'rows' => 8 ]
         );
 
         $message->addValidator( 'stringLength', false, array( 1, 40960 ) )
@@ -125,7 +108,7 @@ class INEX_Form_PeeringRequest extends INEX_Form
             ->setLabel( 'Message' )
             ->setAttrib( 'class', 'span5 mono' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $message );
 

@@ -1,0 +1,147 @@
+</div>
+
+{if $isEdit}
+
+<div class="row-fluid">
+
+    <h3>
+        Physical Interfaces
+        <a class="btn btn-mini"
+            href="{genUrl controller='physical-interface' action='add' vintid=$object->getId()}"><i class="icon-plus"></i></a>
+    </h3>
+
+</div>
+
+<div class="row-fluid">
+
+    <div class="span9">
+        {if count( $physInts )}
+            <table class="table">
+        
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Switch</th>
+                    <th>Port</th>
+                    <th>Speed/Duplex</th>
+                    <th></th>
+                </tr>
+            </thead>
+        
+            <tbody>
+            {foreach $physInts as $int}
+        
+                <tr>
+                    <td>
+                        {$int->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
+                    </td>
+                    <td>
+                        {$int->getSwitchPort()->getSwitcher()->getName()}
+                    </td>
+                    <td>
+                        {$int->getSwitchPort()->getName()}
+                    </td>
+                    <td>
+                        {$int->getSpeed()}/{$int->getDuplex()}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a class="btn btn-mini" href="{genUrl controller='physical-interface' action='edit' id=$int->getId() vintid=$object->getId()}"><i class="icon-pencil"></i></a>
+                            <a data-url="{genUrl controller='physical-interface' action='delete' id=$int->getId() vintid=$object->getId()}"
+                                class="btn btn-mini" id="object-delete-{$int->getId()}"><i class="icon-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+        
+            {/foreach}
+        
+            </tbody>
+        
+            </table>
+            
+        {else}
+        
+            <p>
+                There are no physical interfaces defined for this virtual interface.
+                <a href="{genUrl controller="physical-interface" action="add" vintid=$object->getId()}">Add one now...</a>
+            </p>
+            
+        {/if}
+
+    </div>
+    <br />
+</div>
+
+
+<div class="row-fluid">
+
+    <h3>
+        VLAN Interfaces
+        <a class="btn btn-mini"
+            href="{genUrl controller='vlan-interface' action='add' vintid=$object->getId()}"><i class="icon-plus"></i></a>
+    </h3>
+</div>
+
+<div class="row-fluid">
+    <div class="span9">
+    {if count( $vlanInts )}
+    
+        <table class="table">
+    
+            <thead>
+                <tr>
+                    <th>VLAN Name</th>
+                    <th>VLAN ID</th>
+                    <th>IPv4 Address</th>
+                    <th>IPv6 Address</th>
+                    <th></th>
+                </tr>
+            </thead>
+    
+            <tbody>
+            {foreach $vlanInts as $int}
+    
+                <tr>
+                    <td>
+                        {$int->getVlan()->getName()}
+                    </td>
+                    <td>
+                        {$int->getVlan()->getNumber()}
+                    </td>
+                    <td>
+                        {if $int->getIPv4Address()}
+                            {$int->getIPv4Address()->getAddress()}
+                        {/if}
+                    </td>
+                    <td>
+                        {if $int->getIPv6Address()}
+                            {$int->getIPv6Address()->getAddress()}
+                        {/if}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action='edit' id=$int->getId() vintid=$object->getId()}"><i class="icon-pencil"></i></a>
+                            <a data-url="{genUrl controller='vlan-interface' action='delete' id=$int->getId() vintid=$object->getId()}"
+                                class="btn btn-mini" id="object-delete-{$int->getId()}"><i class="icon-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+    
+            {/foreach}
+    
+            </tbody>
+    
+        </table>
+
+    {else}
+    
+        <p>
+            There are no VLAN interfaces defined for this virtual interface.
+            <a href="{genUrl controller='vlan-interface' action='add' vintid=$object->getId()}">Add one now...</a>
+        </p>
+        
+    {/if}
+    </div>
+</div>
+
+{/if}

@@ -22,17 +22,15 @@
  */
 
 
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
- * The CLI controller.
+ * Controller: CLI actions - needs review
+ *
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class CliController extends INEX_Controller_Action
 {
 
@@ -73,20 +71,9 @@ class CliController extends INEX_Controller_Action
         // This should only be done once a day and if values already exist for 'today',
         // just delete them.
         $day = date( 'Y-m-d' );
-        Doctrine_Query::create()
-            ->delete( 'TrafficDaily' )
-            ->where( 'day = ?', $day )
-            ->execute();
+        $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->deleteForDay( $day );
 
-        $custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->fetchArray();
+        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
 
         foreach( $custs as $cust )
         {
@@ -95,182 +82,34 @@ class CliController extends INEX_Controller_Action
             foreach( INEX_Mrtg::$CATEGORIES as $category )
             {
 	            $mrtg = new INEX_Mrtg(
-	                            INEX_Mrtg::getMrtgFilePath( $this->config['mrtg']['path'],
-	                                'LOG', 'aggregate', $category,
-	                                $cust['shortname']
-	                            )
+                    INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
+                        'LOG', 'aggregate', $category,
+                        $cust->getShortname()
+                    )
 	            );
 
-                $td = new TrafficDaily();
-                $td['day']      = $day;
-                $td['category'] = $category;
-                $td['cust_id']  = $cust['id'];
+                $td = new \Entities\TrafficDaily();
+                $td->setDay( new DateTime( $day ) );
+                $td->setCategory( $category );
+                $td->setCustomer( $cust );
 
-                foreach( INEX_Mrtg::$PERIODS as $period )
+                foreach( INEX_Mrtg::$PERIODS as $name => $period )
                 {
                     $stats = $mrtg->getValues( $period, $category, false );
 
-                    $td["{$period}_avg_in"]  = $stats['averagein'];
-                    $td["{$period}_avg_out"] = $stats['averageout'];
-                    $td["{$period}_max_in"]  = $stats['maxin'];
-                    $td["{$period}_max_out"] = $stats['maxout'];
-                    $td["{$period}_tot_in"]  = $stats['totalin'];
-                    $td["{$period}_tot_out"] = $stats['totalout'];
-
+                    $fn = "set{$name}AvgIn";  $td->$fn( $stats['averagein']  );
+                    $fn = "set{$name}AvgOut"; $td->$fn( $stats['averageout'] );
+                    $fn = "set{$name}MaxIn";  $td->$fn( $stats['maxin']      );
+                    $fn = "set{$name}MaxOut"; $td->$fn( $stats['maxout']     );
+                    $fn = "set{$name}TotIn";  $td->$fn( $stats['totalin']    );
+                    $fn = "set{$name}TotOut"; $td->$fn( $stats['totalout']   );
                 }
 
-                $td->save();
+                $this->getD2EM()->persist( $td );
             }
+            $this->getD2EM()->flush();
         }
     }
-
-    public function updateTraffic95thPercentileDbAction()
-    {
-        $tstart = mktime(  0,  0,  0, date('m'), date('j')-1, date('Y') );
-        $tend   = mktime( 23, 59, 59, date('m'), date('j')-1, date('Y') );
-
-        if( $this->_verbose )
-        {
-            echo "\n\nupdateTraffic95thPercentileDbAction()\n\n";
-            echo "Updating traffic statistics and 95th percentiles...\n\n";
-            echo "START: $tstart " . date( 'Y-m-d H:i:s', $tstart ) . "\n";
-            echo "END:   $tend "   . date( 'Y-m-d H:i:s', $tend   ) . "\n";
-            echo "Deleting pre-existing records for the period of they exist...\n\n";
-        }
-
-        // This should only be done once a day and if values already exist for 'today',
-        // just delete them.
-        Doctrine_Query::create()
-            ->delete( 'Traffic95th' )
-            ->where( 'datetime >= ?', date( 'Y-m-d H:i:s', $tstart ) )
-            ->andWhere( 'datetime <= ?', date( 'Y-m-d H:i:s', $tend ) )
-            ->execute();
-
-        $custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->fetchArray();
-
-
-        $percentiles = array();
-        foreach( $custs as $cust )
-        {
-            if( $this->_verbose )
-            {
-                echo "\n${cust['name']} (${cust['shortname']} - #${cust['id']})\n";
-                echo "\tGathering statistics from MRTG files...\n";
-            }
-
-            $stats = array();
-
-            $mrtg = new INEX_Mrtg(
-                            INEX_Mrtg::getMrtgFilePath( $this->config['mrtg']['path'],
-                                'LOG', 'aggregate', 'bits',
-                                $cust['shortname']
-                            )
-            );
-
-            $dataPoints = $mrtg->getArray();
-
-            unset( $mrtg );
-
-            $qualifyingDataPointCount = 0;
-
-            foreach( $dataPoints as $dp )
-            {
-                if( $dp[0] >= $tstart && $dp[0] <= $tend )
-                {
-                    $t95th = new Traffic95th();
-                    $t95th['cust_id']  = $cust['id'];
-                    $t95th['datetime'] = date( 'Y-m-d H:i:s', $dp[0] );
-
-                    list( $intTime, $avgratein, $avgrateout, $peakratein, $peakrateout ) = $dp;
-
-                    if( $avgratein > $avgrateout )
-                        $t95th['average'] = $avgratein;
-                    else
-                        $t95th['average'] = $avgrateout;
-
-                    if( $peakratein > $peakrateout )
-                        $t95th['max'] = $peakratein;
-                    else
-                        $t95th['max'] = $peakrateout;
-
-                    $t95th->save();
-                    $t95th->free( true ); // memory management
-
-                    ++$qualifyingDataPointCount;
-                }
-            }
-
-            unset( $dataPoints );
-
-            if( $this->_verbose )
-                echo "\tInserted " . $qualifyingDataPointCount . " qualifying data points into database...\n";
-
-
-            // calculate the 95th for the current month or the overall for the last month
-            if( date( 'j') == '1' )
-            {
-	            if( $this->_verbose )
-	                echo "\tCalculating 95th percentile for last month...\n";
-
-                $tend2   = date( 'Y-m-d H:i:s', mktime( 23, 59, 59, date( 'm' ), date('j')-1, date( 'Y' ) ) );
-                $tstart2 = mktime( 0,  0,  0, date( 'm', $tend2 ), 1, date( 'Y', $tend2 ) );
-                $month2  = date( 'Y-m-d', $tstart2 );
-                $tstart2 = date( 'Y-m-d H:i:s', $tstart2 );
-            }
-            else
-            {
-                if( $this->_verbose )
-                    echo "\tCalculating 95th percentile for this month to date...\n";
-
-                $tend2   = date( 'Y-m-d H:i:s', mktime( 23, 59, 59, date( 'm' ), date('j')-1, date( 'Y' ) ) );
-                $tstart2 = mktime( 0,  0,  0,  date( 'm' ), 1, date( 'Y' ) );
-                $month2  = date( 'Y-m-d', $tstart2 );
-                $tstart2 = date( 'Y-m-d H:i:s', $tstart2 );
-            }
-
-            if( $percentiles[$cust['shortname']] = Traffic95thTable::get95thPercentile( $cust['id'], $tstart2, $tend2 ) )
-            {
-	            if( $this->_verbose )
-	                echo "\tFound 95th percentile: ${percentiles[$cust['shortname']]}\n";
-
-                if( count( $entry = Doctrine_Core::getTable( 'Traffic95thMonthly' )
-                        ->findByDql( 'cust_id = ? AND month = ?', array( $cust['id'], $month2 ) ) ) )
-                {
-                    if( $this->_verbose )
-                        echo "\tUpdating value for this month to 95th traffic table...\n";
-
-                    // there should only be one of these (unique index on cust_id and month)!
-                    $entry[0]['max_95th'] = $percentiles[$cust['shortname']] * 8;
-                    $entry[0]->save();
-                    $entry->free();
-                }
-                else
-                {
-                    if( $this->_verbose )
-	                echo "\tAdding first value for this month to 95th traffic table...\n";
-
-                    $entry = new Traffic95thMonthly();
-                    $entry['cust_id']  = $cust['id'];
-                    $entry['month']    = $month2;
-                    $entry['max_95th'] = $percentiles[$cust['shortname']] * 8;
-                    $entry->save();
-                    $entry->free();
-                }
-
-            }
-
-        }
-
-    }
-
 
 
 
@@ -280,38 +119,24 @@ class CliController extends INEX_Controller_Action
      */
     public function examineTrafficDeltasAction()
     {
-
-        $custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->fetchArray();
-
-        $mail = new Zend_Mail();
-        $mail->setFrom( $this->config['cli']['traffic_differentials']['from_email'], $this->config['cli']['traffic_differentials']['from_name'] )
-             ->setSubject( $this->config['cli']['traffic_differentials']['subject'] )
+        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
+        
+        $mail = $this->getMailer();
+        $mail->setFrom( $this->_options['cli']['traffic_differentials']['from_email'], $this->_options['cli']['traffic_differentials']['from_name'] )
+             ->setSubject( $this->_options['cli']['traffic_differentials']['subject'] )
              ->setType( Zend_Mime::MULTIPART_RELATED );
 
-        foreach( $this->config['cli']['traffic_differentials']['recipients'] as $r )
+        foreach( $this->_options['cli']['traffic_differentials']['recipients'] as $r )
             $mail->addTo( $r );
 
-        $mailHtml = $this->view->render( 'customer/mail/diff-header.tpl' );
+        $mailHtml = $this->view->render( 'customer/email/diff-header.phtml' );
 
         $numWithExceededThreshold = 0;
 
         foreach( $custs as $c )
         {
-            $tds = Doctrine_Query::create()
-	               ->from( 'TrafficDaily td' )
-	               ->where( 'td.category = ?', 'bits' )
-	               ->andWhere( 'td.cust_id = ?', $c['id'] )
-	               ->orderBy( 'td.day DESC' )
-	               ->limit( $this->config['cli']['traffic_differentials']['stddev_calc_length'] + 1 )
-	               ->fetchArray();
+            $tds = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )
+                ->getAsArray( $c, $this->_options['cli']['traffic_differentials']['stddev_calc_length'] + 1, INEX_Mrtg::CATEGORY_BITS );
 
     	    $firstDone = false;
             $meanIn  = 0.0; $stddevIn  = 0.0;
@@ -359,7 +184,7 @@ class CliController extends INEX_Controller_Action
 
             if( $this->_verbose )
             {
-	            echo $c['name'] . "\n";
+	            echo $c->getName() . "\n";
 	            printf( "\tIN  M: %d\tSD: %d\tDiff: %d\tT: %d\tR: %s\n",
 	                intval( $meanIn ), intval( $stddevIn ), intval( $dIn ), $thresholdIn, ( $dIn > $thresholdIn ? 'OUT' : 'IN' )
 	            );
@@ -385,27 +210,27 @@ class CliController extends INEX_Controller_Action
                 $this->view->threasholdOut = $thresholdOut;
                 $this->view->percentIn     = $meanIn  ? intval( ( $dIn  / $meanIn  ) * 100 ) : 'NONE';
                 $this->view->percentOut    = $meanOut ? intval( ( $dOut / $meanOut ) * 100 ) : 'NONE';
-                $this->view->days          = $this->config['cli']['traffic_differentials']['stddev_calc_length'];
+                $this->view->days          = $this->_options['cli']['traffic_differentials']['stddev_calc_length'];
 
                 $mrtg = $mail->createAttachment(
                     @file_get_contents(
                         INEX_Mrtg::getMrtgFilePath(
-                            $this->config['mrtg']['path'],
+                            $this->_options['mrtg']['path'] . '/members',
                             'PNG',
                             'aggregate',
                             'bits',
-                            $c['shortname'],
+                            $c->getShortname(),
                             'month'
                         )
                     ),
                     "image/png",
                     Zend_Mime::DISPOSITION_INLINE,
                     Zend_Mime::ENCODING_BASE64,
-                    $c['shortname'] . ".png"
+                    $c->getShortname() . ".png"
                 );
-                $mrtg->id = $c['shortname'];
+                $mrtg->id = $c->getShortname();
 
-                $mailHtml .= $this->view->render( 'customer/mail/diff-member.tpl' );
+                $mailHtml .= $this->view->render( 'customer/email/diff-member.phtml' );
 
                 $numWithExceededThreshold++;
             }
@@ -414,7 +239,7 @@ class CliController extends INEX_Controller_Action
 
         $this->view->numWithExceededThreshold = $numWithExceededThreshold;
 
-        $mailHtml .= $this->view->render( 'customer/mail/diff-footer.tpl' );
+        $mailHtml .= $this->view->render( 'customer/email/diff-footer.phtml' );
 
         $mail->setBodyHtml( $mailHtml  );
         $mail->send();
@@ -425,52 +250,33 @@ class CliController extends INEX_Controller_Action
      */
     public function examinePortUtilisationAction()
     {
-
-        $custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->fetchArray();
-
-        $mail = new Zend_Mail();
-        $mail->setFrom( $this->config['cli']['port_utilisation']['from_email'], $this->config['cli']['traffic_differentials']['from_name'] )
-             ->setSubject( $this->config['cli']['port_utilisation']['subject'] )
+        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, false );
+        
+        $mail = $this->getMailer();
+        $mail->setFrom( $this->_options['cli']['port_utilisation']['from_email'], $this->_options['cli']['traffic_differentials']['from_name'] )
+             ->setSubject( $this->_options['cli']['port_utilisation']['subject'] )
              ->setType( Zend_Mime::MULTIPART_RELATED );
 
-        foreach( $this->config['cli']['port_utilisation']['recipients'] as $r )
+        foreach( $this->_options['cli']['port_utilisation']['recipients'] as $r )
             $mail->addTo( $r );
 
-        $this->view->threshold = $this->config['cli']['port_utilisation']['threshold'];
-        $mailHtml = $this->view->render( 'customer/mail/util-header.tpl' );
+        $this->view->threshold = $this->_options['cli']['port_utilisation']['threshold'];
+        $mailHtml = $this->view->render( 'customer/email/util-header.phtml' );
 
         $numIntsWithExcessUtil = 0;
 
         foreach( $custs as $c )
         {
-            $interfaces = Doctrine_Query::create()
-                ->from( 'Virtualinterface vi' )
-                ->leftJoin( 'vi.Physicalinterface pi' )
-                ->leftJoin( 'pi.Switchport sp' )
-                ->leftJoin( 'sp.SwitchTable s' )
-                ->where( 'vi.custid = ?', $c['id'] )
-                ->orderBy( 'pi.monitorindex' )
-                ->fetchArray();
-
-
-            foreach( $interfaces as $i )
+            foreach( $c->getVirtualInterfaces() as $vi )
             {
-                foreach( $i['Physicalinterface'] as $pi )
+                foreach( $vi->getPhysicalInterfaces() as $pi )
                 {
-                    $speed = $pi['speed'] * 1024 * 1024;
+                    $speed = $pi->getSpeed() * 1024 * 1024;
 
                     $mrtg = new INEX_Mrtg(
-                        INEX_Mrtg::getMrtgFilePath( $this->config['mrtg']['path'],
-                            'LOG', $pi['monitorindex'], INEX_Mrtg::CATEGORY_BITS,
-                            $c['shortname']
+                        INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
+                            'LOG', $pi->getMonitorindex(), INEX_Mrtg::CATEGORY_BITS,
+                            $c->getShortname()
                         )
                     );
 
@@ -479,12 +285,18 @@ class CliController extends INEX_Controller_Action
                     $maxIn  = $stats['maxin'] * 8.0;
                     $maxOut = $stats['maxout'] * 8.0;
 
-                    $switch_port = $pi['Switchport']['SwitchTable']['name'] . ' :: ' . $pi['Switchport']['name'];
+                    $switch_port = $pi->getSwitchport()->getSwitcher()->getName() . ' :: ' . $pi->getSwitchport()->getName();
 
                     $utilIn  = $maxIn  / $speed;
                     $utilOut = $maxOut / $speed;
 
-	                if( $utilIn > $this->config['cli']['port_utilisation']['threshold'] || $utilOut > $this->config['cli']['port_utilisation']['threshold'] )
+                    if( $this->_verbose )
+                    {
+                        echo $c->getName() . "\n";
+                        printf( "\tIN %0.2f%%\tOUT: %0.2f%%\n", $utilIn * 100.0, $utilOut * 100.0 );
+                    }
+                    
+	                if( $utilIn > $this->_options['cli']['port_utilisation']['threshold'] || $utilOut > $this->_options['cli']['port_utilisation']['threshold'] )
 	                {
 	                    $this->view->cust       = $c;
 	                    $this->view->utilIn     = $utilIn;
@@ -494,23 +306,23 @@ class CliController extends INEX_Controller_Action
 		                $mrtg = $mail->createAttachment(
 		                    file_get_contents(
 		                       INEX_Mrtg::getMrtgFilePath(
-		                            $this->config['mrtg']['path'],
+		                            $this->_options['mrtg']['path'] . '/members',
 		                            'PNG',
-		                            $pi['monitorindex'],
+		                            $pi->getMonitorindex(),
 		                            INEX_Mrtg::CATEGORY_BITS,
-		                            $c['shortname'],
+		                            $c->getShortname(),
 		                            INEX_Mrtg::PERIOD_WEEK
 		                        )
 		                    ),
 		                    "image/png",
 		                    Zend_Mime::DISPOSITION_INLINE,
 		                    Zend_Mime::ENCODING_BASE64,
-		                    $c['shortname'] . ".png"
+		                    $c->getShortname() . ".png"
 		                );
 
-	                    $mrtg->id = $c['shortname'];
+	                    $mrtg->id = $c->getShortname();
 
-	                    $mailHtml .= $this->view->render( 'customer/mail/util-member.tpl' );
+	                    $mailHtml .= $this->view->render( 'customer/email/util-member.phtml' );
 
 	                    $numIntsWithExcessUtil++;
 	                }
@@ -520,7 +332,7 @@ class CliController extends INEX_Controller_Action
 
         $this->view->numWithExcessUtil = $numIntsWithExcessUtil;
 
-        $mailHtml .= $this->view->render( 'customer/mail/util-footer.tpl' );
+        $mailHtml .= $this->view->render( 'customer/email/util-footer.phtml' );
 
         $mail->setBodyHtml( $mailHtml  );
         $mail->send();
@@ -532,61 +344,53 @@ class CliController extends INEX_Controller_Action
      */
     public function generateNagiosConfigAction()
     {
+        $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getAndCache( true );
+        
+        echo $this->view->render( 'cli/nagios/switch-definitions.phtml' );
 
-        $switches = Doctrine_Query::create()
-            ->from( 'SwitchTable s' )
-            ->leftJoin( 's.Vendor v' )
-            ->leftJoin( 's.Cabinet c' )
-            ->leftJoin( 'c.Location l' )
-            ->where( 's.active = 1' )
-            ->fetchArray();
-
-        #print_r( $switches );
-        #exit;
-
-        echo $this->view->render( 'cli/nagios/switch-definitions.tpl' );
-
-        $all     = array();
         $brocade = array();
         $cisco   = array();
         $mrv     = array();
 
-        $locations = array();
+        $all     = [];
 
         foreach( $switches as $s )
         {
             $this->view->sw = $s;
-            echo $this->view->render( 'cli/nagios/switch-hosts.tpl' );
+            echo $this->view->render( 'cli/nagios/switch-hosts.phtml' );
 
-            switch( $s['Vendor']['name'] )
+            switch( $s->getVendor()->getName() )
             {
                 case 'Foundry Networks':
-                    $brocade[] = $s['name'];
+                    $brocade[] = $s->getName();
                     break;
 
                 case 'Cisco Systems':
-                    $cisco[] = $s['name'];
+                    $cisco[] = $s->getName();
                     break;
 
                 case 'MRV':
-                    $mrv[] = $s['name'];
+                    $mrv[] = $s->getName();
                     break;
             }
 
-            $all[] = $s['name'];
+            $all[] = $s->getName();
 
-            $locations[$s['Cabinet']['Location']['shortname']][] = $s['name'];
+            if( isset( $locations[ $s->getCabinet()->getLocation()->getShortname() ] ) )
+                $locations[ $s->getCabinet()->getLocation()->getShortname() ] .= ", " . $s->getName();
+            else
+                $locations[ $s->getCabinet()->getLocation()->getShortname() ] = $s->getName();
         }
 
-        $this->view->all = $all;
+        $this->view->all = implode( ', ', $all );
 
         $this->view->locations = $locations;
+        
+        $this->view->vendor_brocade = implode( ', ', $brocade );
+        $this->view->vendor_cisco   = implode( ', ', $cisco   );
+        $this->view->vendor_mrv     = implode( ', ', $mrv     );
 
-        $this->view->vendor_brocade = $brocade;
-        $this->view->vendor_cisco   = $cisco;
-        $this->view->vendor_mrv     = $mrv;
-
-        echo $this->view->render( 'cli/nagios/switch-templates.tpl' );
+        echo $this->view->render( 'cli/nagios/switch-templates.phtml' );
     }
     
     
@@ -616,18 +420,20 @@ class CliController extends INEX_Controller_Action
         fclose( $stdin );
         
         if( $this->_verbose ) echo "Setting mailing list subscription for all users without a subscription setting...\n";
-        $users = Doctrine_Query::create()->from( 'User u' )->execute( null, Doctrine::HYDRATE_RECORD );
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->findAll();
 
         foreach( $users as $u )
         {
             if( $u->hasPreference( "mailinglist.{$list}.subscribed" ) )
                 continue;
 
-            if( in_array( $u['email'], $addresses ) )
+            if( in_array( $u->getEmail(), $addresses ) )
                 $u->setPreference( "mailinglist.{$list}.subscribed", 1 );
             else
                 $u->setPreference( "mailinglist.{$list}.subscribed", 0 );
         }
+        
+        $this->getD2EM()->flush();
     }
 
     /**
@@ -636,17 +442,11 @@ class CliController extends INEX_Controller_Action
     public function mailingListSubscribedAction()
     {
         $list = $this->_getMailingList();
-    
-        $users = Doctrine_Query::create()
-            ->select( 'u.email' )
-            ->from( 'User u' )
-            ->leftJoin( 'u.UserPref up' )
-            ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
-            ->andWhere( 'up.value = 1')
-            ->execute( null, Doctrine::HYDRATE_SINGLE_SCALAR );
-        
+
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->getMailingListSubscribers( $list, 1 );
+
         foreach( $users as $user )
-            echo "$user\n";
+            echo "{$user['email']}\n";
     }
     
     /**
@@ -655,17 +455,11 @@ class CliController extends INEX_Controller_Action
     public function mailingListUnsubscribedAction()
     {
         $list = $this->_getMailingList();
-    
-        $users = Doctrine_Query::create()
-        ->select( 'u.email' )
-        ->from( 'User u' )
-        ->leftJoin( 'u.UserPref up' )
-        ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
-        ->andWhere( 'up.value = 0')
-        ->execute( null, Doctrine::HYDRATE_SINGLE_SCALAR );
-    
+
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->getMailingListSubscribers( $list, 0 );
+
         foreach( $users as $user )
-            echo "$user\n";
+            echo "{$user['email']}\n";
     }
     
     /**
@@ -676,29 +470,23 @@ class CliController extends INEX_Controller_Action
         $list = $this->_getMailingList();
 
         // we'll sync by default so only if we're told not to will the following be true:
-        if( isset( $this->config['mailinglists'][$list]['syncpws'] ) && !$this->config['mailinglists'][$list]['syncpws'] )
+        if( isset( $this->_options['mailinglists'][$list]['syncpws'] ) && !$this->_options['mailinglists'][$list]['syncpws'] )
         {
-            if( $this->_verbose ) echo "{$list}: Password sync for the given mailing list is disabled";
+            if( $this->_verbose )
+                die( "{$list}: Password sync for the given mailing list is disabled" );
+            die();
         }
-        else
-        {
-            $users = Doctrine_Query::create()
-                ->select( 'u.email, u.password' )
-                ->from( 'User u' )
-                ->leftJoin( 'u.UserPref up' )
-                ->where( 'up.attribute = ?', "mailinglist.{$list}.subscribed" )
-                ->andWhere( 'up.value = 1')
-                ->execute( null, Doctrine::HYDRATE_ARRAY );
-            
-            foreach( $users as $user )
-            {
-                $cmd = sprintf( "{$this->config['mailinglist']['cmd']['changepw']} %s %s %s",
-                        escapeshellarg( $list ), escapeshellarg( $user['email'] ), escapeshellarg( $user['password'] )
-                );
+
+        $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->getMailingListSubscribers( $list, 1 );
                 
-                if( $this->_verbose ) echo "$cmd\n";
-                exec( $cmd );
-            }
+        foreach( $users as $user )
+        {
+            $cmd = sprintf( "{$this->_options['mailinglist']['cmd']['changepw']} %s %s %s",
+                    escapeshellarg( $list ), escapeshellarg( $user['email'] ), escapeshellarg( $user['password'] )
+            );
+            
+            if( $this->_verbose ) echo "$cmd\n";
+            exec( $cmd );
         }
     }
     
@@ -708,70 +496,33 @@ class CliController extends INEX_Controller_Action
     public function mailingListSyncScriptAction()
     {
         // do we have mailing lists defined?
-        if( !isset( $this->config['mailinglists'] ) || !count( $this->config['mailinglists'] ) )
+        if( !isset( $this->_options['mailinglists'] ) || !count( $this->_options['mailinglists'] ) )
             die( "ERR: No valid mailing lists defined in your application.ini\n" );
         
-        $apppath = APPLICATION_PATH;
-        $date = date( 'Y-m-d H:i:s' );
-        
-        echo <<<END_BLOCK
-#! /bin/sh
+        $this->view->apppath = APPLICATION_PATH;
+        $this->view->date = date( 'Y-m-d H:i:s' );
 
-#
-# Script for syncronising subscriptions between mailing lists and IXP Manager.
-#
-# Does not affect any subscriptions with email addresses that do not match a user
-# in IXP Manager.
-#
-# Generated: {$date}
-#
-
-
-END_BLOCK;
-        
-        
-        foreach( $this->config['mailinglists'] as $name => $ml )
-        {
-            echo <<<END_BLOCK
-#######################################################################################################################################
-##
-## {$name} - {$ml['name']}
-##
-
-# Set default subsciption settings for any new IXP Manager users
-{$this->config['mailinglist']['cmd']['list_members']} {$name} | {$apppath}/../bin/ixptool.php -a cli.mailing-list-init --p1={$name}
-
-# Add new subscriptions to the list
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-subscribed --p1={$name} | {$this->config['mailinglist']['cmd']['add_members']} {$name} >/dev/null
-
-# Remove subscriptions from the list
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-unsubscribed --p1={$name} | {$this->config['mailinglist']['cmd']['remove_members']} {$name} >/dev/null
-
-# Sync passwords
-{$apppath}/../bin/ixptool.php -a cli.mailing-list-password-sync --p1={$name} >/dev/null
-
-END_BLOCK;
-        }
+        echo $this->view->render( 'cli/mailing-list-sync-script.sh' );
     }
     
     
     private function _getMailingList()
     {
         // do we have mailing lists defined?
-        if( !isset( $this->config['mailinglist']['enabled'] ) || !$this->config['mailinglist']['enabled'] )
+        if( !isset( $this->_options['mailinglist']['enabled'] ) || !$this->_options['mailinglist']['enabled'] )
             die( "ERR: Mailing lists disabled in configuration( use: mailinglist.enabled = 1 to enabled)\n" );
         
         if( !( $list = $this->getFrontController()->getParam( 'param1', false ) ) )
             die( "ERR: You must specify a list name (e.g. --p1 listname)\n" );
         
         // do we have mailing lists defined?
-        if( !isset( $this->config['mailinglists'] ) || !count( $this->config['mailinglists'] ) )
+        if( !isset( $this->_options['mailinglists'] ) || !count( $this->_options['mailinglists'] ) )
             die( "ERR: No valid mailing lists defined in your application.ini\n" );
         
         // is it a valid list?
-        if( !isset( $this->config['mailinglists'][$list] ) )
+        if( !isset( $this->_options['mailinglists'][$list] ) )
             die( "ERR: The specifed list ({$list}) is not defined in your application.ini\n" );
-        
+
         return $list;
     }
 }

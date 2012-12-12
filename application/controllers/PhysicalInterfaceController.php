@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,202 +22,230 @@
  */
 
 
-/*
+/**
+ * Controller: Physical Interfaces
  *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class PhysicalInterfaceController extends INEX_Controller_FrontEnd
 {
-    public function init()
-    {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Physicalinterface';
-        $this->frontend['name']            = 'PhysicalInterface';
-        $this->frontend['pageTitle']       = 'Physical Interfaces';
-
-        $this->frontend['disableAddNew']   = true;
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array( 'id', 'switch', 'switchport', 'status', 'speed', 'duplex' ),
-
-
-            'viewPanelRows'  => array( 'switch', 'switchport', 'status', 'speed', 'duplex', 'monitorindex', 'notes' ),
-
-
-            'sortDefaults' => array(
-                'column' => 'status',
-                'order'  => 'desc'
-            ),
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-
-            'switch' => array(
-                'type' => 'l2HasOne',
-                'l1model' => 'Switchport',
-                'l1controller' => 'switchport',
-                'l2model' => 'SwitchTable',
-                'l2controller' => 'switch',
-                'field' => 'name',
-                'label' => 'Switch',
-                'sortable' => true
-            ),
-
-            'switchport' => array(
-                'type' => 'hasOne',
-                'model' => 'Switchport',
-                'controller' => 'switch-port',
-                'field' => 'name',
-                'label' => 'Port',
-                'sortable' => true
-            ),
-
-            'status' => array(
-                'label' => 'Status',
-                'type' => 'xlate',
-                'sortable' => true,
-            	'xlator' => Physicalinterface::$STATES_TEXT
-            ),
-
-            'speed' => array(
-                'label' => 'Speed',
-                'sortable' => true,
-            ),
-
-            'duplex' => array(
-                'label' => 'Duplex',
-                'sortable' => true
-            ),
-
-            'monitorindex' => array(
-                'label' => 'Monitor Index'
-            )
-
-        );
-
-        parent::feInit();
-    }
-
     /**
-     * addEditPreDisplay
-     *
-     * @param INEX_Form_PhysicalInterface The form object
+     * This function sets up the frontend controller
      */
-    function addEditPreDisplay( $form, $object )
+    protected function _feInit()
     {
-        // did we get a customer id from the provisioning controller?
-        if( $this->_getParam( 'prov_virtualinterface_id', false ) )
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\PhysicalInterface',
+            'form'          => 'INEX_Form_Interface_Physical',
+            'pagetitle'     => 'Physical Interfaces',
+        
+            'titleSingular' => 'Physical Interface',
+            'nameSingular'  => 'a physical interface',
+        
+            'defaultAction' => 'list',
+        
+            'listOrderBy'    => 'customer',
+            'listOrderByDir' => 'ASC',
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
         {
-            $form->getElement( 'cancel' )->setAttrib( 'onClick',
-                "parent.location='" . $this->config['identity']['ixp']['url']
-                    . '/provision/interface-overview/id/' . $this->session->provisioning_interface_active_id . "'"
-            );
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+        
+                    'customer'  => [
+                        'title'      => 'Customer',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'custid'
+                    ],
+        
+                    'location'  => [
+                        'title'      => 'Location',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'location',
+                        'action'     => 'view',
+                        'idField'    => 'locid'
+                    ],
+        
+                    'switch'  => [
+                        'title'      => 'Switch',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'switch',
+                        'action'     => 'view',
+                        'idField'    => 'switchid'
+                    ],
+                    
+                    'port'          => 'Port',
+                    
+                    'status'        => [
+                        'title'          => 'Status',
+                        'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
+                        'xlator'         => \Entities\PhysicalInterface::$STATES
+                    ],
+                    
+        
+                    //'location'      => 'Location',
+                    //'switch'        => 'Switch',
+                    'speed'         => 'Speed',
+                    'duplex'        => 'Duplex'
+                ];
+                
+                $this->_feParams->viewColumns = array_merge(
+                    $this->_feParams->listColumns,
+                    [ 'monitorindex' => 'Monitor Index', 'notes' => 'Notes' ]
+                );
+                break;
+    
+            case \Entities\User::AUTH_CUSTADMIN:
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
+    
+    }
+    
+    
+    
+    /**
+     * Provide array of virtual interfaces for the listAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select(
+                    'pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
+                    pi.monitorindex AS monitorindex, pi.notes AS notes,
+                    c.name AS customer, c.id AS custid,
+                    s.name AS switch, s.id AS switchid,
+                    vi.id AS vintid,
+                    sp.name AS port, l.id AS locid, l.name AS location'
+                )
+            ->from( '\\Entities\\PhysicalInterface', 'pi' )
+            ->leftJoin( 'pi.VirtualInterface', 'vi' )
+            ->leftJoin( 'vi.Customer', 'c' )
+            ->leftJoin( 'pi.SwitchPort', 'sp' )
+            ->leftJoin( 'sp.Switcher', 's' )
+            ->leftJoin( 's.Cabinet', 'cab' )
+            ->leftJoin( 'cab.Location', 'l' );
 
-        // if provisioning and we're creating an interface:
-        if( $this->_getParam( 'prov_physicalinterface_id' ) !== null )
+        
+        if( $id !== null )
+            $qb->where( 'pi.id = ' . intval( $id ) );
+        
+        return $qb->getQuery()->getArrayResult();
+    }
+    
+    
+    /**
+     * @param INEX_Form_Interface_Physical $form The form object
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     * @return void
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+    {
+        if( $isEdit )
         {
-            $form->getElement( 'status' )->setValue( Physicalinterface::STATUS_XCONNECT );
+            $form->getElement( 'switchid' )->setValue( $object->getSwitchPort()->getSwitcher()->getId() );
+            $form->getElement( 'switchportid' )->setValue( $object->getSwitchPort()->getId() );
+            $form->getElement( 'preselectSwitchPort' )->setValue( $object->getSwitchPort()->getId() );
+            $form->getElement( 'preselectPhysicalInterface' )->setValue( $object->getId() );
+            $form->getElement( 'virtualinterfaceid' )->setValue( $object->getVirtualInterface()->getId() );
+            
+            if( $this->getParam( 'rtn', false ) == 'pi' )
+                $form->setAction( OSS_Utils::genUrl( 'physical-interface', 'edit', false, [ 'id' => $object->getId(), 'rtn' => 'pi' ] ) );
+            else
+                $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $object->getVirtualInterface()->getId() ] ) );
         }
-
-
-        if( $this->getRequest()->getParam( 'virtualinterfaceid' ) !== null )
+        else // not editing
         {
-            $form->getElement( 'virtualinterfaceid' )->setValue( $this->getRequest()->getParam( 'virtualinterfaceid' ) );
-
-            if( $form->getElement( 'monitorindex' )->getValue() == '' )
+            if( $this->getRequest()->isPost() && ( $vintid = ( isset( $_POST['virtualinterfaceid'] ) && $_POST['virtualinterfaceid'] ) ) )
+                $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $_POST['virtualinterfaceid'] );
+            else if( ( $vintid = $this->getRequest()->getParam( 'vintid' ) ) !== null )
+                $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $vintid );
+            
+            if( !isset( $vint ) || !$vint )
+                throw new INEX_Exception( 'Not sure how you would add a physical interface without a containing virtual interface');
+            
+            $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
+            $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $vint->getId() ] ) );
+            
+            if( !$object->getMonitorindex() )
             {
-                $virtualInterface = Doctrine::getTable( 'Virtualinterface' )->find( $this->getRequest()->getParam( 'virtualinterfaceid' ) );
-
-                $nextMonitorIndex = Doctrine_Query::create()
-	                ->select( 'MAX( pi.monitorindex )' )
-	                ->from( 'Physicalinterface pi' )
-	                ->leftJoin( 'pi.Virtualinterface vi' )
-	                ->where( 'vi.custid = ?', $virtualInterface['custid'] )
-	                ->execute()
-	                ->toArray();
-
-                $form->getElement( 'monitorindex' )->setValue( $nextMonitorIndex[0]['MAX'] + 1 );
+                $form->getElement( 'monitorindex' )->setValue(
+                    $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $vint->getCustomer() )
+                );
             }
         }
     }
     
     
-    protected function formPrevalidate( $form, $isEdit, $object )
+    /**
+     * @param INEX_Form_Interface_Physical $form The form object
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
     {
-        // set the switch and port fields of the form if we're editing
-        if( $isEdit )
-        {
-            $form->getElement( 'switch_id')->setValue( $object->Switchport->SwitchTable['id'] );
-            $form->getElement( 'preselectSwitchPort' )->setValue( $object->Switchport['id'] );
-            $form->getElement( 'preselectPhysicalInterface' )->setValue( $object['id'] );
-        }
-    }
-    
-    public function ajaxGetPortsAction()
-    {
-        $switch = Doctrine::getTable( 'SwitchTable' )->find( $this->_getParam( 'switchid', null ) );
+        $object->setSwitchPort(
+            $this->getD2EM()->getRepository( '\\Entities\\SwitchPort' )->find( $form->getElement( 'switchportid' )->getValue() )
+        );
+        
+        $object->setVirtualInterface(
+            $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $form->getElement( 'virtualinterfaceid' )->getValue() )
+        );
 
-        $ports = '';
-        
-        if( $switch )
-        {
-            $ports = Doctrine_Query::create()
-                ->from( 'Switchport sp' )
-                ->leftJoin( 'sp.Physicalinterface pi' )
-                ->where( 'sp.switchid = ?', $switch['id'] );
-                
-            if( $this->_getParam( 'id', null ) !== null )
-                $ports = $ports->andWhere( '( pi.id IS NULL OR pi.id = ? )', $this->_getParam( 'id' ) );
-            else
-                $ports = $ports->andWhere( 'pi.id IS NULL' );
-                
-            $ports = $ports->orderBy( 'sp.id' )
-                ->fetchArray();
-                
-            foreach( $ports as $i => $p )
-                $ports[$i]['type'] = Switchport::$TYPE_TEXT[ $p['type'] ];
-        }
-        
-        $this->getResponse()
-            ->setHeader('Content-Type', 'application/json')
-            ->setBody( Zend_Json::encode( $ports ) )
-            ->sendResponse();
-        exit();
-    }
-
-    
-    protected function _deleteSetReturnOnSuccess()
-    {
-        if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
-            return "virtual-interface/edit/id/{$vid}";
-        
-        return 'physical-interface/list';
+        return true;
     }
     
-    protected function _addEditSetReturnOnSuccess( $form, $object )
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful add / edit operation.
+     *
+     * @param INEX_Form_Interface_Physical $form The form object
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
-        return "virtual-interface/edit/id/{$object['virtualinterfaceid']}";
+        if( $this->getParam( 'rtn', false ) == 'pi' )
+            return false;
+        
+        $this->addMessage(
+            'Physical interface successfuly ' . ( $isEdit ? 'edited.' : 'added.' ), OSS_Message::SUCCESS
+        );
+        
+        $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $object->getVirtualInterface()->getId() );
     }
     
-    
-    protected function getForm( $options = null, $isEdit = false )
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful deletion operation.
+     *
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function deleteDestinationOnSuccess()
     {
-        $formName = "INEX_Form_{$this->frontend['name']}";
-    
-        if( $vid = $this->_getParam( 'virtualinterfaceid', false ) )
-            $cancelLocation = $this->genUrl( 'virtual-interface', 'edit', array( 'id' => $vid ) );
-        else
-            $cancelLocation = $this->genUrl( 'physical-interface', 'list' );
-    
-        return new $formName( $options, $isEdit, $cancelLocation );
+        if( $this->getParam( 'rtn', false ) == 'pi' )
+            return false;
+        
+        $this->addMessage(
+            'Physical interface deleted successfuly.', OSS_Message::SUCCESS
+        );
+        
+        $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $this->getParam( 'vintid' ) );
     }
     
 }

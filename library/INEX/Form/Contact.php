@@ -21,99 +21,50 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
+ * Form: adding / editing contacts
  *
- * @package INEX_Form
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Form
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class INEX_Form_Contact extends INEX_Form
 {
-    /**
-     *
-     *
-     */
-    public function __construct( $options = null, $isEdit = false, $cancelLocation )
+    public function init()
     {
-        parent::__construct( $options, $isEdit );
-
-        ////////////////////////////////////////////////
-        // Create and configure elements
-        ////////////////////////////////////////////////
 
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
+            ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $name );
 
+        $this->addElement( INEX_Form_Customer::getPopulatedSelect( 'custid' ) );
 
-        $dbCusts = Doctrine_Query::create()
-            ->from( 'Cust c' )
-            ->orderBy( 'c.name ASC' )
-            ->execute();
-
-        $custs = array( '0' => '' );
-        $maxId = 0;
-
-        foreach( $dbCusts as $c )
-        {
-            $custs[ $c['id'] ] = "{$c['name']}";
-            if( $c['id'] > $maxId ) $maxId = $c['id'];
-        }
-
-        $cust = $this->createElement( 'select', 'custid' );
-        $cust->setMultiOptions( $custs );
-        $cust->setRegisterInArrayValidator( true )
-            ->setRequired( true )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setLabel( 'Customer' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( array( 'Please select a customer' ) );
-
-        $this->addElement( $cust );
-
-
-
-        
-        $email = $this->createElement( 'text', 'email' );
-        $email->addValidator( 'stringLength', false, array( 1, 64 ) )
-            ->addValidator( 'emailAddress' )
-            ->setLabel( 'E-mail' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
-        $this->addElement( $email );
-
-
-
-
+        $this->addElement( OSS_Form_User::createEmailElement( 'email' ) );
 
         $phone = $this->createElement( 'text', 'phone' );
         $phone->addValidator( 'stringLength', false, array( 1, 32 ) )
-            ->setLabel( 'Phone' )
+            ->setLabel( _( 'Phone' ) )
+            ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
-
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $phone );
-
 
 
 
         $mobile = $this->createElement( 'text', 'mobile' );
         $mobile->addValidator( 'stringLength', false, array( 1, 32 ) )
-            ->setLabel( 'Mobile' )
+            ->setLabel( _( 'Mobile' ) )
             ->addFilter( 'StringTrim' )
-            ->addFilter( new INEX_Filter_StripSlashes() );
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $mobile );
 
@@ -135,14 +86,8 @@ class INEX_Form_Contact extends INEX_Form
         $this->addElement( $mayauthorize );
 
 
-
-
-        $this->addElement( 'button', 'cancel', array( 'label' => 'Cancel', 'onClick' => "parent.location='"
-            . $cancelLocation . "'" ) );
-        
-        $this->addElement( 'submit', 'commit', array( 'label' => $isEdit ? 'Save' : 'Add' ) );
-
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
+        $this->addElement( $this->createCancelElement() );
     }
-
+    
 }
-

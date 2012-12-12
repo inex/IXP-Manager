@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,586 +22,346 @@
  */
 
 
-/*
+/**
+ * Controller: Customers
  *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   INEX
+ * @package    INEX_Controller
+ * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-
 class CustomerController extends INEX_Controller_FrontEnd
 {
-    public function init()
+    /**
+     * This function sets up the frontend controller
+     */
+    protected function _feInit()
     {
-        $this->frontend['defaultOrdering'] = 'name';
-        $this->frontend['model']           = 'Cust';
-        $this->frontend['name']            = 'Customer';
-        $this->frontend['pageTitle']       = 'Customers';
-
-        $this->frontend['columns'] = array(
-
-            'displayColumns' => array(
-                'id', 'name', 'autsys', 'shortname', 'peeringemail', 'nocphone'
-            ),
-
-            // Customer can update:
-            'updatableColumns' => array( 'peeringemail', 'noc24hphone', 'nocphone', 'nocemail', 'nocfax', 'nochours', 'nocwww',
-                'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww'
-            ),
-
-            'viewPanelRows'  => array( 'name', 'type', 'status', 'shortname', 'autsys', 'peeringemail', 'nocphone', 'nocemail', 'noc24hphone', 'nocfax',
-                'nochours', 'nocwww', 'irrdb', 'peeringmacro', 'peeringpolicy', 'maxprefixes',
-                'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry',
-                'corpwww', 'datejoin', 'dateleave', 'activepeeringmatrix', 'notes'
-            ),
-
-            'viewPanelTitle' => 'name',
-
-            'id' => array(
-                'label' => 'ID',
-                'hidden' => true
-            ),
-
-
-            'name' => array(
-                'label' => 'Member',
-                'sortable' => true,
-                'searchable' => true,
-                'search' => array(
-                    'type' => 'text',
-                    'beginsWith' => true
-                )
-            ),
-
-            'type' => array(
-                'label' => 'Type',
-                'sortable' => false,
-                'type' => 'xlate',
-                'xlator' => Cust::$CUST_TYPES_TEXT
-            ),
-
-            'status' => array(
-                'label' => 'Status',
-                'sortable' => false,
-                'type' => 'xlate',
-                'xlator' => Cust::$CUST_STATUS_TEXT
-            ),
-
-            'shortname' => array(
-                'label' => 'Short Name',
-                'sortable' => true,
-                'searchable' => true,
-                'search' => array(
-                    'type' => 'text',
-                    'beginsWith' => true
-                )
-            ),
-
-            'autsys' => array(
-                'label' => 'AS',
-                'sortable' => true,
-                'searchable' => true,
-                'search' => array(
-                    'type' => 'text',
-                    'beginsWith' => true
-                )
-            ),
-
-            'peeringemail' => array(
-                'label' => 'Peering E-Mail',
-                'sortable' => false
-            ),
-
-            'nocphone' => array(
-                'label' => 'NOC Phone'
-            ),
-
-            'noc24hphone' => array(
-                'label' => 'NOC 24hr Phone'
-            ),
-
-            'nocemail' => array(
-                'label' => 'NOC E-mail'
-            ),
-
-            'nocfax' => array(
-                'label' => 'NOC Fax'
-            ),
-
-            'nochours' => array(
-                'label' => 'NOC Hours'
-            ),
-
-            'nocwww' => array(
-                'label' => 'NOC Website'
-            ),
-
-            'irrdb' => array(
-                'type' => 'hasOne',
-                'model' => 'Irrdbconfig',
-                'controller' => 'irrdb-config',
-                'field' => 'source',
-                'label' => 'IRRDB',
-                'sortable' => true
-            ),
-
-            'peeringmacro' => array(
-                'label' => 'Peering Macro'
-            ),
-
-            'peeringpolicy' => array(
-                'label' => 'Peering Policy'
-            ),
-
-            'maxprefixes' => array(
-                'label' => 'Max Prefixes'
-            ),
-
-            'billingContact' => array(
-                'label' => 'Billing Contact'
-            ),
-
-            'billingAddress1' => array(
-                'label' => 'Billing Address 1'
-            ),
-
-            'billingAddress2' => array(
-                'label' => 'Billing Address 2'
-            ),
-
-            'billingCity' => array(
-                'label' => 'Billing City'
-            ),
-
-            'billingCountry' => array(
-                'label' => 'Billing Country'
-            ),
-
-            'corpwww' => array(
-                'label' => 'Corporate Website'
-            ),
-
-            'datejoin' => array(
-                'label' => 'Date Joined'
-            ),
-
-            'dateleave' => array(
-                'label' => 'Date Left'
-            ),
-
-            'activepeeringmatrix' => array(
-                'label' => 'Active Peering Matrix'
-            ),
-
-            'notes' => array(
-                'label' => 'Notes'
-            )
-
+        $this->view->feParams = $this->_feParams = (object)[
+            'entity'        => '\\Entities\\Customer',
+            'form'          => 'INEX_Form_Customer',
+            'pagetitle'     => 'Customers',
+        
+            'titleSingular' => 'Customer',
+            'nameSingular'  => 'a customer',
+        
+            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+        
+            'listOrderBy'    => 'c.name',
+            'listOrderByDir' => 'ASC',
+        ];
+    
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                $this->_feParams->listColumns = [
+                    'id' => [ 'title' => 'UID', 'display' => false ],
+        
+                    'name'        => [
+                        'title'      => 'Name',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'id'
+                    ],
+        
+                    'autsys'      => 'AS',
+                    
+                    'shortname'   => [
+                        'title'      => 'Shortname',
+                        'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                        'controller' => 'customer',
+                        'action'     => 'overview',
+                        'idField'    => 'id'
+                    ],
+                    
+                    'peeringemail'   => 'Peering Email',
+                    'noc24hphone'    => 'NOC 24h Phone',
+                    
+                    'type'            => [
+                        'title'         => 'Type',
+                        'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
+                        'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT
+                    ],
+                    
+                    'datejoin'       => [
+                        'title'     => 'Joined',
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ]
+                ];
+                break;
+    
+            case \Entities\User::AUTH_CUSTUSER:
+                $this->_feParams->listColumns = [];
+                $this->_feParams->allowedActions = [ 'details', 'detail' ];
+                $this->_feParams->defaultAction = 'details';
+                break;
+                
+            default:
+                $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
+    
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = array_merge(
+            $this->_feParams->listColumns,
+            [
+                'maxprefixes'     => 'Max Prefixes',
+                'nocphone'        => 'NOC Phone',
+                'nocfax'          => 'NOC Fax',
+                'nochours'        => 'NOC Hours',
+                'nocemail'        => 'NOC Email',
+                'nocwww'          => 'NOC WWW',
+                'irrdb'           => 'IRRDB',
+                'status'          => [
+                    'title'         => 'Status',
+                    'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'        => \Entities\Customer::$CUST_STATUS_TEXT
+                ],
+                'activepeeringmatrix' => 'Active Peering Matrix',
+                'peeringmacro'    => 'Peering Macro',
+                'peeringpolicy'   => 'Peering Policy',
+                'billingContact'  => 'Billing Contact',
+                'billingAddress1' => 'Billing Address1',
+                'billingAddress2' => 'Billing Address2',
+                'billingCity'     => 'Billing City',
+                'billingCountry'  => 'Billing Country',
+                'corpwww'         => 'Corporate WWW',
+                'dateleave'       => [
+                        'title'     => 'Left',
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ],
+                'notes'           => 'Notes',
+                'lastupdated'     => 'Last Updated',
+                'lastupdatedby'   => 'Last Updated By',
+                'creator'         => 'Created By',
+                'created'         => 'Created'
+            ]
         );
-
-
-        // Override global auth level requirement for specific actions
-        $this->frontend['authLevels'] = array(
-            'update-attribute' => User::AUTH_CUSTUSER
-        );
-
-        parent::feInit();
+    }
+    
+    
+    
+    
+    /**
+     * Provide array of customers for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listGetData( $id = null )
+    {
+        $qb = $this->getD2EM()->createQueryBuilder()
+                ->select( 'c.id AS id, c.name AS name, c.shortname AS shortname, c.type AS type,
+                            c.autsys AS autsys, c.maxprefixes AS maxprefixes, c.peeringemail AS peeringemail,
+                            c.nocphone AS nocphone, c.noc24hphone AS noc24hphone, c.nocfax AS nocfax,
+                            c.nochours AS nochours, c.nocemail AS nocemail, c.nocwww AS nocwww,
+                            c.irrdb AS irrdb, c.status AS status, c.activepeeringmatrix AS activepeeringmatrix,
+                            c.peeringmacro AS peeringmacro, c.peeringpolicy AS peeringpolicy,
+                            c.billingContact AS billingContact, c.billingAddress1 AS billingAddress1,
+                            c.billingAddress2 AS billingAddress2, c.billingCity AS billingCity, c.billingCountry AS billingCountry,
+                            c.corpwww AS corpwww, c.datejoin AS datejoin, c.dateleave AS dateleave,
+                            c.notes AS notes, c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby,
+                            c.creator AS creator, c.created AS created'
+                        )
+                ->from( '\\Entities\\Customer', 'c' );
+    
+        if( isset( $this->_feParams->listOrderBy ) )
+            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+    
+        if( $id !== null )
+            $qb->andWhere( 'c.id = ?3' )->setParameter( 3, $id );
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    
+    public function viewAction()
+    {
+        $this->forward( 'overview' );
     }
 
-
+    
     /**
-     * Additional checks when a new object is being added.
+     * The Customer Overview
      */
-    protected function formValidateForAdd( $form )
+    public function overviewAction()
     {
-
-        if( Doctrine::getTable( $this->getModelName() )->findOneByShortname( $form->getValue( 'shortname' ) ) )
+        $this->view->cust = $cust = $this->_loadCustomer();
+    }
+    
+    
+    /**
+     *
+     * @param INEX_Form_Customer $form The Send form object
+     * @param \Entities\Customer $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not processed
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        if( !$isEdit && $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $form->getValue( 'shortname' ) ] ) )
         {
-            $form->getElement( 'shortname' )->addError( 'This short name is not available' );
+            $form->getElement( 'shortname' )->addError( 'This shortname is not available' );
             return false;
         }
+            
+        if( $isEdit )
+        {
+            $object->setLastupdated( new DateTime() );
+            $object->setLastupdatedby( $this->getUser()->getId() );
+        }
+        else
+        {
+            $object->setCreated( new DateTime() );
+            $object->setCreator( $this->getUser()->getUsername() );
+        }
+        
+        return true;
     }
-
-
 
     /**
-     * A generic action to list the elements of a database (as represented
-     * by a Doctrine model) via Smarty templates.
+     *
+     * @param INEX_Form_Customer $form The Send form object
+     * @param \Entities\Customer $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not processed
      */
-    public function getDataAction()
+    protected function addPreFlush( $form, $object, $isEdit )
     {
-        $dataQuery = Doctrine_Query::create()
-        ->from( $this->getModelName() . ' x' )
-        ->orderBy( 'x.shortname ASC' );
-
-        if( $this->getRequest()->getParam( 'member' ) !== NULL )
-        $dataQuery->andWhere( 'x.name LIKE ?', $this->getRequest()->getParam( 'member' ) . '%' );
-
-        if( $this->getRequest()->getParam( 'shortname' ) !== NULL )
-        $dataQuery->andWhere( 'x.shortname LIKE ?', $this->getRequest()->getParam( 'shortname' ) . '%' );
-
-
-        $rows = $dataQuery->execute();
-
-        $count = 0;
-        $data = '';
-        foreach( $rows as $row )
+        
+        if( !( $object->getDatejoin() instanceof DateTime ) )
+            $object->setDatejoin( new DateTime( $form->getValue( 'datejoin' ) ) );
+        
+        if( !( $object->getDateleave() instanceof DateTime ) )
         {
-            if( $count > 0 )
-            $data .= ',';
-
-            $count++;
-
-            $data .= <<<END_JSON
-    {
-        "member":"{$row['name']}",
-        "id":"{$row['id']}",
-        "autsys":"{$row['autsys']}",
-        "shortname":"{$row['shortname']}",
-        "peeringemail":"{$row['peeringemail']}",
-        "nocphone":"{$row['nocphone']}"
-    }
-END_JSON;
-
+            if( !$form->getValue( 'dateleave' ) )
+                $object->setDateleave( null );
+            else
+                $object->setDateleave( new DateTime( $form->getValue( 'dateleave' ) ) );
         }
-
-        $data = <<<END_JSON
-{"ResultSet":{
-    "totalResultsAvailable":{$count},
-    "totalResultsReturned":{$count},
-    "firstResultPosition":0,
-    "Result":[{$data}]}}
-END_JSON;
-
-        echo $data;
-
+            
+        return true;
     }
-
-
-
+    
 
     /**
      * Send the member an operations welcome mail
      *
      */
-    public function sendWelcomeEmailAction()
+    public function welcomeEmailAction()
     {
-        // Is the customer ID valid?
-        if( $this->getRequest()->getParam( 'id' ) !== NULL && is_numeric( $this->getRequest()->getParam( 'id' ) ) )
-        {
-            if( !( $customer = Doctrine::getTable( 'Cust' )->find( $this->getRequest()->getParam( 'id' ) ) ) )
-            {
-                $this->view->message = new INEX_Message( 'Invalid Member ID', "error" );
-                return( $this->_forward( 'list' ) );
-            }
-
-            $this->view->customer = $customer;
-        }
-        else
-        {
-            $this->view->message = new INEX_Message( 'Invalid Member ID', "error" );
-            return( $this->_forward( 'list' ) );
-        }
+        $this->view->customer = $c = $this->_loadCustomer();
+        $this->view->admins = $c->getAdminUsers();
+        $this->view->form = $form = new INEX_Form_Customer_SendEmail();
         
-        $this->view->custadmin = $customer->getCustAdminUser();
+        $form->getElement( 'to' )->setValue( $c->getNocemail() );
 
-        $cancelLocation = 'http' . ( isset( $_SERVER['HTTPS'] ) ? 's' : '' ) . '://'
-            . $_SERVER['SERVER_NAME'] . Zend_Controller_Front::getInstance()->getBaseUrl()
-            . '/' . $this->getRequest()->getParam( 'controller' ) . '/list';
+        $emails = array();
+        foreach( $c->getUsers() as $user )
+            if( Zend_Validate::is( $user->getEmail(), 'EmailAddress' ) )
+                $emails[] = $user->getEmail();
 
-        $form = new INEX_Form_Customer_SendWelcomeEmail( null, false, $cancelLocation );
-
-        $form->getElement( 'to' )->setValue( $customer['nocemail'] );
-
-        $userEmails = array();
-        foreach( $customer['User'] as $user )
-        {
-            if( Zend_Validate::is( $user['email'], 'EmailAddress' ) )
-                $userEmails[] = $user['email'];
-        }
-
-        $form->getElement( 'cc' )->setValue( implode( ',', $userEmails ) );
-
-        $form->getElement( 'bcc' )->setValue( $this->config['identity']['email'] );
-        $form->getElement( 'subject' )->setValue( $this->config['identity']['name'] . ' :: Welcome Mail' );
-
+        $form->getElement( 'cc' )->setValue( implode( ',', $emails ) );
+        $form->getElement( 'bcc' )->setValue( $this->_options['identity']['email'] );
+        $form->getElement( 'subject' )->setValue( $this->_options['identity']['name'] . ' :: Welcome Mail' );
+        $form->getElement( 'message' )->setValue( $this->view->render( "customer/email/welcome-email.phtml" ) );
+        
         // Let's get the information we need for the welcome mail from the database.
-
-        $this->view->networkInfo = Networkinfo::toStructuredArray();
-
-        $this->view->connections = Doctrine_Query::create()
-	        ->from( 'Virtualinterface vi' )
-	        ->leftJoin( 'vi.Cust c' )
-	        ->leftJoin( 'vi.Physicalinterface pi' )
-	        ->leftJoin( 'vi.Vlaninterface vli' )
-	        ->leftJoin( 'vli.Ipv4address v4' )
-	        ->leftJoin( 'vli.Ipv6address v6' )
-	        ->leftJoin( 'vli.Vlan v' )
-	        ->leftJoin( 'pi.Switchport sp' )
-	        ->leftJoin( 'sp.SwitchTable s' )
-	        ->leftJoin( 's.Cabinet cb' )
-	        ->leftJoin( 'cb.Location l' )
-	        ->where( 'c.id = ?', $customer['id'] )
-	        ->orderBy( 'pi.monitorindex' )
-	        ->execute()
-	        ->toArray( true );
-
-	    $this->getLogger()->debug( print_r( $this->view->connections, true ) );
-
-        $form->getElement( 'message' )->setValue( $this->view->render( 'customer' . DIRECTORY_SEPARATOR . 'welcomeEmail.tpl' ) );
-
-
+        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+        
         // Process a submitted form if it passes initial validation
-        if( $this->inexGetPost( 'commit' ) !== null && $form->isValid( $_POST ) )
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
-            $validForm = true;
-            // Validate all e-mail addresses
-            foreach( array( 'to', 'cc', 'bcc' ) as $recipient )
+            $mail = $this->_processSendEmailForm( $form );
+            if( $mail )
             {
-                if( $form->getValue( $recipient ) != '' )
-                {
-	                foreach( explode( ',', $form->getElement( $recipient )->getValue() ) as $email )
-	                {
-	                    if( !Zend_Validate::is( $email, 'EmailAddress' ) )
-	                    {
-	                        $form->getElement( $recipient )->addError( 'Invalid e-mail address: ' . $email );
-	                        $validForm = false;
-	                    }
-	                }
-                }
-            }
-
-            if( $validForm )
-            {
-                $mail = new Zend_Mail();
                 $mail->setBodyText( $form->getValue( 'message' ) );
-                $mail->setFrom( $this->config['identity']['email'], $this->config['identity']['name'] );
+                $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] );
                 $mail->setSubject( $form->getValue( 'subject' ) );
+                $mail->send();
 
-                foreach( array( 'To', 'Cc', 'Bcc' ) as $recipient )
-                    if( $form->getValue( strtolower( $recipient ) ) != '' )
-                        foreach( explode( ',', $form->getElement( strtolower( $recipient ) )->getValue() ) as $email )
-	                        if( Zend_Validate::is( $email, 'EmailAddress' ) )
-	                        {
-	                            $fn = "add$recipient";
-                                $mail->$fn( $email );
-	                        }
-
-                if( $mail->send() )
-                {
-                    $this->getLogger()->info( "Welcome email sent for {$customer['name']}" );
-                    $this->view->message = new INEX_Message( "Welcome email successfully sent to {$customer['name']}", "success" );
-                    $this->_forward( 'dashboard' );
-                    return true;
-                }
-                else
-                {
-                    $this->getLogger()->err( "Could not sent welcome email for {$customer['name']}: " . print_r( $mail, true ) );
-                    $this->view->message = new INEX_Message( "Welcome email could not be sent to {$customer['name']}. Please see logs for more verbose output.", "error" );
-                }
-
+                $this->getLogger()->info( "Welcome email sent for {$c->getName()}" );
+                $this->addMessage( "Welcome email successfully sent to {$c->getName()}", OSS_Message::SUCCESS );
+                return $this->redirect( 'customer/overview/id/' . $c->getId() );
             }
         }
-
-        $this->view->form   = $form->render( $this->view );
-
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'sendWelcomeEmail.tpl' );
     }
 
 
-    public function leagueTableAction()
+    
+    public function detailsAction()
     {
-        $metrics = array(
-            'Total'   => 'data',
-            'Max'     => 'max',
-            'Average' => 'average'
-        );
-
-        $metric = $this->_request->getParam( 'metric', $metrics['Total'] );
-        if( !in_array( $metric, $metrics ) )
-            $metric = $metrics['Total'];
-
-        $day = $this->_request->getParam( 'day', date( 'Y-m-d' ) );
-        if( !Zend_Date::isDate( $day, 'Y-m-d' ) )
-            $day = date( 'Y-m-d' );
-
-        $category = $this->_request->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
-
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
-            $category = INEX_Mrtg::$CATEGORIES['Bits'];
-
-        // load values from the database
-        $this->view->trafficDaily = Doctrine_Query::create()
-            ->from( 'TrafficDaily td' )
-            ->where( 'day = ?', $day )
-            ->andWhere( 'category = ?', $category )
-            ->execute();
-
-        $this->view->day        = $day;
-        $this->view->category   = $category;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        $this->view->metric     = $metric;
-        $this->view->metrics    = $metrics;
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'leagueTable.tpl' );
+        $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true );
     }
-
-    public function ninetyFifthAction()
+        
+    public function detailAction()
     {
-        $month = $this->_request->getParam( 'month', date( 'Y-m-01' ) );
-
-        $cost = $this->_request->getParam( 'cost', "20.00" );
-        if( !is_numeric( $cost ) )
-            $cost = "20.00";
-        $this->view->cost = $cost;
-
-        $months = array();
-        for( $year = 2010; $year <= date( 'Y' ); $year++ )
-            for( $mth = ( $year == 2010 ? 4 : 1 ); $mth <= ( $year == 2010 ? date('n') : 12 ); $mth++ )
-            {
-                $ts = mktime( 0, 0, 0, $mth, 1, $year );
-                $months[date( 'M Y', $ts )] = date( 'Y-m-01', $ts );
-            }
-
-        $this->view->months = $months;
-
-        if( in_array( $month, array_values( $months ) ) )
-            $this->view->month = $month;
-        else
-            $this->view->month = date( 'Y-m-01' );
-
-        // load values from the database
-        $traffic95thMonthly = Doctrine_Query::create()
-            ->from( 'Traffic95thMonthly tf' )
-            ->leftJoin( 'tf.Cust c' )
-            ->where( 'month = ?', $month )
-            ->execute()
-            ->toArray();
-
-        foreach( $traffic95thMonthly as $index => $row )
-            $traffic95thMonthly[$index]['cost'] = sprintf( "%0.2f", $row['max_95th'] / 1024 / 1024 * $cost );
-
-        $this->view->traffic95thMonthly = $traffic95thMonthly;
-
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'ninety-fifth.tpl' );
+        $this->view->cust = $c = $this->_loadCustomer( $this->getParam( 'id', null ), 'customer/details' );
+        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
     }
-
-    public function statisticsOverviewAction()
-    {
-        $category = $this->_request->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
-
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
-            $category = INEX_Mrtg::$CATEGORIES['Bits'];
-
-        $period = $this->_request->getParam( 'period', INEX_Mrtg::$PERIODS['Day'] );
-
-        if( !in_array( $period, INEX_Mrtg::$PERIODS ) )
-            $period = INEX_Mrtg::$PERIODS['Day'];
-
-        $this->view->custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->orderBy( 'c.name' )
-            ->fetchArray();
-
-        $this->view->category   = $category;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        $this->view->period     = $period;
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'statistics-overview.tpl' );
-    }
-
-    public function statisticsByLanAction()
-    {
-        $category = $this->_request->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
-
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
-            $category = INEX_Mrtg::$CATEGORIES['Bits'];
-
-        $period = $this->_request->getParam( 'period', INEX_Mrtg::$PERIODS['Day'] );
-
-        if( !in_array( $period, INEX_Mrtg::$PERIODS ) )
-            $period = INEX_Mrtg::$PERIODS['Day'];
-
-        $lanTag = $this->_request->getParam( 'lan', 10 );
-
-        $lan = Doctrine_Core::getTable( 'Vlan' )->findOneByNumber( $lanTag );
-
-        if( !$lan )
-            $lan = Doctrine_Core::getTable( 'Vlan' )->findOneByNumber( 10 );
-
-        $this->view->lan = $lan;
-
-        $this->view->ints = Doctrine_Query::create()
-            ->from( 'Vlaninterface vl' )
-            ->leftJoin( 'vl.Virtualinterface vi' )
-            ->leftJoin( 'vi.Cust c' )
-            ->leftJoin( 'vi.Physicalinterface pi' )
-            ->leftJoin( 'pi.Switchport sp' )
-            ->leftJoin( 'sp.SwitchTable s' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhere( 'vl.vlanid = ?', $lan['id'] )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->orderBy( 'c.name' )
-            ->fetchArray();
-
-        $this->view->category   = $category;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
-        $this->view->period     = $period;
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'statistics-by-lan.tpl' );
-    }
-
-    public function statisticsListAction()
-    {
-        $this->view->custs = Doctrine_Query::create()
-            ->select( 'c.shortname' )
-            ->addSelect( 'c.name' )
-            ->from( 'Cust c' )
-            ->whereIn( 'c.type', array( Cust::TYPE_FULL, Cust::TYPE_INTERNAL, Cust::TYPE_PROBONO ) )
-            ->andWhere( 'c.status = ?', array( Cust::STATUS_NORMAL ) )
-            ->andWhere( 'c.dateleave = 0 or c.dateleave IS NULL' )
-            ->andWhereIn( 'c.shortname', array( 'inex', 'routeservers' ), true )
-            ->orderBy( 'c.name' )
-            ->fetchArray();
-
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'statistics-list.tpl' );
-    }
-
-
+        
+    
     /**
-     * Set a custom return from an add / edit
-     */
-    public function _addEditSetReturnOnSuccess( $form, $object )
-    {
-        return 'customer/dashboard/id/' . $object['id'];
-    }
-
-    /**
-     * The Customer Dashboard
+     * Load a customer from the database with the given ID (or ID in request) but
+     * redirect to `customer/list` if no ID or no such customer.
      *
+     * @param int|bool $id The customer `$id` to load (or, if false, look for an ID parameter)
+     * @param string $redirect Alternative location to redirect to
+     * @return \Entities\Customer The customer object
      */
-    public function dashboardAction()
+    protected function _loadCustomer( $id = false, $redirect = null )
     {
-        // Is the customer ID valid?
-        if( !$this->getRequest()->getParam( 'id', false ) || !is_numeric( $this->getRequest()->getParam( 'id' ) )
-            || !( $customer = Doctrine::getTable( 'Cust' )->find( $this->getRequest()->getParam( 'id' ) ) ) )
+        if( $id === false )
+            $id = $this->getParam( 'id', false );
+        
+        if( $id )
+            $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $id );
+        
+        if( !$id || !$c )
         {
-            $this->view->message = new INEX_Message( 'Invalid customer ID', "error" );
-            return( $this->_forward( 'list' ) );
+            $this->addMessage( 'Invalid customer ID', OSS_Message::ERROR );
+            $this->redirect( $redirect === null ? 'customer/list' : $redirect );
         }
-
-        $this->view->acust = $customer;
-        $this->view->connections = $customer->getConnections();
         
-        
-        $this->view->display( 'customer' . DIRECTORY_SEPARATOR . 'dashboard.tpl' );
+        return $c;
     }
+    
+    /**
+     * A utility function to process the To / CC / BCC fields of the Send Email
+     * form and return a populated Zend_Mail object.
+     *
+     * @see welcomeEmailAction() for an example
+     * @param INEX_Form_Customer_SendEmail $form The Send Email form
+     * @return Zend_Mail|bool The Zend_Mail object on success
+     */
+    protected function _processSendEmailForm( $form )
+    {
+        $emailsOkay = null;
+        $mail = $this->getMailer();
+        // Validate all e-mail addresses
+        foreach( [ 'to' => 'To', 'cc' => 'Cc', 'bcc' => 'Bcc' ] as $element => $function )
+        {
+            if( ( $v = $form->getValue( $element ) ) != '' )
+            {
+                foreach( explode( ',', $v ) as $email )
+                {
+                    if( !Zend_Validate::is( $email, 'EmailAddress' ) )
+                    {
+                        $form->getElement( $element )->addError( 'Invalid e-mail address: ' . $email );
+                        $emailsOkay = false;
+                    }
+                    else if( $emailsOkay === null || $emailsOkay === true )
+                    {
+                        $fn = "add{$function}";
+                        $mail->$fn( $email );
+                        $emailsOkay = true;
+                    }
+                }
+            }
+        }
+        
+        return $emailsOkay ? $mail : false;
+    }
+    
 }
 

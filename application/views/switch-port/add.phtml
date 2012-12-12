@@ -1,0 +1,18 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller='switch' action='list'}">Switches</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Add New Ports
+    </li>
+</ul>
+
+{$form}
+
+
+{tmplinclude file="footer.phtml"}

@@ -1,0 +1,37 @@
+
+Potential Todo / Feature Ideas
+------------------------------
+
+* Add support for INEX member private VLAN service:
+
+Existing schema.  Private vlans should be defined in the vlan table.  The
+vlan table needs an extra field called "private", maybe.  Need a separate
+privatevlan table to link up vlaninterface ids to these vlans + a little
+front-end glue to show what private VLANs are defined and who they are
+associated with.
+
+Finally, this all needs to be checked to make sure it works with the sflow
+stuff, including that the specific private vlan member owners can see the
+vlan, but no-one else can.
+
+
+
+* Put a frontend on the new RIB database table(s)
+
+* INEX require that members peer "with at least the greater of 4 other
+  Members, or 10% of other Members". A tool to list members failing this
+  requirement would be useful.
+
+* Email members on >80% of port utilisation
+
+* Show who a member peers with (or not) on the overview page
+
+* Show if a member is on the route server or not
+
+* Member audit - port states, errors / discards, route collector session
+  status, route server session status, etc.
+
+
+* Go through application/config/application.ini.dist and fix FIXMEs and add new
+  documentation where indicated
+

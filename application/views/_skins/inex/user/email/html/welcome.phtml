@@ -1,0 +1,140 @@
+<html>
+<head>
+    <title>Welcome to {$options.identity.sitename}</title>
+</head>
+<body>
+<h2>{$options.identity.sitename} - Your Access Details</h2>
+
+<p>
+To whom it may concern,
+</p>
+
+{if isset( $resend ) and $resend}
+    <p>
+        <strong>This email is being sent to you because either you requested a reminder of
+        your account details or an administrator thought it appropriate to send you a
+        reminder.</strong>
+    </p>
+{else}
+    <p>
+    A new user account has been created for you on the {$options.identity.sitename}.
+    </p>
+{/if}
+
+<p>
+You can login to it using the following details:
+</p>
+
+<table border="0">
+<tr>
+    <td width="50"></td>
+    <td align="right"><strong>URL:</strong></td>
+    <td width="20"></td>
+    <td align="left"><a href="{$optoins.identity.url}">{$options.identity.url}</a></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Username:</strong></td>
+    <td></td>
+    <td align="left"><code>{$newuser->getUsername()}</code></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Password:</strong></td>
+    <td></td>
+    <td align="left"><em>(see below)</em></td>
+</tr>
+</table>
+
+<p>
+Once logged in, you will have access to a number of features including:
+</p>
+
+<ul>
+    <li> list of IXP members and peering contact details; </li>
+    <li> the peering manager tool; </li>
+    <li> your port and member to member traffic graphs; </li>
+    <li> ability to view and edit your company details; </li>
+    <li> your port configuration details; </li>
+    <li> the peering matrix; </li>
+    <li> route server, AS112 and other service information. </li>
+</ul>
+
+<p>
+If you require any assistance, please contact {$options.identity.name} on
+<a href="mailto:{$options.identity.email}">{$options.identity.email}</a>.
+</p>
+
+
+<h2>Getting Your Password</h2>
+
+<p>
+To get your new password (or reset it), please use the <em>lost password</em> procedure by visiting
+the following link and entering your username as above:
+</p>
+
+<blockquote>
+    <a href="{genUrl controller="auth" action="lost-password"}">{genUrl controller="auth" action="lost-password"}</a>
+</blockquote>
+
+
+<h2>Additional/Miscellaneous Benefits</h2>
+
+<h3>Route Collector</h3>
+
+<p>
+INEX runs a route collector, whose purpose is to allow exchange members to debug routing issues.
+While there is public access to the route collector available on the INEX looking glass, INEX
+members have CLI access to the route-collector.
+</p>
+
+<p>
+It can be accessed via SSH to <code>route-collector.inex.ie</code> using your new username and password.
+</p>
+
+
+<h3>IRC Channel</h3>
+
+<p>
+Members of the INEX operations team, along with many NOC personnel from INEX member
+organisations can often be found on the <code>#inex-ops</code> IRC channel. This facility
+has proved itself to be a useful communications medium for operational matters. The
+<code>#inex-ops</code> IRC channel is password protected and access to the server is
+encrypted using SSL.
+</p>
+
+<table border="0">
+<tr>
+    <td width="50"></td>
+    <td align="right"><strong>Server name:</strong></td>
+    <td width="20"></td>
+    <td align="left"><code>irc.inex.ie</code>, port 6697, SSL enabled</td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Channel:</strong></td>
+    <td></td>
+    <td align="left"><code>#inex-ops</code></td>
+</tr>
+<tr>
+    <td></td>
+    <td align="right"><strong>Password:</strong></td>
+    <td></td>
+    <td align="left"><code>{$options.identity.misc.irc_password}</code></td>
+</tr>
+</table>
+
+
+
+<p>
+Thanks and kind regards,
+</p>
+
+<p>
+{$options.identity.name}<br />
+<a href="mailto:{$options.identity.email}">{$options.identity.email}</a>
+</p>
+
+
+</body>
+</html>
