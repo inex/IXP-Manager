@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
 # This file will set up Git / SVN externals in library/
 
@@ -68,6 +68,14 @@ else
     svn co http://framework.zend.com/svn/framework/standard/branches/release-1.12/library/Zend/ $LIBDIR/Zend
 fi 
         
+
+# OSS-Framework
+if [[ -e $LIBDIR/OSS-Framework.git ]]; then
+    echo OSS-Framework.git exists - skipping!
+else
+    git clone git://github.com/opensolutions/OSS-Framework.git $LIBDIR/OSS-Framework.git
+fi
+
         
 # Doctrine2
 
