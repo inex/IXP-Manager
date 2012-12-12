@@ -130,6 +130,32 @@ $em->flush();
 ### No need to edit beyond this point
 ###
 
+## Vendors
+
+$vendors = [
+    "Cisco Systems",
+    "Foundry Networks",
+    "Extreme Networks",
+    "Force10 Networks",
+    "Glimmerglass",
+    "Allied Telesyn",
+    "Enterasys",
+    "Dell",
+    "Hitachi Cable",
+    "MRV",
+    "Transmode",
+    "Brocade"
+];
+
+foreach( $vendors as $vendor )
+{
+    $e = new \Entities\Vendor();
+    $e->setName( $vendor );
+    $em->persist( $e );
+}
+
+$em->flush();
+
 
 ## IRRDBs
 
