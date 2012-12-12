@@ -2,33 +2,25 @@
 <?php
 
 /**
- * Copyright (c) 2012 Open Source Solutions Limited
- * All rights reserved.
- *
- * These files are part of Open Source Solutions Limited's "PBX
- * APPLICATION PLATFORM".
- *
- * Information in these files are strictly confidential and the
- * property of Open Source Solutions Limited and may not be
- * extracted or distributed, in whole or in part, for any
- * purpose whatsoever, without the express written consent
- * from Open Source Solutions Limited.
- *
- * Open Source Solutions Limited is a company registered in Dublin,
- * Ireland with the Companies Registration Office (#438231). We
- * trade as Open Solutions with registered business name (#329120).
- * Our registered office is 147 Stepaside Park, Stepaside,
- * Dublin 18, Ireland.
- *
- * Contact us via http://www.opensolutions.ie/
- *   or info@opensolutions.ie   or  +353 1 685 4220.
- *
- * @category   PBX APPLICATION PLATFORM
- * @copyright  Copyright (c) 2007 - 2012, Open Source Solutions Limited, Dublin, Ireland
- * @license    Proprietary License - See LICENSE file bundled with this application
- * @link       http://www.opensolutions.ie/ Open Source Solutions Limited
- * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @author     The Skilled Team of PHP Developers at Open Solutions <info@opensolutions.ie>
+/*
+ * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * All Rights Reserved.
+ * 
+ * This file is part of IXP Manager.
+ * 
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ * 
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ * 
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ * 
+ * http://www.gnu.org/licenses/gpl-2.0.html
  */
 /**
  * Doctrine CLI script

@@ -43,14 +43,19 @@ class Customer
         self::PEERING_POLICY_MANDATORY  => 'mandatory',
         self::PEERING_POLICY_CLOSED     => 'closed'
     );
-    
+
+    const NOC_HOURS_24x7 = '24x7';    
+    const NOC_HOURS_8x5  = '8x5';    
+    const NOC_HOURS_8x7  = '8x7';    
+    const NOC_HOURS_12x5 = '12x5';    
+    const NOC_HOURS_12x7 = '12x7';    
     
     public static $NOC_HOURS = array(
-        '24x7' => '24x7',
-        '8x5'  => '8x5',
-        '8x7'  => '8x7',
-        '12x5' => '12x5',
-        '12x7' => '12x7'
+        self::NOC_HOURS_24x7 => '24x7',
+        self::NOC_HOURS_8x5  => '8x5',
+        self::NOC_HOURS_8x7  => '8x7',
+        self::NOC_HOURS_12x5 => '12x5',
+        self::NOC_HOURS_12x7 => '12x7'
     );
     
     
