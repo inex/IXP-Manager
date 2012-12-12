@@ -1,29 +1,32 @@
 
-IXP Manager
-=======================================
+# IXP Manager
 
+INEX are pleased to release "IXP Manager" under an open source license (the
+GNU Public License V2) which we hope will benefit the wider IXP community,
+and especially new and small IXPs looking to expand.
 
-**WORK IN PROGRESS - COMMITS TO DATE ARE MORE FOR BACKUP PURPOSES THAN USABLE CODE**
+## Documentation
 
-**WE WILL RELEASE AS SOON AS WE HAVE A STABLE IXP Manager V2**
+Please see the [wiki](https://github.com/inex/IXP-Manager/wiki) for general
+documentation including [installation
+instructions](https://github.com/inex/IXP-Manager/wiki/Installation).
 
+## IXP Manager V3 Released
 
-IXP V2 will primarily be about:
+IXP Manager V3 was officially released on 2012-12-12 and primarily featured
+a significant amount of backend changes:
 
-* code refactoring 
+* code refactoring
 * migration to Doctrine2
 * removal of all non JQuery JS libraries
 * better library consistancy and API interfaces
 * security audit
 
+IXP Manager V3 is primarily about INEX trying to fashion IXP Manager as a
+true open source project rather than something INEX specific. 
 
----
 
-
-INEX are pleased to release "IXP Manager" under an open source license (the
-GNU Public License V2) which we hope will benefit the wider IXP community,
-and especially new and small IXPs looking to expand.  IXP Manager is a web
-application built entirely in-house by the INEX operations team.
+## About IXP Manager
 
 IXP Manager is primarily a web application with associated scripts and
 utilities which will allow IXPs to manage new customers, provision new
@@ -32,7 +35,7 @@ contained customer portal allowing IXP members to view their IXP traffic
 statistics and a unique tool called My Peering Manager enabling IXP
 members to request, manage and track peerings with other members.
 
-IXP Manager is written in PHP using the Zend Framework, the Doctrine ORM
+IXP Manager is written in PHP using the Zend Framework, the Doctrine2 ORM
 and the Smarty templating engine. The project website and source code
 can be viewed at https://github.com/inex/IXP-Manager.
 
@@ -48,9 +51,12 @@ Authors:
   Nick Hilliard, Junior Coding Dweeb
   Contact us via: operations (at) inex.ie
 
-Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
 All Rights Reserved.
+
  
+## License
+
 This file is part of IXP Manager.
  
 IXP Manager is free software: you can redistribute it and/or modify it
@@ -66,27 +72,5 @@ You should have received a copy of the GNU General Public License v2.0
 along with IXP Manager.  If not, see:
  
 http://www.gnu.org/licenses/gpl-2.0.html
-
-
-Thirdparty Software
-=====================
-
-IXP Manager includes some other thirdparty software in its distribution:
-
-public/js/jquery - jQuery, dual licensed under the MIT and GPL licenses
-
-public/js/jquery-ui - jQuery UI, dual licensed under the MIT and GPL licenses
-
-public/js/JSCookMenu_mini.js - licensed under the MIT license
-
-public/js/jwysiwyg - dual licensed under the MIT and GPL licenses
-
-public/js/oss_tooltip.js - licensed under the MIT license 
-
-public/js/php.js - dual licensed under the MIT and GPL licenses
-
-public/css/yui - Yahoo! YUI, BSD license
-
-public/css/joomla - various theme elements and icons, GPL v2.
 
 
