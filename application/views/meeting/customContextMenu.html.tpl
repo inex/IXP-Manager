@@ -10,7 +10,7 @@
     </a>
     <ul class="dropdown-menu">
         <li>
-            <a href="{genUrl controller='meeting-item' action='list' id=$row.id}">See Presentations...</a>
+            <a href="{genUrl controller='meeting-item' action='list' meeting_id=$row.id}">See Presentations...</a>
         </li>
         <li>
             <a href="{genUrl controller='meeting' action='compose' id=$row.id}">Compose Email...</a>
