@@ -37,7 +37,7 @@ class INEX_Form_AddAddresses extends INEX_Form
     {
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'ipv4-address/forms/add-addresses.phtml' ] ] ] );
         
-        $this->addElement( INEX_Form_VLAN::getPopulatedSelect( 'vlanid' ) );
+        $this->addElement( INEX_Form_Vlan::getPopulatedSelect( 'vlanid' ) );
                 
 
         $type = $this->createElement( 'select', 'type' );
