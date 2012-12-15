@@ -1502,7 +1502,7 @@ class Customer
         //
         // on 64bit system, MySQL's '0000-00-00' is in range and evaluates as a non-zero
         // date - see: https://bugs.php.net/bug.php?id=60257
-        if( $this->getDateleave()->format( 'Y-m-d' ) == '-0001-11-30' )  // 0000-00-00 on 64bit systems
+        if( $this->getDateleave() instanceof \DateTime && $this->getDateleave()->format( 'Y-m-d' ) == '-0001-11-30' )  // 0000-00-00 on 64bit systems
             return false;
         
         return $this->getDateleave() != null;
