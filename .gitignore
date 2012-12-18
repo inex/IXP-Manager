@@ -3,6 +3,7 @@
 .settings/
 ixp-manager.sublime-workspace
 bin/mailing-list-sync.sh
+bin/fixtures.php
 public/.htaccess
 application/configs/application.ini
 application/configs/pp-application.ini*
