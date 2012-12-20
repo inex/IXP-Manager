@@ -285,15 +285,22 @@ class UserController extends INEX_Controller_FrontEnd
             }
             else
             {
-                $object->setParent(
-                    $this->getD2EM()->createQuery(
-                        'SELECT u FROM \\Entities\\User u WHERE u.privs = ?1 AND u.Customer = ?2'
-                    )
-                    ->setParameter( 1, \Entities\User::AUTH_CUSTADMIN )
-                    ->setParameter( 2, $object->getCustomer() )
-                    ->setMaxResults( 1 )
-                    ->getSingleResult()
-                );
+                try
+                {
+                    $object->setParent(
+                        $this->getD2EM()->createQuery(
+                            'SELECT u FROM \\Entities\\User u WHERE u.privs = ?1 AND u.Customer = ?2'
+                        )
+                        ->setParameter( 1, \Entities\User::AUTH_CUSTADMIN )
+                        ->setParameter( 2, $object->getCustomer() )
+                        ->setMaxResults( 1 )
+                        ->getSingleResult()
+                    );
+                }
+                catch( \Doctrine\ORM\NoResultException $e )
+                {
+                    $object->setParent( $object );
+                }
             }
         }
 
