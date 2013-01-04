@@ -10,7 +10,8 @@
         {assign var='vlanints' value=$vi->getVlanInterfaces()}
         {assign var='vlanint' value=$vlanints.0}
         <small>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Infrastructure #{if $vlanint->getVlan()->getNumber() % 10 == 0}1{else}2{/if}
+            {assign var=physInts value=$vi->getPhysicalInterfaces()}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Infrastructure #{$physInts[0]->getSwitchPort()->getSwitcher()->getInfrastructure()}
             {if $vi->getPhysicalInterfaces()|@count > 1}
                 {assign var='isLAG' value=1}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
@@ -123,7 +124,7 @@
             <div class="well">
                 <h4>Day Graph for {$pi->getSwitchPort()->getSwitcher()->getName()} / {$pi->getSwitchPort()->getName()}</h4>
                 <br />
-            	<a href="{genUrl controller="statistics" action="drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex=$connection.Physicalinterface.0.monitorindex}">
+            	<a href="{genUrl controller="statistics" action="drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
         	        {genMrtgImgUrlTag shortname=$user->getCustomer()->getShortname() monitorindex=$pi->getMonitorindex()}
                 </a>
             </div>
