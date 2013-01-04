@@ -218,7 +218,11 @@ resources.smarty.debugging = 0
 ;;
 ;; Any controller extending INEX_Controller_FrontEnd can be disabled by setting it to '1' below
 ;;
-; controller.XXX.enabled = 0
+; frontend.disabled.XXX = 1
+;
+; e.g.
+;    frontend.disabled.cust-kit = 1
+;    frontend.disabled.console-server-connection = 1
 
 
 
