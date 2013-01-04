@@ -242,7 +242,33 @@ class CustomerController extends INEX_Controller_FrontEnd
             
         return true;
     }
-    
+
+
+
+    /**
+     * Post process hook that can be overridden by subclasses for add and edit actions.
+     *
+     * This is called immediately after the initstantiation of the form object and, if
+     * editing, includes the Doctrine2 entity `$object`.
+     *
+     * If you need to have, for example, edit values set in the form, then use the
+     * `addPrepare()` hook rather than this one.
+     *
+     * @see addPrepare()
+     * @param OSS_Form $form The form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     */
+     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+     {
+         if( !$isEdit && isset( $this->getOptions()['identity']['default_country'] ) )
+             $form->getElement( 'billingCountry' )->setValue( $this->getOptions()['identity']['default_country'] );
+             
+         return true;
+     }
+                                                                                               
 
     /**
      * Send the member an operations welcome mail
