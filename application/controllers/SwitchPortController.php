@@ -124,12 +124,27 @@ class SwitchPortController extends INEX_Controller_FrontEnd
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
         if( $isEdit )
-        {
             $form->getElement( 'switchid' )->setValue( $object->getSwitcher()->getId() );
-            $form->getElement( 'name' )->setAttrib( 'readonly', 'readonly' );
-        }
     }
     
+
+    /**
+     * Prevalidation hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called if the user POSTs a form just before the form is validated by Zend
+     *
+     * @param OSS_Form $form The Send form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not validated or processed
+     */
+    protected function addPreValidate( $form, $object, $isEdit )
+    {
+        // ensure the port name is unique for a given switch
+        // FIXME - for add and edit
+        
+        return true;
+    }
     
     /**
      *
@@ -175,6 +190,47 @@ class SwitchPortController extends INEX_Controller_FrontEnd
             
             $this->redirect( 'switch-port/list/switch/' . $switch->getId() );
         }
+        
+        $this->render( 'add-ports' );
+    }
+    
+    
+    // we have overridden the standard addAction() and so we need a dedicated editAction():
+    public function editAction()
+    {
+        $this->view->isEdit = $isEdit = true;
+    
+        $eid = $this->editResolveId();
+    
+        if( !$eid || !is_numeric( $eid ) )
+            throw new INEX_Exception( 'Bad switch port id for switch-port/edit' );
+        
+        $this->view->object = $object = $this->loadObject( $eid );
+        $this->view->form = $form = $this->getForm( $isEdit, $object );
+        $form->assignEntityToForm( $object, $this );
+        if( $form->getElement( 'submit' ) )
+            $form->getElement( 'submit' )->setLabel( 'Save Changes' );
+    
+        $this->addPrepare( $form, $object, $isEdit );
+    
+        if( $this->getRequest()->isPost() && $this->addPreValidate( $form, $object, $isEdit ) && $form->isValid( $_POST ) )
+        {
+            if( $this->addProcessForm( $form, $object, $isEdit ) )
+            {
+                if( $this->addDestinationOnSuccess( $form, $object, $isEdit ) === false )
+                {
+                    $this->addMessage( $this->feGetParam( 'titleSingular' ) . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+                    $this->redirectAndEnsureDie( $this->_getBaseUrl() . "/index" );
+                }
+            }
+        }
+    
+        $this->view->addPreamble  = $this->_resolveTemplate( 'add-preamble.phtml'  );
+        $this->view->addPostamble = $this->_resolveTemplate( 'add-postamble.phtml' );
+        $this->view->addToolbar   = $this->_resolveTemplate( 'add-toolbar.phtml' );
+        $this->view->addScript    = $this->_resolveTemplate( 'js/add.js' );
+    
+        $this->_display( 'add.phtml' );
     }
     
     

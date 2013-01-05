@@ -35,15 +35,12 @@ class INEX_Form_Switch_Port extends INEX_Form
 {
     public function init()
     {
-
         $this->addElement( INEX_Form_Switch::getPopulatedSelect( 'switchid' ) );
         
         $name = $this->createElement( 'text', 'name' );
         $name->setLabel( 'Name' )
              ->setAttrib( 'class', 'span3' );
         $this->addElement( $name );
-
-        
 
         $type = $this->createElement( 'select', 'type' );
         $type->setMultiOptions( \Entities\SwitchPort::$TYPES )
@@ -57,6 +54,5 @@ class INEX_Form_Switch_Port extends INEX_Form
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
-    
 }
 
