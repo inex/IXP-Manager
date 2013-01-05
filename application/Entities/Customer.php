@@ -825,6 +825,15 @@ class Customer
      */
     public function getDateleave()
     {
+        // on 64bit system, MySQL's '0000-00-00' is in range and evaluates as a non-zero
+        // date - see: https://bugs.php.net/bug.php?id=60257
+        
+        if( PHP_INT_SIZE == 4 )
+            return $this->dateleave;
+            
+        if( $this->dateleave instanceof \DateTime && $this->dateleave->format( 'Y-m-d' ) == '-0001-11-30' )  // 0000-00-00 00:00:00 on 64bit systems
+            return null;
+                                            
         return $this->dateleave;
     }
 
@@ -1499,11 +1508,6 @@ class Customer
     {
         // sigh. Using a date field to determine if an account is closed or not is a
         // very bad idea and should be changed => FIXME
-        //
-        // on 64bit system, MySQL's '0000-00-00' is in range and evaluates as a non-zero
-        // date - see: https://bugs.php.net/bug.php?id=60257
-        if( $this->getDateleave() instanceof \DateTime && $this->getDateleave()->format( 'Y-m-d' ) == '-0001-11-30' )  // 0000-00-00 on 64bit systems
-            return false;
         
         return $this->getDateleave() != null;
     }
