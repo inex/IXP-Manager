@@ -37,3 +37,9 @@ vlan, but no-one else can.
 
 * integrate contacts / users and make contacts much better / CRM like.
 
+* Would be useful to display last login information in the user edit screen or 
+  the list of users. Also the created by, last updated date?
+
+* Member field for "MD5 Required" with values: "No", "Yes - mandatory", 
+  "Yes - on request", "Unknown"
+
