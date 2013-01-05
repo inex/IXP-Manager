@@ -43,7 +43,12 @@
 </div>
 
 
+
 {tmplinclude file='meeting/core.phtml'}
 
+
+{if $user->getPrivs() neq USER::AUTH_SUPERUSER}
+</div>
+{/if}
 
 {tmplinclude file="footer.phtml"}
