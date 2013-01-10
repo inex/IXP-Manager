@@ -1,3 +1,8 @@
+# Next release
+
+* Update Bootstrap to 2.2.1
+
+
 # V3.0.0 - 20121212
 
 Initial release of version 3.0.0.
