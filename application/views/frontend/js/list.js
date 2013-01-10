@@ -22,7 +22,7 @@ $(document).ready(function() {
     });
 
 
-	oDataTable = $( '#frontend-list-table' ).dataTable({
+    oDataTable = $( '#frontend-list-table' ).dataTable({
         'fnDrawCallback': function() {
                 if( oss_prefs != undefined && 'iLength' in oss_prefs && oss_prefs['iLength'] != $( "select[name='frontend-list-table_length']" ).val() )
                 {
@@ -35,6 +35,7 @@ $(document).ready(function() {
             	: {if isset( $options.defaults.table.entries )}{$options.defaults.table.entries}{else}10{/if},
         "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
         "sPaginationType": "bootstrap",
+        "bAutoWidth": false,
         'aoColumns': [
             {foreach $feParams->listColumns as $col => $cconf}
                 {if not is_array( $cconf ) or not isset( $cconf.display ) or $cconf.display}
@@ -44,6 +45,7 @@ $(document).ready(function() {
             { 'bSortable': false, "bSearchable": false, "sWidth": "150px" }
         ]
     });
+    
     $( '#frontend-list-table' ).show();
 
 });
