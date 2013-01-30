@@ -43,3 +43,7 @@ vlan, but no-one else can.
 * Member field for "MD5 Required" with values: "No", "Yes - mandatory", 
   "Yes - on request", "Unknown"
 
+* Show per-member peering matrix on member overview page? 
+
+* Member health report
+
