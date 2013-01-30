@@ -49,6 +49,7 @@ sub switchporttosnmpidentifier {
 	} elsif ($vendorid == VENDORID_BROCADE)  {
 		$shortport =~ s/10gigabitethernet/ethernet/gi;
 		$shortport =~ s/gigabitethernet/ethernet/gi;
+		$shortport =~ s/Management/management/gi;
 	}
 
 	return $shortport;
