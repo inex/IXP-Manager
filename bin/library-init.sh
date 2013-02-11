@@ -35,7 +35,7 @@ fi
 if [[ -e $LIBDIR/Bootstrap-Zend-Framework ]]; then
     echo Bootstrap-Zend-Framework exists - skipping!
 else
-    git clone git://github.com/inex/Bootstrap-Zend-Framework.git $LIBDIR/Bootstrap-Zend-Framework
+    git clone git://github.com/opensolutions/Bootstrap-Zend-Framework.git $LIBDIR/Bootstrap-Zend-Framework
 fi
 
 # Minifier
