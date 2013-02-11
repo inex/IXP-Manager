@@ -124,7 +124,7 @@
             <div class="well">
                 <h4>Day Graph for {$pi->getSwitchPort()->getSwitcher()->getName()} / {$pi->getSwitchPort()->getName()}</h4>
                 <br />
-            	<a href="{genUrl controller="statistics" action="drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
+            	<a href="{genUrl controller="statistics" action="member-drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
         	        {genMrtgImgUrlTag shortname=$user->getCustomer()->getShortname() monitorindex=$pi->getMonitorindex()}
                 </a>
             </div>

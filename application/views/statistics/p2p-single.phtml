@@ -12,7 +12,7 @@
              <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
-            Peer to Peer Statistics {if isset( $dcust ) and $dcust}for {$dcust.name}{/if}
+            Peer to Peer Statistics {if isset( $dcust ) and $dcust}for {$dcust.cname}{/if}
             (
              {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
              {if isset( $period )}
@@ -25,7 +25,7 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Peer to Peer Statistics :: {$cust->getName()} {if isset( $dcust ) and $dcust}&lt;=&gt; {$dcust.name}{/if}</h1>
+            <h1>IXP Peer to Peer Statistics :: {$cust->getName()} {if isset( $dcust ) and $dcust}&lt;=&gt; {$dcust.cname}{/if}</h1>
         </div>
 {/if}
 
@@ -41,7 +41,9 @@
         &nbsp;
         <select name="category" style="width: 100px;">
             {foreach from=$categories key=cname item=cvalue}
-                <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
+                {if $cname neq 'Errors' and $cname neq 'Discards'}
+                    <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
+                {/if}
             {/foreach}
         </select>
     </td>
@@ -147,5 +149,9 @@
     </div>
 
 {/if} {* customer has an interface for given infra and proto *}
+
+{if $user->getPrivs() neq 3}
+</div>
+{/if}
 
 {tmplinclude file="footer.phtml"}
