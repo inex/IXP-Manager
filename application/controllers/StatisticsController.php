@@ -305,36 +305,31 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
                 $this->view->svid = $vints[ ( array_keys( $vints )[0] ) ]->getId();
     
             // find the possible virtual interfaces that this customer peers with
-            $dql = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname,
-                        vi.id AS viid, pi.id AS piid, vli.id AS vlidid, sp.id AS spid, s.id AS sid
             
-                    FROM \\Entities\\Customer c
-                        LEFT JOIN c.VirtualInterfaces vi
-                        LEFT JOIN vi.PhysicalInterfaces pi
-                        LEFT JOIN vi.VlanInterfaces vli
-                        LEFT JOIN pi.SwitchPort sp
-                        LEFT JOIN sp.Switcher s
-                        
-                    WHERE
-                        s.infrastructure = {$infra}
-                        AND vli.ipv{$proto}enabled = 1
-                        AND c.shortname != ?1
-                        AND c.type IN ( " . \Entities\Customer::TYPE_FULL . ", " . \Entities\Customer::TYPE_PROBONO . " )
-                        AND c.status = " . \Entities\Customer::STATUS_NORMAL . "
-                        AND ( c.dateleave IS NULL OR c.dateleave = '0000-00-00' )
-                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
-                        
-            
-    
+            $pvints = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->getForInfrastructure( $infra, $proto );
+
             if( $dvid )
-                $dql .= " AND WHERE vi.id = {$dvid}";
+            {
+                foreach( $pvints as $idx => $pvint )
+                {
+                    if( $pvint['id'] == $dvid )
+                    {
+                        $pvints = [ $pvint ];
+                        $this->view->dcust = $pvint;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                foreach( $pvints as $idx => $pvint )
+                {
+                    if( $pvint['cshortname'] == $shortname )
+                        unset( $pvints[ $idx ] );
+                }
+            }
             
-            $dql .= "  ORDER BY c.name";
-            
-           
-            $q  = $this->getD2EM()->createQuery( $dql )->setParameter( 1, $shortname );
-            
-            $this->view->customersWithVirtualInterfaces = $q->getArrayResult();
+            $this->view->customersWithVirtualInterfaces = $pvints;
         }
     
         if( $dvid )
