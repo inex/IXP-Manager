@@ -54,10 +54,11 @@ class VirtualInterface extends EntityRepository
      * @param int $infra The infrastructure to gather VirtualInterfaces for
      * @param int $proto Either 4 or 6 to limit the results to interface with IPv4 / IPv6
      * @param bool $externalOnly If true (default) then only external (non-internal) interfaces will be returned
+     * @param bool $useResultCache If true, use Doctrine's result cache to prevent needless database overhead
      * @return array As defined above.
      * @throws \INEX_Exception
      */
-    public function getForInfrastructure( $infra, $proto = false, $externalOnly = true )
+    public function getForInfrastructure( $infra, $proto = false, $externalOnly = true, $useResultCache = true )
     {
         $qstr = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname,
                        vi.id AS id, pi.id AS pid, vli.id AS vlanid, sp.id AS spid, sw.id as swid
@@ -85,6 +86,7 @@ class VirtualInterface extends EntityRepository
         
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 1, $infra );
+        $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }
 }
