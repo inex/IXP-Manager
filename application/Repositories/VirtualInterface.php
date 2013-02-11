@@ -84,7 +84,7 @@ class VirtualInterface extends EntityRepository
         $qstr .= " ORDER BY c.name ASC";
         
         $q = $this->getEntityManager()->createQuery( $qstr );
-        $q->setParam( 1, $infra );
+        $q->setParameter( 1, $infra );
         return $q->getArrayResult();
     }
 }

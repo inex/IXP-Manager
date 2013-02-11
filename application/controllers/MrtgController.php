@@ -125,28 +125,28 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
         $infra        = $this->getRequest()->getParam( 'infra',     INEX_Mrtg::INFRASTRUCTURE_PRIMARY );
         $period       = $this->getRequest()->getParam( 'period',    INEX_Mrtg::PERIOD_DAY );
         
-        if( !$this->identity )
+        if( !$this->getIdentity() )
             exit(0);
 
         $_cust = $this->checkShortname( $shortname );
         
-        if( $this->user['privs'] < User::AUTH_SUPERUSER || !$_cust )
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER || !$_cust )
         {
-            $shortname = $this->customer['shortname'];
-            $_cust = $this->customer;
+            $shortname = $this->getUser()->getCustomer()->getShortname();
+            $_cust = $this->getUser()->getCustomer();
         }
         
         // make sure the svid and dvid is valid
         if( !$svid || !$dvid )
         {
-            $this->logger->alert( "P2P file request with svid={$svid} and pvid={$pvid}" );
+            $this->getLogger()->alert( "P2P file request with svid={$svid} and pvid={$pvid}" );
             die();
         }
         
         $svidOk = false;
-        foreach( $_cust->Virtualinterface as $vint )
+        foreach( $_cust->getVirtualInterfaces() as $vint )
         {
-            if( $vint['id'] == $svid )
+            if( $vint->getId() == $svid )
             {
                 $svidOk = true;
                 break;
@@ -156,47 +156,33 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
         // make sure the svid and dvid is valid
         if( !$svidOk )
         {
-            $this->logger->alert( "P2P file request with illegal svid={$svid} for {$shortname}" );
+            $this->getLogger()->alert( "P2P file request with illegal svid={$svid} for {$shortname}" );
             die();
         }
         
         // find the possible virtual interfaces that this customer peers with
         $dvidOk = false;
         $dshortname = '';
-        $customersWithVirtualInterfaces = Doctrine_Query::create()
-        ->select( '
-                c.id, c.name, c.shortname, vi.id, pi.id, vint.id, sp.id, s.id
-                ' )
-        ->from( 'Cust c' )
-        ->leftJoin( 'c.Virtualinterface vi' )
-        ->leftJoin( 'vi.Physicalinterface pi' )
-        ->leftJoin( 'vi.Vlaninterface vint' )
-        ->leftJoin( 'pi.Switchport sp' )
-        ->leftJoin( 'sp.SwitchTable s' )
-        ->where( 's.infrastructure = ?', $infra )
-        ->andWhere( 'vint.ipv' . $proto . 'enabled = 1' )
-        ->andWhere( 'c.shortname != ?', $shortname )
-        ->andWhere( 'c.type != ?', Cust::TYPE_INTERNAL )
-        ->orderBy( 'c.name ASC' )
-        ->fetchArray();
+        
+        $customersWithVirtualInterfaces = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->getForInfrastructure( $infra, $proto );
         
         foreach( $customersWithVirtualInterfaces as $c )
         {
-            foreach( $c['Virtualinterface'] as $cvint )
+            if( $c['shortname'] == $shortname )
+                continue;
+                
+            if( $c['id'] == $dvid )
             {
-                if( $cvint['id'] == $dvid )
-                {
-                    $dshortname = $c['shortname'];
-                    $dvidOk = true;
-                    break 2;
-                }
+                $dshortname = $c['shortname'];
+                $dvidOk = true;
+                break;
             }
         }
         
         // make sure the svid and dvid is valid
         if( !$dvidOk )
         {
-            $this->logger->alert( "P2P file request with illegal pvid={$dvid} for {$shortname}" );
+            $this->getLogger()->alert( "P2P file request with illegal pvid={$dvid} for {$shortname}" );
             die();
         }
         
@@ -204,15 +190,15 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
             $svid, $dvid, $category, $period, $proto
         );
         
-        $this->logger->debug( "Serving $filename to {$this->user->username}" );
+        $this->getLogger()->debug( "Serving $filename to {$this->user->username}" );
 
-        $this->logger->info( "P2P request for {$shortname}-{$dshortname}-{$category}-{$period}-ipv{$proto} by {$this->user->username}" );
+        $this->getLogger()->info( "P2P request for {$shortname}-{$dshortname}-{$category}-{$period}-ipv{$proto} by {$this->user->username}" );
         
         $stat = @readfile( $filename );
 
         if( !$stat )
         {
-            $this->logger->debug( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
+            $this->getLogger()->debug( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
             readfile(
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
@@ -220,8 +206,4 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
             );
         }
     }
-
-
 }
-
-
