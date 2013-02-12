@@ -26,12 +26,12 @@
  * Controller: Peering Manager
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PeeringManagerController extends INEX_Controller_AuthRequiredAction
+class PeeringManagerController extends IXP_Controller_AuthRequiredAction
 {
 
     public function preDispatch()
@@ -190,7 +190,7 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
         $TESTMODE = false;
         
         $peer = $this->_loadPeer( $this->getParam( 'custid', null ) );
-        $f = new INEX_Form_PeeringRequest();
+        $f = new IXP_Form_PeeringRequest();
         
         // potential peerings
         $pp = array(); $count = 0;
@@ -215,7 +215,7 @@ class PeeringManagerController extends INEX_Controller_AuthRequiredAction
             }
         }
         
-        // INEX_Debug::dd( $pp );
+        // IXP_Debug::dd( $pp );
         $this->view->pp = $pp;
         
         $f->getElement( 'to' )->setValue( $peer->getPeeringemail() );

@@ -26,12 +26,12 @@
  * Controller: Manage virtual interfaces
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VirtualInterfaceController extends INEX_Controller_FrontEnd
+class VirtualInterfaceController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -40,7 +40,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     {
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\VirtualInterface',
-            'form'          => 'INEX_Form_Interface_Virtual',
+            'form'          => 'IXP_Form_Interface_Virtual',
             'pagetitle'     => '(Virtual) Interfaces',
         
             'titleSingular' => 'Virtual Interface',
@@ -161,7 +161,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     
     
     /**
-     * @param INEX_Form_Interface_Virtual $form The form object
+     * @param IXP_Form_Interface_Virtual $form The form object
      * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
@@ -182,7 +182,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
     
     
     /**
-     * @param INEX_Form_Interface_Virtual $form The form object
+     * @param IXP_Form_Interface_Virtual $form The form object
      * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void
@@ -199,7 +199,7 @@ class VirtualInterfaceController extends INEX_Controller_FrontEnd
 
     public function addWizardAction()
     {
-        $this->view->form = $form = new INEX_Form_Interface_AddWizard();
+        $this->view->form = $form = new IXP_Form_Interface_AddWizard();
     
         // Process a submitted form if it passes initial validation
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )

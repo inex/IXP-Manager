@@ -26,12 +26,12 @@
  * Controller: Manage IPv4 Addresses
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Ipv4AddressController extends INEX_Controller_FrontEnd
+class Ipv4AddressController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -130,7 +130,7 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
     
     public function addAction()
     {
-        $this->view->form = $form = new INEX_Form_AddAddresses();
+        $this->view->form = $form = new IXP_Form_AddAddresses();
         
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
@@ -138,7 +138,7 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
             $numaddrs = intval( $_POST['numaddrs'] );
             
             if( !( $vlan = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getValue( 'vlanid' ) ) ) )
-                throw new INEX_Exception( 'Unknown VLAN in request' );
+                throw new IXP_Exception( 'Unknown VLAN in request' );
             
             for( $i = 0; $i < $numaddrs; $i++ )
             {
@@ -147,7 +147,7 @@ class Ipv4AddressController extends INEX_Controller_FrontEnd
                 else if( $addrfam == 'IPv6' )
                     $ip = new \Entities\IPv6Address();
                 else
-                    throw new INEX_Exception( 'Invalid address family' );
+                    throw new IXP_Exception( 'Invalid address family' );
 
                 $ip->setVlan( $vlan );
                 $ip->setAddress( trim( $_POST[ 'np_name' . $i ] ) );

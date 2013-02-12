@@ -26,12 +26,12 @@
  * Controller: Manage customer co-located equipment
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CustKitController extends INEX_Controller_FrontEnd
+class CustKitController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -42,7 +42,7 @@ class CustKitController extends INEX_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\CustomerEquipment',
-            'form'          => 'INEX_Form_CustKit',
+            'form'          => 'IXP_Form_CustKit',
             'pagetitle'     => 'Customer Equipment',
         
             'titleSingular' => 'Customer Equipment',
@@ -115,7 +115,7 @@ class CustKitController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_Contact $form The form object
+     * @param IXP_Form_Contact $form The form object
      * @param \Entities\Contact $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
@@ -134,7 +134,7 @@ class CustKitController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_Contact $form The form object
+     * @param IXP_Form_Contact $form The form object
      * @param \Entities\Contact $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void

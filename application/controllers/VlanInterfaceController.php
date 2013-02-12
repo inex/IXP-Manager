@@ -26,12 +26,12 @@
  * Controller: VLAN Interface controller
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VlanInterfaceController extends INEX_Controller_FrontEnd
+class VlanInterfaceController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -40,7 +40,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
     {
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\VlanInterface',
-            'form'          => 'INEX_Form_Interface_Vlan',
+            'form'          => 'IXP_Form_Interface_Vlan',
             'pagetitle'     => 'VLAN Interfaces',
         
             'titleSingular' => 'VLAN Interface',
@@ -151,7 +151,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
     
     
     /**
-     * @param INEX_Form_Interface_Vlan $form The form object
+     * @param IXP_Form_Interface_Vlan $form The form object
      * @param \Entities\VlanInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
@@ -184,7 +184,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
                 $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $vintid );
     
             if( !isset( $vint ) || !$vint )
-                throw new INEX_Exception( 'Not sure how you would add a VLAN interface without a containing virtual interface');
+                throw new IXP_Exception( 'Not sure how you would add a VLAN interface without a containing virtual interface');
     
             // make BGP MD5 easy
             $form->getElement( 'ipv4bgpmd5secret' )->setValue( OSS_String::random() );
@@ -197,7 +197,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
     }
 
     /**
-     * @param INEX_Form_Interface_Vlan $form The form object
+     * @param IXP_Form_Interface_Vlan $form The form object
      * @param \Entities\VlanInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void
@@ -228,7 +228,7 @@ class VlanInterfaceController extends INEX_Controller_FrontEnd
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful add / edit operation.
      *
-     * @param INEX_Form_Interface_Vlan $form The form object
+     * @param IXP_Form_Interface_Vlan $form The form object
      * @param \Entities\VlanInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return bool `false` for standard message and redirection, otherwise redirect within this function

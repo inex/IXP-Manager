@@ -26,12 +26,12 @@
  * Controller: Manage switch ports
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SwitchPortController extends INEX_Controller_FrontEnd
+class SwitchPortController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -42,7 +42,7 @@ class SwitchPortController extends INEX_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\SwitchPort',
-            'form'          => 'INEX_Form_Switch_Port',
+            'form'          => 'IXP_Form_Switch_Port',
             'pagetitle'     => 'Switch Ports',
         
             'titleSingular' => 'Switch Port',
@@ -114,7 +114,7 @@ class SwitchPortController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_SwitchPort $form The form object
+     * @param IXP_Form_SwitchPort $form The form object
      * @param \Entities\SwitchPort $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
@@ -148,7 +148,7 @@ class SwitchPortController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_SwitchPort $form The form object
+     * @param IXP_Form_SwitchPort $form The form object
      * @param \Entities\SwitchPort $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void
@@ -165,12 +165,12 @@ class SwitchPortController extends INEX_Controller_FrontEnd
         
     public function addAction()
     {
-        $this->view->form = $form = new INEX_Form_Switch_AddPorts();
+        $this->view->form = $form = new IXP_Form_Switch_AddPorts();
     
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
             if( !( $switch = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->find( $form->getValue( 'switchid' ) ) ) )
-                throw new INEX_Exception( 'Unknown switch in request' );
+                throw new IXP_Exception( 'Unknown switch in request' );
             
             for( $i = 0; $i < $form->getValue( 'numports' ); $i++ )
             {
@@ -203,7 +203,7 @@ class SwitchPortController extends INEX_Controller_FrontEnd
         $eid = $this->editResolveId();
     
         if( !$eid || !is_numeric( $eid ) )
-            throw new INEX_Exception( 'Bad switch port id for switch-port/edit' );
+            throw new IXP_Exception( 'Bad switch port id for switch-port/edit' );
         
         $this->view->object = $object = $this->loadObject( $eid );
         $this->view->form = $form = $this->getForm( $isEdit, $object );

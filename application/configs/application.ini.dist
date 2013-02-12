@@ -63,7 +63,7 @@ includePaths.twitter = APPLICATION_PATH "/../library/Bootstrap-Zend-Framework/li
 autoloaderNamespaces.Twitter = "Twitter_"
 
 pluginPaths.OSS_Resource = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Resource"
-pluginPaths.INEX_Resource = APPLICATION_PATH "/../library/INEX/Resource"
+pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -216,7 +216,7 @@ resources.smarty.debugging = 0
 
 
 ;;
-;; Any controller extending INEX_Controller_FrontEnd can be disabled by setting it to '1' below
+;; Any controller extending IXP_Controller_FrontEnd can be disabled by setting it to '1' below
 ;;
 ; frontend.disabled.XXX = 1
 ;

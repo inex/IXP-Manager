@@ -26,17 +26,17 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
 
     /**
-     * Register the INEX library autoloader
+     * Register the IXP library autoloader
      *
-     * This function ensures that classes from library/INEX are automatically
+     * This function ensures that classes from library/IXP are automatically
      * loaded from the subdirectories where subdirectories are indicated by
      * underscores in the same manner as Zend.
      *
      */
-    protected function _initINEXAutoLoader()
+    protected function _initIXPAutoLoader()
     {
         $autoloader = Zend_Loader_Autoloader::getInstance();
-        $autoloader->registerNamespace( 'INEX' );
+        $autoloader->registerNamespace( 'IXP' );
     }
 
 

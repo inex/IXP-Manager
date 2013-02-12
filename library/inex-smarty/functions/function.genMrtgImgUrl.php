@@ -29,7 +29,6 @@
  */
 function smarty_function_genMrtgImgUrl( $params, &$smarty )
 {
-    return INEX_Mrtg::generateZendFrontendUrl( $params );
+    return IXP_Mrtg::generateZendFrontendUrl( $params );
 }
 
-?>

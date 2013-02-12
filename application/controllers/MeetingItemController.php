@@ -25,12 +25,12 @@
  * Controller: Manage meeting presentations
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class MeetingItemController extends INEX_Controller_FrontEnd
+class MeetingItemController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -39,7 +39,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
     {
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\MeetingItem',
-            'form'          => 'INEX_Form_Meeting_Item',
+            'form'          => 'IXP_Form_Meeting_Item',
             'pagetitle'     => 'Presentations',
         
             'titleSingular' => 'Presentation',
@@ -131,7 +131,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
             $this->redirect( 'meeting/read' );
         }
 
-        $fn = "INEX_Members_Meeting_{$pres->getMeeting()->getDate()}_({$pres->getId()}).";
+        $fn = "IXP_Members_Meeting_{$pres->getMeeting()->getDate()}_({$pres->getId()}).";
 
         // What kind of file do we have?
         if( preg_match( '/pdf$/i', $pres->getFilename() ) ) {
@@ -166,7 +166,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
 
     /**
      *
-     * @param INEX_Form_Meeting_Item $form
+     * @param IXP_Form_Meeting_Item $form
      * @param \Entities\MeetingItem $object
      * @param bool $isEdit
      * @param array $options Options passed onto Zend_Form
@@ -182,7 +182,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_Meeting_Item $form
+     * @param IXP_Form_Meeting_Item $form
      * @param \Entities\MeetingItem $object
      * @param bool $isEdit
      * @return void
@@ -198,7 +198,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_Meeting_Item $form
+     * @param IXP_Form_Meeting_Item $form
      * @param \Entities\MeetingItem $object
      * @param bool $isEdit
      */
@@ -228,7 +228,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
             if( !is_dir( self::getMeetingsDirectory() ) && !@mkdir( self::getMeetingsDirectory() ) )
             {
                 $this->getLogger()->crit( 'Could not create presentations directory.' );
-                throw new INEX_Exception( 'Presentations directory does not exist and could not be created.' );
+                throw new IXP_Exception( 'Presentations directory does not exist and could not be created.' );
             }
 
             // now, create a directory for this meeting if it does not already exists
@@ -237,7 +237,7 @@ class MeetingItemController extends INEX_Controller_FrontEnd
             if( !is_dir( $meeting_dir ) && !@mkdir( $meeting_dir ) )
             {
                 $this->getLogger()->crit( 'Could not create meeting directory.' );
-                throw new INEX_Exception( 'Meeting directory does not exist and could not be created.' );
+                throw new IXP_Exception( 'Meeting directory does not exist and could not be created.' );
             }
 
             // get the extension for this presentation

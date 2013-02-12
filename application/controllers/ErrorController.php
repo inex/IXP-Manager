@@ -26,12 +26,12 @@
  * Controller: Error handling
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ErrorController extends INEX_Controller_Action
+class ErrorController extends IXP_Controller_Action
 {
     use OSS_Controller_Trait_Error;
 }

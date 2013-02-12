@@ -26,12 +26,12 @@
  * Controller: Default controller for AUTH_SUPERUSER / admins
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class AdminController extends INEX_Controller_AuthRequiredAction
+class AdminController extends IXP_Controller_AuthRequiredAction
 {
 
     public function preDispatch()
@@ -76,13 +76,13 @@ class AdminController extends INEX_Controller_AuthRequiredAction
                 $graphs[$p[0]] = $p[1];
                 $images[]      = $p[0];
                 
-                $mrtg = new INEX_Mrtg(
+                $mrtg = new IXP_Mrtg(
                     $this->_options['mrtg']['path']
                         . DIRECTORY_SEPARATOR . 'ixp_peering-' . $p[0]
-                        . '-' . INEX_Mrtg::CATEGORY_BITS . '.log'
+                        . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
                 );
                 
-                $stats[$p[0]] = $mrtg->getValues( INEX_Mrtg::PERIOD_MONTH, INEX_Mrtg::CATEGORY_BITS );
+                $stats[$p[0]] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
             }
             
             $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;

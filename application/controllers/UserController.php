@@ -26,12 +26,12 @@
  * Controller: Manage users
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class UserController extends INEX_Controller_FrontEnd
+class UserController extends IXP_Controller_FrontEnd
 {
 
     /**
@@ -41,7 +41,7 @@ class UserController extends INEX_Controller_FrontEnd
     {
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\User',
-            'form'          => 'INEX_Form_User',
+            'form'          => 'IXP_Form_User',
             'pagetitle'     => 'Users',
 
             'titleSingular' => 'User',
@@ -173,7 +173,7 @@ class UserController extends INEX_Controller_FrontEnd
 
     /**
      *
-     * @param INEX_Form_User $form The form object
+     * @param IXP_Form_User $form The form object
      * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
@@ -219,7 +219,7 @@ class UserController extends INEX_Controller_FrontEnd
 
     /**
      *
-     * @param INEX_Form_User $form The form object
+     * @param IXP_Form_User $form The form object
      * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return bool
@@ -242,7 +242,7 @@ class UserController extends INEX_Controller_FrontEnd
 
     /**
      *
-     * @param INEX_Form_User $form The form object
+     * @param IXP_Form_User $form The form object
      * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void
@@ -310,7 +310,7 @@ class UserController extends INEX_Controller_FrontEnd
 
     /**
      *
-     * @param INEX_Form_User $form The form object
+     * @param IXP_Form_User $form The form object
      * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void

@@ -26,12 +26,12 @@
  * Controller: Manage locations (data centres)
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LocationController extends INEX_Controller_FrontEnd
+class LocationController extends IXP_Controller_FrontEnd
 {
     
     /**
@@ -43,7 +43,7 @@ class LocationController extends INEX_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Location',
-            'form'          => 'INEX_Form_Location',
+            'form'          => 'IXP_Form_Location',
             'pagetitle'     => 'Locations',
         
             'titleSingular' => 'Location',

@@ -26,12 +26,12 @@
  * Controller: Physical Interfaces
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PhysicalInterfaceController extends INEX_Controller_FrontEnd
+class PhysicalInterfaceController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -40,7 +40,7 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
     {
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\PhysicalInterface',
-            'form'          => 'INEX_Form_Interface_Physical',
+            'form'          => 'IXP_Form_Interface_Physical',
             'pagetitle'     => 'Physical Interfaces',
         
             'titleSingular' => 'Physical Interface',
@@ -145,7 +145,7 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
     
     
     /**
-     * @param INEX_Form_Interface_Physical $form The form object
+     * @param IXP_Form_Interface_Physical $form The form object
      * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
@@ -175,7 +175,7 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
                 $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $vintid );
             
             if( !isset( $vint ) || !$vint )
-                throw new INEX_Exception( 'Not sure how you would add a physical interface without a containing virtual interface');
+                throw new IXP_Exception( 'Not sure how you would add a physical interface without a containing virtual interface');
             
             $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
             $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $vint->getId() ] ) );
@@ -191,7 +191,7 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
     
     
     /**
-     * @param INEX_Form_Interface_Physical $form The form object
+     * @param IXP_Form_Interface_Physical $form The form object
      * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void
@@ -213,7 +213,7 @@ class PhysicalInterfaceController extends INEX_Controller_FrontEnd
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful add / edit operation.
      *
-     * @param INEX_Form_Interface_Physical $form The form object
+     * @param IXP_Form_Interface_Physical $form The form object
      * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return bool `false` for standard message and redirection, otherwise redirect within this function

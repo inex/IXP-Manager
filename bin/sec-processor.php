@@ -252,22 +252,22 @@ $front = $bootstrap->getResource( 'frontController' );
 
 $front->throwExceptions( true );
 
-$front->setRouter(   new INEX_Controller_Router_Cli() );
+$front->setRouter(   new IXP_Controller_Router_Cli() );
 $front->setResponse( new Zend_Controller_Response_Cli() );
 
 switch( $namespace->type )
 {
     case 'BGP_AUTH':
-        $front->setRequest(  new INEX_Controller_Request_Simple( 'bgp-auth', 'sec', null ) );
+        $front->setRequest(  new IXP_Controller_Request_Simple( 'bgp-auth', 'sec', null ) );
         break;
 
     case 'PORT_UPDOWN':
     case 'LINEPROTO_UPDOWN':
-        $front->setRequest(  new INEX_Controller_Request_Simple( 'port-updown', 'sec', null ) );
+        $front->setRequest(  new IXP_Controller_Request_Simple( 'port-updown', 'sec', null ) );
         break;
 
     case 'SECURITY_VIOLATION':
-        $front->setRequest(  new INEX_Controller_Request_Simple( 'security-violation', 'sec', null ) );
+        $front->setRequest(  new IXP_Controller_Request_Simple( 'security-violation', 'sec', null ) );
         break;
 
     default:

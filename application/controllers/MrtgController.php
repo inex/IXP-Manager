@@ -26,12 +26,12 @@
  * Controller: Retrive MRTG images
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class MrtgController extends INEX_Controller_AuthRequiredAction
+class MrtgController extends IXP_Controller_AuthRequiredAction
 {
 
     public static $GRAPH_CATEGORIES = array (
@@ -61,9 +61,9 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
         header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
 
         $monitorindex = $this->getRequest()->getParam( 'monitorindex', 'aggregate' );
-        $period       = $this->getRequest()->getParam( 'period', INEX_Mrtg::$PERIODS['Day'] );
+        $period       = $this->getRequest()->getParam( 'period', IXP_Mrtg::$PERIODS['Day'] );
         $shortname    = $this->getRequest()->getParam( 'shortname' );
-        $category     = $this->getRequest()->getParam( 'category', INEX_Mrtg::$CATEGORIES['Bits'] );
+        $category     = $this->getRequest()->getParam( 'category', IXP_Mrtg::$CATEGORIES['Bits'] );
         $graph        = $this->getRequest()->getParam( 'graph', '' );
 
         $this->getLogger()->debug( "Request for {$shortname}-{$monitorindex}-{$category}-{$period}-{$graph} by {$this->getUser()->getUsername()}" );
@@ -90,7 +90,7 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
             if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER || !$this->checkShortname( $shortname ) )
                 $shortname = $this->getCustomer()->getShortname();
 
-            $filename = INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members'    , 'PNG',
+            $filename = IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members'    , 'PNG',
                 $monitorindex, $category, $shortname, $period
             );
         }
@@ -116,14 +116,14 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
         header( 'Content-Type: image/png' );
         header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
 
-        $period       = $this->getRequest()->getParam( 'period',    INEX_Mrtg::$PERIODS['Day'] );
+        $period       = $this->getRequest()->getParam( 'period',    IXP_Mrtg::$PERIODS['Day'] );
         $shortname    = $this->getRequest()->getParam( 'shortname', false );
         $svid         = $this->getRequest()->getParam( 'svid',      false );
         $dvid         = $this->getRequest()->getParam( 'dvid',      false );
-        $category     = $this->getRequest()->getParam( 'category',  INEX_Mrtg::$CATEGORIES['Bits'] );
-        $proto        = $this->getRequest()->getParam( 'proto',     INEX_Mrtg::PROTOCOL_IPV4 );
-        $infra        = $this->getRequest()->getParam( 'infra',     INEX_Mrtg::INFRASTRUCTURE_PRIMARY );
-        $period       = $this->getRequest()->getParam( 'period',    INEX_Mrtg::PERIOD_DAY );
+        $category     = $this->getRequest()->getParam( 'category',  IXP_Mrtg::$CATEGORIES['Bits'] );
+        $proto        = $this->getRequest()->getParam( 'proto',     IXP_Mrtg::PROTOCOL_IPV4 );
+        $infra        = $this->getRequest()->getParam( 'infra',     IXP_Mrtg::INFRASTRUCTURE_PRIMARY );
+        $period       = $this->getRequest()->getParam( 'period',    IXP_Mrtg::PERIOD_DAY );
         
         if( !$this->getIdentity() )
             exit(0);
@@ -186,7 +186,7 @@ class MrtgController extends INEX_Controller_AuthRequiredAction
             die();
         }
         
-        $filename = INEX_Mrtg::getMrtgP2pFilePath( $this->_options['mrtg']['p2ppath'],
+        $filename = IXP_Mrtg::getMrtgP2pFilePath( $this->_options['mrtg']['p2ppath'],
             $svid, $dvid, $category, $period, $proto
         );
         

@@ -25,12 +25,12 @@
  * Controller: Customer user dashboard and actions
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class DashboardController extends INEX_Controller_AuthRequiredAction
+class DashboardController extends IXP_Controller_AuthRequiredAction
 {
     
     public function preDispatch()
@@ -65,7 +65,7 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
         if( !$this->getCustomer()->isTypeAssociate() )
         {
             $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-	        $this->view->categories = INEX_Mrtg::$CATEGORIES;
+	        $this->view->categories = IXP_Mrtg::$CATEGORIES;
 
 	        $this->getNocDetailsForm();
 	        $this->getBillingDetailsForm();
@@ -97,7 +97,7 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
     
     protected function getNocDetailsForm()
     {
-        $form = new INEX_Form_Customer_NocDetails();
+        $form = new IXP_Form_Customer_NocDetails();
         $form->assignEntityToForm( $this->getCustomer(), $this, true );
         $form->setAction( OSS_Utils::genUrl( 'dashboard', 'update-noc' ) );
         
@@ -131,7 +131,7 @@ class DashboardController extends INEX_Controller_AuthRequiredAction
     
     protected function getBillingDetailsForm()
     {
-        $form = new INEX_Form_Customer_BillingDetails();
+        $form = new IXP_Form_Customer_BillingDetails();
         
         if( !isset( $this->view->billingDetails ) )
             $this->view->billingDetails = $form;

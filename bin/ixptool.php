@@ -118,7 +118,7 @@ if( isset( $opts->a ) )
         $front->throwExceptions( true );
 
         $front->setRequest(  new Zend_Controller_Request_Simple( $action, $controller, $module ) );
-        $front->setRouter(   new INEX_Controller_Router_Cli() );
+        $front->setRouter(   new IXP_Controller_Router_Cli() );
         $front->setResponse( new Zend_Controller_Response_Cli() );
 
         $front->setParam( 'noViewRenderer', true )

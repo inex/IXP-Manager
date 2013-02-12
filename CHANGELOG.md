@@ -1,5 +1,6 @@
 # V3.x.x - 2013xxxx
 
+[HK] Refactor INEX_ library to IXP_ library
 [BF] Fix table width in Chrome (1f96d5b - Barry O'Donovan - 2013-01-10)
 [HK] Freshly pressed CSS/JS files (1831cbf - Barry O'Donovan - 2013-01-10)
 [HK] Update Bootstrap to 2.2.1 (1f1032e - Barry O'Donovan - 2013-01-10)

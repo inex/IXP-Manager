@@ -26,12 +26,12 @@
  * Controller: Statistics / graphs
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class StatisticsController extends INEX_Controller_AuthRequiredAction
+class StatisticsController extends IXP_Controller_AuthRequiredAction
 {
 
     public function preDispatch()
@@ -89,14 +89,14 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $category = $this->_setCategory();
     
         $stats = array();
-        foreach( INEX_Mrtg::$PERIODS as $period )
+        foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new INEX_Mrtg( $this->_options['mrtg']['path'] . '/ixp_peering-' . $graph . '-' . $category . '.log' );
+            $mrtg = new IXP_Mrtg( $this->_options['mrtg']['path'] . '/ixp_peering-' . $graph . '-' . $category . '.log' );
             $stats[$period] = $mrtg->getValues( $period, $category );
         }
         $this->view->stats      = $stats;
         
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
+        $this->view->periods    = IXP_Mrtg::$PERIODS;
     }
     
     public function trunksAction()
@@ -116,14 +116,14 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $this->view->graph   = $graph;
         
         $stats = array();
-        foreach( INEX_Mrtg::$PERIODS as $period )
+        foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new INEX_Mrtg( $this->_options['mrtg']['path'] . '/trunks/' . $graph . '.log' );
-            $stats[$period] = $mrtg->getValues( $period, INEX_Mrtg::CATEGORY_BITS );
+            $mrtg = new IXP_Mrtg( $this->_options['mrtg']['path'] . '/trunks/' . $graph . '.log' );
+            $stats[$period] = $mrtg->getValues( $period, IXP_Mrtg::CATEGORY_BITS );
         }
         $this->view->stats   = $stats;
         
-        $this->view->periods = INEX_Mrtg::$PERIODS;
+        $this->view->periods = IXP_Mrtg::$PERIODS;
     }
     
     public function switchesAction()
@@ -140,9 +140,9 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
         $this->_setPeriod();
         
         $stats = array();
-        foreach( INEX_Mrtg::$PERIODS as $period )
+        foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new INEX_Mrtg(
+            $mrtg = new IXP_Mrtg(
                 $this->_options['mrtg']['path'] . '/switches/' . 'switch-aggregate-'
                     . $switches[$switch] . '-' . $category . '.log'
             );
@@ -158,7 +158,7 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
         
-        $this->view->infras = $infras = INEX_Mrtg::$INFRASTRUCTURES_TEXT;
+        $this->view->infras = $infras = IXP_Mrtg::$INFRASTRUCTURES_TEXT;
         $this->view->infra  = $infra  = $this->getParam( 'infra', 'aggregate' );
 
         if( $infra != 'aggregate' && !in_array( $infra, $infras ) )
@@ -210,7 +210,7 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
             }
             
             if( !$vint )
-                throw new INEX_Exception( 'Member statistics drilldown requested for unknown monitor index' );
+                throw new IXP_Exception( 'Member statistics drilldown requested for unknown monitor index' );
     
             $this->view->switchname = $pi->getSwitchPort()->getSwitcher()->getName();
             $this->view->portname   = $pi->getSwitchPort()->getName();
@@ -221,13 +221,13 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
             $this->view->portname   = '';
         }
     
-        $this->view->periods      = INEX_Mrtg::$PERIODS;
+        $this->view->periods      = IXP_Mrtg::$PERIODS;
     
         $stats = array();
-        foreach( INEX_Mrtg::$PERIODS as $period )
+        foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new INEX_Mrtg(
-                INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
+            $mrtg = new IXP_Mrtg(
+                IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
             );
     
             $stats[$period] = $mrtg->getValues( $period, $this->view->category );
@@ -351,11 +351,11 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
      */
     protected function _setCategory( $pname = 'category' )
     {
-        $category = $this->getParam( $pname, INEX_Mrtg::$CATEGORIES['Bits'] );
-        if( !in_array( $category, INEX_Mrtg::$CATEGORIES ) )
-            $category = INEX_Mrtg::$CATEGORIES['Bits'];
+        $category = $this->getParam( $pname, IXP_Mrtg::$CATEGORIES['Bits'] );
+        if( !in_array( $category, IXP_Mrtg::$CATEGORIES ) )
+            $category = IXP_Mrtg::$CATEGORIES['Bits'];
         $this->view->category   = $category;
-        $this->view->categories = INEX_Mrtg::$CATEGORIES;
+        $this->view->categories = IXP_Mrtg::$CATEGORIES;
         return $category;
     }
     
@@ -371,11 +371,11 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
      */
     protected function _setPeriod( $pname = 'period' )
     {
-        $period = $this->getParam( $pname, INEX_Mrtg::$PERIODS['Day'] );
-        if( !in_array( $period, INEX_Mrtg::$PERIODS ) )
-            $period = INEX_Mrtg::$PERIODS['Day'];
+        $period = $this->getParam( $pname, IXP_Mrtg::$PERIODS['Day'] );
+        if( !in_array( $period, IXP_Mrtg::$PERIODS ) )
+            $period = IXP_Mrtg::$PERIODS['Day'];
         $this->view->period     = $period;
-        $this->view->periods    = INEX_Mrtg::$PERIODS;
+        $this->view->periods    = IXP_Mrtg::$PERIODS;
         return $period;
     }
     
@@ -392,11 +392,11 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     protected function _setInfrastructure( $pname = 'infra' )
     {
         $infra = $this->view->infra = $this->getParam( $pname, 1 );
-        if( !in_array( $infra, INEX_Mrtg::$INFRASTRUCTURES ) )
-            $infra = INEX_Mrtg::INFRASTRUCTURE_PRIMARY;
+        if( !in_array( $infra, IXP_Mrtg::$INFRASTRUCTURES ) )
+            $infra = IXP_Mrtg::INFRASTRUCTURE_PRIMARY;
         
         $this->view->infra      = $infra;
-        $this->view->infrastructures = INEX_Mrtg::$INFRASTRUCTURES;
+        $this->view->infrastructures = IXP_Mrtg::$INFRASTRUCTURES;
         
         return $infra;
     }
@@ -415,11 +415,11 @@ class StatisticsController extends INEX_Controller_AuthRequiredAction
     protected function _setProtocol( $pname = 'proto' )
     {
         $proto = $this->getParam( $pname, 4 );
-        if( !in_array( $proto, INEX_Mrtg::$PROTOCOLS ) )
-            $proto = INEX_Mrtg::PROTOCOL_IPV4;
+        if( !in_array( $proto, IXP_Mrtg::$PROTOCOLS ) )
+            $proto = IXP_Mrtg::PROTOCOL_IPV4;
         
         $this->view->proto     = $proto;
-        $this->view->protocols = INEX_Mrtg::$PROTOCOLS;
+        $this->view->protocols = IXP_Mrtg::$PROTOCOLS;
             
         return $proto;
     }

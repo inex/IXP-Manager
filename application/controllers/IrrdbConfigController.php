@@ -26,12 +26,12 @@
  * Controller: Manage IRRDB sources
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IrrdbConfigController extends INEX_Controller_FrontEnd
+class IrrdbConfigController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -42,7 +42,7 @@ class IrrdbConfigController extends INEX_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\IRRDBConfig',
-            'form'          => 'INEX_Form_IrrdbConfig',
+            'form'          => 'IXP_Form_IrrdbConfig',
             'pagetitle'     => 'IRRDB Sources',
         
             'titleSingular' => 'IRRDB Source',

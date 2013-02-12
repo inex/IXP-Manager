@@ -29,9 +29,8 @@
  */
 function smarty_function_genMrtgImgUrlTag( $params, &$smarty )
 {
-    $url = INEX_Mrtg::generateZendFrontendUrl( $params );
+    $url = IXP_Mrtg::generateZendFrontendUrl( $params );
 
     return '<img width="500" height="135" border="0" src="' . $url . '" />';
 }
 
-?>

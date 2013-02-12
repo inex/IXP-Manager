@@ -30,7 +30,6 @@
 function smarty_function_genMrtgP2pImgUrl( $params, &$smarty )
 {
     $params['p2p'] = true;
-    return INEX_Mrtg::generateZendFrontendUrl( $params );
+    return IXP_Mrtg::generateZendFrontendUrl( $params );
 }
 
-?>

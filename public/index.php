@@ -46,7 +46,7 @@ set_include_path(
 /** Zend_Application */
 require_once 'Zend/Application.php';
 
-require_once( APPLICATION_PATH . '/../library/INEX/Version.php' );
+require_once( APPLICATION_PATH . '/../library/IXP/Version.php' );
 
 
 // Create application, bootstrap, and run

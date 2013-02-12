@@ -32,7 +32,6 @@ function smarty_function_mrtgScale( $params, &$smarty )
     $intDem    = isset( $params['decimals'] ) ? $params['decimals'] : 3;
     $intReturn = isset( $params['return']   ) ? $params['return']   : 0;
 
-    return INEX_Mrtg::scale( $params['value'], $strFormat, $intDem, $intReturn );
+    return IXP_Mrtg::scale( $params['value'], $strFormat, $intDem, $intReturn );
 }
 
-?>

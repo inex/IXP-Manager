@@ -83,12 +83,12 @@ class Vlan extends EntityRepository
      * @param int $protocol The protocol to find interfaces on ( `4` or `6`)
      * @param bool $forceDb Set to true to ignore the cache and force the query to the database
      * @return An array as described above
-     * @throws \INEX_Exception Thrown if an invalid protocol is specified
+     * @throws \IXP_Exception Thrown if an invalid protocol is specified
      */
     public function getInterfaces( $vid, $protocol, $forceDb = false )
     {
         if( !in_array( $protocol, [ 4, 6 ] ) )
-            throw new \INEX_Exception( 'Invalid protocol' );
+            throw new \IXP_Exception( 'Invalid protocol' );
         
         $interfaces = $this->getEntityManager()->createQuery(
                 "SELECT vli, v, vi, c
@@ -144,7 +144,7 @@ class Vlan extends EntityRepository
      * @param int $protocol The protocol to find interfaces on ( `4` or `6`)
      * @param bool $forceDb Set to true to ignore the cache and force the query to the database
      * @return An array as described above
-     * @throws \INEX_Exception Thrown if an invalid protocol is specified
+     * @throws \IXP_Exception Thrown if an invalid protocol is specified
      */
     public function getCustomers( $vid, $protocol, $forceDb = false )
     {

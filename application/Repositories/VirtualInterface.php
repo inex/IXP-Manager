@@ -56,7 +56,7 @@ class VirtualInterface extends EntityRepository
      * @param bool $externalOnly If true (default) then only external (non-internal) interfaces will be returned
      * @param bool $useResultCache If true, use Doctrine's result cache to prevent needless database overhead
      * @return array As defined above.
-     * @throws \INEX_Exception
+     * @throws \IXP_Exception
      */
     public function getForInfrastructure( $infra, $proto = false, $externalOnly = true, $useResultCache = true )
     {
@@ -79,7 +79,7 @@ class VirtualInterface extends EntityRepository
         if( $proto )
         {
             if( !in_array( $proto, [ 4, 6 ] ) )
-                throw new \INEX_Exception( 'Invalid protocol specified' );
+                throw new \IXP_Exception( 'Invalid protocol specified' );
             
             $qstr .= "AND vli.ipv{$proto}enabled = 1 ";
         }

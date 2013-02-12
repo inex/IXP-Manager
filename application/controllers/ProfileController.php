@@ -25,13 +25,13 @@
  * Controller: User profile
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class ProfileController extends INEX_Controller_AuthRequiredAction
+class ProfileController extends IXP_Controller_AuthRequiredAction
 {
     use OSS_Controller_Trait_Profile;
     
@@ -48,7 +48,7 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
      */
     protected function _getFormChangePassword()
     {
-        return new INEX_Form_ChangePassword();
+        return new IXP_Form_ChangePassword();
     }
     
     /**
@@ -56,7 +56,7 @@ class ProfileController extends INEX_Controller_AuthRequiredAction
      */
     protected function _getFormProfile()
     {
-        $pf = new INEX_Form_Profile();
+        $pf = new IXP_Form_Profile();
         
         $pf->getElement( 'username' )->setValue( $this->getUser()->getUsername() );
         $pf->getElement( 'mobile'   )->setValue( $this->getUser()->getAuthorisedMobile() );

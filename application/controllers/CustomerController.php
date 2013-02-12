@@ -26,12 +26,12 @@
  * Controller: Customers
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CustomerController extends INEX_Controller_FrontEnd
+class CustomerController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -40,7 +40,7 @@ class CustomerController extends INEX_Controller_FrontEnd
     {
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Customer',
-            'form'          => 'INEX_Form_Customer',
+            'form'          => 'IXP_Form_Customer',
             'pagetitle'     => 'Customers',
         
             'titleSingular' => 'Customer',
@@ -192,7 +192,7 @@ class CustomerController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_Customer $form The Send form object
+     * @param IXP_Form_Customer $form The Send form object
      * @param \Entities\Customer $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True if we are editing, otherwise false
      * @return bool If false, the form is not processed
@@ -221,7 +221,7 @@ class CustomerController extends INEX_Controller_FrontEnd
 
     /**
      *
-     * @param INEX_Form_Customer $form The Send form object
+     * @param IXP_Form_Customer $form The Send form object
      * @param \Entities\Customer $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True if we are editing, otherwise false
      * @return bool If false, the form is not processed
@@ -278,7 +278,7 @@ class CustomerController extends INEX_Controller_FrontEnd
     {
         $this->view->customer = $c = $this->_loadCustomer();
         $this->view->admins = $c->getAdminUsers();
-        $this->view->form = $form = new INEX_Form_Customer_SendEmail();
+        $this->view->form = $form = new IXP_Form_Customer_SendEmail();
         
         $form->getElement( 'to' )->setValue( $c->getNocemail() );
 
@@ -357,7 +357,7 @@ class CustomerController extends INEX_Controller_FrontEnd
      * form and return a populated Zend_Mail object.
      *
      * @see welcomeEmailAction() for an example
-     * @param INEX_Form_Customer_SendEmail $form The Send Email form
+     * @param IXP_Form_Customer_SendEmail $form The Send Email form
      * @return Zend_Mail|bool The Zend_Mail object on success
      */
     protected function _processSendEmailForm( $form )

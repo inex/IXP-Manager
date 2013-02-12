@@ -26,12 +26,12 @@
  * Controller: Weather map
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class WeatherMapController extends INEX_Controller_Action
+class WeatherMapController extends IXP_Controller_Action
 {
 
     public function indexAction()

@@ -26,12 +26,12 @@
  * Controller: Misc utils
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class UtilsController extends INEX_Controller_AuthRequiredAction
+class UtilsController extends IXP_Controller_AuthRequiredAction
 {
 
     public function preDispatch()

@@ -26,12 +26,12 @@
  * Controller: CLI actions - needs review
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CliController extends INEX_Controller_Action
+class CliController extends IXP_Controller_Action
 {
 
     /**
@@ -79,10 +79,10 @@ class CliController extends INEX_Controller_Action
         {
             $stats = array();
 
-            foreach( INEX_Mrtg::$CATEGORIES as $category )
+            foreach( IXP_Mrtg::$CATEGORIES as $category )
             {
-	            $mrtg = new INEX_Mrtg(
-                    INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
+	            $mrtg = new IXP_Mrtg(
+                    IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
                         'LOG', 'aggregate', $category,
                         $cust->getShortname()
                     )
@@ -93,7 +93,7 @@ class CliController extends INEX_Controller_Action
                 $td->setCategory( $category );
                 $td->setCustomer( $cust );
 
-                foreach( INEX_Mrtg::$PERIODS as $name => $period )
+                foreach( IXP_Mrtg::$PERIODS as $name => $period )
                 {
                     $stats = $mrtg->getValues( $period, $category, false );
 
@@ -136,7 +136,7 @@ class CliController extends INEX_Controller_Action
         foreach( $custs as $c )
         {
             $tds = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )
-                ->getAsArray( $c, $this->_options['cli']['traffic_differentials']['stddev_calc_length'] + 1, INEX_Mrtg::CATEGORY_BITS );
+                ->getAsArray( $c, $this->_options['cli']['traffic_differentials']['stddev_calc_length'] + 1, IXP_Mrtg::CATEGORY_BITS );
 
     	    $firstDone = false;
             $meanIn  = 0.0; $stddevIn  = 0.0;
@@ -214,7 +214,7 @@ class CliController extends INEX_Controller_Action
 
                 $mrtg = $mail->createAttachment(
                     @file_get_contents(
-                        INEX_Mrtg::getMrtgFilePath(
+                        IXP_Mrtg::getMrtgFilePath(
                             $this->_options['mrtg']['path'] . '/members',
                             'PNG',
                             'aggregate',
@@ -273,14 +273,14 @@ class CliController extends INEX_Controller_Action
                 {
                     $speed = $pi->getSpeed() * 1024 * 1024;
 
-                    $mrtg = new INEX_Mrtg(
-                        INEX_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
-                            'LOG', $pi->getMonitorindex(), INEX_Mrtg::CATEGORY_BITS,
+                    $mrtg = new IXP_Mrtg(
+                        IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
+                            'LOG', $pi->getMonitorindex(), IXP_Mrtg::CATEGORY_BITS,
                             $c->getShortname()
                         )
                     );
 
-                    $stats = $mrtg->getValues( INEX_Mrtg::PERIOD_WEEK, INEX_Mrtg::CATEGORY_BITS, false );
+                    $stats = $mrtg->getValues( IXP_Mrtg::PERIOD_WEEK, IXP_Mrtg::CATEGORY_BITS, false );
 
                     $maxIn  = $stats['maxin'] * 8.0;
                     $maxOut = $stats['maxout'] * 8.0;
@@ -305,13 +305,13 @@ class CliController extends INEX_Controller_Action
 
 		                $mrtg = $mail->createAttachment(
 		                    file_get_contents(
-		                       INEX_Mrtg::getMrtgFilePath(
+		                       IXP_Mrtg::getMrtgFilePath(
 		                            $this->_options['mrtg']['path'] . '/members',
 		                            'PNG',
 		                            $pi->getMonitorindex(),
-		                            INEX_Mrtg::CATEGORY_BITS,
+		                            IXP_Mrtg::CATEGORY_BITS,
 		                            $c->getShortname(),
-		                            INEX_Mrtg::PERIOD_WEEK
+		                            IXP_Mrtg::PERIOD_WEEK
 		                        )
 		                    ),
 		                    "image/png",

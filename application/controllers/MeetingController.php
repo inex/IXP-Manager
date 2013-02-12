@@ -26,12 +26,12 @@
  * Controller: Manage meetings
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class MeetingController extends INEX_Controller_FrontEnd
+class MeetingController extends IXP_Controller_FrontEnd
 {
     
     /**
@@ -41,7 +41,7 @@ class MeetingController extends INEX_Controller_FrontEnd
     {
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Meeting',
-            'form'          => 'INEX_Form_Meeting',
+            'form'          => 'IXP_Form_Meeting',
             'pagetitle'     => 'Meetings',
         
             'titleSingular' => 'Meeting',
@@ -126,7 +126,7 @@ class MeetingController extends INEX_Controller_FrontEnd
      * This is called just before we process a possible POST / submission and
      * will allow us to change / alter the form or object.
      *
-     * @param INEX_Form_Meeting $form The Send form object
+     * @param IXP_Form_Meeting $form The Send form object
      * @param \Entities\Meeting $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True if we are editing, otherwise false
      */
@@ -143,7 +143,7 @@ class MeetingController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_Meeting $form The form object
+     * @param IXP_Form_Meeting $form The form object
      * @param \Entities\Meeting $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void
@@ -165,7 +165,7 @@ class MeetingController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_Meeting $form The form object
+     * @param IXP_Form_Meeting $form The form object
      * @param \Entities\Meeting $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True if we are editing, otherwise false
      * @return bool If false, the form is not processed

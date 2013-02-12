@@ -51,7 +51,7 @@ class BGPSessionData extends EntityRepository
      * @param int|null $asn Optional ASN to limit the query to
      * @param bool $forceDb Set to true to ignore the cache and force the query to the database
      * @return array Array of peerings (as described above)
-     * @throws \INEX_Exception Thrown if an invalid protocol or VLAN id is specified
+     * @throws \IXP_Exception Thrown if an invalid protocol or VLAN id is specified
      */
     public function getPeers( $vlan = null, $protocol = 6, $asn = null, $forceDb = false )
     {
@@ -61,10 +61,10 @@ class BGPSessionData extends EntityRepository
             return $apeers;
         
         if( !in_array( $protocol, [ 4, 6 ] ) )
-            throw new \INEX_Exception( 'Invalid protocol' );
+            throw new \IXP_Exception( 'Invalid protocol' );
         
         if( $vlan !== null && !( $evlan = $this->getEntityManager()->getRepository( '\Entities\Vlan' )->find( $vlan ) ) )
-            throw new \INEX_Exception( 'Invalid VLAN' );
+            throw new \IXP_Exception( 'Invalid VLAN' );
             
         $conn = $this->getEntityManager()->getConnection();
         $conn->setFetchMode( \PDO::FETCH_ASSOC );

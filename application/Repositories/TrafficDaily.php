@@ -46,9 +46,9 @@ class TrafficDaily extends EntityRepository
      *      }
      *
      *
-     * @see \INEX_Mrtg::$CATEGORIES
+     * @see \IXP_Mrtg::$CATEGORIES
      * @param \DateTime $day The day to load records for
-     * @param string $category The category of records to load (one of \INEX_Mrtg::$CATEGORIES)
+     * @param string $category The category of records to load (one of \IXP_Mrtg::$CATEGORIES)
      * @return array An array of all switch objects
      */
     public function load( $day, $category )

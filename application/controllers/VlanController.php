@@ -26,12 +26,12 @@
  * Controller: VLAN management
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VlanController extends INEX_Controller_FrontEnd
+class VlanController extends IXP_Controller_FrontEnd
 {
     /**
      * This function sets up the frontend controller
@@ -42,7 +42,7 @@ class VlanController extends INEX_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Vlan',
-            'form'          => 'INEX_Form_Vlan',
+            'form'          => 'IXP_Form_Vlan',
             'pagetitle'     => 'VLANs',
         
             'titleSingular' => 'VLAN',

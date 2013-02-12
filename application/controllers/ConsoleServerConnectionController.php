@@ -26,12 +26,12 @@
  * Controller: Manage connections to console servers
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @category   INEX
- * @package    INEX_Controller
+ * @category   IXP
+ * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ConsoleServerConnectionController extends INEX_Controller_FrontEnd
+class ConsoleServerConnectionController extends IXP_Controller_FrontEnd
 {
     
     /**
@@ -43,7 +43,7 @@ class ConsoleServerConnectionController extends INEX_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\ConsoleServerConnection',
-            'form'          => 'INEX_Form_ConsoleServerConnection',
+            'form'          => 'IXP_Form_ConsoleServerConnection',
             'pagetitle'     => 'Console Server Connections',
         
             'titleSingular' => 'Console Server Connection',
@@ -124,7 +124,7 @@ class ConsoleServerConnectionController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_ConsoleServerConnection $form The form object
+     * @param IXP_Form_ConsoleServerConnection $form The form object
      * @param \Entities\ConsoleServerConnection $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
@@ -143,7 +143,7 @@ class ConsoleServerConnectionController extends INEX_Controller_FrontEnd
     
     /**
      *
-     * @param INEX_Form_ConsoleServerConnection $form The form object
+     * @param IXP_Form_ConsoleServerConnection $form The form object
      * @param \Entities\ConsoleServerConnection $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void
