@@ -161,11 +161,8 @@ class AdminController extends INEX_Controller_AuthRequiredAction
         }
         else
         {
-            $this->session->message = new INEX_Message(
-                "The requested page was not found.",
-                INEX_Message::MESSAGE_TYPE_ERROR
-            );
-            $this->_redirect( 'index' );
+            $this->addMessage( "The requested page was not found.", OSS_Message::ERROR );
+            $this->redirect( 'index' );
         }
     }
 }
