@@ -22,7 +22,7 @@
  */
 
 // load version information
-require_once( dirname( __FILE__ ) . '/../library/INEX/Version.php' );    
+require_once( dirname( __FILE__ ) . '/../library/IXP/Version.php' );    
 
 /**
  * Parses public/.htaccess for application environment
