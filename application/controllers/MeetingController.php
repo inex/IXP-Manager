@@ -82,7 +82,7 @@ class MeetingController extends IXP_Controller_FrontEnd
                 break;
     
             case \Entities\User::AUTH_CUSTUSER:
-                $this->_feParams->allowedActions = [ 'read', 'rsvp' ];
+                $this->_feParams->allowedActions = [ 'read', 'rsvp', 'simple' ];
                 $this->_feParams->defaultAction = 'read';
                 break;
     
