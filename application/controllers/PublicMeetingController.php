@@ -39,11 +39,17 @@ class PublicMeetingController extends IXP_Controller_Action
      */
     public function simpleAction()
     {
-        $this->view->entries = $this->getD2EM()->createQuery(
-                'SELECT m, mi FROM \\Entities\\Meeting m LEFT JOIN m.MeetingItems mi ORDER BY m.date DESC, mi.other_content ASC'
-            )
-            ->execute();
+        $this->view->limit = $limit = (int)$this->getParam( 'limit', 0 );
         
+        $q = $this->getD2EM()->createQuery(
+                'SELECT m, mi FROM \\Entities\\Meeting m LEFT JOIN m.MeetingItems mi
+                    ORDER BY m.date DESC, mi.other_content ASC'
+        );
+        
+        if( $limit && $limit > 0 )
+            $q->setMaxResults( $limit );
+        
+        $this->view->entries = $q->execute();
         $this->view->simple  = true;
 
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );

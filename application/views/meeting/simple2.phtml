@@ -1,3 +1,4 @@
+{if not isset( $limit ) or not $limit}
 <p>
     <em>
         This is public list of INEX Members' Meetings. INEX members should log into the IXP Manager
@@ -5,7 +6,7 @@
         to not be made public as well as access speaker contact details.
     </em>
 </p>
-
+{/if}
 
 
 {foreach from=$entries item=e}

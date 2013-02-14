@@ -96,9 +96,9 @@ class MeetingItemController extends IXP_Controller_FrontEnd
                         mi.created_by AS created_by, mi.created_at AS created_at,
                         mi.updated_by AS updated_by, mi.updated_at AS updated_at,
                         m.id AS mid, m.title AS mtitle'
-        )
-        ->from( '\\Entities\\MeetingItem', 'mi' )
-        ->leftJoin( 'mi.Meeting', 'm' );
+            )
+            ->from( '\\Entities\\MeetingItem', 'mi' )
+            ->leftJoin( 'mi.Meeting', 'm' );
     
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
