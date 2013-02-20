@@ -202,58 +202,65 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         $this->view->form = $form = new IXP_Form_Interface_AddWizard();
     
         // Process a submitted form if it passes initial validation
-        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
+        if( $this->getRequest()->isPost() )
         {
-            // check customer information
-            if( !( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getValue( 'custid' ) ) ) )
-            {
-                $form->getElement( 'custid' )->addError( 'Invalid customer' );
-            }
-            else
-            {
-                $vi = new \Entities\VirtualInterface();
-                $form->assignFormToEntity( $vi, $this, false );
-                $vi->setCustomer( $cust );
-                $this->getD2EM()->persist( $vi );
-    
-                $pi = new \Entities\PhysicalInterface();
-                $form->assignFormToEntity( $pi, $this, false );
-                $pi->setVirtualInterface( $vi );
-                $pi->setSwitchPort(
-                    $this->getD2EM()->getRepository( '\\Entities\\SwitchPort' )->find( $form->getValue( 'switchportid' ) )
-                );
-                $pi->setMonitorindex(
-                    $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $cust )
-                );
-                $this->getD2EM()->persist( $pi );
-                
-    
-                
-                $vli = new \Entities\VlanInterface();
-                $form->assignFormToEntity( $vli, $this, false );
-                $vli->setIPv4Address(
-                    $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->find( $form->getElement( 'ipv4addressid' )->getValue() )
-                );
-                $vli->setIPv6Address(
-                    $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->find( $form->getElement( 'ipv6addressid' )->getValue() )
-                );
-                $vli->setVlan(
-                    $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
-                );
-                $vli->setVirtualInterface( $vi );
-                $this->getD2EM()->persist( $vli );
-                
-                $this->getD2EM()->flush();
-                
-                $this->getLogger()->info( 'New virtual, physical and VLAN interface created for ' . $cust->getName() );
-                $this->addMessage( "New interface created!", OSS_Message::SUCCESS );
-                
-                
-                if( $this->getParam( 'rtn', false ) == 'ov' )
-                    $this->_redirect( 'customer/view/id/' . $cust->getId() );
-                
-                $this->_redirect( 'virtual-interface/edit/id/' . $vi->getId() );
-            }
+        	// make sure we have a custid
+        	if( !isset( $_POST['custid'] ) && $this->getParam( 'custid', false ) )
+        		$_POST['custid'] = $this->getParam( 'custid' );
+        	
+        	if( $form->isValid( $_POST ) )
+        	{
+	            // check customer information
+	            if( !( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getValue( 'custid' ) ) ) )
+	            {
+	                $form->getElement( 'custid' )->addError( 'Invalid customer' );
+	            }
+	            else
+	            {
+	                $vi = new \Entities\VirtualInterface();
+	                $form->assignFormToEntity( $vi, $this, false );
+	                $vi->setCustomer( $cust );
+	                $this->getD2EM()->persist( $vi );
+	    
+	                $pi = new \Entities\PhysicalInterface();
+	                $form->assignFormToEntity( $pi, $this, false );
+	                $pi->setVirtualInterface( $vi );
+	                $pi->setSwitchPort(
+	                    $this->getD2EM()->getRepository( '\\Entities\\SwitchPort' )->find( $form->getValue( 'switchportid' ) )
+	                );
+	                $pi->setMonitorindex(
+	                    $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $cust )
+	                );
+	                $this->getD2EM()->persist( $pi );
+	                
+	    
+	                
+	                $vli = new \Entities\VlanInterface();
+	                $form->assignFormToEntity( $vli, $this, false );
+	                $vli->setIPv4Address(
+	                    $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->find( $form->getElement( 'ipv4addressid' )->getValue() )
+	                );
+	                $vli->setIPv6Address(
+	                    $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->find( $form->getElement( 'ipv6addressid' )->getValue() )
+	                );
+	                $vli->setVlan(
+	                    $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
+	                );
+	                $vli->setVirtualInterface( $vi );
+	                $this->getD2EM()->persist( $vli );
+	                
+	                $this->getD2EM()->flush();
+	                
+	                $this->getLogger()->info( 'New virtual, physical and VLAN interface created for ' . $cust->getName() );
+	                $this->addMessage( "New interface created!", OSS_Message::SUCCESS );
+	                
+	                
+	                if( $this->getParam( 'rtn', false ) == 'ov' )
+	                    $this->_redirect( 'customer/view/id/' . $cust->getId() );
+	                
+	                $this->_redirect( 'virtual-interface/edit/id/' . $vi->getId() );
+	            }
+        	}
         }
         
         if( !isset( $cust ) && ( $cid = $this->getParam( 'custid', false ) ) )
