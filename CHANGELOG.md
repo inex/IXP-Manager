@@ -1,7 +1,17 @@
-# V3.0.2 - 2013xxxx
+# V3.0.2 - 20130220
 
 Schema Updates Required:
   - ALTER TABLE vlan ADD private TINYINT(1) NOT NULL
+
+[IM] Private VLANs should not be public information (bafe5b4 - Barry O'Donovan - 2013-02-20)
+[NF] Show customers their own private VLAN services (e1848ce - Barry O'Donovan - 2013-02-20)
+[IM] Allow VLAN repository functions to limit results by VLAN type (c36f2ef - Barry O'Donovan - 2013-02-20)
+[NF] New page to list all private VLANs and the customers attached to them (615bd06 - Barry O'Donovan - 2013-02-20)
+[NF] List a customer's private VLANs in their overview page (efca8db - Barry O'Donovan - 2013-02-20)
+[NF] Frontend glue for private VLANs (92dc80a - Barry O'Donovan - 2013-02-20)
+[BF] The customer ID for add interface wizard can also come via the URL path (a4952b9 - Barry O'Donovan - 2013-02-20)
+[DB] Schema update required for private VLANs (58ede71 - Barry O'Donovan - 2013-02-20)
+[N+] Schema updates for private VLANs (e1a1e16 - Barry O'Donovan - 2013-02-20)
 
 
 # V3.0.1 - 20130220
