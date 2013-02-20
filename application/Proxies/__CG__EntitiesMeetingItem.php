@@ -210,18 +210,6 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
         return parent::getUpdatedBy();
     }
 
-    public function setUpdatedAr($updatedAr)
-    {
-        $this->__load();
-        return parent::setUpdatedAr($updatedAr);
-    }
-
-    public function getUpdatedAr()
-    {
-        $this->__load();
-        return parent::getUpdatedAr();
-    }
-
     public function getId()
     {
         if ($this->__isInitialized__ === false) {

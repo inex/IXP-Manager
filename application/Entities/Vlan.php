@@ -298,4 +298,32 @@ class Vlan
     {
         return $this->NetworkInfo;
     }
+    /**
+     * @var boolean
+     */
+    private $private;
+
+
+    /**
+     * Set private
+     *
+     * @param boolean $private
+     * @return Vlan
+     */
+    public function setPrivate($private)
+    {
+        $this->private = $private;
+    
+        return $this;
+    }
+
+    /**
+     * Get private
+     *
+     * @return boolean 
+     */
+    public function getPrivate()
+    {
+        return $this->private;
+    }
 }
