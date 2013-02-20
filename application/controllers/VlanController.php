@@ -111,5 +111,14 @@ class VlanController extends IXP_Controller_FrontEnd
         return true;
     }
     
+    
+    /**
+     * Show details of private VLANs
+     */
+    public function privateAction()
+    {
+    	$this->view->pvs = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getPrivateVlanDetails();
+    }
+    
 }
 

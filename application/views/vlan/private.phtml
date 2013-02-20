@@ -1,0 +1,72 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller='vlan' action='private'}">VLANs</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Private VLAN Details
+    </li>
+</ul>
+
+
+<div class="row-fluid">
+
+	<div class="span12">
+	
+		<table class="table">
+		
+			<thead>
+			
+				<th>VLAN Name</th>
+				<th>Tag</th>
+				<th>Infrastructure</th>
+				<th>Members</th>
+				<th>Location</th>
+				<th>Switch</th>
+			
+			</thead>
+			
+			<tbody>
+			
+				{foreach $pvs as $pv}
+
+					<tr>
+						<td>{$pv.name}</td>
+						<td>{$pv.number}</td>
+						<td>{$pv.infra}</td>
+						<td>
+							{foreach $pv.members as $custid => $cust}
+								<a href="{genUrl controller="customer" action="overview" id=$custid}">{$cust.name}</a>
+								(<a href="{genUrl controller="virtual-interface" action="edit" id=$cust.vintid}">interface details</a>)<br />
+							{/foreach}
+						</td>
+						<td>
+							{foreach $pv.members as $custid => $cust}
+								{$cust.location}<br />
+							{/foreach}
+						</td>
+						<td>
+							{foreach $pv.members as $custid => $cust}
+								{$cust.switch}<br />
+							{/foreach}
+						</td>
+					</tr>
+				
+				{/foreach}
+			
+			</tbody>
+		
+		
+		</table>
+	
+	
+	</div>
+
+</div>
+
+
+{tmplinclude file="footer.phtml"}

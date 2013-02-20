@@ -191,5 +191,90 @@ class Vlan extends EntityRepository
             )
             ->getResult();
     }
+
+    
+    /**
+     * Returns an array of private VLANs with their details and membership.
+     *
+     * A sample return would be:
+     *
+     *     [
+     *         [8] => [             // vlanId
+     *             [vlanid] => 8
+     *             [name] => PV-BBnet-HEAnet
+     *             [number] => 1300
+     *             [members] => [
+     *                 [764] => [            // cust ID
+     *                     [id] => 764
+     *                     [name] => CustA
+     *                     [vintid] => 169   // virtual interface ID
+     *                 ]
+     *                 [60] => [
+     *                     [id] => 60
+     *                     [name] => CustB
+     *                     [vintid] => 212
+     *                 ]
+     *             ]
+     *         ]
+     *         [....]
+     *         [....]
+     *     ]
+     *
+     * @return array
+     */
+    public function getPrivateVlanDetails()
+    {
+    	$vlans = $this->getEntityManager()->createQuery(
+    			"SELECT vli, v, vi, pi, sp, s, l, cab, c
+     
+                FROM \\Entities\\Vlan v
+                    LEFT JOIN v.VlanInterfaces vli
+                    LEFT JOIN vli.VirtualInterface vi
+                    LEFT JOIN vi.Customer c
+    				LEFT JOIN vi.PhysicalInterfaces pi
+    				LEFT JOIN pi.SwitchPort sp
+    				LEFT JOIN sp.Switcher s
+    				LEFT JOIN s.Cabinet cab
+    				LEFT JOIN cab.Location l
+    
+                WHERE
+
+    				v.private = 1
+    
+    			ORDER BY v.number ASC"
+    	    )
+    	    ->getArrayResult();
+    	
+    	if( !$vlans || !count( $vlans ) )
+    		return [];
+    	
+    	$pvs = [];
+    	
+    	foreach( $vlans as $v )
+    	{
+    		$pvs[ $v['id'] ]['vlanid']   = $v['id'];
+    		$pvs[ $v['id'] ]['name']     = $v['name'];
+    		$pvs[ $v['id'] ]['number']   = $v['number'];
+    		$pvs[ $v['id'] ]['members']  = [];
+    			
+    		foreach( $v['VlanInterfaces'] as $vli )
+    		{
+    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ] = [];
+    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['id']     = $vli['VirtualInterface']['Customer']['id'];
+    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['name']   = $vli['VirtualInterface']['Customer']['name'];
+    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['vintid'] = $vli['VirtualInterface']['id'];
+    			
+    			$pvs[ $v['id'] ]['infra'] = $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['infrastructure'];
+    			
+    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['location']
+    				= $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['Cabinet']['Location']['name'];
+    			
+    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['switch']
+    				= $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['name'];
+    		}
+    	}
+    	
+    	return $pvs;
+    }
     
 }
