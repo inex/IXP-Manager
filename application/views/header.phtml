@@ -7,21 +7,6 @@
             {if isset( $hasIdentity ) and $hasIdentity}
                 <div class="nav-collapse">
                      <ul class="nav">
-                        {if $user->getPrivs() eq 3}
-                            <li>
-                                <a href="{genUrl}">Home</a>
-                            </li>
-                        {elseif $user->getPrivs() eq 2}
-                            <li {if $controller eq 'user'}class="active"{/if}>
-                                <a href="{genUrl controller="user" action="list"}">User Admin</a>
-                            </li>
-                        {else}
-                            <li {if $controller eq 'dashboard' and $action eq 'index'}class="active"{/if}>
-                                <a href="{genUrl controller="dashboard"}">
-                                    Dashboard
-                                </a>
-                            </li>
-                        {/if}
                         {if $user->getPrivs() neq 2}
                             <li class="dropdown {if $action eq 'switch-configuration' or $action eq 'members-details-list' or ( $controller eq 'meeting' and $action eq 'read' )}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
