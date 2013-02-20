@@ -44,11 +44,11 @@ class Customer
         self::PEERING_POLICY_CLOSED     => 'closed'
     );
 
-    const NOC_HOURS_24x7 = '24x7';    
-    const NOC_HOURS_8x5  = '8x5';    
-    const NOC_HOURS_8x7  = '8x7';    
-    const NOC_HOURS_12x5 = '12x5';    
-    const NOC_HOURS_12x7 = '12x7';    
+    const NOC_HOURS_24x7 = '24x7';
+    const NOC_HOURS_8x5  = '8x5';
+    const NOC_HOURS_8x7  = '8x7';
+    const NOC_HOURS_12x5 = '12x5';
+    const NOC_HOURS_12x7 = '12x7';
     
     public static $NOC_HOURS = array(
         self::NOC_HOURS_24x7 => '24x7',
@@ -1564,6 +1564,107 @@ class Customer
     {
         return $this->getType() == self::TYPE_PROBONO;
     }
+    
+    
+    /**
+     * Does the customer have private VLANs?
+     *
+     * A private VLAN is a VLAN between a subset of members (usually
+     * just two).
+     *
+     * @return bool
+     */
+	public function hasPrivateVLANs()
+	{
+		foreach( $this->getVirtualInterfaces() as $vi )
+		{
+			foreach( $vi->getVlanInterfaces() as $vli )
+			{
+				if( $vli->getVlan()->getPrivate() )
+					return true;
+			}
+		}
+		
+		return false;
+	}
+    
+	/**
+	 * Get private VLAN information as an associate array
+	 *
+	 * Useful utility function for displaying a customers private VLANs in the
+	 * overview page and the customer's own portal. First pass.
+	 *
+	 * Response is an array such as:
+	 *
+	 *     [8] => Array                          // VLAN ID
+	 *     (
+	 *         [vlanid] => 8
+	 *         [name] => PV-CustA-CustB
+	 *         [number] => 1300
+	 *         [location] => Telecity Kilcarbery
+	 *         [switch] => swi1-deg1-3
+	 *         [ports] => Array
+	 *         (
+	 *             [794] => Array                // Phys Int Id
+	 *             (
+	 *                 [name] => GigabitEthernet27
+	 *                 [speed] => 1000
+	 *                 [duplex] => full
+	 *             )
+	 *         )
+	 *         [members] => Array
+	 *         (
+	 *             [custid] => CustB
+	 *         )
+	 *     )
+	 *
+	 *
+	 * @return array Private VLAN details
+	 */
+	public function getPrivateVLANs()
+	{
+		if( !$this->hasPrivateVLANs() )
+			return false;
+		
+		$pvlans = [];
+		
+		foreach( $this->getVirtualInterfaces() as $vi )
+		{
+			foreach( $vi->getVlanInterfaces() as $vli )
+			{
+				if( $vli->getVlan()->getPrivate() )
+				{
+					$vlanid = $vli->getVlan()->getId();
+					 
+					$pvlans[ $vlanid ]['vlanid']   = $vli->getVlan()->getId();
+					$pvlans[ $vlanid ]['name']     = $vli->getVlan()->getName();
+					$pvlans[ $vlanid ]['number']   = $vli->getVlan()->getNumber();
+					$pvlans[ $vlanid ]['location'] = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName();
+					$pvlans[ $vlanid ]['switch']   = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName();
 
-
+					$pvlans[ $vlanid ]['ports']    = [];
+					
+					foreach( $vi->getPhysicalInterfaces() as $pi )
+					{
+						$pvlans[ $vlanid ]['ports'][ $pi->getSwitchPort()->getId() ] = [];
+						$pvlans[ $vlanid ]['ports'][ $pi->getSwitchPort()->getId() ]['name']   = $pi->getSwitchPort()->getName();
+						$pvlans[ $vlanid ]['ports'][ $pi->getSwitchPort()->getId() ]['speed']  = $pi->getSpeed();
+						$pvlans[ $vlanid ]['ports'][ $pi->getSwitchPort()->getId() ]['duplex'] = $pi->getDuplex();
+					}
+						
+					$pvlans[ $vlanid ]['members']  = [];
+					
+					foreach( $vli->getVlan()->getVlanInterfaces() as $vli2 )
+					{
+						if( $vli2->getVirtualInterface()->getCustomer()->getId() != $this->getId() )
+							$pvlans[ $vlanid ]['members'][ $vli2->getVirtualInterface()->getCustomer()->getId() ] = $vli2->getVirtualInterface()->getCustomer()->getName();
+					}
+				}
+			}
+		}
+	
+		return $pvlans;
+	}
+	
+	
 }
