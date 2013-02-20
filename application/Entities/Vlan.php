@@ -9,6 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Vlan
 {
+	
+	const PRIVATE_NO  = 0;
+	const PRIVATE_YES = 1;
+		
+	public static $PRIVATE_YES_NO = array(
+			self::PRIVATE_NO  => 'No',
+			self::PRIVATE_YES => 'Yes'
+	);
+	
+	
     /**
      * @var string $name
      */
@@ -81,7 +91,7 @@ class Vlan
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -104,7 +114,7 @@ class Vlan
     /**
      * Get number
      *
-     * @return integer 
+     * @return integer
      */
     public function getNumber()
     {
@@ -127,7 +137,7 @@ class Vlan
     /**
      * Get rcvrfname
      *
-     * @return string 
+     * @return string
      */
     public function getRcvrfname()
     {
@@ -150,7 +160,7 @@ class Vlan
     /**
      * Get notes
      *
-     * @return string 
+     * @return string
      */
     public function getNotes()
     {
@@ -160,7 +170,7 @@ class Vlan
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -193,7 +203,7 @@ class Vlan
     /**
      * Get VlanInterfaces
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getVlanInterfaces()
     {
@@ -226,7 +236,7 @@ class Vlan
     /**
      * Get IPv4Addresses
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getIPv4Addresses()
     {
@@ -259,7 +269,7 @@ class Vlan
     /**
      * Get IPv6Addresses
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getIPv6Addresses()
     {
@@ -292,7 +302,7 @@ class Vlan
     /**
      * Get NetworkInfo
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getNetworkInfo()
     {
@@ -320,7 +330,7 @@ class Vlan
     /**
      * Get private
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getPrivate()
     {

@@ -58,6 +58,13 @@ class VlanController extends IXP_Controller_FrontEnd
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'      => 'Name',
                 'number'    => 'Tag',
+                
+                'private'        => [
+                    'title'          => 'Private',
+                    'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'         => \Entities\Vlan::$PRIVATE_YES_NO
+                ],
+                
                 'rcvrfname' => 'VRF Name'
             ]
         ];
@@ -78,7 +85,7 @@ class VlanController extends IXP_Controller_FrontEnd
     {
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'v.id AS id, v.name AS name, v.number AS number,
-                    v.rcvrfname AS rcvrfname, v.notes AS notes'
+                    v.rcvrfname AS rcvrfname, v.notes AS notes, v.private AS private'
             )
             ->from( '\\Entities\\Vlan', 'v' );
     
