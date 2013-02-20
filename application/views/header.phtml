@@ -77,9 +77,12 @@
                         {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                             {tmplinclude file="staff-links.phtml"}
                         {/if}
-                        <li class="{if $controller eq 'profile'}active{/if}">
-                            <a href="{genUrl controller="profile"}">Profile</a>
-                        </li>
+                        
+                        {if $user->getPrivs() neq 3}
+	                        <li class="{if $controller eq 'profile'}active{/if}">
+	                            <a href="{genUrl controller="profile"}">Profile</a>
+	                        </li>
+                        {/if}
                         
                     </ul>
                     <ul class="nav pull-right">
@@ -96,6 +99,19 @@
                             
                         {if isset( $session->switched_user_from ) and $session->switched_user_from}
                             <li><a href="{genUrl controller="auth" action="switch-user-back"}">Switch Back</a></li>
+                        {elseif $user->getPrivs() eq 3}
+	                        <li class="dropdown">
+							    <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
+							    <ul class="dropdown-menu">
+							        <li>
+							            <a href="{genUrl controller="profile"}">Profile</a>
+							        </li>
+							        <li class="divider"></li>
+							        <li>
+		                                <a href="{genUrl controller="auth" action="logout"}">Logout</a>
+        							</li>
+							    </ul>
+							</li>
                         {else}
                             <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>
                         {/if}
