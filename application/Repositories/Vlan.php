@@ -18,29 +18,69 @@ class Vlan extends EntityRepository
      */
     const ALL_CACHE_KEY = 'inex_vlans';
     
+    
+    /**
+     * Constant to represent normal and private VLANs
+     * @var int Constant to represent normal and private VLANs
+     */
+    const TYPE_ALL     = 0;
+    
+    /**
+     * Constant to represent normal VLANs only
+     * @var int Constant to represent normal VLANs ony
+     */
+    const TYPE_NORMAL  = 1;
+    
+    /**
+     * Constant to represent private VLANs only
+     * @var int Constant to represent private VLANs ony
+     */
+    const TYPE_PRIVATE = 2;
+    
+    
     /**
      * Return an array of all VLAN objects from the database with caching
+     * (and with the option to specify types - returns normal (non-private)
+     * VLANs by default.
      *
+     * @param $type int The VLAN types to return (see TYPE_ constants).
      * @return array An array of all VLAN objects
      */
-    public function getAndCache()
+    public function getAndCache( $type = self::TYPE_NORMAL )
     {
-        return $this->getEntityManager()->createQuery(
-                "SELECT v FROM Entities\\Vlan v"
+    	switch( $type )
+    	{
+    		case self::TYPE_ALL:
+    			$where = "";
+    			break;
+    			
+    		case self::TYPE_PRIVATE:
+    			$where = "WHERE v.private = 1";
+    			break;
+    			 
+    		default:
+    			$where = "WHERE v.private = 0";
+    			$type = self::TYPE_NORMAL;        // because we never validated $type
+    			break;
+    	}
+    	
+    	return $this->getEntityManager()->createQuery(
+                "SELECT v FROM Entities\\Vlan v {$where}"
             )
-            ->useResultCache( true, 3600, self::ALL_CACHE_KEY )
+            ->useResultCache( true, 3600, self::ALL_CACHE_KEY . "_{$type}" )
             ->getResult();
     }
     
     /**
      * Return an array of all VLAN names where the array key is the VLAN id (**not tag**).
      *
+     * @param $type int The VLAN types to return (see TYPE_ constants).
      * @return array An array of all VLAN names with the vlan id as the key.
      */
-    public function getNames()
+    public function getNames( $type = self::TYPE_NORMAL )
     {
         $vlans = [];
-        foreach( $this->getAndCache() as $a )
+        foreach( $this->getAndCache( $type ) as $a )
             $vlans[ $a->getId() ] = $a->getName();
     
         return $vlans;
