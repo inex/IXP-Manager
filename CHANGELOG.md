@@ -1,6 +1,12 @@
-# V3.x.x - 2013xxxx
+# V3.0.1 - 20130220
 
-[HK] Refactor INEX_ library to IXP_ library
+[DB] ORM schema update due to update of ORM Manager. Inc. change to VLAN table. (cb70971 - Barry O'Donovan - 2013-02-20)
+[IM] Meetings updated with some bugfixes: (a81e554 - Barry O'Donovan - 2013-02-14)
+[BF] IXP FrontEnd extends AuthRequired which is an issue for public display of meeting details (6610127 - Barry O'Donovan - 2013-02-14)
+[BF] Some pages are public access and don't require this for non-logged in users (30834ec - Barry O'Donovan - 2013-02-14)
+[BF] IXP V3 using Doctrine2 from PEAR/Git rather than SVN (3041603 - Barry O'Donovan - 2013-02-13)
+[BF] Small bug fixes from going live with V3 on INEX (23a64b2 - Barry O'Donovan - 2013-02-13)
+[HK] Refactor INEX_ library to more appropriate IXP_ library (b9ddc24 - Barry O'Donovan - 2013-02-12)
 [BF] Fix table width in Chrome (1f96d5b - Barry O'Donovan - 2013-01-10)
 [HK] Freshly pressed CSS/JS files (1831cbf - Barry O'Donovan - 2013-01-10)
 [HK] Update Bootstrap to 2.2.1 (1f1032e - Barry O'Donovan - 2013-01-10)
