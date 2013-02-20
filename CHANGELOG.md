@@ -1,3 +1,9 @@
+# V3.0.2 - 2013xxxx
+
+Schema Updates Required:
+  - ALTER TABLE vlan ADD private TINYINT(1) NOT NULL
+
+
 # V3.0.1 - 20130220
 
 [DB] ORM schema update due to update of ORM Manager. Inc. change to VLAN table. (cb70971 - Barry O'Donovan - 2013-02-20)
