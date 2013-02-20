@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\Traffic95th" table="traffic_95th" repository-class="Repositories\Traffic95th" tableName="traffic_95th">
+  <entity name="Entities\Traffic95th" repository-class="Repositories\Traffic95th" table="traffic_95th" tableName="traffic_95th">
     <id name="id" type="bigint">
       <generator strategy="AUTO"/>
     </id>

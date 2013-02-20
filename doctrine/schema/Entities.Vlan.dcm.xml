@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\Vlan" table="vlan" repository-class="Repositories\Vlan" tableName="vlan">
+  <entity name="Entities\Vlan" repository-class="Repositories\Vlan" table="vlan" tableName="vlan">
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
     <field name="name" type="string" length="255" nullable="true"/>
     <field name="number" type="integer" nullable="true"/>
     <field name="rcvrfname" type="string" length="255" nullable="true"/>
+    <field name="private" type="boolean" nullable="false"/>
     <field name="notes" type="text" nullable="true"/>
     <one-to-many field="VlanInterfaces" target-entity="Entities\VlanInterface" mapped-by="Vlan"/>
     <one-to-many field="IPv4Addresses" target-entity="Entities\IPv4Address" mapped-by="Vlan"/>

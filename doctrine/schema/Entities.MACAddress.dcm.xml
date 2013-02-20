@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\MACAddress" table="macaddress" repository-class="Repositories\MACAddress" tableName="macaddress">
+  <entity name="Entities\MACAddress" repository-class="Repositories\MACAddress" table="macaddress" tableName="macaddress">
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\ChangeLog" table="change_log" repository-class="Repositories\ChangeLog" tableName="change_log">
+  <entity name="Entities\ChangeLog" table="change_log" tableName="change_log" repository-class="Repositories\ChangeLog">
     <id name="id" type="bigint">
       <generator strategy="AUTO"/>
     </id>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\VirtualInterface" table="virtualinterface" repository-class="Repositories\VirtualInterface" tableName="virtualinterface">
+  <entity name="Entities\VirtualInterface" repository-class="Repositories\VirtualInterface" table="virtualinterface" tableName="virtualinterface">
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
