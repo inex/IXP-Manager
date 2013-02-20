@@ -96,9 +96,6 @@
                             <a href="{genUrl controller="profile"}">Profile</a>
                         </li>
                         
-                        <li class="{if $controller eq 'index' and $action eq 'about'}active{/if}">
-                            <a href="{genUrl controller="index" action="about"}">About</a>
-                        </li>
                     </ul>
                     <ul class="nav pull-right">
                         {if $user->getPrivs() eq 3}
