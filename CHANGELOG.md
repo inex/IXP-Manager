@@ -1,3 +1,11 @@
+# V3.0.3 - 2013xxxx
+
+[IM] For admins, colsolidate Profile and Logout menu into a My Account menu (f5b4f78 - Barry O'Donovan - 2013-02-20)
+[IM] Remove redundant Home menu item. The title does that anyway. (fc36562 - Barry O'Donovan - 2013-02-20)
+[IM] Add Twitter account link to INEX footer (5abe8b8 - Barry O'Donovan - 2013-02-20)
+[IM] Move About menu item to tidy it up a bit (c92db2b - Barry O'Donovan - 2013-02-20)
+
+
 # V3.0.2 - 20130220
 
 Schema Updates Required:
