@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\Location" table="location" repository-class="Repositories\Location" tableName="location">
+  <entity name="Entities\Location" repository-class="Repositories\Location" table="location" tableName="location">
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>

@@ -182,59 +182,63 @@
 {foreach $vi->getVlanInterfaces() as $vli}
 {assign var='vlanid' value=$vli->getVlan()->getId()}
 
-<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vli->getVlan()->getName()}:</h4>
+{if not $vli->getVlan()->getPrivate()}
 
-<table id="myDetailsTable">
+	<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vli->getVlan()->getName()}:</h4>
+	
+	<table id="myDetailsTable">
+	
+	<tr>
+	    <td width="40"></td>
+	    <td width="200"><strong>IPv6 Address:</strong></td>
+	    <td width="200" id="value">
+	        {if $vli->getIpv6enabled() and $vli->getIpv6address()}
+	            {$vli->getIPv6Address()->getAddress()}/{$netinfo.$vlanid.6.masklen}
+	        {else}
+	            IPv6 not enabled.
+	        {/if}
+	    </td>
+	    <td width="40"></td>
+	    <td width="200"><strong>IPv4 Address:</strong></td>
+	    <td width="200" id="value">
+	        {if $vli->getIpv4enabled() and $vli->getIpv4address()}
+	            {$vli->getIPv4Address()->getAddress()}/{$netinfo.$vlanid.4.masklen}
+	        {else}
+	            IPv4 not enabled.
+	        {/if}
+	    </td>
+	</tr>
+	
+	<tr>
+	    <td></td><td></td><td></td><td></td><td></td><td></td>
+	</tr>
+	
+	<tr>
+	    <td></td>
+	    <td><strong>Multicast Enabled:</strong></td>
+	    <td id="value">{if $vli->getMcastenabled()}Yes{else}No{/if}</td>
+	    <td></td>
+	    <td><strong></strong></td>
+	    <td id="value"></td>
+	</tr>
+	
+	<tr>
+	    <td></td><td></td><td></td><td></td><td></td><td></td>
+	</tr>
+	
+	<tr>
+	    <td></td>
+	    <td><strong>Route Server Client:</strong></td>
+	    <td id="value">{if $vli->getRsclient()}Yes{else}No{/if}</td>
+	    <td></td>
+	    <td><strong>AS112 Client:</strong></td>
+	    <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
+	</tr>
+	
+	</table>
 
-<tr>
-    <td width="40"></td>
-    <td width="200"><strong>IPv6 Address:</strong></td>
-    <td width="200" id="value">
-        {if $vli->getIpv6enabled() and $vli->getIpv6address()}
-            {$vli->getIPv6Address()->getAddress()}/{$netinfo.$vlanid.6.masklen}
-        {else}
-            IPv6 not enabled.
-        {/if}
-    </td>
-    <td width="40"></td>
-    <td width="200"><strong>IPv4 Address:</strong></td>
-    <td width="200" id="value">
-        {if $vli->getIpv4enabled() and $vli->getIpv4address()}
-            {$vli->getIPv4Address()->getAddress()}/{$netinfo.$vlanid.4.masklen}
-        {else}
-            IPv4 not enabled.
-        {/if}
-    </td>
-</tr>
-
-<tr>
-    <td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
-
-<tr>
-    <td></td>
-    <td><strong>Multicast Enabled:</strong></td>
-    <td id="value">{if $vli->getMcastenabled()}Yes{else}No{/if}</td>
-    <td></td>
-    <td><strong></strong></td>
-    <td id="value"></td>
-</tr>
-
-<tr>
-    <td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
-
-<tr>
-    <td></td>
-    <td><strong>Route Server Client:</strong></td>
-    <td id="value">{if $vli->getRsclient()}Yes{else}No{/if}</td>
-    <td></td>
-    <td><strong>AS112 Client:</strong></td>
-    <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
-</tr>
-
-</table>
-
+{/if} {* end is private vlan *}
+	
 {/foreach}
 
 <br /><br />

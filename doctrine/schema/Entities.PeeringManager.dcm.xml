@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\PeeringManager" table="peering_manager" repository-class="Repositories\PeeringManager" tableName="peering_manager">
+  <entity name="Entities\PeeringManager" repository-class="Repositories\PeeringManager" table="peering_manager" tableName="peering_manager">
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>

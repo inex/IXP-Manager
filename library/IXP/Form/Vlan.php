@@ -62,6 +62,11 @@ class IXP_Form_VLAN extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $rcvrfname );
 
+        $private = $this->createElement( 'checkbox', 'private' );
+        $private->setLabel( 'Private VLAN between a subset of members' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $private );
+        
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
             ->setRequired( false )

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\Traffic95thMonthly" table="traffic_95th_monthly" repository-class="Repositories\Traffic95thMonthly" tableName="traffic_95th_monthly">
+  <entity name="Entities\Traffic95thMonthly" repository-class="Repositories\Traffic95thMonthly" table="traffic_95th_monthly" tableName="traffic_95th_monthly">
     <id name="id" type="bigint">
       <generator strategy="AUTO"/>
     </id>
