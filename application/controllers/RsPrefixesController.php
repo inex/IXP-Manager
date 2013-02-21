@@ -23,7 +23,7 @@
 
 
 /**
- * Controller: List prefixes dropped by the route servers
+ * Controller: List prefixes accepted (or otherwise) by the route servers
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
@@ -31,7 +31,7 @@
  * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class RsDroppedPrefixesController extends IXP_Controller_AuthRequiredAction
+class RsPrefixesController extends IXP_Controller_AuthRequiredAction
 {
     public function preDispatch()
     {
@@ -41,8 +41,8 @@ class RsDroppedPrefixesController extends IXP_Controller_AuthRequiredAction
     
     public function indexAction()
     {
-        $this->view->types = \Entities\RSDroppedPrefix::$SUMMARY_TYPES_FNS;
-        $this->view->cust_prefixes = $this->getD2EM()->getRepository( '\\Entities\\RSDroppedPrefix' )->getAggregateRouteSummaries();
+        $this->view->types = \Entities\RSPrefix::$SUMMARY_TYPES_FNS;
+        $this->view->cust_prefixes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->getAggregateRouteSummaries();
     }
     
     public function listAction()
@@ -58,7 +58,7 @@ class RsDroppedPrefixesController extends IXP_Controller_AuthRequiredAction
             $protocol = null;
         
         $this->view->type = $type = $this->getParam( 'type' );
-        if( !array_key_exists( $type, \Entities\RSDroppedPrefix::$SUMMARY_TYPES_FNS ) )
+        if( !array_key_exists( $type, \Entities\RSPrefix::$SUMMARY_TYPES_FNS ) )
         {
             $this->addMessage( 'Invalid route type in request', OSS_Message::ERROR );
             return $this->forward( 'index' );
@@ -67,8 +67,8 @@ class RsDroppedPrefixesController extends IXP_Controller_AuthRequiredAction
         $this->view->cust     = $cust;
         $this->view->protocol = $protocol;
         
-        $fn = \Entities\RSDroppedPrefix::$ROUTES_TYPES_FNS[ $type ];
-        $this->view->routes = $this->getD2EM()->getRepository( '\\Entities\\RSDroppedPrefix' )->$fn( $protocol, $cust->getId() );
+        $fn = \Entities\RSPrefix::$ROUTES_TYPES_FNS[ $type ];
+        $this->view->routes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->$fn( $protocol, $cust->getId() );
     }
 }
 

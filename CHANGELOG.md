@@ -1,3 +1,10 @@
+# V3.0.4 - 20130221
+
+Schema Updates Required:
+  - RENAME TABLE rs_dropped_prefixes TO rs_prefixes;
+
+[DB] Refactor rs_dropped_prefixes to rs_prefixes as well as associated controller and view refactoring
+
 # V3.0.3 - 20130221
 
 [NF] Correcting misunderstanding of the rs_dropped_routes table (78312d4 - Barry O'Donovan - 2013-02-21)

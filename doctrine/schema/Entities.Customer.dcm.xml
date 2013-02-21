@@ -42,7 +42,7 @@
     <one-to-many field="PeersWith" target-entity="Entities\PeeringManager" mapped-by="Peer"/>
     <one-to-many field="XCusts" target-entity="Entities\PeeringMatrix" mapped-by="XCustomer"/>
     <one-to-many field="YCusts" target-entity="Entities\PeeringMatrix" mapped-by="YCustomer"/>
-    <one-to-many field="RSDroppedPrefixes" target-entity="Entities\RSDroppedPrefix" mapped-by="Customer"/>
+    <one-to-many field="RSPrefixes" target-entity="Entities\RSPrefix" mapped-by="Customer"/>
     <one-to-many field="Users" target-entity="Entities\User" mapped-by="Customer"/>
     <one-to-many field="Traffic95ths" target-entity="Entities\Traffic95th" mapped-by="Customer"/>
     <one-to-many field="Traffic95thMonthlys" target-entity="Entities\Traffic95thMonthly" mapped-by="Customer"/>

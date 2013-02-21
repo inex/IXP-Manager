@@ -257,11 +257,6 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $RSDroppedPrefixes;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
     private $Users;
 
     /**
@@ -292,11 +287,11 @@ class Customer
         $this->PeersWith = new \Doctrine\Common\Collections\ArrayCollection();
         $this->XCusts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->YCusts = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->RSDroppedPrefixes = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Traffic95ths = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Traffic95thMonthlys = new \Doctrine\Common\Collections\ArrayCollection();
         $this->TrafficDailies = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->RSPrefixes = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -1273,39 +1268,6 @@ class Customer
     }
 
     /**
-     * Add RSDroppedPrefixes
-     *
-     * @param Entities\RSDroppedPrefix $rSDroppedPrefixes
-     * @return Customer
-     */
-    public function addRSDroppedPrefixe(\Entities\RSDroppedPrefix $rSDroppedPrefixes)
-    {
-        $this->RSDroppedPrefixes[] = $rSDroppedPrefixes;
-    
-        return $this;
-    }
-
-    /**
-     * Remove RSDroppedPrefixes
-     *
-     * @param Entities\RSDroppedPrefix $rSDroppedPrefixes
-     */
-    public function removeRSDroppedPrefixe(\Entities\RSDroppedPrefix $rSDroppedPrefixes)
-    {
-        $this->RSDroppedPrefixes->removeElement($rSDroppedPrefixes);
-    }
-
-    /**
-     * Get RSDroppedPrefixes
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getRSDroppedPrefixes()
-    {
-        return $this->RSDroppedPrefixes;
-    }
-
-    /**
      * Add Users
      *
      * @param Entities\User $users
@@ -1667,4 +1629,42 @@ class Customer
 	}
 	
 	
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $RSPrefixes;
+
+
+    /**
+     * Add RSPrefixes
+     *
+     * @param \Entities\RSPrefix $rSPrefixes
+     * @return Customer
+     */
+    public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->RSPrefixes[] = $rSPrefixes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove RSPrefixes
+     *
+     * @param \Entities\RSPrefix $rSPrefixes
+     */
+    public function removeRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->RSPrefixes->removeElement($rSPrefixes);
+    }
+
+    /**
+     * Get RSPrefixes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRSPrefixes()
+    {
+        return $this->RSPrefixes;
+    }
 }

@@ -555,24 +555,6 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getYCusts();
     }
 
-    public function addRSDroppedPrefixe(\Entities\RSDroppedPrefix $rSDroppedPrefixes)
-    {
-        $this->__load();
-        return parent::addRSDroppedPrefixe($rSDroppedPrefixes);
-    }
-
-    public function removeRSDroppedPrefixe(\Entities\RSDroppedPrefix $rSDroppedPrefixes)
-    {
-        $this->__load();
-        return parent::removeRSDroppedPrefixe($rSDroppedPrefixes);
-    }
-
-    public function getRSDroppedPrefixes()
-    {
-        $this->__load();
-        return parent::getRSDroppedPrefixes();
-    }
-
     public function addUser(\Entities\User $users)
     {
         $this->__load();
@@ -711,10 +693,40 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::isTypeProBono();
     }
 
+    public function hasPrivateVLANs()
+    {
+        $this->__load();
+        return parent::hasPrivateVLANs();
+    }
+
+    public function getPrivateVLANs()
+    {
+        $this->__load();
+        return parent::getPrivateVLANs();
+    }
+
+    public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->__load();
+        return parent::addRSPrefixe($rSPrefixes);
+    }
+
+    public function removeRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->__load();
+        return parent::removeRSPrefixe($rSPrefixes);
+    }
+
+    public function getRSPrefixes()
+    {
+        $this->__load();
+        return parent::getRSPrefixes();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'irrdb', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'notes', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSDroppedPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'irrdb', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'notes', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents');
     }
 
     public function __clone()

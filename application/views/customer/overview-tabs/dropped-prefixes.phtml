@@ -8,7 +8,7 @@
         <th>Origin AS</th>
     </thead>
     <tbody>
-        {foreach $cust->getRSDroppedPrefixes() as $p}
+        {foreach $cust->getRSPrefixes() as $p}
             <tr>
                 <td>{$p->getPrefix()}</td>
                 <td>IPv{$p->getProtocol()}</td>

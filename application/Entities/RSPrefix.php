@@ -5,9 +5,9 @@ namespace Entities;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Entities\RSDroppedPrefix
+ * RSPrefix
  */
-class RSDroppedPrefix
+class RSPrefix
 {
     /**
      * Map prefix acceptance types to summary functions
@@ -29,38 +29,39 @@ class RSDroppedPrefix
         'nadv_acc' => 'getRoutesNotAdvertisedButAcceptable'
     ];
     
+    
     /**
-     * @var \DateTime $timestamp
+     * @var \DateTime
      */
     private $timestamp;
 
     /**
-     * @var string $prefix
+     * @var string
      */
     private $prefix;
 
     /**
-     * @var integer $protocol
+     * @var integer
      */
     private $protocol;
 
     /**
-     * @var integer $irrdb
+     * @var integer
      */
     private $irrdb;
 
     /**
-     * @var integer $rs_origin
+     * @var integer
      */
     private $rs_origin;
 
     /**
-     * @var integer $id
+     * @var integer
      */
     private $id;
 
     /**
-     * @var Entities\Customer
+     * @var \Entities\Customer
      */
     private $Customer;
 
@@ -69,7 +70,7 @@ class RSDroppedPrefix
      * Set timestamp
      *
      * @param \DateTime $timestamp
-     * @return RSDroppedPrefix
+     * @return RSPrefix
      */
     public function setTimestamp($timestamp)
     {
@@ -92,7 +93,7 @@ class RSDroppedPrefix
      * Set prefix
      *
      * @param string $prefix
-     * @return RSDroppedPrefix
+     * @return RSPrefix
      */
     public function setPrefix($prefix)
     {
@@ -115,7 +116,7 @@ class RSDroppedPrefix
      * Set protocol
      *
      * @param integer $protocol
-     * @return RSDroppedPrefix
+     * @return RSPrefix
      */
     public function setProtocol($protocol)
     {
@@ -138,7 +139,7 @@ class RSDroppedPrefix
      * Set irrdb
      *
      * @param integer $irrdb
-     * @return RSDroppedPrefix
+     * @return RSPrefix
      */
     public function setIrrdb($irrdb)
     {
@@ -161,7 +162,7 @@ class RSDroppedPrefix
      * Set rs_origin
      *
      * @param integer $rsOrigin
-     * @return RSDroppedPrefix
+     * @return RSPrefix
      */
     public function setRsOrigin($rsOrigin)
     {
@@ -193,8 +194,8 @@ class RSDroppedPrefix
     /**
      * Set Customer
      *
-     * @param Entities\Customer $customer
-     * @return RSDroppedPrefix
+     * @param \Entities\Customer $customer
+     * @return RSPrefix
      */
     public function setCustomer(\Entities\Customer $customer = null)
     {
@@ -206,7 +207,7 @@ class RSDroppedPrefix
     /**
      * Get Customer
      *
-     * @return Entities\Customer
+     * @return \Entities\Customer
      */
     public function getCustomer()
     {

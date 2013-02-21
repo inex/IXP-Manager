@@ -110,11 +110,11 @@
 			    <a href="#contacts" data-toggle="tab">Contacts</a>
 			</li>
 			
-            {if count( $cust->getRSDroppedPrefixes() )}
+            {* if count( $cust->getRSPrefixes() )}
 			    <li>
-			        <a href="#dropped-prefixes" data-toggle="tab">Dropped Prefixes</a>
+			        <a href="#prefixes" data-toggle="tab">Dropped Prefixes</a>
     			</li>
-    		{/if}
+    		{/if *}
 			
             {if count( $cust->getConsoleServerConnections() )}
 			    <li>
@@ -155,11 +155,11 @@
 	        	{tmplinclude file="customer/overview-tabs/contacts.phtml"}
         	</div>
         	
-            {if count( $cust->getRSDroppedPrefixes() )}
-    	        <div class="tab-pane" id="dropped-prefixes">
-    	        	{tmplinclude file="customer/overview-tabs/dropped-prefixes.phtml"}
+            {* if count( $cust->getRSPrefixes() )}
+    	        <div class="tab-pane" id="prefixes">
+    	        	{tmplinclude file="customer/overview-tabs/prefixes.phtml"}
             	</div>
-            {/if}
+            {/if *}
             
             {if count( $cust->getConsoleServerConnections() )}
 			    <div class="tab-pane" id="console-server-connections">
