@@ -1,5 +1,8 @@
 # V3.0.3 - 2013xxxx
 
+[NF] Show user last logged in time (and where from) in customer overview (c77c257 - Barry O'Donovan - 2013-02-21)
+[NF] Show console server connections in customer overview (if they have them) (838ab2e - Barry O'Donovan - 2013-02-21)
+[HK] Useful git command for formatted logs (e87f95b - Barry O'Donovan - 2013-02-21)
 [NF] Frontend glue for prefixes dropped by the route servers (624862a - Barry O'Donovan - 2013-02-21)
 [BF] Fix display of members of a private VLAN (b2ed0f7 - Barry O'Donovan - 2013-02-21)
 [IM] Add p2p graphs link to customer overview tabs (a35e0e9 - Barry O'Donovan - 2013-02-21)
