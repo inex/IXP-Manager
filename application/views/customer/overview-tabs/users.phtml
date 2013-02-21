@@ -6,7 +6,8 @@
             <th>Username</th>
             <th>Type</th>
             <th>Email</th>
-            <th>Mobile</th>
+            <th>Last Login</th>
+            <th>Last Login From</th>
             <th><a class="btn btn-mini" href="{genUrl controller='user' action="add" custid=$cust->getId()}"><i class="icon-plus"></i> Add new...</a></th>
         </thead>
         <tbody>
@@ -15,7 +16,18 @@
                     <td>{$u->getUsername()}</td>
                     <td>{USER::$PRIVILEGES[$u->getPrivs()]}</td>
                     <td>{$u->getEmail()}</td>
-                    <td>{$u->getAuthorisedMobile()}</td>
+                    <td>
+                        {if $u->getPreference( 'auth.last_login_at' )}
+                            {$u->getPreference( 'auth.last_login_at' )|date_format:"%Y-%m-%d %H:%M:%S"}
+                        {else}
+                            <em>Never</em>
+                        {/if}
+                    </td>
+                    <td>
+                        {if $u->getPreference( 'auth.last_login_from' )}
+                            {$u->getPreference( 'auth.last_login_from' )}
+                        {/if}
+                    </td>
                     <td>
                         <div class="btn-group">
                             <a class="btn btn-mini" href="{genUrl controller='user' action="edit" id=$u->getId()}"><i class="icon-pencil"></i></a>
