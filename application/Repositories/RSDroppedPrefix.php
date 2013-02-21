@@ -12,4 +12,86 @@ use Doctrine\ORM\EntityRepository;
  */
 class RSDroppedPrefix extends EntityRepository
 {
+    
+    /**
+     * Returns a sorted (by customer name) array of dropped prefix counts by protocol.
+     *
+     * As an example, elements of a returned array may contain:
+     *
+     *     [0] => [
+     *         [id] => 77
+     *         [name] => Acme Solutions Limited
+     *         [protocol] => 4
+     *         [prefixes] => 11
+     *     ],
+     *     [1] => [
+     *         [id] => 77
+     *         [name] => Acme Solutions Limited
+     *         [protocol] => 6
+     *         [prefixes] => 2
+     *     ],
+     *     [2] => [
+     *         [id] => 64
+     *         [name] => ABC Limited
+     *         [protocol] => 4
+     *         [prefixes] => 6
+     *     ],
+     *     ...
+     *
+     *
+     * @return array Sorted (by customer name) array of dropped prefix counts by protocol
+     */
+    public function getCustomerSummary()
+    {
+        return $this->getEntityManager()->createQuery(
+                'SELECT c.id AS id, c.name AS name, dp.protocol AS protocol, count( dp.protocol ) AS prefixes
+                    FROM \\Entities\\RSDroppedPrefix dp LEFT JOIN dp.Customer c
+                    GROUP BY c.id, dp.protocol
+                    ORDER BY c.name ASC, dp.protocol ASC'
+        )->getArrayResult();
+    }
+
+    
+    /**
+     * Processes the output of @see getCustomerSummary() and returns a summarised array of
+     * the customers' dropped prefixes
+     *
+     * As an example, elements of a returned array may contain:
+     *
+     *     [
+     *         [ custid ] => [ name, ipv4, ipv6, total ],
+     *         [ custid ] => [ name, ipv4, ipv6, total ],
+     *         ...
+     *     ]
+     *
+     * where ''custid'' is the customer ID, ''name'' is the customer name, ''ipv4''
+     * and ''ipv6'' is the number of dropped IPv4 and IPv6 prefixes respectivily and
+     * ''total'' is the sum of these.
+     *
+     * @return array Summarised array of the customers' dropped prefixes
+     */
+    public function getFlattenedCustomerSummary()
+    {
+        $summary = [];
+        
+        foreach( $this->getCustomerSummary() as $cp )
+        {
+            $summary[ $cp['id'] ][ 'name' ] = $cp['name'];
+            $summary[ $cp['id'] ][ $cp['protocol'] ] = $cp['prefixes'];
+        }
+        
+        foreach( $summary as $i => $s )
+        {
+            foreach( [ 4, 6 ] as $proto )
+            {
+                if( !isset( $summary[$i][ 'total' ] ) ) $summary[$i][ 'total' ] = 0;
+                if( !isset( $summary[$i][ $proto  ] ) ) $summary[$i][ $proto  ] = 0;
+                
+                $summary[$i][ 'total' ] += $summary[$i][ $proto  ];
+            }
+        }
+        
+        return $summary;
+    }
+    
 }

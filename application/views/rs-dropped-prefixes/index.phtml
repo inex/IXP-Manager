@@ -1,0 +1,43 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        Prefixes Dropped by the Route Servers <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Summary by Customer
+    </li>
+</ul>
+
+{OSS_Message}
+
+<div class="row-fluid">
+    <div class="span12">
+    
+    <table class="table">
+        <thead>
+            <th>Customer</th>
+            <th>IPv4</th>
+            <th>IPv6</th>
+            <th>Total</th>
+        </thead>
+        <tbody>
+            {foreach $cust_prefixes as $id => $cp}
+                <tr>
+                    <td><a href="{genUrl controller="customer" action="overview" id=$id}">{$cp.name}</a></td>
+                    <td><a href="{genUrl controller="rs-dropped-prefixes" action="list" custid=$id protocol=4}">{$cp.4}</a></td>
+                    <td><a href="{genUrl controller="rs-dropped-prefixes" action="list" custid=$id protocol=6}">{$cp.6}</a></td>
+                    <td><a href="{genUrl controller="rs-dropped-prefixes" action="list" custid=$id}">{$cp.total}</a></td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    
+    </div>
+</div>
+
+{tmplinclude file="footer.phtml"}
+
