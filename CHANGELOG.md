@@ -1,5 +1,6 @@
 # V3.0.3 - 2013xxxx
 
+[NF] Refactored customer overview layout -> now sporting tabbed panes (8043c4c - Barry O'Donovan - 2013-02-21)
 [IM] For admins, colsolidate Profile and Logout menu into a My Account menu (f5b4f78 - Barry O'Donovan - 2013-02-20)
 [IM] Remove redundant Home menu item. The title does that anyway. (fc36562 - Barry O'Donovan - 2013-02-20)
 [IM] Add Twitter account link to INEX footer (5abe8b8 - Barry O'Donovan - 2013-02-20)
