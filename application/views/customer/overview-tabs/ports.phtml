@@ -62,7 +62,7 @@
     {if $vli->getVlan()->getPrivate()}
 
         {if !isset( $pvlans )}
-            {$pvlans = $user->getCustomer()->getPrivateVLANs()}
+            {$pvlans = $cust->getPrivateVLANs()}
         {/if}
 
         <h4>
@@ -79,7 +79,7 @@
             <td width="40"></td>
             <td width="150"><strong>Members:</strong></td>
             <td width="400" id="value">
-                {$user->getCustomer()->getName()}<br />
+                {$cust->getName()}<br />
                 {foreach $pvlans[ $vli->getVlan()->getId() ].members as $m}
                     {$m}<br />
                 {/foreach}
