@@ -1,0 +1,19 @@
+
+<table class="table">
+    <thead>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Console Server</th>
+        <th>Port</th>
+    </thead>
+    <tbody>
+        {foreach $cust->getConsoleServerConnections() as $c}
+            <tr>
+                <td>{$c->getDescription()}</td>
+                <td>{$c->getSwitcher()->getCabinet()->getLocation()->getName()}</td>
+                <td>{$c->getSwitcher()->getName()}</td>
+                <td>{$c->getPort()}</td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
