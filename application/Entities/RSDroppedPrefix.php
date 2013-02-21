@@ -10,6 +10,26 @@ use Doctrine\ORM\Mapping as ORM;
 class RSDroppedPrefix
 {
     /**
+     * Map prefix acceptance types to summary functions
+     * @var array Map prefix acceptance types to summary functions
+     */
+    public static $SUMMARY_TYPES_FNS = [
+        'adv_acc'  => 'getSummaryRoutesAdvertisedAndAccepted',
+        'adv_nacc' => 'getSummaryRoutesAdvertisedAndNotAccepted',
+        'nadv_acc' => 'getSummaryRoutesNotAdvertisedButAcceptable'
+    ];
+    
+    /**
+     * Map prefix acceptance types to lookup functions
+     * @var array Map prefix acceptance types to lookup functions
+     */
+    public static $ROUTES_TYPES_FNS = [
+        'adv_acc'  => 'getRoutesAdvertisedAndAccepted',
+        'adv_nacc' => 'getRoutesAdvertisedAndNotAccepted',
+        'nadv_acc' => 'getRoutesNotAdvertisedButAcceptable'
+    ];
+    
+    /**
      * @var \DateTime $timestamp
      */
     private $timestamp;
@@ -61,7 +81,7 @@ class RSDroppedPrefix
     /**
      * Get timestamp
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getTimestamp()
     {
@@ -84,7 +104,7 @@ class RSDroppedPrefix
     /**
      * Get prefix
      *
-     * @return string 
+     * @return string
      */
     public function getPrefix()
     {
@@ -107,7 +127,7 @@ class RSDroppedPrefix
     /**
      * Get protocol
      *
-     * @return integer 
+     * @return integer
      */
     public function getProtocol()
     {
@@ -130,7 +150,7 @@ class RSDroppedPrefix
     /**
      * Get irrdb
      *
-     * @return integer 
+     * @return integer
      */
     public function getIrrdb()
     {
@@ -153,7 +173,7 @@ class RSDroppedPrefix
     /**
      * Get rs_origin
      *
-     * @return integer 
+     * @return integer
      */
     public function getRsOrigin()
     {
@@ -163,7 +183,7 @@ class RSDroppedPrefix
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -186,7 +206,7 @@ class RSDroppedPrefix
     /**
      * Get Customer
      *
-     * @return Entities\Customer 
+     * @return Entities\Customer
      */
     public function getCustomer()
     {

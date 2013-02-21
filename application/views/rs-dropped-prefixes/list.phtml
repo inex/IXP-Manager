@@ -5,7 +5,7 @@
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
     <li>
-        <a href="{genUrl controller="rs-dropped-prefixes"}">Prefixes Dropped by the Route Servers</a> <span class="divider">/</span>
+        <a href="{genUrl controller="rs-dropped-prefixes"}">Route Server Prefixes</a> <span class="divider">/</span>
     </li>
     <li class="active">
         {$cust->getName()} [{$cust->getAutsys()|asnumber}]
@@ -22,20 +22,20 @@
             <th>Prefix</th>
             <th>Protocol</th>
             <th>Timestamp</th>
-            <th>In IRRDB?</th>
-            <th>Origin AS</th>
+            {if $type eq 'adv_acc' or $type eq 'adv_nacc'}
+                <th>Origin AS</th>
+            {/if}
         </thead>
         <tbody>
-            {foreach $cust->getRSDroppedPrefixes() as $p}
-                {if $protocol eq 0 || $protocol eq $p->getProtocol()}
-                    <tr>
-                        <td>{$p->getPrefix()}</td>
-                        <td>IPv{$p->getProtocol()}</td>
-                        <td>{$p->getTimestamp()->format( 'Y-m-d H:i:s' )}</td>
-                        <td>{if $p->getIrrdb()}Yes{else}No{/if}</td>
-                        <td>{$p->getRsOrigin()|asnumber}</td>
-                    </tr>
-                {/if}
+            {foreach $routes as $r}
+                <tr>
+                    <td>{$r.prefix}</td>
+                    <td>IPv{$r.protocol}</td>
+                    <td>{$r.timestamp->format( 'Y-m-d H:i:s' )}</td>
+                    {if $type eq 'adv_acc' or $type eq 'adv_nacc'}
+                        <td>{$r.rsorigin|asnumber}</td>
+                    {/if}
+                </tr>
             {/foreach}
         </tbody>
     </table>
@@ -44,4 +44,3 @@
 </div>
 
 {tmplinclude file="footer.phtml"}
-
