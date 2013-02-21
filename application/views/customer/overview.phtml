@@ -94,14 +94,18 @@
 			    <li>
 			        <a href="#ports" data-toggle="tab">Ports</a>
     			</li>
+			
+			    <li>
+			        <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">P2P &raquo;</a>
+    			</li>
+			
+    			{if $cust->hasPrivateVLANs()}
+					<li>
+					    <a href="#private-vlans" data-toggle="tab">Private VLANs</a>
+					</li>
+				{/if}
     		{/if}
-			
-			{if $cust->hasPrivateVLANs()}
-				<li>
-				    <a href="#private-vlans" data-toggle="tab">Private VLANs</a>
-				</li>
-			{/if}
-			
+				
 			<li>
 			    <a href="#users" data-toggle="tab">Users</a>
 			</li>
@@ -121,14 +125,14 @@
 		        <div class="tab-pane" id="ports">
 		        	{tmplinclude file="customer/overview-tabs/ports.phtml"}
 	        	</div>
-			{/if}
 			        	
-			{if $cust->hasPrivateVLANs()}
-	            <div class="tab-pane" id="private-vlans">
-	        	    {tmplinclude file="customer/overview-tabs/private-vlans.phtml"}
-        	    </div>
+				{if $cust->hasPrivateVLANs()}
+		            <div class="tab-pane" id="private-vlans">
+		        	    {tmplinclude file="customer/overview-tabs/private-vlans.phtml"}
+	        	    </div>
+				{/if}
 			{/if}
-			
+				
 	        <div class="tab-pane" id="users">
 	        	{tmplinclude file="customer/overview-tabs/users.phtml"}
         	</div>
