@@ -41,7 +41,8 @@ class RsDroppedPrefixesController extends IXP_Controller_AuthRequiredAction
     
     public function indexAction()
     {
-        $this->view->cust_prefixes = $this->getD2EM()->getRepository( '\\Entities\\RSDroppedPrefix' )->getFlattenedCustomerSummary();
+        $this->view->types = \Entities\RSDroppedPrefix::$SUMMARY_TYPES_FNS;
+        $this->view->cust_prefixes = $this->getD2EM()->getRepository( '\\Entities\\RSDroppedPrefix' )->getAggregateRouteSummaries();
     }
     
     public function listAction()
@@ -52,12 +53,22 @@ class RsDroppedPrefixesController extends IXP_Controller_AuthRequiredAction
             return $this->forward( 'index' );
         }
         
-        $protocol = $this->getParam( 'protocol', 0 );
+        $protocol = $this->getParam( 'protocol', null );
         if( !in_array( $protocol, [ 4, 6 ] ) )
-            $protocol = 0;
+            $protocol = null;
+        
+        $this->view->type = $type = $this->getParam( 'type' );
+        if( !array_key_exists( $type, \Entities\RSDroppedPrefix::$SUMMARY_TYPES_FNS ) )
+        {
+            $this->addMessage( 'Invalid route type in request', OSS_Message::ERROR );
+            return $this->forward( 'index' );
+        }
         
         $this->view->cust     = $cust;
         $this->view->protocol = $protocol;
+        
+        $fn = \Entities\RSDroppedPrefix::$ROUTES_TYPES_FNS[ $type ];
+        $this->view->routes = $this->getD2EM()->getRepository( '\\Entities\\RSDroppedPrefix' )->$fn( $protocol, $cust->getId() );
     }
 }
 

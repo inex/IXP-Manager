@@ -12,86 +12,256 @@ use Doctrine\ORM\EntityRepository;
  */
 class RSDroppedPrefix extends EntityRepository
 {
-    
-    /**
-     * Returns a sorted (by customer name) array of dropped prefix counts by protocol.
-     *
-     * As an example, elements of a returned array may contain:
-     *
-     *     [0] => [
-     *         [id] => 77
-     *         [name] => Acme Solutions Limited
-     *         [protocol] => 4
-     *         [prefixes] => 11
-     *     ],
-     *     [1] => [
-     *         [id] => 77
-     *         [name] => Acme Solutions Limited
-     *         [protocol] => 6
-     *         [prefixes] => 2
-     *     ],
-     *     [2] => [
-     *         [id] => 64
-     *         [name] => ABC Limited
-     *         [protocol] => 4
-     *         [prefixes] => 6
-     *     ],
-     *     ...
-     *
-     *
-     * @return array Sorted (by customer name) array of dropped prefix counts by protocol
-     */
-    public function getCustomerSummary()
-    {
-        return $this->getEntityManager()->createQuery(
-                'SELECT c.id AS id, c.name AS name, dp.protocol AS protocol, count( dp.protocol ) AS prefixes
-                    FROM \\Entities\\RSDroppedPrefix dp LEFT JOIN dp.Customer c
-                    GROUP BY c.id, dp.protocol
-                    ORDER BY c.name ASC, dp.protocol ASC'
-        )->getArrayResult();
-    }
 
-    
     /**
-     * Processes the output of @see getCustomerSummary() and returns a summarised array of
-     * the customers' dropped prefixes
+     * Return route acceptance counts for all customers as an aggregated array.
      *
-     * As an example, elements of a returned array may contain:
+     * A sample element of the array is (RS = Route Server):
      *
-     *     [
-     *         [ custid ] => [ name, ipv4, ipv6, total ],
-     *         [ custid ] => [ name, ipv4, ipv6, total ],
-     *         ...
+     *     [64] => [                   // customer ID
+     *         [total] => 10           // total routes of all types
+     *         [adv_acc] => [          // routes advertised to the RS and accepted by the RS
+     *             [4] => 6            // IPv4
+     *             [6] => 2            // IPv6
+     *             [total] => 8        // total
+     *         ]
+     *         [adv_nacc] => [         // routes advertised but not accepted (not in IRRDB)
+     *             [4] => 0
+     *             [6] => 1
+     *             [total] => 1
+     *         ]
+     *         [nadv_acc] => [         // routes not advertised but that would be accepted
+     *             [4] => 0
+     *             [6] => 1
+     *             [total] => 1
+     *         ]
+     *         [name] => Customer Name
      *     ]
      *
-     * where ''custid'' is the customer ID, ''name'' is the customer name, ''ipv4''
-     * and ''ipv6'' is the number of dropped IPv4 and IPv6 prefixes respectivily and
-     * ''total'' is the sum of these.
      *
-     * @return array Summarised array of the customers' dropped prefixes
+     * @return array Route acceptance counts for all customers as an aggregated array
      */
-    public function getFlattenedCustomerSummary()
+    public function getAggregateRouteSummaries()
     {
         $summary = [];
         
-        foreach( $this->getCustomerSummary() as $cp )
+        foreach( \Entities\RSDroppedPrefix::$SUMMARY_TYPES_FNS as $type => $fn )
         {
-            $summary[ $cp['id'] ][ 'name' ] = $cp['name'];
-            $summary[ $cp['id'] ][ $cp['protocol'] ] = $cp['prefixes'];
-        }
-        
-        foreach( $summary as $i => $s )
-        {
-            foreach( [ 4, 6 ] as $proto )
+            foreach( [ 4, 6 ] as $protocol )
             {
-                if( !isset( $summary[$i][ 'total' ] ) ) $summary[$i][ 'total' ] = 0;
-                if( !isset( $summary[$i][ $proto  ] ) ) $summary[$i][ $proto  ] = 0;
-                
-                $summary[$i][ 'total' ] += $summary[$i][ $proto  ];
+                foreach( $this->$fn( $protocol ) as $routes )
+                {
+                    // initialise customer's summary array if necessary
+                    if( !isset( $summary[ $routes['id'] ] ) )
+                    {
+                        $summary[ $routes['id'] ] = $this->_initialiseAggregateRouteSummariesArray();
+                        $summary[ $routes['id'] ][ 'name' ] = $routes['name'];
+                    }
+                    
+                    $summary[ $routes['id'] ][ $type ][ $protocol ] = $routes['prefixes'];
+                    $summary[ $routes['id'] ][ $type ]['total'] += $routes['prefixes'];
+                    $summary[ $routes['id'] ][ 'total' ] += $routes['prefixes'];
+                }
             }
         }
         
         return $summary;
     }
+    
+    /**
+     * Used to initialise customer array elements for @see getAggregateRouteSummaries()
+     *
+     * This isn't really necessary but it prevents a ton of isset() queries at the
+     * presentation layer.
+     *
+     * @return array Initialised customer element array
+     */
+    private function _initialiseAggregateRouteSummariesArray()
+    {
+        $init = [
+            'total' => 0
+        ];
+        
+        foreach( \Entities\RSDroppedPrefix::$SUMMARY_TYPES_FNS as $type => $fn )
+        {
+            $init[ $type ] = [
+                4       => 0,
+                6       => 0,
+                'total' => 0
+            ];
+        }
+        
+        return $init;
+    }
+    
+    /**
+     * Returns a count of all routes advertised to the route server and accepted by
+     * it for all customers / a specific customer.
+     *
+     * @param int $protocol The protocol to count routes for (accepts ''4'' or ''6'')
+     * @param int $cust The customer ID to limit the results for
+     * @return array Count of all routes advertised to the route server and accepted by it
+     */
+    public function getSummaryRoutesAdvertisedAndAccepted( $protocol, $cust = null )
+    {
+        return $this->getSummaryRoutes( $protocol, 1, false, $cust );
+    }
+    
+    /**
+     * Returns a count of all routes not advertised to the route server but that would
+     * be accepted by it for all customers / a specific customer.
+     *
+     * @param int $protocol The protocol to count routes for (accepts ''4'' or ''6'')
+     * @param int $cust The customer ID to limit the results for
+     * @return array Count of all routes not advertised to the route server but would be accepted by it
+     */
+    public function getSummaryRoutesAdvertisedAndNotAccepted( $protocol, $cust = null )
+    {
+        return $this->getSummaryRoutes( $protocol, 0, false, $cust );
+    }
+    
+    /**
+     * Returns a count of all routes advertised to the route server but not accepted by
+     * it for all customers / a specific customer.
+     *
+     * @param int $protocol The protocol to count routes for (accepts ''4'' or ''6'')
+     * @param int $cust The customer ID to limit the results for
+     * @return array Count of all routes advertised to the route server but not accepted by it
+     */
+    public function getSummaryRoutesNotAdvertisedButAcceptable( $protocol, $cust = null )
+    {
+        return $this->getSummaryRoutes( $protocol, 1, true, $cust );
+    }
+    
+    /**
+     * Utility function used by the ''getSummaryRoutesXXX()'' function to query the database.
+     *
+     * The rules for routes are:
+     *
+     * * Advertised & Accepted: irrdb = 1 AND rs_origin IS NOT NULL
+     * * Advertised & NOT Accepted: irrdb = 0 AND rs_origin IS NOT NULL
+     * * Not Advertised & Acceptable: irrdb = 1 AND rs_origin IS NULL
+     *
+     * @param int $protocol The IP protocol to limit results to (accepts ''4'' or ''6'')
+     * @param int $irrdb Limit results to ''irrdb = 1'' or ''irrdb = 0''
+     * @param bool $rsOriginIsNull Limit results depending on whether the rs_origin is null or not
+     * @param int $cust The customer ID to limit the results to
+     * @return array The database query result
+     */
+    public function getSummaryRoutes( $protocol, $irrdb, $rsOriginIsNull, $cust = null )
+    {
+        $sql =
+                'SELECT c.id AS id, c.name AS name, dp.protocol AS protocol,
+                        dp.irrdb AS irrdb, count( dp.protocol ) AS prefixes
+    
+                FROM \\Entities\\RSDroppedPrefix dp
+                    LEFT JOIN dp.Customer c
+                WHERE
+                    dp.rs_origin IS ' . ( $rsOriginIsNull ? '' : 'NOT' ) . ' NULL
+                    AND dp.irrdb = ?2
+                    AND dp.protocol = ?1 '
+                    . ( $cust === null ? '' : ' AND c.id = ?3 ' ) . '
+    
+                GROUP BY c.id
+                ORDER BY c.name ASC, dp.protocol ASC, dp.irrdb ASC';
+        
+        $query = $this->getEntityManager()->createQuery( $sql )
+            ->setParameter( 1, $protocol )
+            ->setParameter( 2, $irrdb );
+        
+        if( $cust !== null )
+        {
+            return $query->setParameter( 3, $cust )
+                ->getSingleResult();
+        }
+        
+        return $query->getArrayResult();
+    }
+
+    
+    /**
+     * Returns all routes advertised to the route server and accepted by
+     * it for all customers / a specific customer.
+     *
+     * @param int $protocol The protocol to count routes for (accepts ''null'', ''4'' or ''6'')
+     * @param int $cust The customer ID to limit the results for
+     * @return array All routes advertised to the route server and accepted by it
+     */
+    public function getRoutesAdvertisedAndAccepted( $protocol = null, $cust = null )
+    {
+        return $this->getRoutes( 1, false, $protocol, $cust );
+    }
+    
+    /**
+     * Returns all routes not advertised to the route server but that would
+     * be accepted by it for all customers / a specific customer.
+     *
+     * @param int $protocol The protocol to count routes for (accepts ''null'', ''4'' or ''6'')
+     * @param int $cust The customer ID to limit the results for
+     * @return array All routes not advertised to the route server but would be accepted by it
+     */
+    public function getRoutesAdvertisedAndNotAccepted( $protocol = null, $cust = null )
+    {
+        return $this->getRoutes( 0, false, $protocol, $cust );
+    }
+    
+    /**
+     * Returns all routes not advertised to the route server but that would
+     * be accepted by it for all customers / a specific customer.
+     *
+     * @param int $protocol The protocol to count routes for (accepts ''null'', ''4'' or ''6'')
+     * @param int $cust The customer ID to limit the results for
+     * @return array All routes not advertised to the route server but would be accepted by it
+     */
+    public function getRoutesNotAdvertisedButAcceptable( $protocol = null, $cust = null )
+    {
+        return $this->getRoutes( 1, true, $protocol, $cust );
+    }
+    
+    /**
+     * Utility function used by the ''getRoutesXXX()'' function to query the database.
+     *
+     * The rules for routes are:
+     *
+     * * Advertised & Accepted: irrdb = 1 AND rs_origin IS NOT NULL
+     * * Advertised & NOT Accepted: irrdb = 0 AND rs_origin IS NOT NULL
+     * * Not Advertised & Acceptable: irrdb = 1 AND rs_origin IS NULL
+     *
+     * @param int $irrdb Limit results to ''irrdb = 1'' or ''irrdb = 0''
+     * @param bool $rsOriginIsNull Limit results depending on whether the rs_origin is null or not
+     * @param int $protocol The IP protocol to limit results to (accepts ''null'', ''4'' or ''6'')
+     * @param int $cust The customer ID to limit the results to
+     * @return array The database query result
+     */
+    public function getRoutes( $irrdb, $rsOriginIsNull, $protocol = null, $cust = null )
+    {
+        $sql =
+                'SELECT c.id AS id, c.name AS name, dp.protocol AS protocol,
+                        dp.irrdb AS irrdb, dp.prefix AS prefix,
+                        dp.timestamp AS timestamp, dp.rs_origin AS rsorigin
+    
+                FROM \\Entities\\RSDroppedPrefix dp
+                    LEFT JOIN dp.Customer c
+                        
+                WHERE
+                    dp.rs_origin IS ' . ( $rsOriginIsNull ? '' : 'NOT' ) . ' NULL
+                    AND dp.irrdb = ?2 '
+                    . ( $protocol === null ? '' : ' AND dp.protocol = ?1 ' )
+                    . ( $cust === null ? '' : ' AND c.id = ?3 ' ) . '
+    
+                ORDER BY c.name ASC, dp.protocol ASC, dp.irrdb ASC';
+    
+        $query = $this->getEntityManager()->createQuery( $sql )
+            ->setParameter( 2, $irrdb );
+    
+        if( $protocol !== null )
+            $query->setParameter( 1, $protocol );
+        
+        if( $cust !== null )
+            $query->setParameter( 3, $cust );
+    
+        return $query->getArrayResult();
+    }
+    
     
 }
