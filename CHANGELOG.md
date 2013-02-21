@@ -1,5 +1,7 @@
-# V3.0.3 - 2013xxxx
+# V3.0.3 - 20130221
 
+[NF] Correcting misunderstanding of the rs_dropped_routes table (78312d4 - Barry O'Donovan - 2013-02-21)
+[IM] Show customer ASN in header of dropped prefixes (e75f273 - Barry O'Donovan - 2013-02-21)
 [NF] Show user last logged in time (and where from) in customer overview (c77c257 - Barry O'Donovan - 2013-02-21)
 [NF] Show console server connections in customer overview (if they have them) (838ab2e - Barry O'Donovan - 2013-02-21)
 [HK] Useful git command for formatted logs (e87f95b - Barry O'Donovan - 2013-02-21)
