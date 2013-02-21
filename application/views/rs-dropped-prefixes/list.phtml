@@ -1,0 +1,47 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="rs-dropped-prefixes"}">Prefixes Dropped by the Route Servers</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        {$cust->getName()}
+    </li>
+</ul>
+
+{OSS_Message}
+
+<div class="row-fluid">
+    <div class="span12">
+    
+    <table class="table">
+        <thead>
+            <th>Prefix</th>
+            <th>Protocol</th>
+            <th>Timestamp</th>
+            <th>In IRRDB?</th>
+            <th>Origin AS</th>
+        </thead>
+        <tbody>
+            {foreach $cust->getRSDroppedPrefixes() as $p}
+                {if $protocol eq 0 || $protocol eq $p->getProtocol()}
+                    <tr>
+                        <td>{$p->getPrefix()}</td>
+                        <td>IPv{$p->getProtocol()}</td>
+                        <td>{$p->getTimestamp()->format( 'Y-m-d H:i:s' )}</td>
+                        <td>{if $p->getIrrdb()}Yes{else}No{/if}</td>
+                        <td>{$p->getRsOrigin()|asnumber}</td>
+                    </tr>
+                {/if}
+            {/foreach}
+        </tbody>
+    </table>
+    
+    </div>
+</div>
+
+{tmplinclude file="footer.phtml"}
+

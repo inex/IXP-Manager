@@ -124,6 +124,10 @@
             <a href="{genUrl controller='irrdb-config' action='list'}">IRRDB Configuration</a>
         </li>
     
+        <li {if $controller eq 'rs-dropped-prefixes'}class="active"{/if}>
+            <a href="{genUrl controller='rs-dropped-prefixes' action='index'}">RS Dropped Prefixes</a>
+        </li>
+    
         
               
     <li class="nav-header">IXP Statistics</li>

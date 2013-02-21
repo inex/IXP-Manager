@@ -95,10 +95,6 @@
 			        <a href="#ports" data-toggle="tab">Ports</a>
     			</li>
 			
-			    <li>
-			        <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">P2P &raquo;</a>
-    			</li>
-			
     			{if $cust->hasPrivateVLANs()}
 					<li>
 					    <a href="#private-vlans" data-toggle="tab">Private VLANs</a>
@@ -113,6 +109,18 @@
 			<li>
 			    <a href="#contacts" data-toggle="tab">Contacts</a>
 			</li>
+			
+            {if count( $cust->getRSDroppedPrefixes() )}
+			    <li>
+			        <a href="#dropped-prefixes" data-toggle="tab">Dropped Prefixes</a>
+    			</li>
+    		{/if}
+			
+			{if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
+			    <li>
+			        <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">P2P &raquo;</a>
+    			</li>
+    		{/if}
 			
 		</ul>
         
@@ -141,7 +149,13 @@
 	        	{tmplinclude file="customer/overview-tabs/contacts.phtml"}
         	</div>
         	
-        </div>
+            {if count( $cust->getRSDroppedPrefixes() )}
+    	        <div class="tab-pane" id="dropped-prefixes">
+    	        	{tmplinclude file="customer/overview-tabs/dropped-prefixes.phtml"}
+            	</div>
+            {/if}
+            
+    	</div>
 		    
     </div>
     
