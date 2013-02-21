@@ -1,0 +1,35 @@
+
+<table class="table">
+    <thead>
+        <th>Location</th>
+        <th>Switch</th>
+        <th>Port</th>
+        <th>Speed</th>
+        <th>Other Members</th>
+    </thead>
+    <tbody>
+
+        {foreach $cust->getPrivateVLANs() as $pv}
+        <tr>
+            <td>{$pv.location}</td>
+            <td>{$pv.switch}</td>
+            <td>
+                {foreach $pv.ports as $p}
+                    {$p.name}<br />
+                {/foreach}
+            </td>
+            <td>
+                {foreach $pv.ports as $p}
+                    {$p.speed}/{$p.duplex}<br />
+                {/foreach}
+            </td>
+            <td>
+                {foreach $pv.members as $i => $m}
+                    <a href="{genUrl controller="customer" action="overview" id=$i}">{$m}</a><br />
+                {/foreach}
+            </td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>
+

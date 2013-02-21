@@ -186,7 +186,8 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
     public function overviewAction()
     {
-        $this->view->cust = $cust = $this->_loadCustomer();
+        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+    	$this->view->cust = $cust = $this->_loadCustomer();
     }
     
     
