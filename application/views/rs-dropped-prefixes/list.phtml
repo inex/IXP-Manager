@@ -8,7 +8,7 @@
         <a href="{genUrl controller="rs-dropped-prefixes"}">Prefixes Dropped by the Route Servers</a> <span class="divider">/</span>
     </li>
     <li class="active">
-        {$cust->getName()}
+        {$cust->getName()} [{$cust->getAutsys()|asnumber}]
     </li>
 </ul>
 
