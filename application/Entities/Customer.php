@@ -1667,4 +1667,6 @@ class Customer
     {
         return $this->RSPrefixes;
     }
+    
+    
 }

@@ -188,6 +188,7 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
     	$this->view->cust = $cust = $this->_loadCustomer();
+        $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
     }
     
     
