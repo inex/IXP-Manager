@@ -81,6 +81,15 @@ As such, these routes are distributed to the other route server users.
 </p>
 
 <p>
+{if $cust->getPeeringmacro()}
+    We are using your AS-SET <code>{$cust->getPeeringmacro()}</code> when querying the IRRDB database(s).
+{else}
+    We have no AS-SET on record for you and as such, we are just querying the IRRDB database(s) using
+    the single ASN {$cust->getAutsys()|asnumber}.
+{/if}
+</p>
+
+<p>
 If this is incorrect or if there is a better source, please contact
 {mailto address=$options.identity.email text=$options.identity.name}
 to have this changed.
