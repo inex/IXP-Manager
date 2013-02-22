@@ -1,3 +1,5 @@
+# V3.0.6 - 2013xxxx
+
 # V3.0.5 - 20130222
 
 Schema Updates Required:
