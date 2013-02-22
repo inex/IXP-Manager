@@ -1,3 +1,15 @@
+# V3.0.5 - 2013xxxx
+
+- Route server prefix analysis / frontend on ''rs_prefixes'' table
+    - Sumary table of customers and prefixes
+    - Individual customer routes, filtered by protocol
+    - Datatables integration allowign pagination, sorting and as you type searching
+    - Customer overview link and indication when there are routes blocked
+    - Route classifications are:
+        - Advertised and accepted
+        - Advertised but not accepted
+        - Not advertised but acceptible
+
 # V3.0.4 - 20130221
 
 Schema Updates Required:
