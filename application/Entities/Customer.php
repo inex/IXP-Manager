@@ -1659,6 +1659,7 @@ class Customer
         return false;
     }
     
+    /**
      * @var \Entities\IRRDBConfig
      */
     private $IRRDB;
