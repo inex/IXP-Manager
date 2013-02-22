@@ -7,6 +7,11 @@
             {if isset( $hasIdentity ) and $hasIdentity}
                 <div class="nav-collapse">
                      <ul class="nav">
+                        {if $user->getPrivs() eq 1}
+                            <li {if $controller eq "dashboard"}class="active"{/if}>
+                                <a href="{genUrl}">Home</a>
+                            </li>
+                        {/if}
                         {if $user->getPrivs() neq 2}
                             <li class="dropdown {if $action eq 'switch-configuration' or $action eq 'members-details-list' or ( $controller eq 'meeting' and $action eq 'read' )}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
@@ -22,13 +27,19 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown {if $controller eq 'peering-manager' or $controller eq 'rs-prefixes'
+                                    or $controller eq 'peering-matrix'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {if $user->getPrivs() eq 1}
                                         <li>
                                             <a href="{genUrl controller="peering-manager"}">Peering Manager</a>
                                         </li>
+                                        {if $user->getCustomer()->isRouteServerClient()}
+                                            <li>
+                                                <a href="{genUrl controller="rs-prefixes" action="list"}">Route Server Prefixes</a>
+                                            </li>
+                                        {/if}
                                     {/if}
                                     <li>
                                         <a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a>
