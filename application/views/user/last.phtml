@@ -45,10 +45,16 @@
 
 <script type="text/javascript">
 	oTable = $('#ixpDataTable').dataTable({
-		"aaSorting": [[ 2, 'desc' ]],
+		"aaSorting": [[ 3, 'desc' ]],
 		"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
 		"sPaginationType": "bootstrap",
-		"iDisplayLength": 25,
+		"iDisplayLength": 12,
+		"aoColumns": [
+            { "sType": "string" },
+            { "sType": "string" },
+            { "sType": "html" },
+            { "sType": "string" }
+        ]
 	});
 
 	$('#ixpDataTable').show();

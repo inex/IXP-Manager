@@ -371,7 +371,7 @@ class UserController extends IXP_Controller_FrontEnd
     public function lastAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-        $this->view->last = $this->getD2EM()->getRepository( '\\Entities\\User' )->getLastLogins( 100 );
+        $this->view->last = $this->getD2EM()->getRepository( '\\Entities\\User' )->getLastLogins();
     }
 
 
