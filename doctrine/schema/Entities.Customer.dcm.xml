@@ -16,7 +16,6 @@
     <field name="nocemail" type="string" length="255" nullable="true"/>
     <field name="nochours" type="string" length="255" nullable="true"/>
     <field name="nocwww" type="string" length="255" nullable="true"/>
-    <field name="irrdb" type="integer" nullable="true"/>
     <field name="peeringmacro" type="string" length="255" nullable="true"/>
     <field name="peeringpolicy" type="string" length="255" nullable="true"/>
     <field name="billingContact" type="string" length="255" nullable="true"/>
@@ -34,6 +33,11 @@
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" length="255" nullable="true"/>
     <field name="created" type="date" nullable="true"/>
+    <many-to-one field="IRRDB" target-entity="Entities\IRRDBConfig" inversed-by="Customers">
+      <join-columns>
+        <join-column name="irrdb" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
     <one-to-many field="VirtualInterfaces" target-entity="Entities\VirtualInterface" mapped-by="Customer"/>
     <one-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Customer"/>
     <one-to-many field="ConsoleServerConnections" target-entity="Entities\ConsoleServerConnection" mapped-by="Customer"/>

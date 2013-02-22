@@ -3,6 +3,6 @@
 # Basic version information
 #
 
-define( 'APPLICATION_VERSION', '3.0.4' );
-define( 'APPLICATION_VERDATE', '20130221210000' );
+define( 'APPLICATION_VERSION', '3.0.5' );
+define( 'APPLICATION_VERDATE', '2013mmddhhmmss' );
 

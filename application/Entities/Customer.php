@@ -120,11 +120,6 @@ class Customer
     private $nocwww;
 
     /**
-     * @var integer $irrdb
-     */
-    private $irrdb;
-
-    /**
      * @var string $peeringmacro
      */
     private $peeringmacro;
@@ -568,29 +563,6 @@ class Customer
     public function getNocwww()
     {
         return $this->nocwww;
-    }
-
-    /**
-     * Set irrdb
-     *
-     * @param integer $irrdb
-     * @return Customer
-     */
-    public function setIrrdb($irrdb)
-    {
-        $this->irrdb = $irrdb;
-    
-        return $this;
-    }
-
-    /**
-     * Get irrdb
-     *
-     * @return integer
-     */
-    public function getIrrdb()
-    {
-        return $this->irrdb;
     }
 
     /**
@@ -1687,4 +1659,32 @@ class Customer
         return false;
     }
     
+     * @var \Entities\IRRDBConfig
+     */
+    private $IRRDB;
+
+
+    /**
+     * Set IRRDB
+     *
+     * @param \Entities\IRRDBConfig $iRRDB
+     * @return Customer
+     */
+    public function setIRRDB(\Entities\IRRDBConfig $iRRDB = null)
+    {
+        $this->IRRDB = $iRRDB;
+    
+        return $this;
+    }
+
+    /**
+     * Get IRRDB
+     *
+     * @return \Entities\IRRDBConfig
+     */
+    public function getIRRDB()
+    {
+        return $this->IRRDB;
+    }
+
 }

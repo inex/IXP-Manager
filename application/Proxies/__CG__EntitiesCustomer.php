@@ -186,18 +186,6 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getNocwww();
     }
 
-    public function setIrrdb($irrdb)
-    {
-        $this->__load();
-        return parent::setIrrdb($irrdb);
-    }
-
-    public function getIrrdb()
-    {
-        $this->__load();
-        return parent::getIrrdb();
-    }
-
     public function setPeeringmacro($peeringmacro)
     {
         $this->__load();
@@ -723,10 +711,22 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getRSPrefixes();
     }
 
+    public function setIRRDB(\Entities\IRRDBConfig $iRRDB = NULL)
+    {
+        $this->__load();
+        return parent::setIRRDB($iRRDB);
+    }
+
+    public function getIRRDB()
+    {
+        $this->__load();
+        return parent::getIRRDB();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'irrdb', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'notes', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'notes', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB');
     }
 
     public function __clone()
