@@ -69,6 +69,12 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 
 	        $this->getNocDetailsForm();
 	        $this->getBillingDetailsForm();
+	        
+	        if( $this->getCustomer()->isRouteServerClient() )
+	        {
+	            $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )
+	                ->aggregateRouteSummariesForCustomer( $this->getCustomer()->getId() );
+	        }
         }
     }
     

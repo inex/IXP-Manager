@@ -17,6 +17,18 @@
             <a href="#tab1" data-toggle="tab">Overview</a></li>
             <li><a href="#tab-details" data-toggle="tab">My Details</a></li>
             <li><a href="#tab3" data-toggle="tab">Ports</a></li>
+            
+            {if $user->getCustomer()->isRouteServerClient()}
+                <li>
+                    <a href="{genUrl controller="rs-prefixes" action="list" tab='adv_nacc'}">
+			            {if $rsRoutes.adv_nacc.total gt 0}
+			                <span class="badge badge-important">{$rsRoutes.adv_nacc.total}</span>
+		                {/if}
+                        Prefixes &raquo;
+                    </a>
+                </li>
+            {/if}
+            
             <li><a href="{genUrl controller="peering-manager"}">Peering Manager &raquo;</a></li>
             <li><a href="{genUrl controller="statistics" action="member"}">Statistics &raquo;</a></li>
             <li><a href="{genUrl controller="statistics" action="p2p"}">Peer to Peer Traffic &raquo;</a></li>

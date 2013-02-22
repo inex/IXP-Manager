@@ -1,0 +1,92 @@
+
+<p>
+This <em>Route Server Prefix Analysis</em> tool allows you to examine what routes you
+are advertising to the {$options.identity.orgname} Route Servers.
+<br /><br />
+</p>
+
+<h4>
+    Advertised but Not Accepted
+    <span class="badge badge-{if $aggRoutes.adv_nacc|@count gt 0}important{else}success{/if}">{$aggRoutes.adv_nacc|@count}</span>
+</h4>
+
+<p>
+These are routes that you are advertising to the route servers <strong>but that the route servers are
+NOT accepting</strong> because you do not have an exact <code>route:</code> / <code>route6:</code>
+object in your IRRDB entries. NB: {$options.identity.orgname} filters these objects on prefix size so
+if you are deaggregating your annoucements, you must also create route objects for these deaggregated
+prefixes.
+</p>
+
+<p>
+A typical <code>route:</code> / <code>route6:</code> object for your organisation would be:
+</p>
+
+<div class="row-fluid">
+
+    <div class="span4 offset1">
+    
+        <pre>
+  route:          192.0.2.0/24
+  descr:          {$cust->getName()}
+  origin:         AS{$cust->getAutsys()}
+  mnt-by:         YOURORG-MNT
+</pre>
+    
+    </div>
+
+    <div class="span4 offset1">
+    
+        <pre>
+  route6:         2001:DB8::/32
+  descr:          {$cust->getName()}
+  origin:         AS{$cust->getAutsys()}
+  mnt-by:         YOURORG-MNT
+</pre>
+    
+    </div>
+
+</div>
+
+<br /><br />
+
+<h4>
+    Not Advertised but Acceptable
+    <span class="badge badge-{if $aggRoutes.nadv_acc|@count gt 0}warning{else}success{/if}">{$aggRoutes.nadv_acc|@count}</span>
+</h4>
+
+<p>
+These are prefixes for which you have valid route objects but that you do not advertise to the route servers.
+<strong>Advertising these routes could increase your traffic over {$options.identity.orgname} and thus allow
+you to get greater value for money from your membership.</strong>
+<br /><br />
+</p>
+
+<h4>
+    Advertised and Accepted
+    <span class="badge badge-{if $aggRoutes.adv_acc|@count gt 0}success{else}important{/if}">{$aggRoutes.adv_acc|@count}</span>
+</h4>
+
+<p>
+These are routes that you are advertising to the route servers and that the route servers are accepting as valid.
+As such, these routes are distributed to the other route server users.
+<br /><br />
+</p>
+
+<h4>Source of IRRDB Information</h4>
+
+<p>
+{$options.identity.name} has set the source of IRRDB information for your organisation to:
+{$cust->getIRRDB()->getSource()} <em>({$cust->getIRRDB()->getNotes()})</em>.
+</p>
+
+<p>
+If this is incorrect or if there is a better source, please contact
+{mailto address=$options.identity.email text=$options.identity.name}
+to have this changed.
+</p>
+
+
+
+
+
