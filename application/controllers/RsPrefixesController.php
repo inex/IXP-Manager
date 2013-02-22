@@ -60,6 +60,7 @@ class RsPrefixesController extends IXP_Controller_AuthRequiredAction
         $this->view->tab      = $this->getParam( 'tab', false );
         $this->view->cust     = $cust;
         $this->view->protocol = $protocol;
+        $this->view->types    = array_keys( \Entities\RSPrefix::$ROUTES_TYPES_FNS );
         
         $this->view->aggRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRoutes( $cust->getId(), $protocol );
     }
