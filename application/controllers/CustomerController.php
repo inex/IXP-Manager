@@ -112,7 +112,6 @@ class CustomerController extends IXP_Controller_FrontEnd
                 'nochours'        => 'NOC Hours',
                 'nocemail'        => 'NOC Email',
                 'nocwww'          => 'NOC WWW',
-                'irrdb'           => 'IRRDB',
                 'status'          => [
                     'title'         => 'Status',
                     'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
@@ -155,7 +154,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                             c.autsys AS autsys, c.maxprefixes AS maxprefixes, c.peeringemail AS peeringemail,
                             c.nocphone AS nocphone, c.noc24hphone AS noc24hphone, c.nocfax AS nocfax,
                             c.nochours AS nochours, c.nocemail AS nocemail, c.nocwww AS nocwww,
-                            c.irrdb AS irrdb, c.status AS status, c.activepeeringmatrix AS activepeeringmatrix,
+                            c.status AS status, c.activepeeringmatrix AS activepeeringmatrix,
                             c.peeringmacro AS peeringmacro, c.peeringpolicy AS peeringpolicy,
                             c.billingContact AS billingContact, c.billingAddress1 AS billingAddress1,
                             c.billingAddress2 AS billingAddress2, c.billingCity AS billingCity, c.billingCountry AS billingCountry,
@@ -218,9 +217,41 @@ class CustomerController extends IXP_Controller_FrontEnd
             $object->setCreator( $this->getUser()->getUsername() );
         }
         
+        if( $form->getElement( 'irrdb' )->getValue() )
+        {
+            $object->setIRRDB(
+                    $this->getD2EM()->getRepository( '\\Entities\\IRRDBConfig' )->find( $form->getElement( 'irrdb' )->getValue() )
+            );
+        }
+        else
+        {
+            $object->setIRRDB( null );
+        }
+        
+        
         return true;
     }
 
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful add / edit operation.
+     *
+     * By default it returns `false`.
+     *
+     * On `false`, the default action (`index`) is called and a standard success message is displayed.
+     *
+     *
+     * @param OSS_Form $form The form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function addDestinationOnSuccess( $form, $object, $isEdit  )
+    {
+        $this->addMessage( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+        $this->redirect( 'customer/overview/id/' . $object->getId() );
+    }
+    
     /**
      *
      * @param IXP_Form_Customer $form The Send form object
@@ -267,7 +298,9 @@ class CustomerController extends IXP_Controller_FrontEnd
      {
          if( !$isEdit && isset( $this->getOptions()['identity']['default_country'] ) )
              $form->getElement( 'billingCountry' )->setValue( $this->getOptions()['identity']['default_country'] );
-             
+
+         $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
+          
          return true;
      }
                                                                                                

@@ -99,10 +99,28 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
         return parent::getId();
     }
 
+    public function addCustomer(\Entities\Customer $customers)
+    {
+        $this->__load();
+        return parent::addCustomer($customers);
+    }
+
+    public function removeCustomer(\Entities\Customer $customers)
+    {
+        $this->__load();
+        return parent::removeCustomer($customers);
+    }
+
+    public function getCustomers()
+    {
+        $this->__load();
+        return parent::getCustomers();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'host', 'protocol', 'source', 'notes', 'id');
+        return array('__isInitialized__', 'host', 'protocol', 'source', 'notes', 'id', 'Customers');
     }
 
     public function __clone()

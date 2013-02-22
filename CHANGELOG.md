@@ -1,5 +1,13 @@
 # V3.0.5 - 2013xxxx
 
+Schema Updates Required:
+
+    UPDATE cust SET irrdb = null WHERE irrdb = 0;
+    ALTER TABLE cust ADD CONSTRAINT FK_997B25A666E98DF FOREIGN KEY (irrdb) REFERENCES irrdbconfig (id);
+    CREATE INDEX IDX_997B25A666E98DF ON cust (irrdb)
+
+- [DB] Link IRRDB table to customer table.
+
 - Route server prefix analysis / frontend on ''rs_prefixes'' table
     - Sumary table of customers and prefixes
     - Individual customer routes, filtered by protocol
