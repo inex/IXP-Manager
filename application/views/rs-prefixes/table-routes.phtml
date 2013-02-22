@@ -1,0 +1,31 @@
+
+{if count( $aggRoutes.$type )}
+
+    <table class="table">
+        <thead>
+            <th>Prefix</th>
+            <th>Protocol</th>
+            <th>Timestamp</th>
+            {if $type eq 'adv_acc' or $type eq 'adv_nacc'}
+                <th>Origin AS</th>
+            {/if}
+        </thead>
+        <tbody>
+            {foreach $aggRoutes.$type as $r}
+                <tr>
+                    <td>{$r.prefix}</td>
+                    <td>IPv{$r.protocol}</td>
+                    <td>{$r.timestamp->format( 'Y-m-d H:i:s' )}</td>
+                    {if $type eq 'adv_acc' or $type eq 'adv_nacc'}
+                        <td>{$r.rsorigin|asnumber}</td>
+                    {/if}
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+
+{else}
+
+<p>No {if $protocol}IPv{$protocol} {/if}routes found for this category.</p>
+
+{/if}

@@ -56,19 +56,12 @@ class RsPrefixesController extends IXP_Controller_AuthRequiredAction
         $protocol = $this->getParam( 'protocol', null );
         if( !in_array( $protocol, [ 4, 6 ] ) )
             $protocol = null;
-        
-        $this->view->type = $type = $this->getParam( 'type' );
-        if( !array_key_exists( $type, \Entities\RSPrefix::$SUMMARY_TYPES_FNS ) )
-        {
-            $this->addMessage( 'Invalid route type in request', OSS_Message::ERROR );
-            return $this->forward( 'index' );
-        }
-        
+
+        $this->view->tab      = $this->getParam( 'tab', false );
         $this->view->cust     = $cust;
         $this->view->protocol = $protocol;
         
-        $fn = \Entities\RSPrefix::$ROUTES_TYPES_FNS[ $type ];
-        $this->view->routes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->$fn( $protocol, $cust->getId() );
+        $this->view->aggRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRoutes( $cust->getId(), $protocol );
     }
 }
 
