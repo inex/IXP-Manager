@@ -41,7 +41,8 @@ class RsPrefixesController extends IXP_Controller_AuthRequiredAction
     
     public function indexAction()
     {
-        $this->view->types = \Entities\RSPrefix::$SUMMARY_TYPES_FNS;
+        $this->view->types         = \Entities\RSPrefix::$SUMMARY_TYPES_FNS;
+        $this->view->rsRouteTypes  = array_keys( \Entities\RSPrefix::$ROUTES_TYPES_FNS );
         $this->view->cust_prefixes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummaries();
     }
     
