@@ -22,7 +22,7 @@
     <tbody>
 
         <tr>
-            <td><strong>Corportate Sit</strong></td>
+            <td><strong>Corportate Site</strong></td>
             <td><a href="{$cust->getCorpwww()}">{$cust->getCorpwww()}</a></td>
             <td><strong>Peering Email</strong></td>
             <td>{mailto address=$cust->getpeeringemail()}</td>
@@ -44,7 +44,22 @@
                 <td><strong>Peering Policy</strong></td>
                 <td>{$cust->getPeeringpolicy()}</td>
                 <td><strong>ASN</strong></td>
-                <td>{$cust->getAutsys()|asnumber} {if $cust->getPeeringmacro()}({$cust->getPeeringmacro()}){/if}</td>
+                <td>{$cust->getAutsys()|asnumber} {if $cust->getPeeringmacro()}({$cust->getPeeringmacro()}){else}<em>(no AS-SET)</em>{/if}</td>
+            </tr>
+            <tr>
+                <td><strong>IRRDB</strong></td>
+                <td>{$cust->getIRRDB()->getSource()}</td>
+                <td><strong>Max Prefixes</strong></td>
+                <td>
+                    {$cust->getMaxprefixes()}
+                    {if $cust->getVirtualInterfaces()|@count}
+                        ({foreach $cust->getVirtualInterfaces() as $vi}
+                            {foreach $vi->getVlanInterfaces() as $vli}
+                                {$vli->getMaxbgpprefix()}{if not ( $vi@last and $vli@last )}, {/if}
+                            {/foreach}
+                        {/foreach})
+                    {/if}
+                </td>
             </tr>
         {/if}
         <tr>

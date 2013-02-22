@@ -1,5 +1,10 @@
 # V3.0.6 - 2013xxxx
 
+- [IM] Show max prefixes (by customer and by vlan interfaces) and IRRDB source in customer overview
+- [BF] Fix sorting on last logins list (593105b - Barry O'Donovan - 2013-02-22)
+- [IM] Add AS-SET information to the rs prefixes help page (d5937b7 - Barry O'Donovan - 2013-02-22)
+- [IM] Move position of warning bullet for rs prefixes (3e8dbe0 - Barry O'Donovan - 2013-02-22)
+
 # V3.0.5 - 20130222
 
 Schema Updates Required:
@@ -8,8 +13,8 @@ Schema Updates Required:
     ALTER TABLE cust ADD CONSTRAINT FK_997B25A666E98DF FOREIGN KEY (irrdb) REFERENCES irrdbconfig (id);
     CREATE INDEX IDX_997B25A666E98DF ON cust (irrdb)
 
+- [NF] Customers can now see their route server prefixes (4b1cef7 - Barry O'Donovan - 2013-02-22)
 - [DB] Link IRRDB table to customer table.
-
 - Route server prefix analysis / frontend on ''rs_prefixes'' table
     - Sumary table of customers and prefixes
     - Individual customer routes, filtered by protocol
