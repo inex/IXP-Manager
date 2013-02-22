@@ -1669,4 +1669,22 @@ class Customer
     }
     
     
+    /**
+     * Is the customer a route server client on any of their VLAN interfaces?
+     * @return boolean
+     */
+    public function isRouteServerClient()
+    {
+        foreach( $this->getVirtualInterfaces() as $vi )
+        {
+            foreach( $vi->getVlanInterfaces() as $vli )
+            {
+                if( $vli->getRsclient() )
+                    return true;
+            }
+        }
+        
+        return false;
+    }
+    
 }
