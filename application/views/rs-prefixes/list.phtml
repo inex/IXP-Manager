@@ -8,7 +8,8 @@
         <a href="{genUrl controller="rs-prefixes"}">Route Server Prefixes</a> <span class="divider">/</span>
     </li>
     <li class="active">
-        {$cust->getName()} [{$cust->getAutsys()|asnumber}]
+        <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a>
+        [{$cust->getAutsys()|asnumber}]
         {if $protocol}[IPv{$protocol}]{/if}
     </li>
     <li class="pull-right"  style="margin-top: -6px;">
