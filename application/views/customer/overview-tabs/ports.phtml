@@ -19,6 +19,10 @@
                 {assign var='isLAG' value=0}
             {/if}
         </small>
+        <div class="btn-group" style="padding-left: 20px;">
+            <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='virtual-interface' action='edit' id=$vi->getId()}" title="Edit"><i class="icon-pencil"></i></a>
+        </div>
+        
     </h3>
 
     {foreach $vi->getPhysicalInterfaces() as $pi}
