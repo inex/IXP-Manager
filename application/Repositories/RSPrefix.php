@@ -12,7 +12,53 @@ use Doctrine\ORM\EntityRepository;
  */
 class RSPrefix extends EntityRepository
 {
-
+    /**
+     * Return route acceptance counts for a specific customers as an aggregated array.
+     *
+     * A sample element of the array is (RS = Route Server):
+     *
+     *     [
+     *         [total] => 10           // total routes of all types
+     *         [adv_acc] => [          // routes advertised to the RS and accepted by the RS
+     *             [4] => 6            // IPv4
+     *             [6] => 2            // IPv6
+     *             [total] => 8        // total
+     *         ]
+     *         [adv_nacc] => [         // routes advertised but not accepted (not in IRRDB)
+     *             [4] => 0
+     *             [6] => 1
+     *             [total] => 1
+     *         ]
+     *         [nadv_acc] => [         // routes not advertised but that would be accepted
+     *             [4] => 0
+     *             [6] => 1
+     *             [total] => 1
+     *         ]
+     *     ]
+     *
+     *
+     * @return array Route acceptance counts for all customers as an aggregated array
+     */
+    public function aggregateRouteSummariesForCustomer( $custid )
+    {
+        $summary = $this->_initialiseAggregateRouteSummariesArray();
+    
+        foreach( \Entities\RSPrefix::$SUMMARY_TYPES_FNS as $type => $fn )
+        {
+            foreach( [ 4, 6 ] as $protocol )
+            {
+                if( $sum = $this->$fn( $protocol, $custid ) )
+                {
+                    $summary[ $type ][ $protocol ] = $sum['prefixes'];
+                    $summary[ $type ]['total'] += $sum['prefixes'];
+                    $summary[ 'total' ] += $sum['prefixes'];
+                }
+            }
+        }
+    
+        return $summary;
+    }
+    
     /**
      * Return route acceptance counts for all customers as an aggregated array.
      *
@@ -41,7 +87,7 @@ class RSPrefix extends EntityRepository
      *
      * @return array Route acceptance counts for all customers as an aggregated array
      */
-    public function getAggregateRouteSummaries()
+    public function aggregateRouteSummaries()
     {
         $summary = [];
         
@@ -146,7 +192,7 @@ class RSPrefix extends EntityRepository
      * @param int $irrdb Limit results to ''irrdb = 1'' or ''irrdb = 0''
      * @param bool $rsOriginIsNull Limit results depending on whether the rs_origin is null or not
      * @param int $cust The customer ID to limit the results to
-     * @return array The database query result
+     * @return array The database query result (or false if none)
      */
     public function getSummaryRoutes( $protocol, $irrdb, $rsOriginIsNull, $cust = null )
     {
@@ -171,13 +217,61 @@ class RSPrefix extends EntityRepository
         
         if( $cust !== null )
         {
-            return $query->setParameter( 3, $cust )
-                ->getSingleResult();
+            try
+            {
+                return $query->setParameter( 3, $cust )
+                    ->getSingleResult();
+            }
+            catch( \Doctrine\ORM\NoResultException $e )
+            {
+                return false;
+            }
         }
         
         return $query->getArrayResult();
     }
 
+
+    
+    /**
+     * Return categorised routes for a given customer as an aggregated array.
+     *
+     * A sample element of the array is (RS = Route Server):
+     *
+     *     [
+     *         [adv_acc] => [                             // Routes advertised and accepted
+     *             [0] => [
+     *                 [id] => 64                         // Customer ID
+     *                 [name] => ABC Limited              // Customer Name
+     *                 [protocol] => 4                    // protocol (4,6)
+     *                 [irrdb] => 1                       // 1 if the route is in IRRDB
+     *                 [prefix] => 192.0.2.0/24           // prefix
+     *                 [timestamp] => DateTime Object
+     *                 [rsorigin] => 65500                // origin AS
+     *             ]
+     *             ...
+     *         ]
+     *         [adv_nacc] => [                            // Routes advertised but not accepted
+     *             ...
+     *         ]
+     *         [nadv_acc] => [                            // Routes not advertised but acceptable
+     *             ...
+     *         ]
+     *     ]
+     *
+     * @param int $cust The customer ID to return routes for
+     * @param int protocol The (optional) protocol to limit results to (''4'', ''6'', ''NULL'')
+     * @return array Categorised routes for a given customer as an aggregated array.
+     */
+    public function aggregateRoutes( $cust, $protocol = null )
+    {
+        $aggRoutes = [];
+    
+        foreach( \Entities\RSPrefix::$ROUTES_TYPES_FNS as $type => $fn )
+            $aggRoutes[ $type ] = $this->$fn( $protocol, $cust );
+    
+        return $aggRoutes;
+    }
     
     /**
      * Returns all routes advertised to the route server and accepted by

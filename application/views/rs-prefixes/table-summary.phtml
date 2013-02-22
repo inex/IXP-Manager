@@ -1,0 +1,21 @@
+
+<table class="table hide" id="summary-table-{$type}">
+    <thead>
+        <th>Customer</th>
+        <th>IPv4</th>
+        <th>IPv6</th>
+        <th>Total</th>
+    </thead>
+    <tbody>
+        {foreach $cust_prefixes as $id => $cp}
+            {if $cp.$type.total > 0}
+                <tr>
+                    <td><a href="{genUrl controller="customer" action="overview" id=$id}">{$cp.name}</a></td>
+                    <td><a href="{genUrl controller="rs-prefixes" action="list" custid=$id type=$type tab=$type protocol=4}">{$cp.$type.4}</a></td>
+                    <td><a href="{genUrl controller="rs-prefixes" action="list" custid=$id type=$type tab=$type protocol=6}">{$cp.$type.6}</a></td>
+                    <td><a href="{genUrl controller="rs-prefixes" action="list" custid=$id type=$type tab=$type }"          >{$cp.$type.total}</a></td>
+                </tr>
+            {/if}
+        {/foreach}
+    </tbody>
+</table>

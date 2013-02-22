@@ -8,39 +8,75 @@
         <a href="{genUrl controller="rs-prefixes"}">Route Server Prefixes</a> <span class="divider">/</span>
     </li>
     <li class="active">
-        {$cust->getName()} [{$cust->getAutsys()|asnumber}]
+        <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a>
+        [{$cust->getAutsys()|asnumber}]
+        {if $protocol}[IPv{$protocol}]{/if}
+    </li>
+    <li class="pull-right"  style="margin-top: -6px;">
+        <div class="btn-toolbar" style="display: inline;">
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="protocol-dd">
+                    <span id="protocol-dd-text">{if $protocol}Filtered for IPv{$protocol}{else}Limit to Protocol...{/if}</span>
+                    <span class="caret"></span>
+                </a>
+                <ul id="protocol-dd-ul" class="dropdown-menu pull-right">
+                    {if $protocol}
+                        <li> <a id="protocol-0" href="{genUrl controller=$controller action='list' custid=$cust->getId()}">All Protocols</a> </li>
+                    {/if}
+                    {if $protocol neq 4}
+                        <li> <a id="protocol-4" href="{genUrl controller=$controller action='list' custid=$cust->getId() protocol=4}">IPv4 Only</a> </li>
+                    {/if}
+                    {if $protocol neq 6}
+                        <li> <a id="protocol-6" href="{genUrl controller=$controller action='list' custid=$cust->getId() protocol=6}">IPv6 Only</a> </li>
+                    {/if}
+                    </ul>
+            </div>
+        </div>
     </li>
 </ul>
 
 {OSS_Message}
 
+
 <div class="row-fluid">
-    <div class="span12">
-    
-    <table class="table">
-        <thead>
-            <th>Prefix</th>
-            <th>Protocol</th>
-            <th>Timestamp</th>
-            {if $type eq 'adv_acc' or $type eq 'adv_nacc'}
-                <th>Origin AS</th>
-            {/if}
-        </thead>
-        <tbody>
-            {foreach $routes as $r}
-                <tr>
-                    <td>{$r.prefix}</td>
-                    <td>IPv{$r.protocol}</td>
-                    <td>{$r.timestamp->format( 'Y-m-d H:i:s' )}</td>
-                    {if $type eq 'adv_acc' or $type eq 'adv_nacc'}
-                        <td>{$r.rsorigin|asnumber}</td>
-                    {/if}
-                </tr>
-            {/foreach}
-        </tbody>
-    </table>
-    
+    <div class="span12 tabbable">
+
+    	<ul class="nav nav-tabs" id='routes-type-tabs'>
+    	
+			<li class="active">
+			    <a href="#adv_nacc" data-toggle="tab">Advertised but Not Accepted ({$aggRoutes.adv_nacc|@count})</a>
+			</li>
+        
+			<li>
+			    <a href="#adv_acc" data-toggle="tab">Advertised &amp; Accepted ({$aggRoutes.adv_acc|@count})</a>
+			</li>
+        
+			<li>
+			    <a href="#nadv_acc" data-toggle="tab">Not Advertised but Acceptable ({$aggRoutes.nadv_acc|@count})</a>
+			</li>
+        
+        </ul>
+        
+        <div class="tab-content">
+        
+	        <div class="tab-pane active" id="adv_nacc">
+	            {$type = "adv_nacc"}
+	        	{tmplinclude file="rs-prefixes/table-routes.phtml"}
+	        </div>
+        
+	        <div class="tab-pane" id="adv_acc">
+	            {$type = "adv_acc"}
+	            {tmplinclude file="rs-prefixes/table-routes.phtml"}
+	        </div>
+        
+	        <div class="tab-pane" id="nadv_acc">
+	            {$type = "nadv_acc"}
+	            {tmplinclude file="rs-prefixes/table-routes.phtml"}
+	        </div>
+        
+        </div>
     </div>
 </div>
 
+<script>{tmplinclude file="rs-prefixes/js/list.js"}</script>
 {tmplinclude file="footer.phtml"}

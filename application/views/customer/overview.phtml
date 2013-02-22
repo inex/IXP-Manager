@@ -110,12 +110,6 @@
 			    <a href="#contacts" data-toggle="tab">Contacts</a>
 			</li>
 			
-            {* if count( $cust->getRSPrefixes() )}
-			    <li>
-			        <a href="#prefixes" data-toggle="tab">Dropped Prefixes</a>
-    			</li>
-    		{/if *}
-			
             {if count( $cust->getConsoleServerConnections() )}
 			    <li>
 			        <a href="#console-server-connections" data-toggle="tab">OOB Access</a>
@@ -123,7 +117,16 @@
     		{/if}
 			
     		{if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
-			    <li>
+    		    <li>
+			        <a href="{genUrl controller="rs-prefixes" action="list" custid=$cust->getId()}">
+			            {if $rsRoutes.adv_nacc.total gt 0}
+			                <span class="badge badge-important">{$rsRoutes.adv_nacc.total}</span>
+		                {/if}
+			            RS Prefixes &raquo;
+		            </a>
+    			</li>
+    			
+    			<li>
 			        <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">P2P &raquo;</a>
     			</li>
     		{/if}
@@ -155,12 +158,6 @@
 	        	{tmplinclude file="customer/overview-tabs/contacts.phtml"}
         	</div>
         	
-            {* if count( $cust->getRSPrefixes() )}
-    	        <div class="tab-pane" id="prefixes">
-    	        	{tmplinclude file="customer/overview-tabs/prefixes.phtml"}
-            	</div>
-            {/if *}
-            
             {if count( $cust->getConsoleServerConnections() )}
 			    <div class="tab-pane" id="console-server-connections">
     	        	{tmplinclude file="customer/overview-tabs/console-server-connections.phtml"}
