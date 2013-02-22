@@ -5,6 +5,30 @@ are advertising to the {$options.identity.orgname} Route Servers.
 <br /><br />
 </p>
 
+<h4>Source of IRRDB Information</h4>
+
+<p>
+{$options.identity.name} has set the source of IRRDB information for your organisation to:
+{$cust->getIRRDB()->getSource()} <em>({$cust->getIRRDB()->getNotes()})</em>.
+</p>
+
+<p>
+{if $cust->getPeeringmacro()}
+    We are using your AS-SET <code>{$cust->getPeeringmacro()}</code> when querying the IRRDB database(s).
+{else}
+    We have no AS-SET on record for you and as such, we are just querying the IRRDB database(s) using
+    the single ASN {$cust->getAutsys()|asnumber}.
+{/if}
+</p>
+
+<p>
+If this is incorrect or if there is a better source, please contact
+{mailto address=$options.identity.email text=$options.identity.name}
+to have this changed.
+<br /><br />
+</p>
+
+
 <h4>
     Advertised but Not Accepted
     <span class="badge badge-{if $aggRoutes.adv_nacc|@count gt 0}important{else}success{/if}">{$aggRoutes.adv_nacc|@count}</span>
@@ -71,28 +95,6 @@ you to get greater value for money from your membership.</strong>
 These are routes that you are advertising to the route servers and that the route servers are accepting as valid.
 As such, these routes are distributed to the other route server users.
 <br /><br />
-</p>
-
-<h4>Source of IRRDB Information</h4>
-
-<p>
-{$options.identity.name} has set the source of IRRDB information for your organisation to:
-{$cust->getIRRDB()->getSource()} <em>({$cust->getIRRDB()->getNotes()})</em>.
-</p>
-
-<p>
-{if $cust->getPeeringmacro()}
-    We are using your AS-SET <code>{$cust->getPeeringmacro()}</code> when querying the IRRDB database(s).
-{else}
-    We have no AS-SET on record for you and as such, we are just querying the IRRDB database(s) using
-    the single ASN {$cust->getAutsys()|asnumber}.
-{/if}
-</p>
-
-<p>
-If this is incorrect or if there is a better source, please contact
-{mailto address=$options.identity.email text=$options.identity.name}
-to have this changed.
 </p>
 
 
