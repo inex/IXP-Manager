@@ -33,14 +33,10 @@
  */
 class RsPrefixesController extends IXP_Controller_AuthRequiredAction
 {
-    public function preDispatch()
-    {
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
-    }
-    
     public function indexAction()
     {
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
+        
         $this->view->types         = \Entities\RSPrefix::$SUMMARY_TYPES_FNS;
         $this->view->rsRouteTypes  = array_keys( \Entities\RSPrefix::$ROUTES_TYPES_FNS );
         $this->view->cust_prefixes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummaries();
@@ -48,12 +44,21 @@ class RsPrefixesController extends IXP_Controller_AuthRequiredAction
     
     public function listAction()
     {
-        if( !( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid', 0 ) ) ) )
-        {
-            $this->addMessage( 'Invalid customer ID in request', OSS_Message::ERROR );
-            return $this->forward( 'index' );
-        }
+        $this->assertPrivilege( \Entities\User::AUTH_CUSTUSER, false );
         
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        {
+            $cust = $this->getCustomer();
+        }
+        else
+        {
+            if( !( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid', 0 ) ) ) )
+            {
+                $this->addMessage( 'Invalid customer ID in request', OSS_Message::ERROR );
+                return $this->forward( 'index' );
+            }
+        }
+                
         $protocol = $this->getParam( 'protocol', null );
         if( !in_array( $protocol, [ 4, 6 ] ) )
             $protocol = null;

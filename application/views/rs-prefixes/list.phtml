@@ -1,40 +1,43 @@
 {tmplinclude file="header.phtml"}
 
-<ul class="breadcrumb">
-    <li>
-        <a href="{genUrl}">Home</a> <span class="divider">/</span>
-    </li>
-    <li>
-        <a href="{genUrl controller="rs-prefixes"}">Route Server Prefixes</a> <span class="divider">/</span>
-    </li>
-    <li class="active">
-        <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a>
-        [{$cust->getAutsys()|asnumber}]
-        {if $protocol}[IPv{$protocol}]{/if}
-    </li>
-    <li class="pull-right"  style="margin-top: -6px;">
-        <div class="btn-toolbar" style="display: inline;">
-            <div class="btn-group">
-                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="protocol-dd">
-                    <span id="protocol-dd-text">{if $protocol}Filtered for IPv{$protocol}{else}Limit to Protocol...{/if}</span>
-                    <span class="caret"></span>
-                </a>
-                <ul id="protocol-dd-ul" class="dropdown-menu pull-right">
-                    {if $protocol}
-                        <li> <a id="protocol-0" href="{genUrl controller=$controller action='list' custid=$cust->getId()}">All Protocols</a> </li>
-                    {/if}
-                    {if $protocol neq 4}
-                        <li> <a id="protocol-4" href="{genUrl controller=$controller action='list' custid=$cust->getId() protocol=4}">IPv4 Only</a> </li>
-                    {/if}
-                    {if $protocol neq 6}
-                        <li> <a id="protocol-6" href="{genUrl controller=$controller action='list' custid=$cust->getId() protocol=6}">IPv6 Only</a> </li>
-                    {/if}
-                    </ul>
-            </div>
-        </div>
-    </li>
-</ul>
+{if isset( $user ) and $user->getPrivs() eq USER::AUTH_SUPERUSER}
 
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            <a href="{genUrl controller="rs-prefixes"}">Route Server Prefixes</a> <span class="divider">/</span>
+        </li>
+        <li class="active">
+            <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a>
+            [{$cust->getAutsys()|asnumber}]
+            {if $protocol}[IPv{$protocol}]{/if}
+        </li>
+        <li class="pull-right"  style="margin-top: -6px;">
+            <div class="btn-toolbar" style="display: inline;">
+                {tmplinclude file='rs-prefixes/list-filter.phtml'}
+            </div>
+        </li>
+    </ul>
+    
+    <div>
+
+{else}
+
+    <div class="page-content" >
+    
+        <div class="page-header" >
+            <h1 style="display: inline;">Route Server Prefix Analysis</h1>
+            
+            <span style="float: right; margin-top: -10px;">
+                <div class="btn-toolbar">
+                    {tmplinclude file='rs-prefixes/list-filter.phtml'}
+                </div>
+            </span>
+        </div>
+{/if}
+    
 {OSS_Message}
 
 
@@ -55,7 +58,11 @@
 			    <a href="#nadv_acc" data-toggle="tab">Not Advertised but Acceptable ({$aggRoutes.nadv_acc|@count})</a>
 			</li>
         
-        </ul>
+			<li>
+			    <a href="#help" data-toggle="tab">Help</a>
+			</li>
+        
+		</ul>
         
         <div class="tab-content">
         
@@ -74,8 +81,14 @@
 	            {tmplinclude file="rs-prefixes/table-routes.phtml"}
 	        </div>
         
+	        <div class="tab-pane" id="help">
+	            {tmplinclude file="rs-prefixes/list-help.phtml"}
+	        </div>
+        
         </div>
     </div>
+</div>
+
 </div>
 
 <script>{tmplinclude file="rs-prefixes/js/list.js"}</script>

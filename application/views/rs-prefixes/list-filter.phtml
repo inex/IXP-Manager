@@ -1,0 +1,18 @@
+
+<div class="btn-group">
+    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="protocol-dd">
+        <span id="protocol-dd-text">{if $protocol}Filtered for IPv{$protocol}{else}Limit to Protocol...{/if}</span>
+        <span class="caret"></span>
+    </a>
+    <ul id="protocol-dd-ul" class="dropdown-menu pull-right">
+        {if $protocol}
+            <li> <a id="protocol-0" href="{genUrl controller=$controller action='list' custid=$cust->getId()}">All Protocols</a> </li>
+        {/if}
+        {if $protocol neq 4}
+            <li> <a id="protocol-4" href="{genUrl controller=$controller action='list' custid=$cust->getId() protocol=4}">IPv4 Only</a> </li>
+        {/if}
+        {if $protocol neq 6}
+            <li> <a id="protocol-6" href="{genUrl controller=$controller action='list' custid=$cust->getId() protocol=6}">IPv6 Only</a> </li>
+        {/if}
+        </ul>
+</div>
