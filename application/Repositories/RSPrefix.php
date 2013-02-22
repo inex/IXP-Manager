@@ -178,6 +178,47 @@ class RSPrefix extends EntityRepository
         return $query->getArrayResult();
     }
 
+
+    
+    /**
+     * Return categorised routes for a given customer as an aggregated array.
+     *
+     * A sample element of the array is (RS = Route Server):
+     *
+     *     [
+     *         [adv_acc] => [                             // Routes advertised and accepted
+     *             [0] => [
+     *                 [id] => 64                         // Customer ID
+     *                 [name] => ABC Limited              // Customer Name
+     *                 [protocol] => 4                    // protocol (4,6)
+     *                 [irrdb] => 1                       // 1 if the route is in IRRDB
+     *                 [prefix] => 192.0.2.0/24           // prefix
+     *                 [timestamp] => DateTime Object
+     *                 [rsorigin] => 65500                // origin AS
+     *             ]
+     *             ...
+     *         ]
+     *         [adv_nacc] => [                            // Routes advertised but not accepted
+     *             ...
+     *         ]
+     *         [nadv_acc] => [                            // Routes not advertised but acceptable
+     *             ...
+     *         ]
+     *     ]
+     *
+     * @param int $cust The customer ID to return routes for
+     * @param int protocol The (optional) protocol to limit results to (''4'', ''6'', ''NULL'')
+     * @return array Categorised routes for a given customer as an aggregated array.
+     */
+    public function aggregateRoutes( $cust, $protocol = null )
+    {
+        $aggRoutes = [];
+    
+        foreach( \Entities\RSPrefix::$ROUTES_TYPES_FNS as $type => $fn )
+            $aggRoutes[ $type ] = $this->$fn( $protocol, $cust );
+    
+        return $aggRoutes;
+    }
     
     /**
      * Returns all routes advertised to the route server and accepted by
