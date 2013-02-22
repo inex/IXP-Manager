@@ -1,4 +1,4 @@
-# V3.0.5 - 2013xxxx
+# V3.0.5 - 20130222
 
 Schema Updates Required:
 
