@@ -1,5 +1,7 @@
 # V3.0.6 - 2013xxxx
 
+- [IM] Flow between interface and user editing back to customer overview (58dc7d5 - Barry O'Donovan - 2013-02-22)
+- [HK] Rafactor to make source of IRRDB info more obvious (580f5cb - Barry O'Donovan - 2013-02-22)
 - [IM] Show max prefixes (by customer and by vlan interfaces) and IRRDB source in customer overview
 - [BF] Fix sorting on last logins list (593105b - Barry O'Donovan - 2013-02-22)
 - [IM] Add AS-SET information to the rs prefixes help page (d5937b7 - Barry O'Donovan - 2013-02-22)
