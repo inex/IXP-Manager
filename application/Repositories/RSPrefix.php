@@ -41,7 +41,7 @@ class RSPrefix extends EntityRepository
      *
      * @return array Route acceptance counts for all customers as an aggregated array
      */
-    public function getAggregateRouteSummaries()
+    public function aggregateRouteSummaries()
     {
         $summary = [];
         
