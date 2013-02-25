@@ -34,7 +34,7 @@ Colo Cabinet ID: {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getName()}
 {/foreach}
 
 {foreach $connection->getVlanInterfaces() as $vi}
-{assign var='vlanid' value=$vi->getVlan()->getId()}
+{$vlanid = $vi->getVlan()->getId()}
 {$vi->getVlan()->getName()}
 ---------------------------------------------
 

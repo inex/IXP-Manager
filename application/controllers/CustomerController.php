@@ -316,6 +316,10 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->view->customer = $c = $this->_loadCustomer();
         $this->view->admins = $c->getAdminUsers();
+        
+        // Let's get the information we need for the welcome mail from the database.
+        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+        
         $this->view->form = $form = new IXP_Form_Customer_SendEmail();
         
         $form->getElement( 'to' )->setValue( $c->getNocemail() );
@@ -329,9 +333,6 @@ class CustomerController extends IXP_Controller_FrontEnd
         $form->getElement( 'bcc' )->setValue( $this->_options['identity']['email'] );
         $form->getElement( 'subject' )->setValue( $this->_options['identity']['name'] . ' :: Welcome Mail' );
         $form->getElement( 'message' )->setValue( $this->view->render( "customer/email/welcome-email.phtml" ) );
-        
-        // Let's get the information we need for the welcome mail from the database.
-        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
         
         // Process a submitted form if it passes initial validation
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
