@@ -302,7 +302,8 @@ class CustomerController extends IXP_Controller_FrontEnd
          if( !$isEdit && isset( $this->getOptions()['identity']['default_country'] ) )
              $form->getElement( 'billingCountry' )->setValue( $this->getOptions()['identity']['default_country'] );
 
-         $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
+         if( $object->getIRRDB() instanceof \Entities\IRRDBConfig )
+             $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
           
          return true;
      }
