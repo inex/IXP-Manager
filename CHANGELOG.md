@@ -1,5 +1,11 @@
 # V3.0.6 - 2013xxxx
 
+- [IM] Frontend glue between overview and add / edit / delete contacts (9a18228 - Barry O'Donovan - 2013-03-05)
+- [IM] IRRDB not required for non-peering members (0c2e6cf - Barry O'Donovan - 2013-03-05)
+- [IM] Don't throw ugly errors on dev system if these are not set for the customer (86cc9bb - Barry O'Donovan - 2013-03-05)
+- [BF] There is no IRRDB for new customer - fixes #6 (b3c2d53 - Barry O'Donovan - 2013-03-04)
+- [BF] Netinfo was passed to the view *after* it was actually needed for welcome email (e1deff8 - Barry O'Donovan - 2013-02-25)
+- [BF] Broken link (3103933 - Barry O'Donovan - 2013-02-22)
 - [IM] Flow between interface and user editing back to customer overview (58dc7d5 - Barry O'Donovan - 2013-02-22)
 - [HK] Rafactor to make source of IRRDB info more obvious (580f5cb - Barry O'Donovan - 2013-02-22)
 - [IM] Show max prefixes (by customer and by vlan interfaces) and IRRDB source in customer overview
