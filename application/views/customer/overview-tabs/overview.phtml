@@ -25,7 +25,7 @@
             <td><strong>Corportate Site</strong></td>
             <td><a href="{$cust->getCorpwww()}">{$cust->getCorpwww()}</a></td>
             <td><strong>Peering Email</strong></td>
-            <td>{mailto address=$cust->getpeeringemail()}</td>
+            <td>{if $cust->getpeeringemail()}{mailto address=$cust->getpeeringemail()}{/if}</td>
         </tr>
         <tr>
             <td><strong>Status</strong></td>
@@ -48,7 +48,7 @@
             </tr>
             <tr>
                 <td><strong>IRRDB</strong></td>
-                <td>{$cust->getIRRDB()->getSource()}</td>
+                <td>{if $cust->getIRRDB()}{$cust->getIRRDB()->getSource()}{/if}</td>
                 <td><strong>Max Prefixes</strong></td>
                 <td>
                     {$cust->getMaxprefixes()}
