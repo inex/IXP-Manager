@@ -132,7 +132,70 @@ class ContactController extends IXP_Controller_FrontEnd
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
         if( $isEdit )
+        {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
+        }
+        else if( $this->getParam( 'custid', false ) && ( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) ) ) )
+        {
+            $form->getElement( 'custid' )->setValue( $cust->getId() );
+        }
+    }
+    
+    
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful add / edit operation.
+     *
+     * By default it returns `false`.
+     *
+     * On `false`, the default action (`index`) is called and a standard success message is displayed.
+     *
+     *
+     * @param OSS_Form $form The form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function addDestinationOnSuccess( $form, $object, $isEdit  )
+    {
+        $this->addMessage( 'Contact successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+        $this->redirect( 'customer/overview/tab/contacts/id/' . $object->getCustomer()->getId() );
+    }
+
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        // keep the customer ID for redirection on success
+        $this->getSessionNamespace()->ixp_contact_delete_custid = $object->getCustomer()->getId();
+        return true;
+    }
+    
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful deletion operation.
+     *
+     * By default it returns `false`.
+     *
+     * On `false`, the default action (`index`) is called and a standard success message is displayed.
+     *
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function deleteDestinationOnSuccess()
+    {
+        // retrieve the customer ID
+        $custid = $this->getSessionNamespace()->ixp_contact_delete_custid;
+        unset( $this->getSessionNamespace()->ixp_contact_delete_custid );
+        
+        $this->addMessage( 'Contact successfully deleted', OSS_Message::SUCCESS );
+        $this->redirect( 'customer/overview/tab/contacts/id/' . $custid );
     }
     
     
