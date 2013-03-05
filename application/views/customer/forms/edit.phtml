@@ -44,7 +44,7 @@
     
 </div>
         
-<div id="full-member-details" class="row-fluid {if $isEdit and $object->getType() eq 2}hide{/if}">
+<div id="full-member-details" class="row-fluid">
 
     <div class="span6">
     
@@ -117,10 +117,18 @@ $(document).ready( function(){
     $( '#type' ).bind( 'change', function( event ){
         if( $( '#type' ).val() == 2 )  // associate member
             $( '#full-member-details' ).slideUp( 'fast' );
-        else
-            $( '#full-member-details' ).slideDown( 'fast' );
+        else {
+            $( '#full-member-details' ).slideDown( 'fast', function() {
+                //$( '#irrdb' ).trigger( "liszt:updated" );
+                //$(".chzn-select").chosen();
+            });
+        }
     });
-    
+
+    {if $isEdit and $object->getType() eq 2}
+    $( '#full-member-details' ).slideUp( 'fast' );
+    {/if}
+
     
 });
 

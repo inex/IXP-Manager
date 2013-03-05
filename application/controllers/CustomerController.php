@@ -220,17 +220,27 @@ class CustomerController extends IXP_Controller_FrontEnd
             $object->setCreator( $this->getUser()->getUsername() );
         }
         
-        if( $form->getElement( 'irrdb' )->getValue() )
+        if( ( $form->getValue( 'type' ) == \Entities\Customer::TYPE_FULL || $form->getValue( 'type' ) == \Entities\Customer::TYPE_PROBONO )
+                && !$form->getElement( 'irrdb' )->getValue() )
         {
-            $object->setIRRDB(
-                    $this->getD2EM()->getRepository( '\\Entities\\IRRDBConfig' )->find( $form->getElement( 'irrdb' )->getValue() )
-            );
+            $form->getElement( 'irrdb' )->markAsError();
+            return false;
+        }
+        else if( $form->getElement( 'irrdb' )->getValue() )
+        {
+            if( !( $irrdb = $this->getD2EM()->getRepository( '\\Entities\\IRRDBConfig' )->find( $form->getElement( 'irrdb' )->getValue() ) ) )
+            {
+                // should never be executed as it should be caught by registerInArray validator on element.
+                $form->getElement( 'irrdb' )->setErrorMessages( [ 'Invalid IRRDB source' ] )->markAsError();
+                return false;
+            }
+            
+            $object->setIRRDB( $irrdb );
         }
         else
         {
             $object->setIRRDB( null );
         }
-        
         
         return true;
     }
@@ -279,10 +289,8 @@ class CustomerController extends IXP_Controller_FrontEnd
         return true;
     }
 
-
-
     /**
-     * Post process hook that can be overridden by subclasses for add and edit actions.
+     * Post process hook for add and edit actions.
      *
      * This is called immediately after the initstantiation of the form object and, if
      * editing, includes the Doctrine2 entity `$object`.

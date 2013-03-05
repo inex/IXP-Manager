@@ -88,10 +88,8 @@ class IXP_Form_IrrdbConfig extends IXP_Form
         $maxId = self::populateSelectFromDatabase( $e, '\\Entities\\IRRDBConfig', 'id', 'source', 'source', 'ASC' );
     
         $e->setRegisterInArrayValidator( true )
-            ->setRequired( true )
             ->setLabel( _( 'IRRDB Source' ) )
             ->setAttrib( 'class', 'span3 chzn-select' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select an IRRDB source' ) ) );
     
         return $e;
