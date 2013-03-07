@@ -49,8 +49,20 @@ function scriptutils_get_application_env()
     die( "ERROR: Could not parse or find APPLICATION_ENV in $htaccess_path\n" );
 }
 
+function scriptutils_get_config() 
+{
+	static $config = NULL;
+	static $environment = NULL;
 
+	if ($environment == null) {
+		$inifile = dirname( __FILE__ ) . '/../application/configs/application.ini';
 
+		$environment = scriptutils_get_application_env();
+	}
 
-    
+	if ($config == null) {
+		$config = parse_ini_file ($inifile, true);
+	}
 
+	return isset ($config[$environment]) ? $config[$environment] : NULL;
+}

@@ -313,6 +313,10 @@ mrtg.trunk_graphs[] = "core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
 mrtg.trunk_graphs[] = "core-sw1-sw3-lan1::PoP 1 to PoP 3 (LAN1)"
 ;; ...
 
+; sflow parameters
+sflow.rootdir = /path/to/rrd/files
+sflow.rrd.rrdtool = /usr/bin/rrdtool
+sflow.rrd.rrdcached.sock = unix:/var/run/rrdcached.sock
 
 ;; LANs available for public and member's own peering matrix.
 
