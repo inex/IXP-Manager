@@ -33,6 +33,7 @@ CREATE VIEW view_vlaninterface_details_by_custid AS
 		vlan.name AS vlanname,
 		vlan.id AS vlanid,
 		vlan.rcvrfname,
+		vli.id AS vlaninterfaceid,
 		vli.ipv4enabled,
 		vli.ipv4hostname,
 		vli.ipv4canping,
