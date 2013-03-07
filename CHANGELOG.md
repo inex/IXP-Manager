@@ -1,4 +1,6 @@
 
+# V3.0.7 - 2013xxxx
+
 # V3.0.6 - 20130307
 
 Schema update required:
@@ -15,6 +17,9 @@ Config file update required:
 
 
 - [NF] Add click-to-view PeeringDB to customers
+- [DB] Add peeringDb entry to customer record (e3f72b4 - Barry O'Donovan - 2013-03-07)
+- [IM] Some frontend UI improvements (95435b2 - Barry O'Donovan - 2013-03-07)
+- [IM] Improve frontend UI flow for customer dashboard actions (3e43948 - Barry O'Donovan - 2013-03-07)
 - [IM] Frontend glue between overview and add / edit / delete contacts (9a18228 - Barry O'Donovan - 2013-03-05)
 - [IM] IRRDB not required for non-peering members (0c2e6cf - Barry O'Donovan - 2013-03-05)
 - [IM] Don't throw ugly errors on dev system if these are not set for the customer (86cc9bb - Barry O'Donovan - 2013-03-05)
