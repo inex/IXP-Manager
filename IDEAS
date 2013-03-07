@@ -47,3 +47,17 @@ vlan, but no-one else can.
 
 * Member health report
 
+* Allow member to modify template that Request Peering email is populated 
+  with when sending invite using "Peering Manager". Ideally there could be a
+  list of predefined variables available that could be used while templating 
+  email (ie. peer name, peer ASN, own name, own ASN, own WWW, common peering 
+  LAN IPs, AS MACRO, peering email, NOC email and so on), so member could 
+  create own template using above variables + own text.
+
+* Add field for PeeringDB link (and include in default PM request template)
+
+* Update suggested prefix limit / real prefix limit based on IRRDB entries?
+
+
+
+
