@@ -54,7 +54,10 @@ vlan, but no-one else can.
   LAN IPs, AS MACRO, peering email, NOC email and so on), so member could 
   create own template using above variables + own text.
 
-* Add field for PeeringDB link (and include in default PM request template)
+* Add integrated PeeringDB functionality via access to:
+  mysql -h mysql.peeringdb.com  
+
+* Add PeeringDB link to PM request template
 
 * Update suggested prefix limit / real prefix limit based on IRRDB entries?
 

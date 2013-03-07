@@ -1,5 +1,20 @@
-# V3.0.6 - 2013xxxx
 
+# V3.0.6 - 20130307
+
+Schema update required:
+
+    ALTER TABLE cust ADD peeringDb VARCHAR(255) DEFAULT NULL
+
+
+Config file update required:
+
+    ; The URL used to display PeeringDB entries.
+    ; %ID% is replaced with the customer's peeringDB entry ID as entered in the customer's record.
+    ;
+    peeringdb.url = "https://www.peeringdb.com/private/participant_view.php?id=%ID%"
+
+
+- [NF] Add click-to-view PeeringDB to customers
 - [IM] Frontend glue between overview and add / edit / delete contacts (9a18228 - Barry O'Donovan - 2013-03-05)
 - [IM] IRRDB not required for non-peering members (0c2e6cf - Barry O'Donovan - 2013-03-05)
 - [IM] Don't throw ugly errors on dev system if these are not set for the customer (86cc9bb - Barry O'Donovan - 2013-03-05)

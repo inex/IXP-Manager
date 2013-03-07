@@ -28,6 +28,7 @@
     <field name="dateleave" type="date" nullable="true"/>
     <field name="status" type="smallint" nullable="true"/>
     <field name="activepeeringmatrix" type="boolean" nullable="true"/>
+    <field name="peeringDb" type="string" length="255" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <field name="lastupdated" type="date" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>
