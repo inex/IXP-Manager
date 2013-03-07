@@ -44,7 +44,19 @@
                 <td><strong>Peering Policy</strong></td>
                 <td>{$cust->getPeeringpolicy()}</td>
                 <td><strong>ASN</strong></td>
-                <td>{$cust->getAutsys()|asnumber} {if $cust->getPeeringmacro()}({$cust->getPeeringmacro()}){else}<em>(no AS-SET)</em>{/if}</td>
+                <td>{$cust->getAutsys()|asnumber}</td>
+            </tr>
+            <tr>
+                <td><strong>PeeringDB</strong></td>
+                <td>
+                    {if $cust->getPeeringDb()}
+                        <em>
+                            <a onclick="$.fn.colorbox({ldelim}href:&quot;{$options.peeringdb.url|replace:'%ID%':$cust->getPeeringDb()}&quot;, iframe: true, width: &quot;75%&quot;, height: &quot;75%&quot;{rdelim});return false;">Click to view...</a>
+                        </em>
+                    {/if}
+                </td>
+                <td><strong>AS-SET</strong></td>
+                <td>{$cust->getPeeringmacro()}</td>
             </tr>
             <tr>
                 <td><strong>IRRDB</strong></td>
