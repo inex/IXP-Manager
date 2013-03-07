@@ -130,7 +130,7 @@ class AuthController extends IXP_Controller_Action
         // record current user customer ID
         $custid = $this->getUser()->custid;
         
-        $params['url'] = 'customer/overview/id/' . $subUser->getCustomer()->getId();
+        $params['url'] = 'customer/overview/tab/users/id/' . $subUser->getCustomer()->getId();
         
         return $params;
     }

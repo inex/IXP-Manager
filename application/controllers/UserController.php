@@ -187,8 +187,15 @@ class UserController extends IXP_Controller_FrontEnd
             case \Entities\User::AUTH_SUPERUSER:
                 $form->removeElement( 'name' );
                 $form->getElement( 'username' )->removeValidator( 'stringLength' );
+                
                 if( !$isEdit && !$this->getRequest()->isPost() )
+                {
                     $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
+                    
+                    if( $this->getParam( 'custid', false ) && ( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) ) ) )
+                        $form->getElement( 'custid' )->setValue( $cust->getId() );
+                }
+                
                 if( $isEdit )
                     $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
                 break;
@@ -369,6 +376,11 @@ class UserController extends IXP_Controller_FrontEnd
                 return false;
             }
         }
+        else
+        {
+            // keep the customer ID for redirection on success
+            $this->getSessionNamespace()->ixp_user_delete_custid = $object->getCustomer()->getId();
+        }
         
         // now delete all the users privileges also
         foreach( $object->getPreferences() as $pref )
@@ -378,10 +390,38 @@ class UserController extends IXP_Controller_FrontEnd
         }
         
         $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$object->getUsername()}" );
+        
+        
         return true;
     }
     
-
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful deletion operation.
+     *
+     * By default it returns `false`.
+     *
+     * On `false`, the default action (`index`) is called and a standard success message is displayed.
+     *
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function deleteDestinationOnSuccess()
+    {
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+        {
+            // retrieve the customer ID
+            if( $custid = $this->getSessionNamespace()->ixp_user_delete_custid )
+            {
+                unset( $this->getSessionNamespace()->ixp_user_delete_custid );
+        
+                $this->addMessage( 'Contact successfully deleted', OSS_Message::SUCCESS );
+                $this->redirect( 'customer/overview/tab/users/id/' . $custid );
+            }
+        }
+                
+        return false;
+    }
+    
     /**
      * Show the last users to login
      *
