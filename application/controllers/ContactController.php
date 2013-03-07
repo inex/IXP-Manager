@@ -191,11 +191,15 @@ class ContactController extends IXP_Controller_FrontEnd
     protected function deleteDestinationOnSuccess()
     {
         // retrieve the customer ID
-        $custid = $this->getSessionNamespace()->ixp_contact_delete_custid;
-        unset( $this->getSessionNamespace()->ixp_contact_delete_custid );
+        if( $custid = $this->getSessionNamespace()->ixp_contact_delete_custid )
+        {
+            unset( $this->getSessionNamespace()->ixp_contact_delete_custid );
+            
+            $this->addMessage( 'Contact successfully deleted', OSS_Message::SUCCESS );
+            $this->redirect( 'customer/overview/tab/contacts/id/' . $custid );
+        }
         
-        $this->addMessage( 'Contact successfully deleted', OSS_Message::SUCCESS );
-        $this->redirect( 'customer/overview/tab/contacts/id/' . $custid );
+        return false;
     }
     
     
