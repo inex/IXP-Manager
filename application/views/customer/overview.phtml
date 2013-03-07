@@ -2,7 +2,7 @@
 
 <ul class="breadcrumb">
     <li>
-		<h3>
+	<h3>
             {$cust->getName()}
             {if $cust->getType() eq CUSTOMER::TYPE_ASSOCIATE}
                 <span class="label label-warning">ASSOCIATE MEMBER</span>
@@ -86,21 +86,21 @@
     
     	<ul id="customer-overview-tabs" class="nav nav-tabs">
     	
-			<li class="active">
-			    <a href="#overview" data-toggle="tab">Overview</a>
-			</li>
+	    <li class="active">
+	        <a href="#overview" data-toggle="tab">Overview</a>
+	    </li>
 			
             {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
-			    <li>
-			        <a href="#ports" data-toggle="tab">Ports</a>
-    			</li>
+	        <li>
+		    <a href="#ports" data-toggle="tab">Ports</a>
+    		</li>
 			
-    			{if $cust->hasPrivateVLANs()}
-					<li>
-					    <a href="#private-vlans" data-toggle="tab">Private VLANs</a>
-					</li>
-				{/if}
-    		{/if}
+    		{if $cust->hasPrivateVLANs()}
+		    <li>
+		        <a href="#private-vlans" data-toggle="tab">Private VLANs</a>
+		    </li>
+		{/if}
+    	    {/if}
 				
 			<li>
 			    <a href="#users" data-toggle="tab">Users</a>
