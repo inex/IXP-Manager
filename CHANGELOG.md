@@ -1,6 +1,9 @@
 
 # V3.0.7 - 2013xxxx
 
+- [IM] Cancel editing a customer should return to customer overview
+
+
 # V3.0.6 - 20130307
 
 Schema update required:

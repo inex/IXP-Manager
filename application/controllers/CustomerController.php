@@ -312,7 +312,10 @@ class CustomerController extends IXP_Controller_FrontEnd
 
          if( $object->getIRRDB() instanceof \Entities\IRRDBConfig )
              $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
-          
+
+         if( $isEdit )
+             $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $object->getId() ] ) );
+         
          return true;
      }
                                                                                                
