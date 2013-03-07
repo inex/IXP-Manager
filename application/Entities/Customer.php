@@ -1688,4 +1688,32 @@ class Customer
         return $this->IRRDB;
     }
 
+    /**
+     * @var string
+     */
+    private $peeringDb;
+
+
+    /**
+     * Set peeringDb
+     *
+     * @param string $peeringDb
+     * @return Customer
+     */
+    public function setPeeringDb($peeringDb)
+    {
+        $this->peeringDb = $peeringDb;
+    
+        return $this;
+    }
+
+    /**
+     * Get peeringDb
+     *
+     * @return string 
+     */
+    public function getPeeringDb()
+    {
+        return $this->peeringDb;
+    }
 }
