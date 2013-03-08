@@ -149,14 +149,16 @@ while (<SFLOWTOOL>) {
 	}
 	
 	if ($flush_stuff_to_disk) {
+		if ($quit_after_flush) {
+			# sometimes sflowtool doesn't die properly. Need to prioritise kill.
+			kill 9, $sflowpid;
+		}
 		my $newtv = [gettimeofday()];
 		my $interval = tv_interval($tv, $newtv);
 		$tv = $newtv;
 		$debug && print STDERR "DEBUG: starting rrd flush at time interval: $interval, time: ".time()."\n";
 		process_rrd($interval, $matrix, $rrdcached);
 		if ($quit_after_flush) {
-			# sometimes sflowtool doesn't die properly
-			kill 9, $sflowpid;
 			$debug && print STDERR "DEBUG: orderly quit at ".time()."\n";
 			exit 0;
 		}
