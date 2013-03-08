@@ -28,11 +28,10 @@
 # to a stash of RRD files.
 
 use v5.10.1;
+use warnings;
 use strict;
 use Getopt::Long;
 use Data::Dumper;
-use Net::IP qw(:PROC);
-# RRDTool::OO has a much nicer API, but its functionality is hobbled
 use RRDs;
 use Time::HiRes qw(ualarm gettimeofday tv_interval);
 use IXPManager::Config;
@@ -41,7 +40,7 @@ my $ixp = new IXPManager::Config;	# (configfile => $configfile);
 my $dbh = $ixp->{db};
 
 my $debug = defined($ixp->{ixp}->{debug}) ? $ixp->{ixp}->{debug} : 0;
-my $rrdcached = defined($ixp->{ixp}->{sflow_rrdcached}) ? $ixp->{ixp}->{sflow_rrdcached} : 0;
+my $rrdcached = defined($ixp->{ixp}->{sflow_rrdcached}) ? $ixp->{ixp}->{sflow_rrdcached} : 1;
 my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/sflowtool';
 my $basedir = defined($ixp->{ixp}->{sflow_rrddir}) ? $ixp->{ixp}->{sflow_rrddir} : '/data/ixpmatrix';
 my $timer_period = 60;
@@ -56,7 +55,6 @@ GetOptions(
 	'debug!'		=> \$debug,
 	'daemon!'		=> \$daemon,
 	'sflowtool=s'		=> \$sflowtool,
-	'rrdcached!'		=> \$rrdcached,
 	'sflow_rrddir=s'	=> \$basedir,
 	'flushtimer=i'		=> \$timer_period
 );
@@ -82,7 +80,7 @@ ualarm ( $timer_period*1000000, $timer_period*1000000);
 
 my $tv = [gettimeofday()];
 
-open (SFLOWTOOL, "$sflowtool -l |");
+my $sflowpid = open (SFLOWTOOL, "$sflowtool -l |");
 
 # methodology is to throw away as much crap as possible before parsing
 while (<SFLOWTOOL>) {
@@ -157,6 +155,8 @@ while (<SFLOWTOOL>) {
 		$debug && print STDERR "DEBUG: starting rrd flush at time interval: $interval, time: ".time()."\n";
 		process_rrd($interval, $matrix, $rrdcached);
 		if ($quit_after_flush) {
+			# sometimes sflowtool doesn't die properly
+			kill 9, $sflowpid;
 			$debug && print STDERR "DEBUG: orderly quit at ".time()."\n";
 			exit 0;
 		}
@@ -169,8 +169,11 @@ while (<SFLOWTOOL>) {
 
 close (SFLOWTOOL);
 
+# try to kill off sflowtool if it's not already dead
+kill 9, $sflowpid;
+
 # oops, we should never exit
-die "Oops, sflow input pipe died. Aborting.\n";
+die "Oops, input pipe died. Aborting.\n";
 
 #
 # write traffic matrix out to RRD file while calculating totals
