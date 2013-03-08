@@ -1,0 +1,392 @@
+#!/usr/bin/perl -w
+#
+# sflow-to-rrd-handler
+#
+# Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
+# All Rights Reserved.
+# 
+# This file is part of IXP Manager.
+# 
+# IXP Manager is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation, version v2.0 of the License.
+# 
+# IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+# 
+# You should have received a copy of the GNU General Public License v2.0
+# along with IXP Manager.  If not, see:
+# 
+# http://www.gnu.org/licenses/gpl-2.0.html
+#
+# Description:
+#
+# This script take the output from sflowtool, builds up a peer-to-peer
+# traffic matrix + aggregate stats and periodically writes the results out
+# to a stash of RRD files.
+
+use v5.10.1;
+use warnings;
+use strict;
+use Getopt::Long;
+use Data::Dumper;
+use RRDs;
+use Time::HiRes qw(ualarm gettimeofday tv_interval);
+use IXPManager::Config;
+
+my $ixp = new IXPManager::Config;	# (configfile => $configfile);
+my $dbh = $ixp->{db};
+
+my $debug = defined($ixp->{ixp}->{debug}) ? $ixp->{ixp}->{debug} : 0;
+my $rrdcached = defined($ixp->{ixp}->{sflow_rrdcached}) ? $ixp->{ixp}->{sflow_rrdcached} : 1;
+my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/sflowtool';
+my $basedir = defined($ixp->{ixp}->{sflow_rrddir}) ? $ixp->{ixp}->{sflow_rrddir} : '/data/ixpmatrix';
+my $timer_period = 60;
+my $daemon = 1;
+
+# conundrum: do we run GetOptions() before creating a new IXPManager::Config
+# object, which would allow us to set the configfile location on the command
+# line?  Or do we do it after, which allows us to override the config file
+# arguments on the command line. first world problems.
+
+GetOptions(
+	'debug!'		=> \$debug,
+	'daemon!'		=> \$daemon,
+	'sflowtool=s'		=> \$sflowtool,
+	'sflow_rrddir=s'	=> \$basedir,
+	'flushtimer=i'		=> \$timer_period
+);
+
+my $mactable = reload_mactable($dbh);
+my $matrix = matrix_init($dbh);
+
+my $flush_stuff_to_disk = 0;
+my $quit_after_flush = 0;
+
+# handle signals gracefully
+$SIG{TERM} = sub { $flush_stuff_to_disk = 1; $quit_after_flush = 1; };
+$SIG{QUIT} = sub { $flush_stuff_to_disk = 1; $quit_after_flush = 1; };
+$SIG{HUP} = sub { $flush_stuff_to_disk = 1; };
+
+# set up a periodic timer to signal that stuff should be flushed out.  The
+# flush isn't performed in the SIGALRM callback function because perl has
+# historical problems doing complicated stuff in signal handler functions. 
+# Much more sensible to raise a flag and have the main code body handle this
+# during normal code exceution.
+$SIG{ALRM} = sub { $flush_stuff_to_disk = 1 };
+ualarm ( $timer_period*1000000, $timer_period*1000000);
+
+my $tv = [gettimeofday()];
+
+my $sflowpid = open (SFLOWTOOL, "$sflowtool -l |");
+
+# methodology is to throw away as much crap as possible before parsing
+while (<SFLOWTOOL>) {
+	next unless (substr($_, 0, 4) eq 'FLOW');	# don't use regexp here for performance reasons
+	my ($ipprotocol);
+
+	chomp;
+
+	# parse and split out all the data.  most of this is unused at the
+	# moment, but it's useful to collect it anyway
+	# FLOW,193.242.111.152,2,21,0013136f2fc0,0010a52f261f,0x0800,10,10,94.1.115.114,80.1.2.222,6,0x00,124,1863,750,0x18,179,165,1024
+	my @sample = split (/,/);			# don't use regexp here for performance reasons
+	my (undef, $agent, $srcswport, $dstswport, $srcmac, $dstmac, $ethertype, $vlan, undef, 
+		$srcip, $dstip, $protocol, $tos, $ttl,
+		$srcport, $dstport, $tcpflags, $pktsize, $payloadsize, $samplerate) = @sample;
+
+	given ($ethertype) {
+		when ('0x0800') { $ipprotocol = 4 }
+		when ('0x86dd') { $ipprotocol = 6 }
+		default { next }
+	}
+
+	# each vid may have multiple VLIs associated with it.  The only way
+	# to determine which is the correct one is to iterate through the
+	# array of potential candidates and do a vlan/vid match.  The
+	# database schema guarantees that this is a unique mapping.
+
+	my $srcvli = 0; my $dstvli = 0;
+	foreach my $srcvid (@{$mactable->{mac}->{$srcmac}}) {
+		if (defined($matrix->{vlanmap}->{$vlan}->{$srcvid})) {
+			$srcvli = $matrix->{vlanmap}->{$vlan}->{$srcvid};
+		}
+	}
+	foreach my $dstvid (@{$mactable->{mac}->{$dstmac}}) {
+		if (defined($matrix->{vlanmap}->{$vlan}->{$dstvid})) {
+			$dstvli = $matrix->{vlanmap}->{$vlan}->{$dstvid};
+		}
+	}
+
+	# the sflow accounting perimeter on the switches will ensure that
+	# each packet will be counted exactly once.  because of this, the
+	# packet sample needs to be added to both the source vlaninterface
+	# for bytes in and the destination vlaninterface for bytes out for
+	# the individual counts.
+
+	if ($ipprotocol && $srcvli && $dstvli && ($srcvli != $dstvli) ) {
+		$matrix->{p2p}->{$ipprotocol}->{bytes}->{$srcvli}->{$dstvli} += $pktsize * $samplerate;
+		$matrix->{p2p}->{$ipprotocol}->{pkts}->{$srcvli}->{$dstvli} += $samplerate;
+		$matrix->{individual}->{$ipprotocol}->{bytes}->{$srcvli}->{in}  += $pktsize * $samplerate;
+		$matrix->{individual}->{$ipprotocol}->{bytes}->{$dstvli}->{out} += $pktsize * $samplerate;
+		$matrix->{individual}->{$ipprotocol}->{pkts}->{$srcvli}->{in}   += $samplerate;
+		$matrix->{individual}->{$ipprotocol}->{pkts}->{$dstvli}->{out}  += $samplerate;
+	} else {
+		my $srcname = defined ($matrix->{names}->{$srcvli}) ? $matrix->{names}->{$srcvli} : '(unknown)';
+		my $dstname = defined ($matrix->{names}->{$dstvli}) ? $matrix->{names}->{$dstvli} : '(unknown)';
+
+		$debug && print STDERR "DEBUG: dropped update for: ".
+			"protocol: $ipprotocol ".
+			"vlan: $vlan ".
+			"srcvli: $srcvli / '$srcname' ".
+			"dstvli: $dstvli / '$dstname' ".
+			"pktsize: $pktsize ".
+			"samplerate: $samplerate ".
+			"\n";
+		$debug && print STDERR "DEBUG: rejected: ".$_."\n";
+	}
+	
+	if ($flush_stuff_to_disk) {
+		my $newtv = [gettimeofday()];
+		my $interval = tv_interval($tv, $newtv);
+		$tv = $newtv;
+		$debug && print STDERR "DEBUG: starting rrd flush at time interval: $interval, time: ".time()."\n";
+		process_rrd($interval, $matrix, $rrdcached);
+		if ($quit_after_flush) {
+			# sometimes sflowtool doesn't die properly
+			kill 9, $sflowpid;
+			$debug && print STDERR "DEBUG: orderly quit at ".time()."\n";
+			exit 0;
+		}
+		$flush_stuff_to_disk = 0;
+		$mactable = reload_mactable($dbh);
+		$matrix = matrix_init($dbh);
+		$debug && print STDERR "DEBUG: flush completed at ".time()."\n";
+	}
+}
+
+close (SFLOWTOOL);
+
+# try to kill off sflowtool if it's not already dead
+kill 9, $sflowpid;
+
+# oops, we should never exit
+die "Oops, input pipe died. Aborting.\n";
+
+#
+# write traffic matrix out to RRD file while calculating totals
+#
+sub process_rrd {
+	my ($interval, $matrix, $rrdcached) = @_;
+	my ($aggregate, $rrdfile);
+	
+	foreach my $ipprotocol (qw(4 6)) {
+		foreach my $rrdtype (qw(bytes pkts)) {
+			foreach my $vlan (keys %{$matrix->{vlilist}}) {
+				foreach my $srcvli (keys %{$matrix->{vlilist}->{$vlan}}) {
+					foreach my $dstvli (keys %{$matrix->{vlilist}->{$vlan}}) {
+						next if ($srcvli == $dstvli);
+
+						$rrdfile = sprintf("$basedir/ipv$ipprotocol/$rrdtype/p2p/src-%05d/p2p.ipv$ipprotocol.$rrdtype.src-%05d.dst-%05d.rrd", $srcvli, $srcvli, $dstvli);
+
+						# look up peer-to-peer traffic
+						my $in  = $matrix->{p2p}->{$ipprotocol}->{$rrdtype}->{$dstvli}->{$srcvli};
+						my $out = $matrix->{p2p}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{$dstvli};
+
+						# this is too noisy for normal debugging.
+#						$debug && print STDERR "DEBUG: p2p: building update for ".
+#								"protocol: $ipprotocol ".
+#								"type: $rrdtype ".
+#								"srcvli: $srcvli / '$matrix->{names}->{$srcvli}' ".
+#								"dstvli: $dstvli / '$matrix->{names}->{$dstvli}' ".
+#								"in: $in out: $out ".
+#								"\n";
+						build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
+					}
+
+					# Handle aggregate per-vli traffic
+					$rrdfile = sprintf("$basedir/ipv$ipprotocol/$rrdtype/individual/individual.ipv$ipprotocol.$rrdtype.src-%05d.rrd", $srcvli);
+
+					# these hashrefs are guaranteed to be defined due to matrix_init
+					my $in =  $matrix->{individual}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{in};
+					my $out = $matrix->{individual}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{out};
+
+					# build a running total for the per-vlan traffic.  these
+					# hashrefs are guaranteed to be defined due to matrix_init
+					$matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{in}  += $in;
+					$matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{out} += $out;
+
+					$debug && print STDERR "DEBUG: individual: building update for ".
+							"vlan: $vlan ".
+							"type: $rrdtype ".
+							"protocol: $ipprotocol ".
+							"cust: $srcvli / '$matrix->{names}->{$srcvli}' ".
+							"\n";
+					build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
+				}
+
+				# write per-vlan aggregates out to rrd
+				$rrdfile = sprintf ("$basedir/ipv$ipprotocol/$rrdtype/aggregate/aggregate.ipv$ipprotocol.$rrdtype.vlan%05d.rrd", $vlan);
+				$debug && print STDERR "DEBUG: aggregate: building update for vlan: $vlan type: $rrdtype protocol: $ipprotocol\n";
+
+				my $in =  $matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{in};
+				my $out = $matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{out};
+
+				build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
+			}
+		}
+	}
+}
+
+sub build_update_rrd
+{
+	use File::Path qw(make_path);
+	use File::Basename;
+		
+	my ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached) = @_;
+	my @rrds_options = ();
+	my $rrd_err;
+
+	$in = 0 if (!defined($in));
+	$out = 0 if (!defined($out));
+	
+
+	if (!-s $rrdfile) {
+		my $dir = dirname($rrdfile);
+		if (!-d $dir) {
+			make_path($dir) or die "Could not make directory: $dir: $!\n";
+		}
+		@rrds_options = (
+			'DS:traffic_in:GAUGE:600:U:U',
+			'DS:traffic_out:GAUGE:600:U:U',
+			'RRA:AVERAGE:0.5:1:600',    'RRA:MAX:0.5:1:600',
+			'RRA:AVERAGE:0.5:6:700',    'RRA:MAX:0.5:6:700', 
+			'RRA:AVERAGE:0.5:24:750',   'RRA:MAX:0.5:24:750',  
+			'RRA:AVERAGE:0.5:288:3650', 'RRA:MAX:0.5:288:3650',
+		);
+
+		RRDs::create ($rrdfile, @rrds_options);
+		$rrd_err = RRDs::error;
+		print STDERR "WARNING: while updating $rrdfile: $rrd_err\n" if $rrd_err;
+	}
+
+	if ($rrdcached) {
+		push @rrds_options, '--daemon', 'unix:/var/run/rrdcached.sock';
+	}
+
+	my $rrdvalues = "N:".int($in/$interval).":".int($out/$interval);
+	RRDs::update ($rrdfile, @rrds_options, $rrdvalues);
+
+	$rrd_err = RRDs::error;
+	print STDERR "WARNING: while updating $rrdfile: $rrd_err\n" if $rrd_err;
+}
+
+#
+# build up complete up-to-date blank matrix of all relevant traffic data
+#
+
+sub matrix_init
+{
+	my ($dbh) = @_;
+	my ($sth, $matrix);
+
+	# we need this to be distinct because of 802.3ag LAGs, where there
+	# can be multiple physical ports associated with a single VLI
+
+	my $query = "
+SELECT DISTINCT
+	vli.vlaninterfaceid,
+	vli.virtualinterfaceid,
+	vli.vlan,
+	cu.name
+FROM
+	(view_vlaninterface_details_by_custid vli, cust cu)
+WHERE
+	vli.custid = cu.id
+ORDER BY
+	virtualinterfaceid
+";
+
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute() or die "$dbh->errstr\n";
+
+	while (my $rec = $sth->fetchrow_hashref) {
+		# mapping from virtualinterfaceid->vlaninterfaceid
+		$matrix->{vlanmap}->{$rec->{vlan}}->{$rec->{virtualinterfaceid}} = $rec->{vlaninterfaceid};
+		# mapping from virtualinterfaceid->name
+		$matrix->{names}->{$rec->{vlaninterfaceid}} = $rec->{name};
+
+		# create list of vlids for convenience.  We use a hash here
+		# instead of a strict array because the hash will guarantee
+		# that the keys are unique.  This is important because if
+		# there is a db screwup, you could end up with multiply
+		# referenced objects, and this will lead to data being
+		# counted multiple times.
+		
+		$matrix->{vlilist}->{$rec->{vlan}}->{$rec->{vlaninterfaceid}} = 1;
+	}
+
+	# Not all srcvli/dstvli combinations are valid.  We only consider
+	# those which are on the same vlan.
+
+	foreach my $ipprotocol (qw(4 6)) {
+		foreach my $rrdtype (qw(bytes pkts)) {
+			foreach my $vlan (keys %{$matrix->{vlilist}}) {
+				foreach my $srcvli (keys %{$matrix->{vlilist}->{$vlan}}) {
+					foreach my $dstvli (keys %{$matrix->{vlilist}->{$vlan}}) {
+						next if ($srcvli == $dstvli);
+						$matrix->{p2p}->{$ipprotocol}->{$rrdtype}->{$dstvli}->{$srcvli} = 0;
+					}
+					$matrix->{individual}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{in} = 0;
+					$matrix->{individual}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{out} = 0;
+				}
+				$matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{in}  = 0;
+				$matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{out} = 0;
+			}
+		}
+	}
+
+	return $matrix;
+}
+
+
+# 
+# Create a mapping from macaddress->virtualinterfaceid
+# 
+
+sub reload_mactable
+{
+	my ($dbh) = @_;
+	my ($sth, $mactable);
+
+	my $query = "
+SELECT DISTINCT
+	vi.virtualinterfaceid AS id,
+	m.mac   
+FROM (
+	view_vlaninterface_details_by_custid vi,
+	cust cu,
+	macaddress m
+)
+WHERE
+	vi.virtualinterfaceid = m.virtualinterfaceid
+AND	vi.custid = cu.id
+ORDER BY
+	id
+";
+
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute() or die "$dbh->errstr\n";
+	while (my $rec = $sth->fetchrow_hashref) {
+		push (@{$mactable->{mac}->{$rec->{mac}}}, $rec->{id});
+	}
+
+#	$debug &&
+	foreach my $mac (keys %{$mactable->{mac}}) {
+		$debug && print STDERR "DEBUG: mac-map $mac vlid: ".join (",", @{$mactable->{mac}->{$mac}})."\n";
+	}
+
+	return $mactable;
+}
