@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-if [[ $# -ne 4 ]]; then
+if [ $# -ne 4 ]; then
     echo "IXP Manager - A web application to assist in the management of IXPs"
     echo "Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited."
     echo

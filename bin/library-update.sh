@@ -1,19 +1,19 @@
-#! /usr/bin/env bash
+#!/bin/sh
 
 # This file will set up SVN / Git externals in library/
 
 # Is SVN installed and in the path?
 
-svn &>/dev/null
+svn > /dev/null 2>&1
 
-if [[ $? -eq 127 ]]; then
+if [ $? -eq 127 ]; then
     echo ERROR: SVN not installed or not in the path
     exit
 fi
 
-git &>/dev/null
+git >/dev/null 2>&1
 
-if [[ $? -eq 127 ]]; then
+if [ $? -eq 127 ]; then
     echo ERROR: Git not installed or not in the path
     exit
 fi

@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/sh
 
 sudo /etc/init.d/memcached restart
 rm ../doctrine/schema/*
