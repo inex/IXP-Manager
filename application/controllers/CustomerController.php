@@ -130,7 +130,6 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'title'     => 'Left',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
-                'notes'           => 'Notes',
                 'lastupdated'     => 'Last Updated',
                 'lastupdatedby'   => 'Last Updated By',
                 'creator'         => 'Created By',
@@ -159,7 +158,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                             c.billingContact AS billingContact, c.billingAddress1 AS billingAddress1,
                             c.billingAddress2 AS billingAddress2, c.billingCity AS billingCity, c.billingCountry AS billingCountry,
                             c.corpwww AS corpwww, c.datejoin AS datejoin, c.dateleave AS dateleave,
-                            c.notes AS notes, c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby,
+                            c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby,
                             c.creator AS creator, c.created AS created'
                         )
                 ->from( '\\Entities\\Customer', 'c' );

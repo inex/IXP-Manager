@@ -180,11 +180,6 @@ class Customer
     private $activepeeringmatrix;
 
     /**
-     * @var string $notes
-     */
-    private $notes;
-
-    /**
      * @var \DateTime $lastupdated
      */
     private $lastupdated;
@@ -848,29 +843,6 @@ class Customer
     public function getActivepeeringmatrix()
     {
         return $this->activepeeringmatrix;
-    }
-
-    /**
-     * Set notes
-     *
-     * @param string $notes
-     * @return Customer
-     */
-    public function setNotes($notes)
-    {
-        $this->notes = $notes;
-    
-        return $this;
-    }
-
-    /**
-     * Get notes
-     *
-     * @return string
-     */
-    public function getNotes()
-    {
-        return $this->notes;
     }
 
     /**
@@ -1715,5 +1687,33 @@ class Customer
     public function getPeeringDb()
     {
         return $this->peeringDb;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Notes;
+
+
+    /**
+     * Add Notes
+     *
+     * @param \Entities\CustomerNotes $notes
+     * @return Customer
+     */
+    public function addNote(\Entities\CustomerNotes $notes)
+    {
+        $this->Notes[] = $notes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Notes
+     *
+     * @param \Entities\CustomerNotes $notes
+     */
+    public function removeNote(\Entities\CustomerNotes $notes)
+    {
+        $this->Notes->removeElement($notes);
     }
 }

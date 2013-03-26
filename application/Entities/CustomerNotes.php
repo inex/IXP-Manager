@@ -1,0 +1,167 @@
+<?php
+
+namespace Entities;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * CustomerNotes
+ */
+class CustomerNotes
+{
+    /**
+     * @var boolean
+     */
+    private $private;
+
+    /**
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @var string
+     */
+    private $note;
+
+    /**
+     * @var \DateTime
+     */
+    private $created;
+
+    /**
+     * @var integer
+     */
+    private $id;
+
+    /**
+     * @var \Entities\Customer
+     */
+    private $Customer;
+
+
+    /**
+     * Set private
+     *
+     * @param boolean $private
+     * @return CustomerNotes
+     */
+    public function setPrivate($private)
+    {
+        $this->private = $private;
+    
+        return $this;
+    }
+
+    /**
+     * Get private
+     *
+     * @return boolean 
+     */
+    public function getPrivate()
+    {
+        return $this->private;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return CustomerNotes
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set note
+     *
+     * @param string $note
+     * @return CustomerNotes
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+    
+        return $this;
+    }
+
+    /**
+     * Get note
+     *
+     * @return string 
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return CustomerNotes
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+    
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set Customer
+     *
+     * @param \Entities\Customer $customer
+     * @return CustomerNotes
+     */
+    public function setCustomer(\Entities\Customer $customer)
+    {
+        $this->Customer = $customer;
+    
+        return $this;
+    }
+
+    /**
+     * Get Customer
+     *
+     * @return \Entities\Customer 
+     */
+    public function getCustomer()
+    {
+        return $this->Customer;
+    }
+}

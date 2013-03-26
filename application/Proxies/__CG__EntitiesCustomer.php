@@ -330,18 +330,6 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getActivepeeringmatrix();
     }
 
-    public function setNotes($notes)
-    {
-        $this->__load();
-        return parent::setNotes($notes);
-    }
-
-    public function getNotes()
-    {
-        $this->__load();
-        return parent::getNotes();
-    }
-
     public function setLastupdated($lastupdated)
     {
         $this->__load();
@@ -741,10 +729,22 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getPeeringDb();
     }
 
+    public function addNote(\Entities\CustomerNotes $notes)
+    {
+        $this->__load();
+        return parent::addNote($notes);
+    }
+
+    public function removeNote(\Entities\CustomerNotes $notes)
+    {
+        $this->__load();
+        return parent::removeNote($notes);
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'notes', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Notes', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB');
     }
 
     public function __clone()

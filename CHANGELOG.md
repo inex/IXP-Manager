@@ -1,4 +1,19 @@
 
+# V3.0.8 - 2013
+
+Schema update required:
+
+    CREATE TABLE cust_notes (
+             id BIGINT AUTO_INCREMENT NOT NULL, customer_id INT NOT NULL, private TINYINT(1) NOT NULL, 
+             title VARCHAR(255) NOT NULL, note LONGTEXT NOT NULL, created DATETIME NOT NULL, 
+             INDEX IDX_6377D8679395C3F3 (customer_id), PRIMARY KEY(id)
+         ) 
+         DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    ALTER TABLE cust_notes ADD CONSTRAINT FK_6377D8679395C3F3 FOREIGN KEY (customer_id) REFERENCES cust (id);
+    ALTER TABLE cust DROP notes
+
+
 # V3.0.7 - 2013xxxx
 
 - [IM] Cancel editing a customer should return to customer overview

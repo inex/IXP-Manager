@@ -29,7 +29,6 @@
     <field name="status" type="smallint" nullable="true"/>
     <field name="activepeeringmatrix" type="boolean" nullable="true"/>
     <field name="peeringDb" type="string" length="255" nullable="true"/>
-    <field name="notes" type="text" nullable="true"/>
     <field name="lastupdated" type="date" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" length="255" nullable="true"/>
@@ -39,6 +38,7 @@
         <join-column name="irrdb" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
+    <one-to-many field="Notes" target-entity="Entities\CustomerNotes" mapped-by="Customer"/>
     <one-to-many field="VirtualInterfaces" target-entity="Entities\VirtualInterface" mapped-by="Customer"/>
     <one-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Customer"/>
     <one-to-many field="ConsoleServerConnections" target-entity="Entities\ConsoleServerConnection" mapped-by="Customer"/>
