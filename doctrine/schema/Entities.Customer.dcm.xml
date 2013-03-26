@@ -38,7 +38,7 @@
         <join-column name="irrdb" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
-    <one-to-many field="Notes" target-entity="Entities\CustomerNotes" mapped-by="Customer"/>
+    <one-to-many field="Notes" target-entity="Entities\CustomerNote" mapped-by="Customer"/>
     <one-to-many field="VirtualInterfaces" target-entity="Entities\VirtualInterface" mapped-by="Customer"/>
     <one-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Customer"/>
     <one-to-many field="ConsoleServerConnections" target-entity="Entities\ConsoleServerConnection" mapped-by="Customer"/>

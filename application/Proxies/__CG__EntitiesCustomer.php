@@ -729,13 +729,13 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getPeeringDb();
     }
 
-    public function addNote(\Entities\CustomerNotes $notes)
+    public function addNote(\Entities\CustomerNote $notes)
     {
         $this->__load();
         return parent::addNote($notes);
     }
 
-    public function removeNote(\Entities\CustomerNotes $notes)
+    public function removeNote(\Entities\CustomerNote $notes)
     {
         $this->__load();
         return parent::removeNote($notes);

@@ -1697,10 +1697,10 @@ class Customer
     /**
      * Add Notes
      *
-     * @param \Entities\CustomerNotes $notes
+     * @param \Entities\CustomerNote $notes
      * @return Customer
      */
-    public function addNote(\Entities\CustomerNotes $notes)
+    public function addNote(\Entities\CustomerNote $notes)
     {
         $this->Notes[] = $notes;
     
@@ -1710,9 +1710,9 @@ class Customer
     /**
      * Remove Notes
      *
-     * @param \Entities\CustomerNotes $notes
+     * @param \Entities\CustomerNote $notes
      */
-    public function removeNote(\Entities\CustomerNotes $notes)
+    public function removeNote(\Entities\CustomerNote $notes)
     {
         $this->Notes->removeElement($notes);
     }

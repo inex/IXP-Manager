@@ -5,9 +5,9 @@ namespace Entities;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CustomerNotes
+ * CustomerNote
  */
-class CustomerNotes
+class CustomerNote
 {
     /**
      * @var boolean
@@ -44,7 +44,7 @@ class CustomerNotes
      * Set private
      *
      * @param boolean $private
-     * @return CustomerNotes
+     * @return CustomerNote
      */
     public function setPrivate($private)
     {
@@ -67,7 +67,7 @@ class CustomerNotes
      * Set title
      *
      * @param string $title
-     * @return CustomerNotes
+     * @return CustomerNote
      */
     public function setTitle($title)
     {
@@ -90,7 +90,7 @@ class CustomerNotes
      * Set note
      *
      * @param string $note
-     * @return CustomerNotes
+     * @return CustomerNote
      */
     public function setNote($note)
     {
@@ -113,7 +113,7 @@ class CustomerNotes
      * Set created
      *
      * @param \DateTime $created
-     * @return CustomerNotes
+     * @return CustomerNote
      */
     public function setCreated($created)
     {
@@ -146,7 +146,7 @@ class CustomerNotes
      * Set Customer
      *
      * @param \Entities\Customer $customer
-     * @return CustomerNotes
+     * @return CustomerNote
      */
     public function setCustomer(\Entities\Customer $customer)
     {
