@@ -741,6 +741,12 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::removeNote($notes);
     }
 
+    public function getNotes()
+    {
+        $this->__load();
+        return parent::getNotes();
+    }
+
 
     public function __sleep()
     {

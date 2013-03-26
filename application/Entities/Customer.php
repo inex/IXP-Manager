@@ -1716,4 +1716,14 @@ class Customer
     {
         $this->Notes->removeElement($notes);
     }
+
+    /**
+     * Get Notes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNotes()
+    {
+        return $this->Notes;
+    }
 }
