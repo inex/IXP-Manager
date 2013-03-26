@@ -35,14 +35,15 @@
             <strong>Warning!</strong> Your customer will be able to read this note!
         </div>
         <form class="form" id="co-notes-form">
-            <input type="text" placeholder="Title" class="span12" name="co-notes-ftitle" id="co-notes-ftitle" />
+            <input type="text" placeholder="Title" class="span12" name="title" id="co-notes-ftitle" />
             <br />
-            <textarea rows="6" class="span12" name="co-notes-fnote" id="co-notes-fnote"></textarea>
+            <textarea rows="6" class="span12" name="note" id="co-notes-fnote"></textarea>
             <br />
             <label class="checkbox">
-                <input type="checkbox" name="co-notes-fpublic" id="co-notes-fpublic" value="makePublic" />
+                <input type="checkbox" name="public" id="co-notes-fpublic" value="makePublic" />
                 Make note visible to customer
             </label>
+            <input type="hidden" name="custid" value="{$cust->getId()}" />
         </form>
     </div>
     <div class="modal-footer">
