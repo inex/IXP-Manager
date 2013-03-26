@@ -79,6 +79,7 @@
 </ul>
 
 {OSS_Message}
+<div id="co-messages"></div>
 
 <div class="row-fluid">
 
@@ -110,7 +111,11 @@
 			    <a href="#contacts" data-toggle="tab">Contacts</a>
 			</li>
 			
-            {if count( $cust->getConsoleServerConnections() )}
+			<li>
+			    <a href="#notes" data-toggle="tab">Notes</a>
+			</li>
+			
+			{if count( $cust->getConsoleServerConnections() )}
 			    <li>
 			        <a href="#console-server-connections" data-toggle="tab">OOB Access</a>
     			</li>
@@ -162,7 +167,11 @@
 	        	{tmplinclude file="customer/overview-tabs/contacts.phtml"}
         	</div>
         	
-            {if count( $cust->getConsoleServerConnections() )}
+	        <div class="tab-pane" id="notes">
+	        	{tmplinclude file="customer/overview-tabs/notes.phtml"}
+        	</div>
+        	
+        	{if count( $cust->getConsoleServerConnections() )}
 			    <div class="tab-pane" id="console-server-connections">
     	        	{tmplinclude file="customer/overview-tabs/console-server-connections.phtml"}
             	</div>

@@ -1,0 +1,52 @@
+
+<table class="table" id="co-notes-table">
+    <thead>
+        <th>Title</th>
+        <th>Visibility</th>
+        <th>Created</th>
+        <th><button id="co-notes-add-link" class="btn btn-small"><i class="icon-plus"></i></button></th>
+    </thead>
+    <tbody id="co-notes-table-tbody">
+        {foreach $cust->getNotes() as $n}
+            <tr>
+                <td>{$n->getTitle()}</td>
+                <td>{$n->getPrivate()}</td>
+                <td>{$n->getCreated()}</td>
+                <td>
+                    <div class="btn-group">
+                        <i class="icon-pencil"></i>
+                        <i class="icon-trash"></i>
+                    </div>
+                </td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
+
+<script>{tmplinclude file="customer/js/overview/notes.js"}</script>
+
+<div class="modal hide fade" id="co-notes-dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Add a Note for {$cust->getName()}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="alert hide" id="co-notes-warning">
+            <strong>Warning!</strong> Your customer will be able to read this note!
+        </div>
+        <form class="form" id="co-notes-form">
+            <input type="text" placeholder="Title" class="span12" name="co-notes-ftitle" id="co-notes-ftitle" />
+            <br />
+            <textarea rows="6" class="span12" name="co-notes-fnote" id="co-notes-fnote"></textarea>
+            <br />
+            <label class="checkbox">
+                <input type="checkbox" name="co-notes-fpublic" id="co-notes-fpublic" value="makePublic" />
+                Make note visible to customer
+            </label>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn">Cancel</a>
+        <a href="#" id="co-notes-fadd" class="btn btn-primary">Add</a>
+    </div>
+</div>
