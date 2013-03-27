@@ -33,6 +33,36 @@ function coNotesEditDialog( event ) {
 	});
 }
 
+function coNotesDelete( event ) {
+	var noteid = substr( event.delegateTarget.id, 15 );
+
+	bootbox.confirm( "Are you sure you want to delete this note?", function(result) {
+		if( result ) {
+			$.getJSON( '{genUrl controller="customer-notes" action="ajax-delete"}/id/' + noteid, function( data ){
+				if( data['error'] ) {
+					bootbox.alert( "Error! Server side error deleting the note." );
+					return;
+				}
+
+				$( "#co-notes-table-row-" + noteid ).fadeOut( 'slow', function() {
+					$( "#co-notes-table-row-" + noteid ).remove();	
+				});
+				
+				$( "#co-messages" ).append(
+					"<div class=\"alert alert-success\">"
+					    + "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"
+					    + "<strong>Success!</strong> Your note has been deleted."
+					    + "</div>"
+				);
+			})
+			.fail( function() {
+				bootbox.alert( "Error! Could not delete the note from the server." );
+				return;
+			});
+		}
+	}); 
+}
+
 function coNotesSubmitDialog( event ) {
 	event.preventDefault();
 
@@ -75,16 +105,18 @@ function coNotesPost( data, textStatus, jqXHR ) {
 		    + "</div>"
 	);
 	
-	$( "#co-notes-table-tbody" ).prepend(
-		"<tr>"
-		    + "<td>" + $( "#co-notes-ftitle" ).val() + "</td>"
-		    + "<td>" + "<span class=\"label label-"
-		        + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "important\">PRIVATE" )
-		        + "</span></td>"
-	        + "<td>Just Now</td>"
-	        + "<td>Fix Me</td"
-	        + "</tr>"
-	);
+	if( $( "#co-notes-fadd" ).html() == 'Add' ) {
+		$( "#co-notes-table-tbody" ).prepend(
+			"<tr>"
+			    + "<td>" + $( "#co-notes-ftitle" ).val() + "</td>"
+			    + "<td>" + "<span class=\"label label-"
+			        + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "important\">PRIVATE" )
+			        + "</span></td>"
+		        + "<td>Just Now</td>"
+		        + "<td>Fix Me</td"
+		        + "</tr>"
+		);
+	}
 	
 	coNotesClearDialog();
 }
@@ -109,6 +141,7 @@ $(document).ready(function(){
 	});
 
 	$( 'button[id|="co-notes-edit"]' ).on( 'click', coNotesEditDialog );
+	$( 'button[id|="co-notes-trash"]' ).on( 'click', coNotesDelete );
 	
 	$( "#co-notes-fpublic" ).on( "click", function( event ){
 		coNotesPublicCheckbox();

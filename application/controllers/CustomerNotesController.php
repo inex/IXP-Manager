@@ -101,5 +101,21 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         
         $this->_helper->json( $r );
     }
+
+    public function ajaxDeleteAction()
+    {
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+        
+        $r = [ 'error' => true ];
+        
+        if( $note = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->find( $this->getParam( 'id' ) ) )
+        {
+            $this->getD2EM()->remove( $note );
+            $this->getD2EM()->flush();
+            $r = [ 'error' => false ];
+        }
+        
+        $this->_helper->json( $r );
+    }
 }
 
