@@ -54,7 +54,7 @@ class IXP_Form_Customer_Notes extends IXP_Form
         
         $public = $this->createElement( 'checkbox', 'public' );
         $public->setLabel( 'Make note visible to customer' )
-            ->setCheckedValue( '1' );
+            ->setCheckedValue( 'makePublic' );
         $this->addElement( $public );
         
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );

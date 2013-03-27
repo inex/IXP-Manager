@@ -10,8 +10,10 @@
         {foreach $cust->getNotes() as $n}
             <tr>
                 <td>{$n->getTitle()}</td>
-                <td>{$n->getPrivate()}</td>
-                <td>{$n->getCreated()}</td>
+                <td>
+                    <span class="label label-{if not $n->getPrivate()}success">PUBLIC{else}important">PRIVATE{/if}</span>
+                </td>
+                <td>{$n->getCreated()->format( 'Y-m-d H:i' ) }</td>
                 <td>
                     <div class="btn-group">
                         <i class="icon-pencil"></i>

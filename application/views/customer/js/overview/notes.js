@@ -8,6 +8,14 @@ function coNotesOpenDialog( event ) {
 function coNotesSubmitDialog( event ) {
 	event.preventDefault();
 
+	// validation - just make sure there's a title
+	if( $( "#co-notes-ftitle" ).val().length == 0 ){
+		bootbox.alert( "Error! A title for the note is required.", function() {
+			$( "#co-notes-ftitle" ).focus();
+		});
+		return;
+	}
+	
 	$.post( '{genUrl controller="customer-notes" action="ajax-add"}', $( "#co-notes-form" ).serialize(), coNotesPost, 'json' )
 		.fail( function() {
 			bootbox.alert( "Error! Could not save your note." );
@@ -15,6 +23,14 @@ function coNotesSubmitDialog( event ) {
 }
 
 function coNotesPost( data, textStatus, jqXHR ) {
+	
+	// server-side form validation fails:
+	if( data['error'] ) {
+		bootbox.alert( "Error! Your note could not be saved." );
+		return;
+	}
+		
+	
 	$( "#co-notes-dialog" ).modal( 'hide' );
 	
 	$( "#co-messages" ).append(
