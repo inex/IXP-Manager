@@ -74,7 +74,8 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
                 
                 $this->getD2EM()->flush();
                 
-                $r = [ 'error' => false ];
+                $r[ 'error' ] = false;
+                $r[ 'noteid' ] = $n->getId();
             }
             else
             {
