@@ -7,7 +7,7 @@
         <th><button id="co-notes-add-link" class="btn btn-small"><i class="icon-plus"></i></button></th>
     </thead>
     <tbody id="co-notes-table-tbody">
-        {foreach $cust->getNotes() as $n}
+        {foreach $custNotes as $n}
             <tr>
                 <td>{$n->getTitle()}</td>
                 <td>

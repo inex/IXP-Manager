@@ -12,4 +12,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class CustomerNotes extends EntityRepository
 {
+    /**
+     * Return an array of ordered customer notes
+     *
+     * @param $custid int The customer ID to fetch notes for
+     * @return \Entities\CustomerNote[] An array of all customer notes objects
+     */
+    public function ordered( $custid )
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT n FROM Entities\\CustomerNote n WHERE n.Customer = ?1 ORDER BY n.created DESC"
+            )
+            ->setParameter( 1, $custid )
+            ->getResult();
+    }
+    
 }

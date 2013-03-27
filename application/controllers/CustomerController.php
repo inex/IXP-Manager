@@ -184,10 +184,11 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
     public function overviewAction()
     {
-        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-    	$this->view->cust    = $cust = $this->_loadCustomer();
-    	$this->view->tab     = $this->getParam( 'tab', false );
-    	
+        $this->view->netinfo   = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+    	$this->view->cust      = $cust = $this->_loadCustomer();
+    	$this->view->tab       = $this->getParam( 'tab', false );
+    	$this->view->custNotes = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->ordered( $cust->getId() );
+    	 
     	if( $this->getCustomer()->isRouteServerClient() )
     	    $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
     }
