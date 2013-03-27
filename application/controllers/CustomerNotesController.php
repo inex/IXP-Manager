@@ -46,25 +46,57 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         {
             // locate the customer
             $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $f->getValue( 'custid' ) );
-            
-            if( $cust )
+
+            // if we're editing, we need to fine the note
+            if( $f->getValue( 'noteid' ) )
             {
+                $isEdit = true;
+                $n = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->find( $f->getValue( 'noteid' ) );
+            }
+            else
+            {
+                $isEdit = false;
                 $n = new \Entities\CustomerNote();
+            }
+            
+            if( $cust && $n )
+            {
                 $n->setTitle( $f->getValue( 'title' ) );
                 $n->setNote( $f->getValue( 'note' ) );
                 $n->setPrivate( $f->getValue( 'public' ) == 'makePublic' ? false : true );
-                $n->setCreated( new DateTime() );
-                $n->setCustomer( $cust );
-                $this->getD2EM()->persist( $n );
+                
+                if( !$isEdit )
+                {
+                    $n->setCreated( new DateTime() );
+                    $n->setCustomer( $cust );
+                    $this->getD2EM()->persist( $n );
+                }
+                
                 $this->getD2EM()->flush();
                 
                 $r = [ 'error' => false ];
             }
             else
             {
-                $r['error'] = "Invalid customer specified.";
-                $this->getLogger()->alert( "[ID: {$this->getUser()->getId()}] AJAX Customer Note addition - invalid customer specified" );
+                $r['error'] = "Invalid customer / note specified.";
+                $this->getLogger()->alert( "[ID: {$this->getUser()->getId()}] AJAX Customer Note addition - invalid customer / note specified" );
             }
+        }
+        
+        $this->_helper->json( $r );
+    }
+
+    public function ajaxGetAction()
+    {
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+        
+        $r = [ 'error' => true ];
+        
+        if( $note = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->find( $this->getParam( 'id' ) ) )
+        {
+            $r = $note->toArray();
+            $r['created'] = $r['created']->format( 'Y-m-d H:i' );
+            $r['error'] = false;
         }
         
         $this->_helper->json( $r );

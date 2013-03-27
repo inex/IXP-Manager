@@ -38,6 +38,9 @@ class IXP_Form_Customer_Notes extends IXP_Form
         $custid = $this->createElement( 'hidden', 'custid' );
         $this->addElement( $custid );
 
+        $noteid = $this->createElement( 'hidden', 'noteid' );
+        $this->addElement( $noteid );
+
         $title = $this->createElement( 'text', 'title' );
         $title->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )

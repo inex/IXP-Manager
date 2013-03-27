@@ -56,7 +56,7 @@ class CustomerNote
     /**
      * Get private
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getPrivate()
     {
@@ -79,7 +79,7 @@ class CustomerNote
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -102,7 +102,7 @@ class CustomerNote
     /**
      * Get note
      *
-     * @return string 
+     * @return string
      */
     public function getNote()
     {
@@ -125,7 +125,7 @@ class CustomerNote
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -135,7 +135,7 @@ class CustomerNote
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -158,10 +158,26 @@ class CustomerNote
     /**
      * Get Customer
      *
-     * @return \Entities\Customer 
+     * @return \Entities\Customer
      */
     public function getCustomer()
     {
         return $this->Customer;
+    }
+    
+
+    /**
+     * Return the main fields of the note as an array
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'created' => $this->getCreated(),
+            'id'      => $this->getId(),
+            'note'    => $this->getNote(),
+            'private' => $this->getPrivate(),
+            'title'   => $this->getTitle()
+        ];
     }
 }
