@@ -7,30 +7,30 @@ function coNotesEditDialog( event ) {
 	var noteid = substr( event.delegateTarget.id, 14 );
 	
 	$.getJSON( '{genUrl controller="customer-notes" action="ajax-get"}/id/' + noteid, function( data ){
-		if( data['error'] ) {
-			bootbox.alert( "Error! Error getting the note from the server." );
+			if( data['error'] ) {
+				bootbox.alert( "Error! Error getting the note from the server." );
+				return;
+			}
+			
+			$( "#co-notes-fadd"        ).html( 'Save' );
+			$( "#co-notes-ftitle"      ).val( data['title'] );
+			$( "#co-notes-fnote"       ).val( data['note']  );
+			$( "#notes-dialog-noteid"  ).val( data['id'] );
+			$( "#co-notes-dialog-date" ).html( 'Note first created: ' + data['created'] );
+			
+			if( data['private'] )
+				$( "#co-notes-fpublic" ).prop( 'checked', false );
+			else
+				$( "#co-notes-fpublic" ).prop( 'checked', true );
+			
+			coNotesPublicCheckbox();
+			$( "#co-notes-dialog-title-action" ).html( 'Edit' );
+			coNotesOpenDialog( event );
+		})
+		.fail( function() {
+			bootbox.alert( "Error! Could not get the note from the server." );
 			return;
-		}
-		
-		$( "#co-notes-fadd"        ).html( 'Save' );
-		$( "#co-notes-ftitle"      ).val( data['title'] );
-		$( "#co-notes-fnote"       ).val( data['note']  );
-		$( "#notes-dialog-noteid"  ).val( data['id'] );
-		$( "#co-notes-dialog-date" ).html( 'Note first created: ' + data['created'] );
-		
-		if( data['private'] )
-			$( "#co-notes-fpublic" ).prop( 'checked', false );
-		else
-			$( "#co-notes-fpublic" ).prop( 'checked', true );
-		
-		coNotesPublicCheckbox();
-		$( "#co-notes-dialog-title-action" ).html( 'Edit' );
-		coNotesOpenDialog( event );
-	})
-	.fail( function() {
-		bootbox.alert( "Error! Could not get the note from the server." );
-		return;
-	});
+		});
 }
 
 function coNotesDelete( event ) {
@@ -61,6 +61,11 @@ function coNotesDelete( event ) {
 			});
 		}
 	}); 
+}
+
+function coNotesView( event ) {
+	var noteid = substr( event.delegateTarget.id, 15 );
+	
 }
 
 function coNotesSubmitDialog( event ) {
@@ -117,6 +122,15 @@ function coNotesPost( data, textStatus, jqXHR ) {
 		        + "</tr>"
 		);
 	}
+	else {
+		var noteid = $( "#notes-dialog-noteid" ).val();
+		$( "#co-notes-table-row-title-" + noteid ).html( $( "#co-notes-ftitle" ).val() );
+		$( "#co-notes-table-row-public-" + noteid ).html(
+			"<span class=\"label label-"
+		        + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "important\">PRIVATE" )
+		        + "</span>"
+		);
+	}
 	
 	coNotesClearDialog();
 }
@@ -142,6 +156,7 @@ $(document).ready(function(){
 
 	$( 'button[id|="co-notes-edit"]' ).on( 'click', coNotesEditDialog );
 	$( 'button[id|="co-notes-trash"]' ).on( 'click', coNotesDelete );
+	$( 'button[id|="co-notes-view"]' ).on( 'click', coNotesView );
 	
 	$( "#co-notes-fpublic" ).on( "click", function( event ){
 		coNotesPublicCheckbox();
@@ -149,5 +164,10 @@ $(document).ready(function(){
 
 	$( "#co-notes-fadd" ).on( "click", coNotesSubmitDialog );
 	
+	$( '#co-notes-form' ).on( 'submit', function( event ) {
+		event.preventDefault();
+		coNotesSubmitDialog( event );
+	    return false;
+	});
 });
 

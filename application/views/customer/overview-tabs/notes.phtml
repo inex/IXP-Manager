@@ -9,8 +9,8 @@
     <tbody id="co-notes-table-tbody">
         {foreach $custNotes as $n}
             <tr id="co-notes-table-row-{$n->getId()}">
-                <td>{$n->getTitle()}</td>
-                <td>
+                <td id="co-notes-table-row-title-{$n->getId()}">{$n->getTitle()}</td>
+                <td id="co-notes-table-row-public-{$n->getId()}">
                     <span class="label label-{if not $n->getPrivate()}success">PUBLIC{else}important">PRIVATE{/if}</span>
                 </td>
                 <td>{$n->getCreated()->format( 'Y-m-d H:i' ) }</td>
