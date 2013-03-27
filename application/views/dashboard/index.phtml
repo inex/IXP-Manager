@@ -17,6 +17,9 @@
             <a href="#tab1" data-toggle="tab">Overview</a></li>
             <li><a href="#tab-details" data-toggle="tab">My Details</a></li>
             <li><a href="#tab3" data-toggle="tab">Ports</a></li>
+            {if count( $custNotes )}
+                <li><a href="#tab-notes" data-toggle="tab">Notes</a></li>
+            {/if}
             
             {if $user->getCustomer()->isRouteServerClient()}
                 <li>
@@ -47,12 +50,20 @@
             {tmplinclude file="dashboard/index-tab-details.phtml"}
     
         </div>
+        
         <div class="tab-pane" id="tab3">
             <!-- Connections -->
             {tmplinclude file="dashboard/index-tab-connections.phtml"}
     
         </div>
 
+        {if count( $custNotes )}
+            <div class="tab-pane" id="tab-notes">
+                {tmplinclude file="customer/overview-tabs/notes.phtml"}
+        
+            </div>
+        {/if}
+        
     </div>
 
 {else}

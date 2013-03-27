@@ -89,15 +89,23 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
 
     public function ajaxGetAction()
     {
-        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
-        
         $r = [ 'error' => true ];
         
         if( $note = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->find( $this->getParam( 'id' ) ) )
         {
-            $r = $note->toArray();
-            $r['created'] = $r['created']->format( 'Y-m-d H:i' );
-            $r['error'] = false;
+            if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER
+                && ( $note->getCustomer() != $this->getCustomer() || $note->getPrivate() ) )
+            {
+                $this->getLogger()->alert(
+                    "User {$this->getUser()->getUsername()} tried to access other / private note with ID {$note->getId()}"
+                );
+            }
+            else
+            {
+                $r = $note->toArray();
+                $r['created'] = $r['created']->format( 'Y-m-d H:i' );
+                $r['error'] = false;
+            }
         }
         
         $this->_helper->json( $r );

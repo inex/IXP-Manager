@@ -76,6 +76,10 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 	                ->aggregateRouteSummariesForCustomer( $this->getCustomer()->getId() );
 	        }
         }
+        
+        // do we have any notes?
+        $this->view->custNotes = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->ordered( $this->getCustomer()->getId() );
+        
     }
     
     

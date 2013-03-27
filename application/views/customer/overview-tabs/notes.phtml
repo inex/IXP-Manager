@@ -1,32 +1,54 @@
 
-<table class="table" id="co-notes-table">
+
+<table class="table {if not count( $custNotes )}hide{/if}" id="co-notes-table">
     <thead>
         <th>Title</th>
-        <th>Visibility</th>
+        {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+            <th>Visibility</th>
+        {/if}
         <th>Created</th>
-        <th><button id="co-notes-add-link" class="btn btn-small"><i class="icon-plus"></i></button></th>
+        <th>
+            {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                <button id="co-notes-add-btn" class="btn btn-small"><i class="icon-plus"></i></button>
+            {/if}
+        </th>
     </thead>
     <tbody id="co-notes-table-tbody">
         {foreach $custNotes as $n}
-            <tr id="co-notes-table-row-{$n->getId()}">
-                <td id="co-notes-table-row-title-{$n->getId()}">{$n->getTitle()}</td>
-                <td id="co-notes-table-row-public-{$n->getId()}">
-                    <span class="label label-{if not $n->getPrivate()}success">PUBLIC{else}important">PRIVATE{/if}</span>
-                </td>
-                <td>{$n->getCreated()->format( 'Y-m-d H:i' ) }</td>
-                <td>
-                    <div class="btn-group">
-                        <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-eye-open"></i></button>
-                        <button id="co-notes-edit-{$n->getId()}"  class="btn btn-small"><i class="icon-pencil"></i></button>
-                        <button id="co-notes-trash-{$n->getId()}" class="btn btn-small"><i class="icon-trash"></i></button>
-                    </div>
-                </td>
-            </tr>
+            {if $user->getPrivs() eq USER::AUTH_SUPERUSER or not $n->getPrivate()}
+                <tr id="co-notes-table-row-{$n->getId()}">
+                    <td id="co-notes-table-row-title-{$n->getId()}">{$n->getTitle()}</td>
+    
+                    {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                        <td id="co-notes-table-row-public-{$n->getId()}">
+                            <span class="label label-{if not $n->getPrivate()}success">PUBLIC{else}important">PRIVATE{/if}</span>
+                        </td>
+                    {/if}
+                    <td>{$n->getCreated()->format( 'Y-m-d H:i' ) }</td>
+                    <td>
+                        <div class="btn-group">
+                            <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-eye-open"></i></button>
+                            {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                                <button id="co-notes-edit-{$n->getId()}"  class="btn btn-small"><i class="icon-pencil"></i></button>
+                                <button id="co-notes-trash-{$n->getId()}" class="btn btn-small"><i class="icon-trash"></i></button>
+                            {/if}
+                        </div>
+                    </td>
+                </tr>
+            {/if}
         {/foreach}
     </tbody>
 </table>
 
+{if not count( $custNotes )}
+    <p id="co-notes-no-notes-msg">
+        There are no notes for this customer. <a href="#" id="co-notes-add-link">Add one...</a>
+    </p>
+{/if}
+    
 <script>{tmplinclude file="customer/js/overview/notes.js"}</script>
+
+{if $user->getPrivs() eq USER::AUTH_SUPERUSER}
 
 <div class="modal hide" id="co-notes-dialog">
     <div class="modal-header">
@@ -56,6 +78,8 @@
         <a href="#" id="co-notes-fadd" class="btn btn-primary">Add</a>
     </div>
 </div>
+
+{/if}
 
 <div class="modal hide" data-keyboard="true" id="co-notes-view-dialog">
     <div class="modal-header">
