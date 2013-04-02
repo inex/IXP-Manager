@@ -35,7 +35,9 @@
                             <span class="label label-{if not $n->getPrivate()}success">PUBLIC{else}important">PRIVATE{/if}</span>
                         </td>
                     {/if}
-                    <td>{$n->getUpdated()->format( 'Y-m-d H:i' ) }</td>
+                    <td id="co-notes-table-row-updated-{$n->getId()}">
+                        {$n->getUpdated()->format( 'Y-m-d H:i' ) }
+                    </td>
                     <td>
                         <div class="btn-group">
                             <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-eye-open"></i></button>

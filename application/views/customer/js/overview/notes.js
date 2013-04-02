@@ -67,13 +67,6 @@ function coNotesDelete( event ) {
 				$( "#co-notes-table-row-" + noteid ).fadeOut( 'slow', function() {
 					$( "#co-notes-table-row-" + noteid ).remove();	
 				});
-				
-				$( "#co-messages" ).append(
-					"<div class=\"alert alert-success\">"
-					    + "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"
-					    + "<strong>Success!</strong> Your note has been deleted."
-					    + "</div>"
-				);
 			})
 			.fail( function() {
 				bootbox.alert( "Error! Could not delete the note from the server." );
@@ -123,13 +116,6 @@ function coNotesPost( data, textStatus, jqXHR ) {
 	
 	$( "#co-notes-dialog" ).modal( 'hide' );
 	
-	$( "#co-messages" ).append(
-		"<div class=\"alert alert-success\">"
-		    + "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>"
-		    + "<strong>Success!</strong> Your note has been saved."
-		    + "</div>"
-	);
-	
 	if( $( "#co-notes-fadd" ).html() == 'Add' ) {
 		$( "#co-notes-table-tbody" ).prepend(
 			"<tr class=\"hide\" id=\"co-notes-table-row-" + data['noteid'] + "\">"
@@ -158,11 +144,17 @@ function coNotesPost( data, textStatus, jqXHR ) {
 	else {
 		var noteid = $( "#notes-dialog-noteid" ).val();
 		$( "#co-notes-table-row-title-" + noteid ).html( $( "#co-notes-ftitle" ).val() );
+		$( "#co-notes-table-row-updated-" + noteid ).html( "Just Now" );
 		$( "#co-notes-table-row-public-" + noteid ).html(
 			"<span class=\"label label-"
 		        + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "important\">PRIVATE" )
 		        + "</span>"
 		);
+		
+		$( "#co-notes-table-row-" + data['noteid'] ).fadeOut( 'fast', function() {
+			$( "#co-notes-table-row-" + data['noteid'] ).fadeIn( 'slow' );	
+		});
+		
 	}
 	
 	coNotesClearDialog();
