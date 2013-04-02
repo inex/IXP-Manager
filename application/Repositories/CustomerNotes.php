@@ -18,10 +18,12 @@ class CustomerNotes extends EntityRepository
      * @param $custid int The customer ID to fetch notes for
      * @return \Entities\CustomerNote[] An array of all customer notes objects
      */
-    public function ordered( $custid )
+    public function ordered( $custid, $publicOnly = false )
     {
         return $this->getEntityManager()->createQuery(
-                "SELECT n FROM Entities\\CustomerNote n WHERE n.Customer = ?1 ORDER BY n.created DESC"
+                "SELECT n FROM Entities\\CustomerNote n WHERE n.Customer = ?1 "
+                . ( $publicOnly ? "AND n.private = 0 " : "" )
+                . "ORDER BY n.created DESC"
             )
             ->setParameter( 1, $custid )
             ->getResult();

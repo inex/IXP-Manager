@@ -73,6 +73,9 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
                     $this->getD2EM()->persist( $n );
                 }
                 
+                // update the user's notes last read so he won't be told his own is new
+                $this->getUser()->setPreference( "customer-notes.{$this->getParam( 'custid' )}.last_read", mktime() );
+                
                 $this->getD2EM()->flush();
                 
                 $r[ 'error' ] = false;
@@ -126,6 +129,21 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         }
         
         $this->_helper->json( $r );
+    }
+    
+    public function ajaxPingAction()
+    {
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+            $custid = $this->getParam( 'custid' );
+        else
+            $custid = $this->getCustomer()->getId();
+        
+        // update the last read for this user / customer combination
+        if( is_numeric( $custid ) )
+        {
+            $this->getUser()->setPreference( "customer-notes.{$custid}.last_read", mktime() );
+            $this->getD2EM()->flush();
+        }
     }
 }
 

@@ -112,7 +112,11 @@
 			</li>
 			
 			<li>
-			    <a href="#notes" data-toggle="tab">Notes</a>
+			    <a href="#notes" id="tab-notes" data-toggle="tab">
+			        Notes {if isset( $unreadNotes ) and $unreadNotes}
+			            <span id="notes-unread-indicator" class="badge badge-success">{$unreadNotes}</span>
+		            {/if}
+		        </a>
 			</li>
 			
 			{if count( $cust->getConsoleServerConnections() )}

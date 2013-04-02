@@ -78,11 +78,8 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
         }
         
         // do we have any notes?
-        $this->view->custNotes = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->ordered( $this->getCustomer()->getId() );
-        
+        $this->_fetchCustomerNotes( $this->getCustomer()->getId(), true );
     }
-    
-    
     
     public function updateNocAction()
     {

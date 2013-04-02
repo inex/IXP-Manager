@@ -18,7 +18,13 @@
             <li><a href="#tab-details" data-toggle="tab">My Details</a></li>
             <li><a href="#tab3" data-toggle="tab">Ports</a></li>
             {if count( $custNotes )}
-                <li><a href="#tab-notes" data-toggle="tab">Notes</a></li>
+                <li>
+                    <a href="#tab-content-notes" id="tab-notes" data-toggle="tab">
+                        Notes {if isset( $unreadNotes ) and $unreadNotes}
+                            <span id="notes-unread-indicator" class="badge badge-success">{$unreadNotes}</span>
+                        {/if}
+                    </a>
+                </li>
             {/if}
             
             {if $user->getCustomer()->isRouteServerClient()}
@@ -58,7 +64,7 @@
         </div>
 
         {if count( $custNotes )}
-            <div class="tab-pane" id="tab-notes">
+            <div class="tab-pane" id="tab-content-notes">
                 {tmplinclude file="customer/overview-tabs/notes.phtml"}
         
             </div>

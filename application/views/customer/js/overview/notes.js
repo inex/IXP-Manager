@@ -214,6 +214,16 @@ $(document).ready(function(){
 		});
 
 	{/if}
+
+	$( "#tab-notes" ).on( 'shown', function( e ) {
+		// mark notes as read and update the users last read time
+		$( '#notes-unread-indicator' ).remove();
+		{if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+			$.get( '{genUrl controller="customer-notes" action="ajax-ping" custid=$cust->getId()}' );
+		{else}
+		    $.get( '{genUrl controller="customer-notes" action="ajax-ping"}' );
+		{/if}
+	});
 		
 	$( 'button[id|="co-notes-view"]' ).on( 'click', coNotesViewDialog );
 

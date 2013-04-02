@@ -187,7 +187,9 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->view->netinfo   = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
     	$this->view->cust      = $cust = $this->_loadCustomer();
     	$this->view->tab       = $this->getParam( 'tab', false );
-    	$this->view->custNotes = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->ordered( $cust->getId() );
+    	
+        // load customer notes and the amount of unread notes for this user and customer
+    	$this->_fetchCustomerNotes( $cust->getId() );
     	 
     	if( $this->getCustomer()->isRouteServerClient() )
     	    $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );

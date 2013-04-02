@@ -6,7 +6,7 @@
         {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
             <th>Visibility</th>
         {/if}
-        <th>Created</th>
+        <th>Updated</th>
         <th>
             {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                 <button id="co-notes-add-btn" class="btn btn-small"><i class="icon-plus"></i></button>
@@ -17,14 +17,25 @@
         {foreach $custNotes as $n}
             {if $user->getPrivs() eq USER::AUTH_SUPERUSER or not $n->getPrivate()}
                 <tr id="co-notes-table-row-{$n->getId()}">
-                    <td id="co-notes-table-row-title-{$n->getId()}">{$n->getTitle()}</td>
+                    <td id="co-notes-table-row-title-{$n->getId()}">
+                        {if not $notesLastRead or $n->getUpdated()->format( 'U' ) > $notesLastRead}
+                            <span class="label label-success">
+                                {if $n->getUpdated() eq $n->getCreated()}
+                                    NEW
+                                {else}
+                                    UPDATED
+                                {/if}
+                            </span>
+                        {/if}
+                        {$n->getTitle()}
+                    </td>
     
                     {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                         <td id="co-notes-table-row-public-{$n->getId()}">
                             <span class="label label-{if not $n->getPrivate()}success">PUBLIC{else}important">PRIVATE{/if}</span>
                         </td>
                     {/if}
-                    <td>{$n->getCreated()->format( 'Y-m-d H:i' ) }</td>
+                    <td>{$n->getUpdated()->format( 'Y-m-d H:i' ) }</td>
                     <td>
                         <div class="btn-group">
                             <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-eye-open"></i></button>
