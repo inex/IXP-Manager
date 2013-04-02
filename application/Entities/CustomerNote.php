@@ -180,4 +180,32 @@ class CustomerNote
             'title'   => $this->getTitle()
         ];
     }
+    /**
+     * @var \DateTime
+     */
+    private $updated;
+
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return CustomerNote
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+    
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
 }
