@@ -64,10 +64,11 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
                 $n->setTitle( $f->getValue( 'title' ) );
                 $n->setNote( $f->getValue( 'note' ) );
                 $n->setPrivate( $f->getValue( 'public' ) == 'makePublic' ? false : true );
+                $n->setUpdated( new DateTime() );
                 
                 if( !$isEdit )
                 {
-                    $n->setCreated( new DateTime() );
+                    $n->setCreated( $n->getUpdated() );
                     $n->setCustomer( $cust );
                     $this->getD2EM()->persist( $n );
                 }
