@@ -14,7 +14,9 @@ Schema update required:
     ALTER TABLE cust_notes ADD CONSTRAINT FK_6377D8679395C3F3 FOREIGN KEY (customer_id) REFERENCES cust (id);
     ALTER TABLE cust DROP notes
 
-# V3.0.7 - 2013xxxx
+- [NF] Customer Notes - see https://github.com/inex/IXP-Manager/wiki/Customer-Notes
+
+# V3.0.7 - 20130403
 
 - [IM] Cancel editing a customer should return to customer overview
 - [SF] Added sflow support
