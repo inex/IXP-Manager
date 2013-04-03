@@ -2,27 +2,30 @@
 
 Schema update required:
 
-    CREATE TABLE ContactToGroup (
+
+    CREATE TABLE contact_to_group (
         contact_id INT NOT NULL, contact_group_id BIGINT NOT NULL, 
-        INDEX IDX_7DB29B53E7A1254A (contact_id), 
-        INDEX IDX_7DB29B53647145D0 (contact_group_id), 
+        INDEX IDX_FCD9E962E7A1254A (contact_id), 
+        INDEX IDX_FCD9E962647145D0 (contact_group_id), 
         PRIMARY KEY(contact_id, contact_group_id)
     ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
     
-    CREATE TABLE ContactGroup (
+    CREATE TABLE contact_group (
         id BIGINT AUTO_INCREMENT NOT NULL, name VARCHAR(20) NOT NULL, 
         description VARCHAR(255) NOT NULL, type VARCHAR(20) NOT NULL, 
         active TINYINT(1) NOT NULL, `limit` INT NOT NULL, created DATETIME NOT NULL, 
-        UNIQUE INDEX UNIQ_C1EA42DD5E237E06 (name), 
-        PRIMARY KEY(id)
+        UNIQUE INDEX UNIQ_40EA54CA5E237E06 (name), PRIMARY KEY(id)
     ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
     
-    ALTER TABLE ContactToGroup ADD CONSTRAINT FK_7DB29B53E7A1254A 
+    ALTER TABLE contact_to_group ADD CONSTRAINT FK_FCD9E962E7A1254A 
         FOREIGN KEY (contact_id) REFERENCES contact (id);
-
-    ALTER TABLE ContactToGroup ADD CONSTRAINT FK_7DB29B53647145D0 
-        FOREIGN KEY (contact_group_id) REFERENCES ContactGroup (id);
-
+    
+    ALTER TABLE contact_to_group ADD CONSTRAINT FK_FCD9E962647145D0 
+        FOREIGN KEY (contact_group_id) REFERENCES contact_group (id);
+    
+    ALTER TABLE contact ADD CONSTRAINT FK_4C62E638A76ED395 
+        FOREIGN KEY (user_id) REFERENCES user (id);
+    
     ALTER TABLE contact 
         ADD user_id INT DEFAULT NULL, 
         ADD position VARCHAR(50) DEFAULT NULL, 

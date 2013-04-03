@@ -27,7 +27,7 @@
       </join-columns>
     </one-to-one>
     <many-to-many field="Groups" target-entity="Entities\ContactGroup" inversed-by="Contacts">
-      <join-table name="ContactToGroup">
+      <join-table name="contact_to_group">
         <join-columns>
           <join-column name="contact_id" referenced-column-name="id" nullable="false"/>
         </join-columns>
