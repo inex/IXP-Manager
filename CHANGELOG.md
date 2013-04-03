@@ -1,5 +1,5 @@
 
-# V3.0.7 - 2013xxxx
+# V3.0.7 - 20130403
 
 - [IM] Cancel editing a customer should return to customer overview
 - [SF] Added sflow support
