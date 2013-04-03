@@ -332,4 +332,133 @@ class Contact
     {
         return $this->Customer;
     }
+    /**
+     * @var string
+     */
+    private $position;
+
+    /**
+     * @var \Entities\User
+     */
+    private $User;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Groups;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->Groups = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Set position
+     *
+     * @param string $position
+     * @return Contact
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return string 
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Set User
+     *
+     * @param \Entities\User $user
+     * @return Contact
+     */
+    public function setUser(\Entities\User $user)
+    {
+        $this->User = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get User
+     *
+     * @return \Entities\User 
+     */
+    public function getUser()
+    {
+        return $this->User;
+    }
+
+    /**
+     * Add Groups
+     *
+     * @param \Entities\ContactGroup $groups
+     * @return Contact
+     */
+    public function addGroup(\Entities\ContactGroup $groups)
+    {
+        $this->Groups[] = $groups;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Groups
+     *
+     * @param \Entities\ContactGroup $groups
+     */
+    public function removeGroup(\Entities\ContactGroup $groups)
+    {
+        $this->Groups->removeElement($groups);
+    }
+
+    /**
+     * Get Groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroups()
+    {
+        return $this->Groups;
+    }
+    /**
+     * @var string
+     */
+    private $notes;
+
+
+    /**
+     * Set notes
+     *
+     * @param string $notes
+     * @return Contact
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+    
+        return $this;
+    }
+
+    /**
+     * Get notes
+     *
+     * @return string 
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
 }

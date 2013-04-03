@@ -4,12 +4,14 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
-    <field name="name" type="string" length="255" nullable="true"/>
+    <field name="name" type="string" length="255" nullable="false"/>
+    <field name="position" type="string" length="50" nullable="true"/>
     <field name="email" type="string" length="255" nullable="true"/>
-    <field name="phone" type="string" length="255" nullable="true"/>
-    <field name="mobile" type="string" nullable="true"/>
-    <field name="facilityaccess" type="smallint" nullable="true"/>
-    <field name="mayauthorize" type="boolean" nullable="true"/>
+    <field name="phone" type="string" length="50" nullable="true"/>
+    <field name="mobile" type="string" length="50" nullable="true"/>
+    <field name="facilityaccess" type="boolean" nullable="false"/>
+    <field name="mayauthorize" type="boolean" nullable="false"/>
+    <field name="notes" type="text" nullable="true"/>
     <field name="lastupdated" type="datetime" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" length="32" nullable="true"/>
@@ -19,5 +21,20 @@
         <join-column name="custid" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
+    <one-to-one field="User" target-entity="Entities\User" inversed-by="Contact">
+      <join-columns>
+        <join-column name="user_id" referenced-column-name="id" nullable="false" unique="true"/>
+      </join-columns>
+    </one-to-one>
+    <many-to-many field="Groups" target-entity="Entities\ContactGroup" inversed-by="Contacts">
+      <join-table name="ContactToGroup">
+        <join-columns>
+          <join-column name="contact_id" referenced-column-name="id" nullable="false"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="contact_group_id" referenced-column-name="id" nullable="false"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
   </entity>
 </doctrine-mapping>

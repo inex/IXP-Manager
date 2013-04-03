@@ -621,4 +621,32 @@ class User
     {
         return $this->Meetings;
     }
+    /**
+     * @var \Entities\Contact
+     */
+    private $Contact;
+
+
+    /**
+     * Set Contact
+     *
+     * @param \Entities\Contact $contact
+     * @return User
+     */
+    public function setContact(\Entities\Contact $contact = null)
+    {
+        $this->Contact = $contact;
+    
+        return $this;
+    }
+
+    /**
+     * Get Contact
+     *
+     * @return \Entities\Contact 
+     */
+    public function getContact()
+    {
+        return $this->Contact;
+    }
 }

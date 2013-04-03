@@ -303,6 +303,18 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::getMeetings();
     }
 
+    public function setContact(\Entities\Contact $contact = NULL)
+    {
+        $this->__load();
+        return parent::setContact($contact);
+    }
+
+    public function getContact()
+    {
+        $this->__load();
+        return parent::getContact();
+    }
+
     public function loadPreference($attribute, $index = 0, $includeExpired = false)
     {
         $this->__load();
@@ -378,7 +390,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Meetings', 'Children', 'Preferences', 'ChangeLogs', 'Customer', 'Parent');
+        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Contact', 'Meetings', 'Children', 'Preferences', 'ChangeLogs', 'Customer', 'Parent');
     }
 
     public function __clone()
