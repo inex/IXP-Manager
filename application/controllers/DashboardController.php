@@ -76,9 +76,10 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 	                ->aggregateRouteSummariesForCustomer( $this->getCustomer()->getId() );
 	        }
         }
+        
+        // do we have any notes?
+        $this->_fetchCustomerNotes( $this->getCustomer()->getId(), true );
     }
-    
-    
     
     public function updateNocAction()
     {

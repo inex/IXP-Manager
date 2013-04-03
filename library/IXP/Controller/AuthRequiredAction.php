@@ -62,5 +62,42 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
         return $c;
     }
     
+    
+    
+    /**
+     * Utility function to load a customer's notes and calculate the amount of unread / updated notes
+     * for the logged in user and the given customer
+     *
+     * Used by:
+     * @see CustomerController
+     * @see DashboardController
+     *
+     * @param \Entities\Customer $cust
+     */
+    protected function _fetchCustomerNotes( $custid, $publicOnly = false )
+    {
+        $this->view->custNotes = $custNotes = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->ordered( $custid, $publicOnly );
+        $unreadNotes = 0;
+        $lastRead = false;
+         
+        $lr = $this->getUser()->getPreference( "customer-notes.{$custid}.last_read" );
+        
+        if( $lr )
+        {
+            $lastRead = new \DateTime( "@{$lr}" );
+             
+            foreach( $custNotes as $cn )
+                if( $cn->getUpdated() > $lastRead )
+                    $unreadNotes++;
+        }
+        else
+            $unreadNotes = count( $custNotes );
+    
+        $this->view->notesLastRead = $lastRead;
+        $this->view->unreadNotes   = $unreadNotes;
+    }
+    
+    
+    
 }
 

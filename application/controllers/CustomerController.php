@@ -130,7 +130,6 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'title'     => 'Left',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
-                'notes'           => 'Notes',
                 'lastupdated'     => 'Last Updated',
                 'lastupdatedby'   => 'Last Updated By',
                 'creator'         => 'Created By',
@@ -159,7 +158,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                             c.billingContact AS billingContact, c.billingAddress1 AS billingAddress1,
                             c.billingAddress2 AS billingAddress2, c.billingCity AS billingCity, c.billingCountry AS billingCountry,
                             c.corpwww AS corpwww, c.datejoin AS datejoin, c.dateleave AS dateleave,
-                            c.notes AS notes, c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby,
+                            c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby,
                             c.creator AS creator, c.created AS created'
                         )
                 ->from( '\\Entities\\Customer', 'c' );
@@ -185,10 +184,13 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
     public function overviewAction()
     {
-        $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-    	$this->view->cust    = $cust = $this->_loadCustomer();
-    	$this->view->tab     = $this->getParam( 'tab', false );
+        $this->view->netinfo   = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+    	$this->view->cust      = $cust = $this->_loadCustomer();
+    	$this->view->tab       = $this->getParam( 'tab', false );
     	
+        // load customer notes and the amount of unread notes for this user and customer
+    	$this->_fetchCustomerNotes( $cust->getId() );
+    	 
     	if( $this->getCustomer()->isRouteServerClient() )
     	    $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
     }
@@ -440,5 +442,21 @@ class CustomerController extends IXP_Controller_FrontEnd
         return $emailsOkay ? $mail : false;
     }
     
+    
+    
+    public function unreadNotesAction()
+    {
+        $lastReads = $this->getUser()->getAssocPreference( 'customer-notes' )[0];
+        
+        $latestNotes = [];
+        foreach( $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->getLatestUpdate() as $ln )
+        {
+            if( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) )
+                $latestNotes[] = $ln;
+            
+        }
+
+        $this->view->notes = $latestNotes;
+    }
 }
 

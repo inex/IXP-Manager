@@ -305,15 +305,6 @@ class IXP_Form_Customer extends IXP_Form
         $this->getDisplayGroup( 'billingDisplayGroup' )->setLegend( 'Billing Details' );
 
 
-        $notes = $this->createElement( 'textarea', 'notes' );
-        $notes->setLabel( 'Notes' )
-            ->setAttrib( 'class', 'span3' )
-            ->setRequired( false )
-            ->addFilter( new OSS_Filter_StripSlashes() )
-            ->setAttrib( 'cols', 60 )
-            ->setAttrib( 'rows', 5 );
-        $this->addElement( $notes );
-        
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
