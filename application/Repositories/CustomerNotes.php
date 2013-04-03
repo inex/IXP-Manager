@@ -29,4 +29,36 @@ class CustomerNotes extends EntityRepository
             ->getResult();
     }
     
+
+    /**
+     * Return an array of the latest created / updated note for all customer's with notes.
+     *
+     * Array has the form:
+     *
+     *     [
+     *         0 => [
+     *             'cname' => 'ABC Networks Limited',
+     *             'cid' => 9,
+     *             'cshortname' => 'abcnetworks'
+     *             'latest' => '2013-04-02 16:34:15'
+     *         ]
+     *         ...
+     *     ]
+     *
+     */
+    public function getLatestUpdate()
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT c.name AS cname, c.id AS cid, c.shortname AS cshortname, MAX( cn.updated ) AS latest
+                
+                FROM Entities\\Customer c
+                    LEFT JOIN c.Notes AS cn
+
+                GROUP BY cn.Customer HAVING COUNT( cn.Customer ) > 0
+                
+                ORDER BY latest DESC"
+            )
+            ->getArrayResult();
+    }
+    
 }

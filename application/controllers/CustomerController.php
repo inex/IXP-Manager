@@ -442,5 +442,21 @@ class CustomerController extends IXP_Controller_FrontEnd
         return $emailsOkay ? $mail : false;
     }
     
+    
+    
+    public function unreadNotesAction()
+    {
+        $lastReads = $this->getUser()->getAssocPreference( 'customer-notes' )[0];
+        
+        $latestNotes = [];
+        foreach( $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->getLatestUpdate() as $ln )
+        {
+            if( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) )
+                $latestNotes[] = $ln;
+            
+        }
+
+        $this->view->notes = $latestNotes;
+    }
 }
 
