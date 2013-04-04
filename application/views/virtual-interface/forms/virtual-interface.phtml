@@ -43,7 +43,7 @@
 <div class="form-actions">
     <input type="submit" name="commit" id="commit" value="{if $isEdit}Save Changes{else}Add{/if}" class="btn btn-primary">
     {if isset( $cust )}
-        <a class="btn" href="{genUrl controller='customer' action='overview' tab='ports' id=$cust->getId()}">Return</a>
+        <a class="btn btn-success" href="{genUrl controller='customer' action='overview' tab='ports' id=$cust->getId()}">Return to Customer Overview</a>
     {else}
         <a class="btn btn-success" href="{genUrl controller='virtual-interface' action='add-wizard'}">Wizard Add</a>
         <a class="btn" href="{genUrl controller="virtual-interface" action="list"}">Return</a>
