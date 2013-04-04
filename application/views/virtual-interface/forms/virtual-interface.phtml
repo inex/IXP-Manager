@@ -45,7 +45,7 @@
     {if isset( $cust )}
         <a class="btn" href="{genUrl controller='customer' action='overview' tab='ports' id=$cust->getId()}">Return</a>
     {else}
-        <a class="btn btn-success" href="{genUrl controller='vlan-interface' action='quick-add'}">Wizard Add</a>
+        <a class="btn btn-success" href="{genUrl controller='virtual-interface' action='add-wizard'}">Wizard Add</a>
         <a class="btn" href="{genUrl controller="virtual-interface" action="list"}">Return</a>
     {/if}
 
