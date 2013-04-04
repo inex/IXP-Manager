@@ -9,6 +9,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ContactGroup
 {
+    const TYPE_ROLE = 'ROLE';
+    const TYPE_OTHER = 'OTHER';
+    
+    public static $TYPES = [
+        self::TYPE_ROLE => 'Role',
+        self::TYPE_OTHER => 'Other'
+    ];
+    
     /**
      * @var string
      */
@@ -30,9 +38,9 @@ class ContactGroup
     private $active;
 
     /**
-     * @var integer
+     * @var integer $limited_to
      */
-    private $limit;
+    private $limited_to;
 
     /**
      * @var \DateTime
@@ -150,26 +158,25 @@ class ContactGroup
     }
 
     /**
-     * Set limit
+     * Set limited_to
      *
-     * @param integer $limit
+     * @param integer $limitedTo
      * @return ContactGroup
      */
-    public function setLimit($limit)
+    public function setLimitedTo($limitedTo)
     {
-        $this->limit = $limit;
-    
+        $this->limited_to = $limitedTo;
         return $this;
     }
 
     /**
-     * Get limit
+     * Get limited_to
      *
      * @return integer 
      */
-    public function getLimit()
+    public function getLimitedTo()
     {
-        return $this->limit;
+        return $this->limited_to;
     }
 
     /**
@@ -237,4 +244,5 @@ class ContactGroup
     {
         return $this->Contacts;
     }
+    
 }
