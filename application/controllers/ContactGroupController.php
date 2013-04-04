@@ -56,8 +56,15 @@ class ContactGroupController extends IXP_Controller_FrontEnd
             'listColumns'    => [
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'      => 'Name',
-                'type'      => 'Type',
-                'created'   => 'Created'
+                'type'        => [
+                    'title'          => 'Type',
+                    'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'         => \Entities\ContactGroup::$TYPES
+                ],
+                'created'        => [
+                    'title'         => 'Created',
+                    'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
+                ]
             ]
         ];
     
@@ -70,7 +77,9 @@ class ContactGroupController extends IXP_Controller_FrontEnd
                 'description' => 'Description'
             ]
         );
+        
     }
+    
     
     /**
      * Provide array of objects for the listAction and viewAction
@@ -82,7 +91,7 @@ class ContactGroupController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'o.id AS id, o.name AS name, o.type AS type,
                     o.created AS created, o.description AS description,
-                    o.active AS active, o.limit AS limit'
+                    o.active AS active, o.limited_to AS limit'
             )
             ->from( '\\Entities\\ContactGroup', 'o' );
     
@@ -93,6 +102,24 @@ class ContactGroupController extends IXP_Controller_FrontEnd
             $qb->andWhere( 'o.id = ?1' )->setParameter( 1, $id );
 
         return $qb->getQuery()->getResult();
+    }
+    
+    /**
+     * Postvalidation hook for add / edit
+     *
+     * Adding values for new announcement.
+     *
+     * @param OSS_Form $form The Send form object
+     * @param \Entities\User $user The Doctrine2 User entity
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not processed
+     */
+    protected function addPostValidate( $form, $group, $isEdit )
+    {
+        if( !$isEdit )
+            $group->setCreated( new DateTime() );
+
+        return true;
     }
     
  }
