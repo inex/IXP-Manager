@@ -184,8 +184,12 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                 $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $vintid );
     
             if( !isset( $vint ) || !$vint )
-                throw new IXP_Exception( 'Not sure how you would add a VLAN interface without a containing virtual interface');
-    
+            {
+                $this->addMessage( 'You need a containing virtual interface before you add a VLAN interface', OSS_Message::ERROR );
+                $this->redirect( 'virtual-interface/add' );
+            }
+            
+            
             // make BGP MD5 easy
             $form->getElement( 'ipv4bgpmd5secret' )->setValue( OSS_String::random() );
             $form->getElement( 'ipv6bgpmd5secret' )->setValue(  $form->getElement( 'ipv4bgpmd5secret' )->getValue() );

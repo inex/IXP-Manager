@@ -175,7 +175,10 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
                 $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $vintid );
             
             if( !isset( $vint ) || !$vint )
-                throw new IXP_Exception( 'Not sure how you would add a physical interface without a containing virtual interface');
+            {
+                $this->addMessage( 'You need a containing virtual interface before you add a physical interface', OSS_Message::ERROR );
+                $this->redirect( 'virtual-interface/add' );
+            }
             
             $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
             $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $vint->getId() ] ) );
