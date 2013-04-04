@@ -197,7 +197,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
     protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
         $this->addMessage( 'Virtual interface successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
-        $this->redirect( 'customer/overview/tab/ports/id/' . $object->getCustomer()->getId() );
+        $this->redirect( 'virtual-interface/edit/id/' . $object->getId() );
     }
     
     

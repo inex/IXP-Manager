@@ -1,4 +1,5 @@
 
+# V3.0.x
 
 Schema update required:
 
@@ -42,7 +43,16 @@ Schema update required:
         FOREIGN KEY (user_id) REFERENCES user (id);
 
 
-# V3.0.8 - 2013
+# V3.0.9 - 201304
+
+- [IM] Better redirection when adding / editing virtual interfaces (224fce5 - Barry O'Donovan - 2013-04-04)
+- [IM] Do not assume physical / VLAN interfaces exist for a virtual interface (1b55c11 - Barry O'Donovan - 2013-04-04)
+- [IM] Better error messages and redirection on adding phys / vlan interfaces (6fa56ac - Barry O'Donovan - 2013-04-04)
+- [BF] Broken link (d8abe24 - Barry O'Donovan - 2013-04-04)
+
+
+# V3.0.8 - 20130403
+>>>>>>> master
 
 Schema update required:
 
