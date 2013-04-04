@@ -10,11 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 class ContactGroup
 {
     const TYPE_ROLE = 'ROLE';
-    const TYPE_OTHER = 'OTHER';
     
     public static $TYPES = [
         self::TYPE_ROLE => 'Role',
-        self::TYPE_OTHER => 'Other'
     ];
     
     /**

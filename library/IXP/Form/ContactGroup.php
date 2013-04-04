@@ -53,12 +53,13 @@ class IXP_Form_ContactGroup extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $description );
 
-        $type = $this->createElement( 'select', 'type' );
-        $type->setLabel( _( 'Type' ) )
-            ->setAttrib( 'class', 'span3 chzn-select' )
-            ->setMultiOptions( \Entities\ContactGroup::$TYPES )
-            ->setRegisterInArrayValidator( true )
-            ->setErrorMessages( array( 'Please set the role' ) );
+        $type = $this->createElement( 'text', 'type' );
+        $type->addValidator( 'stringLength', false, array( 1, 20 ) )
+            ->setRequired( true )
+            ->setLabel( 'Type' )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $type );
 
         $active = $this->createElement( 'checkbox', 'active' );
