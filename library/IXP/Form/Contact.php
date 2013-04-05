@@ -34,6 +34,8 @@ class IXP_Form_Contact extends IXP_Form
 {
     public function init()
     {
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'contact/forms/edit.phtml' ] ] ] );
+        
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
@@ -94,6 +96,14 @@ class IXP_Form_Contact extends IXP_Form
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
+        
+        $role = $this->createElement( 'hidden', 'role' );
+        $role->setRequired( false );
+        $this->addElement( $role );
+        
+        $group = $this->createElement( 'hidden', 'group' );
+        $group->setRequired( false );
+        $this->addElement( $group );
     }
     
 }
