@@ -91,6 +91,7 @@ class ContactController extends IXP_Controller_FrontEnd
                 ]
             ]
         );
+        
     }
 
 
@@ -131,9 +132,12 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
+        $this->view->groups = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
+        $this->view->jsonGroups = json_encode( $this->view->groups );
         if( $isEdit )
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
+            $this->view->contactGroups = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray( false, $object->getId() );
         }
         else if( $this->getParam( 'custid', false ) && ( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) ) ) )
         {
@@ -202,6 +206,39 @@ class ContactController extends IXP_Controller_FrontEnd
         return false;
     }
     
+    /**
+     * Prevalidation hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called if the user POSTs a form just before the form is validated by Zend
+     *
+     * @param OSS_Form $form The Send form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not validated or processed
+     */
+    protected function addPreValidate( $form, $object, $isEdit )
+    {
+        if( isset( $_POST['role'] ) )
+        {
+            foreach( $_POST['role'] as $rid )
+            {
+                $groups[\Entities\ContactGroup::TYPE_ROLE][$rid] = ["id" => $rid];
+            }
+        }
+            
+        if( isset( $_POST['group'] ) )
+        {
+            foreach( $_POST['group'] as $gid )
+            {
+                $g = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $gid );
+                if( $g )
+                    $groups[$g->getType()][$gid] = ["id" => $gid];
+            }
+        }   
+        $this->view->contactGroups = $groups;
+        return true;
+    }
+    
     
     /**
      *
@@ -225,6 +262,31 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             $object->setCreated( new DateTime() );
             $object->setCreator( $this->getUser()->getUsername() );
+        }
+        
+        $groupes = [];
+        foreach( $form->getValue( "role" ) as $rid )
+        {
+            $role = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $rid );
+            if( $role && !$object->getGroups()->contains( $role ) )
+                $object->addGroup( $role );
+            $groups[] = $role;
+        }
+        
+        foreach( $form->getValue( "group" ) as $gid )
+        {
+            $group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $gid );
+            if( $group && !$object->getGroups()->contains( $group ) )
+                $object->addGroup( $group );
+            $groups[] = $group;
+        }
+        
+        foreach( $object->getGroups() as $key => $group )
+        {
+            if( !in_array( $group, $groups ) )
+            {
+                $object->getGroups()->remove( $key );
+            }
         }
     
         return true;
