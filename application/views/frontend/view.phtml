@@ -71,7 +71,7 @@
                             {assign var=hasOneId value=$cconf.idField}
                             <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$object.$hasOneId}">{$object.$col}</a>
                         {elseif $cconf.type eq $FE_COL_TYPES.XLATE}
-                            {$cconf.xlator[ $object.$col ]}
+                            {if isset($cconf.xlator[ $object.$col ])}{$cconf.xlator[ $object.$col ]}{else}{$object.$col}{/if}
                         {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
                             {if $object.$col}{$object.$col|date_format:'%Y-%m-%d %H:%M:%S'}{/if}
                         {elseif $cconf.type eq $FE_COL_TYPES.SCRIPT}

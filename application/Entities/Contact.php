@@ -68,6 +68,21 @@ class Contact
      * @var Entities\Customer
      */
     private $Customer;
+    
+     /**
+     * @var string
+     */
+    private $position;
+
+    /**
+     * @var \Entities\User
+     */
+    private $User;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Groups;
 
 
     /**
@@ -332,20 +347,6 @@ class Contact
     {
         return $this->Customer;
     }
-    /**
-     * @var string
-     */
-    private $position;
-
-    /**
-     * @var \Entities\User
-     */
-    private $User;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $Groups;
 
     /**
      * Constructor

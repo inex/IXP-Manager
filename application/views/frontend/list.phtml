@@ -82,7 +82,7 @@
                             </td>
                         {elseif $cconf.type eq $FE_COL_TYPES.XLATE}
                             <td>
-                                {$cconf.xlator[ $row.$col ]}
+                                {if isset($cconf.xlator[ $row.$col ])}{$cconf.xlator[ $row.$col ]}{else}{$row.$col}{/if}
                             </td>
                         {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
                             <td>
