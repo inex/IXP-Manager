@@ -110,7 +110,7 @@ class ContactGroupController extends IXP_Controller_FrontEnd
      * Adding values for new announcement.
      *
      * @param OSS_Form $form The Send form object
-     * @param \Entities\User $user The Doctrine2 User entity
+     * @param \Entities\ContactGroup $group The Doctrine2 contact group entity
      * @param bool $isEdit True if we are editing, otherwise false
      * @return bool If false, the form is not processed
      */
