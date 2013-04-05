@@ -12,4 +12,54 @@ use Doctrine\ORM\EntityRepository;
  */
 class ContactGroup extends EntityRepository
 {
+    /**
+     * Gets groups name array.
+     *
+     * Returned array structure: 
+     * $arr = [
+     *      'ROLE' => [
+     *           [ 'id' => 1, 'name' => 'Billing' ],
+     *           [ 'id' => 2, 'name' => 'Admin']...
+     *       ]
+     *       'Other' => [
+     *           [ 'id' => n, 'name' => 'Other group' ]
+     *       ]
+     * ];
+     * 
+     * @param string|bool $type Contact group tipe
+     * @param int|bool    $cid  Concact id to filter for particular contact
+     * @return array
+     */
+    public function getGroupNamesTypeArray( $type = false, $cid = false )
+    {
+        $dql =  "SELECT cg.id AS id, cg.type AS type, cg.name AS name
+             FROM \\Entities\\ContactGroup cg ";
+             
+        if( $cid )
+            $dql .= " LEFT JOIN cg.Contacts c";
+            
+        if( $type && $cid )
+            $dql .= " WHERE cg.type = ?1 AND c.id = ?2";
+        else if( $type )
+            $dql .= " WHERE cg.type = ?1";
+        else if( $cid )
+            $dql .= " WHERE c.id = ?1";
+        
+        $q = $this->getEntityManager()->createQuery( $dql );
+            
+        if( $type && $cid )
+            $q->setParameter( 1, $type)->setParameter( 2, $cid );
+        else if( $type  )
+           $q->setParameter( 1, $type );
+        else if( !$type && $cid )
+            $q->setParameter( 1, $cid );
+            
+        $tmpGroups = $q->getArrayResult();
+
+        $groups = [];
+        foreach( $tmpGroups as $g )
+            $groups[ $g['type'] ][ $g[ 'id' ] ] = [ 'id' => $g['id'], 'name' => $g['name'] ];
+
+        return $groups;
+    }
 }
