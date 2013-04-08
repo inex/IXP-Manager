@@ -110,6 +110,16 @@ class ContactController extends IXP_Controller_FrontEnd
             )
         ->from( '\\Entities\\Contact', 'c' )
         ->leftJoin( 'c.Customer', 'cust' );
+        
+        if( $this->getParam( "cgid", false ) )
+        {
+            $qb->leftJoin( "c.Groups", "cg" )
+                ->andWhere( "cg.id = ?2" )
+                ->setParameter( 2, $this->getParam( "cgid" ) );
+            
+            $this->view->group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $this->getParam( "cgid" ) );
+            $this->view->listPreamble = "contacts/list-preamble";
+        }
     
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );

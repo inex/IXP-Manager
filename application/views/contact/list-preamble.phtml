@@ -1,0 +1,7 @@
+{if isset( $group ) }
+  <h3>Filtered for group <em>{$group->getName()}</em>
+    <a id="show_all_contacts" class="btn have-tooltip-below" href="{genUrl module=$module controller=$controller action=$action}" data-original-title="Show All">
+      <i class="icon-remove-circle"></i>
+    </a>
+  </h3>
+{/if}
