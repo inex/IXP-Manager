@@ -72,7 +72,7 @@ class IXP_Form_ContactGroup extends IXP_Form
         $limit = $this->createElement( 'text', 'limited_to' );
         $limit->addValidator( 'digits', true )
             ->setRequired( true )
-            ->setLabel( 'Users Limit' )
+            ->setLabel( 'Limit' )
             ->setAttrib( 'class', 'span2' )
             ->addFilter( 'Int' );
         $this->addElement( $limit );
