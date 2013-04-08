@@ -148,10 +148,48 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
             $this->view->contactGroups = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray( false, $object->getId() );
+            
+            if( $object->getUser() )
+            {
+                $form->getElement( 'login' )->setValue( 1 );
+                $form->getElement( 'username' )->setValue( $object->getUser()->getUsername() );
+                $form->getElement( 'password' )->setValue( $object->getUser()->getPassword() );
+                $form->getElement( 'disabled' )->setValue( $object->getUser()->getDisabled() );
+            }
+            else
+            {
+                $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
+            }
         }
         else if( $this->getParam( 'custid', false ) && ( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) ) ) )
         {
             $form->getElement( 'custid' )->setValue( $cust->getId() );
+            $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
+        }
+        
+        if( !$isEdit )
+        {
+            $form->getElement( 'username' )->addValidator( 'OSSDoctrine2Uniqueness', true,
+                [ 'entity' => '\\Entities\\User', 'property' => 'username' ]
+            );
+        }
+        
+        switch( $this->getUser()->getPrivs() )
+        {
+            case \Entities\User::AUTH_SUPERUSER:
+                break;
+                
+            case \Entities\User::AUTH_CUSTADMIN:
+                $form->removeElement( 'password' );
+                $form->removeElement( 'privs' );
+                $form->removeElement( 'custid' );
+                if( $isEdit )
+                    $form->getElement( 'username' )->setAttrib( 'readonly', 'readonly' );
+                    
+                break;
+
+            default:
+                throw new OSS_Exception( 'Unhandled user type' );
         }
     }
     
@@ -228,6 +266,26 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function addPreValidate( $form, $object, $isEdit )
     {
+        if( $isEdit && $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        {
+            if( $this->getUser()->getCustomer() != $object->getCustomer() )
+            {
+                $this->addMessage( 'Illegal attempt to edit a user not under your control. The security team have been notified.' );
+                $this->getLogger()->alert( "User {$this->getUser()->getUsername()} illegally tried to edit {$object->getName()}" );
+                $this->redirect( 'contact/list' );
+            }
+        }
+        
+        if( isset( $_POST['login'] ) && $_POST['login'] )
+        {
+            $_POST['login'] = 1;
+            $form->getElement( "username" )->setRequired( true );
+            $form->getElement( "password" )->setRequired( true );
+            $form->getElement( "privs" )->setRequired( true );
+        }
+        else
+            $_POST['login'] = 0;
+        
         if( isset( $_POST['role'] ) )
         {
             foreach( $_POST['role'] as $rid )
@@ -246,6 +304,7 @@ class ContactController extends IXP_Controller_FrontEnd
             }
         }   
         $this->view->contactGroups = $groups;
+        
         return true;
     }
     
@@ -267,12 +326,15 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             $object->setLastupdated( new DateTime() );
             $object->setLastupdatedby( $this->getUser()->getId() );
+            
         }
         else
         {
             $object->setCreated( new DateTime() );
             $object->setCreator( $this->getUser()->getUsername() );
         }
+        
+        $this->_processUser( $form, $object );
         
         $groupes = [];
         foreach( $form->getValue( "role" ) as $rid )
@@ -290,8 +352,6 @@ class ContactController extends IXP_Controller_FrontEnd
             }
             $groups[] = $role;
         }
-        
-        
         foreach( $form->getValue( "group" ) as $gid )
         {
             $group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $gid );
@@ -321,5 +381,161 @@ class ContactController extends IXP_Controller_FrontEnd
         return true;
     }
     
+    
+    /**
+     * Creates/updates/deltes user for contact
+     *
+     * @param IXP_Form_Contact $form The form object
+     * @param \Entities\Contact $object The Doctrine2 entity (being edited or blank for add)
+     */
+    private function _processUser( $form, $object )
+    {
+        $this->_feParams->userStatus = "none";
+        if( $form->getValue( "login" ) )
+        {
+            if( $object->getUser() )
+            {
+                if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+                {
+                    $object->getUser()->setUsername( $form->getValue( "username" ) );
+                    $object->getUser()->setPassword( $form->getValue( "password" ) );
+                    $object->getUser()->setPrivs( $form->getValue( "privs" ) );
+                }
+                
+                $object->getUser()->setDisabled( $form->getValue( "disabled" ) );                
+                $object->getUser()->setEmail( $form->getValue( "email" ) );
+                $object->getUser()->setLastupdated( new DateTime() );
+                $object->getUser()->setLastupdatedby( $this->getUser()->getId() );
+            }
+            else
+            {
+                $user = new \Entities\User();
+                $this->getD2EM()->persist( $user );
+                
+                $object->setUser( $user );
+                $user->setEmail( $form->getValue( "email" ) );
+                $user->setDisabled( $form->getValue( "disabled" ) );
+                $user->setCreated( new DateTime() );
+                $user->setCreator( $this->getUser()->getUsername() );
+                $user->setCustomer( $object->getCustomer() );
+
+                if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+                {
+                    $user->setParent( $this->getUser() );
+                    $user->setPrivs( \Entities\User::AUTH_CUSTUSER );
+                    $user->setPassword( OSS_String::random( 16 ) );
+                }
+                else
+                {
+                    $user->setUsername( $form->getValue( "username" ) );
+                    $user->setPassword( $form->getValue( "password" ) );
+                    $user->setPrivs( $form->getValue( "privs" ) );
+   
+                    try
+                    {
+                        $user->setParent(
+                            $this->getD2EM()->createQuery(
+                                'SELECT u FROM \\Entities\\User u WHERE u.privs = ?1 AND u.Customer = ?2'
+                            )
+                            ->setParameter( 1, \Entities\User::AUTH_CUSTADMIN )
+                            ->setParameter( 2, $object->getCustomer() )
+                            ->setMaxResults( 1 )
+                            ->getSingleResult()
+                        );
+                    }
+                    catch( \Doctrine\ORM\NoResultException $e )
+                    {
+                        $user->setParent( $user );
+                    }
+                }
+                
+                $this->getLogger()->info( "{$this->getUser()->getUsername()} created user {$user->getUsername()}" );
+                $this->_feParams->userStatus = "created";
+            }
+        }
+        else
+        {
+            if( $object->getUser() )
+            {
+                if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+                {
+                    if( $object->getCustomer() != $this->getUser()->getCustomer() )
+                    {
+                        $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to delete other customer user {$object->getUser()->getUsername()}" );
+                        $this->addMessage( 'You are not authorised to delete this user. The administrators have been notified.' );
+                        return false;
+                    }
+                }
+                
+                // now delete all the users privileges also
+                foreach( $object->getUser()->getPreferences() as $pref )
+                {
+                    $object->getUser()->removePreference( $pref );
+                    $this->getD2EM()->remove( $pref );
+                }
+
+                $user = $object->getUser();
+                $object->unsetUser();
+                $this->getD2EM()->remove( $user );
+                $this->_feParams->removedUserId = $user->getId();
+                $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$user->getUsername()}" );
+            }
+        }
+        $this->_feParams->userStatus = "removed";
+    }
+    
+    
+    /**
+     *
+     * @param IXP_Form_User $form The form object
+     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostFlush( $form, $object, $isEdit )
+    {
+        if( isset( $this->_feParams->userStatus ) )
+        {
+            if( $this->view->userStatus == "created" ) 
+            {
+                $this->view->newuser = $object->getUser();
+                $this->sendWelcomeEmail( $object->getUser() );
+            }
+            else if( $this->_feParams->userStatus == "removed" && isset( $this->_feParams->removedUserId ) ) 
+            {
+                $this->clearUserFromCache( $this->_feParams->removedUserId );
+            }
+
+        }
+
+        return true;
+    }
+    
+    
+    /**
+     * Send a welcome email to a new user
+     *
+     * @param \Entities\User $user The recipient of the email
+     * @return bool True if the mail was sent successfully
+     */
+    private function sendWelcomeEmail( $user )
+    {
+        try
+        {
+            $mail = $this->getMailer();
+            $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
+                ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Your Access Details' ) )
+                ->addTo( $user->getEmail(), $user->getUsername() )
+                ->setBodyHtml( $this->view->render( 'user/email/html/welcome.phtml' ) )
+                ->send();
+        }
+        catch( Zend_Mail_Exception $e )
+        {
+            $this->getLogger()->alert( "Could not send welcome email for new user!\n\n" . $e->toString() );
+            return false;
+        }
+        
+        return true;
+    }
     
 }
