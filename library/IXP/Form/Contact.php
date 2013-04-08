@@ -40,7 +40,7 @@ class IXP_Form_Contact extends IXP_Form
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
-            ->setAttrib( 'class', 'span3' )
+            //->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name );
@@ -49,20 +49,24 @@ class IXP_Form_Contact extends IXP_Form
         $position->addValidator( 'stringLength', false, array( 1, 50 ) )
             ->setRequired( true )
             ->setLabel( 'Position' )
-            ->setAttrib( 'class', 'span3' )
+            //->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $position );
 
         $this->addElement( IXP_Form_Customer::getPopulatedSelect( 'custid' ) );
-
+        $this->getElement( 'custid' )
+            ->setAttrib( 'class', "chzn-select" );        
+        
         $this->addElement( OSS_Form_User::createEmailElement( 'email' ) );
-        $this->getElement( 'email' )->setRequired( false );
+        $this->getElement( 'email' )
+            ->setRequired( false )
+            ->setAttrib( 'class', "" );
 
         $phone = $this->createElement( 'text', 'phone' );
         $phone->addValidator( 'stringLength', false, array( 1, 32 ) )
             ->setLabel( _( 'Phone' ) )
-            ->setAttrib( 'class', 'span3' )
+            //->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $phone );
@@ -71,14 +75,14 @@ class IXP_Form_Contact extends IXP_Form
         $mobile->addValidator( 'stringLength', false, array( 1, 32 ) )
             ->setLabel( _( 'Mobile' ) )
             ->addFilter( 'StringTrim' )
-            ->setAttrib( 'class', 'span3' )
+            //->setAttrib( 'class', 'span3' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $mobile );
         
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'span3' )
+            //->setAttrib( 'class', 'span3' )
             ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 60 )
             ->setAttrib( 'rows', 5 );
@@ -86,12 +90,16 @@ class IXP_Form_Contact extends IXP_Form
 
         $facilityaccess = $this->createElement( 'checkbox', 'facilityaccess' );
         $facilityaccess->setLabel( 'Facility Access' )
-            ->setCheckedValue( '1' );
+            ->addValidator( 'InArray', false, array( array( 0, 1 ) ) )
+            ->addFilter( 'Int' )
+            ->setValue( 1 );
         $this->addElement( $facilityaccess );
 
         $mayauthorize = $this->createElement( 'checkbox', 'mayauthorize' );
         $mayauthorize->setLabel( 'May Authorize' )
-            ->setCheckedValue( '1' );
+            ->addValidator( 'InArray', false, array( array( 0, 1 ) ) )
+            ->addFilter( 'Int' )
+            ->setValue( 1 );
         $this->addElement( $mayauthorize );
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
@@ -104,6 +112,43 @@ class IXP_Form_Contact extends IXP_Form
         $group = $this->createElement( 'hidden', 'group' );
         $group->setRequired( false );
         $this->addElement( $group );
+        
+        $login = $this->createElement( 'checkbox', 'login' );
+        $login->setLabel( 'can login to portal' )
+            ->addValidator( 'InArray', false, array( array( 0, 1 ) ) )
+            ->addFilter( 'Int' );
+        $this->addElement( $login );
+        
+        $username = OSS_Form_Auth::createUsernameElement();
+        $username->addValidator( 'stringLength', false, array( 2, 30 ) )
+            ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\-_\.]+$/' ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', '' );
+        $this->addElement( $username );
+
+        $password = $this->createElement( 'text', 'password' );
+        $password->addValidator( 'stringLength', false, array( 8, 30 ) )
+            ->setRequired( false )
+            //->setAttrib( 'class', 'span3' )
+            ->setLabel( 'Password' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $password );
+        
+        $privileges = $this->createElement( 'select', 'privs' );
+        $privileges->setMultiOptions( \Entities\User::$PRIVILEGES_TEXT )
+            ->setRegisterInArrayValidator( true )
+            ->setRequired( false )
+            ->setLabel( 'Privileges' )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->setErrorMessages( array( 'Please select the users privilege level' ) );
+        $this->addElement( $privileges );
+        
+        $disabled = $this->createElement( 'checkbox', 'disabled' );
+        $disabled->setLabel( 'Disabled?' )
+            ->addValidator( 'InArray', false, array( array( 0, 1 ) ) )
+            ->addFilter( 'Int' );
+        $this->addElement( $disabled );
     }
     
 }
