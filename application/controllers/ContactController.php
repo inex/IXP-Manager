@@ -269,15 +269,34 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             $role = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $rid );
             if( $role && !$object->getGroups()->contains( $role ) )
+            {
                 $object->addGroup( $role );
+                $role->addContact( $object );
+            }
+            if( $role->getLimitedTo() != 0 && $role->getLimitedTo() < count( $role->getContacts() ) )
+            {
+                $this->addMessage( "Role {$role->getName()} is full this contact can't be assign to this role.", OSS_Message::ERROR );
+                return;
+            }
             $groups[] = $role;
         }
+        
         
         foreach( $form->getValue( "group" ) as $gid )
         {
             $group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $gid );
+           
             if( $group && !$object->getGroups()->contains( $group ) )
+            {
                 $object->addGroup( $group );
+                $group->addContact( $object );
+            }
+           
+            if( $group->getLimitedTo() != 0 &&  $group->getLimitedTo() < count( $group->getContacts() ) )
+            {
+                $this->addMessage( "Group {$group->getName()} is full this contact can't be assign to this group.", OSS_Message::ERROR );
+                return;                
+            }
             $groups[] = $group;
         }
         

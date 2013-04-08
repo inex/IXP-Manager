@@ -119,7 +119,14 @@ class ContactGroupController extends IXP_Controller_FrontEnd
         if( !$isEdit )
             $group->setCreated( new DateTime() );
 
-        return true;
+        $cnt = count( $group->getContacts() );
+        if( $form->getValue( "limited_to" ) != 0 && $form->getValue( "limited_to" ) < $cnt )
+        {
+            $this->addMessage( "This group already have more contacts then the limit you wan't to set. Current number of contacts: {$cnt}", OSS_Message::ERROR );
+            return false;
+        }
+        else
+            return true;
     }
     
  }
