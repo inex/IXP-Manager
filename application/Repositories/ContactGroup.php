@@ -38,12 +38,14 @@ class ContactGroup extends EntityRepository
         if( $cid )
             $dql .= " LEFT JOIN cg.Contacts c";
             
+        $dql .= " WHERE cg.active = 1";
+            
         if( $type && $cid )
-            $dql .= " WHERE cg.type = ?1 AND c.id = ?2";
+            $dql .= " AND cg.type = ?1 AND c.id = ?2";
         else if( $type )
-            $dql .= " WHERE cg.type = ?1";
+            $dql .= " AND cg.type = ?1";
         else if( $cid )
-            $dql .= " WHERE c.id = ?1";
+            $dql .= " AND c.id = ?1";
         
         $q = $this->getEntityManager()->createQuery( $dql );
             
