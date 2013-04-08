@@ -225,6 +225,32 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function preDelete( $object )
     {
+        if( $object->getUser() )
+        {
+            if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            {
+                if( $object->getCustomer() != $this->getUser()->getCustomer() )
+                {
+                    $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to delete other customer user {$object->getUser()->getUsername()}" );
+                    $this->addMessage( 'You are not authorised to delete this user. The administrators have been notified.' );
+                    return false;
+                }
+            }
+            
+            // now delete all the users privileges also
+            foreach( $object->getUser()->getPreferences() as $pref )
+            {
+                $object->getUser()->removePreference( $pref );
+                $this->getD2EM()->remove( $pref );
+            }
+
+            $user = $object->getUser();
+            $object->unsetUser();
+            $this->getD2EM()->remove( $user );
+            $this->_feParams->removedUserId = $user->getId();
+            $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$user->getUsername()}" );
+        }
+        
         // keep the customer ID for redirection on success
         $this->getSessionNamespace()->ixp_contact_delete_custid = $object->getCustomer()->getId();
         return true;
@@ -382,7 +408,37 @@ class ContactController extends IXP_Controller_FrontEnd
     }
     
     
+   
+    
+    
     /**
+     *
+     * @param IXP_Form_User $form The form object
+     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostFlush( $form, $object, $isEdit )
+    {
+        if( isset( $this->_feParams->userStatus ) )
+        {
+            if( $this->view->userStatus == "created" ) 
+            {
+                $this->view->newuser = $object->getUser();
+                $this->sendWelcomeEmail( $object->getUser() );
+            }
+            else if( $this->_feParams->userStatus == "removed" && isset( $this->_feParams->removedUserId ) ) 
+            {
+                $this->clearUserFromCache( $this->_feParams->removedUserId );
+            }
+
+        }
+
+        return true;
+    }
+    
+    
+     /**
      * Creates/updates/deltes user for contact
      *
      * @param IXP_Form_Contact $form The form object
@@ -482,33 +538,6 @@ class ContactController extends IXP_Controller_FrontEnd
             }
         }
         $this->_feParams->userStatus = "removed";
-    }
-    
-    
-    /**
-     *
-     * @param IXP_Form_User $form The form object
-     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
-     * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
-     */
-    protected function addPostFlush( $form, $object, $isEdit )
-    {
-        if( isset( $this->_feParams->userStatus ) )
-        {
-            if( $this->view->userStatus == "created" ) 
-            {
-                $this->view->newuser = $object->getUser();
-                $this->sendWelcomeEmail( $object->getUser() );
-            }
-            else if( $this->_feParams->userStatus == "removed" && isset( $this->_feParams->removedUserId ) ) 
-            {
-                $this->clearUserFromCache( $this->_feParams->removedUserId );
-            }
-
-        }
-
-        return true;
     }
     
     
