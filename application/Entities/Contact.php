@@ -391,6 +391,18 @@ class Contact
     
         return $this;
     }
+    
+    /**
+     * Unset User
+     *
+     * @return Contact
+     */
+    public function unsetUser()
+    {
+        $this->User = NULL;
+    
+        return $this;
+    }
 
     /**
      * Get User
