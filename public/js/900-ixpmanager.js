@@ -42,6 +42,8 @@ $( 'document' ).ready( function(){
 
 	$(".chzn-select").chosen();
     $(".chzn-select-deselect").chosen({allow_single_deselect:true});
+    
+    formatFieldset();
 });
 
 
@@ -400,6 +402,23 @@ function tt_sortByName(a, b)
 	var aName = a.name.toLowerCase();
 	var bName = b.name.toLowerCase();
 	return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+}
+
+
+/**
+ * Set proper with and margins for bordered fieldset
+ */
+function formatFieldset()
+{
+    $( ".legend-fieldset-bordered" ).css( "width", $( ".legend-fieldset-bordered > label" ).width() + 20 );
+	
+	$( ".fieldset-bordered-elements> .control-group > .control-label" ).each(function( index ) {
+        $(this).width( "100" );
+    });
+	
+	$( ".fieldset-bordered-elements > .control-group > .controls" ).each(function( index ) {
+        $(this).css( "margin-left", "120px" );
+    });
 }
 
 
