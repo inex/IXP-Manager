@@ -69,17 +69,17 @@ var groups_cnt = {$row_idx} + 1;
     {
         var nrow =  '<tr id="groups-row-' + groups_cnt + '" class="hidden">\
         <td>\
-        <select id="group-type-' + groups_cnt + '" class="chzn-select" style="width: 100px;">\
+        <select id="group-type-' + groups_cnt + '" class="chzn-select" style="width: 100px;" data-placeholder="type...">\
         <option value="0"></option>';
         {foreach $groups as $name => $value}
-            {if $name != "ROLE"}
-                    nrow += '<option value="{$name}">{$name}</option>';
+            {if $name != "ROLE" && isset( $options['contact']['group']['types'][$name] )}
+                    nrow += '<option value="{$name}">{$options["contact"]["group"]["types"][$name]}</option>';
                 {/if}
         {/foreach}
         nrow += '</select>\
         </td>\
-        <td><div class="hidden"><select id="select-group-' + groups_cnt + '" name="group[' + groups_cnt + ']" class="chzn-select" style="width: 100px;"></select></div></td>\
-        <td><span class="btn btn-mini hidden" style="min-height: 20px;" id="remove-group-' + groups_cnt + '"><i class="icon-remove"></i></span></td>\
+        <td><div class="hidden"><select id="select-group-' + groups_cnt + '" name="group[' + groups_cnt + ']" class="chzn-select" style="width: 100px;" data-placeholder="group..."></select></div></td>\
+        <td><div class="hidden"  id="remove-group-' + groups_cnt + '"><span class="btn btn-mini"><i class="icon-remove"></i></span></div></td>\
         </tr>';
         return nrow;
     }

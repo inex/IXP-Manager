@@ -172,6 +172,10 @@ class ContactController extends IXP_Controller_FrontEnd
     {
         $this->view->groups     = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
         $this->view->jsonGroups = json_encode( $this->view->groups );
+
+        // ROLE is trated as a special group and if it is not set, it will disable the contact role functionality        
+        if( !isset( $this->_options['contact']['group']['types'][ \Entities\ContactGroup::TYPE_ROLE ] ) )
+            $form->removeElement( 'role' );
         
         // redirect back to whence we came on form submission
         if( $this->getParam( "uid", false ) )

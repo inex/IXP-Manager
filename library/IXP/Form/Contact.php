@@ -82,7 +82,7 @@ class IXP_Form_Contact extends IXP_Form
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
             ->setRequired( false )
-            //->setAttrib( 'class', 'span3' )
+            ->setAttrib( 'style', 'width: 80%;' )
             ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 60 )
             ->setAttrib( 'rows', 5 );

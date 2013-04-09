@@ -35,7 +35,6 @@ class IXP_Form_ContactGroup extends IXP_Form
 {
     public function init()
     {
-
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 20 ) )
             ->setRequired( true )
@@ -53,15 +52,13 @@ class IXP_Form_ContactGroup extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $description );
-
-        $type = $this->createElement( 'text', 'type' );
-        $type->addValidator( 'stringLength', false, array( 1, 20 ) )
-            ->setRequired( true )
-            ->setLabel( 'Type' )
-            ->setAttrib( 'class', 'span3' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $type );
+        
+        $type = $this->createElement( 'select', 'type' );
+        $type->setLabel( _( 'Type' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setRegisterInArrayValidator( true )
+            ->setErrorMessages( array( 'Please set the role' ) );
+        $this->addElement( $type ); 
 
         $active = $this->createElement( 'checkbox', 'active' );
         $active->setLabel( 'Active' )
