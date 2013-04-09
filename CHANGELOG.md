@@ -24,9 +24,6 @@ Schema update required:
     ALTER TABLE contact_to_group ADD CONSTRAINT FK_FCD9E962647145D0 
         FOREIGN KEY (contact_group_id) REFERENCES contact_group (id);
     
-    ALTER TABLE contact ADD CONSTRAINT FK_4C62E638A76ED395 
-        FOREIGN KEY (user_id) REFERENCES user (id);
-    
     ALTER TABLE contact 
         ADD user_id INT DEFAULT NULL, 
         ADD position VARCHAR(50) DEFAULT NULL, 
@@ -37,12 +34,11 @@ Schema update required:
         CHANGE facilityaccess facilityaccess TINYINT(1) NOT NULL, 
         CHANGE mayauthorize mayauthorize TINYINT(1) NOT NULL;
     
-    CREATE UNIQUE INDEX UNIQ_4C62E638A76ED395 ON contact (user_id)
-
     ALTER TABLE contact ADD CONSTRAINT FK_4C62E638A76ED395 
         FOREIGN KEY (user_id) REFERENCES user (id);
     
-    
+    CREATE UNIQUE INDEX UNIQ_4C62E638A76ED395 ON contact (user_id)
+
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Billing', 'Contact for billing matters', 'ROLE', 1, 0, NOW() );
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Technical', 'Contact for technical matters', 'ROLE', 1, 0, NOW() );
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Admin', 'Contact for admin matters', 'ROLE', 1, 0, NOW() );
