@@ -60,7 +60,7 @@ class ContactGroupController extends IXP_Controller_FrontEnd
                 'type'        => [
                     'title'          => 'Type',
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'         => \Entities\ContactGroup::$TYPES
+                    'xlator'         => $this->_options['contact']['group']['types']
                 ],
                 'created'        => [
                     'title'         => 'Created',
@@ -89,21 +89,47 @@ class ContactGroupController extends IXP_Controller_FrontEnd
      */
     protected function listGetData( $id = null )
     {
+        $types = isset( $this->_options['contact']['group']['types'] ) ? $this->_options['contact']['group']['types'] : [];
+    
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'o.id AS id, o.name AS name, o.type AS type,
                     o.created AS created, o.description AS description,
                     o.active AS active, o.limited_to AS limit'
             )
-            ->from( '\\Entities\\ContactGroup', 'o' );
+            ->from( '\\Entities\\ContactGroup', 'o' )
+            ->where( 'o.type IN( ?1 )' )
+            ->setParameter( 1, array_keys( $types ) );
     
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
         if( $id !== null )
-            $qb->andWhere( 'o.id = ?1' )->setParameter( 1, $id );
+            $qb->andWhere( 'o.id = ?2' )->setParameter( 2, $id );
 
         return $qb->getQuery()->getResult();
     }
+    
+     /**
+     * Post process hook that can be overridden by subclasses for add and edit actions.
+     *
+     * This is called immediately after the initstantiation of the form object and, if
+     * editing, includes the Doctrine2 entity `$object`.
+     *
+     * If you need to have, for example, edit values set in the form, then use the
+     * `addPrepare()` hook rather than this one.
+     *
+     * @see addPrepare()
+     * @param OSS_Form $form The form object
+     * @param \Entities\ContactGroup $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     */
+    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+    {
+        $form->getElement( 'type' )->setMultiOptions( $this->_options['contact']['group']['types'] );
+    }
+    
     
     /**
      * Postvalidation hook for add / edit
