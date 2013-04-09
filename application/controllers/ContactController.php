@@ -524,6 +524,8 @@ class ContactController extends IXP_Controller_FrontEnd
                 $user->setCreated( new DateTime() );
                 $user->setCreator( $this->getUser()->getUsername() );
                 $user->setCustomer( $contact->getCustomer() );
+                
+                $this->_feParams->userStatus = "created";
             }
                 
             $user->setDisabled( $form->getValue( "disabled" ) );
