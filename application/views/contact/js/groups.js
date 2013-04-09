@@ -70,7 +70,7 @@ function _buildGroupsRow()
 {
     var nrow =  '<tr id="groups-row-' + groups_cnt + '" class="hidden">\
     <td>\
-    <select id="group-type-' + groups_cnt + '" class="chzn-select" style="width: 100px;" data-placeholder="Type...">\
+    <select id="group-type-' + groups_cnt + '" class="chzn-select" style="width: 150px;" data-placeholder="Type...">\
     <option value="0"></option>';
     {foreach $groups as $name => $value}
         {if $name != "ROLE" && isset( $options['contact']['group']['types'][$name] )}
@@ -79,7 +79,7 @@ function _buildGroupsRow()
     {/foreach}
     nrow += '</select>\
     </td>\
-    <td><div class="hidden"><select id="select-group-' + groups_cnt + '" name="group[' + groups_cnt + ']" class="chzn-select" style="width: 100px;" data-placeholder="Group..."></select></div></td>\
+    <td><div class="hidden"><select id="select-group-' + groups_cnt + '" name="group[' + groups_cnt + ']" class="chzn-select" style="width: 150px;" data-placeholder="Group..."></select></div></td>\
     <td><div class="hidden"  id="remove-group-' + groups_cnt + '"><span class="btn btn-mini"><i class="icon-remove"></i></span></div></td>\
     </tr>';
     return nrow;

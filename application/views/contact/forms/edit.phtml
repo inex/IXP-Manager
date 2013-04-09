@@ -55,6 +55,7 @@
                 </div>
             {/if}
             {$element->notes}
+            
             {if isset( $groups ) && ( count( $groups ) > 1 || ( count( $groups ) == 1 && !isset( $groups['ROLE'] ) ) ) }
                 <div class="control-group">
                     <label class="control-label" for="group">Groups</label>
@@ -67,17 +68,17 @@
                                    {foreach $cvalue as $cgroup}
                                     <tr id="groups-row-{$row_idx}">
                                         <td>
-                                            <select id="group-type-{$row_idx}" class="chzn-select" style="width: 100px;">
+                                            <select id="group-type-{$row_idx}" class="chzn-select" style="width: 150px;">
                                                 <option value="{$row_idx}"></option>
                                                 {foreach $groups as $name => $value}
                                                     {if $name != "ROLE" && isset( $options['contact']['group']['types'][$name] ) }
-                                                        <option value="{$name}" data-placeholder="type..." {if $name == $cname}selected="selected"{/if}>{$options['contact']['group']['types'][$name]}</option>
+                                                        <option value="{$name}" data-placeholder="Type..." {if $name == $cname}selected="selected"{/if}>{$options['contact']['group']['types'][$name]}</option>
                                                     {/if}
                                                 {/foreach}
                                             </select>
                                         </td>
                                         <td>
-                                            <select id="select-group-{$row_idx}" name="group[{$row_idx}]" data-placeholder="group..." class="chzn-select" style="width: 100px;">
+                                            <select id="select-group-{$row_idx}" name="group[{$row_idx}]" data-placeholder="Group..." class="chzn-select" style="width: 150px;">
                                             {foreach $groups[$cname] as $group}
                                                 {if $name != "ROLE"}
                                                     <option value="{$group.id}" {if $group.id == $cgroup.id }selected="selected"{/if}>{$group.name}</option>
@@ -95,7 +96,7 @@
                             {/if}
                             <tr id="groups-row-{$row_idx}">
                                 <td>
-                                    <select id="group-type-{$row_idx}" class="chzn-select" style="width: 100px;" data-placeholder="type...">
+                                    <select id="group-type-{$row_idx}" class="chzn-select" style="width: 150px;" data-placeholder="Type...">
                                         <option value="{$row_idx}"></option>
                                         {foreach $groups as $name => $value}
                                             {if $name != "ROLE"  && isset( $options['contact']['group']['types'][$name] )}
