@@ -67,7 +67,7 @@ class UserController extends IXP_Controller_FrontEnd
                         'idField'    => 'custid'
                     ],
 
-                    'username'      => 'Userame',
+                    'username'      => 'Username',
                     'email'         => 'Email',
                     
                     'privileges'    => [
@@ -94,7 +94,7 @@ class UserController extends IXP_Controller_FrontEnd
 
                 $this->_feParams->listColumns = [
                     'id' => [ 'title' => 'UID', 'display' => false ],
-                    'username'      => 'Userame',
+                    'username'      => 'Username',
                     'email'         => 'Email',
 
                     'enabled'       => [
@@ -170,7 +170,6 @@ class UserController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
-    
     /**
      * Function which can be over-ridden to perform any pre-deletion tasks
      *
