@@ -18,9 +18,9 @@
             <div class="control-group">
                 <div class="controls-fieldset-bordered">
                     <fieldset class="fieldset-bordered">
-                        <legend class="legend-fieldset-bordered"> 
+                        <legend class="legend-fieldset-bordered">
                             <label class="checkbox inline">
-                                <input type="checkbox" name="login" id="login" {if $element->login->getValue() == 1}checked="checked"{/if}> Can login to portal
+                                <input type="checkbox" name="login" id="login" value="1" {if $element->login->getValue() == 1}checked="checked"{/if}> Can login to portal
                             </label>
                         </legend>
                         <div class="fieldset-bordered-elements" id="login-elements"  {if $element->login->getValue() == 0}style="display: none;"{/if}>
@@ -29,9 +29,9 @@
                             {$element->privs}
                             {$element->disabled}
                         </div>
-                    </fieldset>        
+                    </fieldset>
                 </div>
-            </div> 
+            </div>
         </div>
         <div class="span6">
             {$element->facilityaccess}
@@ -47,7 +47,7 @@
                                 <br />
                             {/if}
                             <label class="checkbox inline" style="width: 55px;" >
-                                <input type="checkbox" name="role[{$role@index}]" {if isset( $contactGroups ) && isset( $contactGroups['ROLE'][$role.id] ) }checked="checked"{/if} 
+                                <input type="checkbox" name="role[{$role@index}]" {if isset( $contactGroups ) && isset( $contactGroups['ROLE'][$role.id] ) }checked="checked"{/if}
                                     id="role[{$role@index}]" value="{$role.id}"> {$role.name}
                             </label>
                         {/foreach}
