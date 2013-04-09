@@ -153,10 +153,10 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             if( $user = $this->getD2EM()->getRepository( "\\Entities\\User" )->find( $this->getParam( "uid" ) ) )
                 return $user->getContact()->getId();
+            
+            $this->addMessage( 'The requested contact / user does not exist', OSS_Message::ERROR );
+            $this->redirect();
         }
-
-        $this->addMessage( 'The requested contact / user does not exist', OSS_Message::ERROR );
-        $this->redirect();
     }
     
     /**
