@@ -53,6 +53,8 @@ class ContactController extends IXP_Controller_FrontEnd
         
             'listOrderBy'    => 'name',
             'listOrderByDir' => 'ASC',
+            
+            'addWhenEmpty'   => false,
     
             'listColumns'    => [
             
@@ -118,7 +120,6 @@ class ContactController extends IXP_Controller_FrontEnd
                 ->setParameter( 2, $this->getParam( "cgid" ) );
             
             $this->view->group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $this->getParam( "cgid" ) );
-            $this->view->listPreamble = "contacts/list-preamble";
         }
     
         if( isset( $this->_feParams->listOrderBy ) )
@@ -482,12 +483,12 @@ class ContactController extends IXP_Controller_FrontEnd
     {
         if( isset( $this->_feParams->userStatus ) )
         {
-            if( $this->view->userStatus == "created" ) 
+            if( $this->view->userStatus == "created" )
             {
                 $this->view->newuser = $object->getUser();
                 $this->sendWelcomeEmail( $object->getUser() );
             }
-            else if( $this->_feParams->userStatus == "removed" && isset( $this->_feParams->removedUserId ) ) 
+            else if( $this->_feParams->userStatus == "removed" && isset( $this->_feParams->removedUserId ) )
             {
                 $this->clearUserFromCache( $this->_feParams->removedUserId );
             }
@@ -518,7 +519,7 @@ class ContactController extends IXP_Controller_FrontEnd
                     $object->getUser()->setPrivs( $form->getValue( "privs" ) );
                 }
                 
-                $object->getUser()->setDisabled( $form->getValue( "disabled" ) );                
+                $object->getUser()->setDisabled( $form->getValue( "disabled" ) );
                 $object->getUser()->setEmail( $form->getValue( "email" ) );
                 $object->getUser()->setLastupdated( new DateTime() );
                 $object->getUser()->setLastupdatedby( $this->getUser()->getId() );
