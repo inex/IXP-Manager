@@ -256,33 +256,20 @@ $em->flush();
 
 ## Contact groups
 
-$contact_groups = [ 'Billing', 'Technical', 'Admin', 'Marketing' ];
+$contactRoles = [ 'Billing', 'Technical', 'Admin', 'Marketing' ];
 
-foreach( $contact_groups as $name )
+foreach( $contactRoles as $name )
 {
-    $description = sprintf( "Contact for %s matter", strtolower( $name ) );
-    
     $e = new \Entities\ContactGroup();
     $e->setName( $name );
-    $e->setDescription( $description );
+    $e->setDescription( sprintf( "Contact role for %s matters", strtolower( $name ) ) );
     $e->setType( \Entities\ContactGroup::TYPE_ROLE );
     $e->setActive( true );
     $e->setLimitedTo( 0 );
     $e->setCreated( new DateTime() ); 
     $em->persist( $e );
-       
-    /* generate SQL statment for this operation.
-     $sql = sprintf( "INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( '%s', '%s', '%s', 1, 0, NOW() );\n", 
-        $name, $description, \Entities\ContactGroup::TYPE_ROLE );
-    */
 }
 
-/* SQL querys for adding contact groups.
-INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Billing', 'Contact for billing matter', 'ROLE', 1, 0, NOW() );
-INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Technical', 'Contact for technical matter', 'ROLE', 1, 0, NOW() );
-INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Admin', 'Contact for admin matter', 'ROLE', 1, 0, NOW() );
-INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Marketing', 'Contact for marketing matter', 'ROLE', 1, 0, NOW() );
-*/
 $em->flush();
 
 

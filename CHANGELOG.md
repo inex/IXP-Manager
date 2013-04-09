@@ -14,7 +14,7 @@ Schema update required:
     CREATE TABLE contact_group (
         id BIGINT AUTO_INCREMENT NOT NULL, name VARCHAR(20) NOT NULL, 
         description VARCHAR(255) NOT NULL, type VARCHAR(20) NOT NULL, 
-        active TINYINT(1) NOT NULL, `limit` INT NOT NULL, created DATETIME NOT NULL, 
+        active TINYINT(1) NOT NULL, `limited_to` INT NOT NULL, created DATETIME NOT NULL, 
         UNIQUE INDEX UNIQ_40EA54CA5E237E06 (name), PRIMARY KEY(id)
     ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
     
@@ -41,6 +41,13 @@ Schema update required:
 
     ALTER TABLE contact ADD CONSTRAINT FK_4C62E638A76ED395 
         FOREIGN KEY (user_id) REFERENCES user (id);
+    
+    
+    INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Billing', 'Contact for billing matters', 'ROLE', 1, 0, NOW() );
+    INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Technical', 'Contact for technical matters', 'ROLE', 1, 0, NOW() );
+    INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Admin', 'Contact for admin matters', 'ROLE', 1, 0, NOW() );
+    INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Marketing', 'Contact for marketing matters', 'ROLE', 1, 0, NOW() );
+
 
 
 # V3.0.9 - 201304

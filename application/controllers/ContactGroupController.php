@@ -26,6 +26,7 @@
  * Controller: Manage contact groups
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Controller
  * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
@@ -129,5 +130,5 @@ class ContactGroupController extends IXP_Controller_FrontEnd
             return true;
     }
     
- }
+}
 

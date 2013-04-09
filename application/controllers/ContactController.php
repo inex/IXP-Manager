@@ -170,7 +170,7 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
-        $this->view->groups = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
+        $this->view->groups     = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
         $this->view->jsonGroups = json_encode( $this->view->groups );
         
         if( isset( $this->_feParams->user ) )
@@ -199,7 +199,7 @@ class ContactController extends IXP_Controller_FrontEnd
             );
             $form->getElement( 'login' )->setValue( 1 );
         }
-        
+
         if( $isEdit )
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
@@ -358,6 +358,7 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function addPreValidate( $form, $object, $isEdit )
     {
+
         if( $isEdit && $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
         {
             if( $this->getUser()->getCustomer() != $object->getCustomer() )
@@ -378,24 +379,20 @@ class ContactController extends IXP_Controller_FrontEnd
         else
             $_POST['login'] = 0;
         
+
         $groups = [];
-        if( isset( $_POST['role'] ) )
+        foreach( [ 'role', 'group' ] as $groupType )
         {
-            foreach( $_POST['role'] as $rid )
+            if( isset( $_POST[ $groupType ] ) )
             {
-                $groups[\Entities\ContactGroup::TYPE_ROLE][$rid] = ["id" => $rid];
+                foreach( $_POST[ $groupType ] as $cgid )
+                {
+                    if( $cg = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $cgid ) )
+                        $groups[ $cg->getType() ][$cgid] = [ "id" => $cgid ];
+                }
             }
         }
             
-        if( isset( $_POST['group'] ) )
-        {
-            foreach( $_POST['group'] as $gid )
-            {
-                $g = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $gid );
-                if( $g )
-                    $groups[$g->getType()][$gid] = ["id" => $gid];
-            }
-        }   
         $this->view->contactGroups = $groups;
         
         return true;
@@ -407,7 +404,7 @@ class ContactController extends IXP_Controller_FrontEnd
      * @param IXP_Form_Contact $form The form object
      * @param \Entities\Contact $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
+     * @return bool If false, the form is not processed
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
@@ -427,40 +424,36 @@ class ContactController extends IXP_Controller_FrontEnd
             $object->setCreator( $this->getUser()->getUsername() );
         }
         
+
         $this->_processUser( $form, $object );
         
-        $groupes = [];
-        foreach( $form->getValue( "role" ) as $rid )
+        $groups = [];
+        foreach( [ 'role', 'group' ] as $groupType )
         {
-            $role = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $rid );
-            if( $role && !$object->getGroups()->contains( $role ) )
+            foreach( $form->getValue( $groupType ) as $cgid )
             {
-                $object->addGroup( $role );
-                $role->addContact( $object );
+                if( $group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $cgid ) )
+                {
+                    if( $group->getLimitedTo() != 0 )
+                    {
+                        $contactsWithGroupForCustomer = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->countForCustomer( $object->getCustomer(), $cgid );
+                        
+                        if( !$object->getGroups()->contains( $group ) && $group->getLimitedTo() <= $contactsWithGroupForCustomer )
+                        {
+                            $this->addMessage( "Contact group {$group->getName()} has a limited membership and is full.", OSS_Message::WARNING );
+                            return false;
+                        }
+                    }
+                    
+                    if( !$object->getGroups()->contains( $group ) )
+                    {
+                        $object->addGroup( $group );
+                        $group->addContact( $object );
+                    }
+                    
+                    $groups[] = $group;
+                }
             }
-            if( $role->getLimitedTo() != 0 && $role->getLimitedTo() < count( $role->getContacts() ) )
-            {
-                $this->addMessage( "Role {$role->getName()} is full this contact can't be assign to this role.", OSS_Message::ERROR );
-                return;
-            }
-            $groups[] = $role;
-        }
-        foreach( $form->getValue( "group" ) as $gid )
-        {
-            $group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $gid );
-           
-            if( $group && !$object->getGroups()->contains( $group ) )
-            {
-                $object->addGroup( $group );
-                $group->addContact( $object );
-            }
-           
-            if( $group->getLimitedTo() != 0 &&  $group->getLimitedTo() < count( $group->getContacts() ) )
-            {
-                $this->addMessage( "Group {$group->getName()} is full this contact can't be assign to this group.", OSS_Message::ERROR );
-                return;                
-            }
-            $groups[] = $group;
         }
         
         foreach( $object->getGroups() as $key => $group )
