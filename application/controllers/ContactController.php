@@ -131,6 +131,34 @@ class ContactController extends IXP_Controller_FrontEnd
     }
     
     
+    
+    
+    /**
+     * Gets the ID of the object for editing - which, by default, returns the id parameter from the request
+     *
+     * @return int|false
+     */
+    protected function editResolveId()
+    {
+        if( $this->_getParam( 'id', false ) )
+            return $this->_getParam( 'id' );
+        else if( $this->_getParam( 'uid', false ) )
+        {
+            $user = $this->getD2EM()->getRepository( "\\Entities\\User" )->find( $this->getParam( "uid" ) );
+            if( $user )
+            {
+                $this->_feParams->user = $user;
+                if( $user->getContact() )
+                    return $user->getContact()->getId();
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+            
+    }
+    
     /**
      *
      * @param IXP_Form_Contact $form The form object
@@ -144,31 +172,61 @@ class ContactController extends IXP_Controller_FrontEnd
     {
         $this->view->groups = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
         $this->view->jsonGroups = json_encode( $this->view->groups );
+        
+        if( isset( $this->_feParams->user ) )
+        {
+            $object->setUser( $this->_feParams->user );
+            $form->setAction(
+                OSS_Utils::genUrl(
+                    $this->getRequest()->getControllerName(),
+                    $this->getRequest()->getActionName(),
+                    $this->getRequest()->getModuleName() == "index" ? false : $this->getRequest()->getModuleName(),
+                    [ 'uid' => $object->getUser()->getId() ]
+                )
+            );
+        }
+        
+        if( $this->getParam( "user", false ) )
+        {
+            $this->_feParams->user = true;
+            $form->setAction(
+                OSS_Utils::genUrl(
+                    $this->getRequest()->getControllerName(),
+                    'add',
+                    $this->getRequest()->getModuleName() == "index" ? false : $this->getRequest()->getModuleName(),
+                    [ 'user' => true ]
+                )
+            );
+            $form->getElement( 'login' )->setValue( 1 );
+        }
+        
         if( $isEdit )
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
             $this->view->contactGroups = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray( false, $object->getId() );
             
-            if( $object->getUser() )
-            {
-                $form->getElement( 'login' )->setValue( 1 );
-                $form->getElement( 'username' )->setValue( $object->getUser()->getUsername() );
-                $form->getElement( 'password' )->setValue( $object->getUser()->getPassword() );
-                $form->getElement( 'disabled' )->setValue( $object->getUser()->getDisabled() );
-            }
-            else
-            {
-                $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
-            }
         }
         else if( $this->getParam( 'custid', false ) && ( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) ) ) )
         {
             $form->getElement( 'custid' )->setValue( $cust->getId() );
-            $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
+            
         }
         
-        if( !$isEdit )
+        if( $object->getUser() )
         {
+            $form->getElement( 'login' )->setValue( 1 );
+            $form->getElement( 'username' )->setValue( $object->getUser()->getUsername() );
+            $form->getElement( 'password' )->setValue( $object->getUser()->getPassword() );
+            $form->getElement( 'disabled' )->setValue( $object->getUser()->getDisabled() );
+            if( !$isEdit )
+            {
+                $form->getElement( 'custid' )->setValue( $object->getUser()->getCustomer()->getId() );
+                $form->getElement( 'email' )->setValue( $object->getUser()->getEmail() );
+            }
+        }
+        else
+        {
+            $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
             $form->getElement( 'username' )->addValidator( 'OSSDoctrine2Uniqueness', true,
                 [ 'entity' => '\\Entities\\User', 'property' => 'username' ]
             );
@@ -210,8 +268,16 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
-        $this->addMessage( 'Contact successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
-        $this->redirect( 'customer/overview/tab/contacts/id/' . $object->getCustomer()->getId() );
+        if( isset( $this->_feParams->user ) )
+        {
+            $this->addMessage( 'User successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+            $this->redirect( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
+        }
+        else
+        {
+            $this->addMessage( 'Contact successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+            $this->redirect( 'customer/overview/tab/contacts/id/' . $object->getCustomer()->getId() );
+        }
     }
 
     /**
@@ -312,6 +378,7 @@ class ContactController extends IXP_Controller_FrontEnd
         else
             $_POST['login'] = 0;
         
+        $groups = [];
         if( isset( $_POST['role'] ) )
         {
             foreach( $_POST['role'] as $rid )
