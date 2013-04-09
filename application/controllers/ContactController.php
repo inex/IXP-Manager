@@ -173,6 +173,9 @@ class ContactController extends IXP_Controller_FrontEnd
         $this->view->groups     = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
         $this->view->jsonGroups = json_encode( $this->view->groups );
         
+        if( !isset( $this->_options['contact']['group']['types'][\Entities\ContactGroup::TYPE_ROLE] ) )
+            $form->removeElement( 'role' );
+        
         if( isset( $this->_feParams->user ) )
         {
             $object->setUser( $this->_feParams->user );
