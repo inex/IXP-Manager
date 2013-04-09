@@ -214,9 +214,10 @@ class ContactController extends IXP_Controller_FrontEnd
         
         if( $object->getUser() )
         {
-            $form->getElement( 'login' )->setValue( 1 );
+            $form->getElement( 'login'    )->setValue( 1 );
             $form->getElement( 'username' )->setValue( $object->getUser()->getUsername() );
             $form->getElement( 'password' )->setValue( $object->getUser()->getPassword() );
+            $form->getElement( 'privs'    )->setValue( $object->getUser()->getPrivs() );
             $form->getElement( 'disabled' )->setValue( $object->getUser()->getDisabled() );
             if( !$isEdit )
             {
