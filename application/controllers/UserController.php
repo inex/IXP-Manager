@@ -67,7 +67,7 @@ class UserController extends IXP_Controller_FrontEnd
                         'idField'    => 'custid'
                     ],
 
-                    'username'      => 'Userame',
+                    'username'      => 'Username',
                     'email'         => 'Email',
                     
                     'privileges'    => [
@@ -94,7 +94,7 @@ class UserController extends IXP_Controller_FrontEnd
 
                 $this->_feParams->listColumns = [
                     'id' => [ 'title' => 'UID', 'display' => false ],
-                    'username'      => 'Userame',
+                    'username'      => 'Username',
                     'email'         => 'Email',
 
                     'enabled'       => [
@@ -354,8 +354,12 @@ class UserController extends IXP_Controller_FrontEnd
      */
     protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
-        $this->addMessage( 'User interface successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
-        $this->redirect( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
+        $this->addMessage( 'User successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+        
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $this->redirect( 'user/list' );
+        else
+            $this->redirect( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
     }
     
     /**
