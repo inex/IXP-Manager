@@ -101,7 +101,7 @@ class Contact
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -124,7 +124,7 @@ class Contact
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -147,7 +147,7 @@ class Contact
     /**
      * Get phone
      *
-     * @return string 
+     * @return string
      */
     public function getPhone()
     {
@@ -170,7 +170,7 @@ class Contact
     /**
      * Get mobile
      *
-     * @return string 
+     * @return string
      */
     public function getMobile()
     {
@@ -193,7 +193,7 @@ class Contact
     /**
      * Get facilityaccess
      *
-     * @return integer 
+     * @return integer
      */
     public function getFacilityaccess()
     {
@@ -216,7 +216,7 @@ class Contact
     /**
      * Get mayauthorize
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getMayauthorize()
     {
@@ -239,7 +239,7 @@ class Contact
     /**
      * Get lastupdated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastupdated()
     {
@@ -262,7 +262,7 @@ class Contact
     /**
      * Get lastupdatedby
      *
-     * @return integer 
+     * @return integer
      */
     public function getLastupdatedby()
     {
@@ -285,7 +285,7 @@ class Contact
     /**
      * Get creator
      *
-     * @return string 
+     * @return string
      */
     public function getCreator()
     {
@@ -308,7 +308,7 @@ class Contact
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -318,7 +318,7 @@ class Contact
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -341,7 +341,7 @@ class Contact
     /**
      * Get Customer
      *
-     * @return Entities\Customer 
+     * @return Entities\Customer
      */
     public function getCustomer()
     {
@@ -372,7 +372,7 @@ class Contact
     /**
      * Get position
      *
-     * @return string 
+     * @return string
      */
     public function getPosition()
     {
@@ -399,7 +399,7 @@ class Contact
      */
     public function unsetUser()
     {
-        $this->User = NULL;
+        $this->User = null;
     
         return $this;
     }
@@ -407,7 +407,7 @@ class Contact
     /**
      * Get User
      *
-     * @return \Entities\User 
+     * @return \Entities\User
      */
     public function getUser()
     {
@@ -440,7 +440,7 @@ class Contact
     /**
      * Get Groups
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGroups()
     {
@@ -468,7 +468,7 @@ class Contact
     /**
      * Get notes
      *
-     * @return string 
+     * @return string
      */
     public function getNotes()
     {
