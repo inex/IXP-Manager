@@ -68,7 +68,9 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Contact types
 ;;
-;; Set contact group types
+;; Set contact group types.
+;; Before removing type entries make sure that type don't have any groups because
+;; it may have broke relations if you add same entry later.
 ;;
 
 contact.group.types.ROLE    = "Role"
