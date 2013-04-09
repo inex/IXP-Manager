@@ -389,8 +389,13 @@ class UserController extends IXP_Controller_FrontEnd
             $this->getD2EM()->remove( $pref );
         }
 
-        if( $object->getContcat() )
-            $object->getContact()->unsetUser();
+        if( $object->getContact() )
+        {
+            if( $this->getParam( "contact", false ) )
+                $this->getD2EM()->remove( $object->getContact() );
+            else
+                $object->getContact()->unsetUser();
+        }
 
         $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$object->getUsername()}" );
         
