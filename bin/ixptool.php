@@ -82,11 +82,12 @@ try
 {
     $opts = new Zend_Console_Getopt(
         array(
-            'help|h'        => 'Displays usage information.',
-            'action|a=s'    => 'Action to perform in format of module.controller.action',
-            'verbose|v'     => 'Verbose messages will be dumped to the default output.',
-            'development|d' => 'Enables development mode.',
-            'p1=s'          => 'Generic paramater #1 for various actions'
+            'help|h'         => 'Displays usage information.',
+            'action|a=s'     => 'Action to perform in format of module.controller.action',
+            'verbose|v'      => 'Verbose messages will be dumped to the default output.',
+            'development|d'  => 'Enables development mode.',
+            'p1=s'           => 'Generic paramater #1 for various actions',
+            'parameters|p=s' => 'Set parameters you want to pass for script. E.g. cust_id=3,type=resller or cust_id=1',
         )
     );
 
@@ -120,6 +121,30 @@ if( isset( $opts->a ) )
         $front->setRequest(  new Zend_Controller_Request_Simple( $action, $controller, $module ) );
         $front->setRouter(   new IXP_Controller_Router_Cli() );
         $front->setResponse( new Zend_Controller_Response_Cli() );
+;
+        if( isset( $opts->p ) )
+        {
+            $opts->p = trim( $opts->p );
+            if( strpos( $opts->p, "," ) )
+            {
+                $params = explode( ",", $opts->p );
+                foreach( $params as $param )
+                {
+                    $param = trim( $param );
+                    if( strpos( $param, "=" ) >= 0 )
+                    {
+                        $param = explode( "=", $param );
+                        $front->getRequest()->setParam( trim( $param[0] ), trim( $param[1] ) );
+                    }
+                }
+            }
+            else if( strpos( $opts->p, "=" ) )
+            {
+                $param = explode( "=", $opts->p );
+                $front->getRequest()->setParam( trim( $param[0] ), trim( $param[1] ) );
+            }
+            
+        }
 
         $front->setParam( 'noViewRenderer', true )
               ->setParam( 'disableOutputBuffering', true );

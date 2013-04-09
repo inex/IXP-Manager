@@ -34,7 +34,8 @@ class IXP_Form_Contact extends IXP_Form
 {
     public function init()
     {
-
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'contact/forms/edit.phtml' ] ] ] );
+        
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
@@ -42,12 +43,21 @@ class IXP_Form_Contact extends IXP_Form
             ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
-
         $this->addElement( $name );
+        
+        $position = $this->createElement( 'text', 'position' );
+        $position->addValidator( 'stringLength', false, array( 1, 50 ) )
+            ->setRequired( true )
+            ->setLabel( 'Position' )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $position );
 
         $this->addElement( IXP_Form_Customer::getPopulatedSelect( 'custid' ) );
 
         $this->addElement( OSS_Form_User::createEmailElement( 'email' ) );
+        $this->getElement( 'email' )->setRequired( false );
 
         $phone = $this->createElement( 'text', 'phone' );
         $phone->addValidator( 'stringLength', false, array( 1, 32 ) )
@@ -57,37 +67,43 @@ class IXP_Form_Contact extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $phone );
 
-
-
         $mobile = $this->createElement( 'text', 'mobile' );
         $mobile->addValidator( 'stringLength', false, array( 1, 32 ) )
             ->setLabel( _( 'Mobile' ) )
             ->addFilter( 'StringTrim' )
             ->setAttrib( 'class', 'span3' )
             ->addFilter( new OSS_Filter_StripSlashes() );
-
         $this->addElement( $mobile );
-
-
-
-
+        
+        $notes = $this->createElement( 'textarea', 'notes' );
+        $notes->setLabel( 'Notes' )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( new OSS_Filter_StripSlashes() )
+            ->setAttrib( 'cols', 60 )
+            ->setAttrib( 'rows', 5 );
+        $this->addElement( $notes );
 
         $facilityaccess = $this->createElement( 'checkbox', 'facilityaccess' );
         $facilityaccess->setLabel( 'Facility Access' )
             ->setCheckedValue( '1' );
         $this->addElement( $facilityaccess );
 
-
-
-
         $mayauthorize = $this->createElement( 'checkbox', 'mayauthorize' );
         $mayauthorize->setLabel( 'May Authorize' )
             ->setCheckedValue( '1' );
         $this->addElement( $mayauthorize );
 
-
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
+        
+        $role = $this->createElement( 'hidden', 'role' );
+        $role->setRequired( false );
+        $this->addElement( $role );
+        
+        $group = $this->createElement( 'hidden', 'group' );
+        $group->setRequired( false );
+        $this->addElement( $group );
     }
     
 }

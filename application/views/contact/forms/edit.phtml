@@ -1,0 +1,106 @@
+<form class="form-horizontal" enctype="application/x-www-form-urlencoded"
+        accept-charset="UTF-8" method="post" horizontal="1"
+        {if $isEdit}
+            action="{genUrl controller=$controller action=$action id=$object->getId()}"
+        {else}
+            action="{genUrl controller=$controller action=$action}"
+        {/if}>
+
+    {$element->name}
+    {$element->position}
+    {$element->custid}
+    {$element->email}
+    {$element->phone}
+    {$element->mobile}
+    {$element->notes}
+    {$element->facilityaccess}
+    {$element->mayauthorize}
+    
+    {assign var=role_line value=4}
+    {if isset( $groups ) && isset( $groups['ROLE'] ) }
+        <div class="control-group">
+            <label class="control-label" for="notes">Role</label>
+            <div class="controls">
+                {foreach $groups['ROLE'] as $role }
+                    {if $role@index % $role_line == 0 && $role@index != 0 }
+                        <br />
+                    {/if}
+                    <label class="checkbox inline" style="width: 55px;" >
+                        <input type="checkbox" name="role[{$role@index}]" {if isset( $contactGroups ) && isset( $contactGroups['ROLE'][$role.id] ) }checked="checked"{/if} id="role[{$role@index}]" value="{$role.id}"> {$role.name}
+                    </label>
+                {/foreach}
+            </div>
+        </div>
+    {/if}
+    
+    {if isset( $groups ) && ( count( $groups ) > 1 || ( count( $groups ) == 1 && !isset( $groups['ROLE'] ) ) ) }
+        <div class="control-group">
+            <label class="control-label" for="notes">Groups</label>
+            <div class="controls">
+                <table id="groups-table">
+                    {assign var=row_idx value=0}
+                    {if isset( $contactGroups ) && ( count( $contactGroups ) > 1 || ( count( $contactGroups ) == 1 && !isset( $contactGroups['ROLE'] ) ) ) }
+                        {foreach $contactGroups as $cname => $cvalue}
+                           {if $cname != "ROLE"}
+                           {foreach $cvalue as $cgroup}
+                            <tr id="groups-row-{$row_idx}">
+                                <td>
+                                    <select id="group-type-{$row_idx}" class="chzn-select" style="width: 100px;">
+                                        <option value="{$row_idx}"></option>
+                                        {foreach $groups as $name => $value}
+                                            {if $name != "ROLE"}
+                                                <option value="{$name}" {if $name == $cname}selected="selected"{/if}>{$name}</option>
+                                            {/if}
+                                        {/foreach}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="select-group-{$row_idx}" name="group[{$row_idx}]" class="chzn-select" style="width: 100px;">
+                                    {foreach $groups[$cname] as $group}
+                                        {if $name != "ROLE"}
+                                            <option value="{$group.id}" {if $group.id == $cgroup.id }selected="selected"{/if}>{$group.name}</option>
+                                        {/if}
+                                    {/foreach}
+                                    </select>
+                                </td>
+                                <td><span class="btn btn-mini" id="remove-group-{$row_idx}"><i class="icon-remove"></i></span></td>
+                            </tr>
+                            
+                            {assign var=row_idx value=$row_idx+1}
+                            {/foreach}
+                            {/if}
+                        {/foreach}
+                    {/if}
+                    <tr id="groups-row-{$row_idx}">
+                        <td>
+                            <select id="group-type-{$row_idx}" class="chzn-select" style="width: 100px;">
+                                <option value="{$row_idx}"></option>
+                                {foreach $groups as $name => $value}
+                                    {if $name != "ROLE"}
+                                        <option value="{$name}">{$name}</option>
+                                    {/if}
+                                {/foreach}
+                            </select>
+                        </td>
+                        <td><div class="hidden"><select id="select-group-{$row_idx}" name="group[{$row_idx}]" class="chzn-select" style="width: 100px;"></select></div></td>
+                        <td><span class="btn btn-mini hidden" style="min-height: 20px;" id="remove-group-{$row_idx}"><i class="icon-remove"></i></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    {/if}
+    
+    
+    <div class="form-actions">
+        {$element->submit}
+        {$element->cancel}
+
+    </div>
+
+    
+</form>
+{if isset( $groups ) && ( count( $groups ) > 1 || ( count( $groups ) == 1 && !isset( $groups['ROLE'] ) ) ) }
+<script type="text/Javascript">
+    {tmplinclude file="contact/js/groups.js" row_idx=$row_idx}
+</script>
+{/if}
