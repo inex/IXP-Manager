@@ -38,7 +38,11 @@ Schema update required:
         FOREIGN KEY (user_id) REFERENCES user (id);
     
     CREATE UNIQUE INDEX UNIQ_4C62E638A76ED395 ON contact (user_id)
-
+    
+    ALTER TABLE user DROP FOREIGN KEY FK_8D93D649727ACA70;
+    DROP INDEX IDX_8D93D649727ACA70 ON user;
+    ALTER TABLE user DROP parent_id
+    
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Billing', 'Contact for billing matters', 'ROLE', 1, 0, NOW() );
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Technical', 'Contact for technical matters', 'ROLE', 1, 0, NOW() );
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Admin', 'Contact for admin matters', 'ROLE', 1, 0, NOW() );

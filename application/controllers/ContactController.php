@@ -535,7 +535,6 @@ class ContactController extends IXP_Controller_FrontEnd
             
             if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
             {
-                $user->setParent( $this->getUser() );
                 $user->setPrivs( \Entities\User::AUTH_CUSTUSER );
                 $user->setPassword( OSS_String::random( 16 ) );
             }
@@ -544,27 +543,9 @@ class ContactController extends IXP_Controller_FrontEnd
                 $user->setUsername( $form->getValue( "username" ) );
                 $user->setPassword( $form->getValue( "password" ) );
                 $user->setPrivs( $form->getValue(    "privs" ) );
-                
-                try
-                {
-                    $user->setParent(
-                        $this->getD2EM()->createQuery(
-                            'SELECT u FROM \\Entities\\User u WHERE u.privs = ?1 AND u.Customer = ?2'
-                        )
-                        ->setParameter( 1, \Entities\User::AUTH_CUSTADMIN )
-                        ->setParameter( 2, $user->getCustomer() )
-                        ->setMaxResults( 1 )
-                        ->getSingleResult()
-                    );
-                }
-                catch( \Doctrine\ORM\NoResultException $e )
-                {
-                    $user->setParent( $user );
-                }
             }
                 
             $this->getLogger()->info( "{$this->getUser()->getUsername()} created user {$user->getUsername()}" );
-            $this->_feParams->userStatus = "created";
         }
         else // !$form->getValue( "login" )
         {
