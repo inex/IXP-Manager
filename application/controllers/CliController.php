@@ -527,6 +527,23 @@ class CliController extends IXP_Controller_Action
     }
     
     
+    /**
+     * Generate a JSON or CSV list of all contacts by a given group
+     *
+     * E.g.:
+     *
+     *     ./ixptool.php -a cli.cli-export-group -p type=ROLE,format=csv,cid=1
+     *
+     * Possible command line parameters are:
+     *
+     * * **type:** Contact group type (e.g. `ROLE`
+     * * **name:** Contact group name
+     * * **format:** Output format - one of `json` (default) or `csv`
+     * * **sn:** Customer shortname to limit results to
+     * * **cid:** Customer id to limit results to
+     *
+     */
+    
     public function cliExportGroupAction()
     {
         $type   = $this->getParam( 'type',   false );
