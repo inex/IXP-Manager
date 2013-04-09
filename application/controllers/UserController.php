@@ -51,6 +51,8 @@ class UserController extends IXP_Controller_FrontEnd
 
             'listOrderBy'    => 'username',
             'listOrderByDir' => 'ASC',
+            
+            'addWhenEmpty'   => false
         ];
 
         switch( $this->getUser()->getPrivs() )
@@ -118,6 +120,11 @@ class UserController extends IXP_Controller_FrontEnd
         $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
 
+    
+    public function addAction()
+    {
+        $this->redirect( 'contact/add' );
+    }
     
     
     protected function listPreamble()
