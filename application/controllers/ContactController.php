@@ -178,8 +178,13 @@ class ContactController extends IXP_Controller_FrontEnd
             $form->removeElement( 'role' );
         
         // redirect back to whence we came on form submission
-        if( $this->getParam( "uid", false ) )
+        if( $this->getParam( "user", false ) )
+        {
+            $form->getElement( 'login' )->setValue( 1 );
             $form->setAction( OSS_Utils::genUrl( 'contact', ( $isEdit ? 'edit' : 'add' ), false, [ 'user' => true ] ) );
+        }
+        else if( $this->getParam( "uid", false ) )
+            $form->setAction( OSS_Utils::genUrl( 'contact', ( $isEdit ? 'edit' : 'add' ), false, [ 'uid' => $this->getParam( "uid" ) ] ) );
 
         if( $isEdit )
         {
@@ -251,7 +256,7 @@ class ContactController extends IXP_Controller_FrontEnd
             $this->redirect( 'contact/list' );
         }
         
-        if( $this->getParam( 'user', false ) )
+        if( $this->getParam( 'user', false ) || $this->getParam( 'uid', false ) )
             $this->redirect( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
         else
             $this->redirect( 'customer/overview/tab/contacts/id/' . $object->getCustomer()->getId() );
@@ -425,16 +430,17 @@ class ContactController extends IXP_Controller_FrontEnd
 
         // let the group processor have the final say as to whether post validation
         // passes or not
-        return $this->_setContactGroups( $object );
+        return $this->_setContactGroups( $form, $object );
     }
     
     /**
      * Process submitted groups (and roles) for this contact and update the relationships
      *
+     * @param IXP_Form_Contact $contact
      * @param \Entities\Contact $contact
      * @return boolean
      */
-    private function _setContactGroups( $contact )
+    private function _setContactGroups( $form, $contact )
     {
         $groups = [];
         
