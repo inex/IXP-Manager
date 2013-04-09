@@ -25,6 +25,7 @@
  * Form: adding / editing contact groups
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Form
  * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
@@ -45,8 +46,8 @@ class IXP_Form_ContactGroup extends IXP_Form
         $this->addElement( $name );
         
         $description = $this->createElement( 'text', 'description' );
-        $description->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->setRequired( true )
+        $description->addValidator( 'stringLength', false, array( 0, 255 ) )
+            ->setRequired( false )
             ->setLabel( 'Description' )
             ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
@@ -66,7 +67,7 @@ class IXP_Form_ContactGroup extends IXP_Form
         $active->setLabel( 'Active' )
             ->setValue( '1' )
             ->addValidator( 'InArray', false, array( array( 0, 1 ) ) )
-            ->addFilter( 'Int' );     
+            ->addFilter( 'Int' );
         $this->addElement( $active );
         
         $limit = $this->createElement( 'text', 'limited_to' );

@@ -12,7 +12,7 @@ class ContactGroup
     const TYPE_ROLE = 'ROLE';
     
     public static $TYPES = [
-        self::TYPE_ROLE => 'Role',
+        self::TYPE_ROLE => 'Role'
     ];
     
     /**
@@ -79,7 +79,7 @@ class ContactGroup
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -102,7 +102,7 @@ class ContactGroup
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -125,7 +125,7 @@ class ContactGroup
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -148,7 +148,7 @@ class ContactGroup
     /**
      * Get active
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getActive()
     {
@@ -170,7 +170,7 @@ class ContactGroup
     /**
      * Get limited_to
      *
-     * @return integer 
+     * @return integer
      */
     public function getLimitedTo()
     {
@@ -193,7 +193,7 @@ class ContactGroup
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -203,7 +203,7 @@ class ContactGroup
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -236,7 +236,7 @@ class ContactGroup
     /**
      * Get Contacts
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getContacts()
     {
