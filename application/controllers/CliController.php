@@ -526,30 +526,51 @@ class CliController extends IXP_Controller_Action
         return $list;
     }
     
+    
+    /**
+     * Generate a JSON or CSV list of all contacts by a given group
+     *
+     * E.g.:
+     *
+     *     ./ixptool.php -a cli.cli-export-group -p type=ROLE,format=csv,cid=1
+     *
+     * Possible command line parameters are:
+     *
+     * * **type:** Contact group type (e.g. `ROLE`
+     * * **name:** Contact group name
+     * * **format:** Output format - one of `json` (default) or `csv`
+     * * **sn:** Customer shortname to limit results to
+     * * **cid:** Customer id to limit results to
+     *
+     */
+    
     public function cliExportGroupAction()
     {
-        $type   = $this->getParam( 'type', false );
-        $name   = $this->getParam( 'name', false );
-        $format = $this->getParam( 'format' , false );
-        $sn     = $this->getParam( 'sn', false );
-        $cid    = $this->getParam( 'cid', false );
+        $type   = $this->getParam( 'type',   false );
+        $name   = $this->getParam( 'name',   false );
+        $format = $this->getParam( 'format', false );
+        $sn     = $this->getParam( 'sn',     false );
+        $cid    = $this->getParam( 'cid',    false );
         
-        if( !$type && !$name )
-            die( "Group name or type must be set.\n" );
+        if( ( !$type && !$name ) || ( $type && $name ) )
+        {
+            echo "ERR: Group name or type must be set (and not both).\n";
+            return;
+        }
             
         if( !$format )
-            die( "Fomart must be set. Available formats: csv, json.\n" );
-            
+            $format = 'json';
+        
         $dql =  "SELECT c.name AS name, c.position as position, c.email AS email, c.phone AS phone, c.mobile AS mobile,
-                c.facilityaccess AS facilityacces, c.mayauthorize AS mayauthorize, c.notes as notes 
+                    c.facilityaccess AS facilityacces, c.mayauthorize AS mayauthorize, c.notes as notes
                 
-             FROM \\Entities\\Contact c 
+             FROM \\Entities\\Contact c
                 LEFT JOIN c.Groups cg
                 LEFT JOIN c.Customer cu\n";
              
         if( $type )
             $dql .= " WHERE cg.type = :type";
-        else if( $name )
+        else
             $dql .= " WHERE cg.name = :name";
         
         if( $cid )
@@ -563,7 +584,7 @@ class CliController extends IXP_Controller_Action
             
         if( $type )
             $q->setParameter( 'type', $type );
-        else if( $name )
+        else
             $q->setParameter( 'name', $name );
         
         if( $cid )
@@ -574,23 +595,20 @@ class CliController extends IXP_Controller_Action
         $contacts = $q->getArrayResult();
         
         if( !$contacts )
-            die( "No contacts found \n" );
+            return;
         
         if( $format == "csv" )
         {
             $names= [];
             foreach( $contacts[0] as $name => $data )
-                    $names[]= $name;
+                $names[]= $name;
 
             array_unshift( $contacts, $names );
             $csv = new OSS_Csv( $contacts );
             echo $csv->getContents( $csv );
-           
         }
-        else if( $format == "json" )
+        else
             echo json_encode( $contacts );
-            
-        
     }
 }
 
