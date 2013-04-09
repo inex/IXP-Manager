@@ -173,7 +173,7 @@ class ContactController extends IXP_Controller_FrontEnd
         $this->view->groups     = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
         $this->view->jsonGroups = json_encode( $this->view->groups );
 
-        // ROLE is trated as a special group and if it is not set, it will disable the contact role functionality        
+        // ROLE is trated as a special group and if it is not set, it will disable the contact role functionality
         if( !isset( $this->_options['contact']['group']['types'][ \Entities\ContactGroup::TYPE_ROLE ] ) )
             $form->removeElement( 'role' );
         
@@ -245,6 +245,11 @@ class ContactController extends IXP_Controller_FrontEnd
     protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
         $this->addMessage( 'Contact successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+        
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        {
+            $this->redirect( 'contact/list' );
+        }
         
         if( $this->getParam( 'user', false ) )
             $this->redirect( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
