@@ -47,7 +47,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
             // locate the customer
             $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $f->getValue( 'custid' ) );
 
-            // if we're editing, we need to fine the note
+            // if we're editing, we need to find the note
             if( $f->getValue( 'noteid' ) )
             {
                 $isEdit = true;
@@ -58,6 +58,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
             {
                 $isEdit = false;
                 $n = new \Entities\CustomerNote();
+                $old = false;
             }
             
             if( $cust && $n )
@@ -79,13 +80,8 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
                 
                 $this->getD2EM()->flush();
 
-                if( $isEdit )
-                {
-                    if( $old->getTitle() != $n->getTitle() || $old->getNote() != $n->getNote() || $old->getPrivate() != $n->getPrivate() )
-                        $this->_sendNotifications( 'edit', $old , $n );
-                }
-                else
-                    $this->_sendNotifications( 'add', false, $n );
+                if( !$old || $old->getTitle() != $n->getTitle() || $old->getNote() != $n->getNote() || $old->getPrivate() != $n->getPrivate() )
+                    $this->_sendNotifications( $old , $n );
                 
                 $r[ 'error' ] = false;
                 $r[ 'noteid' ] = $n->getId();
@@ -135,7 +131,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
             $old = clone( $note );
             $this->getD2EM()->remove( $note );
             $this->getD2EM()->flush();
-            $this->_sendNotifications( 'delete', $old );
+            $this->_sendNotifications( $old, false );
             $r = [ 'error' => false ];
         }
         
@@ -188,9 +184,23 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         }
     }
     
-    private function _sendNotifications( $action, $old = false, $new = false )
+    /**
+     *
+     * We can work out the action as follows:
+     *
+     *  * old == false, new != false: ADD
+     *  * old != false, new == false: DELETE
+     *  * old != false, new != false: EDIT
+     *
+     * @param string $old
+     * @param string $new
+     * @throws Exception
+     */
+    private function _sendNotifications( $old = false, $new = false )
     {
+        // get admin users
         $users = $this->getD2R( "\\Entities\\User" )->findBy( [ 'privs' => \Entities\User::AUTH_SUPERUSER ] );
+        
         if( $old )
             $this->view->cust = $cust = $old->getCustomer();
         else if( $new )
@@ -198,14 +208,13 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         else
             throw new Exception( "Customer note is missing." );
                    
-        $this->view->action = $action;
-        $this->view->oldn = $old;
-        $this->view->newn = $new;
+        $this->view->old = $old;
+        $this->view->new = $new;
         
         $mail = $this->getMailer();
         $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
-            ->setSubject( $this->_options['identity']['sitename'] . ' - Customer notes was updated' )
-            ->setBodyText( $this->view->render( 'customer-notes/email/notification.txt' ) );
+             ->setSubject( '[IXP Notes] [' . $cust->getName() . '] ' . $new->getTitle() )
+             ->setBodyText( $this->view->render( 'customer-notes/email/notification.txt' ) );
           
         foreach( $users as $user )
         {
@@ -213,19 +222,18 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
             {
                 if( !$user->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
                 {
-                    if( $action == "add" )
+                    if( !$old ) // adding
                         continue;
+                    
                     if( !$user->getPreference( "customer-notes.watching.{$old->getId()}" ) )
                         continue;
                 }
-
             }
             else if( $user->getPreference( "customer-notes.notify" ) == "none" )
                 continue;
             
             $mail->addTo( $user->getContact()->getEmail(), $user->getContact()->getName() )
-                ->send();
-            
+                 ->send();
         }
     }
 

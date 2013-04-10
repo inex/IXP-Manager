@@ -1,34 +1,32 @@
-{if $action == "edit"}
-Customer note was editied by user {$user->getContact()->getEmail()}
-for customer '{$cust->getName()}'
 
-[New Note]
-Title:   {$newn->getTitle()}
-Message: {$newn->getNote()}
-Status:  {if $newn->getPrivate()}Private{else}Public{/if}
+Customer:   {$cust->getName()}
+Changed by: {$user->getContact()->getName()} <{$user->getContact()->getEmail()}>
+Action:     Note {if not $old}ADDED{elseif not $new}DELETED{else}UPDATED{/if}
 
-[Old Note]
-Title:   {$oldn->getTitle()}
-Message: {$oldn->getNote()}
-Status:  {if $oldn->getPrivate()}Private{else}Public{/if}
+{if $new}
 
-{elseif $action == "add"}
+================= NEW NOTE DETAILS ===================
 
-New customer note was created by user '{$user->getContact()->getEmail()}'
-for customer {$cust->getName()}
+Title:      {$new->getTitle()}
+Visibility: {if $new->getPrivate()}Private{else}Public{/if}
 
-[New Note]
-Title:   {$newn->getTitle()}
-Message: {$newn->getNote()}
-Status:  {if $newn->getPrivate()}Private{else}Public{/if}
+{$new->getNote()}
 
-{elseif $action == "delete"}
-Customer note was deleted by user '{$user->getContact()->getEmail()}'
-for customer {$cust->getName()}
-
-[Old Note]
-Title:   {$oldn->getTitle()}
-Message: {$oldn->getNote()}
-Status:  {if $oldn->getPrivate()}Private{else}Public{/if}
+======================================================
 
 {/if}
+
+
+{if $old}
+
+================= OLD NOTE DETAILS ===================
+
+Title:      {$old->getTitle()}
+Visibility: {if $old->getPrivate()}Private{else}Public{/if}
+
+{$old->getNote()}
+
+======================================================
+
+{/if}
+
