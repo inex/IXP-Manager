@@ -7,7 +7,7 @@
             <th>Email</th>
             <th>Phone</th>
             <th>Mobile</th>
-            <th><a class="btn btn-mini" href="{genUrl controller='contact' action="add" custid=$cust->getId()}"><i class="icon-plus"></i> Add new...</a></th>        </thead>
+            <th><a class="btn btn-mini" href="{genUrl controller='contact' action="add" custid=$cust->getId() cid=$cust->getId()}"><i class="icon-plus"></i> Add new...</a></th>        </thead>
         <tbody>
             {foreach $cust->getContacts() as $c}
                 <tr>
