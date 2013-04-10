@@ -23,7 +23,7 @@
 
 
 /**
- * A form to allow a user to change their profile.
+ * A form to allow a user to change his profile.
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
