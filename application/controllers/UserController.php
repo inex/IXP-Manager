@@ -133,25 +133,6 @@ class UserController extends IXP_Controller_FrontEnd
     }
     
     
-    protected function listPreamble()
-    {
-        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
-        {
-            if( !isset( $this->getSessionNamespace()->custadminInstructions ) || !$this->getSessionNamespace()->custadminInstructions )
-            {
-                $this->getSessionNamespace()->custadminInstructions = true;
-                
-                $this->addMessage(
-                    "<p><strong>Remember! This admin account is only intended for creating users for your organisation.</strong></p>"
-                        . "<p>For full IXP Manager functionality, graphs and member information, log in under one of your user accounts</p>",
-                    OSS_Message::INFO,
-                    OSS_Message::TYPE_BLOCK
-                );
-            }
-        }
-    }
-        
-
 
     /**
      * Provide array of users for the listAction and viewAction

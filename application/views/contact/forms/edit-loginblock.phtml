@@ -8,7 +8,7 @@
                         Can&nbsp;login&nbsp;to&nbsp;portal
                 </label>
             </legend>
-            <div class="fieldset-bordered-elements" id="login-elements"  {if $element->login->getValue() == 0}style="display: none;"{/if}>
+            <div class="fieldset-bordered-elements {if $element->login->getValue() == 0}hide{/if}" id="login-elements">
                 {$element->username}
                 {$element->password}
                 {$element->privs}

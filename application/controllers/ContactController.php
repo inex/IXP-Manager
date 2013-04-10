@@ -93,7 +93,11 @@ class ContactController extends IXP_Controller_FrontEnd
                     'position'  => 'Position',
                     'email'     => 'Email',
                     'phone'     => 'Phone',
-                    'mobile'    => 'Mobile',
+                    'uid'       => [
+                        'title'         => 'Can Login',
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'        => 'contact/list-column-uid.phtml'
+                    ],
                     'created'       => [
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -121,9 +125,11 @@ class ContactController extends IXP_Controller_FrontEnd
             ->select( 'c.id as id, c.name as name, c.email as email, c.phone AS phone, c.mobile AS mobile,
                 c.facilityaccess AS facilityaccess, c.mayauthorize AS mayauthorize,
                 c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby, c.position AS position,
-                c.creator AS creator, c.created AS created, cust.name AS customer, cust.id AS custid'
+                c.creator AS creator, c.created AS created, cust.name AS customer, cust.id AS custid,
+                u.id AS uid'
             )
             ->from( '\\Entities\\Contact', 'c' )
+            ->leftJoin( 'c.User', 'u' )
             ->leftJoin( 'c.Customer', 'cust' );
         
         if( $this->getParam( "cgid", false ) )
@@ -136,16 +142,40 @@ class ContactController extends IXP_Controller_FrontEnd
         }
 
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $qb->where( 'c.Customer = :cust' )->setParameter( 'cust', $this->getUser()->getCustomer() );
-        
+        {
+            $qb->andWhere( 'c.Customer = :cust' )->setParameter( 'cust', $this->getUser()->getCustomer() );
+            $qb->andWhere( '( c.User IS NULL OR u.privs = :privs )' )->setParameter( 'privs', \Entities\User::AUTH_CUSTUSER );
+        }
+            
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
     
         if( $id !== null )
             $qb->andWhere( 'c.id = :id' )->setParameter( 'id', $id );
-    
+
         return $qb->getQuery()->getResult();
     }
+    
+    
+    protected function listPreamble()
+    {
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+        {
+            if( !isset( $this->getSessionNamespace()->custadminInstructions ) || !$this->getSessionNamespace()->custadminInstructions )
+            {
+                $this->getSessionNamespace()->custadminInstructions = true;
+    
+                $this->addMessage(
+                        "<p><strong>Remember! This admin account is only intended for creating contacts for your organisation.</strong></p>"
+                        . "<p>For full IXP Manager functionality, graphs and member information, log in under one of your user accounts</p>",
+                        OSS_Message::INFO,
+                        OSS_Message::TYPE_BLOCK
+                );
+            }
+        }
+    }
+    
+    
     
     
     /**
@@ -245,7 +275,7 @@ class ContactController extends IXP_Controller_FrontEnd
                 $form->removeElement( 'mayauthorize' );
                 $form->removeElement( 'notes' );
                 
-                if( $isEdit )
+                if( $isEdit && $object->getUser() )
                     $form->getElement( 'username' )->setAttrib( 'readonly', 'readonly' );
                 break;
 
@@ -387,6 +417,17 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function addPrepare( $form, $object, $isEdit )
     {
+        if( $isEdit && $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        {
+            if( $this->getUser()->getCustomer() != $object->getCustomer() )
+            {
+                $this->addMessage( 'Illegal attempt to edit a user not under your control. The security team have been notified.' );
+                $this->getLogger()->alert( "User {$this->getUser()->getUsername()} illegally tried to edit {$object->getName()}" );
+                $this->redirect();
+            }
+        }
+        
+        
         if( !$isEdit )
         {
             // defaults
@@ -407,17 +448,6 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function addPreValidate( $form, $object, $isEdit )
     {
-
-        if( $isEdit && $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-        {
-            if( $this->getUser()->getCustomer() != $object->getCustomer() )
-            {
-                $this->addMessage( 'Illegal attempt to edit a user not under your control. The security team have been notified.' );
-                $this->getLogger()->alert( "User {$this->getUser()->getUsername()} illegally tried to edit {$object->getName()}" );
-                $this->redirect();
-            }
-        }
-        
         if( isset( $_POST['login'] ) && $_POST['login'] == '1' )
         {
             $form->getElement( "username" )->setRequired( true );
@@ -483,7 +513,7 @@ class ContactController extends IXP_Controller_FrontEnd
         $object->setLastupdated( new DateTime() );
         $object->setLastupdatedby( $this->getUser()->getId() );
         
-        $this->_processUser( $form, $object );
+        $this->_processUser( $form, $object, $isEdit );
 
         // let the group processor have the final say as to whether post validation
         // passes or not
@@ -556,6 +586,25 @@ class ContactController extends IXP_Controller_FrontEnd
             $this->sendWelcomeEmail( $object->getUser() );
         }
 
+        return $this->postFlush( $object );
+    }
+    
+    /**
+     * Post database flush hook that can be overridden by subclasses and is called by
+     * default for a successful add / edit / delete.
+     *
+     * Called by `addPostFlush()` and `postDelelte()` - if overriding these, ensure to
+     * call this if you have overridden it.
+     *
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @return bool
+     */
+    protected function postFlush( $object )
+    {
+        // clear the user from the cache (e.g. if user is logged in, it will be cached)
+        if( $object->getUser() )
+            $this->clearUserFromCache( $object->getUser()->getId() );
+        
         return true;
     }
     
@@ -565,8 +614,9 @@ class ContactController extends IXP_Controller_FrontEnd
       *
       * @param IXP_Form_Contact $form The form object
       * @param \Entities\Contact $contact The Doctrine2 entity (being edited or blank for add)
+      * @param bool $isEdit True of we are editing an object, false otherwise
       */
-    private function _processUser( $form, $contact )
+    private function _processUser( $form, $contact, $isEdit )
     {
         if( $form->getValue( "login" ) )
         {
@@ -581,6 +631,14 @@ class ContactController extends IXP_Controller_FrontEnd
                 $user->setCreated( new DateTime() );
                 $user->setCreator( $this->getUser()->getUsername() );
                 $user->setCustomer( $contact->getCustomer() );
+
+                // these should only be updated by CUSTADMIN on creation of a login account
+                if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+                {
+                    $user->setPrivs( \Entities\User::AUTH_CUSTUSER );
+                    $user->setPassword( OSS_String::random( 16 ) );
+                    $user->setUsername( $form->getValue( "username" ) );
+                }
                 
                 $this->_feParams->userStatus = "created";
             }
@@ -590,12 +648,8 @@ class ContactController extends IXP_Controller_FrontEnd
             $user->setLastupdated( new DateTime() );
             $user->setLastupdatedby( $this->getUser()->getId() );
             
-            if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
-            {
-                $user->setPrivs( \Entities\User::AUTH_CUSTUSER );
-                $user->setPassword( OSS_String::random( 16 ) );
-            }
-            else
+            // SUPERADMIN can update these always
+            if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
             {
                 $user->setUsername( $form->getValue( "username" ) );
                 $user->setPassword( $form->getValue( "password" ) );
