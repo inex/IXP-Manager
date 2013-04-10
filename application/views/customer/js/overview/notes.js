@@ -112,8 +112,7 @@ function coNotesPost( data, textStatus, jqXHR ) {
 		bootbox.alert( "Error! Your note could not be saved." );
 		return;
 	}
-		
-	
+
 	$( "#co-notes-dialog" ).modal( 'hide' );
 	
 	if( $( "#co-notes-fadd" ).html() == 'Add' ) {
@@ -125,16 +124,19 @@ function coNotesPost( data, textStatus, jqXHR ) {
 			        + "</span></td>"
 		        + "<td>Just Now</td>"
 		        + "<td>"
-		        	+ "<button id=\"co-notes-view-"  + data['noteid'] + "\" class=\"btn btn-small\"><i class=\"icon-eye-open\"></i></button>"
-		        	+ "<button id=\"co-notes-edit-"  + data['noteid'] + "\" class=\"btn btn-small\"><i class=\"icon-pencil\"></i></button>"
-		        	+ "<button id=\"co-notes-trash-" + data['noteid'] + "\" class=\"btn btn-small\"><i class=\"icon-trash\"></i></button>"
+		            + "<div class=\"btn-group\">"
+		            	+ "<button id=\"co-notes-notify-"  + data['noteid'] + "\" class=\"btn btn-small\"><i class=\"icon-eye-open\"></i></button>"
+		            	+ "<button id=\"co-notes-view-"  + data['noteid'] + "\" class=\"btn btn-small\"><i class=\"icon-zoom-in\"></i></button>"
+		            	+ "<button id=\"co-notes-edit-"  + data['noteid'] + "\" class=\"btn btn-small\"><i class=\"icon-pencil\"></i></button>"
+		            	+ "<button id=\"co-notes-trash-" + data['noteid'] + "\" class=\"btn btn-small\"><i class=\"icon-trash\"></i></button>"
+		        	+ "</div>"
 		        + "</td>"
 		        + "</tr>"
 		);
-		
-		$( "#co-notes-view-"  + data['noteid'] ).on( 'click', coNotesViewDialog );
-		$( "#co-notes-edit-"  + data['noteid'] ).on( 'click', coNotesEditDialog );
-		$( "#co-notes-trash-" + data['noteid'] ).on( 'click', coNotesDelete );
+        $( "#co-notes-notify-" + data['noteid'] ).on( 'click', coNotesNotifyToggle );		
+		$( "#co-notes-view-"   + data['noteid'] ).on( 'click', coNotesViewDialog );
+		$( "#co-notes-edit-"   + data['noteid'] ).on( 'click', coNotesEditDialog );
+		$( "#co-notes-trash-"  + data['noteid'] ).on( 'click', coNotesDelete );
 		
 		$( "#co-notes-no-notes-msg" ).hide();
 		$( "#co-notes-table" ).show();
@@ -167,6 +169,21 @@ function coNotesClearDialog() {
 	$( "#co-notes-warning" ).hide();
 }
 
+function coCustomerNotifyToggle( event ){
+    var custid = substr( event.delegateTarget.id, 15 );
+    $.get( '{genUrl controller="customer-notes" action="ajax-notify-toggle"}/custid/' + custid, function(data){
+        if( data == "ok" )
+            $( event.delegateTarget ).toggleClass( "active" );
+    });
+}
+
+function coNotesNotifyToggle( event ){
+    var noteid = substr( event.delegateTarget.id, 16 );
+    $.get( '{genUrl controller="customer-notes" action="ajax-notify-toggle"}/id/' + noteid, function(data){
+        if( data == "ok" )
+            $( event.delegateTarget ).toggleClass( "active" );
+    });
+}
 
 $(document).ready(function(){
 
@@ -185,7 +202,10 @@ $(document).ready(function(){
 			event.preventDefault();
 			$( "#co-notes-add-btn" ).trigger( 'click' );
 		});
-
+        
+        $( 'button[id|="co-cust-notify"]' ).on( 'click', coCustomerNotifyToggle );
+        $( 'button[id|="co-notes-notify"]' ).on( 'click', coNotesNotifyToggle );
+        
 		$( 'button[id|="co-notes-edit"]' ).on( 'click', coNotesEditDialog );
 		$( 'button[id|="co-notes-trash"]' ).on( 'click', coNotesDelete );
 		
