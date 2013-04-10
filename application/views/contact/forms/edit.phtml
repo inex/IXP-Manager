@@ -15,23 +15,9 @@
             {$element->phone}
             {$element->mobile}
             
-            <div class="control-group">
-                <div class="controls-fieldset-bordered">
-                    <fieldset class="fieldset-bordered">
-                        <legend class="legend-fieldset-bordered">
-                            <label class="checkbox inline">
-                                <input type="checkbox" name="login" id="login" value="1" {if $element->login->getValue() == 1}checked="checked"{/if}> Can login to portal
-                            </label>
-                        </legend>
-                        <div class="fieldset-bordered-elements" id="login-elements"  {if $element->login->getValue() == 0}style="display: none;"{/if}>
-                            {$element->username}
-                            {$element->password}
-                            {$element->privs}
-                            {$element->disabled}
-                        </div>
-                    </fieldset>
-                </div>
-            </div>
+            {if $user->getPrivs() eq 3}
+                {tmplinclude file='contact/forms/edit-loginblock.phtml'}
+            {/if}
         </div>
         <div class="span6">
             {$element->facilityaccess}
@@ -54,7 +40,14 @@
                     </div>
                 </div>
             {/if}
+            
+            {if $user->getPrivs() eq 2}
+                {tmplinclude file='contact/forms/edit-loginblock.phtml'}
+            {/if}
+            
             {$element->notes}
+            
+            {if $user->getPrivs() eq 3}
             {if isset( $groups ) && ( count( $groups ) > 1 || ( count( $groups ) == 1 && !isset( $groups['ROLE'] ) ) ) }
                 <div class="control-group">
                     <label class="control-label" for="group">Groups</label>
@@ -67,17 +60,17 @@
                                    {foreach $cvalue as $cgroup}
                                     <tr id="groups-row-{$row_idx}">
                                         <td>
-                                            <select id="group-type-{$row_idx}" class="chzn-select" style="width: 100px;">
+                                            <select id="group-type-{$row_idx}" class="chzn-select" style="width: 150px;">
                                                 <option value="{$row_idx}"></option>
                                                 {foreach $groups as $name => $value}
                                                     {if $name != "ROLE" && isset( $options['contact']['group']['types'][$name] ) }
-                                                        <option value="{$name}" data-placeholder="type..." {if $name == $cname}selected="selected"{/if}>{$options['contact']['group']['types'][$name]}</option>
+                                                        <option value="{$name}" data-placeholder="Type..." {if $name == $cname}selected="selected"{/if}>{$options['contact']['group']['types'][$name]}</option>
                                                     {/if}
                                                 {/foreach}
                                             </select>
                                         </td>
                                         <td>
-                                            <select id="select-group-{$row_idx}" name="group[{$row_idx}]" data-placeholder="group..." class="chzn-select" style="width: 100px;">
+                                            <select id="select-group-{$row_idx}" name="group[{$row_idx}]" data-placeholder="Group..." class="chzn-select" style="width: 150px;">
                                             {foreach $groups[$cname] as $group}
                                                 {if $name != "ROLE"}
                                                     <option value="{$group.id}" {if $group.id == $cgroup.id }selected="selected"{/if}>{$group.name}</option>
@@ -95,7 +88,7 @@
                             {/if}
                             <tr id="groups-row-{$row_idx}">
                                 <td>
-                                    <select id="group-type-{$row_idx}" class="chzn-select" style="width: 100px;" data-placeholder="type...">
+                                    <select id="group-type-{$row_idx}" class="chzn-select" style="width: 150px;" data-placeholder="Type...">
                                         <option value="{$row_idx}"></option>
                                         {foreach $groups as $name => $value}
                                             {if $name != "ROLE"  && isset( $options['contact']['group']['types'][$name] )}
@@ -110,7 +103,8 @@
                         </table>
                     </div>
                 </div>
-            {/if}
+            {/if} {* isset( $groups ) && ( count( $groups ) > 1 || ( count( $groups ) == 1 && !isset( $groups['ROLE'] ) ) ) *}
+            {/if} {* $user->getPrivs() eq USER::AUTH_SUPERUSER *}
         </div>
     </div>
     
@@ -123,8 +117,11 @@
     
 </form>
 {if isset( $groups ) && ( count( $groups ) > 1 || ( count( $groups ) == 1 && !isset( $groups['ROLE'] ) ) ) }
-<script type="text/Javascript">
-    {tmplinclude file="contact/js/groups.js" row_idx=$row_idx}
+<script>
+    {if $user->getPrivs() eq 3}
+        {tmplinclude file="contact/js/groups.js" row_idx=$row_idx}
+    {/if}
+            
     $( document ).ready( function(){
         $( "#login" ).bind( "change", function(){
             if( $( this ).attr( "checked" ) )

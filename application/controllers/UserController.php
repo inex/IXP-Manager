@@ -51,6 +51,8 @@ class UserController extends IXP_Controller_FrontEnd
 
             'listOrderBy'    => 'username',
             'listOrderByDir' => 'ASC',
+            
+            'addWhenEmpty'   => false
         ];
 
         switch( $this->getUser()->getPrivs() )
@@ -67,7 +69,7 @@ class UserController extends IXP_Controller_FrontEnd
                         'idField'    => 'custid'
                     ],
 
-                    'username'      => 'Userame',
+                    'username'      => 'Username',
                     'email'         => 'Email',
                     
                     'privileges'    => [
@@ -94,7 +96,7 @@ class UserController extends IXP_Controller_FrontEnd
 
                 $this->_feParams->listColumns = [
                     'id' => [ 'title' => 'UID', 'display' => false ],
-                    'username'      => 'Userame',
+                    'username'      => 'Username',
                     'email'         => 'Email',
 
                     'enabled'       => [
@@ -119,26 +121,18 @@ class UserController extends IXP_Controller_FrontEnd
     }
 
     
-    
-    protected function listPreamble()
+    public function addAction()
     {
-        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
-        {
-            if( !isset( $this->getSessionNamespace()->custadminInstructions ) || !$this->getSessionNamespace()->custadminInstructions )
-            {
-                $this->getSessionNamespace()->custadminInstructions = true;
-                
-                $this->addMessage(
-                    "<p><strong>Remember! This admin account is only intended for creating users for your organisation.</strong></p>"
-                        . "<p>For full IXP Manager functionality, graphs and member information, log in under one of your user accounts</p>",
-                    OSS_Message::INFO,
-                    OSS_Message::TYPE_BLOCK
-                );
-            }
-        }
+        $this->redirect( 'contact/add' );
     }
-        
-
+    
+    public function deleteAction()
+    {
+        // disabled as it is handled by the contact controller
+        $this->redirect( 'user/list' );
+    }
+    
+    
 
     /**
      * Provide array of users for the listAction and viewAction
@@ -170,52 +164,6 @@ class UserController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
-    
-    /**
-     * Function which can be over-ridden to perform any pre-deletion tasks
-     *
-     * @param \Entities\User $object The Doctrine2 entity to delete
-     * @return bool Return false to stop / cancel the deletion
-     */
-    protected function preDelete( $object )
-    {
-        // if I'm not an admin, then make sure I have permission!
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-        {
-            if( $object->getCustomer() != $this->getUser()->getCustomer() )
-            {
-                $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to delete other customer user {$object->getUsername()}" );
-                $this->addMessage( 'You are not authorised to delete this user. The administrators have been notified.' );
-                return false;
-            }
-        }
-        else
-        {
-            // keep the customer ID for redirection on success
-            $this->getSessionNamespace()->ixp_user_delete_custid = $object->getCustomer()->getId();
-        }
-        
-        // now delete all the users privileges also
-        foreach( $object->getPreferences() as $pref )
-        {
-            $object->removePreference( $pref );
-            $this->getD2EM()->remove( $pref );
-        }
-
-        if( $object->getContact() )
-        {
-            if( $this->getParam( "contact", false ) )
-                $this->getD2EM()->remove( $object->getContact() );
-            else
-                $object->getContact()->unsetUser();
-        }
-
-        $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$object->getUsername()}" );
-        
-        
-        return true;
-    }
-    
     /**
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful deletion operation.

@@ -8,7 +8,12 @@
             <th>Email</th>
             <th>Last Login</th>
             <th>Last Login From</th>
-            <th><a class="btn btn-mini" href="{genUrl controller='contact' action="add" user=true custid=$cust->getId()}"><i class="icon-plus"></i> Add new...</a></th>
+            <th>
+                {*
+                    The correct way of doing this is via contacts. Leaving it here may be confusing...
+                    <a class="btn btn-mini" href="{genUrl controller='contact' action="add" user=1 custid=$cust->getId() cid=$cust->getId()}"><i class="icon-plus"></i> Add new...</a>
+                *}
+            </th>
         </thead>
         <tbody>
             {foreach $cust->getUsers() as $u}
@@ -30,9 +35,16 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            <a class="btn btn-mini" href="{genUrl controller='contact' action="edit" uid=$u->getId()}"><i class="icon-pencil"></i></a>
-                            <a class="btn btn-mini" id="usr-list-delete-{$u->getId()}" href="{genUrl controller='user' action="delete" id=$u->getId()}"><i class="icon-trash"></i></a>
-                            <a class="btn btn-mini" href="{genUrl controller='auth' action="switch-user" id=$u->getId()}" rel="tooltip" title="Log in as this user..."><i class="icon-user"></i></a>
+                            <a class="btn btn-mini" href="{genUrl controller='contact' action="edit" uid=$u->getId() cid=$cust->getId()}"><i class="icon-pencil"></i></a>
+                            <a class="btn btn-mini" id="usr-list-delete-{$u->getId()}"
+                                    href="{genUrl controller='contact' action="delete" id=$u->getContact()->getId()}">
+                                <i class="icon-trash"></i>
+                            </a>
+                            <a class="btn btn-mini"
+                                {if $u->getDisabled()}disabled="disabled" onclick="return( false );"{/if}
+                                href="{genUrl controller='auth' action="switch-user" id=$u->getId()}" rel="tooltip" title="Log in as this user...">
+                                    <i class="icon-user"></i>
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -43,8 +55,8 @@
 {else}
 
     <p style="padding-left: 40px;">
-        No users found.
-        <a href="{genUrl controller='user' action="add" custid=$cust->getId()}">Add a new user...</a>
+        No users found.<br><br>
+        Users can be added by creating / editing contacts and giving the contact login privileges.
     </p>
 
 {/if}

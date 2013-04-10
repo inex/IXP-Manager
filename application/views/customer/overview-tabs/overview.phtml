@@ -1,6 +1,5 @@
 
-{if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and not $cust->hasLeft()}
-
+{if $hasAggregateGraph}
     <div class="row-fluid">
 
         <div class="well">

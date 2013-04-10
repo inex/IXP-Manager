@@ -42,7 +42,7 @@ class IndexController extends IXP_Controller_Action
         if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
             $this->_redirect( 'admin/index' );
         else if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
-            $this->_redirect( 'user/list' );
+            $this->_redirect( 'contact/list' );
         else
             $this->forward( 'index', 'dashboard' );
     }

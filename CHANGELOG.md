@@ -1,5 +1,5 @@
 
-# V3.0.x
+# V3.0.9
 
 Schema update required:
 
@@ -24,9 +24,6 @@ Schema update required:
     ALTER TABLE contact_to_group ADD CONSTRAINT FK_FCD9E962647145D0 
         FOREIGN KEY (contact_group_id) REFERENCES contact_group (id);
     
-    ALTER TABLE contact ADD CONSTRAINT FK_4C62E638A76ED395 
-        FOREIGN KEY (user_id) REFERENCES user (id);
-    
     ALTER TABLE contact 
         ADD user_id INT DEFAULT NULL, 
         ADD position VARCHAR(50) DEFAULT NULL, 
@@ -37,11 +34,14 @@ Schema update required:
         CHANGE facilityaccess facilityaccess TINYINT(1) NOT NULL, 
         CHANGE mayauthorize mayauthorize TINYINT(1) NOT NULL;
     
-    CREATE UNIQUE INDEX UNIQ_4C62E638A76ED395 ON contact (user_id)
-
     ALTER TABLE contact ADD CONSTRAINT FK_4C62E638A76ED395 
         FOREIGN KEY (user_id) REFERENCES user (id);
     
+    CREATE UNIQUE INDEX UNIQ_4C62E638A76ED395 ON contact (user_id)
+    
+    ALTER TABLE user DROP FOREIGN KEY FK_8D93D649727ACA70;
+    DROP INDEX IDX_8D93D649727ACA70 ON user;
+    ALTER TABLE user DROP parent_id
     
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Billing', 'Contact for billing matters', 'ROLE', 1, 0, NOW() );
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Technical', 'Contact for technical matters', 'ROLE', 1, 0, NOW() );
@@ -50,8 +50,10 @@ Schema update required:
 
 
 
-# V3.0.9 - 201304
-
+- [NF] User / Contact integration. See: https://github.com/inex/IXP-Manager/wiki/Contacts-and-Users
+- [NF] Introduction of Contact Roles and Groups. See: https://github.com/inex/IXP-Manager/wiki/Contact-Groups
+- [NF] Integrate contact fields into user's profile
+- [NF] Note Watching - see https://github.com/inex/IXP-Manager/wiki/Customer-Notes 
 - [IM] Better redirection when adding / editing virtual interfaces (224fce5 - Barry O'Donovan - 2013-04-04)
 - [IM] Do not assume physical / VLAN interfaces exist for a virtual interface (1b55c11 - Barry O'Donovan - 2013-04-04)
 - [IM] Better error messages and redirection on adding phys / vlan interfaces (6fa56ac - Barry O'Donovan - 2013-04-04)
@@ -59,7 +61,6 @@ Schema update required:
 
 
 # V3.0.8 - 20130403
->>>>>>> master
 
 Schema update required:
 

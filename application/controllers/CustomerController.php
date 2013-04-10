@@ -199,8 +199,25 @@ class CustomerController extends IXP_Controller_FrontEnd
         // load customer notes and the amount of unread notes for this user and customer
     	$this->_fetchCustomerNotes( $cust->getId() );
     	 
-    	if( $this->getCustomer()->isRouteServerClient() )
+    	if( $cust->isRouteServerClient() )
     	    $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
+    	
+    	// does the customer have any graphs?
+    	$this->view->hasAggregateGraph = false;
+    	if( $cust->getType() != \Entities\Customer::TYPE_ASSOCIATE && !$cust->hasLeft() )
+    	{
+    	    foreach( $cust->getVirtualInterfaces() as $vi )
+    	    {
+    	        foreach( $vi->getPhysicalInterfaces() as $pi )
+    	        {
+    	            if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED )
+    	            {
+    	                $this->view->hasAggregateGraph = true;
+    	                break;
+    	            }
+    	        }
+    	    }
+    	}
     }
     
     

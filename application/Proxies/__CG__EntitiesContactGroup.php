@@ -90,16 +90,16 @@ class ContactGroup extends \Entities\ContactGroup implements \Doctrine\ORM\Proxy
         return parent::getActive();
     }
 
-    public function setLimited($limited)
+    public function setLimitedTo($limitedTo)
     {
         $this->__load();
-        return parent::setLimited($limited);
+        return parent::setLimitedTo($limitedTo);
     }
 
-    public function getLimited()
+    public function getLimitedTo()
     {
         $this->__load();
-        return parent::getLimited();
+        return parent::getLimitedTo();
     }
 
     public function setCreated($created)
@@ -141,18 +141,6 @@ class ContactGroup extends \Entities\ContactGroup implements \Doctrine\ORM\Proxy
         return parent::getContacts();
     }
 
-    public function setLimitedTo($limitedTo)
-    {
-        $this->__load();
-        return parent::setLimitedTo($limitedTo);
-    }
-
-    public function getLimitedTo()
-    {
-        $this->__load();
-        return parent::getLimitedTo();
-    }
-
 
     public function __sleep()
     {
@@ -168,7 +156,7 @@ class ContactGroup extends \Entities\ContactGroup implements \Doctrine\ORM\Proxy
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);
