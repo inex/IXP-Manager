@@ -1,5 +1,5 @@
 
-# V3.0.x
+# V3.0.9
 
 Schema update required:
 
@@ -50,8 +50,10 @@ Schema update required:
 
 
 
-# V3.0.9 - 201304
-
+- [NF] User / Contact integration. See: https://github.com/inex/IXP-Manager/wiki/Contacts-and-Users
+- [NF] Introduction of Contact Roles and Groups. See: https://github.com/inex/IXP-Manager/wiki/Contact-Groups
+- [NF] Integrate contact fields into user's profile
+- [NF] Note Watching - see https://github.com/inex/IXP-Manager/wiki/Customer-Notes 
 - [IM] Better redirection when adding / editing virtual interfaces (224fce5 - Barry O'Donovan - 2013-04-04)
 - [IM] Do not assume physical / VLAN interfaces exist for a virtual interface (1b55c11 - Barry O'Donovan - 2013-04-04)
 - [IM] Better error messages and redirection on adding phys / vlan interfaces (6fa56ac - Barry O'Donovan - 2013-04-04)
@@ -59,7 +61,6 @@ Schema update required:
 
 
 # V3.0.8 - 20130403
->>>>>>> master
 
 Schema update required:
 
