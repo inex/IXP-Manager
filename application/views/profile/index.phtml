@@ -24,24 +24,12 @@ This is your IXP Manager user profile where you can change you contact preferenc
 
 <div class="row-fluid">
     <div class="span6">
-
-        <h3>Change Your Profile</h3>
-        <br />
-        {$profileForm}
         
-    </div>
-    <div class="span6">
-
         <h3>Change Your Password</h3>
         <br />
         {$passwordForm}
         
-    </div>
-</div>
-
-{if isset( $options.mailinglist.enabled ) and $options.mailinglist.enabled}
-    <div class="row-fluid">
-        <div class="span6">
+        {if isset( $options.mailinglist.enabled ) and $options.mailinglist.enabled}
             <h3>Your Mailing List Subscriptions</h3>
             <p>
                 <br />
@@ -80,14 +68,17 @@ This is your IXP Manager user profile where you can change you contact preferenc
             
             </fieldset>
             </form>
-            
-        </div>
+        {/if}
         
-        <div class="span6">
-            &nbsp;
-        </div>
     </div>
-{/if}
+    <div class="span6">
+     
+        <h3>Change Your Profile</h3>
+        <br />
+        {$profileForm}
+        
+    </div>
+</div>
 
 {if not isset( $user ) or $user->getPrivs() neq 3}
     </div>
