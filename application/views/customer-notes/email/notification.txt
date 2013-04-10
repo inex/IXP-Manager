@@ -1,0 +1,34 @@
+{if $action == "edit"}
+Customer note was editied by user {$user->getContact()->getEmail()}
+for customer '{$cust->getName()}'
+
+[New Note]
+Title:   {$newn->getTitle()}
+Message: {$newn->getNote()}
+Status:  {if $newn->getPrivate()}Private{else}Public{/if}
+
+[Old Note]
+Title:   {$oldn->getTitle()}
+Message: {$oldn->getNote()}
+Status:  {if $oldn->getPrivate()}Private{else}Public{/if}
+
+{elseif $action == "add"}
+
+New customer note was created by user '{$user->getContact()->getEmail()}'
+for customer {$cust->getName()}
+
+[New Note]
+Title:   {$newn->getTitle()}
+Message: {$newn->getNote()}
+Status:  {if $newn->getPrivate()}Private{else}Public{/if}
+
+{elseif $action == "delete"}
+Customer note was deleted by user '{$user->getContact()->getEmail()}'
+for customer {$cust->getName()}
+
+[Old Note]
+Title:   {$oldn->getTitle()}
+Message: {$oldn->getNote()}
+Status:  {if $oldn->getPrivate()}Private{else}Public{/if}
+
+{/if}
