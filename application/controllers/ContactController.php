@@ -376,6 +376,26 @@ class ContactController extends IXP_Controller_FrontEnd
     }
     
     /**
+     * Preparation hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called just before we process a possible POST / submission and
+     * will allow us to change / alter the form or object.
+     *
+     * @param IXP_Form_Contact $form The Send form object
+     * @param \Entities\Contact $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     */
+    protected function addPrepare( $form, $object, $isEdit )
+    {
+        if( !$isEdit )
+        {
+            // defaults
+            $object->setFacilityaccess( false );
+            $object->setMayauthorize( false );
+        }
+    }
+    
+    /**
      * Prevalidation hook that can be overridden by subclasses for add and edit.
      *
      * This is called if the user POSTs a form just before the form is validated by Zend
@@ -401,13 +421,16 @@ class ContactController extends IXP_Controller_FrontEnd
         if( isset( $_POST['login'] ) && $_POST['login'] == '1' )
         {
             $form->getElement( "username" )->setRequired( true );
-            $form->getElement( "password" )->setRequired( true );
-            $form->getElement( "privs"    )->setRequired( true );
+            
+            if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+            {
+                $form->getElement( "password" )->setRequired( true );
+                $form->getElement( "privs"    )->setRequired( true );
+            }
         }
         else
             $_POST['login'] = 0;
         
-
         $this->view->contactGroups = $this->_postedGroupsToArray();
         
         return true;
