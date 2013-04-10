@@ -80,7 +80,10 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
                 $this->getD2EM()->flush();
 
                 if( $isEdit )
-                    $this->_sendNotifications( 'edit', $old , $n );
+                {
+                    if( $old->getTitle() != $n->getTitle() || $old->getNote() != $n->getNote() || $old->getPrivate() != $n->getPrivate() )
+                        $this->_sendNotifications( 'edit', $old , $n );
+                }
                 else
                     $this->_sendNotifications( 'add', false, $n );
                 
