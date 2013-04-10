@@ -145,5 +145,39 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
             $this->getD2EM()->flush();
         }
     }
+        
+    public function ajaxNotifyToggleAction()
+    {
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER  )
+            return;
+        
+        if( $this->getParam( 'custid', false ) )
+        {
+            $id = $this->getParam( 'custid' );
+            $cust = true;
+        }
+        else if( $this->getParam( 'id', false ) )
+        {
+            $id = $this->getParam( 'id' );
+            $cust = false;
+        }
+        
+        $name = $cust ? "customer-notes.%d.notify" : "customer-notes.watching.%d";
+        $value = $cust ? 'all' : 1;
+        
+        //Setts or removes customer notes notification preference for all customers notifications
+        if( is_numeric( $id ) )
+        {
+            if( !$this->getUser()->getPreference( sprintf( $name, $id ) ) )
+                $this->getUser()->setPreference( sprintf( $name, $id ), $value );
+            else
+                $this->getUser()->deletePreference( sprintf( $name, $id ) );
+                      
+            $this->getD2EM()->flush();
+            
+            echo "ok";
+        }
+    }
+    
 }
 
