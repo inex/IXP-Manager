@@ -32,7 +32,11 @@
                         <div class="btn-group">
                             <a class="btn btn-mini" href="{genUrl controller='contact' action="edit" uid=$u->getId()}"><i class="icon-pencil"></i></a>
                             <a class="btn btn-mini" id="usr-list-delete-{$u->getId()}" href="{genUrl controller='user' action="delete" id=$u->getId()}"><i class="icon-trash"></i></a>
-                            <a class="btn btn-mini" href="{genUrl controller='auth' action="switch-user" id=$u->getId()}" rel="tooltip" title="Log in as this user..."><i class="icon-user"></i></a>
+                            <a class="btn btn-mini"
+                                {if $u->getDisabled()}disabled="disabled" onclick="return( false );"{/if}
+                                href="{genUrl controller='auth' action="switch-user" id=$u->getId()}" rel="tooltip" title="Log in as this user...">
+                                    <i class="icon-user"></i>
+                            </a>
                         </div>
                     </td>
                 </tr>
