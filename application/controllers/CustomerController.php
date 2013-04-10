@@ -188,6 +188,14 @@ class CustomerController extends IXP_Controller_FrontEnd
     	$this->view->cust      = $cust = $this->_loadCustomer();
     	$this->view->tab       = $this->getParam( 'tab', false );
     	
+    	if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
+        	$this->view->co_notify_all = true;
+        	
+        if( $this->getUser()->getAssocPreference( "customer-notes.watching" ) )
+            $this->view->co_notify = $this->getUser()->getAssocPreference( "customer-notes.watching" )[0];
+        else
+            $this->view->co_notify = [];
+    	
         // load customer notes and the amount of unread notes for this user and customer
     	$this->_fetchCustomerNotes( $cust->getId() );
     	 
