@@ -39,8 +39,6 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function _feInit()
     {
-        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-        
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Contact',
             'form'          => 'IXP_Form_Contact',
@@ -90,6 +88,16 @@ class ContactController extends IXP_Controller_FrontEnd
                 $this->_feParams->pagetitle = 'Contact Admin for ' . $this->getUser()->getCustomer()->getName();
         
                 $this->_feParams->listColumns = [
+                    'id'        => [ 'title' => 'UID', 'display' => false ],
+                    'name'      => 'Name',
+                    'position'  => 'Position',
+                    'email'     => 'Email',
+                    'phone'     => 'Phone',
+                    'mobile'    => 'Mobile',
+                    'created'       => [
+                        'title'     => 'Created',
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ]
                 ];
                 break;
         
@@ -233,6 +241,9 @@ class ContactController extends IXP_Controller_FrontEnd
                 $form->removeElement( 'password' );
                 $form->removeElement( 'privs' );
                 $form->removeElement( 'custid' );
+                $form->removeElement( 'facilityaccess' );
+                $form->removeElement( 'mayauthorize' );
+                $form->removeElement( 'notes' );
                 
                 if( $isEdit )
                     $form->getElement( 'username' )->setAttrib( 'readonly', 'readonly' );
