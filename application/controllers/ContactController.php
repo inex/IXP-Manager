@@ -284,6 +284,7 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function preDelete( $object )
     {
+        // if I'm not an admin, then make sure I have permission!
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
         {
             if( $object->getCustomer() != $this->getUser()->getCustomer() )
@@ -293,12 +294,23 @@ class ContactController extends IXP_Controller_FrontEnd
                 return false;
             }
         }
+        else
+        {
+            // keep the customer ID for redirection on success
+            $this->getSessionNamespace()->ixp_contact_delete_custid = $object->getCustomer()->getId();
+        }
             
         if( $object->getUser() )
             $this->_deleteUser( $object );
         
-        // keep the customer ID for redirection on success
-        $this->getSessionNamespace()->ixp_contact_delete_custid = $object->getCustomer()->getId();
+        // if we are only deleting the user login account, take over control here and redirect
+        if( $this->getParam( 'useronly', false ) )
+        {
+            $this->getD2EM()->flush();
+            $this->addMessage( 'User login account successfully removed.', OSS_Message::SUCCESS );
+            $this->redirectAndEnsureDie( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
+        }
+        
         return true;
     }
     

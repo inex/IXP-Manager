@@ -126,6 +126,12 @@ class UserController extends IXP_Controller_FrontEnd
         $this->redirect( 'contact/add' );
     }
     
+    public function deleteAction()
+    {
+        // disabled as it is handled by the contact controller
+        $this->redirect( 'user/list' );
+    }
+    
     
     protected function listPreamble()
     {
@@ -177,51 +183,6 @@ class UserController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * Function which can be over-ridden to perform any pre-deletion tasks
-     *
-     * @param \Entities\User $object The Doctrine2 entity to delete
-     * @return bool Return false to stop / cancel the deletion
-     */
-    protected function preDelete( $object )
-    {
-        // if I'm not an admin, then make sure I have permission!
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-        {
-            if( $object->getCustomer() != $this->getUser()->getCustomer() )
-            {
-                $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to delete other customer user {$object->getUsername()}" );
-                $this->addMessage( 'You are not authorised to delete this user. The administrators have been notified.' );
-                return false;
-            }
-        }
-        else
-        {
-            // keep the customer ID for redirection on success
-            $this->getSessionNamespace()->ixp_user_delete_custid = $object->getCustomer()->getId();
-        }
-        
-        // now delete all the users privileges also
-        foreach( $object->getPreferences() as $pref )
-        {
-            $object->removePreference( $pref );
-            $this->getD2EM()->remove( $pref );
-        }
-
-        if( $object->getContact() )
-        {
-            if( $this->getParam( "contact", false ) )
-                $this->getD2EM()->remove( $object->getContact() );
-            else
-                $object->getContact()->unsetUser();
-        }
-
-        $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$object->getUsername()}" );
-        
-        
-        return true;
-    }
-    
     /**
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful deletion operation.

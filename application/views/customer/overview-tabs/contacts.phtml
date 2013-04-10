@@ -18,7 +18,10 @@
                     <td>
                         <div class="btn-group">
                             <a class="btn btn-mini" href="{genUrl controller='contact' action="edit" id=$c->getId() cid=$cust->getId()}"><i class="icon-pencil"></i></a>
-                            <a class="btn btn-mini" id="cont-list-delete-{$c->getId()}" href="{genUrl controller='contact' action="delete" id=$c->getId()}"><i class="icon-trash"></i></a>
+                            <a class="btn btn-mini" id="cont-list-delete-{$c->getId()}" data-hasuser="{if $c->getUser()}1{else}0{/if}"
+                                    href="{genUrl controller='contact' action="delete" id=$c->getId()}">
+                                <i class="icon-trash"></i>
+                            </a>
                             {if $c->getUser()}
                                 <a class="btn btn-mini"
                                     {if $c->getUser()->getDisabled()}disabled="disabled" onclick="return( false );"{/if}
