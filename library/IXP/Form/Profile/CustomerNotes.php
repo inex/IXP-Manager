@@ -31,7 +31,7 @@
  * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IXP_Form_CustomerNotes extends IXP_Form
+class IXP_Form_Profile_CustomerNotes extends IXP_Form
 {
     public function init()
     {

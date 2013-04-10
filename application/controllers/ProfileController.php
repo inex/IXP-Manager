@@ -73,7 +73,7 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
      */
     protected function _getFormCustomerNotes()
     {
-        $cnf = new IXP_Form_CustomerNotes();
+        $cnf = new IXP_Form_Profile_CustomerNotes();
         
         if( $this->getUser()->getPreference( 'customer-notes.notify' ) )
             $cnf->getElement( 'notify' )->setValue( $this->getUser()->getPreference( 'customer-notes.notify' ) );
