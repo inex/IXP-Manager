@@ -159,30 +159,28 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         
     public function ajaxNotifyToggleAction()
     {
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER  )
-            return;
-        
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+                
         if( $this->getParam( 'custid', false ) )
         {
-            $id = $this->getParam( 'custid' );
-            $cust = true;
+            $id   = $this->getParam( 'custid' );
+            $name = sprintf( "customer-notes.%d.notify", $id );
+            $value = 'all';
         }
         else if( $this->getParam( 'id', false ) )
         {
             $id = $this->getParam( 'id' );
-            $cust = false;
+            $name = sprintf( "customer-notes.watching.%d", $id );
+            $value = 1;
         }
         
-        $name = $cust ? "customer-notes.%d.notify" : "customer-notes.watching.%d";
-        $value = $cust ? 'all' : 1;
-        
-        //Setts or removes customer notes notification preference for all customers notifications
-        if( is_numeric( $id ) )
+        // Toggles customer notes notification preference
+        if( isset( $id ) && is_numeric( $id ) )
         {
-            if( !$this->getUser()->getPreference( sprintf( $name, $id ) ) )
-                $this->getUser()->setPreference( sprintf( $name, $id ), $value );
+            if( !$this->getUser()->getPreference( $name ) )
+                $this->getUser()->setPreference( $name, $value );
             else
-                $this->getUser()->deletePreference( sprintf( $name, $id ) );
+                $this->getUser()->deletePreference( $name );
                       
             $this->getD2EM()->flush();
             
@@ -228,7 +226,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
             $mail->addTo( $user->getContact()->getEmail(), $user->getContact()->getName() )
                 ->send();
             
-        }       
+        }
     }
 
 }
