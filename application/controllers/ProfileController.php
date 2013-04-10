@@ -56,7 +56,7 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
      */
     protected function _getFormProfile()
     {
-        $this->view->groups     = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
+        $this->view->groups        = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
         $this->view->contactGroups = $this->getD2R( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray( false, $this->getUser()->getContact()->getId() );
         $pf = new IXP_Form_Profile();
         
@@ -125,11 +125,13 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
             
             // update the users profile
             $form->assignFormToEntity( $this->getUser()->getContact(), $this, true );
-            $this->getUser()->getContact()->setLastUpdated( new DateTime() );            
+            $this->getUser()->getContact()->setLastUpdated( new DateTime() );
             $this->getUser()->getContact()->setLastUpdatedBy( $this->getUser()->getId() );
             
-            $this->getUser()->setEmail( $form->getValue( 'email' ) );
-            $this->getUser()->setLastUpdated( new DateTime() );            
+            if( !in_array( $this->getUser()->getPrivs(), [ \Entities\User::AUTH_CUSTADMIN, \Entities\User::AUTH_SUPERUSER ] ) )
+                $this->getUser()->setEmail( $form->getValue( 'email' ) );
+            
+            $this->getUser()->setLastUpdated( new DateTime() );
             $this->getUser()->setLastUpdatedBy( $this->getUser()->getId() );
             $this->getD2EM()->flush();
             $this->clearUserFromCache();
@@ -143,7 +145,7 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
     }
     
     public function updateCustomerNotesAction()
-    {   
+    {
         $this->view->customerNotesForm = $form = $this->_getFormCustomerNotes();
         
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
