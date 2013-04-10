@@ -52,6 +52,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
             {
                 $isEdit = true;
                 $n = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->find( $f->getValue( 'noteid' ) );
+                $old = clone( $n );
             }
             else
             {
@@ -77,6 +78,14 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
                 $this->getUser()->setPreference( "customer-notes.{$this->getParam( 'custid' )}.last_read", mktime() );
                 
                 $this->getD2EM()->flush();
+
+                if( $isEdit )
+                {
+                    if( $old->getTitle() != $n->getTitle() || $old->getNote() != $n->getNote() || $old->getPrivate() != $n->getPrivate() )
+                        $this->_sendNotifications( 'edit', $old , $n );
+                }
+                else
+                    $this->_sendNotifications( 'add', false, $n );
                 
                 $r[ 'error' ] = false;
                 $r[ 'noteid' ] = $n->getId();
@@ -123,8 +132,10 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         
         if( $note = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->find( $this->getParam( 'id' ) ) )
         {
+            $old = clone( $note );
             $this->getD2EM()->remove( $note );
             $this->getD2EM()->flush();
+            $this->_sendNotifications( 'delete', $old );
             $r = [ 'error' => false ];
         }
         
@@ -145,5 +156,80 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
             $this->getD2EM()->flush();
         }
     }
+        
+    public function ajaxNotifyToggleAction()
+    {
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER  )
+            return;
+        
+        if( $this->getParam( 'custid', false ) )
+        {
+            $id = $this->getParam( 'custid' );
+            $cust = true;
+        }
+        else if( $this->getParam( 'id', false ) )
+        {
+            $id = $this->getParam( 'id' );
+            $cust = false;
+        }
+        
+        $name = $cust ? "customer-notes.%d.notify" : "customer-notes.watching.%d";
+        $value = $cust ? 'all' : 1;
+        
+        //Setts or removes customer notes notification preference for all customers notifications
+        if( is_numeric( $id ) )
+        {
+            if( !$this->getUser()->getPreference( sprintf( $name, $id ) ) )
+                $this->getUser()->setPreference( sprintf( $name, $id ), $value );
+            else
+                $this->getUser()->deletePreference( sprintf( $name, $id ) );
+                      
+            $this->getD2EM()->flush();
+            
+            echo "ok";
+        }
+    }
+    
+    private function _sendNotifications( $action, $old = false, $new = false )
+    {
+        $users = $this->getD2R( "\\Entities\\User" )->findBy( [ 'privs' => \Entities\User::AUTH_SUPERUSER ] );
+        if( $old )
+            $this->view->cust = $cust = $old->getCustomer();
+        else if( $new )
+            $this->view->cust = $cust = $new->getCustomer();
+        else
+            throw new Exception( "Customer note is missing." );
+                   
+        $this->view->action = $action;
+        $this->view->oldn = $old;
+        $this->view->newn = $new;
+        
+        $mail = $this->getMailer();
+        $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
+            ->setSubject( $this->_options['identity']['sitename'] . ' - Customer notes was updated' )
+            ->setBodyText( $this->view->render( 'customer-notes/email/notification.txt' ) );
+          
+        foreach( $users as $user )
+        {
+            if( !$user->getPreference( "customer-notes.notify" ) )
+            {
+                if( !$user->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
+                {
+                    if( $action == "add" )
+                        continue;
+                    if( !$user->getPreference( "customer-notes.watching.{$old->getId()}" ) )
+                        continue;
+                }
+
+            }
+            else if( $user->getPreference( "customer-notes.notify" ) == "none" )
+                continue;
+            
+            $mail->addTo( $user->getContact()->getEmail(), $user->getContact()->getName() )
+                ->send();
+            
+        }       
+    }
+
 }
 

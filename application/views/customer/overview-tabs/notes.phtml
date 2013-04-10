@@ -8,9 +8,12 @@
         {/if}
         <th>Updated</th>
         <th>
-            {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
-                <button id="co-notes-add-btn" class="btn btn-small"><i class="icon-plus"></i></button>
-            {/if}
+            <div class="btn-group">
+                {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                    <button id="co-notes-add-btn" class="btn btn-small"><i class="icon-plus"></i></button>
+                    <button id="co-cust-notify-{$cust->getId()}"  class="btn btn-small {if isset( $co_notify_all ) && $co_notify_all}active{/if}"><i class="icon-eye-open"></i></button>
+                {/if}
+            </div>
         </th>
     </thead>
     <tbody id="co-notes-table-tbody">
@@ -40,7 +43,10 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-eye-open"></i></button>
+                            {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                                <button id="co-notes-notify-{$n->getId()}"  class="btn btn-small {if isset( $co_notify[$n->getId()] ) && $co_notify[$n->getId()]}active{/if}"><i class="icon-eye-open"></i></button>
+                            {/if}
+                            <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-zoom-in"></i></button>
                             {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                                 <button id="co-notes-edit-{$n->getId()}"  class="btn btn-small"><i class="icon-pencil"></i></button>
                                 <button id="co-notes-trash-{$n->getId()}" class="btn btn-small"><i class="icon-trash"></i></button>
@@ -63,7 +69,7 @@
 
 {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
 
-<div class="modal hide" id="co-notes-dialog">
+<div class="modal hide fade" id="co-notes-dialog">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3><span id="co-notes-dialog-title-action">Add a</span> Note for {$cust->getName()}</h3>
@@ -94,7 +100,7 @@
 
 {/if}
 
-<div class="modal hide" data-keyboard="true" id="co-notes-view-dialog">
+<div class="modal hide fade" data-keyboard="true" id="co-notes-view-dialog">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3><span id="co-notes-view-dialog-title"></span></h3>
