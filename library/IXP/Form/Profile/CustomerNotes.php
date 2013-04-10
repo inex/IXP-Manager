@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,9 +26,10 @@
  * A form to allow a user to change his customer notes notifications
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Form
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IXP_Form_Profile_CustomerNotes extends IXP_Form
@@ -41,14 +42,14 @@ class IXP_Form_Profile_CustomerNotes extends IXP_Form
 
         $notify = $this->createElement( 'radio','notify' );
         $notify->addMultiOptions([
-                'none'  => 'Disable all email notifications',
-                'default'  => 'Send email notifications of only what i watch',
-                'all' => 'Notify me of all customer notes'
+                'none'     => 'Disable all email notifications',
+                'default'  => 'Email me on changes to only watched customers and notes',
+                'all'      => 'Email me on any change to any customer note'
             ])
             ->setValue( 'default' );
         $this->addElement( $notify );
         
-        $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Change Customer Notes' ) ) );
+        $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Change Notification Preference' ) ) );
     }
 }
 

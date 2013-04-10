@@ -157,7 +157,7 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
                 
             $this->getD2EM()->flush();
             
-            $this->addMessage( _( 'Your customer notes notification options was updated.' ), OSS_Message::SUCCESS );
+            $this->addMessage( _( 'Your notification preference has been updated.' ), OSS_Message::SUCCESS );
             $this->redirect( 'profile/index' );
         }
     

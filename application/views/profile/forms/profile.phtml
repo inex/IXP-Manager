@@ -8,7 +8,7 @@
             {$element->phone}
             {$element->mobile}
            
-            {if isset( $groups ) && isset( $groups['ROLE'] ) && isset( $options.contact.group.types.ROLE ) }
+            {if isset( $groups ) && isset( $groups['ROLE'] ) && isset( $options.contact.group.types.ROLE ) && isset( $contactGroups['ROLE'] )}
                 {assign var=role_line value=4}
                 <div class="control-group">
                     <label class="control-label" for="role">Role</label>
@@ -24,7 +24,7 @@
                         {/foreach}
                     </div>
                 </div>
-            {/if}    
+            {/if}
 
             {$element->current_password}
     <div class="form-actions">
