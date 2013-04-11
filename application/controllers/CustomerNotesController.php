@@ -213,7 +213,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         
         $mail = $this->getMailer();
         $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
-             ->setSubject( '[IXP Notes] [' . $cust->getName() . '] ' . $new->getTitle() )
+             ->setSubject( '[IXP Notes] [' . $cust->getName() . '] ' . ( $old ? $old->getTitle() : $new->getTitle() ) )
              ->setBodyText( $this->view->render( 'customer-notes/email/notification.txt' ) );
           
         foreach( $users as $user )
