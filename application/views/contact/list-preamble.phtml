@@ -1,0 +1,7 @@
+{if isset( $group ) }
+    <h3>Filtered for Group: <em>{$group->getName()}</em>
+    <a class="btn btn-mini" href="{genUrl controller='contact-group' action='list'}">
+        <i class="icon-arrow-left"></i>
+    </a>
+  </h3>
+{/if}

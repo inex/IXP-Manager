@@ -92,11 +92,6 @@ class User
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Parent;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
     private $Preferences;
 
     /**
@@ -119,7 +114,6 @@ class User
      */
     public function __construct()
     {
-        $this->Parent = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Preferences = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ChangeLogs = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -388,39 +382,6 @@ class User
     }
 
     /**
-     * Add Parent
-     *
-     * @param Entities\User $parent
-     * @return User
-     */
-    public function addParent(\Entities\User $parent)
-    {
-        $this->Parent[] = $parent;
-    
-        return $this;
-    }
-
-    /**
-     * Remove Parent
-     *
-     * @param Entities\User $parent
-     */
-    public function removeParent(\Entities\User $parent)
-    {
-        $this->Parent->removeElement($parent);
-    }
-
-    /**
-     * Get Parent
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getParent()
-    {
-        return $this->Parent;
-    }
-
-    /**
      * Add Preferences
      *
      * @param Entities\UserPreference $preferences
@@ -572,18 +533,6 @@ class User
     }
 
     /**
-     * Set Parent
-     *
-     * @param Entities\User $parent
-     * @return User
-     */
-    public function setParent(\Entities\User $parent = null)
-    {
-        $this->Parent = $parent;
-    
-        return $this;
-    }
-    /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     private $Meetings;
@@ -615,10 +564,39 @@ class User
     /**
      * Get Meetings
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getMeetings()
     {
         return $this->Meetings;
     }
+    /**
+     * @var \Entities\Contact
+     */
+    private $Contact;
+
+
+    /**
+     * Set Contact
+     *
+     * @param \Entities\Contact $contact
+     * @return User
+     */
+    public function setContact(\Entities\Contact $contact = null)
+    {
+        $this->Contact = $contact;
+    
+        return $this;
+    }
+
+    /**
+     * Get Contact
+     *
+     * @return \Entities\Contact
+     */
+    public function getContact()
+    {
+        return $this->Contact;
+    }
+    
 }

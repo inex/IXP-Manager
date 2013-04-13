@@ -1,0 +1,35 @@
+<form class="form-horizontal" enctype="application/x-www-form-urlencoded"
+        accept-charset="UTF-8" method="post" horizontal="1"
+        action="{$element->getAction()}">
+
+            {$element->name}
+            {$element->position}
+            {$element->email}
+            {$element->phone}
+            {$element->mobile}
+           
+            {if isset( $groups ) && isset( $groups['ROLE'] ) && isset( $options.contact.group.types.ROLE ) && isset( $contactGroups['ROLE'] )}
+                {assign var=role_line value=4}
+                <div class="control-group">
+                    <label class="control-label" for="role">Role</label>
+                    <div class="controls">
+                        {foreach $groups['ROLE'] as $role }
+                            {if $role@index % $role_line == 0 && $role@index != 0 }
+                                <br />
+                            {/if}
+                            <label class="checkbox inline" style="width: 55px;" >
+                                <input type="checkbox" disabled="disabled" name="role[{$role@index}]" {if isset( $contactGroups ) && isset( $contactGroups['ROLE'][$role.id] ) }checked="checked"{/if}
+                                    id="role[{$role@index}]" value="{$role.id}"> {$role.name}
+                            </label>
+                        {/foreach}
+                    </div>
+                </div>
+            {/if}
+
+            {$element->current_password}
+    <div class="form-actions">
+        {$element->submit}
+    </div>
+
+    
+</form>

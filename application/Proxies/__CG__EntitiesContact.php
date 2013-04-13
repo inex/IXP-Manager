@@ -183,10 +183,70 @@ class Contact extends \Entities\Contact implements \Doctrine\ORM\Proxy\Proxy
         return parent::getCustomer();
     }
 
+    public function setPosition($position)
+    {
+        $this->__load();
+        return parent::setPosition($position);
+    }
+
+    public function getPosition()
+    {
+        $this->__load();
+        return parent::getPosition();
+    }
+
+    public function setUser(\Entities\User $user)
+    {
+        $this->__load();
+        return parent::setUser($user);
+    }
+
+    public function unsetUser()
+    {
+        $this->__load();
+        return parent::unsetUser();
+    }
+
+    public function getUser()
+    {
+        $this->__load();
+        return parent::getUser();
+    }
+
+    public function addGroup(\Entities\ContactGroup $groups)
+    {
+        $this->__load();
+        return parent::addGroup($groups);
+    }
+
+    public function removeGroup(\Entities\ContactGroup $groups)
+    {
+        $this->__load();
+        return parent::removeGroup($groups);
+    }
+
+    public function getGroups()
+    {
+        $this->__load();
+        return parent::getGroups();
+    }
+
+    public function setNotes($notes)
+    {
+        $this->__load();
+        return parent::setNotes($notes);
+    }
+
+    public function getNotes()
+    {
+        $this->__load();
+        return parent::getNotes();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Customer');
+        return array('__isInitialized__', 'name', 'position', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'notes', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'User', 'Customer', 'Groups');
     }
 
     public function __clone()

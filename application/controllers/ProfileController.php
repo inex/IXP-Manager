@@ -56,13 +56,29 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
      */
     protected function _getFormProfile()
     {
+        $this->view->groups        = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray();
+        $this->view->contactGroups = $this->getD2R( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray( false, $this->getUser()->getContact()->getId() );
         $pf = new IXP_Form_Profile();
         
-        $pf->getElement( 'username' )->setValue( $this->getUser()->getUsername() );
-        $pf->getElement( 'mobile'   )->setValue( $this->getUser()->getAuthorisedMobile() );
-        $pf->getElement( 'email'    )->setValue( $this->getUser()->getEmail() );
+        $pf->assignEntityToForm( $this->getUser()->getContact(), $this );
+
+        if( !in_array( $this->getUser()->getPrivs(), [ \Entities\User::AUTH_CUSTADMIN, \Entities\User::AUTH_SUPERUSER ] ) )
+            $pf->getElement( 'email')->setAttrib( 'readonly', 'readonly' );
         
         return $pf;
+    }
+    
+    /**
+     * Return the appropriate change profile form for your application
+     */
+    protected function _getFormCustomerNotes()
+    {
+        $cnf = new IXP_Form_Profile_CustomerNotes();
+        
+        if( $this->getUser()->getPreference( 'customer-notes.notify' ) )
+            $cnf->getElement( 'notify' )->setValue( $this->getUser()->getPreference( 'customer-notes.notify' ) );
+        
+        return $cnf;
     }
     
     
@@ -79,6 +95,9 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
         
         if( !isset( $this->view->passwordForm ) )
             $this->view->passwordForm = $this->_getFormChangePassword();
+            
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER && !isset( $this->view->customerNotesForm ) )
+            $this->view->customerNotesForm = $this->_getFormCustomerNotes();
     }
 
     protected function changePasswordPostFlush()
@@ -96,8 +115,22 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
         
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
+            if( !OSS_Auth_Password::verify( $form->getValue( 'current_password' ), $this->getUser()->getPassword(), $this->_options['resources']['auth']['oss'] ) )
+            {
+                $form->getElement( 'current_password' )->addError(
+                    'Invalid current password'
+                );
+                return $this->forward( 'index' );
+            }
+            
             // update the users profile
-            $this->getUser()->setAuthorisedMobile( $form->getValue( 'mobile' ) );
+            $form->assignFormToEntity( $this->getUser()->getContact(), $this, true );
+            $this->getUser()->getContact()->setLastUpdated( new DateTime() );
+            $this->getUser()->getContact()->setLastUpdatedBy( $this->getUser()->getId() );
+            
+            if( !in_array( $this->getUser()->getPrivs(), [ \Entities\User::AUTH_CUSTADMIN, \Entities\User::AUTH_SUPERUSER ] ) )
+                $this->getUser()->setEmail( $form->getValue( 'email' ) );
+            
             $this->getUser()->setLastUpdated( new DateTime() );
             $this->getUser()->setLastUpdatedBy( $this->getUser()->getId() );
             $this->getD2EM()->flush();
@@ -111,7 +144,25 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
         $this->forward( 'index' );
     }
     
-
+    public function updateCustomerNotesAction()
+    {
+        $this->view->customerNotesForm = $form = $this->_getFormCustomerNotes();
+        
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
+        {
+            if( $form->getValue( 'notify' ) != 'default' )
+                $this->getUser()->setPreference( 'customer-notes.notify', $form->getValue( 'notify' ) );
+            else
+                $this->getUser()->deletePreference( 'customer-notes.notify' );
+                
+            $this->getD2EM()->flush();
+            
+            $this->addMessage( _( 'Your notification preference has been updated.' ), OSS_Message::SUCCESS );
+            $this->redirect( 'profile/index' );
+        }
+    
+        $this->forward( 'index' );
+    }
     
     public function updateMailingListsAction()
     {

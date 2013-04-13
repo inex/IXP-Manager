@@ -1,0 +1,5 @@
+<li class="pull-right"> 
+    {if !isset( $feParams->readonly ) or !$feParams->readonly}
+        <a class="btn btn-mini pull-right" href="{genUrl controller='contact' action='add' user=true}"><i class="icon-plus"></i></a>
+    {/if}
+</li>

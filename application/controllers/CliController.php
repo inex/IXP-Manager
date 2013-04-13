@@ -525,6 +525,91 @@ class CliController extends IXP_Controller_Action
 
         return $list;
     }
+    
+    
+    /**
+     * Generate a JSON or CSV list of all contacts by a given group
+     *
+     * E.g.:
+     *
+     *     ./ixptool.php -a cli.cli-export-group -p type=ROLE,format=csv,cid=1
+     *
+     * Possible command line parameters are:
+     *
+     * * **type:** Contact group type (e.g. `ROLE`
+     * * **name:** Contact group name
+     * * **format:** Output format - one of `json` (default) or `csv`
+     * * **sn:** Customer shortname to limit results to
+     * * **cid:** Customer id to limit results to
+     *
+     */
+    
+    public function cliExportGroupAction()
+    {
+        $type   = $this->getParam( 'type',   false );
+        $name   = $this->getParam( 'name',   false );
+        $format = $this->getParam( 'format', false );
+        $sn     = $this->getParam( 'sn',     false );
+        $cid    = $this->getParam( 'cid',    false );
+        
+        if( ( !$type && !$name ) || ( $type && $name ) )
+        {
+            echo "ERR: Group name or type must be set (and not both).\n";
+            return;
+        }
+            
+        if( !$format )
+            $format = 'json';
+        
+        $dql =  "SELECT c.name AS name, c.position as position, c.email AS email, c.phone AS phone, c.mobile AS mobile,
+                    c.facilityaccess AS facilityacces, c.mayauthorize AS mayauthorize, c.notes as notes
+                
+             FROM \\Entities\\Contact c
+                LEFT JOIN c.Groups cg
+                LEFT JOIN c.Customer cu\n";
+             
+        if( $type )
+            $dql .= " WHERE cg.type = :type";
+        else
+            $dql .= " WHERE cg.name = :name";
+        
+        if( $cid )
+            $dql .= " AND cu.id = :cid";
+        else if( $sn )
+            $dql .= " AND cu.shortname = :sn";
+            
+        $dql .= " GROUP BY c.id";
+        
+        $q = $this->getEntityManager()->createQuery( $dql );
+            
+        if( $type )
+            $q->setParameter( 'type', $type );
+        else
+            $q->setParameter( 'name', $name );
+        
+        if( $cid )
+            $q->setParameter( 'cid', $cid );
+        else if( $sn )
+            $q->setParameter( 'sn', $sn );
+            
+        $contacts = $q->getArrayResult();
+        
+        if( !$contacts )
+            return;
+        
+        if( $format == "csv" )
+        {
+            $names= [];
+            foreach( $contacts[0] as $name => $data )
+                $names[]= $name;
+
+            array_unshift( $contacts, $names );
+            $csv = new OSS_Csv( $contacts );
+            echo $csv->getContents( $csv );
+        }
+        else
+            echo json_encode( $contacts );
+    }
 }
 
 

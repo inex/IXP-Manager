@@ -403,6 +403,23 @@ function tt_sortByName(a, b)
 }
 
 
+/**
+ * Set proper with and margins for bordered fieldset
+ */
+function formatFieldset()
+{
+    $( ".legend-fieldset-bordered" ).css( "width", $( ".legend-fieldset-bordered > label" ).width() + 20 );
+	
+	$( ".fieldset-bordered-elements> .control-group > .control-label" ).each(function( index ) {
+        $(this).width( "100" );
+    });
+	
+	$( ".fieldset-bordered-elements > .control-group > .controls" ).each(function( index ) {
+        $(this).css( "margin-left", "120px" );
+    });
+}
+
+
 //****************************************************************************
 // DataTables http://datatables.net/blog/Twitter_Bootstrap_2
 //****************************************************************************

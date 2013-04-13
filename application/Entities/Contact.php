@@ -68,6 +68,21 @@ class Contact
      * @var Entities\Customer
      */
     private $Customer;
+    
+     /**
+     * @var string
+     */
+    private $position;
+
+    /**
+     * @var \Entities\User
+     */
+    private $User;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Groups;
 
 
     /**
@@ -86,7 +101,7 @@ class Contact
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -109,7 +124,7 @@ class Contact
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -132,7 +147,7 @@ class Contact
     /**
      * Get phone
      *
-     * @return string 
+     * @return string
      */
     public function getPhone()
     {
@@ -155,7 +170,7 @@ class Contact
     /**
      * Get mobile
      *
-     * @return string 
+     * @return string
      */
     public function getMobile()
     {
@@ -178,7 +193,7 @@ class Contact
     /**
      * Get facilityaccess
      *
-     * @return integer 
+     * @return integer
      */
     public function getFacilityaccess()
     {
@@ -201,7 +216,7 @@ class Contact
     /**
      * Get mayauthorize
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getMayauthorize()
     {
@@ -224,7 +239,7 @@ class Contact
     /**
      * Get lastupdated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastupdated()
     {
@@ -247,7 +262,7 @@ class Contact
     /**
      * Get lastupdatedby
      *
-     * @return integer 
+     * @return integer
      */
     public function getLastupdatedby()
     {
@@ -270,7 +285,7 @@ class Contact
     /**
      * Get creator
      *
-     * @return string 
+     * @return string
      */
     public function getCreator()
     {
@@ -293,7 +308,7 @@ class Contact
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -303,7 +318,7 @@ class Contact
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -326,10 +341,137 @@ class Contact
     /**
      * Get Customer
      *
-     * @return Entities\Customer 
+     * @return Entities\Customer
      */
     public function getCustomer()
     {
         return $this->Customer;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->Groups = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Set position
+     *
+     * @param string $position
+     * @return Contact
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return string
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Set User
+     *
+     * @param \Entities\User $user
+     * @return Contact
+     */
+    public function setUser(\Entities\User $user)
+    {
+        $this->User = $user;
+    
+        return $this;
+    }
+    
+    /**
+     * Unset User
+     *
+     * @return Contact
+     */
+    public function unsetUser()
+    {
+        $this->User = null;
+    
+        return $this;
+    }
+
+    /**
+     * Get User
+     *
+     * @return \Entities\User
+     */
+    public function getUser()
+    {
+        return $this->User;
+    }
+
+    /**
+     * Add Groups
+     *
+     * @param \Entities\ContactGroup $groups
+     * @return Contact
+     */
+    public function addGroup(\Entities\ContactGroup $groups)
+    {
+        $this->Groups[] = $groups;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Groups
+     *
+     * @param \Entities\ContactGroup $groups
+     */
+    public function removeGroup(\Entities\ContactGroup $groups)
+    {
+        $this->Groups->removeElement($groups);
+    }
+
+    /**
+     * Get Groups
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGroups()
+    {
+        return $this->Groups;
+    }
+    /**
+     * @var string
+     */
+    private $notes;
+
+
+    /**
+     * Set notes
+     *
+     * @param string $notes
+     * @return Contact
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+    
+        return $this;
+    }
+
+    /**
+     * Get notes
+     *
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
     }
 }

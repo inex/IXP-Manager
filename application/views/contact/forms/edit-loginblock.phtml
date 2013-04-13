@@ -1,0 +1,19 @@
+<div class="control-group">
+    <div class="controls-fieldset-bordered">
+        <fieldset class="fieldset-bordered">
+            <legend class="legend-fieldset-bordered">
+                <label class="checkbox inline">
+                    <input type="checkbox" name="login" id="login" value="1"
+                        {if $element->login->getValue() == 1}checked="checked"{/if}>
+                        Can&nbsp;login&nbsp;to&nbsp;portal
+                </label>
+            </legend>
+            <div class="fieldset-bordered-elements {if $element->login->getValue() == 0}hide{/if}" id="login-elements">
+                {$element->username}
+                {$element->password}
+                {$element->privs}
+                {$element->disabled}
+            </div>
+        </fieldset>
+    </div>
+</div>

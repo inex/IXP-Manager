@@ -102,18 +102,37 @@ $em->persist( $c );
 
 // now you need your admin user!
 
+$contact = new \Entities\Contact();
+
+$contact->setCustomer( $c );
+$contact->setName( 'Joe Bloggs' );
+$contact->setPosition( 'Master of the Universe' );
+$contact->setEmail( 'joe@siep.com' );
+$contact->setPhone( '+353 86 123 4567' );
+$contact->setMobile( '+353 1 123 4567' );
+$contact->setFacilityaccess( true );
+$contact->setMayauthorize( true );
+$contact->setLastupdated( new \DateTime() );
+$contact->setLastupdatedby( 1 );
+$contact->setCreator( 1 );
+$contact->setCreated( new \DateTime() );
+$contact->setNotes( "" );
+
+$em->persist( $contact );
+
 $u = new \Entities\User();
+
+$contact->setUser( $u );
 
 $u->setUsername( 'username' );
 $u->setPassword( 'letmein1' );        // if you're not using plaintext passwords, put anything here and
                                       // use the forgotten password facility
-$u->setEmail( 'username@siep.com' );
+$u->setEmail( $contact->getEmail() );
 $u->setPrivs( \Entities\User::AUTH_SUPERUSER );
 $u->setDisabled( false );
 $u->setCreator( $u->getUsername() );
-$u->setCreated( new DateTime() );
+$u->setCreated( new \DateTime() );
 $u->setCustomer( $c );
-$u->setParent( $u );
 
 $em->persist( $u );
 
@@ -249,6 +268,24 @@ foreach( $irrdbs as $irrdb )
     $e->setProtocol( $irrdb['protocol'] );
     $e->setSource(   $irrdb['source']   );
     $e->setNotes( $irrdb['notes']       );
+    $em->persist( $e );
+}
+
+$em->flush();
+
+## Contact groups
+
+$contactRoles = [ 'Billing', 'Technical', 'Admin', 'Marketing' ];
+
+foreach( $contactRoles as $name )
+{
+    $e = new \Entities\ContactGroup();
+    $e->setName( $name );
+    $e->setDescription( sprintf( "Contact role for %s matters", strtolower( $name ) ) );
+    $e->setType( \Entities\ContactGroup::TYPE_ROLE );
+    $e->setActive( true );
+    $e->setLimitedTo( 0 );
+    $e->setCreated( new DateTime() ); 
     $em->persist( $e );
 }
 

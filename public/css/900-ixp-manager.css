@@ -301,6 +301,26 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     background-color: #eee;
 }
 
+.controls-fieldset-bordered {
+    margin-left: 90px;
+}
+
+.legend-fieldset-bordered {
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 0px;
+    border-style: none none none;
+    width: none;
+    padding: 5px;
+}
+
+.fieldset-bordered {
+    border: 1px solid #CCCCCC;
+    padding: 10px;
+    border-radius: 4px 4px 4px 4px;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+}
+
 
 
 /* Bootstrap Dropdowns in Breadcrumbs:

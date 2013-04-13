@@ -31,6 +31,13 @@
         </li>
         <li {if $controller eq 'contact'}class="active"{/if}>
             <a href="{genUrl controller='contact' action='list'}">Contacts</a>
+            {if $controller eq 'contact' or $controller eq 'contact-group'}
+                <ul class="nav nav-list">
+                    <li {if $controller eq 'contact-group'}class="active"{/if}>
+                        <a href="{genUrl controller='contact-group' action='list'}">Contact Groups</a>
+                    </li>
+                </ul>
+            {/if}
         </li>
         <li {if $controller eq 'cust-kit'}class="active"{/if}>
             <a href="{genUrl controller='cust-kit' action='list'}">Colocated Equipment</a>

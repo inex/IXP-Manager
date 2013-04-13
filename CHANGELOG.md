@@ -1,6 +1,66 @@
 
-# V3.0.9 - 201304
+# V3.0.9
 
+Schema update required:
+
+
+    CREATE TABLE contact_to_group (
+        contact_id INT NOT NULL, contact_group_id BIGINT NOT NULL, 
+        INDEX IDX_FCD9E962E7A1254A (contact_id), 
+        INDEX IDX_FCD9E962647145D0 (contact_group_id), 
+        PRIMARY KEY(contact_id, contact_group_id)
+    ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    CREATE TABLE contact_group (
+        id BIGINT AUTO_INCREMENT NOT NULL, name VARCHAR(20) NOT NULL, 
+        description VARCHAR(255) NOT NULL, type VARCHAR(20) NOT NULL, 
+        active TINYINT(1) NOT NULL, `limited_to` INT NOT NULL, created DATETIME NOT NULL, 
+        UNIQUE INDEX UNIQ_40EA54CA5E237E06 (name), PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    ALTER TABLE contact_to_group ADD CONSTRAINT FK_FCD9E962E7A1254A 
+        FOREIGN KEY (contact_id) REFERENCES contact (id);
+    
+    ALTER TABLE contact_to_group ADD CONSTRAINT FK_FCD9E962647145D0 
+        FOREIGN KEY (contact_group_id) REFERENCES contact_group (id);
+    
+    ALTER TABLE contact 
+        ADD user_id INT DEFAULT NULL, 
+        ADD position VARCHAR(50) DEFAULT NULL, 
+        ADD notes LONGTEXT DEFAULT NULL, 
+        CHANGE name name VARCHAR(255) NOT NULL, 
+        CHANGE phone phone VARCHAR(50) DEFAULT NULL, 
+        CHANGE mobile mobile VARCHAR(50) DEFAULT NULL, 
+        CHANGE facilityaccess facilityaccess TINYINT(1) NOT NULL, 
+        CHANGE mayauthorize mayauthorize TINYINT(1) NOT NULL;
+    
+    ALTER TABLE contact ADD CONSTRAINT FK_4C62E638A76ED395 
+        FOREIGN KEY (user_id) REFERENCES user (id);
+    
+    CREATE UNIQUE INDEX UNIQ_4C62E638A76ED395 ON contact (user_id);
+    
+    ALTER TABLE user DROP FOREIGN KEY FK_8D93D649727ACA70;
+    DROP INDEX IDX_8D93D649727ACA70 ON user;
+    ALTER TABLE user DROP parent_id;
+    
+    INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Billing', 'Contact for billing matters', 'ROLE', 1, 0, NOW() );
+    INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Technical', 'Contact for technical matters', 'ROLE', 1, 0, NOW() );
+    INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Admin', 'Contact for admin matters', 'ROLE', 1, 0, NOW() );
+    INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Marketing', 'Contact for marketing matters', 'ROLE', 1, 0, NOW() );
+
+**You must also recreate your views:**
+
+    mysql -u root -p password [dbname] < tools/sql/views.sql
+
+Please ensure that you go through all your users and assign / create contacts for them. See 
+`tools/migration_scripts/contact-contactgroups.php` as a sample simple script for some of this.
+
+
+- [NF] Updated profile to allow users update their contact information
+- [NF] User / Contact integration. See: https://github.com/inex/IXP-Manager/wiki/Contacts-and-Users
+- [NF] Introduction of Contact Roles and Groups. See: https://github.com/inex/IXP-Manager/wiki/Contact-Groups
+- [NF] Integrate contact fields into user's profile
+- [NF] Note Watching - see https://github.com/inex/IXP-Manager/wiki/Customer-Notes 
 - [IM] Better redirection when adding / editing virtual interfaces (224fce5 - Barry O'Donovan - 2013-04-04)
 - [IM] Do not assume physical / VLAN interfaces exist for a virtual interface (1b55c11 - Barry O'Donovan - 2013-04-04)
 - [IM] Better error messages and redirection on adding phys / vlan interfaces (6fa56ac - Barry O'Donovan - 2013-04-04)

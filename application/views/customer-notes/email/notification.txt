@@ -1,0 +1,32 @@
+
+Customer:   {$cust->getName()}
+Changed by: {$user->getContact()->getName()} <{$user->getContact()->getEmail()}>
+Action:     Note {if not $old}ADDED{elseif not $new}DELETED{else}UPDATED{/if}
+
+{if $new}
+
+================= NEW NOTE DETAILS ===================
+
+Title:      {$new->getTitle()}
+Visibility: {if $new->getPrivate()}Private{else}Public{/if}
+
+{$new->getNote()}
+
+======================================================
+
+{/if}
+
+
+{if $old}
+
+================= OLD NOTE DETAILS ===================
+
+Title:      {$old->getTitle()}
+Visibility: {if $old->getPrivate()}Private{else}Public{/if}
+
+{$old->getNote()}
+
+======================================================
+
+{/if}
+

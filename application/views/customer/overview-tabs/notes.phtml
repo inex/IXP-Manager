@@ -1,5 +1,4 @@
 
-
 <table class="table {if not count( $custNotes )}hide{/if}" id="co-notes-table">
     <thead>
         <th>Title</th>
@@ -8,9 +7,12 @@
         {/if}
         <th>Updated</th>
         <th>
-            {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
-                <button id="co-notes-add-btn" class="btn btn-small"><i class="icon-plus"></i></button>
-            {/if}
+            <div class="btn-group">
+                {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                    <button id="co-notes-add-btn" class="btn btn-small"><i class="icon-plus"></i></button>
+                    <button id="co-cust-notify-{$cust->getId()}"  class="btn btn-small {if isset( $co_notify_all ) && $co_notify_all}active{/if}"><i class="icon-eye-open"></i></button>
+                {/if}
+            </div>
         </th>
     </thead>
     <tbody id="co-notes-table-tbody">
@@ -40,7 +42,10 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-eye-open"></i></button>
+                            {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                                <button id="co-notes-notify-{$n->getId()}"  class="btn btn-small {if isset( $co_notify[$n->getId()] ) && $co_notify[$n->getId()]}active{/if}"><i class="icon-eye-open"></i></button>
+                            {/if}
+                            <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-zoom-in"></i></button>
                             {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                                 <button id="co-notes-edit-{$n->getId()}"  class="btn btn-small"><i class="icon-pencil"></i></button>
                                 <button id="co-notes-trash-{$n->getId()}" class="btn btn-small"><i class="icon-trash"></i></button>

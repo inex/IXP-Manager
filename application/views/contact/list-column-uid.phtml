@@ -1,0 +1,7 @@
+<td>
+    {if not $row.uid}
+        <i id="contact-has-user-{$row.uid}" data-hasuser="1" class="icon-remove"></i>
+    {else}
+        <i id="contact-has-user-{$row.uid}" data-hasuser="0" class="icon-ok"></i>
+    {/if}
+</td>

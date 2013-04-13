@@ -51,6 +51,8 @@ class UserController extends IXP_Controller_FrontEnd
 
             'listOrderBy'    => 'username',
             'listOrderByDir' => 'ASC',
+            
+            'addWhenEmpty'   => false
         ];
 
         switch( $this->getUser()->getPrivs() )
@@ -119,26 +121,18 @@ class UserController extends IXP_Controller_FrontEnd
     }
 
     
-    
-    protected function listPreamble()
+    public function addAction()
     {
-        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
-        {
-            if( !isset( $this->getSessionNamespace()->custadminInstructions ) || !$this->getSessionNamespace()->custadminInstructions )
-            {
-                $this->getSessionNamespace()->custadminInstructions = true;
-                
-                $this->addMessage(
-                    "<p><strong>Remember! This admin account is only intended for creating users for your organisation.</strong></p>"
-                        . "<p>For full IXP Manager functionality, graphs and member information, log in under one of your user accounts</p>",
-                    OSS_Message::INFO,
-                    OSS_Message::TYPE_BLOCK
-                );
-            }
-        }
+        $this->redirect( 'contact/add' );
     }
-        
-
+    
+    public function deleteAction()
+    {
+        // disabled as it is handled by the contact controller
+        $this->redirect( 'user/list' );
+    }
+    
+    
 
     /**
      * Provide array of users for the listAction and viewAction
@@ -170,262 +164,6 @@ class UserController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
-
-    /**
-     *
-     * @param IXP_Form_User $form The form object
-     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
-     * @param bool $isEdit True of we are editing an object, false otherwise
-     * @param array $options Options passed onto Zend_Form
-     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
-     * @return void
-     */
-    protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
-    {
-        switch( $this->getUser()->getPrivs() )
-        {
-            case \Entities\User::AUTH_SUPERUSER:
-                $form->removeElement( 'name' );
-                $form->getElement( 'username' )->removeValidator( 'stringLength' );
-                
-                if( !$isEdit && !$this->getRequest()->isPost() )
-                {
-                    $form->getElement( 'password' )->setValue( OSS_String::random( 12 ) );
-                    
-                    if( $this->getParam( 'custid', false ) && ( $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) ) ) )
-                        $form->getElement( 'custid' )->setValue( $cust->getId() );
-                }
-                
-                if( $isEdit )
-                    $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
-                break;
-
-            case \Entities\User::AUTH_CUSTADMIN:
-                $form->removeElement( 'password' );
-                $form->removeElement( 'privs' );
-                $form->removeElement( 'custid' );
-                if( $isEdit )
-                {
-                    $form->removeElement( 'name' );
-                    $form->getElement( 'username' )->setAttrib( 'readonly', 'readonly' );
-                }
-                break;
-
-            default:
-                throw new OSS_Exception( 'Unhandled user type' );
-        }
-
-        if( !$isEdit )
-        {
-            $form->getElement( 'username' )->addValidator( 'OSSDoctrine2Uniqueness', true,
-                [ 'entity' => '\\Entities\\User', 'property' => 'username' ]
-            );
-        }
-    }
-
-
-    /**
-     *
-     * @param IXP_Form_User $form The form object
-     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
-     * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return bool
-     */
-    protected function addPreValidate( $form, $object, $isEdit )
-    {
-        // is this user allowed to edit this object?
-        if( $isEdit && $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-        {
-            if( $this->getUser()->getCustomer() != $object->getCustomer() )
-            {
-                $this->addMessage( 'Illegal attempt to edit a user not under your control. The security team have been notified.' );
-                $this->getLogger()->alert( "User {$this->getUser()->getUsername()} illegally tried to edit {$object->getUsername()}" );
-                $this->redirect( 'user/list' );
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     *
-     * @param IXP_Form_User $form The form object
-     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
-     * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
-     */
-    protected function addPostValidate( $form, $object, $isEdit )
-    {
-        
-        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
-        {
-            $object->setCustomer(
-                $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
-            );
-        }
-                
-        if( $isEdit )
-        {
-            $object->setLastupdated( new DateTime() );
-            $object->setLastupdatedby( $this->getUser()->getId() );
-        }
-        else
-        {
-            $object->setCreated( new DateTime() );
-            $object->setCreator( $this->getUser()->getUsername() );
-
-            if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
-            {
-                $object->setCustomer( $this->getUser()->getCustomer() );
-                $object->setParent( $this->getUser() );
-                $object->setPrivs( \Entities\User::AUTH_CUSTUSER );
-                $object->setPassword( OSS_String::random( 16 ) );
-
-                $c = new \Entities\Contact();
-                $c->setCustomer( $this->getUser()->getCustomer() );
-                $c->setName( $form->getElement( 'name' )->getValue() );
-                $c->setEmail( $form->getElement( 'email' )->getValue() );
-                $c->setMobile( $form->getElement( 'authorisedMobile' )->getValue() );
-                $c->setCreator( $this->getUser()->getUsername() );
-                $c->setCreated( new DateTime() );
-                $this->getD2EM()->persist( $c );
-            }
-            else
-            {
-                try
-                {
-                    $object->setParent(
-                        $this->getD2EM()->createQuery(
-                            'SELECT u FROM \\Entities\\User u WHERE u.privs = ?1 AND u.Customer = ?2'
-                        )
-                        ->setParameter( 1, \Entities\User::AUTH_CUSTADMIN )
-                        ->setParameter( 2, $object->getCustomer() )
-                        ->setMaxResults( 1 )
-                        ->getSingleResult()
-                    );
-                }
-                catch( \Doctrine\ORM\NoResultException $e )
-                {
-                    $object->setParent( $object );
-                }
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
-     *
-     * @param IXP_Form_User $form The form object
-     * @param \Entities\User $object The Doctrine2 entity (being edited or blank for add)
-     * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
-     */
-    protected function addPostFlush( $form, $object, $isEdit )
-    {
-        if( !$isEdit )
-        {
-            $this->view->newuser = $object;
-            $this->sendWelcomeEmail( $object );
-        }
-        else
-        {
-            // users are cached so we should delete any existing cache entry for an edited user
-            $this->clearUserFromCache( $object->getId() );
-        }
-
-        return true;
-    }
-
-    /**
-     * You can add `OSS_Message`s here and redirect to a custom destination after a
-     * successful add / edit operation.
-     *
-     * By default it returns `false`.
-     *
-     * On `false`, the default action (`index`) is called and a standard success message is displayed.
-     *
-     *
-     * @param OSS_Form $form The form object
-     * @param object $object The Doctrine2 entity (being edited or blank for add)
-     * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return bool `false` for standard message and redirection, otherwise redirect within this function
-     */
-    protected function addDestinationOnSuccess( $form, $object, $isEdit  )
-    {
-        $this->addMessage( 'User successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
-        
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $this->redirect( 'user/list' );
-        else
-            $this->redirect( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
-    }
-    
-    /**
-     * Function which can be over-ridden to perform any pre-deletion tasks
-     *
-     * @param \Entities\User $object The Doctrine2 entity to delete
-     * @return bool Return false to stop / cancel the deletion
-     */
-    protected function preDelete( $object )
-    {
-        // if I'm not an admin, then make sure I have permission!
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-        {
-            if( $object->getCustomer() != $this->getUser()->getCustomer() )
-            {
-                $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to delete other customer user {$object->getUsername()}" );
-                $this->addMessage( 'You are not authorised to delete this user. The administrators have been notified.' );
-                return false;
-            }
-        }
-        else
-        {
-            // keep the customer ID for redirection on success
-            $this->getSessionNamespace()->ixp_user_delete_custid = $object->getCustomer()->getId();
-        }
-        
-        // now delete all the users privileges also
-        foreach( $object->getPreferences() as $pref )
-        {
-            $object->removePreference( $pref );
-            $this->getD2EM()->remove( $pref );
-        }
-        
-        $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$object->getUsername()}" );
-        
-        
-        return true;
-    }
-    
-    /**
-     * You can add `OSS_Message`s here and redirect to a custom destination after a
-     * successful deletion operation.
-     *
-     * By default it returns `false`.
-     *
-     * On `false`, the default action (`index`) is called and a standard success message is displayed.
-     *
-     * @return bool `false` for standard message and redirection, otherwise redirect within this function
-     */
-    protected function deleteDestinationOnSuccess()
-    {
-        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
-        {
-            // retrieve the customer ID
-            if( $custid = $this->getSessionNamespace()->ixp_user_delete_custid )
-            {
-                unset( $this->getSessionNamespace()->ixp_user_delete_custid );
-        
-                $this->addMessage( 'Contact successfully deleted', OSS_Message::SUCCESS );
-                $this->redirect( 'customer/overview/tab/users/id/' . $custid );
-            }
-        }
-                
-        return false;
-    }
-    
     /**
      * Show the last users to login
      *

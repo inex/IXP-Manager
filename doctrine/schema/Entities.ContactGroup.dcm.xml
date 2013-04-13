@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\ContactGroup" repository-class="Repositories\ContactGroup" table="contact_group" tableName="contact_group">
+    <id name="id" type="bigint">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="name" type="string" unique="true" length="20" nullable="false"/>
+    <field name="description" type="string" length="255" nullable="false"/>
+    <field name="type" type="string" length="20" nullable="false"/>
+    <field name="active" type="boolean" nullable="false"/>
+    <field name="limited_to" type="integer" nullable="false"/>
+    <field name="created" type="datetime" nullable="false"/>
+    <many-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Groups"/>
+  </entity>
+</doctrine-mapping>
