@@ -165,33 +165,6 @@ class UserController extends IXP_Controller_FrontEnd
     }
 
     /**
-     * You can add `OSS_Message`s here and redirect to a custom destination after a
-     * successful deletion operation.
-     *
-     * By default it returns `false`.
-     *
-     * On `false`, the default action (`index`) is called and a standard success message is displayed.
-     *
-     * @return bool `false` for standard message and redirection, otherwise redirect within this function
-     */
-    protected function deleteDestinationOnSuccess()
-    {
-        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
-        {
-            // retrieve the customer ID
-            if( $custid = $this->getSessionNamespace()->ixp_user_delete_custid )
-            {
-                unset( $this->getSessionNamespace()->ixp_user_delete_custid );
-        
-                $this->addMessage( 'User successfully deleted', OSS_Message::SUCCESS );
-                $this->redirect( 'customer/overview/tab/users/id/' . $custid );
-            }
-        }
-                
-        return false;
-    }
-    
-    /**
      * Show the last users to login
      *
      * Named for the UNIX 'last' command
