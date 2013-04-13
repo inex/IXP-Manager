@@ -116,19 +116,21 @@
 
     
 </form>
-{if isset( $groups ) && ( count( $groups ) > 1 || ( count( $groups ) == 1 && !isset( $groups['ROLE'] ) ) ) }
 <script>
+
+{if isset( $groups ) && ( count( $groups ) > 1 || ( count( $groups ) == 1 && !isset( $groups['ROLE'] ) ) ) }
     {if $user->getPrivs() eq 3}
         {tmplinclude file="contact/js/groups.js" row_idx=$row_idx}
     {/if}
-            
-    $( document ).ready( function(){
-        $( "#login" ).bind( "change", function(){
-            if( $( this ).attr( "checked" ) )
-                $( "#login-elements" ).show( "slow" );
-            else
-                $( "#login-elements" ).hide( "slow" );
-        });
-    });
-</script>
 {/if}
+    
+$( document ).ready( function(){
+    $( "#login" ).on( 'change', function(){
+        if( $( this ).attr( "checked" ) )
+            $( "#login-elements" ).show( "slow" );
+        else
+            $( "#login-elements" ).hide( "slow" );
+    });
+});
+
+</script>
