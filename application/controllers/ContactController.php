@@ -301,7 +301,12 @@ class ContactController extends IXP_Controller_FrontEnd
      */
     protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
-        $this->addMessage( 'Contact successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+        $this->addMessage(
+            'Contact successfully ' . ( $isEdit ? ' edited.' : ' added.' ) . ' '
+                . 'If you gave the contact a login account, they will have been emailed with instructions '
+                . 'for setting their password and accessing it. You will have been copied on this email also.',
+            OSS_Message::SUCCESS
+        );
         
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
         {
@@ -533,28 +538,31 @@ class ContactController extends IXP_Controller_FrontEnd
         
         foreach( [ 'role', 'group' ] as $groupType )
         {
-            foreach( $form->getValue( $groupType ) as $cgid )
+            if( $form->getValue( $groupType ) )
             {
-                if( $group = $this->getD2R( "\\Entities\\ContactGroup" )->find( $cgid ) )
+                foreach( $form->getValue( $groupType ) as $cgid )
                 {
-                    if( $group->getLimitedTo() != 0 )
+                    if( $group = $this->getD2R( "\\Entities\\ContactGroup" )->find( $cgid ) )
                     {
-                        $contactsWithGroupForCustomer = $this->getD2R( "\\Entities\\ContactGroup" )->countForCustomer( $contact->getCustomer(), $cgid );
-        
-                        if( !$contact->getGroups()->contains( $group ) && $group->getLimitedTo() <= $contactsWithGroupForCustomer )
+                        if( $group->getLimitedTo() != 0 )
                         {
-                            $this->addMessage( "Contact group {$group->getName()} has a limited membership and is full.", OSS_Message::WARNING );
-                            return false;
+                            $contactsWithGroupForCustomer = $this->getD2R( "\\Entities\\ContactGroup" )->countForCustomer( $contact->getCustomer(), $cgid );
+            
+                            if( !$contact->getGroups()->contains( $group ) && $group->getLimitedTo() <= $contactsWithGroupForCustomer )
+                            {
+                                $this->addMessage( "Contact group {$group->getName()} has a limited membership and is full.", OSS_Message::WARNING );
+                                return false;
+                            }
                         }
+            
+                        if( !$contact->getGroups()->contains( $group ) )
+                        {
+                            $contact->addGroup( $group );
+                            $group->addContact( $contact );
+                        }
+            
+                        $groups[] = $group;
                     }
-        
-                    if( !$contact->getGroups()->contains( $group ) )
-                    {
-                        $contact->addGroup( $group );
-                        $group->addContact( $contact );
-                    }
-        
-                    $groups[] = $group;
                 }
             }
         }
@@ -583,7 +591,7 @@ class ContactController extends IXP_Controller_FrontEnd
         if( isset( $this->_feParams->userStatus ) && $this->_feParams->userStatus == "created" )
         {
             $this->view->newuser = $object->getUser();
-            $this->sendWelcomeEmail( $object->getUser() );
+            $this->sendWelcomeEmail( $object );
         }
 
         return $this->postFlush( $object );
@@ -669,17 +677,22 @@ class ContactController extends IXP_Controller_FrontEnd
     /**
      * Send a welcome email to a new user
      *
-     * @param \Entities\User $user The recipient of the email
+     * @param \Entities\Contact $contact The recipient of the email
      * @return bool True if the mail was sent successfully
      */
-    private function sendWelcomeEmail( $user )
+    private function sendWelcomeEmail( $contact )
     {
         try
         {
             $mail = $this->getMailer();
+            
+            // This may be useful... needs more thought first
+            // if( defined( APPLICATION_ENV ) && APPLICATION_ENV == 'production' )
+            //    ->addCc( $this->getUser()->getEmail(), $this->getUser()->getContact()->getName() );
+            
             $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
                 ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Your Access Details' ) )
-                ->addTo( $user->getEmail(), $user->getUsername() )
+                ->addTo( $contact->getEmail(), $contact->getName() )
                 ->setBodyHtml( $this->view->render( 'user/email/html/welcome.phtml' ) )
                 ->send();
         }
