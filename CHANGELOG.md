@@ -37,19 +37,26 @@ Schema update required:
     ALTER TABLE contact ADD CONSTRAINT FK_4C62E638A76ED395 
         FOREIGN KEY (user_id) REFERENCES user (id);
     
-    CREATE UNIQUE INDEX UNIQ_4C62E638A76ED395 ON contact (user_id)
+    CREATE UNIQUE INDEX UNIQ_4C62E638A76ED395 ON contact (user_id);
     
     ALTER TABLE user DROP FOREIGN KEY FK_8D93D649727ACA70;
     DROP INDEX IDX_8D93D649727ACA70 ON user;
-    ALTER TABLE user DROP parent_id
+    ALTER TABLE user DROP parent_id;
     
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Billing', 'Contact for billing matters', 'ROLE', 1, 0, NOW() );
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Technical', 'Contact for technical matters', 'ROLE', 1, 0, NOW() );
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Admin', 'Contact for admin matters', 'ROLE', 1, 0, NOW() );
     INSERT INTO contact_group ( name, description, type, active, limited_to, created ) VALUES ( 'Marketing', 'Contact for marketing matters', 'ROLE', 1, 0, NOW() );
 
+**You must also recreate your views:**
+
+    mysql -u root -p password [dbname] < tools/sql/views.sql
+
+Please ensure that you go through all your users and assign / create contacts for them. See 
+`tools/migration_scripts/contact-contactgroups.php` as a sample simple script for some of this.
 
 
+- [NF] Updated profile to allow users update their contact information
 - [NF] User / Contact integration. See: https://github.com/inex/IXP-Manager/wiki/Contacts-and-Users
 - [NF] Introduction of Contact Roles and Groups. See: https://github.com/inex/IXP-Manager/wiki/Contact-Groups
 - [NF] Integrate contact fields into user's profile
