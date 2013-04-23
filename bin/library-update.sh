@@ -37,6 +37,10 @@ cd $LIBDIR/Throbber.js
 git pull
 cd -
 
+cd $LIBDIR/OSS_SNMP.git
+git pull
+cd -
+
 for name in Smarty Zend; do
     echo -e "\n\n\n\n\n-------------\n\nUpdating $name..."
     cd $LIBDIR/$name

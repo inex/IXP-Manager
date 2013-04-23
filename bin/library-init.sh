@@ -77,6 +77,13 @@ else
     git clone git://github.com/opensolutions/OSS-Framework.git $LIBDIR/OSS-Framework.git
 fi
 
+# OSS_SNMP
+if [ -e $LIBDIR/OSS_SNMP.git ]; then
+    echo OSS_SNMP.git exists - skipping!
+else
+    git clone git://github.com/opensolutions/OSS_SNMP.git $LIBDIR/OSS_SNMP.git
+fi
+
         
 # Doctrine2
 
