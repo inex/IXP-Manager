@@ -1,4 +1,30 @@
 
+# V3.0.10
+
+Schema update required:
+
+    ALTER TABLE switch ADD hostname VARCHAR(255) DEFAULT NULL;
+    
+    ALTER TABLE switchport 
+        ADD ifName VARCHAR(255) DEFAULT NULL, 
+        ADD ifAlias VARCHAR(255) DEFAULT NULL, 
+        ADD ifHighSpeed INT DEFAULT NULL, 
+        ADD ifMtu INT DEFAULT NULL, 
+        ADD ifPhysAddress VARCHAR(17) DEFAULT NULL, 
+        ADD ifAdminStatus INT DEFAULT NULL, 
+        ADD ifOperStatus INT DEFAULT NULL, 
+        ADD ifLastChange INT DEFAULT NULL, 
+        ADD lastSnmpPoll DATETIME DEFAULT NULL;
+    
+    ALTER TABLE `switch` 
+        ADD os VARCHAR(255) DEFAULT NULL, 
+        ADD osDate DATETIME DEFAULT NULL, 
+        ADD osVersion VARCHAR(255) DEFAULT NULL, 
+        ADD lastPolled DATETIME DEFAULT NULL;
+
+
+
+
 # V3.0.9
 
 Schema update required:
