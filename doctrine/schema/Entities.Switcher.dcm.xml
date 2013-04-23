@@ -5,6 +5,7 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="name" type="string" unique="true" length="255" nullable="true"/>
+    <field name="hostname" type="string" length="255" nullable="true"/>
     <field name="ipv4addr" type="string" length="255" nullable="true"/>
     <field name="ipv6addr" type="string" length="255" nullable="true"/>
     <field name="snmppasswd" type="string" length="255" nullable="true"/>
