@@ -261,10 +261,58 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         return parent::getHostname();
     }
 
+    public function setOs($os)
+    {
+        $this->__load();
+        return parent::setOs($os);
+    }
+
+    public function getOs()
+    {
+        $this->__load();
+        return parent::getOs();
+    }
+
+    public function setOsDate($osDate)
+    {
+        $this->__load();
+        return parent::setOsDate($osDate);
+    }
+
+    public function getOsDate()
+    {
+        $this->__load();
+        return parent::getOsDate();
+    }
+
+    public function setOsVersion($osVersion)
+    {
+        $this->__load();
+        return parent::setOsVersion($osVersion);
+    }
+
+    public function getOsVersion()
+    {
+        $this->__load();
+        return parent::getOsVersion();
+    }
+
+    public function setLastPolled($lastPolled)
+    {
+        $this->__load();
+        return parent::setLastPolled($lastPolled);
+    }
+
+    public function getLastPolled()
+    {
+        $this->__load();
+        return parent::getLastPolled();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'infrastructure', 'switchtype', 'model', 'active', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Cabinet', 'Vendor');
+        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'infrastructure', 'switchtype', 'model', 'active', 'os', 'osDate', 'osVersion', 'lastPolled', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Cabinet', 'Vendor');
     }
 
     public function __clone()

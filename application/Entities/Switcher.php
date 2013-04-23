@@ -520,4 +520,116 @@ class Switcher
     {
         return $this->hostname;
     }
+    /**
+     * @var string
+     */
+    private $os;
+
+    /**
+     * @var \DateTime
+     */
+    private $osDate;
+
+    /**
+     * @var string
+     */
+    private $osVersion;
+
+    /**
+     * @var \DateTime
+     */
+    private $lastPolled;
+
+
+    /**
+     * Set os
+     *
+     * @param string $os
+     * @return Switcher
+     */
+    public function setOs($os)
+    {
+        $this->os = $os;
+    
+        return $this;
+    }
+
+    /**
+     * Get os
+     *
+     * @return string 
+     */
+    public function getOs()
+    {
+        return $this->os;
+    }
+
+    /**
+     * Set osDate
+     *
+     * @param \DateTime $osDate
+     * @return Switcher
+     */
+    public function setOsDate($osDate)
+    {
+        $this->osDate = $osDate;
+    
+        return $this;
+    }
+
+    /**
+     * Get osDate
+     *
+     * @return \DateTime 
+     */
+    public function getOsDate()
+    {
+        return $this->osDate;
+    }
+
+    /**
+     * Set osVersion
+     *
+     * @param string $osVersion
+     * @return Switcher
+     */
+    public function setOsVersion($osVersion)
+    {
+        $this->osVersion = $osVersion;
+    
+        return $this;
+    }
+
+    /**
+     * Get osVersion
+     *
+     * @return string 
+     */
+    public function getOsVersion()
+    {
+        return $this->osVersion;
+    }
+
+    /**
+     * Set lastPolled
+     *
+     * @param \DateTime $lastPolled
+     * @return Switcher
+     */
+    public function setLastPolled($lastPolled)
+    {
+        $this->lastPolled = $lastPolled;
+    
+        return $this;
+    }
+
+    /**
+     * Get lastPolled
+     *
+     * @return \DateTime 
+     */
+    public function getLastPolled()
+    {
+        return $this->lastPolled;
+    }
 }

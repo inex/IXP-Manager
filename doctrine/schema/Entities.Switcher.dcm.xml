@@ -13,6 +13,10 @@
     <field name="switchtype" type="integer" nullable="true"/>
     <field name="model" type="string" length="255" nullable="true"/>
     <field name="active" type="boolean" nullable="true"/>
+    <field name="os" type="string" nullable="true"/>
+    <field name="osDate" type="datetime" nullable="true"/>
+    <field name="osVersion" type="string" nullable="true"/>
+    <field name="lastPolled" type="datetime" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="Cabinet" target-entity="Entities\Cabinet" inversed-by="Switches">
       <join-columns>
