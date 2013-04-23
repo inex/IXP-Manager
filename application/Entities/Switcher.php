@@ -492,4 +492,32 @@ class Switcher
     {
         return $this->active;
     }
+    /**
+     * @var string
+     */
+    private $hostname;
+
+
+    /**
+     * Set hostname
+     *
+     * @param string $hostname
+     * @return Switcher
+     */
+    public function setHostname($hostname)
+    {
+        $this->hostname = $hostname;
+    
+        return $this;
+    }
+
+    /**
+     * Get hostname
+     *
+     * @return string 
+     */
+    public function getHostname()
+    {
+        return $this->hostname;
+    }
 }

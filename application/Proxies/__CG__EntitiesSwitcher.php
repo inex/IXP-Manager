@@ -249,10 +249,22 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         return parent::getActive();
     }
 
+    public function setHostname($hostname)
+    {
+        $this->__load();
+        return parent::setHostname($hostname);
+    }
+
+    public function getHostname()
+    {
+        $this->__load();
+        return parent::getHostname();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'infrastructure', 'switchtype', 'model', 'active', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Cabinet', 'Vendor');
+        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'infrastructure', 'switchtype', 'model', 'active', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Cabinet', 'Vendor');
     }
 
     public function __clone()

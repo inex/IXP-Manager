@@ -198,4 +198,256 @@ class SwitchPort
     {
         return $this->SecEvents;
     }
+    /**
+     * @var string
+     */
+    private $ifName;
+
+    /**
+     * @var string
+     */
+    private $ifAlias;
+
+    /**
+     * @var integer
+     */
+    private $ifHighSpeed;
+
+    /**
+     * @var integer
+     */
+    private $ifMtu;
+
+    /**
+     * @var string
+     */
+    private $ifPhysAddress;
+
+    /**
+     * @var integer
+     */
+    private $ifAdminStatus;
+
+    /**
+     * @var integer
+     */
+    private $ifOperStatus;
+
+    /**
+     * @var integer
+     */
+    private $ifLastChange;
+
+    /**
+     * @var \DateTime
+     */
+    private $lastSnmpPoll;
+
+
+    /**
+     * Set ifName
+     *
+     * @param string $ifName
+     * @return SwitchPort
+     */
+    public function setIfName($ifName)
+    {
+        $this->ifName = $ifName;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifName
+     *
+     * @return string 
+     */
+    public function getIfName()
+    {
+        return $this->ifName;
+    }
+
+    /**
+     * Set ifAlias
+     *
+     * @param string $ifAlias
+     * @return SwitchPort
+     */
+    public function setIfAlias($ifAlias)
+    {
+        $this->ifAlias = $ifAlias;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifAlias
+     *
+     * @return string 
+     */
+    public function getIfAlias()
+    {
+        return $this->ifAlias;
+    }
+
+    /**
+     * Set ifHighSpeed
+     *
+     * @param integer $ifHighSpeed
+     * @return SwitchPort
+     */
+    public function setIfHighSpeed($ifHighSpeed)
+    {
+        $this->ifHighSpeed = $ifHighSpeed;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifHighSpeed
+     *
+     * @return integer 
+     */
+    public function getIfHighSpeed()
+    {
+        return $this->ifHighSpeed;
+    }
+
+    /**
+     * Set ifMtu
+     *
+     * @param integer $ifMtu
+     * @return SwitchPort
+     */
+    public function setIfMtu($ifMtu)
+    {
+        $this->ifMtu = $ifMtu;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifMtu
+     *
+     * @return integer 
+     */
+    public function getIfMtu()
+    {
+        return $this->ifMtu;
+    }
+
+    /**
+     * Set ifPhysAddress
+     *
+     * @param string $ifPhysAddress
+     * @return SwitchPort
+     */
+    public function setIfPhysAddress($ifPhysAddress)
+    {
+        $this->ifPhysAddress = $ifPhysAddress;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifPhysAddress
+     *
+     * @return string 
+     */
+    public function getIfPhysAddress()
+    {
+        return $this->ifPhysAddress;
+    }
+
+    /**
+     * Set ifAdminStatus
+     *
+     * @param integer $ifAdminStatus
+     * @return SwitchPort
+     */
+    public function setIfAdminStatus($ifAdminStatus)
+    {
+        $this->ifAdminStatus = $ifAdminStatus;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifAdminStatus
+     *
+     * @return integer 
+     */
+    public function getIfAdminStatus()
+    {
+        return $this->ifAdminStatus;
+    }
+
+    /**
+     * Set ifOperStatus
+     *
+     * @param integer $ifOperStatus
+     * @return SwitchPort
+     */
+    public function setIfOperStatus($ifOperStatus)
+    {
+        $this->ifOperStatus = $ifOperStatus;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifOperStatus
+     *
+     * @return integer 
+     */
+    public function getIfOperStatus()
+    {
+        return $this->ifOperStatus;
+    }
+
+    /**
+     * Set ifLastChange
+     *
+     * @param integer $ifLastChange
+     * @return SwitchPort
+     */
+    public function setIfLastChange($ifLastChange)
+    {
+        $this->ifLastChange = $ifLastChange;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifLastChange
+     *
+     * @return integer 
+     */
+    public function getIfLastChange()
+    {
+        return $this->ifLastChange;
+    }
+
+    /**
+     * Set lastSnmpPoll
+     *
+     * @param \DateTime $lastSnmpPoll
+     * @return SwitchPort
+     */
+    public function setLastSnmpPoll($lastSnmpPoll)
+    {
+        $this->lastSnmpPoll = $lastSnmpPoll;
+    
+        return $this;
+    }
+
+    /**
+     * Get lastSnmpPoll
+     *
+     * @return \DateTime 
+     */
+    public function getLastSnmpPoll()
+    {
+        return $this->lastSnmpPoll;
+    }
 }

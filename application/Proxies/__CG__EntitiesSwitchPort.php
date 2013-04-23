@@ -117,10 +117,118 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::getSecEvents();
     }
 
+    public function setIfName($ifName)
+    {
+        $this->__load();
+        return parent::setIfName($ifName);
+    }
+
+    public function getIfName()
+    {
+        $this->__load();
+        return parent::getIfName();
+    }
+
+    public function setIfAlias($ifAlias)
+    {
+        $this->__load();
+        return parent::setIfAlias($ifAlias);
+    }
+
+    public function getIfAlias()
+    {
+        $this->__load();
+        return parent::getIfAlias();
+    }
+
+    public function setIfHighSpeed($ifHighSpeed)
+    {
+        $this->__load();
+        return parent::setIfHighSpeed($ifHighSpeed);
+    }
+
+    public function getIfHighSpeed()
+    {
+        $this->__load();
+        return parent::getIfHighSpeed();
+    }
+
+    public function setIfMtu($ifMtu)
+    {
+        $this->__load();
+        return parent::setIfMtu($ifMtu);
+    }
+
+    public function getIfMtu()
+    {
+        $this->__load();
+        return parent::getIfMtu();
+    }
+
+    public function setIfPhysAddress($ifPhysAddress)
+    {
+        $this->__load();
+        return parent::setIfPhysAddress($ifPhysAddress);
+    }
+
+    public function getIfPhysAddress()
+    {
+        $this->__load();
+        return parent::getIfPhysAddress();
+    }
+
+    public function setIfAdminStatus($ifAdminStatus)
+    {
+        $this->__load();
+        return parent::setIfAdminStatus($ifAdminStatus);
+    }
+
+    public function getIfAdminStatus()
+    {
+        $this->__load();
+        return parent::getIfAdminStatus();
+    }
+
+    public function setIfOperStatus($ifOperStatus)
+    {
+        $this->__load();
+        return parent::setIfOperStatus($ifOperStatus);
+    }
+
+    public function getIfOperStatus()
+    {
+        $this->__load();
+        return parent::getIfOperStatus();
+    }
+
+    public function setIfLastChange($ifLastChange)
+    {
+        $this->__load();
+        return parent::setIfLastChange($ifLastChange);
+    }
+
+    public function getIfLastChange()
+    {
+        $this->__load();
+        return parent::getIfLastChange();
+    }
+
+    public function setLastSnmpPoll($lastSnmpPoll)
+    {
+        $this->__load();
+        return parent::setLastSnmpPoll($lastSnmpPoll);
+    }
+
+    public function getLastSnmpPoll()
+    {
+        $this->__load();
+        return parent::getLastSnmpPoll();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'SecEvents', 'Switcher');
+        return array('__isInitialized__', 'type', 'name', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'id', 'PhysicalInterface', 'SecEvents', 'Switcher');
     }
 
     public function __clone()
