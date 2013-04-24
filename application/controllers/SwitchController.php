@@ -86,6 +86,16 @@ class SwitchController extends IXP_Controller_FrontEnd
                         'ipv6addr'       => 'IPv6 Address',
                         'snmppasswd'     => 'SNMP Community',
                         'switchtype'     => 'Type',
+                        'os'             => 'OS',
+                        'osVersion'      => 'OS Version',
+                        'osDate'         => [
+                            'title'      => 'OS Date',
+                            'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
+                        ],
+                        'lastPolled'         => [
+                            'title'      => 'Last Polled',
+                            'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
+                        ],
                         'notes'          => 'Notes'
                     ]
                 );
@@ -114,7 +124,8 @@ class SwitchController extends IXP_Controller_FrontEnd
             ->select( 's.id AS id, s.name AS name,
                 s.ipv4addr AS ipv4addr, s.ipv6addr AS ipv6addr, s.snmppasswd AS snmppasswd,
                 s.infrastructure AS infrastructure, s.switchtype AS switchtype, s.model AS model,
-                s.active AS active, s.notes AS notes,
+                s.active AS active, s.notes AS notes, s.lastPolled AS lastPolled,
+                s.hostname AS hostname, s.os AS os, s.osDate AS osDate, s.osVersion AS osVersion,
                 v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
             )
             ->from( '\\Entities\\Switcher', 's' )
@@ -129,6 +140,42 @@ class SwitchController extends IXP_Controller_FrontEnd
     
         return $qb->getQuery()->getResult();
     }
+    
+    
+    public function osViewAction()
+    {
+        $this->_feParams->listColumns = [
+            'id'        => [ 'title' => 'UID', 'display' => false ],
+            'name'           => 'Name',
+            
+            'vendor'  => [
+                'title'      => 'Vendor',
+                'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                'controller' => 'vendor',
+                'action'     => 'view',
+                'idField'    => 'vendorid'
+            ],
+        
+            'model'          => 'Model',
+            'os'             => 'OS',
+            'osVersion'      => 'OS Version',
+            
+            'osDate'         => [
+                'title'      => 'OS Date',
+                'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
+            ],
+            
+            'lastPolled'         => [
+                'title'      => 'Last Polled',
+                'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
+            ],
+            
+            'active'         => 'Active'
+        ];
+
+        return $this->listAction();
+    }
+    
     
     
     /**
