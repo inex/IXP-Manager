@@ -33,11 +33,75 @@
  */
 class SwitchCliController extends IXP_Controller_CliAction
 {
-    
-    public function testAction()
+    public function init()
     {
-        echo "Yip, works :D";
+        require_once APPLICATION_PATH . '/../library/OSS_SNMP.git/OSS_SNMP/SNMP.php';
     }
     
+    /**
+     * Poll and update switch objects via SNMP
+     */
+    public function snmpPollAction()
+    {
+        // have we been given a specific switch?
+        if( $this->getParam( 'switch', false ) )
+        {
+            if( $sw = $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'name' => $this->getParam( 'switch' ) ] ) )
+            {
+                $this->_snmpPoll( $sw );
+                //$this->getD2EM->flush();
+            }
+            else
+                echo "ERR: No switch found with name " . $this->getParam( 'switch' ) . "\n";
+        }
+        else
+        {
+            // find all active switches
+            if( $sws = $this->getD2R( '\\Entities\\Switcher' )->getActive() )
+            {
+                foreach( $sws as $sw )
+                    $this->_snmpPoll( $sw );
+                
+                //$this->getD2EM->flush();
+            }
+        }
+    }
+    
+    
+    /**
+     *
+     * @param \Entities\Switcher $sw
+     */
+    private function _snmpPoll( $sw, $verbose )
+    {
+        if( $sw->getLastPolled() == null )
+            echo "First time polling of {$sw->getName()} with SNMP request to {$sw->getHostname()}\n";
+        else
+            $this->verbose( "Polling {$sw->getName()} with SNMP request to {$sw->getHostname()}" );
+            
+        try
+        {
+            $host = new \OSS_SNMP\SNMP( $sw->getHostname(), $sw->getSnmppasswd() );
+
+            foreach( [ 'Model', 'Os', 'OsDate', 'OsVersion' ] as $p )
+            {
+                $fn = "get{$p}";
+                $n = $host->getPlatform()->$fn();
+                
+                if( $sw->$fn() != $n )
+                {
+                    echo " - [{$sw->getName()}] Updating {$p} from {$sw->$fn()} to {$n}\n";
+                    $fn = "set{$p}";
+                    $sw->$fn( $n );
+                }
+                
+                $sw->setLastPolled( new \DateTime() );
+            }
+        }
+        catch( \OSS_SNMP\Exception $e )
+        {
+            echo "ERR: Could not poll {$sw->getName()}\n";
+        }
+    }
 }
 

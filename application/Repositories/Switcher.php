@@ -103,4 +103,17 @@ class Switcher extends EntityRepository
         return $this->getEntityManager()->createQuery( $q )->getArrayResult();
     }
     
+    
+    /**
+     * Get all active switches as Doctrine2 objects
+     *
+     * @return array
+     */
+    public function getActive()
+    {
+        $q = "SELECT s FROM \\Entities\\Switcher WHERE s.active = 1";
+        
+        return $this->getEntityManager()->createQuery( $q )->getResult();
+    }
+    
 }

@@ -46,6 +46,11 @@ class IXP_Controller_CliAction extends OSS_Controller_Action
     private $_verbose = false;
     
     /**
+     * Debug flag
+     */
+    private $_debug = false;
+    
+    /**
      * Override the Zend_Controller_Action's constructor (which is called
      * at the very beginning of this function anyway).
      *
@@ -68,8 +73,49 @@ class IXP_Controller_CliAction extends OSS_Controller_Action
             die( 'Unauthorised access to action!' );
         }
         
-        $this->_verbose = $this->getFrontController()->getParam( 'verbose' );
+        $this->_verbose = $this->getFrontController()->getParam( 'verbose', false );
+        $this->_debug   = $this->getFrontController()->getParam( 'debug', false );
     }
 
+    /**
+     * True if the user has requested verbose mode
+     */
+    public function isVerbose()
+    {
+        return $this->_verbose;
+    }
+    
+    /**
+     * If running in verbose mode, echoes the request msg
+     *
+     * @param string $msg The message
+     * @param bool $implicitNewline Set to false to prevent a newline from being echoed
+     */
+    public function verbose( $msg, $implicitNewline )
+    {
+        if( $this->_verbose )
+            echo "{$msg}\n";
+    }
+
+
+    /**
+     * True if the user has requested debug mode
+     */
+    public function isDebug()
+    {
+        return $this->_debug;
+    }
+    
+    /**
+     * If running in debug mode, echoes the request msg
+     *
+     * @param string $msg The message
+     * @param bool $implicitNewline Set to false to prevent a newline from being echoed
+     */
+    public function debug( $msg, $implicitNewline )
+    {
+        if( $this->_debug )
+            echo "{$msg}\n";
+    }
 }
 
