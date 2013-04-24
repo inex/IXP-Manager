@@ -48,6 +48,9 @@ https://github.com/opensolutions/OSS_SNMP/wiki/Device-Discovery
 We'll be adding support for Extreme and possibly Cisco ourselves soon if no one
 gets there first.
 
+Documentation for this will be added to: https://github.com/inex/IXP-Manager/wiki/Updating-Switches-and-Ports-via-SNMP
+
+
 
 - [NF] Plug switch information polled via SNMP into the frontend (26a347a - Barry O'Donovan - 2013-04-24)
 - [IM] Finishing switch data via SNMP poll on production for real data (0b35ece - Barry O'Donovan - 2013-04-24)
