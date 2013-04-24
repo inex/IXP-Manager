@@ -39,17 +39,17 @@ class IXP_Controller_CliAction extends OSS_Controller_Action
     use OSS_Controller_Action_Trait_Doctrine2;
     use OSS_Controller_Action_Trait_Mailer;
     use OSS_Controller_Action_Trait_Logger;
-    
+
     /**
      * Verbose flag
      */
     private $_verbose = false;
-    
+
     /**
      * Debug flag
      */
     private $_debug = false;
-    
+
     /**
      * Override the Zend_Controller_Action's constructor (which is called
      * at the very beginning of this function anyway).
@@ -72,7 +72,7 @@ class IXP_Controller_CliAction extends OSS_Controller_Action
             $this->getLogger()->warn( 'Non CLI access to a CLI controller from ' . $_SERVER['REMOTE_ADDR'] . ' tp ' . $_SERVER['REQUEST_URI'] );
             die( 'Unauthorised access to action!' );
         }
-        
+
         $this->_verbose = $this->getFrontController()->getParam( 'verbose', false );
         $this->_debug   = $this->getFrontController()->getParam( 'debug', false );
     }
@@ -84,17 +84,17 @@ class IXP_Controller_CliAction extends OSS_Controller_Action
     {
         return $this->_verbose;
     }
-    
+
     /**
      * If running in verbose mode, echoes the request msg
      *
      * @param string $msg The message
      * @param bool $implicitNewline Set to false to prevent a newline from being echoed
      */
-    public function verbose( $msg, $implicitNewline )
+    public function verbose( $msg, $implicitNewline = true )
     {
         if( $this->_verbose )
-            echo "{$msg}\n";
+            echo "{$msg}" . ( $implicitNewline ? "\n" : "" );
     }
 
 
@@ -105,17 +105,17 @@ class IXP_Controller_CliAction extends OSS_Controller_Action
     {
         return $this->_debug;
     }
-    
+
     /**
      * If running in debug mode, echoes the request msg
      *
      * @param string $msg The message
      * @param bool $implicitNewline Set to false to prevent a newline from being echoed
      */
-    public function debug( $msg, $implicitNewline )
+    public function debug( $msg, $implicitNewline = true )
     {
         if( $this->_debug )
-            echo "{$msg}\n";
+            echo "{$msg}" . ( $implicitNewline ? "\n" : "" );
     }
 }
 

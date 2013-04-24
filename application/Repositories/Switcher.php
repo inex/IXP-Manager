@@ -17,7 +17,7 @@ class Switcher extends EntityRepository
      * @var string The cache key for all switch objects
      */
     const ALL_CACHE_KEY = 'inex_switches';
-    
+
     /**
      * Return an array of all switch objects from the database with caching
      *
@@ -28,9 +28,9 @@ class Switcher extends EntityRepository
     public function getAndCache( $active = false, $type = 0 )
     {
         $dql = "SELECT s FROM Entities\\Switcher s WHERE 1=1";
-        
+
         $key = self::ALL_CACHE_KEY;
-        
+
         if( $active )
         {
             $dql .= " AND s.active = 1";
@@ -38,7 +38,7 @@ class Switcher extends EntityRepository
         }
         else
             $key .= '-all';
-        
+
         if( $type )
         {
             $dql .= " AND s.switchtype = " . intval( $type );
@@ -46,12 +46,12 @@ class Switcher extends EntityRepository
         }
         else
             $key .= '-all';
-            
+
         return $this->getEntityManager()->createQuery( $dql )
             ->useResultCache( true, 3600, $key )
             ->getResult();
     }
-    
+
     /**
      * Return an array of all switch names where the array key is the switch id
      *
@@ -64,11 +64,11 @@ class Switcher extends EntityRepository
         $switches = [];
         foreach( $this->getAndCache( $active, $type ) as $a )
             $switches[ $a->getId() ] = $a->getName();
-    
+
         return $switches;
     }
-    
-    
+
+
     public function getConfiguration( $switchid = null, $vlanid = null )
     {
         $q =
@@ -79,7 +79,7 @@ class Switcher extends EntityRepository
                     vli.rsclient AS rsclient,
                     v.name AS vlan,
                     ipv4.address AS ipv4address, ipv6.address AS ipv6address
-        
+
             FROM \\Entities\\VlanInterface vli
                 JOIN vli.IPv4Address ipv4
                 LEFT JOIN vli.IPv6Address ipv6
@@ -89,21 +89,21 @@ class Switcher extends EntityRepository
                 LEFT JOIN vi.PhysicalInterfaces pi
                 LEFT JOIN pi.SwitchPort sp
                 LEFT JOIN sp.Switcher s
-            
+
             WHERE 1=1 ";
-        
+
         if( $switchid !== null )
             $q .= 'AND s.id = ' . intval( $switchid ) . ' ';
-        
+
         if( $vlanid !== null )
             $q .= 'AND v.id = ' . intval( $vlanid ) . ' ';
-                            
+
         $q .= "ORDER BY customer ASC";
-        
+
         return $this->getEntityManager()->createQuery( $q )->getArrayResult();
     }
-    
-    
+
+
     /**
      * Get all active switches as Doctrine2 objects
      *
@@ -111,9 +111,8 @@ class Switcher extends EntityRepository
      */
     public function getActive()
     {
-        $q = "SELECT s FROM \\Entities\\Switcher WHERE s.active = 1";
-        
+        $q = "SELECT s FROM \\Entities\\Switcher s WHERE s.active = 1";
         return $this->getEntityManager()->createQuery( $q )->getResult();
     }
-    
+
 }

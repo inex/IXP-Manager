@@ -37,7 +37,7 @@ class SwitchCliController extends IXP_Controller_CliAction
     {
         require_once APPLICATION_PATH . '/../library/OSS_SNMP.git/OSS_SNMP/SNMP.php';
     }
-    
+
     /**
      * Poll and update switch objects via SNMP
      */
@@ -49,7 +49,7 @@ class SwitchCliController extends IXP_Controller_CliAction
             if( $sw = $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'name' => $this->getParam( 'switch' ) ] ) )
             {
                 $this->_snmpPoll( $sw );
-                //$this->getD2EM->flush();
+                $this->getD2EM()->flush();
             }
             else
                 echo "ERR: No switch found with name " . $this->getParam( 'switch' ) . "\n";
@@ -61,24 +61,28 @@ class SwitchCliController extends IXP_Controller_CliAction
             {
                 foreach( $sws as $sw )
                     $this->_snmpPoll( $sw );
-                
-                //$this->getD2EM->flush();
+
+                $this->getD2EM()->flush();
             }
         }
     }
-    
-    
+
+
     /**
      *
      * @param \Entities\Switcher $sw
      */
-    private function _snmpPoll( $sw, $verbose )
+    private function _snmpPoll( $sw )
     {
         if( $sw->getLastPolled() == null )
             echo "First time polling of {$sw->getName()} with SNMP request to {$sw->getHostname()}\n";
         else
             $this->verbose( "Polling {$sw->getName()} with SNMP request to {$sw->getHostname()}" );
-            
+
+        $formatDate = function( $d ) {
+            return $d instanceof \DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
+        };
+
         try
         {
             $host = new \OSS_SNMP\SNMP( $sw->getHostname(), $sw->getSnmppasswd() );
@@ -87,14 +91,18 @@ class SwitchCliController extends IXP_Controller_CliAction
             {
                 $fn = "get{$p}";
                 $n = $host->getPlatform()->$fn();
-                
-                if( $sw->$fn() != $n )
+
+                if( ( $p == 'OsDate' && $formatDate( $sw->$fn() ) != $formatDate( $n ) )
+                    || ( $p != 'OsDate' && $sw->$fn() != $n ) )
                 {
-                    echo " - [{$sw->getName()}] Updating {$p} from {$sw->$fn()} to {$n}\n";
+                    if( $p == 'OsDate' )
+                        echo " - [{$sw->getName()}] Updating {$p} from " . $formatDate( $sw->$fn() ) . " to " . $formatDate( $n ) . "\n";
+                    else
+                        echo " - [{$sw->getName()}] Updating {$p} from {$sw->$fn()} to {$n}\n";
                     $fn = "set{$p}";
                     $sw->$fn( $n );
                 }
-                
+
                 $sw->setLastPolled( new \DateTime() );
             }
         }
@@ -103,5 +111,6 @@ class SwitchCliController extends IXP_Controller_CliAction
             echo "ERR: Could not poll {$sw->getName()}\n";
         }
     }
+
 }
 
