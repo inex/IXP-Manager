@@ -23,6 +23,44 @@ Schema update required:
         ADD lastPolled DATETIME DEFAULT NULL;
 
 
+Library update required:
+
+    bin/library-init.sh
+
+
+Configuration update required - add:
+
+    includePaths.osssnmp    = APPLICATION_PATH "/../library/OSS_SNMP.git"
+
+
+
+Primarily, this version brings switch polling via SNMP to gather information such 
+as model, operating system and version. This information is then visable on the
+admin frontend. To keep this up to date, set up a cronjob such as:
+
+    10 * * * * /path/to/ixp-manager/bin/ixptool.sh -a switch-cli.snmp-poll
+
+This command is safe and will only overwrite one existing database field: `switch.model`.
+See the following link for details on switch model / OS discovery: 
+
+https://github.com/opensolutions/OSS_SNMP/wiki/Device-Discovery
+
+We'll be adding support for Extreme and possibly Cisco ourselves soon if no one
+gets there first.
+
+
+- [NF] Plug switch information polled via SNMP into the frontend (26a347a - Barry O'Donovan - 2013-04-24)
+- [IM] Finishing switch data via SNMP poll on production for real data (0b35ece - Barry O'Donovan - 2013-04-24)
+- [NF] Beginnings of switch poller. Commiting for testing. (cb63255 - Barry O'Donovan - 2013-04-24)
+- [NF] New CLI controller for switch functions (9ee6baf - Barry O'Donovan - 2013-04-24)
+- [HK] Remove errant semi-colon (29c1e70 - Barry O'Donovan - 2013-04-24)
+- [DB] Add new entries for SNMP polled switches (ee42c08 - Barry O'Donovan - 2013-04-23)
+- [DB] Entities and proxies updated (120c1f9 - Barry O'Donovan - 2013-04-23)
+- [DB] Update schema to allow for polling of details from switches via SNMP (f5d3d77 - Barry O'Donovan - 2013-04-23)
+- [DB] Add the ORM Designer file to the repository (3151d22 - Barry O'Donovan - 2013-04-23)
+- [HK] Add new external library (e5b92bf - Barry O'Donovan - 2013-04-23)
+
+
 
 
 # V3.0.9
