@@ -2,23 +2,23 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
- * 
+ *
  * This file is part of IXP Manager.
- * 
+ *
  * IXP Manager is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, version v2.0 of the License.
- * 
+ *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License v2.0
  * along with IXP Manager.  If not, see:
- * 
+ *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
@@ -31,7 +31,7 @@
  * Barry O'Donovan <barryo@inex.ie>
  *
  * http://www.inex.ie/
- * (c) Copyright 2009 Internet Neutral Exchange Association Ltd (INEX)
+ * (c) Copyright 2009 - 2013 Internet Neutral Exchange Association Ltd (INEX)
  *
  */
 
@@ -121,7 +121,7 @@ if( isset( $opts->a ) )
         $front->setRequest(  new Zend_Controller_Request_Simple( $action, $controller, $module ) );
         $front->setRouter(   new IXP_Controller_Router_Cli() );
         $front->setResponse( new Zend_Controller_Response_Cli() );
-;
+
         if( isset( $opts->p ) )
         {
             $opts->p = trim( $opts->p );
