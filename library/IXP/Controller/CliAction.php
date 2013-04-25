@@ -31,25 +31,8 @@
  * @package IXP_Controller
  *
  */
-class IXP_Controller_CliAction extends OSS_Controller_Action
+class IXP_Controller_CliAction extends OSS_Controller_CliAction
 {
-
-    // traits we want to use
-    use OSS_Controller_Action_Trait_Doctrine2Cache;
-    use OSS_Controller_Action_Trait_Doctrine2;
-    use OSS_Controller_Action_Trait_Mailer;
-    use OSS_Controller_Action_Trait_Logger;
-
-    /**
-     * Verbose flag
-     */
-    private $_verbose = false;
-
-    /**
-     * Debug flag
-     */
-    private $_debug = false;
-
     /**
      * Override the Zend_Controller_Action's constructor (which is called
      * at the very beginning of this function anyway).
@@ -65,57 +48,7 @@ class IXP_Controller_CliAction extends OSS_Controller_Action
     {
         // call the parent's version where all the Zend magic happens
         parent::__construct( $request, $response, $invokeArgs );
-
-        //Zend_Controller_Action_HelperBroker::removeHelper('viewRenderer');
-        if ( php_sapi_name() != 'cli' )
-        {
-            $this->getLogger()->warn( 'Non CLI access to a CLI controller from ' . $_SERVER['REMOTE_ADDR'] . ' tp ' . $_SERVER['REQUEST_URI'] );
-            die( 'Unauthorised access to action!' );
-        }
-
-        $this->_verbose = $this->getFrontController()->getParam( 'verbose', false );
-        $this->_debug   = $this->getFrontController()->getParam( 'debug', false );
     }
 
-    /**
-     * True if the user has requested verbose mode
-     */
-    public function isVerbose()
-    {
-        return $this->_verbose;
-    }
-
-    /**
-     * If running in verbose mode, echoes the request msg
-     *
-     * @param string $msg The message
-     * @param bool $implicitNewline Set to false to prevent a newline from being echoed
-     */
-    public function verbose( $msg, $implicitNewline = true )
-    {
-        if( $this->_verbose )
-            echo "{$msg}" . ( $implicitNewline ? "\n" : "" );
-    }
-
-
-    /**
-     * True if the user has requested debug mode
-     */
-    public function isDebug()
-    {
-        return $this->_debug;
-    }
-
-    /**
-     * If running in debug mode, echoes the request msg
-     *
-     * @param string $msg The message
-     * @param bool $implicitNewline Set to false to prevent a newline from being echoed
-     */
-    public function debug( $msg, $implicitNewline = true )
-    {
-        if( $this->_debug )
-            echo "{$msg}" . ( $implicitNewline ? "\n" : "" );
-    }
 }
 
