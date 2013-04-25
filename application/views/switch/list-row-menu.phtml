@@ -6,9 +6,12 @@
         More...
         <span class="caret"></span>
     </a>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu pull-right">
         <li>
             <a href="{genUrl controller='switch-port' action='list' switch=$row.id}">View / Edit Ports</a>
+        </li>
+        <li>
+            <a href="{genUrl controller='switch-port' action='op-status' switch=$row.id}">View Operational Status</a>
         </li>
         <li>
             <a href="{genUrl controller='switch' action='port-report' id=$row.id}">View Port Report</a>
