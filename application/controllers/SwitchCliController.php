@@ -47,10 +47,7 @@ class SwitchCliController extends IXP_Controller_CliAction
         if( $this->getParam( 'switch', false ) )
         {
             if( $sw = $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'name' => $this->getParam( 'switch' ) ] ) )
-            {
                 $this->_snmpPoll( $sw );
-                //$this->getD2EM()->flush();
-            }
             else
                 echo "ERR: No switch found with name " . $this->getParam( 'switch' ) . "\n";
         }
@@ -61,8 +58,6 @@ class SwitchCliController extends IXP_Controller_CliAction
             {
                 foreach( $sws as $sw )
                     $this->_snmpPoll( $sw );
-
-                //$this->getD2EM()->flush();
             }
         }
     }
@@ -102,10 +97,17 @@ class SwitchCliController extends IXP_Controller_CliAction
                     $fn = "set{$p}";
                     $sw->$fn( $n );
                 }
-
-                $this->_snmpPollSwitchPorts( $sw, $host );
-                $sw->setLastPolled( new \DateTime() );
             }
+
+            if( $sw->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
+                $this->_snmpPollSwitchPorts( $sw, $host );
+                
+            $sw->setLastPolled( new \DateTime() );
+            
+            if( $this->getParam( 'noflush', false ) )
+                $this->verbose( '*** noflush parameter set - NO CHANGES MADE TO DATABASE' );
+            else
+                $this->getD2EM()->flush();
         }
         catch( \OSS_SNMP\Exception $e )
         {
@@ -131,61 +133,93 @@ class SwitchCliController extends IXP_Controller_CliAction
             'operationStates' => 'IfOperStatus',
             'lastChanges'     => 'IfLastChange'
         ];
-        
+
         $existingPorts = $sw->getPorts();
-        
+
         try
         {
-            
+
             // we traditionally stored ports in the database by their ifDesc so we need to key
             // off that for backwards compatibility
             $ports = $host->useIface()->descriptions();
-
+            
             // iterate over all the ports discovered on the switch:
             foreach( $ports as $index => $ifDesc )
             {
+                // we're only interested in Ethernet ports here (right?)
+                if( $host->useIface()->types()[ $index ] != \OSS_SNMP\MIBS\Iface::IF_TYPE_ETHERNETCSMACD )
+                    continue;
+                
                 // find the matching switchport in the database (or create a new one)
-                foreach( $existingPorts as $ep )
+                $switchport = false;
+                
+                foreach( $existingPorts as $ix => $ep )
                 {
                     if( $ep->getName() == $ifDesc )
                     {
+                        $this->verbose( "\n - {$sw->getName()} - found pre-existing port for {$ifDesc}" );
                         $switchport = $ep;
+                        unset( $existingPorts[ $ix ] );
                         break;
                     }
-                    
-                    // no existing port in database so we have found a new port
-                    echo " - {$sw->getName()}: found a new port - {$ifDesc}\n";
-                    
-                    $switchport = new \Entities\SwitchPort();
-                    
-                    $switchport->setSwitcher( $sw );
-                    $sw->addPort( $switchport );
-                    
-                    $switchport->setName( $ifDesc );
-                    $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
-                    
-                    $this->getD2EM()->persist( $switchport );
                 }
                 
+                if( !$switchport )
+                {
+                    // no existing port in database so we have found a new port
+                    echo "\n - {$sw->getName()}: found a new port - {$ifDesc}\n";
+
+                    $switchport = new \Entities\SwitchPort();
+
+                    $switchport->setSwitcher( $sw );
+                    $sw->addPort( $switchport );
+
+                    $switchport->setName( $ifDesc );
+                    $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
+
+                    $this->getD2EM()->persist( $switchport );
+                }
+
                 foreach( $map as $snmp => $entity )
                 {
                     $fn = "get{$entity}";
-                    $n = $host->useIface()->$fn()[ $index ];
-    
-                    if( $switchport->$fn() != $n )
-                            echo " - [{$sw->getName()}]:{$ifDesc} Updating {$entity} from {$switchport->$fn()} to {$n}\n";
                     
+                    if( $snmp == 'lastChanges' )
+                        $n = $host->useIface()->$snmp( true )[ $index ];
+                    else
+                        $n = $host->useIface()->$snmp()[ $index ];
+
+                    if( $switchport->$fn() != $n )
+                    {
+                        if( $snmp == 'lastChanges' )
+                        {
+                            // need to allow for small changes due to rounding errors
+                            if( abs( $switchport->$fn() - $n ) > 60 )
+                                echo " - [{$sw->getName()}]:{$ifDesc} Updating {$entity} from [{$switchport->$fn()}] to [{$n}]\n";
+                        }
+                        else
+                            echo " - [{$sw->getName()}]:{$ifDesc} Updating {$entity} from [{$switchport->$fn()}] to [{$n}]\n";
+                    }
+
                     $fn = "set{$entity}";
                     $switchport->$fn( $n );
                 }
-    
-                $switchport->setLastPolled( new \DateTime() );
+
+                $switchport->setLastSnmpPoll( new \DateTime() );
             }
         }
         catch( \OSS_SNMP\Exception $e )
         {
             echo "ERR: Could not poll {$sw->getName()}\n";
         }
+        
+        if( count( $existingPorts ) )
+        {
+            echo "\nWARNING for {$sw->getName()} - ports in database with no matching port on the switch:\n";
+            
+            foreach( $existingPorts as $ep )
+                echo " - {$ep->getName()}\n";
+        }        
     }
 
 }
