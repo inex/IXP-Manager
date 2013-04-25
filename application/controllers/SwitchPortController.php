@@ -65,7 +65,9 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                     'idField'    => 'switchid'
                 ],
             
-                'name'           => 'Name',
+                'name'           => 'Description',
+                'ifName'         => 'Name',
+                'ifAlias'        => 'Alias',
                 
                 'type'  => [
                     'title'    => 'Type',
@@ -90,11 +92,15 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
         
         $qb = $this->getD2EM()->createQueryBuilder()
-        ->select( 'sp.id AS id, sp.name AS name,
-            sp.type AS type, s.name AS switch, s.id AS switchid'
-        )
-        ->from( '\\Entities\\SwitchPort', 'sp' )
-        ->leftJoin( 'sp.Switcher', 's' );
+            ->select( 'sp.id AS id, sp.name AS name, sp.type AS type, s.name AS switch,
+                sp.ifName AS ifName, sp.ifAlias AS ifAlias, sp.ifHighSpeed AS ifHighSpeed,
+                sp.ifMtu AS ifMtu, sp.ifPhysAddress AS ifPhysAddress,
+                sp.ifAdminStatus AS ifAdminStatus, sp.ifOperStatus AS ifOperStatus,
+                sp.ifLastChange AS ifLastChange, sp.lastSnmpPoll AS lastSnmpPoll,
+                s.id AS switchid'
+            )
+            ->from( '\\Entities\\SwitchPort', 'sp' )
+            ->leftJoin( 'sp.Switcher', 's' );
     
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
@@ -109,6 +115,36 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         }
         
         return $qb->getQuery()->getResult();
+    }
+    
+    
+    
+    public function opStatusAction()
+    {
+        $this->_feParams->listColumns = [
+            'id'            => [ 'title' => 'UID', 'display' => false ],
+            'name'          => 'Description',
+            'ifName'        => 'Name',
+            'ifAlias'       => 'Alias',
+            'ifHighSpeed'   => 'Speed',
+            'ifMtu'         => 'MTU',
+            'ifPhysAddress' => 'Physical Address',
+            
+            'ifAdminStatus' => [
+                'title'    => 'Admin State',
+                'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
+                'xlator'   => \OSS_SNMP\MIBS\Iface::$IF_ADMIN_STATES
+            ],
+            
+            'ifOperStatus' => [
+                'title'    => 'Operational State',
+                'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
+                'xlator'   => \OSS_SNMP\MIBS\Iface::$IF_ADMIN_STATES
+            ]
+            
+        ];
+    
+        return $this->listAction();
     }
     
     

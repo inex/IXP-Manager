@@ -1,5 +1,11 @@
-<li class="pull-right" style="margin-top: -12px;"> 
+<li class="pull-right" style="margin-top: -12px;">
 <div class="btn-toolbar" style="display: inline-block;">
+
+    {if $action eq 'op-status'}
+        <a class="btn btn-mini" href="{genUrl controller="switch-port" action="list"}{if isset( $sid )}/switch/{$sid}{/if}">Standard View</a>
+    {else}
+        <a class="btn btn-mini" href="{genUrl controller="switch-port" action="op-status"}{if isset( $sid )}/switch/{$sid}{/if}">Operational Status</a>
+    {/if}
 
     <div class="btn-group">
         <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
@@ -8,7 +14,7 @@
         </a>
         <ul class="dropdown-menu">
             {foreach $switches as $sid => $sname}
-                <li> <a href="{genUrl controller='switch-port' action='list' switch=$sid}">{$sname}</a> </li>
+                <li> <a href="{genUrl controller='switch-port' action=$action switch=$sid}">{$sname}</a> </li>
             {/foreach}
         </ul>
     </div>
