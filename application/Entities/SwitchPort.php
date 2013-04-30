@@ -450,4 +450,32 @@ class SwitchPort
     {
         return $this->lastSnmpPoll;
     }
+    /**
+     * @var integer
+     */
+    private $ifIndex;
+
+
+    /**
+     * Set ifIndex
+     *
+     * @param integer $ifIndex
+     * @return SwitchPort
+     */
+    public function setIfIndex($ifIndex)
+    {
+        $this->ifIndex = $ifIndex;
+    
+        return $this;
+    }
+
+    /**
+     * Get ifIndex
+     *
+     * @return integer 
+     */
+    public function getIfIndex()
+    {
+        return $this->ifIndex;
+    }
 }

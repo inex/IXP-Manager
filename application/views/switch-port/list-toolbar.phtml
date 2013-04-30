@@ -12,7 +12,7 @@
             {if isset( $sid ) and $sid}{$switches.$sid}{else}Limit to switch...{/if}
             <span class="caret"></span>
         </a>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu pull-right">
             {foreach $switches as $sid => $sname}
                 <li> <a href="{genUrl controller='switch-port' action=$action switch=$sid}">{$sname}</a> </li>
             {/foreach}
