@@ -19,7 +19,6 @@ This is a follow on from V3.0.10 to extend SNMP polling to switch ports.
 - [BF] Wrong parameter for limiting view of ports by switch (8f08491 - Barry O'Donovan - 2013-04-25)
 - [IM] Add switchport polling to the CLI poller (2c57237 - Barry O'Donovan - 2013-04-25)
 
-
 # V3.0.10
 
 Schema update required:
