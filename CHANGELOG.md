@@ -1,4 +1,17 @@
 
+# V3.0.12
+
+Schema update required:
+
+    ALTER TABLE switchport ADD ifIndex INT DEFAULT NULL;
+
+The previous version added new data to switchports that is collected via 
+SNMP polling. However, we never recorded the ``ifIndex`` which is 
+essential for polling individual datapoints for a port later.
+
+This version adds that and it is backwards compatible so should "just
+work".
+
 # V3.0.11
 
 This is a follow on from V3.0.11 to extend SNMP polling to switch ports.
