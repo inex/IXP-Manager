@@ -176,8 +176,24 @@ class SwitchCliController extends IXP_Controller_CliAction
 
                     $switchport->setName( $ifDesc );
                     $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
+                    $switchport->setIfIndex( $index );
 
                     $this->getD2EM()->persist( $switchport );
+                }
+                
+                // if the switchport SNMP index is not set, set it
+                // (for backwards compatibility for ports added before we recorded ifIndex)
+                else if( $switchport->getIfIndex() == null )
+                {
+                    echo "\n - {$sw->getName()}: {$ifDesc} - setting ifIndex for the first time to {$index}\n";
+                    $switchport->setIfIndex( $index );
+                }
+                
+                // if the ifIndex has changed, skip and warn
+                else if( $switchport->getIfIndex() != $index )
+                {
+                    echo "\n - {$sw->getName()}: {$ifDesc} - WARNING - ifIndex changed from {$switchport->getIfIndex()} to {$index} - SKIPPING\n";
+                    continue;
                 }
 
                 foreach( $map as $snmp => $entity )
@@ -219,7 +235,7 @@ class SwitchCliController extends IXP_Controller_CliAction
             
             foreach( $existingPorts as $ep )
                 echo " - {$ep->getName()}\n";
-        }        
+        }
     }
 
 }

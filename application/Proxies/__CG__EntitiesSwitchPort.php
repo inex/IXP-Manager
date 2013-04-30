@@ -225,10 +225,22 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::getLastSnmpPoll();
     }
 
+    public function setIfIndex($ifIndex)
+    {
+        $this->__load();
+        return parent::setIfIndex($ifIndex);
+    }
+
+    public function getIfIndex()
+    {
+        $this->__load();
+        return parent::getIfIndex();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'type', 'name', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'id', 'PhysicalInterface', 'SecEvents', 'Switcher');
+        return array('__isInitialized__', 'type', 'name', 'ifIndex', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'id', 'PhysicalInterface', 'SecEvents', 'Switcher');
     }
 
     public function __clone()
