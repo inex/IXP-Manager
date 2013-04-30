@@ -45,6 +45,15 @@ class IXP_Form_Switch extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name );
 
+        $hostname = $this->createElement( 'text', 'hostname' );
+        $hostname->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setAttrib( 'class', 'span3' )
+            ->setRequired( true )
+            ->setLabel( 'Hostname' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $hostname );
+        
         $switchtype = $this->createElement( 'select', 'switchtype' );
         $switchtype->setMultiOptions( \Entities\Switcher::$TYPES )
             ->setAttrib( 'class', 'span3 chzn-select' )
