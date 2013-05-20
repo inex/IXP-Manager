@@ -130,7 +130,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         
         
         $this->addDisplayGroup(
-            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry' ],
+            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingCountry' ],
         	'billingDisplayGroup'
         );
         $this->getDisplayGroup( 'billingDisplayGroup' )->setLegend( 'Billing Details' );

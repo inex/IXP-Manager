@@ -9,7 +9,7 @@
       <field name="address1" type="string" uuid="b4c2d848-c644-4145-80f1-aacfeaec491e"/>
       <field name="address2" type="string" uuid="a918cb34-89ed-48ad-80a8-fa6d0375fcba"/>
       <field name="address3" type="string" uuid="a1f2590c-96ec-4945-aa0f-3185e2428df0"/>
-      <field name="towncity" type="string" uuid="41cbb01f-8642-4eb5-b256-499eb8b5617e"/>
+      <field name="townCity" type="string" uuid="41cbb01f-8642-4eb5-b256-499eb8b5617e"/>
       <field name="postcode" type="string" uuid="ff5c25bc-0e55-4813-98ee-484df12d354e"/>
       <field name="country" type="string" uuid="1d4e5d38-78db-4cc1-abf4-b43923cbf3f8"/>
       <orm-attributes>

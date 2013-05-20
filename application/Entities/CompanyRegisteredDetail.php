@@ -37,7 +37,7 @@ class CompanyRegisteredDetail
     /**
      * @var string
      */
-    private $towncity;
+    private $townCity;
 
     /**
      * @var string
@@ -180,26 +180,26 @@ class CompanyRegisteredDetail
     }
 
     /**
-     * Set towncity
+     * Set townCity
      *
-     * @param string $towncity
+     * @param string $townCity
      * @return CompanyRegisteredDetail
      */
-    public function setTowncity($towncity)
+    public function setTownCity($townCity)
     {
-        $this->towncity = $towncity;
+        $this->townCity = $townCity;
     
         return $this;
     }
 
     /**
-     * Get towncity
+     * Get townCity
      *
      * @return string 
      */
-    public function getTowncity()
+    public function getTownCity()
     {
-        return $this->towncity;
+        return $this->townCity;
     }
 
     /**

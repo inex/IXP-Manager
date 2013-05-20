@@ -273,14 +273,14 @@ class IXP_Form_Customer extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress2 );
 
-        $billingCity = $this->createElement( 'text', 'billingCity' );
-        $billingCity->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingTownCity = $this->createElement( 'text', 'billingTownCity' );
+        $billingTownCity->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span4' )
             ->setLabel( 'City' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $billingCity );
+        $this->addElement( $billingTownCity );
 
         $billingCountry = $this->createElement( 'select', 'billingCountry' );
         $billingCountry->setMultiOptions( OSS_Countries::getCountriesArray() )
@@ -422,7 +422,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $postcode );
                 
         $this->addDisplayGroup(
-            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry' ],
+            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingCountry' ],
         	'billingDisplayGroup'
         );
         $this->getDisplayGroup( 'billingDisplayGroup' )->setLegend( 'Billing Details' );

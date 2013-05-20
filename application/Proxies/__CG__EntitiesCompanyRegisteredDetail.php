@@ -102,16 +102,16 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
         return parent::getAddress3();
     }
 
-    public function setTowncity($towncity)
+    public function setTownCity($townCity)
     {
         $this->__load();
-        return parent::setTowncity($towncity);
+        return parent::setTownCity($townCity);
     }
 
-    public function getTowncity()
+    public function getTownCity()
     {
         $this->__load();
-        return parent::getTowncity();
+        return parent::getTownCity();
     }
 
     public function setPostcode($postcode)
@@ -192,7 +192,7 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'registeredName', 'companyNumber', 'jurisdiction', 'address1', 'address2', 'address3', 'towncity', 'postcode', 'country', 'id', 'Customer');
+        return array('__isInitialized__', 'registeredName', 'companyNumber', 'jurisdiction', 'address1', 'address2', 'address3', 'townCity', 'postcode', 'country', 'id', 'Customer');
     }
 
     public function __clone()
