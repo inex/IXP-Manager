@@ -86,7 +86,7 @@
             </td>
             <td><strong>Billing Details</strong></td>
             <td>
-                {if $cust->getBillingDetails()->getBillingContact()}    {$cust->getBillingDetails()->getBillingContact()}<br />     {/if}
+                {if $cust->getBillingDetails()->getBillingContactName()}    {$cust->getBillingDetails()->getBillingContactName()}<br />     {/if}
                 {if $cust->getBillingDetails()->getBillingAddress1()}   {$cust->getBillingDetails()->getBillingAddress1()}<br />    {/if}
                 {if $cust->getBillingDetails()->getBillingAddress2()}   {$cust->getBillingDetails()->getBillingAddress2()}<br />    {/if}
                 {if $cust->getBillingDetails()->getBillingTownCity()}   {$cust->getBillingDetails()->getBillingTownCity()}<br />    {/if}
