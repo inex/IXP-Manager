@@ -17,7 +17,7 @@ class CompanyRegisteredDetail
     /**
      * @var string
      */
-    private $jurisidiction;
+    private $jurisdiction;
 
     /**
      * @var string
@@ -55,10 +55,14 @@ class CompanyRegisteredDetail
     private $id;
 
     /**
-     * @var \Entities\Customer
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Company;
-
+    private $Customer;
+    
+    public function __construct()
+    {
+        $this->Customer = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Set companyNumber
@@ -84,26 +88,26 @@ class CompanyRegisteredDetail
     }
 
     /**
-     * Set jurisidiction
+     * Set jurisdiction
      *
-     * @param string $jurisidiction
+     * @param string $jurisdiction
      * @return CompanyRegisteredDetail
      */
-    public function setJurisidiction($jurisidiction)
+    public function setJurisdiction($jurisdiction)
     {
-        $this->jurisidiction = $jurisidiction;
+        $this->jurisdiction = $jurisdiction;
     
         return $this;
     }
 
     /**
-     * Get jurisidiction
+     * Get jurisdiction
      *
      * @return string 
      */
-    public function getJurisidiction()
+    public function getJurisdiction()
     {
-        return $this->jurisidiction;
+        return $this->jurisdiction;
     }
 
     /**
@@ -303,5 +307,37 @@ class CompanyRegisteredDetail
     public function getRegisteredName()
     {
         return $this->registeredName;
+    }
+    
+    /**
+     * Add Customer
+     *
+     * @param Entities\Customer $customer
+     * @return CompanyRegisteredDetail
+     */
+    public function addCustomer(\Entities\Customer $customer)
+    {
+        $this->Customer[] = $customer;
+        return $this;
+    }
+
+    /**
+     * Remove Customer
+     *
+     * @param Entities\Customer $customer
+     */
+    public function removeCustomer(\Entities\Customer $customer)
+    {
+        $this->Customer->removeElement($customer);
+    }
+
+    /**
+     * Get Customer
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getCustomer()
+    {
+        return $this->Customer;
     }
 }

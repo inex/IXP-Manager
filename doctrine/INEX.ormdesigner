@@ -5,7 +5,7 @@
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="320b1911-25df-4909-ace7-575ed60fa4e5"/>
       <field name="registeredName" type="string" uuid="d2e5b288-fd9a-4e11-9d53-1dfd48686381"/>
       <field name="companyNumber" type="string" uuid="3faaabb3-de13-449a-8c5a-b65db2c5edb0"/>
-      <field name="jurisidiction" type="string" uuid="c01a7e33-2ae9-49f4-a4d5-ec55fc120279"/>
+      <field name="jurisdiction" type="string" uuid="c01a7e33-2ae9-49f4-a4d5-ec55fc120279"/>
       <field name="address1" type="string" uuid="b4c2d848-c644-4145-80f1-aacfeaec491e"/>
       <field name="address2" type="string" uuid="a918cb34-89ed-48ad-80a8-fa6d0375fcba"/>
       <field name="address3" type="string" uuid="a1f2590c-96ec-4945-aa0f-3185e2428df0"/>

@@ -65,10 +65,14 @@ class CompanyBillingDetail
     private $id;
 
     /**
-     * @var \Entities\Customer
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Company;
-
+    private $Customer;
+    
+    public function __construct()
+    {
+        $this->Customer = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Set billingContactName
@@ -309,27 +313,36 @@ class CompanyBillingDetail
     {
         return $this->id;
     }
-
+    
     /**
-     * Set Company
+     * Add Customer
      *
-     * @param \Entities\Customer $company
+     * @param Entities\Customer $customer
      * @return CompanyBillingDetail
      */
-    public function setCompany(\Entities\Customer $company = null)
+    public function addCustomer(\Entities\Customer $customer)
     {
-        $this->Company = $company;
-    
+        $this->Customer[] = $customer;
         return $this;
     }
 
     /**
-     * Get Company
+     * Remove Customer
      *
-     * @return \Entities\Customer 
+     * @param Entities\Customer $customer
      */
-    public function getCompany()
+    public function removeCustomer(\Entities\Customer $customer)
     {
-        return $this->Company;
+        $this->Customer->removeElement($customer);
+    }
+
+    /**
+     * Get Customer
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getCustomer()
+    {
+        return $this->Customer;
     }
 }

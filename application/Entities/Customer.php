@@ -265,6 +265,16 @@ class Customer
     private $TrafficDailies;
 
     /**
+     * @var \Entities\CompanyRegisteredDetail
+     */
+    private $RegistrationDetails;
+
+    /**
+     * @var \Entities\CompanyBillingDetail
+     */
+    private $BillingDetails;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -1753,17 +1763,6 @@ class Customer
     {
         return $this->peeringmacrov6;
     }
-
-    /**
-     * @var \Entities\CompanyRegisteredDetail
-     */
-    private $RegistrationDetails;
-
-    /**
-     * @var \Entities\CompanyBillingDetail
-     */
-    private $BillingDetails;
-
 
     /**
      * Set RegistrationDetails
