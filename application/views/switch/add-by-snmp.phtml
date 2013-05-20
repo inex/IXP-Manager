@@ -22,14 +22,18 @@
 
 {OSS_Message}
 
-<p>
+<div class="alert alert-info">
     Please complete the details below and click next. The hostname and SNMP community
-    entered below will be used to poll the switch for its details.
-</p>
+    entered below will be used to poll the switch for its details and available ports.
+    <br /><br />
+    <strong>Use only for switches.</strong> Use the
+    <a href="{genUrl controller="switch" action="add"}">manual add method</a>
+    for console servers.
+</div>
 
 {$f}
-    
-    
+
+
 </div>
 
 {tmplinclude file="footer.phtml"}
