@@ -307,6 +307,27 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     }
     
     
+    
+    /**
+     * This action will find all ports on a switch, match them (where possible) to existing
+     * ports of that switch in the database and allow the user to:
+     *
+     *  - view name (ifDescr), ifName and ifAlias
+     *  - set the switchport type in bulk
+     *  - remove port(s)
+     *  - manage these actions in bulk (e.g. phpMyAdmin type row management)
+     */
+    public function snmpPollAction()
+    {
+        if( !( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switchid' ) ) ) )
+        {
+            $this->addMessage( 'Unknown switch', OSS_Message::ERROR );
+            $this->redirect( 'switch/list' );
+        }
+        
+        
+    }
+    
 }
 
 
