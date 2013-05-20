@@ -15,7 +15,7 @@ Then update schema:
             address1 VARCHAR(255) DEFAULT NULL,
             address2 VARCHAR(255) DEFAULT NULL,
             address3 VARCHAR(255) DEFAULT NULL,
-            towncity VARCHAR(255) DEFAULT NULL,
+            townCity VARCHAR(255) DEFAULT NULL,
             postcode VARCHAR(255) DEFAULT NULL,
             country VARCHAR(255) DEFAULT NULL,
             PRIMARY KEY(id)
@@ -57,7 +57,7 @@ Run script:
 
 Checkout commit with refernce:
 
-    a161d6b485cbf893f6e74fca7b3b3d3ab13f8b62
+    cd0e2c406b28f30bccd4c3c508751b9fed324125
 
 Then update schema again:
 
