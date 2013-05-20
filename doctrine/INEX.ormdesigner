@@ -36,6 +36,10 @@
         <attribute name="tableName">company_billing_detail</attribute>
       </orm-attributes>
     </entity>
+    <entity name="DatabaseVersion" uuid="83d06a14-bb71-4d39-b0f0-efe58db4b34c">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="915c75a0-1739-432d-98fd-0f131129c6b0"/>
+      <field name="version" type="integer" required="true" uuid="6b41d919-181f-4b80-add9-cefc18944941"/>
+    </entity>
     <entity name="ContactGroup" uuid="0c1cb743-444a-4fea-ab68-7150272fc55b">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3d4b50db-5775-4991-8836-6c5002afa75b"/>
       <field name="name" type="string" size="20" required="true" unique="true" uuid="30e37e8e-e3ed-4060-8b9e-7000b8cf69ab"/>
@@ -783,6 +787,7 @@
     <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0"/>
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
+    <entity uuid="83d06a14-bb71-4d39-b0f0-efe58db4b34c" position-x="1216" position-y="890" size-x="0" size-x2="93" size-y="0" size-y2="45"/>
     <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0"/>
     <entity uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b" position-x="1013" position-y="855" size-x="0" size-x2="117" size-y="0" size-y2="115"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
