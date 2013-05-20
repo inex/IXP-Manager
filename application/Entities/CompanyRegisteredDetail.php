@@ -276,4 +276,32 @@ class CompanyRegisteredDetail
     {
         return $this->Company;
     }
+    /**
+     * @var string
+     */
+    private $registeredName;
+
+
+    /**
+     * Set registeredName
+     *
+     * @param string $registeredName
+     * @return CompanyRegisteredDetail
+     */
+    public function setRegisteredName($registeredName)
+    {
+        $this->registeredName = $registeredName;
+    
+        return $this;
+    }
+
+    /**
+     * Get registeredName
+     *
+     * @return string 
+     */
+    public function getRegisteredName()
+    {
+        return $this->registeredName;
+    }
 }

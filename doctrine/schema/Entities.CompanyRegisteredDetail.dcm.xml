@@ -4,6 +4,7 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
+    <field name="registeredName" type="string" nullable="true"/>
     <field name="companyNumber" type="string" nullable="true"/>
     <field name="jurisidiction" type="string" nullable="true"/>
     <field name="address1" type="string" nullable="true"/>

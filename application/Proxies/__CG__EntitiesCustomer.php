@@ -771,7 +771,7 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getRegistrationDetails();
     }
 
-    public function setBillingDetails(\Entities\CompanyBillingDetails $billingDetails)
+    public function setBillingDetails(\Entities\CompanyBillingDetail $billingDetails)
     {
         $this->__load();
         return parent::setBillingDetails($billingDetails);

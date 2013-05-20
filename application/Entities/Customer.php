@@ -1732,17 +1732,6 @@ class Customer
     private $peeringmacrov6;
 
     /**
-     * @var \Entities\CompanyRegisteredDetail
-     */
-    private $RegistrationDetails;
-
-    /**
-     * @var \Entities\CompanyBillingDetails
-     */
-    private $BillingDetails;
-
-
-    /**
      * Set peeringmacrov6
      *
      * @param string $peeringmacrov6
@@ -1764,6 +1753,17 @@ class Customer
     {
         return $this->peeringmacrov6;
     }
+
+    /**
+     * @var \Entities\CompanyRegisteredDetail
+     */
+    private $RegistrationDetails;
+
+    /**
+     * @var \Entities\CompanyBillingDetail
+     */
+    private $BillingDetails;
+
 
     /**
      * Set RegistrationDetails
@@ -1791,10 +1791,10 @@ class Customer
     /**
      * Set BillingDetails
      *
-     * @param \Entities\CompanyBillingDetails $billingDetails
+     * @param \Entities\CompanyBillingDetail $billingDetails
      * @return Customer
      */
-    public function setBillingDetails(\Entities\CompanyBillingDetails $billingDetails)
+    public function setBillingDetails(\Entities\CompanyBillingDetail $billingDetails)
     {
         $this->BillingDetails = $billingDetails;
     
@@ -1804,7 +1804,7 @@ class Customer
     /**
      * Get BillingDetails
      *
-     * @return \Entities\CompanyBillingDetails 
+     * @return \Entities\CompanyBillingDetail 
      */
     public function getBillingDetails()
     {

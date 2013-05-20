@@ -159,10 +159,22 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
         return parent::getCompany();
     }
 
+    public function setRegisteredName($registeredName)
+    {
+        $this->__load();
+        return parent::setRegisteredName($registeredName);
+    }
+
+    public function getRegisteredName()
+    {
+        $this->__load();
+        return parent::getRegisteredName();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'companyNumber', 'jurisidiction', 'address1', 'address2', 'address3', 'towncity', 'postcode', 'country', 'id', 'Company');
+        return array('__isInitialized__', 'registeredName', 'companyNumber', 'jurisidiction', 'address1', 'address2', 'address3', 'towncity', 'postcode', 'country', 'id', 'Company');
     }
 
     public function __clone()
