@@ -123,7 +123,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
         {
             if( $form->isValid( $_POST ) )
             {
-                $form->assignFormToEntity( $this->getCustomer(), $this, true );
+                $form->assignFormToEntity( $this->getCustomer()->getBillingDetails(), $this, true );
                 $this->getD2EM()->flush();
                 $this->addMessage( 'Your billing details have been updated', OSS_Message::SUCCESS );
             }
