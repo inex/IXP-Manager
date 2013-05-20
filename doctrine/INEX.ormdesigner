@@ -336,11 +336,6 @@
       <field name="peeringmacro" type="string" size="255" uuid="dc65db75-85cf-4610-ad5a-968ca000859d"/>
       <field name="peeringmacrov6" type="string" size="255" uuid="d25cf8d7-5772-4e4d-84f5-827065b28a09"/>
       <field name="peeringpolicy" type="string" size="255" uuid="1b6e954e-4c3b-48fe-8ee8-5df1f3ca2cf1"/>
-      <field name="billingContact" type="string" size="255" uuid="01dc09e2-f0a2-4cad-bd75-a9e658c9b783"/>
-      <field name="billingAddress1" type="string" size="255" uuid="d76a042b-9603-4d47-9ee1-18ec5c1f761c"/>
-      <field name="billingAddress2" type="string" size="255" uuid="2665cb85-a7dd-44dc-8bcc-2775608fe233"/>
-      <field name="billingCity" type="string" size="255" uuid="77c72a52-d7c7-489f-b9ef-da4cad49bba1"/>
-      <field name="billingCountry" type="string" size="2" uuid="9d6cbfa4-bb6c-4b9b-b807-136d68f67326"/>
       <field name="corpwww" type="string" size="255" uuid="8f870788-286d-43bd-bfea-33f972666bc6"/>
       <field name="datejoin" type="date" uuid="12b5c127-3c0e-4ec5-a4d9-dcd258704b27"/>
       <field name="dateleave" type="date" uuid="8dbbf264-5d02-4ab3-bed9-1a1104ffe206"/>

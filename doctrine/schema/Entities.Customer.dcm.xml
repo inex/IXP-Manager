@@ -19,11 +19,6 @@
     <field name="peeringmacro" type="string" length="255" nullable="true"/>
     <field name="peeringmacrov6" type="string" length="255" nullable="true"/>
     <field name="peeringpolicy" type="string" length="255" nullable="true"/>
-    <field name="billingContact" type="string" length="255" nullable="true"/>
-    <field name="billingAddress1" type="string" length="255" nullable="true"/>
-    <field name="billingAddress2" type="string" length="255" nullable="true"/>
-    <field name="billingCity" type="string" length="255" nullable="true"/>
-    <field name="billingCountry" type="string" length="2" nullable="true"/>
     <field name="corpwww" type="string" length="255" nullable="true"/>
     <field name="datejoin" type="date" nullable="true"/>
     <field name="dateleave" type="date" nullable="true"/>
