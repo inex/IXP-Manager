@@ -1726,4 +1726,88 @@ class Customer
     {
         return $this->Notes;
     }
+    /**
+     * @var string
+     */
+    private $peeringmacrov6;
+
+    /**
+     * @var \Entities\CompanyRegisteredDetail
+     */
+    private $RegistrationDetails;
+
+    /**
+     * @var \Entities\CompanyBillingDetails
+     */
+    private $BillingDetails;
+
+
+    /**
+     * Set peeringmacrov6
+     *
+     * @param string $peeringmacrov6
+     * @return Customer
+     */
+    public function setPeeringmacrov6($peeringmacrov6)
+    {
+        $this->peeringmacrov6 = $peeringmacrov6;
+    
+        return $this;
+    }
+
+    /**
+     * Get peeringmacrov6
+     *
+     * @return string 
+     */
+    public function getPeeringmacrov6()
+    {
+        return $this->peeringmacrov6;
+    }
+
+    /**
+     * Set RegistrationDetails
+     *
+     * @param \Entities\CompanyRegisteredDetail $registrationDetails
+     * @return Customer
+     */
+    public function setRegistrationDetails(\Entities\CompanyRegisteredDetail $registrationDetails)
+    {
+        $this->RegistrationDetails = $registrationDetails;
+    
+        return $this;
+    }
+
+    /**
+     * Get RegistrationDetails
+     *
+     * @return \Entities\CompanyRegisteredDetail 
+     */
+    public function getRegistrationDetails()
+    {
+        return $this->RegistrationDetails;
+    }
+
+    /**
+     * Set BillingDetails
+     *
+     * @param \Entities\CompanyBillingDetails $billingDetails
+     * @return Customer
+     */
+    public function setBillingDetails(\Entities\CompanyBillingDetails $billingDetails)
+    {
+        $this->BillingDetails = $billingDetails;
+    
+        return $this;
+    }
+
+    /**
+     * Get BillingDetails
+     *
+     * @return \Entities\CompanyBillingDetails 
+     */
+    public function getBillingDetails()
+    {
+        return $this->BillingDetails;
+    }
 }

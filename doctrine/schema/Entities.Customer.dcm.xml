@@ -17,6 +17,7 @@
     <field name="nochours" type="string" length="255" nullable="true"/>
     <field name="nocwww" type="string" length="255" nullable="true"/>
     <field name="peeringmacro" type="string" length="255" nullable="true"/>
+    <field name="peeringmacrov6" type="string" length="255" nullable="true"/>
     <field name="peeringpolicy" type="string" length="255" nullable="true"/>
     <field name="billingContact" type="string" length="255" nullable="true"/>
     <field name="billingAddress1" type="string" length="255" nullable="true"/>
@@ -38,6 +39,16 @@
         <join-column name="irrdb" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
+    <one-to-one field="RegistrationDetails" target-entity="Entities\CompanyRegisteredDetail" inversed-by="Company">
+      <join-columns>
+        <join-column name="company_registered_detail_id" referenced-column-name="id" nullable="false" unique="true"/>
+      </join-columns>
+    </one-to-one>
+    <one-to-one field="BillingDetails" target-entity="Entities\CompanyBillingDetails" inversed-by="Company">
+      <join-columns>
+        <join-column name="company_billing_details_id" referenced-column-name="id" nullable="false" unique="true"/>
+      </join-columns>
+    </one-to-one>
     <one-to-many field="Notes" target-entity="Entities\CustomerNote" mapped-by="Customer"/>
     <one-to-many field="VirtualInterfaces" target-entity="Entities\VirtualInterface" mapped-by="Customer"/>
     <one-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Customer"/>

@@ -1,6 +1,30 @@
 <?xml version="1.0"?>
 <orm-designer version="2.1.9.691" name="INEX" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="INEX" import-format="Doctrine2Xml" import-path="schema" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
+    <entity name="CompanyRegisteredDetail" uuid="6070e4d5-359b-4047-a550-8e130118632e">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="320b1911-25df-4909-ace7-575ed60fa4e5"/>
+      <field name="companyNumber" type="string" uuid="3faaabb3-de13-449a-8c5a-b65db2c5edb0"/>
+      <field name="jurisidiction" type="string" uuid="c01a7e33-2ae9-49f4-a4d5-ec55fc120279"/>
+      <field name="address1" type="string" uuid="b4c2d848-c644-4145-80f1-aacfeaec491e"/>
+      <field name="address2" type="string" uuid="a918cb34-89ed-48ad-80a8-fa6d0375fcba"/>
+      <field name="address3" type="string" uuid="a1f2590c-96ec-4945-aa0f-3185e2428df0"/>
+      <field name="towncity" type="string" uuid="41cbb01f-8642-4eb5-b256-499eb8b5617e"/>
+      <field name="postcode" type="string" uuid="ff5c25bc-0e55-4813-98ee-484df12d354e"/>
+      <field name="country" type="string" uuid="1d4e5d38-78db-4cc1-abf4-b43923cbf3f8"/>
+    </entity>
+    <entity name="CompanyBillingDetails" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="a67b06c1-d18c-4196-90ed-d8987633c48b"/>
+      <field name="billingContactName" type="string" uuid="b797975d-1d9d-48fd-84fe-917e08d3297d"/>
+      <field name="billingAddress1" type="string" uuid="1401ac3e-a825-4181-b879-d5d1dca03b1a"/>
+      <field name="billingAddress2" type="string" uuid="1d661987-d0e7-4309-a2f1-4ee996ea2c7e"/>
+      <field name="billingTownCity" type="string" uuid="2ade8305-73f5-4334-81b7-d5f7e77f6f17"/>
+      <field name="billingPostcode" type="string" uuid="45748105-15d5-415d-b7fe-f06c77187d62"/>
+      <field name="billingCountry" type="string" uuid="cda12b9e-c01f-43ae-9d9e-ae6cb48a0fd6"/>
+      <field name="billingEmail" type="string" uuid="650a85dc-f726-434d-b861-0caa97fcd382"/>
+      <field name="billingTelephone" type="string" uuid="932767a1-7093-413a-a7df-7400e196c133"/>
+      <field name="vatNumber" type="string" uuid="e6742d8c-f120-4ede-8cc3-57094f77f916"/>
+      <field name="vatRate" type="string" uuid="e5b6257a-2558-436d-8606-0e35d665aabf"/>
+    </entity>
     <entity name="ContactGroup" uuid="0c1cb743-444a-4fea-ab68-7150272fc55b">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3d4b50db-5775-4991-8836-6c5002afa75b"/>
       <field name="name" type="string" size="20" required="true" unique="true" uuid="30e37e8e-e3ed-4060-8b9e-7000b8cf69ab"/>
@@ -299,6 +323,7 @@
       <field name="nocwww" type="string" size="255" uuid="c73ec8f4-836d-4b5e-81a0-4051c4f614e1"/>
       <field name="irrdb" type="integer" uuid="54db8bfc-62c3-4317-94ac-b7b2bd6d1828"/>
       <field name="peeringmacro" type="string" size="255" uuid="dc65db75-85cf-4610-ad5a-968ca000859d"/>
+      <field name="peeringmacrov6" type="string" size="255" uuid="d25cf8d7-5772-4e4d-84f5-827065b28a09"/>
       <field name="peeringpolicy" type="string" size="255" uuid="1b6e954e-4c3b-48fe-8ee8-5df1f3ca2cf1"/>
       <field name="billingContact" type="string" size="255" uuid="01dc09e2-f0a2-4cad-bd75-a9e658c9b783"/>
       <field name="billingAddress1" type="string" size="255" uuid="d76a042b-9603-4d47-9ee1-18ec5c1f761c"/>
@@ -315,6 +340,8 @@
       <field name="lastupdatedby" type="integer" uuid="0dad4465-e86b-4934-abf0-ef105f15e9cf"/>
       <field name="creator" type="string" size="255" uuid="c2152236-2b56-4088-9cb2-f161c10bb6c4"/>
       <field name="created" type="date" uuid="085f44ec-c9e3-4dcc-8db0-451c688f423f"/>
+      <field name="company_registered_detail_id" type="integer" required="true" unique="true" uuid="76dcfb1e-efda-44d9-bd00-083de3255e70"/>
+      <field name="company_billing_details_id" type="integer" required="true" unique="true" uuid="0320ee04-426b-4d61-98e9-237980463824"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Customer</attribute>
         <attribute name="table">cust</attribute>
@@ -323,6 +350,12 @@
     </entity>
     <association from="Customer" to="IRRDBConfig" owner-alias="Customers" inverse-alias="IRRDB" uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d">
       <association-field from="irrdb" to="id"/>
+    </association>
+    <association from="Customer" to="CompanyRegisteredDetail" owner-alias="Company" inverse-alias="RegistrationDetails" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
+      <association-field from="company_registered_detail_id" to="id"/>
+    </association>
+    <association from="Customer" to="CompanyBillingDetails" owner-alias="Company" inverse-alias="BillingDetails" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
+      <association-field from="company_billing_details_id" to="id"/>
     </association>
     <entity name="Contact" uuid="cc05d49f-a5cf-4650-9300-be430837e73b">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="8db1b416-2452-4121-8c07-d4539f7d2142"/>
@@ -712,7 +745,7 @@
     <entity uuid="005af367-611e-4b83-81c7-f6f36dc00d9f" position-x="1378" position-y="597" size-x="0" size-x2="135" size-y="0" size-y2="255"/>
     <entity uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326" position-x="1009" position-y="715" size-x="0" size-x2="115" size-y="0" size-y2="87"/>
     <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" position-x="396" position-y="718" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
-    <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" position-x="611" position-y="336" size-x="0" size-x2="151" size-y="0" size-y2="451"/>
+    <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" position-x="604" position-y="348" size-x="0" size-x2="148" size-y="0" size-y2="451"/>
     <entity uuid="076963b5-cef4-4b77-8d41-8c1c8f1916a1" position-x="1111" position-y="-151" size-x="0" size-x2="137" size-y="0" size-y2="129"/>
     <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" position-x="801" position-y="153" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
     <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
@@ -730,12 +763,14 @@
     <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" position-x="809" position-y="653" size-x="0" size-x2="145" size-y="0" size-y2="213"/>
     <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" position-x="228" position-y="34" size-x="0" size-x2="131" size-y="0" size-y2="171"/>
     <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0"/>
-    <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" position-x="174" position-y="833" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
+    <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" position-x="175" position-y="631" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
     <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="1582" size-y="41" size-y2="1236"/>
     <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="18" center-position-y="0"/>
-    <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" position-x="621" position-y="847" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
+    <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
+    <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
+    <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" position-x="596" position-y="884" size-x="0" size-x2="129" size-y="0" size-y2="143"/>
     <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0"/>
-    <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" position-x="482" position-y="858" size-x="0" size-x2="113" size-y="0" size-y2="101"/>
+    <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0"/>
     <entity uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b" position-x="1013" position-y="855" size-x="0" size-x2="117" size-y="0" size-y2="115"/>
@@ -747,18 +782,20 @@
     <association uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <association uuid="c9431b23-72cb-4afa-a057-ced40869cfd0" center-position-x="0" center-position-y="0"/>
     <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
-    <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-37" center-position-y="0"/>
+    <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-26" center-position-y="0"/>
     <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" position-x="1391" position-y="479" size-x="0" size-x2="114" size-y="0" size-y2="87"/>
     <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" position-x="629" position-y="256" size-x="0" size-x2="104" size-y="0" size-y2="45"/>
     <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bk-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="1525" size-y="171" size-y2="1025"/>
     <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
     <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" position-x="1166" position-y="564" size-x="0" size-x2="122" size-y="0" size-y2="171"/>
     <association uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
-    <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" position-x="332" position-y="853" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
+    <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" position-x="201" position-y="878" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
     <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" position-x="20" position-y="598" size-x="0" size-x2="126" size-y="0" size-y2="395"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" position-x="294" position-y="321" size-x="0" size-x2="101" size-y="0" size-y2="87"/>
     <association uuid="f18aceae-d3e6-452d-9e28-0c32f340b245" center-position-x="0" center-position-y="0"/>
+    <association uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0"/>
+    <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" position-x="738" position-y="885" size-x="0" size-x2="138" size-y="0" size-y2="171"/>
   </visual-data>
 </orm-designer>

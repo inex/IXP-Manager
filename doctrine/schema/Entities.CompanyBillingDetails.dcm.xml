@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\CompanyBillingDetails">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="billingContactName" type="string" nullable="true"/>
+    <field name="billingAddress1" type="string" nullable="true"/>
+    <field name="billingAddress2" type="string" nullable="true"/>
+    <field name="billingTownCity" type="string" nullable="true"/>
+    <field name="billingPostcode" type="string" nullable="true"/>
+    <field name="billingCountry" type="string" nullable="true"/>
+    <field name="billingEmail" type="string" nullable="true"/>
+    <field name="billingTelephone" type="string" nullable="true"/>
+    <field name="vatNumber" type="string" nullable="true"/>
+    <field name="vatRate" type="string" nullable="true"/>
+    <one-to-one field="Company" target-entity="Entities\Customer" mapped-by="BillingDetails"/>
+  </entity>
+</doctrine-mapping>
