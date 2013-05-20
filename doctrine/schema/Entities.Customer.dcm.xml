@@ -39,16 +39,16 @@
         <join-column name="irrdb" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
-    <one-to-one field="RegistrationDetails" target-entity="Entities\CompanyRegisteredDetail" inversed-by="Company">
+    <many-to-one field="RegistrationDetails" target-entity="Entities\CompanyRegisteredDetail" inversed-by="Customer">
       <join-columns>
-        <join-column name="company_registered_detail_id" referenced-column-name="id" nullable="false" unique="true"/>
+        <join-column name="company_registered_detail_id" referenced-column-name="id" nullable="false"/>
       </join-columns>
-    </one-to-one>
-    <one-to-one field="BillingDetails" target-entity="Entities\CompanyBillingDetail" inversed-by="Company">
+    </many-to-one>
+    <many-to-one field="BillingDetails" target-entity="Entities\CompanyBillingDetail" inversed-by="Customer">
       <join-columns>
-        <join-column name="company_billing_details_id" referenced-column-name="id" nullable="false" unique="true"/>
+        <join-column name="company_billing_details_id" referenced-column-name="id" nullable="false"/>
       </join-columns>
-    </one-to-one>
+    </many-to-one>
     <one-to-many field="Notes" target-entity="Entities\CustomerNote" mapped-by="Customer"/>
     <one-to-many field="VirtualInterfaces" target-entity="Entities\VirtualInterface" mapped-by="Customer"/>
     <one-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Customer"/>

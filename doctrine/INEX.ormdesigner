@@ -351,8 +351,8 @@
       <field name="lastupdatedby" type="integer" uuid="0dad4465-e86b-4934-abf0-ef105f15e9cf"/>
       <field name="creator" type="string" size="255" uuid="c2152236-2b56-4088-9cb2-f161c10bb6c4"/>
       <field name="created" type="date" uuid="085f44ec-c9e3-4dcc-8db0-451c688f423f"/>
-      <field name="company_registered_detail_id" type="integer" required="true" unique="true" uuid="76dcfb1e-efda-44d9-bd00-083de3255e70"/>
-      <field name="company_billing_details_id" type="integer" required="true" unique="true" uuid="0320ee04-426b-4d61-98e9-237980463824"/>
+      <field name="company_registered_detail_id" type="integer" required="true" uuid="76dcfb1e-efda-44d9-bd00-083de3255e70"/>
+      <field name="company_billing_details_id" type="integer" required="true" uuid="0320ee04-426b-4d61-98e9-237980463824"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Customer</attribute>
         <attribute name="table">cust</attribute>
@@ -362,10 +362,10 @@
     <association from="Customer" to="IRRDBConfig" owner-alias="Customers" inverse-alias="IRRDB" uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d">
       <association-field from="irrdb" to="id"/>
     </association>
-    <association from="Customer" to="CompanyRegisteredDetail" owner-alias="Company" inverse-alias="RegistrationDetails" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
+    <association from="Customer" to="CompanyRegisteredDetail" owner-alias="Customer" inverse-alias="RegistrationDetails" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
       <association-field from="company_registered_detail_id" to="id"/>
     </association>
-    <association from="Customer" to="CompanyBillingDetail" owner-alias="Company" inverse-alias="BillingDetails" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
+    <association from="Customer" to="CompanyBillingDetail" owner-alias="Customer" inverse-alias="BillingDetails" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
       <association-field from="company_billing_details_id" to="id"/>
     </association>
     <entity name="Contact" uuid="cc05d49f-a5cf-4650-9300-be430837e73b">
