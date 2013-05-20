@@ -31,11 +31,16 @@
         <fieldset>
             <legend>Billing Details</legend>
             
-            {$element->billingContact}
+            {$element->billingContactName}
             {$element->billingAddress1}
             {$element->billingAddress2}
             {$element->billingCity}
+            {$element->billingPostcode}
             {$element->billingCountry}
+            {$element->billingEmail}
+            {$element->billingTelephone}
+            {$element->vatRate}
+            {$element->vatNumber}
             
         </fieldset>
         
@@ -78,6 +83,31 @@
         </fieldset>
     </div>
     
+</div>
+
+<div class="row-fluid">
+
+    <div class="span6">
+
+        <fieldset>
+            <legend>Registration Details</legend>
+
+            {$element->registeredName}
+            {$element->companyNumber}
+            {$element->jurisdiction}
+            {$element->address1}
+            {$element->address2}
+            {$element->address3}
+            {$element->townCity}
+            {$element->postcode}
+            {$element->country}
+
+        </fieldset>
+
+    </div>
+
+    <div class="span6">
+    </div>
 </div>
             
 

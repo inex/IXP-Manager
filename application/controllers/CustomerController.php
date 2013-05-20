@@ -242,12 +242,27 @@ class CustomerController extends IXP_Controller_FrontEnd
         {
             $object->setLastupdated( new DateTime() );
             $object->setLastupdatedby( $this->getUser()->getId() );
+            
+            $bdetail = $object->getBillingDetails();
+            $rdetail = $object->getRegistrationDetails();
         }
         else
         {
             $object->setCreated( new DateTime() );
             $object->setCreator( $this->getUser()->getUsername() );
+            
+            $bdetail = new \Entities\CompanyBillingDetail();
+            $this->getD2EM()->persist( $bdetail );
+            $object->setBillingDetails( $bdetail );
+            
+            $rdetail = new \Entities\CompanyRegisteredDetail();
+            $this->getD2EM()->persist( $rdetail );
+            $object->setRegistrationDetails( $rdetail );
+            
         }
+        
+        $form->assignFormToEntity( $bdetail, $this, $isEdit );
+        $form->assignFormToEntity( $rdetail, $this, $isEdit );
         
         if( ( $form->getValue( 'type' ) == \Entities\Customer::TYPE_FULL || $form->getValue( 'type' ) == \Entities\Customer::TYPE_PROBONO )
                 && !$form->getElement( 'irrdb' )->getValue() )
@@ -343,7 +358,11 @@ class CustomerController extends IXP_Controller_FrontEnd
              $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
 
          if( $isEdit )
-             $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $object->getId() ] ) );
+         {
+            $form->assignEntityToForm( $object->getBillingDetails(), $this );
+            $form->assignEntityToForm( $object->getRegistrationDetails(), $this );
+            $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $object->getId() ] ) );
+         }
          
          return true;
      }
