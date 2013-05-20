@@ -126,18 +126,6 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         return parent::getModel();
     }
 
-    public function setActrive($actrive)
-    {
-        $this->__load();
-        return parent::setActrive($actrive);
-    }
-
-    public function getActrive()
-    {
-        $this->__load();
-        return parent::getActrive();
-    }
-
     public function setNotes($notes)
     {
         $this->__load();

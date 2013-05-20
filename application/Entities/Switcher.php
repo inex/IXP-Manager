@@ -55,11 +55,6 @@ class Switcher
     private $model;
 
     /**
-     * @var boolean $actrive
-     */
-    private $actrive;
-
-    /**
      * @var string $notes
      */
     private $notes;
@@ -257,29 +252,6 @@ class Switcher
     public function getModel()
     {
         return $this->model;
-    }
-
-    /**
-     * Set actrive
-     *
-     * @param boolean $actrive
-     * @return Switcher
-     */
-    public function setActrive($actrive)
-    {
-        $this->actrive = $actrive;
-    
-        return $this;
-    }
-
-    /**
-     * Get actrive
-     *
-     * @return boolean
-     */
-    public function getActrive()
-    {
-        return $this->actrive;
     }
 
     /**
@@ -514,7 +486,7 @@ class Switcher
     /**
      * Get hostname
      *
-     * @return string 
+     * @return string
      */
     public function getHostname()
     {
@@ -557,7 +529,7 @@ class Switcher
     /**
      * Get os
      *
-     * @return string 
+     * @return string
      */
     public function getOs()
     {
@@ -580,7 +552,7 @@ class Switcher
     /**
      * Get osDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getOsDate()
     {
@@ -603,7 +575,7 @@ class Switcher
     /**
      * Get osVersion
      *
-     * @return string 
+     * @return string
      */
     public function getOsVersion()
     {
@@ -626,7 +598,7 @@ class Switcher
     /**
      * Get lastPolled
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastPolled()
     {
