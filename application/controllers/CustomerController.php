@@ -258,7 +258,6 @@ class CustomerController extends IXP_Controller_FrontEnd
             $rdetail = new \Entities\CompanyRegisteredDetail();
             $this->getD2EM()->persist( $rdetail );
             $object->setRegistrationDetails( $rdetail );
-            
         }
         
         $form->assignFormToEntity( $bdetail, $this, $isEdit );
