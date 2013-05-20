@@ -1,3 +1,75 @@
+# v3.0.13
+
+Checkout commit with reference:
+
+    da13666cbbb2fc0c105b5e69ca3f317f89465388
+
+Then update schema:
+
+    CREATE TABLE 
+        company_registration_detail (
+            id INT AUTO_INCREMENT NOT NULL,
+            registeredName VARCHAR(255) DEFAULT NULL,
+            companyNumber VARCHAR(255) DEFAULT NULL,
+            jurisdiction VARCHAR(255) DEFAULT NULL,
+            address1 VARCHAR(255) DEFAULT NULL,
+            address2 VARCHAR(255) DEFAULT NULL,
+            address3 VARCHAR(255) DEFAULT NULL,
+            towncity VARCHAR(255) DEFAULT NULL,
+            postcode VARCHAR(255) DEFAULT NULL,
+            country VARCHAR(255) DEFAULT NULL,
+            PRIMARY KEY(id)
+        )
+    ENGINE = InnoDB;
+    
+    CREATE TABLE
+        company_billing_detail (
+            id INT AUTO_INCREMENT NOT NULL,
+            billingContactName VARCHAR(255) DEFAULT NULL,
+            billingAddress1 VARCHAR(255) DEFAULT NULL, 
+            billingAddress2 VARCHAR(255) DEFAULT NULL,
+            billingTownCity VARCHAR(255) DEFAULT NULL,
+            billingPostcode VARCHAR(255) DEFAULT NULL,
+        billingCountry VARCHAR(255) DEFAULT NULL,
+        billingEmail VARCHAR(255) DEFAULT NULL,
+        billingTelephone VARCHAR(255) DEFAULT NULL,
+        vatNumber VARCHAR(255) DEFAULT NULL,
+        vatRate VARCHAR(255) DEFAULT NULL,
+        PRIMARY KEY(id)
+    )
+    ENGINE = InnoDB;
+    
+    ALTER TABLE cust
+        ADD company_registered_detail_id INT DEFAULT NULL,
+        ADD company_billing_details_id INT DEFAULT NULL,
+        ADD peeringmacrov6 VARCHAR(255) DEFAULT NULL;
+    
+    ALTER TABLE cust
+        ADD CONSTRAINT FK_997B25A98386213 FOREIGN KEY (company_registered_detail_id) REFERENCES company_registration_detail (id),
+        ADD CONSTRAINT FK_997B25A84478F0C FOREIGN KEY (company_billing_details_id) REFERENCES company_billing_detail (id);
+    
+    CREATE INDEX IDX_997B25A98386213 ON cust (company_registered_detail_id);
+    CREATE INDEX IDX_997B25A84478F0C ON cust (company_billing_details_id);
+
+Run script:
+
+    bin/migrate-scripts/billing-details.php
+
+Checkout commit with refernce:
+
+    a161d6b485cbf893f6e74fca7b3b3d3ab13f8b62
+
+Then update schema again:
+
+    ALTER TABLE cust 
+        DROP billingContact,
+        DROP billingAddress1,
+        DROP billingAddress2,
+        DROP billingCity,
+        DROP billingCountry;
+        
+Checkout last commit.
+
 # V3.0.12
 
 Schema update required:
