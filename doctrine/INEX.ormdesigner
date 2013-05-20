@@ -11,8 +11,13 @@
       <field name="towncity" type="string" uuid="41cbb01f-8642-4eb5-b256-499eb8b5617e"/>
       <field name="postcode" type="string" uuid="ff5c25bc-0e55-4813-98ee-484df12d354e"/>
       <field name="country" type="string" uuid="1d4e5d38-78db-4cc1-abf4-b43923cbf3f8"/>
+      <orm-attributes>
+        <attribute name="table">company_registration_detail</attribute>
+        <attribute name="tableName">company_registration_detail</attribute>
+        <attribute name="repository-class">Repositories\CompanyRegistrationDetail</attribute>
+      </orm-attributes>
     </entity>
-    <entity name="CompanyBillingDetails" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
+    <entity name="CompanyBillingDetail" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="a67b06c1-d18c-4196-90ed-d8987633c48b"/>
       <field name="billingContactName" type="string" uuid="b797975d-1d9d-48fd-84fe-917e08d3297d"/>
       <field name="billingAddress1" type="string" uuid="1401ac3e-a825-4181-b879-d5d1dca03b1a"/>
@@ -24,6 +29,11 @@
       <field name="billingTelephone" type="string" uuid="932767a1-7093-413a-a7df-7400e196c133"/>
       <field name="vatNumber" type="string" uuid="e6742d8c-f120-4ede-8cc3-57094f77f916"/>
       <field name="vatRate" type="string" uuid="e5b6257a-2558-436d-8606-0e35d665aabf"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\CompanyBillingDetail</attribute>
+        <attribute name="table">company_billing_detail</attribute>
+        <attribute name="tableName">company_billing_detail</attribute>
+      </orm-attributes>
     </entity>
     <entity name="ContactGroup" uuid="0c1cb743-444a-4fea-ab68-7150272fc55b">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3d4b50db-5775-4991-8836-6c5002afa75b"/>
@@ -354,7 +364,7 @@
     <association from="Customer" to="CompanyRegisteredDetail" owner-alias="Company" inverse-alias="RegistrationDetails" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
       <association-field from="company_registered_detail_id" to="id"/>
     </association>
-    <association from="Customer" to="CompanyBillingDetails" owner-alias="Company" inverse-alias="BillingDetails" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
+    <association from="Customer" to="CompanyBillingDetail" owner-alias="Company" inverse-alias="BillingDetails" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
       <association-field from="company_billing_details_id" to="id"/>
     </association>
     <entity name="Contact" uuid="cc05d49f-a5cf-4650-9300-be430837e73b">
@@ -768,7 +778,7 @@
     <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="18" center-position-y="0"/>
     <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
     <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
-    <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" position-x="596" position-y="884" size-x="0" size-x2="129" size-y="0" size-y2="143"/>
+    <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" position-x="598" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="143"/>
     <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0"/>
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>

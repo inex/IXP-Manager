@@ -5,9 +5,9 @@ namespace Entities;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CompanyBillingDetails
+ * CompanyBillingDetail
  */
-class CompanyBillingDetails
+class CompanyBillingDetail
 {
     /**
      * @var string
@@ -74,7 +74,7 @@ class CompanyBillingDetails
      * Set billingContactName
      *
      * @param string $billingContactName
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setBillingContactName($billingContactName)
     {
@@ -97,7 +97,7 @@ class CompanyBillingDetails
      * Set billingAddress1
      *
      * @param string $billingAddress1
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setBillingAddress1($billingAddress1)
     {
@@ -120,7 +120,7 @@ class CompanyBillingDetails
      * Set billingAddress2
      *
      * @param string $billingAddress2
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setBillingAddress2($billingAddress2)
     {
@@ -143,7 +143,7 @@ class CompanyBillingDetails
      * Set billingTownCity
      *
      * @param string $billingTownCity
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setBillingTownCity($billingTownCity)
     {
@@ -166,7 +166,7 @@ class CompanyBillingDetails
      * Set billingPostcode
      *
      * @param string $billingPostcode
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setBillingPostcode($billingPostcode)
     {
@@ -189,7 +189,7 @@ class CompanyBillingDetails
      * Set billingCountry
      *
      * @param string $billingCountry
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setBillingCountry($billingCountry)
     {
@@ -212,7 +212,7 @@ class CompanyBillingDetails
      * Set billingEmail
      *
      * @param string $billingEmail
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setBillingEmail($billingEmail)
     {
@@ -235,7 +235,7 @@ class CompanyBillingDetails
      * Set billingTelephone
      *
      * @param string $billingTelephone
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setBillingTelephone($billingTelephone)
     {
@@ -258,7 +258,7 @@ class CompanyBillingDetails
      * Set vatNumber
      *
      * @param string $vatNumber
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setVatNumber($vatNumber)
     {
@@ -281,7 +281,7 @@ class CompanyBillingDetails
      * Set vatRate
      *
      * @param string $vatRate
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setVatRate($vatRate)
     {
@@ -314,7 +314,7 @@ class CompanyBillingDetails
      * Set Company
      *
      * @param \Entities\Customer $company
-     * @return CompanyBillingDetails
+     * @return CompanyBillingDetail
      */
     public function setCompany(\Entities\Customer $company = null)
     {
