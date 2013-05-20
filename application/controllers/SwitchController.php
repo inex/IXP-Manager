@@ -179,6 +179,73 @@ class SwitchController extends IXP_Controller_FrontEnd
     
     
     /**
+     * Add new switch by polling it via SNMP
+     */
+    public function addBySnmpAction()
+    {
+        $this->view->sw = $sw = new \Entities\Switcher();
+        $this->view->f  = $f  = new IXP_Form_Switch_AddBySNMP();
+        
+        if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
+        {
+            do
+            {
+                // ensure provided name and hostname are not in use
+                if( $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'name' => $f->getValue( 'name' ) ] )
+                        || $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'hostname' => $f->getValue( 'hostname' ) ] ) )
+                {
+                    $this->addMessage( 'A switch already exists with the given name / hostname', OSS_Message::ERROR );
+                    break;
+                }
+                
+                // can we talk to it by SNMP and discover some basic details?
+                try
+                {
+                    $snmp = new \OSS_SNMP\SNMP( $f->getValue( 'hostname' ), $f->getValue( 'snmppasswd' ) );
+                    $vendor = $snmp->getPlatform()->getVendor();
+                }
+                catch( \OSS_SNMP\Exception $e )
+                {
+                    $this->addMessage( "Could not query {$f->getValue( 'hostname' )} via SNMP.
+                        Consider using the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>.",
+                        OSS_Message::ERROR
+                    );
+                    break;
+                }
+                die( $snmp->useSystem()->description() );
+                if( $vendor == 'Unknown' )
+                {
+                    $this->addMessage( "Could not interpret switch system description string - most likely
+                        because no platform interpretor exists  for it.<br/><br/>Please see
+                        <a href=\"https://github.com/opensolutions/OSS_SNMP/wiki/Device-Discovery\">this OSS_SNMP page</a>
+                        and consider adding one.<br /><br />
+                        Otherwise use the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>.",
+                    OSS_Message::ERROR
+                    );
+                    break;
+                }
+                
+                
+                if( !( $eVendor = $this->getD2R( '\\Entities\\Vendor' )->findOneBy( [ 'name' => $vendor ] ) ) )
+                {
+                    $this->addMessage( "No vendor defined for {$vendor}. Please
+                        <a href=\"" . OSS_Utils::genUrl( 'vendor', 'add' ) . "\">add one first</a>.",
+                        OSS_Message::ERROR
+                    );
+                    break;
+                }
+                    
+            }while( false );
+        }
+        
+        $this->_display( 'add-by-snmp.phtml' );
+    }
+    
+    
+    
+    
+    
+    /**
      *
      * @param IXP_Form_Cabinet $form The form object
      * @param \Entities\Cabinet $object The Doctrine2 entity (being edited or blank for add)
