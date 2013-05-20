@@ -54,16 +54,16 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
         return parent::getCompanyNumber();
     }
 
-    public function setJurisidiction($jurisidiction)
+    public function setJurisdiction($jurisdiction)
     {
         $this->__load();
-        return parent::setJurisidiction($jurisidiction);
+        return parent::setJurisdiction($jurisdiction);
     }
 
-    public function getJurisidiction()
+    public function getJurisdiction()
     {
         $this->__load();
-        return parent::getJurisidiction();
+        return parent::getJurisdiction();
     }
 
     public function setAddress1($address1)
@@ -171,10 +171,28 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
         return parent::getRegisteredName();
     }
 
+    public function addCustomer(\Entities\Customer $customer)
+    {
+        $this->__load();
+        return parent::addCustomer($customer);
+    }
+
+    public function removeCustomer(\Entities\Customer $customer)
+    {
+        $this->__load();
+        return parent::removeCustomer($customer);
+    }
+
+    public function getCustomer()
+    {
+        $this->__load();
+        return parent::getCustomer();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'registeredName', 'companyNumber', 'jurisidiction', 'address1', 'address2', 'address3', 'towncity', 'postcode', 'country', 'id', 'Company');
+        return array('__isInitialized__', 'registeredName', 'companyNumber', 'jurisdiction', 'address1', 'address2', 'address3', 'towncity', 'postcode', 'country', 'id', 'Customer');
     }
 
     public function __clone()
@@ -186,7 +204,7 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields as $field => $reflProperty) {
+            foreach ($class->reflFields AS $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

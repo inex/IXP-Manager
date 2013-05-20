@@ -171,22 +171,28 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
         return parent::getId();
     }
 
-    public function setCompany(\Entities\Customer $company = NULL)
+    public function addCustomer(\Entities\Customer $customer)
     {
         $this->__load();
-        return parent::setCompany($company);
+        return parent::addCustomer($customer);
     }
 
-    public function getCompany()
+    public function removeCustomer(\Entities\Customer $customer)
     {
         $this->__load();
-        return parent::getCompany();
+        return parent::removeCustomer($customer);
+    }
+
+    public function getCustomer()
+    {
+        $this->__load();
+        return parent::getCustomer();
     }
 
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'id', 'Company');
+        return array('__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'id', 'Customer');
     }
 
     public function __clone()
@@ -198,7 +204,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields as $field => $reflProperty) {
+            foreach ($class->reflFields AS $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);
