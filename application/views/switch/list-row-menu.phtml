@@ -16,5 +16,8 @@
         <li>
             <a href="{genUrl controller='switch' action='port-report' id=$row.id}">View Port Report</a>
         </li>
+        <li>
+            <a href="{genUrl controller='switch-port' action='snmp-poll' switchid=$row.id}">SNMP Poll</a>
+        </li>
     </ul>
 </div>
