@@ -1,0 +1,117 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller='switch' action='list'}">Switches</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        SNMP Poll <em>{$switch->getName()}</em>
+    </li>
+</ul>
+
+{OSS_Message}
+
+<form id="poll-actions" method="post">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Alias</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+        </thead>
+        {foreach $portsData as $pd }
+            <tr>
+                <td><input type="checkbox" name="switch-port[{$pd.port->getId()}]" id="switch-port-{$pd.port->getId()}" value="{$pd.port->getId()}" /></td>
+                <td>{$pd.port->getIfName()}</td>
+                <td>{$pd.port->getName()}</td>
+                <td>{$pd.port->getIfAlias()}</td>
+                <td>
+                    <select id="port-type-{$pd.port->getId()}" class="chzn-select" style="width: 150px;">
+                        {foreach $portTypes as $idx => $name}
+                            <option value="{$idx}" label="{$name}" {if $pd.port->getType() == $idx}selected="selected"{/if}>{$name}</option>
+                        {/foreach}
+                    </select>
+                </td>
+                <td>
+                    {if $pd.bullet ==  "new"}
+                        <span class="badge badge-success">New</span>
+                    {else if $pd.bullet ==  "db"}
+                        <span class="badge badge-important">DB Only</span>
+                    {/if}
+                </td>
+            </tr>
+        {foreachelse}
+            <tr align="center"><td colspan="6"><strong>SMNP Poll unavalibale on this switch</strong></td></tr>
+        {/foreach}
+        <tr>
+            <td colspan="6">
+                {if count( $portsData )}
+                    <br />
+                    With selected: <a href="#" id="poll-group-delete">Delete</a> | <a href="#" id="poll-group-type">Set type: </a>
+                                <select name="shared-type" id="shared-type" class="chzn-select" style="width: 150px;">
+                                    {foreach $portTypes as $idx => $name}
+                                        <option value="{$idx}" label="{$name}">{$name}</option>
+                                    {/foreach}
+                                </select>
+                                | <a href="#" id="poll-group-active">Set Active</a> | <a href="#" id="poll-group-inactive">Set Inactive</a>
+                    <br />
+                    <a href="#" id="poll-select-all">Select All</a> | <a href="#" id="poll-select-none">Deselect All</a> | <a href="#" id="poll-select-inverse">Inverse</a>
+                    <input name="poll-action" id="poll-action" type="hidden" />
+                {/if}
+            </td>
+        </tr>
+    </table>
+    
+</from>
+
+<script type="text/javascript">
+$( 'document' ).ready( function() {
+    $( "a[id|='poll-select']"  ).on( 'click', function( event ){
+        event.preventDefault();
+        var type = $( event.target ).attr( 'id' ).substr( $( event.target ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
+        
+        $( "#poll-actions input[type=checkbox]" ).each( function( idx ) {
+            if( type == "inverse" )
+            {
+                if( $( this ).attr( "checked" ) )
+                    $( this ).removeAttr( "checked" );    
+                else
+                    $( this ).attr( "checked", "checked" );
+            }
+            else if( type == "all" )
+                $( this ).attr( "checked", "checked" );
+            else if( type == "none" )
+                $( this ).removeAttr( "checked" );
+        });
+    });
+    
+    $( "a[id|='poll-group']"  ).on( 'click', function( event ){
+        event.preventDefault();
+        var type = $( event.target ).attr( 'id' ).substr( $( event.target ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
+        
+        $( "#poll-action" ).val( type );
+        $( "#poll-actions" ).trigger( "submit" );
+        
+    });
+    
+    $( "select[id|='port-type']"  ).on( 'change', function( event ){
+        event.preventDefault();
+        var id = $( event.target ).attr( 'id' ).substr( $( event.target ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
+        
+        $( "#poll-select-none" ).trigger( 'click' );
+        $( "#switch-port-" + id ).attr( "checked", "checked" );
+        $( "#shared-type" ).val( $( event.target ).val() );
+        $( "#poll-group-type" ).trigger( 'click' );
+        
+    });
+});
+</script>
+
+{tmplinclude file="footer.phtml"}
