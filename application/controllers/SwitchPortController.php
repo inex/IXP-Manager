@@ -439,7 +439,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
 
                     if( $switchport->$fn() != $n )
                     {
-                        if( $new )
+                        if( !$new )
                         {
                             if( $snmp == 'lastChanges' )
                             {
