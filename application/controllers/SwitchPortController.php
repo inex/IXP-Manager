@@ -319,13 +319,160 @@ class SwitchPortController extends IXP_Controller_FrontEnd
      */
     public function snmpPollAction()
     {
+        $isEdit = $this->getParam( 'edit', 1 );
+        
         if( !( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switchid' ) ) ) )
         {
             $this->addMessage( 'Unknown switch', OSS_Message::ERROR );
             $this->redirect( 'switch/list' );
         }
         
+        if( isset( $_POST ) && isset( $_POST['poll-action'] ) )
+        {
+
+            foreach( $_POST['switch-port'] as $id )
+            {
+                $port = $this->getD2R( "\\Entities\\SwitchPort" )->find( $id );
+
+                if( $_POST['poll-action'] == "delete" )
+                    $this->getD2EM()->remove( $port );
+                else if( $_POST['poll-action'] == "type" )
+                    $port->setType( $_POST['shared-type'] );
+                
+            }
+            
+            $this->getD2EM()->flush();            
+            $this->addMessage( "Switch ports updated", OSS_Message::SUCCESS );
+            $this->redirect( "/switch-port/snmp-poll/switchid/{$switch->getId()}/edit/0" );
+        }
         
+        $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
+        $this->view->switch = $switch;
+        $this->view->portTypes = \Entities\SwitchPort::$TYPES;
+        $this->view->portsData = $this->_snmpPollSwitchPorts( $switch, $host, $isEdit );
+        $this->getD2EM()->flush();
+        
+    }
+    
+    /**
+     *
+     * @param \Entities\Switcher $sw
+     * @param \OSS_SNMP\SNMP $host
+     */
+    private function _snmpPollSwitchPorts( $sw, $host, $edit = true )
+    {
+        // we'll be matching data from OSS_SNMP to the switchport database table using the following:
+        $map = [
+            'descriptions'    => 'Name',
+            'names'           => 'IfName',
+            'aliases'         => 'IfAlias',
+            'highSpeeds'      => 'IfHighspeed',
+            'mtus'            => 'IfMtu',
+            'physAddresses'   => 'IfPhysAddress',
+            'adminStates'     => 'IfAdminStatus',
+            'operationStates' => 'IfOperStatus',
+            'lastChanges'     => 'IfLastChange'
+        ];
+
+        $existingPorts = clone $sw->getPorts();
+        $result = [];
+
+        try
+        {
+
+            // we traditionally stored ports in the database by their ifDesc so we need to key
+            // off that for backwards compatibility
+            $ports = $host->useIface()->descriptions();
+            
+            // iterate over all the ports discovered on the switch:
+            foreach( $ports as $index => $ifDesc )
+            {
+                // we're only interested in Ethernet ports here (right?)
+                if( $host->useIface()->types()[ $index ] != \OSS_SNMP\MIBS\Iface::IF_TYPE_ETHERNETCSMACD )
+                    continue;
+                
+                // find the matching switchport in the database (or create a new one)
+                $switchport = false;
+                
+                foreach( $existingPorts as $ix => $ep )
+                {
+                    if( $ep->getIfIndex() == $index )
+                    {
+                        $switchport = $ep;
+                        $result[] = [ "port" => $switchport, 'bullet' => false ];
+                        unset( $existingPorts[ $ix ] );
+                        break;
+                    }
+                }
+                
+                if( !$edit )
+                    continue;
+                
+                $new = false;
+                if( !$switchport )
+                {
+                    // no existing port in database so we have found a new port
+                    $this->getLogger()->debug(  "{$sw->getName()}: found a new port - {$ifDesc}" );
+                    $switchport = new \Entities\SwitchPort();
+
+                    $switchport->setSwitcher( $sw );
+                    $sw->addPort( $switchport );
+
+                    $switchport->setName( $ifDesc );
+                    $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
+                    $switchport->setIfIndex( $index );
+
+                    $this->getD2EM()->persist( $switchport );
+
+                    $result[] = [ "port" => $switchport, 'bullet' => "new" ];
+                    $new = true;
+                }
+
+                foreach( $map as $snmp => $entity )
+                {
+                    $fn = "get{$entity}";
+                    
+                    if( $snmp == 'lastChanges' )
+                        $n = $host->useIface()->$snmp( true )[ $index ];
+                    else
+                        $n = $host->useIface()->$snmp()[ $index ];
+
+                    if( $switchport->$fn() != $n )
+                    {
+                        if( $new )
+                        {
+                            if( $snmp == 'lastChanges' )
+                            {
+                                // need to allow for small changes due to rounding errors
+                                if( abs( $switchport->$fn() - $n ) > 60 )
+                                    $this->getLogger()->debug( "[{$sw->getName()}]:{$ifDesc} Updating {$entity} from [{$switchport->$fn()}] to [{$n}]" );
+                            }
+                            else
+                                 $this->getLogger()->debug( "[{$sw->getName()}]:{$ifDesc} Updating {$entity} from [{$switchport->$fn()}] to [{$n}]" ); 
+                        }
+                        
+                        $fn = "set{$entity}";
+                        $switchport->$fn( $n );
+                    }
+
+                    
+                }
+
+                $switchport->setLastSnmpPoll( new \DateTime() );
+            }
+        }
+        catch( \OSS_SNMP\Exception $e )
+        {
+            return [];
+        }
+        
+        if( count( $existingPorts ) )
+        {   
+            foreach( $existingPorts as $ep )
+                $result[] = [ "port" => $ep, 'bullet' => "db" ];
+        }
+        
+        return $result;
     }
     
 }
