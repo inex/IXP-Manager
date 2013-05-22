@@ -175,6 +175,7 @@ class SwitchCliController extends IXP_Controller_CliAction
                     $sw->addPort( $switchport );
 
                     $switchport->setName( $ifDesc );
+                    $switchport->setActive( true );
                     $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
                     $switchport->setIfIndex( $index );
 

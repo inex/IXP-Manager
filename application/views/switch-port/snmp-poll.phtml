@@ -15,23 +15,25 @@
 {OSS_Message}
 
 <form id="poll-actions" method="post">
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th></th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Alias</th>
+                <th>Active</th>
                 <th>Type</th>
                 <th></th>
             </tr>
         </thead>
         {foreach $portsData as $pd }
-            <tr>
+            <tr id="poll-tr-{$pd.port->getId()}">
                 <td><input type="checkbox" name="switch-port[{$pd.port->getId()}]" id="switch-port-{$pd.port->getId()}" value="{$pd.port->getId()}" /></td>
                 <td>{$pd.port->getIfName()}</td>
                 <td>{$pd.port->getName()}</td>
                 <td>{$pd.port->getIfAlias()}</td>
+                <td><i class="icon-{if $pd.port->getActive()}ok{else}remove{/if}"></i></td>
                 <td>
                     <select id="port-type-{$pd.port->getId()}" class="chzn-select" style="width: 150px;">
                         {foreach $portTypes as $idx => $name}
@@ -81,15 +83,19 @@ $( 'document' ).ready( function() {
             if( type == "inverse" )
             {
                 if( $( this ).attr( "checked" ) )
-                    $( this ).removeAttr( "checked" );    
+                    $( this ).removeAttr( "checked" ).trigger( "change" );    
                 else
-                    $( this ).attr( "checked", "checked" );
+                    $( this ).attr( "checked", "checked" ).trigger( "change" );
             }
             else if( type == "all" )
-                $( this ).attr( "checked", "checked" );
+                $( this ).attr( "checked", "checked" ).trigger( "change" );
             else if( type == "none" )
-                $( this ).removeAttr( "checked" );
+                $( this ).removeAttr( "checked" ).trigger( "change" );
         });
+    });
+    
+    $( "#shared-type" ).on( 'change', function( event ){
+        $( "#poll-group-type" ).trigger( 'click' );
     });
     
     $( "a[id|='poll-group']"  ).on( 'click', function( event ){
@@ -100,6 +106,31 @@ $( 'document' ).ready( function() {
         $( "#poll-actions" ).trigger( "submit" );
         
     });
+    
+    $( "tr[id|='poll-tr']"  ).on( 'click', function( event ){
+        
+        if( $( event.target ).prop("tagName") != "TD" )
+            return;
+        
+        var id = $( this ).attr( 'id' ).substr( $( this ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
+        
+        if( $( "#switch-port-" + id ).attr( "checked" ) )
+            $( "#switch-port-" + id ).removeAttr( "checked" ).trigger( "change" );    
+        else
+            $( "#switch-port-" + id ).attr( "checked", "checked" ).trigger( "change" );
+        
+    });
+    
+    $( "input[id|='switch-port']"  ).on( 'change', function( event ){
+        var id = $( this ).attr( 'id' ).substr( $( this ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
+        
+        if( $( this ).attr( "checked" ) )   
+            $( "#poll-tr-" + id ).css( "background-color", "#F0F0F0" );
+        else
+            $( "#poll-tr-" + id ).css( "background-color", "#FFFFFF" );
+    });
+    
+    
     
     $( "select[id|='port-type']"  ).on( 'change', function( event ){
         event.preventDefault();

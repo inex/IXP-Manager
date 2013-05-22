@@ -68,6 +68,12 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 'name'           => 'Description',
                 'ifName'         => 'Name',
                 'ifAlias'        => 'Alias',
+                'active'       => [
+                        'title'    => 'Active',
+                        'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'   => 'frontend/list-column-active.phtml',
+                        'colname'  => 'active'
+                ],
                 
                 'type'  => [
                     'title'    => 'Type',
@@ -94,7 +100,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'sp.id AS id, sp.name AS name, sp.type AS type, s.name AS switch,
                 sp.ifName AS ifName, sp.ifAlias AS ifAlias, sp.ifHighSpeed AS ifHighSpeed,
-                sp.ifMtu AS ifMtu, sp.ifPhysAddress AS ifPhysAddress,
+                sp.ifMtu AS ifMtu, sp.ifPhysAddress AS ifPhysAddress, sp.active AS active,
                 sp.ifAdminStatus AS ifAdminStatus, sp.ifOperStatus AS ifOperStatus,
                 sp.ifLastChange AS ifLastChange, sp.lastSnmpPoll AS lastSnmpPoll,
                 s.id AS switchid'
@@ -140,7 +146,13 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 'title'    => 'Operational State',
                 'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
                 'xlator'   => \OSS_SNMP\MIBS\Iface::$IF_ADMIN_STATES
-            ]
+            ],
+            'active'       => [
+                        'title'    => 'Active',
+                        'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'   => 'frontend/list-column-active.phtml',
+                        'colname'  => 'active'
+                ],
             
         ];
     
@@ -214,6 +226,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 $sp->setSwitcher( $switch );
                 $sp->setType( intval( $_POST[ 'np_type' . $i ] ) );
                 $sp->setName( trim( stripslashes( $_POST[ 'np_name' . $i ] ) ) );
+                $sp->setActive( true );
                 $this->getD2EM()->persist( $sp );
             }
 
@@ -338,12 +351,19 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                     $this->getD2EM()->remove( $port );
                 else if( $_POST['poll-action'] == "type" )
                     $port->setType( $_POST['shared-type'] );
+                else if( $_POST['poll-action'] == "active" )
+                    $port->setActive( true );
+                else if( $_POST['poll-action'] == "inactive" )
+                    $port->setActive( false );
                 
             }
             
+            if( $_POST['poll-action'] == "delete" )
+                $this->addMessage( "Only <em>DB Only</em> ports can be removed, because real ports will be appended automaticaly.", OSS_Message::INFO );        
+                
             $this->getD2EM()->flush();            
             $this->addMessage( "Switch ports updated", OSS_Message::SUCCESS );
-            $this->redirect( "/switch-port/snmp-poll/switchid/{$switch->getId()}/edit/0" );
+            $this->redirect( "/switch-port/snmp-poll/switchid/{$switch->getId()}" );
         }
         
         $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
@@ -421,6 +441,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                     $switchport->setName( $ifDesc );
                     $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
                     $switchport->setIfIndex( $index );
+                    $switchport->setActive( true );
 
                     $this->getD2EM()->persist( $switchport );
 
