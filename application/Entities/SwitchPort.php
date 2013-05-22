@@ -26,6 +26,19 @@ class SwitchPort
         self::TYPE_MANAGEMENT => 'Management'
     );
     
+    // This array is for matching data from OSS_SNMP to the switchport database table.
+    public static $OSS_SNMP_MAP = [
+            'descriptions'    => 'Name',
+            'names'           => 'IfName',
+            'aliases'         => 'IfAlias',
+            'highSpeeds'      => 'IfHighspeed',
+            'mtus'            => 'IfMtu',
+            'physAddresses'   => 'IfPhysAddress',
+            'adminStates'     => 'IfAdminStatus',
+            'operationStates' => 'IfOperStatus',
+            'lastChanges'     => 'IfLastChange'
+        ];
+    
     /**
      * @var integer $type
      */

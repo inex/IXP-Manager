@@ -148,11 +148,11 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 'xlator'   => \OSS_SNMP\MIBS\Iface::$IF_ADMIN_STATES
             ],
             'active'       => [
-                        'title'    => 'Active',
-                        'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
-                        'script'   => 'frontend/list-column-active.phtml',
-                        'colname'  => 'active'
-                ],
+                    'title'    => 'Active',
+                    'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                    'script'   => 'frontend/list-column-active.phtml',
+                    'colname'  => 'active'
+            ],
             
         ];
     
@@ -375,13 +375,15 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     }
     
     /**
-
+     * Sets port type for port loaded by id form url.
+     *
+     * If type is not sent by post and it is not valid function returns ko else
+     * it sets type to port flush changes and returns ko 
      */
     public function ajaxSetTypeAction()
     {
-        $port = $this->loadObject( $this->getParam( 'id', false ) );
-        sleep( 1 );        
-        if( isset( $_POST ) && isset( $_POST['type'] ) )
+        $port = $this->loadObject( $this->getParam( 'id', false ) );  
+        if( isset( $_POST ) && isset( $_POST['type'] ) && in_array( $_POST['type'], \Entities\SwitchPort::$TYPES ) )
         {
             $port->setType( $_POST['type'] );
             $this->getD2EM()->flush();
@@ -395,28 +397,16 @@ class SwitchPortController extends IXP_Controller_FrontEnd
      *
      * @param \Entities\Switcher $sw
      * @param \OSS_SNMP\SNMP $host
+     * @param $edit If this is false function will only check wich entries ar database only no altering data in data base
      */
     private function _snmpPollSwitchPorts( $sw, $host, $edit = true )
     {
-        // we'll be matching data from OSS_SNMP to the switchport database table using the following:
-        $map = [
-            'descriptions'    => 'Name',
-            'names'           => 'IfName',
-            'aliases'         => 'IfAlias',
-            'highSpeeds'      => 'IfHighspeed',
-            'mtus'            => 'IfMtu',
-            'physAddresses'   => 'IfPhysAddress',
-            'adminStates'     => 'IfAdminStatus',
-            'operationStates' => 'IfOperStatus',
-            'lastChanges'     => 'IfLastChange'
-        ];
 
         $existingPorts = clone $sw->getPorts();
         $result = [];
-
         try
         {
-
+        
             // we traditionally stored ports in the database by their ifDesc so we need to key
             // off that for backwards compatibility
             $ports = $host->useIface()->descriptions();
@@ -455,7 +445,6 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                     $switchport->setSwitcher( $sw );
                     $sw->addPort( $switchport );
 
-                    $switchport->setName( $ifDesc );
                     $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
                     $switchport->setIfIndex( $index );
                     $switchport->setActive( true );
@@ -466,7 +455,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                     $new = true;
                 }
 
-                foreach( $map as $snmp => $entity )
+                foreach( \Entities\SwitchPort::$OSS_SNMP_MAP as $snmp => $entity )
                 {
                     $fn = "get{$entity}";
                     

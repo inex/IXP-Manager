@@ -77,7 +77,12 @@ class SwitchController extends IXP_Controller_FrontEnd
                     'model'          => 'Model',
                     'ipv4addr'       => 'IPv4 Address',
                     'infrastructure' => 'Infrastructure',
-                    'active'         => 'Active'
+                    'active'       => [
+                            'title'    => 'Active',
+                            'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                            'script'   => 'frontend/list-column-active.phtml',
+                            'colname'  => 'active'
+                    ]
                 ];
     
                 // display the same information in the view as the list

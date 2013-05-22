@@ -122,18 +122,8 @@ class SwitchCliController extends IXP_Controller_CliAction
      */
     private function _snmpPollSwitchPorts( $sw, $host )
     {
-        // we'll be matching data from OSS_SNMP to the switchport database table using the following:
-        $map = [
-            'names'           => 'IfName',
-            'aliases'         => 'IfAlias',
-            'highSpeeds'      => 'IfHighspeed',
-            'mtus'            => 'IfMtu',
-            'physAddresses'   => 'IfPhysAddress',
-            'adminStates'     => 'IfAdminStatus',
-            'operationStates' => 'IfOperStatus',
-            'lastChanges'     => 'IfLastChange'
-        ];
-
+        $map = \Entities\SwitchPort::$OSS_SNMP_MAP;
+        unset( $map['descriptions'] );
         $existingPorts = $sw->getPorts();
 
         try
