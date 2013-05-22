@@ -35,11 +35,13 @@
                 <td>{$pd.port->getIfAlias()}</td>
                 <td><i class="icon-{if $pd.port->getActive()}ok{else}remove{/if}"></i></td>
                 <td>
+                    <div style="float: left;">
                     <select id="port-type-{$pd.port->getId()}" class="chzn-select" style="width: 150px;">
                         {foreach $portTypes as $idx => $name}
                             <option value="{$idx}" label="{$name}" {if $pd.port->getType() == $idx}selected="selected"{/if}>{$name}</option>
                         {/foreach}
-                    </select>
+                    </select></div>
+                    <div id="port-type-state-{$pd.port->getId()}" style="float: left; padding: 2px 0px 0px 5px; width: 20px;"></div>
                 </td>
                 <td>
                     {if $pd.bullet ==  "new"}
@@ -133,13 +135,38 @@ $( 'document' ).ready( function() {
     
     
     $( "select[id|='port-type']"  ).on( 'change', function( event ){
-        event.preventDefault();
-        var id = $( event.target ).attr( 'id' ).substr( $( event.target ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
         
-        $( "#poll-select-none" ).trigger( 'click' );
+        var id = $( event.target ).attr( 'id' ).substr( $( event.target ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
+        var throb =  tt_throbber( 20, 10, 1 );
+        
+        $( '#port-type-state-' + id ).html( "" );
+        throb.appendTo( $( '#port-type-state-' + id ).get(0) ).start()
+        
+        $.ajax({
+            url: "{genUrl controller='switch-port' action='ajax-set-type'}/id/" + id,
+            data: { type: $( this ).val() },
+            async: true,
+            cache: false,
+            type: 'POST',
+            timeout: 10000,
+            success: function( data ){
+                if( data == "ok" ) {
+                    $( '#port-type-state-' + id ).html( '<i class="icon-ok"></i>' );
+                } else {
+                    $( '#port-type-state-' + id ).html( '<i class="icon-remove"></i>' );
+                    ossAddMessage( data, 'error' );
+                }
+            },
+            error: ossAjaxErrorHandler,
+            complete: function(){
+
+            }
+        });
+        
+        /*$( "#poll-select-none" ).trigger( 'click' );
         $( "#switch-port-" + id ).attr( "checked", "checked" );
         $( "#shared-type" ).val( $( event.target ).val() );
-        $( "#poll-group-type" ).trigger( 'click' );
+        $( "#poll-group-type" ).trigger( 'click' );*/
         
     });
 });

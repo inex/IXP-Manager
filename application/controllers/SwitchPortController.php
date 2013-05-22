@@ -359,7 +359,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             }
             
             if( $_POST['poll-action'] == "delete" )
-                $this->addMessage( "Only <em>DB Only</em> ports can be removed, because real ports will be appended automaticaly.", OSS_Message::INFO );        
+                $this->addMessage( "Only <strong><em>DB Only</em></strong> ports can be removed, because real ports will be appended automaticaly.", OSS_Message::INFO );        
                 
             $this->getD2EM()->flush();            
             $this->addMessage( "Switch ports updated", OSS_Message::SUCCESS );
@@ -372,6 +372,23 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         $this->view->portsData = $this->_snmpPollSwitchPorts( $switch, $host, $isEdit );
         $this->getD2EM()->flush();
         
+    }
+    
+    /**
+
+     */
+    public function ajaxSetTypeAction()
+    {
+        $port = $this->loadObject( $this->getParam( 'id', false ) );
+        sleep( 1 );        
+        if( isset( $_POST ) && isset( $_POST['type'] ) )
+        {
+            $port->setType( $_POST['type'] );
+            $this->getD2EM()->flush();
+            echo "ok";           
+        }
+        else
+            echo "ko";
     }
     
     /**
