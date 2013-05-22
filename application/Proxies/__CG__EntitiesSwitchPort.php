@@ -237,10 +237,22 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::getIfIndex();
     }
 
+    public function setActive($active)
+    {
+        $this->__load();
+        return parent::setActive($active);
+    }
+
+    public function getActive()
+    {
+        $this->__load();
+        return parent::getActive();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'type', 'name', 'ifIndex', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'id', 'PhysicalInterface', 'SecEvents', 'Switcher');
+        return array('__isInitialized__', 'type', 'name', 'ifIndex', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'active', 'id', 'PhysicalInterface', 'SecEvents', 'Switcher');
     }
 
     public function __clone()
@@ -252,7 +264,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields as $field => $reflProperty) {
+            foreach ($class->reflFields AS $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);
