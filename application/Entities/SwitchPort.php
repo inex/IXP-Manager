@@ -51,6 +51,66 @@ class SwitchPort
      */
     private $Switcher;
 
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    private $SecEvents;
+
+    /**
+     * @var string
+     */
+    private $ifName;
+
+    /**
+     * @var string
+     */
+    private $ifAlias;
+
+    /**
+     * @var integer
+     */
+    private $ifHighSpeed;
+
+    /**
+     * @var integer
+     */
+    private $ifMtu;
+
+    /**
+     * @var string
+     */
+    private $ifPhysAddress;
+
+    /**
+     * @var integer
+     */
+    private $ifAdminStatus;
+
+    /**
+     * @var integer
+     */
+    private $ifOperStatus;
+
+    /**
+     * @var integer
+     */
+    private $ifLastChange;
+
+    /**
+     * @var \DateTime
+     */
+    private $lastSnmpPoll;
+
+    /**
+     * @var integer
+     */
+    private $ifIndex;
+
+
+    /**
+     * @var boolean $active
+     */
+    private $active;
 
     /**
      * Set type
@@ -153,10 +213,6 @@ class SwitchPort
     {
         return $this->Switcher;
     }
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    private $SecEvents;
 
     /**
      * Constructor
@@ -198,51 +254,6 @@ class SwitchPort
     {
         return $this->SecEvents;
     }
-    /**
-     * @var string
-     */
-    private $ifName;
-
-    /**
-     * @var string
-     */
-    private $ifAlias;
-
-    /**
-     * @var integer
-     */
-    private $ifHighSpeed;
-
-    /**
-     * @var integer
-     */
-    private $ifMtu;
-
-    /**
-     * @var string
-     */
-    private $ifPhysAddress;
-
-    /**
-     * @var integer
-     */
-    private $ifAdminStatus;
-
-    /**
-     * @var integer
-     */
-    private $ifOperStatus;
-
-    /**
-     * @var integer
-     */
-    private $ifLastChange;
-
-    /**
-     * @var \DateTime
-     */
-    private $lastSnmpPoll;
-
 
     /**
      * Set ifName
@@ -450,10 +461,6 @@ class SwitchPort
     {
         return $this->lastSnmpPoll;
     }
-    /**
-     * @var integer
-     */
-    private $ifIndex;
 
 
     /**
@@ -477,5 +484,27 @@ class SwitchPort
     public function getIfIndex()
     {
         return $this->ifIndex;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     * @return SwitchPort
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean 
+     */
+    public function getActive()
+    {
+        return $this->active;
     }
 }
