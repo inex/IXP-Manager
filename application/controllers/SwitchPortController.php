@@ -382,15 +382,15 @@ class SwitchPortController extends IXP_Controller_FrontEnd
      */
     public function ajaxSetTypeAction()
     {
-        $port = $this->loadObject( $this->getParam( 'id', false ) );  
-        if( isset( $_POST ) && isset( $_POST['type'] ) && in_array( $_POST['type'], \Entities\SwitchPort::$TYPES ) )
+        $port = $this->loadObject( $this->getParam( 'id', false ), false ); 
+        if( $port && isset( $_POST ) && isset( $_POST['type'] ) && array_key_exists( $_POST['type'], \Entities\SwitchPort::$TYPES ) )
         {
             $port->setType( $_POST['type'] );
             $this->getD2EM()->flush();
             echo "ok";           
         }
         else
-            echo "ko";
+            echo "Cannot set selected type.";
     }
     
     /**
