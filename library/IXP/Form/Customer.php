@@ -357,12 +357,11 @@ class IXP_Form_Customer extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $companyNumber );
 
-        $jurisdiction = $this->createElement( 'text', 'jurisdiction' );
+        $jurisdiction = new OSS_Form_Element_DatabaseDropdown( 'jurisdiction', [ 'dql' => 'select crd.jurisdiction from \\Entities\\CompanyRegisteredDetail crd WHERE crd.jurisdiction IS NOT NULL' ] );
         $jurisdiction->addValidator( 'stringLength', false, array( 0, 64 ) )
-            ->setRequired( false )
+            ->setRequired( true )
             ->setLabel( 'Jurisdiction' )
             ->addFilter( 'StringTrim' )
-            ->setAttrib( 'class', 'span6' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $jurisdiction );
 
