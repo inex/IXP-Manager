@@ -53,7 +53,7 @@ Then update schema:
 
 Run script:
 
-    bin/migrate-scripts/billing-details.php
+    bin/migration-scripts/billing-details.php
 
 Checkout commit with refernce:
 
