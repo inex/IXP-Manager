@@ -2,7 +2,7 @@
 
 Schema update required:
 
-    ALTER TABLE switchport ADD active TINYINT(1) NOT NULL
+    ALTER TABLE switchport ADD active TINYINT(1) NOT NULL DEFAULT 1
 
 
 # V3.0.12
