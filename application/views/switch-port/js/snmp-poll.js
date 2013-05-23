@@ -64,6 +64,7 @@ $( 'document' ).ready( function() {
         $( '#port-type-state-' + id ).html( "" );
         throb.appendTo( $( '#port-type-state-' + id ).get(0) ).start()
         
+        var success = false;
         $.ajax({
             url: "{genUrl controller='switch-port' action='ajax-set-type'}/id/" + id,
             data: { type: $( this ).val() },
@@ -73,15 +74,18 @@ $( 'document' ).ready( function() {
             timeout: 10000,
             success: function( data ){
                 if( data == "ok" ) {
-                    $( '#port-type-state-' + id ).html( '<i class="icon-ok"></i>' );
+                    success = true;
                 } else {
-                    $( '#port-type-state-' + id ).html( '<i class="icon-remove"></i>' );
                     ossAddMessage( data, 'error' );
                 }
             },
             error: ossAjaxErrorHandler,
             complete: function(){
-
+                if( success ) {
+                    $( '#port-type-state-' + id ).html( '<i class="icon-ok"></i>' );
+                } else {
+                    $( '#port-type-state-' + id ).html( '<i class="icon-remove"></i>' );
+                }
             }
         });
      
