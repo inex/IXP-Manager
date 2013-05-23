@@ -359,7 +359,7 @@ class IXP_Form_Customer extends IXP_Form
 
         $jurisdiction = new OSS_Form_Element_DatabaseDropdown( 'jurisdiction', [ 'dql' => 'select crd.jurisdiction from \\Entities\\CompanyRegisteredDetail crd WHERE crd.jurisdiction IS NOT NULL' ] );
         $jurisdiction->addValidator( 'stringLength', false, array( 0, 64 ) )
-            ->setRequired( true )
+            ->setRequired( false )
             ->setLabel( 'Jurisdiction' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
