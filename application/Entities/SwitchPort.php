@@ -27,6 +27,7 @@ class SwitchPort
     );
     
     // This array is for matching data from OSS_SNMP to the switchport database table.
+    // See snmpUpdate() below
     public static $OSS_SNMP_MAP = [
             'descriptions'    => 'Name',
             'names'           => 'IfName',
@@ -284,7 +285,7 @@ class SwitchPort
     /**
      * Get ifName
      *
-     * @return string 
+     * @return string
      */
     public function getIfName()
     {
@@ -307,7 +308,7 @@ class SwitchPort
     /**
      * Get ifAlias
      *
-     * @return string 
+     * @return string
      */
     public function getIfAlias()
     {
@@ -330,7 +331,7 @@ class SwitchPort
     /**
      * Get ifHighSpeed
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfHighSpeed()
     {
@@ -353,7 +354,7 @@ class SwitchPort
     /**
      * Get ifMtu
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfMtu()
     {
@@ -376,7 +377,7 @@ class SwitchPort
     /**
      * Get ifPhysAddress
      *
-     * @return string 
+     * @return string
      */
     public function getIfPhysAddress()
     {
@@ -399,7 +400,7 @@ class SwitchPort
     /**
      * Get ifAdminStatus
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfAdminStatus()
     {
@@ -422,7 +423,7 @@ class SwitchPort
     /**
      * Get ifOperStatus
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfOperStatus()
     {
@@ -445,7 +446,7 @@ class SwitchPort
     /**
      * Get ifLastChange
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfLastChange()
     {
@@ -468,7 +469,7 @@ class SwitchPort
     /**
      * Get lastSnmpPoll
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastSnmpPoll()
     {
@@ -492,7 +493,7 @@ class SwitchPort
     /**
      * Get ifIndex
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfIndex()
     {
@@ -514,10 +515,57 @@ class SwitchPort
     /**
      * Get active
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getActive()
     {
         return $this->active;
+    }
+    
+
+    /**
+     * Update switch port details from a SNMP poll of the device.
+     *
+     * Pass an instance of OSS_Logger if you want logging enabled.
+     *
+     * @link https://github.com/opensolutions/OSS_SNMP
+     *
+     * @throws \OSS_SNMP\Exception
+     *
+     * @param \OSS_SNMP\SNMP $host An instance of the SNMP host object
+     * @param \OSS_Logger $logger An instance of the logger or false
+     * @return \Entities\SwitchPort For fluent interfaces
+     */
+    public function snmpUpdate( $host, $logger = false )
+    {
+        foreach( self::$OSS_SNMP_MAP as $snmp => $entity )
+        {
+            $fn = "get{$entity}";
+            
+            switch( $snmp )
+            {
+                case 'lastChanges':
+                    $n = $host->useIface()->$snmp( true )[ $this->getIfIndex() ];
+                    
+                    // need to allow for small changes due to rounding errors
+                    if( $logger && $this->$fn() != $n && abs( $this->$fn() - $n ) > 60 )
+                        $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
+                    break;
+                    
+                default:
+                    $n = $host->useIface()->$snmp()[ $this->getIfIndex() ];
+                    
+                    if( $logger && $this->$fn() != $n )
+                        $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
+                    break;
+            }
+        
+            $fn = "set{$entity}";
+            $this->$fn( $n );
+        }
+        
+        $this->setLastSnmpPoll( new \DateTime() );
+        
+        return $this;
     }
 }

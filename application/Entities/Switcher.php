@@ -604,4 +604,96 @@ class Switcher
     {
         return $this->lastPolled;
     }
+    
+    
+    
+    
+    /**
+     * Update a switches ports using SNMP polling
+     *
+     * There is an optional ``$results`` array which can be passed by reference. If
+     * so, it will be indexed by the SNMP port index (or a decresing nagative index
+     * beginning -1 if the port only exists in the database). The contents of this
+     * associative array is:
+     *
+     *     "port"   => \Entities\SwitchPort object
+     *     "bullet" =>
+     *         - false for existing ports
+     *         - "new" for newly found ports
+     *         - "db" for ports that exist in the database only
+     *
+     * **Note:** It is assumed that the Doctrine2 Entity Manager is available in the
+     * Zend registry as ``d2em`` in this function.
+     *
+     * @throws \OSS_SNMP\Exception
+     *
+     * @param \OSS_SNMP\SNMP $host An instance of \OSS_SNMP\SNMP for this switch
+     * @param \OSS_Logger $logger An instance of the logger or false
+     * @param array Call by reference to an array in which to store results as outlined above
+     */
+    public function snmpPollSwitchPorts( $host, $logger = false, &$result = false )
+    {
+        // clone the ports currently known to this switch as we'll be playing with this array
+        $existingPorts = clone $this->getPorts();
+
+        // iterate over all the ports discovered on the switch:
+        foreach( $host->useIface()->indexes() as $index )
+        {
+            // we're only interested in Ethernet ports here (right?)
+            if( $host->useIface()->types()[ $index ] != \OSS_SNMP\MIBS\Iface::IF_TYPE_ETHERNETCSMACD )
+                continue;
+
+            // find the matching switchport that may already be in the database (or create a new one)
+            $switchport = false;
+            
+            foreach( $existingPorts as $ix => $ep )
+            {
+                if( $ep->getIfIndex() == $index )
+                {
+                    $switchport = $ep;
+                    if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => false ];
+                    
+                    // remove this from the array so later we'll know what ports exist only in the database
+                    unset( $existingPorts[ $ix ] );
+                    break;
+                }
+            }
+
+            $new = false;
+            if( !$switchport )
+            {
+                // no existing port in database so we have found a new port
+                $switchport = new \Entities\SwitchPort();
+
+                $switchport->setSwitcher( $this );
+                $this->addPort( $switchport );
+
+                $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
+                $switchport->setIfIndex( $index );
+                $switchport->setActive( true );
+
+                \Zend_Registry::get( 'd2em' )['default']->persist( $switchport );
+
+                if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => "new" ];
+                $new = true;
+                
+                if( $logger ) { $logger->info( "Found new port for {$this->getName()} with index $index" ); };
+            }
+
+            // update / set port details from SNMP
+            $switchport->snmpUpdate( $host, $logger );
+        }
+    
+        if( count( $existingPorts ) )
+        {
+            $i = -1;
+            foreach( $existingPorts as $ep )
+            {
+                if( is_array( $result ) ) $result[ $i-- ] = [ "port" => $ep, 'bullet' => "db" ];
+            }
+        }
+    
+        return $this;
+    }
+    
 }
