@@ -131,8 +131,11 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         {
             try // to refresh switch and switch port details via SNMP
             {
+                if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+                    throw new \OSS_SNMP\Exception();
+                
                 $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
-                $switch->snmpPollSwitchPorts( $host, $this->getLogger() );
+                $switch->snmpPoll( $host, $this->getLogger() );
                 if( $switch->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
                     $switch->snmpPollSwitchPorts( $host, $this->getLogger() );
                 $this->getD2EM()->flush();
@@ -379,6 +382,12 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         else
             $this->view->sid = $switch->getId();
         
+        if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+        {
+            $this->addMessage( 'SNMP Polling of ports is only valid for switches (e.g. not console servers) that are active', OSS_Message::ERROR );
+            $this->redirect( 'switch/list' );
+        }
+        
         if( isset( $_POST ) && isset( $_POST['poll-action'] ) )
         {
             foreach( $_POST['switch-port'] as $id )
@@ -430,14 +439,16 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 
             $this->getD2EM()->flush();
             $this->addMessage( "Switch ports updated", OSS_Message::SUCCESS );
-            $this->redirect( "switch-port/snmp-poll/switchid/{$switch->getId()}" );
+            $this->redirect( "switch-port/snmp-poll/switch/{$switch->getId()}" );
         }
         
         $results = [];
         
         try
         {
-            $switch->snmpPollSwitchPorts( new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() ), $this->getLogger(), $results );
+            $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
+            $switch->snmpPoll( $host, $this->getLogger() );
+            $switch->snmpPollSwitchPorts( $host, $this->getLogger(), $results );
             $this->view->switch    = $switch;
             $this->view->portTypes = \Entities\SwitchPort::$TYPES;
             $this->view->portsData = $results;
@@ -466,6 +477,33 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             $this->getD2EM()->flush();
             echo "ok";
         }
+    }
+    
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( $object->getPhysicalInterface() )
+        {
+            $c = $object->getPhysicalInterface()->getVirtualInterface()->getCustomer();
+            
+            $this->addMessage(
+                "Could not delete switch port {$object->getName()} as it is assigned to a physical interface for <a href=\""
+                    . OSS_Utils::genUrl( 'customer', 'overview', false, [ 'tab' => 'ports', 'id' => $c->getId() ] )
+                    . "\">{$c->getName()}</a>.",
+                OSS_Message::ERROR
+            );
+            return false;
+        }
+        
+        return true;
     }
     
 }
