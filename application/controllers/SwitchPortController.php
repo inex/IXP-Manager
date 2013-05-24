@@ -235,6 +235,18 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         
     public function addAction()
     {
+        $this->addMessage(
+            "<h4>Use of this method is discouraged!</h4>
+                
+                Switch ports are best added using the
+                <a href=\"https://github.com/inex/IXP-Manager/wiki/Updating-Switches-and-Ports-via-SNMP\">CLI scripts</a>
+                or the <em>View / Edit Ports (with SNMP poll)</em> option from the <a href=\""
+                . OSS_Utils::genUrl( 'switch', 'list' ) . "\">switch list page</a>. See <a href=\""
+                . "https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management\">the documentation
+                for more information</a>.",
+            OSS_Message::INFO, OSS_Message::TYPE_BLOCK
+        );
+        
         $this->view->form = $form = new IXP_Form_Switch_AddPorts();
     
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
