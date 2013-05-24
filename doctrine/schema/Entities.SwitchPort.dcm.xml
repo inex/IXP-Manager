@@ -6,6 +6,7 @@
     </id>
     <field name="type" type="integer" nullable="true"/>
     <field name="name" type="string" nullable="true"/>
+    <field name="active" type="boolean" nullable="false"/>
     <field name="ifIndex" type="integer" nullable="true"/>
     <field name="ifName" type="string" nullable="true"/>
     <field name="ifAlias" type="string" nullable="true"/>
@@ -16,7 +17,6 @@
     <field name="ifOperStatus" type="integer" nullable="true"/>
     <field name="ifLastChange" type="integer" nullable="true"/>
     <field name="lastSnmpPoll" type="datetime" nullable="true"/>
-    <field name="active" type="boolean" nullable="false"/>
     <many-to-one field="Switcher" target-entity="Entities\Switcher" inversed-by="Ports">
       <join-columns>
         <join-column name="switchid" referenced-column-name="id"/>
