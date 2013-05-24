@@ -26,6 +26,20 @@ class SwitchPort
         self::TYPE_MANAGEMENT => 'Management'
     );
     
+    // This array is for matching data from OSS_SNMP to the switchport database table.
+    // See snmpUpdate() below
+    public static $OSS_SNMP_MAP = [
+            'descriptions'    => 'Name',
+            'names'           => 'IfName',
+            'aliases'         => 'IfAlias',
+            'highSpeeds'      => 'IfHighspeed',
+            'mtus'            => 'IfMtu',
+            'physAddresses'   => 'IfPhysAddress',
+            'adminStates'     => 'IfAdminStatus',
+            'operationStates' => 'IfOperStatus',
+            'lastChanges'     => 'IfLastChange'
+        ];
+    
     /**
      * @var integer $type
      */
@@ -51,6 +65,66 @@ class SwitchPort
      */
     private $Switcher;
 
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    private $SecEvents;
+
+    /**
+     * @var string
+     */
+    private $ifName;
+
+    /**
+     * @var string
+     */
+    private $ifAlias;
+
+    /**
+     * @var integer
+     */
+    private $ifHighSpeed;
+
+    /**
+     * @var integer
+     */
+    private $ifMtu;
+
+    /**
+     * @var string
+     */
+    private $ifPhysAddress;
+
+    /**
+     * @var integer
+     */
+    private $ifAdminStatus;
+
+    /**
+     * @var integer
+     */
+    private $ifOperStatus;
+
+    /**
+     * @var integer
+     */
+    private $ifLastChange;
+
+    /**
+     * @var \DateTime
+     */
+    private $lastSnmpPoll;
+
+    /**
+     * @var integer
+     */
+    private $ifIndex;
+
+
+    /**
+     * @var boolean $active
+     */
+    private $active;
 
     /**
      * Set type
@@ -153,10 +227,6 @@ class SwitchPort
     {
         return $this->Switcher;
     }
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    private $SecEvents;
 
     /**
      * Constructor
@@ -198,51 +268,6 @@ class SwitchPort
     {
         return $this->SecEvents;
     }
-    /**
-     * @var string
-     */
-    private $ifName;
-
-    /**
-     * @var string
-     */
-    private $ifAlias;
-
-    /**
-     * @var integer
-     */
-    private $ifHighSpeed;
-
-    /**
-     * @var integer
-     */
-    private $ifMtu;
-
-    /**
-     * @var string
-     */
-    private $ifPhysAddress;
-
-    /**
-     * @var integer
-     */
-    private $ifAdminStatus;
-
-    /**
-     * @var integer
-     */
-    private $ifOperStatus;
-
-    /**
-     * @var integer
-     */
-    private $ifLastChange;
-
-    /**
-     * @var \DateTime
-     */
-    private $lastSnmpPoll;
-
 
     /**
      * Set ifName
@@ -260,7 +285,7 @@ class SwitchPort
     /**
      * Get ifName
      *
-     * @return string 
+     * @return string
      */
     public function getIfName()
     {
@@ -283,7 +308,7 @@ class SwitchPort
     /**
      * Get ifAlias
      *
-     * @return string 
+     * @return string
      */
     public function getIfAlias()
     {
@@ -306,7 +331,7 @@ class SwitchPort
     /**
      * Get ifHighSpeed
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfHighSpeed()
     {
@@ -329,7 +354,7 @@ class SwitchPort
     /**
      * Get ifMtu
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfMtu()
     {
@@ -352,7 +377,7 @@ class SwitchPort
     /**
      * Get ifPhysAddress
      *
-     * @return string 
+     * @return string
      */
     public function getIfPhysAddress()
     {
@@ -375,7 +400,7 @@ class SwitchPort
     /**
      * Get ifAdminStatus
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfAdminStatus()
     {
@@ -398,7 +423,7 @@ class SwitchPort
     /**
      * Get ifOperStatus
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfOperStatus()
     {
@@ -421,7 +446,7 @@ class SwitchPort
     /**
      * Get ifLastChange
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfLastChange()
     {
@@ -444,16 +469,12 @@ class SwitchPort
     /**
      * Get lastSnmpPoll
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastSnmpPoll()
     {
         return $this->lastSnmpPoll;
     }
-    /**
-     * @var integer
-     */
-    private $ifIndex;
 
 
     /**
@@ -472,10 +493,79 @@ class SwitchPort
     /**
      * Get ifIndex
      *
-     * @return integer 
+     * @return integer
      */
     public function getIfIndex()
     {
         return $this->ifIndex;
+    }
+
+    /**
+     * Set active
+     *
+     * @param boolean $active
+     * @return SwitchPort
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+    
+
+    /**
+     * Update switch port details from a SNMP poll of the device.
+     *
+     * Pass an instance of OSS_Logger if you want logging enabled.
+     *
+     * @link https://github.com/opensolutions/OSS_SNMP
+     *
+     * @throws \OSS_SNMP\Exception
+     *
+     * @param \OSS_SNMP\SNMP $host An instance of the SNMP host object
+     * @param \OSS_Logger $logger An instance of the logger or false
+     * @return \Entities\SwitchPort For fluent interfaces
+     */
+    public function snmpUpdate( $host, $logger = false )
+    {
+        foreach( self::$OSS_SNMP_MAP as $snmp => $entity )
+        {
+            $fn = "get{$entity}";
+            
+            switch( $snmp )
+            {
+                case 'lastChanges':
+                    $n = $host->useIface()->$snmp( true )[ $this->getIfIndex() ];
+                    
+                    // need to allow for small changes due to rounding errors
+                    if( $logger && $this->$fn() != $n && abs( $this->$fn() - $n ) > 60 )
+                        $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
+                    break;
+                    
+                default:
+                    $n = $host->useIface()->$snmp()[ $this->getIfIndex() ];
+                    
+                    if( $logger && $this->$fn() != $n )
+                        $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
+                    break;
+            }
+        
+            $fn = "set{$entity}";
+            $this->$fn( $n );
+        }
+        
+        $this->setLastSnmpPoll( new \DateTime() );
+        
+        return $this;
     }
 }

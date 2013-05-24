@@ -51,6 +51,13 @@ class IXP_Form_Switch_Port extends IXP_Form
             ->setErrorMessages( array( 'Please set the port type' ) );
         $this->addElement( $type );
 
+        $active = $this->createElement( 'checkbox', 'active' );
+        $active->setLabel( 'Active' )
+            ->setValue( '1' )
+            ->addValidator( 'InArray', false, [ [ 0, 1 ] ] )
+            ->addFilter( 'Int' );
+        $this->addElement( $active );
+
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }

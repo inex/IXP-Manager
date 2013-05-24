@@ -68,6 +68,12 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 'name'           => 'Description',
                 'ifName'         => 'Name',
                 'ifAlias'        => 'Alias',
+                'active'       => [
+                        'title'    => 'Active',
+                        'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'   => 'frontend/list-column-active.phtml',
+                        'colname'  => 'active'
+                ],
                 
                 'type'  => [
                     'title'    => 'Type',
@@ -94,7 +100,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'sp.id AS id, sp.name AS name, sp.type AS type, s.name AS switch,
                 sp.ifName AS ifName, sp.ifAlias AS ifAlias, sp.ifHighSpeed AS ifHighSpeed,
-                sp.ifMtu AS ifMtu, sp.ifPhysAddress AS ifPhysAddress,
+                sp.ifMtu AS ifMtu, sp.ifPhysAddress AS ifPhysAddress, sp.active AS active,
                 sp.ifAdminStatus AS ifAdminStatus, sp.ifOperStatus AS ifOperStatus,
                 sp.ifLastChange AS ifLastChange, sp.lastSnmpPoll AS lastSnmpPoll,
                 s.id AS switchid'
@@ -121,6 +127,24 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     
     public function opStatusAction()
     {
+        if( $this->getParam( 'switch' ) && ( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switch' ) ) ) )
+        {
+            try // to refresh switch and switch port details via SNMP
+            {
+                $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
+                $switch->snmpPollSwitchPorts( $host, $this->getLogger() );
+                if( $switch->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
+                    $switch->snmpPollSwitchPorts( $host, $this->getLogger() );
+                $this->getD2EM()->flush();
+                $this->addMessage( "The below is <strong>live information</strong> gathered via SNMP", OSS_Message::INFO );
+            }
+            catch( \OSS_SNMP\Exception $e )
+            {
+                $this->addMessage( "<strong>Stale data gathered on " . $switch->getLastPolled()->format( 'Y-m-d H:i:s' ) . "</strong>. "
+                        . "Could not update switch and switch port details via SNMP poll.", OSS_Message::ALERT );
+            }
+        }
+        
         $this->_feParams->listColumns = [
             'id'            => [ 'title' => 'UID', 'display' => false ],
             'name'          => 'Description',
@@ -128,22 +152,32 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             'ifAlias'       => 'Alias',
             'ifHighSpeed'   => 'Speed',
             'ifMtu'         => 'MTU',
-            'ifPhysAddress' => 'Physical Address',
+            // 'ifPhysAddress' => 'Physical Address',
             
             'ifAdminStatus' => [
                 'title'    => 'Admin State',
-                'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
-                'xlator'   => \OSS_SNMP\MIBS\Iface::$IF_ADMIN_STATES
+                'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                'script'   => 'switch-port/list-column-port-status.phtml',
+                'colname'  => 'ifAdminStatus'
             ],
             
             'ifOperStatus' => [
                 'title'    => 'Operational State',
-                'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
-                'xlator'   => \OSS_SNMP\MIBS\Iface::$IF_ADMIN_STATES
-            ]
+                'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                'script'   => 'switch-port/list-column-port-status.phtml',
+                'colname'  => 'ifOperStatus'
+            ],
+            'active'       => [
+                    'title'    => 'Active',
+                    'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                    'script'   => 'frontend/list-column-active.phtml',
+                    'colname'  => 'active'
+            ],
             
         ];
     
+        $this->view->portStates = \OSS_SNMP\MIBS\Iface::$IF_OPER_STATES;
+        
         return $this->listAction();
     }
     
@@ -201,6 +235,18 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         
     public function addAction()
     {
+        $this->addMessage(
+            "<h4>Use of this method is discouraged!</h4>
+                
+                Switch ports are best added using the
+                <a href=\"https://github.com/inex/IXP-Manager/wiki/Updating-Switches-and-Ports-via-SNMP\">CLI scripts</a>
+                or the <em>View / Edit Ports (with SNMP poll)</em> option from the <a href=\""
+                . OSS_Utils::genUrl( 'switch', 'list' ) . "\">switch list page</a>. See <a href=\""
+                . "https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management\">the documentation
+                for more information</a>.",
+            OSS_Message::INFO, OSS_Message::TYPE_BLOCK
+        );
+        
         $this->view->form = $form = new IXP_Form_Switch_AddPorts();
     
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
@@ -214,6 +260,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 $sp->setSwitcher( $switch );
                 $sp->setType( intval( $_POST[ 'np_type' . $i ] ) );
                 $sp->setName( trim( stripslashes( $_POST[ 'np_name' . $i ] ) ) );
+                $sp->setActive( true );
                 $this->getD2EM()->persist( $sp );
             }
 
@@ -306,6 +353,120 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         die(); //FIXME I shouldn't have to die() here...
     }
     
+    
+    
+    /**
+     * This action will find all ports on a switch, match them (where possible) to existing
+     * ports of that switch in the database and allow the user to:
+     *
+     *  - view name (ifDescr), ifName and ifAlias
+     *  - set the switchport type in bulk
+     *  - remove port(s)
+     *  - manage these actions in bulk (e.g. phpMyAdmin type row management)
+     *
+     *  Should this be in the SwitchController? Possibly...
+     *
+     */
+    public function snmpPollAction()
+    {
+        $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
+        
+        if( $this->getParam( 'switch' ) == null || !( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switch' ) ) ) )
+        {
+            $this->addMessage( 'Unknown switch', OSS_Message::ERROR );
+            $this->redirect( 'switch/list' );
+        }
+        else
+            $this->view->sid = $switch->getId();
+        
+        if( isset( $_POST ) && isset( $_POST['poll-action'] ) )
+        {
+            foreach( $_POST['switch-port'] as $id )
+            {
+                if( ( $port = $this->getD2R( "\\Entities\\SwitchPort" )->find( $id ) ) )
+                {
+                    switch( $_POST['poll-action'] )
+                    {
+                        case 'delete':
+                            if( $port->getPhysicalInterface() )
+                            {
+                                $cust = $port->getPhysicalInterface()->getVirtualInterface()->getCustomer();
+                                $this->addMessage(
+                                    "Could not delete switch port {$port->getName()} as it is assigned to a physical interface for <a href=\""
+                                        . OSS_Utils::genUrl( 'customer', 'overview', false, [ 'tab' => 'ports', 'id' => $cust->getId() ] )
+                                        . "\">{$cust->getName()}</a>."
+                                );
+                            }
+                            else
+                                $this->getD2EM()->remove( $port );
+                            break;
+                            
+                        case 'type':
+                            $port->setType( $_POST['shared-type'] );
+                            break;
+                            
+                        case 'active':
+                            $port->setActive( true );
+                            break;
+                            
+                        case 'inactive':
+                            $port->setActive( false );
+                            break;
+                    }
+                }
+            }
+            
+            // helpful message for people trying to delete ports:
+            if( $_POST['poll-action'] == "delete" )
+            {
+                $this->addMessage(
+                    "<strong>Please Note:</strong> It is not possible to delete real physical Ethernet switch ports as "
+                        . "the switch is re-polled and these ports are added back into the system as new ports automatically. "
+                        . "The purpose of delete is to remove ports that were manually added to the database that do not match "
+                        . "up with phsyical ports on the switch. You can deactivate switchports however.",
+                    OSS_Message::INFO
+                );
+            }
+                
+            $this->getD2EM()->flush();
+            $this->addMessage( "Switch ports updated", OSS_Message::SUCCESS );
+            $this->redirect( "switch-port/snmp-poll/switchid/{$switch->getId()}" );
+        }
+        
+        $results = [];
+        
+        try
+        {
+            $switch->snmpPollSwitchPorts( new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() ), $this->getLogger(), $results );
+            $this->view->switch    = $switch;
+            $this->view->portTypes = \Entities\SwitchPort::$TYPES;
+            $this->view->portsData = $results;
+            $this->getD2EM()->flush();
+        }
+        catch( \OSS_SNMP\Exception $e )
+        {
+            $this->addMessage( 'Error polling switch via SNMP.', OSS_Message::ERROR );
+            $this->redirect( 'switch/list' );
+        }
+    }
+    
+    /**
+     * Sets port type for port loaded by id form url.
+     *
+     * If type is not sent by post and it is not valid function returns ko else
+     * it sets type to port flush changes and returns ko
+     */
+    public function ajaxSetTypeAction()
+    {
+        $port = $this->loadObject( $this->getParam( 'id', false ), false );
+        
+        if( $port && isset( $_POST['type'] ) && array_key_exists( $_POST['type'], \Entities\SwitchPort::$TYPES ) )
+        {
+            $port->setType( $_POST['type'] );
+            $this->getD2EM()->flush();
+            echo "ok";
+        }
+    }
     
 }
 

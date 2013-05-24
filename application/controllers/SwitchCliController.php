@@ -43,200 +43,73 @@ class SwitchCliController extends IXP_Controller_CliAction
      */
     public function snmpPollAction()
     {
+        $sws = [];
+        
         // have we been given a specific switch?
         if( $this->getParam( 'switch', false ) )
         {
-            if( $sw = $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'name' => $this->getParam( 'switch' ) ] ) )
-                $this->_snmpPoll( $sw );
+            if( ( $sw = $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'name' => $this->getParam( 'switch' ) ] ) ) )
+                $sws[] = $sw;
             else
+            {
                 echo "ERR: No switch found with name " . $this->getParam( 'switch' ) . "\n";
+                return;
+            }
         }
         else
         {
             // find all active switches
-            if( $sws = $this->getD2R( '\\Entities\\Switcher' )->getActive() )
-            {
-                foreach( $sws as $sw )
-                    $this->_snmpPoll( $sw );
-            }
-        }
-    }
-
-
-    /**
-     *
-     * @param \Entities\Switcher $sw
-     */
-    private function _snmpPoll( $sw )
-    {
-        if( $sw->getLastPolled() == null )
-            echo "First time polling of {$sw->getName()} with SNMP request to {$sw->getHostname()}\n";
-        else
-            $this->verbose( "Polling {$sw->getName()} with SNMP request to {$sw->getHostname()}" );
-
-        $formatDate = function( $d ) {
-            return $d instanceof \DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
-        };
-
-        try
-        {
-            $host = new \OSS_SNMP\SNMP( $sw->getHostname(), $sw->getSnmppasswd() );
-
-            foreach( [ 'Model', 'Os', 'OsDate', 'OsVersion' ] as $p )
-            {
-                $fn = "get{$p}";
-                $n = $host->getPlatform()->$fn();
-
-                if( ( $p == 'OsDate' && $formatDate( $sw->$fn() ) != $formatDate( $n ) )
-                    || ( $p != 'OsDate' && $sw->$fn() != $n ) )
-                {
-                    if( $p == 'OsDate' )
-                        echo " - [{$sw->getName()}] Updating {$p} from " . $formatDate( $sw->$fn() ) . " to " . $formatDate( $n ) . "\n";
-                    else
-                        echo " - [{$sw->getName()}] Updating {$p} from {$sw->$fn()} to {$n}\n";
-                    $fn = "set{$p}";
-                    $sw->$fn( $n );
-                }
-            }
-
-            if( $sw->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
-                $this->_snmpPollSwitchPorts( $sw, $host );
-                
-            $sw->setLastPolled( new \DateTime() );
-            
-            if( $this->getParam( 'noflush', false ) )
-                $this->verbose( '*** noflush parameter set - NO CHANGES MADE TO DATABASE' );
-            else
-                $this->getD2EM()->flush();
-        }
-        catch( \OSS_SNMP\Exception $e )
-        {
-            echo "ERR: Could not poll {$sw->getName()}\n";
-        }
-    }
-
-    /**
-     *
-     * @param \Entities\Switcher $sw
-     * @param \OSS_SNMP\SNMP $host
-     */
-    private function _snmpPollSwitchPorts( $sw, $host )
-    {
-        // we'll be matching data from OSS_SNMP to the switchport database table using the following:
-        $map = [
-            'names'           => 'IfName',
-            'aliases'         => 'IfAlias',
-            'highSpeeds'      => 'IfHighspeed',
-            'mtus'            => 'IfMtu',
-            'physAddresses'   => 'IfPhysAddress',
-            'adminStates'     => 'IfAdminStatus',
-            'operationStates' => 'IfOperStatus',
-            'lastChanges'     => 'IfLastChange'
-        ];
-
-        $existingPorts = $sw->getPorts();
-
-        try
-        {
-
-            // we traditionally stored ports in the database by their ifDesc so we need to key
-            // off that for backwards compatibility
-            $ports = $host->useIface()->descriptions();
-            
-            // iterate over all the ports discovered on the switch:
-            foreach( $ports as $index => $ifDesc )
-            {
-                // we're only interested in Ethernet ports here (right?)
-                if( $host->useIface()->types()[ $index ] != \OSS_SNMP\MIBS\Iface::IF_TYPE_ETHERNETCSMACD )
-                    continue;
-                
-                // find the matching switchport in the database (or create a new one)
-                $switchport = false;
-                
-                foreach( $existingPorts as $ix => $ep )
-                {
-                    if( $ep->getName() == $ifDesc )
-                    {
-                        $this->verbose( "\n - {$sw->getName()} - found pre-existing port for {$ifDesc}" );
-                        $switchport = $ep;
-                        unset( $existingPorts[ $ix ] );
-                        break;
-                    }
-                }
-                
-                if( !$switchport )
-                {
-                    // no existing port in database so we have found a new port
-                    echo "\n - {$sw->getName()}: found a new port - {$ifDesc}\n";
-
-                    $switchport = new \Entities\SwitchPort();
-
-                    $switchport->setSwitcher( $sw );
-                    $sw->addPort( $switchport );
-
-                    $switchport->setName( $ifDesc );
-                    $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
-                    $switchport->setIfIndex( $index );
-
-                    $this->getD2EM()->persist( $switchport );
-                }
-                
-                // if the switchport SNMP index is not set, set it
-                // (for backwards compatibility for ports added before we recorded ifIndex)
-                else if( $switchport->getIfIndex() == null )
-                {
-                    echo "\n - {$sw->getName()}: {$ifDesc} - setting ifIndex for the first time to {$index}\n";
-                    $switchport->setIfIndex( $index );
-                }
-                
-                // if the ifIndex has changed, skip and warn
-                else if( $switchport->getIfIndex() != $index )
-                {
-                    echo "\n - {$sw->getName()}: {$ifDesc} - WARNING - ifIndex changed from {$switchport->getIfIndex()} to {$index} - SKIPPING\n";
-                    continue;
-                }
-
-                foreach( $map as $snmp => $entity )
-                {
-                    $fn = "get{$entity}";
-                    
-                    if( $snmp == 'lastChanges' )
-                        $n = $host->useIface()->$snmp( true )[ $index ];
-                    else
-                        $n = $host->useIface()->$snmp()[ $index ];
-
-                    if( $switchport->$fn() != $n )
-                    {
-                        if( $snmp == 'lastChanges' )
-                        {
-                            // need to allow for small changes due to rounding errors
-                            if( abs( $switchport->$fn() - $n ) > 60 )
-                                echo " - [{$sw->getName()}]:{$ifDesc} Updating {$entity} from [{$switchport->$fn()}] to [{$n}]\n";
-                        }
-                        else
-                            echo " - [{$sw->getName()}]:{$ifDesc} Updating {$entity} from [{$switchport->$fn()}] to [{$n}]\n";
-                    }
-
-                    $fn = "set{$entity}";
-                    $switchport->$fn( $n );
-                }
-
-                $switchport->setLastSnmpPoll( new \DateTime() );
-            }
-        }
-        catch( \OSS_SNMP\Exception $e )
-        {
-            echo "ERR: Could not poll {$sw->getName()}\n";
+            $sws = $this->getD2R( '\\Entities\\Switcher' )->getActive();
         }
         
-        if( count( $existingPorts ) )
+        if( count( $sws ) )
         {
-            echo "\nWARNING for {$sw->getName()} - ports in database with no matching port on the switch:\n";
+            // create a logger for stdout
+            if( $this->isVerbose() || $this->isDebug() )
+            {
+                $writer = new Zend_Log_Writer_Stream( 'php://output' );
+                $logger = new OSS_Log();
+                
+                if( !$this->isDebug() );
+                    $logger->addFilter( new Zend_Log_Filter_Priority( OSS_Log::INFO ) );
+                    
+                $logger->addWriter( $writer );
+            }
+            else
+                $logger = false;
             
-            foreach( $existingPorts as $ep )
-                echo " - {$ep->getName()}\n";
+            foreach( $sws as $sw )
+            {
+                if( $sw->getLastPolled() == null )
+                    echo "First time polling of {$sw->getName()} with SNMP request to {$sw->getHostname()}\n";
+                else
+                    $this->verbose( "Polling {$sw->getName()} with SNMP request to {$sw->getHostname()}" );
+                
+                $swPolled = false;
+                try
+                {
+                    $swPolled = false;
+                    $host = new \OSS_SNMP\SNMP( $sw->getHostname(), $sw->getSnmppasswd() );
+                    $sw->snmpPoll( $host, $logger );
+                    $swPolled = true;
+                    
+                    if( $sw->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
+                        $sw->snmpPollSwitchPorts( $host, $logger );
+                    
+                    if( $this->getParam( 'noflush', false ) )
+                        $this->verbose( '*** noflush parameter set - NO CHANGES MADE TO DATABASE' );
+                    else
+                        $this->getD2EM()->flush();
+                }
+                catch( \OSS_SNMP\Exception $e )
+                {
+                    if( $swPolled )
+                        echo "ERROR: OSS_SNMP exception polling {$sw->getName()} by SNMP\n";
+                    else
+                        echo "ERROR: OSS_SNMP exception polling ports for {$sw->getName()} by SNMP\n";
+                }
+            }
         }
     }
-
 }
 

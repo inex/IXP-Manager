@@ -1,11 +1,31 @@
 <li class="pull-right" style="margin-top: -12px;">
 <div class="btn-toolbar" style="display: inline-block;">
 
-    {if $action eq 'op-status'}
-        <a class="btn btn-mini" href="{genUrl controller="switch-port" action="list"}{if isset( $sid )}/switch/{$sid}{/if}">Standard View</a>
-    {else}
-        <a class="btn btn-mini" href="{genUrl controller="switch-port" action="op-status"}{if isset( $sid )}/switch/{$sid}{/if}">Operational Status</a>
-    {/if}
+    <div class="btn-group">
+        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+            {if $action eq 'op-status'}
+                Live Port States (with SNMP poll)
+            {else if $action eq 'list'}
+                Ports (database only)
+            {else if $action eq 'snmp-poll'}
+                Ports (with SNMP poll)
+            {else}
+                Unknown action?
+            {/if}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <li {if $action eq 'op-status'}class="active"{/if}>
+                <a href="{genUrl controller='switch-port' action='op-status' switch=$sid}">View Live Port States (with SNMP poll)</a>
+            </li>
+            <li {if $action eq 'list'}class="active"{/if}>
+                <a href="{genUrl controller='switch-port' action='list'      switch=$sid}">View / Edit Ports (database only)</a>
+            </li>
+            <li {if $action eq 'snmp-poll'}class="active"{/if}>
+                <a href="{genUrl controller='switch-port' action='snmp-poll' switch=$sid}">View / Edit Ports (with SNMP poll)</a>
+            </li>
+        </ul>
+    </div>
 
     <div class="btn-group">
         <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">

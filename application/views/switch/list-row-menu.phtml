@@ -8,10 +8,13 @@
     </a>
     <ul class="dropdown-menu pull-right">
         <li>
-            <a href="{genUrl controller='switch-port' action='list' switch=$row.id}">View / Edit Ports</a>
+            <a href="{genUrl controller='switch-port' action='snmp-poll' switch=$row.id}">View / Edit Ports (with SNMP poll)</a>
+        </li>
+    <li>
+            <a href="{genUrl controller='switch-port' action='list' switch=$row.id}">View / Edit Ports (database only)</a>
         </li>
         <li>
-            <a href="{genUrl controller='switch-port' action='op-status' switch=$row.id}">View Operational Status</a>
+            <a href="{genUrl controller='switch-port' action='op-status' switch=$row.id}">View Live Port States</a>
         </li>
         <li>
             <a href="{genUrl controller='switch' action='port-report' id=$row.id}">View Port Report</a>

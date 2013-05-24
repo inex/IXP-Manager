@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,10 +28,10 @@
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Form
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IXP_Form_Switch extends IXP_Form
+class IXP_Form_Switch_AddBySNMP extends IXP_Form
 {
     public function init()
     {
@@ -53,7 +53,7 @@ class IXP_Form_Switch extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $hostname );
-        
+
         $switchtype = $this->createElement( 'select', 'switchtype' );
         $switchtype->setMultiOptions( \Entities\Switcher::$TYPES )
             ->setAttrib( 'class', 'span3 chzn-select' )
@@ -73,23 +73,6 @@ class IXP_Form_Switch extends IXP_Form
         $this->addElement( $infrastructre );
 
 
-        $ipv4addr = $this->createElement( 'text', 'ipv4addr' );
-        $ipv4addr->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->setAttrib( 'class', 'span3' )
-            ->setRequired( true )
-            ->setLabel( 'IPv4 Address' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $ipv4addr );
-
-        $ipv6addr = $this->createElement( 'text', 'ipv6addr' );
-        $ipv6addr->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->setAttrib( 'class', 'span3' )
-            ->setLabel( 'IPv6 Address' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $ipv6addr );
-
         $snmppasswd = $this->createElement( 'text', 'snmppasswd' );
         $snmppasswd->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setAttrib( 'class', 'span3' )
@@ -98,27 +81,6 @@ class IXP_Form_Switch extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $snmppasswd );
 
-        $this->addElement( IXP_Form_Vendor::getPopulatedSelect( 'vendorid' ) );
-        
-
-        $model = $this->createElement( 'text', 'model' );
-        $model->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->setLabel( 'Model' )
-            ->setAttrib( 'class', 'span3' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $model );
-
-
-        $notes = $this->createElement( 'textarea', 'notes' );
-        $notes->setLabel( 'Notes' )
-            ->setAttrib( 'class', 'span3' )
-            ->setRequired( false )
-            ->addFilter( new OSS_Filter_StripSlashes() )
-            ->setAttrib( 'cols', 60 )
-            ->setAttrib( 'rows', 5 );
-        $this->addElement( $notes );
-        
         $active = $this->createElement( 'checkbox', 'active' );
         $active->setLabel( 'Active?' )
             ->setCheckedValue( '1' )
@@ -127,39 +89,13 @@ class IXP_Form_Switch extends IXP_Form
         $this->addElement( $active );
         
 
-        $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
-        $this->addElement( $this->createCancelElement() );
+        $this->addElement( self::createSubmitElement( 'submit', _( 'Next' ) ) );
+        $this->addElement( $this->createCancelElement( 'cancel', OSS_Utils::genUrl( 'switch', 'list' ) ) );
+        
+        $manualAdd = new OSS_Form_Element_Buttonlink( 'manualAdd' );
+        $manualAdd->setAttrib( 'href', OSS_Utils::genUrl( 'switch', 'add' ) )
+            ->setAttrib( 'label', _( 'Manual / Non-SNMP Add' ) );
+        $this->addElement( $manualAdd );
     }
     
-    /**
-     * Create a SELECT / dropdown element of all switch names indexed by their id.
-     *
-     * @param string $name The element name
-     * @return Zend_Form_Element_Select The select element
-     */
-    public static function getPopulatedSelect( $name = 'switchid', $type = null )
-    {
-        $sw = new Zend_Form_Element_Select( $name );
-
-        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
-            ->select( 'e.id AS id, e.name AS name' )
-            ->from( '\\Entities\\Switcher', 'e' )
-            ->orderBy( "e.name", 'ASC' );
-        
-        if( $type !== null )
-            $qb->where( 'e.switchtype = ?1' )->setParameter( 1, $type );
-        
-        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\Switcher', 'id', 'name', 'name', 'ASC' );
-    
-        $sw->setRegisterInArrayValidator( true )
-            ->setRequired( true )
-            ->setLabel( _( 'Switch' ) )
-            ->setAttrib( 'class', 'span3 chzn-select' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( array( _( 'Please select a switch' ) ) );
-    
-        return $sw;
-    }
-    
-
 }

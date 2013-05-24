@@ -126,18 +126,6 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         return parent::getModel();
     }
 
-    public function setActrive($actrive)
-    {
-        $this->__load();
-        return parent::setActrive($actrive);
-    }
-
-    public function getActrive()
-    {
-        $this->__load();
-        return parent::getActrive();
-    }
-
     public function setNotes($notes)
     {
         $this->__load();
@@ -307,6 +295,12 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     {
         $this->__load();
         return parent::getLastPolled();
+    }
+
+    public function snmpPollSwitchPorts($host, $logger = false, &$result = false)
+    {
+        $this->__load();
+        return parent::snmpPollSwitchPorts($host, $logger, $result);
     }
 
 
