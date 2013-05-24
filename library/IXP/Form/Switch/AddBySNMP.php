@@ -91,6 +91,11 @@ class IXP_Form_Switch_AddBySNMP extends IXP_Form
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Next' ) ) );
         $this->addElement( $this->createCancelElement( 'cancel', OSS_Utils::genUrl( 'switch', 'list' ) ) );
+        
+        $manualAdd = new OSS_Form_Element_Buttonlink( 'manualAdd' );
+        $manualAdd->setAttrib( 'href', OSS_Utils::genUrl( 'switch', 'add' ) )
+            ->setAttrib( 'label', _( 'Manual / Non-SNMP Add' ) );
+        $this->addElement( $manualAdd );
     }
     
 }
