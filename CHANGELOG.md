@@ -13,6 +13,7 @@ updated and edited in bulk.
 
 See: https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management
 
+[IM] Add help messages and a help link to documentation (47e7619 - Barry O'Donovan - 2013-05-24)
 [IM] Default to SNMP add for switches and allow manual add from there (aabd968 - Barry O'Donovan - 2013-05-24)
 [IM] Better integration of different switch port pages (8e3eff8 - Barry O'Donovan - 2013-05-24)
 [IM] Refactor CLI SNMP actions using new entitiy functions (6a9f789 - Barry O'Donovan - 2013-05-24)
