@@ -20,6 +20,21 @@ class Switcher
     
     
     /**
+     * Elements for SNMP polling via the OSS_SNMP library
+     *
+     * These are used to build function names
+     *
+     * @see snmpPoll() below
+     * @var array Elements for SNMP polling via the OSS_SNMP library
+     */
+    public static $OSS_SNMP_SWITCH_ELEMENTS = [
+        'Model',
+        'Os',
+        'OsDate',
+        'OsVersion'
+    ];
+    
+    /**
      * @var string $name
      */
     private $name;
@@ -53,11 +68,6 @@ class Switcher
      * @var string $model
      */
     private $model;
-
-    /**
-     * @var boolean $actrive
-     */
-    private $actrive;
 
     /**
      * @var string $notes
@@ -257,29 +267,6 @@ class Switcher
     public function getModel()
     {
         return $this->model;
-    }
-
-    /**
-     * Set actrive
-     *
-     * @param boolean $actrive
-     * @return Switcher
-     */
-    public function setActrive($actrive)
-    {
-        $this->actrive = $actrive;
-    
-        return $this;
-    }
-
-    /**
-     * Get actrive
-     *
-     * @return boolean
-     */
-    public function getActrive()
-    {
-        return $this->actrive;
     }
 
     /**
@@ -514,7 +501,7 @@ class Switcher
     /**
      * Get hostname
      *
-     * @return string 
+     * @return string
      */
     public function getHostname()
     {
@@ -557,7 +544,7 @@ class Switcher
     /**
      * Get os
      *
-     * @return string 
+     * @return string
      */
     public function getOs()
     {
@@ -580,7 +567,7 @@ class Switcher
     /**
      * Get osDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getOsDate()
     {
@@ -603,7 +590,7 @@ class Switcher
     /**
      * Get osVersion
      *
-     * @return string 
+     * @return string
      */
     public function getOsVersion()
     {
@@ -626,10 +613,150 @@ class Switcher
     /**
      * Get lastPolled
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastPolled()
     {
         return $this->lastPolled;
     }
+    
+    
+    
+    /**
+     * Update switch's details using SNMP polling
+     *
+     * @throws \OSS_SNMP\Exception
+     * @see self::$OSS_SNMP_SWITCH_ELEMENTS
+     *
+     * @param \OSS_SNMP\SNMP $host An instance of \OSS_SNMP\SNMP for this switch
+     * @param \OSS_Logger $logger An instance of the logger or false
+     * @return \Entities\Switcher For fluent interfaces
+     */
+    public function snmpPoll( $host, $logger = false )
+    {
+        // utility to format dates
+        $formatDate = function( $d ) {
+            return $d instanceof \DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
+        };
+    
+        foreach( self::$OSS_SNMP_SWITCH_ELEMENTS as $p )
+        {
+            $fn = "get{$p}";
+            $n = $host->getPlatform()->$fn();
+    
+            switch( $p )
+            {
+                case 'OsDate':
+                    if( $logger && $formatDate( $this->$fn() ) != $formatDate( $n ) )
+                        $logger->info( " [{$this->getName()}] Updating {$p} from " . $formatDate( $this->$fn() ) . " to " . $formatDate( $n ) );
+                    break;
+                    
+                default:
+                    if( $logger && $this->$fn() != $n )
+                        $logger->info( " [{$this->getName()}] Updating {$p} from {$this->$fn()} to {$n}" );
+                    break;
+            }
+            
+            $fn = "set{$p}";
+            $this->$fn( $n );
+        }
+    
+        $this->setLastPolled( new \DateTime() );
+        return $this;
+    }
+    
+    
+    
+    /**
+     * Update a switches ports using SNMP polling
+     *
+     * There is an optional ``$results`` array which can be passed by reference. If
+     * so, it will be indexed by the SNMP port index (or a decresing nagative index
+     * beginning -1 if the port only exists in the database). The contents of this
+     * associative array is:
+     *
+     *     "port"   => \Entities\SwitchPort object
+     *     "bullet" =>
+     *         - false for existing ports
+     *         - "new" for newly found ports
+     *         - "db" for ports that exist in the database only
+     *
+     * **Note:** It is assumed that the Doctrine2 Entity Manager is available in the
+     * Zend registry as ``d2em`` in this function.
+     *
+     * @throws \OSS_SNMP\Exception
+     *
+     * @param \OSS_SNMP\SNMP $host An instance of \OSS_SNMP\SNMP for this switch
+     * @param \OSS_Logger $logger An instance of the logger or false
+     * @param array Call by reference to an array in which to store results as outlined above
+     * @return \Entities\Switcher For fluent interfaces
+     */
+    public function snmpPollSwitchPorts( $host, $logger = false, &$result = false )
+    {
+        // clone the ports currently known to this switch as we'll be playing with this array
+        $existingPorts = clone $this->getPorts();
+
+        // iterate over all the ports discovered on the switch:
+        foreach( $host->useIface()->indexes() as $index )
+        {
+            // we're only interested in Ethernet ports here (right?)
+            if( $host->useIface()->types()[ $index ] != \OSS_SNMP\MIBS\Iface::IF_TYPE_ETHERNETCSMACD )
+                continue;
+
+            // find the matching switchport that may already be in the database (or create a new one)
+            $switchport = false;
+            
+            foreach( $existingPorts as $ix => $ep )
+            {
+                if( $ep->getIfIndex() == $index )
+                {
+                    $switchport = $ep;
+                    if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => false ];
+                    if( $logger ) { $logger->info( " - {$this->getName()} - found pre-existing port for ifIndex {$index}" ); };
+                    
+                    // remove this from the array so later we'll know what ports exist only in the database
+                    unset( $existingPorts[ $ix ] );
+                    break;
+                }
+            }
+
+            $new = false;
+            if( !$switchport )
+            {
+                // no existing port in database so we have found a new port
+                $switchport = new \Entities\SwitchPort();
+
+                $switchport->setSwitcher( $this );
+                $this->addPort( $switchport );
+
+                $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
+                $switchport->setIfIndex( $index );
+                $switchport->setActive( true );
+
+                \Zend_Registry::get( 'd2em' )['default']->persist( $switchport );
+
+                if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => "new" ];
+                $new = true;
+                
+                if( $logger ) { $logger->info( "Found new port for {$this->getName()} with index $index" ); };
+            }
+
+            // update / set port details from SNMP
+            $switchport->snmpUpdate( $host, $logger );
+        }
+    
+        if( count( $existingPorts ) )
+        {
+            $i = -1;
+            foreach( $existingPorts as $ep )
+            {
+                if( is_array( $result ) ) $result[ $i-- ] = [ "port" => $ep, 'bullet' => "db" ];
+                if( $logger ) { $logger->warn( "{$this->getName()} - port found in database with no matching port on the switch: "
+                        . " [{$ep->getId()}] {$ep->getName()}" ); };
+            }
+        }
+    
+        return $this;
+    }
+    
 }

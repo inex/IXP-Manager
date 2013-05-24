@@ -1,5 +1,6 @@
 <?php
 
+use Entities\Switcher;
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
@@ -76,7 +77,12 @@ class SwitchController extends IXP_Controller_FrontEnd
                     'model'          => 'Model',
                     'ipv4addr'       => 'IPv4 Address',
                     'infrastructure' => 'Infrastructure',
-                    'active'         => 'Active'
+                    'active'       => [
+                            'title'    => 'Active',
+                            'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                            'script'   => 'frontend/list-column-active.phtml',
+                            'colname'  => 'active'
+                    ]
                 ];
     
                 // display the same information in the view as the list
@@ -176,6 +182,126 @@ class SwitchController extends IXP_Controller_FrontEnd
         return $this->listAction();
     }
     
+    
+    
+    /**
+     * Add new switch by polling it via SNMP
+     */
+    public function addBySnmpAction()
+    {
+        $this->view->sw = $sw = new \Entities\Switcher();
+        $this->view->f  = $f  = new IXP_Form_Switch_AddBySNMP();
+        
+        if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
+        {
+            do
+            {
+                // ensure provided name and hostname are not in use
+                if( $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'name' => $f->getValue( 'name' ) ] )
+                        || $this->getD2R( '\\Entities\\Switcher' )->findOneBy( [ 'hostname' => $f->getValue( 'hostname' ) ] ) )
+                {
+                    $this->addMessage( 'A switch already exists with the given name / hostname', OSS_Message::ERROR );
+                    break;
+                }
+                
+                // can we talk to it by SNMP and discover some basic details?
+                try
+                {
+                    $snmp = new \OSS_SNMP\SNMP( $f->getValue( 'hostname' ), $f->getValue( 'snmppasswd' ) );
+                    $vendor = $snmp->getPlatform()->getVendor();
+                }
+                catch( \OSS_SNMP\Exception $e )
+                {
+                    $this->addMessage( "Could not query {$f->getValue( 'hostname' )} via SNMP.
+                        Consider using the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>.",
+                        OSS_Message::ERROR
+                    );
+                    break;
+                }
+
+                if( $vendor == 'Unknown' )
+                {
+                    $this->addMessage( "Could not interpret switch system description string - most likely
+                            because no platform interpretor exists  for it.<br/><br/>Please see
+                            <a href=\"https://github.com/opensolutions/OSS_SNMP/wiki/Device-Discovery\">this OSS_SNMP page</a>
+                            and consider adding one.<br /><br />
+                            Otherwise use the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>.",
+                        OSS_Message::ERROR
+                    );
+                    break;
+                }
+                
+                
+                if( !( $eVendor = $this->getD2R( '\\Entities\\Vendor' )->findOneBy( [ 'name' => $vendor ] ) ) )
+                {
+                    $this->addMessage( "No vendor defined for [{$vendor}]. Please
+                        <a href=\"" . OSS_Utils::genUrl( 'vendor', 'add' ) . "\">add one first</a>.",
+                        OSS_Message::ERROR
+                    );
+                    break;
+                }
+                
+                
+                // now we have a switch with all the necessary details, add it:
+                $s = new Switcher();
+                $s->setCabinet(
+                    $this->getD2R( '\\Entities\\Cabinet' )->find( $f->getValue( 'cabinetid' ) )
+                );
+                $s->setVendor( $eVendor );
+                $s->setName( $f->getValue( 'name' ) );
+                $s->setHostname( $f->getValue( 'hostname' ) );
+                $s->setIpv4addr( $this->_resolve( $s->getHostname(), DNS_A    ) );
+                $s->setIpv6addr( $this->_resolve( $s->getHostname(), DNS_AAAA ) );
+                $s->setSnmppasswd( $f->getValue( 'snmppasswd' ) );
+                $s->setInfrastructure( $f->getValue( 'infrastructure' ) );
+                $s->setSwitchtype( $f->getValue( 'switchtype' ) );
+                $s->setModel( $snmp->getPlatform()->getModel() );
+                $s->setActive( true );
+                $s->setOs( $snmp->getPlatform()->getOs() );
+                $s->setOsDate( $snmp->getPlatform()->getOsDate() );
+                $s->setOsVersion( $snmp->getPlatform()->getOsVersion() );
+                $s->setLastPolled( new DateTime() );
+                    
+                $this->getD2EM()->persist( $s );
+                $this->getD2EM()->flush();
+                
+                $this->addMessage(
+                    "Switch polled and added successfully! Please configure the ports found below.", OSS_Message::SUCCESS
+                );
+                
+                $this->redirect( 'switch-port/snmp-poll/switchid/' . $s->getId() );
+            }while( false );
+        }
+        
+        $this->_display( 'add-by-snmp.phtml' );
+    }
+    
+    
+    /**
+     * Resolve a hostname into an IPv4/IPv6 address
+     *
+     * **NB:** Assumes only one IP address and as such only the first is returned
+     *
+     * @param string $hn The hostname to resolve
+     * @param int $type The DNS query type - either DNS_A or DNS_AAAA
+     * @throws Exception In the event that an unsupprted query type is requested
+     * @return string|null The resolved IP address or null
+     */
+    private function _resolve( $hn, $type )
+    {
+        $a = dns_get_record( $hn, $type );
+        
+        if( empty( $a ) )
+            return null;
+        
+        if( $type == DNS_A )
+            return $a[0]['ip'];
+        
+        if( $type == DNS_AAAA )
+            return $a[0]['ipv6'];
+        
+        throw new Exception( 'Unhandled DNS query type.' );
+    }
     
     
     /**
@@ -293,6 +419,37 @@ class SwitchController extends IXP_Controller_FrontEnd
         $this->view->vlanid   = $vid = ( isset( $_POST['vid'] ) && isset( $vlans[    $_POST['vid'] ] ) ) ? $_POST['vid'] : null;
         
         $this->view->config = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getConfiguration( $sid, $vid );
+    }
+    
+    
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        foreach( $object->getPorts() as $p )
+        {
+            if( $p->getPhysicalInterface() )
+            {
+                $this->addMessage(
+                    "Could not delete the switch as at least one switch port is assigned to a physical interface for a customer",
+                    OSS_Message::ERROR
+                );
+                return false;
+            }
+        }
+        
+        // if we got here, all switch ports are free
+        foreach( $object->getPorts() as $p )
+            $this->getD2EM()->remove( $p );
+        
+        return true;
     }
     
     

@@ -6,6 +6,7 @@
     </id>
     <field name="type" type="integer" nullable="true"/>
     <field name="name" type="string" nullable="true"/>
+    <field name="active" type="boolean" nullable="false"/>
     <field name="ifIndex" type="integer" nullable="true"/>
     <field name="ifName" type="string" nullable="true"/>
     <field name="ifAlias" type="string" nullable="true"/>

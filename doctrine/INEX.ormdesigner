@@ -180,6 +180,7 @@
       <field name="switchid" type="integer" uuid="930dfe01-28bb-43e4-9b63-cea471f3097b"/>
       <field name="type" type="integer" uuid="12c83a2a-75d3-4cbe-bbd8-aa74fd5c8ba1"/>
       <field name="name" type="string" uuid="394040cb-9679-4335-9cef-f8ba535bc8d3"/>
+      <field name="active" type="boolean" default="1" required="true" uuid="6f96fa47-0b29-40f3-a99a-9048a1643f3b"/>
       <field name="ifIndex" type="integer" uuid="5907ca6d-dd76-42bd-9df6-152f7fdfe467"/>
       <field name="ifName" type="string" uuid="0bca76d3-c24a-468c-9992-288a215959a3"/>
       <field name="ifAlias" type="string" uuid="910f7489-ad5e-4af7-b816-c6dd85c4098a"/>
