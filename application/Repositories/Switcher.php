@@ -65,6 +65,7 @@ class Switcher extends EntityRepository
         foreach( $this->getAndCache( $active, $type ) as $a )
             $switches[ $a->getId() ] = $a->getName();
 
+        asort( $switches );
         return $switches;
     }
 

@@ -10,6 +10,8 @@
     <li class="active">
         SNMP Poll <em>{$switch->getName()}</em>
     </li>
+    
+    {tmplinclude file='switch-port/list-toolbar.phtml'}
 </ul>
 
 {OSS_Message}
@@ -20,6 +22,7 @@
             <tr>
                 <th></th>
                 <th>Name</th>
+                <th>Customer</th>
                 <th>Description</th>
                 <th>Alias</th>
                 <th>Active</th>
@@ -31,6 +34,12 @@
             <tr id="poll-tr-{$pd.port->getId()}">
                 <td><input type="checkbox" name="switch-port[{$pd.port->getId()}]" id="switch-port-{$pd.port->getId()}" value="{$pd.port->getId()}" /></td>
                 <td>{$pd.port->getIfName()}</td>
+                <td>
+                    {if $pd.port->getPhysicalInterface()}
+                        {$cust = $pd.port->getPhysicalInterface()->getVirtualInterface()->getCustomer()}
+                        <a href="{genUrl controller='customer' action='overview' id=$cust->getId() tab='ports'}">{$cust->getShortname}</a>
+                    {/if}
+                </td>
                 <td>{$pd.port->getName()}</td>
                 <td>{$pd.port->getIfAlias()}</td>
                 <td><i class="icon-{if $pd.port->getActive()}ok{else}remove{/if}"></i></td>

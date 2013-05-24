@@ -127,6 +127,24 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     
     public function opStatusAction()
     {
+        if( $this->getParam( 'switch' ) && ( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switch' ) ) ) )
+        {
+            try // to refresh switch and switch port details via SNMP
+            {
+                $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
+                $switch->snmpPollSwitchPorts( $host, $this->getLogger() );
+                if( $switch->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
+                    $switch->snmpPollSwitchPorts( $host, $this->getLogger() );
+                $this->getD2EM()->flush();
+                $this->addMessage( "The below is <strong>live information</strong> gathered via SNMP", OSS_Message::INFO );
+            }
+            catch( \OSS_SNMP\Exception $e )
+            {
+                $this->addMessage( "<strong>Stale data gathered on " . $switch->getLastPolled()->format( 'Y-m-d H:i:s' ) . "</strong>. "
+                        . "Could not update switch and switch port details via SNMP poll.", OSS_Message::ALERT );
+            }
+        }
+        
         $this->_feParams->listColumns = [
             'id'            => [ 'title' => 'UID', 'display' => false ],
             'name'          => 'Description',
@@ -134,18 +152,20 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             'ifAlias'       => 'Alias',
             'ifHighSpeed'   => 'Speed',
             'ifMtu'         => 'MTU',
-            'ifPhysAddress' => 'Physical Address',
+            // 'ifPhysAddress' => 'Physical Address',
             
             'ifAdminStatus' => [
                 'title'    => 'Admin State',
-                'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
-                'xlator'   => \OSS_SNMP\MIBS\Iface::$IF_ADMIN_STATES
+                'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                'script'   => 'switch-port/list-column-port-status.phtml',
+                'colname'  => 'ifAdminStatus'
             ],
             
             'ifOperStatus' => [
                 'title'    => 'Operational State',
-                'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
-                'xlator'   => \OSS_SNMP\MIBS\Iface::$IF_ADMIN_STATES
+                'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                'script'   => 'switch-port/list-column-port-status.phtml',
+                'colname'  => 'ifOperStatus'
             ],
             'active'       => [
                     'title'    => 'Active',
@@ -156,6 +176,8 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             
         ];
     
+        $this->view->portStates = \OSS_SNMP\MIBS\Iface::$IF_OPER_STATES;
+        
         return $this->listAction();
     }
     
@@ -335,11 +357,15 @@ class SwitchPortController extends IXP_Controller_FrontEnd
      */
     public function snmpPollAction()
     {
-        if( $this->getParam( 'switchid' ) == null || !( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switchid' ) ) ) )
+        $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
+        
+        if( $this->getParam( 'switch' ) == null || !( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switch' ) ) ) )
         {
             $this->addMessage( 'Unknown switch', OSS_Message::ERROR );
             $this->redirect( 'switch/list' );
         }
+        else
+            $this->view->sid = $switch->getId();
         
         if( isset( $_POST ) && isset( $_POST['poll-action'] ) )
         {
