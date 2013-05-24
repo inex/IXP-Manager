@@ -20,6 +20,21 @@ class Switcher
     
     
     /**
+     * Elements for SNMP polling via the OSS_SNMP library
+     *
+     * These are used to build function names
+     *
+     * @see snmpPoll() below
+     * @var array Elements for SNMP polling via the OSS_SNMP library
+     */
+    public static $OSS_SNMP_SWITCH_ELEMENTS = [
+        'Model',
+        'Os',
+        'OsDate',
+        'OsVersion'
+    ];
+    
+    /**
      * @var string $name
      */
     private $name;
@@ -607,6 +622,50 @@ class Switcher
     
     
     
+    /**
+     * Update switch's details using SNMP polling
+     *
+     * @throws \OSS_SNMP\Exception
+     * @see self::$OSS_SNMP_SWITCH_ELEMENTS
+     *
+     * @param \OSS_SNMP\SNMP $host An instance of \OSS_SNMP\SNMP for this switch
+     * @param \OSS_Logger $logger An instance of the logger or false
+     * @return \Entities\Switcher For fluent interfaces
+     */
+    public function snmpPoll( $host, $logger = false )
+    {
+        // utility to format dates
+        $formatDate = function( $d ) {
+            return $d instanceof \DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
+        };
+    
+        foreach( self::$OSS_SNMP_SWITCH_ELEMENTS as $p )
+        {
+            $fn = "get{$p}";
+            $n = $host->getPlatform()->$fn();
+    
+            switch( $p )
+            {
+                case 'OsDate':
+                    if( $logger && $formatDate( $this->$fn() ) != $formatDate( $n ) )
+                        $logger->info( " [{$this->getName()}] Updating {$p} from " . $formatDate( $this->$fn() ) . " to " . $formatDate( $n ) );
+                    break;
+                    
+                default:
+                    if( $logger && $this->$fn() != $n )
+                        $logger->info( " [{$this->getName()}] Updating {$p} from {$this->$fn()} to {$n}" );
+                    break;
+            }
+            
+            $fn = "set{$p}";
+            $this->$fn( $n );
+        }
+    
+        $this->setLastPolled( new \DateTime() );
+        return $this;
+    }
+    
+    
     
     /**
      * Update a switches ports using SNMP polling
@@ -630,6 +689,7 @@ class Switcher
      * @param \OSS_SNMP\SNMP $host An instance of \OSS_SNMP\SNMP for this switch
      * @param \OSS_Logger $logger An instance of the logger or false
      * @param array Call by reference to an array in which to store results as outlined above
+     * @return \Entities\Switcher For fluent interfaces
      */
     public function snmpPollSwitchPorts( $host, $logger = false, &$result = false )
     {
@@ -652,6 +712,7 @@ class Switcher
                 {
                     $switchport = $ep;
                     if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => false ];
+                    if( $logger ) { $logger->info( " - {$this->getName()} - found pre-existing port for ifIndex {$index}" ); };
                     
                     // remove this from the array so later we'll know what ports exist only in the database
                     unset( $existingPorts[ $ix ] );
@@ -690,6 +751,8 @@ class Switcher
             foreach( $existingPorts as $ep )
             {
                 if( is_array( $result ) ) $result[ $i-- ] = [ "port" => $ep, 'bullet' => "db" ];
+                if( $logger ) { $logger->warn( "{$this->getName()} - port found in database with no matching port on the switch: "
+                        . " [{$ep->getId()}] {$ep->getName()}" ); };
             }
         }
     
