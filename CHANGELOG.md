@@ -131,6 +131,12 @@ See: https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management
 - [NF] Switch polling by SNMP (a24cab2 - Barry O'Donovan - 2013-05-20)
 - [HK] This field was a typo and is now removed (3dd5935 - Barry O'Donovan - 2013-05-20)
 
+# V3.0.13
+
+Skipped this tag in error. 
+
+*This tag is intentionally left blank.*
+
 
 # V3.0.12
 
