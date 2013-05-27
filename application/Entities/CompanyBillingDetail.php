@@ -345,4 +345,116 @@ class CompanyBillingDetail
     {
         return $this->Customer;
     }
+    /**
+     * @var boolean
+     */
+    private $purchaseOrderRequired;
+
+    /**
+     * @var string
+     */
+    private $invoiceMethod;
+
+    /**
+     * @var string
+     */
+    private $invoiceEmail;
+
+    /**
+     * @var string
+     */
+    private $billingFrequency;
+
+
+    /**
+     * Set purchaseOrderRequired
+     *
+     * @param boolean $purchaseOrderRequired
+     * @return CompanyBillingDetail
+     */
+    public function setPurchaseOrderRequired($purchaseOrderRequired)
+    {
+        $this->purchaseOrderRequired = $purchaseOrderRequired;
+    
+        return $this;
+    }
+
+    /**
+     * Get purchaseOrderRequired
+     *
+     * @return boolean 
+     */
+    public function getPurchaseOrderRequired()
+    {
+        return $this->purchaseOrderRequired;
+    }
+
+    /**
+     * Set invoiceMethod
+     *
+     * @param string $invoiceMethod
+     * @return CompanyBillingDetail
+     */
+    public function setInvoiceMethod($invoiceMethod)
+    {
+        $this->invoiceMethod = $invoiceMethod;
+    
+        return $this;
+    }
+
+    /**
+     * Get invoiceMethod
+     *
+     * @return string 
+     */
+    public function getInvoiceMethod()
+    {
+        return $this->invoiceMethod;
+    }
+
+    /**
+     * Set invoiceEmail
+     *
+     * @param string $invoiceEmail
+     * @return CompanyBillingDetail
+     */
+    public function setInvoiceEmail($invoiceEmail)
+    {
+        $this->invoiceEmail = $invoiceEmail;
+    
+        return $this;
+    }
+
+    /**
+     * Get invoiceEmail
+     *
+     * @return string 
+     */
+    public function getInvoiceEmail()
+    {
+        return $this->invoiceEmail;
+    }
+
+    /**
+     * Set billingFrequency
+     *
+     * @param string $billingFrequency
+     * @return CompanyBillingDetail
+     */
+    public function setBillingFrequency($billingFrequency)
+    {
+        $this->billingFrequency = $billingFrequency;
+    
+        return $this;
+    }
+
+    /**
+     * Get billingFrequency
+     *
+     * @return string 
+     */
+    public function getBillingFrequency()
+    {
+        return $this->billingFrequency;
+    }
 }

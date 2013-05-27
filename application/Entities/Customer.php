@@ -1669,4 +1669,60 @@ class Customer
     {
         return $this->BillingDetails;
     }
+    /**
+     * @var string
+     */
+    private $abbreviatedName;
+
+    /**
+     * @var string
+     */
+    private $MD5Support;
+
+
+    /**
+     * Set abbreviatedName
+     *
+     * @param string $abbreviatedName
+     * @return Customer
+     */
+    public function setAbbreviatedName($abbreviatedName)
+    {
+        $this->abbreviatedName = $abbreviatedName;
+    
+        return $this;
+    }
+
+    /**
+     * Get abbreviatedName
+     *
+     * @return string 
+     */
+    public function getAbbreviatedName()
+    {
+        return $this->abbreviatedName;
+    }
+
+    /**
+     * Set MD5Support
+     *
+     * @param string $mD5Support
+     * @return Customer
+     */
+    public function setMD5Support($mD5Support)
+    {
+        $this->MD5Support = $mD5Support;
+    
+        return $this;
+    }
+
+    /**
+     * Get MD5Support
+     *
+     * @return string 
+     */
+    public function getMD5Support()
+    {
+        return $this->MD5Support;
+    }
 }
