@@ -210,66 +210,6 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getPeeringpolicy();
     }
 
-    public function setBillingContact($billingContact)
-    {
-        $this->__load();
-        return parent::setBillingContact($billingContact);
-    }
-
-    public function getBillingContact()
-    {
-        $this->__load();
-        return parent::getBillingContact();
-    }
-
-    public function setBillingAddress1($billingAddress1)
-    {
-        $this->__load();
-        return parent::setBillingAddress1($billingAddress1);
-    }
-
-    public function getBillingAddress1()
-    {
-        $this->__load();
-        return parent::getBillingAddress1();
-    }
-
-    public function setBillingAddress2($billingAddress2)
-    {
-        $this->__load();
-        return parent::setBillingAddress2($billingAddress2);
-    }
-
-    public function getBillingAddress2()
-    {
-        $this->__load();
-        return parent::getBillingAddress2();
-    }
-
-    public function setBillingCity($billingCity)
-    {
-        $this->__load();
-        return parent::setBillingCity($billingCity);
-    }
-
-    public function getBillingCity()
-    {
-        $this->__load();
-        return parent::getBillingCity();
-    }
-
-    public function setBillingCountry($billingCountry)
-    {
-        $this->__load();
-        return parent::setBillingCountry($billingCountry);
-    }
-
-    public function getBillingCountry()
-    {
-        $this->__load();
-        return parent::getBillingCountry();
-    }
-
     public function setCorpwww($corpwww)
     {
         $this->__load();
@@ -783,10 +723,34 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getBillingDetails();
     }
 
+    public function setAbbreviatedName($abbreviatedName)
+    {
+        $this->__load();
+        return parent::setAbbreviatedName($abbreviatedName);
+    }
+
+    public function getAbbreviatedName()
+    {
+        $this->__load();
+        return parent::getAbbreviatedName();
+    }
+
+    public function setMD5Support($mD5Support)
+    {
+        $this->__load();
+        return parent::setMD5Support($mD5Support);
+    }
+
+    public function getMD5Support()
+    {
+        $this->__load();
+        return parent::getMD5Support();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Notes', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'abbreviatedName', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'MD5Support', 'id', 'Notes', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails');
     }
 
     public function __clone()
@@ -798,7 +762,7 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

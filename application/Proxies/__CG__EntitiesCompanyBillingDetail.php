@@ -189,10 +189,58 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
         return parent::getCustomer();
     }
 
+    public function setPurchaseOrderRequired($purchaseOrderRequired)
+    {
+        $this->__load();
+        return parent::setPurchaseOrderRequired($purchaseOrderRequired);
+    }
+
+    public function getPurchaseOrderRequired()
+    {
+        $this->__load();
+        return parent::getPurchaseOrderRequired();
+    }
+
+    public function setInvoiceMethod($invoiceMethod)
+    {
+        $this->__load();
+        return parent::setInvoiceMethod($invoiceMethod);
+    }
+
+    public function getInvoiceMethod()
+    {
+        $this->__load();
+        return parent::getInvoiceMethod();
+    }
+
+    public function setInvoiceEmail($invoiceEmail)
+    {
+        $this->__load();
+        return parent::setInvoiceEmail($invoiceEmail);
+    }
+
+    public function getInvoiceEmail()
+    {
+        $this->__load();
+        return parent::getInvoiceEmail();
+    }
+
+    public function setBillingFrequency($billingFrequency)
+    {
+        $this->__load();
+        return parent::setBillingFrequency($billingFrequency);
+    }
+
+    public function getBillingFrequency()
+    {
+        $this->__load();
+        return parent::getBillingFrequency();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'id', 'Customer');
+        return array('__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'purchaseOrderRequired', 'invoiceMethod', 'invoiceEmail', 'billingFrequency', 'id', 'Customer');
     }
 
     public function __clone()
@@ -204,7 +252,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields AS $field => $reflProperty) {
+            foreach ($class->reflFields as $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);
