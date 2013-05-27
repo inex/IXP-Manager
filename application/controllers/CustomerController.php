@@ -155,13 +155,14 @@ class CustomerController extends IXP_Controller_FrontEnd
                             c.nochours AS nochours, c.nocemail AS nocemail, c.nocwww AS nocwww,
                             c.status AS status, c.activepeeringmatrix AS activepeeringmatrix,
                             c.peeringmacro AS peeringmacro, c.peeringpolicy AS peeringpolicy,
-                            c.billingContact AS billingContact, c.billingAddress1 AS billingAddress1,
-                            c.billingAddress2 AS billingAddress2, c.billingCity AS billingCity, c.billingCountry AS billingCountry,
+                            bd.billingContactName AS billingContact, bd.billingAddress1 AS billingAddress1,
+                            bd.billingAddress2 AS billingAddress2, bd.billingTownCity AS billingCity, bd.billingCountry AS billingCountry,
                             c.corpwww AS corpwww, c.datejoin AS datejoin, c.dateleave AS dateleave,
                             c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby,
                             c.creator AS creator, c.created AS created'
                         )
-                ->from( '\\Entities\\Customer', 'c' );
+                ->from( '\\Entities\\Customer', 'c' )
+                ->join( 'c.BillingDetails', 'bd' );
     
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
@@ -242,12 +243,26 @@ class CustomerController extends IXP_Controller_FrontEnd
         {
             $object->setLastupdated( new DateTime() );
             $object->setLastupdatedby( $this->getUser()->getId() );
+            
+            $bdetail = $object->getBillingDetails();
+            $rdetail = $object->getRegistrationDetails();
         }
         else
         {
             $object->setCreated( new DateTime() );
             $object->setCreator( $this->getUser()->getUsername() );
+            
+            $bdetail = new \Entities\CompanyBillingDetail();
+            $this->getD2EM()->persist( $bdetail );
+            $object->setBillingDetails( $bdetail );
+            
+            $rdetail = new \Entities\CompanyRegisteredDetail();
+            $this->getD2EM()->persist( $rdetail );
+            $object->setRegistrationDetails( $rdetail );
         }
+        
+        $form->assignFormToEntity( $bdetail, $this, $isEdit );
+        $form->assignFormToEntity( $rdetail, $this, $isEdit );
         
         if( ( $form->getValue( 'type' ) == \Entities\Customer::TYPE_FULL || $form->getValue( 'type' ) == \Entities\Customer::TYPE_PROBONO )
                 && !$form->getElement( 'irrdb' )->getValue() )
@@ -343,7 +358,11 @@ class CustomerController extends IXP_Controller_FrontEnd
              $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
 
          if( $isEdit )
-             $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $object->getId() ] ) );
+         {
+            $form->assignEntityToForm( $object->getBillingDetails(), $this );
+            $form->assignEntityToForm( $object->getRegistrationDetails(), $this );
+            $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $object->getId() ] ) );
+         }
          
          return true;
      }

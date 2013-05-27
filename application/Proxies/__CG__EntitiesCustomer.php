@@ -747,10 +747,46 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getNotes();
     }
 
+    public function setPeeringmacrov6($peeringmacrov6)
+    {
+        $this->__load();
+        return parent::setPeeringmacrov6($peeringmacrov6);
+    }
+
+    public function getPeeringmacrov6()
+    {
+        $this->__load();
+        return parent::getPeeringmacrov6();
+    }
+
+    public function setRegistrationDetails(\Entities\CompanyRegisteredDetail $registrationDetails)
+    {
+        $this->__load();
+        return parent::setRegistrationDetails($registrationDetails);
+    }
+
+    public function getRegistrationDetails()
+    {
+        $this->__load();
+        return parent::getRegistrationDetails();
+    }
+
+    public function setBillingDetails(\Entities\CompanyBillingDetail $billingDetails)
+    {
+        $this->__load();
+        return parent::setBillingDetails($billingDetails);
+    }
+
+    public function getBillingDetails()
+    {
+        $this->__load();
+        return parent::getBillingDetails();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Notes', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Notes', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails');
     }
 
     public function __clone()
@@ -762,7 +798,7 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
             if ($original === null) {
                 throw new \Doctrine\ORM\EntityNotFoundException();
             }
-            foreach ($class->reflFields as $field => $reflProperty) {
+            foreach ($class->reflFields AS $field => $reflProperty) {
                 $reflProperty->setValue($this, $reflProperty->getValue($original));
             }
             unset($this->_entityPersister, $this->_identifier);

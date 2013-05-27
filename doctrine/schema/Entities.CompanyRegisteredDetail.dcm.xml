@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\CompanyRegisteredDetail" table="company_registration_detail" tableName="company_registration_detail" repository-class="Repositories\CompanyRegistrationDetail">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="registeredName" type="string" nullable="true"/>
+    <field name="companyNumber" type="string" nullable="true"/>
+    <field name="jurisdiction" type="string" nullable="true"/>
+    <field name="address1" type="string" nullable="true"/>
+    <field name="address2" type="string" nullable="true"/>
+    <field name="address3" type="string" nullable="true"/>
+    <field name="townCity" type="string" nullable="true"/>
+    <field name="postcode" type="string" nullable="true"/>
+    <field name="country" type="string" nullable="true"/>
+    <one-to-many field="Customer" target-entity="Entities\Customer" mapped-by="RegistrationDetails"/>
+  </entity>
+</doctrine-mapping>

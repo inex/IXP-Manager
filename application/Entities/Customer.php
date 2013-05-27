@@ -130,31 +130,6 @@ class Customer
     private $peeringpolicy;
 
     /**
-     * @var string $billingContact
-     */
-    private $billingContact;
-
-    /**
-     * @var string $billingAddress1
-     */
-    private $billingAddress1;
-
-    /**
-     * @var string $billingAddress2
-     */
-    private $billingAddress2;
-
-    /**
-     * @var string $billingCity
-     */
-    private $billingCity;
-
-    /**
-     * @var string $billingCountry
-     */
-    private $billingCountry;
-
-    /**
      * @var string $corpwww
      */
     private $corpwww;
@@ -263,6 +238,16 @@ class Customer
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     private $TrafficDailies;
+
+    /**
+     * @var \Entities\CompanyRegisteredDetail
+     */
+    private $RegistrationDetails;
+
+    /**
+     * @var \Entities\CompanyBillingDetail
+     */
+    private $BillingDetails;
 
     /**
      * Constructor
@@ -604,121 +589,6 @@ class Customer
     public function getPeeringpolicy()
     {
         return $this->peeringpolicy;
-    }
-
-    /**
-     * Set billingContact
-     *
-     * @param string $billingContact
-     * @return Customer
-     */
-    public function setBillingContact($billingContact)
-    {
-        $this->billingContact = $billingContact;
-    
-        return $this;
-    }
-
-    /**
-     * Get billingContact
-     *
-     * @return string
-     */
-    public function getBillingContact()
-    {
-        return $this->billingContact;
-    }
-
-    /**
-     * Set billingAddress1
-     *
-     * @param string $billingAddress1
-     * @return Customer
-     */
-    public function setBillingAddress1($billingAddress1)
-    {
-        $this->billingAddress1 = $billingAddress1;
-    
-        return $this;
-    }
-
-    /**
-     * Get billingAddress1
-     *
-     * @return string
-     */
-    public function getBillingAddress1()
-    {
-        return $this->billingAddress1;
-    }
-
-    /**
-     * Set billingAddress2
-     *
-     * @param string $billingAddress2
-     * @return Customer
-     */
-    public function setBillingAddress2($billingAddress2)
-    {
-        $this->billingAddress2 = $billingAddress2;
-    
-        return $this;
-    }
-
-    /**
-     * Get billingAddress2
-     *
-     * @return string
-     */
-    public function getBillingAddress2()
-    {
-        return $this->billingAddress2;
-    }
-
-    /**
-     * Set billingCity
-     *
-     * @param string $billingCity
-     * @return Customer
-     */
-    public function setBillingCity($billingCity)
-    {
-        $this->billingCity = $billingCity;
-    
-        return $this;
-    }
-
-    /**
-     * Get billingCity
-     *
-     * @return string
-     */
-    public function getBillingCity()
-    {
-        return $this->billingCity;
-    }
-
-    /**
-     * Set billingCountry
-     *
-     * @param string $billingCountry
-     * @return Customer
-     */
-    public function setBillingCountry($billingCountry)
-    {
-        $this->billingCountry = $billingCountry;
-    
-        return $this;
-    }
-
-    /**
-     * Get billingCountry
-     *
-     * @return string
-     */
-    public function getBillingCountry()
-    {
-        return $this->billingCountry;
     }
 
     /**
@@ -1725,5 +1595,78 @@ class Customer
     public function getNotes()
     {
         return $this->Notes;
+    }
+    /**
+     * @var string
+     */
+    private $peeringmacrov6;
+
+    /**
+     * Set peeringmacrov6
+     *
+     * @param string $peeringmacrov6
+     * @return Customer
+     */
+    public function setPeeringmacrov6($peeringmacrov6)
+    {
+        $this->peeringmacrov6 = $peeringmacrov6;
+    
+        return $this;
+    }
+
+    /**
+     * Get peeringmacrov6
+     *
+     * @return string 
+     */
+    public function getPeeringmacrov6()
+    {
+        return $this->peeringmacrov6;
+    }
+
+    /**
+     * Set RegistrationDetails
+     *
+     * @param \Entities\CompanyRegisteredDetail $registrationDetails
+     * @return Customer
+     */
+    public function setRegistrationDetails(\Entities\CompanyRegisteredDetail $registrationDetails)
+    {
+        $this->RegistrationDetails = $registrationDetails;
+    
+        return $this;
+    }
+
+    /**
+     * Get RegistrationDetails
+     *
+     * @return \Entities\CompanyRegisteredDetail 
+     */
+    public function getRegistrationDetails()
+    {
+        return $this->RegistrationDetails;
+    }
+
+    /**
+     * Set BillingDetails
+     *
+     * @param \Entities\CompanyBillingDetail $billingDetails
+     * @return Customer
+     */
+    public function setBillingDetails(\Entities\CompanyBillingDetail $billingDetails)
+    {
+        $this->BillingDetails = $billingDetails;
+    
+        return $this;
+    }
+
+    /**
+     * Get BillingDetails
+     *
+     * @return \Entities\CompanyBillingDetail 
+     */
+    public function getBillingDetails()
+    {
+        return $this->BillingDetails;
     }
 }

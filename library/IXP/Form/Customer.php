@@ -65,7 +65,6 @@ class IXP_Form_Customer extends IXP_Form
             ->addFilter( 'StringTrim' );
         $this->addElement( $shortname  );
 
-
         $corpwww = $this->createElement( 'text', 'corpwww' );
         $corpwww->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
@@ -247,7 +246,7 @@ class IXP_Form_Customer extends IXP_Form
         
         
         
-        $billingContact = $this->createElement( 'text', 'billingContact' );
+        $billingContact = $this->createElement( 'text', 'billingContactName' );
         $billingContact->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
             ->setLabel( 'Contact' )
@@ -274,14 +273,14 @@ class IXP_Form_Customer extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress2 );
 
-        $billingCity = $this->createElement( 'text', 'billingCity' );
-        $billingCity->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingTownCity = $this->createElement( 'text', 'billingTownCity' );
+        $billingTownCity->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span4' )
             ->setLabel( 'City' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $billingCity );
+        $this->addElement( $billingTownCity );
 
         $billingCountry = $this->createElement( 'select', 'billingCountry' );
         $billingCountry->setMultiOptions( OSS_Countries::getCountriesArray() )
@@ -292,18 +291,140 @@ class IXP_Form_Customer extends IXP_Form
             ->setAttrib( 'class', 'chzn-select span6' );
         
         $this->addElement( $billingCountry );
+
+        $billingPostcode = $this->createElement( 'text', 'billingPostcode' );
+        $billingPostcode->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span4' )
+            ->setLabel( 'Postcode' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $billingPostcode );
         
-        
-        
-        
-        
-        
+        $billingEmail = $this->createElement( 'text', 'billingEmail' );
+        $billingEmail->addValidator('emailAddress' )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'placeholder', 'billing@gmail.com' )
+            ->setLabel( 'E-Mail' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $billingEmail );
+
+        $billingTelephone = $this->createElement( 'text', 'billingTelephone' );
+        $billingTelephone->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'placeholder', '+353 1 234 5678' )
+            ->setLabel( 'Telephone' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $billingTelephone );
+
+        $vatNumber = $this->createElement( 'text', 'vatNumber' );
+        $vatNumber->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setLabel( 'VAT Number' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $vatNumber );
+
+        $vatRate = $this->createElement( 'text', 'vatRate' );
+        $vatRate->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span4' )
+            ->setLabel( 'VAT Rate' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $vatRate );
+
+        $registeredName = $this->createElement( 'text', 'registeredName' );
+        $registeredName->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setLabel( 'Registered Name' )
+            ->addFilter( 'StringTrim' )
+            ->setAttrib( 'class', 'span6' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $registeredName );
+
+        $companyNumber = $this->createElement( 'text', 'companyNumber' );
+        $companyNumber->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setLabel( 'Company Number' )
+            ->addFilter( 'StringTrim' )
+            ->setAttrib( 'class', 'span6' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $companyNumber );
+
+        $jurisdiction = new OSS_Form_Element_DatabaseDropdown( 'jurisdiction', [ 'dql' => 'select crd.jurisdiction from \\Entities\\CompanyRegisteredDetail crd WHERE crd.jurisdiction IS NOT NULL' ] );
+        $jurisdiction->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setLabel( 'Jurisdiction' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $jurisdiction );
+
+        $address1 = $this->createElement( 'text', 'address1' );
+        $address1->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setLabel( 'Address' )
+            ->setAttrib( 'class', 'span6' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $address1 );
+
+        $address2 = $this->createElement( 'text', 'address2' );
+        $address2->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setLabel( '' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $address2 );
+
+        $address3 = $this->createElement( 'text', 'address3' );
+        $address3->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setLabel( '' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $address3 );
+
+        $townCity = $this->createElement( 'text', 'townCity' );
+        $townCity->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span4' )
+            ->setLabel( 'City' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $townCity );
+
+        $country = $this->createElement( 'select', 'country' );
+        $country->setMultiOptions( OSS_Countries::getCountriesArray() )
+            ->setRegisterInArrayValidator( true )
+            ->setValue( 'IE' )
+            ->setLabel( 'Country' )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'chzn-select span6' );
+
+        $this->addElement( $country );
+
+        $postcode = $this->createElement( 'text', 'postcode' );
+        $postcode->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span4' )
+            ->setLabel( 'Postcode' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $postcode );
+                
         $this->addDisplayGroup(
-            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingCity', 'billingCountry' ],
+            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingCountry' ],
         	'billingDisplayGroup'
         );
         $this->getDisplayGroup( 'billingDisplayGroup' )->setLegend( 'Billing Details' );
-
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
