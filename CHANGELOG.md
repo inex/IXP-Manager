@@ -1,8 +1,10 @@
-# v3.0.14
+# v3.0.15
 
-Checkout commit with reference:
+**NB: This is a TWO stage migration process, please follow instructions carefully!**
 
-    da13666cbbb2fc0c105b5e69ca3f317f89465388
+Checkout commit with specific reference:
+
+    git checkout da13666cbbb2fc0c105b5e69ca3f317f89465388
 
 Then update schema:
 
@@ -51,15 +53,15 @@ Then update schema:
     CREATE INDEX IDX_997B25A98386213 ON cust (company_registered_detail_id);
     CREATE INDEX IDX_997B25A84478F0C ON cust (company_billing_details_id);
 
-Run script:
+Restart memcached and run script:
 
     bin/migration-scripts/billing-details.php
 
-Checkout commit with refernce:
+Checkout commit with specific reference:
 
-    cd0e2c406b28f30bccd4c3c508751b9fed324125
+    git checkout cd0e2c406b28f30bccd4c3c508751b9fed324125
 
-Then update schema again:
+Then restart memcached and update schema again:
 
     ALTER TABLE cust 
         DROP billingContact,
@@ -68,7 +70,27 @@ Then update schema again:
         DROP billingCity,
         DROP billingCountry;
         
-Checkout last commit.
+
+Checkout latest commit / head:
+
+    git checkout v3.0.15 (or inex-live, etc)
+
+
+
+- [HK] Set purpose at top of file (a574ebb - Barry O'Donovan - 2013-05-27)
+- [BF] Left required field after testing (ed1dc21 - Nerijus Barauskas - 2013-05-23)
+- [IM] Using new OSS_Form_Element_DatabaseDropdown (ca54926 - Nerijus Barauskas - 2013-05-23)
+- [BF] Making simlar names in database for consitance (798dd8e - Nerijus Barauskas - 2013-05-20)
+- [BF] Non existent function called (a161d6b - Nerijus Barauskas - 2013-05-20)
+- [IM] Updating code to user CompanyBillingDetail entity insted of customer billing fields (e5682a1 - Nerijus Barauskas - 2013-05-20)
+- [DB] Removing billing fields from customer table (c1f0a17 - Nerijus Barauskas - 2013-05-20)
+- [NF] Addig migration script for billing details (da13666 - Nerijus Barauskas - 2013-05-20)
+- [IM] Updating form to use company billing/registration detail entities (b947b11 - Nerijus Barauskas - 2013-05-20)
+- [DB] Schema and entity fixes (869442f - Nerijus Barauskas - 2013-05-20)
+- [DB] Rgenerating proxies (520b2f8 - Nerijus Barauskas - 2013-05-20)
+- [DB] Update schema (331ad46 - Barry O'Donovan - 2013-05-20)
+- [DB] Update schema (0efb652 - Barry O'Donovan - 2013-05-20)
+- [DB] Schema fix and add registered company name (1a07245 - Barry O'Donovan - 2013-05-20)
 
 
 # v3.0.14
@@ -86,28 +108,28 @@ updated and edited in bulk.
 
 See: https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management
 
-[IM] Add help messages and a help link to documentation (47e7619 - Barry O'Donovan - 2013-05-24)
-[IM] Default to SNMP add for switches and allow manual add from there (aabd968 - Barry O'Donovan - 2013-05-24)
-[IM] Better integration of different switch port pages (8e3eff8 - Barry O'Donovan - 2013-05-24)
-[IM] Refactor CLI SNMP actions using new entitiy functions (6a9f789 - Barry O'Donovan - 2013-05-24)
-[DB] [HK] Schema / generated entities clean up (5b52ee2 - Barry O'Donovan - 2013-05-24)
-[IM/CR] Major refactor of SNMP polling code (246308e - Barry O'Donovan - 2013-05-23)
-[CR] Small tweaks and fixes. (39cf69d - Barry O'Donovan - 2013-05-23)
-[IM] Better AJAX handling (74ed6f6 - Nerijus Barauskas - 2013-05-23)
-[BF] Fixing logic (4d1b02f - Nerijus Barauskas - 2013-05-23)
-[IM] Tidying up code (a1656cd - Nerijus Barauskas - 2013-05-22)
-[IM] Making single row type update as ajax (45e6bf8 - Nerijus Barauskas - 2013-05-22)
-[NF] True /false script for frontend (aee7f81 - Nerijus Barauskas - 2013-05-22)
-[IM] Updating older code to reflect new active field (4c36969 - Nerijus Barauskas - 2013-05-22)
-[DB] Adding active field to swichport table (c61d353 - Nerijus Barauskas - 2013-05-22)
-[HK] Regenerating proxies after shema changes (2055343 - Nerijus Barauskas - 2013-05-22)
-[BF] Wrong logic then reducing log inforamtion (f4c6104 - Nerijus Barauskas - 2013-05-21)
-[NF] SNMP Poll first pass (3222570 - Nerijus Barauskas - 2013-05-21)
-[NF] Adding view for SNMP Poll (5d223d6 - Nerijus Barauskas - 2013-05-21)
-[IM] Adding link to snmp-poll for switch (cde0422 - Nerijus Barauskas - 2013-05-21)
-[WIP] Switchport discovery by SNMP (501cb2f - Barry O'Donovan - 2013-05-20)
-[NF] Switch polling by SNMP (a24cab2 - Barry O'Donovan - 2013-05-20)
-[HK] This field was a typo and is now removed (3dd5935 - Barry O'Donovan - 2013-05-20)
+- [IM] Add help messages and a help link to documentation (47e7619 - Barry O'Donovan - 2013-05-24)
+- [IM] Default to SNMP add for switches and allow manual add from there (aabd968 - Barry O'Donovan - 2013-05-24)
+- [IM] Better integration of different switch port pages (8e3eff8 - Barry O'Donovan - 2013-05-24)
+- [IM] Refactor CLI SNMP actions using new entitiy functions (6a9f789 - Barry O'Donovan - 2013-05-24)
+- [DB] [HK] Schema / generated entities clean up (5b52ee2 - Barry O'Donovan - 2013-05-24)
+- [IM/CR] Major refactor of SNMP polling code (246308e - Barry O'Donovan - 2013-05-23)
+- [CR] Small tweaks and fixes. (39cf69d - Barry O'Donovan - 2013-05-23)
+- [IM] Better AJAX handling (74ed6f6 - Nerijus Barauskas - 2013-05-23)
+- [BF] Fixing logic (4d1b02f - Nerijus Barauskas - 2013-05-23)
+- [IM] Tidying up code (a1656cd - Nerijus Barauskas - 2013-05-22)
+- [IM] Making single row type update as ajax (45e6bf8 - Nerijus Barauskas - 2013-05-22)
+- [NF] True /false script for frontend (aee7f81 - Nerijus Barauskas - 2013-05-22)
+- [IM] Updating older code to reflect new active field (4c36969 - Nerijus Barauskas - 2013-05-22)
+- [DB] Adding active field to swichport table (c61d353 - Nerijus Barauskas - 2013-05-22)
+- [HK] Regenerating proxies after shema changes (2055343 - Nerijus Barauskas - 2013-05-22)
+- [BF] Wrong logic then reducing log inforamtion (f4c6104 - Nerijus Barauskas - 2013-05-21)
+- [NF] SNMP Poll first pass (3222570 - Nerijus Barauskas - 2013-05-21)
+- [NF] Adding view for SNMP Poll (5d223d6 - Nerijus Barauskas - 2013-05-21)
+- [IM] Adding link to snmp-poll for switch (cde0422 - Nerijus Barauskas - 2013-05-21)
+- [WIP] Switchport discovery by SNMP (501cb2f - Barry O'Donovan - 2013-05-20)
+- [NF] Switch polling by SNMP (a24cab2 - Barry O'Donovan - 2013-05-20)
+- [HK] This field was a typo and is now removed (3dd5935 - Barry O'Donovan - 2013-05-20)
 
 
 # V3.0.12
