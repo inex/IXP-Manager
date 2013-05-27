@@ -42,7 +42,7 @@ function ixpSendPeeringRequest( event ) {
 	// close all tooltips
 	$("[rel=tooltip]").tooltip( 'hide' );
 
-	var Throb = tt_throbberWithOverlay( 200, 15, 5, "#peering-request-container" );
+	var Throb = ossThrobberWithOverlay( 200, 15, 5, "#peering-request-container" );
 	var custid = $( '#peering-request-form-custid' ).val();
 	
 	$.post( '{genUrl controller="peering-manager" action="peering-request"}', $( '#peering-request-form' ).serialize(), function( data ) {
@@ -168,7 +168,7 @@ $(document).ready( function() {
 		$( '#modal-peering-notes-footer-close' ).attr('disabled', 'disabled' ).addClass( 'disabled' );
 		$( '#modal-peering-notes-footer-save' ).attr('disabled', 'disabled' ).addClass( 'disabled' );
 
-		var Throb = tt_throbberWithOverlay( 200, 15, 5, "#peering-notes-container" );
+		var Throb = ossThrobberWithOverlay( 200, 15, 5, "#peering-notes-container" );
 		var custid = $( '#modal-peering-notes-custid' ).val();
 		
 		$.post( '{genUrl controller="peering-manager" action="peering-notes"}', $( '#peering-notes-form' ).serialize(), function( data ) {

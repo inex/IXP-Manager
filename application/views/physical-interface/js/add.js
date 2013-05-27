@@ -4,7 +4,7 @@ $( "#switchid" ).on( 'change', function( event ) {
     $( "#switchid" ).attr( 'disabled', 'disabled' );
 
     if( $(this).val() != '0' ) {
-        tt_chosenClear( "#switchportid", "<option>Please wait, loading data...</option>" );
+        ossChosenClear( "#switchportid", "<option>Please wait, loading data...</option>" );
 
         $.getJSON( "{genUrl controller='switch-port' action='ajax-get'}/id/"
                 + $( "#preselectPhysicalInterface" ).val() + "/switchid/" + $(this).val(), function( j ) {
@@ -16,9 +16,9 @@ $( "#switchid" ).on( 'change', function( event ) {
 
             // do we have a preselect?
             if( $( "#preselectSwitchPort" ).val() ) {
-                tt_chosenSet( "#switchportid", options, $( "#preselectSwitchPort" ).val() );
+                ossChosenSet( "#switchportid", options, $( "#preselectSwitchPort" ).val() );
             } else {
-                tt_chosenSet( "#switchportid", options );
+                ossChosenSet( "#switchportid", options );
             }
         });
     }
