@@ -4,6 +4,7 @@
 
 Checkout commit with specific reference:
 
+    git pull
     git checkout da13666cbbb2fc0c105b5e69ca3f317f89465388
 
 Then update schema:
@@ -135,7 +136,7 @@ See: https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management
 
 Skipped this tag in error. 
 
-*This tag is intentionally left blank.*
+*This tag is (un)intentionally left blank.*
 
 
 # V3.0.12
