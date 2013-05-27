@@ -9,6 +9,31 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CompanyBillingDetail
 {
+    
+    const INVOICE_METHOD_EMAIL = 'EMAIL';
+    const INVOICE_METHOD_POST  = 'POST';
+
+    public static $INVOICE_METHODS = [
+        self::INVOICE_METHOD_EMAIL => 'Email',
+        self::INVOICE_METHOD_POST  => 'Post'
+    ];
+
+    const BILLING_FREQUENCY_MONTHLY    = 'MONTHLY';
+    const BILLING_FREQUENCY_2MONTHLY   = '2MONTHLY';
+    const BILLING_FREQUENCY_QUARTERLY  = 'QUARTERLY';
+    const BILLING_FREQUENCY_HALFYEARLY = 'HALFYEARLY';
+    const BILLING_FREQUENCY_ANNUALLY   = 'ANNUALLY';
+    const BILLING_FREQUENCY_NOBILLING  = 'NOBILLING';
+    
+    public static $BILLING_FREQUENCIES = [
+        self::BILLING_FREQUENCY_MONTHLY    => 'Monthly',
+        self::BILLING_FREQUENCY_2MONTHLY   => 'Every 2 Months',
+        self::BILLING_FREQUENCY_QUARTERLY  => 'Quarterly',
+        self::BILLING_FREQUENCY_HALFYEARLY => 'Half-Yearly',
+        self::BILLING_FREQUENCY_ANNUALLY   => 'Annually',
+        self::BILLING_FREQUENCY_NOBILLING  => 'No Billing'
+    ];
+
     /**
      * @var string
      */
@@ -68,6 +93,26 @@ class CompanyBillingDetail
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     private $Customer;
+
+    /**
+     * @var boolean
+     */
+    private $purchaseOrderRequired;
+
+    /**
+     * @var string
+     */
+    private $invoiceMethod;
+
+    /**
+     * @var string
+     */
+    private $invoiceEmail;
+
+    /**
+     * @var string
+     */
+    private $billingFrequency;
     
     public function __construct()
     {
@@ -345,26 +390,6 @@ class CompanyBillingDetail
     {
         return $this->Customer;
     }
-    /**
-     * @var boolean
-     */
-    private $purchaseOrderRequired;
-
-    /**
-     * @var string
-     */
-    private $invoiceMethod;
-
-    /**
-     * @var string
-     */
-    private $invoiceEmail;
-
-    /**
-     * @var string
-     */
-    private $billingFrequency;
-
 
     /**
      * Set purchaseOrderRequired

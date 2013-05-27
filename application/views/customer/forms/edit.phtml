@@ -21,6 +21,8 @@
             {$element->datejoin}
             {$element->dateleave}
             {$element->status}
+            {$element->MD5Support}
+            {$element->abbreviatedName}
             
         </fieldset>
         
@@ -32,6 +34,7 @@
             <legend>Billing Details</legend>
             
             {$element->billingContactName}
+            {$element->billingFrequency}
             {$element->billingAddress1}
             {$element->billingAddress2}
             {$element->billingTownCity}
@@ -39,6 +42,8 @@
             {$element->billingCountry}
             {$element->billingEmail}
             {$element->billingTelephone}
+            {$element->invoiceMethod}
+            {$element->invoiceEmail}
             {$element->vatRate}
             {$element->vatNumber}
             
@@ -154,6 +159,16 @@ $(document).ready( function(){
                 //$(".chzn-select").chosen();
             });
         }
+    });
+    
+    $( "#name" ).on( "change", function(){
+        if( $( '#abbreviatedName' ).val() == "" )
+            $( '#abbreviatedName' ).val( $('#name' ).val() );
+    });
+    
+    $( "#billingEmail" ).on( "change", function(){
+        if( $( '#invoiceEmail' ).val() == "" )
+            $( '#invoiceEmail' ).val( $('#billingEmail' ).val() );
     });
 
     {if $isEdit and $object->getType() eq 2}

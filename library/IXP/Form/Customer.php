@@ -104,6 +104,22 @@ class IXP_Form_Customer extends IXP_Form
             ->setAttrib( 'class', 'chzn-select span6' )
             ->setErrorMessages( array( 'Please set the customer\'s status' ) );
         $this->addElement( $status );
+        
+        $MD5Support = $this->createElement( 'select', 'MD5Support' );
+        $MD5Support->setMultiOptions( [ '' => '' ] + \Entities\Customer::$MD5_SUPPORT )
+            ->setRegisterInArrayValidator( true )
+            ->setLabel( 'MD5 Support' )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'chzn-select span6' );
+        $this->addElement( $MD5Support );
+        
+        $abbreviatedName = $this->createElement( 'text', 'abbreviatedName' );
+        $abbreviatedName->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setLabel( 'Abbreviated Name' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $abbreviatedName );
 
 
         $autsys = $this->createElement( 'text', 'autsys' );
@@ -176,8 +192,6 @@ class IXP_Form_Customer extends IXP_Form
     		'peeringDisplayGroup'
         );
         $this->getDisplayGroup( 'peeringDisplayGroup' )->setLegend( 'Peering Details' );
-
-        
         
         $nocphone = $this->createElement( 'text', 'nocphone' );
         $nocphone->addValidator( 'stringLength', false, array( 0, 255 ) )
@@ -281,15 +295,15 @@ class IXP_Form_Customer extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingTownCity );
-
+        
         $billingCountry = $this->createElement( 'select', 'billingCountry' );
-        $billingCountry->setMultiOptions( OSS_Countries::getCountriesArray() )
+        $billingCountry->setMultiOptions( [ "" => "" ] + OSS_Countries::getCountriesArray() )
             ->setRegisterInArrayValidator( true )
-            ->setValue( 'IE' )
+            ->setValue( "" )
             ->setLabel( 'Country' )
             ->setRequired( false )
             ->setAttrib( 'class', 'chzn-select span6' );
-        
+
         $this->addElement( $billingCountry );
 
         $billingPostcode = $this->createElement( 'text', 'billingPostcode' );
@@ -305,7 +319,7 @@ class IXP_Form_Customer extends IXP_Form
         $billingEmail->addValidator('emailAddress' )
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
-            ->setAttrib( 'placeholder', 'billing@gmail.com' )
+            ->setAttrib( 'placeholder', 'billing@example.com' )
             ->setLabel( 'E-Mail' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -320,7 +334,33 @@ class IXP_Form_Customer extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingTelephone );
-
+        
+        $invoiceMethod = $this->createElement( 'select', 'invoiceMethod' );
+        $invoiceMethod->setMultiOptions( [ '' => '' ] + \Entities\CompanyBillingDetail::$INVOICE_METHODS )
+            ->setRegisterInArrayValidator( true )
+            ->setLabel( 'Invoice Method' )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'chzn-select span6' );
+        $this->addElement( $invoiceMethod );
+        
+        $billingFrequency = $this->createElement( 'select', 'billingFrequency' );
+        $billingFrequency->setMultiOptions( [ '' => '' ] + \Entities\CompanyBillingDetail::$BILLING_FREQUENCIES )
+            ->setRegisterInArrayValidator( true )
+            ->setLabel( 'Billing Frequency' )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'chzn-select span6' );
+        $this->addElement( $billingFrequency );
+        
+        $invoiceEmail = $this->createElement( 'text', 'invoiceEmail' );
+        $invoiceEmail->addValidator('emailAddress' )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'placeholder', 'invoicing@example.com' )
+            ->setLabel( 'Invoice E-Mail' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $invoiceEmail );
+        
         $vatNumber = $this->createElement( 'text', 'vatNumber' );
         $vatNumber->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
@@ -402,9 +442,9 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $townCity );
 
         $country = $this->createElement( 'select', 'country' );
-        $country->setMultiOptions( OSS_Countries::getCountriesArray() )
+        $country->setMultiOptions( [ "" => "" ] + OSS_Countries::getCountriesArray() )
             ->setRegisterInArrayValidator( true )
-            ->setValue( 'IE' )
+            ->setValue( "" )
             ->setLabel( 'Country' )
             ->setRequired( false )
             ->setAttrib( 'class', 'chzn-select span6' );

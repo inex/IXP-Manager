@@ -37,7 +37,7 @@
                 <td>
                     {if $pd.port->getPhysicalInterface()}
                         {$cust = $pd.port->getPhysicalInterface()->getVirtualInterface()->getCustomer()}
-                        <a href="{genUrl controller='customer' action='overview' id=$cust->getId() tab='ports'}">{$cust->getShortname}</a>
+                        <a href="{genUrl controller='customer' action='overview' id=$cust->getId() tab='ports'}">{$cust->getShortname()}</a>
                     {/if}
                 </td>
                 <td>{$pd.port->getName()}</td>
