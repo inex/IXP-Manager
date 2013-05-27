@@ -328,7 +328,7 @@
       <field name="name" type="string" size="255" uuid="334f3001-30d1-4cc6-8169-66cccbc6b06c"/>
       <field name="type" type="integer" uuid="371315d4-81a7-49be-a6ec-7c5ce0bf5968"/>
       <field name="shortname" type="string" size="255" unique="true" uuid="e45b5f3a-8c31-4eaa-a2c2-ee17ed8d44a3"/>
-      <field name="abreviatedName" type="string" size="30" uuid="94f0f3ee-5379-4bbd-bcba-8d4f7e65f3ae"/>
+      <field name="abbreviatedName" type="string" size="30" uuid="94f0f3ee-5379-4bbd-bcba-8d4f7e65f3ae"/>
       <field name="autsys" type="integer" uuid="bc62f2c0-4c60-42d4-bf45-0a5a043ceb1e"/>
       <field name="maxprefixes" type="integer" uuid="a7c55834-923d-47b3-a7cb-c9db1666b883"/>
       <field name="peeringemail" type="string" size="255" uuid="1c9997f1-f8ee-4a8f-b291-1f767e51a8ed"/>

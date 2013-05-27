@@ -7,7 +7,7 @@
     <field name="name" type="string" length="255" nullable="true"/>
     <field name="type" type="integer" nullable="true"/>
     <field name="shortname" type="string" unique="true" length="255" nullable="true"/>
-    <field name="abreviatedName" type="string" length="30" nullable="true"/>
+    <field name="abbreviatedName" type="string" length="30" nullable="true"/>
     <field name="autsys" type="integer" nullable="true"/>
     <field name="maxprefixes" type="integer" nullable="true"/>
     <field name="peeringemail" type="string" length="255" nullable="true"/>
