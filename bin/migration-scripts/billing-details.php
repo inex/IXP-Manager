@@ -2,7 +2,9 @@
 <?php
 
 /**
-/*
+/* Billing Details migration script - see CHANGELOG for v3.0.14
+ *
+ *
  * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  * 
