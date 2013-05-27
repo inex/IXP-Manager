@@ -7,6 +7,7 @@
     <field name="name" type="string" length="255" nullable="true"/>
     <field name="type" type="integer" nullable="true"/>
     <field name="shortname" type="string" unique="true" length="255" nullable="true"/>
+    <field name="abreviatedName" type="string" length="30" nullable="true"/>
     <field name="autsys" type="integer" nullable="true"/>
     <field name="maxprefixes" type="integer" nullable="true"/>
     <field name="peeringemail" type="string" length="255" nullable="true"/>
@@ -29,6 +30,7 @@
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" length="255" nullable="true"/>
     <field name="created" type="date" nullable="true"/>
+    <field name="MD5Support" type="string" nullable="true"/>
     <many-to-one field="IRRDB" target-entity="Entities\IRRDBConfig" inversed-by="Customers">
       <join-columns>
         <join-column name="irrdb" referenced-column-name="id"/>
