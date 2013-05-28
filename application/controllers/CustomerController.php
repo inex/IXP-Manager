@@ -188,6 +188,9 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->view->netinfo   = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
     	$this->view->cust      = $cust = $this->_loadCustomer();
     	$this->view->tab       = $this->getParam( 'tab', false );
+
+        $this->view->registerClass( 'Countries', 'OSS_Countries' );
+        $this->view->registerClass( 'BillingDetails', '\\Entities\\CompanyBillingDetail' );
     	
     	// is this user watching all notes for this customer?
     	if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
