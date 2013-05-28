@@ -364,7 +364,7 @@ function ossPopover()
         title:     $( this ).attr( prefix + "title" ) ? $( this ).attr( prefix + "title" ) : false,
         delay:     $( this ).attr( prefix + "delay" ) ? parseInt( $( this ).attr( prefix + "delay" ) ) : 0,
         animation: $( this ).attr( prefix + "animation" ) ? $( this ).attr( prefix + "animation" ) : true,
-        placement: $( this ).attr( prefix + "placement" ) ? $( this ).attr( prefix + "placement" ) : 'top',
+        placement: $( this ).attr( prefix + "placement" ) ? $( this ).attr( prefix + "placement" ) : 'top'
 
     });
 }
@@ -389,14 +389,14 @@ $( 'document' ).ready( function(){
 
 //See https://github.com/harvesthq/chosen/issues/92 for:
 function ossChosenFixWidth( obj, force ) {
-	if( ( force != undefined && force == true ) || obj.attr( 'chzn-fix-width' ) === '1' ) {
-		 czn_id = "#" + obj.attr( "id" ) + "_chzn";
-	     width = parseInt( obj.css( "width" ) );
+    if( ( force != undefined && force == true ) || obj.attr( 'chzn-fix-width' ) === '1' ) {
+        czn_id = "#" + obj.attr( "id" ) + "_chzn";
+	width = parseInt( obj.css( "width" ) );
 	
-	     $( czn_id ).css( "width", width + "px" );
-	     $( czn_id + " > .chzn-drop" ).css( "width", ( width - 2 ) + "px" );
-	     $( czn_id + " > .chzn-drop > .chzn-search > input" ).css( "width", (width - 37 ) + "px" ); 
-	}
+	$( czn_id ).css( "width", width + "px" );
+	$( czn_id + " > .chzn-drop" ).css( "width", ( width - 2 ) + "px" );
+        $( czn_id + " > .chzn-drop > .chzn-search > input" ).css( "width", (width - 37 ) + "px" ); 
+    }
 }	
 
 // clear a chosen dropdown
