@@ -113,11 +113,11 @@ class IXP_Form_Customer_BillingRegistration extends IXP_Form
         $this->addElement( $billingTelephone );
         
         $invoiceMethod = $this->createElement( 'select', 'invoiceMethod' );
-        $invoiceMethod->setMultiOptions( [ '' => '' ] + \Entities\CompanyBillingDetail::$INVOICE_METHODS )
+        $invoiceMethod->setMultiOptions( [ '0' => ' ' ] + \Entities\CompanyBillingDetail::$INVOICE_METHODS )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Invoice Method' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span6' );
+            ->setAttrib( 'class', 'chzn-select-deselect span6' );
         $this->addElement( $invoiceMethod );
 
         $purchaseOrderRequired = $this->createElement( 'checkbox', 'purchaseOrderRequired' );
@@ -134,7 +134,7 @@ class IXP_Form_Customer_BillingRegistration extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Billing Frequency' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span6' );
+            ->setAttrib( 'class', 'chzn-select-deselect span6' );
         $this->addElement( $billingFrequency );
         
         $invoiceEmail = $this->createElement( 'text', 'invoiceEmail' );
