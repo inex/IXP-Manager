@@ -113,7 +113,7 @@ class IXP_Form_Customer_BillingRegistration extends IXP_Form
         $this->addElement( $billingTelephone );
         
         $invoiceMethod = $this->createElement( 'select', 'invoiceMethod' );
-        $invoiceMethod->setMultiOptions( [ '0' => ' ' ] + \Entities\CompanyBillingDetail::$INVOICE_METHODS )
+        $invoiceMethod->setMultiOptions( [ '' => '' ] + \Entities\CompanyBillingDetail::$INVOICE_METHODS )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Invoice Method' )
             ->setRequired( false )
@@ -126,8 +126,6 @@ class IXP_Form_Customer_BillingRegistration extends IXP_Form
             ->addValidator( 'InArray', false, [ [ 0, 1 ] ] )
             ->addFilter( 'Int' );
         $this->addElement( $purchaseOrderRequired );
-
-
         
         $billingFrequency = $this->createElement( 'select', 'billingFrequency' );
         $billingFrequency->setMultiOptions( [ '' => '' ] + \Entities\CompanyBillingDetail::$BILLING_FREQUENCIES )
