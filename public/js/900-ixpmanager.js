@@ -27,23 +27,3 @@ $( 'document' ).ready( function(){
 	$('.dropdown-toggle').dropdown();
 });
 
-
-
-/*****************************************************************************/
-// Preferences via cookies
-/*****************************************************************************/
-/*
-var tt_cookie_expiry_days = 90;
-var tt_prefs = {
-	'my_show_notes'       : false,
-	'my_show_descs'       : false,
-	'my_show_daily_total' : false,
-	'my_show_weekly_total': false,
-	'chart_settings'      : false
-};
-
-cprefs = $.jsonCookie( 'tt_prefs' );
-if( cprefs != null )
-	tt_prefs = cprefs;
-
-*/
