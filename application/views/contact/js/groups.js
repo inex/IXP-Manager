@@ -5,6 +5,7 @@ $( document ).ready( function(){
     $( "select[id|='group-type']" ).bind( "change", updateGroups );
     $( "#select-group-{$row_idx}" ).bind( "change", changeGroup );
     $( "span[id|='remove-group']" ).bind( "click", removeRow );
+    $( "div[id|='remove-group']" ).bind( "click", removeRow );
 });
     
 function updateGroups( event ){
@@ -12,7 +13,7 @@ function updateGroups( event ){
     id = '#select-group-' + row;
     
     $( id ).parent().show( "slow" ).removeClass( 'hidden' );
-    tt_chosenClear( id );
+    ossChosenClear( id );
     
     var options = groups[$( event.target ).val()];
     
@@ -28,13 +29,13 @@ function updateGroups( event ){
     	});
     }
 
-    arrOptions = arrOptions.sort( tt_sortByName );
+    arrOptions = arrOptions.sort( ossSortByName );
     var ddoptions = '<option value=""></option>';
 
     for( var i = 0;  i < arrOptions.length;  i++ )
         ddoptions += arrOptions[i].string;
 
-    tt_chosenSet( id, ddoptions );
+    ossChosenSet( id, ddoptions );
 };
     
 function changeGroup( event ){
@@ -80,7 +81,7 @@ function _buildGroupsRow()
     nrow += '</select>\
     </td>\
     <td><div class="hidden"><select id="select-group-' + groups_cnt + '" name="group[' + groups_cnt + ']" class="chzn-select" style="width: 150px;" data-placeholder="Group..."></select></div></td>\
-    <td><div class="hidden"  id="remove-group-' + groups_cnt + '"><span class="btn btn-mini"><i class="icon-remove"></i></span></div></td>\
+    <td><div class="hidden btn btn-mini"  id="remove-group-' + groups_cnt + '"><i class="icon-remove"></i></div></td>\
     </tr>';
     return nrow;
 }

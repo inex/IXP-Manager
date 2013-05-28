@@ -5,8 +5,8 @@ $( "#vlanid" ).change( function() {
 
     if( $(this).val() != '0' ) {
 
-        tt_chosenClear( "#ipv4addressid", "<option>Please wait, loading data...</option>" );
-        tt_chosenClear( "#ipv6addressid", "<option>Please wait, loading data...</option>" );
+        ossChosenClear( "#ipv4addressid", "<option>Please wait, loading data...</option>" );
+        ossChosenClear( "#ipv6addressid", "<option>Please wait, loading data...</option>" );
 
         $.getJSON( "{genUrl controller='ipv4-address' action='ajax-get-for-vlan'}/vliid/"
                 + $( "#preselectVlanInterface" ).val() + "/vlanid/" + $(this).val(), null, function( j ){
@@ -18,9 +18,9 @@ $( "#vlanid" ).change( function() {
 
             // do we have a preselect?
             if( $( "#preselectIPv4Address" ).val() ) {
-                tt_chosenSet( "#ipv4addressid", options, $( "#preselectIPv4Address" ).val() );
+                ossChosenSet( "#ipv4addressid", options, $( "#preselectIPv4Address" ).val() );
             } else {
-                tt_chosenSet( "#ipv4addressid", options );
+                ossChosenSet( "#ipv4addressid", options );
             }
         });
 
@@ -34,9 +34,9 @@ $( "#vlanid" ).change( function() {
 
             // do we have a preselect?
             if( $( "#preselectIPv6Address" ).val() ) {
-                tt_chosenSet( "#ipv6addressid", options, $( "#preselectIPv6Address" ).val() );
+                ossChosenSet( "#ipv6addressid", options, $( "#preselectIPv6Address" ).val() );
             } else {
-                tt_chosenSet( "#ipv6addressid", options );
+                ossChosenSet( "#ipv6addressid", options );
             }
         });
 
