@@ -4,6 +4,8 @@ Bring miscelaneous JS fucntions into line with OSS-Framework.
 
 Upgrade external JS and CSS libraries.
 
+- [HK] Freshly pressed CSS / JS (e385b53 - Barry O'Donovan - 2013-05-28)
+- [IM] Update Chosen (4bf3505 - Barry O'Donovan - 2013-05-28)
 - [IM] Freshly pressed JS / CSS (8d81aa6 - Barry O'Donovan - 2013-05-28)
 - [IM] Upgrade colorbox (28798b7 - Barry O'Donovan - 2013-05-28)
 - [IM] Upgrade datatables (d4fbd0c - Barry O'Donovan - 2013-05-28)
