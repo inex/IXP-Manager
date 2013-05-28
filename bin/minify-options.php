@@ -73,7 +73,7 @@ $http_js = '{genUrl}/js';
 // var variable meaning we don't need to keep our list of JS files up to date manually
 // and also it means that versioned bundles get updated automatically.
 
-$mini_js_conditional_if   = '{if isset( $config.use_minified_js ) and $config.use_minified_js}';
+$mini_js_conditional_if   = '{if isset( $options.mini_js ) and $options.mini_js}';
 $mini_js_conditional_else = '{else}';
 $mini_js_conditional_end  = '{/if}';
 
@@ -124,7 +124,7 @@ $http_css = '{genUrl}/css';
 // var variable meaning we don't need to keep our list of CSS files up to date manually
 // and also it means that versioned bundles get updated automatically.
 
-$mini_css_conditional_if   = '{if isset( $config.use_minified_css ) and $config.use_minified_css}';
+$mini_css_conditional_if   = '{if isset( $options.mini_css ) and $options.mini_css}';
 $mini_css_conditional_else = '{else}';
 $mini_css_conditional_end  = '{/if}';
 
