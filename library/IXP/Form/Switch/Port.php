@@ -48,7 +48,6 @@ class IXP_Form_Switch_Port extends IXP_Form
             ->addValidator( 'greaterThan', true, array( 0 ) )
             ->setLabel( 'Type' )
             ->setAttrib( 'class', 'span3 chzn-select' )
-            ->setAttrib( 'chzn-nofix-width', '1' )
             ->setErrorMessages( array( 'Please set the port type' ) );
         $this->addElement( $type );
 

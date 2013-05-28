@@ -38,7 +38,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'virtual-interface/forms/add-wizard.phtml' ] ] ] );
         
         $this->addElement( IXP_Form_Customer::getPopulatedSelect( 'custid' ) );
-        $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span12' )->setAttrib( 'chzn-nofix-width', '1' );
+        $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span12' );
                 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // VIRTUAL INTERFACE DETAILS
@@ -93,7 +93,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         // PHYSICAL INTERFACE DETAILS
 
         $this->addElement( IXP_Form_Switch::getPopulatedSelect( 'switchid' ) );
-        $this->getElement( 'switchid' )->setAttrib( 'class', 'chzn-select span12' )->setAttrib( 'chzn-nofix-width', '1' );
+        $this->getElement( 'switchid' )->setAttrib( 'class', 'chzn-select span12' );
         
         $switchPorts = $this->createElement( 'select', 'switchportid' );
         
@@ -101,7 +101,6 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
             ->setRegisterInArrayValidator( false )
             ->setLabel( 'Port' )
             ->setAttrib( 'class', 'chzn-select span12' )
-            ->setAttrib( 'chzn-nofix-width', '1' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a switch port' ) );
         $this->addElement( $switchPorts );
@@ -111,7 +110,6 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $status->setMultiOptions( \Entities\PhysicalInterface::$STATES )
             ->setRegisterInArrayValidator( true )
             ->setAttrib( 'class', 'chzn-select span12' )
-            ->setAttrib( 'chzn-nofix-width', '1' )
             ->setLabel( 'Status' )
             ->setErrorMessages( array( 'Please set the status' ) );
         $this->addElement( $status );
@@ -121,7 +119,6 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $speed->setMultiOptions( \Entities\PhysicalInterface::$SPEED )
             ->setRegisterInArrayValidator( true )
             ->setAttrib( 'class', 'chzn-select span12' )
-            ->setAttrib( 'chzn-nofix-width', '1' )
             ->setLabel( 'Speed' )
             ->setErrorMessages( array( 'Please set the speed' ) );
         $this->addElement( $speed );
@@ -131,7 +128,6 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $duplex->setMultiOptions( \Entities\PhysicalInterface::$DUPLEX )
             ->setRegisterInArrayValidator( true )
             ->setAttrib( 'class', 'chzn-select span12' )
-            ->setAttrib( 'chzn-nofix-width', '1' )
             ->setLabel( 'Duplex' )
             ->setErrorMessages( array( 'Please set the duplex' ) );
         $this->addElement( $duplex );
@@ -149,8 +145,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
 
         $this->addElement( IXP_Form_Vlan::getPopulatedSelect( 'vlanid' ) );
         $this->getElement( 'vlanid' )
-            ->setAttrib( 'class', 'chzn-select span12' )
-            ->setAttrib( 'chzn-nofix-width', '1' );
+            ->setAttrib( 'class', 'chzn-select span12' );
         
         
         $ipv4enabled = $this->createElement( 'checkbox', 'ipv4enabled' );
@@ -161,6 +156,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $ipv4addressid = $this->createElement( 'select', 'ipv4addressid' );
         $ipv4addressid->setRegisterInArrayValidator( false )
             ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
             ->setLabel( 'IPv4 Address' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a IPv4 address' ) );
@@ -209,6 +205,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $ipv6addressid->setRegisterInArrayValidator( false )
             ->setLabel( 'IPv6 Address' )
             ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a IPv6 address' ) );
         $this->addElement( $ipv6addressid );

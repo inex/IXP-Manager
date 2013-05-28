@@ -57,7 +57,6 @@ class IXP_Form_Switch_AddBySNMP extends IXP_Form
         $switchtype = $this->createElement( 'select', 'switchtype' );
         $switchtype->setMultiOptions( \Entities\Switcher::$TYPES )
             ->setAttrib( 'class', 'span3 chzn-select' )
-            ->setAttrib( 'chzn-nofix-width', '1' )
             ->setRegisterInArrayValidator( true )
             ->addValidator( 'greaterThan', true, array( 0 ) )
             ->setLabel( 'Type' )

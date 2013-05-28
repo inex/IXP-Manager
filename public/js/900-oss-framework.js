@@ -389,9 +389,9 @@ $( 'document' ).ready( function(){
 });
 
 
-// See https://github.com/harvesthq/chosen/issues/92 for:
-function ossChosenFixWidth( obj ) {
-	if( obj.attr( 'chzn-nofix-width' ) !== '1' ) {
+//See https://github.com/harvesthq/chosen/issues/92 for:
+function ossChosenFixWidth( obj, force ) {
+	if( ( force != undefined && force == true ) || obj.attr( 'chzn-fix-width' ) === '1' ) {
 		 czn_id = "#" + obj.attr( "id" ) + "_chzn";
 	     width = parseInt( obj.css( "width" ) );
 	
@@ -399,7 +399,7 @@ function ossChosenFixWidth( obj ) {
 	     $( czn_id + " > .chzn-drop" ).css( "width", ( width - 2 ) + "px" );
 	     $( czn_id + " > .chzn-drop > .chzn-search > input" ).css( "width", (width - 37 ) + "px" ); 
 	}
-}
+}	
 
 // clear a chosen dropdown
 function ossChosenClear( id ) {

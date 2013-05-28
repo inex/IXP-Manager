@@ -42,7 +42,9 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         $this->addElement( $virtualInterface );
 
         $this->addElement( IXP_Form_Vlan::getPopulatedSelect( 'vlanid' ) );
-        $this->getElement( 'vlanid' )->setAttrib( 'class', 'chzn-select span2' );
+        $this->getElement( 'vlanid' )
+            ->setAttrib( 'class', 'chzn-select span6' );            
+        
         
         $ipv4enabled = $this->createElement( 'checkbox', 'ipv4enabled' );
         $ipv4enabled->setLabel( 'IPv4 Enabled' )
@@ -52,6 +54,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         $ipv4addressid = $this->createElement( 'select', 'ipv4addressid' );
         $ipv4addressid->setRegisterInArrayValidator( false )
             ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
             ->setLabel( 'IPv4 Address' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a IPv4 address' ) );
@@ -98,6 +101,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         $ipv6addressid->setRegisterInArrayValidator( false )
             ->setLabel( 'IPv6 Address' )
             ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a IPv6 address' ) );
         $this->addElement( $ipv6addressid );
