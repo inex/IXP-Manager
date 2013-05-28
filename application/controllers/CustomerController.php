@@ -255,14 +255,12 @@ class CustomerController extends IXP_Controller_FrontEnd
             $bdetail = new \Entities\CompanyBillingDetail();
             $this->getD2EM()->persist( $bdetail );
             $object->setBillingDetails( $bdetail );
+            $bdetail->setPurchaseOrderRequired( 0 );
             
             $rdetail = new \Entities\CompanyRegisteredDetail();
             $this->getD2EM()->persist( $rdetail );
             $object->setRegistrationDetails( $rdetail );
         }
-        
-        $form->assignFormToEntity( $bdetail, $this, $isEdit );
-        $form->assignFormToEntity( $rdetail, $this, $isEdit );
         
         if( ( $form->getValue( 'type' ) == \Entities\Customer::TYPE_FULL || $form->getValue( 'type' ) == \Entities\Customer::TYPE_PROBONO )
                 && !$form->getElement( 'irrdb' )->getValue() )
@@ -306,7 +304,10 @@ class CustomerController extends IXP_Controller_FrontEnd
     protected function addDestinationOnSuccess( $form, $object, $isEdit  )
     {
         $this->addMessage( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
-        $this->redirect( 'customer/overview/id/' . $object->getId() );
+        if( $isEdit )
+            $this->redirect( 'customer/overview/id/' . $object->getId() );
+        else
+            $this->redirect( 'customer/billing-registration/id/' . $object->getId() );
     }
     
     /**
@@ -351,9 +352,6 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
      protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
      {
-         if( !$isEdit && isset( $this->getOptions()['identity']['default_country'] ) )
-             $form->getElement( 'billingCountry' )->setValue( $this->getOptions()['identity']['default_country'] );
-
          if( $object->getIRRDB() instanceof \Entities\IRRDBConfig )
              $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
 
@@ -366,6 +364,30 @@ class CustomerController extends IXP_Controller_FrontEnd
          
          return true;
      }
+
+
+    /**
+     * Send the member an operations welcome mail
+     *
+     */
+    public function billingRegistrationAction()
+    {
+        $this->view->cust = $c = $this->_loadCustomer();
+        $this->view->form = $form = new IXP_Form_Customer_BillingRegistration();
+
+        $form->assignEntityToForm( $c->getBillingDetails(), $this );
+        $form->assignEntityToForm( $c->getRegistrationDetails(), $this );
+        
+        // Process a submitted form if it passes initial validation
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
+        {
+            $form->assignFormToEntity( $c->getBillingDetails(), $this, true );
+            $form->assignFormToEntity( $c->getRegistrationDetails(), $this, true );
+
+            $this->getD2EM()->flush();
+            $this->addDestinationOnSuccess( $form, $c, true );
+        }
+    }
                                                                                                
 
     /**
