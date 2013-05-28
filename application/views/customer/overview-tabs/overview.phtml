@@ -84,14 +84,8 @@
                     {if $cust->getNoc24hphone()} {$cust->getNoc24hphone()} (24h) {/if}
                 {/if}
             </td>
-            <td><strong>Billing Details</strong></td>
+            <td></td>
             <td>
-                {if $cust->getBillingDetails()->getBillingContactName()}    {$cust->getBillingDetails()->getBillingContactName()}<br />     {/if}
-                {if $cust->getBillingDetails()->getBillingAddress1()}   {$cust->getBillingDetails()->getBillingAddress1()}<br />    {/if}
-                {if $cust->getBillingDetails()->getBillingAddress2()}   {$cust->getBillingDetails()->getBillingAddress2()}<br />    {/if}
-                {if $cust->getBillingDetails()->getBillingTownCity()}   {$cust->getBillingDetails()->getBillingTownCity()}<br />    {/if}
-                {if $cust->getBillingDetails()->getBillingPostcode()}   {$cust->getBillingDetails()->getBillingPostcode()}<br />     {/if}
-                {if $cust->getBillingDetails()->getBillingCountry()}    {$cust->getBillingDetails()->getBillingCountry()}<br />     {/if}
             </td>
         </tr>
 
