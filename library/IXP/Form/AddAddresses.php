@@ -44,7 +44,7 @@ class IXP_Form_AddAddresses extends IXP_Form
         $type->setMultiOptions( [ 'IPv4' => 'IPv4', 'IPv6' => 'IPv6' ] )
             ->setRegisterInArrayValidator( true )
             ->setValue( 'IPv6' )
-            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setAttrib( 'class', 'span2 chzn-select' )
             ->setLabel( 'Address Family' );
         $this->addElement( $type );
     }

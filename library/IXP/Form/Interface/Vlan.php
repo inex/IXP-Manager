@@ -42,7 +42,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         $this->addElement( $virtualInterface );
 
         $this->addElement( IXP_Form_Vlan::getPopulatedSelect( 'vlanid' ) );
-        $this->getElement( 'vlanid' )->setAttrib( 'class', 'chzn-select span6' );
+        $this->getElement( 'vlanid' )->setAttrib( 'class', 'chzn-select span2' );
         
         $ipv4enabled = $this->createElement( 'checkbox', 'ipv4enabled' );
         $ipv4enabled->setLabel( 'IPv4 Enabled' )

@@ -50,7 +50,7 @@ class IXP_Form_Customer extends IXP_Form
         $type->setMultiOptions( [ '0' => '' ] + \Entities\Customer::$CUST_TYPES_TEXT )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Type' )
-            ->setAttrib( 'class', 'chzn-select span6' )
+            ->setAttrib( 'class', 'chzn-select span2' )
             ->setErrorMessages( array( 'Please select a customer type' ) );
         $this->addElement( $type );
 
@@ -101,7 +101,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Status' )
             ->setRequired( true )
-            ->setAttrib( 'class', 'chzn-select span6' )
+            ->setAttrib( 'class', 'chzn-select span2' )
             ->setErrorMessages( array( 'Please set the customer\'s status' ) );
         $this->addElement( $status );
 
@@ -136,7 +136,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Peering Policy' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span6' );
+            ->setAttrib( 'class', 'chzn-select span2' );
         
         $this->addElement( $peeringpolicy );
         
@@ -223,7 +223,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Hours' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span6' );
+            ->setAttrib( 'class', 'chzn-select span2' );
         $this->addElement( $nochours );
         
         
@@ -288,7 +288,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setValue( 'IE' )
             ->setLabel( 'Country' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span6' );
+            ->setAttrib( 'class', 'chzn-select span2' );
         
         $this->addElement( $billingCountry );
 
@@ -407,7 +407,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setValue( 'IE' )
             ->setLabel( 'Country' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span6' );
+            ->setAttrib( 'class', 'chzn-select span2' );
 
         $this->addElement( $country );
 
@@ -447,7 +447,7 @@ class IXP_Form_Customer extends IXP_Form
         $cust->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( _( 'Customer' ) )
-            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setAttrib( 'class', 'span2 chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select a customer' ) ) );
         

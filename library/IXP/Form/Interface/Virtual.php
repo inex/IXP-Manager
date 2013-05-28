@@ -39,7 +39,7 @@ class IXP_Form_Interface_Virtual extends IXP_Form
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'virtual-interface/forms/virtual-interface.phtml' ] ] ] );
         
         $this->addElement( IXP_Form_Customer::getPopulatedSelect( 'custid' ) );
-        $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span6' );
+        $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span2' );
         
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 0, 255 ) )

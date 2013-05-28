@@ -65,6 +65,7 @@ class IXP_Form_Vendor extends IXP_Form
             ->setRequired( true )
             ->setLabel( _( 'Vendor' ) )
             ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setAttrib( 'chzn-nofix-width', '1' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select a vendor' ) ) );
         

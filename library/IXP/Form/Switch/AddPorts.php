@@ -42,6 +42,7 @@ class IXP_Form_Switch_AddPorts extends IXP_Form
         $deftype = $this->createElement( 'select', 'deftype' );
         $deftype->setMultiOptions( \Entities\SwitchPort::$TYPES )
             ->setAttrib( 'class', 'chzn-select span3' )
+            ->setAttrib( 'chzn-nofix-width', '1' )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Default Type' );
         $this->addElement( $deftype );

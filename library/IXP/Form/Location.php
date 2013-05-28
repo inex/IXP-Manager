@@ -160,6 +160,7 @@ class IXP_Form_Location extends IXP_Form
             ->setRequired( true )
             ->setLabel( _( 'Location' ) )
             ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setAttrib( 'chzn-nofix-width', '1' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select a location' ) ) );
         

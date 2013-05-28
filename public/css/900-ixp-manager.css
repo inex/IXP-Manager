@@ -330,3 +330,11 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 }
 
 
+
+/* Chosen width issues: https://github.com/harvesthq/chosen/issues/92 
+
+.chzn-container, .chzn-drop {
+    width: 100% !important;
+}
+
+*/

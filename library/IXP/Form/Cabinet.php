@@ -104,7 +104,7 @@ class IXP_Form_Cabinet extends IXP_Form
         $cab->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( _( 'Cabinet' ) )
-            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setAttrib( 'class', 'span2 chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select a cabinet' ) ) );
         

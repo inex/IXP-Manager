@@ -81,6 +81,7 @@ class IXP_Form_User extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Privileges' )
             ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setAttrib( 'chzn-nofix-width', '1' )
             ->setErrorMessages( array( 'Please select the users privilege level' ) );
 
         $this->addElement( $privileges );

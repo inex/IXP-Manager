@@ -96,6 +96,7 @@ class IXP_Form_VLAN extends IXP_Form
             ->setRequired( true )
             ->setLabel( _( 'VLAN' ) )
             ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setAttrib( 'chzn-nofix-width', '1' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select a VLAN' ) ) );
     

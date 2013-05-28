@@ -376,9 +376,30 @@ function ossPopover()
 //****************************************************************************
 
 $( 'document' ).ready( function(){
-    $(".chzn-select").chosen();
-    $(".chzn-select-deselect").chosen({allow_single_deselect:true});
+	
+    $(".chzn-select").each( function( index ){
+    	$( this ).chosen();
+        ossChosenFixWidth( $( this ) );
+    });
+    
+    $(".chzn-select-deselect").each( function( index ) {
+    	$( this ).chosen( { allow_single_deselect:true } );
+        ossChosenFixWidth( $( this ) );
+    });
 });
+
+
+// See https://github.com/harvesthq/chosen/issues/92 for:
+function ossChosenFixWidth( obj ) {
+	if( obj.attr( 'chzn-nofix-width' ) !== '1' ) {
+		 czn_id = "#" + obj.attr( "id" ) + "_chzn";
+	     width = parseInt( obj.css( "width" ) );
+	
+	     $( czn_id ).css( "width", width + "px" );
+	     $( czn_id + " > .chzn-drop" ).css( "width", ( width - 2 ) + "px" );
+	     $( czn_id + " > .chzn-drop > .chzn-search > input" ).css( "width", (width - 37 ) + "px" ); 
+	}
+}
 
 // clear a chosen dropdown
 function ossChosenClear( id ) {
