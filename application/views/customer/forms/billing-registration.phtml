@@ -1,0 +1,75 @@
+
+<form class="form-horizontal" enctype="application/x-www-form-urlencoded"
+        accept-charset="UTF-8" method="post" horizontal="1"
+        action="{genUrl controller="customer" action="billing-registration" id=$cust->getId()}">
+            
+<div class="row-fluid">
+
+    <div class="span6">
+         <legend>Billing Details</legend>
+
+            {$element->billingContactName}
+            {$element->billingFrequency}
+            {$element->billingAddress1}
+            {$element->billingAddress2}
+            {$element->billingTownCity}
+            {$element->billingPostcode}
+            {$element->billingCountry}
+            {$element->billingEmail}
+            {$element->billingTelephone}
+            {$element->purchaseOrderRequired}
+            {$element->invoiceMethod}
+            {$element->invoiceEmail}
+            {$element->vatRate}
+            {$element->vatNumber}
+
+        </fieldset>
+    </div>
+
+    <div class="span6">
+    
+         <fieldset>
+            <legend>Registration Details</legend>
+
+            {$element->registeredName}
+            {$element->companyNumber}
+            {$element->jurisdiction}
+            {$element->address1}
+            {$element->address2}
+            {$element->address3}
+            {$element->townCity}
+            {$element->postcode}
+            {$element->country}
+
+        </fieldset>
+
+        
+    </div>
+
+    
+</div>
+
+<div class="form-actions">
+
+    {$element->cancel}
+    {$element->submit}
+
+</div>
+
+    
+</form>
+
+
+<script type="text/javascript">
+
+$(document).ready( function(){
+    
+    $( "#billingEmail" ).on( "change", function(){
+        if( $( '#invoiceEmail' ).val() == "" )
+            $( '#invoiceEmail' ).val( $('#billingEmail' ).val() );
+    });
+    
+});
+
+</script>
+
