@@ -1,9 +1,11 @@
 #! /bin/sh
 
 
+# Update public/js/900-oss-framework.js from OSS-Framework
+
 DIR="$( cd "$( dirname "$0" )" && pwd )"
-OUTPUT="${DIR}/../public/js/900-oss-framework.js";
-PATH="${DIR}/../library/OSS-Framework.git/data/js";
+DEST="${DIR}/../public/js/900-oss-framework.js";
+SOURCE="${DIR}/../library/OSS-Framework.git/data/js";
 
 
 echo "/**
@@ -23,9 +25,9 @@ echo "/**
  *
  */
  
-" > $OUTPUT
+" > $DEST
 
- /bin/cat "$PATH/100-message.js" "$PATH/110-error.js" "$PATH/120-modal-dialog.js" >> $OUTPUT
- /bin/cat "$PATH/130-toggle.js" "$PATH/140-tooltip.js" "$PATH/200-popover.js" >> $OUTPUT
- /bin/cat "$PATH/300-chosen.js" "$PATH/320-throbber.js" "$PATH/400-utility.js" >> $OUTPUT
- /bin/cat "$PATH/600-datatables.js" >> $OUTPUT
+ /bin/cat "$SOURCE/100-message.js" "$SOURCE/110-error.js" "$SOURCE/120-modal-dialog.js" >> $DEST
+ /bin/cat "$SOURCE/130-toggle.js" "$SOURCE/140-tooltip.js" "$SOURCE/200-popover.js" >> $DEST
+ /bin/cat "$SOURCE/300-chosen.js" "$SOURCE/320-throbber.js" "$SOURCE/400-utility.js" >> $DEST
+ /bin/cat "$SOURCE/600-datatables.js" >> $DEST
