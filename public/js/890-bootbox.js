@@ -611,7 +611,7 @@ var bootbox = window.bootbox || (function(document, $) {
             OK      : 'OK',
             CANCEL  : 'Отмена',
             CONFIRM : 'Применить'
-        },
+        }
     };
 
     function _translate(str, locale) {

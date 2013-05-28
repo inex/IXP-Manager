@@ -366,7 +366,7 @@ function ossPopover()
         title:     $( this ).attr( prefix + "title" ) ? $( this ).attr( prefix + "title" ) : false,
         delay:     $( this ).attr( prefix + "delay" ) ? parseInt( $( this ).attr( prefix + "delay" ) ) : 0,
         animation: $( this ).attr( prefix + "animation" ) ? $( this ).attr( prefix + "animation" ) : true,
-        placement: $( this ).attr( prefix + "placement" ) ? $( this ).attr( prefix + "placement" ) : 'top',
+        placement: $( this ).attr( prefix + "placement" ) ? $( this ).attr( prefix + "placement" ) : 'top'
 
     });
 }
