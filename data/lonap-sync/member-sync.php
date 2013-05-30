@@ -530,7 +530,10 @@ function parseFile( $filename )
     if( $handle ) {
         
         while( ( $row = fgetcsv($handle, 4096, ",") ) !== false )
-        {
+        {   
+            if( count( $row ) != 75 )
+                continue;
+
             $result[ $row[59]]  = processRow( $row, $fields, $field_names );
         }
         
