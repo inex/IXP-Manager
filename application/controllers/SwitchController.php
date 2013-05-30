@@ -317,8 +317,10 @@ class SwitchController extends IXP_Controller_FrontEnd
     {
         if( $isEdit )
         {
-            $form->getElement( 'cabinetid' )->setValue( $object->getCabinet()->getId() );
-            $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
+            if( $object->getCabinet() )
+                $form->getElement( 'cabinetid' )->setValue( $object->getCabinet()->getId() );
+            if( $object->getVendor() )
+                $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
         }
     }
     

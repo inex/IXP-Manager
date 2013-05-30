@@ -53,6 +53,7 @@
                 <td><strong>Duplex:</strong></td>
                 <td id="value">{$pi->getDuplex()}</td>
             </tr>
+            {if $pi->getSwitchPort()->getSwitcher()->getCabinet()}
             <tr>
                 <td><strong>Location:</strong></td>
                 <td id="value">{$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}</td>
@@ -60,6 +61,7 @@
                 <td><strong>Colo Cabinet ID:</strong></td>
                 <td id="value">{$pi->getSwitchPort()->getSwitcher()->getCabinet()->getName()}</td>
             </tr>
+            {/if}
             <tr>
                 <td></td><td></td><td></td><td></td><td></td>
             </tr>
