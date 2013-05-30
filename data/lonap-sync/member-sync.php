@@ -91,10 +91,7 @@ foreach( $origin_members as $key => $member )
     createUpdateNotes( $cust, $member, $em );
     
     if( ++$cnt % 10 == 0 )
-    {
         $em->flush();
-        die();
-    }
 }
 
 $em->flush();
