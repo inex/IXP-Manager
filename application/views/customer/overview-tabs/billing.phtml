@@ -1,0 +1,98 @@
+<div class="row-fluid">
+    <div class="span6">
+        {assign var='rdetails' value= $cust->getRegistrationDetails() }
+        <legend>Registration Details</legend>
+        <table class="table">
+            <tr>
+                <th>Registered Name</th>
+                <td>{$rdetails->getRegisteredName()}</td>
+            </tr>
+            <tr>
+                <th>Company Number</th>
+                <td>{$rdetails->getCompanyNumber()}</td>
+            </tr>
+            <tr>
+                <th>Jurisdiction</th>
+                <td>{$rdetails->getJurisdiction()}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>
+                    {if $rdetails->getAddress1()}{$rdetails->getAddress1()}<br/>{/if}
+                    {if $rdetails->getAddress2()}{$rdetails->getAddress2()}<br/>{/if}
+                    {if $rdetails->getAddress3()}{$rdetails->getAddress3()}<br/>{/if}
+                    {if $rdetails->getTownCity()}{$rdetails->getTownCity()}<br/>{/if}
+                    {if $rdetails->getPostcode()}{$rdetails->getPostcode()}{/if}
+                </td>
+            </tr>
+            <tr>
+                <th>Country</th>
+                <td>{Countries::getCountryName($rdetails->getCountry())}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="span6">
+        <legend>Billing Details</legend>
+        {assign var='bdetails' value=$cust->getBillingDetails() }
+        <table class="table">
+            <tr>
+                <th>Contact Name</th>
+                <td>{$bdetails->getBillingContactName()}</td>
+            </tr>
+            <tr>
+                <th>VAT Number</th>
+                <td>{$bdetails->getVatNumber()}</td>
+            </tr>
+            <tr>
+                <th>VAT Rate</th>
+                <td>{$bdetails->getVatRate()}</td>
+            </tr>
+            <tr>
+                <th>Billing Period</th>
+                <td>
+                    {if isset( BillingDetails::$BILLING_FREQUENCIES[$bdetails->getBillingFrequency()] )}
+                        {BillingDetails::$BILLING_FREQUENCIES[$bdetails->getBillingFrequency()]}
+                    {/if}
+                </td>
+            </tr>
+            <tr>
+                <th>E-Mail</th>
+                <td>{$bdetails->getBillingEmail()}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>
+                    {if $bdetails->getBillingAddress1()}{$bdetails->getBillingAddress1()}<br/>{/if}
+                    {if $bdetails->getBillingAddress2()}{$bdetails->getBillingAddress2()}<br/>{/if}
+                    {if $bdetails->getBillingTownCity()}{$bdetails->getBillingTownCity()}<br/>{/if}
+                    {if $bdetails->getBillingPostcode()}{$bdetails->getBillingPostcode()}{/if}
+                </td>
+            </tr>
+            <tr>
+                <th>Country</th>
+                <td>{Countries::getCountryName($bdetails->getBillingCountry())}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{$bdetails->getBillingTelephone()}</td>
+            </tr>
+            <tr>
+                <th>P/O Required</th>
+                <td>{if $bdetails->getPurchaseOrderRequired()}<i class="icon-ok"></i>{else}<i class="icon-remove"></i>{/if}</td>
+            </tr>
+            <tr>
+                <th>Invoice Method</th>
+                <td>
+                    {if isset( BillingDetails::$INVOICE_METHODS[$bdetails->getInvoiceMethod()] )}
+                        {BillingDetails::$INVOICE_METHODS[$bdetails->getInvoiceMethod()]}
+                    {/if}
+                </td>
+            </tr>
+            <tr>
+                <th>Invoice E-Mail</th>
+                <td>{$bdetails->getInvoiceEmail()}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
