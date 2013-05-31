@@ -1,3 +1,26 @@
+# v3.0.18
+
+Update schema:
+
+    ALTER TABLE cust 
+        ADD abbreviatedName VARCHAR(30) DEFAULT NULL, 
+        ADD MD5Support VARCHAR(255) DEFAULT NULL;
+    
+    UPDATE cust SET abbreviatedName = name;
+    UPDATE cust SET MD5Support = 'UNKNOWN';
+    
+    ALTER TABLE switchport 
+        CHANGE active active TINYINT(1) NOT NULL DEFAULT 1;
+    
+    ALTER TABLE company_billing_detail 
+        ADD purchaseOrderRequired TINYINT(1) NOT NULL DEFAULT 0, 
+        ADD invoiceMethod VARCHAR(255) DEFAULT NULL, 
+        ADD invoiceEmail VARCHAR(255) DEFAULT NULL, 
+        ADD billingFrequency VARCHAR(255) DEFAULT NULL;
+
+
+
+
 # v3.0.17
 
 [IM] Add RIPE and ARIN from RADB (c4f3c2b - Barry O'Donovan - 2013-05-31)
