@@ -19,6 +19,24 @@ Update schema:
         ADD billingFrequency VARCHAR(255) DEFAULT NULL;
 
 
+Primarily a refactoring of customer / billing / registration details.
+
+[DB] Merge in lonap schema updates (c6f7333 - Barry O'Donovan - 2013-05-31)
+[IM] Regenerated js file using new script (9ea89b9 - Nerijus Barauskas - 2013-05-28)
+[NF] Adding update oss js files script (84ab33e - Nerijus Barauskas - 2013-05-28)
+[IM] Changes after review (5f61ab3 - Nerijus Barauskas - 2013-05-28)
+[IM] Adding billing tab in customer overview page (997437b - Nerijus Barauskas - 2013-05-28)
+[BF] Small fixes (605529a - Nerijus Barauskas - 2013-05-28)
+[IM] Allow to select empty values for some dropdown lists (4ceb37e - Nerijus Barauskas - 2013-05-28)
+[IM] Spliting edit int two action. Edit customer details and edit billing/registration details (74829f0 - Nerijus Barauskas - 2013-05-28)
+[IM] Removing customer billing-registration detailsf from customer form (9a4cc8d - Nerijus Barauskas - 2013-05-28)
+[NF] Adding customer billing-registration action (21b5bb8 - Nerijus Barauskas - 2013-05-28)
+[NF] Adding customer billing/registration form (ac0a4ec - Nerijus Barauskas - 2013-05-28)
+[IM] Adding new field to form to reflect schema changes (8999e39 - Nerijus Barauskas - 2013-05-27)
+[HK] Regenerating proxies. (6622ba2 - Nerijus Barauskas - 2013-05-27)
+[IM] Updating entities after schema changes (52c26f2 - Nerijus Barauskas - 2013-05-27)
+[DB] Adding new fields to the schema (487a556 - Barry O'Donovan - 2013-05-27)
+
 
 
 # v3.0.17
