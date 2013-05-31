@@ -63,7 +63,12 @@ if( !isset( $argv[1] ) )
     exit( 1 );
 }
 
-$vlan = loadCreateVlan( 'LONAP', 'LONAP', $em );
+$vlan = loadVlan( 'LONAP', $em );
+if( !$vlan )
+{
+    echo "ERROR: VLAN can not be loaded for further actions.\n";
+    exit( 1 );
+}
 
 $handle = @fopen( $argv[1], "r" );
 $fnames = false;
@@ -146,27 +151,14 @@ function updateVlanInterface( $row, $vlan, $em )
 
 
 /**
- * Creates or loads vlan
+ * Loads vlan
  *
- * @param string $name      Vlan name to create or find by
- * @param string $rcvrfname RCVRF name
- * @param object $em        Entity manager
+ * @param string $name Vlan name to find by
+ * @param object $em   Entity manager
  * @return \Entities\Vlan
  */
-function loadCreateVlan( $name, $rcvrfname, $em )
+function loadVlan( $name, $em )
 {
     $vlan = $em->getRepository( "\\Entities\\Vlan" )->findOneBy( [ 'name' => $name ] );
-    if( !$vlan )
-    {
-        $vlan = new \Entities\Vlan();
-        $em->persist( $vlan );
-        $vlan->setName( $name );
-        $vlan->setRcvrfname( $rcvrfname );
-        $vlan->setPrivate( 0 );
-        $vlan->setNumber( 
-            count( $em->getRepository( "\\Entities\\Vlan" )->findAll() ) + 1
-        );
-    }
-
     return $vlan;
 }

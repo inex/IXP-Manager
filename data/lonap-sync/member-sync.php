@@ -118,7 +118,8 @@ function createUpdateCustomer( $member, $em )
         $cust->setCreated( new \DateTime() );
     }
 
-    $cust->setName( $member['trading_name_www'] );
+    $cust->setName( $member['trading_name_www'] ? $member['trading_name_www'] : $member['company_name'] );
+    $cust->setAbbreviatedName( $cust->getName() );
     $cust->setShortname( $member['seb_memberid'] );
     $cust->setStatus( mapCustStatus( $member['status'] ) );
     $cust->setType( mapCustType( $member['type'] ) );
