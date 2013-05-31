@@ -22,11 +22,22 @@
  */
                               
 /**
- * Script parses csv file by schema from getFields() function. From parsed data it
- * creates or update customer, billing and registration details, customer notes 
- * and contacts.
+ * Script parses csv file and takes only these rows which have IPv4 addresses and
+ * group ports by server. Then it creates Vlan for LONAP if is not exist. Then
+ * iterates through servers and creates them if it not exists. Later it iterates
+ * through server ports and create them in database if not exists and it is related
+ * with customer by ASN(autsys). If Port was created then physical interface for
+ * that port is also created with virtual interface. If port exists then script 
+ * checks if physical interface and virtual interface is existent for that port.
+ * If port have pchan_master and it is_pchannel set to false then scripts find
+ * virtual interface for pchan_master and where is_pchannel is true and appends with
+ * not pchannel interface (Builds LAG). Then Virtual interface and port data is
+ * passed forward where script checks if ports IPs are already assign to LONAP's 
+ * Vlan if not then assign them then script checks if VlanInterfce is not already
+ * created for same ip to same virtual interface if not then creates it.
+ * 
  *
- * Script call: ./member-sync.php file.csv
+ * Script call: ./port-sync.php file.csv
  */                              
                               
 //ini_set('memory_limit', -1);
@@ -79,6 +90,8 @@ if( !$switches )
     exit( 1 );
 }
 
+$vlan = loadCreateVlan( 'LONAP', 'LONAP', $em );
+
 //$name is equal to $port['switch']
 $cnt = 0;
 foreach( $switches as $name => $switch )
@@ -88,20 +101,48 @@ foreach( $switches as $name => $switch )
     {
         $virtual_interface = updatePhysicalInterface( $port, $em, $sw );
         if( $virtual_interface )
-            updateVlanInterface( $virtual_interface, $port, $em );
+            createUpdateVlanInterface( $virtual_interface, $vlan, $port, $em );
     }
     
-    //die();
     if( ++$cnt % 10 == 0 )
-    {
-        //$em->flush();
-        //die();
-    }
+        $em->flush();
 }
 
 $em->flush();
 
+/**
+ * Creates or loads vlan
+ *
+ * @param string $name      Vlan name to create or find by
+ * @param string $rcvrfname RCVRF name
+ * @param object $em        Entity manager
+ * @return \Entities\Vlan
+ */
+function loadCreateVlan( $name, $rcvrfname, $em )
+{
+    $vlan = $em->getRepository( "\\Entities\\Vlan" )->findOneBy( [ 'name' => $name ] );
+    if( !$vlan )
+    {
+        $vlan = new \Entities\Vlan();
+        $em->persist( $vlan );
+        $vlan->setName( $name );
+        $vlan->setRcvrfname( $rcvrfname );
+        $vlan->setPrivate( 0 );
+        $vlan->setNumber( 
+            count( $em->getRepository( "\\Entities\\Vlan" )->findAll() ) + 1
+        );
+    }
 
+    return $vlan;
+}
+
+/**
+ * Creates or loads switch
+ *
+ * @param string $name Switch name to create or find by
+ * @param object $em   Entity manager
+ * @return \Entities\Switcher
+ */
 function loadCreateSwitch( $name, $em )
 {
     $sw = $em->getRepository( "\\Entities\\Switcher" )->findOneBy( ['name'=> $name ] );
@@ -118,7 +159,20 @@ function loadCreateSwitch( $name, $em )
     return $sw;
 }
 
-
+/**
+ * Updates or creates physical interface for port data form parsed CSV file
+ *
+ * First function creates or loads port for database. Than it creates or loads
+ * physical interface. And finally updates or creates virtual interface.
+ *
+ * NOTICE: If customer is not related with port it returns false and skip all actions otherwise
+ *         It returns new or updated virtual interface for vlan interface actions.
+ *
+ * @param array              $port     Parsed port data from csv
+ * @param object             $em       Entity manager
+ * @param \Entities\Switcher $switcher Switch for adding port and ports search
+ * @return bool|\Entities\VirtualInterface
+ */
 function updatePhysicalInterface( $port, $em, $switcher )
 {
     $cust = $em->getRepository( "\\Entities\\Customer" )->findOneBy( ['autsys'=> $port['asn'] ] );
@@ -128,6 +182,23 @@ function updatePhysicalInterface( $port, $em, $switcher )
         return false;
     }
     
+    $dbPort = createLoadPort( $port, $switcher, $em );
+    $phInt  = createLoadPhysicalInterface( $dbPort, $cust, $em );
+    $viInt  = createUpdateVirtualInterface( $phInt, $port, $switcher, $cust, $em );
+    
+    return $viInt;
+}
+
+/**
+ * Creates or loads switch port form database
+ *
+ * @param array              $port    Parsed port data from csv
+ * @param \Entities\Switcher $switcher Switch for adding port 
+ * @param object             $em       Entity manager
+ * @return \Entities\SwitchPort
+ */
+function createLoadPort( $port, $switcher, $em )
+{
     $dbPort = $em->getRepository( "\\Entities\\SwitchPort" )->findOneBy( ['Switcher'=> $switcher->getId(), 'name' => $port['port_desc'], 'ifIndex' => $port['bridge_id'] ] );
     if( !$dbPort )
     {
@@ -140,15 +211,27 @@ function updatePhysicalInterface( $port, $em, $switcher )
         $switcher->addPort( $dbPort );
         $dbPort->setIfIndex( $port['bridge_id'] );
         $dbPort->setIfName( $port['port_id'] );
-        $dbPort->setIfPhysAddress( str_replace( ':', '', strtoupper($port['mac'] ) ) );
+        $dbPort->setIfPhysAddress( str_replace( ':', '', strtoupper( $port['mac'] ) ) );
         $dbPort->setIfOperStatus( $port['ifoperstatus'] == "up" ? 1 : 2 );
         $dbPort->setIfAdminStatus( $port['ifadminstatus'] == "enabled" ? 1 : 2 );
     }
 
+    return $dbPort;
+}
+
+/**
+ * Creates or loads physical interface for port
+ *
+ * @param \Entities\SwitchPort $dbPort Port to create or load Physical interface
+ * @param \Entities\Customer   $cust   Customer to get next monitor index
+ * @param object               $em     Entity manager
+ * @return \Entities\PhysicalInterface
+ */
+function createLoadPhysicalInterface( $dbPort, $cust, $em )
+{
     $phInt = $dbPort->getPhysicalInterface();
     if( !$phInt )
     {
-
         $phInt = new \Entities\PhysicalInterface();
         $em->persist( $phInt );
         $phInt->setStatus( \Entities\PhysicalInterface::STATUS_CONNECTED );
@@ -158,10 +241,23 @@ function updatePhysicalInterface( $port, $em, $switcher )
         );
         $phInt->setSwitchPort( $dbPort );
         $dbPort->setPhysicalInterface( $phInt );
-        
-        
     }
 
+    return $phInt;
+}
+
+/**
+ * Creates or updates physical interface for port
+ *
+ * @param \Entities\PhysicalInterface $phInt    Ports physical interface to get or create virtual interface
+ * @param array                       $port     Parsed port data from csv to check if is LAG or simple port
+ * @param \Entities\Switcher          $switcher Switch to look for port
+ * @param \Entities\Customer          $cust     Customer to assign new virtual interface
+ * @param object                      $em       Entity manager
+ * @return \Entities\VirutalInterface
+ */
+function createUpdateVirtualInterface( $phInt, $port, $switcher, $cust, $em )
+{
     $viInt = $phInt->getVirtualInterface();
     if( !$viInt )
     {
@@ -195,9 +291,127 @@ function updatePhysicalInterface( $port, $em, $switcher )
     return $viInt;
 }
 
-function updateVlanInterface( $virtual_interface, $port, $em )
+/**
+ * Creates or updates virtual interface for port
+ *
+ * @param \Entities\VirtualInterface  $virtInt VirtualInterface for add or load vlan interface
+ * @param \Entities\Vlan              $vlan    Vlan for IP addresses and to assign vlan interface.
+ * @param array                       $port     Parsed port data from csv file
+ * @param object                      $em       Entity manager
+ * @return \Entities\SwitchPort
+ */
+function createUpdateVlanInterface( $virtInt, $vlan, $port, $em )
 {
+    $ip4 = createLoadIPv4( $port, $vlan, $em );
+    $ip6 = createLoadIPv6( $port, $vlan, $em );
 
+    $vlInt = false;
+    foreach( $virtInt->getVlanInterfaces() as $vint )
+    {
+        if( $vint->getIPv4Address() == $ip4 )
+        {
+            $vlInt = $vint;
+            break;
+        }
+    }
+
+    if( !$vlInt )
+    {
+        $vlInt = new \Entities\VlanInterface();
+        $em->persist( $vlInt );
+        $vlInt->setVirtualInterface( $virtInt );
+        $virtInt->addVlanInterface( $vlInt );
+        $vlInt->setVlan( $vlan );
+        $vlan->addVlanInterface( $vlInt );
+        $vlInt->setIPv4Address( $ip4 );
+        $vlInt->setIpv4enabled( 1 );
+        $vlInt->setRsclient( 0 );
+        $vlInt->setMaxbgpprefix( 100 );
+    }
+
+    $vlInt->setIpv4hostname( $port['ipv4_ptr'] );
+    if( $port['ipv4_mcast'] )
+        $vlInt->setMcastenabled( 1 );
+    else
+        $vlInt->setMcastenabled( 0 );
+
+    if( $ip6 )
+    {
+        $vlInt->setIPv6Address( $ip6 );
+        $vlInt->setIpv6enabled( 1 );
+        $vlInt->setIpv6hostname( $port['ipv6_ptr'] );
+    }
+    else
+    {
+        $vlInt->setIPv6Address( null );
+        $vlInt->setIpv6enabled( 0 );
+        $vlInt->setIpv6hostname( null );   
+    }
+
+}
+
+/**
+ * Creates or updates IPv4Address
+ *
+ * @param array          $port Parsed port data from csv file
+ * @param \Entities\Vlan $vlan Vlan to assing or load ip address
+ * @param object         $em   Entity manager
+ * @return \Entities\IPv4Address
+ */
+function createLoadIPv4( $port, $vlan, $em )
+{
+    $ip4 = false;
+    foreach( $vlan->getIPv4Addresses() as $ip )
+    {
+        if( $ip->getAddress() == $port['ipv4addr'] )
+        {
+            $ip4 = $ip;
+            break;
+        }
+    }
+    if( !$ip4 )
+    {
+        $ip4 = new \Entities\IPv4Address();
+        $em->persist( $ip4 );
+        $ip4->setAddress( $port['ipv4addr'] );
+        $ip4->setVlan( $vlan );
+        $vlan->addIPv4Addresse( $ip4 );
+    }
+    return $ip4;
+}
+
+/**
+ * Creates or updates IPv6Address
+ *
+ * @param array          $port Parsed port data from csv file
+ * @param \Entities\Vlan $vlan Vlan to assing or load ip address
+ * @param object         $em   Entity manager
+ * @return \Entities\IPv6Address
+ */
+function createLoadIPv6( $port, $vlan, $em )
+{
+    $ip6 = false;
+    if( $port['ipv6addr'] )
+    {
+        foreach( $vlan->getIPv6Addresses() as $ip )
+        {
+            if( $ip->getAddress() == $port['ipv6addr'] )
+            {
+                $ip6 = $ip;
+                break;
+            }
+        }
+        if( !$ip6 )
+        {
+            $ip6 = new \Entities\IPv6Address();
+            $em->persist( $ip6 );
+            $ip6->setAddress( $port['ipv6addr'] );
+            $ip6->setVlan( $vlan );
+            $vlan->addIPv6Addresse( $ip6 );
+        }
+    }
+    
+    return $ip6;
 }
 
 
