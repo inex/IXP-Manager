@@ -1,3 +1,18 @@
+# v3.0.17
+
+[IM] Add RIPE and ARIN from RADB (c4f3c2b - Barry O'Donovan - 2013-05-31)
+[HK] Freshly pressed CSS/JS (6903325 - Barry O'Donovan - 2013-05-28)
+[HK] Merging (45fb167 - Barry O'Donovan - 2013-05-28)
+[HK] Freshly pressed CSS/JS (78b5085 - Barry O'Donovan - 2013-05-28)
+[IM] Chosen width fixing should be on request, not default (f5f7e1d - Barry O'Donovan - 2013-05-28)
+[HK] Small BF and freshly presses CSS / JS (e616eca - Barry O'Donovan - 2013-05-28)
+[IM] Regenerated js file using new script (9ea89b9 - Nerijus Barauskas - 2013-05-28)
+[IM] Fix Chosen width issues (5c19e08 - Barry O'Donovan - 2013-05-28)
+[NF] Adding update oss js files script (84ab33e - Nerijus Barauskas - 2013-05-28)
+[HK] Freshly pressed CSS/JS (9e696b2 - Barry O'Donovan - 2013-05-28)
+[BF] Wrong variable for minified css/js check (ebad231 - Barry O'Donovan - 2013-05-28)
+
+
 # v3.0.16
 
 Bring miscelaneous JS fucntions into line with OSS-Framework.
