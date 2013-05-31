@@ -86,7 +86,7 @@ $switches = parseFile( $argv[1] );
 
 if( !$switches )
 {
-    echo "No members found\n";
+    echo "No switches found\n";
     exit( 1 );
 }
 
