@@ -19,3 +19,6 @@
 [submodule "library/Bootbox.git"]
 	path = library/Bootbox.git
 	url = https://github.com/makeusabrew/bootbox.git
+[submodule "library/Throbber.js.git"]
+	path = library/Throbber.js.git
+	url = https://github.com/aino/throbber.js.git
