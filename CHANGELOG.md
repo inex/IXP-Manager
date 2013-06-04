@@ -1,3 +1,31 @@
+# v3.1.0
+
+**NB:** This is a major version bump as we are changing the manner in
+which third party libraries are included with IXP Manager.
+
+Upgrade to this tag specifically first, then to the next tag (v3.1.1)
+and follow the instructions there.
+
+We use a large number of external / third party libraries and it's 
+very easy to get out of sync with these. By using Git submodules we
+can make the install procedure easier as well as ensure the known
+supported versions of third party libraries are used.
+
+After upgrading to this version, remove the following directories from
+your `library/` directory:
+
+* `Bootbox` 
+* `Bootstrap-Zend-Framework` 
+* `Minify` 
+* `Smarty` 
+* `Throbber.js` 
+* `wiki` 
+* `Zend` 
+* `OSS-Framework.git` 
+* `OSS_SNMP.git` 
+
+Then proceed to the instructions for v3.1.1.
+
 # v3.0.18
 
 Update schema:
@@ -21,37 +49,37 @@ Update schema:
 
 Primarily a refactoring of customer / billing / registration details.
 
-[DB] Merge in lonap schema updates (c6f7333 - Barry O'Donovan - 2013-05-31)
-[IM] Regenerated js file using new script (9ea89b9 - Nerijus Barauskas - 2013-05-28)
-[NF] Adding update oss js files script (84ab33e - Nerijus Barauskas - 2013-05-28)
-[IM] Changes after review (5f61ab3 - Nerijus Barauskas - 2013-05-28)
-[IM] Adding billing tab in customer overview page (997437b - Nerijus Barauskas - 2013-05-28)
-[BF] Small fixes (605529a - Nerijus Barauskas - 2013-05-28)
-[IM] Allow to select empty values for some dropdown lists (4ceb37e - Nerijus Barauskas - 2013-05-28)
-[IM] Spliting edit int two action. Edit customer details and edit billing/registration details (74829f0 - Nerijus Barauskas - 2013-05-28)
-[IM] Removing customer billing-registration detailsf from customer form (9a4cc8d - Nerijus Barauskas - 2013-05-28)
-[NF] Adding customer billing-registration action (21b5bb8 - Nerijus Barauskas - 2013-05-28)
-[NF] Adding customer billing/registration form (ac0a4ec - Nerijus Barauskas - 2013-05-28)
-[IM] Adding new field to form to reflect schema changes (8999e39 - Nerijus Barauskas - 2013-05-27)
-[HK] Regenerating proxies. (6622ba2 - Nerijus Barauskas - 2013-05-27)
-[IM] Updating entities after schema changes (52c26f2 - Nerijus Barauskas - 2013-05-27)
-[DB] Adding new fields to the schema (487a556 - Barry O'Donovan - 2013-05-27)
+- [DB] Merge in lonap schema updates (c6f7333 - Barry O'Donovan - 2013-05-31)
+- [IM] Regenerated js file using new script (9ea89b9 - Nerijus Barauskas - 2013-05-28)
+- [NF] Adding update oss js files script (84ab33e - Nerijus Barauskas - 2013-05-28)
+- [IM] Changes after review (5f61ab3 - Nerijus Barauskas - 2013-05-28)
+- [IM] Adding billing tab in customer overview page (997437b - Nerijus Barauskas - 2013-05-28)
+- [BF] Small fixes (605529a - Nerijus Barauskas - 2013-05-28)
+- [IM] Allow to select empty values for some dropdown lists (4ceb37e - Nerijus Barauskas - 2013-05-28)
+- [IM] Spliting edit int two action. Edit customer details and edit billing/registration details (74829f0 - Nerijus Barauskas - 2013-05-28)
+- [IM] Removing customer billing-registration detailsf from customer form (9a4cc8d - Nerijus Barauskas - 2013-05-28)
+- [NF] Adding customer billing-registration action (21b5bb8 - Nerijus Barauskas - 2013-05-28)
+- [NF] Adding customer billing/registration form (ac0a4ec - Nerijus Barauskas - 2013-05-28)
+- [IM] Adding new field to form to reflect schema changes (8999e39 - Nerijus Barauskas - 2013-05-27)
+- [HK] Regenerating proxies. (6622ba2 - Nerijus Barauskas - 2013-05-27)
+- [IM] Updating entities after schema changes (52c26f2 - Nerijus Barauskas - 2013-05-27)
+- [DB] Adding new fields to the schema (487a556 - Barry O'Donovan - 2013-05-27)
 
 
 
 # v3.0.17
 
-[IM] Add RIPE and ARIN from RADB (c4f3c2b - Barry O'Donovan - 2013-05-31)
-[HK] Freshly pressed CSS/JS (6903325 - Barry O'Donovan - 2013-05-28)
-[HK] Merging (45fb167 - Barry O'Donovan - 2013-05-28)
-[HK] Freshly pressed CSS/JS (78b5085 - Barry O'Donovan - 2013-05-28)
-[IM] Chosen width fixing should be on request, not default (f5f7e1d - Barry O'Donovan - 2013-05-28)
-[HK] Small BF and freshly presses CSS / JS (e616eca - Barry O'Donovan - 2013-05-28)
-[IM] Regenerated js file using new script (9ea89b9 - Nerijus Barauskas - 2013-05-28)
-[IM] Fix Chosen width issues (5c19e08 - Barry O'Donovan - 2013-05-28)
-[NF] Adding update oss js files script (84ab33e - Nerijus Barauskas - 2013-05-28)
-[HK] Freshly pressed CSS/JS (9e696b2 - Barry O'Donovan - 2013-05-28)
-[BF] Wrong variable for minified css/js check (ebad231 - Barry O'Donovan - 2013-05-28)
+- [IM] Add RIPE and ARIN from RADB (c4f3c2b - Barry O'Donovan - 2013-05-31)
+- [HK] Freshly pressed CSS/JS (6903325 - Barry O'Donovan - 2013-05-28)
+- [HK] Merging (45fb167 - Barry O'Donovan - 2013-05-28)
+- [HK] Freshly pressed CSS/JS (78b5085 - Barry O'Donovan - 2013-05-28)
+- [IM] Chosen width fixing should be on request, not default (f5f7e1d - Barry O'Donovan - 2013-05-28)
+- [HK] Small BF and freshly presses CSS / JS (e616eca - Barry O'Donovan - 2013-05-28)
+- [IM] Regenerated js file using new script (9ea89b9 - Nerijus Barauskas - 2013-05-28)
+- [IM] Fix Chosen width issues (5c19e08 - Barry O'Donovan - 2013-05-28)
+- [NF] Adding update oss js files script (84ab33e - Nerijus Barauskas - 2013-05-28)
+- [HK] Freshly pressed CSS/JS (9e696b2 - Barry O'Donovan - 2013-05-28)
+- [BF] Wrong variable for minified css/js check (ebad231 - Barry O'Donovan - 2013-05-28)
 
 
 # v3.0.16
