@@ -13,3 +13,6 @@
 [submodule "Bootstrap-Zend-Framework"]
 	path = Bootstrap-Zend-Framework
 	url = https://github.com/opensolutions/Bootstrap-Zend-Framework.git
+[submodule "Minify"]
+	path = Minify
+	url = https://github.com/opensolutions/Minify.git
