@@ -25,3 +25,6 @@
 [submodule "library/wiki"]
 	path = library/wiki
 	url = https://github.com/inex/IXP-Manager.wiki.git
+[submodule "library/Bootstrap-Zend-Framework"]
+	path = library/Bootstrap-Zend-Framework
+	url = https://github.com/opensolutions/Bootstrap-Zend-Framework.git
