@@ -17,7 +17,7 @@ class Switcher extends EntityRepository
      * @var string The cache key for all switch objects
      */
     const ALL_CACHE_KEY = 'inex_switches';
-
+    
     /**
      * Return an array of all switch objects from the database with caching
      *
@@ -29,27 +29,55 @@ class Switcher extends EntityRepository
     {
         $dql = "SELECT s FROM Entities\\Switcher s WHERE 1=1";
 
-        $key = self::ALL_CACHE_KEY;
+        $key = $this->genCacheKey( $active, $type );
 
         if( $active )
-        {
             $dql .= " AND s.active = 1";
-            $key .= '-active';
-        }
-        else
-            $key .= '-all';
 
         if( $type )
-        {
             $dql .= " AND s.switchtype = " . intval( $type );
-            $key .= '-' . intval( $type );
-        }
-        else
-            $key .= '-all';
 
         return $this->getEntityManager()->createQuery( $dql )
             ->useResultCache( true, 3600, $key )
             ->getResult();
+    }
+    
+
+    /**
+     * Clear the cache of a given result set
+     *
+     * @param bool $active If `true`, return only active switches
+     * @param int $type If `0`, all types otherwise limit to specific type
+     */
+    public function clearCache( $active = false, $type = 0 )
+    {
+        return $this->getEntityManager()->getConfiguration()->getQueryCacheImpl()->delete(
+            $this->genCacheKey( $active, $type )
+        );
+    }
+
+    /**
+     * Generate a deterministic caching key for given parameters
+     *    
+     * @param bool $active If `true`, return only active switches
+     * @param int $type If `0`, all types otherwise limit to specific type
+     * @return string The generate caching key
+     */
+    public function genCacheKey( $active, $type )
+    {
+        $key = self::ALL_CACHE_KEY;
+        
+        if( $active )
+            $key .= '-active';
+        else
+            $key .= '-all';
+            
+        if( $type )
+            $key .= '-' . intval( $type );
+        else
+            $key .= '-all';
+    
+        return $key;                                                                                                                                            
     }
 
     /**

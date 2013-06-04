@@ -265,11 +265,14 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $this->getD2EM()->persist( $s );
                 $this->getD2EM()->flush();
                 
+                // clear the cache
+                $this->getD2R( '\\Entities\\Switcher' )->clearCache();
+                
                 $this->addMessage(
                     "Switch polled and added successfully! Please configure the ports found below.", OSS_Message::SUCCESS
                 );
                 
-                $this->redirect( 'switch-port/snmp-poll/switchid/' . $s->getId() );
+                $this->redirect( 'switch-port/snmp-poll/switch/' . $s->getId() );
             }while( false );
         }
         
@@ -352,7 +355,7 @@ class SwitchController extends IXP_Controller_FrontEnd
     protected function postFlush( $object )
     {
         // this is created in Repositories\Switcher::getAndCache()
-        $this->getD2Cache()->delete( \Repositories\Switcher::ALL_CACHE_KEY );
+        $this->getD2R( '\\Entities\\Switcher' )->clearCache();
         return true;
     }
     
