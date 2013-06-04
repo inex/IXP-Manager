@@ -61,34 +61,37 @@ class AdminController extends IXP_Controller_AuthRequiredAction
     private function _publicPeeringGraphs()
     {
         // only do this once every five minutes
-        if( $admin_home_stats = $this->getD2Cache()->fetch( 'admin_home_stats' ) )
+        if( isset( $this->_options['mrtg']['traffic_graphs'] ) && $this->_options['mrtg']['traffic_graphs'] )
         {
-            $this->view->graphs = $admin_home_stats['graphs'];
-            $this->view->stats  = $admin_home_stats['stats'];
-        }
-        else
-        {
-            $admin_home_stats = [];
-            
-            foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
+            if( $admin_home_stats = $this->getD2Cache()->fetch( 'admin_home_stats' ) )
             {
-                $p = explode( '::', $g );
-                $graphs[$p[0]] = $p[1];
-                $images[]      = $p[0];
-                
-                $mrtg = new IXP_Mrtg(
-                    $this->_options['mrtg']['path']
-                        . DIRECTORY_SEPARATOR . 'ixp_peering-' . $p[0]
-                        . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                );
-                
-                $stats[$p[0]] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                $this->view->graphs = $admin_home_stats['graphs'];
+                $this->view->stats  = $admin_home_stats['stats'];
             }
+            else
+            {
+                $admin_home_stats = [];
             
-            $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
-            $admin_home_stats['stats']  = $this->view->stats      = $stats;
+                foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
+                {
+                    $p = explode( '::', $g );
+                    $graphs[$p[0]] = $p[1];
+                    $images[]      = $p[0];
+                
+                    $mrtg = new IXP_Mrtg(
+                        $this->_options['mrtg']['path']
+                            . DIRECTORY_SEPARATOR . 'ixp_peering-' . $p[0]
+                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                    );
+                
+                    $stats[$p[0]] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                }
             
-            $this->getD2Cache()->save( 'admin_home_stats', $admin_home_stats, 300 );
+                $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
+                $admin_home_stats['stats']  = $this->view->stats      = $stats;
+            
+                $this->getD2Cache()->save( 'admin_home_stats', $admin_home_stats, 300 );
+            }
         }
     }
 
