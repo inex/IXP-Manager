@@ -241,7 +241,7 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                 if( $ipv4->getVlanInterface() && $ipv4->getVlanInterface() != $object )
                 {
                     $address = $form->getElement( 'ipv4addressid' )->getValue();
-                    $this->addMessage( "IPv4 address '{$address}' is already in use.", OSS_Message::ERROR );
+                    $form->getElement( 'ipv4addressid' )->setErrors( ["IPv4 address '{$address}' is already in use."] );
                     return false;
                 }
 
@@ -270,7 +270,7 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                 if( $ipv6->getVlanInterface() && $ipv6->getVlanInterface() != $object )
                 {
                     $address = $form->getElement( 'ipv6addressid' )->getValue();
-                    $this->addMessage( "IPv6 address '{$address}' is already in use.", OSS_Message::ERROR );
+                    $form->getElement( 'ipv6addressid' )->setErrors( ["IPv6 address '{$address}' is already in use." ] );
                     return false;
                 }
 

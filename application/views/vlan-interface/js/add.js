@@ -6,8 +6,8 @@ $( "#vlanid" ).change( function() {
 
     if( $(this).val() != '0' ) {
 
-        ossChosenClear( "#ipv4addressid", "<option>Please wait, loading data...</option>" );
-        ossChosenClear( "#ipv6addressid", "<option>Please wait, loading data...</option>" );
+        //ossChosenClear( "#ipv4addressid", "<option>Please wait, loading data...</option>" );
+        //ossChosenClear( "#ipv6addressid", "<option>Please wait, loading data...</option>" );
 
         $.getJSON( "{genUrl controller='ipv4-address' action='ajax-get-for-vlan'}/vliid/"
                 + $( "#preselectVlanInterface" ).val() + "/vlanid/" + $(this).val(), null, function( j ){
@@ -20,7 +20,7 @@ $( "#vlanid" ).change( function() {
             // do we have a preselect?
             if( $( "#preselectIPv4Address" ).val() ) {
                 
-                if( vlanid == $( '#vlanid' ).val() ){
+                if( vlanid == $( '#vlanid' ).val() && !$( "#ipv4addressid" ).val() ) {
                     $( "#ipv4addressid" ).val( $( "#preselectIPv4Address" ).val() );
                 }
 
@@ -41,7 +41,7 @@ $( "#vlanid" ).change( function() {
             // do we have a preselect?
             if( $( "#preselectIPv6Address" ).val() ) {
                 
-                if( vlanid == $( '#vlanid' ).val() ){
+                if( vlanid == $( '#vlanid' ).val()  && !$( "#ipv6addressid" ).val() ){
                     $( "#ipv6addressid" ).val( $( "#preselectIPv6Address" ).val() );
                 }
                 
