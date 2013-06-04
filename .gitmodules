@@ -1,3 +1,6 @@
 [submodule "library/Zend"]
 	path = library/Zend
 	url = https://github.com/opensolutions/zf1.git
+[submodule "library/Smarty"]
+	path = library/Smarty
+	url = https://github.com/opensolutions/smarty.git
