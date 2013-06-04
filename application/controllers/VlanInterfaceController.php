@@ -162,13 +162,11 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
     {
         if( $isEdit )
         {
-            $form->getElement( 'ipv4addressid'      )->setValue( $object->getIPv4Address() ? $object->getIPv4Address()->getAddress() : null );
-            $form->getElement( 'ipv6addressid'      )->setValue( $object->getIPv6Address() ? $object->getIPv6Address()->getAddress() : null );
             $form->getElement( 'virtualinterfaceid' )->setValue( $object->getVirtualInterface()->getId() );
             $form->getElement( 'vlanid'             )->setValue( $object->getVlan()->getId()             );
             
-            $form->getElement( 'preselectIPv4Address'   )->setValue( $object->getIPv4Address() ? $object->getIPv4Address()->getId() : null );
-            $form->getElement( 'preselectIPv6Address'   )->setValue( $object->getIPv6Address() ? $object->getIPv6Address()->getId() : null );
+            $form->getElement( 'preselectIPv4Address'   )->setValue( $object->getIPv4Address() ? $object->getIPv4Address()->getAddress() : null );
+            $form->getElement( 'preselectIPv6Address'   )->setValue( $object->getIPv6Address() ? $object->getIPv6Address()->getAddress() : null );
             $form->getElement( 'preselectVlanInterface' )->setValue( $object->getId()        );
             
             if( $this->getParam( 'rtn', false ) == 'vli' )
@@ -204,26 +202,63 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
      * @param IXP_Form_Interface_Vlan $form The form object
      * @param \Entities\VlanInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
+     * @return bool
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
-        $object->setIPv4Address(
-            $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->find( $form->getElement( 'ipv4addressid' )->getValue() )
-        );
-    
-        $object->setIPv6Address(
-            $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->find( $form->getElement( 'ipv6addressid' )->getValue() )
-        );
-        
-        $object->setVlan(
-            $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
-        );
-    
         $object->setVirtualInterface(
             $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $form->getElement( 'virtualinterfaceid' )->getValue() )
         );
-        
+
+        $vlan = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() );
+        $object->setVlan( $vlan );
+
+        if( $form->getValue( "ipv4enabled" ) )
+        {
+            $ipv4 = $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( 'ipv4addressid' )->getValue() ] );
+            if( !$ipv4 )
+            {
+                $ipv4 = new \Entities\IPv4Address();
+                $this->getD2EM()->persist( $ipv4 );
+                $ipv4->setVlan( $vlan );
+                $ipv4->setAddress( $form->getElement( 'ipv4addressid' )->getValue() );
+            }
+            else
+            {
+                if( $ipv4->getVlanInterface() && $ipv4->getVlanInterface() != $object )
+                {
+                    $address = $form->getElement( 'ipv4addressid' )->getValue();
+                    $this->addMessage( "IPv4 address '{$address}' is already in use.", OSS_Message::ERROR );
+                    return false;
+                }
+
+            }
+            $object->setIPv4Address( $ipv4 );
+        }
+
+        if( $form->getValue( "ipv6enabled" ) )
+        {
+            $ipv6 = $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( 'ipv6addressid' )->getValue() ] );
+            if( !$ipv6 )
+            {
+                $ipv6 = new \Entities\IPv6Address();
+                $this->getD2EM()->persist( $ipv6 );
+                $ipv6->setVlan( $vlan );
+                $ipv6->setAddress( $form->getElement( 'ipv6addressid' )->getValue() );
+            }
+            else
+            {
+                if( $ipv6->getVlanInterface() && $ipv6->getVlanInterface() != $object )
+                {
+                    $address = $form->getElement( 'ipv6addressid' )->getValue();
+                    $this->addMessage( "IPv6 address '{$address}' is already in use.", OSS_Message::ERROR );
+                    return false;
+                }
+
+            }
+            $object->setIPv6Address( $ipv6 );
+        }
+    
         return true;
     }
     
