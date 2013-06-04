@@ -10,3 +10,6 @@
 [submodule "library/OSS_SNMP.git"]
 	path = library/OSS_SNMP.git
 	url = https://github.com/opensolutions/OSS_SNMP.git
+[submodule "Bootstrap-Zend-Framework"]
+	path = Bootstrap-Zend-Framework
+	url = https://github.com/opensolutions/Bootstrap-Zend-Framework.git
