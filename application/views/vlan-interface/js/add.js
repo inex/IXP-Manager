@@ -36,7 +36,7 @@ $( "#vlanid" ).change( function() {
             var options = "<option value=\"\">- select -</option>\n";
 
             for( var i = 0; i < j.length; i++ )
-                options += "<option value=\"" + j[i].id + "\">" + j[i].address + "</option>\n";
+                options += "<option value=\"" + j[i].address + "\">" + j[i].address + "</option>\n";
 
             // do we have a preselect?
             if( $( "#preselectIPv6Address" ).val() ) {
