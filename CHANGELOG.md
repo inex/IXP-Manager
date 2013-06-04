@@ -1,3 +1,26 @@
+# v3.1.1
+
+Second phase of v3.1.0. Update to this tag and then execute:
+
+    git submodule init
+    git submodule update
+
+
+- [HK] These scripts are redundant now that we are using submodules
+- [HK] Add OSS clone of Minify library as external (b62c2be - Barry O'Donovan - 2013-06-04)
+- [HK] Add OSS clone of Bootstrap-Zend-Framework library as external (6448780 - Barry O'Donovan - 2013-06-04)
+- [HK] Added these two submodules in the parent directory in error (c742f9a - Barry O'Donovan - 2013-06-04)
+- [HK] Add IXP Manager GitHub wiki as external (13f79ef - Barry O'Donovan - 2013-06-04)
+- [HK] Add Throbber.js library as external (174c3dc - Barry O'Donovan - 2013-06-04)
+- [HK] Add Bootbox library as external (ad1f4b0 - Barry O'Donovan - 2013-06-04)
+- [HK] Add Minify library as external (d697a93 - Barry O'Donovan - 2013-06-04)
+- [HK] Add OSS clone of Bootstrap-Zend-Framework library as external (a39ae64 - Barry O'Donovan - 2013-06-04)
+- [HK] Add OSS-SNMP library as external (45f8ca2 - Barry O'Donovan - 2013-06-04)
+- [HK] Add OSS-Framework library as external (82cbd3f - Barry O'Donovan - 2013-06-04)
+- [HK] Add Smarty library as external (2817c76 - Barry O'Donovan - 2013-06-04)
+- [HK] Add Zend library as external (eecc1fa - Barry O'Donovan - 2013-06-04)
+
+
 # v3.1.0
 
 **NB:** This is a major version bump as we are changing the manner in
