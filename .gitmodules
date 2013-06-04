@@ -1,0 +1,3 @@
+[submodule "library/Zend"]
+	path = library/Zend
+	url = https://github.com/opensolutions/zf1.git
