@@ -22,3 +22,6 @@
 [submodule "library/Throbber.js.git"]
 	path = library/Throbber.js.git
 	url = https://github.com/aino/throbber.js.git
+[submodule "library/wiki"]
+	path = library/wiki
+	url = https://github.com/inex/IXP-Manager.wiki.git
