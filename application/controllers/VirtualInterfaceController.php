@@ -258,67 +258,12 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
 	                $vli = new \Entities\VlanInterface();
 	                $form->assignFormToEntity( $vli, $this, false );
 
-                    $vlan = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() );
-	                $vli->setVlan( $vlan );
+                    $vli->setVlan( 
+                        $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
+                    );
 
-                    if( $form->getValue( "ipv4enabled" ) )
-                    {
-                        if( !$form->getElement( 'ipv4addressid' )->getValue() )
-                        {
-                            $form->getElement( 'ipv4addressid' )->setErrors( ["Please select or enter a IPv4 address."] );
-                            return false;
-                        }
-
-                        $ipv4 = $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( 'ipv4addressid' )->getValue() ] );
-                        if( !$ipv4 )
-                        {
-                            $ipv4 = new \Entities\IPv4Address();
-                            $this->getD2EM()->persist( $ipv4 );
-                            $ipv4->setVlan( $vlan );
-                            $ipv4->setAddress( $form->getElement( 'ipv4addressid' )->getValue() );
-                        }
-                        else
-                        {
-                            if( $ipv4->getVlanInterface() && $ipv4->getVlanInterface() != $vi )
-                            {
-                                $address = $form->getElement( 'ipv4addressid' )->getValue();
-                                $form->getElement( 'ipv4addressid' )->setErrors( ["IPv4 address '{$address}' is already in use."] );
-                                return false;
-                            }
-
-                        }
-                        $vli->setIPv4Address( $ipv4 );
-                    }
-
-                    if( $form->getValue( "ipv6enabled" ) )
-                    {
-                        if( !$form->getElement( 'ipv6addressid' )->getValue() )
-                        {
-                            $form->getElement( 'ipv6addressid' )->setErrors( ["Please select or enter a IPv6 address."] );
-                            return false;
-                        }
-
-                        $ipv6 = $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( 'ipv6addressid' )->getValue() ] );
-                        if( !$ipv6 )
-                        {
-                            $ipv6 = new \Entities\IPv6Address();
-                            $this->getD2EM()->persist( $ipv6 );
-                            $ipv6->setVlan( $vlan );
-                            $ipv6->setAddress( $form->getElement( 'ipv6addressid' )->getValue() );
-                        }
-                        else
-                        {
-                            if( $ipv6->getVlanInterface() && $ipv6->getVlanInterface() != $vi )
-                            {
-                                $address = $form->getElement( 'ipv6addressid' )->getValue();
-                                $form->getElement( 'ipv6addressid' )->setErrors( ["IPv6 address '{$address}' is already in use." ] );
-                                return false;
-                            }
-
-                        }
-                        $vli->setIPv6Address( $ipv6 );
-                    }
-
+                    if( !$this->setIp( $form, $vi, $vli, false ) || !$this->setIp( $form, $vi, $vli, true ) )
+                        return false;
 
 	                $vli->setVirtualInterface( $vi );
 	                $this->getD2EM()->persist( $vli );
@@ -360,6 +305,60 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         {
             $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'list' ) );
         }
+    }
+
+    /**
+     * Sets IPv4 or IPv6 from form to given VlanInterface.
+     * 
+     * Function checks if IP address is provided if IP enabled. And then it checks if given IP address exits for current Vlan
+     * if exists then function checks if is not assigned to other virtual interface. If assigned then it add an error and
+     * returns false, else assigns IP to Vlan interface. If not IP not existent function creates new one and assign it to Vlan
+     * interface.
+     *
+     * @param IXP_Form_Interface_AddWizard $form Form to get IP address data
+     * @param \Entities\VirtualInterface   $vi   Virtual interface to check if IP is not assign to different
+     * @param \Entities\VlanInterface      $vli  Vlan interface to assign IP to
+     * @param bool                         $ipv6 Flat to define if IP address is IPv4 or IPv6
+     * @return bool
+     */
+    private function setIp( $form, $vi, $vli, $ipv6 = false )
+    {
+        $iptype = $ipv6 ? "ipv6" : "ipv4";
+        $ipVer = $ipv6 ? "IPv6" : "IPv4";
+        $setter = "set{$ipVer}Address";
+        $entity = "\\Entities\\{$ipVer}Address";
+        $vlan = $vli->getVlan();
+
+        if( $form->getValue( $iptype . "enabled" ) )
+        {
+            if( !$form->getElement( $iptype . 'addressid' )->getValue() )
+            {
+                $form->getElement( $iptype . 'addressid' )->setErrors( ["Please select or enter a {$ipVer} address."] );
+                return false;
+            }
+
+            $ip = $this->getD2EM()->getRepository( $entity )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( $iptype . 'addressid' )->getValue() ] );
+            if( !$ip )
+            {
+                $ip = new $entity();
+                $this->getD2EM()->persist( $ip );
+                $ip->setVlan( $vlan );
+                $ip->setAddress( $form->getElement( $iptype . 'addressid' )->getValue() );
+            }
+            else
+            {
+                //If VlanInterface is assign to ip and Vlan interface is different then it returns false
+                if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli )
+                {
+                    $address = $form->getElement( $iptype . 'addressid' )->getValue();
+                    $form->getElement( $iptype . 'addressid' )->setErrors( ["{$ipVer} address '{$address}' is already in use." ] );
+                    return false;
+                }
+
+            }
+            $vli->$setter( $ip );
+        }
+        return true;
     }
         
 }
