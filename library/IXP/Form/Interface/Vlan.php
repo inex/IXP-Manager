@@ -52,7 +52,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         $this->addElement( $ipv4enabled );
 
         $ipv4addressid = new OSS_Form_Element_DatabaseDropdown( 'ipv4addressid' );
-        $ipv4addressid->setRequired( true )
+        $ipv4addressid->setRequired( false )
             ->setChosenOptions( [ "0" => "" ] )
             ->setLabel( 'IPv4 Address' )
             ->setErrorMessages( array( 'Please select or enter a IPv4 address' ) );
@@ -96,7 +96,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         $this->addElement( $ipv6enabled );
 
         $ipv6addressid = new OSS_Form_Element_DatabaseDropdown( 'ipv6addressid' );
-        $ipv6addressid->setRequired( true )
+        $ipv6addressid->setRequired( false )
             ->setLabel( 'IPv6 Address' )
             ->setChosenOptions( [ "0" => "" ] )
             ->setErrorMessages( array( 'Please select or enter a IPv6 address' ) );
@@ -187,6 +187,9 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         
         $preselectVlanInterface = $this->createElement( 'hidden', 'preselectVlanInterface' );
         $this->addElement( $preselectVlanInterface );
+
+        $preselectCustomer = $this->createElement( 'hidden', 'preselectCustomer' );
+        $this->addElement( $preselectCustomer );
             
     }
 

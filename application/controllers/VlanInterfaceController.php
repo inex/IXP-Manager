@@ -73,8 +73,12 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                         'action'     => 'list',
                         'idField'    => 'vlanid'
                     ],
-
-                    'rsclient'      => 'Route Server',
+                    'rsclient'       => [
+                            'title'    => 'Route Serve',
+                            'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                            'script'   => 'frontend/list-column-active.phtml',
+                            'colname'  => 'rsclient'
+                    ],
                     'ipv4'          => 'ipv4',
                     'ipv6'          => 'ipv6'
                 ];
@@ -163,6 +167,7 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
         if( $isEdit )
         {
             $form->getElement( 'virtualinterfaceid' )->setValue( $object->getVirtualInterface()->getId() );
+            $form->getElement( 'preselectCustomer'  )->setValue( $object->getVirtualInterface()->getCustomer()->getId() );
             $form->getElement( 'vlanid'             )->setValue( $object->getVlan()->getId()             );
             
             $form->getElement( 'preselectIPv4Address'   )->setValue( $object->getIPv4Address() ? $object->getIPv4Address()->getAddress() : null );
@@ -194,6 +199,8 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
             $form->getElement( 'maxbgpprefix' )->setValue( $vint->getCustomer()->getMaxprefixes() );
             
             $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
+            $form->getElement( 'preselectCustomer'  )->setValue( $vint->getCustomer()->getId() );
+
             $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $vint->getId() ] ) );
         }
     }
@@ -215,6 +222,12 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
 
         if( $form->getValue( "ipv4enabled" ) )
         {
+            if( !$form->getElement( 'ipv4addressid' )->getValue() )
+            {
+                $form->getElement( 'ipv4addressid' )->setErrors( ["Please select or enter a IPv4 address."] );
+                return false;
+            }
+
             $ipv4 = $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( 'ipv4addressid' )->getValue() ] );
             if( !$ipv4 )
             {
@@ -238,6 +251,12 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
 
         if( $form->getValue( "ipv6enabled" ) )
         {
+            if( !$form->getElement( 'ipv6addressid' )->getValue() )
+            {
+                $form->getElement( 'ipv6addressid' )->setErrors( ["Please select or enter a IPv6 address."] );
+                return false;
+            }
+
             $ipv6 = $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( 'ipv6addressid' )->getValue() ] );
             if( !$ipv6 )
             {
