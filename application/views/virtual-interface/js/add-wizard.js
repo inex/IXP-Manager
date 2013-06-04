@@ -37,8 +37,8 @@ $( "#vlanid" ).on( 'change', function( event ) {
 
     if( $(this).val() != '0' ) {
 
-        ossChosenClear( "#ipv4addressid", "<option>Please wait, loading data...</option>" );
-        ossChosenClear( "#ipv6addressid", "<option>Please wait, loading data...</option>" );
+        //ossChosenClear( "#ipv4addressid", "<option>Please wait, loading data...</option>" );
+        //ossChosenClear( "#ipv6addressid", "<option>Please wait, loading data...</option>" );
 
         $.getJSON( "{genUrl controller='ipv4-address' action='ajax-get-for-vlan'}/vliid/"
                 + $( "#preselectVlanInterface" ).val() + "/vlanid/" + $(this).val(), null, function( j ){
@@ -46,13 +46,13 @@ $( "#vlanid" ).on( 'change', function( event ) {
             var options = "<option value=\"\">- select -</option>\n";
 
             for( var i = 0; i < j.length; i++ )
-                options += "<option value=\"" + j[i].id + "\">" + j[i].address + "</option>\n";
+                options += "<option value=\"" + j[i].address + "\">" + j[i].address + "</option>\n";
 
             // do we have a preselect?
             if( $( "#preselectIPv4Address" ).val() ) {
-                ossChosenSet( "#ipv4addressid", options, $( "#preselectIPv4Address" ).val() );
+                ossChosenSet( "#ipv4addressid_osschzn", options, $( "#preselectIPv4Address" ).val() );
             } else {
-                ossChosenSet( "#ipv4addressid", options );
+                ossChosenSet( "#ipv4addressid_osschzn", options );
             }
         });
 
@@ -62,13 +62,13 @@ $( "#vlanid" ).on( 'change', function( event ) {
             var options = "<option value=\"\">- select -</option>\n";
 
             for( var i = 0; i < j.length; i++ )
-                options += "<option value=\"" + j[i].id + "\">" + j[i].address + "</option>\n";
+                options += "<option value=\"" + j[i].address + "\">" + j[i].address + "</option>\n";
 
             // do we have a preselect?
             if( $( "#preselectIPv6Address" ).val() ) {
-                ossChosenSet( "#ipv6addressid", options, $( "#preselectIPv6Address" ).val() );
+                ossChosenSet( "#ipv6addressid_osschzn", options, $( "#preselectIPv6Address" ).val() );
             } else {
-                ossChosenSet( "#ipv6addressid", options );
+                ossChosenSet( "#ipv6addressid_osschzn", options );
             }
         });
 
@@ -99,6 +99,8 @@ $(document).ready( function() {
             $( '#ipv4details' ).slideDown();
         else
             $( '#ipv4details' ).slideUp();
+
+        $( window ).trigger( "resize" );
     });
 
     $( '#ipv6enabled' ).on( 'click', function( event ){
@@ -107,6 +109,8 @@ $(document).ready( function() {
             $( '#ipv6details' ).slideDown();
         else
             $( '#ipv6details' ).slideUp();
+
+        $( window ).trigger( "resize" );
     });
 
     if( $( '#ipv4enabled' ).is(':checked') )

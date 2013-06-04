@@ -80,8 +80,10 @@ $(document).ready( function() {
             
             if( !$( '#ipv6addressid' ).val() ){
                 $.get("{genUrl controller='ipv6-address' action='ajax-get-next'}/schema/LONAP/custid/" + $('#preselectCustomer').val(), function( data ) {
-                    bootbox.alert( "IPv6 address <em>" + data + "</em> was auto generated for this VlanInterface" );
-                    $( '#ipv6addressid' ).val( data );
+                    if( data ){
+                        bootbox.alert( "IPv6 address <em>" + data + "</em> was auto generated for this VlanInterface" );
+                        $( '#ipv6addressid' ).val( data );
+                    }
                 })
             }
             $( '#ipv6details' ).slideDown();

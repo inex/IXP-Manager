@@ -257,15 +257,69 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
 	                
 	                $vli = new \Entities\VlanInterface();
 	                $form->assignFormToEntity( $vli, $this, false );
-	                $vli->setIPv4Address(
-	                    $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->find( $form->getElement( 'ipv4addressid' )->getValue() )
-	                );
-	                $vli->setIPv6Address(
-	                    $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->find( $form->getElement( 'ipv6addressid' )->getValue() )
-	                );
-	                $vli->setVlan(
-	                    $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
-	                );
+
+                    $vlan = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() );
+	                $vli->setVlan( $vlan );
+
+                    if( $form->getValue( "ipv4enabled" ) )
+                    {
+                        if( !$form->getElement( 'ipv4addressid' )->getValue() )
+                        {
+                            $form->getElement( 'ipv4addressid' )->setErrors( ["Please select or enter a IPv4 address."] );
+                            return false;
+                        }
+
+                        $ipv4 = $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( 'ipv4addressid' )->getValue() ] );
+                        if( !$ipv4 )
+                        {
+                            $ipv4 = new \Entities\IPv4Address();
+                            $this->getD2EM()->persist( $ipv4 );
+                            $ipv4->setVlan( $vlan );
+                            $ipv4->setAddress( $form->getElement( 'ipv4addressid' )->getValue() );
+                        }
+                        else
+                        {
+                            if( $ipv4->getVlanInterface() && $ipv4->getVlanInterface() != $vi )
+                            {
+                                $address = $form->getElement( 'ipv4addressid' )->getValue();
+                                $form->getElement( 'ipv4addressid' )->setErrors( ["IPv4 address '{$address}' is already in use."] );
+                                return false;
+                            }
+
+                        }
+                        $vli->setIPv4Address( $ipv4 );
+                    }
+
+                    if( $form->getValue( "ipv6enabled" ) )
+                    {
+                        if( !$form->getElement( 'ipv6addressid' )->getValue() )
+                        {
+                            $form->getElement( 'ipv6addressid' )->setErrors( ["Please select or enter a IPv6 address."] );
+                            return false;
+                        }
+
+                        $ipv6 = $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( 'ipv6addressid' )->getValue() ] );
+                        if( !$ipv6 )
+                        {
+                            $ipv6 = new \Entities\IPv6Address();
+                            $this->getD2EM()->persist( $ipv6 );
+                            $ipv6->setVlan( $vlan );
+                            $ipv6->setAddress( $form->getElement( 'ipv6addressid' )->getValue() );
+                        }
+                        else
+                        {
+                            if( $ipv6->getVlanInterface() && $ipv6->getVlanInterface() != $vi )
+                            {
+                                $address = $form->getElement( 'ipv6addressid' )->getValue();
+                                $form->getElement( 'ipv6addressid' )->setErrors( ["IPv6 address '{$address}' is already in use." ] );
+                                return false;
+                            }
+
+                        }
+                        $vli->setIPv6Address( $ipv6 );
+                    }
+
+
 	                $vli->setVirtualInterface( $vi );
 	                $this->getD2EM()->persist( $vli );
 	                
