@@ -28,3 +28,6 @@
 [submodule "library/Bootstrap-Zend-Framework"]
 	path = library/Bootstrap-Zend-Framework
 	url = https://github.com/opensolutions/Bootstrap-Zend-Framework.git
+[submodule "library/Minify"]
+	path = library/Minify
+	url = https://github.com/opensolutions/Minify.git
