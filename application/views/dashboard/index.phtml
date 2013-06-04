@@ -41,7 +41,9 @@
             
             <li><a href="{genUrl controller="peering-manager"}">Peering Manager &raquo;</a></li>
             <li><a href="{genUrl controller="statistics" action="member"}">Statistics &raquo;</a></li>
-            <li><a href="{genUrl controller="statistics" action="p2p"}">Peer to Peer Traffic &raquo;</a></li>
+            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
+                <li><a href="{genUrl controller="statistics" action="p2p"}">Peer to Peer Traffic &raquo;</a></li>
+            {/if}
     </ul>
     
     <div class="tab-content">
