@@ -2,7 +2,7 @@
 <?php
 
 /**
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  *
  * This file is part of IXP Manager.
  *
@@ -20,10 +20,10 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-                              
-                              
+
+
 //ini_set('memory_limit', -1);
-                              
+
 date_default_timezone_set('Europe/Dublin');
 mb_internal_encoding('UTF-8');
 mb_language('uni');
@@ -70,14 +70,17 @@ echo "Installing fixtures\n";
 $c = new \Entities\Customer();
 
 $c->setName( "Somecity Internet Exchange Point" );
-$c->setShortname( "siep" );  // lowercase abbreviation (e.g. inex/ linx / lonap)
-$c->setAutsys( 12345 );      // your ASN
-$c->setMaxprefixes( 1000 );  // set appropriately if you peer with other members on the
-                             // exchange. e.g friendly member providing transit
-                             
-$c->setPeeringemail( 'peering@siep.com' );
+$c->setAbbreviatedName( 'SIEP' ); // shorter name for graphs, etc
+$c->setShortname( "siep" );        // lowercase abbreviation (e.g. inex/ linx / lonap)
+$c->setAutsys( 12345 );            // your ASN
+$c->setMaxprefixes( 1000 );        // set appropriately if you peer with other members on the
+                                   // exchange. e.g friendly member providing transit
+
+$c->setPeeringemail( 'peering@lonap.net' );
 $c->setPeeringmacro( 'AS-SIEP' );
+$c->setPeeringmacrov6( 'AS-SIEP6' );
 $c->setPeeringpolicy( \Entities\Customer::PEERING_POLICY_MANDATORY );
+$c->setMD5Support( \Entities\Customer::MD5_SUPPORT_YES );
 
 $c->setNocphone( '+353 1 123 4567' );
 $c->setNoc24hphone( '+353 1 123 4567' );
@@ -99,6 +102,32 @@ $c->setCreated( new DateTime() );
 
 $em->persist( $c );
 
+
+
+$crd = new \Entities\CompanyRegisteredDetail();
+$crd->setRegisteredName( 'Somecity Internet Exchange Point Limited' );
+$crd->setCompanyNumber( '123456' );
+$crd->setJurisdiction( 'Ireland' );
+$crd->setAddress1( '5 Somewhere' );
+$crd->setTownCity( 'Dublin' );
+$crd->setPostcode( 'D4' );
+$crd->setCountry( 'IE' );
+
+$em->persist( $crd );
+
+$c->setRegistrationDetails( $crd );
+
+$cbd = new \Entities\CompanyBillingDetail();
+$cbd->setBillingAddress1( 'c/o The Bill Payers' );
+$cbd->setBillingAddress2( 'Money House, Moneybags Street' );
+$cbd->setBillingTownCity( 'Dublin' );
+$cbd->setBillingPostcode( 'D4' );
+$cbd->setBillingCountry( 'IE' );
+$cbd->setPurchaseOrderRequired( false );
+
+$em->persist( $cbd );
+
+$c->setBillingDetails( $cbd );
 
 // now you need your admin user!
 
@@ -292,7 +321,7 @@ foreach( $contactRoles as $name )
     $e->setType( \Entities\ContactGroup::TYPE_ROLE );
     $e->setActive( true );
     $e->setLimitedTo( 0 );
-    $e->setCreated( new DateTime() ); 
+    $e->setCreated( new DateTime() );
     $em->persist( $e );
 }
 
