@@ -16,3 +16,6 @@
 [submodule "Minify"]
 	path = Minify
 	url = https://github.com/opensolutions/Minify.git
+[submodule "library/Bootbox.git"]
+	path = library/Bootbox.git
+	url = https://github.com/makeusabrew/bootbox.git
