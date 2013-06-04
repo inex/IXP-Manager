@@ -7,3 +7,6 @@
 [submodule "library/OSS-Framework.git"]
 	path = library/OSS-Framework.git
 	url = https://github.com/opensolutions/OSS-Framework.git
+[submodule "library/OSS_SNMP.git"]
+	path = library/OSS_SNMP.git
+	url = https://github.com/opensolutions/OSS_SNMP.git
