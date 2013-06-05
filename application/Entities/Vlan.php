@@ -9,16 +9,15 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Vlan
 {
-	
-	const PRIVATE_NO  = 0;
-	const PRIVATE_YES = 1;
-		
-	public static $PRIVATE_YES_NO = array(
-			self::PRIVATE_NO  => 'No',
-			self::PRIVATE_YES => 'Yes'
-	);
-	
-	
+
+    const PRIVATE_NO  = 0;
+    const PRIVATE_YES = 1;
+
+    public static $PRIVATE_YES_NO = array(
+            self::PRIVATE_NO  => 'No',
+            self::PRIVATE_YES => 'Yes'
+    );
+
     /**
      * @var string $name
      */
@@ -63,6 +62,11 @@ class Vlan
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     private $NetworkInfo;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $NetInfo;
 
     /**
      * Constructor
@@ -336,10 +340,7 @@ class Vlan
     {
         return $this->private;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $NetInfo;
+    
 
 
     /**
@@ -370,8 +371,142 @@ class Vlan
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getNetInfo()
+    public function getNetInfos()
     {
         return $this->NetInfo;
+    }
+
+    /**
+     * Return the entity object of NetInfo
+     *
+     * @param string $property The named attribute / preference to check for
+     * @param int    $protocol Sets one of \Entities\NetInfo Protocols
+     * @param int    $index    Ddefault 0 If an indexed preference, get a specific index (default: 0)
+     * @return \Entities\NetInfo|bool Returns net info object or false
+     * @throws Exception Unknown protocol.
+     */
+    public function loadNetInfo( $property, $protocol, $index = 0 )
+    {
+        if( !isset( \Entities\NetInfo::$PROTOCOLS[ $protocol ] ) )
+            throw new Exception( "Unknown protocol" );
+
+        foreach( $this->getNetInfos() as $pref )
+        {
+            if( $pref->getProperty() == $property && $pref->getIx() == $index && $pref->getProtocol() == $protocol )
+            {
+                return $pref;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Set (or update) a NetInfo
+     *
+     * @param string $property The preference name
+     * @param string $value    The value to assign to the preference
+     * @param int    $protocol Sets one of \Entities\NetInfo Protocols
+     * @param int    $index    default 0 If an indexed preference, set a specific index number. Default 0.
+     * @return \Entities\NetInfo|bool Returns net info object or false
+     * @throws Exception Unknown protocol.
+     */
+    public function setNetInfo( $property, $value, $protocol, $index = 0 )
+    {
+        if( !isset( \Entities\NetInfo::$PROTOCOLS[ $protocol ] ) )
+            throw new Exception( "Unknown protocol" );
+
+        $pref = $this->loadNetInfo( $property, $protocol, $index );
+
+        if( $pref )
+        {
+            $pref->setValue( $value );
+            $pref->setProtocol( $protocol );
+            $pref->setIx( $index );
+
+            return $this;
+        }
+
+        $pref = $this->_createNetInfoEntity( $this );
+        $pref->setProperty( $property );
+        $pref->setProtocol( $protocol );
+        $pref->setValue( $value );
+        $pref->setIx( $index );
+
+        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+        $em->persist( $pref );
+        return $this;
+    }
+
+    /**
+     * Add an indexed NetInfo
+     *
+     * @param string $property The preference name
+     * @param string $value The value to assign to the preference
+     * @param int    $protocol Sets one of \Entities\NetInfo Protocols
+     * @return \Entities\NetInfo|bool Returns net info object or false
+     * @throws Exception Unknown protocol
+     */
+    public function addIndexedNetInfo( $property, $value, $protocol )
+    {
+        if( !isset( \Entities\NetInfo::$PROTOCOLS[ $protocol ] ) )
+            throw new Exception( "Unknown protocol" );
+
+        // what's the current highest index and how many is there?
+        $highest = -1;
+
+        foreach( $this->getNetInfos() as $pref )
+        {
+            if( $pref->getProperty() == $property && $pref->getProtocol() == $protocol )
+            {
+                if( $pref->getIx() > $highest )
+                    $highest = $pref->getIx();
+            }
+        }
+
+        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+        if( is_array( $value ) )
+        {
+            foreach( $value as $v )
+            {
+                $pref = $this->_createNetInfoEntity( $this );
+                $pref->setProperty( $property );
+                $pref->setProtocol( $protocol );
+                $pref->setValue( $v );
+                $pref->setIx( ++$highest );
+                
+                $em->persist( $pref );
+            }
+        }
+        else
+        {
+            $pref = $this->_createNetInfoEntity( $this );
+            $pref->setProperty( $property );
+            $pref->setProtocol( $protocol );
+            $pref->setValue( $value );
+            $pref->setIx( ++$highest );
+
+            $em->persist( $pref );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Creates \Entities\NetInfo object.
+     *
+     * @return \Entities\NetInfo
+     */
+    private function _createNetInfoEntity( $owner = null )
+    {
+        $pref = new \Entities\NetInfo();
+
+        if( $owner != null )
+        {
+            $pref->setVlan( $owner );
+            $owner->addNetInfo( $pref );
+        }
+
+        return $pref;
     }
 }

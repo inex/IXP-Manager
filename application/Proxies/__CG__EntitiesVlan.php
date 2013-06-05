@@ -195,10 +195,28 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
         return parent::removeNetInfo($netInfo);
     }
 
-    public function getNetInfo()
+    public function getNetInfos()
     {
         $this->__load();
-        return parent::getNetInfo();
+        return parent::getNetInfos();
+    }
+
+    public function loadNetInfo($property, $protocol, $index = 0)
+    {
+        $this->__load();
+        return parent::loadNetInfo($property, $protocol, $index);
+    }
+
+    public function setNetInfo($property, $value, $protocol, $index = 0)
+    {
+        $this->__load();
+        return parent::setNetInfo($property, $value, $protocol, $index);
+    }
+
+    public function addIndexedPreference($property, $value, $protocol)
+    {
+        $this->__load();
+        return parent::addIndexedPreference($property, $value, $protocol);
     }
 
 
