@@ -258,8 +258,8 @@ identity.orgname  = "XXX"
 ;; e.g. we use "INEX Operations" here
 identity.name  = "XXX Operations"
 
-;; e.g. we use "operations@example.com" here
-identity.email = "operations@inex.ie"
+;; e.g. we use "operations@inex.ie" here
+identity.email = "operations@example.com"
 
 ;; e.g. we use "INEX Ops Autobot"
 identity.autobot.name  = "XXX Ops Autobot"
@@ -330,7 +330,8 @@ mrtg.trunk_graphs[] = "core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
 mrtg.trunk_graphs[] = "core-sw1-sw3-lan1::PoP 1 to PoP 3 (LAN1)"
 ;; ...
 
-; sflow parameters
+; sflow parameters (peer to peer graphs)
+sflow.enabled = true
 sflow.rootdir = /path/to/rrd/files
 sflow.rrd.rrdtool = /usr/bin/rrdtool
 sflow.rrd.rrdcached.sock = unix:/var/run/rrdcached.sock
