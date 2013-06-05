@@ -429,7 +429,46 @@ weathermap.1.height = 1200
 ; weathermap.2.name = "Weathermap for Peering LAN 2"
 ; ...
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; We use PHP-Weathermap which is publically available. Our true settings
+;; are commented out, please replace with your own
+;;
 
+weathermap.1.name   = "Weathermap for Peering LAN 1"
+weathermap.1.menu   = "Weathermap - LAN 1"
+; weathermap.1.url    = "https://www.inex.ie/noncms/weathermap-lan1-plain.html"
+weathermap.1.url    = "https://www.example.com/weathermap-lan1-plain.html"
+weathermap.1.width  = 900
+weathermap.1.height = 1200
+
+; weathermap.2.name = "Weathermap for Peering LAN 2"
+; ...
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Net Info default properties
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+netinfo.property.masklen.name = "Subnet Size"
+netinfo.property.masklen.singleton = true
+netinfo.property.routeserver.name = "Route Server"
+netinfo.property.routeserver.singleton = false
+netinfo.property.routeserver.properties.ipaddress = "IP Address"
+netinfo.property.routeserver.properties.type.name = "Type"
+netinfo.property.routeserver.properties.type.values[] = 'Quagga (std)'
+netinfo.property.routeserver.properties.type.values[] = 'Quagga (EuroIX)'
+netinfo.property.routeserver.properties.type.values[] = 'Bird'
+netinfo.property.routeserver.properties.type.values[] = 'OpenBGPd'
+netinfo.property.dnsfile.name = "DNS File" ;;singleton by default
+netinfo.property.as112server.name = "AS112 Server"
+netinfo.property.as112server.singleton = false
+netinfo.property.routecollector.name = "Route Collector"
+netinfo.property.routecollector.singleton = false
+netinfo.property.pingbeacon.name = "Ping Beacon"
+netinfo.property.pingbeacon.singleton = false
+netinfo.property.pingbeacon.properties.ipaddress = "IP Address"
+netinfo.property.pingbeacon.properties.ratelimited = "Rate Limited"
+netinfo.property.pingbeacon.help = "If this ping beacon is not rate"
 
 [staging : production]
 
