@@ -9,6 +9,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NetInfo
 {
+    const PROTOCOL_IPV4 = 0;
+    const PROTOCOL_IPV6 = 1;
+
+    public static $PROTOCOLS = [
+        self::PROTOCOL_IPV4 => "IPv4",
+        self::PROTOCOL_IPV6 => "IPv6" 
+    ];
+
     /**
      * @var integer
      */
