@@ -43,7 +43,7 @@ class IXP_Form_Interface_Physical extends IXP_Form
         $switchPorts->setRequired( true )
             ->setRegisterInArrayValidator( false )
             ->setLabel( 'Port' )
-            ->setAttrib( 'class', 'chzn-select span3' )
+            ->setAttrib( 'class', 'chzn-select span2' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a switch port' ) );
         $this->addElement( $switchPorts );
@@ -54,7 +54,7 @@ class IXP_Form_Interface_Physical extends IXP_Form
         $status = $this->createElement( 'select', 'status' );
         $status->setMultiOptions( \Entities\PhysicalInterface::$STATES )
             ->setRegisterInArrayValidator( true )
-            ->setAttrib( 'class', 'chzn-select span3' )
+            ->setAttrib( 'class', 'chzn-select span2' )
             ->setLabel( 'Status' )
             ->setErrorMessages( array( 'Please set the status' ) );
         $this->addElement( $status );
@@ -63,7 +63,7 @@ class IXP_Form_Interface_Physical extends IXP_Form
         $speed = $this->createElement( 'select', 'speed' );
         $speed->setMultiOptions( \Entities\PhysicalInterface::$SPEED )
             ->setRegisterInArrayValidator( true )
-            ->setAttrib( 'class', 'chzn-select span3' )
+            ->setAttrib( 'class', 'chzn-select span2' )
             ->setLabel( 'Speed' )
             ->setErrorMessages( array( 'Please set the speed' ) );
         $this->addElement( $speed );
@@ -72,7 +72,7 @@ class IXP_Form_Interface_Physical extends IXP_Form
         $duplex = $this->createElement( 'select', 'duplex' );
         $duplex->setMultiOptions( \Entities\PhysicalInterface::$DUPLEX )
             ->setRegisterInArrayValidator( true )
-            ->setAttrib( 'class', 'chzn-select span3' )
+            ->setAttrib( 'class', 'chzn-select span2' )
             ->setLabel( 'Duplex' )
             ->setErrorMessages( array( 'Please set the duplex' ) );
         $this->addElement( $duplex );

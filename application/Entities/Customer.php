@@ -14,35 +14,35 @@ class Customer
     const TYPE_INTERNAL   = 3;
     const TYPE_PROBONO    = 4;
     
-    public static $CUST_TYPES_TEXT = array(
+    public static $CUST_TYPES_TEXT = [
         self::TYPE_FULL      => 'Full',
         self::TYPE_ASSOCIATE => 'Associate',
         self::TYPE_INTERNAL  => 'Internal',
         self::TYPE_PROBONO   => 'Pro-bono'
-    );
+    ];
     
     
     const STATUS_NORMAL       = 1;
     const STATUS_NOTCONNECTED = 2;
     const STATUS_SUSPENDED    = 3;
     
-    public static $CUST_STATUS_TEXT = array(
+    public static $CUST_STATUS_TEXT = [
         self::STATUS_NORMAL           => 'Normal',
         self::STATUS_NOTCONNECTED     => 'Not Connected',
         self::STATUS_SUSPENDED        => 'Suspended',
-    );
+    ];
     
     const PEERING_POLICY_OPEN       = 'open';
     const PEERING_POLICY_SELECTIVE  = 'selective';
     const PEERING_POLICY_MANDATORY  = 'mandatory';
     const PEERING_POLICY_CLOSED     = 'closed';
     
-    public static $PEERING_POLICIES = array(
+    public static $PEERING_POLICIES = [
         self::PEERING_POLICY_OPEN       => 'open',
         self::PEERING_POLICY_SELECTIVE  => 'selective',
         self::PEERING_POLICY_MANDATORY  => 'mandatory',
         self::PEERING_POLICY_CLOSED     => 'closed'
-    );
+    ];
 
     const NOC_HOURS_24x7 = '24x7';
     const NOC_HOURS_8x5  = '8x5';
@@ -50,13 +50,27 @@ class Customer
     const NOC_HOURS_12x5 = '12x5';
     const NOC_HOURS_12x7 = '12x7';
     
-    public static $NOC_HOURS = array(
+    public static $NOC_HOURS = [
         self::NOC_HOURS_24x7 => '24x7',
         self::NOC_HOURS_8x5  => '8x5',
         self::NOC_HOURS_8x7  => '8x7',
         self::NOC_HOURS_12x5 => '12x5',
         self::NOC_HOURS_12x7 => '12x7'
-    );
+    ];
+    
+   const MD5_SUPPORT_UNKNOWN   = 'UNKNOWN';
+   const MD5_SUPPORT_YES       = 'YES';
+   const MD5_SUPPORT_MANDATORY = 'MANDATORY';
+   const MD5_SUPPORT_PREFERRED = 'PREFERRED';
+   const MD5_SUPPORT_NO        = 'NO';
+    
+    public static $MD5_SUPPORT = [
+        self::MD5_SUPPORT_UNKNOWN   => 'Unknown',
+        self::MD5_SUPPORT_YES       => 'Yes',
+        self::MD5_SUPPORT_MANDATORY => 'Yes - Mandatory',
+        self::MD5_SUPPORT_PREFERRED => 'Yes - Preferred',
+        self::MD5_SUPPORT_NO        => 'No'
+    ];
     
     
     /**
@@ -1668,5 +1682,61 @@ class Customer
     public function getBillingDetails()
     {
         return $this->BillingDetails;
+    }
+    /**
+     * @var string
+     */
+    private $abbreviatedName;
+
+    /**
+     * @var string
+     */
+    private $MD5Support;
+
+
+    /**
+     * Set abbreviatedName
+     *
+     * @param string $abbreviatedName
+     * @return Customer
+     */
+    public function setAbbreviatedName($abbreviatedName)
+    {
+        $this->abbreviatedName = $abbreviatedName;
+    
+        return $this;
+    }
+
+    /**
+     * Get abbreviatedName
+     *
+     * @return string 
+     */
+    public function getAbbreviatedName()
+    {
+        return $this->abbreviatedName;
+    }
+
+    /**
+     * Set MD5Support
+     *
+     * @param string $mD5Support
+     * @return Customer
+     */
+    public function setMD5Support($mD5Support)
+    {
+        $this->MD5Support = $mD5Support;
+    
+        return $this;
+    }
+
+    /**
+     * Get MD5Support
+     *
+     * @return string 
+     */
+    public function getMD5Support()
+    {
+        return $this->MD5Support;
     }
 }

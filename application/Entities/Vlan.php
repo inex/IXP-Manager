@@ -336,4 +336,42 @@ class Vlan
     {
         return $this->private;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $NetInfo;
+
+
+    /**
+     * Add NetInfo
+     *
+     * @param \Entities\NetInfo $netInfo
+     * @return Vlan
+     */
+    public function addNetInfo(\Entities\NetInfo $netInfo)
+    {
+        $this->NetInfo[] = $netInfo;
+    
+        return $this;
+    }
+
+    /**
+     * Remove NetInfo
+     *
+     * @param \Entities\NetInfo $netInfo
+     */
+    public function removeNetInfo(\Entities\NetInfo $netInfo)
+    {
+        $this->NetInfo->removeElement($netInfo);
+    }
+
+    /**
+     * Get NetInfo
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNetInfo()
+    {
+        return $this->NetInfo;
+    }
 }

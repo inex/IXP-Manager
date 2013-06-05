@@ -59,7 +59,7 @@ $( 'document' ).ready( function() {
     $( "select[id|='port-type']"  ).on( 'change', function( event ){
         
         var id = $( event.target ).attr( 'id' ).substr( $( event.target ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
-        var throb =  tt_throbber( 20, 10, 1 );
+        var throb =  ossThrobber( 20, 10, 1 );
         
         $( '#port-type-state-' + id ).html( "" );
         throb.appendTo( $( '#port-type-state-' + id ).get(0) ).start()

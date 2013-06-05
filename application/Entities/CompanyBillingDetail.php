@@ -9,6 +9,31 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CompanyBillingDetail
 {
+    
+    const INVOICE_METHOD_EMAIL = 'EMAIL';
+    const INVOICE_METHOD_POST  = 'POST';
+
+    public static $INVOICE_METHODS = [
+        self::INVOICE_METHOD_EMAIL => 'Email',
+        self::INVOICE_METHOD_POST  => 'Post'
+    ];
+
+    const BILLING_FREQUENCY_MONTHLY    = 'MONTHLY';
+    const BILLING_FREQUENCY_2MONTHLY   = '2MONTHLY';
+    const BILLING_FREQUENCY_QUARTERLY  = 'QUARTERLY';
+    const BILLING_FREQUENCY_HALFYEARLY = 'HALFYEARLY';
+    const BILLING_FREQUENCY_ANNUALLY   = 'ANNUALLY';
+    const BILLING_FREQUENCY_NOBILLING  = 'NOBILLING';
+    
+    public static $BILLING_FREQUENCIES = [
+        self::BILLING_FREQUENCY_MONTHLY    => 'Monthly',
+        self::BILLING_FREQUENCY_2MONTHLY   => 'Every 2 Months',
+        self::BILLING_FREQUENCY_QUARTERLY  => 'Quarterly',
+        self::BILLING_FREQUENCY_HALFYEARLY => 'Half-Yearly',
+        self::BILLING_FREQUENCY_ANNUALLY   => 'Annually',
+        self::BILLING_FREQUENCY_NOBILLING  => 'No Billing'
+    ];
+
     /**
      * @var string
      */
@@ -68,6 +93,26 @@ class CompanyBillingDetail
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     private $Customer;
+
+    /**
+     * @var boolean
+     */
+    private $purchaseOrderRequired;
+
+    /**
+     * @var string
+     */
+    private $invoiceMethod;
+
+    /**
+     * @var string
+     */
+    private $invoiceEmail;
+
+    /**
+     * @var string
+     */
+    private $billingFrequency;
     
     public function __construct()
     {
@@ -344,5 +389,97 @@ class CompanyBillingDetail
     public function getCustomer()
     {
         return $this->Customer;
+    }
+
+    /**
+     * Set purchaseOrderRequired
+     *
+     * @param boolean $purchaseOrderRequired
+     * @return CompanyBillingDetail
+     */
+    public function setPurchaseOrderRequired($purchaseOrderRequired)
+    {
+        $this->purchaseOrderRequired = $purchaseOrderRequired;
+    
+        return $this;
+    }
+
+    /**
+     * Get purchaseOrderRequired
+     *
+     * @return boolean 
+     */
+    public function getPurchaseOrderRequired()
+    {
+        return $this->purchaseOrderRequired;
+    }
+
+    /**
+     * Set invoiceMethod
+     *
+     * @param string $invoiceMethod
+     * @return CompanyBillingDetail
+     */
+    public function setInvoiceMethod($invoiceMethod)
+    {
+        $this->invoiceMethod = $invoiceMethod;
+    
+        return $this;
+    }
+
+    /**
+     * Get invoiceMethod
+     *
+     * @return string 
+     */
+    public function getInvoiceMethod()
+    {
+        return $this->invoiceMethod;
+    }
+
+    /**
+     * Set invoiceEmail
+     *
+     * @param string $invoiceEmail
+     * @return CompanyBillingDetail
+     */
+    public function setInvoiceEmail($invoiceEmail)
+    {
+        $this->invoiceEmail = $invoiceEmail;
+    
+        return $this;
+    }
+
+    /**
+     * Get invoiceEmail
+     *
+     * @return string 
+     */
+    public function getInvoiceEmail()
+    {
+        return $this->invoiceEmail;
+    }
+
+    /**
+     * Set billingFrequency
+     *
+     * @param string $billingFrequency
+     * @return CompanyBillingDetail
+     */
+    public function setBillingFrequency($billingFrequency)
+    {
+        $this->billingFrequency = $billingFrequency;
+    
+        return $this;
+    }
+
+    /**
+     * Get billingFrequency
+     *
+     * @return string 
+     */
+    public function getBillingFrequency()
+    {
+        return $this->billingFrequency;
     }
 }

@@ -1,0 +1,27 @@
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Administrator's Home"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller=$controller action="list"}">{$feParams->pagetitle}</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Edit Billing / Registration details for {$cust->getName()}
+    </li>
+    <li class="pull-right">
+        <div class="btn-group">
+            <a class="btn btn-mini" href="{genUrl module=$module controller=$controller action='list'}"><i class="icon-list"></i></a>
+            <a class="btn btn-mini" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+        </div>
+    </li>
+</ul>
+
+{OSS_Message}
+<div id="co-messages"></div>
+
+{$form}
+
+
+{tmplinclude file="footer.phtml"}

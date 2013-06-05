@@ -80,7 +80,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Hours' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span6' );
+            ->setAttrib( 'class', 'chzn-select span2' );
         $this->addElement( $nochours );
         
         

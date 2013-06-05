@@ -55,7 +55,7 @@ class IXP_Form_ContactGroup extends IXP_Form
         
         $type = $this->createElement( 'select', 'type' );
         $type->setLabel( _( 'Type' ) )
-            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->setAttrib( 'class', 'span2 chzn-select' )
             ->setRegisterInArrayValidator( true )
             ->setErrorMessages( array( 'Please set the role' ) );
         $this->addElement( $type ); 
