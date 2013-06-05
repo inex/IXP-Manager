@@ -1740,4 +1740,3 @@ class Customer
         return $this->MD5Support;
     }
 }
-
