@@ -126,7 +126,7 @@
     
 $( document ).ready( function(){
     $( "#login" ).on( 'change', function(){
-        if( $( this ).attr( "checked" ) )
+        if( $( this ).prop( "checked" ) )
             $( "#login-elements" ).show( "slow" );
         else
             $( "#login-elements" ).hide( "slow" );
