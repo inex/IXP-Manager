@@ -22,9 +22,11 @@
                                     <li>
                                         <a href="{genUrl controller="customer" action="details"}">Member Details</a>
                                     </li>
-                                    <li>
-                                        <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
-                                    </li>
+                                    {if not isset( $options['frontend']['disabled']['meeting'] ) or not $options['frontend']['disabled']['meeting'] }
+                                        <li>
+                                            <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
+                                        </li>
+                                    {/if}
                                 </ul>
                             </li>
                             <li class="dropdown {if $controller eq 'peering-manager' or $controller eq 'rs-prefixes'
