@@ -25,16 +25,14 @@
 
     <div class="span6">
         {$element->ipv4enabled}
-
-        <div id="ipv4details" class="hide">
+        <div id="ipv4details" {if !$element->ipv4enabled->getValue()}class="hide"{/if}>
             {$element->ipv4DisplayGroup}
         </div>
     </div>
 
     <div class="span6">
         {$element->ipv6enabled}
-
-        <div id="ipv6details" class="hide">
+        <div id="ipv6details" {if !$element->ipv6enabled->getValue()}class="hide"{/if}>
             {$element->ipv6DisplayGroup}
         </div>
     </div>
@@ -46,6 +44,8 @@
 {$element->preselectIPv4Address}
 {$element->preselectIPv6Address}
 {$element->preselectVlanInterface}
+{$element->preselectCustomer}
+
 
 <div class="form-actions">
     {$element->cancel}

@@ -33,6 +33,9 @@
  */
 class VlanInterfaceController extends IXP_Controller_FrontEnd
 {
+    
+    use IXP_Controller_Trait_Interfaces;
+    
     /**
      * This function sets up the frontend controller
      */
@@ -73,8 +76,12 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                         'action'     => 'list',
                         'idField'    => 'vlanid'
                     ],
-
-                    'rsclient'      => 'Route Server',
+                    'rsclient'       => [
+                            'title'    => 'Route Server',
+                            'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                            'script'   => 'frontend/list-column-active.phtml',
+                            'colname'  => 'rsclient'
+                    ],
                     'ipv4'          => 'ipv4',
                     'ipv6'          => 'ipv6'
                 ];
@@ -162,13 +169,12 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
     {
         if( $isEdit )
         {
-            $form->getElement( 'ipv4addressid'      )->setValue( $object->getIPv4Address() ? $object->getIPv4Address()->getAddress() : null );
-            $form->getElement( 'ipv6addressid'      )->setValue( $object->getIPv6Address() ? $object->getIPv6Address()->getAddress() : null );
             $form->getElement( 'virtualinterfaceid' )->setValue( $object->getVirtualInterface()->getId() );
+            $form->getElement( 'preselectCustomer'  )->setValue( $object->getVirtualInterface()->getCustomer()->getId() );
             $form->getElement( 'vlanid'             )->setValue( $object->getVlan()->getId()             );
             
-            $form->getElement( 'preselectIPv4Address'   )->setValue( $object->getIPv4Address() ? $object->getIPv4Address()->getId() : null );
-            $form->getElement( 'preselectIPv6Address'   )->setValue( $object->getIPv6Address() ? $object->getIPv6Address()->getId() : null );
+            $form->getElement( 'preselectIPv4Address'   )->setValue( $object->getIPv4Address() ? $object->getIPv4Address()->getAddress() : null );
+            $form->getElement( 'preselectIPv6Address'   )->setValue( $object->getIPv6Address() ? $object->getIPv6Address()->getAddress() : null );
             $form->getElement( 'preselectVlanInterface' )->setValue( $object->getId()        );
             
             if( $this->getParam( 'rtn', false ) == 'vli' )
@@ -196,6 +202,8 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
             $form->getElement( 'maxbgpprefix' )->setValue( $vint->getCustomer()->getMaxprefixes() );
             
             $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
+            $form->getElement( 'preselectCustomer'  )->setValue( $vint->getCustomer()->getId() );
+
             $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $vint->getId() ] ) );
         }
     }
@@ -204,26 +212,22 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
      * @param IXP_Form_Interface_Vlan $form The form object
      * @param \Entities\VlanInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
+     * @return bool
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
-        $object->setIPv4Address(
-            $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->find( $form->getElement( 'ipv4addressid' )->getValue() )
-        );
-    
-        $object->setIPv6Address(
-            $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->find( $form->getElement( 'ipv6addressid' )->getValue() )
-        );
-        
-        $object->setVlan(
-            $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
-        );
-    
         $object->setVirtualInterface(
             $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $form->getElement( 'virtualinterfaceid' )->getValue() )
         );
-        
+
+        $object->setVlan(
+            $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
+        );
+
+
+         if( !$this->setIp( $form, $object->getVirtualInterface(), $object, false ) || !$this->setIp( $form, $object->getVirtualInterface(), $object, true ) )
+            return false;
+    
         return true;
     }
     
@@ -266,6 +270,6 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
     
         $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $this->getParam( 'vintid' ) );
     }
-    
+
 }
 

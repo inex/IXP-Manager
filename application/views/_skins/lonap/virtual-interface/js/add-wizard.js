@@ -104,19 +104,43 @@ $(document).ready( function() {
     });
 
     $( '#ipv6enabled' ).on( 'click', function( event ){
-
-        if( $( '#ipv6enabled' ).is(':checked') )
+        if( $( '#ipv6enabled' ).is(':checked') ){
+            if( $( '#custid' ).val() && !$( '#ipv6addressid' ).val() ){
+                $.get("{genUrl controller='ipv6-address' action='ajax-get-next'}/schema/LONAP/custid/" + $('#custid').val(), function( data ) {
+                    if( data ){
+                        bootbox.alert( "IPv6 address <em>" + data + "</em> was auto generated for this VlanInterface" );
+                        $( '#ipv6addressid' ).val( data );
+                    }
+                });
+            }
             $( '#ipv6details' ).slideDown();
+        }
         else
             $( '#ipv6details' ).slideUp();
 
         $( window ).trigger( "resize" );
     });
 
-    if( $( '#ipv4enabled' ).is(':checked') )
+    $( '#custid' ).on( 'change', function(){
+        if( $( '#ipv6enabled' ).is(':checked') ){
+            $.get("{genUrl controller='ipv6-address' action='ajax-get-next'}/schema/LONAP/custid/" + $('#custid').val(), function( data ) {
+                if( data ){
+                    bootbox.alert( "IPv6 address <em>" + data + "</em> was auto generated for this VlanInterface" );
+                    $( '#ipv6addressid' ).val( data );
+                }
+            });
+        }
+    });
+
+    if( $( '#ipv4enabled' ).is(':checked') ){
         $( '#ipv4details' ).show();
+        $( window ).trigger( "resize" );
+    }
 
     if( $( '#ipv6enabled' ).is(':checked') )
+    {
         $( '#ipv6details' ).show();
+        $( window ).trigger( "resize" );
+    }
 
 });
