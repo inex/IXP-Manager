@@ -51,13 +51,11 @@ class IXP_Form_Interface_Vlan extends IXP_Form
             ->setCheckedValue( '1' );
         $this->addElement( $ipv4enabled );
 
-        $ipv4addressid = $this->createElement( 'select', 'ipv4addressid' );
-        $ipv4addressid->setRegisterInArrayValidator( false )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setAttrib( 'chzn-fix-width', '1' )
+        $ipv4addressid = new OSS_Form_Element_DatabaseDropdown( 'ipv4addressid' );
+        $ipv4addressid->setRequired( false )
+            ->setChosenOptions( [ "0" => "" ] )
             ->setLabel( 'IPv4 Address' )
-            ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
-            ->setErrorMessages( array( 'Please select a IPv4 address' ) );
+            ->setErrorMessages( array( 'Please select or enter a IPv4 address' ) );
         $this->addElement( $ipv4addressid );
 
         $ipv4hostname = $this->createElement( 'text', 'ipv4hostname' );
@@ -97,13 +95,11 @@ class IXP_Form_Interface_Vlan extends IXP_Form
             ->setCheckedValue( '1' );
         $this->addElement( $ipv6enabled );
 
-        $ipv6addressid = $this->createElement( 'select', 'ipv6addressid' );
-        $ipv6addressid->setRegisterInArrayValidator( false )
+        $ipv6addressid = new OSS_Form_Element_DatabaseDropdown( 'ipv6addressid' );
+        $ipv6addressid->setRequired( false )
             ->setLabel( 'IPv6 Address' )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setAttrib( 'chzn-fix-width', '1' )
-            ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
-            ->setErrorMessages( array( 'Please select a IPv6 address' ) );
+            ->setChosenOptions( [ "0" => "" ] )
+            ->setErrorMessages( array( 'Please select or enter a IPv6 address' ) );
         $this->addElement( $ipv6addressid );
         
         $ipv6hostname = $this->createElement( 'text', 'ipv6hostname' );
@@ -191,6 +187,9 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         
         $preselectVlanInterface = $this->createElement( 'hidden', 'preselectVlanInterface' );
         $this->addElement( $preselectVlanInterface );
+
+        $preselectCustomer = $this->createElement( 'hidden', 'preselectCustomer' );
+        $this->addElement( $preselectCustomer );
             
     }
 

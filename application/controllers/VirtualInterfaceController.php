@@ -33,6 +33,10 @@
  */
 class VirtualInterfaceController extends IXP_Controller_FrontEnd
 {
+    
+    use IXP_Controller_Trait_Interfaces;
+    
+    
     /**
      * This function sets up the frontend controller
      */
@@ -257,15 +261,14 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
 	                
 	                $vli = new \Entities\VlanInterface();
 	                $form->assignFormToEntity( $vli, $this, false );
-	                $vli->setIPv4Address(
-	                    $this->getD2EM()->getRepository( '\\Entities\\IPv4Address' )->find( $form->getElement( 'ipv4addressid' )->getValue() )
-	                );
-	                $vli->setIPv6Address(
-	                    $this->getD2EM()->getRepository( '\\Entities\\IPv6Address' )->find( $form->getElement( 'ipv6addressid' )->getValue() )
-	                );
-	                $vli->setVlan(
-	                    $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
-	                );
+
+                    $vli->setVlan(
+                        $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
+                    );
+
+                    if( !$this->setIp( $form, $vi, $vli, false ) || !$this->setIp( $form, $vi, $vli, true ) )
+                        return false;
+
 	                $vli->setVirtualInterface( $vi );
 	                $this->getD2EM()->persist( $vli );
 	                
@@ -307,6 +310,6 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'list' ) );
         }
     }
-        
+
 }
 

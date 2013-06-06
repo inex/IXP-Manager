@@ -12,4 +12,32 @@ use Doctrine\ORM\EntityRepository;
  */
 class IPv6Address extends EntityRepository
 {
+    /**
+     * Returns IPv6 addresses array for given customer
+     *
+     * Return array contains only IPv6 addresses like:
+     * ["x:x:x:x:x:x:x:x", "x:x:x:x:x:x:x:x", ..., "x:x:x:x:x:x:x:x"]
+     *
+     * @param \Entities\Customer
+     * @return array
+     */
+    public function getArrayForCustomer( $customer )
+    {
+        $addresses = $this->getEntityManager()->createQuery(
+            "SELECT ip6.address as address
+        
+             FROM \\Entities\\IPv6Address ip6
+                 LEFT JOIN ip6.VlanInterface vi
+                 LEFT JOIN vi.VirtualInterface viri
+        
+             WHERE viri.Customer = ?1"
+        )
+        ->setParameter( 1, $customer )
+        ->getArrayResult();
+
+        if( !$addresses )
+            return [];
+        else
+            return array_map( 'current', $addresses );
+    }
 }

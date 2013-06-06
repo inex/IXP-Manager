@@ -27,12 +27,12 @@ define hostgroup {
 }
 
 
-define hostgroup {
-        hostgroup_name          INEX-Switches-Cisco
-        alias                   INEX Cisco Switches
-        members                 {$vendor_cisco}
-
-}
+#define hostgroup {
+#        hostgroup_name          INEX-Switches-Cisco
+#        alias                   INEX Cisco Switches
+#        members                 {$vendor_cisco}
+#
+#}
 
 
 define hostgroup {
@@ -51,12 +51,12 @@ define service{ldelim}
         check_command                   check_foundry_chassis!fjvrGzHqr
 {rdelim}
 
-define service  {ldelim}
-        use                             inex-production-switch-service
-        service_description             Temperature
-        hostgroup_name                  INEX-Switches-Cisco
-        check_command                   check_cisco_temperature!fjvrGzHqr!32!38
-{rdelim}
+#define service  {ldelim}
+#        use                             inex-production-switch-service
+#        service_description             Temperature
+#        hostgroup_name                  INEX-Switches-Cisco
+#        check_command                   check_cisco_temperature!fjvrGzHqr!32!38
+#{rdelim}
 
 
 
