@@ -9,12 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NetInfo
 {
-    const PROTOCOL_IPV4 = 0;
-    const PROTOCOL_IPV6 = 1;
+    const PROTOCOL_IPV4 = 4;
+    const PROTOCOL_IPV6 = 6;
 
     public static $PROTOCOLS = [
         self::PROTOCOL_IPV4 => "IPv4",
-        self::PROTOCOL_IPV6 => "IPv6" 
+        self::PROTOCOL_IPV6 => "IPv6"
     ];
 
     /**
@@ -64,7 +64,7 @@ class NetInfo
     /**
      * Get protocol
      *
-     * @return integer 
+     * @return integer
      */
     public function getProtocol()
     {
@@ -87,7 +87,7 @@ class NetInfo
     /**
      * Get property
      *
-     * @return string 
+     * @return string
      */
     public function getProperty()
     {
@@ -110,7 +110,7 @@ class NetInfo
     /**
      * Get ix
      *
-     * @return integer 
+     * @return integer
      */
     public function getIx()
     {
@@ -133,7 +133,7 @@ class NetInfo
     /**
      * Get value
      *
-     * @return string 
+     * @return string
      */
     public function getValue()
     {
@@ -143,7 +143,7 @@ class NetInfo
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -166,7 +166,7 @@ class NetInfo
     /**
      * Get Vlan
      *
-     * @return \Entities\Vlan 
+     * @return \Entities\Vlan
      */
     public function getVlan()
     {
