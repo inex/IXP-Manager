@@ -1,129 +1,41 @@
 {tmplinclude file="header.phtml"}
 
-{if isset( $user ) and $user->getPrivs() eq USER::AUTH_SUPERUSER}
-    <ul class="breadcrumb">
-        <li>
-            <a href="{genUrl}">Home</a> <span class="divider">/</span>
-        </li>
-        <li>
-            <a href="{genUrl controller="vlan"}">VLANs</a> <span class="divider">/</span>
-        </li>
-        <li class="active">
-            {$feParams->pagetitle}
-        </li>
-        
-        {* do we have a custom page header toolbar? *}
-        {if $listToolbar}
-            {tmplinclude file=$listToolbar}
-        {else}
-            <li class="pull-right"> 
-                {if !isset( $feParams->readonly ) or !$feParams->readonly}
-                    <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
-                {/if}
-            </li>
-        {/if}
-    </ul>
-
-    <div>
-{else}
-    <div class="page-content" >
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="vlan"}">VLANs</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        {$feParams->pagetitle}
+    </li>
     
-        <div class="page-header" >
-            <h1 style="display: inline;">{$feParams->pagetitle}</h1>
-            
-            <span style="float: right; margin-top: -10px;">
-                {* do we have a custom page header toolbar? *}
-                {if $listToolbar}
-                    {tmplinclude file=$listToolbar}
-                {else}
-                    <div class="btn-toolbar">
-                        <div class="btn-group">
-                            {if !isset( $feParams->readonly ) or !$feParams->readonly}
-                                <a class="btn" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
-                            {/if}
-                        </div>
-                    </div>
-                {/if}
-            </span>
-        </div>
+    {if isset( $options.netinfo )}
+        <li class="pull-right">
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-plus"></i>&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu pull-right">
+                    {foreach $options.netinfo.property as $n => $d}
+                        <li>
+                            <a href="{genUrl controller=$controller action='add'}" id="add-info-{$n}" data-name="{$n}">Add {$d.name}</a>
+                        </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </li>
+    {/if}
+</ul>
+    
+{OSS_Message}
+
+{if isset( $options.netinfo )}
+    {tmplinclude file="net-info/list-configured.phtml"}
+{else}
+    {tmplinclude file="net-info/list-unconfigured.phtml"}
 {/if}
     
-    {OSS_Message}
+    
+    
 
-    {* do we have any additional text to put before the table? *}
-    {if $listPreamble}{tmplinclude file=$listPreamble}{/if}
-
-    {if count( $data )}
-    <table id='frontend-list-table' class="table hide">
-    
-    <thead>
-        <tr>
-            <th>Property</th>
-            <th>Value</th>
-            <th>Protocol<th>
-            <th></th>
-        </tr>
-    </thead>
-    
-    <tbody>
-        {foreach $options.netinfo.property as $name => $info}
-            {if isset( $info.display ) }
-                {capture name="text"}{$name}.{$info.display}{/capture} 
-                {assign var='property' value=$smarty.capture.text}
-            {else}
-                {assign var='property' value=$name}
-            {/if}
-                
-            {foreach NetInfo::$PROTOCOLS as $prot => $protocol}
-                {foreach $Vlan->getIndexedNetInfo( $property, $prot ) as $ix => $value }
-                <tr>
-                    <td>{$info.name}</td>
-                    <td id='values-{$name}{$ix}{$protocol}'>
-                        <div class="hidden" data-name="protocol">{$prot}</div>
-                        <div class="hidden" data-name="ix">{$ix}</div>
-                        
-                        {assign var='tooltip' value=false}
-                        {if isset( $info.properties) }
-                            {foreach $info.properties as $prop => $innerProp }     
-                                
-                                {capture name="text"}{$name}.{$prop}{/capture} 
-                                {assign var='property' value=$smarty.capture.text}
-                                
-                                {capture name="text"}{if $tooltip}{$tooltip}<br />{/if}{if is_array($innerProp)}{$innerProp.name}{else}{$innerProp}{/if}: {$Vlan->getNetInfo($property, $prot, $ix )}{/capture} 
-                                {assign var='tooltip' value=$smarty.capture.text}
-                                {if $prop != $info.display}
-                                    <div class="hidden" data-name="{$name}_{$prop}">{$Vlan->getNetInfo($property, $prot, $ix )}</div>
-                                {else}
-                                    {assign var="value" value=$Vlan->getNetInfo($property, $prot, $ix )}
-                                {/if}
-                            {/foreach}
-                            <div data-name="{$name}{if isset( $info.display ) }_{$info.display}{/if}" class="have-tooltip-below" title="{$tooltip}">{$value}</div>
-                        {else}
-                            <div data-name="{$name}{if isset( $info.display ) }_{$info.display}{/if}">{$value}</div>
-                        {/if}
-                        
-                    </td>
-                    <td>{$protocol}</td>
-                    <td>{tmplinclude file=$listRowMenu}</td>
-                </tr>
-                {/foreach}
-            {/foreach}
-    {/foreach}
-    </tbody>
-    
-    </table>
-    {else}
-        <p>
-            There are no entries.{if !isset( $feParams->addWhenEmpty ) || $feParams->addWhenEmpty } Do you want to <a href="{genUrl controller=$controller action='add'}">add one...</a>{/if}
-        </p>
-    {/if} {* end if count( $data ) *}
-    
-    {* do we have any additional text to put after the table? *}
-    {if $listPostamble}{tmplinclude file=$listPostamble}{/if}
-    
-</div>
-
-
-{if $listScript}<script>{tmplinclude file=$listScript}</script>{/if}
-{if $listAddonScript}<script>{tmplinclude file=$listAddonScript}</script>{/if}
 {tmplinclude file="footer.phtml"}

@@ -75,6 +75,7 @@ class NetInfoController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $this->view->Vlan = $vlan = $this->getD2R( '\\Entities\\Vlan' )->find( $this->getParam( 'vlid', 0 ) );
+        
         if( !$vlan )
         {
             $this->addMessage( "Requested object was not found.", OSS_Message::ERROR );
@@ -82,7 +83,7 @@ class NetInfoController extends IXP_Controller_FrontEnd
 
         }
 
-        $this->view->registerClass( 'NetInfo', '\Entities\NetInfo' );        
+        $this->view->registerClass( 'NetInfo', '\Entities\NetInfo' );
     
         return $vlan->getNetInfos();
     }
@@ -119,7 +120,7 @@ class NetInfoController extends IXP_Controller_FrontEnd
                     if( $vlan->hasNetInfo( $property, $protocol ) )
                     {
                         $this->addMessage( "This property already exists use edit instead.", OSS_Message::ERROR );
-                        $this->redirect( "net-info/list/vlid/" . $vlan->getId() );            
+                        $this->redirect( "net-info/list/vlid/" . $vlan->getId() );
                     }
 
                     $vlan->setNetInfo( $property, $value, $protocol );
