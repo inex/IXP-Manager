@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\UserLoginHistory" table="user_logins" tableName="user_logins" repository-class="Repositories\UserLoginHistory">
+    <id name="id" type="bigint">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="ip" type="string" length="39" nullable="false"/>
+    <field name="when" type="datetime" nullable="false"/>
+    <indexes>
+      <index name="when_idx" columns="when,user_id"/>
+    </indexes>
+    <many-to-one field="User" target-entity="Entities\User" inversed-by="LastLogins">
+      <join-columns>
+        <join-column name="user_id" referenced-column-name="id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>
