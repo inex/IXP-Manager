@@ -18,6 +18,26 @@ Schema change required:
     ALTER TABLE netinfo ADD CONSTRAINT FK_F843DE6B8B4937A1 FOREIGN KEY (vlan_id) REFERENCES vlan (id);
 
 
+See: https://github.com/inex/IXP-Manager/wiki/Network-Information
+
+**NB: CHANGES REQUIRED TO `application.ini` - SEE ABOVE LINK**
+
+New replacement for the old Network Information table which was quite inflexible - the 
+new table is a collection of key / value pairs making it much more useful.
+
+
+
+
+- [IM/BF/CR] Fixes for new network information code (ce5d152 - Barry O'Donovan - 2013-06-06)
+- [IM] Use 4/6 for protocol identifiers (2052ce5 - Barry O'Donovan - 2013-06-06)
+- [IM] Allowing to add/edit/remove network information (51abad5 - Nerijus Barauskas - 2013-06-06)
+- [NF] New function for network inforamtion (307f5c0 - Nerijus Barauskas - 2013-06-06)
+- [IM] Better language (55f6643 - Nerijus Barauskas - 2013-06-05)
+- [NF] Adding net-info controller with list add and remove actions first pass (37c49a8 - Nerijus Barauskas - 2013-06-05)
+- [NF] Adding new link to net info (5a8c4a5 - Nerijus Barauskas - 2013-06-05)
+- [IM] Adding new paramters for netinfo properties (60d143b - Nerijus Barauskas - 2013-06-05)
+- [IM] Adding constants (966fe26 - Nerijus Barauskas - 2013-06-05)
+- [NF] Adding new function for Vlan's network inforamtion (93aa6db - Nerijus Barauskas - 2013-06-05)
 
 
 # v3.1.2
