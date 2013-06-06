@@ -1,3 +1,41 @@
+# v3.1.2
+
+Lots of miscelanous improvements from the LONAP set up (some de-INEXification).
+
+Also allow one to enter a new IP address when adding / editing VLAN interfaces.
+
+Some fixes for jQuery 1.9.
+
+- [IM] Move common functionality into a trait (0bd640b - Barry O'Donovan - 2013-06-06)
+- [HK] We don't have CIsco switches anymore... (f63a5ab - Barry O'Donovan - 2013-06-05)
+- [HK] Update application.ini.dist (4f9fbd2 - Barry O'Donovan - 2013-06-05)
+- [BF] Function call attr changed to prop where checking if checkbox is checked (ced6417 - Nerijus Barauskas - 2013-06-05)
+- [BF] jQuery s/attr/prop for checkboxes. (aef3f1f - Barry O'Donovan - 2013-06-05)
+- [IM] Do not show meetings in menu also if it is disabled (6b30453 - Barry O'Donovan - 2013-06-05)
+- [IM] Extracting same function from different places (c59fd7e - Nerijus Barauskas - 2013-06-04)
+- [BF] $.browser was removed in jQuery 1.9 (8aff681 - Barry O'Donovan - 2013-06-04)
+- [IM] Disable this disabled controller (ee8d91e - Barry O'Donovan - 2013-06-04)
+- [IM] Hide disabled controllers from view (e243369 - Barry O'Donovan - 2013-06-04)
+- [IM] Add new company entities to fixtures (149fa1f - Barry O'Donovan - 2013-06-04)
+- [IM] Show abbreviated name on overview (6062db4 - Barry O'Donovan - 2013-06-04)
+- [BF] Clear the cache after adding new switches (a6e5437 - Barry O'Donovan - 2013-06-04)
+- [BF] Bad index selecetd (f810a11 - Nerijus Barauskas - 2013-06-04)
+- [NF] Selecting next IPv6 address then enabling IPv6 and customer is select on Virtual Interface wizard (06d1b8e - Nerijus Barauskas - 2013-06-04)
+- [IM] Allowing to imput or select IPv4 and IPv6 on virtual interface wizard (ef4742c - Nerijus Barauskas - 2013-06-04)
+- [HK] Update OSS_SNMP ref (60d36f3 - Barry O'Donovan - 2013-06-04)
+- [IM] Type should not be required (7364faa - Barry O'Donovan - 2013-06-04)
+- [BF] Better logic in javacripts (b6d2d92 - Nerijus Barauskas - 2013-06-04)
+- [IM] Allow one to turn off P2P graphs (9416aba - Barry O'Donovan - 2013-06-04)
+- [IM] Allowint to add new IPv4 or IPv6 address or select exiting ones then adding editing VlanInterface (7747073 - Nerijus Barauskas - 2013-06-04)
+- [NF] New js file for lonap to get next IPv6 then enabling IPv6 in VlanInterface (83122b6 - Nerijus Barauskas - 2013-06-04)
+- [NF] New action to get next IPv6 addres for customer (341ce74 - Nerijus Barauskas - 2013-06-04)
+- [NF] New function to get IPv6 addresses array for given customer (6ef9a70 - Nerijus Barauskas - 2013-06-04)
+- [IM] Do not hang when loading dashboard without aggregate graphs (294edf6 - Barry O'Donovan - 2013-06-04)
+- [IM] Configurable offset for authentication page logos (802f3cf - Barry O'Donovan - 2013-06-04)
+- [BF] Check that $user is defined before accessing it (8986fb8 - Barry O'Donovan - 2013-06-04)
+- [IM] Partial commit on allowing to select or imput IPv4 or IPv6 addresses then adding or editing Vlan Interface (dd6bfd5 - Nerijus Barauskas - 2013-06-04)
+
+
 # v3.1.1
 
 Second phase of v3.1.0. Update to this tag and then execute:
