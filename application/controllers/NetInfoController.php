@@ -50,8 +50,6 @@ class NetInfoController extends IXP_Controller_FrontEnd
         
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
         
-            'listOrderBy'    => 'protocol',
-            'listOrderByDir' => 'ASC',
             'addWhenEmpty'   => false,
         
             'listColumns'    => [
@@ -59,7 +57,6 @@ class NetInfoController extends IXP_Controller_FrontEnd
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'property'      => 'Property',
                 'value'    => 'Value',
-                'ix'    => 'Index',
                 'protocol'        => [
                     'title'          => 'Protocol',
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
@@ -68,11 +65,6 @@ class NetInfoController extends IXP_Controller_FrontEnd
             ]
         ];
     
-        // display the same information in the view as the list
-        $this->_feParams->viewColumns = array_merge(
-            $this->_feParams->listColumns,
-            [ 'notes' => 'Notes' ]
-        );
     }
     
     /**
@@ -82,7 +74,7 @@ class NetInfoController extends IXP_Controller_FrontEnd
      */
     protected function listGetData( $id = null )
     {
-        $vlan = $this->getD2R( '\\Entities\\Vlan' )->find( $this->getParam( 'vlid', 0 ) );
+        $this->view->Vlan = $vlan = $this->getD2R( '\\Entities\\Vlan' )->find( $this->getParam( 'vlid', 0 ) );
         if( !$vlan )
         {
             $this->addMessage( "Requested object was not found.", OSS_Message::ERROR );
@@ -90,21 +82,9 @@ class NetInfoController extends IXP_Controller_FrontEnd
 
         }
 
-        $this->view->Vlan = $vlan;
-        $this->view->Protocols = \Entities\NetInfo::$PROTOCOLS;
-
-        $qb = $this->getD2EM()->createQueryBuilder()
-            ->select( 'ni.id AS id, ni.protocol AS protocol, ni.ix as ix,
-                    ni.property AS property, ni.value AS value'
-            )
-            ->from( '\\Entities\\NetInfo', 'ni' )
-            ->where( 'ni.Vlan = ?1')
-            ->setParameter( 1, $vlan );
+        $this->view->registerClass( 'NetInfo', '\Entities\NetInfo' );        
     
-        if( isset( $this->_feParams->listOrderBy ) )
-            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
-        return $qb->getQuery()->getResult();
+        return $vlan->getNetInfos();
     }
     
 
@@ -115,11 +95,11 @@ class NetInfoController extends IXP_Controller_FrontEnd
         {
             $this->addMessage( "Requested object was not found.", OSS_Message::ERROR );
             $this->redirect( "vlan/list" );
-
         }
 
         if( $this->getRequest()->isPost() )
         {
+            $ix = $_POST['ix'];
             $protocol = $_POST['protocol'];
             unset( $_POST['protocol'] );
             foreach( $_POST as $property => $value )
@@ -130,8 +110,20 @@ class NetInfoController extends IXP_Controller_FrontEnd
                 else
                     $prop = $property;
 
-                if( !isset( $this->_options['netinfo']['property'][$prop]['singleton'] ) || $this->_options['netinfo']['property'][$prop]['singleton'] )
+                if( $ix != '' )
+                {
+                    $vlan->setNetInfo( $property, $value, $protocol, $ix );
+                }
+                else if( !isset( $this->_options['netinfo']['property'][$prop]['singleton'] ) || $this->_options['netinfo']['property'][$prop]['singleton'] )
+                {
+                    if( $vlan->hasNetInfo( $property, $protocol ) )
+                    {
+                        $this->addMessage( "This property already exists use edit instead.", OSS_Message::ERROR );
+                        $this->redirect( "net-info/list/vlid/" . $vlan->getId() );            
+                    }
+
                     $vlan->setNetInfo( $property, $value, $protocol );
+                }
                 else
                     $vlan->addIndexedNetInfo( $property, $value, $protocol );
             }
@@ -142,20 +134,37 @@ class NetInfoController extends IXP_Controller_FrontEnd
         }
     }
 
-    /**
-     * You can add `OSS_Message`s here and redirect to a custom destination after a
-     * successful deletion operation.
-     *
-     * By default it returns `false`.
-     *
-     * On `false`, the default action (`index`) is called and a standard success message is displayed.
-     *
-     * @return bool `false` for standard message and redirection, otherwise redirect within this function
-     */
-    protected function deleteDestinationOnSuccess()
+    public function deleteAction()
     {
+        $vlan = $this->getD2R( '\\Entities\\Vlan' )->find( $this->getParam( 'vlid', 0 ) );
+        if( !$vlan )
+        {
+            $this->addMessage( "Requested object was not found.", OSS_Message::ERROR );
+            $this->redirect( "vlan/list" );
+
+        }
+
+        $ix = $this->getParam( 'ix', false );
+        $name = $this->getParam( 'name', false );
+        $protocol = $this->getParam( 'protocol', false );
+
+        if( $ix === false || $name === false || $protocol === false)
+        {
+            $this->addMessage( "Missing arguments for this action.", OSS_Message::ERROR );
+            $this->redirect( "net-info/list/vlid/" . $vlid->getId() );
+        }
+
+        if( strpos( $name, '.' ) )
+        {
+            $name = substr( $name, 0, strpos( $name, '.' ) );
+            $result = $vlan->deleteAssocNetInfo( $name, $protocol, $ix );
+        }
+        else
+            $result = $vlan->deleteNetInfo( $name, $protocol, $ix );
+
+        $this->getD2EM()->flush();
         $this->addMessage( "Network information was updated successfully", OSS_Message::SUCCESS );
-        $this->redirect( "net-info/list/vlid/" . $this->getParam( 'vlid', 0 ) );
+        $this->redirect( "net-info/list/vlid/" . $vlan->getId() );
     }
 }
 

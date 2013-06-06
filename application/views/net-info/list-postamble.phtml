@@ -1,16 +1,17 @@
 <div id="add-property" class="modal hide fade">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Add New Porperty <span id="property-name"></span></h3>
+        <h3><span id="dialog_title">Add New</span> Porperty <span id="property-name"></span></h3>
     </div>
     <div class="modal-body" id="add-mbody">
         <div id="add-mbody-inner" style="z-index: 100; position: fixed;">
+            <p id="add-dialog-help" style="width: 520px;" align="justify"></p>
             <form id="form-add-property" method="post" action="{genUrl controller=$controller action=add vlid=$Vlan->getId()}" class="form-horizontal">
-                <div class="control-group">
+                <div class="control-group" id="protocol-element">
                     <label class="control-label" for="protocol">Protocol</label>
                     <div class="controls">
-                        <select name="protocol" class="chzn-select" chzn-fix-width="1">
-                            {foreach $Protocols as $idx => $protocol}
+                        <select name="protocol" id="protocol" class="chzn-select" chzn-fix-width="1">
+                            {foreach NetInfo::$PROTOCOLS as $idx => $protocol}
                                 <option value="{$idx}">{$protocol}</option>
                             {/foreach}
                         </select>
@@ -18,6 +19,7 @@
                 </div>
                 <div id="property-fields">
                 </div>
+                <input type="hidden" name="ix" id="ix">
             </form>
         </div>
     </div>
@@ -34,20 +36,59 @@
 
     $( document ).ready( function(){
         $( 'a[id|="add-info"]' ).on("click", openAddDialog );
+        $( 'a[id|="edit-row"]' ).on("click", openEditDialog );
     });
+
+    function openEditDialog( event ){
+        event.preventDefault();
+
+        var id = substr( event.delegateTarget.id, 9 );
+        var name = $( event.delegateTarget ).attr( 'data-name' );
+        
+        $( '#dialog_title' ).html( "Edit" );
+        $( '#add_dialog_save' ).html( "Save" );
+        $( '#protocol-element' ).hide( 'fast' );
+        
+        $( '#property-fields' ).html( getPropertyFields( name ) );
+
+        $( '#values-' + id + ' > div' ).each( function(){
+            var vid =  $( this ).attr( 'data-name' );
+            $( '#' + vid ).val( $( this ).html() );
+            if( vid == 'protocol' )
+                $( '#' + vid ).trigger( "liszt:updated" );
+        });
+
+
+        openDialog( name );
+    };
 
     function openAddDialog( event ){
         event.preventDefault();
         var name = $( event.target ).attr( 'data-name' );
 
-        $( "#property-name" ).html( getPropertyName( name ) );
-        $( "#property-fields" ).html( getPropertyFields( name ) );
+        $( '#protocol-element' ).show( 'fast' );
+        $( '#dialog_title' ).html( "Add new" );
+        $( '#add_dialog_save' ).html( "Add" );
+        $( '#property-fields' ).html( getPropertyFields( name ) );
+        $( '#protocol' ).val('{NetInfo::PROTOCOL_IPV4}').trigger( "liszt:updated" );
 
-        $(".chzn-select").each( function( index ){
+        openDialog( name );
+    };
+
+    function openDialog( name ){
+
+        $( '#property-name' ).html( getPropertyName( name ) );
+
+        if( getHelp( name ) )
+            $( '#add-dialog-help' ).html( getHelp( name ) );
+        else
+            $( '#add-dialog-help' ).html( '' );
+
+        $( '.chzn-select' ).each( function( index ){
             $( this ).chosen();
             ossChosenFixWidth( $( this ) );
         });
-
+        
         $( '#add_dialog_save' ).off( 'click' ).on( 'click', function(){
             $( '#form-add-property' ).trigger( 'submit' );
         });
@@ -58,14 +99,8 @@
 
         ossCloseOssMessages();
         $( '#add-mbody' ).height( 200 );
-        $( '#add-property' ).off( "shown").on( "shown", function(){
-            var add = 0;
-            if( isSingleton( name ) )
-            {
-                ossAddMessage( "If this property exists for selected protocol it will be overwritten", "info", true );
-                add = 25;
-            }
-            $( '#add-mbody' ).height( $( '#add-mbody-inner' ).height() + add );
+        $( '#add-property' ).off( 'shown' ).on( 'shown', function(){
+            $( '#add-mbody' ).height( $( '#add-mbody-inner' ).height() );
         });
 
         dialog = $( '#add-property' ).modal( {
@@ -73,13 +108,16 @@
                 keyboard: true,
                 show: true
         });
-
-        
-    };
+    }
 
     function isSingleton( id )
     {
         return getFieldsData()[id]['singleton'];
+    }
+
+    function getHelp( id )
+    {
+        return getFieldsData()[id]['help'];
     }
 
     function getPropertyName( id )
@@ -98,6 +136,7 @@
             {$name} : {
             name: '{$data.name}',
             singleton: {if !isset( $data.singleton ) || $data.singleton }true{else}false{/if},
+            help: {if isset( $data.help )}'{$data.help}'{else}false{/if},
             fields: '{if isset( $data.properties)}\
                 {foreach $data.properties as $property => $propData }\
                     {if is_array( $propData ) }\
