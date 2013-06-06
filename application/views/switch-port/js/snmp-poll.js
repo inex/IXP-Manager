@@ -7,7 +7,7 @@ $( 'document' ).ready( function() {
         $( "#poll-actions input[type=checkbox]" ).each( function( idx ) {
             if( type == "inverse" )
             {
-                if( $( this ).attr( "checked" ) )
+                if( $( this ).prop( "checked" ) )
                     $( this ).removeAttr( "checked" ).trigger( "change" );    
                 else
                     $( this ).attr( "checked", "checked" ).trigger( "change" );
@@ -39,7 +39,7 @@ $( 'document' ).ready( function() {
         
         var id = $( this ).attr( 'id' ).substr( $( this ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
         
-        if( $( "#switch-port-" + id ).attr( "checked" ) )
+        if( $( "#switch-port-" + id ).prop( "checked" ) )
             $( "#switch-port-" + id ).removeAttr( "checked" ).trigger( "change" );    
         else
             $( "#switch-port-" + id ).attr( "checked", "checked" ).trigger( "change" );
@@ -49,7 +49,7 @@ $( 'document' ).ready( function() {
     $( "input[id|='switch-port']"  ).on( 'change', function( event ){
         var id = $( this ).attr( 'id' ).substr( $( this ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
         
-        if( $( this ).attr( "checked" ) )   
+        if( $( this ).prop( "checked" ) )   
             $( "#poll-tr-" + id ).css( "background-color", "#F0F0F0" );
         else
             $( "#poll-tr-" + id ).css( "background-color", "#FFFFFF" );
