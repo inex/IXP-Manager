@@ -33,6 +33,16 @@
  */
 class RsPrefixesController extends IXP_Controller_AuthRequiredAction
 {
+    public function init()
+    {
+        if( isset( $this->_options['frontend']['disabled'][ $this->getRequest()->getControllerName() ] )
+            && $this->_options['frontend']['disabled'][ $this->getRequest()->getControllerName() ] )
+        {
+            $this->addMessage( _( 'This controller has been disabled.' ), OSS_Message::ERROR );
+            $this->redirectAndEnsureDie( '' );
+        }
+    }
+
     public function indexAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );

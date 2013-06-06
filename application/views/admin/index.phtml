@@ -147,23 +147,35 @@
 
 <div class="span6">
 
-        {foreach from=$graphs key=k item=graph}
-            <div class="row-fluid">
-                <div class="well">
-                    <h3>{$graphs.$k}</h3>
-
-                    <p>
-                        {genMrtgGraphBox
-                            shortname='X_Peering'
-                            period='month'
-                            category='bits'
-                            values=$stats.$k
-                            graph=$k
-                        }
-                    </p>
+        {if isset( $graphs ) and count( $graphs )}
+            {foreach from=$graphs key=k item=graph}
+                <div class="row-fluid">
+                    <div class="well">
+                        <h3>{$graphs.$k}</h3>
+ 
+                        <p>
+                            {genMrtgGraphBox
+                                shortname='X_Peering'
+                                period='month'
+                                category='bits'
+                                values=$stats.$k
+                                graph=$k
+                            }
+                        </p>
+                    </div>
                 </div>
+            {/foreach}
+        {else}
+            <div class="row-fluid">
+               <div class="well">
+                   <h3>Configure Your Aggregate Graph(s)</h3>
+                
+                   <p>
+                       Fix me with documentation. 
+                   </p>
+               </div>
             </div>
-        {/foreach}
+        {/if}
 </div>
 </div>
 

@@ -61,7 +61,7 @@ class IXP_Form_Cabinet extends IXP_Form
         $type = $this->createElement( 'text', 'type' );
         $type->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setAttrib( 'class', 'span3' )
-            ->setRequired( true )
+            ->setRequired( false )
             ->setLabel( 'Type' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );

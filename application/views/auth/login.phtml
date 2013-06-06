@@ -18,12 +18,12 @@
                 <br /><br /><br /><br />
             </p>
     {else}
-        <div class="span6 offset4">
+        <div class="span6 {if isset( $options.identity.biglogoconf.offset )}{$options.identity.biglogoconf.offset}{/if}">
             <p align="center">
                 <img src="{$options.identity.biglogo}" />
             </p>
     {/if}
-    </div>
+        </div>
     
 </div>
 
