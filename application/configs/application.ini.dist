@@ -76,7 +76,7 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 ;; removing it will disable the contact role form elements. It is intended to assign roles
 ;; to contacts such as 'Admin', 'Billing', 'Technical', 'Marketing'. These are set up
 ;; by the default fixtures.
-;; 
+;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/Contact-Groups
 ;;
 
@@ -284,6 +284,9 @@ identity.logo = APPLICATION_PATH "/../public/images/inex-logo-150x73.jpg"
 
 ;; PLEASE USE YOU OWN LOGO HERE!!!
 identity.biglogo = "https://www.inex.ie/ixp/images/inex-logo-600x165.gif"
+
+;; offset to use on auth pages (Bootstrap CSS classes)
+identity.biglogoconf.offset = offset4
 
 ;; We have a miscellaneous benefits page which includes details for an
 ;; operations IRC channel including a password:

@@ -84,9 +84,8 @@
                     {if $cust->getNoc24hphone()} {$cust->getNoc24hphone()} (24h) {/if}
                 {/if}
             </td>
-            <td></td>
-            <td>
-            </td>
+            <td><strong>Abreviated Name</strong></td>
+            <td>{$cust->getAbbreviatedName()}</td>
         </tr>
 
     </tbody>

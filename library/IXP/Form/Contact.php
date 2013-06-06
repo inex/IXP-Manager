@@ -141,6 +141,7 @@ class IXP_Form_Contact extends IXP_Form
             ->setRequired( false )
             ->setLabel( 'Privileges' )
             ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
             ->setErrorMessages( array( 'Please select the users privilege level' ) );
         $this->addElement( $privileges );
         

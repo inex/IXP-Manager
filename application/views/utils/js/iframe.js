@@ -18,34 +18,13 @@ $(document).ready(function()
 			}
 		}
 
-		// Check if browser is Safari or Opera.
-		if ($.browser.safari || $.browser.opera)
+		// For other good browsers.
+		$('iframe').load(function()
 		{
-			// Start timer when loaded.
-			$('iframe').load(function()
-				{
-					setTimeout(iResize, 0);
-				}
-			);
-
-			// Safari and Opera need a kick-start.
-			for (var i = 0, j = iFrames.length; i < j; i++)
-			{
-				var iSource = iFrames[i].src;
-				iFrames[i].src = '';
-				iFrames[i].src = iSource;
-			}
+			// Set inline style to equal the body height of the iframed content.
+			this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
 		}
-		else
-		{
-			// For other good browsers.
-			$('iframe').load(function()
-				{
-					// Set inline style to equal the body height of the iframed content.
-					this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
-				}
-			);
-		}
+		);
 	}
 );
 </script>

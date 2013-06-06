@@ -17,3 +17,4 @@ var/templates_c/*
 public/images/.directory
 public/images/joomla-admin/.directory
 public/images/joomla-admin/menu/.directory
+application/views/_skins/lonap

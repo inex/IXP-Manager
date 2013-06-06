@@ -39,28 +39,32 @@
                 </ul>
             {/if}
         </li>
-        <li {if $controller eq 'cust-kit'}class="active"{/if}>
-            <a href="{genUrl controller='cust-kit' action='list'}">Colocated Equipment</a>
-        </li>
-        
-        <li {if $controller eq 'meeting' and $controller neq 'meeting-item' and $action neq 'read'}class="active"{/if}>
-            <a href="{genUrl controller='meeting' action='list'}">Meetings</a>
-            
-            {if $controller eq 'meeting' or $controller eq 'meeting-item' or ( $controller eq 'static' and $action eq 'meetings-instructions' )}
-                <ul class="nav nav-list">
-                    <li {if $controller eq 'meeting-item'}class="active"{/if}>
-                        <a href="{genUrl controller='meeting-item' action='list'}">Presentations</a>
-                    </li>
-                    <li {if $controller eq 'meeting' and $action eq 'read'}class="active"{/if}>
-                        <a href="{genUrl controller='meeting' action='read'}">Member View</a>
-                    </li>
-                    <li {if $controller eq 'static' and $action eq 'meetings-instructions'}class="active"{/if}>
-                        <a href="{genUrl controller='static' action='meetings-instructions'}">Instructions</a>
-                    </li>
-                </ul>
-            {/if}
-            
-        </li>
+
+	{if not isset( $options['frontend']['disabled']['cust-kit'] ) or not $options['frontend']['disabled']['cust-kit'] }
+            <li {if $controller eq 'cust-kit'}class="active"{/if}>
+                <a href="{genUrl controller='cust-kit' action='list'}">Colocated Equipment</a>
+            </li>
+        {/if}
+
+	{if not isset( $options['frontend']['disabled']['meeting'] ) or not $options['frontend']['disabled']['meeting'] }
+            <li {if $controller eq 'meeting' and $controller neq 'meeting-item' and $action neq 'read'}class="active"{/if}>
+                <a href="{genUrl controller='meeting' action='list'}">Meetings</a>
+             
+                {if $controller eq 'meeting' or $controller eq 'meeting-item' or ( $controller eq 'static' and $action eq 'meetings-instructions' )}
+                    <ul class="nav nav-list">
+                        <li {if $controller eq 'meeting-item'}class="active"{/if}>
+                            <a href="{genUrl controller='meeting-item' action='list'}">Presentations</a>
+                        </li>
+                        <li {if $controller eq 'meeting' and $action eq 'read'}class="active"{/if}>
+                            <a href="{genUrl controller='meeting' action='read'}">Member View</a>
+                        </li>
+                        <li {if $controller eq 'static' and $action eq 'meetings-instructions'}class="active"{/if}>
+                            <a href="{genUrl controller='static' action='meetings-instructions'}">Instructions</a>
+                        </li>
+                    </ul>
+                {/if}
+            </li>
+        {/if}
         
               
     <li class="nav-header">IXP Admin Actions</li>
@@ -110,9 +114,11 @@
             <a href="{genUrl controller='vendor' action='list'}">Vendors</a>
         </li>
         
-        <li {if $controller eq 'console-server-connection'}class="active"{/if}>
-            <a href="{genUrl controller='console-server-connection' action='list'}">Console Server Connections</a>
-        </li>
+        {if not isset( $options['frontend']['disabled']['console-server-connection'] ) or not $options['frontend']['disabled']['console-server-connection'] }
+            <li {if $controller eq 'console-server-connection'}class="active"{/if}>
+                <a href="{genUrl controller='console-server-connection' action='list'}">Console Server Connections</a>
+            </li>
+        {/if}
         
         <li {if $controller eq 'vlan' and $action neq 'private'}class="active"{/if}>
             <a href="{genUrl controller='vlan' action='list'}">VLANs</a>
@@ -131,10 +137,11 @@
             <a href="{genUrl controller='irrdb-config' action='list'}">IRRDB Configuration</a>
         </li>
     
-        <li {if $controller eq 'rs-prefixes'}class="active"{/if}>
-            <a href="{genUrl controller='rs-prefixes' action='index'}">Route Server Prefixes</a>
-        </li>
-    
+        {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
+            <li {if $controller eq 'rs-prefixes'}class="active"{/if}>
+                <a href="{genUrl controller='rs-prefixes' action='index'}">Route Server Prefixes</a>
+            </li>
+        {/if}    
         
               
     <li class="nav-header">IXP Statistics</li>
