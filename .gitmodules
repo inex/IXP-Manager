@@ -1,0 +1,27 @@
+[submodule "library/Zend"]
+	path = library/Zend
+	url = https://github.com/opensolutions/zf1.git
+[submodule "library/Smarty"]
+	path = library/Smarty
+	url = https://github.com/opensolutions/smarty.git
+[submodule "library/OSS-Framework.git"]
+	path = library/OSS-Framework.git
+	url = https://github.com/opensolutions/OSS-Framework.git
+[submodule "library/OSS_SNMP.git"]
+	path = library/OSS_SNMP.git
+	url = https://github.com/opensolutions/OSS_SNMP.git
+[submodule "library/Bootbox.git"]
+	path = library/Bootbox.git
+	url = https://github.com/makeusabrew/bootbox.git
+[submodule "library/Throbber.js.git"]
+	path = library/Throbber.js.git
+	url = https://github.com/aino/throbber.js.git
+[submodule "library/wiki"]
+	path = library/wiki
+	url = https://github.com/inex/IXP-Manager.wiki.git
+[submodule "library/Bootstrap-Zend-Framework"]
+	path = library/Bootstrap-Zend-Framework
+	url = https://github.com/opensolutions/Bootstrap-Zend-Framework.git
+[submodule "library/Minify"]
+	path = library/Minify
+	url = https://github.com/opensolutions/Minify.git
