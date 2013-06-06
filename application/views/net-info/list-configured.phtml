@@ -1,0 +1,105 @@
+
+<div>
+
+    {if count( $data )}
+    
+    <table id='frontend-list-table' class="table hide">
+    
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Value</th>
+            <th>Protocol<th>
+            <th></th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {foreach $options.netinfo.property as $name => $info}
+            {if isset( $info.display ) }
+                {capture name="text"}{$name}.{$info.display}{/capture}
+                {assign var='property' value=$smarty.capture.text}
+            {else}
+                {assign var='property' value=$name}
+            {/if}
+                
+            {foreach NetInfo::$PROTOCOLS as $prot => $protocol}
+                {foreach $Vlan->getIndexedNetInfo( $property, $prot ) as $ix => $value }
+                <tr>
+                    <td>{$info.name}</td>
+                    <td id='values-{$name}{$ix}{$protocol}'>
+                        <div class="hidden" data-name="protocol">{$prot}</div>
+                        <div class="hidden" data-name="ix">{$ix}</div>
+                        
+                        {assign var='tooltip' value=false}
+                        {if isset( $info.properties) }
+                            {foreach $info.properties as $prop => $innerProp }
+                                
+                                {capture name="text"}{$name}.{$prop}{/capture}
+                                {assign var='property' value=$smarty.capture.text}
+                                
+                                {capture name="text"}{if $tooltip}{$tooltip}<br />{/if}{if is_array($innerProp)}{$innerProp.name}{else}{$innerProp}{/if}: {$Vlan->getNetInfo($property, $prot, $ix )}{/capture}
+                                {assign var='tooltip' value=$smarty.capture.text}
+                                {if $prop != $info.display}
+                                    <div class="hidden" data-name="{$name}_{$prop}">{$Vlan->getNetInfo($property, $prot, $ix )}</div>
+                                {else}
+                                    {assign var="value" value=$Vlan->getNetInfo($property, $prot, $ix )}
+                                {/if}
+                            {/foreach}
+                            <div data-name="{$name}{if isset( $info.display ) }_{$info.display}{/if}" class="have-tooltip-below" title="{$tooltip}">{$value}</div>
+                        {else}
+                            <div data-name="{$name}{if isset( $info.display ) }_{$info.display}{/if}">{$value}</div>
+                        {/if}
+                        
+                    </td>
+                    <td>{$protocol}</td>
+                    <td>{tmplinclude file=$listRowMenu}</td>
+                </tr>
+                {/foreach}
+            {/foreach}
+    {/foreach}
+    </tbody>
+    
+    </table>
+    {else}
+        <p>
+            There are no entries.
+        </p>
+    {/if} {* end if count( $data ) *}
+    
+</div>
+
+<div id="add-property" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3><span id="dialog_title">Add New</span> Porperty <span id="property-name"></span></h3>
+    </div>
+    <div class="modal-body" id="add-mbody">
+        <div id="add-mbody-inner" style="z-index: 100; position: fixed;">
+            <p id="add-dialog-help" style="width: 520px;" align="justify"></p>
+            <form id="form-add-property" method="post" action="{genUrl controller=$controller action=add vlid=$Vlan->getId()}" class="form-horizontal">
+                <div class="control-group" id="protocol-element">
+                    <label class="control-label" for="protocol">Protocol</label>
+                    <div class="controls">
+                        <select name="protocol" id="protocol" class="chzn-select" chzn-fix-width="1">
+                            {foreach NetInfo::$PROTOCOLS as $idx => $protocol}
+                                <option value="{$idx}">{$protocol}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div id="property-fields">
+                </div>
+                <input type="hidden" name="ix" id="ix">
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <span id="add_dialog_cancel" class="btn">Cancel</span>
+        <span id="add_dialog_save" class="btn btn-primary">Add</span>
+    </div>
+</div>
+
+
+<script type="text/javascript">{tmplinclude file='frontend/js/list.js'}</script>
+<script type="text/javascript">{tmplinclude file='net-info/js/list.js'}</script>

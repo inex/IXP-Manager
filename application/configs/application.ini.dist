@@ -433,8 +433,75 @@ weathermap.1.height = 1200
 ; weathermap.2.name = "Weathermap for Peering LAN 2"
 ; ...
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; We use PHP-Weathermap which is publically available. Our true settings
+;; are commented out, please replace with your own
+;;
+
+weathermap.1.name   = "Weathermap for Peering LAN 1"
+weathermap.1.menu   = "Weathermap - LAN 1"
+; weathermap.1.url    = "https://www.inex.ie/noncms/weathermap-lan1-plain.html"
+weathermap.1.url    = "https://www.example.com/weathermap-lan1-plain.html"
+weathermap.1.width  = 900
+weathermap.1.height = 1200
+
+; weathermap.2.name = "Weathermap for Peering LAN 2"
+; ...
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Network Information default properties
+;;
+;; The below defines the default key / value pairs allowable
+;; in the VLAN network information editor within IXP Manager
+;; 
+;; Feel free to customise for your own IXP.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; Subnet size of the network (e.g. 23, 24, 25 for IPv4 or 64 for IPv6)
+; This is also defined as a 'singleton' meaning only one of these properties
+; is allowed per VLAN and protocol
+netinfo.property.masklen.name = "Subnet Size"
+netinfo.property.masklen.singleton = true
+
+; Define route servers available as well as their types from a predefined list
+netinfo.property.routeserver.name = "Route Server"
+; multiple route servers allowed for each vlan/protocol 
+netinfo.property.routeserver.singleton = false
+; when there are two (or more) properties, indicate which one to display in the table
+netinfo.property.routeserver.display = "ipaddress"
+netinfo.property.routeserver.properties.ipaddress = "IP Address"
+; value arrays translate to a select dropdown in the UI
+netinfo.property.routeserver.properties.type.name = "Type"
+netinfo.property.routeserver.properties.type.values[] = 'Quagga (std)'
+netinfo.property.routeserver.properties.type.values[] = 'Quagga (EuroIX)'
+netinfo.property.routeserver.properties.type.values[] = 'Bird'
+netinfo.property.routeserver.properties.type.values[] = 'OpenBGPd'
+
+; Note that singleton is the default. We use the below to write out
+; reverse DNS / ARPA entries
+netinfo.property.dnsfile.name = "Reverse DNS File" 
+
+; We have an AS112 service - this defines its IP address(es)
+netinfo.property.as112server.name = "AS112 Server"
+netinfo.property.as112server.singleton = false
+
+; We have one route collector - this defines its IP address
+netinfo.property.routecollector.name = "Route Collector"
+netinfo.property.routecollector.singleton = false
+
+; Servers / hosts we tolerate echo requests to for members to test
+netinfo.property.pingbeacon.name = "Ping Beacon"
+netinfo.property.pingbeacon.singleton = false
+netinfo.property.pingbeacon.properties.ipaddress = "IP Address"
+netinfo.property.pingbeacon.properties.ratelimited = "Rate Limited"
+; Help messages are displayed on the UI data entry dialog:
+netinfo.property.pingbeacon.help = "If this ping beacon is not rate limited, just enter 'No'. If it is, provide details of the rate limiting so the end user may know how many pings / sec they can push at this box."
+    
+    
+    
+    
 [staging : production]
 
 ;; if you want to set up a staging environment with a different database.

@@ -1,3 +1,25 @@
+# v3.1.3
+
+Schema change required:
+
+    CREATE TABLE netinfo ( 
+        id INT AUTO_INCREMENT NOT NULL, 
+        vlan_id INT NOT NULL, 
+        protocol INT NOT NULL, 
+        property VARCHAR(255) NOT NULL, 
+        ix INT NOT NULL,  
+        value LONGTEXT NOT NULL, 
+       
+        INDEX IDX_F843DE6B8B4937A1 (vlan_id), 
+        INDEX VlanProtoProp ( protocol, property, vlan_id ), 
+        PRIMARY KEY( id )
+    ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    ALTER TABLE netinfo ADD CONSTRAINT FK_F843DE6B8B4937A1 FOREIGN KEY (vlan_id) REFERENCES vlan (id);
+
+
+
+
 # v3.1.2
 
 Lots of miscelanous improvements from the LONAP set up (some de-INEXification).

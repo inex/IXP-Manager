@@ -195,10 +195,100 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
         return parent::removeNetInfo($netInfo);
     }
 
-    public function getNetInfo()
+    public function getNetInfos()
     {
         $this->__load();
-        return parent::getNetInfo();
+        return parent::getNetInfos();
+    }
+
+    public function getSubnetSize($protocol)
+    {
+        $this->__load();
+        return parent::getSubnetSize($protocol);
+    }
+
+    public function getRouteServers($protocol)
+    {
+        $this->__load();
+        return parent::getRouteServers($protocol);
+    }
+
+    public function getDnsFile($protocol)
+    {
+        $this->__load();
+        return parent::getDnsFile($protocol);
+    }
+
+    public function getAS112Servers($protocol)
+    {
+        $this->__load();
+        return parent::getAS112Servers($protocol);
+    }
+
+    public function getRouteCollectors($protocol)
+    {
+        $this->__load();
+        return parent::getRouteCollectors($protocol);
+    }
+
+    public function getPingBeacons($protocol)
+    {
+        $this->__load();
+        return parent::getPingBeacons($protocol);
+    }
+
+    public function loadNetInfo($property, $protocol, $index = 0)
+    {
+        $this->__load();
+        return parent::loadNetInfo($property, $protocol, $index);
+    }
+
+    public function deleteNetInfo($property, $protocol, $index = NULL)
+    {
+        $this->__load();
+        return parent::deleteNetInfo($property, $protocol, $index);
+    }
+
+    public function hasNetInfo($property, $protocol, $index = 0)
+    {
+        $this->__load();
+        return parent::hasNetInfo($property, $protocol, $index);
+    }
+
+    public function getNetInfo($property, $protocol, $index = 0)
+    {
+        $this->__load();
+        return parent::getNetInfo($property, $protocol, $index);
+    }
+
+    public function getIndexedNetInfo($property, $protocol, $withIndex = false)
+    {
+        $this->__load();
+        return parent::getIndexedNetInfo($property, $protocol, $withIndex);
+    }
+
+    public function setNetInfo($property, $value, $protocol, $index = 0)
+    {
+        $this->__load();
+        return parent::setNetInfo($property, $value, $protocol, $index);
+    }
+
+    public function addIndexedNetInfo($property, $value, $protocol)
+    {
+        $this->__load();
+        return parent::addIndexedNetInfo($property, $value, $protocol);
+    }
+
+    public function getAssocNetInfo($property, $protocol, $index = NULL)
+    {
+        $this->__load();
+        return parent::getAssocNetInfo($property, $protocol, $index);
+    }
+
+    public function deleteAssocNetInfo($property, $protocol, $index = NULL)
+    {
+        $this->__load();
+        return parent::deleteAssocNetInfo($property, $protocol, $index);
     }
 
 
