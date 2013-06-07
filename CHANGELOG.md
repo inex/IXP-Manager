@@ -1,3 +1,37 @@
+# v3.1.4
+
+Schema change required:
+
+    CREATE TABLE user_logins (
+        id BIGINT AUTO_INCREMENT NOT NULL, 
+        user_id INT NOT NULL, 
+        ip VARCHAR(39) NOT NULL, 
+        at DATETIME NOT NULL, 
+        
+        INDEX IDX_6341CC99A76ED395 (user_id), 
+        INDEX at_idx (at, user_id), 
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    ALTER TABLE user_logins ADD CONSTRAINT FK_6341CC99A76ED395 FOREIGN KEY (user_id) REFERENCES user (id);
+
+
+v3.1.3 contained partial database update which breaks some functionality. This commit fixes that.
+
+Also add migration scripts for LONAP.
+
+
+- [IM] Better / appropriate name (b9559a4 - Barry O'Donovan - 2013-06-07)
+- [CR/IM] Small tweaks and fixes (86c7b6c - Barry O'Donovan - 2013-06-07)
+- [CR/IM] Small tweaks and fixes (5608a98 - Barry O'Donovan - 2013-06-07)
+- [CR/IM] Small tweaks and fixes (cbd9a92 - Barry O'Donovan - 2013-06-07)
+- [IM] Updating other Entities (8a1afe1 - Nerijus Barauskas - 2013-06-07)
+- [IM] Updating other Entities (70b1226 - Nerijus Barauskas - 2013-06-07)
+- [NF] New entity, repository proxy files for UserLoginHistory entity (6313d2e - Nerijus Barauskas - 2013-06-07)
+- [DB] Renaming field from when to at (6ca1b3b - Nerijus Barauskas - 2013-06-07)
+
+
+
 # v3.1.3
 
 Sponsored by: FIXME
