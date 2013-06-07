@@ -291,6 +291,24 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::getContact();
     }
 
+    public function addLastLogin(\Entities\UserLoginHistory $lastLogins)
+    {
+        $this->__load();
+        return parent::addLastLogin($lastLogins);
+    }
+
+    public function removeLastLogin(\Entities\UserLoginHistory $lastLogins)
+    {
+        $this->__load();
+        return parent::removeLastLogin($lastLogins);
+    }
+
+    public function getLastLogins()
+    {
+        $this->__load();
+        return parent::getLastLogins();
+    }
+
     public function loadPreference($attribute, $index = 0, $includeExpired = false)
     {
         $this->__load();
@@ -366,7 +384,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Contact', 'Meetings', 'Preferences', 'ChangeLogs', 'Customer');
+        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Contact', 'LastLogins', 'Meetings', 'Preferences', 'ChangeLogs', 'Customer');
     }
 
     public function __clone()
