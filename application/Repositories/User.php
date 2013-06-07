@@ -35,7 +35,7 @@ class User extends EntityRepository
     {
         $q = $this->getEntityManager()->createQuery(
                 "SELECT up.attribute AS attribute, up.value AS lastlogin, u.username AS username,
-                        u.email AS email, c.name AS cust_name, c.id AS cust_id
+                        u.email AS email, c.name AS cust_name, c.id AS cust_id, u.id AS user_id
                     FROM \\Entities\\UserPreference up
                         JOIN up.User u
                         JOIN u.Customer c

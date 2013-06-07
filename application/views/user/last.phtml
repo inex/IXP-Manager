@@ -37,7 +37,10 @@
                 {$l.cust_name}
             </a>
         </td>
-        <td>{$l.lastlogin|date_format:"%Y-%m-%d %H:%M:%S"}</td>
+        <td>
+            {$l.lastlogin|date_format:"%Y-%m-%d %H:%M:%S"}
+            <a class="btn btn-mini have-tooltip" title="History" href="{genUrl controller='login-history' action="list" uid=$l.user_id limit=1}"><i class="icon-time"></i></a>
+        </td>
     </tr>
     {/foreach}
     </tbody>

@@ -127,7 +127,7 @@
     </table>
     {else}
         <p>
-            There are no entries.{if !isset( $feParams->addWhenEmpty ) || $feParams->addWhenEmpty } Do you want to <a href="{genUrl controller=$controller action='add'}">add one...</a>{/if}
+            There are no entries.{if ( !isset( $feParams->addWhenEmpty ) || $feParams->addWhenEmpty ) || ( !isset( $feParams->readonly ) || !$feParams->readonly )} Do you want to <a href="{genUrl controller=$controller action='add'}">add one...</a>{/if}
         </p>
     {/if} {* end if count( $data ) *}
     

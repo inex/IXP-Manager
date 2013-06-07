@@ -638,7 +638,6 @@ class ContactController extends IXP_Controller_FrontEnd
                 
                 $user->setCreated( new DateTime() );
                 $user->setCreator( $this->getUser()->getUsername() );
-                $user->setCustomer( $contact->getCustomer() );
 
                 // these should only be updated by CUSTADMIN on creation of a login account
                 if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
@@ -650,6 +649,8 @@ class ContactController extends IXP_Controller_FrontEnd
                 
                 $this->_feParams->userStatus = "created";
             }
+            
+            $user->setCustomer( $contact->getCustomer() );
                 
             $user->setDisabled( $form->getValue( "disabled" ) );
             $user->setEmail( $form->getValue( "email" ) );
