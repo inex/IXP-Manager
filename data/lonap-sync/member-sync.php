@@ -298,7 +298,7 @@ function createUpdateNotes( $cust, $member, $em )
     if( $member['po_number'] )
     {
         createUpdateNote( "Purchase Orders",
-            "Purchase order recorded during migration to IXP Manager: {$member['po_number']}\n",
+            "Purchase order data recorded during migration to IXP Manager:<br /><br />{$member['po_number']}\n",
             $cust, $em
         );
     }
@@ -306,7 +306,7 @@ function createUpdateNotes( $cust, $member, $em )
     if( $member['bill_notes'] )
     {
         createUpdateNote( "Billing Notes",
-            "Billing notes as recorded during migration to IXP Manager:\n\n{$member['bill_notes']}",
+            "Billing notes as recorded during migration to IXP Manager:<br /><br />{$member['bill_notes']}",
             $cust, $em
         );
     }
@@ -314,12 +314,12 @@ function createUpdateNotes( $cust, $member, $em )
     if( $member['joining_form_comments'] )
     {
         createUpdateNote( "Joining Form Comments",
-            "Joining form comments as recorded during migration to IXP Manager:\n\n{$member['joining_form_comments']}",
+            "Joining form comments as recorded during migration to IXP Manager:<br /><br />{$member['joining_form_comments']}",
             $cust, $em
         );
     }
 
-    $original_data = "<h3>Original Data Used for Migration to IXP Manager</h3><table class=\"table\">";
+    $original_data = "<h4>Data Used for Migration to IXP Manager</h4><table class=\"table\">";
     
     foreach( $member as $key => $value )
     {
