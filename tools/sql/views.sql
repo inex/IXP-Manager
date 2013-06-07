@@ -80,6 +80,7 @@ CREATE VIEW view_switch_details_by_custid AS
 		pi.notes,
 		sp.name AS switchport,
 		sp.id AS switchportid,
+		sp.ifName AS spifname,
 		sw.name AS switch,
 		sw.id AS switchid,
 		sw.vendorid,
