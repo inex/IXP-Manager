@@ -50,7 +50,7 @@ class IXP_Form_Customer extends IXP_Form
         $type->setMultiOptions( [ '0' => '' ] + \Entities\Customer::$CUST_TYPES_TEXT )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Type' )
-            ->setAttrib( 'class', 'chzn-select span2' )
+            ->setAttrib( 'class', 'chzn-select span4' )
             ->setErrorMessages( array( 'Please select a customer type' ) );
         $this->addElement( $type );
 
