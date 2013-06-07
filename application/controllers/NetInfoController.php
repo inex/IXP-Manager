@@ -42,7 +42,6 @@ class NetInfoController extends IXP_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\NetInfo',
-            'form'          => 'IXP_Form_Vlan',
             'pagetitle'     => 'Network Information',
         
             'titleSingular' => 'NetInfo',
