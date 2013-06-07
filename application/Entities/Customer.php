@@ -1429,7 +1429,7 @@ class Customer
 					$pvlans[ $vlanid ]['vlanid']   = $vli->getVlan()->getId();
 					$pvlans[ $vlanid ]['name']     = $vli->getVlan()->getName();
 					$pvlans[ $vlanid ]['number']   = $vli->getVlan()->getNumber();
-					$pvlans[ $vlanid ]['location'] = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName();
+					$pvlans[ $vlanid ]['location'] = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet() ? $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() : "";
 					$pvlans[ $vlanid ]['switch']   = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName();
 
 					$pvlans[ $vlanid ]['ports']    = [];

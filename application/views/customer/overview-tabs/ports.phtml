@@ -53,6 +53,7 @@
                 <td><strong>Duplex:</strong></td>
                 <td id="value">{$pi->getDuplex()}</td>
             </tr>
+            {if $pi->getSwitchPort()->getSwitcher()->getCabinet()}
             <tr>
                 <td><strong>Location:</strong></td>
                 <td id="value">{$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}</td>
@@ -60,6 +61,7 @@
                 <td><strong>Colo Cabinet ID:</strong></td>
                 <td id="value">{$pi->getSwitchPort()->getSwitcher()->getCabinet()->getName()}</td>
             </tr>
+            {/if}
             <tr>
                 <td></td><td></td><td></td><td></td><td></td>
             </tr>
@@ -116,7 +118,7 @@
                 <td width="200"><strong>IPv6 Address:</strong></td>
                 <td width="200" id="value">
                     {if $vli->getIpv6enabled() and $vli->getIpv6address()}
-                        {$vli->getIPv6Address()->getAddress()}/{$netinfo.$vlanid.6.masklen}
+                        {$vli->getIPv6Address()->getAddress()}{if isset( $netinfo.$vlanid) }/{$netinfo.$vlanid.6.masklen}{/if}
                     {else}
                         IPv6 not enabled.
                     {/if}
@@ -125,7 +127,7 @@
                 <td width="200"><strong>IPv4 Address:</strong></td>
                 <td width="200" id="value">
                     {if $vli->getIpv4enabled() and $vli->getIpv4address()}
-                        {$vli->getIPv4Address()->getAddress()}/{$netinfo.$vlanid.4.masklen}
+                        {$vli->getIPv4Address()->getAddress()}{if isset( $netinfo.$vlanid) }/{$netinfo.$vlanid.4.masklen}{/if}
                     {else}
                         IPv4 not enabled.
                     {/if}

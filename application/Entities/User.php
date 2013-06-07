@@ -599,4 +599,42 @@ class User
         return $this->Contact;
     }
     
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $LastLogins;
+
+
+    /**
+     * Add LastLogins
+     *
+     * @param \Entities\UserLoginHistory $lastLogins
+     * @return User
+     */
+    public function addLastLogin(\Entities\UserLoginHistory $lastLogins)
+    {
+        $this->LastLogins[] = $lastLogins;
+    
+        return $this;
+    }
+
+    /**
+     * Remove LastLogins
+     *
+     * @param \Entities\UserLoginHistory $lastLogins
+     */
+    public function removeLastLogin(\Entities\UserLoginHistory $lastLogins)
+    {
+        $this->LastLogins->removeElement($lastLogins);
+    }
+
+    /**
+     * Get LastLogins
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLastLogins()
+    {
+        return $this->LastLogins;
+    }
 }

@@ -30,7 +30,7 @@
             <td><strong>Status</strong></td>
             <td>{CUSTOMER::$CUST_STATUS_TEXT[$cust->getStatus()]}</td>
             <td><strong>Joined</strong></td>
-            <td>{$cust->getDatejoin()->format( 'Y-m-d' )}</td>
+            <td>{if $cust->getDatejoin()}{$cust->getDatejoin()->format( 'Y-m-d' )}{/if}</td>
         </tr>
         <tr>
             <td><strong>Type</strong></td>

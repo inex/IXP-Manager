@@ -1,0 +1,7 @@
+
+<div class="btn-group">
+    {if !isset( $feParams->readonly ) or !$feParams->readonly}
+        <a class="btn btn-mini have-tooltip-below" id='edit-row-{$name}{$ix}{$protocol}' data-name="{$name}" href="{genUrl module=$module controller=$controller action='edit' ix=$ix name=$property protocol=$prot vlid=$Vlan->getId()}" title="Edit"><i class="icon-pencil"></i></a>
+        <a class="btn btn-mini have-tooltip-below" id='list-delete-{$name}{$ix}{$protocol}' href="{genUrl module=$module controller=$controller action='delete' ix=$ix name=$property protocol=$prot vlid=$Vlan->getId()}" title="Delete"><i class="icon-trash"></i></a>
+    {/if}
+</div>

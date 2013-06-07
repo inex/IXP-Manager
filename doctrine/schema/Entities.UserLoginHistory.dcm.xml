@@ -5,9 +5,9 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="ip" type="string" length="39" nullable="false"/>
-    <field name="when" type="datetime" nullable="false"/>
+    <field name="at" type="datetime" nullable="false"/>
     <indexes>
-      <index name="when_idx" columns="when,user_id"/>
+      <index name="at_idx" columns="at,user_id"/>
     </indexes>
     <many-to-one field="User" target-entity="Entities\User" inversed-by="LastLogins">
       <join-columns>

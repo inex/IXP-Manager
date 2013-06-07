@@ -1,3 +1,80 @@
+# v3.1.4
+
+Schema change required:
+
+    CREATE TABLE user_logins (
+        id BIGINT AUTO_INCREMENT NOT NULL, 
+        user_id INT NOT NULL, 
+        ip VARCHAR(39) NOT NULL, 
+        at DATETIME NOT NULL, 
+        
+        INDEX IDX_6341CC99A76ED395 (user_id), 
+        INDEX at_idx (at, user_id), 
+        PRIMARY KEY(id)
+    ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    ALTER TABLE user_logins ADD CONSTRAINT FK_6341CC99A76ED395 FOREIGN KEY (user_id) REFERENCES user (id);
+
+
+v3.1.3 contained partial database update which breaks some functionality. This commit fixes that.
+
+Also add migration scripts for LONAP.
+
+
+- [IM] Better / appropriate name (b9559a4 - Barry O'Donovan - 2013-06-07)
+- [CR/IM] Small tweaks and fixes (86c7b6c - Barry O'Donovan - 2013-06-07)
+- [CR/IM] Small tweaks and fixes (5608a98 - Barry O'Donovan - 2013-06-07)
+- [CR/IM] Small tweaks and fixes (cbd9a92 - Barry O'Donovan - 2013-06-07)
+- [IM] Updating other Entities (8a1afe1 - Nerijus Barauskas - 2013-06-07)
+- [IM] Updating other Entities (70b1226 - Nerijus Barauskas - 2013-06-07)
+- [NF] New entity, repository proxy files for UserLoginHistory entity (6313d2e - Nerijus Barauskas - 2013-06-07)
+- [DB] Renaming field from when to at (6ca1b3b - Nerijus Barauskas - 2013-06-07)
+
+
+
+# v3.1.3
+
+Sponsored by: FIXME
+
+Schema change required:
+
+    CREATE TABLE netinfo ( 
+        id INT AUTO_INCREMENT NOT NULL, 
+        vlan_id INT NOT NULL, 
+        protocol INT NOT NULL, 
+        property VARCHAR(255) NOT NULL, 
+        ix INT NOT NULL,  
+        value LONGTEXT NOT NULL, 
+       
+        INDEX IDX_F843DE6B8B4937A1 (vlan_id), 
+        INDEX VlanProtoProp ( protocol, property, vlan_id ), 
+        PRIMARY KEY( id )
+    ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    ALTER TABLE netinfo ADD CONSTRAINT FK_F843DE6B8B4937A1 FOREIGN KEY (vlan_id) REFERENCES vlan (id);
+
+
+See: https://github.com/inex/IXP-Manager/wiki/Network-Information
+
+**NB: CHANGES REQUIRED TO `application.ini` - SEE ABOVE LINK**
+
+New replacement for the old Network Information table which was quite inflexible - the 
+new table is a collection of key / value pairs making it much more useful.
+
+
+
+- [IM/BF/CR] Fixes for new network information code (ce5d152 - Barry O'Donovan - 2013-06-06)
+- [IM] Use 4/6 for protocol identifiers (2052ce5 - Barry O'Donovan - 2013-06-06)
+- [IM] Allowing to add/edit/remove network information (51abad5 - Nerijus Barauskas - 2013-06-06)
+- [NF] New function for network inforamtion (307f5c0 - Nerijus Barauskas - 2013-06-06)
+- [IM] Better language (55f6643 - Nerijus Barauskas - 2013-06-05)
+- [NF] Adding net-info controller with list add and remove actions first pass (37c49a8 - Nerijus Barauskas - 2013-06-05)
+- [NF] Adding new link to net info (5a8c4a5 - Nerijus Barauskas - 2013-06-05)
+- [IM] Adding new paramters for netinfo properties (60d143b - Nerijus Barauskas - 2013-06-05)
+- [IM] Adding constants (966fe26 - Nerijus Barauskas - 2013-06-05)
+- [NF] Adding new function for Vlan's network inforamtion (93aa6db - Nerijus Barauskas - 2013-06-05)
+
+
 # v3.1.2
 
 Lots of miscelanous improvements from the LONAP set up (some de-INEXification).

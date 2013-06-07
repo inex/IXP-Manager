@@ -1,0 +1,41 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="vlan"}">VLANs</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        {$feParams->pagetitle}
+    </li>
+    
+    {if isset( $options.netinfo )}
+        <li class="pull-right">
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-plus"></i>&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu pull-right">
+                    {foreach $options.netinfo.property as $n => $d}
+                        <li>
+                            <a href="{genUrl controller=$controller action='add'}" id="add-info-{$n}" data-name="{$n}">Add {$d.name}</a>
+                        </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </li>
+    {/if}
+</ul>
+    
+{OSS_Message}
+
+{if isset( $options.netinfo )}
+    {tmplinclude file="net-info/list-configured.phtml"}
+{else}
+    {tmplinclude file="net-info/list-unconfigured.phtml"}
+{/if}
+    
+    
+    
+
+{tmplinclude file="footer.phtml"}
