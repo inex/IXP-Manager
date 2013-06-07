@@ -7,7 +7,6 @@
             <th>Type</th>
             <th>Email</th>
             <th>Last Login</th>
-            <th>Last Login From</th>
             <th>
                 {*
                     The correct way of doing this is via contacts. Leaving it here may be confusing...
@@ -26,11 +25,6 @@
                             {$u->getPreference( 'auth.last_login_at' )|date_format:"%Y-%m-%d %H:%M:%S"}
                         {else}
                             <em>Never</em>
-                        {/if}
-                    </td>
-                    <td>
-                        {if $u->getPreference( 'auth.last_login_from' )}
-                            {$u->getPreference( 'auth.last_login_from' )}
                         {/if}
                     </td>
                     <td>
