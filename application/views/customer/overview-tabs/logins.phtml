@@ -27,7 +27,7 @@
                         <td>
                             {if count( $u->getLastLogins() ) > 0}
                                 <div class="btn-group">
-                                    <a class="btn btn-mini have-tooltip" title="History" href="{genUrl controller='login-history' action="list" uid=$u->getId() limit=1}"><i class="icon-time"></i></a>
+                                    <a class="btn btn-mini have-tooltip" title="History" href="{genUrl controller='login-history' action="list" uid=$u->getId()}"><i class="icon-time"></i></a>
                                 </div>
                             {/if}
                         </td>
