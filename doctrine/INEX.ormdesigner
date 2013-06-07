@@ -5,9 +5,9 @@
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="2ec9db54-1a9e-4bea-b669-1842199f515f"/>
       <field name="user_id" type="integer" required="true" uuid="99836e5c-d45b-4622-af11-a66b52ef9d93"/>
       <field name="ip" type="string" size="39" required="true" uuid="cb30ab15-2f18-462f-81b7-6304e752aad2"/>
-      <field name="when" type="datetime" required="true" uuid="0696d2a8-2a83-4330-9f7d-53f020738b1f"/>
-      <index name="when_idx">
-        <index-field name="when"/>
+      <field name="at" type="datetime" required="true" uuid="0696d2a8-2a83-4330-9f7d-53f020738b1f"/>
+      <index name="at_idx">
+        <index-field name="at"/>
         <index-field name="user_id"/>
       </index>
       <orm-attributes>
