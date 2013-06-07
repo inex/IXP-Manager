@@ -249,9 +249,11 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
 	                $pi = new \Entities\PhysicalInterface();
 	                $form->assignFormToEntity( $pi, $this, false );
 	                $pi->setVirtualInterface( $vi );
-	                $pi->setSwitchPort(
-	                    $this->getD2EM()->getRepository( '\\Entities\\SwitchPort' )->find( $form->getValue( 'switchportid' ) )
-	                );
+	                
+	                $sp = $this->getD2R( '\\Entities\\SwitchPort' )->find( $form->getValue( 'switchportid' ) );
+	                $sp->setType( \Entities\SwitchPort::TYPE_PEERING );
+	                $pi->setSwitchPort( $sp );
+	                
 	                $pi->setMonitorindex(
 	                    $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $cust )
 	                );
