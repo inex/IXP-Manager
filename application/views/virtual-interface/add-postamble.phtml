@@ -33,7 +33,7 @@
         
                 <tr>
                     <td>
-                        {$int->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
+                        {if $int->getSwitchPort()->getSwitcher()->getCabinet()}{$int->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}{/if}
                     </td>
                     <td>
                         {$int->getSwitchPort()->getSwitcher()->getName()}
