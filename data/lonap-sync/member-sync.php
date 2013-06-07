@@ -2,7 +2,7 @@
 <?php
 
 /**
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  *
  * This file is part of IXP Manager.
  *
@@ -22,12 +22,13 @@
  */
                               
 /**
- * Script parses csv file by schema from getFields() function. From parsed data it
- * creates or update customer, billing and registration details, customer notes 
- * and contacts.
+ * This script parses a csv file as defined in getFields() function.
+ *
+ * From this parsed data it creates or update customer, billing and
+ * registration details, customer notes and contacts.
  *
  * Script call: ./member-sync.php file.csv
- */                              
+ */
                               
 //ini_set('memory_limit', -1);
                               
@@ -67,7 +68,7 @@ $countries = OSS_Countries::getCountriesArray();
 //Checking if file path is given
 if( !isset( $argv[1] ) )
 {
-    echo "ERROR: Missing file path.\n";
+    echo "ERROR: Usage: member-sync.php <data.csv>\n";
     exit( 1 );
 }
 
@@ -219,7 +220,7 @@ function createUpdateContacts( $cust, $member, $em )
 /**
  * Creates or updates customers contact from given member array by type.
  *
- * Function checks if contact exits for given type as role and contact name. If contact 
+ * Function checks if contact exits for given type as role and contact name. If contact
  * is not existent then function creates contact and otherwise it updates it.
  *
  * @param string             $type   Contact type. Valid options: admin | tech | billing
@@ -239,15 +240,16 @@ function createUpdateContact( $type, $cust, $member, $em )
     else
         throw new Exception( "Unknown type" );
     
-    $role = $em->getRepository( "\\Entities\\ContactGroup" )->findOneBy( [ 'name'=> $role_name ] );
-    if( $member[ $type . '_name' ] || $member[ $type . '_email' ] || $member [$type . '_phone' ] )
+    $role = $em->getRepository( "\\Entities\\ContactGroup" )->findOneBy( [ 'name' => $role_name ] );
+    if( $member[ $type . '_name' ] || $member[ $type . '_email' ] || $member [ $type . '_phone' ] )
     {
         $cont = false;
+        
         if( $cust->getContacts() )
         {
             foreach( $cust->getContacts() as $tcont )
             {
-                if( $tcont->getName() == $member['admin_name'] && $tcont->getGroups()->contains( $role ) )
+                if( $tcont->getName() == $member[ $type . '_name'] && $tcont->getGroups()->contains( $role ) )
                 {
                     $cont = $tcont;
                     break;
@@ -260,7 +262,7 @@ function createUpdateContact( $type, $cust, $member, $em )
             $cont = new \Entities\Contact();
             $em->persist( $cont );
             $cont->setCreated( new \DateTime() );
-            $cont->setName( $member[$type . '_name'] ? $member[$type . '_name'] : $role_name );
+            $cont->setName( $member[$type . '_name'] ? $member[$type . '_name'] : "$role_name Contact" );
             $cont->addGroup( $role );
             $cont->setCustomer( $cust );
             $cont->setFacilityaccess( 0 );
@@ -269,6 +271,7 @@ function createUpdateContact( $type, $cust, $member, $em )
         $cont->setLastupdated( new \DateTime() );
         $cont->setEmail( $member[ $type . '_email'] );
         $cont->setPhone( $member[ $type . '_phone'] );
+        
         if( $type == 'billing' )
             $cont->setNotes( $member['billing_c2_notes'] );
 
@@ -293,15 +296,30 @@ function createUpdateContact( $type, $cust, $member, $em )
 function createUpdateNotes( $cust, $member, $em )
 {
     if( $member['po_number'] )
-        createUpdateNote( "Purchase Orders", $member['po_number'], $cust, $em );
+    {
+        createUpdateNote( "Purchase Orders",
+            "Purchase order recorded during migration to IXP Manager: {$member['po_number']}\n",
+            $cust, $em
+        );
+    }
 
     if( $member['bill_notes'] )
-        createUpdateNote( "Billing Notes", $member['bill_notes'], $cust, $em );
+    {
+        createUpdateNote( "Billing Notes",
+            "Billing notes as recorded during migration to IXP Manager:\n\n{$member['bill_notes']}",
+            $cust, $em
+        );
+    }
 
     if( $member['joining_form_comments'] )
-        createUpdateNote( "Joining Form Comments", $member['joining_form_comments'], $cust, $em );
+    {
+        createUpdateNote( "Joining Form Comments",
+            "Joining form comments as recorded during migration to IXP Manager:\n\n{$member['joining_form_comments']}",
+            $cust, $em
+        );
+    }
 
-    $original_data = "<table class=\"table\">";
+    $original_data = "<h3>Original Data Used for Migration to IXP Manager</h3><table class=\"table\">";
     
     foreach( $member as $key => $value )
     {
@@ -314,16 +332,13 @@ function createUpdateNotes( $cust, $member, $em )
             $original_data .= "<tr><th align=\"right\">{$key}:</th><td>{$value}</td></tr>";
     }
     
-    $original_data .= "</table></ br>Updated: " . date("d/m/Y H:i:s" );
+    $original_data .= "</table><br />Updated: " . date( "d/m/Y H:i:s" );
 
     createUpdateNote( "Original Migration Data", $original_data, $cust, $em );
 }
 
 /**
- * Creates or updates customers contact from given member array by type.
- *
- * Function checks if contact exits for given type as role and contact name. If contact 
- * is not existent then function creates contact and otherwise it updates it.
+ * Creates or updates customer notes from given member array by type.
  *
  * @param string             $title   Note title
  * @param string             $contemt Note content
@@ -333,31 +348,32 @@ function createUpdateNotes( $cust, $member, $em )
  */
 function createUpdateNote( $title, $content, $cust, $em )
 {
-        $cnote = false;
-        if( $cust->getNotes() )
+    $cnote = false;
+    if( $cust->getNotes() )
+    {
+        foreach( $cust->getNotes() as $tnote )
         {
-            foreach( $cust->getNotes() as $tnote )
+            if( $tnote->getTitle() == $title )
             {
-                if( $tnote->getTitle() == $title )
-                {
-                    $cnote = $tnote;
-                    break;
-                }
+                $cnote = $tnote;
+                break;
             }
         }
+    }
 
-        if( !$cnote )
-        {
-            $cnote = new \Entities\CustomerNote();
-            $em->persist( $cnote );
-            $cnote->setCustomer( $cust );
-            $cust->addNote( $cnote );
-            $cnote->setTitle( $title );
-            $cnote->setPrivate( 1 );
-            $cnote->setCreated( new \DateTime() );
-        }
-        $cnote->setUpdated( new \DateTime() );
-        $cnote->setNote( $content );
+    if( !$cnote )
+    {
+        $cnote = new \Entities\CustomerNote();
+        $em->persist( $cnote );
+        $cnote->setCustomer( $cust );
+        $cust->addNote( $cnote );
+        $cnote->setTitle( $title );
+        $cnote->setPrivate( 1 );
+        $cnote->setCreated( new \DateTime() );
+    }
+    
+    $cnote->setUpdated( new \DateTime() );
+    $cnote->setNote( $content );
 }
 
 /**
@@ -371,9 +387,9 @@ function createUpdateNote( $title, $content, $cust, $em )
 function mapCustStatus( $status )
 {
     $status = strtolower( $status );
-    $cust_status = [ 
-        "active" => \Entities\Customer::STATUS_NORMAL,
-        "ex-member" => \Entities\Customer::STATUS_SUSPENDED,
+    $cust_status = [
+        "active"       => \Entities\Customer::STATUS_NORMAL,
+        "ex-member"    => \Entities\Customer::STATUS_SUSPENDED,
         "provisioning" => \Entities\Customer::STATUS_NOTCONNECTED
     ];
 
@@ -391,8 +407,8 @@ function mapCustStatus( $status )
 function mapCustType( $type )
 {
     $type = strtolower( $type );
-    $cust_type = [ 
-        "member" => \Entities\Customer::TYPE_FULL,
+    $cust_type = [
+        "member"    => \Entities\Customer::TYPE_FULL,
         "secondary" => \Entities\Customer::TYPE_PROBONO,
         "affiliate" => \Entities\Customer::TYPE_ASSOCIATE
     ];
@@ -401,7 +417,7 @@ function mapCustType( $type )
 }
 
 /**
- * Maps member billing_frequency value from parsed csv file value to 
+ * Maps member billing_frequency value from parsed csv file value to
  * \Entities\CompanyBillingDetail billing frequency.
  *
  * Returns null or one of \Entities\CompanyBillingDetail::BILLING_FREQUENCY constants.
@@ -412,7 +428,7 @@ function mapCustType( $type )
 function mapBillFreq( $freq )
 {
     $freq = strtolower( $freq );
-    $bill_freq = [ 
+    $bill_freq = [
         "no-billing" => \Entities\CompanyBillingDetail::BILLING_FREQUENCY_NOBILLING,
         "quarterly" => \Entities\CompanyBillingDetail::BILLING_FREQUENCY_QUARTERLY,
         "annually" => \Entities\CompanyBillingDetail::BILLING_FREQUENCY_ANNUALLY
@@ -422,7 +438,7 @@ function mapBillFreq( $freq )
 }
 
 /**
- * Maps member invoice_method value from parsed csv file value to 
+ * Maps member invoice_method value from parsed csv file value to
  * \Entities\CompanyBillingDetail invoice method.
  *
  * Returns null or one of \Entities\CompanyBillingDetail::INVOICE_METHOD constants.
@@ -433,7 +449,7 @@ function mapBillFreq( $freq )
 function mapInvoiceMethod( $method )
 {
     $method = strtolower( $method );
-    $inv_methods = [ 
+    $inv_methods = [
         "email" => \Entities\CompanyBillingDetail::INVOICE_METHOD_EMAIL,
         "post" => \Entities\CompanyBillingDetail::INVOICE_METHOD_POST
     ];
@@ -442,7 +458,7 @@ function mapInvoiceMethod( $method )
 }
 
 /**
- * Maps member as_routing_registry value from parsed csv file value to 
+ * Maps member as_routing_registry value from parsed csv file value to
  * \Entities\IRRDBConfig object.
  *
  * Returns null or one of \Entities\IRRDBConfig object.
@@ -530,12 +546,12 @@ function parseFile( $filename )
     $handle = @fopen( $filename, "r" );
     if( $handle ) {
         
-        while( ( $row = fgetcsv($handle, 4096, ",") ) !== false )
-        {   
+        while( ( $row = fgetcsv($handle, 20000, ",") ) !== false )
+        {
             if( count( $row ) != 75 )
                 continue;
 
-            $result[ $row[59]]  = processRow( $row, $fields, $field_names );
+            $result[ $row[59] ]  = processRow( $row, $fields, $field_names );
         }
         
         if( !feof( $handle ) )
@@ -550,12 +566,13 @@ function parseFile( $filename )
         echo "Error: file '{$filename}' can not be opened.\n";
         exit( 1 );
     }
+    
     return $result;
 }
 
 /**
  * Process row from csv file.
- * 
+ *
  * Function sets field names as array indexes. And then iterates thought it and
  * fixes data type by schema for easier array usage.
  *
@@ -570,7 +587,7 @@ function processRow( $row, $fields, $fnames )
     
     foreach( $row as $key => $value )
     {
-        if( $value != "\\N" )    
+        if( $value != "\\N" )
         {
             switch( $fields[$key] )
             {
