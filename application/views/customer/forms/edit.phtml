@@ -127,10 +127,11 @@ $(document).ready( function(){
     });
 
     {if $isEdit and $object->getType() eq 2}
-    $( '#full-member-details' ).slideUp( 'fast' );
-    $( '#full-member-details2' ).slideUp( 'fast' );
+        $( '#full-member-details' ).slideUp( 'fast' );
+        $( '#full-member-details2' ).slideUp( 'fast' );
     {/if}
 
+    $( '#type' ).trigger( 'change' );
     
 });
 

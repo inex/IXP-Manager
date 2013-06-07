@@ -87,7 +87,7 @@ if( $handle ) {
 
         if( !updateVlanInterface( $row, $vlan, $em ) )
         {
-            echo "WARNING: Virtual interface for address {$row[0]} was not found.\n";
+            echo "Virtual interface for address " . strtolower( $row[0] ) . " was not found.\n";
             continue;
         }
     }
@@ -138,7 +138,7 @@ function updateVlanInterface( $row, $vlan, $em )
     }
     else
     {
-        $ip = $em->getRepository( "\\Entities\\IPv6Address" )->findOneBy( [ 'Vlan' => $vlan->getId(), 'address'=> $row[0] ] );
+        $ip = $em->getRepository( "\\Entities\\IPv6Address" )->findOneBy( [ 'Vlan' => $vlan->getId(), 'address'=> strtolower( $row[0] ) ] );
         if( $ip )
             $vlInt = $em->getRepository( "\\Entities\\VlanInterface" )->findOneBy( [ 'Vlan' => $vlan->getId(), 'IPv6Address'=> $ip ] );
     }
