@@ -19,7 +19,15 @@
 
 <table class="table">
     <tbody>
-
+        <tr>
+            <td><strong>Abreviated Name</strong></td>
+            <td>{$cust->getAbbreviatedName()}</td>
+            <td colspan="2">
+                <span class="label label-{if $rsclient}success{else}important{/if}">RS Client</span>
+                &nbsp;&nbsp;&nbsp;
+                <span class="label label-{if $as112client}success{else}important{/if}">AS112</span>
+            </td>
+        </tr>
         <tr>
             <td><strong>Corporate Site</strong></td>
             <td><a href="{$cust->getCorpwww()}">{$cust->getCorpwww()}</a></td>
@@ -84,8 +92,8 @@
                     {if $cust->getNoc24hphone()} {$cust->getNoc24hphone()} (24h) {/if}
                 {/if}
             </td>
-            <td><strong>Abreviated Name</strong></td>
-            <td>{$cust->getAbbreviatedName()}</td>
+            <td></td>
+            <td></td>
         </tr>
 
     </tbody>
