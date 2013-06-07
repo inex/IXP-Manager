@@ -2,7 +2,7 @@
 <?php
 
 /**
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  *
  * This file is part of IXP Manager.
  *
@@ -21,6 +21,11 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
                          
+
+// Parses route server CSV and updates VlanInterface accordingly.
+
+define( 'PEERING_LAN_NAME', 'Peering LAN #1' );
+
                               
 //ini_set('memory_limit', -1);
                               
@@ -63,7 +68,7 @@ if( !isset( $argv[1] ) )
     exit( 1 );
 }
 
-$vlan = loadVlan( 'LONAP', $em );
+$vlan = loadVlan( PEERING_LAN_NAME, $em );
 if( !$vlan )
 {
     echo "ERROR: VLAN can not be loaded for further actions.\n";
@@ -84,7 +89,7 @@ if( $handle ) {
         {
             echo "WARNING: Virtual interface for address {$row[0]} was not found.\n";
             continue;
-        }            
+        }
     }
     
     if( !feof( $handle ) )
@@ -113,7 +118,7 @@ $em->flush();
  * @param array          $row  Data row parsed form cfg file.
  * @param \Entities\Vlan $vlan Vlan for IP addresses and vlan interface search
  * @param object         $em   Entity manager
- * @return 
+ * @return
  */
 function updateVlanInterface( $row, $vlan, $em )
 {
@@ -146,7 +151,7 @@ function updateVlanInterface( $row, $vlan, $em )
         return true;
     }
     else
-        return false; 
+        return false;
 }
 
 
