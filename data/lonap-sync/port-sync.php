@@ -2,7 +2,7 @@
 <?php
 
 /**
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  *
  * This file is part of IXP Manager.
  *
@@ -22,24 +22,35 @@
  */
                               
 /**
- * Script parses csv file and takes only these rows which have IPv4 addresses and
- * group ports by server. Then it loads Vlan for LONAP if is not exist script stops. 
- * Then iterates through servers form parsed data and if it is not in database prints
- * error and stops. Later it iterates through server ports and if not exists in database 
- * or it is not related with customer by ASN(autsys) it prints messages and  stops.
- * If port exists then script it checks if physical interface and virtual interface 
- * is existent for that port if not creates them.
- * If port have pchan_master and it is_pchannel set to false then scripts find
- * virtual interface for pchan_master and where is_pchannel is true and appends with
- * not pchannel interface (Builds LAG). Then Virtual interface and port data is
- * passed forward where script checks if ports IPs are already assign to LONAP's 
- * Vlan if not then assign them then script checks if VlanInterfce is not already
- * created for same ip to same virtual interface if not then creates it.
- * 
+ * This script parses a csv file and takes only these rows which have an IPv4 address
+ * defined. It groups ports by switch and then loads the defined vlan (assumes one VLAN
+ * per file).
+ *
+ * Then it iterates through the switches from the parsed data (and if the switch is
+ * no defined in the database, the script stops).
+ *
+ * The it iterates over switch ports and finds that port in the database. If it does
+ * not exist, or it is not related with customer by ASN(autsys) it prints
+ * and error message and stops.
+ *
+ * If port exists then script checks if physical interface and virtual interface
+ * also exists for that port and if not it creates them.
+ *
+ * If port has pchan_master / is_pchannel set, the script tries to find the parent
+ * virtual interface and adds the new physical interface to it.
+ *
+ * Then virtual interface and port data is processed to check if IPs are already
+ * assigned to to the Vlan (if not then assign them). The script also checks if
+ * VlanInterfce is not already created for same ip to same virtual interface;
+ * if not then creates it.
+ *
  *
  * Script call: ./port-sync.php file.csv
- */                              
+ */
                               
+define( 'PEERING_LAN_NAME', 'Peering LAN #1' );
+
+
 //ini_set('memory_limit', -1);
                               
 date_default_timezone_set('Europe/Dublin');
@@ -90,10 +101,10 @@ if( !$switches )
     exit( 1 );
 }
 
-$vlan = loadVlan( 'LONAP', $em );
+$vlan = loadVlan( PEERING_LAN_NAME, $em );
 if( !$vlan )
 {
-    echo "ERROR: VLAN can not be loaded for further actions.\n";
+    echo "ERROR: VLAN '" . PEERING_LAN_NAME . "' could not be loaded - please create it.\n";
     exit( 1 );
 }
 
@@ -111,6 +122,7 @@ foreach( $switches as $name => $switch )
     foreach( $switch as $port )
     {
         $virtual_interface = updatePhysicalInterface( $port, $em, $sw );
+        
         if( $virtual_interface )
             createUpdateVlanInterface( $virtual_interface, $vlan, $port, $em );
     }
@@ -144,21 +156,22 @@ function loadVlan( $name, $em )
 function loadSwitch( $name, $em )
 {
     $sw = $em->getRepository( "\\Entities\\Switcher" )->findOneBy( ['name'=> $name ] );
-    /*if( !$sw )
+    
+    if( !$sw )
     {
-        $sw = new \Entities\Switcher();
-        $em->persist( $sw );
-        $sw->setName( $name );
-        $sw->setActive( 1 );
-        $sw->setInfrastructure( 0 );
-        $sw->setSwitchtype( \Entities\Switcher::TYPE_SWITCH );
-    }*/
+        //$sw = new \Entities\Switcher();
+        //$em->persist( $sw );
+        //$sw->setName( $name );
+        //$sw->setActive( 1 );
+        //$sw->setInfrastructure( 1 );
+        //$sw->setSwitchtype( \Entities\Switcher::TYPE_SWITCH );
+    }
 
     return $sw;
 }
 
 /**
- * Updates or creates physical interface for port data form parsed CSV file
+ * Updates or creates physical interface for port data from parsed CSV file
  *
  * First function creates or loads port for database. Than it creates or loads
  * physical interface. And finally updates or creates virtual interface.
@@ -174,6 +187,7 @@ function loadSwitch( $name, $em )
 function updatePhysicalInterface( $port, $em, $switcher )
 {
     $cust = $em->getRepository( "\\Entities\\Customer" )->findOneBy( ['autsys'=> $port['asn'] ] );
+    
     if( !$cust )
     {
         echo "WARNING: '{$port['membername']}' with autsys {$port['asn']} was not found in database. For port {$port['port_id']} in switch {$port['switch']}\n";
@@ -181,11 +195,16 @@ function updatePhysicalInterface( $port, $em, $switcher )
     }
     
     $dbPort = loadPort( $port, $switcher, $em );
+    
     if( !$dbPort )
     {
-        echo "ERRO: port with ifIndex '{$port['snmp_oid']}' can not be found for switch {$switcher->getName()}\n";
+        echo "ERROR: port with ifIndex '{$port['snmp_oid']}' can not be found for switch {$switcher->getName()}\n";
         return false;
     }
+    
+    // make sure this port is of type 'peer'
+    $dbPort->setType( \Entities\SwitchPort::TYPE_PEERING );
+    
     $phInt  = createLoadPhysicalInterface( $dbPort, $port, $cust, $em );
     $viInt  = createUpdateVirtualInterface( $phInt, $port, $switcher, $cust, $em );
     
@@ -196,7 +215,7 @@ function updatePhysicalInterface( $port, $em, $switcher )
  * Loads switch port form database
  *
  * @param array              $port    Parsed port data from csv
- * @param \Entities\Switcher $switcher Switch for adding port 
+ * @param \Entities\Switcher $switcher Switch for adding port
  * @param object             $em       Entity manager
  * @return \Entities\SwitchPort
  */
@@ -234,6 +253,7 @@ function loadPort( $port, $switcher, $em )
 function createLoadPhysicalInterface( $dbPort, $port, $cust, $em )
 {
     $phInt = $dbPort->getPhysicalInterface();
+    
     if( !$phInt )
     {
         $phInt = new \Entities\PhysicalInterface();
@@ -243,6 +263,7 @@ function createLoadPhysicalInterface( $dbPort, $port, $cust, $em )
         $phInt->setMonitorindex(
             $em->getRepository( "\\Entities\\PhysicalInterface" )->getNextMonitorIndex( $cust )
         );
+        
         $phInt->setSwitchPort( $dbPort );
         $dbPort->setPhysicalInterface( $phInt );
     }
@@ -270,9 +291,12 @@ function createLoadPhysicalInterface( $dbPort, $port, $cust, $em )
                 break;
 
             default:
+                echo "Uh oh: could not parse speed {$port['port_type']}\n";
                 break;
         }
     }
+    else
+        echo "Uh oh: no port type for switchport {$dbPort->getSwitcher()->getName()}:{$dbPort->getName()}\n";
 
     return $phInt;
 }
@@ -290,9 +314,10 @@ function createLoadPhysicalInterface( $dbPort, $port, $cust, $em )
 function createUpdateVirtualInterface( $phInt, $port, $switcher, $cust, $em )
 {
     $viInt = $phInt->getVirtualInterface();
+    
     if( !$viInt )
     {
-        if( $port['pchan_master'] && !$port['is_pchannel'] )
+        if( $port['pchan_master'] )
         {
             foreach( $switcher->getPorts() as $sport )
             {
@@ -336,7 +361,7 @@ function createUpdateVlanInterface( $virtInt, $vlan, $port, $em )
     $ip4 = loadIPv4( $port, $vlan, $em );
     if( !$ip4 )
     {
-        echo "RROR: ip {$port['ipv4addr']} not exists in Vlan {$vlan->getName()}";
+        echo "ERROR: ip {$port['ipv4addr']} does not exist in Vlan {$vlan->getName()}";
         return false;
     }
     
@@ -382,7 +407,7 @@ function createUpdateVlanInterface( $virtInt, $vlan, $port, $em )
     {
         $vlInt->setIPv6Address( null );
         $vlInt->setIpv6enabled( 0 );
-        $vlInt->setIpv6hostname( null );   
+        $vlInt->setIpv6hostname( null );
     }
 
 }
@@ -490,12 +515,13 @@ function parseFile( $filename )
         echo "Error: file '{$filename}' can not be opened.\n";
         exit( 1 );
     }
+    
     return $result;
 }
 
 /**
  * Process row from csv file.
- * 
+ *
  * Function sets field names as array indexes. And then iterates thought it and
  * fixes data type by schema for easier array usage.
  *
@@ -510,7 +536,7 @@ function processRow( $row, $fnames )
     
     foreach( $row as $key => $value )
     {
-        if( trim( $value ) == "" || trim( $value ) == "-" )    
+        if( trim( $value ) == "" || trim( $value ) == "-" )
             $row[$key] = null;
     }
     return $row;
