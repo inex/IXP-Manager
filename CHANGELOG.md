@@ -1,5 +1,7 @@
 # v3.1.3
 
+Sponsored by: FIXME
+
 Schema change required:
 
     CREATE TABLE netinfo ( 
@@ -24,7 +26,6 @@ See: https://github.com/inex/IXP-Manager/wiki/Network-Information
 
 New replacement for the old Network Information table which was quite inflexible - the 
 new table is a collection of key / value pairs making it much more useful.
-
 
 
 
