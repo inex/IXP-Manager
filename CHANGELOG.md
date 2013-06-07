@@ -1,3 +1,135 @@
+# v3.1.1
+
+Second phase of v3.1.0. Update to this tag and then execute:
+
+    git submodule init
+    git submodule update
+
+
+- [HK] These scripts are redundant now that we are using submodules
+- [HK] Add OSS clone of Minify library as external (b62c2be - Barry O'Donovan - 2013-06-04)
+- [HK] Add OSS clone of Bootstrap-Zend-Framework library as external (6448780 - Barry O'Donovan - 2013-06-04)
+- [HK] Added these two submodules in the parent directory in error (c742f9a - Barry O'Donovan - 2013-06-04)
+- [HK] Add IXP Manager GitHub wiki as external (13f79ef - Barry O'Donovan - 2013-06-04)
+- [HK] Add Throbber.js library as external (174c3dc - Barry O'Donovan - 2013-06-04)
+- [HK] Add Bootbox library as external (ad1f4b0 - Barry O'Donovan - 2013-06-04)
+- [HK] Add Minify library as external (d697a93 - Barry O'Donovan - 2013-06-04)
+- [HK] Add OSS clone of Bootstrap-Zend-Framework library as external (a39ae64 - Barry O'Donovan - 2013-06-04)
+- [HK] Add OSS-SNMP library as external (45f8ca2 - Barry O'Donovan - 2013-06-04)
+- [HK] Add OSS-Framework library as external (82cbd3f - Barry O'Donovan - 2013-06-04)
+- [HK] Add Smarty library as external (2817c76 - Barry O'Donovan - 2013-06-04)
+- [HK] Add Zend library as external (eecc1fa - Barry O'Donovan - 2013-06-04)
+
+
+# v3.1.0
+
+**NB:** This is a major version bump as we are changing the manner in
+which third party libraries are included with IXP Manager.
+
+Upgrade to this tag specifically first, then to the next tag (v3.1.1)
+and follow the instructions there.
+
+We use a large number of external / third party libraries and it's 
+very easy to get out of sync with these. By using Git submodules we
+can make the install procedure easier as well as ensure the known
+supported versions of third party libraries are used.
+
+After upgrading to this version, remove the following directories from
+your `library/` directory:
+
+* `Bootbox` 
+* `Bootstrap-Zend-Framework` 
+* `Minify` 
+* `Smarty` 
+* `Throbber.js` 
+* `wiki` 
+* `Zend` 
+* `OSS-Framework.git` 
+* `OSS_SNMP.git` 
+
+Then proceed to the instructions for v3.1.1.
+
+# v3.0.18
+
+Update schema:
+
+    ALTER TABLE cust 
+        ADD abbreviatedName VARCHAR(30) DEFAULT NULL, 
+        ADD MD5Support VARCHAR(255) DEFAULT NULL;
+    
+    UPDATE cust SET abbreviatedName = name;
+    UPDATE cust SET MD5Support = 'UNKNOWN';
+    
+    ALTER TABLE switchport 
+        CHANGE active active TINYINT(1) NOT NULL DEFAULT 1;
+    
+    ALTER TABLE company_billing_detail 
+        ADD purchaseOrderRequired TINYINT(1) NOT NULL DEFAULT 0, 
+        ADD invoiceMethod VARCHAR(255) DEFAULT NULL, 
+        ADD invoiceEmail VARCHAR(255) DEFAULT NULL, 
+        ADD billingFrequency VARCHAR(255) DEFAULT NULL;
+
+
+Primarily a refactoring of customer / billing / registration details.
+
+- [DB] Merge in lonap schema updates (c6f7333 - Barry O'Donovan - 2013-05-31)
+- [IM] Regenerated js file using new script (9ea89b9 - Nerijus Barauskas - 2013-05-28)
+- [NF] Adding update oss js files script (84ab33e - Nerijus Barauskas - 2013-05-28)
+- [IM] Changes after review (5f61ab3 - Nerijus Barauskas - 2013-05-28)
+- [IM] Adding billing tab in customer overview page (997437b - Nerijus Barauskas - 2013-05-28)
+- [BF] Small fixes (605529a - Nerijus Barauskas - 2013-05-28)
+- [IM] Allow to select empty values for some dropdown lists (4ceb37e - Nerijus Barauskas - 2013-05-28)
+- [IM] Spliting edit int two action. Edit customer details and edit billing/registration details (74829f0 - Nerijus Barauskas - 2013-05-28)
+- [IM] Removing customer billing-registration detailsf from customer form (9a4cc8d - Nerijus Barauskas - 2013-05-28)
+- [NF] Adding customer billing-registration action (21b5bb8 - Nerijus Barauskas - 2013-05-28)
+- [NF] Adding customer billing/registration form (ac0a4ec - Nerijus Barauskas - 2013-05-28)
+- [IM] Adding new field to form to reflect schema changes (8999e39 - Nerijus Barauskas - 2013-05-27)
+- [HK] Regenerating proxies. (6622ba2 - Nerijus Barauskas - 2013-05-27)
+- [IM] Updating entities after schema changes (52c26f2 - Nerijus Barauskas - 2013-05-27)
+- [DB] Adding new fields to the schema (487a556 - Barry O'Donovan - 2013-05-27)
+
+
+
+# v3.0.17
+
+- [IM] Add RIPE and ARIN from RADB (c4f3c2b - Barry O'Donovan - 2013-05-31)
+- [HK] Freshly pressed CSS/JS (6903325 - Barry O'Donovan - 2013-05-28)
+- [HK] Merging (45fb167 - Barry O'Donovan - 2013-05-28)
+- [HK] Freshly pressed CSS/JS (78b5085 - Barry O'Donovan - 2013-05-28)
+- [IM] Chosen width fixing should be on request, not default (f5f7e1d - Barry O'Donovan - 2013-05-28)
+- [HK] Small BF and freshly presses CSS / JS (e616eca - Barry O'Donovan - 2013-05-28)
+- [IM] Regenerated js file using new script (9ea89b9 - Nerijus Barauskas - 2013-05-28)
+- [IM] Fix Chosen width issues (5c19e08 - Barry O'Donovan - 2013-05-28)
+- [NF] Adding update oss js files script (84ab33e - Nerijus Barauskas - 2013-05-28)
+- [HK] Freshly pressed CSS/JS (9e696b2 - Barry O'Donovan - 2013-05-28)
+- [BF] Wrong variable for minified css/js check (ebad231 - Barry O'Donovan - 2013-05-28)
+
+
+# v3.0.16
+
+Bring miscelaneous JS fucntions into line with OSS-Framework.
+
+Upgrade external JS and CSS libraries.
+
+- [HK] Freshly pressed CSS / JS (e385b53 - Barry O'Donovan - 2013-05-28)
+- [IM] Update Chosen (4bf3505 - Barry O'Donovan - 2013-05-28)
+- [IM] Freshly pressed JS / CSS (8d81aa6 - Barry O'Donovan - 2013-05-28)
+- [IM] Upgrade colorbox (28798b7 - Barry O'Donovan - 2013-05-28)
+- [IM] Upgrade datatables (d4fbd0c - Barry O'Donovan - 2013-05-28)
+- [IM] Update jQuery CSS and images (4ef322c - Barry O'Donovan - 2013-05-28)
+- [IM] Update jQuery JS files (60e406e - Barry O'Donovan - 2013-05-28)
+- [IM] Upgrade Bootstrap to 2.3.2 from 2.2.1 (59c0f48 - Barry O'Donovan - 2013-05-28)
+- [HK] Freshly pressed JS / CSS bundles (e0a16bd - Barry O'Donovan - 2013-05-28)
+- [HK] Change layout of JS files (f4ab938 - Barry O'Donovan - 2013-05-28)
+- [HK] Dead code (ec4a58e - Barry O'Donovan - 2013-05-28)
+- [BF] fn() referenced as fn (c770041 - Barry O'Donovan - 2013-05-27)
+- [NF] adding combined.js file generated by OSS-Framework library (90f54dc - Nerijus Barauskas - 2013-05-27)
+- [IM] Removing old scripts (5453f91 - Nerijus Barauskas - 2013-05-27)
+- [IM] Updating function names form tt_ to oss (077ed90 - Nerijus Barauskas - 2013-05-27)
+- [BF] Groups was not working as it should (143e63d - Nerijus Barauskas - 2013-05-27)
+- [NF] Allowing to set additional information popover (e97f95a - Nerijus Barauskas - 2013-05-24)
+
+
 # v3.0.15
 
 **NB: This is a TWO stage migration process, please follow instructions carefully!**

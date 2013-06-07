@@ -255,6 +255,13 @@ $irrdbs = [
         'protocol' => 'irrd',
         'source'   => 'RADB,APNIC,ARIN',
         'notes'    => 'RADB+APNIC+ARIN Query from RADB Database'
+    ],
+
+    [
+        'host'     => 'whois.radb.net',
+        'protocol' => 'irrd',
+        'source'   => 'RIPE,ARIN',
+        'notes'    => 'RIPE+ARIN Query from RADB Database'
     ]
 
 ];

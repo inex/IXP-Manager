@@ -9,6 +9,7 @@
     <field name="rcvrfname" type="string" length="255" nullable="true"/>
     <field name="private" type="boolean" nullable="false"/>
     <field name="notes" type="text" nullable="true"/>
+    <one-to-many field="NetInfo" target-entity="Entities\NetInfo" mapped-by="Vlan"/>
     <one-to-many field="VlanInterfaces" target-entity="Entities\VlanInterface" mapped-by="Vlan"/>
     <one-to-many field="IPv4Addresses" target-entity="Entities\IPv4Address" mapped-by="Vlan"/>
     <one-to-many field="IPv6Addresses" target-entity="Entities\IPv6Address" mapped-by="Vlan"/>
