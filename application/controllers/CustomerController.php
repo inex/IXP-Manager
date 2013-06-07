@@ -186,44 +186,59 @@ class CustomerController extends IXP_Controller_FrontEnd
     public function overviewAction()
     {
         $this->view->netinfo   = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-    	$this->view->cust      = $cust = $this->_loadCustomer();
-    	$this->view->tab       = $this->getParam( 'tab', false );
+        $this->view->cust      = $cust = $this->_loadCustomer();
+        $this->view->tab       = $this->getParam( 'tab', false );
 
         $this->view->registerClass( 'Countries', 'OSS_Countries' );
         $this->view->registerClass( 'BillingDetails', '\\Entities\\CompanyBillingDetail' );
-    	
-    	// is this user watching all notes for this customer?
-    	if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
-        	$this->view->co_notify_all = true;
-        	
-    	// what specific notes is this cusomer watching?
+        
+        // is this user watching all notes for this customer?
+        if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
+            $this->view->co_notify_all = true;
+           
+        // what specific notes is this cusomer watching?
         if( $this->getUser()->getAssocPreference( "customer-notes.watching" ) )
             $this->view->co_notify = $this->getUser()->getAssocPreference( "customer-notes.watching" )[0];
         else
             $this->view->co_notify = [];
-    	
+        
         // load customer notes and the amount of unread notes for this user and customer
-    	$this->_fetchCustomerNotes( $cust->getId() );
-    	 
-    	if( $cust->isRouteServerClient() )
-    	    $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
-    	
-    	// does the customer have any graphs?
-    	$this->view->hasAggregateGraph = false;
-    	if( $cust->getType() != \Entities\Customer::TYPE_ASSOCIATE && !$cust->hasLeft() )
-    	{
-    	    foreach( $cust->getVirtualInterfaces() as $vi )
-    	    {
-    	        foreach( $vi->getPhysicalInterfaces() as $pi )
-    	        {
-    	            if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED )
-    	            {
-    	                $this->view->hasAggregateGraph = true;
-    	                break;
-    	            }
-    	        }
-    	    }
-    	}
+        $this->_fetchCustomerNotes( $cust->getId() );
+        
+        if( $cust->isRouteServerClient() )
+            $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
+        
+        // does the customer have any graphs?
+        $this->view->hasAggregateGraph = false;
+        if( $cust->getType() != \Entities\Customer::TYPE_ASSOCIATE && !$cust->hasLeft() )
+        {
+            foreach( $cust->getVirtualInterfaces() as $vi )
+            {
+                foreach( $vi->getPhysicalInterfaces() as $pi )
+                {
+                    if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED )
+                    {
+                        $this->view->hasAggregateGraph = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        //is customer RS or AS112 client
+        $this->view->rsclient = false;
+        $this->view->as112client   = false;
+        foreach( $cust->getVirtualInterfaces() as $vi )
+        {
+            foreach( $vi->getVlanInterfaces() as $vli )
+            {
+                if( $vli->getRsclient() )
+                    $this->view->rsclient = true;
+
+                if( $vli->getAs112client() )
+                    $this->view->as112client = true; 
+            }
+        }
     }
     
     
