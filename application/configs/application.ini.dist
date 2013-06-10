@@ -317,6 +317,7 @@ identity.default_country = 'IE'
 ;; can use various URIs here including local file system:
 
 ;; This is for standard interface graphs
+;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
 mrtg.path = http://mrtg.example.com/mrtg
 
 ;; This is for P2P graphs (which are a work in progress)
