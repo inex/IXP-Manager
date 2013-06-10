@@ -1,0 +1,47 @@
+
+{if count( $cust->getUsers() )}
+
+    <table class="table">
+        <thead>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Last Login</th>
+            <th>Last Login From</th>
+            <th>
+            </th>
+        </thead>
+        <tbody>
+            {foreach $cust->getUsers() as $u}
+                {if $u->getPreference( 'auth.last_login_from' )}
+                    <tr>
+                        <td>{$u->getUsername()}</td>
+                        <td>{$u->getEmail()}</td>
+                        <td>
+                            {$u->getPreference( 'auth.last_login_at' )|date_format:"%Y-%m-%d %H:%M:%S"}
+                        </td>
+                        <td>
+                            {if $u->getPreference( 'auth.last_login_from' )}
+                                {$u->getPreference( 'auth.last_login_from' )}
+                            {/if}
+                        </td>
+                        <td>
+                            {if count( $u->getLastLogins() ) > 0}
+                                <div class="btn-group">
+                                    <a class="btn btn-mini have-tooltip" title="History" href="{genUrl controller='login-history' action="list" uid=$u->getId()}"><i class="icon-time"></i></a>
+                                </div>
+                            {/if}
+                        </td>
+                    </tr>
+                {/if}
+            {/foreach}
+        </tbody>
+    </table>
+    <script>{tmplinclude file="customer/js/overview/users.js"}</script>
+{else}
+
+    <p style="padding-left: 40px;">
+        No users found.<br><br>
+        Users can be added by creating / editing contacts and giving the contact login privileges.
+    </p>
+
+{/if}

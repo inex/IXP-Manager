@@ -5,6 +5,7 @@
     <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
     <ul class="dropdown-menu">
         <li> <a href="{genUrl module=$module controller=$controller action='welcome-email' id=$row.id}">Resend welcome email</a> </li>
+        <li> <a href="{genUrl controller='login-history' action="list" uid=$row.id limit=1}">Login History</a> </li>
         {if $user->getPrivs() eq 3}<li> <a href="{genUrl controller="auth" action="switch-user" id=$row.id}">Switch to...</a> </li>{/if}
     </ul>
 </div>

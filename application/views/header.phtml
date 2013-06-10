@@ -3,6 +3,11 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="{if isset( $hasIdentity ) and $hasIdentity and $user->getPrivs() eq 3}container-fluid{else}container{/if}">
+             <a id="collapsed_menu" class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
             <a class="brand" href="{genUrl}">{$options.identity.sitename}</a>
             {if isset( $hasIdentity ) and $hasIdentity}
                 <div class="nav-collapse">
