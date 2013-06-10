@@ -108,7 +108,7 @@
             <div class="well">
                 <h4 style="vertical-align: middle">
                     {$cust->getName()}
-                    {if $category eq 'bits' or $category eq 'pkts'}
+                    {if ( isset( $options.sflow.enabled ) and $options.sflow.enabled ) and ( $category eq 'bits' or $category eq 'pkts' )} 
                         <span class="btn btn-mini" style="float: right">
                             <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname() category=$category period=$period}"><i class="icon-random"></i></a>
                         </span>
