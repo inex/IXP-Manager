@@ -29,18 +29,20 @@
                         <td><strong>IXP Manager</strong></td>
                         <td>{$smarty.const.APPLICATION_VERSION} ({$smarty.const.APPLICATION_VERDATE})</td>
                     </tr>
-                    <tr>
-                        <td><strong>Apache</strong></td>
-                        <td>{$apachever}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>PHP</strong></td>
-                        <td>{$phpver}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>MySQL</strong></td>
-                        <td>{$dbver}</td>
-                    </tr>
+                    {if isset( $hasIdentity ) and $hasIdentity and $user->getPrivs() eq 3}
+                        <tr>
+                            <td><strong>Apache</strong></td>
+                            <td>{$apachever}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PHP</strong></td>
+                            <td>{$phpver}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MySQL</strong></td>
+                            <td>{$dbver}</td>
+                        </tr>
+                    {/if}
                 </table>
             </div>
         </div>
