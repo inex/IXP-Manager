@@ -136,7 +136,7 @@ $query = 'SELECT
 		sw.vendorid,
 		sw.name		AS switchname,
 		sw.snmppasswd,
-		sp.name		AS switchport
+		sp.ifName	AS switchport
 	FROM
 		switch sw,
 		switchport sp
@@ -172,7 +172,7 @@ foreach my $infra (keys %{$lans}) {
 	foreach my $traffictype (keys %{$traffictypes}) {
 		foreach my $switchid (@{$lans->{$infra}->{switchids}}) {
 			foreach my $switchport (@{$lans->{$infra}->{$switchid}->{ports}}) {
-				my $spidentifier = IXPManager::Utils::switchporttosnmpidentifier($switchport, $lans->{$infra}->{$switchid}->{vendorid});
+				my $spidentifier = IXPManager::Utils::switchportifnametosnmpidentifier($switchport);
 				$debug && print STDERR ("INFO: per-infra aggregate pushed $spidentifier (\"$switchport\") to infra $infra\n");
 				my $mrtgobj =	$traffictypes->{$traffictype}->{in}.'#'.$spidentifier.
 						'&'.
@@ -224,7 +224,7 @@ $query = 'SELECT
 		sw.vendorid,
 		sw.name		AS switchname,
 		sw.snmppasswd,
-		sp.name		AS switchport
+		sp.ifName	AS switchport
 	FROM
 		switch sw,
 		switchport sp
@@ -242,7 +242,7 @@ $sth->execute() || die "$dbh->errstr\n";
 my $switchports;
 # slurp everything in from SQL
 while (my $rec = $sth->fetchrow_hashref) {
-	my $spidentifier = IXPManager::Utils::switchporttosnmpidentifier($rec->{switchport}, $rec->{vendorid});
+	my $spidentifier = IXPManager::Utils::switchportifnametosnmpidentifier($rec->{switchport});
 	foreach my $traffictype (keys %{$traffictypes}) {
 		my $mrtgobj =	$traffictypes->{$traffictype}->{in}.'#'.$spidentifier.
 				'&'.
@@ -279,7 +279,7 @@ $query = 'SELECT
 		cu.name,
 		cu.shortname,
 		sd.switch,
-		sd.switchport,
+		sd.spifname,
 		sd.vendorid,
 		sd.snmppasswd,
 		pi.speed,
@@ -305,7 +305,7 @@ while (my $rec = $sth->fetchrow_hashref) {
 	my $membername = $rec->{name};
 	my $shortname = $rec->{shortname};
 	my $switch = $rec->{switch};
-	my $switchport = $rec->{switchport};
+	my $switchport = $rec->{spifname};
 	my $speed = $rec->{speed};
 	my $index = $rec->{monitorindex};
 
@@ -314,7 +314,7 @@ while (my $rec = $sth->fetchrow_hashref) {
 	my $speedpkts  = int ($speedbytes / 64);
 	my $speeddisc  = int ($speedbytes / 10);
 
-	my $shortport = IXPManager::Utils::switchporttosnmpidentifier($switchport, $rec->{vendorid});
+	my $shortport = IXPManager::Utils::switchportifnametosnmpidentifier($switchport);
 
 	$rec->{shortport} = $shortport;
 

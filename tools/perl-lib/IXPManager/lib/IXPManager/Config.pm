@@ -39,7 +39,7 @@ use vars qw(@ISA @EXPORT_OK @EXPORT $VERSION $AUTOLOAD);
 
 @ISA = ("Config");
 
-$VERSION = '0.22';
+$VERSION = '0.23';
 
 1;
 

@@ -54,3 +54,18 @@ sub switchporttosnmpidentifier {
 
 	return $shortport;
 }
+
+
+sub switchportifnametosnmpidentifier {
+       my ($ifname) = @_;
+
+       # escape special characters in ifName as per
+       # http://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html - "Interface by Name" section
+
+       $ifname =~ s/:/\\:/g; 
+       $ifname =~ s/&/\\&/g;   
+       $ifname =~ s/@/\\@/g;  
+       $ifname =~ s/\ /\\\ /g; 
+       
+       return $ifname;
+}
