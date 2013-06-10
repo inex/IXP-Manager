@@ -1,3 +1,19 @@
+# v3.1.6 
+
+- [HK] Misnamed - corrected here (6c4bbbe - Barry O'Donovan - 2013-06-10)
+- [HK] Add the l2database script to GitHub (d7059a5 - Barry O'Donovan - 2013-06-10)
+- [BF] The schema currently is for last seen only (4a9bad2 - Barry O'Donovan - 2013-06-10)
+- [IM] Hide P2P links if p2p graphs are not enabled (0ef5e71 - Barry O'Donovan - 2013-06-10)
+- [IM] Better to just exclude associate members (49689be - Barry O'Donovan - 2013-06-10)
+- [IM] Better image missing image (dc82b14 - Barry O'Donovan - 2013-06-10)
+- [IM] More robust and better config for graphs (a811e4f - Barry O'Donovan - 2013-06-10)
+- [NF] initd script for mrtg for Debian / Ubuntu (3a38435 - Barry O'Donovan - 2013-06-10)
+- [HK] Freshly pressed CSS / JS (72199b5 - Barry O'Donovan - 2013-06-10)
+- [IM] Improve about page (b69f956 - Barry O'Donovan - 2013-06-10)
+- [IM] Small fixes and improvements. (905fc59 - Barry O'Donovan - 2013-06-10)
+- [BF] Fix logic (2098e9e - Barry O'Donovan - 2013-06-10)
+
+
 # v3.1.5
 
 
@@ -9,25 +25,25 @@ your configuration file:
     resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
 
 
-[IM] Bring constants in line with perl libs (12bd310 - Barry O'Donovan - 2013-06-10)
-[IM] Remove non-existant graphs from intra-switch graphs category dropdown (3f2f3b8 - Barry O'Donovan - 2013-06-07)
-[IM] Use ifName directly when generting MRTG configurations (cda2cab - Barry O'Donovan - 2013-06-07)
-[IM] Use ifName directly when generting MRTG configurations (eac33c9 - Barry O'Donovan - 2013-06-07)
-[BF] When editing contacts customer users customer wasn't changed (4ff4b17 - Nerijus Barauskas - 2013-06-07)
-[IM] Including user id in DQL query (00ca385 - Nerijus Barauskas - 2013-06-07)
-[IM] Adding option to enable login history (a979ddf - Nerijus Barauskas - 2013-06-07)
-[IM] Adding links to login history (2415b7b - Nerijus Barauskas - 2013-06-07)
-[IM] Add link should be hidden if readonly is set to true also (aa69006 - Nerijus Barauskas - 2013-06-07)
-[IM] Updating customers overiew tabs by adding login tab (587319b - Nerijus Barauskas - 2013-06-07)
-[NF] Adding login history controller (9028344 - Nerijus Barauskas - 2013-06-07)
-[IM] Making work ordering on oDataTables as defined in feParams (163792c - Nerijus Barauskas - 2013-06-07)
-[IM] Allowing actions on smaller screens (60337d0 - Nerijus Barauskas - 2013-06-07)
-[BF] Removing unused form property (35d9a29 - Nerijus Barauskas - 2013-06-07)
-[IM] Set switch port type to peering when adding to a virtual interface (ed46c49 - Barry O'Donovan - 2013-06-07)
-[IM] Small tweaks and fixes on UI (dd152ae - Barry O'Donovan - 2013-06-07)
-[IM] Do not show if disabled (c1a1ef3 - Barry O'Donovan - 2013-06-07)
-[IM] Small tweaks / fixes (a07f019 - Barry O'Donovan - 2013-06-07)
-[NF] Showing RS and AS112 client status in customer overview page (0e6763b - Nerijus Barauskas - 2013-06-07)
+- [IM] Bring constants in line with perl libs (12bd310 - Barry O'Donovan - 2013-06-10)
+- [IM] Remove non-existant graphs from intra-switch graphs category dropdown (3f2f3b8 - Barry O'Donovan - 2013-06-07)
+- [IM] Use ifName directly when generting MRTG configurations (cda2cab - Barry O'Donovan - 2013-06-07)
+- [IM] Use ifName directly when generting MRTG configurations (eac33c9 - Barry O'Donovan - 2013-06-07)
+- [BF] When editing contacts customer users customer wasn't changed (4ff4b17 - Nerijus Barauskas - 2013-06-07)
+- [IM] Including user id in DQL query (00ca385 - Nerijus Barauskas - 2013-06-07)
+- [IM] Adding option to enable login history (a979ddf - Nerijus Barauskas - 2013-06-07)
+- [IM] Adding links to login history (2415b7b - Nerijus Barauskas - 2013-06-07)
+- [IM] Add link should be hidden if readonly is set to true also (aa69006 - Nerijus Barauskas - 2013-06-07)
+- [IM] Updating customers overiew tabs by adding login tab (587319b - Nerijus Barauskas - 2013-06-07)
+- [NF] Adding login history controller (9028344 - Nerijus Barauskas - 2013-06-07)
+- [IM] Making work ordering on oDataTables as defined in feParams (163792c - Nerijus Barauskas - 2013-06-07)
+- [IM] Allowing actions on smaller screens (60337d0 - Nerijus Barauskas - 2013-06-07)
+- [BF] Removing unused form property (35d9a29 - Nerijus Barauskas - 2013-06-07)
+- [IM] Set switch port type to peering when adding to a virtual interface (ed46c49 - Barry O'Donovan - 2013-06-07)
+- [IM] Small tweaks and fixes on UI (dd152ae - Barry O'Donovan - 2013-06-07)
+- [IM] Do not show if disabled (c1a1ef3 - Barry O'Donovan - 2013-06-07)
+- [IM] Small tweaks / fixes (a07f019 - Barry O'Donovan - 2013-06-07)
+- [NF] Showing RS and AS112 client status in customer overview page (0e6763b - Nerijus Barauskas - 2013-06-07)
 
 
 # v3.1.4
