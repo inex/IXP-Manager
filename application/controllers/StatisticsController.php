@@ -72,6 +72,15 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
     public function publicAction()
     {
+        if( !isset( $this->_options['mrtg']['traffic_graphs'] ) || !is_array( $this->_options['mrtg']['traffic_graphs'] ) || !count( $this->_options['mrtg']['traffic_graphs'] ) )
+        {
+            $this->addMessage( 
+                "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
+                OSS_Message::ERROR
+            );
+            $this->redirect();
+        }
+    
         // get the available graphs
         foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
         {
@@ -101,6 +110,15 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
     public function trunksAction()
     {
+        if( !isset( $this->_options['mrtg']['trunk_graphs'] ) || !is_array( $this->_options['mrtg']['trunk_graphs'] ) || !count( $this->_options['mrtg']['trunk_graphs'] ) )
+        {
+            $this->addMessage(
+                "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
+                OSS_Message::ERROR
+            );
+            $this->redirect();
+        }
+                                                                                                
         // get the available graphs
         foreach( $this->_options['mrtg']['trunk_graphs'] as $g )
         {
