@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,9 +26,10 @@
  * Controller: Login history management
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Controller
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LoginHistoryController extends IXP_Controller_FrontEnd
@@ -63,6 +64,9 @@ class LoginHistoryController extends IXP_Controller_FrontEnd
                 ]
             ]
         ];
+        
+        // display the same information in the view as the list
+        $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
     
     /**
@@ -73,8 +77,7 @@ class LoginHistoryController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-            ->select( 'lh.id AS id, lh.at AS at, lh.ip AS ip, u.id AS user_id'
-            )
+            ->select( 'lh.id AS id, lh.at AS at, lh.ip AS ip, u.id AS user_id' )
             ->from( '\\Entities\\UserLoginHistory', 'lh' )
             ->join( 'lh.User', 'u' );
     
@@ -82,7 +85,7 @@ class LoginHistoryController extends IXP_Controller_FrontEnd
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
     
         if( $id !== null )
-            $qb->andWhere( 'v.id = ?1' )->setParameter( 1, $id );
+            $qb->andWhere( 'lh.id = ?1' )->setParameter( 1, $id );
 
         if( $this->getParam( 'uid', false ) )
             $qb->andWhere( 'u.id = ?2' )->setParameter( 2, $this->getParam( 'uid' ) );

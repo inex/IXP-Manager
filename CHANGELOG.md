@@ -1,3 +1,35 @@
+# v3.1.5
+
+
+This version adds complete user login history rather than just 'last login'
+with full UI integration. To enable this, you need to add the following to 
+your configuration file:
+
+    resources.auth.oss.login_history.enabled = 1
+    resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
+
+
+[IM] Bring constants in line with perl libs (12bd310 - Barry O'Donovan - 2013-06-10)
+[IM] Remove non-existant graphs from intra-switch graphs category dropdown (3f2f3b8 - Barry O'Donovan - 2013-06-07)
+[IM] Use ifName directly when generting MRTG configurations (cda2cab - Barry O'Donovan - 2013-06-07)
+[IM] Use ifName directly when generting MRTG configurations (eac33c9 - Barry O'Donovan - 2013-06-07)
+[BF] When editing contacts customer users customer wasn't changed (4ff4b17 - Nerijus Barauskas - 2013-06-07)
+[IM] Including user id in DQL query (00ca385 - Nerijus Barauskas - 2013-06-07)
+[IM] Adding option to enable login history (a979ddf - Nerijus Barauskas - 2013-06-07)
+[IM] Adding links to login history (2415b7b - Nerijus Barauskas - 2013-06-07)
+[IM] Add link should be hidden if readonly is set to true also (aa69006 - Nerijus Barauskas - 2013-06-07)
+[IM] Updating customers overiew tabs by adding login tab (587319b - Nerijus Barauskas - 2013-06-07)
+[NF] Adding login history controller (9028344 - Nerijus Barauskas - 2013-06-07)
+[IM] Making work ordering on oDataTables as defined in feParams (163792c - Nerijus Barauskas - 2013-06-07)
+[IM] Allowing actions on smaller screens (60337d0 - Nerijus Barauskas - 2013-06-07)
+[BF] Removing unused form property (35d9a29 - Nerijus Barauskas - 2013-06-07)
+[IM] Set switch port type to peering when adding to a virtual interface (ed46c49 - Barry O'Donovan - 2013-06-07)
+[IM] Small tweaks and fixes on UI (dd152ae - Barry O'Donovan - 2013-06-07)
+[IM] Do not show if disabled (c1a1ef3 - Barry O'Donovan - 2013-06-07)
+[IM] Small tweaks / fixes (a07f019 - Barry O'Donovan - 2013-06-07)
+[NF] Showing RS and AS112 client status in customer overview page (0e6763b - Nerijus Barauskas - 2013-06-07)
+
+
 # v3.1.4
 
 Schema change required:

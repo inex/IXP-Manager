@@ -12,27 +12,36 @@
         </thead>
         <tbody>
             {foreach $cust->getUsers() as $u}
-                {if $u->getPreference( 'auth.last_login_from' )}
-                    <tr>
-                        <td>{$u->getUsername()}</td>
-                        <td>{$u->getEmail()}</td>
-                        <td>
+                <tr>
+                    <td>
+                        <a href="{genUrl controller="contact" action="edit" id=$u->getContact()->getId() cid=$u->getCustomer()->getId()}">
+                            {$u->getUsername()}
+                        </a>
+                    </td>
+                    <td>{$u->getEmail()}</td>
+                    <td>
+                        {if $u->getPreference( 'auth.last_login_at' )}
                             {$u->getPreference( 'auth.last_login_at' )|date_format:"%Y-%m-%d %H:%M:%S"}
-                        </td>
-                        <td>
-                            {if $u->getPreference( 'auth.last_login_from' )}
-                                {$u->getPreference( 'auth.last_login_from' )}
-                            {/if}
-                        </td>
-                        <td>
-                            {if count( $u->getLastLogins() ) > 0}
-                                <div class="btn-group">
-                                    <a class="btn btn-mini have-tooltip" title="History" href="{genUrl controller='login-history' action="list" uid=$u->getId()}"><i class="icon-time"></i></a>
-                                </div>
-                            {/if}
-                        </td>
-                    </tr>
-                {/if}
+                            <a class="btn btn-mini have-tooltip" title="History" href="{genUrl controller='login-history' action="list" uid=$u->getId() limit=1}">
+                                <i class="icon-time"></i>
+                            </a>
+                        {else}
+                            <em>Never</em>
+                        {/if}
+                    </td>
+                    <td>
+                        {if $u->getPreference( 'auth.last_login_from' )}
+                            {$u->getPreference( 'auth.last_login_from' )}
+                        {/if}
+                    </td>
+                    <td>
+                        {if count( $u->getLastLogins() ) > 0}
+                            <div class="btn-group">
+                                <a class="btn btn-mini have-tooltip" title="History" href="{genUrl controller='login-history' action="list" uid=$u->getId()}"><i class="icon-time"></i></a>
+                            </div>
+                        {/if}
+                    </td>
+                </tr>
             {/foreach}
         </tbody>
     </table>

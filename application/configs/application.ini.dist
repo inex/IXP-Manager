@@ -98,10 +98,6 @@ contact.group.types.ROLE = "Role"
 mini_js = 1
 mini_css = 1
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Enables login history
-login_history.enabled = 1
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Resources
 ;;
@@ -120,6 +116,8 @@ resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
 resources.auth.oss.pwhash  = "plaintext"
 ;resources.auth.oss.hash_cost  = 9
 resources.auth.oss.entity  = "\\Entities\\User"
+resources.auth.oss.login_history.enabled = 1
+resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
 
 
 ;; You'll want to allow your users find their usernames and reset
