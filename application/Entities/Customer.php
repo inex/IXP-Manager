@@ -12,6 +12,7 @@ class Customer
     const TYPE_FULL       = 1;
     const TYPE_ASSOCIATE  = 2;
     const TYPE_INTERNAL   = 3;
+    const TYPE_IXP        = 3;
     const TYPE_PROBONO    = 4;
     
     public static $CUST_TYPES_TEXT = [

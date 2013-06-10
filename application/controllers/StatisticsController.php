@@ -137,6 +137,13 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->view->switch     = $switch;
         
         $category = $this->_setCategory();
+        
+        // override allowed categories as some aren't available here
+        $this->view->categories = [
+            'Bits'     => IXP_Mrtg::CATEGORY_BITS,
+            'Packets'  => IXP_Mrtg::CATEGORY_PACKETS
+        ];
+        
         $this->_setPeriod();
         
         $stats = array();

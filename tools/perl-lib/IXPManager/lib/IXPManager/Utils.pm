@@ -55,7 +55,6 @@ sub switchporttosnmpidentifier {
 	return $shortport;
 }
 
-
 sub switchportifnametosnmpidentifier {
        my ($ifname) = @_;
 
