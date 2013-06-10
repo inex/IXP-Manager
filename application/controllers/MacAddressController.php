@@ -78,11 +78,6 @@ class MacAddressController extends IXP_Controller_FrontEnd
                 'mac'            => 'MAC Address',
                 
                 'firstseen'      => [
-                    'title'          => 'First Seen',
-                    'type'           => self::$FE_COL_TYPES[ 'DATETIME' ]
-                ],
-                
-                'lastseen'      => [
                     'title'          => 'Last Seen',
                     'type'           => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
