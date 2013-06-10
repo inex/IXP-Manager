@@ -293,13 +293,13 @@ $query = 'SELECT
 		cu.id = vi.custid
 	AND	pi.virtualinterfaceid = vi.id
 	AND	cu.status = ?
-	AND	( cu.type = ? OR cu.type = ? )
+	AND	cu.type != ? 
 	ORDER BY
 		shortname
 ';
 
 $sth = $dbh->prepare($query) || die "$dbh->errstr\n";
-$sth->execute(CUST_STATUS_NORMAL, CUST_TYPE_FULL, CUST_TYPE_PROBONO) || die "$dbh->errstr\n";
+$sth->execute(CUST_STATUS_NORMAL, CUST_TYPE_ASSOCIATE) || die "$dbh->errstr\n";
 
 while (my $rec = $sth->fetchrow_hashref) {
 	my $membername = $rec->{name};
