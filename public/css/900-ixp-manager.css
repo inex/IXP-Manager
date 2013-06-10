@@ -321,6 +321,40 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
 }
 
+.info_box {
+	/* margin-top: 20px;
+	margin-bottom: 20px; */
+}
+
+.info_box .title {
+	position: relative;
+	top: -30px;
+	margin-left: 0em;
+	padding: 2px 7px;
+	display: inline;
+	font-size: 1em;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	border: 1px solid #dddddd;
+	background-color: #fafafa;
+	background-color: #f9f9f9;
+	background-image: -moz-linear-gradient( top, #ffffff, #f0f0f0 );
+	background-image: -webkit-gradient( linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0) );
+	background-image: -webkit-linear-gradient(top, #ffffff, #f0f0f0);
+	background-image: -o-linear-gradient(top, #ffffff, #f0f0f0);
+	background-image: linear-gradient(to bottom, #ffffff, #f0f0f0);
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff0f0f0', GradientType=0);
+}
+
+.info_box .title a{
+	color:#555555;
+	text-decoration:none;
+}
+.info_box .content{
+	margin-top:-10px;
+}
 
 
 /* Bootstrap Dropdowns in Breadcrumbs:

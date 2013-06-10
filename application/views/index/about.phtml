@@ -16,62 +16,246 @@
         </div>
 {/if}
 
-<p>
-	<strong>IXP Manager</strong> is primarily a web application with associated
-	scripts and utilities which allows Internet Exchange Points (IXPs) to
-	manage new members (or customers), provision new connections and services and
-	monitor traffic usage. It also has a self contained customer portal allowing
-	IXP members to view their IXP traffic statistics and a unique tool called
-	<em>Peering Manager</em> enabling IXP members to request, manage and track
-	peerings with other members.
-</p>
 
-<p>
-	IXP Manager was built entirely in house by the INEX operations team
-	to support the running of the exchange. <a href="https://www.inex.ie/">INEX</a>
-	(Internet Neutral Exchange Association) is Ireland's IP peering hub.
-</p>
+<div class="row-fluid">
 
-<p>
-	INEX are pleased to to be able to release IXP Manager under an open source license
-	(the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU Public License V2)</a>
-	which we hope will benefit the wider IXP community, and especially new and small
-	IXPs looking to expand.
-</p>
+    <div class="span6">
+        
+        <div class="well info_box">
+            <div class="title"><i class="icon-info-sign"></i>&nbsp;Version Information</div>
+            <div class="content">
+                <table class="table table-striped table-condensed">
+                    <tr>
+                        <td><strong>IXP Manager</strong></td>
+                        <td>{$smarty.const.APPLICATION_VERSION} ({$smarty.const.APPLICATION_VERDATE})</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Apache</strong></td>
+                        <td>{$apachever}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PHP</strong></td>
+                        <td>{$phpver}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MySQL</strong></td>
+                        <td>{$dbver}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 20px; margin-top: -10px;">
+            <a class="btn btn-small" href="https://github.com/inex/IXP-Manager/wiki">
+                <i class="icon-home"></i>&nbsp;Web
+            </a>
+            <a class="btn btn-small" href="https://www.inex.ie/mailman/listinfo/ixpmanager">
+                <i class="icon-envelope"></i>&nbsp;Mailing List
+            </a>
+            <a class="btn btn-small" href="https://twitter.com/ComePeerWithMe">
+                <i class="icon-globe"></i>&nbsp;Twitter
+            </a>
+            <a class="btn btn-small" href="http://www.linkedin.com/groups?gid=1853398">
+                <i class="icon-globe"></i>&nbsp;Linked In
+            </a>
+            <a class="btn btn-small" href="https://www.facebook.com/comepeerwithme">
+                <i class="icon-globe"></i>&nbsp;Facebook
+            </a>
+            <a class="btn btn-small" href="https://github.com/inex/IXP-Manager">
+                <i class="icon-globe"></i>&nbsp;Github
+            </a>
+        </div>
 
-<p>
-	IXP Manager is written in PHP using the Zend Framework, the Doctrine ORM, the
-	Smarty templating engine, <a href="http://www.opensolutions.ie/">Open Solutions</a>'
-	extensions to Zend - <a href="https://github.com/opensolutions/OSS-Framework/wiki">the
-	OSS Framework</a>, JQuery and many other smaller components. The project website
-	and source code can be viewed at
-	<a href="https://github.com/inex/IXP-Manager/wiki">https://github.com/inex/IXP-Manager</a>.
-</p>
+        <div class="well info_box">
+            <div class="title"><i class="icon-user"></i>&nbsp;Development Team</div>
+            <div class="content">
+                <table class="table table-striped table-condensed">
+                    <tr>
+                        <td><strong><i class="icon-user"></i>&nbsp;Barry O'Donovan</strong></td>
+                        <td>
+                            Project Leader and Network Consultant, <a href="https://www.inex.ie/">INEX</a><br />
+                            Founder and MD, <a href="http://www.opensolutions.ie/">Open Solutions</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong><i class="icon-user"></i>&nbsp;Nick Hilliard</strong></td>
+                        <td>
+                            CTO, <a href="https://www.inex.ie/">INEX</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="well info_box">
+            <div class="title"><i class="icon-user"></i>&nbsp;Commercial Support</div>
+            <div class="content">
+                <p>
+                <a href="https://www.inex.ie/">INEX</a> are eager for <strong>IXP Manager</strong> to become
+                the de facto management system for similar IXPs and are willing to help with installations so
+                as to build better documentation. We will consider feature requests, especially where they
+                benefit INEX also and would certainly love feature patches!
+                </p>
+                <p>
+                If you want commercial support, please contact the authors directly for a quote via
+                {mailto encode="javascript" address="sales@opensolutions.ie"} or
+                {mailto encode="javascript" address="info@netability.ie"}.
+                </p>
+                <p>
+                Any code developed commercially or otherwise will be released under the same license as IXP Manager.
+                </p>
+            </div>
+        </div>
+        
+        <div class="well info_box">
+            <div class="title"><i class="icon-thumbs-up"></i>&nbsp;Acknowledgements</div>
+            <div class="content">
+                <table class="table table-striped table-condensed">
+                    <tr>
+                        <td>
+                            <strong><i class="icon-user"></i>
+                            &nbsp;<a href="http://www.doctrine-project.org/">Doctrine Project</a>
+                            </strong></td>
+                        <td>
+                            The Doctrine2 ORM and DBAL Libraries
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>
+                                <i class="icon-user"></i>
+                                &nbsp;
+                                <a href="http://jquery.com/">jQuery Foundation</a>
+                            </strong>
+                        </td>
+                        <td>
+                            jQuery Javascript and UI Library
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>
+                                <i class="icon-user"></i>
+                                &nbsp;<a href="http://www.opensolutions.ie/">Open Solutions</a>
+                                </strong>
+                            </td>
+                        <td>
+                            The <a href="https://github.com/opensolutions/OSS-Framework">OSS-Framework</a> library,
+                            the <a href="https://github.com/opensolutions/OSS_SNMP">OSS_SNMP</a> library
+                            and <a href="https://github.com/opensolutions/Minify">Minify</a>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong><i class="icon-user"></i>
+                            &nbsp;<a href="http://www.smarty.net/">Smarty</a>
+                            </strong></td>
+                        <td>
+                            The PHP Templating Engine
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong><i class="icon-user"></i>
+                            &nbsp;Twitter
+                            </strong></td>
+                        <td>
+                            The <a href="http://twitter.github.io/bootstrap/index.html">Bootstrap</a> front-end framework
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong><i class="icon-user"></i>
+                            &nbsp;Zend Technologies</strong>
+                        </td>
+                        <td>
+                            The <a href="http://framework.zend.com/">Zend Framework</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+    </div>
 
-<p>
-	There is a mailing / discussion list for IXP Manager. You can join and view the
-	archives at: <a href="https://www.inex.ie/mailman/listinfo/ixpmanager">https://www.inex.ie/mailman/listinfo/ixpmanager</a>.
-</p>
+    <div class="span6">
+        <div class="well info_box">
+            <div class="title"><i class="icon-info-sign"></i>&nbsp;Developed by INEX</div>
+            <div class="content">
+            <p>
+                <a href="https://www.inex.ie/">
+                    <img src="{genUrl}/images/inex-logo-325x165.png" alt="[INEX Logo]" align="left" />
+                </a>
+                
+                <strong>IXP Manager</strong> is an IXP management tool developed by
+                <a href="https://www.inex.ie/"><strong>INEX, Ireland's Internet Exchange
+                Point</strong></a>.
+            </p>
+            <p>
+                <strong>IXP Manager</strong> comprises of a web application
+                with associated scripts and utilities which allows IXPs to manage customers,
+                provision new connections and services and monitor traffic usage. It also has a self
+                contained customer portal allowing IXP members to view their IXP traffic statistics,
+                peer to peer traffic and many other unique tools including <em>My Peering Manager</em>
+                and the <em>Route Server Prefix Analysis Tool</em>. Auto-provisioning features include
+                configurations for route collectors, route servers, AS112 services, reverse DNS, graph
+                collecting and more.
+            </p>
+            </div>
+        </div>
+        
+        
+        <div class="well info_box">
+            <div class="title"><i class="icon-info-sign"></i>&nbsp;Software License</div>
+            <div class="content">
+                <p>
+                	<strong>
+                		Copyright (C) 2009 - {$smarty.now|date_format:"%Y"} Internet Neutral Exchange Association Limited.<br />
+                		All Rights Reserved.
+                	</strong>
+                </p>
+                
+                <p>
+                    IXP Manager is free software: you can redistribute it and/or modify it
+                    under the terms of the <a href="https://github.com/inex/IXP-Manager/blob/master/LICENSE">GNU General Public License</a>
+                    as published by the Free Software Foundation, version v2.0 of the License.
+                </p>
+                <p>
+                    IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+                    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+                    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+                    more details.
+                </p>
+            </div>
+            
+        </div>
 
-<h3>Software License</h3>
+        <div class="well info_box">
+            <div class="title"><i class="icon-heart"></i>&nbsp;Sponsors</div>
+            <div class="content">
+                <p>
+                    As well as the development team at <a href="https://www.inex.ie/">INEX</a>, the
+                    following have sponsored the IXP Manager project by using the commercial
+                    support options to extend IXP Manager's capabilities.
+                </p>
+            
+                <table class="table table-striped table-condensed">
+                    <tr>
+                        <td>
+                            <strong><i class="icon-user"></i>
+                            &nbsp;<a href="http://www.lonap.net/">LONAP</a>
+                            </strong></td>
+                        <td>
+                            London Access Point
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
 
-<p>
-	<strong>
-		Copyright (C) 2009 - {$smarty.now|date_format:"%Y"} Internet Neutral Exchange Association Limited.<br />
-		All Rights Reserved.
-	</strong>
-</p>
-
-<pre>
-IXP Manager is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the Free
-Software Foundation, version v2.0 of the License.
-
-IXP Manager is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-more details.
-</pre>
 
 {if not isset( $user ) or $user->getPrivs() neq 3}
     </div>
