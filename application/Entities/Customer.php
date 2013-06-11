@@ -14,30 +14,30 @@ class Customer
     const TYPE_INTERNAL   = 3;
     const TYPE_IXP        = 3;
     const TYPE_PROBONO    = 4;
-    
+
     public static $CUST_TYPES_TEXT = [
         self::TYPE_FULL      => 'Full',
         self::TYPE_ASSOCIATE => 'Associate',
         self::TYPE_INTERNAL  => 'Internal',
         self::TYPE_PROBONO   => 'Pro-bono'
     ];
-    
-    
+
+
     const STATUS_NORMAL       = 1;
     const STATUS_NOTCONNECTED = 2;
     const STATUS_SUSPENDED    = 3;
-    
+
     public static $CUST_STATUS_TEXT = [
         self::STATUS_NORMAL           => 'Normal',
         self::STATUS_NOTCONNECTED     => 'Not Connected',
         self::STATUS_SUSPENDED        => 'Suspended',
     ];
-    
+
     const PEERING_POLICY_OPEN       = 'open';
     const PEERING_POLICY_SELECTIVE  = 'selective';
     const PEERING_POLICY_MANDATORY  = 'mandatory';
     const PEERING_POLICY_CLOSED     = 'closed';
-    
+
     public static $PEERING_POLICIES = [
         self::PEERING_POLICY_OPEN       => 'open',
         self::PEERING_POLICY_SELECTIVE  => 'selective',
@@ -50,7 +50,7 @@ class Customer
     const NOC_HOURS_8x7  = '8x7';
     const NOC_HOURS_12x5 = '12x5';
     const NOC_HOURS_12x7 = '12x7';
-    
+
     public static $NOC_HOURS = [
         self::NOC_HOURS_24x7 => '24x7',
         self::NOC_HOURS_8x5  => '8x5',
@@ -58,13 +58,13 @@ class Customer
         self::NOC_HOURS_12x5 => '12x5',
         self::NOC_HOURS_12x7 => '12x7'
     ];
-    
+
    const MD5_SUPPORT_UNKNOWN   = 'UNKNOWN';
    const MD5_SUPPORT_YES       = 'YES';
    const MD5_SUPPORT_MANDATORY = 'MANDATORY';
    const MD5_SUPPORT_PREFERRED = 'PREFERRED';
    const MD5_SUPPORT_NO        = 'NO';
-    
+
     public static $MD5_SUPPORT = [
         self::MD5_SUPPORT_UNKNOWN   => 'Unknown',
         self::MD5_SUPPORT_YES       => 'Yes',
@@ -72,8 +72,8 @@ class Customer
         self::MD5_SUPPORT_PREFERRED => 'Yes - Preferred',
         self::MD5_SUPPORT_NO        => 'No'
     ];
-    
-    
+
+
     /**
      * @var string $name
      */
@@ -283,7 +283,7 @@ class Customer
         $this->TrafficDailies = new \Doctrine\Common\Collections\ArrayCollection();
         $this->RSPrefixes = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Set name
      *
@@ -293,7 +293,7 @@ class Customer
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -316,7 +316,7 @@ class Customer
     public function setType($type)
     {
         $this->type = $type;
-    
+
         return $this;
     }
 
@@ -339,7 +339,7 @@ class Customer
     public function setShortname($shortname)
     {
         $this->shortname = $shortname;
-    
+
         return $this;
     }
 
@@ -362,7 +362,7 @@ class Customer
     public function setAutsys($autsys)
     {
         $this->autsys = $autsys;
-    
+
         return $this;
     }
 
@@ -385,7 +385,7 @@ class Customer
     public function setMaxprefixes($maxprefixes)
     {
         $this->maxprefixes = $maxprefixes;
-    
+
         return $this;
     }
 
@@ -408,7 +408,7 @@ class Customer
     public function setPeeringemail($peeringemail)
     {
         $this->peeringemail = $peeringemail;
-    
+
         return $this;
     }
 
@@ -431,7 +431,7 @@ class Customer
     public function setNocphone($nocphone)
     {
         $this->nocphone = $nocphone;
-    
+
         return $this;
     }
 
@@ -454,7 +454,7 @@ class Customer
     public function setNoc24hrphone($noc24hrphone)
     {
         $this->noc24hrphone = $noc24hrphone;
-    
+
         return $this;
     }
 
@@ -477,7 +477,7 @@ class Customer
     public function setNocfax($nocfax)
     {
         $this->nocfax = $nocfax;
-    
+
         return $this;
     }
 
@@ -500,7 +500,7 @@ class Customer
     public function setNocemail($nocemail)
     {
         $this->nocemail = $nocemail;
-    
+
         return $this;
     }
 
@@ -523,7 +523,7 @@ class Customer
     public function setNochours($nochours)
     {
         $this->nochours = $nochours;
-    
+
         return $this;
     }
 
@@ -546,7 +546,7 @@ class Customer
     public function setNocwww($nocwww)
     {
         $this->nocwww = $nocwww;
-    
+
         return $this;
     }
 
@@ -569,7 +569,7 @@ class Customer
     public function setPeeringmacro($peeringmacro)
     {
         $this->peeringmacro = $peeringmacro;
-    
+
         return $this;
     }
 
@@ -592,7 +592,7 @@ class Customer
     public function setPeeringpolicy($peeringpolicy)
     {
         $this->peeringpolicy = $peeringpolicy;
-    
+
         return $this;
     }
 
@@ -615,7 +615,7 @@ class Customer
     public function setCorpwww($corpwww)
     {
         $this->corpwww = $corpwww;
-    
+
         return $this;
     }
 
@@ -638,7 +638,7 @@ class Customer
     public function setDatejoin($datejoin)
     {
         $this->datejoin = $datejoin;
-    
+
         return $this;
     }
 
@@ -661,7 +661,7 @@ class Customer
     public function setDateleave($dateleave)
     {
         $this->dateleave = $dateleave;
-    
+
         return $this;
     }
 
@@ -674,13 +674,13 @@ class Customer
     {
         // on 64bit system, MySQL's '0000-00-00' is in range and evaluates as a non-zero
         // date - see: https://bugs.php.net/bug.php?id=60257
-        
+
         if( PHP_INT_SIZE == 4 )
             return $this->dateleave;
-            
+
         if( $this->dateleave instanceof \DateTime && $this->dateleave->format( 'Y-m-d' ) == '-0001-11-30' )  // 0000-00-00 00:00:00 on 64bit systems
             return null;
-                                            
+
         return $this->dateleave;
     }
 
@@ -693,7 +693,7 @@ class Customer
     public function setStatus($status)
     {
         $this->status = $status;
-    
+
         return $this;
     }
 
@@ -716,7 +716,7 @@ class Customer
     public function setActivepeeringmatrix($activepeeringmatrix)
     {
         $this->activepeeringmatrix = $activepeeringmatrix;
-    
+
         return $this;
     }
 
@@ -739,7 +739,7 @@ class Customer
     public function setLastupdated($lastupdated)
     {
         $this->lastupdated = $lastupdated;
-    
+
         return $this;
     }
 
@@ -762,7 +762,7 @@ class Customer
     public function setLastupdatedby($lastupdatedby)
     {
         $this->lastupdatedby = $lastupdatedby;
-    
+
         return $this;
     }
 
@@ -785,7 +785,7 @@ class Customer
     public function setCreator($creator)
     {
         $this->creator = $creator;
-    
+
         return $this;
     }
 
@@ -808,7 +808,7 @@ class Customer
     public function setCreated($created)
     {
         $this->created = $created;
-    
+
         return $this;
     }
 
@@ -841,7 +841,7 @@ class Customer
     public function addVirtualInterface(\Entities\VirtualInterface $virtualInterfaces)
     {
         $this->VirtualInterfaces[] = $virtualInterfaces;
-    
+
         return $this;
     }
 
@@ -874,7 +874,7 @@ class Customer
     public function addContact(\Entities\Contact $contacts)
     {
         $this->Contacts[] = $contacts;
-    
+
         return $this;
     }
 
@@ -907,7 +907,7 @@ class Customer
     public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
     {
         $this->ConsoleServerConnections[] = $consoleServerConnections;
-    
+
         return $this;
     }
 
@@ -940,7 +940,7 @@ class Customer
     public function addCustomerEquipment(\Entities\CustomerEquipment $customerEquipment)
     {
         $this->CustomerEquipment[] = $customerEquipment;
-    
+
         return $this;
     }
 
@@ -973,7 +973,7 @@ class Customer
     public function addPeer(\Entities\PeeringManager $peers)
     {
         $this->Peers[] = $peers;
-    
+
         return $this;
     }
 
@@ -1006,7 +1006,7 @@ class Customer
     public function addPeersWith(\Entities\PeeringManager $peersWith)
     {
         $this->PeersWith[] = $peersWith;
-    
+
         return $this;
     }
 
@@ -1039,7 +1039,7 @@ class Customer
     public function addXCust(\Entities\PeeringMatrix $xCusts)
     {
         $this->XCusts[] = $xCusts;
-    
+
         return $this;
     }
 
@@ -1072,7 +1072,7 @@ class Customer
     public function addYCust(\Entities\PeeringMatrix $yCusts)
     {
         $this->YCusts[] = $yCusts;
-    
+
         return $this;
     }
 
@@ -1105,7 +1105,7 @@ class Customer
     public function addUser(\Entities\User $users)
     {
         $this->Users[] = $users;
-    
+
         return $this;
     }
 
@@ -1138,7 +1138,7 @@ class Customer
     public function addTraffic95th(\Entities\Traffic95th $traffic95ths)
     {
         $this->Traffic95ths[] = $traffic95ths;
-    
+
         return $this;
     }
 
@@ -1171,7 +1171,7 @@ class Customer
     public function addTraffic95thMonthly(\Entities\Traffic95thMonthly $traffic95thMonthlys)
     {
         $this->Traffic95thMonthlys[] = $traffic95thMonthlys;
-    
+
         return $this;
     }
 
@@ -1204,7 +1204,7 @@ class Customer
     public function addTrafficDailie(\Entities\TrafficDaily $trafficDailies)
     {
         $this->TrafficDailies[] = $trafficDailies;
-    
+
         return $this;
     }
 
@@ -1242,7 +1242,7 @@ class Customer
     public function setNoc24hphone($noc24hphone)
     {
         $this->noc24hphone = $noc24hphone;
-    
+
         return $this;
     }
 
@@ -1270,7 +1270,7 @@ class Customer
     public function addSecEvent(\Entities\SecEvent $secEvents)
     {
         $this->SecEvents[] = $secEvents;
-    
+
         return $this;
     }
 
@@ -1293,17 +1293,17 @@ class Customer
     {
         return $this->SecEvents;
     }
-    
-    
+
+
     public function hasLeft()
     {
         // sigh. Using a date field to determine if an account is closed or not is a
         // very bad idea and should be changed => FIXME
-        
+
         return $this->getDateleave() != null;
     }
-    
-    
+
+
     /**
      * Find all users of privilege CUSTADMIN for this customer
      *
@@ -1312,14 +1312,14 @@ class Customer
     public function getAdminUsers()
     {
         $ausers = [];
-        
+
         foreach( $this->getUsers() as $u )
             if( $u->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
                 $ausers[] = $u;
-        
+
         return $ausers;
     }
-    
+
     /**
      * Check if this customer is of the named type
      * @return boolean
@@ -1355,8 +1355,8 @@ class Customer
     {
         return $this->getType() == self::TYPE_PROBONO;
     }
-    
-    
+
+
     /**
      * Does the customer have private VLANs?
      *
@@ -1365,99 +1365,74 @@ class Customer
      *
      * @return bool
      */
-	public function hasPrivateVLANs()
-	{
-		foreach( $this->getVirtualInterfaces() as $vi )
-		{
-			foreach( $vi->getVlanInterfaces() as $vli )
-			{
-				if( $vli->getVlan()->getPrivate() )
-					return true;
-			}
-		}
-		
-		return false;
-	}
-    
-	/**
-	 * Get private VLAN information as an associate array
-	 *
-	 * Useful utility function for displaying a customers private VLANs in the
-	 * overview page and the customer's own portal. First pass.
-	 *
-	 * Response is an array such as:
-	 *
-	 *     [8] => Array                          // VLAN ID
-	 *     (
-	 *         [vlanid] => 8
-	 *         [name] => PV-CustA-CustB
-	 *         [number] => 1300
-	 *         [location] => Telecity Kilcarbery
-	 *         [switch] => swi1-deg1-3
-	 *         [ports] => Array
-	 *         (
-	 *             [794] => Array                // Phys Int Id
-	 *             (
-	 *                 [name] => GigabitEthernet27
-	 *                 [speed] => 1000
-	 *                 [duplex] => full
-	 *             )
-	 *         )
-	 *         [members] => Array
-	 *         (
-	 *             [custid] => CustB
-	 *         )
-	 *     )
-	 *
-	 *
-	 * @return array Private VLAN details
-	 */
-	public function getPrivateVLANs()
-	{
-		if( !$this->hasPrivateVLANs() )
-			return false;
-		
-		$pvlans = [];
-		
-		foreach( $this->getVirtualInterfaces() as $vi )
-		{
-			foreach( $vi->getVlanInterfaces() as $vli )
-			{
-				if( $vli->getVlan()->getPrivate() )
-				{
-					$vlanid = $vli->getVlan()->getId();
-					 
-					$pvlans[ $vlanid ]['vlanid']   = $vli->getVlan()->getId();
-					$pvlans[ $vlanid ]['name']     = $vli->getVlan()->getName();
-					$pvlans[ $vlanid ]['number']   = $vli->getVlan()->getNumber();
-					$pvlans[ $vlanid ]['location'] = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet() ? $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() : "";
-					$pvlans[ $vlanid ]['switch']   = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName();
+    public function hasPrivateVLANs()
+    {
+        foreach( $this->getVirtualInterfaces() as $vi )
+        {
+            foreach( $vi->getVlanInterfaces() as $vli )
+            {
+                if( $vli->getVlan()->getPrivate() )
+                    return true;
+            }
+        }
 
-					$pvlans[ $vlanid ]['ports']    = [];
-					
-					foreach( $vi->getPhysicalInterfaces() as $pi )
-					{
-						$pvlans[ $vlanid ]['ports'][ $pi->getSwitchPort()->getId() ] = [];
-						$pvlans[ $vlanid ]['ports'][ $pi->getSwitchPort()->getId() ]['name']   = $pi->getSwitchPort()->getName();
-						$pvlans[ $vlanid ]['ports'][ $pi->getSwitchPort()->getId() ]['speed']  = $pi->getSpeed();
-						$pvlans[ $vlanid ]['ports'][ $pi->getSwitchPort()->getId() ]['duplex'] = $pi->getDuplex();
-					}
-						
-					$pvlans[ $vlanid ]['members']  = [];
-					
-					foreach( $vli->getVlan()->getVlanInterfaces() as $vli2 )
-					{
-						if( $vli2->getVirtualInterface()->getCustomer()->getId() != $this->getId() )
-							$pvlans[ $vlanid ]['members'][ $vli2->getVirtualInterface()->getCustomer()->getId() ] = $vli2->getVirtualInterface()->getCustomer()->getName();
-					}
-				}
-			}
-		}
-	
-		return $pvlans;
-	}
-	
-	
+        return false;
+    }
+
+    /**
+     * Get private VLAN information as an associate array
+     *
+     * Useful utility function for displaying a customers private VLANs in the
+     * overview page and the customer's own portal.
+     *
+     * Response is an array such as:
+     *
+     *     [8] => [                          // VLAN ID
+     *         [vlis] => [
+     *             // VlanInterface objects for the customer that are on this private VLAN
+     *         ],
+     *         [members] => [
+     *             // Customer objects for all customers (including this one) that share this VLAN
+     *         ]
+     *     ]
+     *
+     *
+     * @return array Private VLAN details
+     */
+    public function getPrivateVlanDetails()
+    {
+        if( !$this->hasPrivateVLANs() )
+            return false;
+
+        $pvlans = [];
+
+        foreach( $this->getVirtualInterfaces() as $vi )
+        {
+            foreach( $vi->getVlanInterfaces() as $vli )
+            {
+                if( $vli->getVlan()->getPrivate() )
+                {
+                    if( !isset( $pvlans[ $vli->getVlan()->getId() ]['vlis'] ) )
+                        $pvlans[ $vli->getVlan()->getId() ]['vlis'] = [];
+
+                    $pvlans[ $vli->getVlan()->getId() ]['vlis'][] = $vli;
+
+                    if( !isset( $pvlans[ $vli->getVlan()->getId() ]['members'] ) )
+                    {
+                        $pvlans[ $vli->getVlan()->getId() ]['members'] = [];
+
+                        foreach( $vli->getVlan()->getVlanInterfaces() as $vli2 )
+                            $pvlans[ $vli->getVlan()->getId() ]['members'][ $vli2->getVirtualInterface()->getCustomer()->getId() ]
+                                = $vli2->getVirtualInterface()->getCustomer();
+                    }
+                }
+            }
+        }
+
+        return $pvlans;
+    }
+
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -1473,7 +1448,7 @@ class Customer
     public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
     {
         $this->RSPrefixes[] = $rSPrefixes;
-    
+
         return $this;
     }
 
@@ -1496,8 +1471,8 @@ class Customer
     {
         return $this->RSPrefixes;
     }
-    
-    
+
+
     /**
      * Is the customer a route server client on any of their VLAN interfaces?
      * @return boolean
@@ -1512,10 +1487,10 @@ class Customer
                     return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * @var \Entities\IRRDBConfig
      */
@@ -1531,7 +1506,7 @@ class Customer
     public function setIRRDB(\Entities\IRRDBConfig $iRRDB = null)
     {
         $this->IRRDB = $iRRDB;
-    
+
         return $this;
     }
 
@@ -1560,14 +1535,14 @@ class Customer
     public function setPeeringDb($peeringDb)
     {
         $this->peeringDb = $peeringDb;
-    
+
         return $this;
     }
 
     /**
      * Get peeringDb
      *
-     * @return string 
+     * @return string
      */
     public function getPeeringDb()
     {
@@ -1588,7 +1563,7 @@ class Customer
     public function addNote(\Entities\CustomerNote $notes)
     {
         $this->Notes[] = $notes;
-    
+
         return $this;
     }
 
@@ -1605,7 +1580,7 @@ class Customer
     /**
      * Get Notes
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getNotes()
     {
@@ -1625,14 +1600,14 @@ class Customer
     public function setPeeringmacrov6($peeringmacrov6)
     {
         $this->peeringmacrov6 = $peeringmacrov6;
-    
+
         return $this;
     }
 
     /**
      * Get peeringmacrov6
      *
-     * @return string 
+     * @return string
      */
     public function getPeeringmacrov6()
     {
@@ -1648,14 +1623,14 @@ class Customer
     public function setRegistrationDetails(\Entities\CompanyRegisteredDetail $registrationDetails)
     {
         $this->RegistrationDetails = $registrationDetails;
-    
+
         return $this;
     }
 
     /**
      * Get RegistrationDetails
      *
-     * @return \Entities\CompanyRegisteredDetail 
+     * @return \Entities\CompanyRegisteredDetail
      */
     public function getRegistrationDetails()
     {
@@ -1671,14 +1646,14 @@ class Customer
     public function setBillingDetails(\Entities\CompanyBillingDetail $billingDetails)
     {
         $this->BillingDetails = $billingDetails;
-    
+
         return $this;
     }
 
     /**
      * Get BillingDetails
      *
-     * @return \Entities\CompanyBillingDetail 
+     * @return \Entities\CompanyBillingDetail
      */
     public function getBillingDetails()
     {
@@ -1704,14 +1679,14 @@ class Customer
     public function setAbbreviatedName($abbreviatedName)
     {
         $this->abbreviatedName = $abbreviatedName;
-    
+
         return $this;
     }
 
     /**
      * Get abbreviatedName
      *
-     * @return string 
+     * @return string
      */
     public function getAbbreviatedName()
     {
@@ -1727,14 +1702,14 @@ class Customer
     public function setMD5Support($mD5Support)
     {
         $this->MD5Support = $mD5Support;
-    
+
         return $this;
     }
 
     /**
      * Get MD5Support
      *
-     * @return string 
+     * @return string
      */
     public function getMD5Support()
     {

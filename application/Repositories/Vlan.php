@@ -17,27 +17,27 @@ class Vlan extends EntityRepository
      * @var string The cache key for all VLAN objects
      */
     const ALL_CACHE_KEY = 'inex_vlans';
-    
-    
+
+
     /**
      * Constant to represent normal and private VLANs
      * @var int Constant to represent normal and private VLANs
      */
     const TYPE_ALL     = 0;
-    
+
     /**
      * Constant to represent normal VLANs only
      * @var int Constant to represent normal VLANs ony
      */
     const TYPE_NORMAL  = 1;
-    
+
     /**
      * Constant to represent private VLANs only
      * @var int Constant to represent private VLANs ony
      */
     const TYPE_PRIVATE = 2;
-    
-    
+
+
     /**
      * Return an array of all VLAN objects from the database with caching
      * (and with the option to specify types - returns normal (non-private)
@@ -48,29 +48,29 @@ class Vlan extends EntityRepository
      */
     public function getAndCache( $type = self::TYPE_NORMAL )
     {
-    	switch( $type )
-    	{
-    		case self::TYPE_ALL:
-    			$where = "";
-    			break;
-    			
-    		case self::TYPE_PRIVATE:
-    			$where = "WHERE v.private = 1";
-    			break;
-    			 
-    		default:
-    			$where = "WHERE v.private = 0";
-    			$type = self::TYPE_NORMAL;        // because we never validated $type
-    			break;
-    	}
-    	
-    	return $this->getEntityManager()->createQuery(
+        switch( $type )
+        {
+            case self::TYPE_ALL:
+                $where = "";
+                break;
+
+            case self::TYPE_PRIVATE:
+                $where = "WHERE v.private = 1";
+                break;
+
+            default:
+                $where = "WHERE v.private = 0";
+                $type = self::TYPE_NORMAL;        // because we never validated $type
+                break;
+        }
+
+        return $this->getEntityManager()->createQuery(
                 "SELECT v FROM Entities\\Vlan v {$where}"
             )
             ->useResultCache( true, 3600, self::ALL_CACHE_KEY . "_{$type}" )
             ->getResult();
     }
-    
+
     /**
      * Return an array of all VLAN names where the array key is the VLAN id (**not tag**).
      *
@@ -82,10 +82,10 @@ class Vlan extends EntityRepository
         $vlans = [];
         foreach( $this->getAndCache( $type ) as $a )
             $vlans[ $a->getId() ] = $a->getName();
-    
+
         return $vlans;
     }
-    
+
     /**
      * Return all active, trafficing and external VLAN interfaces on a given VLAN for a given protocol
      * (including customer details)
@@ -129,35 +129,35 @@ class Vlan extends EntityRepository
     {
         if( !in_array( $protocol, [ 4, 6 ] ) )
             throw new \IXP_Exception( 'Invalid protocol' );
-        
+
         $interfaces = $this->getEntityManager()->createQuery(
                 "SELECT vli, v, vi, c
-         
+
                 FROM \\Entities\\VlanInterface vli
                     LEFT JOIN vli.Vlan v
                     LEFT JOIN vli.VirtualInterface vi
                     LEFT JOIN vi.Customer c
-        
+
                 WHERE
-                    
+
                     " . Customer::DQL_CUST_CURRENT . "
                     AND " . Customer::DQL_CUST_TRAFFICING . "
                     AND " . Customer::DQL_CUST_EXTERNAL . "
                     AND c.activepeeringmatrix = 1
                     AND v.id = ?1
                     AND vli.ipv{$protocol}enabled = 1
-                    
+
                 GROUP BY vi.Customer
                 ORDER BY c.autsys ASC"
             )
             ->setParameter( 1, $vid );
-        
+
         if( !$forceDb )
             $interfaces->useResultCache( true, 3600 );
-        
+
         return $interfaces->getArrayResult();
     }
-    
+
     /**
      * Return all active, trafficing and external customers on a given VLAN for a given protocol
      * (indexed by ASN)
@@ -189,14 +189,14 @@ class Vlan extends EntityRepository
     public function getCustomers( $vid, $protocol, $forceDb = false )
     {
         $key = "vlan_customers_{$vid}_{$protocol}";
-        
+
         if( !$forceDb && ( $custs = \Zend_Registry::get( 'd2cache' )->fetch( $key ) ) )
             return $custs;
-        
+
         $acusts = $this->getInterfaces( $vid, $protocol, $forceDb );
-        
+
         $custs = [];
-    
+
         foreach( $acusts as $c )
         {
             $custs[ $c['VirtualInterface']['Customer']['autsys'] ] = [];
@@ -206,12 +206,12 @@ class Vlan extends EntityRepository
             $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['rsclient']  = $c['rsclient'];
             $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['custid']    = $c['VirtualInterface']['Customer']['id'];
         }
-        
+
         \Zend_Registry::get( 'd2cache' )->save( $key, $custs, 86400 );
-            
+
         return $custs;
     }
-    
+
     /**
      * Tempory INEX function until I have a better way of doing this. Used by the
      * `PeeringManagerController`. FIXME.
@@ -220,19 +220,19 @@ class Vlan extends EntityRepository
     {
         return $this->getEntityManager()->createQuery(
                 "SELECT v
-         
+
                     FROM \\Entities\\Vlan v
-            
+
                     WHERE
-            
+
                         v.number IN ( 10, 12 )
-    
+
                 ORDER BY v.number ASC"
             )
             ->getResult();
     }
 
-    
+
     /**
      * Returns an array of private VLANs with their details and membership.
      *
@@ -264,57 +264,63 @@ class Vlan extends EntityRepository
      */
     public function getPrivateVlanDetails()
     {
-    	$vlans = $this->getEntityManager()->createQuery(
-    			"SELECT vli, v, vi, pi, sp, s, l, cab, c
-     
+        $vlans = $this->getEntityManager()->createQuery(
+                "SELECT vli, v, vi, pi, sp, s, l, cab, c
+
                 FROM \\Entities\\Vlan v
                     LEFT JOIN v.VlanInterfaces vli
                     LEFT JOIN vli.VirtualInterface vi
                     LEFT JOIN vi.Customer c
-    				LEFT JOIN vi.PhysicalInterfaces pi
-    				LEFT JOIN pi.SwitchPort sp
-    				LEFT JOIN sp.Switcher s
-    				LEFT JOIN s.Cabinet cab
-    				LEFT JOIN cab.Location l
-    
+                    LEFT JOIN vi.PhysicalInterfaces pi
+                    LEFT JOIN pi.SwitchPort sp
+                    LEFT JOIN sp.Switcher s
+                    LEFT JOIN s.Cabinet cab
+                    LEFT JOIN cab.Location l
+
                 WHERE
 
-    				v.private = 1
-    
-    			ORDER BY v.number ASC"
-    	    )
-    	    ->getArrayResult();
-    	
-    	if( !$vlans || !count( $vlans ) )
-    		return [];
-    	
-    	$pvs = [];
-    	
-    	foreach( $vlans as $v )
-    	{
-    		$pvs[ $v['id'] ]['vlanid']   = $v['id'];
-    		$pvs[ $v['id'] ]['name']     = $v['name'];
-    		$pvs[ $v['id'] ]['number']   = $v['number'];
-    		$pvs[ $v['id'] ]['members']  = [];
-    			
-    		foreach( $v['VlanInterfaces'] as $vli )
-    		{
-    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ] = [];
-    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['id']     = $vli['VirtualInterface']['Customer']['id'];
-    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['name']   = $vli['VirtualInterface']['Customer']['name'];
-    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['vintid'] = $vli['VirtualInterface']['id'];
-    			
-    			$pvs[ $v['id'] ]['infra'] = $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['infrastructure'];
-    			
-    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['location']
-    				= $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['Cabinet']['Location']['name'];
-    			
-    			$pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['switch']
-    				= $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['name'];
-    		}
-    	}
-    	
-    	return $pvs;
+                    v.private = 1
+
+                ORDER BY v.number ASC"
+            )
+            ->getArrayResult();
+
+        if( !$vlans || !count( $vlans ) )
+            return [];
+
+        $pvs = [];
+
+        foreach( $vlans as $v )
+        {
+            $pvs[ $v['id'] ]['vlanid']   = $v['id'];
+            $pvs[ $v['id'] ]['name']     = $v['name'];
+            $pvs[ $v['id'] ]['number']   = $v['number'];
+            $pvs[ $v['id'] ]['members']  = [];
+
+            foreach( $v['VlanInterfaces'] as $vli )
+            {
+                if( !isset( $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ] ) )
+                {
+                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ] = [];
+                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['id']     = $vli['VirtualInterface']['Customer']['id'];
+                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['name']   = $vli['VirtualInterface']['Customer']['name'];
+                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['vintid'] = $vli['VirtualInterface']['id'];
+
+                    $pvs[ $v['id'] ]['infra'] = $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['infrastructure'];
+                }
+
+                foreach( $vli['VirtualInterface']['PhysicalInterfaces'] as $pi )
+                {
+                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['locations'][]
+                        = $pi['SwitchPort']['Switcher']['Cabinet']['Location']['name'];
+
+                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['switches'][]
+                        = $pi['SwitchPort']['Switcher']['name'];
+                }
+            }
+        }
+
+        return $pvs;
     }
-    
+
 }

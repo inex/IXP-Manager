@@ -369,7 +369,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::getAssocPreference($attribute, $index, $ignoreExpired);
     }
 
-    public function deleteAssocPreference($attribute, $index = false)
+    public function deleteAssocPreference($attribute, $index = NULL)
     {
         $this->__load();
         return parent::deleteAssocPreference($attribute, $index);

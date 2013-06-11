@@ -615,10 +615,10 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::hasPrivateVLANs();
     }
 
-    public function getPrivateVLANs()
+    public function getPrivateVlanDetails()
     {
         $this->__load();
-        return parent::getPrivateVLANs();
+        return parent::getPrivateVlanDetails();
     }
 
     public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)

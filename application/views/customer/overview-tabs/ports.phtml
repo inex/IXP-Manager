@@ -7,15 +7,15 @@
 
     <h3>
         Connection {counter name=numconnections}
-        
+
         {assign var='vlanints' value=$vi->getVlanInterfaces()}
-        
+
         {if count( $vlanints ) }
             {assign var='vlanint' value=$vlanints.0}
         {else}
             {assign var='vlanint' value=0}
         {/if}
-        
+
         <small>
             {assign var=physInts value=$vi->getPhysicalInterfaces()}
             {if count( $physInts )}
@@ -31,7 +31,7 @@
         <div class="btn-group" style="padding-left: 20px;">
             <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='virtual-interface' action='edit' id=$vi->getId()}" title="Edit"><i class="icon-pencil"></i></a>
         </div>
-        
+
     </h3>
 
     {foreach $vi->getPhysicalInterfaces() as $pi}
@@ -79,40 +79,46 @@
         {assign var='vlanid' value=$vli->getVlan()->getId()}
 
         {if $vli->getVlan()->getPrivate()}
-    
+
             {if !isset( $pvlans )}
-                {$pvlans = $cust->getPrivateVLANs()}
+                {$pvlans = $cust->getPrivateVlanDetails()}
             {/if}
-    
+
             <h4>
                 &nbsp;&nbsp;&nbsp;Private VLAN Service
-                <small>INEX Reference: #{$vli->getVlan()->getId()}</small>
+                <small>{$options.identity.orgname} Reference: #{$vli->getVlan()->getId()}</small>
             </h4>
-    
+
             <table id="myDetailsTable">
-    
+
             <tr>
                 <td width="40"></td>
-                <td width="150"><strong>802.1q Tag</strong></td>
-                <td width="100" id="value">{$pvlans[ $vli->getVlan()->getId() ].number}</td>
-                <td width="40"></td>
-                <td width="150"><strong>Members:</strong></td>
+                <td width="80"><strong>Name</strong></td>
+                <td width="150" id="value">{$vli->getVlan()->getName()}</td>
+                <td width="20"></td>
+                <td width="80"><strong>Tag</strong></td>
+                <td width="80" id="value">{$vli->getVlan()->getNumber()}</td>
+                <td width="20"></td>
+                <td width="150"><strong>Other Members:</strong></td>
                 <td width="400" id="value">
-                    {$cust->getName()}<br />
-                    {foreach $pvlans[ $vli->getVlan()->getId() ].members as $m}
-                        {$m}<br />
-                    {/foreach}
+                    {if count( $pvlans[ $vli->getVlan()->getId() ].members ) == 1}
+                        <em>None - single member</em>
+                    {else}
+                        {foreach $pvlans[ $vli->getVlan()->getId() ].members as $m}
+                            {$m->getAbbreviatedName()}<br />
+                        {/foreach}
+                    {/if}
                 </td>
             </tr>
-    
+
             </table>
             <br /><br />
-    
+
         {else}
             <h4>&nbsp;&nbsp;&nbsp;{$vli->getVlan()->getName()}:</h4>
-    
+
             <table id="myDetailsTable">
-    
+
             <tr>
                 <td width="40"></td>
                 <td width="200"><strong>IPv6 Address:</strong></td>
@@ -133,11 +139,11 @@
                     {/if}
                 </td>
             </tr>
-    
+
             <tr>
                 <td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
-    
+
             <tr>
                 <td></td>
                 <td><strong>Multicast Enabled:</strong></td>
@@ -146,11 +152,11 @@
                 <td><strong></strong></td>
                 <td id="value"></td>
             </tr>
-    
+
             <tr>
                 <td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
-    
+
             <tr>
                 <td></td>
                 <td><strong>Route Server Client:</strong></td>
@@ -159,9 +165,9 @@
                 <td><strong>AS112 Client:</strong></td>
                 <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
             </tr>
-    
+
             </table>
-    
+
         {/if} {* end private VLAN? *}
 
     {foreachelse}

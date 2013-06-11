@@ -20,11 +20,11 @@
             {/if}
         </small>
     </h3>
-    
+
     {foreach $vi->getPhysicalInterfaces() as $pi}
-        
+
         {if $isLAG}<h5>Port {counter name=numphysports} of {$vi->getPhysicalInterfaces()|@count} in LAG</h5>{/if}
-        
+
         <table id="myDetailsTable">
             <tr>
                 <td width="200"><strong>Switch:</strong></td>
@@ -52,113 +52,119 @@
             </tr>
         </table>
     {/foreach}
-    
+
     <br /><br />
-    
-    
+
+
     {foreach $vi->getVlanInterfaces() as $vli}
     {assign var='vlanid' value=$vli->getVlan()->getId()}
-    
+
     {if $vli->getVlan()->getPrivate()}
-    
-    	{if !isset( $pvlans )}
-    		{$pvlans = $user->getCustomer()->getPrivateVLANs()}
-    	{/if}
-    	
-    	<h4>
-    		&nbsp;&nbsp;&nbsp;Private VLAN Service
-    		<small>INEX Reference: #{$vli->getVlan()->getId()}</small>
-    	</h4>
-    	
-	    <table id="myDetailsTable">
-	    
-	    <tr>
-	        <td width="40"></td>
-	        <td width="150"><strong>802.1q Tag</strong></td>
-	        <td width="100" id="value">{$pvlans[ $vli->getVlan()->getId() ].number}</td>
-	        <td width="40"></td>
-	        <td width="150"><strong>Members:</strong></td>
-	        <td width="400" id="value">
-	        	{$user->getCustomer()->getName()}<br />
-	        	{foreach $pvlans[ $vli->getVlan()->getId() ].members as $m}
-	        		{$m}<br />
-        		{/foreach}
-	        </td>
-	    </tr>
-	    
-    	</table>
-	    <br /><br />
-    	
+
+        {if !isset( $pvlans )}
+            {$pvlans = $user->getCustomer()->getPrivateVlanDetails()}
+        {/if}
+
+        <h4>
+            &nbsp;&nbsp;&nbsp;Private VLAN Service
+            <small>{$options.identity.orgname} Reference: #{$vli->getVlan()->getId()}</small>
+        </h4>
+
+        <table id="myDetailsTable">
+
+            <tr>
+                <td width="40"></td>
+                <td width="80"><strong>Name</strong></td>
+                <td width="150" id="value">{$vli->getVlan()->getName()}</td>
+                <td width="20"></td>
+                <td width="80"><strong>Tag</strong></td>
+                <td width="80" id="value">{$vli->getVlan()->getNumber()}</td>
+                <td width="20"></td>
+                <td width="150"><strong>Other&nbsp;Members:</strong></td>
+                <td width="400" id="value">
+                    {if count( $pvlans[ $vli->getVlan()->getId() ].members ) == 1}
+                        <em>None - single member</em>
+                    {else}
+                        {foreach $pvlans[ $vli->getVlan()->getId() ].members as $m}
+                            {$m->getAbbreviatedName()}<br />
+                        {/foreach}
+                    {/if}
+                </td>
+            </tr>
+
+        </table>
+        <br /><br />
+
     {else}
-	    <h4>&nbsp;&nbsp;&nbsp;{$vli->getVlan()->getName()}:</h4>
-	    
-	    <table id="myDetailsTable">
-	    
-	    <tr>
-	        <td width="40"></td>
-	        <td width="200"><strong>IPv6 Address:</strong></td>
-	        <td width="200" id="value">
-	            {if $vli->getIpv6enabled() and $vli->getIpv6address()}
-	                {$vli->getIPv6Address()->getAddress()}/{$netinfo.$vlanid.6.masklen}
-	            {else}
-	                IPv6 not enabled.
-	            {/if}
-	        </td>
-	        <td width="40"></td>
-	        <td width="200"><strong>IPv4 Address:</strong></td>
-	        <td width="200" id="value">
-	            {if $vli->getIpv4enabled() and $vli->getIpv4address()}
-	                {$vli->getIPv4Address()->getAddress()}/{$netinfo.$vlanid.4.masklen}
-	            {else}
-	                IPv4 not enabled.
-	            {/if}
-	        </td>
-	    </tr>
-	    
-	    <tr>
-	        <td></td><td></td><td></td><td></td><td></td><td></td>
-	    </tr>
-	    
-	    <tr>
-	        <td></td>
-	        <td><strong>Multicast Enabled:</strong></td>
-	        <td id="value">{if $vli->getMcastenabled()}Yes{else}No{/if}</td>
-	        <td></td>
-	        <td><strong></strong></td>
-	        <td id="value"></td>
-	    </tr>
-	    
-	    <tr>
-	        <td></td><td></td><td></td><td></td><td></td><td></td>
-	    </tr>
-	    
-	    <tr>
-	        <td></td>
-	        <td><strong>Route Server Client:</strong></td>
-	        <td id="value">{if $vli->getRsclient()}Yes{else}No{/if}</td>
-	        <td></td>
-	        <td><strong>AS112 Client:</strong></td>
-	        <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
-	    </tr>
-	    
-	    </table>
+        <h4>&nbsp;&nbsp;&nbsp;{$vli->getVlan()->getName()}:</h4>
+
+        <table id="myDetailsTable">
+
+        <tr>
+            <td width="40"></td>
+            <td width="160"><strong>IPv6 Address:</strong></td>
+            <td width="180" id="value">
+                {if $vli->getIpv6enabled() and $vli->getIpv6address()}
+                    {$vli->getIPv6Address()->getAddress()}/{$netinfo.$vlanid.6.masklen}
+                {else}
+                    IPv6 not enabled.
+                {/if}
+            </td>
+            <td width="20"></td>
+            <td width="160"><strong>IPv4 Address:</strong></td>
+            <td width="180" id="value">
+                {if $vli->getIpv4enabled() and $vli->getIpv4address()}
+                    {$vli->getIPv4Address()->getAddress()}/{$netinfo.$vlanid.4.masklen}
+                {else}
+                    IPv4 not enabled.
+                {/if}
+            </td>
+        </tr>
+
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td><strong>Multicast:</strong></td>
+            <td id="value">{if $vli->getMcastenabled()}Yes{else}No{/if}</td>
+            <td></td>
+            <td><strong></strong></td>
+            <td id="value"></td>
+        </tr>
+
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td><strong>Route&nbsp;Server:</strong></td>
+            <td id="value">{if $vli->getRsclient()}Yes{else}No{/if}</td>
+            <td></td>
+            <td><strong>AS112&nbsp;Client:</strong></td>
+            <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
+        </tr>
+
+        </table>
 
     {/if} {* end private VLAN? *}
-	    
+
     {/foreach}
-    
+
     <br /><br />
-        
+
     </div>
     <div class="span6">
-        
+
         {foreach $vi->getPhysicalInterfaces() as $pi}
             <br /><br />
             <div class="well">
                 <h4>Day Graph for {$pi->getSwitchPort()->getSwitcher()->getName()} / {$pi->getSwitchPort()->getName()}</h4>
                 <br />
-            	<a href="{genUrl controller="statistics" action="member-drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
-        	        {genMrtgImgUrlTag shortname=$user->getCustomer()->getShortname() monitorindex=$pi->getMonitorindex()}
+                <a href="{genUrl controller="statistics" action="member-drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
+                    {genMrtgImgUrlTag shortname=$user->getCustomer()->getShortname() monitorindex=$pi->getMonitorindex()}
                 </a>
             </div>
         {/foreach}

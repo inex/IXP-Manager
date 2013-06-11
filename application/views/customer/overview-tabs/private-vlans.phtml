@@ -1,6 +1,8 @@
 
 <table class="table">
     <thead>
+        <th>VLAN</th>
+        <th>Tag</th>
         <th>Location</th>
         <th>Switch</th>
         <th>Port</th>
@@ -9,26 +11,36 @@
     </thead>
     <tbody>
 
-        {foreach $cust->getPrivateVLANs() as $pv}
-        <tr>
-            <td>{$pv.location}</td>
-            <td>{$pv.switch}</td>
-            <td>
-                {foreach $pv.ports as $p}
-                    {$p.name}<br />
+    {if !isset( $pvlans )}
+        {$pvlans = $cust->getPrivateVlanDetails()}
+    {/if}
+
+        {foreach $pvlans as $vlanid => $pv}
+            {foreach $pv.vlis as $vli}
+            <tr>
+                <td>{$vli->getVlan()->getName()}</td>
+                <td>{$vli->getVlan()->getNumber()}</td>
+                {$pis = $vli->getVirtualInterface()->getPhysicalInterfaces()}
+                <td>{$pis.0->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}</td>
+                <td>{$pis.0->getSwitchPort()->getSwitcher()->getName()}</td>
+                {foreach $vli->getVirtualInterface()->getPhysicalInterfaces() as $p}
+                    <td>{$p->getSwitchPort()->getName()}<br /></td>
+                    <td>{$p->getSpeed()}/{$p->getDuplex()}<br /></td>
                 {/foreach}
-            </td>
-            <td>
-                {foreach $pv.ports as $p}
-                    {$p.speed}/{$p.duplex}<br />
-                {/foreach}
-            </td>
-            <td>
-                {foreach $pv.members as $i => $m}
-                    <a href="{genUrl controller="customer" action="overview" id=$i}">{$m}</a><br />
-                {/foreach}
-            </td>
-        </tr>
+                <td>
+                    {$others = 0}
+                    {foreach $pv.members as $m}
+                        {if $m->getId() neq $cust->getId()}
+                            <a href="{genUrl controller="customer" action="overview" id=$m->getId()}">{$m->getAbbreviatedName()}</a><br />
+                            {$others = 1}
+                        {/if}
+                    {/foreach}
+                    {if not $others}
+                        <em>None - single member</em>
+                    {/if}
+                </td>
+            </tr>
+            {/foreach}
         {/foreach}
     </tbody>
 </table>
