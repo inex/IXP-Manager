@@ -40,23 +40,35 @@ class StaticController extends IXP_Controller_Action
         if( substr( $this->getRequest()->getActionName(), 0, 4 ) == 'auth' )
             $this->_requireAuth();
     }
-    
+
     private function _requireAuth( $priv = \Entities\User::AUTH_CUSTUSER )
     {
         if( !$this->getAuth()->hasIdentity() || $this->getUser()->getPrivs() < $priv )
         {
             if( $this->traitIsInitialised( 'OSS_Controller_Action_Trait_Messages' ) )
                 $this->addMessage( "Please login below.", OSS_Message::ERROR );
-        
+
             if( $this->traitIsInitialised( 'OSS_Controller_Action_Trait_Namespace' ) )
                 $this->getSessionNamespace()->postAuthRedirect = $this->getRequest()->getPathInfo();
-        
+
             $this->redirectAndEnsureDie( 'auth/login' );
         }
-        
-        
+
+
     }
-    
+
+    public function __call( $method, $args )
+    {
+        // FIXME Add options to enforce authentication based on name of page
+        // e,g, auth- or auth1/2/3-
+        
+        if( substr( $method, -6 ) != 'Action' )
+            throw new Zend_Exception( "Bad action is static controller" );
+
+        $method = substr( $method, 0, -6 );
+    }
+
+
     public function supportAction()
     {}
 
@@ -77,7 +89,7 @@ class StaticController extends IXP_Controller_Action
     {
         $this->_requireAuth();
     }
-    
+
     public function miscBenefitsAction()
     {
         $this->_requireAuth();
@@ -92,11 +104,11 @@ class StaticController extends IXP_Controller_Action
     {
         $this->_requireAuth();
     }
-    
+
     public function routeServersAction()
     {
         $this->_requireAuth();
-        
+
         // just find out if the user has route servers enabled or not
         $this->view->rsclient = false;
         foreach( $this->getCustomer()->getVirtualInterfaces() as $vi )
@@ -104,11 +116,11 @@ class StaticController extends IXP_Controller_Action
                 if( $vli->getRsclient() )
                     $this->view->rsclient = true;
     }
-    
+
     public function as112Action()
     {
         $this->_requireAuth();
-        
+
         // just find out if the user AS112 enabled or not
         $this->view->as112 = false;
         $this->view->rsclient = false;
@@ -123,7 +135,7 @@ class StaticController extends IXP_Controller_Action
             }
         }
     }
-    
+
 }
 
 
