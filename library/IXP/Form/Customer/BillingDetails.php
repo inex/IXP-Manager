@@ -69,7 +69,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingCity );
-        
+
         $billingPostcode = $this->createElement( 'text', 'billingPostcode' );
         $billingPostcode->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
@@ -85,11 +85,12 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setValue( 'IE' )
             ->setLabel( 'Country' )
             ->setRequired( false )
-            ->setAttrib( 'style', 'width: 150px;' )
-            ->setAttrib( 'class', 'chzn-select' );
-        
+            ->setAttrib( 'class', 'chzn-select span12' )
+            ->setAttrib( 'chzn-fix-width', '1' );
+
+
         $this->addElement( $billingCountry );
-        
+
         $billingEmail = $this->createElement( 'text', 'billingEmail' );
         $billingEmail->addValidator('emailAddress' )
             ->setRequired( false )
@@ -127,10 +128,13 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $vatRate );
-        
-        
+
+
         $this->addDisplayGroup(
-            [ 'billingContact', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingCountry' ],
+            [ 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity',
+                'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone',
+                'vatNumber', 'vatRate'
+            ],
         	'billingDisplayGroup'
         );
         $this->getDisplayGroup( 'billingDisplayGroup' )->setLegend( 'Billing Details' );

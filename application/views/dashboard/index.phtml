@@ -26,7 +26,7 @@
                     </a>
                 </li>
             {/if}
-            
+
             {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
                 {if $user->getCustomer()->isRouteServerClient()}
                     <li>
@@ -46,13 +46,14 @@
             {/if}
 
             <li><a href="{genUrl controller="statistics" action="member"}">Statistics &raquo;</a></li>
+
             {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
                 <li><a href="{genUrl controller="statistics" action="p2p"}">Peer to Peer Traffic &raquo;</a></li>
             {/if}
     </ul>
-    
+
     <div class="tab-content">
-    
+
         <div class="tab-pane active" id="tab1">
             <!-- Overview Tab -->
             {tmplinclude file="dashboard/index-tab-overview.phtml"}
@@ -61,30 +62,30 @@
         <div class="tab-pane" id="tab-details">
             <!-- Details Tab -->
             {tmplinclude file="dashboard/index-tab-details.phtml"}
-    
+
         </div>
-        
+
         <div class="tab-pane" id="tab3">
             <!-- Connections -->
             {tmplinclude file="dashboard/index-tab-connections.phtml"}
-    
+
         </div>
 
         {if count( $custNotes )}
             <div class="tab-pane" id="tab-content-notes">
                 {tmplinclude file="customer/overview-tabs/notes.phtml"}
-        
+
             </div>
         {/if}
-        
+
     </div>
 
 {else}
 
     {tmplinclude file="dashboard/index-tab-associate.phtml"}
-    
+
 {/if}
 
 </div>
-    
+
 {tmplinclude file="footer.phtml"}
