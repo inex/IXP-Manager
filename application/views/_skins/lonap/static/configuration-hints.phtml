@@ -1,0 +1,166 @@
+{tmplinclude file="header.phtml"}
+
+{if $user->getPrivs() eq 3}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{genUrl}">Home</a> <span class="divider">/</span>
+        </li>
+        <li>
+            Documentation <span class="divider">/</span>
+        </li>
+        <li class="active">
+            Configuration Hints
+        </li>
+    </ul>
+
+    <div>
+{else}
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Configuration Hints</h1>
+        </div>
+{/if}
+
+
+<p>
+Lonap runs a stable Internet Exchange, because there is a set of regulations that prohibit
+certain types of traffic. The example configurations on this page can be used to configure
+your peering router interfaces, in order to prevent the prohibited traffic reaching the
+exchange.  We recommend that you base your configurations on the example on this page.
+If you wish to share your configuration for a router that is not described on this page,
+then please send it to {mailto encode="javascript" address="support@lonap.net"}.
+</p>
+
+<p>
+It is important to stress that these configurations are sample configurations and you should
+ensure that the recommendations will fit with your topology.  Changes to router software and
+new protocols released in time may require these recommendations to alter.
+</p>
+
+<h3>Cisco Router, directly connected to the exchange</h3>
+
+<p>
+Connecting your router directly to the exchange is the recommended configuration.  This
+configuration is for members who connect to LONAP and take a 'single VLAN' (access) port.
+This is the default port style, and the port you will be assigned unless you specifically
+ask for a multiple VLAN port.
+</p>
+
+<p>
+<pre>
+interface GigabitEthernet x/y
+    ip address 5.57.80.x 255.255.252.0
+    description PEERING:: Lonap Internet Exchange
+    no ip redirects
+    no ip proxy-arp
+    no cdp enable
+    no ip directed-broadcast
+    no mop enable
+    no keepalive
+</pre>
+</p>
+
+<h3>Cisco Router, connected via intermedia Cisco Switch</h3>
+
+<p>
+This configuration effectively extends the number of ports on your router using
+802.1q VLAN trunking. It is not the recommended configuration style, because this
+method can cause frames to leak from any intermediate switch, towards the exchange.
+Should this occur, the exchange will shut down your port in order to protect the
+health of the internet exchange.
+</p>
+
+<p>
+There is a wide variety of switches that can act as intermediate switches.  This
+configuration assumes your switch runs IOS.  If a command in this sample configuration
+is not accepted by your switch, you can check to see whether the feature is available
+on your equipment - if not then there is no need to explicitly disable the configuration.
+</p>
+
+<h4>Intermediate Switch</h4>
+
+<p><pre>
+interface GigabitEthernet x/y
+    description Port facing LONAP Internet Exchange
+    switchport access vlan 300
+    switchport mode access
+    switchport nonegotiate
+    no keepalive
+    no cdp enable
+    no lldp receive
+    no lldp transmit
+    no udld enable
+    spanning-tree bpdufilter enable
+end
+
+vlan 300
+    name LONAP
+end
+
+interface GigabitEthernet x/z
+    description Port Facing London router xxx
+    switchport mode trunk
+    switchport trunk allowed vlan 300
+</pre></p>
+
+<h4>Router terminating BGP Sessions</h4>
+
+<p><pre>
+interface GigabitEthernet x/y
+    description Port facing London Switch yyy
+    no ip address
+
+interface GigabitEthernet x/y.300
+    description PEERING:: LONAP Internet Exchange
+    encapsulation dot1q 300
+    ip address 5.57.80.x 255.255.252.0
+    no ip redirects
+    no ip proxy-arp
+    no cdp enable
+    no ip directed-broadcast
+    no mop enable
+    no keepalive
+</pre></p>
+
+<h3>Juniper Router connected to exchange</h3>
+
+<h4>Access Interface</h4>
+<p><pre>
+ge-0/0/x {
+    unit 0 {
+        description "PEERING:: LONAP";
+        family inet {
+            no-redirects
+            address 5.57.80.x/22;
+        }
+        family inet6 {
+            address 2001:7F8:17::xxxx:1/64;
+        }
+    }
+}
+</pre></p>
+
+<h4>Tagged Interface</h4>
+
+<p><pre>
+ge-0/0/x {
+    vlan-tagging;
+    unit 4 {
+        description "PEERING:: LONAP";
+        vlan-id 4;
+        family inet {
+            no-redirects
+            address 5.57.80.x/22;
+        }
+        family inet6 {
+            address 2001:7F8:17::xxxx:1/64;
+        }
+    }
+}
+</pre></p>
+
+
+</div>
+
+{tmplinclude file="footer.phtml"}
+
