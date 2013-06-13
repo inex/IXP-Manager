@@ -1,0 +1,61 @@
+
+<footer>
+
+    <p>
+        IXP Manager V{$smarty.const.APPLICATION_VERSION}
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        Copyright &copy; 2010 - {$smarty.now|date_format:'%Y'} <a href="http://www.inex.ie/">Internet Neutral Exchange Association Ltd.</a>
+        &nbsp;|&nbsp;
+        <a href="{genUrl controller="static" action="support"}">Contact Us</a>
+    </p>
+
+    <p>
+        Licensed under GPL v2.0.
+        &nbsp;|&nbsp;
+        This Program is provided AS IS, without warranty.
+        &nbsp;|&nbsp;
+        {assign var="ENDTIME" value=microtime(1)}
+        {assign var="RUNNINGTIME" value="`$ENDTIME-$smarty.const.APPLICATION_STARTTIME`"}
+        Generated in {$RUNNINGTIME|string_format:"%0.3f"} seconds
+    </p>
+    
+    <p>
+        Keep up with
+        <span class="label label-info">
+            <a class="aplain" href="http://www.lonap.net/">LONAP</a>
+        </span>
+        
+        &nbsp;|&nbsp;
+        
+        Get the source at
+        <span class="label label-info">
+            <a class="aplain" href="https://github.com/inex/IXP-Manager">GitHub</a>
+        </span>
+        
+        &nbsp;|&nbsp;
+        
+        Join the
+        <span class="label label-info">
+            <a class="aplain" href="http://www.linkedin.com/groups/LONAP-Members-Partners-Supporters-108562">LinkedIn Group</a>
+        </span>
+        
+        &nbsp;|&nbsp;
+        
+        Follow us on
+        <span class="label label-info">
+            <a class="aplain" href="https://twitter.com/lonap">Twitter</a>
+        </span>
+        
+    </p>
+
+
+    {if $smarty.const.APPLICATION_ENV != 'production' and ( not isset( $hasIdentity ) or !$hasIdentity)}
+        <p>
+            <strong>
+                THE IXP IS RUNNING IN NON-PRODUCTION MODE AND INFORMATION CAN BE LEAKED VIA DEBUGGING
+                UTILITIES. ENSURE HTACCESS IS IN PLACE.
+            </strong>
+        </p>
+    {/if}
+
+</footer>
