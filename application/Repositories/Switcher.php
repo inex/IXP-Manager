@@ -17,7 +17,7 @@ class Switcher extends EntityRepository
      * @var string The cache key for all switch objects
      */
     const ALL_CACHE_KEY = 'inex_switches';
-    
+
     /**
      * Return an array of all switch objects from the database with caching
      *
@@ -41,7 +41,7 @@ class Switcher extends EntityRepository
             ->useResultCache( true, 3600, $key )
             ->getResult();
     }
-    
+
 
     /**
      * Clear the cache of a given result set
@@ -58,7 +58,7 @@ class Switcher extends EntityRepository
 
     /**
      * Generate a deterministic caching key for given parameters
-     *    
+     *
      * @param bool $active If `true`, return only active switches
      * @param int $type If `0`, all types otherwise limit to specific type
      * @return string The generate caching key
@@ -66,18 +66,18 @@ class Switcher extends EntityRepository
     public function genCacheKey( $active, $type )
     {
         $key = self::ALL_CACHE_KEY;
-        
+
         if( $active )
             $key .= '-active';
         else
             $key .= '-all';
-            
+
         if( $type )
             $key .= '-' . intval( $type );
         else
             $key .= '-all';
-    
-        return $key;                                                                                                                                            
+
+        return $key;
     }
 
     /**
@@ -102,7 +102,7 @@ class Switcher extends EntityRepository
     {
         $q =
             "SELECT s.name AS switchname, s.id AS switchid,
-                    sp.name AS portname,
+                    sp.name AS portname, sp.ifName AS ifName,
                     pi.speed AS speed, pi.duplex AS duplex, pi.status AS portstatus,
                     c.name AS customer, c.id AS custid, c.autsys AS asn,
                     vli.rsclient AS rsclient,

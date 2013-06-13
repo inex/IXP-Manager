@@ -43,21 +43,21 @@ class SwitchController extends IXP_Controller_FrontEnd
             'entity'        => '\\Entities\\Switcher',
             'form'          => 'IXP_Form_Switch',
             'pagetitle'     => 'Switches',
-        
+
             'titleSingular' => 'Switch',
             'nameSingular'  => 'a switch',
-        
+
             'listOrderBy'    => 'name',
             'listOrderByDir' => 'ASC'
         ];
-        
+
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $this->_feParams->listColumns = [
                     'id'        => [ 'title' => 'UID', 'display' => false ],
                     'name'           => 'Name',
-                    
+
                     'cabinet'  => [
                         'title'      => 'Cabinet',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -65,7 +65,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                         'action'     => 'view',
                         'idField'    => 'cabinetid'
                     ],
-                
+
                     'vendor'  => [
                         'title'      => 'Vendor',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -73,7 +73,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                         'action'     => 'view',
                         'idField'    => 'vendorid'
                     ],
-                    
+
                     'model'          => 'Model',
                     'ipv4addr'       => 'IPv4 Address',
                     'infrastructure' => 'Infrastructure',
@@ -84,7 +84,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                             'colname'  => 'active'
                     ]
                 ];
-    
+
                 // display the same information in the view as the list
                 $this->_feParams->viewColumns = array_merge(
                     $this->_feParams->listColumns,
@@ -105,20 +105,20 @@ class SwitchController extends IXP_Controller_FrontEnd
                         'notes'          => 'Notes'
                     ]
                 );
-                
+
                 $this->_feParams->defaultAction = 'list';
                 break;
-                
+
             case \Entities\User::AUTH_CUSTUSER:
                 $this->_feParams->allowedActions = [ 'configuration' ];
                 $this->_feParams->defaultAction = 'configuration';
                 break;
-                
+
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
     }
-    
+
     /**
      * Provide array of users for the listAction and viewAction
      *
@@ -137,23 +137,23 @@ class SwitchController extends IXP_Controller_FrontEnd
             ->from( '\\Entities\\Switcher', 's' )
             ->leftJoin( 's.Cabinet', 'c' )
             ->leftJoin( 's.Vendor', 'v' );
-    
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $id !== null )
             $qb->andWhere( 's.id = ?1' )->setParameter( 1, $id );
-    
+
         return $qb->getQuery()->getResult();
     }
-    
-    
+
+
     public function osViewAction()
     {
         $this->_feParams->listColumns = [
             'id'        => [ 'title' => 'UID', 'display' => false ],
             'name'           => 'Name',
-            
+
             'vendor'  => [
                 'title'      => 'Vendor',
                 'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -161,29 +161,29 @@ class SwitchController extends IXP_Controller_FrontEnd
                 'action'     => 'view',
                 'idField'    => 'vendorid'
             ],
-        
+
             'model'          => 'Model',
             'os'             => 'OS',
             'osVersion'      => 'OS Version',
-            
+
             'osDate'         => [
                 'title'      => 'OS Date',
                 'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
             ],
-            
+
             'lastPolled'         => [
                 'title'      => 'Last Polled',
                 'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
             ],
-            
+
             'active'         => 'Active'
         ];
 
         return $this->listAction();
     }
-    
-    
-    
+
+
+
     /**
      * Add new switch by polling it via SNMP
      */
@@ -191,7 +191,7 @@ class SwitchController extends IXP_Controller_FrontEnd
     {
         $this->view->sw = $sw = new \Entities\Switcher();
         $this->view->f  = $f  = new IXP_Form_Switch_AddBySNMP();
-        
+
         if( $this->getRequest()->isPost() && $f->isValid( $_POST ) )
         {
             do
@@ -203,7 +203,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                     $this->addMessage( 'A switch already exists with the given name / hostname', OSS_Message::ERROR );
                     break;
                 }
-                
+
                 // can we talk to it by SNMP and discover some basic details?
                 try
                 {
@@ -230,8 +230,8 @@ class SwitchController extends IXP_Controller_FrontEnd
                     );
                     break;
                 }
-                
-                
+
+
                 if( !( $eVendor = $this->getD2R( '\\Entities\\Vendor' )->findOneBy( [ 'name' => $vendor ] ) ) )
                 {
                     $this->addMessage( "No vendor defined for [{$vendor}]. Please
@@ -240,8 +240,8 @@ class SwitchController extends IXP_Controller_FrontEnd
                     );
                     break;
                 }
-                
-                
+
+
                 // now we have a switch with all the necessary details, add it:
                 $s = new Switcher();
                 $s->setCabinet(
@@ -261,25 +261,25 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $s->setOsDate( $snmp->getPlatform()->getOsDate() );
                 $s->setOsVersion( $snmp->getPlatform()->getOsVersion() );
                 $s->setLastPolled( new DateTime() );
-                    
+
                 $this->getD2EM()->persist( $s );
                 $this->getD2EM()->flush();
-                
+
                 // clear the cache
                 $this->getD2R( '\\Entities\\Switcher' )->clearCache();
-                
+
                 $this->addMessage(
                     "Switch polled and added successfully! Please configure the ports found below.", OSS_Message::SUCCESS
                 );
-                
+
                 $this->redirect( 'switch-port/snmp-poll/switch/' . $s->getId() );
             }while( false );
         }
-        
+
         $this->_display( 'add-by-snmp.phtml' );
     }
-    
-    
+
+
     /**
      * Resolve a hostname into an IPv4/IPv6 address
      *
@@ -293,20 +293,20 @@ class SwitchController extends IXP_Controller_FrontEnd
     private function _resolve( $hn, $type )
     {
         $a = dns_get_record( $hn, $type );
-        
+
         if( empty( $a ) )
             return null;
-        
+
         if( $type == DNS_A )
             return $a[0]['ip'];
-        
+
         if( $type == DNS_AAAA )
             return $a[0]['ipv6'];
-        
+
         throw new Exception( 'Unhandled DNS query type.' );
     }
-    
-    
+
+
     /**
      *
      * @param IXP_Form_Cabinet $form The form object
@@ -326,8 +326,8 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
         }
     }
-    
-    
+
+
     /**
      *
      * @param IXP_Form_Cabinet $form The form object
@@ -340,14 +340,14 @@ class SwitchController extends IXP_Controller_FrontEnd
         $object->setCabinet(
             $this->getD2EM()->getRepository( '\\Entities\\Cabinet' )->find( $form->getElement( 'cabinetid' )->getValue() )
         );
-    
+
         $object->setVendor(
             $this->getD2EM()->getRepository( '\\Entities\\Vendor' )->find( $form->getElement( 'vendorid' )->getValue() )
         );
-    
+
         return true;
     }
-    
+
     /**
      * Clear the cache after a change to a switch
      *
@@ -360,7 +360,7 @@ class SwitchController extends IXP_Controller_FrontEnd
         $this->getD2R( '\\Entities\\Switcher' )->clearCache();
         return true;
     }
-    
+
 
     function portReportAction()
     {
@@ -372,7 +372,7 @@ class SwitchController extends IXP_Controller_FrontEnd
             $this->addMessage( 'Unknown switch.', OSS_Message::ERROR );
             return $this->redirect( 'switch/list' );
         }
-        
+
         $allports = $this->getD2EM()->createQuery(
                 'SELECT sp.id AS spid, sp.name AS portname, sp.type AS porttype
                 FROM \\Entities\\SwitchPort sp
@@ -381,52 +381,52 @@ class SwitchController extends IXP_Controller_FrontEnd
             )
             ->setParameter( 1, $switch )
             ->getResult();
-        
+
         $ports = $this->getD2EM()->createQuery(
                 'SELECT sp.id AS spid, sp.name AS portname, sp.type AS porttype,
                         pi.speed AS speed, pi.duplex AS duplex, c.name AS custname
-            
+
                 FROM \\Entities\\SwitchPort sp
                     JOIN sp.PhysicalInterface pi
                     JOIN pi.VirtualInterface vi
                     JOIN vi.Customer c
-            
+
                 WHERE sp.Switcher = ?1
-        
+
                 ORDER BY spid ASC'
             )
             ->setParameter( 1, $switch )
             ->getArrayResult();
-            
+
         foreach( $allports as $id => $port )
         {
             if( isset( $ports[0] ) && $ports[0][ 'portname' ] == $port[ 'portname' ] )
                 $allports[ $port[ 'portname' ] ] = array_shift( $ports );
             else
                 $allports[ $port[ 'portname' ] ] = $port;
-            
+
             $allports[ $port[ 'portname' ] ]['porttype'] = \Entities\SwitchPort::$TYPES[ $allports[ $port[ 'portname' ] ]['porttype'] ];
-            
+
             unset( $allports[ $id ] );
         }
-        
+
         $this->view->ports = $allports;
     }
-    
+
     public function configurationAction()
     {
         $this->view->registerClass( 'PHYSICALINTERFACE', '\\Entities\\PhysicalInterface' );
         $this->view->states   = \Entities\PhysicalInterface::$STATES;
         $this->view->vlans    = $vlans    = $this->getD2EM()->getRepository( '\\Entities\\Vlan'     )->getNames();
         $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
-        
-        $this->view->switchid = $sid = ( isset( $_POST['sid'] ) && isset( $switches[ $_POST['sid'] ] ) ) ? $_POST['sid'] : null;
-        $this->view->vlanid   = $vid = ( isset( $_POST['vid'] ) && isset( $vlans[    $_POST['vid'] ] ) ) ? $_POST['vid'] : null;
-        
+
+        $this->view->switchid = $sid = ( $this->getParam( 'sid', false ) && isset( $switches[ $this->getParam( 'sid' ) ] ) ) ? $this->getParam( 'sid' ) : null;
+        $this->view->vlanid   = $vid = ( $this->getParam( 'vid', false ) && isset( $vlans[    $this->getParam( 'vid' ) ] ) ) ? $this->getParam( 'vid' ) : null;
+
         $this->view->config = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getConfiguration( $sid, $vid );
     }
-    
-    
+
+
     /**
      * Function which can be over-ridden to perform any pre-deletion tasks
      *
@@ -449,14 +449,14 @@ class SwitchController extends IXP_Controller_FrontEnd
                 return false;
             }
         }
-        
+
         // if we got here, all switch ports are free
         foreach( $object->getPorts() as $p )
             $this->getD2EM()->remove( $p );
-        
+
         return true;
     }
-    
-    
+
+
 }
 

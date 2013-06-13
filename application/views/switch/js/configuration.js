@@ -13,12 +13,12 @@ $(document).ready(function() {
             {if not isset( $switchid )}null,{/if}
             null,
             { "sSortDataType": "dom-text", "sType": "numeric" },
-            {if not isset( $vlanid )}null,{/if}
+            {if not isset( $vlanid ) and count( $vlans ) > 1}null,{/if}
             { "sSortDataType": "dom-text", "sType": "html" },
             null,
             null,
             null,
-            null           
+            null
         ]
     });
     $( '#frontend-list-table' ).show();
