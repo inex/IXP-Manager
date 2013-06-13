@@ -222,7 +222,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         {
             $vint = false;
             $pi = null;
-            foreach( $this->getCustomer()->getVirtualInterfaces() as $vi )
+            foreach( $cust->getVirtualInterfaces() as $vi )
             {
                 foreach( $vi->getPhysicalInterfaces() as $pi )
                 {
