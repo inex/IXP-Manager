@@ -1,3 +1,16 @@
+# v3.1.7
+
+[IM] Fixes for customer dashboard area (67e35e9 - Barry O'Donovan - 2013-06-13)
+[NF] Static docs no longer need to be explicitly defined (e795d9f - Barry O'Donovan - 2013-06-13)
+[HK] Freshly pressed CSS / JS (new Colorbox version) (dfa5f46 - Barry O'Donovan - 2013-06-13)
+[IM] Hide peering manager / matrix / rs prefix tools if disabled by configuration (2fd2e57 - Barry O'Donovan - 2013-06-13)
+[BF] Various fixes to user view of member and switches (b499b64 - Barry O'Donovan - 2013-06-13)
+[HK] Update refs to OSS_SNMP (e059064 - Barry O'Donovan - 2013-06-11)
+[NF] Script to identify private VLANs via SNMP and add to IXP Manager (ec6b76c - Barry O'Donovan - 2013-06-11)
+[IM] INEX doesn't allow single member VLANs but LONAP does. This corrects and allows for that. (17a86f7 - Barry O'Donovan - 2013-06-11)
+[IM] If you are not an admin, you do not need to know these details (907cc63 - Barry O'Donovan - 2013-06-10)
+
+
 # v3.1.6 
 
 - [HK] Misnamed - corrected here (6c4bbbe - Barry O'Donovan - 2013-06-10)
