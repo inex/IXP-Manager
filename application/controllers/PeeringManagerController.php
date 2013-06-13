@@ -36,6 +36,13 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
 
     public function preDispatch()
     {
+        if( isset( $this->_options['frontend']['disabled'][ $this->getRequest()->getControllerName() ] )
+                && $this->_options['frontend']['disabled'][ $this->getRequest()->getControllerName() ] )
+        {
+            $this->addMessage( _( 'This controller has been disabled.' ), OSS_Message::ERROR );
+            $this->redirect( '' );
+        }
+        
         // we should only be available to CUSTUSERs
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_CUSTUSER )
         {
@@ -44,8 +51,8 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
             );
             $this->_redirect( '' );
         }
+        
     }
-    
 
     public function indexAction()
     {

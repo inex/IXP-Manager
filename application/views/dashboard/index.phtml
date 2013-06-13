@@ -41,8 +41,10 @@
                 {/if}
             {/if}
 
-            
-            <li><a href="{genUrl controller="peering-manager"}">Peering Manager &raquo;</a></li>
+            {if !isset( $options['frontend']['disabled']['peering-manager'] ) or !$options['frontend']['disabled']['peering-manager'] }
+                <li><a href="{genUrl controller="peering-manager"}">Peering Manager &raquo;</a></li>
+            {/if}
+
             <li><a href="{genUrl controller="statistics" action="member"}">Statistics &raquo;</a></li>
             {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
                 <li><a href="{genUrl controller="statistics" action="p2p"}">Peer to Peer Traffic &raquo;</a></li>

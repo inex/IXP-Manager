@@ -39,25 +39,25 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {if $user->getPrivs() eq 1}
-                                        <li>
-                                            <a href="{genUrl controller="peering-manager"}">Peering Manager</a>
-                                        </li>
-                                        {if $user->getCustomer()->isRouteServerClient()}
-                                            <li>
-                                                <a href="{genUrl controller="rs-prefixes" action="list"}">Route Server Prefixes</a>
-                                            </li>
+                                        {if !isset( $options['frontend']['disabled']['peering-manager'] ) or !$options['frontend']['disabled']['peering-manager'] }
+                                            <li><a href="{genUrl controller="peering-manager"}">Peering Manager</a></li>
+                                        {/if}
+                                        {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
+                                            {if $user->getCustomer()->isRouteServerClient()}
+                                                <li><a href="{genUrl controller="rs-prefixes" action="list"}">Route Server Prefixes</a></li>
+                                            {/if}
                                         {/if}
                                     {/if}
-                                    <li>
-                                        <a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a>
-                                    </li>
+                                    {if !isset( $options['frontend']['disabled']['peering-matrix'] ) or !$options['frontend']['disabled']['peering-matrix'] }
+                                        <li><a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a></li>
+                                    {/if}
                                 </ul>
                             </li>
 
                             {* STATIC DOCUMENTATION LINKS - SPECIFIC TO INDIVIDUAL IXPS *}
                             {* Add a skinned file in views/_skins/xxx/header-documentation.phtml for your IXP to override the sample *}
                             {tmplinclude file="header-documentation.phtml"}
-                            
+
                             <li class="dropdown {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
@@ -95,13 +95,13 @@
                         {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                             {tmplinclude file="staff-links.phtml"}
                         {/if}
-                        
+
                         {if $user->getPrivs() neq 3}
 	                        <li class="{if $controller eq 'profile'}active{/if}">
 	                            <a href="{genUrl controller="profile"}">Profile</a>
 	                        </li>
                         {/if}
-                        
+
                     </ul>
                     <ul class="nav pull-right">
                         {if $user->getPrivs() eq 3}
@@ -114,7 +114,7 @@
                                 </select>
                             </form>
                         {/if}
-                            
+
                         {if isset( $session->switched_user_from ) and $session->switched_user_from}
                             <li><a href="{genUrl controller="auth" action="switch-user-back"}">Switch Back</a></li>
                         {elseif $user->getPrivs() eq 3}
@@ -157,13 +157,13 @@
         </div>
     </div>
 </div>
-    
+
 {if isset( $hasIdentity ) and $hasIdentity and $user->getPrivs() eq 3}
-    
+
     <div class="container-fluid">
 
     {tmplinclude file="menu.phtml"}
-    
+
 {elseif isset( $mode ) and $mode eq 'fluid'}
 
     <div class="container-fluid">
