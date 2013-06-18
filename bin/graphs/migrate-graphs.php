@@ -35,10 +35,7 @@ $SRCDIR_RRD = "/home/nerijus/tmp/ixp-lonap";
 $DESTDIR_LOG = "/home/nerijus/tmp/test-lonap";
 
 foreach( $em->getRepository( '\\Entities\\Customer' )->findAll() as $cust )
-{
-    //if( $cust->getShortname() != "akamai" )
-        //continue;
-        
+{   
     foreach( $cust->getVirtualInterfaces() as $viInt )
     {
         foreach( $viInt->getPhysicalInterfaces() as $pInt )
@@ -54,7 +51,7 @@ foreach( $em->getRepository( '\\Entities\\Customer' )->findAll() as $cust )
             //echo "MRTG: $mrtg \n RRD: $rrd\n";
             if( !file_exists( $mrtg ) || !file_exists( $rrd ) )
             {
-                echo "ERROR: Missing one of source files\n";
+                echo "ERROR: Missing one of source files for customer {$cust->getShortname()} on switch {$switch}.\n";
                 continue;
             }
             
