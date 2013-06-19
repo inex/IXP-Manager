@@ -17,13 +17,27 @@ class SwitchPort
     const TYPE_OTHER          = 4;
     const TYPE_MANAGEMENT     = 5;
     
+    /**
+     * For resellers, we need to enforce the one port - one mac - one address rule
+     * on the peering LAN. Depending on switch technology, this will be done using
+     * a virtual ethernet port or a dedcaited fanout switch. A fanout port is a port
+     * that sends a resold member's traffic to a peering port / switch.
+     *
+     * I.e. it is an output port to the exchange to connects to a standard peering
+     * input port.
+     *
+     * @var int
+     */
+    const TYPE_FANOUT         = 6;
+    
     public static $TYPES = array(
         self::TYPE_UNSET      => 'Unset / Unknown',
         self::TYPE_PEERING    => 'Peering',
         self::TYPE_MONITOR    => 'Monitor',
         self::TYPE_CORE       => 'Core',
         self::TYPE_OTHER      => 'Other',
-        self::TYPE_MANAGEMENT => 'Management'
+        self::TYPE_MANAGEMENT => 'Management',
+        self::TYPE_FANOUT     => 'Reseller Fanout'
     );
     
     // This array is for matching data from OSS_SNMP to the switchport database table.

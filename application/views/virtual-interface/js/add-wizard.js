@@ -6,7 +6,7 @@ $( "#switchid" ).on( 'change', function( event ) {
         ossChosenClear( "#switchportid", "<option>Please wait, loading data...</option>" );
 
         $.getJSON( "{genUrl controller='switch-port' action='ajax-get'}/id/"
-                + $( "#preselectPhysicalInterface" ).val() + "/switchid/" + $(this).val(), function( j ) {
+                + $( "#preselectPhysicalInterface" ).val() + "/type/peering/switchid/" + $(this).val(), function( j ) {
 
             var options = "<option value=\"\">- select -</option>\n";
 

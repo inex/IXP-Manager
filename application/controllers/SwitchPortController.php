@@ -334,6 +334,10 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             $dql .= 'AND ( pi.id IS NULL OR pi.id = ?2 )';
         else
             $dql .= 'AND pi.id IS NULL';
+        
+        // limit to ports suitable for peering?
+        if( $this->getParam( 'type', null ) == 'peering' )
+            $dql .= 'AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_PEERING . ', ' . \Entities\SwitchPort::TYPE_UNSET . ' ) )';
 
         $dql .= " ORDER BY sp.id ASC";
         
