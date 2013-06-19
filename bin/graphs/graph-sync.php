@@ -48,7 +48,7 @@ $handle = @fopen( $mrtg, "r" );
 //script overwrites $out file use a to append $out file.
 $dir = dirname( $out );
 if( !is_dir( $dir ) )
-    mkdir( $dir, 777, true );
+    mkdir( $dir, 0777, true );
 
 $fout = @fopen( $out, "w" );
 
