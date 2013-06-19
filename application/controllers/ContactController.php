@@ -113,7 +113,6 @@ class ContactController extends IXP_Controller_FrontEnd
             $this->_feParams->viewColumns = $this->_feParams->listColumns + ['phone'     => 'Phone', 'mobile'    => 'Mobile' ];
     }
 
-
     /**
      * Provide array of users for the listAction and viewAction
      *
@@ -157,47 +156,87 @@ class ContactController extends IXP_Controller_FrontEnd
         
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             return $data;
-            
-        foreach( $data as $idx => $contact )
-        {
-            $cont = $this->getD2R( '\\Entities\\Contact' )->find($contact['id'] );
-            $roles = [];
-            $groups = [];
-            foreach( $cont->getGroups() as $group )
-            {
-                if( $group->getType() == \Entities\ContactGroup::TYPE_ROLE )
-                    $roles[] = $group->getName();
-                else
-                    $groups[] = $this->_options['contact']['group']['types'][$group->getType() ] . " " . $group->getName();
-            }
-            asort( $roles );
-            asort( $groups );
-            if( $id !== null )
-            {
-                if( $roles )
-                {
-                    $this->_feParams->viewColumns = $this->_feParams->viewColumns + [ 'role'  => 'Role' ];
-                    $data[$idx]['role'] = implode( '<br/>', $roles );
-                }
-                if( $groups )
-                {
-                    $this->_feParams->viewColumns = $this->_feParams->viewColumns + [ 'group'  => 'Group' ];
-                    $data[$idx]['group'] = implode( '<br/>', $groups );
-                }
-            }
-            else if( $roles )
-            {
-                $this->_feParams->listColumns = $this->_feParams->listColumns + [ 'role'            => [
-                        'title'         => 'Role',
-                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
-                        'script'        => 'contact/list-role.phtml'
-                    ]];
-                $data[$idx]['role'] = $roles;
-            }
-        }
-        //OSS_Debug::dd( $data );
+        
+        $data = $this->setRolesAndGroups( $data, $id );
+
         return $data;
         
+    }
+
+    /**
+     * Sets roles and groups for contacts from the data array.
+     *
+     * From data array gets contact ids  and loads the role and group names by ids array.
+     * Then it iterates throw $data and if roles or groups was found for preview it appends
+     * that data to $data array. For list only roles is appended to $data array. Function returns
+     * appended $data array.
+     *
+     * @param array $data Data loaded form DQL query for list or view action
+     * @param int   $id   The `id` of the row to load for `viewAction`. `null` if `listAction`
+     * @return array
+     */
+    private function setRolesAndGroups( $data, $id )
+    {
+        $ids = [];
+        foreach( $data as $row )
+            $ids[] = $row['id'];
+
+        $roles = $this->getD2R( '\\Entities\\Contact' )->getRolesByIds( $ids );  
+        if( $id !== null )
+            $groups = $this->getD2R( '\\Entities\\Contact' )->getGroupsByIds( $ids );
+
+        foreach( $data as $idx => $contact )
+        {
+            if( $id !== null )
+            {
+                if( isset( $roles[ $contact['id'] ] ) )
+                {
+                    asort( $roles[ $contact['id'] ] );
+
+                    if( !isset( $this->_feParams->viewColumns->role ) )
+                        $this->_feParams->viewColumns = $this->_feParams->viewColumns + [ 'role'  => 'Role' ];
+                    
+                    $data[$idx]['role'] = implode( '<br/>',  $roles[ $contact['id'] ] );
+                }
+                if( isset( $groups[ $contact['id'] ] ) )
+                {
+                    if( !isset( $this->_feParams->viewColumns->role ) )
+                        $this->_feParams->viewColumns = $this->_feParams->viewColumns + [ 'group'  => 'Group' ];
+                    
+                    asort( $groups[ $contact['id'] ] );
+                    $group = "";
+                    foreach( $groups[ $contact['id'] ] as $gdata )
+                    {
+                        if( $group != "" )
+                            $group .= "<br />";
+
+                        $group .= $this->_options['contact']['group']['types'][ $gdata['type'] ] . " " . $gdata['name'];
+                    }
+
+                    $data[$idx]['group'] = $group;
+                }
+            }
+            else 
+            {
+                if( isset( $roles[ $contact['id'] ] ) )
+                {
+                    asort( $roles[ $contact['id'] ] );
+                    $data[$idx]['role'] = $roles[ $contact['id'] ];
+                }
+                else
+                    $data[$idx]['role'] = [];
+
+                if( !isset( $this->_feParams->listColumns['role']  ) )
+                {
+                    $this->_feParams->listColumns = $this->_feParams->listColumns + [ 'role' => [
+                            'title'  => 'Role',
+                            'type'   => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                            'script' => 'contact/list-role.phtml' ]
+                    ];
+                }
+            }
+        }
+        return $data;
     }
     
     
