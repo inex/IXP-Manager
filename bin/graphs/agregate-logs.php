@@ -1,6 +1,31 @@
 #!/usr/bin/env php
 <?php
 
+/*
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+$SRCDIR_LOG  = "/srv/mrtg";
+$DESTDIR_LOG = "/srv/mrtg";
+
+
 mb_internal_encoding('UTF-8');
 mb_language('uni');
 setlocale(LC_ALL, "en_IE.utf8");
@@ -29,95 +54,86 @@ $plugin = new OSS_Resource_Doctrine2( $config['doctrine2'] );
 $application->getBootstrap()->registerPluginResource( $plugin );
 $em = $plugin->getDoctrine2( 'default' );
 
-$SRCDIR_LOG = "/home/nerijus/tmp/ixp-lonap";
-$DESTDIR_LOG = "/home/nerijus/tmp/test-lonap";
-
 foreach( $em->getRepository( '\\Entities\\Customer' )->findAll() as $cust )
-{   
+{
     $logs = [];
+
     foreach( $cust->getVirtualInterfaces() as $viInt )
     {
         foreach( $viInt->getPhysicalInterfaces() as $pInt )
-        {   
-            $mrtg = sprintf( "%s/mrtg/members/%s/%s-%d-bits.log", $SRCDIR_LOG, $cust->getShortname(), $cust->getShortname(), $pInt->getMonitorindex() );
-            
-            //echo "MRTG: $mrtg \n RRD: $rrd\n";
-            if( !file_exists( $mrtg ) )
+        {
+            $mrtg = sprintf( "%s/members/%s/%s-%d-bits.log",
+                $SRCDIR_LOG,
+                $cust->getShortname(),
+                $cust->getShortname(),
+                $pInt->getMonitorindex()
+            );
+
+            if( !file_exists( $mrtg ) || !( $src = fopen( $mrtg, 'r' ) ) )
             {
-                echo "ERROR: Missing one of source file for customer {$cust->getShortname()}  mointor index {$pInt->getMonitorindex()}.\n";
+                echo "ERROR: Missing / cannot access source file for customer {$cust->getShortname()} for mointor index {$pInt->getMonitorindex()}.\n";
                 continue;
             }
 
-            $src = fopen( $mrtg, 'r' );
-
-            if( $src )
+            while( ( $buffer = fgets( $src, 4096 ) ) !== false )
             {
-                while( ( $buffer = fgets( $src, 4096 ) ) !== false )
+                $row = explode( ' ', $buffer );
+
+                if( count( $row ) == 3 )
                 {
-                    $row = explode( ' ', $buffer );
-                    if( count( $row ) == 3 )
-                    {
-                        if( isset( $logs[ 0 ] ) )
-                        {
-                            if( $row[0] > $logs[0][0] )
-                                $logs[0][0] = $row[0];
+                    if( !isset( $logs[0] ) )
+                        $logs[0] = [ $row[0], 0, 0 ];
+                    else if( $row[0] > $logs[0][0] )
+                        $logs[0][0] = $row[0];
 
-                            $logs[ 0 ][1] += $row[1];
-                            $logs[ 0 ][2] += $row[2];
-                        }
-                        else
-                            $logs[ 0 ] = [ $row[0], intval( $row[1] ), intval( $row[2] ) ];
-                    }
-                    else
-                    {
-                        if( isset( $logs[ $row[0] ] ) )
-                        {
-                            $logs[ $row[0] ][1] += $row[1];
-                            $logs[ $row[0] ][2] += $row[2];
-                            $logs[ $row[0] ][3] += $row[3];
-                            $logs[ $row[0] ][4] += $row[4];
-                        }
-                        else
-                            $logs[ $row[0] ] = [ $row[0], intval( $row[1] ), intval( $row[2] ), intval( $row[3] ), intval( $row[4] ) ];
-                    }
+                    $logs[0][1] += $row[1];
+                    $logs[0][2] += $row[2];
                 }
-  
-                if( !feof( $src ) )
-                    echo "Error: unexpected fgets() fail\n";
+                else
+                {
+                    if( !isset( $logs[ $row[0] ] ) )
+                        $logs[ $row[0] ] = [ $row[0], 0, 0, 0, 0 ];
 
-                fclose( $src );
+                    $logs[ $row[0] ][1] += $row[1];
+                    $logs[ $row[0] ][2] += $row[2];
+                    $logs[ $row[0] ][3] += $row[3];
+                    $logs[ $row[0] ][4] += $row[4];
+                }
             }
 
+            if( !feof( $src ) )
+                echo "Error: unexpected fgets() fail\n";
+
+            fclose( $src );
         }
     }
-    
-    $out = sprintf( "%s/mrtg/members/%s/%s-agregate-bits.log", $DESTDIR_LOG, $cust->getShortname(), $cust->getShortname() );
-    
+
+    $out = sprintf( "%s/members/%s/%s-agregate-bits.log",
+        $DESTDIR_LOG,
+        $cust->getShortname(),
+        $cust->getShortname()
+    );
+
     $dir = dirname( $out );
     if( !is_dir( $dir ) )
-        mkdir( $dir, 0777, true );
+        mkdir( $dir, 0700, true );
 
-    $dst = fopen( $out, 'w' );
-
-    if( !$dst ) 
+    if( !( $dst = fopen( $out, 'w' ) ) )
     {
         echo "ERROR: Failed to open output file [$out].\n";
         continue;
     }
-    
+
     if( isset( $logs[0] ) )
     {
-        krsort( $logs );
-        $row = implode( " ", $logs[0] ) . "\n";
+        fputs( $dst, implode( " ", $logs[0] ) . "\n" );
         unset( $logs[0] );
-        fputs( $dst, $row );
     }
 
-    foreach( $logs as $idx => $row )
-    {
-        $row = implode( " ", $row ) . "\n";
-        fputs( $dst, $row );
-    }
-    
+    krsort( $logs, SORT_NUMERIC );
+
+    foreach( $logs as $row )
+        fputs( $dst, implode( " ", $row ) . "\n" );
+
     fclose( $dst );
 }
