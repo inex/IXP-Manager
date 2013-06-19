@@ -12,4 +12,69 @@ use Doctrine\ORM\EntityRepository;
  */
 class Contact extends EntityRepository
 {
+    /**
+     * Gets role names array for contacts.
+     * 
+     * Function gets arrays of role names for contacts by given contacts
+     * id list. Return sturcture:
+     * $array = [ 
+     *   contact_id0 => [ name0, name1, ..],
+     *   contact_id1 => [ name0, name1, ..],
+     *   ... 
+     * ];
+     *
+     * @param array $ids Contacts ID list to get roles names
+     * @return array
+     */
+    public function getRolesByIds( $ids )
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select( 'c.id as contact_id, cg.name as name' )
+            ->from( '\\Entities\\Contact', 'c' )
+            ->leftJoin( 'c.Groups', 'cg' );
+        
+        $qb->add( 'where', $qb->expr()->in( 'c.id', '?1' ) )
+            ->andWhere( 'cg.type = ?2' )
+            ->setParameter( 1, $ids )
+            ->setParameter( 2, \Entities\ContactGroup::TYPE_ROLE );
+
+        $data = [];
+        foreach( $qb->getQuery()->getResult() as $row )
+            $data[ $row['contact_id'] ][] = $row['name'];
+
+        return $data;
+    }
+
+    /**
+     * Gets group types and names array for contacts.
+     * 
+     * Function gets arrays of group types and names for contacts by given
+     * contacts id list. Return sturcture:
+     * $array = [ 
+     *   contact_id0 => [ [ name => name0, type => type0 ], [ name => name1, type => type1 ], ..],
+     *   contact_id1 => [ [ name => name0, type => type0 ], [ name => name1, type => type1 ], ..],
+     *   ... 
+     * ];
+     *
+     * @param array $ids Contacts ID list to get roles names
+     * @return array
+     */
+    public function getGroupsByIds( $ids )
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select( 'c.id as contact_id, cg.name as name, cg.type as type' )
+            ->from( '\\Entities\\Contact', 'c' )
+            ->leftJoin( 'c.Groups', 'cg' );
+        
+        $qb->add( 'where', $qb->expr()->in( 'c.id', '?1' ) )
+            ->andWhere( 'cg.type <> ?2' )
+            ->setParameter( 1, $ids )
+            ->setParameter( 2, \Entities\ContactGroup::TYPE_ROLE );
+
+        $data = [];
+        foreach( $qb->getQuery()->getResult() as $row )
+            $data[ $row['contact_id'] ][] = ['type' => $row['type'], 'name' => $row['name'] ];
+
+        return $data;
+    }
 }
