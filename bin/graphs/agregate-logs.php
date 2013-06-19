@@ -44,7 +44,7 @@ foreach( $em->getRepository( '\\Entities\\Customer' )->findAll() as $cust )
             //echo "MRTG: $mrtg \n RRD: $rrd\n";
             if( !file_exists( $mrtg ) )
             {
-                echo "ERROR: Missing one of source files for customer {$cust->getShortname()} on switch {$switch}.\n";
+                echo "ERROR: Missing one of source file for customer {$cust->getShortname()}  mointor index {$pInt->getMonitorindex()}.\n";
                 continue;
             }
 
@@ -99,11 +99,20 @@ foreach( $em->getRepository( '\\Entities\\Customer' )->findAll() as $cust )
 
     $dst = fopen( $out, 'w' );
 
-    krsort( $logs );
-    $row = implode( " ", $logs[0] ) . "\n";
-    unset( $logs[0] );
+    if( !$dst ) 
+    {
+        echo "ERROR: Failed to open output file [$out].\n";
+        continue;
+    }
     
-    fputs( $dst, $row );
+    if( isset( $logs[0] ) )
+    {
+        krsort( $logs );
+        $row = implode( " ", $logs[0] ) . "\n";
+        unset( $logs[0] );
+        fputs( $dst, $row );
+    }
+
     foreach( $logs as $idx => $row )
     {
         $row = implode( " ", $row ) . "\n";
