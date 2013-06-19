@@ -1,3 +1,13 @@
+# v3.1.x
+
+Schema update required:
+
+    ALTER TABLE cust ADD reseller INT DEFAULT NULL, ADD isReseller TINYINT(1) NOT NULL DEFAULT 0;
+    ALTER TABLE cust ADD CONSTRAINT FK_997B25A18015899 FOREIGN KEY (reseller) REFERENCES cust (id);
+    CREATE INDEX IDX_997B25A18015899 ON cust (reseller);
+
+
+
 # v3.1.7
 
 [IM] Fixes for customer dashboard area (67e35e9 - Barry O'Donovan - 2013-06-13)

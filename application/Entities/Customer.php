@@ -1715,4 +1715,98 @@ class Customer
     {
         return $this->MD5Support;
     }
+    /**
+     * @var boolean
+     */
+    private $isReseller;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $ResoldCustomers;
+
+    /**
+     * @var \Entities\Customer
+     */
+    private $Reseller;
+
+
+    /**
+     * Set isReseller
+     *
+     * @param boolean $isReseller
+     * @return Customer
+     */
+    public function setIsReseller($isReseller)
+    {
+        $this->isReseller = $isReseller;
+    
+        return $this;
+    }
+
+    /**
+     * Get isReseller
+     *
+     * @return boolean 
+     */
+    public function getIsReseller()
+    {
+        return $this->isReseller;
+    }
+
+    /**
+     * Add ResoldCustomers
+     *
+     * @param \Entities\Customer $resoldCustomers
+     * @return Customer
+     */
+    public function addResoldCustomer(\Entities\Customer $resoldCustomers)
+    {
+        $this->ResoldCustomers[] = $resoldCustomers;
+    
+        return $this;
+    }
+
+    /**
+     * Remove ResoldCustomers
+     *
+     * @param \Entities\Customer $resoldCustomers
+     */
+    public function removeResoldCustomer(\Entities\Customer $resoldCustomers)
+    {
+        $this->ResoldCustomers->removeElement($resoldCustomers);
+    }
+
+    /**
+     * Get ResoldCustomers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getResoldCustomers()
+    {
+        return $this->ResoldCustomers;
+    }
+
+    /**
+     * Set Reseller
+     *
+     * @param \Entities\Customer $reseller
+     * @return Customer
+     */
+    public function setReseller(\Entities\Customer $reseller = null)
+    {
+        $this->Reseller = $reseller;
+    
+        return $this;
+    }
+
+    /**
+     * Get Reseller
+     *
+     * @return \Entities\Customer 
+     */
+    public function getReseller()
+    {
+        return $this->Reseller;
+    }
 }
