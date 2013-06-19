@@ -70,7 +70,7 @@ if( !( $handle = @fopen( $mrtg, "r" ) ) )
 //script overwrites $out file use a to append $out file.
 $dir = dirname( $out );
 if( !is_dir( $dir ) )
-    mkdir( $dir, 700, true );
+    mkdir( $dir, 0700, true );
 
 if( !( $fout = @fopen( $out, "w" ) ) )
     die( "ERROR: cannot open $out\n" );
