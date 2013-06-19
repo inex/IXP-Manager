@@ -30,9 +30,9 @@ mb_internal_encoding('UTF-8');
 mb_language('uni');
 setlocale(LC_ALL, "en_IE.utf8");
 
-require_once( dirname( __FILE__ ) . '/../utils.inc' );
+require_once( dirname( __FILE__ ) . '/../../../bin/utils.inc' );
 define( 'APPLICATION_ENV', scriptutils_get_application_env() );
-define('APPLICATION_PATH', realpath( dirname(__FILE__) . '/../../application' ) );
+define('APPLICATION_PATH', realpath( dirname(__FILE__) . '/../../../application' ) );
 
 set_include_path( implode( PATH_SEPARATOR, array(
     realpath( APPLICATION_PATH . '/../library' ),
@@ -108,7 +108,7 @@ foreach( $em->getRepository( '\\Entities\\Customer' )->findAll() as $cust )
         }
     }
 
-    $out = sprintf( "%s/members/%s/%s-agregate-bits.log",
+    $out = sprintf( "%s/members/%s/%s-aggregate-bits.log",
         $DESTDIR_LOG,
         $cust->getShortname(),
         $cust->getShortname()
