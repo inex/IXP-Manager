@@ -74,9 +74,6 @@ class ContactController extends IXP_Controller_FrontEnd
                     'name'      => 'Name',
                     'position'  => 'Position',
                     'email'     => 'Email',
-                    'phone'     => 'Phone',
-                    'mobile'    => 'Mobile',
-        
                     'created'       => [
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -110,7 +107,10 @@ class ContactController extends IXP_Controller_FrontEnd
         }
         
         // display the same information in the view as the list
-        $this->_feParams->viewColumns = $this->_feParams->listColumns;
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $this->_feParams->viewColumns = $this->_feParams->listColumns;
+        else
+            $this->_feParams->viewColumns = $this->_feParams->listColumns + ['phone'     => 'Phone', 'mobile'    => 'Mobile' ];
     }
 
 
@@ -152,8 +152,52 @@ class ContactController extends IXP_Controller_FrontEnd
     
         if( $id !== null )
             $qb->andWhere( 'c.id = :id' )->setParameter( 'id', $id );
-
-        return $qb->getQuery()->getResult();
+        
+        $data = $qb->getQuery()->getResult();
+        
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            return $data;
+            
+        foreach( $data as $idx => $contact )
+        {
+            $cont = $this->getD2R( '\\Entities\\Contact' )->find($contact['id'] );
+            $roles = [];
+            $groups = [];
+            foreach( $cont->getGroups() as $group )
+            {
+                if( $group->getType() == \Entities\ContactGroup::TYPE_ROLE )
+                    $roles[] = $group->getName();
+                else
+                    $groups[] = $this->_options['contact']['group']['types'][$group->getType() ] . " " . $group->getName();
+            }
+            asort( $roles );
+            asort( $groups );
+            if( $id !== null )
+            {
+                if( $roles )
+                {
+                    $this->_feParams->viewColumns = $this->_feParams->viewColumns + [ 'role'  => 'Role' ];
+                    $data[$idx]['role'] = implode( '<br/>', $roles );
+                }
+                if( $groups )
+                {
+                    $this->_feParams->viewColumns = $this->_feParams->viewColumns + [ 'group'  => 'Group' ];
+                    $data[$idx]['group'] = implode( '<br/>', $groups );
+                }
+            }
+            else if( $roles )
+            {
+                $this->_feParams->listColumns = $this->_feParams->listColumns + [ 'role'            => [
+                        'title'         => 'Role',
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'        => 'contact/list-role.phtml'
+                    ]];
+                $data[$idx]['role'] = $roles;
+            }
+        }
+        //OSS_Debug::dd( $data );
+        return $data;
+        
     }
     
     
