@@ -47,7 +47,7 @@ class IXP_Form_Contact extends IXP_Form
         
         $position = $this->createElement( 'text', 'position' );
         $position->addValidator( 'stringLength', false, array( 1, 50 ) )
-            ->setRequired( true )
+            ->setRequired( false )
             ->setLabel( 'Position' )
             //->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
