@@ -397,7 +397,8 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->view->cust = $c = $this->_loadCustomer();
         $this->view->form = $form = new IXP_Form_Customer_BillingRegistration();
-
+    
+        $old = clone $c->getBillingDetails();
         $form->assignEntityToForm( $c->getBillingDetails(), $this );
         $form->assignEntityToForm( $c->getRegistrationDetails(), $this );
         
@@ -408,6 +409,23 @@ class CustomerController extends IXP_Controller_FrontEnd
             $form->assignFormToEntity( $c->getRegistrationDetails(), $this, true );
 
             $this->getD2EM()->flush();
+            
+            if( $this->_options['billing_updates']['details_dest'] )
+            {
+                $this->view->oldDetails = $old;
+                $this->view->customer = $c;
+                
+                $mail = $this->getMailer();
+                $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
+                    ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Changed' ) )
+                    ->addTo( $this->_options['billing_updates']['details_dest'] , $this->_options['identity']['sitename'] .' - Admin' )
+                    ->setBodyHtml( $this->view->render( 'customer/email/billing-details-canged.phtml' ) )
+                    ->send();
+
+                if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+                    $this->addMessage( "Details has been sent to " . $this->_options['billing_updates']['details_dest'], OSS_Message::INFO );
+            }
+
             $this->addDestinationOnSuccess( $form, $c, true );
         }
     }

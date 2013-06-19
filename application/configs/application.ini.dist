@@ -417,6 +417,14 @@ cli.port_utilisation.recipients[] = "someone-else@example.com"
 meeting.rsvp_to_email = "rsvp@example.com"
 meeting.rsvp_to_name  = "Person Who Looks After This Stuff"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Billing updtes notifier
+;;
+;; Send email with updated billing detail by given address
+;;
+
+billing_updates.details_dest = "nerijus+details_dest@opensolutions.ie"
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

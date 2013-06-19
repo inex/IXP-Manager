@@ -123,9 +123,25 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
         {
             if( $form->isValid( $_POST ) )
             {
+                if( $this->_options['billing_updates']['details_dest'] )
+                    $old = clone $this->getCustomer()->getBillingDetails();
+
                 $form->assignFormToEntity( $this->getCustomer()->getBillingDetails(), $this, true );
                 $this->getD2EM()->flush();
                 $this->addMessage( 'Your billing details have been updated', OSS_Message::SUCCESS );
+                
+                if( $this->_options['billing_updates']['details_dest'] )
+                {
+                    $this->view->oldDetails = $old;
+                    $this->view->customer = $this->getCustomer();
+                    
+                    $mail = $this->getMailer();
+                    $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
+                        ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Changed' ) )
+                        ->addTo( $this->_options['billing_updates']['details_dest'] , $this->_options['identity']['sitename'] .'- Admin' )
+                        ->setBodyHtml( $this->view->render( 'customer/email/billing-details-canged.phtml' ) )
+                        ->send();
+                }
             }
             else
             {
