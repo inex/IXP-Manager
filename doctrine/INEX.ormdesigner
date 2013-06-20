@@ -327,6 +327,7 @@
       <field name="mtu" type="integer" uuid="9d13a2bc-8e8f-4173-8237-7291cd2b2aab"/>
       <field name="trunk" type="boolean" uuid="7bc0973f-b829-4e86-8fff-01cad0033d7b"/>
       <field name="channelgroup" type="integer" uuid="5e0cb020-4918-4766-be8c-b8c2311178dd"/>
+      <field name="fanout_virtual_interface_id" type="integer" required="true" unique="true" uuid="81bae44e-2f20-4c59-83ad-1fcd93a890b3"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\VirtualInterface</attribute>
         <attribute name="table">virtualinterface</attribute>
@@ -335,6 +336,9 @@
     </entity>
     <association from="VirtualInterface" to="Customer" owner-alias="VirtualInterfaces" inverse-alias="Customer" uuid="a6cd1017-f136-4839-a577-7477c6a5a287">
       <association-field from="custid" to="id"/>
+    </association>
+    <association from="VirtualInterface" to="VirtualInterface" owner-alias="PeeringVirtualInterface" inverse-alias="FanoutVirtualInterface" uuid="9b62100a-86c3-40ef-8d69-2031372dd209">
+      <association-field from="fanout_virtual_interface_id" to="id"/>
     </association>
     <entity name="IPv4Address" uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="d2d715d5-e7fc-452c-9081-72e65fc1a1a0"/>
@@ -833,6 +837,7 @@
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0"/>
+    <association uuid="9b62100a-86c3-40ef-8d69-2031372dd209" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20"/>
     <entity uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b" position-x="1112" position-y="839" size-x="0" size-x2="114" size-y="0" size-y2="129"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" position-x="953" position-y="933" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
