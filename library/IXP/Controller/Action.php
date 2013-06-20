@@ -139,6 +139,18 @@ class IXP_Controller_Action extends OSS_Controller_Action
         
         $this->view->customers = $this->_customers;
     }
+
+    /**
+     * Checks if reseller mode is enabled.
+     * 
+     * To enable resller mode set reseller.enable to true in application.ini
+     *
+     * @return bool
+     */
+    protected function resellerMode()
+    {
+        return ( isset( $this->_options['reseller']['enabled'] ) && $this->_options['reseller']['enabled'] );
+    }
     
 }
 
