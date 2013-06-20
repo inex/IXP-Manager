@@ -285,5 +285,38 @@ class IXP_Form_Customer extends IXP_Form
         return $cust;
     }
 
+    /**
+     * Enables reseller form elements in customer form
+     *
+     * @param bool $modeEnabled Status of reseller mode enabled or not.
+     * @return IXP_Form_Customer
+     */
+    public function enableResller( $modeEnabled )
+    {
+        if( !$modeEnabled )
+            return $this;
+
+        $isReseller = $this->createElement( 'checkbox', 'isReseller' );
+        $isReseller->setLabel( 'Is a Reseller' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $isReseller );
+
+        $isResold = $this->createElement( 'checkbox', 'isResold' );
+        $isResold->setLabel( 'Resold Customer' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $isResold );
+
+        $reseller = $this->createElement( 'select', 'reseller' );
+        $reseller->setMultiOptions( [ '0' => '' ] + Zend_Registry::get( 'd2em' )['default']->getRepository( '\\Entities\\Customer' )->getResellerNames() )
+            ->setRegisterInArrayValidator( true )
+            ->setLabel( 'Reseller' )
+            ->setRequired( false )
+            ->setAttrib( 'chzn-fix-width', '1' )
+            ->setAttrib( 'class', 'chzn-select' );
+        $this->addElement( $reseller );
+
+        return $this;
+    }
+
 }
 
