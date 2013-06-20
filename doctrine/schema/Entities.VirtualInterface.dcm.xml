@@ -14,8 +14,14 @@
         <join-column name="custid" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
+    <one-to-one field="FanoutVirtualInterface" target-entity="Entities\VirtualInterface" inversed-by="PeeringVirtualInterface">
+      <join-columns>
+        <join-column name="fanout_virtual_interface_id" referenced-column-name="id" nullable="false" unique="true"/>
+      </join-columns>
+    </one-to-one>
     <one-to-many field="PhysicalInterfaces" target-entity="Entities\PhysicalInterface" mapped-by="VirtualInterface"/>
     <one-to-many field="VlanInterfaces" target-entity="Entities\VlanInterface" mapped-by="VirtualInterface"/>
+    <one-to-one field="PeeringVirtualInterface" target-entity="Entities\VirtualInterface" mapped-by="FanoutVirtualInterface"/>
     <one-to-many field="MACAddresses" target-entity="Entities\MACAddress" mapped-by="VirtualInterface"/>
   </entity>
 </doctrine-mapping>
