@@ -301,6 +301,23 @@ class CustomerController extends IXP_Controller_FrontEnd
         {
             $object->setIRRDB( null );
         }
+
+        if( $this->resellerMode() )
+        {
+            if( $form->getValue( 'isResold' ) )
+            {
+                $reseller = $this->getD2R( "\\Entities\\Customer" )->find( $form->getValue( "reseller" ) );
+                if( !$reseller )
+                {
+                    $form->getElement( "resller" )->setErrorMessages( ['Select Reseller'] )->markAsError();
+                    return false;
+                }
+                $object->setReseller( $reseller );
+                
+            }
+            else
+                $object->setReseller( null );
+        }
         
         return true;
     }
@@ -370,17 +387,28 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
      protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
      {
-         if( $object->getIRRDB() instanceof \Entities\IRRDBConfig )
-             $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
+        if( $object->getIRRDB() instanceof \Entities\IRRDBConfig )
+            $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
 
-         if( $isEdit )
-         {
+        $form->enableResller( $this->resellerMode() );
+        
+        if( $this->resellerMode() )
+        {
+            if( $object->getReseller() instanceof \Entities\Customer )
+            {
+                $form->getElement( 'isResold' )->setValue( true );
+                $form->getElement( 'reseller' )->setValue( $object->getReseller()->getId() );
+            }
+        }
+
+        if( $isEdit )
+        {
             $form->assignEntityToForm( $object->getBillingDetails(), $this );
             $form->assignEntityToForm( $object->getRegistrationDetails(), $this );
             $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $object->getId() ] ) );
-         }
+        }
          
-         return true;
+        return true;
      }
 
 
