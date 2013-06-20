@@ -19,5 +19,11 @@
         <join-column name="virtualinterfaceid" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
+    <one-to-one field="FanoutPhysicalInterface" target-entity="Entities\PhysicalInterface" inversed-by="PeeringPhysicalInterface">
+      <join-columns>
+        <join-column name="fanout_physical_interface_id" referenced-column-name="id" nullable="false" unique="true"/>
+      </join-columns>
+    </one-to-one>
+    <one-to-one field="PeeringPhysicalInterface" target-entity="Entities\PhysicalInterface" mapped-by="FanoutPhysicalInterface"/>
   </entity>
 </doctrine-mapping>
