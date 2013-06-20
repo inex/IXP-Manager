@@ -84,9 +84,12 @@ class IXP_Controller_Action extends OSS_Controller_Action
         // we need this for access to class constants in the template
         $this->view->registerClass( 'USER',     '\\Entities\\User' );
         $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
+        $this->view->resellerMode = $this->resellerMode();
         
         if( $this->getAuth()->hasIdentity() && $this->getUser()->getPrivs() == Entities\User::AUTH_SUPERUSER )
             $this->superUserSetup();
+
+        
     }
 
     /**

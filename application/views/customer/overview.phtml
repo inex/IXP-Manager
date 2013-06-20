@@ -18,7 +18,13 @@
             {if $cust->hasLeft()}
                 <span class="label label-important">ACCOUNT CLOSED</span>
             {/if}
+            {if $resellerMode && $cust->getIsReseller()}
+                <span class="label">Reseller</span>
+            {/if}
         </h3>
+        {if $resellerMode && $cust->getReseller()}
+            <P style="margin-left: 15px;">Resold customer by <a href="{genUrl controller=$controller action=$action id=$cust->getReseller()->getId()}">{$cust->getReseller()->getName()}</P>
+        {/if}
     </li>
     <li class="pull-right" style="margin-top: 12px;">
         <div class="btn-toolbar" style="display: inline;">
