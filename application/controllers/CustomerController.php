@@ -317,6 +317,13 @@ class CustomerController extends IXP_Controller_FrontEnd
             }
             else
                 $object->setReseller( null );
+
+            if( !$form->getValue( 'isReseller' ) && $object->getIsReseller() && count( $object->getResoldCustomers() ) )
+            {
+                $form->getElement( 'isReseller' )->setErrorMessages( [''] )->markAsError();
+                $this->addMessage( 'You can not change reseller state because you have resold customers. You nead to reassign them first.', OSS_Message::INFO );
+                return false;
+            }
         }
         
         return true;
