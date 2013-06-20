@@ -138,9 +138,6 @@ class CustomerController extends IXP_Controller_FrontEnd
         );
     }
     
-    
-    
-    
     /**
      * Provide array of customers for the listAction and viewAction
      *
@@ -428,7 +425,10 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->view->cust = $c = $this->_loadCustomer();
         $this->view->form = $form = new IXP_Form_Customer_BillingRegistration();
 
-        $form->assignEntityToForm( $c->getBillingDetails(), $this );
+        if( ( !isset( $this->_options['reseller']['no_billing_for_resold_customers'] ) || !$this->_options['reseller']['no_billing_for_resold_customers']  )
+            || !$this->resellerMode() || !$c->isResoldCustomer() )
+            $form->assignEntityToForm( $c->getBillingDetails(), $this );
+        
         $form->assignEntityToForm( $c->getRegistrationDetails(), $this );
         
         // Process a submitted form if it passes initial validation

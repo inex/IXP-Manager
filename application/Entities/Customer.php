@@ -1755,6 +1755,26 @@ class Customer
     }
 
     /**
+     * Checks if customer is reseller
+     *
+     * @return boolean 
+     */
+    public function isReseller()
+    {
+        return $this->isReseller;
+    }
+
+    /**
+     * Checks if customer is resold customer
+     *
+     * @return boolean 
+     */
+    public function isResoldCustomer()
+    {
+        return $this->getReseller() ? true : false;
+    }
+
+    /**
      * Add ResoldCustomers
      *
      * @param \Entities\Customer $resoldCustomers

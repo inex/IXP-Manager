@@ -6,27 +6,6 @@
 <div class="row-fluid">
 
     <div class="span6">
-         <legend>Billing Details</legend>
-
-            {$element->billingContactName}
-            {$element->billingFrequency}
-            {$element->billingAddress1}
-            {$element->billingAddress2}
-            {$element->billingTownCity}
-            {$element->billingPostcode}
-            {$element->billingCountry}
-            {$element->billingEmail}
-            {$element->billingTelephone}
-            {$element->purchaseOrderRequired}
-            {$element->invoiceMethod}
-            {$element->invoiceEmail}
-            {$element->vatRate}
-            {$element->vatNumber}
-
-        </fieldset>
-    </div>
-
-    <div class="span6">
     
          <fieldset>
             <legend>Registration Details</legend>
@@ -44,6 +23,29 @@
         </fieldset>
 
         
+    </div>
+
+    <div class="span6">
+        {if (!isset( $options.reseller.no_billing_for_resold_customers ) || !$options.reseller.no_billing_for_resold_customers ) || !$resellerMode || !$cust->isResoldCustomer() }
+            <legend>Billing Details</legend>
+
+                {$element->billingContactName}
+                {$element->billingFrequency}
+                {$element->billingAddress1}
+                {$element->billingAddress2}
+                {$element->billingTownCity}
+                {$element->billingPostcode}
+                {$element->billingCountry}
+                {$element->billingEmail}
+                {$element->billingTelephone}
+                {$element->purchaseOrderRequired}
+                {$element->invoiceMethod}
+                {$element->invoiceEmail}
+                {$element->vatRate}
+                {$element->vatNumber}
+
+            </fieldset>
+        {/if}
     </div>
 
     

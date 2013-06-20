@@ -83,6 +83,16 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Enables resller mode
+;;
+reseller.enabled = true
+;;
+;; If reseller mode enabled and this is set to true then super admin or customer itself
+;; can not add/change resold customers details.
+;;
+reseller.no_billing_for_resold_customers = true
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; We use Minify to bundle and compress CSS and JS in

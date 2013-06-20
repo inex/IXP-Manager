@@ -60,7 +60,7 @@
                     </li>
                     <li>
                         <a href="{genUrl controller=$controller action="billing-registration" id=$cust->getId()}">
-                            {if (!isset( $options.reseller.no_billing_for_resold_customers ) || !$options.reseller.no_billing_for_resold_customers ) || !$resellerMode}
+                            {if (!isset( $options.reseller.no_billing_for_resold_customers ) || !$options.reseller.no_billing_for_resold_customers ) || !$resellerMode || !$cust->isResoldCustomer()}
                                 Edit Billing/Registration Details
                             {else}
                                 Edit Registration Details

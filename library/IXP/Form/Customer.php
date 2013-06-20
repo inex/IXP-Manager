@@ -101,7 +101,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Status' )
             ->setRequired( true )
-            ->setAttrib( 'class', 'chzn-select span2' )
+            ->setAttrib( 'class', 'chzn-select span3' )
             ->setErrorMessages( array( 'Please set the customer\'s status' ) );
         $this->addElement( $status );
         
@@ -152,7 +152,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Peering Policy' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span2' );
+            ->setAttrib( 'class', 'chzn-select span3' );
         
         $this->addElement( $peeringpolicy );
         
