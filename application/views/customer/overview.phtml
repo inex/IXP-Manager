@@ -60,7 +60,11 @@
                     </li>
                     <li>
                         <a href="{genUrl controller=$controller action="billing-registration" id=$cust->getId()}">
-                            Edit Billing/Registration Details
+                            {if (!isset( $options.reseller.no_billing_for_resold_customers ) || !$options.reseller.no_billing_for_resold_customers ) || !$resellerMode}
+                                Edit Billing/Registration Details
+                            {else}
+                                Edit Registration Details
+                            {/if}
                         </a>
                     </li>
                 </ul>
@@ -113,7 +117,7 @@
         </li>
 
         <li>
-            <a href="#billing" data-toggle="tab">Billing</a>
+            <a href="#details" data-toggle="tab">Details</a>
         </li>
             
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
@@ -184,8 +188,8 @@
             {tmplinclude file="customer/overview-tabs/overview.phtml"}
         </div>
 
-        <div class="tab-pane" id="billing">
-            {tmplinclude file="customer/overview-tabs/billing.phtml"}
+        <div class="tab-pane" id="details">
+            {tmplinclude file="customer/overview-tabs/details.phtml"}
         </div>
 
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
