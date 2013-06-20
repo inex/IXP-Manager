@@ -76,6 +76,15 @@ class PhysicalInterface
      */
     private $VirtualInterface;
 
+    /**
+     * @var \Entities\PhysicalInterface
+     */
+    private $FanoutPhysicalInterface;
+
+    /**
+     * @var \Entities\PhysicalInterface
+     */
+    private $PeeringPhysicalInterface;
 
     /**
      * Set status
@@ -246,5 +255,52 @@ class PhysicalInterface
     public function getVirtualInterface()
     {
         return $this->VirtualInterface;
+    }
+
+
+    /**
+     * Set FanoutPhysicalInterface
+     *
+     * @param \Entities\PhysicalInterface $fanoutPhysicalInterface
+     * @return PhysicalInterface
+     */
+    public function setFanoutPhysicalInterface(\Entities\PhysicalInterface $fanoutPhysicalInterface = null)
+    {
+        $this->FanoutPhysicalInterface = $fanoutPhysicalInterface;
+    
+        return $this;
+    }
+
+    /**
+     * Get FanoutPhysicalInterface
+     *
+     * @return \Entities\PhysicalInterface 
+     */
+    public function getFanoutPhysicalInterface()
+    {
+        return $this->FanoutPhysicalInterface;
+    }
+
+    /**
+     * Set PeeringPhysicalInterface
+     *
+     * @param \Entities\PhysicalInterface $peeringPhysicalInterface
+     * @return PhysicalInterface
+     */
+    public function setPeeringPhysicalInterface(\Entities\PhysicalInterface $peeringPhysicalInterface = null)
+    {
+        $this->PeeringPhysicalInterface = $peeringPhysicalInterface;
+    
+        return $this;
+    }
+
+    /**
+     * Get PeeringPhysicalInterface
+     *
+     * @return \Entities\PhysicalInterface 
+     */
+    public function getPeeringPhysicalInterface()
+    {
+        return $this->PeeringPhysicalInterface;
     }
 }
