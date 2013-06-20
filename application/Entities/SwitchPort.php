@@ -37,7 +37,7 @@ class SwitchPort
         self::TYPE_CORE       => 'Core',
         self::TYPE_OTHER      => 'Other',
         self::TYPE_MANAGEMENT => 'Management',
-        self::TYPE_FANOUT     => 'Reseller Fanout'
+        self::TYPE_FANOUT     => 'Fanout'
     );
     
     // This array is for matching data from OSS_SNMP to the switchport database table.

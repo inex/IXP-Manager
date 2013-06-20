@@ -315,4 +315,18 @@ class VirtualInterface
     {
         return $this->Customer;
     }
+
+    /**
+     * Get Type
+     * Returns type of first physical interface switchport in physicalInterfaces list.
+     *
+     * @return string|bool 
+     */
+    public function getType()
+    {
+        if( count( $this->getPhysicalInterfaces() ) )
+            return $this->getPhysicalInterfaces()[0]->getSwitchPort()->getType();
+        else
+            return false;
+    }
 }

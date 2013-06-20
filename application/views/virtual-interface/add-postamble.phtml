@@ -21,8 +21,8 @@
             <thead>
                 <tr>
                     <th>Location</th>
-                    <th>Switch</th>
-                    <th>Port</th>
+                    <th>Peering Port</th>
+                    <th>Fanout Port</th>
                     <th>Speed/Duplex</th>
                     <th></th>
                 </tr>
@@ -36,10 +36,22 @@
                         {if $int->getSwitchPort()->getSwitcher()->getCabinet()}{$int->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}{/if}
                     </td>
                     <td>
-                        {$int->getSwitchPort()->getSwitcher()->getName()}
+                        {if $int->getSwitchPort()->getType() != SwitchPort::TYPE_FANOUT}
+                            {$int->getSwitchPort()->getSwitcher()->getName()}::{$int->getSwitchPort()->getIfName()}
+                        {else if $int->getPeeringPhysicalInterface()}
+                            <a href="{genUrl controller=$controller action=$action id=$int->getPeeringPhysicalInterface()->getVirtualInterface()->getId()}">
+                                {$int->getPeeringPhysicalInterface()->getSwitchPort()->getSwitcher()->getName()}::{$int->getPeeringPhysicalInterface()->getSwitchPort()->getIfName()}
+                            </a>
+                        {/if}
                     </td>
                     <td>
-                        {$int->getSwitchPort()->getName()}
+                        {if $int->getSwitchPort()->getType() == SwitchPort::TYPE_FANOUT}
+                            {$int->getSwitchPort()->getSwitcher()->getName()}::{$int->getSwitchPort()->getIfName()}
+                        {else if $int->getFanoutPhysicalInterface()}
+                            <a href="{genUrl controller=$controller action=$action id=$int->getFanoutPhysicalInterface()->getVirtualInterface()->getId()}">
+                                {$int->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName()}::{$int->getFanoutPhysicalInterface()->getSwitchPort()->getIfName()}
+                            </a>
+                        {/if}
                     </td>
                     <td>
                         {$int->getSpeed()}/{$int->getDuplex()}
