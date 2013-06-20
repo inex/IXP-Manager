@@ -252,6 +252,7 @@
       <field name="duplex" type="string" size="16" uuid="ed6840cf-769f-40b8-bfb4-a68a30d480c4"/>
       <field name="monitorindex" type="integer" uuid="c515c52e-8f2d-4cc0-8862-584c0bb8d636"/>
       <field name="notes" type="text" uuid="eed9d024-c35e-4c89-802a-7fcbf392067f"/>
+      <field name="fanout_physical_interface_id" type="integer" unique="true" uuid="d8b65def-02ef-4aef-a766-dfa92e3b9284"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\PhysicalInterface</attribute>
         <attribute name="table">physicalinterface</attribute>
@@ -263,6 +264,9 @@
     </association>
     <association from="PhysicalInterface" to="VirtualInterface" owner-alias="PhysicalInterfaces" inverse-alias="VirtualInterface" uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6">
       <association-field from="virtualinterfaceid" to="id"/>
+    </association>
+    <association from="PhysicalInterface" to="PhysicalInterface" owner-alias="PeeringPhysicalInterface" inverse-alias="FanoutPhysicalInterface" uuid="1166ebf0-8024-4783-9af3-61e1b4f61070">
+      <association-field from="fanout_physical_interface_id" to="id"/>
     </association>
     <entity name="VlanInterface" uuid="bad4f785-8f04-4d84-8cc9-36f638715559">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="7ee46365-d03c-4418-b7be-ddfebaf9420e"/>
@@ -327,7 +331,6 @@
       <field name="mtu" type="integer" uuid="9d13a2bc-8e8f-4173-8237-7291cd2b2aab"/>
       <field name="trunk" type="boolean" uuid="7bc0973f-b829-4e86-8fff-01cad0033d7b"/>
       <field name="channelgroup" type="integer" uuid="5e0cb020-4918-4766-be8c-b8c2311178dd"/>
-      <field name="fanout_virtual_interface_id" type="integer" required="true" unique="true" uuid="81bae44e-2f20-4c59-83ad-1fcd93a890b3"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\VirtualInterface</attribute>
         <attribute name="table">virtualinterface</attribute>
@@ -336,9 +339,6 @@
     </entity>
     <association from="VirtualInterface" to="Customer" owner-alias="VirtualInterfaces" inverse-alias="Customer" uuid="a6cd1017-f136-4839-a577-7477c6a5a287">
       <association-field from="custid" to="id"/>
-    </association>
-    <association from="VirtualInterface" to="VirtualInterface" owner-alias="PeeringVirtualInterface" inverse-alias="FanoutVirtualInterface" uuid="9b62100a-86c3-40ef-8d69-2031372dd209">
-      <association-field from="fanout_virtual_interface_id" to="id"/>
     </association>
     <entity name="IPv4Address" uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="d2d715d5-e7fc-452c-9081-72e65fc1a1a0"/>
@@ -809,9 +809,10 @@
     <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" position-x="396" position-y="718" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
     <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" position-x="595" position-y="350" size-x="0" size-x2="186" size-y="0" size-y2="465"/>
     <entity uuid="076963b5-cef4-4b77-8d41-8c1c8f1916a1" position-x="1111" position-y="-151" size-x="0" size-x2="137" size-y="0" size-y2="129"/>
-    <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" position-x="801" position-y="153" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
+    <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" position-x="802" position-y="145" size-x="0" size-x2="183" size-y="0" size-y2="143"/>
     <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
     <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
+    <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20"/>
     <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" position-x="1277" position-y="-133" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" position-x="1235" position-y="193" size-x="0" size-x2="122" size-y="0" size-y2="101"/>
     <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="128" center-position-y="0"/>
@@ -827,7 +828,7 @@
     <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0"/>
     <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" position-x="175" position-y="631" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
     <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="1582" size-y="60" size-y2="1343"/>
-    <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="18" center-position-y="0"/>
+    <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="0" center-position-y="0"/>
     <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
     <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" position-x="598" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="143"/>
@@ -837,13 +838,12 @@
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0"/>
-    <association uuid="9b62100a-86c3-40ef-8d69-2031372dd209" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20"/>
     <entity uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b" position-x="1112" position-y="839" size-x="0" size-x2="114" size-y="0" size-y2="129"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" position-x="953" position-y="933" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
     <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" position-x="805" position-y="323" size-x="0" size-x2="126" size-y="0" size-y2="101"/>
     <association uuid="ab08b405-788c-4579-bc8d-3445b6ba3821" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-56"/>
-    <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" position-x="983" position-y="93" size-x="0" size-x2="158" size-y="0" size-y2="339"/>
+    <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>
     <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" position-x="641" position-y="-14" size-x="0" size-x2="132" size-y="0" size-y2="199"/>
     <association uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <association uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
