@@ -153,14 +153,36 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
      * @return void
      */
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
-    {
+    {        
         if( $isEdit )
         {
+            $form->enableFanoutPort( $this->resellerMode() && $object->getVirtualInterface()->getCustomer()->isResoldCustomer() );
+
             $form->getElement( 'switchid' )->setValue( $object->getSwitchPort()->getSwitcher()->getId() );
             $form->getElement( 'switchportid' )->setValue( $object->getSwitchPort()->getId() );
             $form->getElement( 'preselectSwitchPort' )->setValue( $object->getSwitchPort()->getId() );
             $form->getElement( 'preselectPhysicalInterface' )->setValue( $object->getId() );
             $form->getElement( 'virtualinterfaceid' )->setValue( $object->getVirtualInterface()->getId() );
+
+            if( $form->getElement( 'fanout' ) )
+            {
+                if( $object->getFanoutPhysicalInterface() )
+                {
+                    $form->getElement( 'fanout' )->setValue( true );
+                    $form->getElement( 'fn_switchid' )->setValue( $object->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getId() );
+                    $form->getElement( 'fn_switchportid' )->setValue( $object->getFanoutPhysicalInterface()->getSwitchPort()->getId() );
+                    $form->getElement( 'fn_monitorindex' )->setValue( $object->getFanoutPhysicalInterface()->getMonitorindex() );
+
+                    $form->getElement( 'fn_preselectSwitchPort' )->setValue( $object->getFanoutPhysicalInterface()->getSwitchPort()->getId() );
+                    $form->getElement( 'fn_preselectPhysicalInterface' )->setValue( $object->getFanoutPhysicalInterface()->getId() );
+                }
+                else
+                {
+                    $form->getElement( 'fn_monitorindex' )->setValue(
+                        $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $object->getVirtualInterface()->getCustomer()->getReseller() )
+                    );
+                }
+            }
             
             if( $this->getParam( 'rtn', false ) == 'pi' )
                 $form->setAction( OSS_Utils::genUrl( 'physical-interface', 'edit', false, [ 'id' => $object->getId(), 'rtn' => 'pi' ] ) );
@@ -179,6 +201,8 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
                 $this->addMessage( 'You need a containing virtual interface before you add a physical interface', OSS_Message::ERROR );
                 $this->redirect( 'virtual-interface/add' );
             }
+
+            $form->enableFanoutPort( $this->resellerMode() && $vint->getCustomer()->isResoldCustomer() );
             
             $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
             $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'edit', false, [ 'id' => $vint->getId() ] ) );
@@ -189,7 +213,15 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
                     $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $vint->getCustomer() )
                 );
             }
+
+            if( $form->getElement( 'fanout' ) )
+            {
+                $form->getElement( 'fn_monitorindex' )->setValue(
+                    $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $vint->getCustomer()->getReseller() )
+                );
+            }
         }
+
     }
     
     
@@ -208,11 +240,124 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
         
         $object->setSwitchPort( $sp );
         
-        $object->setVirtualInterface(
-            $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $form->getElement( 'virtualinterfaceid' )->getValue() )
-        );
+        $vi =  $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $form->getElement( 'virtualinterfaceid' )->getValue() );
+        $object->setVirtualInterface( $vi );
+
+        if( $form->getElement( 'fanout' ) )
+        {
+            if( !$this->_processFanoutPhysicalInterface( $form, $object, $vi ) )
+                return false;
+        }
+        
+        if( $object->getRelatedInterface() )
+        {
+            $object->getRelatedInterface()->setSpeed( $form->getValue( "speed" ) );
+            $object->getRelatedInterface()->setStatus( $form->getValue( "status" ) );
+            $object->getRelatedInterface()->setDuplex( $form->getValue( "duplex" ) );
+        }
+        return true;
+    }
+
+
+    private function _processFanoutPhysicalInterface( $form, $object, $vi )
+    {
+        if( $form->getValue( 'fanout' ) )
+        {
+            if( !$form->getValue( 'fn_switchid' ) )
+            {
+                $form->getElement( 'fn_switchid' )->setErrorMessages( ['Please select a switch'] )->markAsError();
+                $form->getElement( 'fn_switchportid' )->setErrorMessages( ['Please select a switchport'] )->markAsError();
+                return false;
+            }
+            else if( !$form->getValue( 'fn_switchportid' ) )
+            {
+                $form->getElement( 'fn_switchportid' )->setErrorMessages( ['Please select a switchport'] )->markAsError();
+                return false;
+            }
+            else if( !$form->getValue( 'fn_monitorindex' ) )
+            {
+                $form->getElement( 'fn_monitorindex' )->setErrorMessages( ['This value can not be empty.'] )->markAsError();
+                return false;
+            }
+
+            $fnsp = $this->getD2R( '\\Entities\\SwitchPort' )->find( $form->getElement( 'fn_switchportid' )->getValue() );
+            $fnsp->setType( \Entities\SwitchPort::TYPE_FANOUT );
+            if( !$fnsp->getPhysicalInterface() )
+            {
+                
+                $fnphi = new \Entities\PhysicalInterface();
+                $this->getD2EM()->persist( $fnphi );
+                $fnphi->setSwitchPort( $fnsp );
+                $fnsp->setPhysicalInterface( $fnphi );
+                $fnphi->setMonitorindex( $form->getValue( "fn_monitorindex" ) );
+
+            }
+            else
+            {
+                $fnphi = $fnsp->getPhysicalInterface();
+                if( $fnsp->getPhysicalInterface()->getRelatedInterface() && $fnsp->getPhysicalInterface()->getRelatedInterface()->getId() != $object->getId() )
+                {
+                    $this->addMesssage( "Selected fanout port already have related physical interface.", OSS_Message::ERROR );
+                    return false;
+                }
+                
+            }
+            
+            if( $object->getRelatedInterface() )
+            {
+                if( !$fnphi->getVirtualInterface() )
+                {
+                    $object->getRelatedInterface()->getVirtualInterface()->addPhysicalInterface( $fnphi );
+                    $fnphi->setVirtualInterface( $object->getRelatedInterface()->getVirtualInterface() );
+                }
+                
+                $this->_removeRelatedInterface( $object );
+            }
+            else if( !$fnphi->getVirtualInterface() )
+            {
+                
+                $fnvi = new \Entities\VirtualInterface();
+                $this->getD2EM()->persist( $fnvi );
+                $fnvi->setCustomer( $vi->getCustomer()->getReseller() );
+                $fnvi->addPhysicalInterface( $fnphi );
+                $fnphi->setVirtualInterface( $fnvi );  
+            }
+
+            $object->setFanoutPhysicalInterface( $fnphi );
+            $fnphi->setPeeringPhysicalInterface( $object );
+        }
+        else if( $object->getRelatedInterface() )
+        {
+            $this->_removeRelatedInterface( $object );
+            $object->setFanoutPhysicalInterface( null );
+        }
 
         return true;
+    }
+
+    /**
+     * Removes related interface
+     *
+     * Removes related interface and if it only one physical interface removes it also
+     *
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @return void
+     */
+    private function _removeRelatedInterface( $object )
+    {
+        $object->getRelatedInterface()->getSwitchPort()->setType( \Entities\SwitchPort::TYPE_UNSET );
+        if( count( $object->getRelatedInterface()->getVirtualInterface()->getPhysicalInterfaces() ) == 1 )
+        {                   
+            foreach( $object->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $fnvi )
+                $this->getD2EM()->remove( $fnvi );
+
+            $this->getD2EM()->remove( $object->getRelatedInterface()->getVirtualInterface() );
+            $this->getD2EM()->remove( $object->getRelatedInterface() );
+        }
+        else
+        {
+            $this->getD2EM()->remove( $object->getRelatedInterface() );
+        }
     }
     
     /**
@@ -252,6 +397,36 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
         );
         
         $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $this->getParam( 'vintid' ) );
+    }
+
+    /**
+     * Function which can be over-ridden to perform any post-deletion tasks
+     *
+     * Database `flush()` has been successfully completed at this stage
+     *
+     * If you return with true, then the standard log message and OSS_Message
+     * will be performed. If you want to override these, return false.
+     *
+     * NB: also calls `postFlush()`
+     *
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel standard log and OSS_Message
+     */
+    protected function postDelete( $object )
+    {
+        if( $object->getFanoutPhysicalInterface() )
+        {
+            $this->_removeRelatedInterface( $object );
+        }
+        else if( $object->getPeeringPhysicalInterface() )
+        {
+            $this->addMessage( "Peering port left withot related fanout port", OSS_Message::INFO );
+            $object->getSwitchPort()->setType( \Entities\SwitchPort::TYPE_UNSET );
+            $object->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
+        }
+        $this->getD2EM()->flush();
+
+        return $this->postFlush( $object );
     }
     
 }
