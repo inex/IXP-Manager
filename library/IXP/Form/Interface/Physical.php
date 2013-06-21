@@ -36,14 +36,15 @@ class IXP_Form_Interface_Physical extends IXP_Form
 
     public function init()
     {
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'physical-interface/forms/edit.phtml' ] ] ] );
+
         $this->addElement( IXP_Form_Switch::getPopulatedSelect( 'switchid' ) );
         
         $switchPorts = $this->createElement( 'select', 'switchportid' );
-
         $switchPorts->setRequired( true )
             ->setRegisterInArrayValidator( false )
             ->setLabel( 'Port' )
-            ->setAttrib( 'class', 'chzn-select span2' )
+            ->setAttrib( 'class', 'chzn-select span4' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a switch port' ) );
         $this->addElement( $switchPorts );
@@ -54,7 +55,7 @@ class IXP_Form_Interface_Physical extends IXP_Form
         $status = $this->createElement( 'select', 'status' );
         $status->setMultiOptions( \Entities\PhysicalInterface::$STATES )
             ->setRegisterInArrayValidator( true )
-            ->setAttrib( 'class', 'chzn-select span2' )
+            ->setAttrib( 'class', 'chzn-select span4' )
             ->setLabel( 'Status' )
             ->setErrorMessages( array( 'Please set the status' ) );
         $this->addElement( $status );
@@ -63,7 +64,7 @@ class IXP_Form_Interface_Physical extends IXP_Form
         $speed = $this->createElement( 'select', 'speed' );
         $speed->setMultiOptions( \Entities\PhysicalInterface::$SPEED )
             ->setRegisterInArrayValidator( true )
-            ->setAttrib( 'class', 'chzn-select span2' )
+            ->setAttrib( 'class', 'chzn-select span3' )
             ->setLabel( 'Speed' )
             ->setErrorMessages( array( 'Please set the speed' ) );
         $this->addElement( $speed );
@@ -72,7 +73,7 @@ class IXP_Form_Interface_Physical extends IXP_Form
         $duplex = $this->createElement( 'select', 'duplex' );
         $duplex->setMultiOptions( \Entities\PhysicalInterface::$DUPLEX )
             ->setRegisterInArrayValidator( true )
-            ->setAttrib( 'class', 'chzn-select span2' )
+            ->setAttrib( 'class', 'chzn-select span3' )
             ->setLabel( 'Duplex' )
             ->setErrorMessages( array( 'Please set the duplex' ) );
         $this->addElement( $duplex );
@@ -90,7 +91,6 @@ class IXP_Form_Interface_Physical extends IXP_Form
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'span3' )
             ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 60 )
             ->setAttrib( 'rows', 5 );
@@ -104,6 +104,55 @@ class IXP_Form_Interface_Physical extends IXP_Form
         
         $preselectPhysicalInterface = $this->createElement( 'hidden', 'preselectPhysicalInterface' );
         $this->addElement( $preselectPhysicalInterface );
+    }
+
+    /**
+     * Enables Fanout ports form elements in customer form
+     *
+     * @param bool $modeEnabled Status of reseller mode enabled or not.
+     * @return IXP_Form_Customer
+     */
+    public function enableFanoutPort( $modeEnabled )
+    {
+        if( !$modeEnabled )
+            return $this;
+
+        $fanout = $this->createElement( 'checkbox', 'fanout' );
+        $fanout->setLabel( 'Associate a fanout port' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $fanout );
         
+        $switcher = IXP_Form_Switch::getPopulatedSelect( 'fn_switchid' );
+        $switcher->setRequired( false )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
+            ->removeValidator( 'between' );
+        $this->addElement( $switcher );
+
+        $switchPorts = $this->createElement( 'select', 'fn_switchportid' );
+        $switchPorts->setRequired( false )
+            ->setRegisterInArrayValidator( false )
+            ->setLabel( 'Port' )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
+            ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
+            ->setErrorMessages( array( 'Please select a switch port' ) );
+        $this->addElement( $switchPorts );
+
+        $monitorindex = $this->createElement( 'text', 'fn_monitorindex' );
+        $monitorindex->addValidator( 'int' )
+            ->setLabel( 'Monitor Index' )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $monitorindex );
+
+        $preselectSwitchPort = $this->createElement( 'hidden', 'fn_preselectSwitchPort' );
+        $this->addElement( $preselectSwitchPort );
+        
+        $preselectPhysicalInterface = $this->createElement( 'hidden', 'fn_preselectPhysicalInterface' );
+        $this->addElement( $preselectPhysicalInterface );
+
+        return $this;
     }
 }

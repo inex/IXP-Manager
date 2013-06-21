@@ -1,0 +1,65 @@
+
+<form class="form-horizontal" enctype="application/x-www-form-urlencoded"
+        accept-charset="UTF-8" method="post" horizontal="1"
+        {if $isEdit}
+            action="{genUrl controller="physical-interface" action="edit" id=$object->getId()}"
+        {else}
+            action="{genUrl controller="physical-interface" action="add"}"
+        {/if}>
+            
+<div class="row-fluid">
+
+    <div class="span6">
+        <fieldset>
+            {$element->switchid}
+            {$element->switchportid}
+            {$element->status}
+            {$element->speed}
+            {$element->duplex}
+            {$element->monitorindex}
+            {$element->notes}
+            {$element->virtualinterfaceid}
+            {$element->preselectSwitchPort}
+            {$element->preselectPhysicalInterface}
+        </fieldset>
+        
+    </div>
+
+    <div class="span6">
+        <fieldset>
+            {if $element->fanout}
+                {$element->fanout}
+                <div id="fn_details" {if !$element->fanout->getValue()}style="display: none;"{/if}>
+                    {$element->fn_switchid}
+                    {$element->fn_switchportid}
+                    {$element->fn_monitorindex}
+                    {$element->fn_preselectSwitchPort}
+                    {$element->fn_preselectPhysicalInterface}
+                </div>
+            {/if}
+        </fieldset>
+    </div>
+</div>
+
+
+<div class="form-actions">
+
+    {$element->cancel}
+    {$element->submit}
+
+</div>
+
+    
+</form>
+
+{if $element->fanout}
+    <script type="text/javascript">
+        $( '#fanout' ).on( 'change', function(){
+            if( $( this ).prop( "checked" ) )
+                $( '#fn_details' ).slideDown( 'slow' );
+            else
+                $( '#fn_details' ).slideUp( 'slow' );
+        });
+    </script>
+{/if}
+
