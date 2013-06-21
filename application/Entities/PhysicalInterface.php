@@ -303,4 +303,24 @@ class PhysicalInterface
     {
         return $this->PeeringPhysicalInterface;
     }
+
+    /**
+     * Gets Peearing/Fanout realtions
+     * 
+     * If switch port typs is peering and it have fanout physical interface function will return it else if 
+     * switch port typs is fanout and it have physical physical interface it will return it or if non of these
+     * conditions is satisfied function will return false
+     * 
+     * @return \Entities\PhysicalInterface|bool
+     */
+    public function getRelatedInterface()
+    {
+        if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $this->getPeeringPhysicalInterface() )
+            return $this->getPeeringPhysicalInterface();
+        else if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $this->getFanoutPhysicalInterface() )
+            return $this->getFanoutPhysicalInterface();
+        else
+            return false;
+        
+    }
 }
