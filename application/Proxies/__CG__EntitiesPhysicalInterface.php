@@ -159,6 +159,12 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         return parent::getPeeringPhysicalInterface();
     }
 
+    public function getRelatedInterface()
+    {
+        $this->__load();
+        return parent::getRelatedInterface();
+    }
+
 
     public function __sleep()
     {

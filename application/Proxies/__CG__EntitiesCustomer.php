@@ -759,6 +759,18 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getIsReseller();
     }
 
+    public function isReseller()
+    {
+        $this->__load();
+        return parent::isReseller();
+    }
+
+    public function isResoldCustomer()
+    {
+        $this->__load();
+        return parent::isResoldCustomer();
+    }
+
     public function addResoldCustomer(\Entities\Customer $resoldCustomers)
     {
         $this->__load();
