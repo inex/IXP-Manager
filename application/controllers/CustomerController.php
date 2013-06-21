@@ -299,6 +299,19 @@ class CustomerController extends IXP_Controller_FrontEnd
             $object->setIRRDB( null );
         }
 
+        return $this->_setReseller( $form, $object );
+    }
+
+    
+    /**
+     * Sets reseller to customer from form
+     *
+     * @param IXP_Form_Customer $form The Send form object
+     * @param \Entities\Customer $object The Doctrine2 entity (being edited or blank for add)
+     * @return bool If false, the form is not processed
+     */
+    private function _setReseller( $form, $object )
+    {
         if( $this->resellerMode() )
         {
             if( $form->getValue( 'isResold' ) )
@@ -309,11 +322,43 @@ class CustomerController extends IXP_Controller_FrontEnd
                     $form->getElement( "resller" )->setErrorMessages( ['Select Reseller'] )->markAsError();
                     return false;
                 }
+
+                if( $object->getReseller() && $object->getReseller()->getId() != $form->getValue( 'reseller' ) )
+                {
+                    foreach( $object->getVirtualInterfaces() as $viInt )
+                    {
+                        foreach( $viInt->getPhysicalInterfaces() as $phInt )
+                        {
+                            if( $phInt->getFanoutPhysicalInterface() 
+                                && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
+                            {
+                                $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
+                                $this->addMessage( 'You can not change reseller because where are still related ports. You nead to reassign them first.', OSS_Message::INFO );
+                                return false;
+                            }
+                        }
+                    }
+                }
                 $object->setReseller( $reseller );
-                
             }
-            else
+            else if( $object->getReseller() )
+            {
+                foreach( $object->getVirtualInterfaces() as $viInt )
+                {
+                    foreach( $viInt->getPhysicalInterfaces() as $phInt )
+                    {
+                        if( $phInt->getFanoutPhysicalInterface() 
+                            && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
+                        {
+                            $form->getElement( 'isResold' )->setValue(1);
+                            $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
+                            $this->addMessage( 'You can not change resold customer state because where are still related ports. You nead to reassign them first.', OSS_Message::INFO );
+                            return false;
+                        }
+                    }
+                }
                 $object->setReseller( null );
+            }
 
             if( !$form->getValue( 'isReseller' ) && $object->getIsReseller() && count( $object->getResoldCustomers() ) )
             {
@@ -441,7 +486,6 @@ class CustomerController extends IXP_Controller_FrontEnd
             $this->addDestinationOnSuccess( $form, $c, true );
         }
     }
-                                                                                               
 
     /**
      * Send the member an operations welcome mail
