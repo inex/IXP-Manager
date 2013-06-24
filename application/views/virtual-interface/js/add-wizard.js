@@ -7,14 +7,18 @@ function updateSwitchPort(){
     $( this ).attr( 'disabled', 'disabled' );
     
     var prep = "#";
+    var type = "peering";
     if( $( this ).attr( "id" ).substr( 0, 3 ) == "fn_" )
+    {
         prep += "fn_";
+        type = "fanout";
+    }
     
     if( $(this).val() != '0' ) {
         ossChosenClear( prep + "switchportid", "<option>Please wait, loading data...</option>" );
         
         $.getJSON( "{genUrl controller='switch-port' action='ajax-get'}/id/"
-        + $( prep + "preselectPhysicalInterface" ).val() + "/type/peering/switchid/" + $(this).val(), function( j ) {
+        + $( prep + "preselectPhysicalInterface" ).val() + "/type/" + type +  "/switchid/" + $(this).val(), function( j ) {
             
             var options = "<option value=\"\">- select -</option>\n";
             
@@ -30,7 +34,7 @@ function updateSwitchPort(){
         });
     }
     
-    $( this ).removeAttr( 'disabled' );
+    $( this).removeAttr( 'disabled' );
     
 };
 

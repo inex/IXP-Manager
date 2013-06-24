@@ -337,7 +337,9 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         
         // limit to ports suitable for peering?
         if( $this->getParam( 'type', null ) == 'peering' )
-            $dql .= 'AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_PEERING . ', ' . \Entities\SwitchPort::TYPE_UNSET . ', ' . \Entities\SwitchPort::TYPE_FANOUT . ' ) )';
+            $dql .= 'AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_PEERING . ', ' . \Entities\SwitchPort::TYPE_UNSET . ') )';
+        if( $this->getParam( 'type', null ) == 'fanout' )
+            $dql .= 'AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_FANOUT . ', ' . \Entities\SwitchPort::TYPE_UNSET . ' ) )';
 
         $dql .= " ORDER BY sp.id ASC";
         
