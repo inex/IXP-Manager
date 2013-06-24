@@ -206,7 +206,11 @@
 
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
             <div class="tab-pane" id="ports">
-                {tmplinclude file="customer/overview-tabs/ports.phtml"}
+                {if $resellerMode && $cust->isReseller()}
+                    {tmplinclude file="customer/overview-tabs/reseller-ports.phtml"}
+                {else}
+                    {tmplinclude file="customer/overview-tabs/ports.phtml"}
+                {/if}
             </div>
 
                 {if $cust->hasPrivateVLANs()}
