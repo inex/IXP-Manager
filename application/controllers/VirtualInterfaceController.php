@@ -227,6 +227,10 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
     public function addWizardAction()
     {
         $this->view->form = $form = new IXP_Form_Interface_AddWizard();
+        if( $this->resellerMode() )
+            $this->view->resoldCusts = json_encode( $this->getD2R( "\\Entities\\Customer" )->getResoldCustomerNames() );
+
+        $form->enableFanoutPort( $this->resellerMode() );
     
         // Process a submitted form if it passes initial validation
         if( $this->getRequest()->isPost() )
@@ -262,7 +266,11 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
 	                );
 	                $this->getD2EM()->persist( $pi );
 	                
-	    
+                    if( $form->getElement( 'fanout' ) )
+                    {
+                        if( !$this->_processFanoutPhysicalInterface( $form, $pi, $vi ) )
+                            return false;
+                    }
 	                
 	                $vli = new \Entities\VlanInterface();
 	                $form->assignFormToEntity( $vli, $this, false );
@@ -315,6 +323,5 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             $form->getElement( 'cancel' )->setAttrib( 'href', OSS_Utils::genUrl( 'virtual-interface', 'list' ) );
         }
     }
-
 }
 

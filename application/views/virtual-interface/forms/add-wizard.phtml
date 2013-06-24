@@ -23,7 +23,11 @@
 
         <fieldset>
             <legend>Physical Interface Settings</legend>
-
+            {if $element->fanout}
+                <div id="fanoutbox" class="hide">
+                    {$element->fanout}
+                </div>
+            {/if}
             {$element->switchid}
             {$element->switchportid}
             {$element->status}
@@ -64,7 +68,11 @@
         </div>
     </div>
     
-    <div class="span4"></div>
+    <div class="span4">
+         <div id="fanoutdetails" class="hide">
+            {$element->fanoutDisplayGroup}
+        </div>
+    </div>
     
 </div>
         
