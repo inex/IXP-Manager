@@ -125,6 +125,30 @@ class Customer extends EntityRepository
         
         return $customers;
     }
+
+    /**
+     * Return an array of all resold customers names where the array key is the customer id.
+     *
+     * @param int $id Customers id to get resold customer names list
+     * @return array An array of all reseller names with the customer id as the key.
+     */
+    public function getResoldCustomerNames( $custid = false )
+    {
+        $query = "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c WHERE c.Reseller IS NOT NULL";
+        if( $custid )
+            $query .= " AND c.Reseller = " . $custid;
+        $query .= " ORDER BY c.name ASC";
+        
+        $acusts = $this->getEntityManager()
+                    ->createQuery( $query )
+                    ->getResult();
+        
+        $customers = [];
+        foreach( $acusts as $c )
+            $customers[ $c['id'] ] = $c['name'];
+        
+        return $customers;
+    }
     
     /**
      * Return an array of the must recent customers (who are current,
