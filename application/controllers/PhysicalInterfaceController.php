@@ -126,11 +126,14 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
                     'pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
                     pi.monitorindex AS monitorindex, pi.notes AS notes,
                     c.name AS customer, c.id AS custid,
-                    s.name AS switch, s.id AS switchid,
-                    vi.id AS vintid,
+                    s.name AS switch, s.id AS switchid, 
+                    vi.id AS vintid, 
+                    sp.type as type, ppi.id as ppid, fpi.id as fpid,
                     sp.name AS port, l.id AS locid, l.name AS location'
                 )
             ->from( '\\Entities\\PhysicalInterface', 'pi' )
+            ->leftJoin( 'pi.PeeringPhysicalInterface', 'ppi' )
+            ->leftJoin( 'pi.FanoutPhysicalInterface', 'fpi' )
             ->leftJoin( 'pi.VirtualInterface', 'vi' )
             ->leftJoin( 'vi.Customer', 'c' )
             ->leftJoin( 'pi.SwitchPort', 'sp' )
@@ -141,7 +144,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
         
         if( $id !== null )
             $qb->where( 'pi.id = ' . intval( $id ) );
-        
+
         return $qb->getQuery()->getArrayResult();
     }
     
@@ -158,6 +161,9 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
     {        
         if( $isEdit )
         {
+            if( $object->getRelatedInterface() && $object->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT )
+                $object = $object->getRelatedInterface();
+
             $form->enableFanoutPort( $this->resellerMode() && $object->getVirtualInterface()->getCustomer()->isResoldCustomer() );
 
             $form->getElement( 'switchid' )->setValue( $object->getSwitchPort()->getSwitcher()->getId() );
@@ -300,6 +306,34 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
     }
 
     /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param \Entities\PhysicalInterface $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( $object->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $object->getFanoutPhysicalInterface() )
+        {
+            $object->getSwitchPort()->setPhysicalInterface( null );
+            $object->getFanoutPhysicalInterface()->getSwitchPort()->setType( \Entities\SwitchPort::TYPE_PEERING );
+        }
+        else if( $object->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $object->getPeeringPhysicalInterface() )
+        {
+            if( $this->getParam( 'related', false ) )
+                $this->_removeRelatedInterface( $object );
+         
+            $object->getSwitchPort()->setType( \Entities\SwitchPort::TYPE_UNSET );
+            $object->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
+        }
+
+        return true;
+    }
+
+    /**
      * Function which can be over-ridden to perform any post-deletion tasks
      *
      * Database `flush()` has been successfully completed at this stage
@@ -314,17 +348,11 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
      */
     protected function postDelete( $object )
     {
-        if( $object->getFanoutPhysicalInterface() )
+        if( $this->getParam( 'related', false ) && $object->getRelatedInterface() )
         {
             $this->_removeRelatedInterface( $object );
+            $this->getD2EM()->flush();
         }
-        else if( $object->getPeeringPhysicalInterface() )
-        {
-            $this->addMessage( "Peering port left withot related fanout port", OSS_Message::INFO );
-            $object->getSwitchPort()->setType( \Entities\SwitchPort::TYPE_UNSET );
-            $object->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
-        }
-        $this->getD2EM()->flush();
 
         return $this->postFlush( $object );
     }

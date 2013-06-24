@@ -205,11 +205,14 @@ trait IXP_Controller_Trait_Interfaces
      */
     private function _removeRelatedInterface( $pi )
     {
-        $pi->getRelatedInterface()->getSwitchPort()->setType( \Entities\SwitchPort::TYPE_UNSET );
+        $pi->getRelatedInterface()->getSwitchPort()->setPhysicalInterface( null );
         if( count( $pi->getRelatedInterface()->getVirtualInterface()->getPhysicalInterfaces() ) == 1 )
         {                   
             foreach( $pi->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $fnvi )
                 $this->getD2EM()->remove( $fnvi );
+
+            foreach( $pi->getRelatedInterface()->getVirtualInterface()->getMACAddresses() as $mac )
+                $this->getD2EM()->remove( $mac );
 
             $this->getD2EM()->remove( $pi->getRelatedInterface()->getVirtualInterface() );
             $this->getD2EM()->remove( $pi->getRelatedInterface() );
