@@ -106,7 +106,7 @@ $(document).ready( function() {
 
     // trigger a change on selects to populate dependant fields
     $("#switchid").trigger( 'change' );
-   
+    $("#custid").trigger( 'change' );
     $("#vlanid").trigger( 'change' );
     
     

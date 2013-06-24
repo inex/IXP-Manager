@@ -325,8 +325,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
         {
             if( $this->getParam( 'related', false ) )
                 $this->_removeRelatedInterface( $object );
-         
-            $object->getSwitchPort()->setType( \Entities\SwitchPort::TYPE_UNSET );
+
             $object->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
         }
 
