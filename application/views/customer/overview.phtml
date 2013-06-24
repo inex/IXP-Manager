@@ -119,6 +119,12 @@
         <li>
             <a href="#details" data-toggle="tab">Details</a>
         </li>
+
+        {if $resellerMode && $cust->isReseller()}
+            <li>
+                <a href="#resold-customers" data-toggle="tab">Resold Customers</a>
+            </li>
+        {/if}
             
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
             <li>
@@ -191,6 +197,12 @@
         <div class="tab-pane" id="details">
             {tmplinclude file="customer/overview-tabs/details.phtml"}
         </div>
+
+        {if $resellerMode && $cust->isReseller()}
+            <div class="tab-pane" id="resold-customers">
+                {tmplinclude file="customer/overview-tabs/resold-customers.phtml"}
+            </div>
+        {/if}
 
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
             <div class="tab-pane" id="ports">

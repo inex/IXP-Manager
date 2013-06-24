@@ -1,0 +1,33 @@
+
+{if count( $cust->getResoldCustomers() )}
+
+    <table class="table">
+        <thead>
+            <th>Name</th>
+            <th>As</th>
+            <th>Shortname</th>
+            <th>Peering Email</th>
+            <th>NOC 24h Phone</th>
+            <th>Joined</th>
+        </thead>
+        <tbody>
+            {foreach $cust->getResoldCustomers() as $rc}
+                <tr>
+                    <td><a href="{genUrl controller=$controller action=$action id=$rc->getId()}">{$rc->getName()}</a></td>
+                    <td>{$rc->getAutsys()}</td>
+                    <td><a href="{genUrl controller=$controller action=$action id=$rc->getId()}">{$rc->getShortname()}</a></td>
+                    <td>{$rc->getPeeringemail()}</td>
+                    <td>{$rc->getNoc24hphone()}</td>
+                    <td>{$rc->getDatejoin()->format('Y-m-d H:i:s')}</td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+{else}
+
+    <p style="padding-left: 40px;">
+        No resold customers found.
+    </p>
+
+{/if}
+
