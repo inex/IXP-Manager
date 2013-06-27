@@ -1,11 +1,15 @@
-# v3.1.x
+# v3.2.0
+
+Minor version bump as we've added a major new feature - reseller support.
 
 Schema update required:
 
     ALTER TABLE cust ADD reseller INT DEFAULT NULL, ADD isReseller TINYINT(1) NOT NULL DEFAULT 0;
     ALTER TABLE cust ADD CONSTRAINT FK_997B25A18015899 FOREIGN KEY (reseller) REFERENCES cust (id);
     CREATE INDEX IDX_997B25A18015899 ON cust (reseller);
-
+    ALTER TABLE physicalinterface ADD fanout_physical_interface_id INT DEFAULT NULL;
+    ALTER TABLE physicalinterface ADD CONSTRAINT FK_5FFF4D602E68AB8C FOREIGN KEY (fanout_physical_interface_id) REFERENCES physicalinterface (id);
+    CREATE UNIQUE INDEX UNIQ_5FFF4D602E68AB8C ON physicalinterface (fanout_physical_interface_id)
 
 
 # v3.1.7
