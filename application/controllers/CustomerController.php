@@ -84,7 +84,12 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
                         'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT
                     ],
-                    
+                    'status'            => [
+                        'title'         => 'Status',
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'mapper'        => \Entities\Customer::$CUST_STATUS_TEXT,
+                        'script'        => 'customer/list-status.phtml'
+                    ],
                     'datejoin'       => [
                         'title'     => 'Joined',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]

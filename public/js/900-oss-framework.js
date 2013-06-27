@@ -391,13 +391,14 @@ $( 'document' ).ready( function(){
 function ossChosenFixWidth( obj, force ) {
     if( ( force != undefined && force == true ) || obj.attr( 'chzn-fix-width' ) === '1' ) {
         czn_id = "#" + obj.attr( "id" ) + "_chzn";
-	width = parseInt( obj.css( "width" ) );
-	
-	$( czn_id ).css( "width", width + "px" );
-	$( czn_id + " > .chzn-drop" ).css( "width", ( width - 2 ) + "px" );
-        $( czn_id + " > .chzn-drop > .chzn-search > input" ).css( "width", (width - 37 ) + "px" ); 
+        width = parseInt( obj.css( "width" ) );
+    
+        if( $( czn_id ).length == 0)
+            czn_id = czn_id.replace( /\-/g, "_" );
+
+        $( czn_id ).css( "width", width + "px" );
     }
-}	
+}
 
 // clear a chosen dropdown
 function ossChosenClear( id ) {
