@@ -253,7 +253,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
 
         if( $form->getElement( 'fanout' ) )
         {
-            if( !$this->_processFanoutPhysicalInterface( $form, $object, $vi ) )
+            if( !$this->processFanoutPhysicalInterface( $form, $object, $vi ) )
                 return false;
         }
         
@@ -324,7 +324,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
         else if( $object->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $object->getPeeringPhysicalInterface() )
         {
             if( $this->getParam( 'related', false ) )
-                $this->_removeRelatedInterface( $object );
+                $this->removeRelatedInterface( $object );
 
             $object->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
         }
@@ -349,7 +349,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
     {
         if( $this->getParam( 'related', false ) && $object->getRelatedInterface() )
         {
-            $this->_removeRelatedInterface( $object );
+            $this->removeRelatedInterface( $object );
             $this->getD2EM()->flush();
         }
 

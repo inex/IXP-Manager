@@ -155,14 +155,14 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             else if( $pi->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $pi->getPeeringPhysicalInterface() )
             {
                 if( $this->getParam( 'related', false ) )
-                    $this->_removeRelatedInterface( $pi );
+                    $this->removeRelatedInterface( $pi );
 
                 $pi->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
             }
             $this->getD2EM()->remove( $pi );
            
             if( $this->getParam( 'related', false ) && $pi->getRelatedInterface() )
-                $this->_removeRelatedInterface( $pi );
+                $this->removeRelatedInterface( $pi );
         }
         
         foreach( $vi->getVlanInterfaces() as $vli )
@@ -286,7 +286,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                 
                     if( $form->getElement( 'fanout' ) )
                     {
-                        if( !$this->_processFanoutPhysicalInterface( $form, $pi, $vi ) )
+                        if( !$this->processFanoutPhysicalInterface( $form, $pi, $vi ) )
                             return false;
 
                         if( $pi->getRelatedInterface() )
