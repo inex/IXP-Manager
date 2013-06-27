@@ -23,7 +23,7 @@
             {/if}
         </h3>
         {if $resellerMode && $cust->getReseller()}
-            <P style="margin-left: 15px;">Resold customer by <a href="{genUrl controller=$controller action=$action id=$cust->getReseller()->getId()}">{$cust->getReseller()->getName()}</P>
+            <p style="margin-left: 15px;">Resold customer of <a href="{genUrl controller=$controller action=$action id=$cust->getReseller()->getId()}">{$cust->getReseller()->getName()}</p>
         {/if}
     </li>
     <li class="pull-right" style="margin-top: 12px;">
@@ -180,7 +180,7 @@
                 {/if}
             {/if}
 
-            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}            
+            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
                 <li>
                     <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">P2P &raquo;</a>
                 </li>
