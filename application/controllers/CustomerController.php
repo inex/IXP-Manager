@@ -233,7 +233,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                     $this->view->rsclient = true;
 
                 if( $vli->getAs112client() )
-                    $this->view->as112client = true; 
+                    $this->view->as112client = true;
             }
         }
     }
@@ -312,60 +312,62 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
     private function _setReseller( $form, $object )
     {
-        if( $this->resellerMode() )
+        if( !$this->resellerMode() )
+            return true;
+        
+        if( $form->getValue( 'isResold' ) )
         {
-            if( $form->getValue( 'isResold' ) )
+            $reseller = $this->getD2R( "\\Entities\\Customer" )->find( $form->getValue( "reseller" ) );
+            
+            if( !$reseller )
             {
-                $reseller = $this->getD2R( "\\Entities\\Customer" )->find( $form->getValue( "reseller" ) );
-                if( !$reseller )
-                {
-                    $form->getElement( "resller" )->setErrorMessages( ['Select Reseller'] )->markAsError();
-                    return false;
-                }
-
-                if( $object->getReseller() && $object->getReseller()->getId() != $form->getValue( 'reseller' ) )
-                {
-                    foreach( $object->getVirtualInterfaces() as $viInt )
-                    {
-                        foreach( $viInt->getPhysicalInterfaces() as $phInt )
-                        {
-                            if( $phInt->getFanoutPhysicalInterface() 
-                                && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
-                            {
-                                $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
-                                $this->addMessage( 'You can not change reseller because where are still related ports. You nead to reassign them first.', OSS_Message::INFO );
-                                return false;
-                            }
-                        }
-                    }
-                }
-                $object->setReseller( $reseller );
+                $form->getElement( "resller" )->setErrorMessages( ['Select Reseller'] )->markAsError();
+                return false;
             }
-            else if( $object->getReseller() )
+
+            if( $object->getReseller() && $object->getReseller()->getId() != $form->getValue( 'reseller' ) )
             {
                 foreach( $object->getVirtualInterfaces() as $viInt )
                 {
                     foreach( $viInt->getPhysicalInterfaces() as $phInt )
                     {
-                        if( $phInt->getFanoutPhysicalInterface() 
-                            && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
+                        if( $phInt->getFanoutPhysicalInterface()
+                                && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
                         {
-                            $form->getElement( 'isResold' )->setValue(1);
                             $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
-                            $this->addMessage( 'You can not change resold customer state because where are still related ports. You nead to reassign them first.', OSS_Message::INFO );
+                            $this->addMessage( 'You can not change the reseller because there are still fanout ports from the current reseller linked to this customer\'s phsyical interfaces. You nead to reassign these first.', OSS_Message::INFO );
                             return false;
                         }
                     }
                 }
-                $object->setReseller( null );
             }
-
-            if( !$form->getValue( 'isReseller' ) && $object->getIsReseller() && count( $object->getResoldCustomers() ) )
+            
+            $object->setReseller( $reseller );
+        }
+        else if( $object->getReseller() )
+        {
+            foreach( $object->getVirtualInterfaces() as $viInt )
             {
-                $form->getElement( 'isReseller' )->setErrorMessages( [''] )->markAsError();
-                $this->addMessage( 'You can not change reseller state because you have resold customers. You nead to reassign them first.', OSS_Message::INFO );
-                return false;
+                foreach( $viInt->getPhysicalInterfaces() as $phInt )
+                {
+                    if( $phInt->getFanoutPhysicalInterface()
+                            && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
+                    {
+                        $form->getElement( 'isResold' )->setValue(1);
+                        $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
+                        $this->addMessage( 'You can not change this resold customer state because there are still phsyical interface(s) of this customer linked to fanout ports or the current reseller. You nead to reassign these first.', OSS_Message::INFO );
+                        return false;
+                    }
+                }
             }
+            $object->setReseller( null );
+        }
+
+        if( !$form->getValue( 'isReseller' ) && $object->getIsReseller() && count( $object->getResoldCustomers() ) )
+        {
+            $form->getElement( 'isReseller' )->setErrorMessages( [''] )->markAsError();
+            $this->addMessage( 'You can not change the reseller state because this customer still has resold customers. You nead to reassign these first.', OSS_Message::INFO );
+            return false;
         }
         
         return true;
