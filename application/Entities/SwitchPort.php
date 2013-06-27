@@ -30,6 +30,14 @@ class SwitchPort
      */
     const TYPE_FANOUT         = 6;
     
+    /**
+     * For resellers, we need an uplink port(s) through which they deliver reseller
+     * connections.
+     *
+     * @var int
+     */
+    const TYPE_RESELLER       = 7;
+    
     public static $TYPES = array(
         self::TYPE_UNSET      => 'Unset / Unknown',
         self::TYPE_PEERING    => 'Peering',
@@ -37,7 +45,8 @@ class SwitchPort
         self::TYPE_CORE       => 'Core',
         self::TYPE_OTHER      => 'Other',
         self::TYPE_MANAGEMENT => 'Management',
-        self::TYPE_FANOUT     => 'Fanout'
+        self::TYPE_FANOUT     => 'Fanout',
+        self::TYPE_RESELLER   => 'Reseller'
     );
     
     // This array is for matching data from OSS_SNMP to the switchport database table.

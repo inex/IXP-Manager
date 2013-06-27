@@ -7,7 +7,7 @@ function updateSwitchPort(){
     $( this ).attr( 'disabled', 'disabled' );
     
     var prep = "#";
-    var type = "peering";
+    var type = "";  // was peering but we want to allow reseller and others
     if( $( this ).attr( "id" ).substr( 0, 3 ) == "fn_" )
     {
         prep += "fn_";

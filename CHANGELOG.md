@@ -9,7 +9,7 @@ Schema update required:
     CREATE INDEX IDX_997B25A18015899 ON cust (reseller);
     ALTER TABLE physicalinterface ADD fanout_physical_interface_id INT DEFAULT NULL;
     ALTER TABLE physicalinterface ADD CONSTRAINT FK_5FFF4D602E68AB8C FOREIGN KEY (fanout_physical_interface_id) REFERENCES physicalinterface (id);
-    CREATE UNIQUE INDEX UNIQ_5FFF4D602E68AB8C ON physicalinterface (fanout_physical_interface_id)
+    CREATE UNIQUE INDEX UNIQ_5FFF4D602E68AB8C ON physicalinterface (fanout_physical_interface_id);
 
 
 # v3.1.7

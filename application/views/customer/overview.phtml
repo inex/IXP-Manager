@@ -18,8 +18,12 @@
             {if $cust->hasLeft()}
                 <span class="label label-important">ACCOUNT CLOSED</span>
             {/if}
-            {if $resellerMode && $cust->getIsReseller()}
-                <span class="label">RESELLER</span>
+            {if $resellerMode}
+                {if $cust->getIsReseller()}
+                    <span class="label">RESELLER</span>
+                {elseif $cust->getReseller()}
+                    <span class="label">RESOLD CUSTOMER</span>
+                {/if}
             {/if}
         </h3>
         {if $resellerMode && $cust->getReseller()}

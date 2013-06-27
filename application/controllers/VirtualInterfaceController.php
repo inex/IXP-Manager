@@ -95,7 +95,6 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
-    
     }
     
     public function viewAction()
@@ -180,7 +179,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         }
         
         return true;
-    }    
+    }
     
     /**
      * @param IXP_Form_Interface_Virtual $form The form object
@@ -197,7 +196,6 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
 
             $this->view->ptypes   = \Entities\SwitchPort::$TYPES;
-            $this->view->registerClass( 'SwitchPort', '\\Entities\\SwitchPort' );
             $this->view->cust     = $object->getCustomer();
             $this->view->physInts = $object->getPhysicalInterfaces();
             $this->view->vlanInts = $object->getVlanInterfaces();

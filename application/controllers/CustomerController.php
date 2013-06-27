@@ -188,6 +188,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $this->view->registerClass( 'Countries', 'OSS_Countries' );
         $this->view->registerClass( 'BillingDetails', '\\Entities\\CompanyBillingDetail' );
+        $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
         
         // is this user watching all notes for this customer?
         if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) )

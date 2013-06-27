@@ -128,6 +128,7 @@ use constant SWITCHPORT_TYPE_CORE	=>	3;
 use constant SWITCHPORT_TYPE_OTHER	=>	4;
 use constant SWITCHPORT_TYPE_MANAGEMENT	=>	5;
 use constant SWITCHPORT_TYPE_FANOUT	=>	6;
+use constant SWITCHPORT_TYPE_RESELLER	=>	7;
 
 our $switchport_type_desc = {
 	SWITCHPORT_TYPE_PEERING		=>	'Peering port',
@@ -136,6 +137,7 @@ our $switchport_type_desc = {
 	SWITCHPORT_TYPE_OTHER		=>	'Other port',
 	SWITCHPORT_TYPE_MANAGEMENT	=>	'Management port',
   	SWITCHPORT_TYPE_FANOUT      	=>	'Reseller fanout port',
+  	SWITCHPORT_TYPE_RESELLER      	=>	'Reseller uplink port',
 };
 
 # Vendor IDs

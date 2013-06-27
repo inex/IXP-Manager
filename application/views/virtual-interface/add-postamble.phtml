@@ -36,7 +36,7 @@
                         {if $int->getSwitchPort()->getSwitcher()->getCabinet()}{$int->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}{/if}
                     </td>
                     <td>
-                        {if $int->getSwitchPort()->getType() != SwitchPort::TYPE_FANOUT}
+                        {if $int->getSwitchPort()->getType() != SWITCHPORT::TYPE_FANOUT}
                             {$int->getSwitchPort()->getSwitcher()->getName()}::{$int->getSwitchPort()->getIfName()}
                         {else if $int->getPeeringPhysicalInterface()}
                             <a href="{genUrl controller=$controller action=$action id=$int->getPeeringPhysicalInterface()->getVirtualInterface()->getId()}">
@@ -45,7 +45,7 @@
                         {/if}
                     </td>
                     <td>
-                        {if $int->getSwitchPort()->getType() == SwitchPort::TYPE_FANOUT}
+                        {if $int->getSwitchPort()->getType() == SWITCHPORT::TYPE_FANOUT}
                             {$int->getSwitchPort()->getSwitcher()->getName()}::{$int->getSwitchPort()->getIfName()}
                         {else if $int->getFanoutPhysicalInterface()}
                             <a href="{genUrl controller=$controller action=$action id=$int->getFanoutPhysicalInterface()->getVirtualInterface()->getId()}">
