@@ -274,7 +274,7 @@ class PhysicalInterface
     /**
      * Get FanoutPhysicalInterface
      *
-     * @return \Entities\PhysicalInterface 
+     * @return \Entities\PhysicalInterface
      */
     public function getFanoutPhysicalInterface()
     {
@@ -297,7 +297,7 @@ class PhysicalInterface
     /**
      * Get PeeringPhysicalInterface
      *
-     * @return \Entities\PhysicalInterface 
+     * @return \Entities\PhysicalInterface
      */
     public function getPeeringPhysicalInterface()
     {
@@ -305,13 +305,13 @@ class PhysicalInterface
     }
 
     /**
-     * Gets Peearing/Fanout realtions
-     * 
-     * If switch port typs is peering and it have fanout physical interface function will return it else if 
-     * switch port typs is fanout and it have physical physical interface it will return it or if non of these
-     * conditions is satisfied function will return false
-     * 
-     * @return \Entities\PhysicalInterface|bool
+     * Gets the related peering / fanout port for the current fanout / peering port
+     *
+     * For reseller functionality, we have the option of having fanout ports connectted to
+     * peering ports. In this case, this function will return the related peering or
+     * fanout port as appropriate.
+     *
+     * @return \Entities\PhysicalInterface The related peering / fanout port (or false for none / n/a)
      */
     public function getRelatedInterface()
     {
@@ -321,6 +321,5 @@ class PhysicalInterface
             return $this->getFanoutPhysicalInterface();
         else
             return false;
-        
     }
 }
