@@ -140,6 +140,7 @@ resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
 ;; for Ubuntu. For FreeBSD, try "/usr/local/share/pear/Doctrine/ORM"
 resources.doctrine2cache.path               = "/usr/share/php/Doctrine/ORM"
 resources.doctrine2cache.autoload_method    = "pear"
+resources.doctrine2cache.namespace                          = 'IXPManager' 
 ; resources.doctrine2cache.type                               = 'ArrayCache'
 resources.doctrine2cache.type                               = 'MemcacheCache'
 resources.doctrine2cache.memcache.servers.0.host       = '127.0.0.1'
