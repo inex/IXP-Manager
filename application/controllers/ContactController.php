@@ -33,7 +33,7 @@
  */
 class ContactController extends IXP_Controller_FrontEnd
 {
-    
+
     /**
      * This function sets up the frontend controller
      */
@@ -43,26 +43,26 @@ class ContactController extends IXP_Controller_FrontEnd
             'entity'        => '\\Entities\\Contact',
             'form'          => 'IXP_Form_Contact',
             'pagetitle'     => 'Contacts',
-        
+
             'titleSingular' => 'Contact',
             'nameSingular'  => 'a contact',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
+
             'listOrderBy'    => 'name',
             'listOrderByDir' => 'ASC',
-            
+
             'addWhenEmpty'   => false
         ];
-        
+
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
-                
+
                 $this->_feParams->listColumns = [
-                
+
                     'id'        => [ 'title' => 'UID', 'display' => false ],
-                
+
                     'customer'  => [
                         'title'      => 'Customer',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -70,7 +70,7 @@ class ContactController extends IXP_Controller_FrontEnd
                         'action'     => 'overview',
                         'idField'    => 'custid'
                     ],
-                
+
                     'name'      => 'Name',
                     'position'  => 'Position',
                     'email'     => 'Email',
@@ -80,10 +80,10 @@ class ContactController extends IXP_Controller_FrontEnd
                     ]
                 ];
                 break;
-        
+
             case \Entities\User::AUTH_CUSTADMIN:
                 $this->_feParams->pagetitle = 'Contact Admin for ' . $this->getUser()->getCustomer()->getName();
-        
+
                 $this->_feParams->listColumns = [
                     'id'        => [ 'title' => 'UID', 'display' => false ],
                     'name'      => 'Name',
@@ -101,11 +101,11 @@ class ContactController extends IXP_Controller_FrontEnd
                     ]
                 ];
                 break;
-        
+
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
-        
+
         // display the same information in the view as the list
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             $this->_feParams->viewColumns = $this->_feParams->listColumns;
@@ -130,13 +130,13 @@ class ContactController extends IXP_Controller_FrontEnd
             ->from( '\\Entities\\Contact', 'c' )
             ->leftJoin( 'c.User', 'u' )
             ->leftJoin( 'c.Customer', 'cust' );
-        
+
         if( $this->getParam( "cgid", false ) )
         {
             $qb->leftJoin( "c.Groups", "cg" )
                 ->andWhere( "cg.id = ?2" )
                 ->setParameter( 2, $this->getParam( "cgid" ) );
-            
+
             $this->view->group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $this->getParam( "cgid" ) );
         }
 
@@ -145,22 +145,22 @@ class ContactController extends IXP_Controller_FrontEnd
             $qb->andWhere( 'c.Customer = :cust' )->setParameter( 'cust', $this->getUser()->getCustomer() );
             $qb->andWhere( '( c.User IS NULL OR u.privs = :privs )' )->setParameter( 'privs', \Entities\User::AUTH_CUSTUSER );
         }
-            
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $id !== null )
             $qb->andWhere( 'c.id = :id' )->setParameter( 'id', $id );
-        
+
         $data = $qb->getQuery()->getResult();
-        
+
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             return $data;
-        
+
         $data = $this->setRolesAndGroups( $data, $id );
 
         return $data;
-        
+
     }
 
     /**
@@ -181,7 +181,7 @@ class ContactController extends IXP_Controller_FrontEnd
         foreach( $data as $row )
             $ids[] = $row['id'];
 
-        $roles = $this->getD2R( '\\Entities\\Contact' )->getRolesByIds( $ids );  
+        $roles = $this->getD2R( '\\Entities\\Contact' )->getRolesByIds( $ids );
         if( $id !== null )
             $groups = $this->getD2R( '\\Entities\\Contact' )->getGroupsByIds( $ids );
 
@@ -195,14 +195,14 @@ class ContactController extends IXP_Controller_FrontEnd
 
                     if( !isset( $this->_feParams->viewColumns->role ) )
                         $this->_feParams->viewColumns = $this->_feParams->viewColumns + [ 'role'  => 'Role' ];
-                    
+
                     $data[$idx]['role'] = implode( '<br/>',  $roles[ $contact['id'] ] );
                 }
                 if( isset( $groups[ $contact['id'] ] ) )
                 {
                     if( !isset( $this->_feParams->viewColumns->role ) )
                         $this->_feParams->viewColumns = $this->_feParams->viewColumns + [ 'group'  => 'Group' ];
-                    
+
                     asort( $groups[ $contact['id'] ] );
                     $group = "";
                     foreach( $groups[ $contact['id'] ] as $gdata )
@@ -216,7 +216,7 @@ class ContactController extends IXP_Controller_FrontEnd
                     $data[$idx]['group'] = $group;
                 }
             }
-            else 
+            else
             {
                 if( isset( $roles[ $contact['id'] ] ) )
                 {
@@ -238,8 +238,8 @@ class ContactController extends IXP_Controller_FrontEnd
         }
         return $data;
     }
-    
-    
+
+
     protected function listPreamble()
     {
         if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
@@ -247,7 +247,7 @@ class ContactController extends IXP_Controller_FrontEnd
             if( !isset( $this->getSessionNamespace()->custadminInstructions ) || !$this->getSessionNamespace()->custadminInstructions )
             {
                 $this->getSessionNamespace()->custadminInstructions = true;
-    
+
                 $this->addMessage(
                         "<p><strong>Remember! This admin account is only intended for creating contacts for your organisation.</strong></p>"
                         . "<p>For full IXP Manager functionality, graphs and member information, log in under one of your user accounts</p>",
@@ -257,10 +257,10 @@ class ContactController extends IXP_Controller_FrontEnd
             }
         }
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Gets the ID of the object for editing - which, by default, returns the id parameter from the request
      *
@@ -274,12 +274,12 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             if( $user = $this->getD2EM()->getRepository( "\\Entities\\User" )->find( $this->getParam( "uid" ) ) )
                 return $user->getContact()->getId();
-            
+
             $this->addMessage( 'The requested contact / user does not exist', OSS_Message::ERROR );
             $this->redirect();
         }
     }
-    
+
     /**
      *
      * @param IXP_Form_Contact $form The form object
@@ -297,7 +297,7 @@ class ContactController extends IXP_Controller_FrontEnd
         // ROLE is trated as a special group and if it is not set, it will disable the contact role functionality
         if( !isset( $this->_options['contact']['group']['types'][ \Entities\ContactGroup::TYPE_ROLE ] ) )
             $form->removeElement( 'role' );
-        
+
         // redirect back to whence we came on form submission
         if( $this->getParam( "user", false ) )
         {
@@ -317,7 +317,7 @@ class ContactController extends IXP_Controller_FrontEnd
                 )
             );
         }
-        
+
         if( $isEdit )
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
@@ -327,7 +327,7 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             $form->getElement( 'custid' )->setValue( $cust->getId() );
         }
-        
+
         if( $object->getUser() )
         {
             $form->getElement( 'login'    )->setValue( 1 );
@@ -343,13 +343,13 @@ class ContactController extends IXP_Controller_FrontEnd
                 [ 'entity' => '\\Entities\\User', 'property' => 'username' ]
             );
         }
-        
+
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $form->getElement( 'username' )->removeValidator( 'stringLength' );
                 break;
-                
+
             case \Entities\User::AUTH_CUSTADMIN:
                 $form->removeElement( 'password' );
                 $form->removeElement( 'privs' );
@@ -357,7 +357,7 @@ class ContactController extends IXP_Controller_FrontEnd
                 $form->removeElement( 'facilityaccess' );
                 $form->removeElement( 'mayauthorize' );
                 $form->removeElement( 'notes' );
-                
+
                 if( $isEdit && $object->getUser() )
                     $form->getElement( 'username' )->setAttrib( 'readonly', 'readonly' );
                 break;
@@ -366,8 +366,8 @@ class ContactController extends IXP_Controller_FrontEnd
                 throw new OSS_Exception( 'Unhandled user type / security issues' );
         }
     }
-    
-    
+
+
     /**
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful add / edit operation.
@@ -390,12 +390,12 @@ class ContactController extends IXP_Controller_FrontEnd
                 . 'for setting their password and accessing it. You will have been copied on this email also.',
             OSS_Message::SUCCESS
         );
-        
+
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
         {
             $this->redirect( 'contact/list' );
         }
-        
+
         if( $this->getParam( 'user', false ) || $this->getParam( 'uid', false ) )
             $this->redirect( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
         else
@@ -428,10 +428,10 @@ class ContactController extends IXP_Controller_FrontEnd
             // keep the customer ID for redirection on success
             $this->getSessionNamespace()->ixp_contact_delete_custid = $object->getCustomer()->getId();
         }
-            
+
         if( $object->getUser() )
             $this->_deleteUser( $object );
-        
+
         // if we are only deleting the user login account, take over control here and redirect
         if( $this->getParam( 'useronly', false ) )
         {
@@ -439,10 +439,10 @@ class ContactController extends IXP_Controller_FrontEnd
             $this->addMessage( 'User login account successfully removed.', OSS_Message::SUCCESS );
             $this->redirectAndEnsureDie( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
         }
-        
+
         return true;
     }
-    
+
     /**
      * Do the heavy lifting for deleting a user
      *
@@ -451,24 +451,31 @@ class ContactController extends IXP_Controller_FrontEnd
     private function _deleteUser( $contact )
     {
         $user = $contact->getUser();
-        
+
         // delete all the user's preferences
         foreach( $user->getPreferences() as $pref )
         {
             $user->removePreference( $pref );
             $this->getD2EM()->remove( $pref );
         }
-        
+
+        // delete all the user's login records
+        foreach( $user->getLastLogins() as $ll )
+        {
+            $user->removeLastLogin( $ll );
+            $this->getD2EM()->remove( $ll );
+        }
+
         // clear the user from the contact and remove the user then
         $contact->unsetUser();
         $this->getD2EM()->remove( $user );
-        
+
         // in case the user is currently logged in:
         $this->clearUserFromCache( $user->getId() );
-        
+
         $this->getLogger()->info( "{$this->getUser()->getUsername()} deleted user {$user->getUsername()}" );
     }
-    
+
     /**
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful deletion operation.
@@ -485,14 +492,14 @@ class ContactController extends IXP_Controller_FrontEnd
         if( $custid = $this->getSessionNamespace()->ixp_contact_delete_custid )
         {
             unset( $this->getSessionNamespace()->ixp_contact_delete_custid );
-            
+
             $this->addMessage( 'Contact successfully deleted', OSS_Message::SUCCESS );
             $this->redirect( 'customer/overview/tab/contacts/id/' . $custid );
         }
-        
+
         return false;
     }
-    
+
     /**
      * Preparation hook that can be overridden by subclasses for add and edit.
      *
@@ -514,8 +521,8 @@ class ContactController extends IXP_Controller_FrontEnd
                 $this->redirect();
             }
         }
-        
-        
+
+
         if( !$isEdit )
         {
             // defaults
@@ -523,7 +530,7 @@ class ContactController extends IXP_Controller_FrontEnd
             $object->setMayauthorize( false );
         }
     }
-    
+
     /**
      * Prevalidation hook that can be overridden by subclasses for add and edit.
      *
@@ -539,7 +546,7 @@ class ContactController extends IXP_Controller_FrontEnd
         if( isset( $_POST['login'] ) && $_POST['login'] == '1' )
         {
             $form->getElement( "username" )->setRequired( true );
-            
+
             if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
             {
                 $form->getElement( "password" )->setRequired( true );
@@ -548,13 +555,13 @@ class ContactController extends IXP_Controller_FrontEnd
         }
         else
             $_POST['login'] = 0;
-        
+
         $this->view->contactGroups = $this->_postedGroupsToArray();
-        
+
         return true;
     }
 
-    
+
     /**
      * Process submitted groups (and roles) into an array
      *
@@ -574,10 +581,10 @@ class ContactController extends IXP_Controller_FrontEnd
                 }
             }
         }
-        
+
         return $groups;
     }
-    
+
     /**
      *
      * @param IXP_Form_Contact $form The form object
@@ -591,23 +598,23 @@ class ContactController extends IXP_Controller_FrontEnd
             $object->setCustomer( $this->getD2R( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() ) );
         else
             $object->setCustomer( $this->getUser()->getCustomer() );
-    
+
         if( !$isEdit )
         {
             $object->setCreated( new DateTime() );
             $object->setCreator( $this->getUser()->getUsername() );
         }
-        
+
         $object->setLastupdated( new DateTime() );
         $object->setLastupdatedby( $this->getUser()->getId() );
-        
+
         $this->_processUser( $form, $object, $isEdit );
 
         // let the group processor have the final say as to whether post validation
         // passes or not
         return $this->_setContactGroups( $form, $object );
     }
-    
+
     /**
      * Process submitted groups (and roles) for this contact and update the relationships
      *
@@ -618,7 +625,7 @@ class ContactController extends IXP_Controller_FrontEnd
     private function _setContactGroups( $form, $contact )
     {
         $groups = [];
-        
+
         foreach( [ 'role', 'group' ] as $groupType )
         {
             if( $form->getValue( $groupType ) )
@@ -630,26 +637,26 @@ class ContactController extends IXP_Controller_FrontEnd
                         if( $group->getLimitedTo() != 0 )
                         {
                             $contactsWithGroupForCustomer = $this->getD2R( "\\Entities\\ContactGroup" )->countForCustomer( $contact->getCustomer(), $cgid );
-            
+
                             if( !$contact->getGroups()->contains( $group ) && $group->getLimitedTo() <= $contactsWithGroupForCustomer )
                             {
                                 $this->addMessage( "Contact group {$group->getName()} has a limited membership and is full.", OSS_Message::WARNING );
                                 return false;
                             }
                         }
-            
+
                         if( !$contact->getGroups()->contains( $group ) )
                         {
                             $contact->addGroup( $group );
                             $group->addContact( $contact );
                         }
-            
+
                         $groups[] = $group;
                     }
                 }
             }
         }
-        
+
         foreach( $contact->getGroups() as $key => $group )
         {
             if( !in_array( $group, $groups ) )
@@ -657,11 +664,11 @@ class ContactController extends IXP_Controller_FrontEnd
                 $contact->getGroups()->remove( $key );
             }
         }
-        
+
         return true;
     }
-    
-    
+
+
     /**
      *
      * @param IXP_Form_User $form The form object
@@ -679,7 +686,7 @@ class ContactController extends IXP_Controller_FrontEnd
 
         return $this->postFlush( $object );
     }
-    
+
     /**
      * Post database flush hook that can be overridden by subclasses and is called by
      * default for a successful add / edit / delete.
@@ -695,11 +702,11 @@ class ContactController extends IXP_Controller_FrontEnd
         // clear the user from the cache (e.g. if user is logged in, it will be cached)
         if( $object->getUser() )
             $this->clearUserFromCache( $object->getUser()->getId() );
-        
+
         return true;
     }
-    
-    
+
+
      /**
       * Creates/updates/deletes the user for a contact when adding / editing a contact
       *
@@ -712,13 +719,13 @@ class ContactController extends IXP_Controller_FrontEnd
         if( $form->getValue( "login" ) )
         {
             // the contact has a user already or one needs to be created
-            
+
             if( !( $user = $contact->getUser() ) )
             {
                 $user = new \Entities\User();
                 $this->getD2EM()->persist( $user );
                 $contact->setUser( $user );
-                
+
                 $user->setCreated( new DateTime() );
                 $user->setCreator( $this->getUser()->getUsername() );
 
@@ -729,17 +736,17 @@ class ContactController extends IXP_Controller_FrontEnd
                     $user->setPassword( OSS_String::random( 16 ) );
                     $user->setUsername( $form->getValue( "username" ) );
                 }
-                
+
                 $this->_feParams->userStatus = "created";
             }
-            
+
             $user->setCustomer( $contact->getCustomer() );
-                
+
             $user->setDisabled( $form->getValue( "disabled" ) );
             $user->setEmail( $form->getValue( "email" ) );
             $user->setLastupdated( new DateTime() );
             $user->setLastupdatedby( $this->getUser()->getId() );
-            
+
             // SUPERADMIN can update these always
             if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
             {
@@ -747,7 +754,7 @@ class ContactController extends IXP_Controller_FrontEnd
                 $user->setPassword( $form->getValue( "password" ) );
                 $user->setPrivs( $form->getValue(    "privs" ) );
             }
-                
+
             $this->getLogger()->info( "{$this->getUser()->getUsername()} created user {$user->getUsername()}" );
         }
         else // !$form->getValue( "login" )
@@ -756,8 +763,8 @@ class ContactController extends IXP_Controller_FrontEnd
                 $this->_deleteUser( $contact );
         }
     }
-    
-    
+
+
     /**
      * Send a welcome email to a new user
      *
@@ -769,11 +776,11 @@ class ContactController extends IXP_Controller_FrontEnd
         try
         {
             $mail = $this->getMailer();
-            
+
             // This may be useful... needs more thought first
             // if( defined( APPLICATION_ENV ) && APPLICATION_ENV == 'production' )
             //    ->addCc( $this->getUser()->getEmail(), $this->getUser()->getContact()->getName() );
-            
+
             $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
                 ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Your Access Details' ) )
                 ->addTo( $contact->getEmail(), $contact->getName() )
@@ -785,8 +792,8 @@ class ContactController extends IXP_Controller_FrontEnd
             $this->getLogger()->alert( "Could not send welcome email for new user!\n\n" . $e->toString() );
             return false;
         }
-        
+
         return true;
     }
-    
+
 }
