@@ -16,7 +16,7 @@
         {if $listToolbar}
             {tmplinclude file=$listToolbar}
         {else}
-            <li class="pull-right"> 
+            <li class="pull-right">
                 {if !isset( $feParams->readonly ) or !$feParams->readonly}
                     <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="add"}"><i class="icon-plus"></i></a>
                 {/if}
@@ -83,6 +83,10 @@
                         {elseif $cconf.type eq $FE_COL_TYPES.XLATE}
                             <td>
                                 {if isset($cconf.xlator[ $row.$col ])}{$cconf.xlator[ $row.$col ]}{else}{$row.$col}{/if}
+                            </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.YES_NO}
+                            <td>
+                                {if $row.$col}Yes{else}No{/if}
                             </td>
                         {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
                             <td>

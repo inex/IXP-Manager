@@ -72,7 +72,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'script'     => 'customer/list-autsys.phtml'
                     ],
                     
-                    'shortname'   => [
+                    'shortname'     => [
                         'title'      => 'Shortname',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                         'controller' => 'customer',
@@ -80,17 +80,21 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'idField'    => 'id'
                     ],
                     
-                    'peeringemail'   => 'Peering Email',
-                    'noc24hphone'    => 'NOC 24h Phone',
+                    'peeringpolicy'   => 'Peering Policy',
+
+                    'isReseller'    => [
+                        'title'         => 'Reseller',
+                        'type'          => self::$FE_COL_TYPES[ 'YES_NO' ],
+                    ],
                     
-                    'type'            => [
+                    'type'          => [
                         'title'         => 'Type',
                         'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
                         'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT,
-                        'script'     => 'customer/list-type.phtml'
+                        'script'        => 'customer/list-type.phtml'
                     ],
                     
-                    'status'            => [
+                    'status'        => [
                         'title'         => 'Status',
                         'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
                         'mapper'        => \Entities\Customer::$CUST_STATUS_TEXT,
@@ -102,6 +106,10 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'type'      => self::$FE_COL_TYPES[ 'DATE' ]
                     ]
                 ];
+                
+                if( !$this->resellerMode() )
+                    unset( $this->_feParams->listColumns[ 'isReseller' ] );
+                
                 break;
     
             case \Entities\User::AUTH_CUSTUSER:
@@ -124,14 +132,15 @@ class CustomerController extends IXP_Controller_FrontEnd
                 'nochours'        => 'NOC Hours',
                 'nocemail'        => 'NOC Email',
                 'nocwww'          => 'NOC WWW',
+                'noc24hphone'     => 'NOC 24h Phone',
                 'status'          => [
                     'title'         => 'Status',
                     'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
                     'xlator'        => \Entities\Customer::$CUST_STATUS_TEXT
                 ],
                 'activepeeringmatrix' => 'Active Peering Matrix',
+                'peeringemail'   => 'Peering Email',
                 'peeringmacro'    => 'Peering Macro',
-                'peeringpolicy'   => 'Peering Policy',
                 'billingContact'  => 'Billing Contact',
                 'billingAddress1' => 'Billing Address1',
                 'billingAddress2' => 'Billing Address2',
@@ -164,6 +173,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                             c.nochours AS nochours, c.nocemail AS nocemail, c.nocwww AS nocwww,
                             c.status AS status, c.activepeeringmatrix AS activepeeringmatrix,
                             c.peeringmacro AS peeringmacro, c.peeringpolicy AS peeringpolicy,
+                            c.isReseller AS isReseller,
                             bd.billingContactName AS billingContact, bd.billingAddress1 AS billingAddress1,
                             bd.billingAddress2 AS billingAddress2, bd.billingTownCity AS billingCity, bd.billingCountry AS billingCountry,
                             c.corpwww AS corpwww, c.datejoin AS datejoin, c.dateleave AS dateleave,

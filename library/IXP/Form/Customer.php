@@ -148,7 +148,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $peeringemail );
 
         $peeringpolicy = $this->createElement( 'select', 'peeringpolicy' );
-        $peeringpolicy->setMultiOptions( [ 0 => '' ] + \Entities\Customer::$PEERING_POLICIES )
+        $peeringpolicy->setMultiOptions( [ '' => '' ] + \Entities\Customer::$PEERING_POLICIES )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Peering Policy' )
             ->setRequired( false )

@@ -10,6 +10,7 @@ Schema update required:
     ALTER TABLE physicalinterface ADD fanout_physical_interface_id INT DEFAULT NULL;
     ALTER TABLE physicalinterface ADD CONSTRAINT FK_5FFF4D602E68AB8C FOREIGN KEY (fanout_physical_interface_id) REFERENCES physicalinterface (id);
     CREATE UNIQUE INDEX UNIQ_5FFF4D602E68AB8C ON physicalinterface (fanout_physical_interface_id);
+    UPDATE `cust` SET `peeringpolicy` = '' WHERE `peeringpolicy` = '0';
 
 # v3.1.8
 
