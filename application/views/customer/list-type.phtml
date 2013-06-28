@@ -1,0 +1,13 @@
+<td>
+    {if $row.$col eq CUSTOMER::TYPE_ASSOCIATE}
+        <span class="label label-warning">ASSOCIATE</span>
+    {elseif $row.$col eq CUSTOMER::TYPE_PROBONO}
+        <span class="label label-info">PROBONO</span>
+    {elseif $row.$col eq CUSTOMER::TYPE_INTERNAL}
+        <span class="label label-inverse">INTERNAL</span>
+    {elseif $row.$col eq CUSTOMER::TYPE_FULL}
+        <span class="label label-success">FULL</span>
+    {else}
+        <span class="label">UNKNOWN</span>
+    {/if}
+</td>

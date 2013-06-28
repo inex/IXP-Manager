@@ -66,7 +66,11 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'idField'    => 'id'
                     ],
         
-                    'autsys'      => 'AS',
+                    'autsys'      => [
+                        'title'      => 'AS',
+                        'type'       => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'     => 'customer/list-autsys.phtml'
+                    ],
                     
                     'shortname'   => [
                         'title'      => 'Shortname',
@@ -81,18 +85,21 @@ class CustomerController extends IXP_Controller_FrontEnd
                     
                     'type'            => [
                         'title'         => 'Type',
-                        'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
-                        'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT,
+                        'script'     => 'customer/list-type.phtml'
                     ],
+                    
                     'status'            => [
                         'title'         => 'Status',
                         'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
                         'mapper'        => \Entities\Customer::$CUST_STATUS_TEXT,
                         'script'        => 'customer/list-status.phtml'
                     ],
+                    
                     'datejoin'       => [
                         'title'     => 'Joined',
-                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                        'type'      => self::$FE_COL_TYPES[ 'DATE' ]
                     ]
                 ];
                 break;

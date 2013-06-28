@@ -1,5 +1,16 @@
 <td>
-    <span class="label label-{if $row.$col == 1}success{elseif $row.$col == 3}important{else}warning{/if}">
-    {$cconf.mapper[$row.$col]}
-    </span>
+    {if $row.dateleave neq null and $row.dateleave->format( 'Y-m-d' ) neq '0000-00-00' and $row.dateleave->format( 'Y-m-d' ) neq '-0001-11-30'}
+        <span class="label label-important">CLOSED</span>
+    {else}
+        {if $row.$col == CUSTOMER::STATUS_SUSPENDED}
+            <span class="label label-impotant">SUSPENDED</span>
+        {elseif $row.$col == CUSTOMER::STATUS_NORMAL or ( $row.type == CUSTOMER::TYPE_ASSOCIATE and $row.$col == CUSTOMER::STATUS_NOTCONNECTED )}
+            {* An associate member can't be connected anyway! *}
+            <span class="label label-success">NORMAL</span>
+        {elseif $row.$col == CUSTOMER::STATUS_NOTCONNECTED}
+            <span class="label label-warning">NOT CONNECTED</span>
+        {else}
+            <span class="label">{$cconf.mapper[$row.$col]}</span>
+        {/if}
+    {/if}
 </td>
