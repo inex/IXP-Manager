@@ -1,3 +1,6 @@
+
+{* NB - USED FOR BOTH ADMIN AND CUSTOMER VIEW - BEWARE OF SECURITY *}
+
 <div class="row-fluid">
 
     <div class="span6">
@@ -21,9 +24,15 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
                 
                 {if count( $physInts ) and $physInts[0]->getRelatedInterface()}
-                    for <a href="{genUrl controller="customer" action="overview" id=$physInts[0]->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}">
-                        {$physInts[0]->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName()}
-                    </a>
+                    for <a
+                    
+                    {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                        href="{genUrl controller="customer" action="overview" id=$physInts[0]->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}"
+                    {else}
+                        href="{genUrl controller="customer" action="detail" id=$physInts[0]->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}"
+                    {/if}
+                    
+                    >{$physInts[0]->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName()}</a>
                 {else}
                     <em>(unassigned)</em>
                 {/if}
@@ -39,10 +48,13 @@
                 {assign var='isLAG' value=0}
             {/if}
         </small>
-        <div class="btn-group" style="padding-left: 20px;">
-            <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='virtual-interface' action='edit' id=$vi->getId()}" title="Edit"><i class="icon-pencil"></i></a>
-        </div>
-
+        
+        {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+            <div class="btn-group" style="padding-left: 20px;">
+                <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='virtual-interface' action='edit' id=$vi->getId()}" title="Edit"><i class="icon-pencil"></i></a>
+            </div>
+        {/if}
+        
     </h3>
 
     {foreach $vi->getPhysicalInterfaces() as $pi}
@@ -80,7 +92,9 @@
     {foreachelse}
         <p>
             No physical interfaces defined.
-            <a href="{genUrl controller="physical-interface" action="add" vintid=$vi->getId()}">Add one...</a>
+            {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                <a href="{genUrl controller="physical-interface" action="add" vintid=$vi->getId()}">Add one...</a>
+            {/if}
         </p>
     {/foreach}
 
@@ -185,7 +199,9 @@
         {if $vi->getType() eq SWITCHPORT::TYPE_PEERING}
             <p>
                 No VLAN interfaces defined.
-                <a href="{genUrl controller="vlan-interface" action="add" vintid=$vi->getId()}">Add one...</a>
+                {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                    <a href="{genUrl controller="vlan-interface" action="add" vintid=$vi->getId()}">Add one...</a>
+                {/if}
             </p>
         {/if}
     {/foreach}

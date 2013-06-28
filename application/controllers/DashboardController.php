@@ -44,6 +44,8 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
         // Get the three most recent members
         $this->view->recentMembers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getRecent( 3 );
 
+        $this->view->cust = $this->getUser()->getCustomer();
+        
         /*
             // is there a meeting available to register for?
             $this->view->meeting = false;
