@@ -2,6 +2,8 @@
 Potential Todo / Feature Ideas
 ------------------------------
 
+* Review MRTG script for reseller and fanout ports
+
 * Fix static documentation to allow for auth. See StaticController::__call()
 
 * INEX require that members peer "with at least the greater of 4 other
