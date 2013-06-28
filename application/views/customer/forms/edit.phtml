@@ -54,20 +54,55 @@
     <div class="span6">
 
      <fieldset>
-            <legend>NOC Details</legend>
+        <legend>NOC Details</legend>
 
-            {$element->nocphone}
-            {$element->noc24hphone}
-            {$element->nocfax}
-            {$element->nocemail}
-            {$element->nochours}
-            {$element->nocwww}
+        {$element->nocphone}
+        {$element->noc24hphone}
+        {$element->nocfax}
+        {$element->nocemail}
+        {$element->nochours}
+        {$element->nocwww}
 
     </fieldset>
-
     </div>
 
     <div class="span6">
+        {if isset( $element->reseller ) }
+            <fieldset>
+                <legend>Reseller Details</Legend>
+
+                {$element->isReseller}
+                {$element->isResold}
+                <div id="reseller-element-div" style="margin-top: -15px; margin-left: 80px; {if !$element->reseller->getValue()}display: none;{/if} ">
+                    {$element->reseller}
+                </div>
+            </fieldset>
+            <script type="text/javascript">
+                $( document ).ready( function(){
+                    
+                    $( "#isResold" ).change( function(){
+                        if( $( this ).prop( "checked" ) )
+                        {
+                            $( '#reseller-element-div' ).show();
+                            if( $( '#isReseller' ).prop( "checked" ) )
+                                $( '#isReseller' ).prop( "checked", false );
+                        }
+                        else
+                            $( '#reseller-element-div' ).hide();
+                        
+                    });
+
+                    $( "#isReseller" ).change( function(){
+                        if( $( this ).prop( "checked" ) )
+                        {
+                            if( $( '#isResold' ).prop( "checked" ) )
+                                $( '#isResold' ).prop( "checked", false ).trigger( "change" );
+                        }
+                        
+                    });
+                });
+            </script>
+        {/if}
     </div>
     
 </div>

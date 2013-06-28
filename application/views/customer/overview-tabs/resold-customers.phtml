@@ -1,0 +1,43 @@
+
+{if count( $cust->getResoldCustomers() )}
+
+    <table class="table">
+        <thead>
+            <th>Name</th>
+            <th>AS</th>
+            {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                <th>Shortname</th>
+            {/if}
+            <th>Peering Email</th>
+            <th>NOC 24h Phone</th>
+            <th>Joined</th>
+        </thead>
+        <tbody>
+            {foreach $cust->getResoldCustomers() as $rc}
+                <tr>
+                    <td>
+                        {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                            <a href="{genUrl controller='customer' action='overview' id=$rc->getId()}">{$rc->getName()}</a>
+                        {else}
+                            <a href="{genUrl controller='customer' action='detail' id=$rc->getId()}">{$rc->getName()}</a>
+                        {/if}
+                    </td>
+                    <td>{$rc->getAutsys()|asnumber}</td>
+                    {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                        <td><a href="{genUrl controller=$controller action=$action id=$rc->getId()}">{$rc->getShortname()}</a></td>
+                    {/if}
+                    <td>{$rc->getPeeringemail()}</td>
+                    <td>{$rc->getNoc24hphone()}</td>
+                    <td>{$rc->getDatejoin()->format('Y-m-d H:i:s')}</td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+{else}
+
+    <p style="padding-left: 40px;">
+        No resold customers found.
+    </p>
+
+{/if}
+

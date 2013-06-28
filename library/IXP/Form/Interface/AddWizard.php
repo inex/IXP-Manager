@@ -96,7 +96,6 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $this->getElement( 'switchid' )->setAttrib( 'class', 'chzn-select span12' );
         
         $switchPorts = $this->createElement( 'select', 'switchportid' );
-        
         $switchPorts->setRequired( true )
             ->setRegisterInArrayValidator( false )
             ->setLabel( 'Port' )
@@ -299,6 +298,55 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $preselectPhysicalInterface = $this->createElement( 'hidden', 'preselectPhysicalInterface' );
         $this->addElement( $preselectPhysicalInterface );
         
+    }
+
+    /**
+     * Enables Fanout ports form elements in customer form
+     *
+     * @param bool $modeEnabled Status of reseller mode enabled or not.
+     * @return IXP_Form_Customer
+     */
+    public function enableFanoutPort( $modeEnabled )
+    {
+        if( !$modeEnabled )
+            return $this;
+
+        $fanout = $this->createElement( 'checkbox', 'fanout' );
+        $fanout->setLabel( 'Associate a fanout port' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $fanout );
+        
+        $switcher = IXP_Form_Switch::getPopulatedSelect( 'fn_switchid' );
+        $switcher->setRequired( false )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
+            ->removeValidator( 'between' );
+        $this->addElement( $switcher );
+
+        $switchPorts = $this->createElement( 'select', 'fn_switchportid' );
+        $switchPorts->setRequired( false )
+            ->setRegisterInArrayValidator( false )
+            ->setLabel( 'Port' )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->setAttrib( 'chzn-fix-width', '1' )
+            ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
+            ->setErrorMessages( array( 'Please select a switch port' ) );
+        $this->addElement( $switchPorts );
+
+        $preselectSwitchPort = $this->createElement( 'hidden', 'fn_preselectSwitchPort' );
+        $this->addElement( $preselectSwitchPort );
+        
+        $preselectPhysicalInterface = $this->createElement( 'hidden', 'fn_preselectPhysicalInterface' );
+        $this->addElement( $preselectPhysicalInterface );
+
+        $this->addDisplayGroup(
+            [ 'fn_switchid', 'fn_switchportid', 'fn_preselectSwitchPort', 'fn_preselectPhysicalInterface' ],
+            'fanoutDisplayGroup'
+        );
+        
+        $this->getDisplayGroup( 'fanoutDisplayGroup' )->setLegend( 'Fanout Port' );
+
+        return $this;
     }
 
 }

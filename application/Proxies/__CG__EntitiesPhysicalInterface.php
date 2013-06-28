@@ -135,10 +135,40 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         return parent::getVirtualInterface();
     }
 
+    public function setFanoutPhysicalInterface(\Entities\PhysicalInterface $fanoutPhysicalInterface = NULL)
+    {
+        $this->__load();
+        return parent::setFanoutPhysicalInterface($fanoutPhysicalInterface);
+    }
+
+    public function getFanoutPhysicalInterface()
+    {
+        $this->__load();
+        return parent::getFanoutPhysicalInterface();
+    }
+
+    public function setPeeringPhysicalInterface(\Entities\PhysicalInterface $peeringPhysicalInterface = NULL)
+    {
+        $this->__load();
+        return parent::setPeeringPhysicalInterface($peeringPhysicalInterface);
+    }
+
+    public function getPeeringPhysicalInterface()
+    {
+        $this->__load();
+        return parent::getPeeringPhysicalInterface();
+    }
+
+    public function getRelatedInterface()
+    {
+        $this->__load();
+        return parent::getRelatedInterface();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'status', 'speed', 'duplex', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface');
+        return array('__isInitialized__', 'status', 'speed', 'duplex', 'monitorindex', 'notes', 'id', 'SwitchPort', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'VirtualInterface');
     }
 
     public function __clone()

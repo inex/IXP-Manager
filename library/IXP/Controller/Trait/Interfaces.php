@@ -89,7 +89,150 @@ trait IXP_Controller_Trait_Interfaces
     
         return true;
     }
-    
-    
+
+    /**
+     * Links peering and fanout physical interfaces.
+     *
+     * If *link with fanout port* is checked in the form, then this function:
+     *
+     * * checks if the necessary fields are set;
+     * * loads the selected SwitchPort;
+     * * creates/loads this SwitchPort's physical interface;
+     * * creates a link between the fanout and peering physical interfaces.
+     *
+     * If *link with fanout port* is not checked then this function checks
+     * if the peering port has a related interface and, if so, removes the relation.
+     *
+     * @param IXP_Form                     $form Form to get fanout data (one of _Interface_AddWizard or _Interface_Physical)
+     * @param \Entities\PhysicalInterface  $pi   Peering physical interface to related with fanout physical interface (port).
+     * @param \Entities\VirtualInterface   $vi   Virtual interface of peering physical intreface
+     * @return bool
+     */
+    protected function processFanoutPhysicalInterface( $form, $pi, $vi )
+    {
+        if( !$form->getValue( 'fanout' ) )
+        {
+            if( $pi->getRelatedInterface() )
+            {
+                // if *link with fanout port* is unchecked and the physical interace
+                // has a related fanout interface, we need to remove it
+                $this->removeRelatedInterface( $pi );
+                $pi->setFanoutPhysicalInterface( null );
+            }
+            
+            return true;
+        }
+        
+        // from here on, we assume $form->getValue( 'fanout' ) is true
+        
+        if( !$form->getValue( 'fn_switchid' ) )
+        {
+            $form->getElement( 'fn_switchid' )->setErrorMessages( ['Please select a switch'] )->markAsError();
+            $form->getElement( 'fn_switchportid' )->setErrorMessages( ['Please select a switchport'] )->markAsError();
+            return false;
+        }
+        
+        if( !$form->getValue( 'fn_switchportid' ) )
+        {
+            $form->getElement( 'fn_switchportid' )->setErrorMessages( ['Please select a switchport'] )->markAsError();
+            return false;
+        }
+        
+        if( $form->getElement( 'fn_monitorindex' ) )
+        {
+            if( !$form->getValue( 'fn_monitorindex' ) )
+            {
+                $form->getElement( 'fn_monitorindex' )->setErrorMessages( ['This value can not be empty.'] )->markAsError();
+                return false;
+            }
+            $monitorIdx = $form->getValue( 'fn_monitorindex' );
+        }
+        else
+        {
+            $monitorIdx = $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex(
+                              $vi->getCustomer()->getReseller()
+                          );
+        }
+
+        $fnsp = $this->getD2R( '\\Entities\\SwitchPort' )->find( $form->getElement( 'fn_switchportid' )->getValue() );
+        $fnsp->setType( \Entities\SwitchPort::TYPE_FANOUT );
+        
+        // if switchport does not have a physical interface then create one for it
+        if( !$fnsp->getPhysicalInterface() )
+        {
+            
+            $fnphi = new \Entities\PhysicalInterface();
+            $fnphi->setSwitchPort( $fnsp );
+            $fnsp->setPhysicalInterface( $fnphi );
+            $fnphi->setMonitorindex( $monitorIdx );
+            $this->getD2EM()->persist( $fnphi );
+        }
+        else
+        {
+            $fnphi = $fnsp->getPhysicalInterface();
+            
+            // checking if the fanout port already has physical interface and it is not this one
+            if( $fnsp->getPhysicalInterface()->getRelatedInterface() && $fnsp->getPhysicalInterface()->getRelatedInterface()->getId() != $pi->getId() )
+            {
+                $this->addMesssage( "Selected fanout port already has a related physical interface.", OSS_Message::ERROR );
+                return false;
+            }
+        }
+        
+        // if the physical interace already has a related physical interface and it's not the same as the fanout physical interface
+        if( $pi->getRelatedInterface() &&  $pi->getRelatedInterface()->getId() != $fnphi->getId() )
+        {
+            // if fanout does not have a virtual interface, relate it with old fanout port virtual interface.
+            if( !$fnphi->getVirtualInterface() )
+            {
+                $pi->getRelatedInterface()->getVirtualInterface()->addPhysicalInterface( $fnphi );
+                $fnphi->setVirtualInterface( $pi->getRelatedInterface()->getVirtualInterface() );
+            }
+            
+            $this->removeRelatedInterface( $pi );
+        }
+        else if( !$fnphi->getVirtualInterface() )
+        {
+            // creating virtual interface for fanout physical interface if it doesn't have one
+            $fnvi = new \Entities\VirtualInterface();
+            $fnvi->setCustomer( $vi->getCustomer()->getReseller() );
+            $fnvi->addPhysicalInterface( $fnphi );
+            $fnphi->setVirtualInterface( $fnvi );
+            $this->getD2EM()->persist( $fnvi );
+        }
+
+        $pi->setFanoutPhysicalInterface( $fnphi );
+        $fnphi->setPeeringPhysicalInterface( $pi );
+
+        return true;
+    }
+
+     /**
+     * Removes related interface
+     *
+     * Removes a related interface and if it only has one physical interface, removes the virtual interface also
+     *
+     * @param \Entities\PhysicalInterface $pi Physical interface to remove related physical interface.
+     * @return void
+     */
+    private function removeRelatedInterface( $pi )
+    {
+        $pi->getRelatedInterface()->getSwitchPort()->setPhysicalInterface( null );
+        if( count( $pi->getRelatedInterface()->getVirtualInterface()->getPhysicalInterfaces() ) == 1 )
+        {
+            foreach( $pi->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $fnvi )
+                $this->getD2EM()->remove( $fnvi );
+
+            foreach( $pi->getRelatedInterface()->getVirtualInterface()->getMACAddresses() as $mac )
+                $this->getD2EM()->remove( $mac );
+
+            $this->getD2EM()->remove( $pi->getRelatedInterface()->getVirtualInterface() );
+            $this->getD2EM()->remove( $pi->getRelatedInterface() );
+        }
+        else
+        {
+            $this->getD2EM()->remove( $pi->getRelatedInterface() );
+        }
+    }
 }
 

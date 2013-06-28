@@ -44,6 +44,8 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
         // Get the three most recent members
         $this->view->recentMembers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getRecent( 3 );
 
+        $this->view->cust = $this->getUser()->getCustomer();
+        
         /*
             // is there a meeting available to register for?
             $this->view->meeting = false;
@@ -64,6 +66,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 
         if( !$this->getCustomer()->isTypeAssociate() )
         {
+            $this->view->resoldCustomer = $this->getCustomer()->isResoldCustomer();
             $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
 	        $this->view->categories = IXP_Mrtg::$CATEGORIES;
 
@@ -143,7 +146,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
         if( !isset( $this->view->billingDetails ) )
             $this->view->billingDetails = $form;
         
-        $form->assignEntityToForm( $this->getCustomer(), $this, true );
+        $form->assignEntityToForm( $this->getCustomer()->getBillingDetails(), $this, true );
         $form->setAction( OSS_Utils::genUrl( 'dashboard', 'update-billing' ) );
         return $form;
     }

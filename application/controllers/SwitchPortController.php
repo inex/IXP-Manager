@@ -319,7 +319,25 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         $this->_display( 'add.phtml' );
     }
     
-    
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful add / edit operation.
+     *
+     * By default it returns `false`.
+     *
+     * On `false`, the default action (`index`) is called and a standard success message is displayed.
+     *
+     *
+     * @param OSS_Form $form The form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function addDestinationOnSuccess( $form, $object, $isEdit  )
+    {
+        $this->addMessage( $this->feGetParam( 'titleSingular' ) . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
+        $this->redirectAndEnsureDie( 'switch-port/list/switch/' . $object->getSwitcher()->getId() );
+    }
     
     public function ajaxGetAction()
     {
@@ -334,6 +352,12 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             $dql .= 'AND ( pi.id IS NULL OR pi.id = ?2 )';
         else
             $dql .= 'AND pi.id IS NULL';
+        
+        // limit to ports suitable for peering?
+        if( $this->getParam( 'type', null ) == 'peering' )
+            $dql .= 'AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_PEERING . ', ' . \Entities\SwitchPort::TYPE_UNSET . ') )';
+        if( $this->getParam( 'type', null ) == 'fanout' )
+            $dql .= 'AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_FANOUT . ', ' . \Entities\SwitchPort::TYPE_UNSET . ' ) )';
 
         $dql .= " ORDER BY sp.id ASC";
         

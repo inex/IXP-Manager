@@ -74,7 +74,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     {
         if( !isset( $this->_options['mrtg']['traffic_graphs'] ) || !is_array( $this->_options['mrtg']['traffic_graphs'] ) || !count( $this->_options['mrtg']['traffic_graphs'] ) )
         {
-            $this->addMessage( 
+            $this->addMessage(
                 "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
                 OSS_Message::ERROR
             );
@@ -228,7 +228,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
                 {
                     if( $pi->getMonitorindex() == $monitorindex )
                     {
-                        $vint = $vi;
+                        $this->view->pi   = $pi;
+                        $this->view->vint = $vint = $vi;
                         break 2;
                     }
                 }

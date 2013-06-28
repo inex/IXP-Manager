@@ -12,6 +12,33 @@
             
             {$element->custid}
             {$element->trunk}
+            {if isset( $type ) && $type }
+                <div class="control-group">
+                    <label class="control-label">Type</label>
+                    <div class="controls">
+                        <span class="label {if $type == 1}label-success{else if $type == 6}label-inverse{/if}">{$ptypes[$type]|strtoupper}</span>
+                        {if count( $physInts )}
+                            {foreach $physInts as $int}
+                                    {if $type == 1 && $int->getFanoutPhysicalInterface() }
+                                        <span style="margin-left: 15px;">
+                                            <a href="{genUrl controller=$controller action=$action id=$int->getFanoutPhysicalInterface()->getVirtualInterface()->getId()}">
+                                                See {$ptypes[6]|strtolower} port
+                                            </a>
+                                        </span>
+                                    {/if}
+                                    {if $type == 6 && $int->getPeeringPhysicalInterface() }
+                                        <span style="margin-left: 15px;">
+                                            <a href="{genUrl controller=$controller action=$action id=$int->getPeeringPhysicalInterface()->getVirtualInterface()->getId()}">
+                                                See {$ptypes[1]|strtolower} port
+                                            </a>
+                                        </span>
+                                    {/if}
+                            {/foreach}
+                     
+                        {/if}
+                    </div>
+                </div>
+            {/if}
             
         </fieldset>
         

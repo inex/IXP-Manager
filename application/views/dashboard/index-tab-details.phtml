@@ -8,8 +8,9 @@
 	</div>
 	
 	<div class="span6">
-
-	    {$billingDetails}
+        {if (!isset( $options.reseller.no_billing_for_resold_customers ) || !$options.reseller.no_billing_for_resold_customers ) || !$resellerMode || !$resoldCustomer }
+            {$billingDetails}
+        {/if}
 
 	</div>
 	

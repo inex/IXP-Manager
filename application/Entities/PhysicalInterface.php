@@ -76,6 +76,15 @@ class PhysicalInterface
      */
     private $VirtualInterface;
 
+    /**
+     * @var \Entities\PhysicalInterface
+     */
+    private $FanoutPhysicalInterface;
+
+    /**
+     * @var \Entities\PhysicalInterface
+     */
+    private $PeeringPhysicalInterface;
 
     /**
      * Set status
@@ -246,5 +255,71 @@ class PhysicalInterface
     public function getVirtualInterface()
     {
         return $this->VirtualInterface;
+    }
+
+
+    /**
+     * Set FanoutPhysicalInterface
+     *
+     * @param \Entities\PhysicalInterface $fanoutPhysicalInterface
+     * @return PhysicalInterface
+     */
+    public function setFanoutPhysicalInterface(\Entities\PhysicalInterface $fanoutPhysicalInterface = null)
+    {
+        $this->FanoutPhysicalInterface = $fanoutPhysicalInterface;
+    
+        return $this;
+    }
+
+    /**
+     * Get FanoutPhysicalInterface
+     *
+     * @return \Entities\PhysicalInterface
+     */
+    public function getFanoutPhysicalInterface()
+    {
+        return $this->FanoutPhysicalInterface;
+    }
+
+    /**
+     * Set PeeringPhysicalInterface
+     *
+     * @param \Entities\PhysicalInterface $peeringPhysicalInterface
+     * @return PhysicalInterface
+     */
+    public function setPeeringPhysicalInterface(\Entities\PhysicalInterface $peeringPhysicalInterface = null)
+    {
+        $this->PeeringPhysicalInterface = $peeringPhysicalInterface;
+    
+        return $this;
+    }
+
+    /**
+     * Get PeeringPhysicalInterface
+     *
+     * @return \Entities\PhysicalInterface
+     */
+    public function getPeeringPhysicalInterface()
+    {
+        return $this->PeeringPhysicalInterface;
+    }
+
+    /**
+     * Gets the related peering / fanout port for the current fanout / peering port
+     *
+     * For reseller functionality, we have the option of having fanout ports connectted to
+     * peering ports. In this case, this function will return the related peering or
+     * fanout port as appropriate.
+     *
+     * @return \Entities\PhysicalInterface The related peering / fanout port (or false for none / n/a)
+     */
+    public function getRelatedInterface()
+    {
+        if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $this->getPeeringPhysicalInterface() )
+            return $this->getPeeringPhysicalInterface();
+        else if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $this->getFanoutPhysicalInterface() )
+            return $this->getFanoutPhysicalInterface();
+        else
+            return false;
     }
 }

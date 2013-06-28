@@ -32,6 +32,7 @@
         </table>
     </div>
     <div class="span6">
+        {if (!isset( $options.reseller.no_billing_for_resold_customers ) || !$options.reseller.no_billing_for_resold_customers ) || !$resellerMode || !$cust->isResoldCustomer()}
         <legend>Billing Details</legend>
         {assign var='bdetails' value=$cust->getBillingDetails() }
         <table class="table">
@@ -93,6 +94,7 @@
                 <td>{$bdetails->getInvoiceEmail()}</td>
             </tr>
         </table>
+        {/if}
     </div>
 </div>
 

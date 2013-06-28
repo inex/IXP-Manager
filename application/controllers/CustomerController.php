@@ -66,9 +66,13 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'idField'    => 'id'
                     ],
         
-                    'autsys'      => 'AS',
+                    'autsys'      => [
+                        'title'      => 'AS',
+                        'type'       => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'script'     => 'customer/list-autsys.phtml'
+                    ],
                     
-                    'shortname'   => [
+                    'shortname'     => [
                         'title'      => 'Shortname',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                         'controller' => 'customer',
@@ -76,25 +80,36 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'idField'    => 'id'
                     ],
                     
-                    'peeringemail'   => 'Peering Email',
-                    'noc24hphone'    => 'NOC 24h Phone',
-                    
-                    'type'            => [
-                        'title'         => 'Type',
-                        'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
-                        'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT
+                    'peeringpolicy'   => 'Peering Policy',
+
+                    'isReseller'    => [
+                        'title'         => 'Reseller',
+                        'type'          => self::$FE_COL_TYPES[ 'YES_NO' ],
                     ],
-                    'status'            => [
+                    
+                    'type'          => [
+                        'title'         => 'Type',
+                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                        'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT,
+                        'script'        => 'customer/list-type.phtml'
+                    ],
+                    
+                    'status'        => [
                         'title'         => 'Status',
                         'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
                         'mapper'        => \Entities\Customer::$CUST_STATUS_TEXT,
                         'script'        => 'customer/list-status.phtml'
                     ],
+                    
                     'datejoin'       => [
                         'title'     => 'Joined',
-                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                        'type'      => self::$FE_COL_TYPES[ 'DATE' ]
                     ]
                 ];
+                
+                if( !$this->resellerMode() )
+                    unset( $this->_feParams->listColumns[ 'isReseller' ] );
+                
                 break;
     
             case \Entities\User::AUTH_CUSTUSER:
@@ -117,14 +132,15 @@ class CustomerController extends IXP_Controller_FrontEnd
                 'nochours'        => 'NOC Hours',
                 'nocemail'        => 'NOC Email',
                 'nocwww'          => 'NOC WWW',
+                'noc24hphone'     => 'NOC 24h Phone',
                 'status'          => [
                     'title'         => 'Status',
                     'type'          => self::$FE_COL_TYPES[ 'XLATE' ],
                     'xlator'        => \Entities\Customer::$CUST_STATUS_TEXT
                 ],
                 'activepeeringmatrix' => 'Active Peering Matrix',
+                'peeringemail'   => 'Peering Email',
                 'peeringmacro'    => 'Peering Macro',
-                'peeringpolicy'   => 'Peering Policy',
                 'billingContact'  => 'Billing Contact',
                 'billingAddress1' => 'Billing Address1',
                 'billingAddress2' => 'Billing Address2',
@@ -143,9 +159,6 @@ class CustomerController extends IXP_Controller_FrontEnd
         );
     }
     
-    
-    
-    
     /**
      * Provide array of customers for the listAction and viewAction
      *
@@ -160,6 +173,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                             c.nochours AS nochours, c.nocemail AS nocemail, c.nocwww AS nocwww,
                             c.status AS status, c.activepeeringmatrix AS activepeeringmatrix,
                             c.peeringmacro AS peeringmacro, c.peeringpolicy AS peeringpolicy,
+                            c.isReseller AS isReseller,
                             bd.billingContactName AS billingContact, bd.billingAddress1 AS billingAddress1,
                             bd.billingAddress2 AS billingAddress2, bd.billingTownCity AS billingCity, bd.billingCountry AS billingCountry,
                             c.corpwww AS corpwww, c.datejoin AS datejoin, c.dateleave AS dateleave,
@@ -196,6 +210,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $this->view->registerClass( 'Countries', 'OSS_Countries' );
         $this->view->registerClass( 'BillingDetails', '\\Entities\\CompanyBillingDetail' );
+        $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
         
         // is this user watching all notes for this customer?
         if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
@@ -241,7 +256,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                     $this->view->rsclient = true;
 
                 if( $vli->getAs112client() )
-                    $this->view->as112client = true; 
+                    $this->view->as112client = true;
             }
         }
     }
@@ -305,6 +320,77 @@ class CustomerController extends IXP_Controller_FrontEnd
         else
         {
             $object->setIRRDB( null );
+        }
+
+        return $this->_setReseller( $form, $object );
+    }
+
+    
+    /**
+     * Sets reseller to customer from form
+     *
+     * @param IXP_Form_Customer $form The Send form object
+     * @param \Entities\Customer $object The Doctrine2 entity (being edited or blank for add)
+     * @return bool If false, the form is not processed
+     */
+    private function _setReseller( $form, $object )
+    {
+        if( !$this->resellerMode() )
+            return true;
+        
+        if( $form->getValue( 'isResold' ) )
+        {
+            $reseller = $this->getD2R( "\\Entities\\Customer" )->find( $form->getValue( "reseller" ) );
+            
+            if( !$reseller )
+            {
+                $form->getElement( "resller" )->setErrorMessages( ['Select Reseller'] )->markAsError();
+                return false;
+            }
+
+            if( $object->getReseller() && $object->getReseller()->getId() != $form->getValue( 'reseller' ) )
+            {
+                foreach( $object->getVirtualInterfaces() as $viInt )
+                {
+                    foreach( $viInt->getPhysicalInterfaces() as $phInt )
+                    {
+                        if( $phInt->getFanoutPhysicalInterface()
+                                && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
+                        {
+                            $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
+                            $this->addMessage( 'You can not change the reseller because there are still fanout ports from the current reseller linked to this customer\'s phsyical interfaces. You nead to reassign these first.', OSS_Message::INFO );
+                            return false;
+                        }
+                    }
+                }
+            }
+            
+            $object->setReseller( $reseller );
+        }
+        else if( $object->getReseller() )
+        {
+            foreach( $object->getVirtualInterfaces() as $viInt )
+            {
+                foreach( $viInt->getPhysicalInterfaces() as $phInt )
+                {
+                    if( $phInt->getFanoutPhysicalInterface()
+                            && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
+                    {
+                        $form->getElement( 'isResold' )->setValue(1);
+                        $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
+                        $this->addMessage( 'You can not change this resold customer state because there are still phsyical interface(s) of this customer linked to fanout ports or the current reseller. You nead to reassign these first.', OSS_Message::INFO );
+                        return false;
+                    }
+                }
+            }
+            $object->setReseller( null );
+        }
+
+        if( !$form->getValue( 'isReseller' ) && $object->getIsReseller() && count( $object->getResoldCustomers() ) )
+        {
+            $form->getElement( 'isReseller' )->setErrorMessages( [''] )->markAsError();
+            $this->addMessage( 'You can not change the reseller state because this customer still has resold customers. You nead to reassign these first.', OSS_Message::INFO );
+            return false;
         }
         
         return true;
@@ -375,17 +461,28 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
      protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
      {
-         if( $object->getIRRDB() instanceof \Entities\IRRDBConfig )
-             $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
+        if( $object->getIRRDB() instanceof \Entities\IRRDBConfig )
+            $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
 
-         if( $isEdit )
-         {
+        $form->enableResller( $this->resellerMode() );
+        
+        if( $this->resellerMode() )
+        {
+            if( $object->getReseller() instanceof \Entities\Customer )
+            {
+                $form->getElement( 'isResold' )->setValue( true );
+                $form->getElement( 'reseller' )->setValue( $object->getReseller()->getId() );
+            }
+        }
+
+        if( $isEdit )
+        {
             $form->assignEntityToForm( $object->getBillingDetails(), $this );
             $form->assignEntityToForm( $object->getRegistrationDetails(), $this );
             $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $object->getId() ] ) );
-         }
+        }
          
-         return true;
+        return true;
      }
 
 
@@ -398,7 +495,10 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->view->cust = $c = $this->_loadCustomer();
         $this->view->form = $form = new IXP_Form_Customer_BillingRegistration();
 
-        $form->assignEntityToForm( $c->getBillingDetails(), $this );
+        if( ( !isset( $this->_options['reseller']['no_billing_for_resold_customers'] ) || !$this->_options['reseller']['no_billing_for_resold_customers']  )
+            || !$this->resellerMode() || !$c->isResoldCustomer() )
+            $form->assignEntityToForm( $c->getBillingDetails(), $this );
+        
         $form->assignEntityToForm( $c->getRegistrationDetails(), $this );
         
         // Process a submitted form if it passes initial validation
@@ -411,7 +511,6 @@ class CustomerController extends IXP_Controller_FrontEnd
             $this->addDestinationOnSuccess( $form, $c, true );
         }
     }
-                                                                                               
 
     /**
      * Send the member an operations welcome mail

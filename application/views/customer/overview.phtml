@@ -18,7 +18,17 @@
             {if $cust->hasLeft()}
                 <span class="label label-important">ACCOUNT CLOSED</span>
             {/if}
+            {if $resellerMode}
+                {if $cust->getIsReseller()}
+                    <span class="label">RESELLER</span>
+                {elseif $cust->getReseller()}
+                    <span class="label">RESOLD CUSTOMER</span>
+                {/if}
+            {/if}
         </h3>
+        {if $resellerMode && $cust->getReseller()}
+            <p style="margin-left: 15px;">Resold customer of <a href="{genUrl controller=$controller action=$action id=$cust->getReseller()->getId()}">{$cust->getReseller()->getName()}</p>
+        {/if}
     </li>
     <li class="pull-right" style="margin-top: 12px;">
         <div class="btn-toolbar" style="display: inline;">
@@ -54,7 +64,11 @@
                     </li>
                     <li>
                         <a href="{genUrl controller=$controller action="billing-registration" id=$cust->getId()}">
-                            Edit Billing/Registration Details
+                            {if (!isset( $options.reseller.no_billing_for_resold_customers ) || !$options.reseller.no_billing_for_resold_customers ) || !$resellerMode || !$cust->isResoldCustomer()}
+                                Edit Billing/Registration Details
+                            {else}
+                                Edit Registration Details
+                            {/if}
                         </a>
                     </li>
                 </ul>
@@ -107,8 +121,14 @@
         </li>
 
         <li>
-            <a href="#billing" data-toggle="tab">Billing</a>
+            <a href="#details" data-toggle="tab">Details</a>
         </li>
+
+        {if $resellerMode && $cust->isReseller()}
+            <li>
+                <a href="#resold-customers" data-toggle="tab">Resold Customers</a>
+            </li>
+        {/if}
             
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
             <li>
@@ -164,7 +184,7 @@
                 {/if}
             {/if}
 
-            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}            
+            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
                 <li>
                     <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">P2P &raquo;</a>
                 </li>
@@ -178,13 +198,23 @@
             {tmplinclude file="customer/overview-tabs/overview.phtml"}
         </div>
 
-        <div class="tab-pane" id="billing">
-            {tmplinclude file="customer/overview-tabs/billing.phtml"}
+        <div class="tab-pane" id="details">
+            {tmplinclude file="customer/overview-tabs/details.phtml"}
         </div>
+
+        {if $resellerMode && $cust->isReseller()}
+            <div class="tab-pane" id="resold-customers">
+                {tmplinclude file="customer/overview-tabs/resold-customers.phtml"}
+            </div>
+        {/if}
 
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
             <div class="tab-pane" id="ports">
-                {tmplinclude file="customer/overview-tabs/ports.phtml"}
+                {if $resellerMode && $cust->isReseller()}
+                    {tmplinclude file="customer/overview-tabs/reseller-ports.phtml"}
+                {else}
+                    {tmplinclude file="customer/overview-tabs/ports.phtml"}
+                {/if}
             </div>
 
                 {if $cust->hasPrivateVLANs()}

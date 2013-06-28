@@ -177,6 +177,12 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         return parent::getCustomer();
     }
 
+    public function getType()
+    {
+        $this->__load();
+        return parent::getType();
+    }
+
 
     public function __sleep()
     {

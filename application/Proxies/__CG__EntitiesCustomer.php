@@ -747,10 +747,64 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getMD5Support();
     }
 
+    public function setIsReseller($isReseller)
+    {
+        $this->__load();
+        return parent::setIsReseller($isReseller);
+    }
+
+    public function getIsReseller()
+    {
+        $this->__load();
+        return parent::getIsReseller();
+    }
+
+    public function isReseller()
+    {
+        $this->__load();
+        return parent::isReseller();
+    }
+
+    public function isResoldCustomer()
+    {
+        $this->__load();
+        return parent::isResoldCustomer();
+    }
+
+    public function addResoldCustomer(\Entities\Customer $resoldCustomers)
+    {
+        $this->__load();
+        return parent::addResoldCustomer($resoldCustomers);
+    }
+
+    public function removeResoldCustomer(\Entities\Customer $resoldCustomers)
+    {
+        $this->__load();
+        return parent::removeResoldCustomer($resoldCustomers);
+    }
+
+    public function getResoldCustomers()
+    {
+        $this->__load();
+        return parent::getResoldCustomers();
+    }
+
+    public function setReseller(\Entities\Customer $reseller = NULL)
+    {
+        $this->__load();
+        return parent::setReseller($reseller);
+    }
+
+    public function getReseller()
+    {
+        $this->__load();
+        return parent::getReseller();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'abbreviatedName', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'MD5Support', 'id', 'Notes', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'abbreviatedName', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'MD5Support', 'isReseller', 'id', 'Notes', 'VirtualInterfaces', 'ResoldCustomers', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails', 'Reseller');
     }
 
     public function __clone()
