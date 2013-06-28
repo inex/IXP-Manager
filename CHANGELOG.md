@@ -2,6 +2,8 @@
 
 Minor version bump as we've added a major new feature - reseller support.
 
+See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
+
 Schema update required:
 
     ALTER TABLE cust ADD reseller INT DEFAULT NULL, ADD isReseller TINYINT(1) NOT NULL DEFAULT 0;
@@ -11,6 +13,60 @@ Schema update required:
     ALTER TABLE physicalinterface ADD CONSTRAINT FK_5FFF4D602E68AB8C FOREIGN KEY (fanout_physical_interface_id) REFERENCES physicalinterface (id);
     CREATE UNIQUE INDEX UNIQ_5FFF4D602E68AB8C ON physicalinterface (fanout_physical_interface_id);
     UPDATE `cust` SET `peeringpolicy` = '' WHERE `peeringpolicy` = '0';
+
+New `application.ini` configuration options:
+
+    reseller.enabled = true / false
+    reseller.no_billing_for_resold_customers = true / false
+
+
+- [IM] Show if a customer is a reseller or not on the list (823e39d - Barry O'Donovan - 2013-06-28)
+- [IM] More accurate information in customer list for status and type (cec4274 - Barry O'Donovan - 2013-06-28)
+- [IM] Show a reseller customer their resold customers (f479c99 - Barry O'Donovan - 2013-06-28)
+- [IM] Show resellers their fanout and uplink ports also (64d401e - Barry O'Donovan - 2013-06-28)
+- [IM] Show port types on statistics overview and drilldown pages (b4e6577 - Barry O'Donovan - 2013-06-28)
+- [CR/IM] Code review of reseller and fanout port functionality (712eb31 - Barry O'Donovan - 2013-06-27)
+- [HK] Better language (690e314 - Barry O'Donovan - 2013-06-27)
+- [CR/IM] A bit of refactoring (719dd23 - Barry O'Donovan - 2013-06-27)
+- [CR/HK] Better documentation (3166454 - Barry O'Donovan - 2013-06-27)
+- [CR/HK] Better error messages (bfe850c - Barry O'Donovan - 2013-06-27)
+- [CR/HK] Better documentation (6a1bb6f - Barry O'Donovan - 2013-06-27)
+- [HK] Better language (25ec40d - Barry O'Donovan - 2013-06-27)
+- [DB] Update schema changes required for resellers (2dfcfd4 - Barry O'Donovan - 2013-06-27)
+- [HK] Freshly pressed CSS / JS (6166e0c - Barry O'Donovan - 2013-06-27)
+- [IM] Use a namespace for Doctrine2 cache (c5dcd68 - Barry O'Donovan - 2013-06-27)
+- [IM] Adding more port options for reseller customer in customer overview. Sloves IXP-7 (99f85e3 - Nerijus Barauskas - 2013-06-24)
+- [NF] Additional js files for differnet remove dialog box (8bf54df - Nerijus Barauskas - 2013-06-24)
+- [IM] Improvements in removing virtual interface (ccfb66e - Nerijus Barauskas - 2013-06-24)
+- [IM] Improvements then removing physical interface (f1807c0 - Nerijus Barauskas - 2013-06-24)
+- [IM] Separating peering from fanout (3c08e5a - Nerijus Barauskas - 2013-06-24)
+- [NF] Allowing to set fanout port in add-wizard. Solves IXP-6 (25aefe9 - Nerijus Barauskas - 2013-06-24)
+- [IM] Moving shared function to interfaces trait (216a59c - Nerijus Barauskas - 2013-06-24)
+- [NF] Function to get resold customers names list (9bd3311 - Nerijus Barauskas - 2013-06-24)
+- [NF] Resold customer list in reseller overview page. Solves IXP-5. (897782f - Nerijus Barauskas - 2013-06-24)
+- [NF] Linking a fanout port to a physical interface. Part if IXP-4 (4029583 - Nerijus Barauskas - 2013-06-21)
+- [IM] Including TYPE FANOUT to get it in the list when editing physical interface. (e375248 - Nerijus Barauskas - 2013-06-21)
+- [NF] Adding function getRelatedInterface wich returns FanoutPhysicalInterface if you call it from PeerPhysicalInterface and vice verse (5cb6f27 - Nerijus Barauskas - 2013-06-21)
+- [IM] Updating proxies (69761eb - Nerijus Barauskas - 2013-06-21)
+- [IM] Adding form Fanout port form element into physical Interface add edit form. Part of IXP-4 (7132725 - Nerijus Barauskas - 2013-06-21)
+- [IM] Checking if if customer have related Physical interfaces then changing resller state, reseller and resold customer state. (3afec0e - Nerijus Barauskas - 2013-06-21)
+- [IM] Changes to Virtual Interface page for fanout. Solves IXP-3 (d28d87f - Nerijus Barauskas - 2013-06-20)
+- [IM] Hiding billing details if 'reseller.no_billing_for_resold_customers' in application.ini is set to true and reseller mode is enabled. Solves IXP-2 (49597b7 - Nerijus Barauskas - 2013-06-20)
+- [IM] Rename overview section billing to details (c09a5a2 - Nerijus Barauskas - 2013-06-20)
+- [IM] Showing reseller information in customer overview. [Solves IXP-1] (8c28e6d - Nerijus Barauskas - 2013-06-20)
+- [IM] Updating entities and proxies after db schema canges (ecddb6b - Nerijus Barauskas - 2013-06-20)
+- [DB] Physical interfaces do not have to have a fanout port (3749e14 - Barry O'Donovan - 2013-06-20)
+- [IM] Not allowing to change reseller state if resller have resold customers (282f32d - Nerijus Barauskas - 2013-06-20)
+- [DB] Link pysical interfaces for fanout and peering (15d57db - Barry O'Donovan - 2013-06-20)
+- [DB] Link virtual interfaces for fanout and peering (952e96f - Barry O'Donovan - 2013-06-20)
+- [IM] Setting reseller data then adding updating customer (b26b5ea - Nerijus Barauskas - 2013-06-20)
+- [NF] Function to return resellers names array (ffb62bb - Nerijus Barauskas - 2013-06-20)
+- [IM] Adding form element for reseller fields in customer form (f61f5ee - Nerijus Barauskas - 2013-06-20)
+- [NF] Function to check if resller mode is enabled (7528bd6 - Nerijus Barauskas - 2013-06-20)
+- [NF] Add FANOUT type port for resellers (15779b2 - Barry O'Donovan - 2013-06-19)
+- [DB] Schema update for reseller members (1e44de4 - Barry O'Donovan - 2013-06-19)
+ 
+
 
 # v3.1.8
 
