@@ -17,6 +17,13 @@
             <a href="#tab1" data-toggle="tab">Overview</a></li>
             <li><a href="#tab-details" data-toggle="tab">My Details</a></li>
             <li><a href="#tab3" data-toggle="tab">Ports</a></li>
+            
+            {if $resellerMode && $cust->isReseller()}
+                <li>
+                    <a href="#tab-resold-customers" data-toggle="tab">Resold Customers</a>
+                </li>
+            {/if}
+            
             {if count( $custNotes )}
                 <li>
                     <a href="#tab-content-notes" id="tab-notes" data-toggle="tab">
@@ -71,6 +78,12 @@
 
         </div>
 
+        {if $resellerMode && $cust->isReseller()}
+            <div class="tab-pane" id="tab-resold-customers">
+                {tmplinclude file="customer/overview-tabs/resold-customers.phtml"}
+            </div>
+        {/if}
+        
         {if count( $custNotes )}
             <div class="tab-pane" id="tab-content-notes">
                 {tmplinclude file="customer/overview-tabs/notes.phtml"}
