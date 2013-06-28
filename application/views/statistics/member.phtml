@@ -38,7 +38,13 @@
     <div class="span6">
 
         <div class="well">
-            <h3>Aggregate Traffic Statistics</h3>
+            <h3>
+                Aggregate Peering Traffic
+                {if $resellerMode and $cust->isReseller()}
+                    {* let's be explicit that this is peering traffic only *}
+                    <small><em>(Peering ports only)</em></small>
+                {/if}
+            </h3>
 
             <p>
                 <br />
@@ -88,9 +94,23 @@
                         {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
                         / {$pi->getSwitchPort()->getSwitcher()->getName()}
                         / {$pi->getSwitchPort()->getName()} ({$pi->getSpeed()}Mbps)
+
+                {if $resellerMode and $cust->isReseller()}
+                    <br /><small>
+                    {if $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_PEERING}
+                        Peering Port
+                    {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_FANOUT}
+                        Fanout Port for <a href="{genUrl controller='customer' action='overview' id=$pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}">
+                            {$pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName()}
+                        </a>
+                    {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_RESELLER}
+                        Reseller Uplink Port
+                    {/if}
+                    </small>
+                {/if}
+
                 </h4>
-
-
+                
                 <p>
                     <br />
                     <a href="{genUrl controller='statistics' action='member-drilldown' monitorindex=$pi->getMonitorindex() category=$category shortname=$cust->getShortname()}">

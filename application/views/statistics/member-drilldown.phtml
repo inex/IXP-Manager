@@ -32,9 +32,25 @@
     <div class="span6">
 
         {if $switchname eq ''}
-            <h2>Aggregate Statistics for All Ports</h2>
+            <h2>Aggregate Statistics for All Peering Ports</h2>
         {else}
-            <h2>Port: {$switchname} / {$portname}</h2>
+            <h2>
+                Port: {$switchname} / {$portname}
+                
+                {if $resellerMode and $cust->isReseller()}
+                    <br /><small>
+                    {if $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_PEERING}
+                        Peering Port
+                    {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_FANOUT}
+                        Fanout Port for <a href="{genUrl controller='customer' action='overview' id=$pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}">
+                            {$pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName()}
+                        </a>
+                    {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_RESELLER}
+                        Reseller Uplink Port
+                    {/if}
+                    </small>
+                {/if}
+            </h2>
         {/if}
 
     </div>
