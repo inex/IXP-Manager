@@ -11,6 +11,33 @@ Schema update required:
     ALTER TABLE physicalinterface ADD CONSTRAINT FK_5FFF4D602E68AB8C FOREIGN KEY (fanout_physical_interface_id) REFERENCES physicalinterface (id);
     CREATE UNIQUE INDEX UNIQ_5FFF4D602E68AB8C ON physicalinterface (fanout_physical_interface_id);
 
+# v3.1.8
+
+New recommended `application.ini` configuration option:
+
+    resources.doctrine2cache.namespace                          = 'IXPManager'
+
+- [HK] Freshly pressed CSS / JS (6166e0c - Barry O'Donovan - 2013-06-27)
+- [IM] Use a namespace for Doctrine2 cache (c5dcd68 - Barry O'Donovan - 2013-06-27)
+- [IM] Better logic for showing contacts role and groups information (30fc572 - Nerijus Barauskas - 2013-06-19)
+- [NF] New function to get group and role names array by contacts ip array (b7c17d4 - Nerijus Barauskas - 2013-06-19)
+- [IM] Adding bullets for contact role and also showing groups and roles in contact preview (367c423 - Nerijus Barauskas - 2013-06-19)
+- [IM] Adding bullet for customer status (32af76d - Nerijus Barauskas - 2013-06-19)
+- [BF] Fixing group dropdown lists in contact form (653c38a - Nerijus Barauskas - 2013-06-19)
+- [IM] Position in contacts is not required field (069a36c - Nerijus Barauskas - 2013-06-19)
+- [BF] After chosen update nead to update some scripts (250ac97 - Nerijus Barauskas - 2013-06-19)
+- [BF] Paths and spelling (a473ff3 - Barry O'Donovan - 2013-06-19)
+- [HK] Move LONAP graph sync scripts (0f54632 - Barry O'Donovan - 2013-06-19)
+- [IM/BF] Aggregate logs improvements (c3808e6 - Barry O'Donovan - 2013-06-19)
+- [IM] Update / improve / bugfix migration script (510c4af - Barry O'Donovan - 2013-06-19)
+- [HK] LONAP - Update LONAP footer (7f8ae4b - Barry O'Donovan - 2013-06-19)
+- [BF] Few code fixes (bcc289b - Nerijus Barauskas - 2013-06-19)
+- [NF] Agregating logs (c624852 - Nerijus Barauskas - 2013-06-19)
+- [BF] fixing privileges (2db5aaf - Nerijus Barauskas - 2013-06-19)
+- [IM] More informative error message (bab4f37 - Nerijus Barauskas - 2013-06-18)
+- [NF] Scripts to migrate graphs from RRD to MRTG (8ba4b4c - Nerijus Barauskas - 2013-06-18)
+- [BF] Fix header in graphs pages (a2fd6d0 - Barry O'Donovan - 2013-06-13)
+
 
 # v3.1.7
 

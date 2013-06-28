@@ -40,10 +40,11 @@ function updateGroups( event ){
     
 function changeGroup( event ){
     row = $( event.target ).attr( 'id' ).substr( $( event.target ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
-    
     $( "#groups-table" ).append( _buildGroupsRow() ); 
     $( '#group-type-' + groups_cnt ).chosen();
+    ossChosenFixWidth( $( '#group-type-' + groups_cnt ) );
     $( '#select-group-' + groups_cnt ).chosen();
+    ossChosenFixWidth( $( '#select-group-' + groups_cnt ) );
     
     $( "select[id|='select-group']" ).unbind( "change" );
     $( '#groups-row-' + groups_cnt ).show( "slow" ).removeClass( 'hidden' );
@@ -71,7 +72,7 @@ function _buildGroupsRow()
 {
     var nrow =  '<tr id="groups-row-' + groups_cnt + '" class="hidden">\
     <td>\
-    <select id="group-type-' + groups_cnt + '" class="chzn-select" style="width: 150px;" data-placeholder="Type...">\
+    <select id="group-type-' + groups_cnt + '" class="chzn-select" chzn-fix-width="1" style="width: 150px;" data-placeholder="Type...">\
     <option value="0"></option>';
     {foreach $groups as $name => $value}
         {if $name != "ROLE" && isset( $options['contact']['group']['types'][$name] )}
@@ -80,7 +81,7 @@ function _buildGroupsRow()
     {/foreach}
     nrow += '</select>\
     </td>\
-    <td><div class="hidden"><select id="select-group-' + groups_cnt + '" name="group[' + groups_cnt + ']" class="chzn-select" style="width: 150px;" data-placeholder="Group..."></select></div></td>\
+    <td><div class="hidden"><select id="select-group-' + groups_cnt + '" name="group[' + groups_cnt + ']" class="chzn-select" chzn-fix-width="1" style="width: 150px;" data-placeholder="Group..."></select></div></td>\
     <td><div class="hidden btn btn-mini"  id="remove-group-' + groups_cnt + '"><i class="icon-remove"></i></div></td>\
     </tr>';
     return nrow;
