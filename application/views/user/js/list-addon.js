@@ -12,12 +12,12 @@ $(document).ready(function() {
         {
             "label": "Remove User Access",
             "class": "btn-danger",
-            "callback": function() { document.location.href = url; }
+            "callback": function() { document.location.href = url + "/useronly/1"; }
         },
         {
             "label": "Delete",
             "class": "btn-danger",
-            "callback": function() { document.location.href = url + "/contact/true"; }
+            "callback": function() { document.location.href = url }
         }
         ]);
 

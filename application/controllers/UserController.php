@@ -143,9 +143,11 @@ class UserController extends IXP_Controller_FrontEnd
     {
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'u.id as id, u.username as username, u.email as email, u.privs AS privileges,
-                    u.created as created, u.disabled as disabled, c.id as custid, c.name as customer' )
+                    u.created as created, u.disabled as disabled, c.id as custid, c.name as customer,
+                    contact.id AS contactid' )
             ->from( '\\Entities\\User', 'u' )
-            ->leftJoin( 'u.Customer', 'c' );
+            ->leftJoin( 'u.Customer', 'c' )
+            ->leftJoin( 'u.Contact', 'contact' );
 
         if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
         {
