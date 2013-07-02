@@ -5,6 +5,12 @@ Update to `application.ini` required. Please find the `peeringdb.url` entry and 
     peeringdb.url = "https://www.peeringdb.com/view.php?asn=%ASN%"
 
 
+- [BF] Fix contact (pre)view - fixes #28 (a26d1f1 - Barry O'Donovan - 2013-07-02)
+- [BF] Fix cancel location on billing form - fixes #24 (763cb94 - Barry O'Donovan - 2013-07-02)
+- [BF] Better password length consistancy. Fixes #23 (0da4614 - Barry O'Donovan - 2013-07-02)
+- [IM] Use ASN for PeeringDB links - resolves #26 (ff4711f - Barry O'Donovan - 2013-07-02)
+- [BF] Must also remove last login records when removing a user (79115ae - Barry O'Donovan - 2013-06-28)
+
 
 # v3.2.0
 
