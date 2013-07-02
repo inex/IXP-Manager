@@ -58,7 +58,7 @@
                 <td>
                     {if $cust->getPeeringDb()}
                         <em>
-                            <a onclick="$.fn.colorbox({ldelim}href:&quot;{$options.peeringdb.url|replace:'%ID%':$cust->getPeeringDb()}&quot;, iframe: true, width: &quot;75%&quot;, height: &quot;75%&quot;{rdelim});return false;">Click to view...</a>
+                            <a onclick="$.colorbox({ldelim}href:&quot;{$options.peeringdb.url|replace:'%ID%':$cust->getPeeringDb()|replace:'%ASN%':$cust->getAutsys()}&quot;, iframe: true, width: &quot;75%&quot;, height: &quot;75%&quot;{rdelim});return false;">Click to view...</a>
                         </em>
                     {/if}
                 </td>

@@ -170,17 +170,6 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( IXP_Form_IrrdbConfig::getPopulatedSelect() );
 
 
-        $peeringDb = $this->createElement( 'text', 'peeringDb' );
-        $peeringDb->addValidator( 'int' )
-            ->setRequired( false )
-            ->setAttrib( 'placeholder', 'XXX (from url ...id=XXX)' )
-            ->setAttrib( 'class', 'span6' )
-            ->setLabel( 'PeeringDB ID' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $peeringDb );
-        
-        
         $activepeeringmatrix = $this->createElement( 'checkbox', 'activepeeringmatrix' );
         $activepeeringmatrix->setLabel( 'Active Peering Matrix' )
             ->setCheckedValue( '1' );
@@ -188,7 +177,7 @@ class IXP_Form_Customer extends IXP_Form
 
 
         $this->addDisplayGroup(
-            [ 'autsys', 'maxprefixes', 'peeringemail', 'peeringmacro', 'peeringpolicy', 'irrdb', 'peeringDb', 'activepeeringmatrix' ],
+            [ 'autsys', 'maxprefixes', 'peeringemail', 'peeringmacro', 'peeringpolicy', 'irrdb', 'activepeeringmatrix' ],
     		'peeringDisplayGroup'
         );
         $this->getDisplayGroup( 'peeringDisplayGroup' )->setLegend( 'Peering Details' );
