@@ -158,9 +158,8 @@ class ContactController extends IXP_Controller_FrontEnd
             return $data;
 
         $data = $this->setRolesAndGroups( $data, $id );
-
+        
         return $data;
-
     }
 
     /**

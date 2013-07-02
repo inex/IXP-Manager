@@ -1,4 +1,8 @@
 <td>
+    {if isset( $object )}
+        {$row = $object}
+    {/if}
+    
     {if not $row.uid}
         <i id="contact-has-user-{$row.uid}" data-hasuser="1" class="icon-remove"></i>
     {else}
