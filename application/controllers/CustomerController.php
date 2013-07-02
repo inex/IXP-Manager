@@ -494,6 +494,8 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->view->cust = $c = $this->_loadCustomer();
         $this->view->form = $form = new IXP_Form_Customer_BillingRegistration();
+        
+        $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $c->getId() ] ) );
 
         if( ( !isset( $this->_options['reseller']['no_billing_for_resold_customers'] ) || !$this->_options['reseller']['no_billing_for_resold_customers']  )
             || !$this->resellerMode() || !$c->isResoldCustomer() )
