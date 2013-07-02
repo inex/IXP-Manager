@@ -39,7 +39,11 @@ class IXP_Form_Auth_ResetPassword extends IXP_Form
 
         $this->addElement( OSS_Form_Auth::createUsernameElement() );
         $this->addElement( OSS_Form_Auth::createPasswordResetTokenElement() );
-        $this->addElement( OSS_Form_Auth::createPasswordElement() );
+        $this->addElement(
+            OSS_Form_Auth::createPasswordElement()
+                ->removeValidator( 'stringLength' )
+                ->addValidator( 'stringLength', false, array( 8, 30 ) )
+        );
         $this->addElement( OSS_Form_Auth::createPasswordConfirmElement() );
         $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Reset Password' ) ) );
         $this->addElement( OSS_Form_Auth::createReturnToLoginElement() );

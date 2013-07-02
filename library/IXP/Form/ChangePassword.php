@@ -47,6 +47,8 @@ class IXP_Form_ChangePassword extends IXP_Form
         
         $this->addElement(
             OSS_Form_Auth::createPasswordElement( 'new_password' )
+                ->removeValidator( 'stringLength' )
+                ->addValidator( 'stringLength', false, array( 8, 30 ) )
                 ->setLabel( _( 'New Password' ) )
                 ->setAttrib( 'class', 'span6' )
         );
