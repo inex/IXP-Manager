@@ -1,3 +1,11 @@
+# v3.2.1
+
+Update to `application.ini` required. Please find the `peeringdb.url` entry and update to:
+
+    peeringdb.url = "https://www.peeringdb.com/view.php?asn=%ASN%"
+
+
+
 # v3.2.0
 
 Minor version bump as we've added a major new feature - reseller support.
