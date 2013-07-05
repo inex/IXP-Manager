@@ -186,6 +186,15 @@ class CustomerController extends IXP_Controller_FrontEnd
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
     
+        if( $this->multiIXP() && $this->getParam( 'ixp', false ) )
+        {
+            $qb->leftJoin( 'c.IXPs', 'ixp' )
+                ->andWhere( 'ixp.id = ?2' )
+                ->setParameter( 2, $this->getParam( 'ixp' ) );
+
+            $this->view->validCustomers = $this->getD2R( "\\Entities\\Customer" )->getNamesNotAssignedToIXP( $this->getParam( 'ixp' ) );
+        }
+
         if( $id !== null )
             $qb->andWhere( 'c.id = ?3' )->setParameter( 3, $id );
     
