@@ -418,12 +418,13 @@ meeting.rsvp_to_email = "rsvp@example.com"
 meeting.rsvp_to_name  = "Person Who Looks After This Stuff"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Billing updtes notifier
+;; Billing updates notificatons
 ;;
-;; Send email with updated billing detail by given address
+;; Send email with updated billing details to the following address when billing details
+;; are updated by and admin or a user.
 ;;
 
-billing_updates.details_dest = "nerijus+details_dest@opensolutions.ie"
+; billing_updates.notify = "accounts1@example.com"
 
 
 

@@ -410,20 +410,20 @@ class CustomerController extends IXP_Controller_FrontEnd
 
             $this->getD2EM()->flush();
             
-            if( $this->_options['billing_updates']['details_dest'] )
+            if( isset( $this->_options['billing_updates']['notify'] ) )
             {
                 $this->view->oldDetails = $old;
-                $this->view->customer = $c;
+                $this->view->customer   = $c;
                 
-                $mail = $this->getMailer();
-                $mail->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
-                    ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Changed' ) )
-                    ->addTo( $this->_options['billing_updates']['details_dest'] , $this->_options['identity']['sitename'] .' - Admin' )
+                $this->getMailer()
+                    ->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
+                    ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Change Notification' ) )
+                    ->addTo( $this->_options['billing_updates']['notify'] , $this->_options['identity']['sitename'] .' - Accounts' )
                     ->setBodyHtml( $this->view->render( 'customer/email/billing-details-canged.phtml' ) )
                     ->send();
 
                 if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
-                    $this->addMessage( "Details has been sent to " . $this->_options['billing_updates']['details_dest'], OSS_Message::INFO );
+                    $this->addMessage( "Notification of updated billing details has been sent to " . $this->_options['billing_updates']['notify'], OSS_Message::INFO );
             }
 
             $this->addDestinationOnSuccess( $form, $c, true );

@@ -1,7 +1,14 @@
-<h3>Dear Administrator,</h3>
+<html>
+<head>
+    <title>Billing Details Change Notification</title>
+</head>
+
+<body>
+
+<h3>Dear Accounts,</h3>
 
 <p>
-Customers <em>{$customer->getName()}</em> Billing Details has been changed.
+Billing details have been updated for <em>{$customer->getName()}</em>.
 </p>
 
 <table style="border-collapse:collapse; border: 1px solid black;">
@@ -83,3 +90,6 @@ Kind regards,
 {$options.identity.name}<br />
 <a href="mailto:{$options.identity.email}">{$options.identity.email}</a>
 </p>
+
+</body>
+</html>
