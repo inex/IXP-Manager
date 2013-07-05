@@ -99,5 +99,32 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( $this->createCancelElement() );
     }
 
+    /**
+     * Create a SELECT / dropdown element of all IXP names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'ixpid' )
+    {
+        $sw = new Zend_Form_Element_Select( $name );
+
+        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
+            ->select( 'e.id AS id, e.shortname AS name' )
+            ->from( '\\Entities\\IXP', 'e' )
+            ->orderBy( "e.name", 'ASC' );
+        
+        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\IXP', 'id', 'name', 'name', 'ASC' );
+    
+        $sw->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'IXP' ) )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a IXP' ) ) );
+    
+        return $sw;
+    }
+
 }
 

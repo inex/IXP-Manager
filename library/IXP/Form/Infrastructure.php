@@ -34,6 +34,7 @@ class IXP_Form_Infrastructure extends IXP_Form
 {
     public function init()
     {
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'infrastructure/forms/edit.phtml' ] ] ] );
 
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
@@ -53,12 +54,29 @@ class IXP_Form_Infrastructure extends IXP_Form
             ->addFilter( 'StringTrim' );
         $this->addElement( $shortname  );
 
-        $ixp = $this->createElement( 'hidden', 'ixp' );
-        $ixp->setValue( '1' );
-        $this->addElement( $ixp  );
-
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
+    }
+
+    /** 
+     * Sets IXP form element to drop down or hidden depends on
+     * multi IXP is enabled or not.
+     *
+     * @param bool $multiIXP Flag if multi ixp mode enabled
+     * @return IXP_Form_Infrastructure
+     */
+    public function setMultiIXP( $multiIXP )
+    {
+        if( !$multiIXP )
+        {
+            $ixp = $this->createElement( 'hidden', 'ixp' );
+            $ixp->setValue( '1' );   
+        }
+        else
+            $ixp = IXP_Form_IXP::getPopulatedSelect( 'ixp' );
+
+        $this->addElement( $ixp  );
+        return $this;
     }
 
 }

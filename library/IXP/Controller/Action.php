@@ -87,6 +87,7 @@ class IXP_Controller_Action extends OSS_Controller_Action
         $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
        
         $this->view->resellerMode = $this->resellerMode();
+        $this->view->multiIXP     = $this->multiIXP();
         
         if( $this->getAuth()->hasIdentity() && $this->getUser()->getPrivs() == Entities\User::AUTH_SUPERUSER )
             $this->superUserSetup();
@@ -155,6 +156,18 @@ class IXP_Controller_Action extends OSS_Controller_Action
     protected function resellerMode()
     {
         return ( isset( $this->_options['reseller']['enabled'] ) && $this->_options['reseller']['enabled'] );
+    }
+
+    /**
+     * Checks if multi IXP mode is enabled.
+     *
+     * To enable multi IXP mode set multiixp.enable to true in application.ini
+     *
+     * @return bool
+     */
+    protected function multiIXP()
+    {
+        return ( isset( $this->_options['multiixp']['enabled'] ) && $this->_options['multiixp']['enabled'] );
     }
     
 }

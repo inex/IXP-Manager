@@ -92,6 +92,11 @@ contact.group.types.ROLE = "Role"
 ;;
 reseller.enabled = true
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Enables resller mode
+;;
+multiixp.enabled = true
+
 ;;
 ;; If reseller mode enabled and this is set to true then super admin or customer itself
 ;; can not add/change resold customers details.
