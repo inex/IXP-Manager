@@ -86,6 +86,24 @@
             <attribute name="repository-class">Repositories\IXP</attribute>
         </orm-attributes>
     </entity>
+    <entity name="CustomerToIXP">
+        <field name="id" type="integer" required="true" primary="true" auto-increment="true"/>
+        <field name="customer_id" type="integer" required="true" primary="true"/>
+        <field name="ixp_id" type="integer" required="true" primary="true"/>
+        <orm-attributes>
+            <attribute name="repository-class">Repositories\CustomerToIXP</attribute>
+            <attribute name="table">customer_to_ixp</attribute>
+            <attribute name="tableName">customer_to_ixp</attribute>
+        </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="CustomerToIXP">
+        <many-to-many-entity name="Customer" owning-side="true" alias="IXPs">
+            <many-to-many-field from="customer_id" to="id"/>
+        </many-to-many-entity>
+        <many-to-many-entity name="IXP" owning-side="false" alias="Customers">
+            <many-to-many-field from="ixp_id" to="id"/>
+        </many-to-many-entity>
+    </many-to-many>
     <entity name="CompanyBillingDetail" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="a67b06c1-d18c-4196-90ed-d8987633c48b"/>
       <field name="billingContactName" type="string" uuid="b797975d-1d9d-48fd-84fe-917e08d3297d"/>

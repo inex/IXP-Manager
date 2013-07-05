@@ -264,6 +264,72 @@ class Customer
      */
     private $BillingDetails;
 
+
+    /**
+     * @var string
+     */
+    private $peeringDb;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Notes;
+    /**
+     * @var string
+     */
+    private $peeringmacrov6;
+
+    /**
+     * @var string
+     */
+    private $abbreviatedName;
+
+    /**
+     * @var string
+     */
+    private $MD5Support;
+
+    /**
+     * @var boolean
+     */
+    private $isReseller;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $ResoldCustomers;
+
+    /**
+     * @var \Entities\Customer
+     */
+    private $Reseller;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $IXPs;
+
+    /**
+     * @var \Entities\IRRDBConfig
+     */
+    private $IRRDB;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $RSPrefixes;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    private $SecEvents;
+
+    /**
+     * @var string $noc24hphone
+     */
+    private $noc24hphone;
+
+
     /**
      * Constructor
      */
@@ -1227,10 +1293,6 @@ class Customer
     {
         return $this->TrafficDailies;
     }
-    /**
-     * @var string $noc24hphone
-     */
-    private $noc24hphone;
 
 
     /**
@@ -1255,11 +1317,6 @@ class Customer
     {
         return $this->noc24hphone;
     }
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    private $SecEvents;
-
 
     /**
      * Add SecEvents
@@ -1432,13 +1489,6 @@ class Customer
         return $pvlans;
     }
 
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $RSPrefixes;
-
-
     /**
      * Add RSPrefixes
      *
@@ -1491,11 +1541,6 @@ class Customer
         return false;
     }
 
-    /**
-     * @var \Entities\IRRDBConfig
-     */
-    private $IRRDB;
-
 
     /**
      * Set IRRDB
@@ -1521,12 +1566,6 @@ class Customer
     }
 
     /**
-     * @var string
-     */
-    private $peeringDb;
-
-
-    /**
      * Set peeringDb
      *
      * @param string $peeringDb
@@ -1548,11 +1587,6 @@ class Customer
     {
         return $this->peeringDb;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $Notes;
-
 
     /**
      * Add Notes
@@ -1586,10 +1620,6 @@ class Customer
     {
         return $this->Notes;
     }
-    /**
-     * @var string
-     */
-    private $peeringmacrov6;
 
     /**
      * Set peeringmacrov6
@@ -1659,16 +1689,6 @@ class Customer
     {
         return $this->BillingDetails;
     }
-    /**
-     * @var string
-     */
-    private $abbreviatedName;
-
-    /**
-     * @var string
-     */
-    private $MD5Support;
-
 
     /**
      * Set abbreviatedName
@@ -1715,22 +1735,7 @@ class Customer
     {
         return $this->MD5Support;
     }
-    /**
-     * @var boolean
-     */
-    private $isReseller;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $ResoldCustomers;
-
-    /**
-     * @var \Entities\Customer
-     */
-    private $Reseller;
-
-
+    
     /**
      * Set isReseller
      *
@@ -1828,5 +1833,38 @@ class Customer
     public function getReseller()
     {
         return $this->Reseller;
+    }
+
+    /**
+     * Add IXPs
+     *
+     * @param \Entities\IXP $iXPs
+     * @return Customer
+     */
+    public function addIXP(\Entities\IXP $iXPs)
+    {
+        $this->IXPs[] = $iXPs;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IXPs
+     *
+     * @param \Entities\IXP $iXPs
+     */
+    public function removeIXP(\Entities\IXP $iXPs)
+    {
+        $this->IXPs->removeElement($iXPs);
+    }
+
+    /**
+     * Get IXPs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getIXPs()
+    {
+        return $this->IXPs;
     }
 }
