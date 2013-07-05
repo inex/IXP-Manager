@@ -487,7 +487,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
 
     /**
-     * Send the member an operations welcome mail
+     * 
      *
      */
     public function billingRegistrationAction()
