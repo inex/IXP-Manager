@@ -89,6 +89,10 @@
             {/if}
             
         </li>
+
+        <li {if $controller eq 'infrastructure'}class="infrastructure"{/if}>
+            <a href="{genUrl controller='infrastructure' action='list'}">Infrastructures</a>
+        </li>
         
         <li>
             <a href="{genUrl controller='ipv6-address' action='list'}">IP Addressing</a>
