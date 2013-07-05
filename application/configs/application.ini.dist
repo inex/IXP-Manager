@@ -432,6 +432,15 @@ cli.port_utilisation.recipients[] = "someone-else@example.com"
 meeting.rsvp_to_email = "rsvp@example.com"
 meeting.rsvp_to_name  = "Person Who Looks After This Stuff"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Billing updates notificatons
+;;
+;; Send email with updated billing details to the following address when billing details
+;; are updated by and admin or a user.
+;;
+
+; billing_updates.notify = "accounts1@example.com"
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
