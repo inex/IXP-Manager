@@ -98,7 +98,7 @@ class Customer extends EntityRepository
     public function getNames()
     {
         $acusts = $this->getEntityManager()->createQuery(
-            "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c"
+            "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c ORDER BY name ASC"
         )->getResult();
         
         $customers = [];
