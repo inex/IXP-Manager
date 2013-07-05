@@ -433,7 +433,7 @@ meeting.rsvp_to_email = "rsvp@example.com"
 meeting.rsvp_to_name  = "Person Who Looks After This Stuff"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Billing updates notificatons
+;; Billing updates notifications
 ;;
 ;; Send email with updated billing details to the following address when billing details
 ;; are updated by and admin or a user.
