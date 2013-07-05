@@ -312,7 +312,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'infrastructure', 'switchtype', 'model', 'active', 'os', 'osDate', 'osVersion', 'lastPolled', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Cabinet', 'Vendor');
+        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'switchtype', 'model', 'active', 'os', 'osDate', 'osVersion', 'lastPolled', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Infrastructure', 'Cabinet', 'Vendor');
     }
 
     public function __clone()

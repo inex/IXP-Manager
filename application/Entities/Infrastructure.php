@@ -29,6 +29,10 @@ class Infrastructure
      */
     private $IXP;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Switchers;
 
     /**
      * Set name
@@ -107,5 +111,46 @@ class Infrastructure
     public function getIXP()
     {
         return $this->IXP;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->Switchers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add Switchers
+     *
+     * @param \Entities\Switcher $switchers
+     * @return Infrastructure
+     */
+    public function addSwitcher(\Entities\Switcher $switchers)
+    {
+        $this->Switchers[] = $switchers;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Switchers
+     *
+     * @param \Entities\Switcher $switchers
+     */
+    public function removeSwitcher(\Entities\Switcher $switchers)
+    {
+        $this->Switchers->removeElement($switchers);
+    }
+
+    /**
+     * Get Switchers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getSwitchers()
+    {
+        return $this->Switchers;
     }
 }

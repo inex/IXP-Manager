@@ -216,7 +216,7 @@
       <field name="ipv4addr" type="string" size="255" uuid="db341555-090f-4992-86df-7d880066410f"/>
       <field name="ipv6addr" type="string" size="255" uuid="c53d4076-8573-498f-a4ad-26c6584b85dd"/>
       <field name="snmppasswd" type="string" size="255" uuid="4b73b930-a965-4e30-81e5-8c664891c88c"/>
-      <field name="infrastructure" type="smallint" uuid="06791ab2-f917-4be2-9602-831d305c694a"/>
+      <field name="infrastructure" type="integer" uuid="06791ab2-f917-4be2-9602-831d305c694a"/>
       <field name="switchtype" type="integer" uuid="d9e9f4ea-bd98-4ab1-adda-0e34a8699ce8"/>
       <field name="vendorid" type="integer" uuid="0c6b8117-2c7e-41f7-be3c-0c7c9cd5beb4"/>
       <field name="model" type="string" size="255" uuid="5796046e-993c-474e-a188-74a6f946d460"/>
@@ -232,6 +232,9 @@
         <attribute name="repository-class">Repositories\Switcher</attribute>
       </orm-attributes>
     </entity>
+    <association from="Switcher" to="Infrastructure" owner-alias="Switchers" inverse-alias="Infrastructure" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
+        <association-field from="infrastructure" to="id"/>
+    </association>
     <association from="Switcher" to="Cabinet" owner-alias="Switches" inverse-alias="Cabinet" uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765">
       <association-field from="cabinetid" to="id"/>
     </association>

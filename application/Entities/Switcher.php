@@ -55,9 +55,9 @@ class Switcher
     private $snmppasswd;
 
     /**
-     * @var integer $infrastructure
+     * @var \Entities\Infrastructure
      */
-    private $infrastructure;
+    private $Infrastructure;
 
     /**
      * @var integer $switchtype
@@ -758,5 +758,5 @@ class Switcher
     
         return $this;
     }
-    
+
 }

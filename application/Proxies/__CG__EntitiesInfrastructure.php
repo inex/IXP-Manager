@@ -87,10 +87,28 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         return parent::getIXP();
     }
 
+    public function addSwitcher(\Entities\Switcher $switchers)
+    {
+        $this->__load();
+        return parent::addSwitcher($switchers);
+    }
+
+    public function removeSwitcher(\Entities\Switcher $switchers)
+    {
+        $this->__load();
+        return parent::removeSwitcher($switchers);
+    }
+
+    public function getSwitchers()
+    {
+        $this->__load();
+        return parent::getSwitchers();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'id', 'IXP');
+        return array('__isInitialized__', 'name', 'shortname', 'id', 'Switchers', 'IXP');
     }
 
     public function __clone()
