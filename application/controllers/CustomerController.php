@@ -426,7 +426,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                     $this->addMessage( "Notification of updated billing details has been sent to " . $this->_options['billing_updates']['notify'], OSS_Message::INFO );
             }
 
-            $this->addDestinationOnSuccess( $form, $c, true );
+            $this->redirect( 'customer/overview/id/' . $c->getId() . '/tab/billing' );
         }
     }
                                                                                                

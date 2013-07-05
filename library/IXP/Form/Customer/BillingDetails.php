@@ -85,7 +85,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setValue( 'IE' )
             ->setLabel( 'Country' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span12' )
+            ->setAttrib( 'class', 'chzn-select' )
             ->setAttrib( 'chzn-fix-width', '1' );
 
 
@@ -111,29 +111,41 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingTelephone );
 
-        $vatNumber = $this->createElement( 'text', 'vatNumber' );
-        $vatNumber->addValidator( 'stringLength', false, array( 0, 64 ) )
+        /* Probably do not want to let the customer update this themselves...
+
+            $vatNumber = $this->createElement( 'text', 'vatNumber' );
+            $vatNumber->addValidator( 'stringLength', false, array( 0, 64 ) )
+                ->setRequired( false )
+                ->setAttrib( 'class', 'span6' )
+                ->setLabel( 'VAT Number' )
+                ->addFilter( 'StringTrim' )
+                ->addFilter( new OSS_Filter_StripSlashes() );
+            $this->addElement( $vatNumber );
+
+            $vatRate = $this->createElement( 'text', 'vatRate' );
+            $vatRate->addValidator( 'stringLength', false, array( 0, 64 ) )
+                ->setRequired( false )
+                ->setAttrib( 'class', 'span4' )
+                ->setLabel( 'VAT Rate' )
+                ->addFilter( 'StringTrim' )
+                ->addFilter( new OSS_Filter_StripSlashes() );
+            $this->addElement( $vatRate );
+        */
+
+        $invoiceEmail = $this->createElement( 'text', 'invoiceEmail' );
+        $invoiceEmail->addValidator('emailAddress' )
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
-            ->setLabel( 'VAT Number' )
+            ->setAttrib( 'placeholder', 'invoicing@example.com' )
+            ->setLabel( 'Invoice E-Mail' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $vatNumber );
-
-        $vatRate = $this->createElement( 'text', 'vatRate' );
-        $vatRate->addValidator( 'stringLength', false, array( 0, 64 ) )
-            ->setRequired( false )
-            ->setAttrib( 'class', 'span4' )
-            ->setLabel( 'VAT Rate' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $vatRate );
-
+        $this->addElement( $invoiceEmail );
 
         $this->addDisplayGroup(
             [ 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity',
                 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone',
-                'vatNumber', 'vatRate'
+                'invoiceEmail'
             ],
         	'billingDisplayGroup'
         );
