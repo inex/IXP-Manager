@@ -1,0 +1,21 @@
+
+<form class="form-horizontal" enctype="application/x-www-form-urlencoded"
+        accept-charset="UTF-8" method="post" horizontal="1"
+        {if $isEdit}
+            action="{genUrl controller="infrastructure" action="edit" id=$object->getId()}"
+        {else}
+            action="{genUrl controller="infrastructure" action="add"}"
+        {/if}>
+            
+    {$element->name}
+    {$element->shortname}
+    {$element->ixp}
+
+<div class="form-actions">
+
+    {$element->cancel}
+    {$element->submit}
+
+</div>   
+</form>
+

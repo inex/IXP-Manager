@@ -79,5 +79,37 @@ class IXP_Form_Infrastructure extends IXP_Form
         return $this;
     }
 
+    /**
+     * Create a SELECT / dropdown element of all infrastructures indexed by their id.
+     *
+     * Drop down list will be appended like this:
+     *  ixp1 - inf1
+     *  ixp1 - inf3
+     *  ixp2 - inf2
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelect( $name = 'ifrastructureid' )
+    {
+        $sw = new Zend_Form_Element_Select( $name );
+
+        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
+            ->select( 'e.id AS id, e.shortname AS name, ix.shortname AS ixp' )
+            ->from( '\\Entities\\Infrastructure', 'e' )
+            ->join( 'e.IXP', 'ix' )
+            ->add( 'orderBy', "ixp ASC, name ASC" );
+        
+        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\Infrastructure', 'id', [ 'ixp', 'name' ], 'ixp', 'ASC' );
+    
+        $sw->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'infrastructure' ) )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( [ 'Please select a infrastructure' ] );
+    
+        return $sw;
+    }
 }
 

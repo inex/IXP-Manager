@@ -121,7 +121,7 @@ class IXP_Form_IXP extends IXP_Form
             ->setLabel( _( 'IXP' ) )
             ->setAttrib( 'class', 'chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( array( _( 'Please select a IXP' ) ) );
+            ->setErrorMessages( [ 'Please select a IXP' ] );
     
         return $sw;
     }
