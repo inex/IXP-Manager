@@ -151,6 +151,8 @@ class IXP_Controller_Action extends OSS_Controller_Action
      *
      * To enable resller mode set reseller.enable to true in application.ini
      *
+     * @see https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
+     * 
      * @return bool
      */
     protected function resellerMode()
@@ -162,6 +164,8 @@ class IXP_Controller_Action extends OSS_Controller_Action
      * Checks if multi IXP mode is enabled.
      *
      * To enable multi IXP mode set multiixp.enable to true in application.ini
+     * 
+     * @see https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
      *
      * @return bool
      */

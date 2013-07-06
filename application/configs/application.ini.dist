@@ -83,6 +83,13 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Enables multi-IXP mode.
+;;
+;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
+;;
+multiixp.enabled = true
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -91,11 +98,6 @@ contact.group.types.ROLE = "Role"
 ;; See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
 ;;
 reseller.enabled = true
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Enables resller mode
-;;
-multiixp.enabled = true
 
 ;;
 ;; If reseller mode enabled and this is set to true then super admin or customer itself
