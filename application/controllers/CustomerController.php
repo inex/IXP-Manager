@@ -487,7 +487,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
 
     /**
-     * Send the member an operations welcome mail
+     * 
      *
      */
     public function billingRegistrationAction()
@@ -501,6 +501,8 @@ class CustomerController extends IXP_Controller_FrontEnd
             || !$this->resellerMode() || !$c->isResoldCustomer() )
             $form->assignEntityToForm( $c->getBillingDetails(), $this );
         
+        $old = clone $c->getBillingDetails();
+        
         $form->assignEntityToForm( $c->getRegistrationDetails(), $this );
         
         // Process a submitted form if it passes initial validation
@@ -510,7 +512,24 @@ class CustomerController extends IXP_Controller_FrontEnd
             $form->assignFormToEntity( $c->getRegistrationDetails(), $this, true );
 
             $this->getD2EM()->flush();
-            $this->addDestinationOnSuccess( $form, $c, true );
+            
+            if( isset( $this->_options['billing_updates']['notify'] ) )
+            {
+                $this->view->oldDetails = $old;
+                $this->view->customer   = $c;
+                
+                $this->getMailer()
+                    ->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
+                    ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Change Notification' ) )
+                    ->addTo( $this->_options['billing_updates']['notify'] , $this->_options['identity']['sitename'] .' - Accounts' )
+                    ->setBodyHtml( $this->view->render( 'customer/email/billing-details-canged.phtml' ) )
+                    ->send();
+
+                if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+                    $this->addMessage( "Notification of updated billing details has been sent to " . $this->_options['billing_updates']['notify'], OSS_Message::INFO );
+            }
+
+            $this->redirect( 'customer/overview/id/' . $c->getId() . '/tab/billing' );
         }
     }
 
