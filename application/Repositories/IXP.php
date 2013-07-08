@@ -29,4 +29,23 @@ class IXP extends EntityRepository
         
         return $customers;
     }
+
+    /**
+     * Return an array of all ixp names which are not related with given Customer where the array key is the IXP id.
+     *
+     * @param int $custid Customer id for filtering results
+     * @return array An array of IXP names with the ixp id as the key.
+     */
+    public function getNamesNotAssignedToCustomer( $custid )
+    {
+        $aixps = $this->getEntityManager()->createQuery(
+            "SELECT i.id AS id, i.name AS name FROM Entities\\IXP i WHERE ?1 NOT MEMBER OF i.Customers ORDER BY name ASC"
+        )->setParameter( 1, $custid )->getResult();
+        
+        $ixps = [];
+        foreach( $aixps as $i )
+            $ixps[ $i['id'] ] = $i['name'];
+        
+        return $ixps;
+    }
 }
