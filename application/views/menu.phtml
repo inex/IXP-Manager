@@ -68,6 +68,16 @@
         
               
     <li class="nav-header">IXP Admin Actions</li>
+        {if $multiIXP }
+            <li {if $controller eq 'ixp'}class="ixp"{/if}>
+                <a href="{genUrl controller='ixp' action='list'}">IXPs</a>
+            </li>
+        {/if}
+
+        <li {if $controller eq 'infrastructure'}class="infrastructure"{/if}>
+            <a href="{genUrl controller='infrastructure' action='list'}">Infrastructures</a>
+        </li>
+
         
         <li {if $controller eq 'location'}class="active"{/if}>
             <a href="{genUrl controller='location' action='list'}">Locations</a>
@@ -89,17 +99,7 @@
             {/if}
             
         </li>
-
-        <li {if $controller eq 'infrastructure'}class="infrastructure"{/if}>
-            <a href="{genUrl controller='infrastructure' action='list'}">Infrastructures</a>
-        </li>
         
-        {if $multiIXP }
-            <li {if $controller eq 'ixp'}class="ixp"{/if}>
-                <a href="{genUrl controller='ixp' action='list'}">IXPs</a>
-            </li>
-        {/if}
-
         <li>
             <a href="{genUrl controller='ipv6-address' action='list'}">IP Addressing</a>
             
