@@ -188,11 +188,19 @@ class CustomerController extends IXP_Controller_FrontEnd
     
         if( $this->multiIXP() && $this->getParam( 'ixp', false ) )
         {
+            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+            if( !$ixp )
+            {
+                $this->addMessage( "Could not load requested object", OSS_Message::ERROR );
+                $this->redirectAndEnsureDie( "/ixp" );
+            }
+
             $qb->leftJoin( 'c.IXPs', 'ixp' )
                 ->andWhere( 'ixp.id = ?2' )
-                ->setParameter( 2, $this->getParam( 'ixp' ) );
+                ->setParameter( 2, $ixp->getId() );
 
-            $this->view->validCustomers = $this->getD2R( "\\Entities\\Customer" )->getNamesNotAssignedToIXP( $this->getParam( 'ixp' ) );
+            $this->view->validCustomers = $this->getD2R( '\\Entities\\Customer' )->getNamesNotAssignedToIXP( $ixp->getId( ) );
+            $this->_feParams->addWhenEmpty = false;
         }
 
         if( $id !== null )
