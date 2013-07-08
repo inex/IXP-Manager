@@ -4,7 +4,7 @@
     {if $multiIXP}
         <div class="btn-group">
             <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                {if isset( $ixp ) }{$ixp->getShortname()}{else}Limit to IXP...{/if}
+                {if isset( $ixp ) }{$ixp->getName()}{else}Limit to IXP...{/if}
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu pull-right">

@@ -611,7 +611,20 @@ class CustomerController extends IXP_Controller_FrontEnd
     
     public function detailsAction()
     {
-        $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true );
+        if( $this->getParam( 'ixp', false ) )
+        {
+            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+            $ixpid = $ixp->getId();
+        }
+        else if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $ixpid = $this->getUser()->getCustomer()->getIXPs()[0]->getId();
+        else
+            $ixpid = false;
+
+        $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, false, false, $ixpid );
+
+        if( $this->multiIXP() )
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames();
     }
         
     public function detailAction()
