@@ -8,7 +8,7 @@
     });
     
     $( document ).ready( function(){
-        $( ".breadcrumb > li > .btn" ).on( 'click', function( event ){
+        $( "#assign-customer-btn" ).on( 'click', function( event ){
             event.preventDefault();
             dialog = $( '#cust-assign-dialog' ).modal( {
                 backdrop: true,

@@ -118,7 +118,10 @@ class IxpController extends IXP_Controller_FrontEnd
         $this->getD2EM()->flush();
 
         $this->addMessage( "Customer was assigned to IXP successfully.", OSS_Message::SUCCESS );
-        $this->redirectAndEnsureDie( "/customer/list/ixp/" .  $ixp->getId() );
+        if( $this->getParam( 'overview', false ) )
+            $this->redirectAndEnsureDie( "/customer/overview/tab/ixps/id/" .  $customer->getId() );
+        else
+            $this->redirectAndEnsureDie( "/customer/list/ixp/" .  $ixp->getId() );
     }
 
     public function unassignCustomerAction()
