@@ -1,0 +1,23 @@
+<li class="pull-right" style="margin-top: -12px;">
+<div class="btn-toolbar">
+    
+    {if $multiIXP}
+        <div class="btn-group">
+            <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                {if isset( $ixp ) }{$ixp->getShortname()}{else}Limit to IXP...{/if}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                {foreach $ixpNames as $xid => $xname}
+                    <li> <a href="{genUrl controller=$controller action=$action ixp=$xid}">{$xname}</a> </li>
+                {/foreach}
+            </ul>
+        </div>
+    {/if}
+    <div class="btn-group">
+        {if !isset( $feParams->readonly ) or !$feParams->readonly}
+            <a class="btn btn-mini" href="{genUrl module=$module controller=$controller action='add'}"><i class="icon-plus"></i></a>
+        {/if}
+    </div>
+</div>
+</li>

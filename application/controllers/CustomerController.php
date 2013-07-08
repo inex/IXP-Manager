@@ -203,6 +203,9 @@ class CustomerController extends IXP_Controller_FrontEnd
             $this->_feParams->addWhenEmpty = false;
         }
 
+        if( $this->multiIXP() )
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames();
+
         if( $id !== null )
             $qb->andWhere( 'c.id = ?3' )->setParameter( 3, $id );
     
