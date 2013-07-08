@@ -310,8 +310,8 @@ class SwitchController extends IXP_Controller_FrontEnd
 
     /**
      *
-     * @param IXP_Form_Cabinet $form The form object
-     * @param \Entities\Cabinet $object The Doctrine2 entity (being edited or blank for add)
+     * @param IXP_Form_Switch $form The form object
+     * @param \Entities\Switcher $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
      * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
@@ -326,15 +326,15 @@ class SwitchController extends IXP_Controller_FrontEnd
             if( $object->getVendor() )
                 $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
             
-            $form->getElement( 'infrastructre' )->setValue( $object->getInfrastructure()->getId() );
+            $form->getElement( 'infrastructure' )->setValue( $object->getInfrastructure()->getId() );
         }
     }
 
 
     /**
      *
-     * @param IXP_Form_Cabinet $form The form object
-     * @param \Entities\Cabinet $object The Doctrine2 entity (being edited or blank for add)
+     * @param IXP_Form_Switch $form The form object
+     * @param \Entities\Switcher $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @return void
      */
@@ -349,7 +349,7 @@ class SwitchController extends IXP_Controller_FrontEnd
         );
 
         $object->setInfrastructure(
-            $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructre' )->getValue() )
+            $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructure' )->getValue() )
         );
 
         return true;
