@@ -315,6 +315,8 @@ class CustomerController extends IXP_Controller_FrontEnd
             $rdetail = new \Entities\CompanyRegisteredDetail();
             $this->getD2EM()->persist( $rdetail );
             $object->setRegistrationDetails( $rdetail );
+        
+            $object->setIsReseller( 0 );
         }
         
         if( ( $form->getValue( 'type' ) == \Entities\Customer::TYPE_FULL || $form->getValue( 'type' ) == \Entities\Customer::TYPE_PROBONO )
@@ -338,6 +340,10 @@ class CustomerController extends IXP_Controller_FrontEnd
         {
             $object->setIRRDB( null );
         }
+
+        $object->addIXP( 
+            $this->getD2R( "\\Entities\\IXP" )->find( $form->getValue( "ixp" ) ) 
+        );
 
         return $this->_setReseller( $form, $object );
     }
@@ -482,6 +488,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
 
         $form->enableResller( $this->resellerMode() );
+        $form->setMultiIXP( $this->multiIXP() );
         
         if( $this->resellerMode() )
         {
