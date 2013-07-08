@@ -247,6 +247,9 @@ class CustomerController extends IXP_Controller_FrontEnd
         
         if( $cust->isRouteServerClient() )
             $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
+
+        if( $this->multiIXP() )
+            $this->view->validIXPs = $this->getD2R( "\\Entities\\IXP" )->getNamesNotAssignedToCustomer( $cust->getId() );
         
         // does the customer have any graphs?
         $this->view->hasAggregateGraph = false;

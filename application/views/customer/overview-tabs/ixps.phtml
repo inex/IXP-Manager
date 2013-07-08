@@ -1,0 +1,77 @@
+
+{if count( $cust->getIXPs() )}
+
+    <table class="table">
+        <thead>
+            <th>Name</th>
+            <th>Shortname</th>
+            <th>
+                <span class="btn btn-mini" id="assign-ixp-btn" ><i class="icon-plus"></i></span>
+            </th>
+        </thead>
+        <tbody>
+            {foreach $cust->getIXPs() as $i}
+                <tr>
+                    <td>{$i->getName()}</td>
+                    <td>{$i->getShortname()}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a class="btn btn-mini" href="{genUrl controller='ixp' action='edit' id=$i->getId() cid=$cust->getId()}"><i class="icon-pencil"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+{else}
+
+    <p style="padding-left: 40px;">
+        No IXPs found.
+    </p>
+
+{/if}
+
+<div class="modal hide fade" id="ixp-assign-dialog">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Assign IXP</h3>
+    </div>
+    <div class="modal-body" style="min-height: 20px;">
+        <form class="form-horizontal" style="position: fixed; z-index: 10px">
+            <div class="control-group">
+                <label class="control-label" for="ixpid">IXP</label>
+                <div class="controls">
+                    <select id="ixpid" class="chzn-select" chzn-fix-width=1 >
+                        {foreach $validIXPs as $key => $value}
+                            <option value="{$key}">{$value}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <span id="cust-assign-dialog-close" class="btn">Close</span>
+        <span id="cust-assign-dialog-assign" class="btn btn-primary">Assign</span>
+    </div>
+</div>
+
+<script type="text/javascript">
+$( "#cust-assign-dialog-close" ).on( 'click', function(){
+    dialog.modal( "hide" );
+});
+
+$( "#cust-assign-dialog-assign" ).on( 'click', function(){ 
+    window.location.href = '{genUrl controller="ixp" action="assign-customer" overview="1" cid=$cust->getId()}/id/' + $( '#ixpid' ).val();
+});
+
+$( document ).ready( function(){
+    $( "#assign-ixp-btn" ).on( 'click', function( event ){
+        dialog = $( '#ixp-assign-dialog' ).modal( {
+            backdrop: true,
+            keyboard: true,
+            show: true
+        });
+    } );
+});
+</script>
