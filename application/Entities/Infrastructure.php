@@ -35,6 +35,11 @@ class Infrastructure
     private $Switchers;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Vlans;
+
+    /**
      * Set name
      *
      * @param string $name
@@ -152,5 +157,38 @@ class Infrastructure
     public function getSwitchers()
     {
         return $this->Switchers;
+    }
+
+    /**
+     * Add Vlans
+     *
+     * @param \Entities\Vlan $vlans
+     * @return Infrastructure
+     */
+    public function addVlan(\Entities\Vlan $vlans)
+    {
+        $this->Vlans[] = $vlans;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Vlans
+     *
+     * @param \Entities\Vlan $vlans
+     */
+    public function removeVlan(\Entities\Vlan $vlans)
+    {
+        $this->Vlans->removeElement($vlans);
+    }
+
+    /**
+     * Get Vlans
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVlans()
+    {
+        return $this->Vlans;
     }
 }

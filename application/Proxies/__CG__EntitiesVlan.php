@@ -291,10 +291,22 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
         return parent::deleteAssocNetInfo($property, $protocol, $index);
     }
 
+    public function setInfrastructure(\Entities\Infrastructure $infrastructure = NULL)
+    {
+        $this->__load();
+        return parent::setInfrastructure($infrastructure);
+    }
+
+    public function getInfrastructure()
+    {
+        $this->__load();
+        return parent::getInfrastructure();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'number', 'rcvrfname', 'private', 'notes', 'id', 'NetInfo', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo');
+        return array('__isInitialized__', 'name', 'number', 'rcvrfname', 'private', 'notes', 'id', 'NetInfo', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'Infrastructure');
     }
 
     public function __clone()

@@ -69,6 +69,15 @@ class Vlan
     private $NetInfo;
 
     /**
+     * @var \Entities\Infrastructure
+     */
+    private $Infrastructure;
+    /**
+     * @var boolean
+     */
+    private $private;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -312,11 +321,6 @@ class Vlan
     {
         return $this->NetworkInfo;
     }
-    /**
-     * @var boolean
-     */
-    private $private;
-
 
     /**
      * Set private
@@ -808,5 +812,28 @@ class Vlan
             $config[$key] = $value;
         }
         return $config;
+    }
+
+    /**
+     * Set Infrastructure
+     *
+     * @param \Entities\Infrastructure $infrastructure
+     * @return Vlan
+     */
+    public function setInfrastructure(\Entities\Infrastructure $infrastructure = null)
+    {
+        $this->Infrastructure = $infrastructure;
+    
+        return $this;
+    }
+
+    /**
+     * Get Infrastructure
+     *
+     * @return \Entities\Infrastructure 
+     */
+    public function getInfrastructure()
+    {
+        return $this->Infrastructure;
     }
 }

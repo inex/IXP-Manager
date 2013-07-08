@@ -362,6 +362,7 @@
     </association>
     <entity name="Vlan" uuid="1b90f411-dfed-48a8-acd0-97cbf599e069">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="947c18c6-133a-42ba-a7e2-1346d7cc7e44"/>
+      <field name="infrastructureid" type="integer"/>
       <field name="name" type="string" size="255" uuid="34caf8b1-714c-4ffd-87d9-c5e6b3834c70"/>
       <field name="number" type="integer" uuid="156b2f6b-7ce1-4558-9e7e-27f484e0a95f"/>
       <field name="rcvrfname" type="string" size="255" uuid="dc73bea4-6ccb-48cc-831f-a1a1116a3d0b"/>
@@ -373,6 +374,9 @@
         <attribute name="tableName">vlan</attribute>
       </orm-attributes>
     </entity>
+    <association from="Vlan" to="Infrastructure" owner-alias="Infrastructure" inverse-alias="Vlans">
+        <association-field from="infrastructureid" to="id"/>
+    </association>
     <entity name="VirtualInterface" uuid="aa930c08-4f0b-4947-b15b-840caa7455cb">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="5c0ba88f-afec-4008-93e7-b3447d5ac484"/>
       <field name="custid" type="integer" uuid="c0e1e95c-baca-45c1-b2b9-52f04b4911a9"/>

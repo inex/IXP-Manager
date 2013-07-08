@@ -105,10 +105,28 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         return parent::getSwitchers();
     }
 
+    public function addVlan(\Entities\Vlan $vlans)
+    {
+        $this->__load();
+        return parent::addVlan($vlans);
+    }
+
+    public function removeVlan(\Entities\Vlan $vlans)
+    {
+        $this->__load();
+        return parent::removeVlan($vlans);
+    }
+
+    public function getVlans()
+    {
+        $this->__load();
+        return parent::getVlans();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'id', 'Switchers', 'IXP');
+        return array('__isInitialized__', 'name', 'shortname', 'id', 'Switchers', 'Vlans', 'IXP');
     }
 
     public function __clone()

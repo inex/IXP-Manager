@@ -12,5 +12,6 @@
       </join-columns>
     </many-to-one>
     <one-to-many field="Switchers" target-entity="Entities\Switcher" mapped-by="Infrastructure"/>
+    <one-to-many field="Vlans" target-entity="Entities\Vlan" mapped-by="Infrastructure"/>
   </entity>
 </doctrine-mapping>
