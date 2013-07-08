@@ -19,7 +19,7 @@
         <small>
             {assign var=physInts value=$vi->getPhysicalInterfaces()}
             {if $vi->getType() eq SWITCHPORT::TYPE_PEERING and  count( $physInts )}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Infrastructure #{$physInts[0]->getSwitchPort()->getSwitcher()->getInfrastructure()}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Infrastructure #{$physInts[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getShortName()}
             {elseif $vi->getType() eq SWITCHPORT::TYPE_FANOUT}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
                 
