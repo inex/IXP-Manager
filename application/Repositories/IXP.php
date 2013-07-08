@@ -12,4 +12,21 @@ use Doctrine\ORM\EntityRepository;
  */
 class IXP extends EntityRepository
 {
+    /**
+     * Return an array of all IXP names where the array key is the IXP id.
+     *
+     * @return array An array of all IXP names with the IXP id as the key.
+     */
+    public function getNames()
+    {
+        $acusts = $this->getEntityManager()->createQuery(
+            "SELECT i.id AS id, i.name AS name FROM Entities\\IXP i ORDER BY name ASC"
+        )->getResult();
+        
+        $customers = [];
+        foreach( $acusts as $c )
+            $customers[ $c['id'] ] = $c['name'];
+        
+        return $customers;
+    }
 }
