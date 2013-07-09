@@ -182,8 +182,19 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     public function membersAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+
+        if( $this->getParam( 'ixp', false ) )
+        {
+            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+            $ixpid = $ixp->getId();
+        }
+        else
+        {
+            $ixpid = false;
+            $ixp = false;
+        }
         
-        $this->view->infras = $infras = IXP_Mrtg::$INFRASTRUCTURES_TEXT;
+        $this->view->infras = $infras = $this->getD2R( '\\Entities\\Infrastructure' )->getNames( $ixp );
         $this->view->infra  = $infra  = $this->getParam( 'infra', 'aggregate' );
 
         if( $infra != 'aggregate' && !in_array( $infra, $infras ) )
@@ -191,7 +202,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         
         $this->_setCategory();
         $this->_setPeriod();
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
+        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, $ixpid );
+
+        if( $this->multiIXP() )
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
     }
     
     public function memberAction()

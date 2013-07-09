@@ -17,6 +17,20 @@
     </li>
     <li class="pull-right"  style="margin-top: -6px;">
         <div class="btn-toolbar" style="display: inline;">
+            {if $multiIXP}
+                <div class="btn-group">
+                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                        {if isset( $ixp ) }{$ixp->getName()}{else}Limit to IXP...{/if}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                        {foreach $ixpNames as $xid => $xname}
+                            <li> <a href="{genUrl controller=$controller action=$action ixp=$xid}">{$xname}</a> </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            {/if}
+
             <div class="btn-group" id="vlan-btn-group">
                 <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="vlan-dd">
                     <span id="vlan-dd-text">
@@ -35,7 +49,7 @@
                         <li> <a id="vlan-{$iid}" href="{genUrl controller='statistics' action='members' infra=$iid}">{$iname}</a> </li>
                     {/foreach}
                 </ul>
-            </div>
+            </div>            
         </div>
     </li>
 
@@ -45,7 +59,7 @@
 
 <div class="row-fluid">
     <div class="span12">
-        <form action="{genUrl controller="statistics" action="members" infra=$infra}" method="post" class="form-horizontal">
+        <form action="{genUrl controller="statistics" action="members" infra=$infra}{if isset( $ixp )}/ixp/{$ixp->getId()}{/if}" method="post" class="form-horizontal">
             <strong>Graph Type:</strong>
             <select name="category" class="chzn-select" onchange="this.form.submit();">
                 {foreach from=$categories key=cname item=cvalue}
@@ -84,7 +98,7 @@
 
             {foreach $vi->getPhysicalInterfaces() as $pi}
             
-                {if $pi->getSwitchPort()->getSwitcher()->getInfrastructure() == $infra}
+                {if $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $infra}
                 
                     {$monindexes[] = $pi->getMonitorindex()}
                     {$mi = $pi->getMonitorindex()}
