@@ -204,7 +204,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         }
 
         if( $this->multiIXP() )
-            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames();
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
 
         if( $id !== null )
             $qb->andWhere( 'c.id = ?3' )->setParameter( 3, $id );
@@ -617,14 +617,20 @@ class CustomerController extends IXP_Controller_FrontEnd
             $ixpid = $ixp->getId();
         }
         else if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $ixpid = $this->getUser()->getCustomer()->getIXPs()[0]->getId();
+        {
+            $this->view->ixp = $ixp = $this->getUser()->getCustomer()->getIXPs()[0];
+            if( $ixp )
+                $ixpid = $ixp->getId();
+            else
+                $ixpid = 1;
+        }
         else
             $ixpid = false;
 
         $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, false, false, $ixpid );
 
         if( $this->multiIXP() )
-            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames();
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
     }
         
     public function detailAction()
