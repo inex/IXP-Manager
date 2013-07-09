@@ -15,13 +15,27 @@ class IXP extends EntityRepository
     /**
      * Return an array of all IXP names where the array key is the IXP id.
      *
+     * NOTICE: Super user can see all IXPs and customer user can see only those which 
+     *         is assign to users customer.
+     *
+     * @param  \Entities\User $user User to limit IXP names
      * @return array An array of all IXP names with the IXP id as the key.
      */
-    public function getNames()
+    public function getNames( $user )
     {
-        $acusts = $this->getEntityManager()->createQuery(
-            "SELECT i.id AS id, i.name AS name FROM Entities\\IXP i ORDER BY name ASC"
-        )->getResult();
+        $dql = "SELECT i.id AS id, i.name AS name FROM Entities\\IXP i";
+
+        if( $user->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $dql .= " WHERE ?1 MEMBER OF i.Customers";
+
+        $dql .= " ORDER BY name ASC";
+        
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        if( $user->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $query->setParameter( 1, $user->getCustomer()->getId() );
+
+        $acusts = $query->getResult();
         
         $customers = [];
         foreach( $acusts as $c )
