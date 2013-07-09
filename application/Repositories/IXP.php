@@ -35,13 +35,13 @@ class IXP extends EntityRepository
         if( $user->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             $query->setParameter( 1, $user->getCustomer()->getId() );
 
-        $acusts = $query->getResult();
+        $aixps = $query->getResult();
         
-        $customers = [];
-        foreach( $acusts as $c )
-            $customers[ $c['id'] ] = $c['name'];
+        $ixps = [];
+        foreach( $aixps as $i )
+            $ixps[ $i['id'] ] = $i['name'];
         
-        return $customers;
+        return $ixps;
     }
 
     /**
