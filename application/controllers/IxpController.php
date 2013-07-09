@@ -39,6 +39,12 @@ class IxpController extends IXP_Controller_FrontEnd
      */
     protected function _feInit()
     {
+        if( !$this->multiIXP() )
+        {
+            $this->addMessage( 'Multi IXP mode is not enabled.' );
+            $this->redirectAndEnsureDie();
+        }
+
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\IXP',
             'form'          => 'IXP_Form_IXP',
@@ -68,12 +74,6 @@ class IxpController extends IXP_Controller_FrontEnd
 
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
-        }
-
-        if( !$this->multiIXP() )
-        {
-            $this->AddMessage( 'Multi IXP mode is not enabled.' );
-            $this->redirectAndEnsureDie();
         }
     }
 

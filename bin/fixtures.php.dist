@@ -64,10 +64,46 @@ echo "Installing fixtures\n";
 ### MODIFY YOUR FIXTURES HERE
 ###
 ###
-### First you need a "customer" object for your own IXP.
+
+### First you need to create an initial IXP object for your IXP
+
+$ixp = new \Entities\IXP;
+$ixp->setName( "Somecity Internet Exchange Point" );
+$ixp->setShortname( "SIEP" );
+$ixp->setAddress1( "5 Somewhere" );
+$ixp->setAddress2( "Somebourogh" );
+$ixp->setAddress3( "Dublin" );
+$ixp->setAddress4( "D4" );
+$ixp->setCountry( 'IE' );
+
+$em->persist( $ixp );
+
+
+### An IXP has one or more infrastructures. An infrastructure is an
+### interconnected group of switches. IXPs such as INEX and LINX (as
+### examples) run two infrastructures on different hardware for 
+### resiliency. Define your one or more infrastructures here.
+### (or you can also add these later in the application)
+
+$infra1 = new \Entities\Infrastructure;
+$infra1->setName( "Infrastructure #1" );
+$infra1->setShortname( "#1" );
+$infra1->setIXP( $ixp );
+$em->persist( $infra1 );
+$ixp->addInfrastructure( $infra1 );
+
+// $infra2 = new \Entities\Infrastructure;
+// $infra2->setName( "Infrastructure #2" );
+// $infra2->setShortname( "#2" );
+// $infra2->setIXP( $ixp );
+// $em->persist( $infra2 );
+// $ixp->addInfrastructure( $infra2 );
+
+
+### Now you need a "customer" object for your own IXP.
 ### Alter the following to suit
 
-$c = new \Entities\Customer();
+$c = new \Entities\Customer;
 
 $c->setName( "Somecity Internet Exchange Point" );
 $c->setAbbreviatedName( 'SIEP' ); // shorter name for graphs, etc
@@ -101,6 +137,11 @@ $c->setType( \Entities\Customer::TYPE_INTERNAL );        // do not change this
 $c->setCreated( new DateTime() );
 
 $em->persist( $c );
+
+
+// and associate it with your IXP
+$ixp->addCustomer( $c );
+$c->addIXP( $ixp );
 
 
 
