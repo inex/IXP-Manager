@@ -615,6 +615,10 @@ class CustomerController extends IXP_Controller_FrontEnd
         {
             $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
             $ixpid = $ixp->getId();
+            
+            if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER && !$this->getUser()->getCustomer()->getIXPs()->contains( $ixp ) )
+                $this->redirectAndEnsureDie( '/erro/insufficient-permissions' );
+
         }
         else if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
         {
@@ -637,6 +641,22 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->view->cust = $c = $this->_loadCustomer( $this->getParam( 'id', null ), 'customer/details' );
         $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+        
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        {
+            $notallow = true;
+            foreach( $this->getUser()->getCustomer()->getIXPs() as $ixp )
+            {
+                if( $ixp->getCustomers()->contains( $c ) )
+                {
+                    $notallow = false;
+                    break;
+                }
+            }
+            
+            if( $notallow )
+                $this->redirectAndEnsureDie( '/erro/insufficient-permissions' );
+        }       
     }
         
     
