@@ -54,6 +54,9 @@ class IXP_Form_VLAN extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $number );
 
+        $infrastructre = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
+        $this->addElement( $infrastructre );
+
         $rcvrfname = $this->createElement( 'text', 'rcvrfname' );
         $rcvrfname->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setLabel( 'RC VRF Name' )
@@ -86,11 +89,20 @@ class IXP_Form_VLAN extends IXP_Form
      * @param string $name The element name
      * @return Zend_Form_Element_Select The select element
      */
-    public static function getPopulatedSelect( $name = 'vlanid' )
+    public static function getPopulatedSelect( $name = 'vlanid', $public = false )
     {
         $vlan = new Zend_Form_Element_Select( $name );
+
+
+        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
+            ->select( 'v.id AS id, v.name AS name' )
+            ->from( '\\Entities\\Vlan', 'v' )
+            ->orderBy( "v.name", 'ASC' );
+
+        if( $public )
+            $qb->where( "v.private = 0" );
     
-        $maxId = self::populateSelectFromDatabase( $vlan, '\\Entities\\Vlan', 'id', 'name', 'name', 'ASC' );
+        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $vlan, '\\Entities\\Vlan', 'id', 'name', 'name', 'ASC' );
     
         $vlan->setRegisterInArrayValidator( true )
             ->setRequired( true )

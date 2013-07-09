@@ -37,7 +37,7 @@ class IXP_Form_AddAddresses extends IXP_Form
     {
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'ipv4-address/forms/add-addresses.phtml' ] ] ] );
         
-        $this->addElement( IXP_Form_Vlan::getPopulatedSelect( 'vlanid' ) );
+        $this->addElement( IXP_Form_Vlan::getPopulatedSelect( 'vlanid', true ) );
                 
 
         $type = $this->createElement( 'select', 'type' );
