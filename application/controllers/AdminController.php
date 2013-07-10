@@ -108,16 +108,29 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             
             $ints = $this->getD2EM()->getRepository( 'Entities\\VirtualInterface' )->getByLocation();
             
-            $speeds = array();
-            $bylocation = array();
-            $bylan = array();
+            $speeds = [];
+            $bylocation = [];
+            $bylan = [];
+            $byixp = [];
             foreach( $ints as $int )
             {
-                if( !isset( $bylocation[ $int['locationname'] ] ) )
-                    $bylocation[ $int['locationname'] ] = array();
+                $infrastructure = sprintf( "LAN# %s", $int['infrastructure'] );
+                if( $this->multiIXP() )
+                {
+                    $locationname = sprintf( "%s - %s", $int['locixp'], $int['locationname'] );
+                    $infrastructure = sprintf( "%s - %s", $int['locixp'], $infrastructure );
+                }
+                else
+                    $locationname = $int['locationname'];
+            
+                if( !isset( $bylocation[ $locationname ] ) )
+                    $bylocation[ $locationname ] = [];
 
-                if( !isset( $bylan[ $int['infrastructure'] ] ) )
-                    $bylan[ $int['infrastructure'] ] = array();
+                if( !isset( $bylan[ $infrastructure ] ) )
+                    $bylan[ $infrastructure ] = [];
+
+                if( !isset( $byixp[ $int['ixp'] ] ) )
+                    $byixp[ $int['ixp'] ] = [];
 
                 if( !isset( $speeds[ $int['speed'] ] ) )
                     $speeds[ $int['speed'] ] = 1;
@@ -125,20 +138,26 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                     $speeds[ $int['speed'] ]++;
                                     
                 if( !isset( $bylocation[ $int['locationname'] ][ $int['speed'] ] ) )
-                    $bylocation[ $int['locationname'] ][ $int['speed'] ] = 1;
+                    $bylocation[ $locationname ][ $int['speed'] ] = 1;
                 else
-                    $bylocation[ $int['locationname'] ][ $int['speed'] ] = $bylocation[ $int['locationname'] ][ $int['speed'] ] + 1;
+                    $bylocation[ $locationname ][ $int['speed'] ]++;
 
-                if( !isset( $bylan[ $int['infrastructure'] ][ $int['speed'] ] ) )
-                    $bylan[ $int['infrastructure'] ][ $int['speed'] ] = 1;
+                if( !isset( $byixp[ $int['ixp'] ][ $int['speed'] ] ) )
+                    $byixp[ $int['ixp'] ][ $int['speed'] ] = 1;
                 else
-                    $bylan[ $int['infrastructure'] ][ $int['speed'] ] = $bylan[ $int['infrastructure'] ][ $int['speed'] ] + 1;
+                    $byixp[ $int['ixp'] ][ $int['speed'] ]++;
+
+                if( !isset( $bylan[ $infrastructure ][ $int['speed'] ] ) )
+                    $bylan[ $infrastructure ][ $int['speed'] ] = 1;
+                else
+                    $bylan[ $infrastructure ][ $int['speed'] ]++;
             }
             
             ksort( $speeds, SORT_NUMERIC );
             $this->view->speeds      = $admin_home_ctypes['speeds']      = $speeds;
             $this->view->bylocation  = $admin_home_ctypes['bylocation']  = $bylocation;
             $this->view->bylan       = $admin_home_ctypes['bylan']       = $bylan;
+            $this->view->byixp       = $admin_home_ctypes['byixp']       = $byixp;
             
             $this->getD2Cache()->save( 'admin_home_ctypes', $admin_home_ctypes, 3600 );
         }
@@ -147,6 +166,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
         $this->view->speeds      = $admin_home_ctypes['speeds'];
         $this->view->bylocation  = $admin_home_ctypes['bylocation'];
         $this->view->bylan       = $admin_home_ctypes['bylan'];
+        $this->view->byixp       = $admin_home_ctypes['byixp'];
     }
     
     public function staticAction()
