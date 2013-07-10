@@ -94,15 +94,9 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
     {
 
         if( $this->getParam( 'ixp', false ) )
-        {
             $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
-            $ixpid = $ixp->getId();
-        }
         else
-        {
-            $ixpid = false;
             $ixp = false;
-        }
 
         $this->view->vlans = $vlans = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getNames( 1, $ixp );
 
@@ -118,12 +112,12 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
             ->leftJoin( 'vli.VirtualInterface', 'vi' )
             ->leftJoin( 'vi.Customer', 'c' );
 
-        if( $ixpid )
+        if( $ixp )
         {
             $qb->leftJoin( 'v.Infrastructure', 'inf' )
                 ->leftJoin( 'inf.IXP', 'ixp' )
                 ->andWhere( 'ixp.id = ?3' )
-                ->setParameter( 3, $ixpid );
+                ->setParameter( 3, $ixp->getId() );
         }
     
         if( isset( $this->_feParams->listOrderBy ) )
