@@ -109,12 +109,7 @@ class IXP_Form_IXP extends IXP_Form
     {
         $sw = new Zend_Form_Element_Select( $name );
 
-        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
-            ->select( 'e.id AS id, e.shortname AS name' )
-            ->from( '\\Entities\\IXP', 'e' )
-            ->orderBy( "e.name", 'ASC' );
-        
-        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\IXP', 'id', 'name', 'name', 'ASC' );
+        $maxId = self::populateSelectFromDatabase( $sw, '\\Entities\\IXP', 'id', 'name', 'name', 'ASC' );
     
         $sw->setRegisterInArrayValidator( true )
             ->setRequired( true )
