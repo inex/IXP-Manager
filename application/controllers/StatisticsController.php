@@ -196,9 +196,15 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     public function membersAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+        $this->view->infra  = $infra  = $this->getParam( 'infra', 'aggregate' );
 
         if( $this->getParam( 'ixp', false ) )
             $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+        else if( $infra != "aggregate" )
+        {
+            $oinfra = $this->getD2R( "\\Entities\\Infrastructure" )->find( $infra );
+            $this->view->ixp = $ixp = $oinfra->getIXP();
+        }
         else
         {
             $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
@@ -209,14 +215,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         }
         
         $this->view->infras = $infras = $this->getD2R( '\\Entities\\Infrastructure' )->getNames( $ixp );
-        $this->view->infra  = $infra  = $this->getParam( 'infra', 'aggregate' );
-
-        if( $infra != 'aggregate' && !in_array( $infra, $infras ) )
-            $infra = 'aggregate';
-        
+  
         $this->_setCategory();
         $this->_setPeriod();
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, $ixp ? $ixp->getId() : false );
+        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, ( $ixp && $infra == 'aggregate' ) ? $ixp->getId() : false );
 
         if( $this->multiIXP() )
             $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );

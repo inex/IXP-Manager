@@ -43,7 +43,7 @@
                     <span class="caret"></span>
                 </a>
                 <ul id="vlan-dd-ul" class="dropdown-menu pull-right">
-                    <li> <a id="vlan-aggregate" href="{genUrl controller='statistics' action='members'}">Aggregate Traffic</a> </li>
+                    <li> <a id="vlan-aggregate" href="{genUrl controller='statistics' action='members'}{if isset( $ixp )}/ixp/{$ixp->getId()}{/if}">Aggregate Traffic</a> </li>
                     <li class="divider"></li>
                     {foreach $infras as $iid => $iname}
                         <li> <a id="vlan-{$iid}" href="{genUrl controller='statistics' action='members' infra=$iid}">{$iname}</a> </li>
