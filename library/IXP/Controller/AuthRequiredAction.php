@@ -80,15 +80,17 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
         $unreadNotes = 0;
         $lastRead = false;
          
+        $rut = $this->getUser()->getPreference( "customer-notes.read_upto" );
         $lr = $this->getUser()->getPreference( "customer-notes.{$custid}.last_read" );
         
-        if( $lr )
+        if( $lr || $rut )
         {
-            $lastRead = new \DateTime( "@{$lr}" );
-             
             foreach( $custNotes as $cn )
-                if( $cn->getUpdated() > $lastRead )
+            {
+                $time = $cn->getUpdated()->format( "U" );
+                if( ( !$rut || $rut < $time ) && ( !$lr || $lr < $time ) )
                     $unreadNotes++;
+            }
         }
         else
             $unreadNotes = count( $custNotes );
