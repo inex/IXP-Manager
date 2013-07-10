@@ -422,15 +422,34 @@ class SwitchController extends IXP_Controller_FrontEnd
 
     public function configurationAction()
     {
+        if( $this->getParam( 'ixp', false ) )
+        {
+            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+            if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER && !$this->getUser()->getCustomer()->getIXPs()->contains( $ixp ) )
+                $this->redirectAndEnsureDie( '/erro/insufficient-permissions' );
+        }
+        else if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $this->view->ixp = $ixp = $this->getUser()->getCustomer()->getIXPs()[0];
+        else
+        {
+            $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
+            if( $ixp )
+                $this->view->ixp = $ixp = $ixp[0];
+            else
+                $ixp = false;
+        }
+
         $this->view->registerClass( 'PHYSICALINTERFACE', '\\Entities\\PhysicalInterface' );
         $this->view->states   = \Entities\PhysicalInterface::$STATES;
-        $this->view->vlans    = $vlans    = $this->getD2EM()->getRepository( '\\Entities\\Vlan'     )->getNames();
-        $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
+        $this->view->ixps     = $ixps     = $this->getD2R( '\\Entities\\IXP'      )->getNames( $this->getUser() );
+        $this->view->vlans    = $vlans    = $this->getD2R( '\\Entities\\Vlan'     )->getNames( 1, $ixp );
+        $this->view->switches = $switches = $this->getD2R( '\\Entities\\Switcher' )->getNames( false, 0, $ixp );
 
-        $this->view->switchid = $sid = ( $this->getParam( 'sid', false ) && isset( $switches[ $this->getParam( 'sid' ) ] ) ) ? $this->getParam( 'sid' ) : null;
-        $this->view->vlanid   = $vid = ( $this->getParam( 'vid', false ) && isset( $vlans[    $this->getParam( 'vid' ) ] ) ) ? $this->getParam( 'vid' ) : null;
+        $this->view->switchid = $sid   = ( $this->getParam( 'sid', false ) && isset( $switches[ $this->getParam( 'sid' ) ] ) ) ? $this->getParam( 'sid' ) : null;
+        $this->view->vlanid   = $vid   = ( $this->getParam( 'vid', false ) && isset( $vlans[    $this->getParam( 'vid' ) ] ) ) ? $this->getParam( 'vid' ) : null;
+        $this->view->ixpid    = $ixpid = $ixp ? $ixp->getId() : null;
 
-        $this->view->config = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getConfiguration( $sid, $vid );
+        $this->view->config = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getConfiguration( $sid, $vid, $ixpid );
     }
 
 
