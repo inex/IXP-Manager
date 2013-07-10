@@ -96,7 +96,13 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
         if( $this->getParam( 'ixp', false ) )
             $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
         else
-            $ixp = false;
+        {
+            $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
+            if( $ixp )
+                $this->view->ixp = $ixp = $ixp[0];
+            else
+                $ixp = false;
+        }
 
         $this->view->vlans = $vlans = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getNames( 1, $ixp );
 
