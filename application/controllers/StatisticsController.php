@@ -41,7 +41,22 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     public function listAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer')->getCurrentActive( true, true, true );
+
+        if( $this->getParam( 'ixp', false ) )
+            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+        else
+        {
+            $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
+            if( $ixp )
+                $this->view->ixp = $ixp = $ixp[0];
+            else
+                $ixp = false;
+        }
+
+        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer')->getCurrentActive( true, true, false, $ixp ? $ixp->getId() : false );
+
+        if( $this->multiIXP() )
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
     }
     
     public function leagueTableAction()
@@ -176,22 +191,21 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         }
         $this->view->stats      = $stats;
         
-    }
-    
+    }    
     
     public function membersAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
 
         if( $this->getParam( 'ixp', false ) )
-        {
             $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
-            $ixpid = $ixp->getId();
-        }
         else
         {
-            $ixpid = false;
-            $ixp = false;
+            $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
+            if( $ixp )
+                $this->view->ixp = $ixp = $ixp[0];
+            else
+                $ixp = false;
         }
         
         $this->view->infras = $infras = $this->getD2R( '\\Entities\\Infrastructure' )->getNames( $ixp );
@@ -202,7 +216,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         
         $this->_setCategory();
         $this->_setPeriod();
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, $ixpid );
+        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, $ixp ? $ixp->getId() : false );
 
         if( $this->multiIXP() )
             $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
