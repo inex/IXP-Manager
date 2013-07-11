@@ -60,6 +60,8 @@
     <entity name="Infrastructure">
         <field name="id" type="integer" required="true" primary="true" auto-increment="true" />
         <field name="name" type="string" size="255"/>
+        <field name="mrtg_path" type="string" size="255"/>
+        <field name="mrtg_p2p_path" type="string" size="255"/>
         <field name="shortname" type="string" size="255" unique="true"/>
         <field name="ixp_id" type="integer" required="true"/>
         <orm-attributes>

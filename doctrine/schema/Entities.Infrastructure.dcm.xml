@@ -5,6 +5,8 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="name" type="string" length="255" nullable="true"/>
+    <field name="mrtg_path" type="string" length="255" nullable="true"/>
+    <field name="mrtg_p2p_path" type="string" length="255" nullable="true"/>
     <field name="shortname" type="string" unique="true" length="255" nullable="true"/>
     <many-to-one field="IXP" target-entity="Entities\IXP" inversed-by="Infrastructures">
       <join-columns>
