@@ -68,17 +68,20 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
         {
             $this->view->resoldCustomer = $this->getCustomer()->isResoldCustomer();
             $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-	        $this->view->categories = IXP_Mrtg::$CATEGORIES;
+            $this->view->categories = IXP_Mrtg::$CATEGORIES;
 
-	        $this->getNocDetailsForm();
-	        $this->getBillingDetailsForm();
-	        
-	        if( $this->getCustomer()->isRouteServerClient() )
-	        {
-	            $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )
-	                ->aggregateRouteSummariesForCustomer( $this->getCustomer()->getId() );
-	        }
+            $this->getNocDetailsForm();
+            $this->getBillingDetailsForm();
+            
+            if( $this->getCustomer()->isRouteServerClient() )
+            {
+                $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )
+                ->aggregateRouteSummariesForCustomer( $this->getCustomer()->getId() );
+            }
         }
+
+        if( $this->multiIXP() )
+            $this->view->validIXPs = $this->getD2R( "\\Entities\\IXP" )->getNamesNotAssignedToCustomer( $this->getUser()->getCustomer()->getId() );
         
         // do we have any notes?
         $this->_fetchCustomerNotes( $this->getCustomer()->getId(), true );
