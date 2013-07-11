@@ -110,7 +110,7 @@ class Switcher extends EntityRepository
      * @param int $ixpid    IXP id for filtering results
      * @return array
      */
-    public function getConfiguration( $switchid = null, $vlanid = null, $ixpid = null )
+    public function getConfiguration( $switchid = null, $vlanid = null, $ixpid = null, $superuser = true )
     {
         $q =
             "SELECT s.name AS switchname, s.id AS switchid,
@@ -146,9 +146,17 @@ class Switcher extends EntityRepository
         if( $ixpid !== null )
             $q .= 'AND ( sixp.id = ' . intval( $ixpid ) . ' OR vixp.id = ' . intval( $ixpid ) . ' ) ';
 
+        if( !$superuser && $ixpid )
+            $q .= 'AND ?1 MEMBER OF c.IXPs ';
+
         $q .= "ORDER BY customer ASC";
 
-        return $this->getEntityManager()->createQuery( $q )->getArrayResult();
+        $query = $this->getEntityManager()->createQuery( $q );
+
+        if( !$superuser && $ixpid )
+            $query->setParameter( 1, $ixpid );
+        
+        return $query->getArrayResult();
     }
 
 

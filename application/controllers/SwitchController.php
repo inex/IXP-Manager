@@ -422,13 +422,14 @@ class SwitchController extends IXP_Controller_FrontEnd
 
     public function configurationAction()
     {
+        $superuser = $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER;
         if( $this->getParam( 'ixp', false ) )
         {
             $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
-            if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER && !$this->getUser()->getCustomer()->getIXPs()->contains( $ixp ) )
+            if( !$superuser && !$this->getUser()->getCustomer()->getIXPs()->contains( $ixp ) )
                 $this->redirectAndEnsureDie( '/erro/insufficient-permissions' );
         }
-        else if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        else if( !$superuser )
             $this->view->ixp = $ixp = $this->getUser()->getCustomer()->getIXPs()[0];
         else
         {
@@ -449,7 +450,7 @@ class SwitchController extends IXP_Controller_FrontEnd
         $this->view->vlanid   = $vid   = ( $this->getParam( 'vid', false ) && isset( $vlans[    $this->getParam( 'vid' ) ] ) ) ? $this->getParam( 'vid' ) : null;
         $this->view->ixpid    = $ixpid = $ixp ? $ixp->getId() : null;
 
-        $this->view->config = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getConfiguration( $sid, $vid, $ixpid );
+        $this->view->config = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getConfiguration( $sid, $vid, $ixpid, $superuser );
     }
 
 
