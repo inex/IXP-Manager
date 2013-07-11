@@ -153,10 +153,28 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         return parent::getInfrastructures();
     }
 
+    public function addCustomer(\Entities\Customer $customers)
+    {
+        $this->__load();
+        return parent::addCustomer($customers);
+    }
+
+    public function removeCustomer(\Entities\Customer $customers)
+    {
+        $this->__load();
+        return parent::removeCustomer($customers);
+    }
+
+    public function getCustomers()
+    {
+        $this->__load();
+        return parent::getCustomers();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures');
+        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', 'Customers');
     }
 
     public function __clone()

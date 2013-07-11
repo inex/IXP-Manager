@@ -66,42 +66,57 @@
     </div>
 
     <div class="span6">
-        {if isset( $element->reseller ) }
+        {if $resellerMode || $multiIXP }
             <fieldset>
-                <legend>Reseller Details</Legend>
-
-                {$element->isReseller}
-                {$element->isResold}
-                <div id="reseller-element-div" style="margin-top: -15px; margin-left: 80px; {if !$element->reseller->getValue()}display: none;{/if} ">
-                    {$element->reseller}
-                </div>
+                <legend>
+                    {if $resellerMode && $multiIXP }
+                        Reseller & IXP Association Details
+                    {else if $resellerMode }
+                        Reseller Details
+                    {else}
+                        IXP Association Details
+                    {/if}
+                </Legend>
+                {if $resellerMode }
+                    {$element->isReseller}
+                    {$element->isResold}
+                    <div id="reseller-element-div" style="margin-top: -15px; margin-left: 80px; {if !$element->reseller->getValue()}display: none;{/if} ">
+                        {$element->reseller}
+                    </div>
+                {/if}
+                {$element->ixp}
             </fieldset>
-            <script type="text/javascript">
-                $( document ).ready( function(){
-                    
-                    $( "#isResold" ).change( function(){
-                        if( $( this ).prop( "checked" ) )
-                        {
-                            $( '#reseller-element-div' ).show();
-                            if( $( '#isReseller' ).prop( "checked" ) )
-                                $( '#isReseller' ).prop( "checked", false );
-                        }
-                        else
-                            $( '#reseller-element-div' ).hide();
+            {if $resellerMode }
+                <script type="text/javascript">
+                    $( document ).ready( function(){
                         
-                    });
+                        $( "#isResold" ).change( function(){
+                            if( $( this ).prop( "checked" ) )
+                            {
+                                $( '#reseller-element-div' ).show();
+                                if( $( '#isReseller' ).prop( "checked" ) )
+                                    $( '#isReseller' ).prop( "checked", false );
+                            }
+                            else
+                                $( '#reseller-element-div' ).hide();
+                            
+                        });
 
-                    $( "#isReseller" ).change( function(){
-                        if( $( this ).prop( "checked" ) )
-                        {
-                            if( $( '#isResold' ).prop( "checked" ) )
-                                $( '#isResold' ).prop( "checked", false ).trigger( "change" );
-                        }
-                        
+                        $( "#isReseller" ).change( function(){
+                            if( $( this ).prop( "checked" ) )
+                            {
+                                if( $( '#isResold' ).prop( "checked" ) )
+                                    $( '#isResold' ).prop( "checked", false ).trigger( "change" );
+                            }
+                            
+                        });
                     });
-                });
-            </script>
+                </script>
+            {/if}
+        {else}
+            {$element->ixp}
         {/if}
+        
     </div>
     
 </div>

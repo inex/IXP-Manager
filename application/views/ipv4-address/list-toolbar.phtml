@@ -1,6 +1,20 @@
 <li class="pull-right"  style="margin-top: -6px;"> 
 <div class="btn-toolbar" style="display: inline;">
 
+    {if $multiIXP}
+        <div class="btn-group">
+            <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                {if isset( $ixp ) }{$ixp->getName()}{else}Limit to IXP...{/if}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                {foreach $ixpNames as $xid => $xname}
+                    <li> <a href="{genUrl controller=$controller action=$action ixp=$xid}">{$xname}</a> </li>
+                {/foreach}
+            </ul>
+        </div>
+    {/if}
+
     <div class="btn-group" id="vlan-btn-group">
         <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="vlan-dd">
             <span id="vlan-dd-text">{if isset( $vid ) and $vid}{$vlans.$vid}{else}Limit to VLAN...{/if}</span>

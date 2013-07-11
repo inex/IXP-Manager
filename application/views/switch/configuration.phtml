@@ -14,6 +14,14 @@
 
         <li class="pull-right">
             <form class="form-inline" method="post">
+                {if $multiIXP}
+                    <select data-placeholder="Limit to IXP..." class="chzn-select" name="ixp">
+                        <option></option>
+                        {foreach $ixps as $iid => $iname}
+                            <option value="{$iid}" {if isset( $ixpid ) and $ixpid eq $iid}selected="selected"{/if}>{$iname}</option>
+                        {/foreach}
+                    </select>
+                {/if}
                 <select data-placeholder="Limit to switch..." class="chzn-select-deselect" name="sid">
                     <option></option>
                     {foreach $switches as $sid => $sname}
@@ -44,6 +52,15 @@
 
             <span style="float: right; margin-top: -10px;">
                 <form class="form-inline" method="post">
+                    {if $multiIXP && count( $ixps ) > 1 }
+                        <select data-placeholder="Limit to IXP..." class="chzn-select" name="ixp">
+                            <option></option>
+                            {foreach $ixps as $iid => $iname}
+                                <option value="{$iid}" {if isset( $ixpid ) and $ixpid eq $iid}selected="selected"{/if}>{$iname}</option>
+                            {/foreach}
+                        </select>
+                    {/if}
+
                     <select data-placeholder="Limit to switch..." class="chzn-select-deselect" name="sid">
                         <option></option>
                         {foreach $switches as $sid => $sname}

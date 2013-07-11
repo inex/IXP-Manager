@@ -12,4 +12,54 @@ use Doctrine\ORM\EntityRepository;
  */
 class IXP extends EntityRepository
 {
+    /**
+     * Return an array of all IXP names where the array key is the IXP id.
+     *
+     * NOTICE: Super user can see all IXPs and customer user can see only those which 
+     *         is assign to users customer.
+     *
+     * @param  \Entities\User $user User to limit IXP names
+     * @return array An array of all IXP names with the IXP id as the key.
+     */
+    public function getNames( $user )
+    {
+        $dql = "SELECT i.id AS id, i.name AS name FROM Entities\\IXP i";
+
+        if( $user->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $dql .= " WHERE ?1 MEMBER OF i.Customers";
+
+        $dql .= " ORDER BY name ASC";
+        
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        if( $user->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $query->setParameter( 1, $user->getCustomer()->getId() );
+
+        $aixps = $query->getResult();
+        
+        $ixps = [];
+        foreach( $aixps as $i )
+            $ixps[ $i['id'] ] = $i['name'];
+        
+        return $ixps;
+    }
+
+    /**
+     * Return an array of all ixp names which are not related with given Customer where the array key is the IXP id.
+     *
+     * @param int $custid Customer id for filtering results
+     * @return array An array of IXP names with the ixp id as the key.
+     */
+    public function getNamesNotAssignedToCustomer( $custid )
+    {
+        $aixps = $this->getEntityManager()->createQuery(
+            "SELECT i.id AS id, i.name AS name FROM Entities\\IXP i WHERE ?1 NOT MEMBER OF i.Customers ORDER BY name ASC"
+        )->setParameter( 1, $custid )->getResult();
+        
+        $ixps = [];
+        foreach( $aixps as $i )
+            $ixps[ $i['id'] ] = $i['name'];
+        
+        return $ixps;
+    }
 }

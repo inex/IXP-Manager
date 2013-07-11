@@ -114,8 +114,18 @@
     <td><strong>Corporate Web:</strong></td>
     <td id="value"><a href="{$cust->getCorpwww()}">{$cust->getCorpwww()}</a></td>
     <td></td>
-    <td></td>
-    <td></td>
+    {if $multiIXP}
+        <td><strong>IXPs:</strong></td>
+        <td>
+            {foreach $cust->getIXPs() as $ixp}
+                {if $ixp@index != 0}<br />{/if}
+                {$ixp->getName()}
+            {/foreach}
+        </td>
+    {else}
+        <td></td>
+        <td></td>
+    {/if}
 </tr>
 
 <tr>
@@ -133,6 +143,7 @@
     Connection {counter name=numconnections}
     {assign var='vlanints' value=$vi->getVlanInterfaces()}
     {assign var='vlanint' value=$vlanints.0}
+    {if $vlanint}
     <small>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Infrastructure #{if $vlanint->getVlan()->getNumber() % 10 == 0}1{else}2{/if}
         {if $vi->getPhysicalInterfaces()|@count > 1}
@@ -142,6 +153,7 @@
             {assign var='isLAG' value=0}
         {/if}
     </small>
+    {/if}
 </h3>
 
 {foreach $vi->getPhysicalInterfaces() as $pi}

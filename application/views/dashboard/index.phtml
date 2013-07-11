@@ -15,6 +15,9 @@
     <ul class="nav nav-tabs">
         <li class="active">
             <a href="#tab1" data-toggle="tab">Overview</a></li>
+            {if $multiIXP}
+                <li><a href="#tab-ixps" data-toggle="tab">IXPs</a></li>
+            {/if}
             <li><a href="#tab-details" data-toggle="tab">My Details</a></li>
             <li><a href="#tab3" data-toggle="tab">Ports</a></li>
             
@@ -63,18 +66,25 @@
 
         <div class="tab-pane active" id="tab1">
             <!-- Overview Tab -->
-            {tmplinclude file="dashboard/index-tab-overview.phtml"}
+            {tmplinclude file="dashboard/index-tabs/overview.phtml"}
         </div>
+        
+        {if $multiIXP}
+            <div class="tab-pane" id="tab-ixps">
+                {tmplinclude file="dashboard/index-tabs/ixps.phtml"}
+
+            </div>
+        {/if}
 
         <div class="tab-pane" id="tab-details">
             <!-- Details Tab -->
-            {tmplinclude file="dashboard/index-tab-details.phtml"}
+            {tmplinclude file="dashboard/index-tabs/details.phtml"}
 
         </div>
 
         <div class="tab-pane" id="tab3">
             <!-- Connections -->
-            {tmplinclude file="dashboard/index-tab-connections.phtml"}
+            {tmplinclude file="dashboard/index-tabs/connections.phtml"}
 
         </div>
 
@@ -95,7 +105,7 @@
 
 {else}
 
-    {tmplinclude file="dashboard/index-tab-associate.phtml"}
+    {tmplinclude file="dashboard/index-tabs/associate.phtml"}
 
 {/if}
 

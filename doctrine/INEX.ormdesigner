@@ -60,6 +60,8 @@
     <entity name="Infrastructure">
         <field name="id" type="integer" required="true" primary="true" auto-increment="true" />
         <field name="name" type="string" size="255"/>
+        <field name="mrtg_path" type="string" size="255"/>
+        <field name="mrtg_p2p_path" type="string" size="255"/>
         <field name="shortname" type="string" size="255" unique="true"/>
         <field name="ixp_id" type="integer" required="true"/>
         <orm-attributes>
@@ -86,6 +88,24 @@
             <attribute name="repository-class">Repositories\IXP</attribute>
         </orm-attributes>
     </entity>
+    <entity name="CustomerToIXP">
+        <field name="id" type="integer" required="true" primary="true" auto-increment="true"/>
+        <field name="customer_id" type="integer" required="true" primary="true"/>
+        <field name="ixp_id" type="integer" required="true" primary="true"/>
+        <orm-attributes>
+            <attribute name="repository-class">Repositories\CustomerToIXP</attribute>
+            <attribute name="table">customer_to_ixp</attribute>
+            <attribute name="tableName">customer_to_ixp</attribute>
+        </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="CustomerToIXP">
+        <many-to-many-entity name="Customer" owning-side="true" alias="IXPs">
+            <many-to-many-field from="customer_id" to="id"/>
+        </many-to-many-entity>
+        <many-to-many-entity name="IXP" owning-side="false" alias="Customers">
+            <many-to-many-field from="ixp_id" to="id"/>
+        </many-to-many-entity>
+    </many-to-many>
     <entity name="CompanyBillingDetail" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="a67b06c1-d18c-4196-90ed-d8987633c48b"/>
       <field name="billingContactName" type="string" uuid="b797975d-1d9d-48fd-84fe-917e08d3297d"/>
@@ -344,6 +364,7 @@
     </association>
     <entity name="Vlan" uuid="1b90f411-dfed-48a8-acd0-97cbf599e069">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="947c18c6-133a-42ba-a7e2-1346d7cc7e44"/>
+      <field name="infrastructureid" type="integer"/>
       <field name="name" type="string" size="255" uuid="34caf8b1-714c-4ffd-87d9-c5e6b3834c70"/>
       <field name="number" type="integer" uuid="156b2f6b-7ce1-4558-9e7e-27f484e0a95f"/>
       <field name="rcvrfname" type="string" size="255" uuid="dc73bea4-6ccb-48cc-831f-a1a1116a3d0b"/>
@@ -355,6 +376,9 @@
         <attribute name="tableName">vlan</attribute>
       </orm-attributes>
     </entity>
+    <association from="Vlan" to="Infrastructure" owner-alias="Infrastructure" inverse-alias="Vlans">
+        <association-field from="infrastructureid" to="id"/>
+    </association>
     <entity name="VirtualInterface" uuid="aa930c08-4f0b-4947-b15b-840caa7455cb">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="5c0ba88f-afec-4008-93e7-b3447d5ac484"/>
       <field name="custid" type="integer" uuid="c0e1e95c-baca-45c1-b2b9-52f04b4911a9"/>

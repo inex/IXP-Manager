@@ -92,7 +92,19 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
      */
     protected function listGetData( $id = null )
     {
-        $this->view->vlans = $vlans = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getNames();
+
+        if( $this->getParam( 'ixp', false ) )
+            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+        else
+        {
+            $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
+            if( $ixp )
+                $this->view->ixp = $ixp = $ixp[0];
+            else
+                $ixp = false;
+        }
+
+        $this->view->vlans = $vlans = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getNames( 1, $ixp );
 
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'ip.id as id, ip.address as address,
@@ -105,6 +117,14 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
             ->leftJoin( 'ip.VlanInterface', 'vli' )
             ->leftJoin( 'vli.VirtualInterface', 'vi' )
             ->leftJoin( 'vi.Customer', 'c' );
+
+        if( $ixp )
+        {
+            $qb->leftJoin( 'v.Infrastructure', 'inf' )
+                ->leftJoin( 'inf.IXP', 'ixp' )
+                ->andWhere( 'ixp.id = ?3' )
+                ->setParameter( 3, $ixp->getId() );
+        }
     
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
@@ -112,18 +132,30 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
         if( $id !== null )
             $qb->andWhere( 'ip.id = ?1' )->setParameter( 1, $id );
     
+        
         $vid = false;
         if( !( ( $vid = $this->getParam( 'vlan', false ) ) && isset( $vlans[$vid] ) ) )
         {
-            if( isset( $this->_options['identity']['vlans']['default'] ) && isset( $vlans[ $this->_options['identity']['vlans']['default'] ] ) )
+            if( $ixp && $vlans )
+                $vid = array_keys( $vlans )[ 0 ];
+            else if( isset( $this->_options['identity']['vlans']['default'] ) && isset( $vlans[ $this->_options['identity']['vlans']['default'] ] ) )
                 $vid = $this->_options['identity']['vlans']['default'];
         }
         
         if( $vid )
         {
             $this->view->vid = $vid;
-            $qb->where( 'v.id = ?2' )->setParameter( 2, $vid );
+            $qb->andWhere( 'v.id = ?2' )->setParameter( 2, $vid );
+
+            if( !$ixp )
+            {
+                $vlan = $this->getD2R( "\\Entities\\Vlan" )->find( $vid );
+                $this->view->ixp = $ixp = $vlan->getInfrastructure()->getIXP();
+            }
         }
+
+        if( $this->multiIXP() )
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
         
         return $qb->getQuery()->getResult();
     }

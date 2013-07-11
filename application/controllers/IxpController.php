@@ -100,5 +100,49 @@ class IxpController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
+
+    public function assignCustomerAction()
+    {
+        
+        $ixp = $this->loadObject( $this->getParam( 'id' ) );
+        $customer = $this->getD2R( '\\Entities\\Customer' )->find( $this->getParam( "cid", false ) );
+
+        if( !$customer )
+        {
+            $this->addMessage( "Could not load requested object", OSS_Message::ERROR );
+            $this->redirectAndEnsureDie( "/customer/list/ixp/" .  $ixp->getId() );
+        }
+
+        $ixp->addCustomer( $customer );
+        $customer->addIXP( $ixp );
+        $this->getD2EM()->flush();
+
+        $this->addMessage( "Customer was assigned to IXP successfully.", OSS_Message::SUCCESS );
+        if( $this->getParam( 'overview', false ) )
+            $this->redirectAndEnsureDie( "/customer/overview/tab/ixps/id/" .  $customer->getId() );
+        else
+            $this->redirectAndEnsureDie( "/customer/list/ixp/" .  $ixp->getId() );
+    }
+
+    public function unassignCustomerAction()
+    {
+        
+        $ixp = $this->loadObject( $this->getParam( 'id' ) );
+        $customer = $this->getD2R( '\\Entities\\Customer' )->find( $this->getParam( "cid", false ) );
+
+        if( !$customer )
+        {
+            $this->addMessage( "Could not load requested object", OSS_Message::ERROR );
+            $this->redirectAndEnsureDie( "/customer/list/ixp/" .  $ixp->getId() );
+        }
+
+        $ixp->removeCustomer( $customer );
+        $customer->removeIXP( $ixp );
+        $this->getD2EM()->flush();
+
+        $this->addMessage( "Customer was unassigned to IXP successfully.", OSS_Message::SUCCESS );
+        $this->redirectAndEnsureDie( "/customer/list/ixp/" .  $ixp->getId() );
+    }      
+
 }
 

@@ -265,4 +265,42 @@ class IXP
     {
         return $this->Infrastructures;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Customers;
+
+
+    /**
+     * Add Customers
+     *
+     * @param \Entities\Customer $customers
+     * @return IXP
+     */
+    public function addCustomer(\Entities\Customer $customers)
+    {
+        $this->Customers[] = $customers;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Customers
+     *
+     * @param \Entities\Customer $customers
+     */
+    public function removeCustomer(\Entities\Customer $customers)
+    {
+        $this->Customers->removeElement($customers);
+    }
+
+    /**
+     * Get Customers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCustomers()
+    {
+        return $this->Customers;
+    }
 }

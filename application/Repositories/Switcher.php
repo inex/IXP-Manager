@@ -83,22 +83,34 @@ class Switcher extends EntityRepository
     /**
      * Return an array of all switch names where the array key is the switch id
      *
-     * @param bool $active If `true`, return only active switches
-     * @param int $type If `0`, all types otherwise limit to specific type
+     * @param bool          $active If `true`, return only active switches
+     * @param int           $type   If `0`, all types otherwise limit to specific type
+     * @param \Entities\IXP $ixp    IXP to filter vlan names
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getNames( $active = false, $type = 0 )
+    public function getNames( $active = false, $type = 0, $ixp = false )
     {
         $switches = [];
         foreach( $this->getAndCache( $active, $type ) as $a )
-            $switches[ $a->getId() ] = $a->getName();
+        {
+            if( !$ixp || ( $ixp->getInfrastructures()->contains( $a->getInfrastructure() ) ) )
+                $switches[ $a->getId() ] = $a->getName();
+        }
 
         asort( $switches );
         return $switches;
     }
 
 
-    public function getConfiguration( $switchid = null, $vlanid = null )
+    /**
+     * Return an array of configurations
+     *
+     * @param int $switchid Switcher id for filtering results
+     * @param int $vlanid   Vlan id for filtering results
+     * @param int $ixpid    IXP id for filtering results
+     * @return array
+     */
+    public function getConfiguration( $switchid = null, $vlanid = null, $ixpid = null, $superuser = true )
     {
         $q =
             "SELECT s.name AS switchname, s.id AS switchid,
@@ -118,6 +130,10 @@ class Switcher extends EntityRepository
                 LEFT JOIN vi.PhysicalInterfaces pi
                 LEFT JOIN pi.SwitchPort sp
                 LEFT JOIN sp.Switcher s
+                LEFT JOIN v.Infrastructure vinf
+                LEFT JOIN vinf.IXP vixp
+                LEFT JOIN s.Infrastructure sinf
+                LEFT JOIN sinf.IXP sixp
 
             WHERE 1=1 ";
 
@@ -127,9 +143,20 @@ class Switcher extends EntityRepository
         if( $vlanid !== null )
             $q .= 'AND v.id = ' . intval( $vlanid ) . ' ';
 
+        if( $ixpid !== null )
+            $q .= 'AND ( sixp.id = ' . intval( $ixpid ) . ' OR vixp.id = ' . intval( $ixpid ) . ' ) ';
+
+        if( !$superuser && $ixpid )
+            $q .= 'AND ?1 MEMBER OF c.IXPs ';
+
         $q .= "ORDER BY customer ASC";
 
-        return $this->getEntityManager()->createQuery( $q )->getArrayResult();
+        $query = $this->getEntityManager()->createQuery( $q );
+
+        if( !$superuser && $ixpid )
+            $query->setParameter( 1, $ixpid );
+        
+        return $query->getArrayResult();
     }
 
 

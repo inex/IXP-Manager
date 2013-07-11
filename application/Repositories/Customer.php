@@ -71,7 +71,7 @@ class Customer extends EntityRepository
      * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
      * @return array
      */
-    public function getCurrentActive( $asArray = false, $trafficing = false, $externalOnly = false )
+    public function getCurrentActive( $asArray = false, $trafficing = false, $externalOnly = false, $ixpid = false )
     {
         $dql = "SELECT c FROM \\Entities\\Customer c
                 WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_ACTIVE;
@@ -81,10 +81,16 @@ class Customer extends EntityRepository
         
         if( $externalOnly )
             $dql .= " AND " . self::DQL_CUST_EXTERNAL;
-            
+
+        if( $ixpid !== false )
+            $dql .= " AND ?1 MEMBER OF c.IXPs";
+
         $dql .= " ORDER BY c.name ASC";
         
         $custs = $this->getEntityManager()->createQuery( $dql );
+
+        if( $ixpid !== false )
+            $custs->setParameter( 1, $ixpid );
         
         return $asArray ? $custs->getArrayResult() : $custs->getResult();
     }
@@ -98,13 +104,32 @@ class Customer extends EntityRepository
     public function getNames()
     {
         $acusts = $this->getEntityManager()->createQuery(
-            "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c"
+            "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c ORDER BY name ASC"
         )->getResult();
         
         $customers = [];
         foreach( $acusts as $c )
             $customers[ $c['id'] ] = $c['name'];
         
+        return $customers;
+    }
+
+    /**
+     * Return an array of all customer names which are not related with given IXP where the array key is the customer id.
+     *
+     * @param int $ixpid IXP id for filtering results
+     * @return array An array of customer names with the customer id as the key.
+     */
+    public function getNamesNotAssignedToIXP( $ixpid )
+    {
+        $acusts = $this->getEntityManager()->createQuery(
+            "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c WHERE ?1 NOT MEMBER OF c.IXPs ORDER BY name ASC"
+        )->setParameter( 1, $ixpid )->getResult();
+        
+        $customers = [];
+        foreach( $acusts as $c )
+            $customers[ $c['id'] ] = $c['name'];
+
         return $customers;
     }
 

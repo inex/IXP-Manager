@@ -12,4 +12,32 @@ use Doctrine\ORM\EntityRepository;
  */
 class Infrastructure extends EntityRepository
 {
+    /**
+     * Return an array of infrastructure names where the array key is the infrastructure id.
+     *
+     * @param \Entities\IXP $ixp IXP to filter infrastructure names.
+     * @return array An array of infrastructure names with the infrastructure id as the key.
+     */
+    public function getNames( $ixp = false )
+    {
+        $dql = "SELECT i.id AS id, i.name AS name FROM Entities\\Infrastructure i";
+
+        if( $ixp )
+            $dql .= " WHERE i.IXP = ?1";
+
+        $dql .= " ORDER BY name ASC";
+        
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        if( $ixp )
+            $query->setParameter( 1, $ixp );
+
+        $ainfras = $query->getResult();
+        
+        $infras = [];
+        foreach( $ainfras as $a )
+            $infras[ $a['id'] ] = $a['name'];
+        
+        return $infras;
+    }
 }
