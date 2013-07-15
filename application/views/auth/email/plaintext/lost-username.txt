@@ -1,17 +1,18 @@
+
 {$options.identity.sitename} - Your Accounts
+====================================================
 
 To whom it may concern,
 
-You, or someone purporting to be you, has requested a username
-reminder for your email address for {$options.identity.sitename}.
+You, or someone purporting to be you, has requested a username reminder for your email address for {$options.identity.sitename}.
 
 The usernames linked to your account are:
+
 {foreach $users as $u}
-   * {$u->getUsername()}   (for {$u->getCustomer()->getName()})
+* {$u->getUsername()} - (for {$u->getCustomer()->getName()})
 {/foreach}
 
-If you did not make this request, please ignore this mail.
-
+If you did not make this request, please contact our support team.
 
 Thanks and kind regards,
 
