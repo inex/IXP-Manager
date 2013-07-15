@@ -54,8 +54,8 @@ class IXP_Form_VLAN extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $number );
 
-        $infrastructre = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
-        $this->addElement( $infrastructre );
+        $infrastructure = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
+        $this->addElement( $infrastructure );
 
         $rcvrfname = $this->createElement( 'text', 'rcvrfname' );
         $rcvrfname->addValidator( 'stringLength', false, array( 1, 255 ) )
@@ -87,9 +87,10 @@ class IXP_Form_VLAN extends IXP_Form
      * Create a SELECT / dropdown element of all VLAN names indexed by their id.
      *
      * @param string $name The element name
+     * @param bool $publicOnly If true, exclude private VLANs from the dropdown
      * @return Zend_Form_Element_Select The select element
      */
-    public static function getPopulatedSelect( $name = 'vlanid', $public = false )
+    public static function getPopulatedSelect( $name = 'vlanid', $publicOnly = false )
     {
         $vlan = new Zend_Form_Element_Select( $name );
 
