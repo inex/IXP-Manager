@@ -10,6 +10,17 @@
     <li class="active">
         Unread Notes for You
     </li>
+    {if count( $notes )}
+        <li class="pull-right"  style="margin-top: -6px;">
+            <div class="btn-toolbar" style="display: inline;">
+                <div class="btn-group">
+                    <a class="btn btn-mini" href="{genUrl controller='customer-notes' action='read-all'}">
+                        Mark All As Read
+                    </a>
+                </div>
+            </div>
+        </li>
+    {/if}
 </ul>
 
 {OSS_Message}

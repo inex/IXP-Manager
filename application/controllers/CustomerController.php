@@ -224,7 +224,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         
         // load customer notes and the amount of unread notes for this user and customer
         $this->_fetchCustomerNotes( $cust->getId() );
-        
+
         if( $cust->isRouteServerClient() )
             $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
         
@@ -662,7 +662,9 @@ class CustomerController extends IXP_Controller_FrontEnd
         $latestNotes = [];
         foreach( $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->getLatestUpdate() as $ln )
         {
-            if( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) )
+        
+            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) ) 
+                && ( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) )
                 $latestNotes[] = $ln;
             
         }
