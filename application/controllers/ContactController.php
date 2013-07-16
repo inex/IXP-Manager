@@ -722,20 +722,20 @@ class ContactController extends IXP_Controller_FrontEnd
             if( !( $user = $contact->getUser() ) )
             {
                 $user = new \Entities\User();
-                $this->getD2EM()->persist( $user );
                 $contact->setUser( $user );
 
                 $user->setCreated( new DateTime() );
                 $user->setCreator( $this->getUser()->getUsername() );
 
                 // these should only be updated by CUSTADMIN on creation of a login account
-                if( $this->getUser()->getPrivs() == \Entities\User::AUTH_CUSTADMIN )
+                if( $this->getUser()->getPrivs() <= \Entities\User::AUTH_CUSTADMIN )
                 {
                     $user->setPrivs( \Entities\User::AUTH_CUSTUSER );
                     $user->setPassword( OSS_String::random( 16 ) );
                     $user->setUsername( $form->getValue( "username" ) );
                 }
 
+                $this->getD2EM()->persist( $user );
                 $this->_feParams->userStatus = "created";
             }
 
@@ -751,7 +751,11 @@ class ContactController extends IXP_Controller_FrontEnd
             {
                 $user->setUsername( $form->getValue( "username" ) );
                 $user->setPassword( $form->getValue( "password" ) );
-                $user->setPrivs( $form->getValue(    "privs" ) );
+                $user->setPrivs( $form->getValue(    "privs"    ) );
+                
+                // if this is an admin user, let them start with no unread notes
+                if( $user->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+                    $user->setPreference( 'customer-notes.read_upto', time() );
             }
 
             $this->getLogger()->info( "{$this->getUser()->getUsername()} created user {$user->getUsername()}" );

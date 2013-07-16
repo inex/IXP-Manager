@@ -44,7 +44,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
                 $this->getUser()->deletePreference( "customer-notes.$id.last_read" );
         }
        
-        $this->getUser()->setPreference('customer-notes.read_upto', time() );
+        $this->getUser()->setPreference( 'customer-notes.read_upto', time() );
         $this->getD2EM()->flush();
 
         $this->redirect( '/customer/unread-notes' );
