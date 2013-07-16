@@ -481,11 +481,8 @@ class CliController extends IXP_Controller_Action
                 
         foreach( $users as $user )
         {
-            $cmd = escapeshellcmd(
-                sprintf( "{$this->_options['mailinglist']['cmd']['changepw']} %s %s %s",
-                    $list, $user['email'], $user['password']
-                    //escapeshellarg( $list ), escapeshellarg( $user['email'] ), escapeshellarg( $user['password'] )
-                )
+            $cmd = sprintf( "{$this->_options['mailinglist']['cmd']['changepw']} %s %s %s",
+                escapeshellarg( $list ), escapeshellarg( $user['email'] ), escapeshellarg( $user['password'] )
             );
             
             if( $this->_verbose ) echo "$cmd\n";
