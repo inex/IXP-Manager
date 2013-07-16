@@ -20,7 +20,8 @@
             {if $user->getPrivs() eq USER::AUTH_SUPERUSER or not $n->getPrivate()}
                 <tr id="co-notes-table-row-{$n->getId()}">
                     <td id="co-notes-table-row-title-{$n->getId()}">
-                        {if not $notesLastRead or $n->getUpdated()->format( 'U' ) > $notesLastRead}
+                        {if ( not $notesLastRead or $n->getUpdated()->format( 'U' ) > $notesLastRead )
+                                and ( not $notesReadUpto or $n->getUpdated()->format( 'U' ) > $notesReadUpto )}
                             <span class="label label-success">
                                 {if $n->getUpdated() eq $n->getCreated()}
                                     NEW

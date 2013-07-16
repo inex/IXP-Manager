@@ -78,10 +78,9 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
     {
         $this->view->custNotes = $custNotes = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->ordered( $custid, $publicOnly );
         $unreadNotes = 0;
-        $lastRead = false;
          
         $rut = $this->getUser()->getPreference( "customer-notes.read_upto" );
-        $lr = $this->getUser()->getPreference( "customer-notes.{$custid}.last_read" );
+        $lr  = $this->getUser()->getPreference( "customer-notes.{$custid}.last_read" );
         
         if( $lr || $rut )
         {
@@ -95,7 +94,8 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
         else
             $unreadNotes = count( $custNotes );
     
-        $this->view->notesLastRead = $lastRead;
+        $this->view->notesReadUpto = $rut;
+        $this->view->notesLastRead = $lr;
         $this->view->unreadNotes   = $unreadNotes;
     }
     

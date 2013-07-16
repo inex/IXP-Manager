@@ -224,7 +224,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         
         // load customer notes and the amount of unread notes for this user and customer
         $this->_fetchCustomerNotes( $cust->getId() );
-        
+
         if( $cust->isRouteServerClient() )
             $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
         
