@@ -1,3 +1,124 @@
+# v3.3.0
+
+Minor version bump as we've added a major new feature - multi IXP support.
+
+Draft SQL:
+
+Call
+  git checkout 75960b1302e612fb2fa59bc15c4185c722edc647 
+
+Then run SQL queries to update database;
+
+CREATE TABLE ixp (
+  id INT AUTO_INCREMENT NOT NULL,
+  name VARCHAR(255) DEFAULT NULL,
+  shortname VARCHAR(255) DEFAULT NULL,
+  address1 VARCHAR(255) DEFAULT NULL,
+  address2 VARCHAR(255) DEFAULT NULL,
+  address3 VARCHAR(255) DEFAULT NULL,
+  address4 VARCHAR(255) DEFAULT NULL,
+  country VARCHAR(255) DEFAULT NULL,
+  UNIQUE INDEX UNIQ_FA4AB7F64082763 (shortname),
+  PRIMARY KEY(id)
+) 
+DEFAULT CHARACTER SET utf8 
+COLLATE utf8_unicode_ci 
+ENGINE = InnoDB;
+
+
+CREATE TABLE infrastructure (
+  id INT AUTO_INCREMENT NOT NULL,
+  ixp_id INT DEFAULT NULL,
+  name VARCHAR(255) DEFAULT NULL,
+  shortname VARCHAR(255) DEFAULT NULL,
+  UNIQUE INDEX UNIQ_D129B19064082763 (shortname),
+  INDEX IDX_D129B190A5A4E881 (ixp_id),
+  PRIMARY KEY(id)
+)
+DEFAULT CHARACTER SET utf8
+COLLATE utf8_unicode_ci
+ENGINE = InnoDB;
+                
+ALTER TABLE infrastructure 
+  ADD CONSTRAINT FK_D129B190A5A4E881 
+    FOREIGN KEY (ixp_id)
+    REFERENCES ixp (id);
+
+INSERT INTO ixp ( name, shortname, address1, address2, address3, address4, country )
+    VALUES ( 'IXP name', 'ixp', 'address1, 'address2', 'address3', 'address4', 'IE' );
+    
+You can insert fictures by using these SQL queries, or simply use crud:
+
+    INSERT INTO infrastructure (name, shortname, ixp_id) VALUES ('Infrastructure1', 'inf1', 1 ) 
+    INSERT INTO infrastructure (name, shortname, ixp_id) VALUES ('Infrastructure2', 'inf2', 1 ) 
+
+
+
+Be sure that Switcher infrastructure number have matching infrastructure ids and then use 
+these SQL queries
+
+ALTER TABLE switch 
+    CHANGE infrastructure infrastructure INT DEFAULT NULL;
+
+ALTER TABLE switch 
+    ADD CONSTRAINT FK_6FE94B18D129B190 
+    FOREIGN KEY (infrastructure) 
+    REFERENCES infrastructure (id);
+
+CREATE INDEX IDX_6FE94B18D129B190 ON switch (infrastructure);
+
+Call
+
+  git checkout master
+
+======================== Customer to IXP ===========================================
+
+CREATE TABLE customer_to_ixp (
+    customer_id INT NOT NULL,
+    ixp INT NOT NULL,
+    INDEX IDX_E85DBF209395C3F3 (customer_id),
+    INDEX IDX_E85DBF20FA4AB7F (ixp_id),
+    PRIMARY KEY(customer_id, ixp_id)
+)
+DEFAULT CHARACTER SET utf8
+COLLATE utf8_unicode_ci
+ENGINE = InnoDB;
+
+ALTER TABLE customer_to_ixp 
+    ADD CONSTRAINT FK_E85DBF209395C3F3 
+    FOREIGN KEY (customer_id)
+    REFERENCES cust (id);
+
+ALTER TABLE customer_to_ixp 
+    ADD CONSTRAINT FK_E85DBF20FA4AB7F
+    FOREIGN KEY (ixp_id)
+    REFERENCES ixp (id);
+
+
+====================== Vlan with Infrastructure ======================================
+
+ALTER TABLE vlan 
+    ADD infrastructureid INT DEFAULT 1;
+
+ALTER TABLE vlan 
+    ADD CONSTRAINT FK_F83104A1721EBF79 
+    FOREIGN KEY (infrastructureid)
+    REFERENCES infrastructure (id);
+
+CREATE INDEX IDX_F83104A1721EBF79 
+    ON vlan (infrastructureid);
+
+
+
+==================== Adding MRTG fields to Infrastructure ============================
+
+ALTER TABLE infrastructure 
+    ADD mrtg_path VARCHAR(255) DEFAULT NULL,
+    ADD mrtg_p2p_path VARCHAR(255) DEFAULT NULL;
+
+
+
+
 # v3.2.1
 
 Update to `application.ini` required. Please find the `peeringdb.url` entry and update to:
