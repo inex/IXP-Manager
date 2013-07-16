@@ -3,7 +3,7 @@
         <span class="label label-important">CLOSED</span>
     {else}
         {if $row.$col == CUSTOMER::STATUS_SUSPENDED}
-            <span class="label label-impotant">SUSPENDED</span>
+            <span class="label label-important">SUSPENDED</span>
         {elseif $row.$col == CUSTOMER::STATUS_NORMAL or ( $row.type == CUSTOMER::TYPE_ASSOCIATE and $row.$col == CUSTOMER::STATUS_NOTCONNECTED )}
             {* An associate member can't be connected anyway! *}
             <span class="label label-success">NORMAL</span>
