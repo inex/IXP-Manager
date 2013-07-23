@@ -1,7 +1,13 @@
 
-# v3.3.3
+# v3.3.0
 
-This is a significant update to allow IXP Manager to manage multiple IXPs with shared customers.
+This is part one of a significant update to allow IXP Manager to manage multiple IXPs with shared customers.
+
+This first part adds managed infrastructure support rather than just using integers to represent infrastructures.
+
+An infrastructre is a physically diverse network for peering. For example, INEX has two infrastructres with 
+a peering LAN on each. All members connect to the 'primary peering infrastructure' while those looking
+for resiliency also join the secondary peering infrastructure.
 
 A schema update is required as follows - run SQL queries to update database:
 
@@ -25,6 +31,7 @@ A schema update is required as follows - run SQL queries to update database:
     CREATE TABLE infrastructure (
       id INT AUTO_INCREMENT NOT NULL,
       ixp_id INT DEFAULT NULL,
+
       name VARCHAR(255) DEFAULT NULL,
       shortname VARCHAR(255) DEFAULT NULL,
       UNIQUE INDEX UNIQ_D129B19064082763 (shortname),
@@ -32,8 +39,8 @@ A schema update is required as follows - run SQL queries to update database:
       PRIMARY KEY(id)
     )
       DEFAULT CHARACTER SET utf8
-    COLLATE utf8_unicode_ci
-    ENGINE = InnoDB;
+      COLLATE utf8_unicode_ci
+      ENGINE = InnoDB;
                     
     ALTER TABLE infrastructure 
       ADD CONSTRAINT FK_D129B190A5A4E881 
