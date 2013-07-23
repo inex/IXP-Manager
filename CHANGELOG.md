@@ -11,7 +11,7 @@ A schema change is required (as well as setting one infrastructure as the primar
     
     UPDATE `infrastructure` SET `isPrimary` = 1 WHERE id = 1;
 
-
+- [IM] Tidy up stale infrastructure references (45d7e47 - Barry O'Donovan - 2013-07-23)
 - [NF] We can set primary infrastructures per IXP (5ccdd32 - Barry O'Donovan - 2013-07-23)
 - [BF] Stale reference to old infrastructure references (0dfbbca - Barry O'Donovan - 2013-07-23)
 - [NF] Filter private VLANs for a specific infrastructure (5ac1d83 - Barry O'Donovan - 2013-07-23)
