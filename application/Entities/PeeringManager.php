@@ -12,42 +12,42 @@ class PeeringManager
     /**
      * @var \DateTime $email_last_sent
      */
-    private $email_last_sent;
+    protected $email_last_sent;
 
     /**
      * @var integer $emails_sent
      */
-    private $emails_sent;
+    protected $emails_sent;
 
     /**
      * @var boolean $peered
      */
-    private $peered;
+    protected $peered;
 
     /**
      * @var boolean $rejected
      */
-    private $rejected;
+    protected $rejected;
 
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
     /**
      * @var Entities\Customer
      */
-    private $Peer;
+    protected $Peer;
 
 
     /**
@@ -223,12 +223,12 @@ class PeeringManager
     /**
      * @var \DateTime $created
      */
-    private $created;
+    protected $created;
 
     /**
      * @var \DateTime $updated
      */
-    private $updated;
+    protected $updated;
 
 
     /**

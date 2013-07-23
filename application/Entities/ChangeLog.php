@@ -12,42 +12,42 @@ class ChangeLog
     /**
      * @var string $title
      */
-    private $title;
+    protected $title;
 
     /**
      * @var string $details
      */
-    private $details;
+    protected $details;
 
     /**
      * @var integer $visibility
      */
-    private $visibility;
+    protected $visibility;
 
     /**
      * @var \DateTime $livedate
      */
-    private $livedate;
+    protected $livedate;
 
     /**
      * @var integer $version
      */
-    private $version;
+    protected $version;
 
     /**
      * @var \DateTime $created_at
      */
-    private $created_at;
+    protected $created_at;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\User
      */
-    private $User;
+    protected $User;
 
 
     /**

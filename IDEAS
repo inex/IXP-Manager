@@ -2,6 +2,9 @@
 Potential Todo / Feature Ideas
 ------------------------------
 
+* <nick-2128> you know what would be incredibly useful? an ixpmanager.php 
+  file which bleated about whether the correct modules are installed or not
+
 * Review MRTG script for reseller and fanout ports
 
 * Fix static documentation to allow for auth. See StaticController::__call()

@@ -12,27 +12,27 @@ class IRRDBConfig
     /**
      * @var string $host
      */
-    private $host;
+    protected $host;
 
     /**
      * @var string $protocol
      */
-    private $protocol;
+    protected $protocol;
 
     /**
      * @var string $source
      */
-    private $source;
+    protected $source;
 
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
 
     /**
@@ -139,7 +139,7 @@ class IRRDBConfig
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $Customers;
+    protected $Customers;
 
     /**
      * Constructor

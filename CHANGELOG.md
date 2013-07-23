@@ -71,6 +71,18 @@ Be sure that the infrastructure numbers you used in your switch definitions matc
 
 
 
+# v3.2.2
+
+[BF] Small bug fix in "mark all notes as read" (35368e7 - Barry O'Donovan - 2013-07-16)
+[IM/CR] Typos and better naming (04c24a9 - Barry O'Donovan - 2013-07-15)
+[HK] Typo (5be397c - Barry O'Donovan - 2013-07-15)
+[NF] Authentication emails are now sent in plaintext and HTML (23f5f14 - Barry O'Donovan - 2013-07-15)
+[NF] Adding auth email plain text templates (cb6035c - Nerijus Barauskas - 2013-07-11)
+[IM] Adding Mark All As Read Button in customer unread notes list (eb6e9c8 - Nerijus Barauskas - 2013-07-10)
+[IM] Hidding private Vlans then adding adding IPv4 or IPv6 addresses (aa7fae0 - Nerijus Barauskas - 2013-07-09)
+[BF] Fix user / contact deletion from user list (4fac457 - Barry O'Donovan - 2013-07-02)
+
+
 # v3.2.1
 
 Update to `application.ini` required. Please find the `peeringdb.url` entry and update to:

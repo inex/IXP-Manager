@@ -224,7 +224,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         
         // load customer notes and the amount of unread notes for this user and customer
         $this->_fetchCustomerNotes( $cust->getId() );
-        
+
         if( $cust->isRouteServerClient() )
             $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
         
@@ -522,7 +522,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                     ->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
                     ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Change Notification' ) )
                     ->addTo( $this->_options['billing_updates']['notify'] , $this->_options['identity']['sitename'] .' - Accounts' )
-                    ->setBodyHtml( $this->view->render( 'customer/email/billing-details-canged.phtml' ) )
+                    ->setBodyHtml( $this->view->render( 'customer/email/billing-details-changed.phtml' ) )
                     ->send();
 
                 if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
@@ -662,7 +662,9 @@ class CustomerController extends IXP_Controller_FrontEnd
         $latestNotes = [];
         foreach( $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->getLatestUpdate() as $ln )
         {
-            if( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) )
+        
+            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) ) 
+                && ( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) )
                 $latestNotes[] = $ln;
             
         }

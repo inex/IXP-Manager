@@ -142,7 +142,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
                         ->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
                         ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Change Notification' ) )
                         ->addTo( $this->_options['billing_updates']['notify'] , $this->_options['identity']['sitename'] .' - Accounts' )
-                        ->setBodyHtml( $this->view->render( 'customer/email/billing-details-canged.phtml' ) )
+                        ->setBodyHtml( $this->view->render( 'customer/email/billing-details-changed.phtml' ) )
                         ->send();
 
                 }

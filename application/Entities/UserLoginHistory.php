@@ -12,22 +12,22 @@ class UserLoginHistory
     /**
      * @var string
      */
-    private $ip;
+    protected $ip;
 
     /**
      * @var \DateTime
      */
-    private $at;
+    protected $at;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Entities\User
      */
-    private $User;
+    protected $User;
 
 
     /**

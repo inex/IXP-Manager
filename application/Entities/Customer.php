@@ -77,192 +77,192 @@ class Customer
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var integer $type
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string $shortname
      */
-    private $shortname;
+    protected $shortname;
 
     /**
      * @var integer $autsys
      */
-    private $autsys;
+    protected $autsys;
 
     /**
      * @var integer $maxprefixes
      */
-    private $maxprefixes;
+    protected $maxprefixes;
 
     /**
      * @var string $peeringemail
      */
-    private $peeringemail;
+    protected $peeringemail;
 
     /**
      * @var string $nocphone
      */
-    private $nocphone;
+    protected $nocphone;
 
     /**
      * @var string $noc24hrphone
      */
-    private $noc24hrphone;
+    protected $noc24hrphone;
 
     /**
      * @var string $nocfax
      */
-    private $nocfax;
+    protected $nocfax;
 
     /**
      * @var string $nocemail
      */
-    private $nocemail;
+    protected $nocemail;
 
     /**
      * @var string $nochours
      */
-    private $nochours;
+    protected $nochours;
 
     /**
      * @var string $nocwww
      */
-    private $nocwww;
+    protected $nocwww;
 
     /**
      * @var string $peeringmacro
      */
-    private $peeringmacro;
+    protected $peeringmacro;
 
     /**
      * @var string $peeringpolicy
      */
-    private $peeringpolicy;
+    protected $peeringpolicy;
 
     /**
      * @var string $corpwww
      */
-    private $corpwww;
+    protected $corpwww;
 
     /**
      * @var \DateTime $datejoin
      */
-    private $datejoin;
+    protected $datejoin;
 
     /**
      * @var \DateTime $dateleave
      */
-    private $dateleave;
+    protected $dateleave;
 
     /**
      * @var integer $status
      */
-    private $status;
+    protected $status;
 
     /**
      * @var boolean $activepeeringmatrix
      */
-    private $activepeeringmatrix;
+    protected $activepeeringmatrix;
 
     /**
      * @var \DateTime $lastupdated
      */
-    private $lastupdated;
+    protected $lastupdated;
 
     /**
      * @var integer $lastupdatedby
      */
-    private $lastupdatedby;
+    protected $lastupdatedby;
 
     /**
      * @var string $creator
      */
-    private $creator;
+    protected $creator;
 
     /**
      * @var \DateTime $created
      */
-    private $created;
+    protected $created;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $VirtualInterfaces;
+    protected $VirtualInterfaces;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Contacts;
+    protected $Contacts;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $ConsoleServerConnections;
+    protected $ConsoleServerConnections;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $CustomerEquipment;
+    protected $CustomerEquipment;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Peers;
+    protected $Peers;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $PeersWith;
+    protected $PeersWith;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $XCusts;
+    protected $XCusts;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $YCusts;
+    protected $YCusts;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Users;
+    protected $Users;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Traffic95ths;
+    protected $Traffic95ths;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Traffic95thMonthlys;
+    protected $Traffic95thMonthlys;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $TrafficDailies;
+    protected $TrafficDailies;
 
     /**
      * @var \Entities\CompanyRegisteredDetail
      */
-    private $RegistrationDetails;
+    protected $RegistrationDetails;
 
     /**
      * @var \Entities\CompanyBillingDetail
      */
-    private $BillingDetails;
+    protected $BillingDetails;
 
     /**
      * Constructor
@@ -1230,7 +1230,7 @@ class Customer
     /**
      * @var string $noc24hphone
      */
-    private $noc24hphone;
+    protected $noc24hphone;
 
 
     /**
@@ -1258,7 +1258,7 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $SecEvents;
+    protected $SecEvents;
 
 
     /**
@@ -1436,7 +1436,7 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $RSPrefixes;
+    protected $RSPrefixes;
 
 
     /**
@@ -1494,7 +1494,7 @@ class Customer
     /**
      * @var \Entities\IRRDBConfig
      */
-    private $IRRDB;
+    protected $IRRDB;
 
 
     /**
@@ -1523,7 +1523,7 @@ class Customer
     /**
      * @var string
      */
-    private $peeringDb;
+    protected $peeringDb;
 
 
     /**
@@ -1551,7 +1551,7 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $Notes;
+    protected $Notes;
 
 
     /**
@@ -1589,7 +1589,7 @@ class Customer
     /**
      * @var string
      */
-    private $peeringmacrov6;
+    protected $peeringmacrov6;
 
     /**
      * Set peeringmacrov6
@@ -1662,12 +1662,12 @@ class Customer
     /**
      * @var string
      */
-    private $abbreviatedName;
+    protected $abbreviatedName;
 
     /**
      * @var string
      */
-    private $MD5Support;
+    protected $MD5Support;
 
 
     /**
@@ -1718,17 +1718,17 @@ class Customer
     /**
      * @var boolean
      */
-    private $isReseller;
+    protected $isReseller;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $ResoldCustomers;
+    protected $ResoldCustomers;
 
     /**
      * @var \Entities\Customer
      */
-    private $Reseller;
+    protected $Reseller;
 
 
     /**

@@ -12,22 +12,22 @@ class IPv4Address
     /**
      * @var string $address
      */
-    private $address;
+    protected $address;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\VlanInterface
      */
-    private $VlanInterface;
+    protected $VlanInterface;
 
     /**
      * @var Entities\Vlan
      */
-    private $Vlan;
+    protected $Vlan;
 
 
     /**

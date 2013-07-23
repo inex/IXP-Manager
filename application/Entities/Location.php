@@ -12,62 +12,62 @@ class Location
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string $shortname
      */
-    private $shortname;
+    protected $shortname;
 
     /**
      * @var string $tag
      */
-    private $tag;
+    protected $tag;
 
     /**
      * @var string $address
      */
-    private $address;
+    protected $address;
 
     /**
      * @var string $nocphone
      */
-    private $nocphone;
+    protected $nocphone;
 
     /**
      * @var string $nocfax
      */
-    private $nocfax;
+    protected $nocfax;
 
     /**
      * @var string $nocemail
      */
-    private $nocemail;
+    protected $nocemail;
 
     /**
      * @var string $officephone
      */
-    private $officephone;
+    protected $officephone;
 
     /**
      * @var string $officefax
      */
-    private $officefax;
+    protected $officefax;
 
     /**
      * @var string $officeemail
      */
-    private $officeemail;
+    protected $officeemail;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Cabinets;
+    protected $Cabinets;
 
     /**
      * Constructor
@@ -352,7 +352,7 @@ class Location
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
 
     /**

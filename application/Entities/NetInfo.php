@@ -20,32 +20,32 @@ class NetInfo
     /**
      * @var integer
      */
-    private $protocol;
+    protected $protocol;
 
     /**
      * @var string
      */
-    private $property;
+    protected $property;
 
     /**
      * @var integer
      */
-    private $ix;
+    protected $ix;
 
     /**
      * @var string
      */
-    private $value;
+    protected $value;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Entities\Vlan
      */
-    private $Vlan;
+    protected $Vlan;
 
 
     /**

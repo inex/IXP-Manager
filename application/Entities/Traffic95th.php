@@ -12,27 +12,27 @@ class Traffic95th
     /**
      * @var \DateTime $datetime
      */
-    private $datetime;
+    protected $datetime;
 
     /**
      * @var integer $average
      */
-    private $average;
+    protected $average;
 
     /**
      * @var integer $max
      */
-    private $max;
+    protected $max;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
 
     /**
