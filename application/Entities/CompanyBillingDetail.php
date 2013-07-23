@@ -37,82 +37,82 @@ class CompanyBillingDetail
     /**
      * @var string
      */
-    private $billingContactName;
+    protected $billingContactName;
 
     /**
      * @var string
      */
-    private $billingAddress1;
+    protected $billingAddress1;
 
     /**
      * @var string
      */
-    private $billingAddress2;
+    protected $billingAddress2;
 
     /**
      * @var string
      */
-    private $billingTownCity;
+    protected $billingTownCity;
 
     /**
      * @var string
      */
-    private $billingPostcode;
+    protected $billingPostcode;
 
     /**
      * @var string
      */
-    private $billingCountry;
+    protected $billingCountry;
 
     /**
      * @var string
      */
-    private $billingEmail;
+    protected $billingEmail;
 
     /**
      * @var string
      */
-    private $billingTelephone;
+    protected $billingTelephone;
 
     /**
      * @var string
      */
-    private $vatNumber;
+    protected $vatNumber;
 
     /**
      * @var string
      */
-    private $vatRate;
+    protected $vatRate;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Customer;
+    protected $Customer;
 
     /**
      * @var boolean
      */
-    private $purchaseOrderRequired;
+    protected $purchaseOrderRequired;
 
     /**
      * @var string
      */
-    private $invoiceMethod;
+    protected $invoiceMethod;
 
     /**
      * @var string
      */
-    private $invoiceEmail;
+    protected $invoiceEmail;
 
     /**
      * @var string
      */
-    private $billingFrequency;
+    protected $billingFrequency;
     
     public function __construct()
     {

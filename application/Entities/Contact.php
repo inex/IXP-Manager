@@ -12,77 +12,77 @@ class Contact
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string $email
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string $phone
      */
-    private $phone;
+    protected $phone;
 
     /**
      * @var string $mobile
      */
-    private $mobile;
+    protected $mobile;
 
     /**
      * @var integer $facilityaccess
      */
-    private $facilityaccess;
+    protected $facilityaccess;
 
     /**
      * @var boolean $mayauthorize
      */
-    private $mayauthorize;
+    protected $mayauthorize;
 
     /**
      * @var \DateTime $lastupdated
      */
-    private $lastupdated;
+    protected $lastupdated;
 
     /**
      * @var integer $lastupdatedby
      */
-    private $lastupdatedby;
+    protected $lastupdatedby;
 
     /**
      * @var string $creator
      */
-    private $creator;
+    protected $creator;
 
     /**
      * @var \DateTime $created
      */
-    private $created;
+    protected $created;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
     
      /**
      * @var string
      */
-    private $position;
+    protected $position;
 
     /**
      * @var \Entities\User
      */
-    private $User;
+    protected $User;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $Groups;
+    protected $Groups;
 
 
     /**
@@ -449,7 +449,7 @@ class Contact
     /**
      * @var string
      */
-    private $notes;
+    protected $notes;
 
 
     /**

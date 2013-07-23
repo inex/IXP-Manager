@@ -12,42 +12,42 @@ class BGPSessionData
     /**
      * @var integer $srcipaddressid
      */
-    private $srcipaddressid;
+    protected $srcipaddressid;
 
     /**
      * @var integer $desipaddressid
      */
-    private $desipaddressid;
+    protected $desipaddressid;
 
     /**
      * @var integer $protocol
      */
-    private $protocol;
+    protected $protocol;
 
     /**
      * @var integer $vlan
      */
-    private $vlan;
+    protected $vlan;
 
     /**
      * @var integer $packetcount
      */
-    private $packetcount;
+    protected $packetcount;
 
     /**
      * @var \DateTime $timestamp
      */
-    private $timestamp;
+    protected $timestamp;
 
     /**
      * @var string $source
      */
-    private $source;
+    protected $source;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
 
     /**
@@ -223,7 +223,7 @@ class BGPSessionData
     /**
      * @var integer $dstipaddressid
      */
-    private $dstipaddressid;
+    protected $dstipaddressid;
 
 
     /**

@@ -12,87 +12,87 @@ class MeetingItem
     /**
      * @var string $title
      */
-    private $title;
+    protected $title;
 
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string $role
      */
-    private $role;
+    protected $role;
 
     /**
      * @var string $email
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string $company
      */
-    private $company;
+    protected $company;
 
     /**
      * @var string $company_url
      */
-    private $company_url;
+    protected $company_url;
 
     /**
      * @var string $summary
      */
-    private $summary;
+    protected $summary;
 
     /**
      * @var string $presentation
      */
-    private $presentation;
+    protected $presentation;
 
     /**
      * @var string $filename
      */
-    private $filename;
+    protected $filename;
 
     /**
      * @var string $video_url
      */
-    private $video_url;
+    protected $video_url;
 
     /**
      * @var boolean $other_content
      */
-    private $other_content;
+    protected $other_content;
 
     /**
      * @var integer $created_by
      */
-    private $created_by;
+    protected $created_by;
 
     /**
      * @var \DateTime $created_at
      */
-    private $created_at;
+    protected $created_at;
 
     /**
      * @var integer $updated_by
      */
-    private $updated_by;
+    protected $updated_by;
 
     /**
      * @var \DateTime $updated_ar
      */
-    private $updated_ar;
+    protected $updated_ar;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Meeting
      */
-    private $Meeting;
+    protected $Meeting;
 
 
     /**
@@ -452,7 +452,7 @@ class MeetingItem
     /**
      * @var \DateTime $updated_at
      */
-    private $updated_at;
+    protected $updated_at;
 
 
     /**

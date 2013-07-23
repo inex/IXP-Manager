@@ -32,82 +32,82 @@ class User
     /**
      * @var string $username
      */
-    private $username;
+    protected $username;
 
     /**
      * @var string $password
      */
-    private $password;
+    protected $password;
 
     /**
      * @var string $email
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string $authorisedMobile
      */
-    private $authorisedMobile;
+    protected $authorisedMobile;
 
     /**
      * @var integer $uid
      */
-    private $uid;
+    protected $uid;
 
     /**
      * @var integer $privs
      */
-    private $privs;
+    protected $privs;
 
     /**
      * @var boolean $disabled
      */
-    private $disabled;
+    protected $disabled;
 
     /**
      * @var \DateTime $lastupdated
      */
-    private $lastupdated;
+    protected $lastupdated;
 
     /**
      * @var integer $lastupdatedby
      */
-    private $lastupdatedby;
+    protected $lastupdatedby;
 
     /**
      * @var string $creator
      */
-    private $creator;
+    protected $creator;
 
     /**
      * @var \DateTime $created
      */
-    private $created;
+    protected $created;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Preferences;
+    protected $Preferences;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $ChangeLogs;
+    protected $ChangeLogs;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
     /**
      * @var Entities\User
      */
-    private $Children;
+    protected $Children;
 
     /**
      * Constructor
@@ -535,7 +535,7 @@ class User
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Meetings;
+    protected $Meetings;
 
 
     /**
@@ -573,7 +573,7 @@ class User
     /**
      * @var \Entities\Contact
      */
-    private $Contact;
+    protected $Contact;
 
 
     /**
@@ -602,7 +602,7 @@ class User
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $LastLogins;
+    protected $LastLogins;
 
 
     /**

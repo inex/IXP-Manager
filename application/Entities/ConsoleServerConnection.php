@@ -12,57 +12,57 @@ class ConsoleServerConnection
     /**
      * @var string $description
      */
-    private $description;
+    protected $description;
 
     /**
      * @var string $port
      */
-    private $port;
+    protected $port;
 
     /**
      * @var integer $speed
      */
-    private $speed;
+    protected $speed;
 
     /**
      * @var integer $parity
      */
-    private $parity;
+    protected $parity;
 
     /**
      * @var integer $stopbits
      */
-    private $stopbits;
+    protected $stopbits;
 
     /**
      * @var integer $flowcontrol
      */
-    private $flowcontrol;
+    protected $flowcontrol;
 
     /**
      * @var boolean $autobaud
      */
-    private $autobaud;
+    protected $autobaud;
 
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
     /**
      * @var Entities\Switcher
      */
-    private $Switcher;
+    protected $Switcher;
 
 
     /**

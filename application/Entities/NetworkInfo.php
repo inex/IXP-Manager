@@ -12,42 +12,42 @@ class NetworkInfo
     /**
      * @var integer $protocol
      */
-    private $protocol;
+    protected $protocol;
 
     /**
      * @var string $network
      */
-    private $network;
+    protected $network;
 
     /**
      * @var integer $masklen
      */
-    private $masklen;
+    protected $masklen;
 
     /**
      * @var string $rs1address
      */
-    private $rs1address;
+    protected $rs1address;
 
     /**
      * @var string $rs2address
      */
-    private $rs2address;
+    protected $rs2address;
 
     /**
      * @var string $dnsfile
      */
-    private $dnsfile;
+    protected $dnsfile;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Vlan
      */
-    private $Vlan;
+    protected $Vlan;
 
 
     /**
