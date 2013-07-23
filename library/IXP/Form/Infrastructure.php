@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,9 +25,10 @@
  * Form: editing IXP details
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Form
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IXP_Form_Infrastructure extends IXP_Form
