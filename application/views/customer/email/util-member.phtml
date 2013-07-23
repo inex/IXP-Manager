@@ -4,19 +4,19 @@
 
 {if $utilIn gt $threshold}
 <p>
-<strong>INBOUND:</strong> Traffic inbound on this port reached a maximum of {$utilIn*100|string_format:"%.2f"}%.
+<strong>INBOUND:</strong> Traffic inbound on this port reached a maximum of {$utilIn*100|string_format:"%0.2f"}%%.
 </p>
 {/if}
 
 {if $utilOut gt $threshold}
 <p>
-<strong>OUTBOUND:</strong> Traffic outbound on this port reached a maximum of {$utilOut*100|string_format:"%.2f"}%.
+<strong>OUTBOUND:</strong> Traffic outbound on this port reached a maximum of {$utilOut*100|string_format:"%0.2f"}%%.
 </p>
 {/if}
 
 <p>
 <a href="{$options.identity.url}statistics/member/shortname/{$cust->getShortname()}">
-    <img src="cid:{$cust->getShortname()}" alt="[{$cust->getShortname()}]" />
+    <img src="cid:{$mrtg_id}" alt="[{$cust->getShortname()}]" />
 </a>
 </p>
 

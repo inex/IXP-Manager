@@ -317,10 +317,10 @@ class CliController extends IXP_Controller_Action
 		                    "image/png",
 		                    Zend_Mime::DISPOSITION_INLINE,
 		                    Zend_Mime::ENCODING_BASE64,
-		                    $c->getShortname() . ".png"
+		                    "{$c->getShortname()}-{$pi->getMonitorindex()}.png"
 		                );
 
-	                    $mrtg->id = $c->getShortname();
+	                    $this->view->mrtg_id = $mrtg->id = "{$c->getShortname()}-{$pi->getMonitorindex()}";
 
 	                    $mailHtml .= $this->view->render( 'customer/email/util-member.phtml' );
 
