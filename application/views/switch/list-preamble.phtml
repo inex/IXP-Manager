@@ -3,7 +3,11 @@
 
 <div class="row-fluid">
     <div class="alert alert-info">
-        Only showing switches for: <strong>{$infra->getName()}</strong>
+        Only showing switches for: <strong>{$infra->getName()}</strong>.
+        <span class="pull-right">
+            <a href="{genUrl controller='switch' action='list'}" class='btn btn-small'>Show All</a>
+        </span>
+        
     </div>
 </div>
 

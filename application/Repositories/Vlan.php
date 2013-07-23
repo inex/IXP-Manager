@@ -262,10 +262,9 @@ class Vlan extends EntityRepository
      *
      * @return array
      */
-    public function getPrivateVlanDetails()
+    public function getPrivateVlanDetails( $infra = null )
     {
-        $vlans = $this->getEntityManager()->createQuery(
-                "SELECT vli, v, vi, pi, sp, s, l, cab, c, i
+        $q = "SELECT vli, v, vi, pi, sp, s, l, cab, c, i
 
                 FROM \\Entities\\Vlan v
                     LEFT JOIN v.VlanInterfaces vli
@@ -280,11 +279,19 @@ class Vlan extends EntityRepository
 
                 WHERE
 
-                    v.private = 1
+                    v.private = 1 ";
+        
+        if( $infra )
+            $q .= ' AND i = :infra ';
 
-                ORDER BY v.number ASC"
-            )
-            ->getArrayResult();
+        $q .= 'ORDER BY v.number ASC';
+    
+        $q = $this->getEntityManager()->createQuery( $q );
+        
+        if( $infra )
+            $q->setParameter( 'infra', $infra );
+        
+        $vlans = $q->getArrayResult();
 
         if( !$vlans || !count( $vlans ) )
             return [];
