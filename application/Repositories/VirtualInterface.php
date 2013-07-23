@@ -69,14 +69,14 @@ class VirtualInterface extends EntityRepository
                         JOIN vi.VlanInterfaces vli
                         JOIN pi.SwitchPort sp
                         JOIN sp.Switcher sw
+                        JOIN sw.Infrastructure i
                     WHERE
-                        sw.infrastructure = ?1
+                        i.id = ?1
                         AND " . Customer::DQL_CUST_ACTIVE     . "
                         AND " . Customer::DQL_CUST_CURRENT    . "
                         AND " . Customer::DQL_CUST_TRAFFICING . "
                         AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
-                                                                        
-        
+                               
         if( $proto )
         {
             if( !in_array( $proto, [ 4, 6 ] ) )
