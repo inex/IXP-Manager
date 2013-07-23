@@ -55,7 +55,7 @@ class Switcher
     protected $snmppasswd;
 
     /**
-     * @var integer $infrastructure
+     * @var \Entities\Infrastructure
      */
     protected $infrastructure;
 
@@ -203,12 +203,12 @@ class Switcher
     /**
      * Set infrastructure
      *
-     * @param integer $infrastructure
+     * @param \Entities\Infrastructure $infrastructure
      * @return Switcher
      */
     public function setInfrastructure($infrastructure)
     {
-        $this->infrastructure = $infrastructure;
+        $this->Infrastructure = $infrastructure;
     
         return $this;
     }
@@ -216,11 +216,11 @@ class Switcher
     /**
      * Get infrastructure
      *
-     * @return integer
+     * @return \Entities\Infrastructure
      */
     public function getInfrastructure()
     {
-        return $this->infrastructure;
+        return $this->Infrastructure;
     }
 
     /**
@@ -758,5 +758,11 @@ class Switcher
     
         return $this;
     }
-    
+
+    /**
+     * @var \Entities\Infrastructure
+     */
+    private $Infrastructure;
+
+
 }

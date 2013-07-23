@@ -129,15 +129,22 @@ class SwitchController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 's.id AS id, s.name AS name,
                 s.ipv4addr AS ipv4addr, s.ipv6addr AS ipv6addr, s.snmppasswd AS snmppasswd,
-                s.infrastructure AS infrastructure, s.switchtype AS switchtype, s.model AS model,
+                i.name AS infrastructure, s.switchtype AS switchtype, s.model AS model,
                 s.active AS active, s.notes AS notes, s.lastPolled AS lastPolled,
                 s.hostname AS hostname, s.os AS os, s.osDate AS osDate, s.osVersion AS osVersion,
                 v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
             )
             ->from( '\\Entities\\Switcher', 's' )
+            ->leftJoin( 's.Infrastructure', 'i' )
             ->leftJoin( 's.Cabinet', 'c' )
             ->leftJoin( 's.Vendor', 'v' );
 
+        if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
+        {
+            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
+            $this->view->infra = $infra;
+        }
+        
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
@@ -253,7 +260,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $s->setIpv4addr( $this->_resolve( $s->getHostname(), DNS_A    ) );
                 $s->setIpv6addr( $this->_resolve( $s->getHostname(), DNS_AAAA ) );
                 $s->setSnmppasswd( $f->getValue( 'snmppasswd' ) );
-                $s->setInfrastructure( $f->getValue( 'infrastructure' ) );
+                $s->setInfrastructure( $this->getD2R( '\\Entities\\Infrastructure' )->findOneBy( $f->getValue( 'infrastructure' ) ) );
                 $s->setSwitchtype( $f->getValue( 'switchtype' ) );
                 $s->setModel( $snmp->getPlatform()->getModel() );
                 $s->setActive( true );
@@ -324,6 +331,11 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $form->getElement( 'cabinetid' )->setValue( $object->getCabinet()->getId() );
             if( $object->getVendor() )
                 $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
+            
+            if( $object->getInfrastructure() )
+                $form->getElement( 'infrastructre' )->setValue( $object->getInfrastructure()->getId() );
+            else
+                $form->getElement( 'infrastructre' )->setValue( null );
         }
     }
 
@@ -344,6 +356,13 @@ class SwitchController extends IXP_Controller_FrontEnd
         $object->setVendor(
             $this->getD2EM()->getRepository( '\\Entities\\Vendor' )->find( $form->getElement( 'vendorid' )->getValue() )
         );
+
+        if( $form->getElement( 'infrastructre' )->getValue() )
+        {
+            $object->setInfrastructure(
+                $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructre' )->getValue() )
+            );
+        }
 
         return true;
     }

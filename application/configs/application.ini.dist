@@ -83,6 +83,13 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Enables multi-IXP mode.
+;;
+;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
+;;
+multiixp.enabled = false
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

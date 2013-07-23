@@ -1,3 +1,109 @@
+
+# v3.3.0
+
+This is part one of a significant update to allow IXP Manager to manage multiple IXPs with shared customers.
+
+This first part adds managed infrastructure support rather than just using integers to represent infrastructures.
+
+An infrastructre is a physically diverse network for peering. For example, INEX has two infrastructres with 
+a peering LAN on each. All members connect to the 'primary peering infrastructure' while those looking
+for resiliency also join the secondary peering infrastructure.
+
+A schema update is required as follows - run SQL queries to update database:
+
+
+    CREATE TABLE ixp (
+        id INT AUTO_INCREMENT NOT NULL, 
+        name VARCHAR(255) DEFAULT NULL, 
+        shortname VARCHAR(255) DEFAULT NULL, 
+        address1 VARCHAR(255) DEFAULT NULL, 
+        address2 VARCHAR(255) DEFAULT NULL, 
+        address3 VARCHAR(255) DEFAULT NULL, 
+        address4 VARCHAR(255) DEFAULT NULL, 
+        country VARCHAR(255) DEFAULT NULL, 
+        UNIQUE INDEX UNIQ_FA4AB7F64082763 (shortname), 
+        PRIMARY KEY(id)
+    ) 
+        DEFAULT CHARACTER SET utf8 
+        COLLATE utf8_unicode_ci 
+        ENGINE = InnoDB;
+    
+    CREATE TABLE infrastructure (
+        id INT AUTO_INCREMENT NOT NULL, 
+        ixp_id INT DEFAULT NULL, 
+        name VARCHAR(255) DEFAULT NULL, 
+        shortname VARCHAR(255) DEFAULT NULL, 
+        UNIQUE INDEX UNIQ_D129B19064082763 (shortname), 
+        INDEX IDX_D129B190A5A4E881 (ixp_id), 
+        PRIMARY KEY(id)
+    ) 
+        DEFAULT CHARACTER SET utf8 
+        COLLATE utf8_unicode_ci 
+        ENGINE = InnoDB;
+    
+    ALTER TABLE infrastructure 
+        ADD CONSTRAINT FK_D129B190A5A4E881 
+            FOREIGN KEY (ixp_id) REFERENCES ixp (id);
+
+
+Even if not using this new multiple IXP feature, you need to add your only IXP to the database:
+
+    INSERT INTO ixp ( `name`, `shortname`, `address1`, `address2`, `address3`, `address4`, `country` )
+        VALUES ( 'IXP name', 'ixp', 'address1', 'address2', 'address3', 'address4', 'IE' );
+
+When defining your switches, you will have given them an infrastructure. For example, INEX runs
+two separate peering LANs for resiliency and these are Infrastruture #1 and #2. Even if you only
+have one, you need to insert these infrastructure(s) using SQL queries such as:
+
+    INSERT INTO `infrastructure` ( `id`, `name`, `shortname`, `ixp_id` ) 
+        VALUES ( 1, 'Infrastructure #1', '#1', 1 );
+    INSERT INTO `infrastructure` ( `id`, `name`, `shortname`, `ixp_id` ) 
+        VALUES ( 2, 'Infrastructure #2', '#2', 1 );
+
+Be sure that the infrastructure numbers you used in your switch definitions match the
+`id` you used above. 
+
+**NB:** It is okay to use `NULL` as the infrastructure for management devices such as
+console servers, management switches, etc. But, even if running one IXP with one 
+infrastructure, you must create that infrastructre with ID 1 and set the switch 
+infrastructure colume for those peering switches to 1 also before doing the following.
+
+We now need to link the infrastrcture table to the switch table:
+
+    ALTER TABLE switch 
+        CHANGE infrastructure 
+            infrastructure INT DEFAULT NULL;
+    
+    ALTER TABLE switch 
+        ADD CONSTRAINT FK_6FE94B18D129B190 
+            FOREIGN KEY (infrastructure) REFERENCES infrastructure (id);
+    
+    CREATE INDEX IDX_6FE94B18D129B190 
+        ON switch (infrastructure);
+
+
+On my own system (@barryo), some house keeping SQL updates were also required. You can execute these
+safely as they will have no effect if not needed.
+
+
+    ALTER TABLE cust 
+        CHANGE isReseller 
+            isReseller TINYINT(1) NOT NULL;
+    
+    ALTER TABLE switchport 
+        CHANGE active 
+            active TINYINT(1) NOT NULL;
+    
+    ALTER TABLE company_billing_detail 
+        CHANGE purchaseOrderRequired 
+            purchaseOrderRequired TINYINT(1) NOT NULL;
+
+
+
+
+
+
+
 # v3.2.2
 
 [BF] Small bug fix in "mark all notes as read" (35368e7 - Barry O'Donovan - 2013-07-16)

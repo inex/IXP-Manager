@@ -22,12 +22,13 @@ class VirtualInterface extends EntityRepository
     public function getByLocation()
     {
         return $ints = $this->getEntityManager()->createQuery(
-            "SELECT vi.id AS id, pi.speed AS speed, sw.infrastructure AS infrastructure, l.name AS locationname
+            "SELECT vi.id AS id, pi.speed AS speed, i.id AS infrastructure, l.name AS locationname
                 FROM Entities\\VirtualInterface vi
                     JOIN vi.Customer c
                     JOIN vi.PhysicalInterfaces pi
                     JOIN pi.SwitchPort sp
                     JOIN sp.Switcher sw
+                    JOIN sw.Infrastructure i
                     JOIN sw.Cabinet ca
                     JOIN ca.Location l
                 WHERE
