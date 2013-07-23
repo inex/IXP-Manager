@@ -104,6 +104,39 @@ class IxpController extends IXP_Controller_FrontEnd
 
         return $qb->getQuery()->getResult();
     }
+    
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( ( $cnt = count( $object->getInfrastructures() ) ) )
+        {
+            $this->addMessage(
+                    "Could not delete this IXP as {$cnt} infrastructures(es) are associated with it",
+                    OSS_Message::ERROR
+            );
+            return false;
+        }
+    
+        if( ( $cnt = count( $object->getCustomers() ) ) )
+        {
+            $this->addMessage(
+                    "Could not delete this IXP as {$cnt} customer(es) are associated with it",
+                    OSS_Message::ERROR
+            );
+            return false;
+        }
+    
+        return true;
+    }
+    
 
 }
 

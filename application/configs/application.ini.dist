@@ -89,7 +89,7 @@ contact.group.types.ROLE = "Role"
 ;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
 ;;
-multiixp.enabled = true
+multiixp.enabled = false
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
