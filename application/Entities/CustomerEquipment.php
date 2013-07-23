@@ -12,27 +12,27 @@ class CustomerEquipment
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string $description
      */
-    private $description;
+    protected $description;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
     /**
      * @var Entities\Cabinet
      */
-    private $Cabinet;
+    protected $Cabinet;
 
 
     /**
@@ -139,7 +139,7 @@ class CustomerEquipment
     /**
      * @var string $descr
      */
-    private $descr;
+    protected $descr;
 
 
     /**

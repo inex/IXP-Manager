@@ -12,47 +12,47 @@ class Cabinet
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string $colocation
      */
-    private $colocation;
+    protected $colocation;
 
     /**
      * @var integer $height
      */
-    private $height;
+    protected $height;
 
     /**
      * @var string $type
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Switches;
+    protected $Switches;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $CustomerEquipment;
+    protected $CustomerEquipment;
 
     /**
      * @var Entities\Location
      */
-    private $Location;
+    protected $Location;
 
     /**
      * Constructor
@@ -279,7 +279,7 @@ class Cabinet
     /**
      * @var string $cololocation
      */
-    private $cololocation;
+    protected $cololocation;
 
 
     /**

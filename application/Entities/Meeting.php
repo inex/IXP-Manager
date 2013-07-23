@@ -12,67 +12,67 @@ class Meeting
     /**
      * @var string $title
      */
-    private $title;
+    protected $title;
 
     /**
      * @var string $before_text
      */
-    private $before_text;
+    protected $before_text;
 
     /**
      * @var string $after_text
      */
-    private $after_text;
+    protected $after_text;
 
     /**
      * @var \DateTime $date
      */
-    private $date;
+    protected $date;
 
     /**
      * @var \DateTime $time
      */
-    private $time;
+    protected $time;
 
     /**
      * @var string $venue
      */
-    private $venue;
+    protected $venue;
 
     /**
      * @var string $venue_url
      */
-    private $venue_url;
+    protected $venue_url;
 
     /**
      * @var \DateTime $created_at
      */
-    private $created_at;
+    protected $created_at;
 
     /**
      * @var integer $updated_by
      */
-    private $updated_by;
+    protected $updated_by;
 
     /**
      * @var \DateTime $updated_at
      */
-    private $updated_at;
+    protected $updated_at;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $MeetingItems;
+    protected $MeetingItems;
 
     /**
      * @var Entities\User
      */
-    private $CreatedBy;
+    protected $CreatedBy;
 
     /**
      * Constructor

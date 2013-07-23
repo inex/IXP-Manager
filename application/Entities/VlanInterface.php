@@ -12,117 +12,117 @@ class VlanInterface
     /**
      * @var boolean $ipv4enabled
      */
-    private $ipv4enabled;
+    protected $ipv4enabled;
 
     /**
      * @var string $ipv4hostname
      */
-    private $ipv4hostname;
+    protected $ipv4hostname;
 
     /**
      * @var boolean $ipv6enabled
      */
-    private $ipv6enabled;
+    protected $ipv6enabled;
 
     /**
      * @var string $ipv6hostname
      */
-    private $ipv6hostname;
+    protected $ipv6hostname;
 
     /**
      * @var boolean $mcastenabled
      */
-    private $mcastenabled;
+    protected $mcastenabled;
 
     /**
      * @var boolean $irrdbfilter
      */
-    private $irrdbfilter;
+    protected $irrdbfilter;
 
     /**
      * @var string $bgpmd5secret
      */
-    private $bgpmd5secret;
+    protected $bgpmd5secret;
 
     /**
      * @var string $ipv4bgpmd5secret
      */
-    private $ipv4bgpmd5secret;
+    protected $ipv4bgpmd5secret;
 
     /**
      * @var string $ipv6bgpmd5secret
      */
-    private $ipv6bgpmd5secret;
+    protected $ipv6bgpmd5secret;
 
     /**
      * @var integer $maxbgpprefix
      */
-    private $maxbgpprefix;
+    protected $maxbgpprefix;
 
     /**
      * @var boolean $rsclient
      */
-    private $rsclient;
+    protected $rsclient;
 
     /**
      * @var boolean $ipv4canping
      */
-    private $ipv4canping;
+    protected $ipv4canping;
 
     /**
      * @var boolean $ipv6canping
      */
-    private $ipv6canping;
+    protected $ipv6canping;
 
     /**
      * @var boolean $ipv4monitorrcbgp
      */
-    private $ipv4monitorrcbgp;
+    protected $ipv4monitorrcbgp;
 
     /**
      * @var boolean $ipv6monitorrcbgp
      */
-    private $ipv6monitorrcbgp;
+    protected $ipv6monitorrcbgp;
 
     /**
      * @var boolean $as112client
      */
-    private $as112client;
+    protected $as112client;
 
     /**
      * @var boolean $busyhost
      */
-    private $busyhost;
+    protected $busyhost;
 
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\IPv4Address
      */
-    private $IPv4Address;
+    protected $IPv4Address;
 
     /**
      * @var Entities\IPv6Address
      */
-    private $IPv6Address;
+    protected $IPv6Address;
 
     /**
      * @var Entities\VirtualInterface
      */
-    private $VirtualInterface;
+    protected $VirtualInterface;
 
     /**
      * @var Entities\Vlan
      */
-    private $Vlan;
+    protected $Vlan;
 
 
     /**

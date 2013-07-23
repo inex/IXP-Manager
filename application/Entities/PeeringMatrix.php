@@ -12,37 +12,37 @@ class PeeringMatrix
     /**
      * @var integer $x_as
      */
-    private $x_as;
+    protected $x_as;
 
     /**
      * @var integer $y_as
      */
-    private $y_as;
+    protected $y_as;
 
     /**
      * @var string $peering_status
      */
-    private $peering_status;
+    protected $peering_status;
 
     /**
      * @var \DateTime $updated
      */
-    private $updated;
+    protected $updated;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $XCustomer;
+    protected $XCustomer;
 
     /**
      * @var Entities\Customer
      */
-    private $YCustomer;
+    protected $YCustomer;
 
 
     /**
@@ -195,7 +195,7 @@ class PeeringMatrix
     /**
      * @var integer $vlan
      */
-    private $vlan;
+    protected $vlan;
 
 
     /**

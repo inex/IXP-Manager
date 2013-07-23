@@ -37,67 +37,67 @@ class Switcher
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string $ipv4addr
      */
-    private $ipv4addr;
+    protected $ipv4addr;
 
     /**
      * @var string $ipv6addr
      */
-    private $ipv6addr;
+    protected $ipv6addr;
 
     /**
      * @var string $snmppasswd
      */
-    private $snmppasswd;
+    protected $snmppasswd;
 
     /**
      * @var integer $infrastructure
      */
-    private $infrastructure;
+    protected $infrastructure;
 
     /**
      * @var integer $switchtype
      */
-    private $switchtype;
+    protected $switchtype;
 
     /**
      * @var string $model
      */
-    private $model;
+    protected $model;
 
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Ports;
+    protected $Ports;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $ConsoleServerConnections;
+    protected $ConsoleServerConnections;
 
     /**
      * @var Entities\Cabinet
      */
-    private $Cabinet;
+    protected $Cabinet;
 
     /**
      * @var Entities\Vendor
      */
-    private $Vendor;
+    protected $Vendor;
 
     /**
      * Constructor
@@ -416,7 +416,7 @@ class Switcher
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $SecEvents;
+    protected $SecEvents;
 
 
     /**
@@ -454,7 +454,7 @@ class Switcher
     /**
      * @var boolean $active
      */
-    private $active;
+    protected $active;
 
 
     /**
@@ -482,7 +482,7 @@ class Switcher
     /**
      * @var string
      */
-    private $hostname;
+    protected $hostname;
 
 
     /**
@@ -510,22 +510,22 @@ class Switcher
     /**
      * @var string
      */
-    private $os;
+    protected $os;
 
     /**
      * @var \DateTime
      */
-    private $osDate;
+    protected $osDate;
 
     /**
      * @var string
      */
-    private $osVersion;
+    protected $osVersion;
 
     /**
      * @var \DateTime
      */
-    private $lastPolled;
+    protected $lastPolled;
 
 
     /**

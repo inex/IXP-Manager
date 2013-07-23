@@ -12,52 +12,52 @@ class CompanyRegisteredDetail
     /**
      * @var string
      */
-    private $companyNumber;
+    protected $companyNumber;
 
     /**
      * @var string
      */
-    private $jurisdiction;
+    protected $jurisdiction;
 
     /**
      * @var string
      */
-    private $address1;
+    protected $address1;
 
     /**
      * @var string
      */
-    private $address2;
+    protected $address2;
 
     /**
      * @var string
      */
-    private $address3;
+    protected $address3;
 
     /**
      * @var string
      */
-    private $townCity;
+    protected $townCity;
 
     /**
      * @var string
      */
-    private $postcode;
+    protected $postcode;
 
     /**
      * @var string
      */
-    private $country;
+    protected $country;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Customer;
+    protected $Customer;
     
     public function __construct()
     {
@@ -283,7 +283,7 @@ class CompanyRegisteredDetail
     /**
      * @var string
      */
-    private $registeredName;
+    protected $registeredName;
 
 
     /**
