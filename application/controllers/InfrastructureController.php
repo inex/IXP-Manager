@@ -57,7 +57,8 @@ class InfrastructureController extends IXP_Controller_FrontEnd
                 $this->_feParams->listColumns = [
                     'id'        => [ 'title' => 'UID', 'display' => false ],
                     'name'      => 'Name',
-                    'shortname' => 'Shortname'
+                    'shortname' => 'Shortname',
+                    'isPrimary'   => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ]
                 ];
 
                 if( $this->multiIXP() )
@@ -82,7 +83,7 @@ class InfrastructureController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-            ->select( 'i.id AS id, i.name AS name,
+            ->select( 'i.id AS id, i.name AS name, i.isPrimary AS isPrimary,
                 i.shortname AS shortname, ix.shortname AS ixp_name,
                 ix.id AS ixp_id'
             )
@@ -104,6 +105,43 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
+    
+    /**
+     * Prevalidation hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called if the user POSTs a form just before the form is validated by Zend
+     *
+     * @param OSS_Form $form The Send form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not validated or processed
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        // at least one infrastructure must be primary
+        if( !$form->getElement( 'isPrimary' )->getValue() )
+        {
+            // is any other infrastructure primary?
+            $primaryInfra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary();
+            if( !$primaryInfra || $primaryInfra->getId() == $object->getId() )
+            {
+                $this->addMessage(
+                    '<h4>At least one infrastructure must be the primary infrastructure '
+                            . ( $this->multiIXP() ? 'in every IXP' : '' ) . '</h4>'
+                        . '<p>To change the primary infrastructure, do not unset the current one but rather '
+                        . 'set another to be the primary.</p>',
+                    OSS_Message::ERROR, OSS_Message::TYPE_BLOCK
+                );
+                $form->getElement( 'isPrimary' )->setValue( true );
+                return false;
+            }
+        }
+        
+        
+        return true;
+    }
+    
+    
     /**
      * Post process hook for add and edit actions.
      *
@@ -161,6 +199,14 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         }
         
         $object->setIXP( $ixp );
+        
+        // if we're setting this infra as the primary, ensure the rest in this IXP are not primary
+        if( $object->getIsPrimary() )
+        {
+            foreach( $ixp->getInfrastructures() as $i )
+                if( $i->getId() != $object->getId() )
+                    $i->setIsPrimary( false );
+        }
         
         return true;
     }

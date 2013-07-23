@@ -108,16 +108,17 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             
             $ints = $this->getD2EM()->getRepository( 'Entities\\VirtualInterface' )->getByLocation();
             
-            $speeds = array();
-            $bylocation = array();
-            $bylan = array();
+            $speeds     = [];
+            $bylocation = [];
+            $bylan      = [];
+            
             foreach( $ints as $int )
             {
                 if( !isset( $bylocation[ $int['locationname'] ] ) )
-                    $bylocation[ $int['locationname'] ] = array();
+                    $bylocation[ $int['locationname'] ] = [];
 
                 if( !isset( $bylan[ $int['infrastructure'] ] ) )
-                    $bylan[ $int['infrastructure'] ] = array();
+                    $bylan[ $int['infrastructure'] ] = [];
 
                 if( !isset( $speeds[ $int['speed'] ] ) )
                     $speeds[ $int['speed'] ] = 1;

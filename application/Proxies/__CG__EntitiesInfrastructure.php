@@ -105,10 +105,22 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         return parent::getSwitchers();
     }
 
+    public function setIsPrimary($isPrimary)
+    {
+        $this->__load();
+        return parent::setIsPrimary($isPrimary);
+    }
+
+    public function getIsPrimary()
+    {
+        $this->__load();
+        return parent::getIsPrimary();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'id', 'Switchers', 'IXP');
+        return array('__isInitialized__', 'name', 'shortname', 'isPrimary', 'id', 'Switchers', 'IXP');
     }
 
     public function __clone()

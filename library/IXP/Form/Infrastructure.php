@@ -52,6 +52,14 @@ class IXP_Form_Infrastructure extends IXP_Form
             ->addFilter( 'StringToLower' )
             ->addFilter( 'StringTrim' );
         $this->addElement( $shortname  );
+        
+        $isPrimary = $this->createElement( 'checkbox', 'isPrimary' );
+        $isPrimary->setLabel( 'This is the <em>primary</em> infrastructure' )
+            ->setValue( '0' )
+            ->addValidator( 'InArray', false, [ [ 0, 1 ] ] )
+            ->addFilter( 'Int' );
+        $this->addElement( $isPrimary );
+        
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );

@@ -153,4 +153,33 @@ class Infrastructure
     {
         return $this->Switchers;
     }
+    
+    /**
+     * @var boolean
+     */
+    private $isPrimary;
+
+
+    /**
+     * Set isPrimary
+     *
+     * @param boolean $isPrimary
+     * @return Infrastructure
+     */
+    public function setIsPrimary($isPrimary)
+    {
+        $this->isPrimary = $isPrimary;
+    
+        return $this;
+    }
+
+    /**
+     * Get isPrimary
+     *
+     * @return boolean 
+     */
+    public function getIsPrimary()
+    {
+        return $this->isPrimary;
+    }
 }

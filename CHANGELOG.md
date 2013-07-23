@@ -1,6 +1,10 @@
 
 # v3.3.1
 
+    ALTER TABLE infrastructure 
+        ADD `isPrimary` TINYINT(1) NOT NULL, 
+        CHANGE ixp_id ixp_id INT NOT NULL
+
 - [BF] Link to infra table (56918bf - Barry O'Donovan - 2013-07-23)
 - [IM] Do not show peering manager to assoc users (3322a06 - Barry O'Donovan - 2013-07-23)
 

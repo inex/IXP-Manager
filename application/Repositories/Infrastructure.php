@@ -12,4 +12,48 @@ use Doctrine\ORM\EntityRepository;
  */
 class Infrastructure extends EntityRepository
 {
+    
+    /**
+     * Return the primary infrastructure (for a given IXP, or the default IXP)
+     *
+     * @throws \IXP_Exception
+     * @param \Entities\IXP $ixp The IXP to find the primary infrastucture for. If null, uses the default IXP with ID 1.
+     * @return \Entities\Infrastructure The primary infrastructure for a given IXP
+     */
+    public function getPrimary( $ixp = null )
+    {
+        if( $ixp == null )
+            $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->find( 1 );
+        
+        if( !$ixp )
+        {
+            // uh oh, inconsistency
+            throw new \IXP_Exception(
+                'When seeking the primary infrastructure of an IXP, we could not load the default IXP which should have ID 1'
+            );
+        }
+        
+        $infra = $this->getEntityManager()->createQuery(
+                "SELECT i
+                    FROM Entities\\Infrastructure i
+                    JOIN i.IXP ixp
+                    WHERE i.isPrimary = 1
+                        AND ixp = :ixp"
+            )
+            ->setParameter( 'ixp', $ixp )
+            ->getResult();
+        
+        if( !$infra || count( $infra ) > 1 )
+        {
+            // uh oh, inconsistency
+            throw new \IXP_Exception(
+                'When seeking the primary infrastructure of IXP ID #' . $ixp->getId() . ' we found none or more than one.'
+                    . ' There must be one (and only one) infrastructure marked as private per IXP'
+            );
+        }
+        
+        return $infra[0];
+    }
+    
+    
 }
