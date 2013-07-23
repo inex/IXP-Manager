@@ -1,12 +1,26 @@
 
 # v3.3.1
 
+We can now set which infrastructure is considered the primary or default infrastructre. This is useful for some frontend presentation.
+
+A schema change is required (as well as setting one infrastructure as the primary which **is required**):
+
     ALTER TABLE infrastructure 
         ADD `isPrimary` TINYINT(1) NOT NULL, 
         CHANGE ixp_id ixp_id INT NOT NULL
+    
+    UPDATE `infrastructure` SET `isPrimary` = 1 WHERE id = 1;
 
+
+- [NF] We can set primary infrastructures per IXP (5ccdd32 - Barry O'Donovan - 2013-07-23)
+- [BF] Stale reference to old infrastructure references (0dfbbca - Barry O'Donovan - 2013-07-23)
+- [NF] Filter private VLANs for a specific infrastructure (5ac1d83 - Barry O'Donovan - 2013-07-23)
+- [BF] Stale reference to old infrastructure references (760edaa - Barry O'Donovan - 2013-07-23)
 - [BF] Link to infra table (56918bf - Barry O'Donovan - 2013-07-23)
 - [IM] Do not show peering manager to assoc users (3322a06 - Barry O'Donovan - 2013-07-23)
+
+
+
 
 # v3.3.0
 
