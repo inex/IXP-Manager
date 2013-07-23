@@ -47,10 +47,8 @@ class IXP_Form_IXP extends IXP_Form
         $shortname = $this->createElement( 'text', 'shortname' );
         $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->addValidator( 'alnum' )
-            ->addValidator( 'regex', false, array('/^[a-z0-9]+/' ) )
             ->setRequired( true )
-            ->setLabel( 'Short Name' )
-            ->addFilter( 'StringToLower' )
+            ->setLabel( 'Shortname' )
             ->addFilter( 'StringTrim' );
         $this->addElement( $shortname  );
 

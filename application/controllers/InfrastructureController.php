@@ -89,6 +89,12 @@ class InfrastructureController extends IXP_Controller_FrontEnd
             ->from( '\\Entities\\Infrastructure', 'i' )
             ->leftJoin( 'i.IXP', 'ix' );
 
+        if( $this->getParam( 'ixp', false ) && $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) ) )
+        {
+            $qb->andWhere( 'ix = :ixp' )->setParameter( 'ixp', $ixp );
+            $this->view->ixp = $ixp;
+        }
+        
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
