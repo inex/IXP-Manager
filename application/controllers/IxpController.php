@@ -137,6 +137,23 @@ class IxpController extends IXP_Controller_FrontEnd
         return true;
     }
     
-
+    /**
+     * Post database flush hook that can be overridden by subclasses and is called by
+     * default for a successful add / edit / delete.
+     *
+     * Called by `addPostFlush()` and `postDelete()` - if overriding these, ensure to
+     * call this if you have overridden it.
+     *
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @return bool
+     */
+    protected function postFlush( $object )
+    {
+        // wipe cached entries
+        if( $object->getId() == 1 )
+            $this->getD2Cache()->delete( \Repositories\IXP::CACHE_KEY_DEFAULT_IXP );
+        return true;
+    }
+    
 }
 
