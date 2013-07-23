@@ -94,7 +94,7 @@ class IXP_Form_Infrastructure extends IXP_Form
         $sw = new Zend_Form_Element_Select( $name );
 
         $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
-            ->select( 'e.id AS id, e.shortname AS name, ix.shortname AS ixp' )
+            ->select( 'e.id AS id, e.name AS name, ix.shortname AS ixp' )
             ->from( '\\Entities\\Infrastructure', 'e' )
             ->join( 'e.IXP', 'ix' )
             ->add( 'orderBy', "ixp ASC, name ASC" );
@@ -102,11 +102,11 @@ class IXP_Form_Infrastructure extends IXP_Form
         $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\Infrastructure', 'id', [ 'ixp', 'name' ], 'ixp', 'ASC' );
     
         $sw->setRegisterInArrayValidator( true )
-            ->setRequired( true )
+            ->setRequired( false )
             ->setLabel( _( 'infrastructure' ) )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( [ 'Please select a infrastructure' ] );
+            ->setAttrib( 'class', 'chzn-select-deselect' )
+            //->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( [ 'Please select an infrastructure' ] );
     
         return $sw;
     }

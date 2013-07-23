@@ -326,7 +326,10 @@ class SwitchController extends IXP_Controller_FrontEnd
             if( $object->getVendor() )
                 $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
             
-            $form->getElement( 'infrastructre' )->setValue( $object->getInfrastructure()->getId() );
+            if( $object->getInfrastructure() )
+                $form->getElement( 'infrastructre' )->setValue( $object->getInfrastructure()->getId() );
+            else
+                $form->getElement( 'infrastructre' )->setValue( null );
         }
     }
 
@@ -348,9 +351,12 @@ class SwitchController extends IXP_Controller_FrontEnd
             $this->getD2EM()->getRepository( '\\Entities\\Vendor' )->find( $form->getElement( 'vendorid' )->getValue() )
         );
 
-        $object->setInfrastructure(
-            $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructre' )->getValue() )
-        );
+        if( $form->getElement( 'infrastructre' )->getValue() )
+        {
+            $object->setInfrastructure(
+                $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructre' )->getValue() )
+            );
+        }
 
         return true;
     }
