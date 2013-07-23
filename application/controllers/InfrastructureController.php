@@ -147,9 +147,13 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         
         if( !$ixp )
         {
-            $this->addMessage( 'Culd not load requested object', OSS_Message::ERROR );
-            $thos->redirectAndEnsureDie( '/infrastructure' );
+            $this->addMessage(
+                    'There is an issue with your infrastructures as we could not load an infrastructure with ID ' . $form->getValue( 'ixp' ),
+                    OSS_Message::ERROR
+            );
+            return false;
         }
+        
         $object->setIXP( $ixp );
         
         return true;
