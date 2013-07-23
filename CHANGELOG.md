@@ -1,4 +1,9 @@
 
+# v3.3.1
+
+- [BF] Link to infra table (56918bf - Barry O'Donovan - 2013-07-23)
+- [IM] Do not show peering manager to assoc users (3322a06 - Barry O'Donovan - 2013-07-23)
+
 # v3.3.0
 
 This is part one of a significant update to allow IXP Manager to manage multiple IXPs with shared customers.
@@ -101,19 +106,39 @@ safely as they will have no effect if not needed.
 
 
 
-
-
+- [IM] Tidy up IXP/infra and add filter to list infras for a given IXP (177a1db - Barry O'Donovan - 2013-07-23)
+- [BF] Check for infras and custs before deleting an IXP (4d61f94 - Barry O'Donovan - 2013-07-23)
+- [NF] Show switches for a specific infrastructure (dc017e5 - Barry O'Donovan - 2013-07-23)
+- [IM] Catch deletion exceptions if the infra has switches assigned to it (0a2b97c - Barry O'Donovan - 2013-07-23)
+- [IM] Infrastructure is not required - e.g. in the case of mgmt switches (031a584 - Barry O'Donovan - 2013-07-23)
+- [IM] Improve multi-ixp mode not enabled error (832719b - Barry O'Donovan - 2013-07-23)
+- [BF|IM] Better error and correct type. (NB-T2BOD) (b2a7300 - Barry O'Donovan - 2013-07-23)
+- [IM] Only show IXP in multi-IXP mode (78eacb0 - Barry O'Donovan - 2013-07-23)
+- [IM] Restructure menu order to make it more sensible (8a52a10 - Barry O'Donovan - 2013-07-23)
+- [IM] Do not neet these restrictions on infra shortname (e2b1658 - Barry O'Donovan - 2013-07-23)
+- [DB] private -> protected (5c68887 - Barry O'Donovan - 2013-07-23)
+- [DB] Private properties cause a lot of errors when serializing objects (bcc7731 - Barry O'Donovan - 2013-07-23)
+- [HK] Complete changeset for @rowanthorpe pull request #37 (cf2badc - Barry O'Donovan - 2013-07-16)
+- [IM] If adding a new admin user, ensure they start with no notes pending (59b813d - Barry O'Donovan - 2013-07-16)
+- [IM] Various improvements for multi IXP framework (1312ac8 - Barry O'Donovan - 2013-07-06)
+- [IM] Update DQL to use new infrastructure table (a6315c7 - Barry O'Donovan - 2013-07-06)
+- [IM] Add SQL queries for upgrade (5bbb405 - Barry O'Donovan - 2013-07-06)
+- [IM] Updating switcher add and editing forms (722f2f8 - Nerijus Barauskas - 2013-07-05)
+- [IM] Allowing to enable multi IXP mode (89e27aa - Nerijus Barauskas - 2013-07-05)
+- [DB] Adding relation between switcher and interface (dd44ce2 - Nerijus Barauskas - 2013-07-05)
+- [NF] Adding CRUD for Infrastructures and hiden CRUD for IXPs (75960b1 - Nerijus Barauskas - 2013-07-05)
+- [DB] Adding IXP and Infrastructure Entities (4af9daa - Nerijus Barauskas - 2013-07-05)
 
 # v3.2.2
 
-[BF] Small bug fix in "mark all notes as read" (35368e7 - Barry O'Donovan - 2013-07-16)
-[IM/CR] Typos and better naming (04c24a9 - Barry O'Donovan - 2013-07-15)
-[HK] Typo (5be397c - Barry O'Donovan - 2013-07-15)
-[NF] Authentication emails are now sent in plaintext and HTML (23f5f14 - Barry O'Donovan - 2013-07-15)
-[NF] Adding auth email plain text templates (cb6035c - Nerijus Barauskas - 2013-07-11)
-[IM] Adding Mark All As Read Button in customer unread notes list (eb6e9c8 - Nerijus Barauskas - 2013-07-10)
-[IM] Hidding private Vlans then adding adding IPv4 or IPv6 addresses (aa7fae0 - Nerijus Barauskas - 2013-07-09)
-[BF] Fix user / contact deletion from user list (4fac457 - Barry O'Donovan - 2013-07-02)
+- [BF] Small bug fix in "mark all notes as read" (35368e7 - Barry O'Donovan - 2013-07-16)
+- [IM/CR] Typos and better naming (04c24a9 - Barry O'Donovan - 2013-07-15)
+- [HK] Typo (5be397c - Barry O'Donovan - 2013-07-15)
+- [NF] Authentication emails are now sent in plaintext and HTML (23f5f14 - Barry O'Donovan - 2013-07-15)
+- [NF] Adding auth email plain text templates (cb6035c - Nerijus Barauskas - 2013-07-11)
+- [IM] Adding Mark All As Read Button in customer unread notes list (eb6e9c8 - Nerijus Barauskas - 2013-07-10)
+- [IM] Hidding private Vlans then adding adding IPv4 or IPv6 addresses (aa7fae0 - Nerijus Barauskas - 2013-07-09)
+- [BF] Fix user / contact deletion from user list (4fac457 - Barry O'Donovan - 2013-07-02)
 
 
 # v3.2.1
