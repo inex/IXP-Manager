@@ -12,27 +12,27 @@ class Infrastructure
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $shortname;
+    protected $shortname;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Entities\IXP
      */
-    private $IXP;
+    protected $IXP;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $Switchers;
+    protected $Switchers;
 
     /**
      * Set name

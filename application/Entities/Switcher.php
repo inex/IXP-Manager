@@ -759,4 +759,10 @@ class Switcher
         return $this;
     }
 
+    /**
+     * @var \Entities\Infrastructure
+     */
+    private $Infrastructure;
+
+
 }
