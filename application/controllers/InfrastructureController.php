@@ -57,10 +57,12 @@ class InfrastructureController extends IXP_Controller_FrontEnd
                 $this->_feParams->listColumns = [
                     'id'        => [ 'title' => 'UID', 'display' => false ],
                     'name'      => 'Name',
-                    'shortname' => 'Shortname',
-                    'ixp_name'  => 'IXP'
+                    'shortname' => 'Shortname'
                 ];
 
+                if( $this->multiIXP() )
+                    $this->_feParams->listColumns[ 'ixp_name' ] = 'IXP';
+                
                 // display the same information in the view as the list
                 $this->_feParams->viewColumns = $this->_feParams->listColumns;
 
