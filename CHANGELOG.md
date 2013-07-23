@@ -69,8 +69,6 @@ Be sure that the infrastructure numbers you used in your switch definitions matc
     
     CREATE INDEX IDX_6FE94B18D129B190 ON switch (infrastructure);
 
-
-
 # v3.2.1
 
 Update to `application.ini` required. Please find the `peeringdb.url` entry and update to:
