@@ -1,5 +1,26 @@
 
-# v3.3.1
+# v3.3.2 (xxxxx)
+
+A number of minor fixes but one significat change:
+
+The email notification code for port utilisation and traffic deltas have moved to a more specific controller.
+
+This means you may need to update your cronjob scripts for these as follows:
+
+* `cli.examine-port-utilisation` becomes `statistics-cli.email-port-utilisation`
+* `cli.examine-traffic-deltas` becomes `statistics-cli.email-traffic-deltas`
+
+The [documentation](https://github.com/inex/IXP-Manager/wiki/Email-Notifications) has been updated.
+
+Also, in the event you have skinned these emails, the templates for these emails changes from `customer/email` to `statistics-cli/email`.
+
+
+- [IM|HK] Move email notifications for traffic deltas and port utilisation to a better home
+- [BF] For LAG / multiple ports from the same customer we incorrectly showed the same graph for all (cfdad6f - Barry O'Donovan - 2013-07-24)
+- [IM] Introduce caching to IXPs and infrastructures to prevent needless database queries (cbe2aa5 - Barry O'Donovan - 2013-07-23)
+- [BF] Stale reference to infrastructures (8f9122b - Barry O'Donovan - 2013-07-23)
+
+# v3.3.1 (20130723)
 
 We can now set which infrastructure is considered the primary or default infrastructre. This is useful for some frontend presentation.
 
@@ -7,7 +28,7 @@ A schema change is required (as well as setting one infrastructure as the primar
 
     ALTER TABLE infrastructure 
         ADD `isPrimary` TINYINT(1) NOT NULL, 
-        CHANGE ixp_id ixp_id INT NOT NULL
+        CHANGE ixp_id ixp_id INT NOT NULL;
     
     UPDATE `infrastructure` SET `isPrimary` = 1 WHERE id = 1;
 
@@ -22,7 +43,7 @@ A schema change is required (as well as setting one infrastructure as the primar
 
 
 
-# v3.3.0
+# v3.3.0 (20130723)
 
 This is part one of a significant update to allow IXP Manager to manage multiple IXPs with shared customers.
 
@@ -147,7 +168,7 @@ safely as they will have no effect if not needed.
 - [NF] Adding CRUD for Infrastructures and hiden CRUD for IXPs (75960b1 - Nerijus Barauskas - 2013-07-05)
 - [DB] Adding IXP and Infrastructure Entities (4af9daa - Nerijus Barauskas - 2013-07-05)
 
-# v3.2.2
+# v3.2.2 (20130716)
 
 - [BF] Small bug fix in "mark all notes as read" (35368e7 - Barry O'Donovan - 2013-07-16)
 - [IM/CR] Typos and better naming (04c24a9 - Barry O'Donovan - 2013-07-15)
@@ -176,7 +197,7 @@ Update to `application.ini` required. Please find the `peeringdb.url` entry and 
 - [NF] Sending information about updated billig details (446843b - Nerijus Barauskas - 2013-06-19)
 
 
-# v3.2.0
+# v3.2.0 (20130628)
 
 Minor version bump as we've added a major new feature - reseller support.
 

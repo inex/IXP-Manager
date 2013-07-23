@@ -1,0 +1,24 @@
+
+
+<h2>{$cust->getName()} :: {$switchport}</h2>
+
+{if $utilIn gt $threshold}
+    {$utilIn = $utilIn * 100.0}
+    <p>
+        <strong>INBOUND:</strong> Traffic inbound on this port reached a maximum of {$utilIn|string_format:"%0.1f"}%.
+    </p>
+{/if}
+
+{if $utilOut gt $threshold}
+    {$utilOut = $utilOut * 100.0}
+    <p>
+        <strong>OUTBOUND:</strong> Traffic outbound on this port reached a maximum of {$utilOut|string_format:"%0.1f"}%.
+    </p>
+{/if}
+
+<p>
+<a href="{$options.identity.url}statistics/member/shortname/{$cust->getShortname()}">
+    <img src="cid:{$mrtg_id}" alt="[{$cust->getShortname()}]" />
+</a>
+</p>
+
