@@ -159,6 +159,28 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         return true;
     }
 
-
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( ( $cnt = count( $object->getSwitchers() ) ) )
+        {
+            $this->addMessage(
+                    "Could not delete this infrastructure as {$cnt} switch(es) are assigned to it",
+                    OSS_Message::ERROR
+            );
+            return false;
+        }
+    
+        return true;
+    }
+    
 }
 
