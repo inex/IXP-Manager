@@ -83,6 +83,13 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Enables multi-IXP mode.
+;;
+;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
+;;
+multiixp.enabled = false
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -442,22 +449,6 @@ meeting.rsvp_to_name  = "Person Who Looks After This Stuff"
 ; billing_updates.notify = "accounts1@example.com"
 
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; We use PHP-Weathermap which is publically available. Our true settings
-;; are commented out, please replace with your own
-;;
-
-weathermap.1.name   = "Weathermap for Peering LAN 1"
-weathermap.1.menu   = "Weathermap - LAN 1"
-; weathermap.1.url    = "https://www.inex.ie/noncms/weathermap-lan1-plain.html"
-weathermap.1.url    = "https://www.example.com/weathermap-lan1-plain.html"
-weathermap.1.width  = 900
-weathermap.1.height = 1200
-
-; weathermap.2.name = "Weathermap for Peering LAN 2"
-; ...
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

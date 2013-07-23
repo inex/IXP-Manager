@@ -12,52 +12,52 @@ class VirtualInterface
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string $description
      */
-    private $description;
+    protected $description;
 
     /**
      * @var integer $mtu
      */
-    private $mtu;
+    protected $mtu;
 
     /**
      * @var boolean $trunk
      */
-    private $trunk;
+    protected $trunk;
 
     /**
      * @var integer $channelgroup
      */
-    private $channelgroup;
+    protected $channelgroup;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $PhysicalInterfaces;
+    protected $PhysicalInterfaces;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $VlanInterfaces;
+    protected $VlanInterfaces;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $MACAddresses;
+    protected $MACAddresses;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
     /**
      * Constructor

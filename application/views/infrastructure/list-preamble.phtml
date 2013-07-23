@@ -1,0 +1,13 @@
+
+{if isset( $ixp ) and $ixp}
+
+<div class="row-fluid">
+    <div class="alert alert-info">
+        Only showing infrastructures for: <strong>{$ixp->getName()}</strong>.
+        <span class="pull-right">
+            <a href="{genUrl controller='infrastructure' action='list'}" class='btn btn-small'>Show All</a>
+        </span>
+    </div>
+</div>
+
+{/if}

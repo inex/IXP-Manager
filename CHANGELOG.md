@@ -1,13 +1,162 @@
+
+# v3.3.1
+
+We can now set which infrastructure is considered the primary or default infrastructre. This is useful for some frontend presentation.
+
+A schema change is required (as well as setting one infrastructure as the primary which **is required**):
+
+    ALTER TABLE infrastructure 
+        ADD `isPrimary` TINYINT(1) NOT NULL, 
+        CHANGE ixp_id ixp_id INT NOT NULL
+    
+    UPDATE `infrastructure` SET `isPrimary` = 1 WHERE id = 1;
+
+- [IM] Tidy up stale infrastructure references (45d7e47 - Barry O'Donovan - 2013-07-23)
+- [NF] We can set primary infrastructures per IXP (5ccdd32 - Barry O'Donovan - 2013-07-23)
+- [BF] Stale reference to old infrastructure references (0dfbbca - Barry O'Donovan - 2013-07-23)
+- [NF] Filter private VLANs for a specific infrastructure (5ac1d83 - Barry O'Donovan - 2013-07-23)
+- [BF] Stale reference to old infrastructure references (760edaa - Barry O'Donovan - 2013-07-23)
+- [BF] Link to infra table (56918bf - Barry O'Donovan - 2013-07-23)
+- [IM] Do not show peering manager to assoc users (3322a06 - Barry O'Donovan - 2013-07-23)
+
+
+
+
+# v3.3.0
+
+This is part one of a significant update to allow IXP Manager to manage multiple IXPs with shared customers.
+
+This first part adds managed infrastructure support rather than just using integers to represent infrastructures.
+
+An infrastructre is a physically diverse network for peering. For example, INEX has two infrastructres with 
+a peering LAN on each. All members connect to the 'primary peering infrastructure' while those looking
+for resiliency also join the secondary peering infrastructure.
+
+A schema update is required as follows - run SQL queries to update database:
+
+
+    CREATE TABLE ixp (
+        id INT AUTO_INCREMENT NOT NULL, 
+        name VARCHAR(255) DEFAULT NULL, 
+        shortname VARCHAR(255) DEFAULT NULL, 
+        address1 VARCHAR(255) DEFAULT NULL, 
+        address2 VARCHAR(255) DEFAULT NULL, 
+        address3 VARCHAR(255) DEFAULT NULL, 
+        address4 VARCHAR(255) DEFAULT NULL, 
+        country VARCHAR(255) DEFAULT NULL, 
+        UNIQUE INDEX UNIQ_FA4AB7F64082763 (shortname), 
+        PRIMARY KEY(id)
+    ) 
+        DEFAULT CHARACTER SET utf8 
+        COLLATE utf8_unicode_ci 
+        ENGINE = InnoDB;
+    
+    CREATE TABLE infrastructure (
+        id INT AUTO_INCREMENT NOT NULL, 
+        ixp_id INT DEFAULT NULL, 
+        name VARCHAR(255) DEFAULT NULL, 
+        shortname VARCHAR(255) DEFAULT NULL, 
+        UNIQUE INDEX UNIQ_D129B19064082763 (shortname), 
+        INDEX IDX_D129B190A5A4E881 (ixp_id), 
+        PRIMARY KEY(id)
+    ) 
+        DEFAULT CHARACTER SET utf8 
+        COLLATE utf8_unicode_ci 
+        ENGINE = InnoDB;
+    
+    ALTER TABLE infrastructure 
+        ADD CONSTRAINT FK_D129B190A5A4E881 
+            FOREIGN KEY (ixp_id) REFERENCES ixp (id);
+
+
+Even if not using this new multiple IXP feature, you need to add your only IXP to the database:
+
+    INSERT INTO ixp ( `name`, `shortname`, `address1`, `address2`, `address3`, `address4`, `country` )
+        VALUES ( 'IXP name', 'ixp', 'address1', 'address2', 'address3', 'address4', 'IE' );
+
+When defining your switches, you will have given them an infrastructure. For example, INEX runs
+two separate peering LANs for resiliency and these are Infrastruture #1 and #2. Even if you only
+have one, you need to insert these infrastructure(s) using SQL queries such as:
+
+    INSERT INTO `infrastructure` ( `id`, `name`, `shortname`, `ixp_id` ) 
+        VALUES ( 1, 'Infrastructure #1', '#1', 1 );
+    INSERT INTO `infrastructure` ( `id`, `name`, `shortname`, `ixp_id` ) 
+        VALUES ( 2, 'Infrastructure #2', '#2', 1 );
+
+Be sure that the infrastructure numbers you used in your switch definitions match the
+`id` you used above. 
+
+**NB:** It is okay to use `NULL` as the infrastructure for management devices such as
+console servers, management switches, etc. But, even if running one IXP with one 
+infrastructure, you must create that infrastructre with ID 1 and set the switch 
+infrastructure colume for those peering switches to 1 also before doing the following.
+
+We now need to link the infrastrcture table to the switch table:
+
+    ALTER TABLE switch 
+        CHANGE infrastructure 
+            infrastructure INT DEFAULT NULL;
+    
+    ALTER TABLE switch 
+        ADD CONSTRAINT FK_6FE94B18D129B190 
+            FOREIGN KEY (infrastructure) REFERENCES infrastructure (id);
+    
+    CREATE INDEX IDX_6FE94B18D129B190 
+        ON switch (infrastructure);
+
+
+On my own system (@barryo), some house keeping SQL updates were also required. You can execute these
+safely as they will have no effect if not needed.
+
+
+    ALTER TABLE cust 
+        CHANGE isReseller 
+            isReseller TINYINT(1) NOT NULL;
+    
+    ALTER TABLE switchport 
+        CHANGE active 
+            active TINYINT(1) NOT NULL;
+    
+    ALTER TABLE company_billing_detail 
+        CHANGE purchaseOrderRequired 
+            purchaseOrderRequired TINYINT(1) NOT NULL;
+
+
+
+
+- [IM] Tidy up IXP/infra and add filter to list infras for a given IXP (177a1db - Barry O'Donovan - 2013-07-23)
+- [BF] Check for infras and custs before deleting an IXP (4d61f94 - Barry O'Donovan - 2013-07-23)
+- [NF] Show switches for a specific infrastructure (dc017e5 - Barry O'Donovan - 2013-07-23)
+- [IM] Catch deletion exceptions if the infra has switches assigned to it (0a2b97c - Barry O'Donovan - 2013-07-23)
+- [IM] Infrastructure is not required - e.g. in the case of mgmt switches (031a584 - Barry O'Donovan - 2013-07-23)
+- [IM] Improve multi-ixp mode not enabled error (832719b - Barry O'Donovan - 2013-07-23)
+- [BF|IM] Better error and correct type. (NB-T2BOD) (b2a7300 - Barry O'Donovan - 2013-07-23)
+- [IM] Only show IXP in multi-IXP mode (78eacb0 - Barry O'Donovan - 2013-07-23)
+- [IM] Restructure menu order to make it more sensible (8a52a10 - Barry O'Donovan - 2013-07-23)
+- [IM] Do not neet these restrictions on infra shortname (e2b1658 - Barry O'Donovan - 2013-07-23)
+- [DB] private -> protected (5c68887 - Barry O'Donovan - 2013-07-23)
+- [DB] Private properties cause a lot of errors when serializing objects (bcc7731 - Barry O'Donovan - 2013-07-23)
+- [HK] Complete changeset for @rowanthorpe pull request #37 (cf2badc - Barry O'Donovan - 2013-07-16)
+- [IM] If adding a new admin user, ensure they start with no notes pending (59b813d - Barry O'Donovan - 2013-07-16)
+- [IM] Various improvements for multi IXP framework (1312ac8 - Barry O'Donovan - 2013-07-06)
+- [IM] Update DQL to use new infrastructure table (a6315c7 - Barry O'Donovan - 2013-07-06)
+- [IM] Add SQL queries for upgrade (5bbb405 - Barry O'Donovan - 2013-07-06)
+- [IM] Updating switcher add and editing forms (722f2f8 - Nerijus Barauskas - 2013-07-05)
+- [IM] Allowing to enable multi IXP mode (89e27aa - Nerijus Barauskas - 2013-07-05)
+- [DB] Adding relation between switcher and interface (dd44ce2 - Nerijus Barauskas - 2013-07-05)
+- [NF] Adding CRUD for Infrastructures and hiden CRUD for IXPs (75960b1 - Nerijus Barauskas - 2013-07-05)
+- [DB] Adding IXP and Infrastructure Entities (4af9daa - Nerijus Barauskas - 2013-07-05)
+
 # v3.2.2
 
-[BF] Small bug fix in "mark all notes as read" (35368e7 - Barry O'Donovan - 2013-07-16)
-[IM/CR] Typos and better naming (04c24a9 - Barry O'Donovan - 2013-07-15)
-[HK] Typo (5be397c - Barry O'Donovan - 2013-07-15)
-[NF] Authentication emails are now sent in plaintext and HTML (23f5f14 - Barry O'Donovan - 2013-07-15)
-[NF] Adding auth email plain text templates (cb6035c - Nerijus Barauskas - 2013-07-11)
-[IM] Adding Mark All As Read Button in customer unread notes list (eb6e9c8 - Nerijus Barauskas - 2013-07-10)
-[IM] Hidding private Vlans then adding adding IPv4 or IPv6 addresses (aa7fae0 - Nerijus Barauskas - 2013-07-09)
-[BF] Fix user / contact deletion from user list (4fac457 - Barry O'Donovan - 2013-07-02)
+- [BF] Small bug fix in "mark all notes as read" (35368e7 - Barry O'Donovan - 2013-07-16)
+- [IM/CR] Typos and better naming (04c24a9 - Barry O'Donovan - 2013-07-15)
+- [HK] Typo (5be397c - Barry O'Donovan - 2013-07-15)
+- [NF] Authentication emails are now sent in plaintext and HTML (23f5f14 - Barry O'Donovan - 2013-07-15)
+- [NF] Adding auth email plain text templates (cb6035c - Nerijus Barauskas - 2013-07-11)
+- [IM] Adding Mark All As Read Button in customer unread notes list (eb6e9c8 - Nerijus Barauskas - 2013-07-10)
+- [IM] Hidding private Vlans then adding adding IPv4 or IPv6 addresses (aa7fae0 - Nerijus Barauskas - 2013-07-09)
+- [BF] Fix user / contact deletion from user list (4fac457 - Barry O'Donovan - 2013-07-02)
 
 
 # v3.2.1

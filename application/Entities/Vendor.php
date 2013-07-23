@@ -12,17 +12,17 @@ class Vendor
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Switches;
+    protected $Switches;
 
     /**
      * Constructor

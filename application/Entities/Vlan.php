@@ -21,52 +21,52 @@ class Vlan
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var integer $number
      */
-    private $number;
+    protected $number;
 
     /**
      * @var string $rcvrfname
      */
-    private $rcvrfname;
+    protected $rcvrfname;
 
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $VlanInterfaces;
+    protected $VlanInterfaces;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $IPv4Addresses;
+    protected $IPv4Addresses;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $IPv6Addresses;
+    protected $IPv6Addresses;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $NetworkInfo;
+    protected $NetworkInfo;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $NetInfo;
+    protected $NetInfo;
 
     /**
      * Constructor
@@ -315,7 +315,7 @@ class Vlan
     /**
      * @var boolean
      */
-    private $private;
+    protected $private;
 
 
     /**

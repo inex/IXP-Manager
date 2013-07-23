@@ -38,7 +38,7 @@
                                     or $controller eq 'peering-matrix'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                    {if $user->getPrivs() eq 1}
+                                    {if $user->getPrivs() eq 1 and $user->getCustomer()->getType() neq CUSTOMER::TYPE_ASSOCIATE}
                                         {if !isset( $options['frontend']['disabled']['peering-manager'] ) or !$options['frontend']['disabled']['peering-manager'] }
                                             <li><a href="{genUrl controller="peering-manager"}">Peering Manager</a></li>
                                         {/if}

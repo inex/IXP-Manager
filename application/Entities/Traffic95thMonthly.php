@@ -12,22 +12,22 @@ class Traffic95thMonthly
     /**
      * @var \DateTime $month
      */
-    private $month;
+    protected $month;
 
     /**
      * @var integer $max_95th
      */
-    private $max_95th;
+    protected $max_95th;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
 
     /**

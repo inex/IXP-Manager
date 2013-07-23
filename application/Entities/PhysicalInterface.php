@@ -39,52 +39,52 @@ class PhysicalInterface
     /**
      * @var integer $status
      */
-    private $status;
+    protected $status;
 
     /**
      * @var integer $speed
      */
-    private $speed;
+    protected $speed;
 
     /**
      * @var string $duplex
      */
-    private $duplex;
+    protected $duplex;
 
     /**
      * @var integer $monitorindex
      */
-    private $monitorindex;
+    protected $monitorindex;
 
     /**
      * @var string $notes
      */
-    private $notes;
+    protected $notes;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\SwitchPort
      */
-    private $SwitchPort;
+    protected $SwitchPort;
 
     /**
      * @var Entities\VirtualInterface
      */
-    private $VirtualInterface;
+    protected $VirtualInterface;
 
     /**
      * @var \Entities\PhysicalInterface
      */
-    private $FanoutPhysicalInterface;
+    protected $FanoutPhysicalInterface;
 
     /**
      * @var \Entities\PhysicalInterface
      */
-    private $PeeringPhysicalInterface;
+    protected $PeeringPhysicalInterface;
 
     /**
      * Set status

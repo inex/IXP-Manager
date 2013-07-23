@@ -13,6 +13,20 @@
 </ul>
 
 
+{if isset( $infra ) and $infra}
+
+<div class="row-fluid">
+    <div class="alert alert-info">
+        Only showing private VLANs for: <strong>{$infra->getName()}</strong>.
+        <span class="pull-right">
+            <a href="{genUrl controller='vlan' action='private'}" class='btn btn-small'>Show All</a>
+        </span>
+    </div>
+</div>
+
+{/if}
+
+
 <div class="row-fluid">
 
     <div class="span12">

@@ -22,12 +22,13 @@ class VirtualInterface extends EntityRepository
     public function getByLocation()
     {
         return $ints = $this->getEntityManager()->createQuery(
-            "SELECT vi.id AS id, pi.speed AS speed, sw.infrastructure AS infrastructure, l.name AS locationname
+            "SELECT vi.id AS id, pi.speed AS speed, i.name AS infrastructure, l.name AS locationname
                 FROM Entities\\VirtualInterface vi
                     JOIN vi.Customer c
                     JOIN vi.PhysicalInterfaces pi
                     JOIN pi.SwitchPort sp
                     JOIN sp.Switcher sw
+                    JOIN sw.Infrastructure i
                     JOIN sw.Cabinet ca
                     JOIN ca.Location l
                 WHERE
@@ -51,7 +52,7 @@ class VirtualInterface extends EntityRepository
      *     * SwithPort ID (spid)
      *     * Switch ID (swid)
      *
-     * @param int $infra The infrastructure to gather VirtualInterfaces for
+     * @param \Entities\Infrastructure $infra The infrastructure to gather VirtualInterfaces for
      * @param int $proto Either 4 or 6 to limit the results to interface with IPv4 / IPv6
      * @param bool $externalOnly If true (default) then only external (non-internal) interfaces will be returned
      * @param bool $useResultCache If true, use Doctrine's result cache to prevent needless database overhead
@@ -68,14 +69,14 @@ class VirtualInterface extends EntityRepository
                         JOIN vi.VlanInterfaces vli
                         JOIN pi.SwitchPort sp
                         JOIN sp.Switcher sw
+                        JOIN sw.Infrastructure i
                     WHERE
-                        sw.infrastructure = ?1
+                        i = :infra
                         AND " . Customer::DQL_CUST_ACTIVE     . "
                         AND " . Customer::DQL_CUST_CURRENT    . "
                         AND " . Customer::DQL_CUST_TRAFFICING . "
                         AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
-                                                                        
-        
+                               
         if( $proto )
         {
             if( !in_array( $proto, [ 4, 6 ] ) )
@@ -90,7 +91,7 @@ class VirtualInterface extends EntityRepository
         $qstr .= " ORDER BY c.name ASC";
         
         $q = $this->getEntityManager()->createQuery( $qstr );
-        $q->setParameter( 1, $infra );
+        $q->setParameter( 'infra', $infra );
         $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }
