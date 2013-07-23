@@ -12,6 +12,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class Infrastructure extends EntityRepository
 {
+    /**
+     * The cache key for the primary infrastructre (append IXP id)
+     * @var string The cache key for the primary infrastructre (append IXP id)
+     */
+    const CACHE_KEY_PRIMARY = 'infrastructure_primary_';
+    
+    /**
+     * The cache key for the all infrastructres (append IXP id)
+     * @var string The cache key for all infrastructres (append IXP id)
+     */
+    const CACHE_KEY_ALL = 'infrastructure_all_';
     
     /**
      * Return the primary infrastructure (for a given IXP, or the default IXP)
@@ -23,15 +34,7 @@ class Infrastructure extends EntityRepository
     public function getPrimary( $ixp = null )
     {
         if( $ixp == null )
-            $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->find( 1 );
-        
-        if( !$ixp )
-        {
-            // uh oh, inconsistency
-            throw new \IXP_Exception(
-                'When seeking the primary infrastructure of an IXP, we could not load the default IXP which should have ID 1'
-            );
-        }
+            $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->getDefault();
         
         $infra = $this->getEntityManager()->createQuery(
                 "SELECT i
@@ -41,6 +44,7 @@ class Infrastructure extends EntityRepository
                         AND ixp = :ixp"
             )
             ->setParameter( 'ixp', $ixp )
+            ->useResultCache( true, 7200, self::CACHE_KEY_PRIMARY . $ixp->getId() )
             ->getResult();
         
         if( !$infra || count( $infra ) > 1 )
@@ -64,8 +68,8 @@ class Infrastructure extends EntityRepository
     public function getAll( $ixp = null )
     {
         if( $ixp == null )
-            $ixp = $this->getDefaultIXP();
-                
+            $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->getDefault();
+                            
         $infras = $this->getEntityManager()->createQuery(
                 "SELECT i
                     FROM Entities\\Infrastructure i
@@ -73,6 +77,7 @@ class Infrastructure extends EntityRepository
                     WHERE ixp = :ixp"
             )
             ->setParameter( 'ixp', $ixp )
+            ->useResultCache( true, 7200, self::CACHE_KEY_ALL . $ixp->getId() )
             ->getResult();
 
         return $infras;
@@ -99,25 +104,4 @@ class Infrastructure extends EntityRepository
         return $infras;
     }
 
-    
-    /**
-     * In a non-multi-IXP environment, get the default IXP
-     *
-     * @throws \IXP_Exception
-     * @return \Entities\IXP The default IXP
-     */
-    private function getDefaultIXP()
-    {
-        $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->find( 1 );
-        
-        if( !$ixp )
-        {
-            // uh oh, inconsistency
-            throw new \IXP_Exception(
-                    'When seeking the primary infrastructure of an IXP, we could not load the default IXP which should have ID 1'
-            );
-        }
-        
-        return $ixp;
-    }
 }

@@ -210,6 +210,26 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         
         return true;
     }
+    
+    
+    /**
+     * Post database flush hook that can be overridden by subclasses and is called by
+     * default for a successful add / edit / delete.
+     *
+     * Called by `addPostFlush()` and `postDelete()` - if overriding these, ensure to
+     * call this if you have overridden it.
+     *
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @return bool
+     */
+    protected function postFlush( $object )
+    {
+        // wipe cached entries
+        $this->getD2Cache()->delete( \Repositories\Infrastructure::CACHE_KEY_PRIMARY . $object->getId() );
+        $this->getD2Cache()->delete( \Repositories\Infrastructure::CACHE_KEY_ALL     . $object->getId() );
+        return true;
+    }
+    
 
     /**
      * Function which can be over-ridden to perform any pre-deletion tasks
