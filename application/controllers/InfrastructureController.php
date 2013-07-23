@@ -1,6 +1,5 @@
 <?php
 
-use Entities\Switcher;
 /*
  * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
