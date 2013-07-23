@@ -265,7 +265,7 @@ class Vlan extends EntityRepository
     public function getPrivateVlanDetails()
     {
         $vlans = $this->getEntityManager()->createQuery(
-                "SELECT vli, v, vi, pi, sp, s, l, cab, c
+                "SELECT vli, v, vi, pi, sp, s, l, cab, c, i
 
                 FROM \\Entities\\Vlan v
                     LEFT JOIN v.VlanInterfaces vli
@@ -274,6 +274,7 @@ class Vlan extends EntityRepository
                     LEFT JOIN vi.PhysicalInterfaces pi
                     LEFT JOIN pi.SwitchPort sp
                     LEFT JOIN sp.Switcher s
+                    LEFT JOIN s.Infrastructure i
                     LEFT JOIN s.Cabinet cab
                     LEFT JOIN cab.Location l
 
@@ -306,7 +307,7 @@ class Vlan extends EntityRepository
                     $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['name']   = $vli['VirtualInterface']['Customer']['name'];
                     $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['vintid'] = $vli['VirtualInterface']['id'];
 
-                    $pvs[ $v['id'] ]['infra'] = $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['infrastructure'];
+                    $pvs[ $v['id'] ]['infra'] = $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['Infrastructure']['shortname'];
                 }
 
                 foreach( $vli['VirtualInterface']['PhysicalInterfaces'] as $pi )
