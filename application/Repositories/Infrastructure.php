@@ -55,5 +55,69 @@ class Infrastructure extends EntityRepository
         return $infra[0];
     }
     
+    /**
+     * Get all infrastructures for an IXP
+     *
+     * @param \Entities\IXP $ixp The IXP to find the infrastuctures for
+     * @return \Entities\Infrastructure[] The infrastructures for a given IXP
+     */
+    public function getAll( $ixp = null )
+    {
+        if( $ixp == null )
+            $ixp = $this->getDefaultIXP();
+                
+        $infras = $this->getEntityManager()->createQuery(
+                "SELECT i
+                    FROM Entities\\Infrastructure i
+                    JOIN i.IXP ixp
+                    WHERE ixp = :ixp"
+            )
+            ->setParameter( 'ixp', $ixp )
+            ->getResult();
+
+        return $infras;
+    }
     
+    
+    /**
+     * Get all infrastructures for an IXP as an array indexed by their ids
+     *
+     * @param string $key The property of the infrastructure to place in the array (e.g. `Name`, `Shortname`)
+     * @param \Entities\IXP $ixp The IXP to find the infrastuctures for
+     * @return array The infrastructures for a given IXP
+     */
+    public function getAllAsArray( $key = 'Name', $ixp = null )
+    {
+        $infras = [];
+        $fn = "get{$key}";
+        
+        $oInfras = $this->getAll( $ixp );
+
+        foreach( $oInfras as $i )
+            $infras[ $i->getId() ] = $i->$fn();
+
+        return $infras;
+    }
+
+    
+    /**
+     * In a non-multi-IXP environment, get the default IXP
+     *
+     * @throws \IXP_Exception
+     * @return \Entities\IXP The default IXP
+     */
+    private function getDefaultIXP()
+    {
+        $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->find( 1 );
+        
+        if( !$ixp )
+        {
+            // uh oh, inconsistency
+            throw new \IXP_Exception(
+                    'When seeking the primary infrastructure of an IXP, we could not load the default IXP which should have ID 1'
+            );
+        }
+        
+        return $ixp;
+    }
 }

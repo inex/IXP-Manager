@@ -52,7 +52,7 @@ class VirtualInterface extends EntityRepository
      *     * SwithPort ID (spid)
      *     * Switch ID (swid)
      *
-     * @param int $infra The infrastructure to gather VirtualInterfaces for
+     * @param \Entities\Infrastructure $infra The infrastructure to gather VirtualInterfaces for
      * @param int $proto Either 4 or 6 to limit the results to interface with IPv4 / IPv6
      * @param bool $externalOnly If true (default) then only external (non-internal) interfaces will be returned
      * @param bool $useResultCache If true, use Doctrine's result cache to prevent needless database overhead
@@ -71,7 +71,7 @@ class VirtualInterface extends EntityRepository
                         JOIN sp.Switcher sw
                         JOIN sw.Infrastructure i
                     WHERE
-                        i.id = ?1
+                        i = :infra
                         AND " . Customer::DQL_CUST_ACTIVE     . "
                         AND " . Customer::DQL_CUST_CURRENT    . "
                         AND " . Customer::DQL_CUST_TRAFFICING . "
@@ -91,7 +91,7 @@ class VirtualInterface extends EntityRepository
         $qstr .= " ORDER BY c.name ASC";
         
         $q = $this->getEntityManager()->createQuery( $qstr );
-        $q->setParameter( 1, $infra );
+        $q->setParameter( 'infra', $infra );
         $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }

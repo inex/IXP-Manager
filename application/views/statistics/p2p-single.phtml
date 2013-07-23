@@ -6,13 +6,14 @@
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
         </li>
         <li>
-            <a href="{genUrl controller='customer' action='list'}">Customers</a> <span class="divider">/</span>
+            <a href="{genUrl controller='statistics' action='members'}">Statistics</a> <span class="divider">/</span>
         </li>
         <li>
              <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
-            Peer to Peer Statistics {if isset( $dcust ) and $dcust}for {$dcust.cname}{/if}
+            <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">Peer to Peer Statistics</a>
+            {if isset( $dcust ) and $dcust}for {$dcust.cname}{/if}
             (
              {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
              {if isset( $period )}
@@ -62,19 +63,19 @@
     <td valign="middle"><strong>Infrastructure:</strong></td>
     <td>
         &nbsp;
-        <select name="infra" style="width: 150px;">
-            {foreach from=$infrastructures key=iname item=ivalue}
-                <option value="{$ivalue}" {if $infra eq $ivalue}selected="selected"{/if}>{$iname}</option>
+        <select name="infra" style="width: 150px;" class="chzn-select">
+            {foreach $infrastructures as $ivalue => $iname}
+                <option value="{$ivalue}" {if $infra->getId() eq $ivalue}selected="selected"{/if}>{$iname}</option>
             {/foreach}
         </select>
     </td>
     *}
-    {if count( $customersVirtualInterfaces.Virtualinterface ) > 1}
+    {if count( $vints ) > 1}
         <td width="20"></td>
         <td valign="middle"><strong>Interface:</strong></td>
         <td>
             &nbsp;
-            <select name="interface" style="width: 100px;">
+            <select name="interface" style="width: 100px;" class="chzn-select">
                 {foreach $vints as $id => $vi}
                     <option value="{$id}" {if isset( $interface ) and $interface eq $id}selected="selected"{/if}>{$id}</option>
                 {/foreach}
@@ -83,7 +84,7 @@
     {/if}
     <td width="20"></td>
     <td valign="middle">
-        <input type="hidden" name="shortname" value="{$shortname}" />
+        <input type="hidden" name="shortname" value="{$cust->getShortname()}" />
         {if isset( $dvid )}<input type="hidden" name="dvid" value="{$dvid}" />{/if}
         <input class="btn" type="submit" value="Submit &raquo;" />
     </td>
@@ -117,7 +118,7 @@
                 <p>
                     <br />
                     <img
-                        src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$dvid category=$category proto=$proto period=$pid infra=$infra}"
+                        src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$dvid category=$category proto=$proto period=$pid infra=$infra->getId()}"
                         width="600"
                     />
                 </p>

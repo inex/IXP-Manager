@@ -305,11 +305,11 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             
             foreach( $vi->getPhysicalInterfaces() as $pi )
             {
-                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure() == $infra )
+                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $infra->getId() )
                     $vints[ $vi->getId() ] = $vi;
             }
         }
-            
+        
         $this->view->vints = $vints;
         $this->view->customersWithVirtualInterfaces = false;
         
@@ -417,12 +417,11 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
      */
     protected function _setInfrastructure( $pname = 'infra' )
     {
-        $infra = $this->view->infra = $this->getParam( $pname, 1 );
-        if( !in_array( $infra, IXP_Mrtg::$INFRASTRUCTURES ) )
-            $infra = IXP_Mrtg::INFRASTRUCTURE_PRIMARY;
+        if( !$this->getParam( $pname, false ) || !( $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( $pname ) ) ) )
+            $infra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary();
         
-        $this->view->infra      = $infra;
-        $this->view->infrastructures = IXP_Mrtg::$INFRASTRUCTURES;
+        $this->view->infra           = $infra;
+        $this->view->infrastructures = $this->getD2R( '\\Entities\\Infrastructure' )->getAllAsArray();
         
         return $infra;
     }
