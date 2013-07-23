@@ -1,4 +1,25 @@
 
+# v3.3.2 (xxxxx)
+
+A number of minor fixes but one significat change:
+
+The email notification code for port utilisation and traffic deltas have moved to a more specific controller.
+
+This means you may need to update your cronjob scripts for these as follows:
+
+* `cli.examine-port-utilisation` becomes `statistics-cli.email-port-utilisation`
+* `cli.examine-traffic-deltas` becomes `statistics-cli.email-traffic-deltas`
+
+The [documentation](https://github.com/inex/IXP-Manager/wiki/Email-Notifications) has been updated.
+
+Also, in the event you have skinned these emails, the templates for these emails changes from `customer/email` to `statistics-cli/email`.
+
+
+- [IM|HK] Move email notifications for traffic deltas and port utilisation to a better home
+- [BF] For LAG / multiple ports from the same customer we incorrectly showed the same graph for all (cfdad6f - Barry O'Donovan - 2013-07-24)
+- [IM] Introduce caching to IXPs and infrastructures to prevent needless database queries (cbe2aa5 - Barry O'Donovan - 2013-07-23)
+- [BF] Stale reference to infrastructures (8f9122b - Barry O'Donovan - 2013-07-23)
+
 # v3.3.1 (20130723)
 
 We can now set which infrastructure is considered the primary or default infrastructre. This is useful for some frontend presentation.
