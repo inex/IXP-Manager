@@ -46,8 +46,6 @@ class IXP_Form_Infrastructure extends IXP_Form
 
         $shortname = $this->createElement( 'text', 'shortname' );
         $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->addValidator( 'alnum' )
-            ->addValidator( 'regex', false, array('/^[a-z0-9]+/' ) )
             ->setRequired( true )
             ->setLabel( 'Short Name' )
             ->addFilter( 'StringToLower' )
@@ -58,7 +56,7 @@ class IXP_Form_Infrastructure extends IXP_Form
         $this->addElement( $this->createCancelElement() );
     }
 
-    /** 
+    /**
      * Sets IXP form element to drop down or hidden depends on
      * multi IXP is enabled or not.
      *
@@ -70,7 +68,7 @@ class IXP_Form_Infrastructure extends IXP_Form
         if( !$multiIXP )
         {
             $ixp = $this->createElement( 'hidden', 'ixp' );
-            $ixp->setValue( '1' );   
+            $ixp->setValue( '1' );
         }
         else
             $ixp = IXP_Form_IXP::getPopulatedSelect( 'ixp' );
