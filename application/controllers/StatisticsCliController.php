@@ -322,8 +322,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
     
     private function emailPortsWithCounts( $type, $category, $inField, $outField )
     {
-        $day = date( 'Y-m-d', strtotime( '-1 days' ) );
-        
+        $this->view->day = $day = date( 'Y-m-d', strtotime( '-1 days' ) );
         $data = $this->getD2R( '\\Entities\\TrafficDaily' )->load( $day, $category );
         
         $mail = $this->getMailer();
