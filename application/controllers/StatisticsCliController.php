@@ -310,6 +310,77 @@ class StatisticsCliController extends IXP_Controller_CliAction
     }
     
     
+    public function emailPortsWithErrorsAction()
+    {
+        $this->emailPortsWithCounts( 'Errors', IXP_Mrtg::CATEGORY_ERRORS, 'day_tot_in', 'day_tot_out' );
+    }
+    
+    public function emailPortsWithDiscardsAction()
+    {
+        $this->emailPortsWithCounts( 'Discards', IXP_Mrtg::CATEGORY_DISCARDS, 'day_tot_in', 'day_tot_out' );
+    }
+    
+    private function emailPortsWithCounts( $type, $category, $inField, $outField )
+    {
+        $day = date( 'Y-m-d', strtotime( '-1 days' ) );
+        
+        $data = $this->getD2R( '\\Entities\\TrafficDaily' )->load( $day, $category );
+        
+        $mail = $this->getMailer();
+        $mail->setFrom( $this->_options['cli']['ports_with_counts']['from_email'], $this->_options['cli']['ports_with_counts']['from_name'] )
+            ->setSubject( sprintf( $this->_options['cli']['ports_with_counts']['subject'], $type ) )
+            ->setType( Zend_Mime::MULTIPART_RELATED );
+    
+        foreach( $this->_options['cli']['ports_with_counts']['recipients'] as $r )
+            $mail->addTo( $r );
+    
+        $this->view->type = $type;
+        $mailHtml = $this->view->render( 'statistics-cli/email/counts-header.phtml' );
+        
+        $numWithCounts = 0;
+        
+        foreach( $data as $d )
+        {
+            if( $d[ $inField ] == 0 && $d[ $outField ] == 0 )
+                continue;
+
+            $numWithCounts++;
+
+            if( $this->isVerbose() || $this->isDebug() )
+                echo "{$d['Customer']['name']}\t\tIN / OUT: {$d[ $inField ]} / {$d[ $outField ]}\n";
+        
+            $mrtg = $mail->createAttachment(
+                file_get_contents(
+                    IXP_Mrtg::getMrtgFilePath(
+                        $this->_options['mrtg']['path'] . '/members',
+                        'PNG',
+                        'aggregate',
+                        $category,
+                        $d['Customer']['shortname'],
+                        IXP_Mrtg::PERIOD_DAY
+                    )
+                ),
+                "image/png",
+                Zend_Mime::DISPOSITION_INLINE,
+                Zend_Mime::ENCODING_BASE64,
+                "{$d['Customer']['shortname']}-aggregate.png"
+            );
+    
+            $this->view->mrtg_id = $mrtg->id = "{$d['Customer']['shortname']}-aggregate";
+            $this->view->ecust = $d['Customer'];
+            $this->view->in  = $d[ $inField  ];
+            $this->view->out = $d[ $outField ];
+            $mailHtml .= $this->view->render( 'statistics-cli/email/counts-member.phtml' );
+        }
+    
+        if( $numWithCounts )
+        {
+            $this->view->numWithCounts = $numWithCounts;
+            $mailHtml .= $this->view->render( 'statistics-cli/email/counts-footer.phtml' );
+            $mail->setBodyHtml( $mailHtml  );
+            $mail->send();
+        }
+    }
     
 }
 
