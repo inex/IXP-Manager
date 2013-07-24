@@ -1,8 +1,7 @@
 <?php
 
-use Entities\Switcher;
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,9 +26,10 @@ use Entities\Switcher;
  * Controller: Manage Interfaces
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Controller
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class InfrastructureController extends IXP_Controller_FrontEnd
@@ -58,9 +58,12 @@ class InfrastructureController extends IXP_Controller_FrontEnd
                     'id'        => [ 'title' => 'UID', 'display' => false ],
                     'name'      => 'Name',
                     'shortname' => 'Shortname',
-                    'ixp_name'  => 'IXP'
+                    'isPrimary'   => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ]
                 ];
 
+                if( $this->multiIXP() )
+                    $this->_feParams->listColumns[ 'ixp_name' ] = 'IXP';
+                
                 // display the same information in the view as the list
                 $this->_feParams->viewColumns = $this->_feParams->listColumns;
 
@@ -80,13 +83,19 @@ class InfrastructureController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-            ->select( 'i.id AS id, i.name AS name,
+            ->select( 'i.id AS id, i.name AS name, i.isPrimary AS isPrimary,
                 i.shortname AS shortname, ix.shortname AS ixp_name,
                 ix.id AS ixp_id'
             )
             ->from( '\\Entities\\Infrastructure', 'i' )
             ->leftJoin( 'i.IXP', 'ix' );
 
+        if( $this->getParam( 'ixp', false ) && $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) ) )
+        {
+            $qb->andWhere( 'ix = :ixp' )->setParameter( 'ixp', $ixp );
+            $this->view->ixp = $ixp;
+        }
+        
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
@@ -96,6 +105,43 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
+    
+    /**
+     * Prevalidation hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called if the user POSTs a form just before the form is validated by Zend
+     *
+     * @param OSS_Form $form The Send form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not validated or processed
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        // at least one infrastructure must be primary
+        if( !$form->getElement( 'isPrimary' )->getValue() )
+        {
+            // is any other infrastructure primary?
+            $primaryInfra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary();
+            if( !$primaryInfra || $primaryInfra->getId() == $object->getId() )
+            {
+                $this->addMessage(
+                    '<h4>At least one infrastructure must be the primary infrastructure '
+                            . ( $this->multiIXP() ? 'in every IXP' : '' ) . '</h4>'
+                        . '<p>To change the primary infrastructure, do not unset the current one but rather '
+                        . 'set another to be the primary.</p>',
+                    OSS_Message::ERROR, OSS_Message::TYPE_BLOCK
+                );
+                $form->getElement( 'isPrimary' )->setValue( true );
+                return false;
+            }
+        }
+        
+        
+        return true;
+    }
+    
+    
     /**
      * Post process hook for add and edit actions.
      *
@@ -145,14 +191,68 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         
         if( !$ixp )
         {
-            $this->addMessage( 'Culd not load requested object', OSS_Message::ERROR );
-            $thos->redirectAndEnsureDie( '/infrastructure' );
+            $this->addMessage(
+                    'There is an issue with your infrastructures as we could not load an infrastructure with ID ' . $form->getValue( 'ixp' ),
+                    OSS_Message::ERROR
+            );
+            return false;
         }
+        
         $object->setIXP( $ixp );
+        
+        // if we're setting this infra as the primary, ensure the rest in this IXP are not primary
+        if( $object->getIsPrimary() )
+        {
+            foreach( $ixp->getInfrastructures() as $i )
+                if( $i->getId() != $object->getId() )
+                    $i->setIsPrimary( false );
+        }
         
         return true;
     }
+    
+    
+    /**
+     * Post database flush hook that can be overridden by subclasses and is called by
+     * default for a successful add / edit / delete.
+     *
+     * Called by `addPostFlush()` and `postDelete()` - if overriding these, ensure to
+     * call this if you have overridden it.
+     *
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @return bool
+     */
+    protected function postFlush( $object )
+    {
+        // wipe cached entries
+        $this->getD2Cache()->delete( \Repositories\Infrastructure::CACHE_KEY_PRIMARY . $object->getId() );
+        $this->getD2Cache()->delete( \Repositories\Infrastructure::CACHE_KEY_ALL     . $object->getId() );
+        return true;
+    }
+    
 
-
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( ( $cnt = count( $object->getSwitchers() ) ) )
+        {
+            $this->addMessage(
+                    "Could not delete this infrastructure as {$cnt} switch(es) are assigned to it",
+                    OSS_Message::ERROR
+            );
+            return false;
+        }
+    
+        return true;
+    }
+    
 }
 

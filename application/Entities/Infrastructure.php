@@ -12,27 +12,27 @@ class Infrastructure
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $shortname;
+    protected $shortname;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Entities\IXP
      */
-    private $IXP;
+    protected $IXP;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $Switchers;
+    protected $Switchers;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -234,7 +234,24 @@ class Infrastructure
     public function setMrtgP2pPath($mrtgP2pPath)
     {
         $this->mrtg_p2p_path = $mrtgP2pPath;
-    
+        return $this;
+    }
+                    
+    /**
+     * @var boolean
+     */
+    private $isPrimary;
+
+
+    /**
+     * Set isPrimary
+     *
+     * @param boolean $isPrimary
+     * @return Infrastructure
+     */
+    public function setIsPrimary($isPrimary)
+    {
+        $this->isPrimary = $isPrimary;
         return $this;
     }
 
@@ -246,5 +263,15 @@ class Infrastructure
     public function getMrtgP2pPath()
     {
         return $this->mrtg_p2p_path;
+    }
+    
+    /*
+     * Get isPrimary
+     *
+     * @return boolean 
+     */
+    public function getIsPrimary()
+    {
+        return $this->isPrimary;
     }
 }

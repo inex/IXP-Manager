@@ -35,6 +35,21 @@ use Entities\CustomerNotes;
 class CustomerNotesController extends IXP_Controller_AuthRequiredAction
 {
 
+    public function readAllAction()
+    {
+        $lastReads = $this->getUser()->getAssocPreference( 'customer-notes' )[0];
+        foreach( $lastReads as $id => $data )
+        {
+            if( is_numeric( $id ) )
+                $this->getUser()->deletePreference( "customer-notes.$id.last_read" );
+        }
+       
+        $this->getUser()->setPreference( 'customer-notes.read_upto', time() );
+        $this->getD2EM()->flush();
+
+        $this->redirect( '/customer/unread-notes' );
+    }
+
     public function ajaxAddAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );

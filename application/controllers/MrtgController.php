@@ -51,7 +51,7 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
 
     private function checkShortname( $shortname )
     {
-        return $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
+        return $this->getD2R( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
     }
 
 
@@ -116,18 +116,30 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
         header( 'Content-Type: image/png' );
         header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
 
+        
         $period       = $this->getRequest()->getParam( 'period',    IXP_Mrtg::$PERIODS['Day'] );
         $shortname    = $this->getRequest()->getParam( 'shortname', false );
         $svid         = $this->getRequest()->getParam( 'svid',      false );
         $dvid         = $this->getRequest()->getParam( 'dvid',      false );
         $category     = $this->getRequest()->getParam( 'category',  IXP_Mrtg::$CATEGORIES['Bits'] );
         $proto        = $this->getRequest()->getParam( 'proto',     IXP_Mrtg::PROTOCOL_IPV4 );
-        $infra        = $this->getRequest()->getParam( 'infra',     IXP_Mrtg::INFRASTRUCTURE_PRIMARY );
+        $infra        = $this->getRequest()->getParam( 'infra',     false );
         $period       = $this->getRequest()->getParam( 'period',    IXP_Mrtg::PERIOD_DAY );
         
         if( !$this->getIdentity() )
             exit(0);
 
+        if( $infra === false )
+        {
+            // we default to the primary infrastructure
+            $infra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary();
+        }
+        else
+        {
+            if( !( $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $infra ) ) )
+                exit( 0 );
+        }
+        
         $_cust = $this->checkShortname( $shortname );
         
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER || !$_cust )
@@ -164,16 +176,16 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
         $dvidOk = false;
         $dshortname = '';
         
-        $customersWithVirtualInterfaces = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->getForInfrastructure( $infra, $proto );
+        $customersWithVirtualInterfaces = $this->getD2R( '\\Entities\\VirtualInterface' )->getForInfrastructure( $infra, $proto );
         
         foreach( $customersWithVirtualInterfaces as $c )
         {
-            if( $c['shortname'] == $shortname )
+            if( $c['cshortname'] == $shortname )
                 continue;
                 
             if( $c['id'] == $dvid )
             {
-                $dshortname = $c['shortname'];
+                $dshortname = $c['cshortname'];
                 $dvidOk = true;
                 break;
             }
@@ -190,9 +202,9 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
             $svid, $dvid, $category, $period, $proto
         );
         
-        $this->getLogger()->debug( "Serving $filename to {$this->user->username}" );
+        $this->getLogger()->debug( "Serving $filename to {$this->getUser()->getUsername()}" );
 
-        $this->getLogger()->info( "P2P request for {$shortname}-{$dshortname}-{$category}-{$period}-ipv{$proto} by {$this->user->username}" );
+        $this->getLogger()->info( "P2P request for {$shortname}-{$dshortname}-{$category}-{$period}-ipv{$proto} by {$this->getUser()->getUsername()}" );
         
         $stat = @readfile( $filename );
 

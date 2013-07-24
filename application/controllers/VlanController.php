@@ -167,7 +167,11 @@ class VlanController extends IXP_Controller_FrontEnd
      */
     public function privateAction()
     {
-    	$this->view->pvs = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getPrivateVlanDetails();
+        $infra = null;
+        if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
+            $this->view->infra = $infra;
+        
+    	$this->view->pvs = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getPrivateVlanDetails( $infra );
     }
     
 }

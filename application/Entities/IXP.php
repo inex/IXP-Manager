@@ -12,47 +12,47 @@ class IXP
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $shortname;
+    protected $shortname;
 
     /**
      * @var string
      */
-    private $address1;
+    protected $address1;
 
     /**
      * @var string
      */
-    private $address2;
+    protected $address2;
 
     /**
      * @var string
      */
-    private $address3;
+    protected $address3;
 
     /**
      * @var string
      */
-    private $address4;
+    protected $address4;
 
     /**
      * @var string
      */
-    private $country;
+    protected $country;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $Infrastructures;
+    protected $Infrastructures;
 
     /**
      * Constructor

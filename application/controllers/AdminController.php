@@ -112,16 +112,19 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             $bylocation = [];
             $bylan = [];
             $byixp = [];
+            
             foreach( $ints as $int )
             {
-                $infrastructure = sprintf( "LAN# %s", $int['infrastructure'] );
                 if( $this->multiIXP() )
                 {
                     $locationname = sprintf( "%s - %s", $int['locixp'], $int['locationname'] );
-                    $infrastructure = sprintf( "%s - %s", $int['locixp'], $infrastructure );
+                    $infrastructure = sprintf( "%s - %s", $int['locixp'], $int['infrastructure'] );
                 }
                 else
+                {
                     $locationname = $int['locationname'];
+                    $infrastructure = $int['infrastructure'];
+                }
             
                 if( !isset( $bylocation[ $locationname ] ) )
                     $bylocation[ $locationname ] = [];

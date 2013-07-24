@@ -89,7 +89,7 @@ contact.group.types.ROLE = "Role"
 ;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
 ;;
-multiixp.enabled = true
+multiixp.enabled = false
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -407,9 +407,9 @@ mailinglist.cmd.changepw       = "/usr/local/mailman/bin/withlist -q -l -r chang
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; IXP Tool / CLI Settings
+;; IXP Tool / Statistics CLI Settings
 ;;
-;; We have a few useful tools which also need better documentation.
+;; See: https://github.com/inex/IXP-Manager/wiki/Email-Notifications
 ;;
 
 cli.traffic_differentials.stddev_calc_length = 60
@@ -425,6 +425,13 @@ cli.port_utilisation.from_name  = "XXX Operations"
 cli.port_utilisation.subject = "XXX Port Utilisation Report"
 cli.port_utilisation.recipients[] = "someone@example.com"
 cli.port_utilisation.recipients[] = "someone-else@example.com"
+
+; note that the %s in the subject below is replaced with Errors / Discards as appropriate by the script 
+cli.ports_with_counts.from_email = "ops@example.com"
+cli.ports_with_counts.from_name  = "IXP Operations"
+cli.ports_with_counts.subject = "IXP - Ports with %s"
+cli.ports_with_counts.recipients[] = "someone@example.com"
+cli.ports_with_counts.recipients[] = "someone-else@example.com"
 
 
 
@@ -449,22 +456,6 @@ meeting.rsvp_to_name  = "Person Who Looks After This Stuff"
 ; billing_updates.notify = "accounts1@example.com"
 
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; We use PHP-Weathermap which is publically available. Our true settings
-;; are commented out, please replace with your own
-;;
-
-weathermap.1.name   = "Weathermap for Peering LAN 1"
-weathermap.1.menu   = "Weathermap - LAN 1"
-; weathermap.1.url    = "https://www.inex.ie/noncms/weathermap-lan1-plain.html"
-weathermap.1.url    = "https://www.example.com/weathermap-lan1-plain.html"
-weathermap.1.width  = 900
-weathermap.1.height = 1200
-
-; weathermap.2.name = "Weathermap for Peering LAN 2"
-; ...
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

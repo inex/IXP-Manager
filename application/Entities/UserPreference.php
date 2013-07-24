@@ -12,27 +12,27 @@ class UserPreference
     /**
      * @var string $attribute
      */
-    private $attribute;
+    protected $attribute;
 
     /**
      * @var string $op
      */
-    private $op;
+    protected $op;
 
     /**
      * @var string $value
      */
-    private $value;
+    protected $value;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\User
      */
-    private $User;
+    protected $User;
 
 
     /**
@@ -139,7 +139,7 @@ class UserPreference
     /**
      * @var integer $ix
      */
-    private $ix;
+    protected $ix;
 
 
     /**
@@ -167,7 +167,7 @@ class UserPreference
     /**
      * @var integer $expire
      */
-    private $expire;
+    protected $expire;
 
 
     /**

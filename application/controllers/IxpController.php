@@ -1,8 +1,7 @@
 <?php
 
-use Entities\Switcher;
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,9 +26,10 @@ use Entities\Switcher;
  * Controller: Manage IXPs
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Controller
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IxpController extends IXP_Controller_FrontEnd
@@ -41,7 +41,12 @@ class IxpController extends IXP_Controller_FrontEnd
     {
         if( !$this->multiIXP() )
         {
-            $this->addMessage( 'Multi IXP mode is not enabled.' );
+            $this->addMessage(
+                'Multi-IXP mode has not been enabled. '
+                    . 'Please see <a href="https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality">this page</a> '
+                    . 'for more information and documentation.',
+                OSS_Message::ERROR
+            );
             $this->redirectAndEnsureDie();
         }
 
@@ -100,7 +105,6 @@ class IxpController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
-
     public function assignCustomerAction()
     {
         
@@ -144,5 +148,56 @@ class IxpController extends IXP_Controller_FrontEnd
         $this->redirectAndEnsureDie( "/customer/list/ixp/" .  $ixp->getId() );
     }      
 
+    
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( ( $cnt = count( $object->getInfrastructures() ) ) )
+        {
+            $this->addMessage(
+                    "Could not delete this IXP as {$cnt} infrastructures(es) are associated with it",
+                    OSS_Message::ERROR
+            );
+            return false;
+        }
+    
+        if( ( $cnt = count( $object->getCustomers() ) ) )
+        {
+            $this->addMessage(
+                    "Could not delete this IXP as {$cnt} customer(es) are associated with it",
+                    OSS_Message::ERROR
+            );
+            return false;
+        }
+    
+        return true;
+    }
+    
+    /**
+     * Post database flush hook that can be overridden by subclasses and is called by
+     * default for a successful add / edit / delete.
+     *
+     * Called by `addPostFlush()` and `postDelete()` - if overriding these, ensure to
+     * call this if you have overridden it.
+     *
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @return bool
+     */
+    protected function postFlush( $object )
+    {
+        // wipe cached entries
+        if( $object->getId() == 1 )
+            $this->getD2Cache()->delete( \Repositories\IXP::CACHE_KEY_DEFAULT_IXP );
+        return true;
+    }
+    
 }
 

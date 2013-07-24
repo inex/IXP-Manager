@@ -18,9 +18,9 @@
     <field name="lastPolled" type="datetime" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Switchers">
-        <join-columns>
-            <join-column name="infrastructure" referenced-column-name="id"/>
-        </join-columns>
+      <join-columns>
+        <join-column name="infrastructure" referenced-column-name="id"/>
+      </join-columns>
     </many-to-one>
     <many-to-one field="Cabinet" target-entity="Entities\Cabinet" inversed-by="Switches">
       <join-columns>

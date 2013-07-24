@@ -139,6 +139,12 @@ class SwitchController extends IXP_Controller_FrontEnd
             ->leftJoin( 's.Cabinet', 'c' )
             ->leftJoin( 's.Vendor', 'v' );
 
+        if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
+        {
+            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
+            $this->view->infra = $infra;
+        }
+        
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
@@ -326,7 +332,10 @@ class SwitchController extends IXP_Controller_FrontEnd
             if( $object->getVendor() )
                 $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
             
-            $form->getElement( 'infrastructure' )->setValue( $object->getInfrastructure()->getId() );
+            if( $object->getInfrastructure() )
+                $form->getElement( 'infrastructre' )->setValue( $object->getInfrastructure()->getId() );
+            else
+                $form->getElement( 'infrastructre' )->setValue( null );
         }
     }
 
@@ -348,9 +357,12 @@ class SwitchController extends IXP_Controller_FrontEnd
             $this->getD2EM()->getRepository( '\\Entities\\Vendor' )->find( $form->getElement( 'vendorid' )->getValue() )
         );
 
-        $object->setInfrastructure(
-            $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructure' )->getValue() )
-        );
+        if( $form->getElement( 'infrastructre' )->getValue() )
+        {
+            $object->setInfrastructure(
+                $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructre' )->getValue() )
+            );
+        }
 
         return true;
     }

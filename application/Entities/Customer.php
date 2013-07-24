@@ -77,257 +77,193 @@ class Customer
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var integer $type
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string $shortname
      */
-    private $shortname;
+    protected $shortname;
 
     /**
      * @var integer $autsys
      */
-    private $autsys;
+    protected $autsys;
 
     /**
      * @var integer $maxprefixes
      */
-    private $maxprefixes;
+    protected $maxprefixes;
 
     /**
      * @var string $peeringemail
      */
-    private $peeringemail;
+    protected $peeringemail;
 
     /**
      * @var string $nocphone
      */
-    private $nocphone;
-
-    /**
-     * @var string $noc24hrphone
-     */
-    private $noc24hrphone;
+    protected $nocphone;
 
     /**
      * @var string $nocfax
      */
-    private $nocfax;
+    protected $nocfax;
 
     /**
      * @var string $nocemail
      */
-    private $nocemail;
+    protected $nocemail;
 
     /**
      * @var string $nochours
      */
-    private $nochours;
+    protected $nochours;
 
     /**
      * @var string $nocwww
      */
-    private $nocwww;
+    protected $nocwww;
 
     /**
      * @var string $peeringmacro
      */
-    private $peeringmacro;
+    protected $peeringmacro;
 
     /**
      * @var string $peeringpolicy
      */
-    private $peeringpolicy;
+    protected $peeringpolicy;
 
     /**
      * @var string $corpwww
      */
-    private $corpwww;
+    protected $corpwww;
 
     /**
      * @var \DateTime $datejoin
      */
-    private $datejoin;
+    protected $datejoin;
 
     /**
      * @var \DateTime $dateleave
      */
-    private $dateleave;
+    protected $dateleave;
 
     /**
      * @var integer $status
      */
-    private $status;
+    protected $status;
 
     /**
      * @var boolean $activepeeringmatrix
      */
-    private $activepeeringmatrix;
+    protected $activepeeringmatrix;
 
     /**
      * @var \DateTime $lastupdated
      */
-    private $lastupdated;
+    protected $lastupdated;
 
     /**
      * @var integer $lastupdatedby
      */
-    private $lastupdatedby;
+    protected $lastupdatedby;
 
     /**
      * @var string $creator
      */
-    private $creator;
+    protected $creator;
 
     /**
      * @var \DateTime $created
      */
-    private $created;
+    protected $created;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $VirtualInterfaces;
+    protected $VirtualInterfaces;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Contacts;
+    protected $Contacts;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $ConsoleServerConnections;
+    protected $ConsoleServerConnections;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $CustomerEquipment;
+    protected $CustomerEquipment;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Peers;
+    protected $Peers;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $PeersWith;
+    protected $PeersWith;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $XCusts;
+    protected $XCusts;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $YCusts;
+    protected $YCusts;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Users;
+    protected $Users;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Traffic95ths;
+    protected $Traffic95ths;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $Traffic95thMonthlys;
+    protected $Traffic95thMonthlys;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $TrafficDailies;
+    protected $TrafficDailies;
 
     /**
      * @var \Entities\CompanyRegisteredDetail
      */
-    private $RegistrationDetails;
+    protected $RegistrationDetails;
 
     /**
      * @var \Entities\CompanyBillingDetail
      */
-    private $BillingDetails;
-
-
-    /**
-     * @var string
-     */
-    private $peeringDb;
+    protected $BillingDetails;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $Notes;
-    /**
-     * @var string
-     */
-    private $peeringmacrov6;
+    protected $IXPs;
 
-    /**
-     * @var string
-     */
-    private $abbreviatedName;
-
-    /**
-     * @var string
-     */
-    private $MD5Support;
-
-    /**
-     * @var boolean
-     */
-    private $isReseller;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $ResoldCustomers;
-
-    /**
-     * @var \Entities\Customer
-     */
-    private $Reseller;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $IXPs;
-
-    /**
-     * @var \Entities\IRRDBConfig
-     */
-    private $IRRDB;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $RSPrefixes;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    private $SecEvents;
-
-    /**
-     * @var string $noc24hphone
-     */
-    private $noc24hphone;
 
 
     /**
@@ -509,29 +445,6 @@ class Customer
     public function getNocphone()
     {
         return $this->nocphone;
-    }
-
-    /**
-     * Set noc24hrphone
-     *
-     * @param string $noc24hrphone
-     * @return Customer
-     */
-    public function setNoc24hrphone($noc24hrphone)
-    {
-        $this->noc24hrphone = $noc24hrphone;
-
-        return $this;
-    }
-
-    /**
-     * Get noc24hrphone
-     *
-     * @return string
-     */
-    public function getNoc24hrphone()
-    {
-        return $this->noc24hrphone;
     }
 
     /**
@@ -1293,6 +1206,11 @@ class Customer
     {
         return $this->TrafficDailies;
     }
+    
+    /**
+     * @var string $noc24hphone
+     */
+    protected $noc24hphone;
 
 
     /**
@@ -1317,6 +1235,11 @@ class Customer
     {
         return $this->noc24hphone;
     }
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $SecEvents;
 
     /**
      * Add SecEvents
@@ -1490,6 +1413,12 @@ class Customer
     }
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    protected $RSPrefixes;
+
+
+    /**
      * Add RSPrefixes
      *
      * @param \Entities\RSPrefix $rSPrefixes
@@ -1541,6 +1470,10 @@ class Customer
         return false;
     }
 
+    /**
+     * @var \Entities\IRRDBConfig
+     */
+    protected $IRRDB;
 
     /**
      * Set IRRDB
@@ -1566,6 +1499,12 @@ class Customer
     }
 
     /**
+     * @var string
+     */
+    protected $peeringDb;
+
+
+    /**
      * Set peeringDb
      *
      * @param string $peeringDb
@@ -1587,6 +1526,11 @@ class Customer
     {
         return $this->peeringDb;
     }
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    protected $Notes;
 
     /**
      * Add Notes
@@ -1620,6 +1564,11 @@ class Customer
     {
         return $this->Notes;
     }
+
+    /**
+     * @var string
+     */
+    protected $peeringmacrov6;
 
     /**
      * Set peeringmacrov6
@@ -1689,6 +1638,16 @@ class Customer
     {
         return $this->BillingDetails;
     }
+    
+    /**
+     * @var string
+     */
+    protected $abbreviatedName;
+
+    /**
+     * @var string
+     */
+    protected $MD5Support;
 
     /**
      * Set abbreviatedName
@@ -1736,6 +1695,22 @@ class Customer
         return $this->MD5Support;
     }
     
+    /**
+     * @var boolean
+     */
+    protected $isReseller;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    protected $ResoldCustomers;
+
+    /**
+     * @var \Entities\Customer
+     */
+    protected $Reseller;
+
+
     /**
      * Set isReseller
      *

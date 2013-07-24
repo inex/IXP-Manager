@@ -66,88 +66,88 @@ class SwitchPort
     /**
      * @var integer $type
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\PhysicalInterface
      */
-    private $PhysicalInterface;
+    protected $PhysicalInterface;
 
     /**
      * @var Entities\Switcher
      */
-    private $Switcher;
+    protected $Switcher;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    private $SecEvents;
+    protected $SecEvents;
 
     /**
      * @var string
      */
-    private $ifName;
+    protected $ifName;
 
     /**
      * @var string
      */
-    private $ifAlias;
+    protected $ifAlias;
 
     /**
      * @var integer
      */
-    private $ifHighSpeed;
+    protected $ifHighSpeed;
 
     /**
      * @var integer
      */
-    private $ifMtu;
+    protected $ifMtu;
 
     /**
      * @var string
      */
-    private $ifPhysAddress;
+    protected $ifPhysAddress;
 
     /**
      * @var integer
      */
-    private $ifAdminStatus;
+    protected $ifAdminStatus;
 
     /**
      * @var integer
      */
-    private $ifOperStatus;
+    protected $ifOperStatus;
 
     /**
      * @var integer
      */
-    private $ifLastChange;
+    protected $ifLastChange;
 
     /**
      * @var \DateTime
      */
-    private $lastSnmpPoll;
+    protected $lastSnmpPoll;
 
     /**
      * @var integer
      */
-    private $ifIndex;
+    protected $ifIndex;
 
 
     /**
      * @var boolean $active
      */
-    private $active;
+    protected $active;
 
     /**
      * Set type

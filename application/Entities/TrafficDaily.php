@@ -12,142 +12,142 @@ class TrafficDaily
     /**
      * @var \DateTime $day
      */
-    private $day;
+    protected $day;
 
     /**
      * @var string $category
      */
-    private $category;
+    protected $category;
 
     /**
      * @var integer $day_avg_in
      */
-    private $day_avg_in;
+    protected $day_avg_in;
 
     /**
      * @var integer $day_avg_out
      */
-    private $day_avg_out;
+    protected $day_avg_out;
 
     /**
      * @var integer $day_max_in
      */
-    private $day_max_in;
+    protected $day_max_in;
 
     /**
      * @var integer $day_max_out
      */
-    private $day_max_out;
+    protected $day_max_out;
 
     /**
      * @var integer $day_tot_in
      */
-    private $day_tot_in;
+    protected $day_tot_in;
 
     /**
      * @var integer $day_tot_out
      */
-    private $day_tot_out;
+    protected $day_tot_out;
 
     /**
      * @var integer $week_avg_in
      */
-    private $week_avg_in;
+    protected $week_avg_in;
 
     /**
      * @var integer $week_avg_out
      */
-    private $week_avg_out;
+    protected $week_avg_out;
 
     /**
      * @var integer $week_max_in
      */
-    private $week_max_in;
+    protected $week_max_in;
 
     /**
      * @var integer $week_max_out
      */
-    private $week_max_out;
+    protected $week_max_out;
 
     /**
      * @var integer $week_tot_in
      */
-    private $week_tot_in;
+    protected $week_tot_in;
 
     /**
      * @var integer $week_tot_out
      */
-    private $week_tot_out;
+    protected $week_tot_out;
 
     /**
      * @var integer $month_avg_in
      */
-    private $month_avg_in;
+    protected $month_avg_in;
 
     /**
      * @var integer $month_avg_out
      */
-    private $month_avg_out;
+    protected $month_avg_out;
 
     /**
      * @var integer $month_max_in
      */
-    private $month_max_in;
+    protected $month_max_in;
 
     /**
      * @var integer $month_max_out
      */
-    private $month_max_out;
+    protected $month_max_out;
 
     /**
      * @var integer $month_tot_in
      */
-    private $month_tot_in;
+    protected $month_tot_in;
 
     /**
      * @var integer $month_tot_out
      */
-    private $month_tot_out;
+    protected $month_tot_out;
 
     /**
      * @var integer $year_avg_in
      */
-    private $year_avg_in;
+    protected $year_avg_in;
 
     /**
      * @var integer $year_avg_out
      */
-    private $year_avg_out;
+    protected $year_avg_out;
 
     /**
      * @var integer $year_max_in
      */
-    private $year_max_in;
+    protected $year_max_in;
 
     /**
      * @var integer $year_max_out
      */
-    private $year_max_out;
+    protected $year_max_out;
 
     /**
      * @var integer $year_tot_in
      */
-    private $year_tot_in;
+    protected $year_tot_in;
 
     /**
      * @var integer $year_tot_out
      */
-    private $year_tot_out;
+    protected $year_tot_out;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
 
     /**

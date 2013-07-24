@@ -24,42 +24,42 @@ class SecEvent
     /**
      * @var string $type
      */
-    private $type;
+    protected $type;
 
     /**
      * @var string $message
      */
-    private $message;
+    protected $message;
 
     /**
      * @var string $recorded_date
      */
-    private $recorded_date;
+    protected $recorded_date;
 
     /**
      * @var \DateTime $timestamp
      */
-    private $timestamp;
+    protected $timestamp;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
     /**
      * @var Entities\Switcher
      */
-    private $Switch;
+    protected $Switch;
 
     /**
      * @var Entities\SwitchPort
      */
-    private $SwitchPort;
+    protected $SwitchPort;
 
 
     /**

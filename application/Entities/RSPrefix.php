@@ -33,37 +33,37 @@ class RSPrefix
     /**
      * @var \DateTime
      */
-    private $timestamp;
+    protected $timestamp;
 
     /**
      * @var string
      */
-    private $prefix;
+    protected $prefix;
 
     /**
      * @var integer
      */
-    private $protocol;
+    protected $protocol;
 
     /**
      * @var integer
      */
-    private $irrdb;
+    protected $irrdb;
 
     /**
      * @var integer
      */
-    private $rs_origin;
+    protected $rs_origin;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
 
     /**

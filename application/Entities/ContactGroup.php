@@ -18,42 +18,42 @@ class ContactGroup
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $description;
+    protected $description;
 
     /**
      * @var string
      */
-    private $type;
+    protected $type;
 
     /**
      * @var boolean
      */
-    private $active;
+    protected $active;
 
     /**
      * @var integer $limited_to
      */
-    private $limited_to;
+    protected $limited_to;
 
     /**
      * @var \DateTime
      */
-    private $created;
+    protected $created;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $Contacts;
+    protected $Contacts;
 
     /**
      * Constructor

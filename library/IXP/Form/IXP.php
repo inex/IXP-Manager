@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,9 +25,10 @@
  * Form: editing IXP details
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Form
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IXP_Form_IXP extends IXP_Form
@@ -46,10 +47,8 @@ class IXP_Form_IXP extends IXP_Form
         $shortname = $this->createElement( 'text', 'shortname' );
         $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->addValidator( 'alnum' )
-            ->addValidator( 'regex', false, array('/^[a-z0-9]+/' ) )
             ->setRequired( true )
-            ->setLabel( 'Short Name' )
-            ->addFilter( 'StringToLower' )
+            ->setLabel( 'Shortname' )
             ->addFilter( 'StringTrim' );
         $this->addElement( $shortname  );
 

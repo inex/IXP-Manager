@@ -12,32 +12,32 @@ class CustomerNote
     /**
      * @var boolean
      */
-    private $private;
+    protected $private;
 
     /**
      * @var string
      */
-    private $title;
+    protected $title;
 
     /**
      * @var string
      */
-    private $note;
+    protected $note;
 
     /**
      * @var \DateTime
      */
-    private $created;
+    protected $created;
 
     /**
      * @var integer
      */
-    private $id;
+    protected $id;
 
     /**
      * @var \Entities\Customer
      */
-    private $Customer;
+    protected $Customer;
 
 
     /**
@@ -183,7 +183,7 @@ class CustomerNote
     /**
      * @var \DateTime
      */
-    private $updated;
+    protected $updated;
 
 
     /**

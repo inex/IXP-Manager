@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,9 +25,10 @@
  * Form: editing IXP details
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @author     Nerijus Barauskas <nerijus@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Form
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class IXP_Form_Infrastructure extends IXP_Form
@@ -46,13 +47,19 @@ class IXP_Form_Infrastructure extends IXP_Form
 
         $shortname = $this->createElement( 'text', 'shortname' );
         $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->addValidator( 'alnum' )
-            ->addValidator( 'regex', false, array('/^[a-z0-9]+/' ) )
             ->setRequired( true )
             ->setLabel( 'Short Name' )
             ->addFilter( 'StringToLower' )
             ->addFilter( 'StringTrim' );
         $this->addElement( $shortname  );
+        
+        $isPrimary = $this->createElement( 'checkbox', 'isPrimary' );
+        $isPrimary->setLabel( 'This is the <em>primary</em> infrastructure' )
+            ->setValue( '0' )
+            ->addValidator( 'InArray', false, [ [ 0, 1 ] ] )
+            ->addFilter( 'Int' );
+        $this->addElement( $isPrimary );
+        
 
         $name = $this->createElement( 'text', 'mrtg_path' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
@@ -74,7 +81,7 @@ class IXP_Form_Infrastructure extends IXP_Form
         $this->addElement( $this->createCancelElement() );
     }
 
-    /** 
+    /**
      * Sets IXP form element to drop down or hidden depends on
      * multi IXP is enabled or not.
      *
@@ -86,7 +93,7 @@ class IXP_Form_Infrastructure extends IXP_Form
         if( !$multiIXP )
         {
             $ixp = $this->createElement( 'hidden', 'ixp' );
-            $ixp->setValue( '1' );   
+            $ixp->setValue( '1' );
         }
         else
             $ixp = IXP_Form_IXP::getPopulatedSelect( 'ixp' );
@@ -111,7 +118,7 @@ class IXP_Form_Infrastructure extends IXP_Form
         $sw = new Zend_Form_Element_Select( $name );
 
         $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
-            ->select( 'e.id AS id, e.shortname AS name, ix.shortname AS ixp' )
+            ->select( 'e.id AS id, e.name AS name, ix.shortname AS ixp' )
             ->from( '\\Entities\\Infrastructure', 'e' )
             ->join( 'e.IXP', 'ix' )
             ->add( 'orderBy', "ixp ASC, name ASC" );
@@ -119,11 +126,11 @@ class IXP_Form_Infrastructure extends IXP_Form
         $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\Infrastructure', 'id', [ 'ixp', 'name' ], 'ixp', 'ASC' );
     
         $sw->setRegisterInArrayValidator( true )
-            ->setRequired( true )
+            ->setRequired( false )
             ->setLabel( _( 'infrastructure' ) )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( [ 'Please select a infrastructure' ] );
+            ->setAttrib( 'class', 'chzn-select-deselect' )
+            //->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( [ 'Please select an infrastructure' ] );
     
         return $sw;
     }

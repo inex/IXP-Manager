@@ -68,7 +68,6 @@ class IXP_Form_Switch extends IXP_Form
         $infrastructre = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
         $this->addElement( $infrastructre );
 
-
         $ipv4addr = $this->createElement( 'text', 'ipv4addr' );
         $ipv4addr->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setAttrib( 'class', 'span3' )

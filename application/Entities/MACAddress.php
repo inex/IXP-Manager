@@ -12,27 +12,27 @@ class MACAddress
     /**
      * @var \DateTime $firstseen
      */
-    private $firstseen;
+    protected $firstseen;
 
     /**
      * @var \DateTime $lastseen
      */
-    private $lastseen;
+    protected $lastseen;
 
     /**
      * @var string $mac
      */
-    private $mac;
+    protected $mac;
 
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var Entities\VirtualInterface
      */
-    private $VirtualInterface;
+    protected $VirtualInterface;
 
 
     /**
