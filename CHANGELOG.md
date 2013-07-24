@@ -1,4 +1,39 @@
 
+# v3.4.0 (2013xxxx)
+
+    CREATE TABLE customer_to_ixp (
+        customer_id INT NOT NULL, 
+        ixp_id INT NOT NULL, 
+        INDEX IDX_E85DBF209395C3F3 (customer_id), 
+        INDEX IDX_E85DBF20A5A4E881 (ixp_id), 
+        PRIMARY KEY(customer_id, ixp_id)
+    ) 
+        DEFAULT CHARACTER SET utf8 
+       COLLATE utf8_unicode_ci 
+       ENGINE = InnoDB;
+    
+    ALTER TABLE customer_to_ixp 
+        ADD CONSTRAINT FK_E85DBF209395C3F3 
+            FOREIGN KEY (customer_id) REFERENCES cust (id);
+    
+    ALTER TABLE customer_to_ixp 
+        ADD CONSTRAINT FK_E85DBF20A5A4E881 
+            FOREIGN KEY (ixp_id) REFERENCES ixp (id);
+    
+    ALTER TABLE vlan 
+        ADD infrastructureid INT DEFAULT NULL;
+    
+    ALTER TABLE vlan 
+        ADD CONSTRAINT FK_F83104A1721EBF79 
+            FOREIGN KEY (infrastructureid) REFERENCES infrastructure (id);
+    
+    CREATE INDEX IDX_F83104A1721EBF79 ON vlan (infrastructureid);
+    
+    ALTER TABLE infrastructure 
+        ADD mrtg_path VARCHAR(255) DEFAULT NULL, 
+        ADD mrtg_p2p_path VARCHAR(255) DEFAULT NULL;
+
+
 # v3.3.2 (20130724)
 
 Major new feature - CLI tool to email a report on ports with error / discard counts. See the [documentation](https://github.com/inex/IXP-Manager/wiki/Email-Notifications).
