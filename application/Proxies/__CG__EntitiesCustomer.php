@@ -126,18 +126,6 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getNocphone();
     }
 
-    public function setNoc24hrphone($noc24hrphone)
-    {
-        $this->__load();
-        return parent::setNoc24hrphone($noc24hrphone);
-    }
-
-    public function getNoc24hrphone()
-    {
-        $this->__load();
-        return parent::getNoc24hrphone();
-    }
-
     public function setNocfax($nocfax)
     {
         $this->__load();

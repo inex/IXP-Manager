@@ -105,7 +105,6 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         return parent::getSwitchers();
     }
 
-<<<<<<< HEAD
     public function addVlan(\Entities\Vlan $vlans)
     {
         $this->__load();
@@ -142,32 +141,28 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         return parent::setMrtgP2pPath($mrtgP2pPath);
     }
 
-    public function getMrtgP2pPath()
-    {
-        $this->__load();
-        return parent::getMrtgP2pPath();
-=======
     public function setIsPrimary($isPrimary)
     {
         $this->__load();
         return parent::setIsPrimary($isPrimary);
     }
 
+    public function getMrtgP2pPath()
+    {
+        $this->__load();
+        return parent::getMrtgP2pPath();
+    }
+
     public function getIsPrimary()
     {
         $this->__load();
         return parent::getIsPrimary();
->>>>>>> master
     }
 
 
     public function __sleep()
     {
-<<<<<<< HEAD
-        return array('__isInitialized__', 'name', 'mrtg_path', 'mrtg_p2p_path', 'shortname', 'id', 'Switchers', 'Vlans', 'IXP');
-=======
-        return array('__isInitialized__', 'name', 'shortname', 'isPrimary', 'id', 'Switchers', 'IXP');
->>>>>>> master
+        return array('__isInitialized__', 'name', 'mrtg_path', 'mrtg_p2p_path', 'shortname', 'isPrimary', 'id', 'Switchers', 'Vlans', 'IXP');
     }
 
     public function __clone()
