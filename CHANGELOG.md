@@ -9,6 +9,7 @@ This means you may need to update your cronjob scripts for these as follows:
 
 * `cli.examine-port-utilisation` becomes `statistics-cli.email-port-utilisation`
 * `cli.examine-traffic-deltas` becomes `statistics-cli.email-traffic-deltas`
+* `cli.upload-traffic-stats-to-db` becomes `statistics-cli.upload-traffic-stats-to-db`
 
 The [documentation](https://github.com/inex/IXP-Manager/wiki/Email-Notifications) has been updated.
 
