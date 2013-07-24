@@ -1,7 +1,9 @@
 
-# v3.3.2 (xxxxx)
+# v3.3.2 (20130724)
 
-A number of minor fixes but one significat change:
+Major new feature - CLI tool to email a report on ports with error / discard counts. See the [documentation](https://github.com/inex/IXP-Manager/wiki/Email-Notifications).
+
+Also a number of minor fixes but one significat change:
 
 The email notification code for port utilisation and traffic deltas have moved to a more specific controller.
 
@@ -15,8 +17,10 @@ The [documentation](https://github.com/inex/IXP-Manager/wiki/Email-Notifications
 
 Also, in the event you have skinned these emails, the templates for these emails changes from `customer/email` to `statistics-cli/email`.
 
-
-- [IM|HK] Move email notifications for traffic deltas and port utilisation to a better home
+- [IM] Include date with error / discard report (1c799b3 - Barry O'Donovan - 2013-07-24)
+- [NF] CLI tool to email a report on ports with error / discard counts (686689b - Barry O'Donovan - 2013-07-24)
+- [IM|HK] Move traffic stats to database CLI tool to a better home (748452c - Barry O'Donovan - 2013-07-24)
+- [IM|HK] Move email notifications for traffic deltas and port utilisation to a better home (4ed554c - Barry O'Donovan - 2013-07-24)
 - [BF] For LAG / multiple ports from the same customer we incorrectly showed the same graph for all (cfdad6f - Barry O'Donovan - 2013-07-24)
 - [IM] Introduce caching to IXPs and infrastructures to prevent needless database queries (cbe2aa5 - Barry O'Donovan - 2013-07-23)
 - [BF] Stale reference to infrastructures (8f9122b - Barry O'Donovan - 2013-07-23)
