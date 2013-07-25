@@ -191,15 +191,15 @@ class CustomerController extends IXP_Controller_FrontEnd
             $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
             if( !$ixp )
             {
-                $this->addMessage( "Could not load requested object", OSS_Message::ERROR );
+                $this->addMessage( "Could not load the requested IXP object", OSS_Message::ERROR );
                 $this->redirectAndEnsureDie( "/ixp" );
             }
 
             $qb->leftJoin( 'c.IXPs', 'ixp' )
-                ->andWhere( 'ixp.id = ?2' )
-                ->setParameter( 2, $ixp->getId() );
+                ->andWhere( 'ixp.id = :ixpid' )
+                ->setParameter( 'ixpid', $ixp->getId() );
 
-            $this->view->validCustomers = $this->getD2R( '\\Entities\\Customer' )->getNamesNotAssignedToIXP( $ixp->getId( ) );
+            $this->view->validCustomers = $this->getD2R( '\\Entities\\Customer' )->getNamesNotAssignedToIXP( $ixp );
             $this->_feParams->addWhenEmpty = false;
         }
 
@@ -347,8 +347,8 @@ class CustomerController extends IXP_Controller_FrontEnd
             $object->setIRRDB( null );
         }
 
-        $object->addIXP( 
-            $this->getD2R( "\\Entities\\IXP" )->find( $form->getValue( "ixp" ) ) 
+        $object->addIXP(
+            $this->getD2R( "\\Entities\\IXP" )->find( $form->getValue( "ixp" ) )
         );
 
         return $this->_setReseller( $form, $object );
@@ -517,7 +517,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
 
     /**
-     * 
+     *
      *
      */
     public function billingRegistrationAction()
@@ -653,7 +653,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             
             if( $notallow )
                 $this->redirectAndEnsureDie( '/erro/insufficient-permissions' );
-        }       
+        }
     }
         
     
@@ -729,7 +729,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         foreach( $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->getLatestUpdate() as $ln )
         {
         
-            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) ) 
+            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) )
                 && ( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) )
                 $latestNotes[] = $ln;
             

@@ -115,22 +115,20 @@ class Customer extends EntityRepository
     }
 
     /**
-     * Return an array of all customer names which are not related with given IXP where the array key is the customer id.
+     * Return an array of all customers who are not related with a given IXP.
      *
-     * @param int $ixpid IXP id for filtering results
-     * @return array An array of customer names with the customer id as the key.
+     * @param \Entities\IXP $ixp IXP for filtering results
+     * @return \Entities\Customerp[ An array of customers
      */
-    public function getNamesNotAssignedToIXP( $ixpid )
+    public function getNamesNotAssignedToIXP( $ixp )
     {
-        $acusts = $this->getEntityManager()->createQuery(
-            "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c WHERE ?1 NOT MEMBER OF c.IXPs ORDER BY name ASC"
-        )->setParameter( 1, $ixpid )->getResult();
-        
-        $customers = [];
-        foreach( $acusts as $c )
-            $customers[ $c['id'] ] = $c['name'];
-
-        return $customers;
+        return $this->getEntityManager()->createQuery(
+                "SELECT c
+                    FROM Entities\\Customer c
+                    WHERE ?1 NOT MEMBER OF c.IXPs
+                    ORDER BY c.name ASC" )
+            ->setParameter( 1, $ixp )
+            ->getResult();
     }
 
     /**

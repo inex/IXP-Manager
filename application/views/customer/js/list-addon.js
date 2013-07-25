@@ -1,3 +1,4 @@
+
 {if isset( $validCustomers )}
     $( "#cust-assign-dialog-close" ).on( 'click', function(){
         dialog.modal( "hide" );
@@ -18,3 +19,4 @@
         } );
     });
 {/if}
+	
