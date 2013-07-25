@@ -62,6 +62,26 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
         return $c;
     }
     
+    /**
+     * Load a customer from the database by ID but redirect to `error/error` if no such customer.
+     *
+     * @param int $id The customer ID to load
+     * @param string $redirect Alternative location to redirect to
+     * @return \Entities\Customer The customer object
+     */
+    protected function loadCustomerById( $id, $redirect = null )
+    {
+        if( $id )
+            $c = $this->getD2R( '\\Entities\\Customer' )->find( $id );
+    
+        if( !$id || !$c )
+        {
+            $this->addMessage( "Could not load the requested customer object", OSS_Message::ERROR );
+            $this->redirect( $redirect === null ? 'error/error' : $redirect );
+        }
+    
+        return $c;
+    }
     
     
     /**
