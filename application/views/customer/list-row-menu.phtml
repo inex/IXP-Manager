@@ -1,4 +1,7 @@
 
 <div class="btn-group">
     <a class="btn btn-mini" href="{genUrl controller=$controller action="overview" id=$row.id}"><i class="icon-eye-open"></i></a>
+    {if $multiIXP and isset( $ixp )}
+        <a class="btn btn-mini" href="{genUrl controller='ixp' action='unassign-customer' cid=$row.id id=$ixp->getId()}"><i class="icon-remove"></i></a>
+    {/if}
 </div>

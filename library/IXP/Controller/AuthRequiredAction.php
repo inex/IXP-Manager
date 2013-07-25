@@ -83,6 +83,27 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
         return $c;
     }
     
+    /**
+     * Load an IXP from the database by ID but redirect to `error/error` if no such IXP.
+     *
+     * @param int $id The IXP ID to load
+     * @param string $redirect Alternative location to redirect to
+     * @return \Entities\IXP The IXP object
+     */
+    protected function loadIxpById( $id, $redirect = null )
+    {
+        if( $id )
+            $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
+    
+        if( !$id || !$i )
+        {
+            $this->addMessage( "Could not load the IXP object", OSS_Message::ERROR );
+            $this->redirect( $redirect === null ? 'error/error' : $redirect );
+        }
+    
+        return $i;
+    }
+    
     
     /**
      * Utility function to load a customer's notes and calculate the amount of unread / updated notes

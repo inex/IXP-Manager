@@ -58,9 +58,10 @@ class Infrastructure extends EntityRepository
      *
      * @throws \IXP_Exception
      * @param \Entities\IXP $ixp The IXP to find the primary infrastucture for. If null, uses the default IXP with ID 1.
-     * @return \Entities\Infrastructure The primary infrastructure for a given IXP
+     * @param bool $throw If true (default) throw an excpetion on database inconsistency (no primary, more that one priamry)
+     * @return \Entities\Infrastructure The primary infrastructure for a given IXP. Or, if `$throw` is false, return false if no primary.
      */
-    public function getPrimary( $ixp = null )
+    public function getPrimary( $ixp = null, $throw = true )
     {
         if( $ixp == null )
             $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->getDefault();
@@ -79,6 +80,9 @@ class Infrastructure extends EntityRepository
         if( !$infra || count( $infra ) > 1 )
         {
             // uh oh, inconsistency
+            if( !$throw )
+                return false;
+            
             throw new \IXP_Exception(
                 'When seeking the primary infrastructure of IXP ID #' . $ixp->getId() . ' we found none or more than one.'
                     . ' There must be one (and only one) infrastructure marked as private per IXP'

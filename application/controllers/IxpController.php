@@ -139,7 +139,7 @@ class IxpController extends IXP_Controller_FrontEnd
                 {
                     $this->addMessage(
                             "The customer <em>{$customer->getName()}</em> has assigned interfaces in this IXP."
-                                . " Please deprovisioning all interfaces before unsassigning this customer from this IXP.",
+                                . " Please deprovision all interfaces before unsassigning this customer from this IXP.",
                             OSS_Message::ERROR
                     );
                     $this->redirect( "/customer/list/ixp/" .  $ixp->getId() );
@@ -173,7 +173,7 @@ class IxpController extends IXP_Controller_FrontEnd
         if( ( $cnt = count( $object->getInfrastructures() ) ) )
         {
             $this->addMessage(
-                    "Could not delete this IXP as {$cnt} infrastructures(es) are associated with it",
+                    "Could not delete this IXP as {$cnt} infrastructures(es) are associated with it.",
                     OSS_Message::ERROR
             );
             return false;
@@ -182,7 +182,7 @@ class IxpController extends IXP_Controller_FrontEnd
         if( ( $cnt = count( $object->getCustomers() ) ) )
         {
             $this->addMessage(
-                    "Could not delete this IXP as {$cnt} customer(es) are associated with it",
+                    "Could not delete this IXP as {$cnt} customer(s) are associated with it.",
                     OSS_Message::ERROR
             );
             return false;
