@@ -347,9 +347,12 @@ class CustomerController extends IXP_Controller_FrontEnd
             $object->setIRRDB( null );
         }
 
-        $object->addIXP(
-            $this->getD2R( "\\Entities\\IXP" )->find( $form->getValue( "ixp" ) )
-        );
+        if( !$isEdit )
+        {
+            $object->addIXP(
+                $this->loadIxpById( $form->getValue( "ixp" ) )
+            );
+        }
 
         return $this->_setReseller( $form, $object );
     }
@@ -494,7 +497,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
 
         $form->enableResller( $this->resellerMode() );
-        $form->setMultiIXP( $this->multiIXP() );
+        $form->setMultiIXP( $this->multiIXP(), $isEdit );
         
         if( $this->resellerMode() )
         {
