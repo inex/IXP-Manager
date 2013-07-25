@@ -5,10 +5,13 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="name" type="string" length="255" nullable="true"/>
+    <field name="shortname" type="string" length="255" nullable="true"/>
+    <field name="isPrimary" type="boolean" length="1" nullable="false"/>
     <field name="mrtg_path" type="string" length="255" nullable="true"/>
     <field name="mrtg_p2p_path" type="string" length="255" nullable="true"/>
-    <field name="shortname" type="string" unique="true" length="255" nullable="true"/>
-    <field name="isPrimary" type="boolean" length="1" nullable="false"/>
+    <unique-constraints>
+      <unique-constraint name="IXPSN" columns="shortname,ixp_id"/>
+    </unique-constraints>
     <many-to-one field="IXP" target-entity="Entities\IXP" inversed-by="Infrastructures">
       <join-columns>
         <join-column name="ixp_id" referenced-column-name="id" nullable="false"/>

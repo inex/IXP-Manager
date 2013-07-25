@@ -28,6 +28,12 @@
             FOREIGN KEY (infrastructureid) REFERENCES infrastructure (id);
     
     CREATE INDEX IDX_F83104A1721EBF79 ON vlan (infrastructureid);
+
+    DROP INDEX UNIQ_D129B19064082763 
+        ON infrastructure;
+        
+    CREATE UNIQUE INDEX IXPSN 
+        ON infrastructure (shortname, ixp_id);
     
     ALTER TABLE infrastructure 
         ADD mrtg_path VARCHAR(255) DEFAULT NULL, 
