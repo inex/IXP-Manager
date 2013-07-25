@@ -26,7 +26,8 @@
 # A script to poll all switches and update a database table of the known
 # MAC addresses attached to each port.
 #
-# Tested on Brocade TurboIron, FES-X6xx and Extreme BD-8806 kit.  Possibly may
+# Tested on Brocade TurboIron, FES-X6xx and
+# Extreme BD-8806, X460-48t, X650-24x(SSns) and X670V-48x. Possibly may
 # squeak on other vendors' kit due to implementation issues.
 
 use strict;
