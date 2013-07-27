@@ -268,8 +268,7 @@ class Vlan extends EntityRepository
      */
     public function getPrivateVlanDetails( $infra = null )
     {
-        $q = $this->getEntityManager()->createQuery(
-                "SELECT vli, v, vi, pi, sp, s, l, cab, c, i, ixp
+        $q = "SELECT vli, v, vi, pi, sp, s, l, cab, c, i, ixp
                 FROM \\Entities\\Vlan v
                     LEFT JOIN v.VlanInterfaces vli
                     LEFT JOIN v.Infrastructure i
