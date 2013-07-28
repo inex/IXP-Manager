@@ -1,4 +1,11 @@
 
+# Upgrade Instructions
+
+Please see the following page for upgrade instructions:
+
+> https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
+
+
 # v3.3.2 (20130724)
 
 Major new feature - CLI tool to email a report on ports with error / discard counts. See the [documentation](https://github.com/inex/IXP-Manager/wiki/Email-Notifications).
