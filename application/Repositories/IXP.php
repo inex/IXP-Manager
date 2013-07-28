@@ -46,8 +46,8 @@ class IXP extends EntityRepository
     /**
      * Return an array of all IXP names where the array key is the IXP id.
      *
-     * NOTICE: Super user can see all IXPs and customer user can see only those which 
-     *         is assign to users customer.
+     * NOTE: Super user can see all IXPs and customer user can see only those which
+     *         is assigned to the users customer.
      *
      * @param  \Entities\User $user User to limit IXP names
      * @return array An array of all IXP names with the IXP id as the key.
