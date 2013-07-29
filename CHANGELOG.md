@@ -1,4 +1,10 @@
 
+# Upgrade Instructions
+
+Please see the following page for upgrade instructions:
+
+> https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
+
 # v3.4.0 (2013xxxx)
 
     CREATE TABLE customer_to_ixp (
