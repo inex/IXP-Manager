@@ -57,7 +57,7 @@ class Switcher
     /**
      * @var \Entities\Infrastructure
      */
-    protected $infrastructure;
+    protected $Infrastructure;
 
     /**
      * @var integer $switchtype
@@ -758,11 +758,5 @@ class Switcher
     
         return $this;
     }
-
-    /**
-     * @var \Entities\Infrastructure
-     */
-    private $Infrastructure;
-
 
 }
