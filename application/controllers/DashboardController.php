@@ -34,7 +34,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 {
     
     public function preDispatch()
-    { 
+    {
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_CUSTUSER )
             $this->_redirect( '' );
     }
@@ -42,7 +42,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
     public function indexAction()
     {
         // Get the three most recent members
-        $this->view->recentMembers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getRecent( 3 );
+        $this->view->recentMembers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getRecent();
 
         $this->view->cust = $this->getUser()->getCustomer();
         
