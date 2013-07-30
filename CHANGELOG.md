@@ -7,6 +7,17 @@ Please see the following page for upgrade instructions:
 
 # v3.4.0 (2013xxxx)
 
+This is a major new update which supports multiple IXPs with customers being members of one or more.
+
+A "separate IXP" is an IXP that is not connected in anyway to another. E.g. in different cities with no inter-connection.
+
+This update also links VLANs to infrastructures so you can now use the same VLAN tag in different infrastructures. 
+
+
+**NB:** There are a lot of upgrade steps required in this - please follow the instructions carefully.
+
+A schema update is required:
+
     CREATE TABLE customer_to_ixp (
         customer_id INT NOT NULL, 
         ixp_id INT NOT NULL, 
@@ -14,7 +25,7 @@ Please see the following page for upgrade instructions:
         INDEX IDX_E85DBF20A5A4E881 (ixp_id), 
         PRIMARY KEY(customer_id, ixp_id)
     ) 
-        DEFAULT CHARACTER SET utf8 
+       DEFAULT CHARACTER SET utf8 
        COLLATE utf8_unicode_ci 
        ENGINE = InnoDB;
     
@@ -34,7 +45,7 @@ Please see the following page for upgrade instructions:
             FOREIGN KEY (infrastructureid) REFERENCES infrastructure (id);
     
     CREATE INDEX IDX_F83104A1721EBF79 ON vlan (infrastructureid);
-
+    
     DROP INDEX UNIQ_D129B19064082763 
         ON infrastructure;
         
@@ -44,6 +55,12 @@ Please see the following page for upgrade instructions:
     ALTER TABLE infrastructure 
         ADD mrtg_path VARCHAR(255) DEFAULT NULL, 
         ADD mrtg_p2p_path VARCHAR(255) DEFAULT NULL;
+
+
+VLANs must be linked with infrastructures. Immediately of the frontend will not work. You can use a simple SQL query as follows and then, correct the VLANs to the correct infrastructures in the web interface:
+
+    UPDATE `vlan` SET `infrastructureid` = 1;
+
 
 
 # v3.3.3 (20130730)

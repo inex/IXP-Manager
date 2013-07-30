@@ -1,0 +1,20 @@
+
+{if isset( $infra ) and $infra}
+
+<div class="row-fluid">
+    <div class="alert alert-info">
+        Only showing {if isset( $publiconly ) and $publiconly}public{/if}
+            VLANs for: <strong>{$infra->getName()}</strong>.
+        <span class="pull-right">
+            {if isset( $publiconly ) and $publiconly}
+                <a href="{genUrl controller='vlan' action='list' infra=$infra->getId()}" class='btn btn-small'>Include Private</a>
+            {else}
+                <a href="{genUrl controller='vlan' action='list' infra=$infra->getId() publiconly=1}" class='btn btn-small'>Public Only</a>
+            {/if}
+            <a href="{genUrl controller='vlan' action='list'}" class='btn btn-small'>Show All VLANs</a>
+        </span>
+        
+    </div>
+</div>
+
+{/if}

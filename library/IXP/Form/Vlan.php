@@ -54,7 +54,9 @@ class IXP_Form_VLAN extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $number );
 
-        $infrastructure = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
+        $infrastructure = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' )
+            ->setRequired( true )
+            ->setAttrib( 'class', 'chzn-select' );
         $this->addElement( $infrastructure );
 
         $rcvrfname = $this->createElement( 'text', 'rcvrfname' );

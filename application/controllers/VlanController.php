@@ -97,13 +97,25 @@ class VlanController extends IXP_Controller_FrontEnd
             ->from( '\\Entities\\Vlan', 'v' )
             ->join( 'v.Infrastructure', 'i' )
             ->join( 'i.IXP', 'ix' );
-    
+
+        if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
+        {
+            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
+            $this->view->infra = $infra;
+        }
+
+        if( $this->getParam( 'publiconly', false ) )
+        {
+            $qb->andWhere( 'v.private = 0' );
+            $this->view->publiconly = 1;
+        }
+        
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
     
         if( $id !== null )
             $qb->andWhere( 'v.id = ?1' )->setParameter( 1, $id );
-    
+
         return $qb->getQuery()->getResult();
     }
 

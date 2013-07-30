@@ -57,7 +57,7 @@
                         {if $multiIXP}
                             <td>{if isset( $pv.ixp )}{$pv.ixp}{/if}</td>
                         {/if}
-                        <td>{if isset( $pv.infra )}{$pv.infra}{/if}</td>
+                        <td>{if isset( $pv.infrastructure )}{$pv.infrastructure}{/if}</td>
                         <td>
                             {foreach $pv.members as $custid => $cust}
                                 <a href="{genUrl controller="customer" action="overview" id=$custid}">{$cust.name}</a>
