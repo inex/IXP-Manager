@@ -51,6 +51,7 @@ class MacAddressController extends IXP_Controller_FrontEnd
         
             'readonly'      => true,
             
+            // ordering is hard coded as follows in listGetData()
             'listOrderBy'    => 'customer',
             'listOrderByDir' => 'ASC',
         
@@ -96,30 +97,63 @@ class MacAddressController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-            ->select(
-                'm.id AS id, m.firstseen AS firstseen, m.lastseen AS lastseen, m.mac AS mac,
-                c.id AS customerid, c.name AS customer,
-                vi.id AS interfaceid,
-                CONCAT( CONCAT( s.name, \' - \' ),  sp.name ) AS interface,
-                ip4.address AS ipv4, ip6.address AS ipv6'
-            )
+            ->select( 'm' )
             ->from( '\\Entities\\MACAddress', 'm' )
             ->join( 'm.VirtualInterface', 'vi' )
             ->join( 'vi.VlanInterfaces', 'vli' )
-            ->join( 'vli.IPv4Address', 'ip4' )
-            ->join( 'vli.IPv6Address', 'ip6' )
             ->join( 'vi.Customer', 'c' )
             ->join( 'vi.PhysicalInterfaces', 'pi' )
             ->join( 'pi.SwitchPort', 'sp' )
             ->join( 'sp.Switcher', 's' );
             
-        if( isset( $this->_feParams->listOrderBy ) )
-            $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
+        $qb->orderBy( 'c.name', 'ASC' );
     
         if( $id !== null )
             $qb->andWhere( 'm.id = ?1' )->setParameter( 1, $id );
-    
-        return $qb->getQuery()->getResult();
+
+        $objects = $qb->getQuery()->getResult();
+        
+        $data = [];
+        
+        foreach( $objects as $m )
+        {
+            $data[ $m->getId() ]['id']          = $m->getId();
+            $data[ $m->getId() ]['firstseen']   = $m->getFirstseen();
+            $data[ $m->getId() ]['lastseen']    = $m->getLastseen();
+            $data[ $m->getId() ]['mac']         = $m->getMac();
+            $data[ $m->getId() ]['customerid']  = $m->getVirtualInterface()->getCustomer()->getId();
+            $data[ $m->getId() ]['customer']    = $m->getVirtualInterface()->getCustomer()->getName();
+            $data[ $m->getId() ]['interfaceid'] = $m->getVirtualInterface()->getId();
+            
+            $data[ $m->getId() ]['interface']   =
+                $m->getVirtualInterface()->getPhysicalInterfaces()[0]->getSwitchport()->getSwitcher()->getName() . " - "
+                    . $m->getVirtualInterface()->getPhysicalInterfaces()[0]->getSwitchport()->getName();
+            
+            if( $m->getVirtualInterface()->getVlanInterfaces() )
+            {
+                foreach( $m->getVirtualInterface()->getVlanInterfaces() as $vli )
+                {
+                    if( !$vli->getVlan()->getPrivate() )
+                    {
+                        if( $vli->getIpv4Address() )
+                            $data[ $m->getId() ]['ipv4'] = $vli->getIpv4Address()->getAddress();
+                        
+                        if( $vli->getIpv6Address() )
+                            $data[ $m->getId() ]['ipv6'] = $vli->getIpv6Address()->getAddress();
+                        
+                        break;
+                    }
+                }
+                    
+                if( !isset( $data[ $m->getId() ]['ipv4'] ) )
+                    $data[ $m->getId() ]['ipv4'] = '';
+                
+                if( !isset( $data[ $m->getId() ]['ipv6'] ) )
+                    $data[ $m->getId() ]['ipv6'] = '';
+            }
+        }
+        
+        return $data;
     }
     
 }

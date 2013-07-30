@@ -30,18 +30,18 @@
             </thead>
             <tbody>
 
-            {foreach $recentMembers as $rm}
-                <tr>
-                    <td>{$rm->getName()}</td>
-                    <td>{$rm->getAutsys()|asnumber}</td>
-                    <td>{$rm->getDatejoin()->format( 'Y-m-d' )}</td>
-                    {if not $user->getCustomer()->isTypeAssociate()}
-                        <td>
-                            <a href="mailto:{$rm->getPeeringemail()}">{$rm->getPeeringemail()}</a>
-                        </td>
+                {for $i=0 to 2}
+                    {if isset( $recentMembers.$i ) }
+                        <tr>
+                            <td>{$recentMembers.$i->getName()}</td>
+                            <td>{$recentMembers.$i->getAutsys()|asnumber}</td>
+                            <td>{$recentMembers.$i->getDatejoin()->format( 'Y-m-d' )}</td>
+                            <td>
+                                <a href="mailto:{$recentMembers.$i->getPeeringemail()}">{$recentMembers.$i->getPeeringemail()}</a>
+                            </td>
+                        </tr>
                     {/if}
-                </tr>
-            {/foreach}
+                {/for}
 
             </tbody>
         </table>

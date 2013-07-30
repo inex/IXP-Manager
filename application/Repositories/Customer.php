@@ -177,19 +177,20 @@ class Customer extends EntityRepository
      * Return an array of the must recent customers (who are current,
      * external, active and trafficing).
      *
-     * @param $limit int The number of customers to get
      * @return array An array of all customer names with the customer id as the key.
      */
-    public function getRecent( $limit = 3 )
+    public function getRecent()
     {
         return $this->getEntityManager()->createQuery(
                 "SELECT c
                  FROM \\Entities\\Customer c
+                     LEFT JOIN c.VirtualInterfaces vi
+                     LEFT JOIN vi.PhysicalInterfaces pi
                  WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_ACTIVE . "
                      AND " . self::DQL_CUST_EXTERNAL . " AND " . self::DQL_CUST_TRAFFICING . "
+                     AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED . "
                 ORDER BY c.datejoin DESC"
             )
-            ->setMaxResults( $limit )
             ->useResultCache( true, 3600 )
             ->getResult();
     }
