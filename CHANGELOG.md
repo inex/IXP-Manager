@@ -62,6 +62,11 @@ VLANs must be linked with infrastructures. Immediately of the frontend will not 
     UPDATE `vlan` SET `infrastructureid` = 1;
 
 
+All existing customers must be linked to the default / pre-existing IXP. To achieve this, run:
+
+    bin/ixptool.php -a database-migration-cli.v340-customers-to-ixps
+
+
 
 # v3.3.3 (20130730)
 
