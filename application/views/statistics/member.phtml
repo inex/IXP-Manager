@@ -56,14 +56,15 @@
 
     </div>
 
-    <div class="span6">
+    <div class="span6 well">
 
+        <h3>Graph Options</h3>
         <p>
-        <br /><br /><br />
-        Click on a graphs for longer term statistics or change the graph time in the drop down below.
+            Click on a graph for longer term statistics (daily, weekly, monthly and yearly).
+            Change the graph type in the drop down below.
         </p>
 
-        <form action="{genUrl controller="statistics" action="member"}" method="post" class="well form-inline">
+        <form action="{genUrl controller="statistics" action="member"}" method="post" class="form-inline">
             <input type="hidden" name="shortname" value="{$cust->getShortname()}" />
             <strong>Graph Type:</strong>&nbsp;&nbsp;&nbsp;&nbsp;
             <select name="category" onchange="this.form.submit();" class="chzn-select">
@@ -73,6 +74,11 @@
             </select>
         </form>
 
+        <p>
+            <a class="btn btn-primary pull-right" href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">
+                See Peer to Peer Graphs
+            </a>
+        </p>
     </div>
 
 </div>

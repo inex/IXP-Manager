@@ -21,6 +21,14 @@
              {/if}
             )
         </li>
+        <li class="pull-right"  style="margin-top: -6px;">
+            <div class="btn-toolbar" style="display: inline;">
+                <a class="btn btn-small" href="{genUrl controller="statistics" action="member" shortname=$cust->getShortname()}">
+                    Statistics Overview
+                </a>
+            </div>
+        </li>
+        
     </ul>
     <div>
 {else}
