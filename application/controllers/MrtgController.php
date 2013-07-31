@@ -34,11 +34,14 @@
 class MrtgController extends IXP_Controller_AuthRequiredAction
 {
     protected $_flock = null;
-
     
     public function preDispatch()
     {
+        // there's no HTML output from this controller - just images
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+        
+        header( 'Content-Type: image/png' );
+        header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
     }
 
     private function checkShortname( $shortname )
@@ -49,14 +52,11 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
 
     function retrieveImageAction()
     {
-        header( 'Content-Type: image/png' );
-        header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
-
-        $monitorindex = $this->getRequest()->getParam( 'monitorindex', 'aggregate' );
-        $period       = $this->getRequest()->getParam( 'period', IXP_Mrtg::$PERIODS['Day'] );
-        $shortname    = $this->getRequest()->getParam( 'shortname' );
-        $category     = $this->getRequest()->getParam( 'category', IXP_Mrtg::$CATEGORIES['Bits'] );
-        $graph        = $this->getRequest()->getParam( 'graph', '' );
+        $monitorindex = $this->getParam( 'monitorindex', 'aggregate' );
+        $period       = $this->getParam( 'period', IXP_Mrtg::$PERIODS['Day'] );
+        $shortname    = $this->getParam( 'shortname' );
+        $category     = $this->getParam( 'category', IXP_Mrtg::$CATEGORIES['Bits'] );
+        $graph        = $this->getParam( 'graph', '' );
 
         $this->getLogger()->debug( "Request for {$shortname}-{$monitorindex}-{$category}-{$period}-{$graph} by {$this->getUser()->getUsername()}" );
 
@@ -89,12 +89,10 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
 
         $this->getLogger()->debug( "Serving {$filename} to {$this->getUser()->getUsername()}" );
 
-        $stat = @readfile( $filename );
-
-        if( $stat === false )
+        if( @readfile( $filename ) === false )
         {
-            $this->getLogger()->debug( "Could not load {$filename} for mrtg/retrieveImageAction" );
-            echo readfile(
+            $this->getLogger()->notice( "Could not load {$filename} for mrtg/retrieveImageAction" );
+            @readfile(
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
                     . 'image-missing.png'
@@ -105,22 +103,15 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
 
     function retrieveP2pImageAction()
     {
-        header( 'Content-Type: image/png' );
-        header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
-
+        $period       = $this->getParam( 'period',    IXP_Mrtg::$PERIODS['Day'] );
+        $shortname    = $this->getParam( 'shortname', false );
+        $svid         = $this->getParam( 'svid',      false );
+        $dvid         = $this->getParam( 'dvid',      false );
+        $category     = $this->getParam( 'category',  IXP_Mrtg::$CATEGORIES['Bits'] );
+        $proto        = $this->getParam( 'proto',     IXP_Mrtg::PROTOCOL_IPV4 );
+        $infra        = $this->getParam( 'infra',     false );
+        $period       = $this->getParam( 'period',    IXP_Mrtg::PERIOD_DAY );
         
-        $period       = $this->getRequest()->getParam( 'period',    IXP_Mrtg::$PERIODS['Day'] );
-        $shortname    = $this->getRequest()->getParam( 'shortname', false );
-        $svid         = $this->getRequest()->getParam( 'svid',      false );
-        $dvid         = $this->getRequest()->getParam( 'dvid',      false );
-        $category     = $this->getRequest()->getParam( 'category',  IXP_Mrtg::$CATEGORIES['Bits'] );
-        $proto        = $this->getRequest()->getParam( 'proto',     IXP_Mrtg::PROTOCOL_IPV4 );
-        $infra        = $this->getRequest()->getParam( 'infra',     false );
-        $period       = $this->getRequest()->getParam( 'period',    IXP_Mrtg::PERIOD_DAY );
-        
-        if( !$this->getIdentity() )
-            exit(0);
-
         if( $infra === false )
         {
             // we default to the primary infrastructure
@@ -198,12 +189,10 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
 
         $this->getLogger()->info( "P2P request for {$shortname}-{$dshortname}-{$category}-{$period}-ipv{$proto} by {$this->getUser()->getUsername()}" );
         
-        $stat = @readfile( $filename );
-
-        if( !$stat )
+        if( @readfile( $filename ) === false )
         {
-            $this->getLogger()->debug( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
-            readfile(
+            $this->getLogger()->notice( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );
+            @readfile(
                 APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
                     . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
                     . '300x1.png'
