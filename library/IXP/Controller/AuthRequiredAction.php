@@ -103,7 +103,7 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
                 return false;
             
             $this->addMessage( "Could not load the IXP object", OSS_Message::ERROR );
-            $this->redirect( $redirect === null ? 'error/error' : $redirect );
+            $this->redirect( $redirect === null ? '' : $redirect );
         }
         
         $this->getD2Cache()->save( "ixp_{$id}", $i );

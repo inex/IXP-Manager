@@ -42,6 +42,21 @@ class IXP extends EntityRepository
         
         return $ixp[0];
     }
+
+    /**
+     * Return an array of all IXP objects linked to the given customer
+     *
+     * @param  \Entities\Customer $customer The customer to limit results to
+     * @return \Entities\IXP[] An array of all IXP objects for the given customer
+     */
+    public function getForCustomer( $customer )
+    {
+        $dql = "SELECT i FROM Entities\\IXP i WHERE :cust MEMBER OF i.Customers ORDER BY i.name ASC";
+
+        return $this->getEntityManager()->createQuery( $dql )
+            ->setParameter( 'cust', $customer )
+            ->getResult();
+    }
     
     /**
      * Return an array of all IXP names where the array key is the IXP id.

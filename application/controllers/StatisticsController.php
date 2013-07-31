@@ -34,25 +34,25 @@
 class StatisticsController extends IXP_Controller_AuthRequiredAction
 {
     /**
-     * The selected / default IXP. Available in the view as `$ixp`. Set in `preDispatch()`.
+     * The selected / default IXP. Available in the view as `$ixp`. Set in `_setIXP()`.
      * @var \Entities\IXP The IXP / default IXP
      */
     private $ixp = null;
     
     /**
-     * All available IXPs. Available in the view as `$ixps`. Set in `preDispatch()`.
+     * All available IXPs. Available in the view as `$ixps`. Set in `_setIXP()`.
      * @var \Entities\IXP[] All available IXPs
      */
     private $ixps = null;
     
     /**
-     * The selected infrastructure (or `aggregate`). Set in `preDispatch()` and available in the view as `$infra`.
+     * The selected infrastructure (or `aggregate`). Set in `_setInfrastructure()` and available in the view as `$infra`.
      * @var \Entities\Infrastructure The selected infrastructure (or `aggregate`).
      */
     private $infra = null;
     
     /**
-     * The selected infrastructure ID or `aggregate`. Set in `preDispatch()` and available in the view as `$infraid`.
+     * The selected infrastructure ID or `aggregate`. Set in `_setInfrastructure()` and available in the view as `$infraid`.
      *
      * Useful as the infrastructure is either an object or 'aggregate' - using this variable allows direct use without
      * bounding if's.
@@ -62,50 +62,16 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     private $infraid = null;
     
     public function preDispatch()
-    {
-        // sort out IXPs
-        if( $this->multiIXP() )
-        {
-            $this->ixps = $this->view->ixps = $this->getD2R( "\\Entities\\IXP" )->findAll();
-                
-            if( $this->getParam( 'ixp', false ) )
-                $this->view->ixp = $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ) );
-            else if( $this->ixps )
-                $this->view->ixp = $this->ixp = $this->ixps[0];
-            else
-                throw new IXP_Exception( "No IXPs defined!" );
-        }
-        else
-        {
-            // in non-multiIXP environments, there is only one IXP and it has ID 1
-            $this->ixp = $this->view->ixp = $this->loadIxpById( 1 );
-        }
-        
-        // and sort out infrastructrues
-        $this->view->infra = $this->view->infraid = $this->infra = $this->infraid = $this->getParam( 'infra', 'aggregate' );
-        
-        if( $this->infra != "aggregate" )
-        {
-            foreach( $this->ixp->getInfrastructures() as $inf )
-            {
-                if( $inf->getId() == $this->infra )
-                {
-                    $this->view->infra   = $this->infra   = $inf;
-                    $this->view->infraid = $this->infraid = $inf->getId();
-                    break;
-                }
-            }
-            
-            if( !( $this->infra instanceof \Entities\Infrastructure ) )
-                $this->view->infra = $this->view->infraid = $this->infra = $this->infraid = 'aggregate';
-        }
-    }
+    {}
 
     
     public function listAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
 
+        $this->_setIXP();
+        $this->_setInfrastructure();
+        
         $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
         
         if( !is_string( $this->infra ) && $this->infra )
@@ -116,6 +82,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
     
+        $this->_setIXP();
+        $this->_setInfrastructure();
         $this->_setCategory();
         $this->_setPeriod();
         
@@ -123,6 +91,20 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         
         if( !is_string( $this->infra ) && $this->infra )
             $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
+    }
+    
+    public function memberAction()
+    {
+        if( $this->getUser()->getPrivs() < \Entities\User::AUTH_SUPERUSER )
+            $shortname = $this->getCustomer()->getShortname();
+        else
+            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
+    
+        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
+        
+        $this->_setIXP( $cust );
+        
+        $this->_setCategory();
     }
     
     
@@ -266,18 +248,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         }
         $this->view->stats      = $stats;
         
-    }
-    
-    public function memberAction()
-    {
-        if( $this->getUser()->getPrivs() < \Entities\User::AUTH_SUPERUSER )
-            $shortname = $this->getCustomer()->getShortname();
-        else
-            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
-    
-        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
-        
-        $this->_setCategory();
     }
     
     public function memberDrilldownAction()
@@ -440,6 +410,85 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     }
     
     /**
+     * Set the IXP based on submitted parameters
+     *
+     * @param \Entities\Customer $cust Limit list of IXPs to this customer and ensure this customer is part of the selected IXP
+     */
+    protected function _setIXP( $cust = false )
+    {
+        if( $this->multiIXP() )
+        {
+            // need to handle this two ways - one for customers and one for admins
+            if( $cust )
+            {
+                $this->ixps = $this->view->ixps = $this->getD2R( "\\Entities\\IXP" )->getForCustomer( $cust );
+                
+                if( $this->getParam( 'ixp', false ) )
+                    $this->view->ixp = $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ) );
+                else
+                    $this->view->ixp = $this->ixp = $cust->getIXPs()[0];
+                    
+                $valid = false;
+                foreach( $cust->getIXPs() as $i )
+                {
+                    if( $this->ixp->getId() == $i->getId() )
+                    {
+                        $valid = true;
+                        break;
+                    }
+                }
+                
+                if( !$valid )
+                {
+                    $this->getLogger()->alert( "{$this->getUser()->getUsername()} tried to access an invalid IXP" );
+                    $this->addMessage( "Invalid IXP for you :(", OSS_Message::ERROR );
+                    $this->redirectAndEnsureDie('');
+                }
+            }
+            else
+            {
+                $this->ixps = $this->view->ixps = $this->getD2R( "\\Entities\\IXP" )->findAll();
+        
+                if( $this->getParam( 'ixp', false ) )
+                    $this->view->ixp = $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ) );
+                else if( $this->ixps )
+                    $this->view->ixp = $this->ixp = $this->ixps[0];
+                else
+                    throw new IXP_Exception( "No IXPs defined!" );
+            }
+        }
+        else
+        {
+            // in non-multiIXP environments, there is only one IXP and it has ID 1
+            $this->ixp = $this->view->ixp = $this->loadIxpById( 1 );
+        }
+    }
+        
+    /**
+     * Set the IXP based on submitted parameters
+     */
+    protected function _setInfrastructure()
+    {
+        $this->view->infra = $this->view->infraid = $this->infra = $this->infraid = $this->getParam( 'infra', 'aggregate' );
+        
+        if( $this->infra != "aggregate" )
+        {
+            foreach( $this->ixp->getInfrastructures() as $inf )
+            {
+                if( $inf->getId() == $this->infra )
+                {
+                    $this->view->infra   = $this->infra   = $inf;
+                    $this->view->infraid = $this->infraid = $inf->getId();
+                    break;
+                }
+            }
+        
+            if( !( $this->infra instanceof \Entities\Infrastructure ) )
+                $this->view->infra = $this->view->infraid = $this->infra = $this->infraid = 'aggregate';
+        }
+    }
+    
+    /**
      * Utility function to extract, validate (and default if necessary) a
      * category from request parameters.
      *
@@ -478,28 +527,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->view->periods    = IXP_Mrtg::$PERIODS;
         return $period;
     }
-    
-    /**
-     * Utility function to extract, validate (and default if necessary) an
-     * infrastructure from request parameters.
-     *
-     * Sets the view variables `$infra` to the chosen / defaulted infrastructure
-     * and `$infrastructures` to all available infrastructures.
-     *
-     * @param string $pname The name of the parameter to extract the infrastructure from
-     * @return string The chosen / defaulted infrastructure
-     */
-    protected function _setInfrastructure( $pname = 'infra' )
-    {
-        if( !$this->getParam( $pname, false ) || !( $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( $pname ) ) ) )
-            $infra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary();
-        
-        $this->view->infra           = $infra;
-        $this->view->infrastructures = $this->getD2R( '\\Entities\\Infrastructure' )->getAllAsArray();
-        
-        return $infra;
-    }
-    
     
     /**
      * Utility function to extract, validate (and default if necessary) a
