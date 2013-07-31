@@ -206,6 +206,9 @@ class IxpController extends IXP_Controller_FrontEnd
         // wipe cached entries
         if( $object->getId() == 1 )
             $this->getD2Cache()->delete( \Repositories\IXP::CACHE_KEY_DEFAULT_IXP );
+        
+        $this->getD2Cache()->save( "ixp_{$object->getId()}", $object );
+        
         return true;
     }
     

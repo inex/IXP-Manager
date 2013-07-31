@@ -87,20 +87,26 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
      * Load an IXP from the database by ID but redirect to `error/error` if no such IXP.
      *
      * @param int $id The IXP ID to load
-     * @param string $redirect Alternative location to redirect to
+     * @param string $redirect Alternative location to redirect to (if null, `error/error`, if false, return false on error)
      * @return \Entities\IXP The IXP object
      */
     protected function loadIxpById( $id, $redirect = null )
     {
-        if( $id )
-            $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
+        if( $this->getD2Cache()->contains( "ixp_{$id}" ) )
+            return $this->getD2Cache()->fetch( "ixp_{$id}" );
+        
+        $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
     
         if( !$id || !$i )
         {
+            if( $redirect === false )
+                return false;
+            
             $this->addMessage( "Could not load the IXP object", OSS_Message::ERROR );
             $this->redirect( $redirect === null ? 'error/error' : $redirect );
         }
-    
+        
+        $this->getD2Cache()->save( "ixp_{$id}", $i );
         return $i;
     }
     
