@@ -13,14 +13,14 @@ use Doctrine\ORM\EntityRepository;
 class Infrastructure extends EntityRepository
 {
     /**
-     * The cache key for the primary infrastructre (append IXP id)
-     * @var string The cache key for the primary infrastructre (append IXP id)
+     * The cache key for the primary infrastructure (append IXP id)
+     * @var string The cache key for the primary infrastructure (append IXP id)
      */
     const CACHE_KEY_PRIMARY = 'infrastructure_primary_';
     
     /**
-     * The cache key for the all infrastructres (append IXP id)
-     * @var string The cache key for all infrastructres (append IXP id)
+     * The cache key for the all infrastructures (append IXP id)
+     * @var string The cache key for all infrastructures (append IXP id)
      */
     const CACHE_KEY_ALL = 'infrastructure_all_';
     
