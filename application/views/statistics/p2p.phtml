@@ -55,6 +55,8 @@
             </select>
         </td>
         <td width="20"></td>
+    {else}
+        <input type="hidden" name="ixp" value="{$ixp->getId()}" />
     {/if}
     <td valign="middle"><strong>Infrastructure:</strong></td>
     <td>
