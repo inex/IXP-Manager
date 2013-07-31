@@ -119,30 +119,30 @@
             <div class="well">
 
                 <h4>
-                        {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
+                    {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
                         / {$pi->getSwitchPort()->getSwitcher()->getName()}
                         / {$pi->getSwitchPort()->getName()} ({$pi->getSpeed()}Mbps)
 
-                {if $resellerMode and $cust->isReseller()}
-                    <br /><small>
-                    {if $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_PEERING}
-                        Peering Port
-                    {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_FANOUT}
-                        Fanout Port for <a href="{genUrl controller='customer' action='overview' id=$pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}">
-                            {$pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName()}
-                        </a>
-                    {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_RESELLER}
-                        Reseller Uplink Port
+                    {if $resellerMode and $cust->isReseller()}
+                        <br /><small>
+                        {if $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_PEERING}
+                            Peering Port
+                        {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_FANOUT}
+                            Fanout Port for <a href="{genUrl controller='customer' action='overview' id=$pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}">
+                                {$pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName()}
+                            </a>
+                        {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_RESELLER}
+                            Reseller Uplink Port
+                        {/if}
+                        </small>
                     {/if}
-                    </small>
-                {/if}
 
                 </h4>
                 
                 <p>
                     <br />
-                    <a href="{genUrl controller='statistics' action='member-drilldown' monitorindex=$pi->getMonitorindex() category=$category shortname=$cust->getShortname()}">
-                        {genMrtgImgUrlTag shortname=$cust->getShortname() category=$category monitorindex=$pi->getMonitorindex()}
+                    <a href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex=$pi->getMonitorindex() category=$category shortname=$cust->getShortname()}">
+                        {genMrtgImgUrlTag ixp=$ixp->getId() shortname=$cust->getShortname() category=$category monitorindex=$pi->getMonitorindex()}
                     </a>
                 </p>
 

@@ -107,6 +107,69 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->_setCategory();
     }
     
+    public function memberDrilldownAction()
+    {
+        $category = $this->_setCategory();
+        $this->view->monitorindex = $monitorindex = $this->getParam( 'monitorindex', 1 );
+    
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $shortname = $this->getCustomer()->getShortname();
+        else
+            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
+    
+        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
+
+        $this->_setIXP( $cust );
+        
+        if( $monitorindex != 'aggregate' )
+        {
+            $vint = false;
+            $pi = null;
+            foreach( $cust->getVirtualInterfaces() as $vi )
+            {
+                foreach( $vi->getPhysicalInterfaces() as $pi )
+                {
+                    if( $pi->getMonitorindex() == $monitorindex )
+                    {
+                        $this->view->pi   = $pi;
+                        $this->view->vint = $vint = $vi;
+                        break 2;
+                    }
+                }
+            }
+    
+            if( !$vint )
+                throw new IXP_Exception( 'Member statistics drilldown requested for unknown monitor index' );
+    
+            $this->view->switchname = $pi->getSwitchPort()->getSwitcher()->getName();
+            $this->view->portname   = $pi->getSwitchPort()->getName();
+        }
+        else
+        {
+            $this->view->switchname = '';
+            $this->view->portname   = '';
+        }
+    
+        $this->view->periods      = IXP_Mrtg::$PERIODS;
+    
+        $stats = array();
+        foreach( IXP_Mrtg::$PERIODS as $period )
+        {
+            $mrtg = new IXP_Mrtg(
+                    IXP_Mrtg::getMrtgFilePath( $this->ixp->getMrtgPath() . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
+            );
+    
+            $stats[$period] = $mrtg->getValues( $period, $this->view->category );
+        }
+        $this->view->stats     = $stats;
+    
+        if( $this->getParam( 'mini', false ) )
+        {
+            Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+            $this->view->display( 'statistics/member-drilldown-mini.phtml' );
+        }
+    }
+    
     
     public function leagueTableAction()
     {
@@ -248,67 +311,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         }
         $this->view->stats      = $stats;
         
-    }
-    
-    public function memberDrilldownAction()
-    {
-        $category = $this->_setCategory();
-        $this->view->monitorindex = $monitorindex = $this->getParam( 'monitorindex', 1 );
-        
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $shortname = $this->getCustomer()->getShortname();
-        else
-            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
-    
-        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
-    
-        if( $monitorindex != 'aggregate' )
-        {
-            $vint = false;
-            $pi = null;
-            foreach( $cust->getVirtualInterfaces() as $vi )
-            {
-                foreach( $vi->getPhysicalInterfaces() as $pi )
-                {
-                    if( $pi->getMonitorindex() == $monitorindex )
-                    {
-                        $this->view->pi   = $pi;
-                        $this->view->vint = $vint = $vi;
-                        break 2;
-                    }
-                }
-            }
-            
-            if( !$vint )
-                throw new IXP_Exception( 'Member statistics drilldown requested for unknown monitor index' );
-    
-            $this->view->switchname = $pi->getSwitchPort()->getSwitcher()->getName();
-            $this->view->portname   = $pi->getSwitchPort()->getName();
-        }
-        else
-        {
-            $this->view->switchname = '';
-            $this->view->portname   = '';
-        }
-    
-        $this->view->periods      = IXP_Mrtg::$PERIODS;
-    
-        $stats = array();
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg(
-                IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
-            );
-    
-            $stats[$period] = $mrtg->getValues( $period, $this->view->category );
-        }
-        $this->view->stats     = $stats;
-    
-        if( $this->_request->getParam( 'mini', false ) )
-        {
-            Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
-            $this->view->display( 'statistics/member-drilldown-mini.phtml' );
-        }
     }
     
     /**
