@@ -79,7 +79,8 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                     $images[]      = $p[0];
                 
                     $mrtg = new IXP_Mrtg(
-                        $this->_options['mrtg']['path']
+                        // FIXME plastering over multiIXP here for now
+                        $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath()
                             . DIRECTORY_SEPARATOR . 'ixp_peering-' . $p[0]
                             . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
                     );

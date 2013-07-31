@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,19 +28,19 @@
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Controller
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsController extends IXP_Controller_AuthRequiredAction
 {
     /**
-     * The selected / default IXP. Available in the view as `$ixp`. Set in `preDispath()`.
+     * The selected / default IXP. Available in the view as `$ixp`. Set in `preDispatch()`.
      * @var \Entities\IXP The IXP / default IXP
      */
     private $ixp = null;
     
     /**
-     * All available IXPs. Available in the view as `$ixps`. Set in `preDispath()`.
+     * All available IXPs. Available in the view as `$ixps`. Set in `preDispatch()`.
      * @var \Entities\IXP[] All available IXPs
      */
     private $ixps = null;
@@ -182,7 +182,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $stats = array();
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new IXP_Mrtg( $this->_options['mrtg']['path'] . '/ixp_peering-' . $graph . '-' . $category . '.log' );
+            $mrtg = new IXP_Mrtg(
+                // FIXME plastering over multiIXP here for now
+                $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath()
+                    . '/ixp_peering-' . $graph . '-' . $category . '.log' );
             $stats[$period] = $mrtg->getValues( $period, $category );
         }
         $this->view->stats      = $stats;
@@ -218,7 +221,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $stats = array();
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new IXP_Mrtg( $this->_options['mrtg']['path'] . '/trunks/' . $graph . '.log' );
+            $mrtg = new IXP_Mrtg(
+                // FIXME plastering over multiIXP here for now
+                $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath()
+                    . '/trunks/' . $graph . '.log' );
             $stats[$period] = $mrtg->getValues( $period, IXP_Mrtg::CATEGORY_BITS );
         }
         $this->view->stats   = $stats;
@@ -250,7 +256,9 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
             $mrtg = new IXP_Mrtg(
-                $this->_options['mrtg']['path'] . '/switches/' . 'switch-aggregate-'
+                // FIXME plastering over multiIXP here for now
+                $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath()
+                    . '/switches/' . 'switch-aggregate-'
                     . $switches[$switch] . '-' . $category . '.log'
             );
     

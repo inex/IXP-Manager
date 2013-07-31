@@ -127,9 +127,9 @@
     
                 <p>
                     <br />
-                    <a href="{genUrl controller="statistics" action="member" shortname=$cust->getShortname() monitorindex=aggregate category=$category}">
+                    <a href="{genUrl controller="statistics" action="member" ixp=$ixp->getId() shortname=$cust->getShortname() monitorindex=aggregate category=$category}">
                         <img
-                            src="{genMrtgImgUrl shortname=$cust->getShortname() category=$category period=$period monitorindex=$monindex}"
+                            src="{genMrtgImgUrl ixp=$ixp->getId() shortname=$cust->getShortname() category=$category period=$period monitorindex=$monindex}"
                             width="300"
                         />
                     </a>

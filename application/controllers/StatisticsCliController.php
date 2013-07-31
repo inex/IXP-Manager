@@ -66,7 +66,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
                     $speed = $pi->getSpeed() * 1024 * 1024;
     
                     $mrtg = new IXP_Mrtg(
-                            IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
+                            IXP_Mrtg::getMrtgFilePath(
+                                    $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP()->getMrtgPath() . '/members',
                                     'LOG', $pi->getMonitorindex(), IXP_Mrtg::CATEGORY_BITS,
                                     $c->getShortname()
                             )
@@ -98,7 +99,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
                         $mrtg = $mail->createAttachment(
                             file_get_contents(
                                 IXP_Mrtg::getMrtgFilePath(
-                                    $this->_options['mrtg']['path'] . '/members',
+                                    $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP()->getMrtgPath() . '/members',
                                     'PNG',
                                     $pi->getMonitorindex(),
                                     IXP_Mrtg::CATEGORY_BITS,
@@ -233,7 +234,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
                 $mrtg = $mail->createAttachment(
                     @file_get_contents(
                         IXP_Mrtg::getMrtgFilePath(
-                            $this->_options['mrtg']['path'] . '/members',
+                            // FIXME plastering over multiIXP here for now
+                            $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/members',
                             'PNG',
                             'aggregate',
                             'bits',
@@ -280,9 +282,11 @@ class StatisticsCliController extends IXP_Controller_CliAction
             foreach( IXP_Mrtg::$CATEGORIES as $category )
             {
                 $mrtg = new IXP_Mrtg(
-                        IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
-                                'LOG', 'aggregate', $category,
-                                $cust->getShortname()
+                        IXP_Mrtg::getMrtgFilePath(
+                            // FIXME plastering over multiIXP here for now
+                            $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/members',
+                            'LOG', 'aggregate', $category,
+                            $cust->getShortname()
                         )
                 );
     
@@ -351,7 +355,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
             $mrtg = $mail->createAttachment(
                 file_get_contents(
                     IXP_Mrtg::getMrtgFilePath(
-                        $this->_options['mrtg']['path'] . '/members',
+                        // FIXME plastering over multiIXP here for now
+                        $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/members',
                         'PNG',
                         'aggregate',
                         $category,

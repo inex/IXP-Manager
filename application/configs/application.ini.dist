@@ -331,20 +331,8 @@ identity.default_country = 'IE'
 ;;
 ;; MRTG Details
 ;;
-;; This is poorly documented but we will endeavour to do a better
-;; job of ut
-;;
-
-;; For displaying graphs, we normally get the PNG (or RRD) file from a
-;; secure backend server using HTTP. We use file_get_contents() so you
-;; can use various URIs here including local file system:
-
-;; This is for standard interface graphs
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
-mrtg.path = http://mrtg.example.com/mrtg
-
-;; This is for P2P graphs (which are a work in progress)
-mrtg.p2ppath = http://mrtg.example.com/sflow/sflow-graph.php
+;;
 
 ;; We have publically available overall graphs which are defined here
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs

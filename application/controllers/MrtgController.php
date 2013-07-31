@@ -35,6 +35,12 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
 {
     protected $_flock = null;
     
+    /**
+     * The requested IXP
+     * @var \Entities\IXP
+     */
+    protected $ixp = null;
+    
     public function preDispatch()
     {
         // there's no HTML output from this controller - just images
@@ -42,6 +48,14 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
         
         header( 'Content-Type: image/png' );
         header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
+        
+        if( $this->multiIXP() && !$this->getParam( 'ixp', false ) )
+                $this->errorAction();
+        else if( !$this->multiIXP() )
+            $this->setParam( 'ixp', 1 );
+        
+        if( !( $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ), false ) ) )
+            $this->errorAction();
     }
 
     private function checkShortname( $shortname )
@@ -49,7 +63,16 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
         return $this->getD2R( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
     }
 
-
+    function errorAction()
+    {
+        @readfile(
+                APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
+                . 'image-missing.png'
+        );
+        die();
+    }
+    
     function retrieveImageAction()
     {
         $monitorindex = $this->getParam( 'monitorindex', 'aggregate' );
@@ -62,18 +85,18 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
 
         if( $shortname == 'X_Trunks' )
         {
-            $filename = $this->_options['mrtg']['path']
+            $filename = $this->ixp->getMrtgPath()
                 . '/trunks/' . $graph . '-' . $period . '.png';
         }
         else if( $shortname == 'X_SwitchAggregate' )
         {
-            $filename = $this->_options['mrtg']['path']
+            $filename = $this->ixp->getMrtgPath()
                 . '/switches/switch-aggregate-' . $graph . '-'
                 . $category . '-' . $period . '.png';
         }
         else if( $shortname == 'X_Peering' )
         {
-            $filename = $this->_options['mrtg']['path']
+            $filename = $this->ixp->getMrtgPath()
                 . '/ixp_peering-' . $graph . '-'
                 . $category . '-' . $period . '.png';
         }
@@ -82,7 +105,7 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
             if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER || !$this->checkShortname( $shortname ) )
                 $shortname = $this->getCustomer()->getShortname();
 
-            $filename = IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members'    , 'PNG',
+            $filename = IXP_Mrtg::getMrtgFilePath( $this->ixp->getMrtgPath() . '/members'    , 'PNG',
                 $monitorindex, $category, $shortname, $period
             );
         }
@@ -181,7 +204,7 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
             die();
         }
         
-        $filename = IXP_Mrtg::getMrtgP2pFilePath( $this->_options['mrtg']['p2ppath'],
+        $filename = IXP_Mrtg::getMrtgP2pFilePath( $this->ixp->getMrtgP2pPath(),
             $svid, $dvid, $category, $period, $proto
         );
         

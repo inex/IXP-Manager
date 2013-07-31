@@ -65,6 +65,16 @@ All existing customers must be linked to the default / pre-existing IXP. To achi
 
     bin/ixptool.php -a database-migration-cli.v340-customers-to-ixps
 
+Up to now, the MRTG graph paths were defined in `application.ini` as follows:
+
+    mrtg.path = http://www.example.com/mrtg
+    mrtg.p2ppath = http://www.example.com/sflow/sflow-graph.php
+
+This no longer works in the context of supporting multiple IXPs. Please **remove these** and edit and use the following SQL:
+
+    UPDATE `ixp` SET `mrtg_path` = 'http://www.example.com/mrtg';
+    UPDATE `ixp` SET `mrtg_p2p_path` = 'http://www.example.com/sflow/sflow-graph.php';
+
 
 
 # v3.3.3 (20130730)
