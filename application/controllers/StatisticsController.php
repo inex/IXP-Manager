@@ -325,9 +325,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
         $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
 
+        $this->_setIXP();
+        $this->_setInfrastructure( false );
         $category = $this->_setCategory();
         $period   = $this->_setPeriod();
-        $infra    = $this->_setInfrastructure();
         $proto    = $this->_setProtocol();
         $dvid     = $this->view->dvid = $this->getParam( 'dvid', false );
     
@@ -351,7 +352,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             
             foreach( $vi->getPhysicalInterfaces() as $pi )
             {
-                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $infra->getId() )
+                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $this->infra->getId() )
                     $vints[ $vi->getId() ] = $vi;
             }
         }
@@ -469,9 +470,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     /**
      * Set the IXP based on submitted parameters
      */
-    protected function _setInfrastructure()
+    protected function _setInfrastructure( $defaultToAggregate = true )
     {
-        $this->view->infra = $this->view->infraid = $this->infra = $this->infraid = $this->getParam( 'infra', 'aggregate' );
+        $this->view->infra = $this->view->infraid = $this->infra = $this->infraid
+            = $this->getParam( 'infra', ( $defaultToAggregate ? 'aggregate' : false ) );
         
         if( $this->infra != "aggregate" )
         {
@@ -486,7 +488,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             }
         
             if( !( $this->infra instanceof \Entities\Infrastructure ) )
-                $this->view->infra = $this->view->infraid = $this->infra = $this->infraid = 'aggregate';
+            {
+                $this->view->infra   = $this->infra   = $this->ixp->getInfrastructures()[0];
+                $this->view->infraid = $this->infraid = $this->infra->getId();
+            }
         }
     }
     
