@@ -20,6 +20,18 @@
 <form action="{genUrl controller="statistics" action="league-table"}" method="post" class="form-horizontal">
 <table>
 <tr>
+    {if $multiIXP}
+        <td valign="middle"><strong>IXP:</strong></td>
+        <td>
+            &nbsp;
+            <select name="ixp" style="width: 100px;" class="chzn-select" onchange="this.form.submit();">
+                {foreach $ixps as $i}
+                    <option value="{$i->getId()}" {if $ixp->getId() eq $i->getId()}selected="selected"{/if}>{$i->getShortname()}</option>
+                {/foreach}
+            </select>
+        </td>
+        <td width="20"></td>
+    {/if}
     <td valign="middle"><strong>Metric:</strong></td>
     <td valign="middle">
         <select class="chzn-select" name="metric">

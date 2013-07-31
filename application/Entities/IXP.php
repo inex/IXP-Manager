@@ -359,4 +359,42 @@ class IXP
     {
         return $this->mrtg_p2p_path;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $TrafficDaily;
+
+
+    /**
+     * Add TrafficDaily
+     *
+     * @param \Entities\TrafficDaily $trafficDaily
+     * @return IXP
+     */
+    public function addTrafficDaily(\Entities\TrafficDaily $trafficDaily)
+    {
+        $this->TrafficDaily[] = $trafficDaily;
+    
+        return $this;
+    }
+
+    /**
+     * Remove TrafficDaily
+     *
+     * @param \Entities\TrafficDaily $trafficDaily
+     */
+    public function removeTrafficDaily(\Entities\TrafficDaily $trafficDaily)
+    {
+        $this->TrafficDaily->removeElement($trafficDaily);
+    }
+
+    /**
+     * Get TrafficDaily
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTrafficDaily()
+    {
+        return $this->TrafficDaily;
+    }
 }

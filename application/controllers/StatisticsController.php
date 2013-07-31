@@ -175,6 +175,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
         
+        $this->_setIXP();
+        
         $this->view->metrics = $metrics = [
             'Total'   => 'data',
             'Max'     => 'max',
@@ -193,7 +195,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         
         $category = $this->_setCategory();
                 
-        $this->view->trafficDaily = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->load( $day, $category );
+        $this->view->trafficDaily = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->load( $day, $category, $this->ixp );
     }
     
     

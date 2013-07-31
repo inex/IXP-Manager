@@ -375,10 +375,22 @@ class TrafficDaily extends \Entities\TrafficDaily implements \Doctrine\ORM\Proxy
         return parent::getCustomer();
     }
 
+    public function setIXP(\Entities\IXP $iXP = NULL)
+    {
+        $this->__load();
+        return parent::setIXP($iXP);
+    }
+
+    public function getIXP()
+    {
+        $this->__load();
+        return parent::getIXP();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'day', 'category', 'day_avg_in', 'day_avg_out', 'day_max_in', 'day_max_out', 'day_tot_in', 'day_tot_out', 'week_avg_in', 'week_avg_out', 'week_max_in', 'week_max_out', 'week_tot_in', 'week_tot_out', 'month_avg_in', 'month_avg_out', 'month_max_in', 'month_max_out', 'month_tot_in', 'month_tot_out', 'year_avg_in', 'year_avg_out', 'year_max_in', 'year_max_out', 'year_tot_in', 'year_tot_out', 'id', 'Customer');
+        return array('__isInitialized__', 'day', 'category', 'day_avg_in', 'day_avg_out', 'day_max_in', 'day_max_out', 'day_tot_in', 'day_tot_out', 'week_avg_in', 'week_avg_out', 'week_max_in', 'week_max_out', 'week_tot_in', 'week_tot_out', 'month_avg_in', 'month_avg_out', 'month_max_in', 'month_max_out', 'month_tot_in', 'month_tot_out', 'year_avg_in', 'year_avg_out', 'year_max_in', 'year_max_out', 'year_tot_in', 'year_tot_out', 'id', 'Customer', 'IXP');
     }
 
     public function __clone()

@@ -781,7 +781,8 @@
     </association>
     <entity name="TrafficDaily" uuid="e8daf53a-44b8-4798-b6a3-808bff907953">
       <field name="id" type="bigint" primary="true" auto-increment="true" uuid="d4fa99e8-9f7e-4394-a49a-115de5739a2d"/>
-      <field name="cust_id" type="integer" uuid="44e4925a-c9e5-4ecf-8b85-ffdf6e381d52"/>
+      <field name="ixp_id" type="integer" required="true" uuid="877f40e0-7c9e-4587-a0c0-6e45000eec88"/>
+      <field name="cust_id" type="integer" required="true" uuid="44e4925a-c9e5-4ecf-8b85-ffdf6e381d52"/>
       <field name="day" type="date" uuid="aafe8444-8406-4c10-83e9-2e68330b8050"/>
       <field name="category" type="string" size="10" uuid="714e62c0-a748-4893-a26a-138fd33f5916"/>
       <field name="day_avg_in" type="bigint" uuid="56408f52-f017-4b1b-bd92-ace41b36bf27"/>
@@ -816,6 +817,9 @@
     </entity>
     <association from="TrafficDaily" to="Customer" owner-alias="TrafficDailies" inverse-alias="Customer" uuid="212269bb-5626-4a46-b864-1a94ecee88f3">
       <association-field from="cust_id" to="id"/>
+    </association>
+    <association from="TrafficDaily" to="IXP" owner-alias="TrafficDaily" inverse-alias="IXP" uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68">
+      <association-field from="ixp_id" to="id"/>
     </association>
     <entity name="ChangeLog" uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b">
       <field name="id" type="bigint" primary="true" auto-increment="true" uuid="c6a37161-a119-40dc-8322-53a9b3d1fe48"/>
@@ -876,7 +880,7 @@
     <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20"/>
     <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" position-x="1277" position-y="-133" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" position-x="1235" position-y="193" size-x="0" size-x2="122" size-y="0" size-y2="101"/>
-    <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="128" center-position-y="0"/>
+    <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0"/>
     <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
     <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" position-x="421" position-y="186" size-x="0" size-x2="128" size-y="0" size-y2="171"/>
     <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" position-x="861" position-y="-161" size-x="0" size-x2="135" size-y="0" size-y2="227"/>
@@ -900,6 +904,7 @@
     <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0"/>
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
+    <association uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0"/>
     <entity uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b" position-x="1112" position-y="839" size-x="0" size-x2="114" size-y="0" size-y2="129"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" position-x="953" position-y="933" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
@@ -921,7 +926,7 @@
     <association uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" position-x="201" position-y="878" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
-    <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" position-x="20" position-y="598" size-x="0" size-x2="126" size-y="0" size-y2="395"/>
+    <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" position-x="294" position-y="321" size-x="0" size-x2="101" size-y="0" size-y2="87"/>
     <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" position-x="1533" position-y="-214" size-x="0" size-x2="122" size-y="0" size-y2="73"/>
     <association uuid="f18aceae-d3e6-452d-9e28-0c32f340b245" center-position-x="0" center-position-y="0"/>

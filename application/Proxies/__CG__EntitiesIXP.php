@@ -195,10 +195,28 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         return parent::getMrtgP2pPath();
     }
 
+    public function addTrafficDaily(\Entities\TrafficDaily $trafficDaily)
+    {
+        $this->__load();
+        return parent::addTrafficDaily($trafficDaily);
+    }
+
+    public function removeTrafficDaily(\Entities\TrafficDaily $trafficDaily)
+    {
+        $this->__load();
+        return parent::removeTrafficDaily($trafficDaily);
+    }
+
+    public function getTrafficDaily()
+    {
+        $this->__load();
+        return parent::getTrafficDaily();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'mrtg_path', 'mrtg_p2p_path', 'id', 'Infrastructures', 'Customers');
+        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'mrtg_path', 'mrtg_p2p_path', 'id', 'Infrastructures', 'TrafficDaily', 'Customers');
     }
 
     public function __clone()

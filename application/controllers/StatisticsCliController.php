@@ -268,48 +268,58 @@ class StatisticsCliController extends IXP_Controller_CliAction
     
     public function uploadTrafficStatsToDbAction()
     {
-        // This should only be done once a day and if values already exist for 'today',
-        // just delete them.
-        $day = date( 'Y-m-d' );
-        $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->deleteForDay( $day );
-    
-        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
-    
-        foreach( $custs as $cust )
+        // do this for all IXPs
+        $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
+        
+        foreach( $ixps as $ixp )
         {
-            $stats = array();
-    
-            foreach( IXP_Mrtg::$CATEGORIES as $category )
+            $this->verbose( "Processing IXP " . $ixp->getName() );
+            
+            // This should only be done once a day and if values already exist for 'today',
+            // just delete them.
+            $day = date( 'Y-m-d' );
+            $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->deleteForDay( $day, $ixp );
+        
+            $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, $ixp );
+        
+            foreach( $custs as $cust )
             {
-                $mrtg = new IXP_Mrtg(
+                $this->verbose( "\t- processing customer " . $cust->getName() );
+                $stats = array();
+        
+                foreach( IXP_Mrtg::$CATEGORIES as $category )
+                {
+                    $mrtg = new IXP_Mrtg(
                         IXP_Mrtg::getMrtgFilePath(
-                            // FIXME plastering over multiIXP here for now
-                            $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/members',
+                            $ixp->getMrtgPath() . '/members',
                             'LOG', 'aggregate', $category,
                             $cust->getShortname()
                         )
-                );
-    
-                $td = new \Entities\TrafficDaily();
-                $td->setDay( new DateTime( $day ) );
-                $td->setCategory( $category );
-                $td->setCustomer( $cust );
-    
-                foreach( IXP_Mrtg::$PERIODS as $name => $period )
-                {
-                    $stats = $mrtg->getValues( $period, $category, false );
-    
-                    $fn = "set{$name}AvgIn";  $td->$fn( $stats['averagein']  );
-                    $fn = "set{$name}AvgOut"; $td->$fn( $stats['averageout'] );
-                    $fn = "set{$name}MaxIn";  $td->$fn( $stats['maxin']      );
-                    $fn = "set{$name}MaxOut"; $td->$fn( $stats['maxout']     );
-                    $fn = "set{$name}TotIn";  $td->$fn( $stats['totalin']    );
-                    $fn = "set{$name}TotOut"; $td->$fn( $stats['totalout']   );
+                    );
+        
+                    $td = new \Entities\TrafficDaily();
+                    $td->setDay( new DateTime( $day ) );
+                    $td->setCategory( $category );
+                    $td->setCustomer( $cust );
+                    $td->setIXP( $ixp );
+        
+                    foreach( IXP_Mrtg::$PERIODS as $name => $period )
+                    {
+                        $stats = $mrtg->getValues( $period, $category, false );
+        
+                        $fn = "set{$name}AvgIn";  $td->$fn( $stats['averagein']  );
+                        $fn = "set{$name}AvgOut"; $td->$fn( $stats['averageout'] );
+                        $fn = "set{$name}MaxIn";  $td->$fn( $stats['maxin']      );
+                        $fn = "set{$name}MaxOut"; $td->$fn( $stats['maxout']     );
+                        $fn = "set{$name}TotIn";  $td->$fn( $stats['totalin']    );
+                        $fn = "set{$name}TotOut"; $td->$fn( $stats['totalout']   );
+                    }
+        
+                    $this->getD2EM()->persist( $td );
                 }
-    
-                $this->getD2EM()->persist( $td );
+                
+                $this->getD2EM()->flush();
             }
-            $this->getD2EM()->flush();
         }
     }
     

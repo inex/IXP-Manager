@@ -55,6 +55,16 @@ A schema update is required:
     ALTER TABLE ixp
         ADD mrtg_path VARCHAR(255) DEFAULT NULL, 
         ADD mrtg_p2p_path VARCHAR(255) DEFAULT NULL;
+    
+    ALTER TABLE traffic_daily 
+        ADD ixp_id INT DEFAULT NULL;
+    
+    ALTER TABLE traffic_daily 
+        ADD CONSTRAINT FK_1F0F81A7A5A4E881 
+            FOREIGN KEY (ixp_id) REFERENCES ixp (id);
+    
+    CREATE INDEX IDX_1F0F81A7A5A4E881 
+        ON traffic_daily (ixp_id)
 
 VLANs must be linked with infrastructures. Immediately of the frontend will not work. You can use a simple SQL query as follows and then, correct the VLANs to the correct infrastructures in the web interface:
 
@@ -74,6 +84,16 @@ This no longer works in the context of supporting multiple IXPs. Please **remove
 
     UPDATE `ixp` SET `mrtg_path` = 'http://www.example.com/mrtg';
     UPDATE `ixp` SET `mrtg_p2p_path` = 'http://www.example.com/sflow/sflow-graph.php';
+
+The daily traffic information needs to be multi-IXP aware (see changes to `traffic_daily` above). We 
+need to associate the current entries with the default IXP and then add a constraint such that IXP (and 
+customer) is required on these entries (may take a moment to execute):
+
+    UPDATE `traffic_daily` SET `ixp_id` = 1;
+    
+    ALTER TABLE traffic_daily 
+        CHANGE ixp_id ixp_id INT NOT NULL, 
+        CHANGE cust_id cust_id INT NOT NULL;
 
 
 
