@@ -27,7 +27,14 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Interface Statistics :: {$cust->getName()}</h1>
+            <h1>
+                IXP Interface Statistics
+                {if $multiIXP}
+                    @ {$ixp->getShortname()}
+                {else}
+                    :: {$cust->getName()}
+                {/if}
+            </h1>
         </div>
 {/if}
 
@@ -80,9 +87,9 @@
             
             {if $multiIXP}
                 <strong>IXP:</strong>
-                <select name="ixp" class="chzn-select" onchange="this.form.submit();">
+                <select name="ixp" class="chzn-select span3" onchange="this.form.submit();">
                     {foreach $ixps as $i}
-                        <option value="{$i->getId()}" {if $ixp->getId() eq $i->getId()}selected{/if}>{$i->getName()}</option>
+                        <option value="{$i->getId()}" {if $ixp->getId() eq $i->getId()}selected{/if}>{$i->getShortname()}</option>
                     {/foreach}
                 </select>
             {else}
@@ -90,7 +97,7 @@
             {/if}
             
             <strong>Graph Type:</strong>&nbsp;&nbsp;&nbsp;&nbsp;
-            <select name="category" onchange="this.form.submit();" class="chzn-select">
+            <select name="category" onchange="this.form.submit();" class="chzn-select span3">
                 {foreach from=$categories key=cname item=cvalue}
                     <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
                 {/foreach}
