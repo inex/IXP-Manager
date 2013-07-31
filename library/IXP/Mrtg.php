@@ -126,6 +126,16 @@ class IXP_Mrtg
     );
 
     /**
+     * The reverse array of $CATEGORIES - human readable form.
+     */
+    public static $GRAPH_CATEGORIES = array (
+            'bits' => 'Bits',
+            'pkts' => 'Packets',
+            'errs' => 'Errors',
+            'discs' => 'Discards',
+    );
+    
+    /**
      * Array of valid categories for aggregate graphs
      */
     public static $CATEGORIES_AGGREGATE = array(

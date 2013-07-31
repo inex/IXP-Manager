@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,19 +28,11 @@
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Controller
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class MrtgController extends IXP_Controller_AuthRequiredAction
 {
-
-    public static $GRAPH_CATEGORIES = array (
-        'bits' => 'Bits',
-        'pkts' => 'Packets',
-        'errs' => 'Errors',
-        'discs' => 'Discards',
-    );
-
     protected $_flock = null;
 
     
