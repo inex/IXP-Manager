@@ -138,11 +138,11 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
         if( $infra === false )
         {
             // we default to the primary infrastructure
-            $infra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary();
+            $infra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary( $this->ixp );
         }
         else
         {
-            if( !( $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $infra ) ) )
+            if( !( $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $infra ) ) || $infra->getIXP()->getId() != $this->ixp->getId() )
                 exit( 0 );
         }
         

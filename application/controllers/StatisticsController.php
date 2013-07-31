@@ -325,9 +325,9 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
         $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
 
-        $this->_setIXP();
+        $this->_setIXP( $cust );
         $this->_setInfrastructure( false );
-        $category = $this->_setCategory();
+        $category = $this->_setCategory( 'category', true );
         $period   = $this->_setPeriod();
         $proto    = $this->_setProtocol();
         $dvid     = $this->view->dvid = $this->getParam( 'dvid', false );
@@ -356,7 +356,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
                     $vints[ $vi->getId() ] = $vi;
             }
         }
-        
+
         $this->view->vints = $vints;
         $this->view->customersWithVirtualInterfaces = false;
         
@@ -379,7 +379,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
             // find the possible virtual interfaces that this customer peers with
             
-            $pvints = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->getForInfrastructure( $infra, $proto );
+            $pvints = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )
+                ->getForInfrastructure( $this->infra, $proto );
 
             if( $dvid )
             {
@@ -503,15 +504,16 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
      * and `$categories` to all available categories.
      *
      * @param string $pname The name of the parameter to extract the category from
+     * @param bool $aggregate Use aggregate categories only (i.e. bits, pkts, no errs, no discs)
      * @return string The chosen / defaulted category
      */
-    protected function _setCategory( $pname = 'category' )
+    protected function _setCategory( $pname = 'category', $aggregate = false )
     {
         $category = $this->getParam( $pname, IXP_Mrtg::$CATEGORIES['Bits'] );
-        if( !in_array( $category, IXP_Mrtg::$CATEGORIES ) )
+        if( !in_array( $category, $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES ) )
             $category = IXP_Mrtg::$CATEGORIES['Bits'];
         $this->view->category   = $category;
-        $this->view->categories = IXP_Mrtg::$CATEGORIES;
+        $this->view->categories = $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES;
         return $category;
     }
     
