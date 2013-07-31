@@ -11,23 +11,15 @@
     <li class="active">
         List
     </li>
-    {if $multiIXP}
-        <li class="pull-right"  style="margin-top: -6px;">
-            <div class="btn-toolbar" style="display: inline;">    
-                <div class="btn-group">
-                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                        {if isset( $ixp ) }{$ixp->getName()}{else}Limit to IXP...{/if}
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                        {foreach $ixpNames as $xid => $xname}
-                            <li> <a href="{genUrl controller=$controller action=$action ixp=$xid}">{$xname}</a> </li>
-                        {/foreach}
-                    </ul>
-                </div>
-            </div>
-        </li>
-    {/if}
+    <li class="pull-right"  style="margin-top: -6px;">
+        <div class="btn-toolbar" style="display: inline;">
+            {if $multiIXP}
+                {include file='statistics/snippets/menu-ixp-dropdown.phtml'}
+            {/if}
+            
+            {include file='statistics/snippets/menu-infra-dropdown.phtml'}
+        </div>
+    </li>
 </ul>
 
 
@@ -52,8 +44,8 @@
             {/if}
             
         	<li>
-        		<a href="{genUrl controller="dashboard" action="statistics" shortname=$cust.shortname}">
-        			{$cust.name}
+        		<a href="{genUrl controller="dashboard" action="statistics" shortname=$cust->getShortname()}">
+        			{$cust->getName()}
         		</a>
         	</li>
 

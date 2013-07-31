@@ -69,9 +69,10 @@ class Customer extends EntityRepository
      * @param bool $asArray If `true`, return an associative array, else an array of Customer objects
      * @param bool $trafficing If `true`, only include trafficing customers (i.e. no associates)
      * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
+     * @param \Entities\IXP $ixp Limit to a specific IXP
      * @return array
      */
-    public function getCurrentActive( $asArray = false, $trafficing = false, $externalOnly = false, $ixpid = false )
+    public function getCurrentActive( $asArray = false, $trafficing = false, $externalOnly = false, $ixp = false )
     {
         $dql = "SELECT c FROM \\Entities\\Customer c
                 WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_ACTIVE;
@@ -82,17 +83,48 @@ class Customer extends EntityRepository
         if( $externalOnly )
             $dql .= " AND " . self::DQL_CUST_EXTERNAL;
 
-        if( $ixpid !== false )
-            $dql .= " AND ?1 MEMBER OF c.IXPs";
+        if( $ixp !== false )
+            $dql .= " AND :ixp MEMBER OF c.IXPs";
 
         $dql .= " ORDER BY c.name ASC";
         
         $custs = $this->getEntityManager()->createQuery( $dql );
 
-        if( $ixpid !== false )
-            $custs->setParameter( 1, $ixpid );
+        if( $ixp !== false )
+            $custs->setParameter( 'ixp', $ixp );
         
         return $asArray ? $custs->getArrayResult() : $custs->getResult();
+    }
+    
+    /**
+     * Takes an array of \Entities\Customer and filters them for a given infrastructure.
+     *
+     * Often used by passing the return fo `getCurrentActive()`
+     *
+     * @param \Entities\Customer[] $customers
+     * @param \Entities\Infrastructure $infra
+     * @return \Entities\Customer[]
+     */
+    public function filterForInfrastructure( $customers, $infra )
+    {
+        $filtered = [];
+        
+        foreach( $customers as $c )
+        {
+            foreach( $c->getVirtualInterfaces() as $vi )
+            {
+                foreach( $vi->getPhysicalInterfaces() as $pi )
+                {
+                    if( $pi->getSwitchport()->getSwitcher()->getInfrastructure() == $infra )
+                    {
+                        $filtered[] = $c;
+                        continue 3;
+                    }
+                }
+            }
+        }
+        
+        return $filtered;
     }
     
     

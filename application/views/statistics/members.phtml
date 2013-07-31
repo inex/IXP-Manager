@@ -18,38 +18,10 @@
     <li class="pull-right"  style="margin-top: -6px;">
         <div class="btn-toolbar" style="display: inline;">
             {if $multiIXP}
-                <div class="btn-group">
-                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                        {if isset( $ixp ) }{$ixp->getName()}{else}Limit to IXP...{/if}
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                        {foreach $ixpNames as $xid => $xname}
-                            <li> <a href="{genUrl controller=$controller action=$action ixp=$xid}">{$xname}</a> </li>
-                        {/foreach}
-                    </ul>
-                </div>
+                {include file='statistics/snippets/menu-ixp-dropdown.phtml'}
             {/if}
-
-            <div class="btn-group" id="vlan-btn-group">
-                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="vlan-dd">
-                    <span id="vlan-dd-text">
-                        {if $infra == 'aggregate'}
-                            Aggregate Traffic
-                        {else}
-                            {$infras.$infra}
-                        {/if}
-                    </span>
-                    <span class="caret"></span>
-                </a>
-                <ul id="vlan-dd-ul" class="dropdown-menu pull-right">
-                    <li> <a id="vlan-aggregate" href="{genUrl controller='statistics' action='members'}{if isset( $ixp )}/ixp/{$ixp->getId()}{/if}">Aggregate Traffic</a> </li>
-                    <li class="divider"></li>
-                    {foreach $infras as $iid => $iname}
-                        <li> <a id="vlan-{$iid}" href="{genUrl controller='statistics' action='members' infra=$iid}">{$iname}</a> </li>
-                    {/foreach}
-                </ul>
-            </div>            
+            
+            {include file='statistics/snippets/menu-infra-dropdown.phtml'}
         </div>
     </li>
 
@@ -59,7 +31,28 @@
 
 <div class="row-fluid">
     <div class="span12">
-        <form action="{genUrl controller="statistics" action="members" infra=$infra}{if isset( $ixp )}/ixp/{$ixp->getId()}{/if}" method="post" class="form-horizontal">
+        <form action="{genUrl controller="statistics" action="members"}" method="post" class="form-horizontal">
+        
+            {if $multiIXP}
+                <strong>IXP:</strong>
+                <select name="ixp" class="chzn-select" onchange="this.form.submit();">
+                    {foreach $ixps as $i}
+                        <option value="{$i->getId()}" {if $ixp->getId() eq $i->getId()}selected{/if}>{$i->getName()}</option>
+                    {/foreach}
+                </select>
+            {else}
+                <input type="hidden" name="ixp" value="{$ixp->getId()}" />
+            {/if}
+            
+            <strong>Infrastructure:</strong>
+            <select name="infra" class="chzn-select" onchange="this.form.submit();">
+                <option value="aggregate" {if $infraid eq 'aggregate'}selected{/if}>Aggregate Traffic</option>
+                {foreach $ixp->getInfrastructures() as $i}
+                    <option value="{$i->getId()}" {if $infraid eq $i->getId()}selected{/if}>{$i->getName()}</option>
+                {/foreach}
+            </select>
+        
+            
             <strong>Graph Type:</strong>
             <select name="category" class="chzn-select" onchange="this.form.submit();">
                 {foreach from=$categories key=cname item=cvalue}
@@ -86,30 +79,29 @@
 
     {$monindexes = []}
     {$portdetails = []}
-    {if $infra eq 'aggregate'}
+    {if $infraid eq 'aggregate'}
     
         {$monindexes[] = 'aggregate'}
         
     {else}
         
-        {* does this customer have interfaces on the requested LAN *}
+        {* get the customer's interfaces on the requested LAN *}
         
         {foreach $cust->getVirtualInterfaces() as $vi}
 
             {foreach $vi->getPhysicalInterfaces() as $pi}
             
-                {if $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $infra}
+                {if $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $infraid}
                 
                     {$monindexes[] = $pi->getMonitorindex()}
                     {$mi = $pi->getMonitorindex()}
                     
-                    {$portdetails.$mi.switch = $pi->getSwitchPort()->getSwitcher()->getName()}
+                    {$portdetails.$mi.switch     = $pi->getSwitchPort()->getSwitcher()->getName()}
                     {$portdetails.$mi.switchport = $pi->getSwitchPort()->getName()}
                     
                 {/if}
             
             {/foreach}
-        
         
         {/foreach}
         
@@ -122,7 +114,7 @@
             <div class="well">
                 <h4 style="vertical-align: middle">
                     {$cust->getName()}
-                    {if ( isset( $options.sflow.enabled ) and $options.sflow.enabled ) and ( $category eq 'bits' or $category eq 'pkts' )} 
+                    {if ( isset( $options.sflow.enabled ) and $options.sflow.enabled ) and ( $category eq 'bits' or $category eq 'pkts' )}
                         <span class="btn btn-mini" style="float: right">
                             <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname() category=$category period=$period}"><i class="icon-random"></i></a>
                         </span>

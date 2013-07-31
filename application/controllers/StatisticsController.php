@@ -33,31 +33,98 @@
  */
 class StatisticsController extends IXP_Controller_AuthRequiredAction
 {
-
+    /**
+     * The selected / default IXP. Available in the view as `$ixp`. Set in `preDispath()`.
+     * @var \Entities\IXP The IXP / default IXP
+     */
+    private $ixp = null;
+    
+    /**
+     * All available IXPs. Available in the view as `$ixps`. Set in `preDispath()`.
+     * @var \Entities\IXP[] All available IXPs
+     */
+    private $ixps = null;
+    
+    /**
+     * The selected infrastructure (or `aggregate`). Set in `preDispatch()` and available in the view as `$infra`.
+     * @var \Entities\Infrastructure The selected infrastructure (or `aggregate`).
+     */
+    private $infra = null;
+    
+    /**
+     * The selected infrastructure ID or `aggregate`. Set in `preDispatch()` and available in the view as `$infraid`.
+     *
+     * Useful as the infrastructure is either an object or 'aggregate' - using this variable allows direct use without
+     * bounding if's.
+     *
+     * @var string|int The selected infrastructure ID or `aggregate`.
+     */
+    private $infraid = null;
+    
     public function preDispatch()
-    {}
+    {
+        // sort out IXPs
+        if( $this->multiIXP() )
+        {
+            $this->ixps = $this->view->ixps = $this->getD2R( "\\Entities\\IXP" )->findAll();
+                
+            if( $this->getParam( 'ixp', false ) )
+                $this->view->ixp = $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ) );
+            else if( $this->ixps )
+                $this->view->ixp = $this->ixp = $this->ixps[0];
+            else
+                throw new IXP_Exception( "No IXPs defined!" );
+        }
+        else
+        {
+            // in non-multiIXP environments, there is only one IXP and it has ID 1
+            $this->ixp = $this->view->ixp = $this->loadIxpById( 1 );
+        }
+        
+        // and sort out infrastructrues
+        $this->view->infra = $this->view->infraid = $this->infra = $this->infraid = $this->getParam( 'infra', 'aggregate' );
+        
+        if( $this->infra != "aggregate" )
+        {
+            foreach( $this->ixp->getInfrastructures() as $inf )
+            {
+                if( $inf->getId() == $this->infra )
+                {
+                    $this->view->infra   = $this->infra   = $inf;
+                    $this->view->infraid = $this->infraid = $inf->getId();
+                    break;
+                }
+            }
+            
+            if( !( $this->infra instanceof \Entities\Infrastructure ) )
+                $this->view->infra = $this->view->infraid = $this->infra = $this->infraid = 'aggregate';
+        }
+    }
 
     
     public function listAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
 
-        if( $this->getParam( 'ixp', false ) )
-            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
-        else
-        {
-            $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
-            if( $ixp )
-                $this->view->ixp = $ixp = $ixp[0];
-            else
-                $ixp = false;
-        }
-
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer')->getCurrentActive( true, true, false, $ixp ? $ixp->getId() : false );
-
-        if( $this->multiIXP() )
-            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
+        $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+        
+        if( !is_string( $this->infra ) && $this->infra )
+            $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
     }
+
+    public function membersAction()
+    {
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+    
+        $this->_setCategory();
+        $this->_setPeriod();
+        
+        $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+        
+        if( !is_string( $this->infra ) && $this->infra )
+            $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
+    }
+    
     
     public function leagueTableAction()
     {
@@ -191,37 +258,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         }
         $this->view->stats      = $stats;
         
-    }    
-    
-    public function membersAction()
-    {
-        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
-        $this->view->infra  = $infra  = $this->getParam( 'infra', 'aggregate' );
-
-        if( $this->getParam( 'ixp', false ) )
-            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
-        else if( $infra != "aggregate" )
-        {
-            $oinfra = $this->getD2R( "\\Entities\\Infrastructure" )->find( $infra );
-            $this->view->ixp = $ixp = $oinfra->getIXP();
-        }
-        else
-        {
-            $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
-            if( $ixp )
-                $this->view->ixp = $ixp = $ixp[0];
-            else
-                $ixp = false;
-        }
-        
-        $this->view->infras = $infras = $this->getD2R( '\\Entities\\Infrastructure' )->getNames( $ixp );
-  
-        $this->_setCategory();
-        $this->_setPeriod();
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, ( $ixp && $infra == 'aggregate' ) ? $ixp->getId() : false );
-
-        if( $this->multiIXP() )
-            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
     }
     
     public function memberAction()

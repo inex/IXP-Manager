@@ -631,7 +631,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                 $ixp = false;
         }
 
-        $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, false, false, $ixp ? $ixp->getId() : false );
+        $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, false, false, $ixp ? $ixp : false );
 
         if( $this->multiIXP() )
             $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );

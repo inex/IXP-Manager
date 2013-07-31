@@ -1,0 +1,25 @@
+<div class="btn-group">
+    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" id="vlan-dd">
+        <span id="vlan-dd-text">
+            {if $infraid == 'aggregate'}
+                Aggregate Traffic
+            {else}
+                {$infra->getName()}
+            {/if}
+        </span>
+        <span class="caret"></span>
+    </a>
+    <ul id="vlan-dd-ul" class="dropdown-menu pull-right">
+        <li>
+            <a id="vlan-aggregate" href="{genUrl controller=$controller action=$action ixp=$ixp->getId()}">Aggregate Traffic</a>
+        </li>
+        <li class="divider"></li>
+        {foreach $ixp->getInfrastructures() as $inf}
+            <li>
+                <a id="vlan-{$inf->getId()}" href="{genUrl controller=$controller action=$action ixp=$ixp->getId() infra=$inf->getId()}">
+                    {$inf->getName()}
+                </a>
+            </li>
+        {/foreach}
+    </ul>
+</div>
