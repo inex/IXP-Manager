@@ -62,8 +62,6 @@
       <field name="name" type="string" size="255" uuid="02357757-59b4-470c-8c32-d56c3370bad9"/>
       <field name="shortname" type="string" size="255" uuid="20582920-be04-4962-939f-b5638e02740a"/>
       <field name="isPrimary" type="boolean" size="1" default="0" required="true" uuid="8e597898-cb1f-4894-9dcf-5219be025587"/>
-      <field name="mrtg_path" type="string" size="255" uuid="b91ff2c9-593b-4aeb-8489-1e3ed3a678e7"/>
-      <field name="mrtg_p2p_path" type="string" size="255" uuid="1122eb6d-e702-46d4-95fa-67ef3fc27075"/>
       <field name="ixp_id" type="integer" required="true" uuid="6d316694-a9c3-4547-9265-daf01edf6a88"/>
       <index name="IXPSN" unique="true">
         <index-field name="shortname"/>
@@ -87,6 +85,8 @@
       <field name="address3" type="string" uuid="8e8b7fe8-e734-45b8-94cf-95657476c3e4"/>
       <field name="address4" type="string" uuid="4d4b3b92-df16-4e11-805e-b77bfd582742"/>
       <field name="country" type="string" uuid="72f9e0ee-d964-448f-ad2b-7e923aaf7435"/>
+      <field name="mrtg_path" type="string" size="255" uuid="1328ffc2-7a48-4aea-9e9c-3e1e9e50489f"/>
+      <field name="mrtg_p2p_path" type="string" size="255" uuid="f3a641a9-5f10-42ab-8a7c-97da577dad11"/>
       <orm-attributes>
         <attribute name="table">ixp</attribute>
         <attribute name="tableName">ixp</attribute>

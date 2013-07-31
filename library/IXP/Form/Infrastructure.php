@@ -61,22 +61,6 @@ class IXP_Form_Infrastructure extends IXP_Form
         $this->addElement( $isPrimary );
         
 
-        $name = $this->createElement( 'text', 'mrtg_path' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->setRequired( true )
-            ->setLabel( 'MRTG Path' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $name  );
-
-        $name = $this->createElement( 'text', 'mrtg_p2p_path' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->setRequired( true )
-            ->setLabel( 'MRTG P2P Path' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $name  );
-
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }

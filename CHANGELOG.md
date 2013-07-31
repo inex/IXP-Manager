@@ -52,10 +52,9 @@ A schema update is required:
     CREATE UNIQUE INDEX IXPSN 
         ON infrastructure (shortname, ixp_id);
     
-    ALTER TABLE infrastructure 
+    ALTER TABLE ixp
         ADD mrtg_path VARCHAR(255) DEFAULT NULL, 
         ADD mrtg_p2p_path VARCHAR(255) DEFAULT NULL;
-
 
 VLANs must be linked with infrastructures. Immediately of the frontend will not work. You can use a simple SQL query as follows and then, correct the VLANs to the correct infrastructures in the web interface:
 

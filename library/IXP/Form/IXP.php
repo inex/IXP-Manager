@@ -94,6 +94,23 @@ class IXP_Form_IXP extends IXP_Form
             ->setAttrib( 'chzn-fix-width', '1' );
         $this->addElement( $country );
 
+        $mrtgPath = $this->createElement( 'text', 'mrtg_path' );
+        $mrtgPath->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setRequired( true )
+            ->setLabel( 'MRTG Path' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $mrtgPath  );
+        
+        $p2pPath = $this->createElement( 'text', 'mrtg_p2p_path' );
+        $p2pPath->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setRequired( true )
+            ->setLabel( 'MRTG P2P Path' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $p2pPath  );
+        
+        
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }

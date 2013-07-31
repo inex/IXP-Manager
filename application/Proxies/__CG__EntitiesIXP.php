@@ -171,10 +171,34 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         return parent::getCustomers();
     }
 
+    public function setMrtgPath($mrtgPath)
+    {
+        $this->__load();
+        return parent::setMrtgPath($mrtgPath);
+    }
+
+    public function getMrtgPath()
+    {
+        $this->__load();
+        return parent::getMrtgPath();
+    }
+
+    public function setMrtgP2pPath($mrtgP2pPath)
+    {
+        $this->__load();
+        return parent::setMrtgP2pPath($mrtgP2pPath);
+    }
+
+    public function getMrtgP2pPath()
+    {
+        $this->__load();
+        return parent::getMrtgP2pPath();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', 'Customers');
+        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'mrtg_path', 'mrtg_p2p_path', 'id', 'Infrastructures', 'Customers');
     }
 
     public function __clone()
