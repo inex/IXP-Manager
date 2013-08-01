@@ -5,6 +5,15 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+
+# v3.3.4 (20130801)
+
+New feature to export member details - see https://github.com/inex/IXP-Manager/wiki/Exporting-Member-Details
+
+
+- [BF] (Very) stale reference to older code (7978423 - Barry O'Donovan - 2013-08-01)
+- [NF] Exporting Member Details (93e049b - Barry O'Donovan - 2013-08-01)
+
 # v3.3.3 (20130730)
 
 - [IM] Fix #46 - Do not display new member on "Recent Members" (in member login) until they have a connected physical interface (61c0846 - Barry O'Donovan - 2013-07-30)
