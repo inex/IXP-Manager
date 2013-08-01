@@ -1,4 +1,16 @@
 
+# Upgrade Instructions
+
+Please see the following page for upgrade instructions:
+
+> https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
+
+# v3.3.3 (20130730)
+
+- [IM] Fix #46 - Do not display new member on "Recent Members" (in member login) until they have a connected physical interface (61c0846 - Barry O'Donovan - 2013-07-30)
+- [BF] Fix #51 - Known MAC Addresses only lists MACs of interfaces which have ipv4 and ipv6 assigned (7affd56 - Barry O'Donovan - 2013-07-30)
+- [BF] Fix #50 (eed758d - Barry O'Donovan - 2013-07-30)
+
 # v3.3.2 (20130724)
 
 Major new feature - CLI tool to email a report on ports with error / discard counts. See the [documentation](https://github.com/inex/IXP-Manager/wiki/Email-Notifications).
