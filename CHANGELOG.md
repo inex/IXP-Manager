@@ -112,6 +112,16 @@ entries as they are no longer used. Instead, edit your IXP(s) or use SQL such as
 
 Then, edit your infrastructures and set the *Aggregate Graph Name* (e.g. `network1` above) appropriately. The titles are now worked out automatically. 
 
+If you are using inter-switch / PoP graphs, they will have been configured as follows in `application.ini`:
+
+    mrtg.trunk_graphs[] = "core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
+
+Please update these by preceeding them with `1::`:
+
+    mrtg.trunk_graphs[] = "1::core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
+
+The `1::` represents the IXP ID where these graphs reside. For an upgrade to this new multi-IXP code, all your existing entries will be for IXP ID 1.
+
 # v3.3.4 (20130801)
 
 New feature to export member details - see https://github.com/inex/IXP-Manager/wiki/Exporting-Member-Details
