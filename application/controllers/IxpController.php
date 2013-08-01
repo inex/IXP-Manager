@@ -39,17 +39,6 @@ class IxpController extends IXP_Controller_FrontEnd
      */
     protected function _feInit()
     {
-        if( !$this->multiIXP() )
-        {
-            $this->addMessage(
-                'Multi-IXP mode has not been enabled. '
-                    . 'Please see <a href="https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality">this page</a> '
-                    . 'for more information and documentation.',
-                OSS_Message::ERROR
-            );
-            $this->redirectAndEnsureDie();
-        }
-
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\IXP',
             'form'          => 'IXP_Form_IXP',
@@ -83,6 +72,67 @@ class IxpController extends IXP_Controller_FrontEnd
         }
     }
 
+    
+    protected function listPreamble()
+    {
+        if( !$this->multiIXP() )
+        {
+            $this->addMessage(
+                    'Multi-IXP mode has not been enabled. '
+                    . 'Please see <a href="https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality">this page</a> '
+                    . 'for more information and documentation. <strong>DO NOT ADD MORE THAN ONE IXP WITHOUT ENABLED MUTLI-IXP MODE!</strong>',
+                    OSS_Message::WARNING
+            );
+        }
+    }
+    
+    /**
+     * Preparation hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called just before we process a possible POST / submission and
+     * will allow us to change / alter the form or object.
+     *
+     * @param OSS_Form $form The Send form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     */
+    protected function addPrepare( $form, $object, $isEdit )
+    {
+        if( !$this->multiIXP() && !$isEdit )
+        {
+            $this->addMessage(
+                'Seriously dude - Multi-IXP mode has not been enabled. <strong>DO NOT ADD MORE THAN ONE IXP WITHOUT ENABLED MUTLI-IXP MODE!</strong>',
+                OSS_Message::ERROR
+            );
+            $this->redirect( 'ixp/list' );
+        }
+    }
+        
+    /**
+     * You can add `OSS_Message`s here and redirect to a custom destination after a
+     * successful add / edit operation.
+     *
+     * By default it returns `false`.
+     *
+     * On `false`, the default action (`index`) is called and a standard success message is displayed.
+     *
+     *
+     * @param OSS_Form $form The form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return bool `false` for standard message and redirection, otherwise redirect within this function
+     */
+    protected function addDestinationOnSuccess( $form, $object, $isEdit  )
+    {
+        if( !$this->multiIXP() )
+        {
+            $this->addMessage( 'IXP details updated successfully.', OSS_Message::SUCCESS );
+            $this->redirect( 'infrastructure/list' );
+        }
+        
+        return false;
+    }
+    
     /**
      * Provide array of users for the listAction and viewAction
      *
