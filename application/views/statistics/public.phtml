@@ -16,7 +16,7 @@
         </div>
 {/if}
 
-<h3>{$graphs.$graph} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
+<h3>{$graphs.$graph.title} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
 
 {OSS_Message}
 
@@ -25,16 +25,16 @@
 <table>
 <tr>
     <td width="20"></td>
-    <td valign="middle"><strong>Select Infrastructure:</strong></td>
+    <td valign="middle"><strong>Select {if $multiIXP}IXP / {/if}Infrastructure:&nbsp;</strong></td>
     <td>
         <select name="graph" class="chzn-select" onchange="this.form.submit();">
-            {foreach from=$graphs key=id item=name}
-                <option value="{$id}" {if $graph eq $id}selected{/if}>{$name}</option>
+            {foreach $graphs as $id => $data}
+                <option value="{$id}" {if $graph eq $id}selected{/if}>{$data.title}</option>
             {/foreach}
         </select>
     </td>
     <td width="20"></td>
-    <td valign="middle"><strong>Category:</strong></td>
+    <td valign="middle"><strong>Category:&nbsp;</strong></td>
     <td>
         <select name="category" class="chzn-select" onchange="this.form.submit();">
             {foreach from=$categories key=cname item=cval}
@@ -46,7 +46,6 @@
 </table>
 </form>
 </p>
-
 
 <div class="row-fluid">
 
@@ -65,7 +64,7 @@
                         period=$pvalue
                         category=$category
                         values=$stats.$pvalue
-                        graph=$graph
+                        graph=$graphs.$graph.name
                 }
             </p>
         </div>

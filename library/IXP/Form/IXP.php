@@ -110,6 +110,7 @@ class IXP_Form_IXP extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $p2pPath  );
         
+        $this->addElement( self::createAggregateGraphNameElement() );
         
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
@@ -135,6 +136,22 @@ class IXP_Form_IXP extends IXP_Form
             ->setErrorMessages( [ 'Please select an IXP' ] );
     
         return $sw;
+    }
+    
+    /**
+     * Create a 'Aggregate Graph Name element used by the IXP and infrastructre forms
+     *
+     * @param string $name The element name (defaults to `aggregate_graph_name`)
+     * @return Zend_Form_Element_Text
+     */
+    public static function createAggregateGraphNameElement( $name = 'aggregate_graph_name' )
+    {
+        $agn = new Zend_Form_Element_Text( $name );
+        
+        return $agn->setRequired( false )
+            ->setLabel( 'Aggregate Graph Name' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
     }
 
 }

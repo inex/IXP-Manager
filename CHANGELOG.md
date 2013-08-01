@@ -54,7 +54,11 @@ A schema update is required:
     
     ALTER TABLE ixp
         ADD mrtg_path VARCHAR(255) DEFAULT NULL, 
-        ADD mrtg_p2p_path VARCHAR(255) DEFAULT NULL;
+        ADD mrtg_p2p_path VARCHAR(255) DEFAULT NULL,
+        ADD aggregate_graph_name VARCHAR(255) DEFAULT NULL;
+    
+    ALTER TABLE infrastructure 
+        ADD aggregate_graph_name VARCHAR(255) DEFAULT NULL;
     
     ALTER TABLE traffic_daily 
         ADD ixp_id INT DEFAULT NULL;
@@ -95,7 +99,18 @@ customer) is required on these entries (may take a moment to execute):
         CHANGE ixp_id ixp_id INT NOT NULL, 
         CHANGE cust_id cust_id INT NOT NULL;
 
+Up to now, we hard coded aggregate IXP and infrastructure graphs in the `application.ini` file using a configuration option such as:
 
+    mrtg.traffic_graphs[] = "aggregate::Aggregate Graphs" 
+    mrtg.traffic_graphs[] = "network1::Infrastructure #1" 
+
+where `aggregate` was the file name on the MRTG server and `Aggregate Graphs` was the frontend title. You can now remove these 
+entries as they are no longer used. Instead, for your IXP use SQL such as the following to set the file name:
+
+    UPDATE `ixp` SET `aggregate_graph_name` = 'aggregate' WHERE `id` = 1;
+
+If you are running multi-IXP mode, you can edit the IXP directly in the frontend. Then, edit your infrastructures and set 
+the *Aggregate Graph Name* (e.g. `network1` above) appropriately. The titles are now worked out automatically. 
 
 # v3.3.4 (20130801)
 

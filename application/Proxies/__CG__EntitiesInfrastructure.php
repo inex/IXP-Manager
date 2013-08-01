@@ -135,10 +135,22 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         return parent::getIsPrimary();
     }
 
+    public function setAggregateGraphName($aggregateGraphName)
+    {
+        $this->__load();
+        return parent::setAggregateGraphName($aggregateGraphName);
+    }
+
+    public function getAggregateGraphName()
+    {
+        $this->__load();
+        return parent::getAggregateGraphName();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'isPrimary', 'id', 'Switchers', 'Vlans', 'IXP');
+        return array('__isInitialized__', 'name', 'shortname', 'isPrimary', 'aggregate_graph_name', 'id', 'Switchers', 'Vlans', 'IXP');
     }
 
     public function __clone()

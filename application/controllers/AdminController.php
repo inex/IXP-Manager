@@ -71,21 +71,60 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             else
             {
                 $admin_home_stats = [];
-            
-                foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
+                $graphs = [];
+                $stats  = [];
+                
+                if( $this->multiIXP() )
                 {
-                    $p = explode( '::', $g );
-                    $graphs[$p[0]] = $p[1];
-                    $images[]      = $p[0];
-                
-                    $mrtg = new IXP_Mrtg(
-                        // FIXME plastering over multiIXP here for now
-                        $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath()
-                            . DIRECTORY_SEPARATOR . 'ixp_peering-' . $p[0]
-                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                    );
-                
-                    $stats[$p[0]] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                    $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
+                    
+                    foreach( $ixps as $ixp )
+                    {
+                        if( $ixp->getAggregateGraphName() )
+                        {
+                            $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
+                            $graphs[ $ixp->getId() ]['title'] = $ixp->getName();
+                        }
+                    }
+                    
+                    foreach( $graphs as $id => $data )
+                    {
+                        $mrtg = new IXP_Mrtg(
+                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
+                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                        );
+                    
+                        $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                    }
+                }
+                else
+                {
+                    $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
+                    
+                    if( $ixp->getAggregateGraphName() )
+                    {
+                        $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
+                        $graphs[ $ixp->getId() ]['title'] = 'IXP Aggregate Graph';
+                    }
+
+                    foreach( $ixp->getInfrastructures() as $inf )
+                    {
+                        if( $inf->getAggregateGraphName() )
+                        {
+                            $graphs[ $ixp->getId() . '-' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
+                            $graphs[ $ixp->getId() . '-' . $inf->getId() ]['title'] = $inf->getName();
+                        }
+                    }
+                    
+                    foreach( $graphs as $id => $data )
+                    {
+                        $mrtg = new IXP_Mrtg(
+                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
+                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                        );
+                    
+                        $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                    }
                 }
             
                 $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;

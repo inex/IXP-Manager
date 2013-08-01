@@ -334,7 +334,9 @@ identity.default_country = 'IE'
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
 ;;
 
-;; We have publically available overall graphs which are defined here
+;; We support aggregate IXP and aggregate infrastructure graphs assuming you
+;; have set up MRTG to support these. 
+;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
 ;mrtg.traffic_graphs[] = "aggregate::Aggregate Graphs"
 ;mrtg.traffic_graphs[] = "network1::Infrastructure #1"

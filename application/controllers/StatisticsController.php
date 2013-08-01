@@ -201,7 +201,31 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
     public function publicAction()
     {
-        if( !isset( $this->_options['mrtg']['traffic_graphs'] ) || !is_array( $this->_options['mrtg']['traffic_graphs'] ) || !count( $this->_options['mrtg']['traffic_graphs'] ) )
+        // get the available graphs
+        $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
+        
+        $graphs = [];
+        foreach( $ixps as $ixp )
+        {
+            if( $ixp->getAggregateGraphName() )
+            {
+                $graphs[ $ixp->getShortname() ]['name']  = $ixp->getAggregateGraphName();
+                $graphs[ $ixp->getShortname() ]['title'] = ( $this->multiIXP() ? $ixp->getShortname() . ' - ' : ' ' ) . 'Aggregate';
+                $graphs[ $ixp->getShortname() ]['mrtg']  = $ixp->getMrtgPath();
+            }
+                
+            foreach( $ixp->getInfrastructures() as $inf )
+            {
+                if( $inf->getAggregateGraphName() )
+                {
+                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
+                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['title'] = ( $this->multiIXP() ? $ixp->getShortname() . ' - ' : ' ' ) . $inf->getName();
+                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['mrtg']  = $ixp->getMrtgPath();
+                }
+            }
+        }
+        
+        if( !count( $graphs ) )
         {
             $this->addMessage(
                 "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
@@ -209,34 +233,25 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             );
             $this->redirect();
         }
-    
-        // get the available graphs
-        foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
-        {
-            $p = explode( '::', $g );
-            $graphs[$p[0]] = $p[1];
-            $images[]      = $p[0];
-        }
+        
         $this->view->graphs     = $graphs;
         
-        $graph = $this->getParam( 'graph', $images[0] );
-        if( !in_array( $graph, $images ) )
-            $graph = $images[0];
+        $graph = $this->getParam( 'graph', array_keys( $graphs )[0] );
+        if( !isset( $graphs[ $graph ] ) )
+            $graph = array_keys( $graphs )[0];
         $this->view->graph      = $graph;
         
         $category = $this->_setCategory();
-    
+
         $stats = array();
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
             $mrtg = new IXP_Mrtg(
-                // FIXME plastering over multiIXP here for now
-                $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath()
-                    . '/ixp_peering-' . $graph . '-' . $category . '.log' );
+                $graphs[ $graph ][ 'mrtg' ] . '/ixp_peering-' . $graphs[ $graph ][ 'name' ] . '-' . $category . '.log' );
             $stats[$period] = $mrtg->getValues( $period, $category );
         }
-        $this->view->stats      = $stats;
         
+        $this->view->stats      = $stats;
         $this->view->periods    = IXP_Mrtg::$PERIODS;
     }
     

@@ -7,6 +7,7 @@
     <field name="name" type="string" length="255" nullable="true"/>
     <field name="shortname" type="string" length="255" nullable="true"/>
     <field name="isPrimary" type="boolean" length="1" nullable="false"/>
+    <field name="aggregate_graph_name" type="string" length="255" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="IXPSN" columns="shortname,ixp_id"/>
     </unique-constraints>

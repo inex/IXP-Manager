@@ -201,18 +201,18 @@
 <div class="span6">
 
         {if isset( $graphs ) and count( $graphs )}
-            {foreach from=$graphs key=k item=graph}
+            {foreach $graphs as $id => $data}
                 <div class="row-fluid">
                     <div class="well">
-                        <h3>{$graphs.$k}</h3>
+                        <h3>{$data.title}</h3>
  
                         <p>
                             {genMrtgGraphBox
                                 shortname='X_Peering'
                                 period='month'
                                 category='bits'
-                                values=$stats.$k
-                                graph=$k
+                                values=$stats.$id
+                                graph=$data.name
                             }
                         </p>
                     </div>
@@ -224,7 +224,8 @@
                    <h3>Configure Your Aggregate Graph(s)</h3>
                 
                    <p>
-                       Fix me with documentation.
+                       Aggregate graphs have not been configured.
+                       Please see <a href="https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs">this documentation</a>.
                    </p>
                </div>
             </div>

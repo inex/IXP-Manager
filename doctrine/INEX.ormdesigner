@@ -62,6 +62,7 @@
       <field name="name" type="string" size="255" uuid="02357757-59b4-470c-8c32-d56c3370bad9"/>
       <field name="shortname" type="string" size="255" uuid="20582920-be04-4962-939f-b5638e02740a"/>
       <field name="isPrimary" type="boolean" size="1" default="0" required="true" uuid="8e597898-cb1f-4894-9dcf-5219be025587"/>
+      <field name="aggregate_graph_name" type="string" size="255" uuid="3e884e1f-245b-4e9b-a67f-aa9b4dcbcc01"/>
       <field name="ixp_id" type="integer" required="true" uuid="6d316694-a9c3-4547-9265-daf01edf6a88"/>
       <index name="IXPSN" unique="true">
         <index-field name="shortname"/>
@@ -87,6 +88,7 @@
       <field name="country" type="string" uuid="72f9e0ee-d964-448f-ad2b-7e923aaf7435"/>
       <field name="mrtg_path" type="string" size="255" uuid="1328ffc2-7a48-4aea-9e9c-3e1e9e50489f"/>
       <field name="mrtg_p2p_path" type="string" size="255" uuid="f3a641a9-5f10-42ab-8a7c-97da577dad11"/>
+      <field name="aggregate_graph_name" type="string" size="255" uuid="6880fa9c-3176-45bb-9775-0bf0a5be549a"/>
       <orm-attributes>
         <attribute name="table">ixp</attribute>
         <attribute name="tableName">ixp</attribute>
@@ -878,7 +880,7 @@
     <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
     <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
     <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20"/>
-    <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" position-x="1277" position-y="-133" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
+    <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" position-x="1235" position-y="193" size-x="0" size-x2="122" size-y="0" size-y2="101"/>
     <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0"/>
     <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
@@ -928,7 +930,7 @@
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
     <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" position-x="294" position-y="321" size-x="0" size-x2="101" size-y="0" size-y2="87"/>
-    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" position-x="1533" position-y="-214" size-x="0" size-x2="122" size-y="0" size-y2="73"/>
+    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" position-x="1466" position-y="-215" size-x="0" size-x2="175" size-y="0" size-y2="101"/>
     <association uuid="f18aceae-d3e6-452d-9e28-0c32f340b245" center-position-x="0" center-position-y="0"/>
     <association uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0"/>

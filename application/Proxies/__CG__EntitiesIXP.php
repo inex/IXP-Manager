@@ -213,10 +213,22 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         return parent::getTrafficDaily();
     }
 
+    public function setAggregateGraphName($aggregateGraphName)
+    {
+        $this->__load();
+        return parent::setAggregateGraphName($aggregateGraphName);
+    }
+
+    public function getAggregateGraphName()
+    {
+        $this->__load();
+        return parent::getAggregateGraphName();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'mrtg_path', 'mrtg_p2p_path', 'id', 'Infrastructures', 'TrafficDaily', 'Customers');
+        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'mrtg_path', 'mrtg_p2p_path', 'aggregate_graph_name', 'id', 'Infrastructures', 'TrafficDaily', 'Customers');
     }
 
     public function __clone()

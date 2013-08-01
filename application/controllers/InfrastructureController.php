@@ -64,7 +64,8 @@ class InfrastructureController extends IXP_Controller_FrontEnd
                 $this->_feParams->listColumns = array_merge( $this->_feParams->listColumns, [
                         'name'      => 'Name',
                         'shortname' => 'Shortname',
-                        'isPrimary'   => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ]
+                        'isPrimary'   => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
+                        'aggregate_graph_name' => 'Aggregate Graph Name'
                     ]
                 );
                 
@@ -89,7 +90,7 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'i.id AS id, i.name AS name, i.isPrimary AS isPrimary,
                 i.shortname AS shortname, ix.shortname AS ixp_name,
-                ix.id AS ixp_id'
+                ix.id AS ixp_id, i.aggregate_graph_name AS aggregate_graph_name'
             )
             ->from( '\\Entities\\Infrastructure', 'i' )
             ->leftJoin( 'i.IXP', 'ix' );

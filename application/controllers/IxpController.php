@@ -66,9 +66,10 @@ class IxpController extends IXP_Controller_FrontEnd
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $this->_feParams->listColumns = [
-                    'id'        => [ 'title' => 'UID', 'display' => false ],
-                    'name'      => 'Name',
-                    'shortname' => 'Shortname',
+                    'id'                   => [ 'title' => 'UID', 'display' => false ],
+                    'name'                 => 'Name',
+                    'shortname'            => 'Shortname',
+                    'aggregate_graph_name' => 'Aggregate Graph Name'
                 ];
 
                 // display the same information in the view as the list
@@ -90,7 +91,7 @@ class IxpController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-            ->select( 'i.id AS id, i.name AS name,
+            ->select( 'i.id AS id, i.name AS name, i.aggregate_graph_name AS aggregate_graph_name,
                 i.shortname AS shortname, i.address1 AS address1, i.address2 AS address2,
                 i.address3 AS address3, i.address4 AS address4, i.country AS country'
             )
