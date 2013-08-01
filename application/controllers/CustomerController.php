@@ -487,7 +487,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
 
     /**
-     * 
+     *
      *
      */
     public function billingRegistrationAction()
@@ -663,7 +663,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         foreach( $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->getLatestUpdate() as $ln )
         {
         
-            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) ) 
+            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) )
                 && ( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) )
                 $latestNotes[] = $ln;
             

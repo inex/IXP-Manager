@@ -1,0 +1,50 @@
+{* Sample member details table for LONAP - note, no formatting included *}
+{* replicates https://www.lonap.net/members.shtml as of 20130801 *}
+
+{foreach $customers as $c}
+    {$cid = $c->getId()}
+    {$data.$cid.type           = $c->getType()}
+    {$data.$cid.corpwww        = $c->getCorpwww()}
+    {$data.$cid.name           = $c->getName()}
+    {$data.$cid.autsys         = $c->getAutsys()}
+    {$data.$cid.peeringpolicy  = $c->getPeeringpolicy()}
+
+    {$data.$cid.routeserver    = 'No'}
+    {$data.$cid.ipv6           = 'No'}
+    {$data.$cid.ports          = ''}
+    {$data.$cid.numberofports  = 0}
+    {$data.$cid.joined         = $c->getDatejoin()->format( 'Y-m-d' )}
+    
+    {foreach $c->getVirtualInterfaces() as $vi}
+        {$pi = $vi->getPhysicalInterfaces()}
+        {$data.$cid.numberofports = $data.$cid.numberofports + count( $pi )}
+        {$pi = $pi.0}
+        {if count( $vi->getPhysicalInterfaces() ) > 1}
+            {$data.$cid.ports = $data.$cid.ports|cat:count( $vi->getPhysicalInterfaces() )|cat:'*'}
+        {/if}
+        {if $pi->getSpeed() eq 100}
+            {$data.$cid.ports = $data.$cid.ports|cat:'FE'}
+        {elseif $pi->getSpeed() eq 1000}
+            {$data.$cid.ports = $data.$cid.ports|cat:'GE'}
+        {elseif $pi->getSpeed() eq 10000}
+            {$data.$cid.ports = $data.$cid.ports|cat:'10GE'}
+        {else}
+            {$data.$cid.ports = $data.$cid.ports|cat:$pi->getSpeed()}
+        {/if}
+        {if not $vi@last}
+            {$data.$cid.ports = $data.$cid.ports|cat:' + '}
+        {/if}
+        
+        {foreach $vi->getVlanInterfaces() as $vli}
+            {if $vli->getRsclient()}
+                {$data.$cid.routeserver    = 'Yes'}
+            {/if}
+            {if $vli->getIpv6enabled()}
+                {$data.$cid.ipv6 = 'Yes'}
+            {/if}
+        {/foreach}
+    {/foreach}
+    
+{/foreach}
+    
+{json_encode( $data )}
