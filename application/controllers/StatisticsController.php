@@ -270,8 +270,9 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         foreach( $this->_options['mrtg']['trunk_graphs'] as $g )
         {
             $p = explode( '::', $g );
-            $graphs[$p[0]] = $p[1];
-            $images[]      = $p[0];
+            $ixpid         = $p[0];
+            $images[]      = $p[1];
+            $graphs[$p[1]] = $p[2];
         }
         $this->view->graphs  = $graphs;
         
@@ -279,14 +280,14 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         if( !in_array( $graph, $images ) )
             $graph = $images[0];
         $this->view->graph   = $graph;
+
+        // load the IXP
+        $ixp = $this->loadIxpById( $ixpid );
         
         $stats = array();
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new IXP_Mrtg(
-                // FIXME plastering over multiIXP here for now
-                $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath()
-                    . '/trunks/' . $graph . '.log' );
+            $mrtg = new IXP_Mrtg( $ixp->getMrtgPath() . '/trunks/' . $graph . '.log' );
             $stats[$period] = $mrtg->getValues( $period, IXP_Mrtg::CATEGORY_BITS );
         }
         $this->view->stats   = $stats;

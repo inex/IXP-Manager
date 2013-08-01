@@ -338,14 +338,14 @@ identity.default_country = 'IE'
 ;; have set up MRTG to support these. 
 ;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
-;mrtg.traffic_graphs[] = "aggregate::Aggregate Graphs"
-;mrtg.traffic_graphs[] = "network1::Infrastructure #1"
-;mrtg.traffic_graphs[] = "network2::Infrastructure #2"
 
 ;; We also show intra-switch graphs
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
-;mrtg.trunk_graphs[] = "core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
-;mrtg.trunk_graphs[] = "core-sw1-sw3-lan1::PoP 1 to PoP 3 (LAN1)"
+;;
+;; Reference:  mrtg.trunk_graphs[] = "{$ixpid}::{$graph_file_name}::{$graph_title}"
+;
+;mrtg.trunk_graphs[] = "1::core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
+;mrtg.trunk_graphs[] = "1::core-sw1-sw3-lan1::PoP 1 to PoP 3 (LAN1)"
 ;; ...
 
 ; sflow parameters (peer to peer graphs)
