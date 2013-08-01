@@ -296,9 +296,21 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
     public function switchesAction()
     {
-        $switches = $this->view->switches
-            = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames( true, \Entities\Switcher::TYPE_SWITCH );
+        $eSwitches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getAndCache( true, \Entities\Switcher::TYPE_SWITCH );
     
+        $switches = [];
+        foreach( $eSwitches as $s )
+        {
+            // if we're not doing infrastructure aggregates, we're probably not doing swicth aggregates:
+            if( $s->getInfrastructure()->getAggregateGraphName() )
+            {
+                $switches[ $s->getId() ][ 'name' ] = $s->getName();
+                $switches[ $s->getId() ][ 'mrtg' ] = $s->getInfrastructure()->getIXP()->getMrtgPath();
+            }
+        }
+        
+        $this->view->switches = $switches;
+        
         $switch = $this->getParam( 'switch', array_keys( $switches )[0] );
         if( !in_array( $switch, array_keys( $switches ) ) )
             $switch = array_keys( $switches )[0];
@@ -316,16 +328,13 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
             $mrtg = new IXP_Mrtg(
-                // FIXME plastering over multiIXP here for now
-                $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath()
-                    . '/switches/' . 'switch-aggregate-'
-                    . $switches[$switch] . '-' . $category . '.log'
+                $switches[ $switch ][ 'mrtg' ] . '/switches/' . 'switch-aggregate-'
+                    . $switches[ $switch ][ 'name' ] . '-' . $category . '.log'
             );
     
             $stats[$period] = $mrtg->getValues( $period, $category );
         }
         $this->view->stats      = $stats;
-        
     }
     
     /**
