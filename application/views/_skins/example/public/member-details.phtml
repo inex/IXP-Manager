@@ -1,0 +1,55 @@
+{* Sample member details table for LONAP - note, no formatting included *}
+{* replicates https://www.lonap.net/members.shtml as of 20130801 *}
+<html>
+<body>
+
+<table>
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>ASN</th>
+            <th>Connections</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+    
+        {foreach $customers as $c}
+        
+            {* let's ignore associate and internal members here, we can add them in using a second loop later if we wish *}
+            {* we can also ignore TYPE_PROBONO if we wish *}
+            {if $c->getType() eq CUSTOMER::TYPE_ASSOCIATE or $c->getType() eq CUSTOMER::TYPE_INTERNAL}
+                {continue}
+            {/if}
+            
+            <tr>
+            
+                <td>
+                    <a href="{$c->getCorpwww()}">{$c->getName()}</a>
+                </td>
+                <td>
+                    <a href="http://www.ripe.net/perl/whois?searchtext=as{$c->getAutsys()}&form_type=simple">{$c->getAutsys()}</a>
+                </td>
+                
+                {* LONAP shows connects as items such as FE + GE, GE, 10GE + GE, 4*10GE, etc *}
+                <td>
+                    {foreach $c->getVirtualInterfaces() as $vi}
+                        {$pi = $vi->getPhysicalInterfaces()}
+                        {$pi = $pi.0}
+                        {if count( $vi->getPhysicalInterfaces() ) > 1}{count( $vi->getPhysicalInterfaces() )}*{/if}{if
+                            $pi->getSpeed() eq 100}FE{elseif $pi->getSpeed() eq 1000}GE{elseif
+                            $pi->getSpeed() eq 10000}10GE{else}{$pi->getSpeed()}
+                        {/if}
+                        {if not $vi@last}&nbsp;+&nbsp;{/if}
+                    {/foreach}
+                </td>
+            </tr>
+        
+        {/foreach}
+    
+    </tbody>
+
+</table>
+
+</body>
+</html>
