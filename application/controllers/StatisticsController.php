@@ -41,7 +41,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     public function listAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer')->getCurrentActive( true, true, true );
+        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer')->getCurrentActive( false, true, true );
     }
     
     public function leagueTableAction()
