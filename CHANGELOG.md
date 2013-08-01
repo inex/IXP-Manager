@@ -74,17 +74,18 @@ VLANs must be linked with infrastructures. Immediately of the frontend will not 
 
     UPDATE `vlan` SET `infrastructureid` = 1;
 
-
 All existing customers must be linked to the default / pre-existing IXP. To achieve this, run:
 
     bin/ixptool.php -a database-migration-cli.v340-customers-to-ixps
+
+In the below, you will see references to *edit you IXP(s)* - for multi-IXP mode, there is a new menu option on the left called *IXPs*. For single-IXP mode users, there is a link to edit IXPs on the *Infrastructures* page.
 
 Up to now, the MRTG graph paths were defined in `application.ini` as follows:
 
     mrtg.path = http://www.example.com/mrtg
     mrtg.p2ppath = http://www.example.com/sflow/sflow-graph.php
 
-This no longer works in the context of supporting multiple IXPs. Please **remove these** and edit and use the following SQL:
+This no longer works in the context of supporting multiple IXPs. Please **remove these** and edit your IXP(s) or  use the following SQL:
 
     UPDATE `ixp` SET `mrtg_path` = 'http://www.example.com/mrtg';
     UPDATE `ixp` SET `mrtg_p2p_path` = 'http://www.example.com/sflow/sflow-graph.php';
@@ -105,12 +106,11 @@ Up to now, we hard coded aggregate IXP and infrastructure graphs in the `applica
     mrtg.traffic_graphs[] = "network1::Infrastructure #1" 
 
 where `aggregate` was the file name on the MRTG server and `Aggregate Graphs` was the frontend title. You can now remove these 
-entries as they are no longer used. Instead, for your IXP use SQL such as the following to set the file name:
+entries as they are no longer used. Instead, edit your IXP(s) or use SQL such as the following to set the file name:
 
     UPDATE `ixp` SET `aggregate_graph_name` = 'aggregate' WHERE `id` = 1;
 
-If you are running multi-IXP mode, you can edit the IXP directly in the frontend. Then, edit your infrastructures and set 
-the *Aggregate Graph Name* (e.g. `network1` above) appropriately. The titles are now worked out automatically. 
+Then, edit your infrastructures and set the *Aggregate Graph Name* (e.g. `network1` above) appropriately. The titles are now worked out automatically. 
 
 # v3.3.4 (20130801)
 
