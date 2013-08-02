@@ -21,6 +21,11 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+if( file_exists( '../MAINT_MODE_ENABLED' ) )
+{
+    require_once( 'maintenance.php' );
+}
+
 // let's time how long it takes to execute 
 define( 'APPLICATION_STARTTIME', microtime( true ) );
 

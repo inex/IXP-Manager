@@ -1,5 +1,6 @@
 .project
 .buildpath
+MAINT_MODE_ENABLED
 .settings/
 ixp-manager.sublime-workspace
 bin/mailing-list-sync.sh
@@ -14,6 +15,7 @@ var/meetings/*
 var/session/*
 var/templates_c/*
 *~
+public/maintenance.php
 public/images/.directory
 public/images/joomla-admin/.directory
 public/images/joomla-admin/menu/.directory
