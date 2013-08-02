@@ -62,6 +62,17 @@
         {if $isLAG}<h5>Port {counter name=numphysports} of {$vi->getPhysicalInterfaces()|@count} in LAG</h5>{/if}
 
         <table id="myDetailsTable">
+            {if $multiIXP}
+                <tr>
+                    <td width="200"><strong>IXP:</strong></td>
+                    <td width="200" id="value">
+                        {$pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getIXP()->getName()}
+                    </td>
+                    <td width="40"></td>
+                    <td width="200"></td>
+                    <td width="200" id="value"></td>
+                </tr>
+            {/if}
             <tr>
                 <td width="200"><strong>Switch:</strong></td>
                 <td width="200" id="value">{$pi->getSwitchPort()->getSwitcher()->getName()}{$options.identity.switch_domain}</td>
@@ -120,6 +131,11 @@
                 <td width="40"></td>
                 <td width="80"><strong>Name</strong></td>
                 <td width="150" id="value">{$vli->getVlan()->getName()}</td>
+                {if $multiIXP}
+                    <td width="20"></td>
+                    <td width="60"><strong>IXP</strong></td>
+                    <td width="150" id="value">{$vli->getVlan()->getInfrastructure()->getIXP()->getName()}</td>
+                {/if}
                 <td width="20"></td>
                 <td width="80"><strong>Tag</strong></td>
                 <td width="80" id="value">{$vli->getVlan()->getNumber()}</td>

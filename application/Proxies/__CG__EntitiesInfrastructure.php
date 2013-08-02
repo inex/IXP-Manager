@@ -105,6 +105,24 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         return parent::getSwitchers();
     }
 
+    public function addVlan(\Entities\Vlan $vlans)
+    {
+        $this->__load();
+        return parent::addVlan($vlans);
+    }
+
+    public function removeVlan(\Entities\Vlan $vlans)
+    {
+        $this->__load();
+        return parent::removeVlan($vlans);
+    }
+
+    public function getVlans()
+    {
+        $this->__load();
+        return parent::getVlans();
+    }
+
     public function setIsPrimary($isPrimary)
     {
         $this->__load();
@@ -117,10 +135,22 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         return parent::getIsPrimary();
     }
 
+    public function setAggregateGraphName($aggregateGraphName)
+    {
+        $this->__load();
+        return parent::setAggregateGraphName($aggregateGraphName);
+    }
+
+    public function getAggregateGraphName()
+    {
+        $this->__load();
+        return parent::getAggregateGraphName();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'isPrimary', 'id', 'Switchers', 'IXP');
+        return array('__isInitialized__', 'name', 'shortname', 'isPrimary', 'aggregate_graph_name', 'id', 'Switchers', 'Vlans', 'IXP');
     }
 
     public function __clone()

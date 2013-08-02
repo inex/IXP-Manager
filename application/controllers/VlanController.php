@@ -58,7 +58,9 @@ class VlanController extends IXP_Controller_FrontEnd
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'      => 'Name',
                 'number'    => 'Tag',
-                
+                'ixp'    => 'IXP',
+                'infrastructure'    => 'Infrastructure',
+
                 'private'        => [
                     'title'          => 'Private',
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
@@ -68,7 +70,10 @@ class VlanController extends IXP_Controller_FrontEnd
                 'rcvrfname' => 'VRF Name'
             ]
         ];
-    
+        
+        if( !$this->multiIXP() )
+            unset( $this->_feParams->listColumns['ixp'] );
+        
         // display the same information in the view as the list
         $this->_feParams->viewColumns = array_merge(
             $this->_feParams->listColumns,
@@ -85,17 +90,74 @@ class VlanController extends IXP_Controller_FrontEnd
     {
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'v.id AS id, v.name AS name, v.number AS number,
-                    v.rcvrfname AS rcvrfname, v.notes AS notes, v.private AS private'
+                    v.rcvrfname AS rcvrfname, v.notes AS notes,
+                    v.private AS private, i.shortname AS infrastructure,
+                    ix.shortname AS ixp'
             )
-            ->from( '\\Entities\\Vlan', 'v' );
-    
+            ->from( '\\Entities\\Vlan', 'v' )
+            ->join( 'v.Infrastructure', 'i' )
+            ->join( 'i.IXP', 'ix' );
+
+        if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
+        {
+            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
+            $this->view->infra = $infra;
+        }
+
+        if( $this->getParam( 'publiconly', false ) )
+        {
+            $qb->andWhere( 'v.private = 0' );
+            $this->view->publiconly = 1;
+        }
+        
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
     
         if( $id !== null )
             $qb->andWhere( 'v.id = ?1' )->setParameter( 1, $id );
-    
+
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Post process hook for add and edit actions.
+     *
+     * This is called immediately after the initstantiation of the form object and, if
+     * editing, includes the Doctrine2 entity `$object`.
+     *
+     * If you need to have, for example, edit values set in the form, then use the
+     * `addPrepare()` hook rather than this one.
+     *
+     * @see addPrepare()
+     * @param OSS_Form $form The form object
+     * @param \Entities\Vlan $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @param array $options Options passed onto Zend_Form
+     * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
+     */
+     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
+     {
+        if( $isEdit )
+            $form->getElement( 'infrastructure' )->setValue( $object->getInfrastructure()->getId() );
+         
+        return true;
+     }
+    
+    /**
+     *
+     * @param IXP_Form $form The form object
+     * @param \Entities\Vlan $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True of we are editing an object, false otherwise
+     * @return void
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+
+        $object->setInfrastructure(
+            $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructure' )->getValue() )
+        );
+
+        return true;
     }
     
     /**

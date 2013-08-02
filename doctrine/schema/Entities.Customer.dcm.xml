@@ -68,5 +68,15 @@
     <one-to-many field="Traffic95thMonthlys" target-entity="Entities\Traffic95thMonthly" mapped-by="Customer"/>
     <one-to-many field="TrafficDailies" target-entity="Entities\TrafficDaily" mapped-by="Customer"/>
     <one-to-many field="SecEvents" target-entity="Entities\SecEvent" mapped-by="Customer"/>
+    <many-to-many field="IXPs" target-entity="Entities\IXP" inversed-by="Customers">
+      <join-table name="customer_to_ixp">
+        <join-columns>
+          <join-column name="customer_id" referenced-column-name="id" nullable="false"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="ixp_id" referenced-column-name="id" nullable="false"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
   </entity>
 </doctrine-mapping>

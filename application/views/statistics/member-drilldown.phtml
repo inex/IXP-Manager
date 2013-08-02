@@ -20,7 +20,17 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Interface Statistics :: {$cust->getName()} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})</h1>
+            <h1>
+                IXP Interface Statistics
+                
+                {if $multiIXP}
+                    @ {$ixp->getShortname()}
+                {else}
+                    :: {$cust->getName()}
+                {/if}
+
+                ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
+            </h1>
         </div>
 {/if}
 
@@ -32,9 +42,17 @@
     <div class="span6">
 
         {if $switchname eq ''}
-            <h2>Aggregate Statistics for All Peering Ports</h2>
+            <h3>
+                Aggregate Statistics for
+                
+                {if $multiIXP}
+                    {$ixp->getShortname()}
+                {else}
+                    All Peering Ports
+                {/if}
+            </h3>
         {else}
-            <h2>
+            <h3>
                 Port: {$switchname} / {$portname}
                 
                 {if $resellerMode and $cust->isReseller()}
@@ -50,13 +68,13 @@
                     {/if}
                     </small>
                 {/if}
-            </h2>
+            </h3>
         {/if}
 
     </div>
     <div class="span6">
     
-        <form action="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() monitorindex=$monitorindex}" method="post" class="form-horizontal">
+        <form action="{genUrl controller="statistics" action="member-drilldown" ixp=$ixp->getId() shortname=$cust->getShortname() monitorindex=$monitorindex}" method="post" class="form-horizontal">
             
             <strong>Graph Type:&nbsp;&nbsp;&nbsp;</strong>
 
@@ -66,7 +84,7 @@
                 {/foreach}
             </select>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a class="btn" href="{genUrl controller="statistics" action="member"}{if $user->getPrivs() eq 3}/shortname/{$cust->getShortname()}{/if}">
+            <a class="btn btn-primary" href="{genUrl controller="statistics" action="member" ixp=$ixp->getId()}{if $user->getPrivs() eq 3}/shortname/{$cust->getShortname()}{/if}">
                 Statistics Overview
             </a>
             

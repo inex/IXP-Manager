@@ -60,6 +60,7 @@ class IXP_Form_Infrastructure extends IXP_Form
             ->addFilter( 'Int' );
         $this->addElement( $isPrimary );
         
+        $this->addElement( IXP_Form_IXP::createAggregateGraphNameElement() );
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );

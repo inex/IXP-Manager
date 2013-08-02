@@ -11,6 +11,15 @@
     <li class="active">
         List
     </li>
+    <li class="pull-right"  style="margin-top: -6px;">
+        <div class="btn-toolbar" style="display: inline;">
+            {if $multiIXP}
+                {include file='statistics/snippets/menu-ixp-dropdown.phtml'}
+            {/if}
+            
+            {include file='statistics/snippets/menu-infra-dropdown.phtml'}
+        </div>
+    </li>
 </ul>
 
 

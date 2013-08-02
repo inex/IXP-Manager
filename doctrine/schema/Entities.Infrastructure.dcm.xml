@@ -5,13 +5,18 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="name" type="string" length="255" nullable="true"/>
-    <field name="shortname" type="string" unique="true" length="255" nullable="true"/>
+    <field name="shortname" type="string" length="255" nullable="true"/>
     <field name="isPrimary" type="boolean" length="1" nullable="false"/>
+    <field name="aggregate_graph_name" type="string" length="255" nullable="true"/>
+    <unique-constraints>
+      <unique-constraint name="IXPSN" columns="shortname,ixp_id"/>
+    </unique-constraints>
     <many-to-one field="IXP" target-entity="Entities\IXP" inversed-by="Infrastructures">
       <join-columns>
         <join-column name="ixp_id" referenced-column-name="id" nullable="false"/>
       </join-columns>
     </many-to-one>
     <one-to-many field="Switchers" target-entity="Entities\Switcher" mapped-by="Infrastructure"/>
+    <one-to-many field="Vlans" target-entity="Entities\Vlan" mapped-by="Infrastructure"/>
   </entity>
 </doctrine-mapping>

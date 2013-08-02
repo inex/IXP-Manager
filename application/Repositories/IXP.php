@@ -12,7 +12,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class IXP extends EntityRepository
 {
-    
     /**
      * The cache key for the default IXP
      * @var string The cache key for the default IXP
@@ -42,6 +41,72 @@ class IXP extends EntityRepository
         }
         
         return $ixp[0];
+    }
+
+    /**
+     * Return an array of all IXP objects linked to the given customer
+     *
+     * @param  \Entities\Customer $customer The customer to limit results to
+     * @return \Entities\IXP[] An array of all IXP objects for the given customer
+     */
+    public function getForCustomer( $customer )
+    {
+        $dql = "SELECT i FROM Entities\\IXP i WHERE :cust MEMBER OF i.Customers ORDER BY i.name ASC";
+
+        return $this->getEntityManager()->createQuery( $dql )
+            ->setParameter( 'cust', $customer )
+            ->getResult();
+    }
+    
+    /**
+     * Return an array of all IXP names where the array key is the IXP id.
+     *
+     * NOTE: Super user can see all IXPs and customer user can see only those which
+     *         is assigned to the users customer.
+     *
+     * @param  \Entities\User $user User to limit IXP names
+     * @return array An array of all IXP names with the IXP id as the key.
+     */
+    public function getNames( $user )
+    {
+        $dql = "SELECT i.id AS id, i.name AS name FROM Entities\\IXP i";
+
+        if( $user->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $dql .= " WHERE ?1 MEMBER OF i.Customers";
+
+        $dql .= " ORDER BY name ASC";
+        
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        if( $user->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $query->setParameter( 1, $user->getCustomer()->getId() );
+
+        $aixps = $query->getResult();
+        
+        $ixps = [];
+        foreach( $aixps as $i )
+            $ixps[ $i['id'] ] = $i['name'];
+        
+        return $ixps;
+    }
+
+    /**
+     * Return an array of all ixp names which are not related with given Customer where the array key is the IXP id.
+     *
+     * @param int $custid Customer id for filtering results
+     * @return array An array of IXP names with the ixp id as the key.
+     */
+    public function getNamesNotAssignedToCustomer( $custid )
+    {
+        $aixps = $this->getEntityManager()->createQuery(
+            "SELECT i.id AS id, i.name AS name FROM Entities\\IXP i WHERE ?1 NOT MEMBER OF i.Customers ORDER BY name ASC"
+        )->setParameter( 1, $custid )->getResult();
+        
+        $ixps = [];
+        foreach( $aixps as $i )
+            $ixps[ $i['id'] ] = $i['name'];
+        
+        return $ixps;
     }
     
 }

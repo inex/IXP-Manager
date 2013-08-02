@@ -1,9 +1,17 @@
 <div class="btn-group">
-    <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='switch' action='list' infra=$row.id}"
-        title="View switches in this infrastructure"><i class="icon-folder-open"></i></a>
-    <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='vlan' action='private' infra=$row.id}"
-        title="View private VLANs in this infrastructure"><i class="icon-lock"></i></a>
     <a class="btn btn-mini have-tooltip-below" href="{genUrl controller=$controller action='view' id=$row.id}" title="Preview"><i class="icon-eye-open"></i></a>
     <a class="btn btn-mini have-tooltip-below" href="{genUrl controller=$controller action='edit' id=$row.id}" title="Edit"><i class="icon-pencil"></i></a>
     <a class="btn btn-mini have-tooltip-below" id='list-delete-{$row.id}' href="{genUrl controller=$controller action='delete' id=$row.id}" title="Delete"><i class="icon-trash"></i></a>
+    <a class="btn btn-mini dropdown-toggle" href="#" data-toggle="dropdown">
+        <span class="caret"></span>
+    </a>
+    
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{genUrl controller='switch' action='list' infra=$row.id}">View Switches</a>
+            <a href="{genUrl controller='vlan' action='list' infra=$row.id}">View All VLANs</a>
+            <a href="{genUrl controller='vlan' action='list' infra=$row.id publiconly=1}">View Public VLANs</a>
+            <a href="{genUrl controller='vlan' action='private' infra=$row.id}">View Private VLANs</a>
+        </li>
+    </ul>
 </div>

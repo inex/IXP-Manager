@@ -153,10 +153,82 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         return parent::getInfrastructures();
     }
 
+    public function addCustomer(\Entities\Customer $customers)
+    {
+        $this->__load();
+        return parent::addCustomer($customers);
+    }
+
+    public function removeCustomer(\Entities\Customer $customers)
+    {
+        $this->__load();
+        return parent::removeCustomer($customers);
+    }
+
+    public function getCustomers()
+    {
+        $this->__load();
+        return parent::getCustomers();
+    }
+
+    public function setMrtgPath($mrtgPath)
+    {
+        $this->__load();
+        return parent::setMrtgPath($mrtgPath);
+    }
+
+    public function getMrtgPath()
+    {
+        $this->__load();
+        return parent::getMrtgPath();
+    }
+
+    public function setMrtgP2pPath($mrtgP2pPath)
+    {
+        $this->__load();
+        return parent::setMrtgP2pPath($mrtgP2pPath);
+    }
+
+    public function getMrtgP2pPath()
+    {
+        $this->__load();
+        return parent::getMrtgP2pPath();
+    }
+
+    public function addTrafficDaily(\Entities\TrafficDaily $trafficDaily)
+    {
+        $this->__load();
+        return parent::addTrafficDaily($trafficDaily);
+    }
+
+    public function removeTrafficDaily(\Entities\TrafficDaily $trafficDaily)
+    {
+        $this->__load();
+        return parent::removeTrafficDaily($trafficDaily);
+    }
+
+    public function getTrafficDaily()
+    {
+        $this->__load();
+        return parent::getTrafficDaily();
+    }
+
+    public function setAggregateGraphName($aggregateGraphName)
+    {
+        $this->__load();
+        return parent::setAggregateGraphName($aggregateGraphName);
+    }
+
+    public function getAggregateGraphName()
+    {
+        $this->__load();
+        return parent::getAggregateGraphName();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures');
+        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'mrtg_path', 'mrtg_p2p_path', 'aggregate_graph_name', 'id', 'Infrastructures', 'TrafficDaily', 'Customers');
     }
 
     public function __clone()

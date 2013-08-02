@@ -21,6 +21,14 @@
              {/if}
             )
         </li>
+        <li class="pull-right"  style="margin-top: -6px;">
+            <div class="btn-toolbar" style="display: inline;">
+                <a class="btn btn-small" href="{genUrl controller="statistics" action="member" shortname=$cust->getShortname()}">
+                    Statistics Overview
+                </a>
+            </div>
+        </li>
+        
     </ul>
     <div>
 {else}
@@ -36,6 +44,29 @@
 <form action="{genUrl controller="statistics" action="p2p"}" method="post">
 <table>
 <tr>
+    {if $multiIXP}
+        <td valign="middle"><strong>IXP:</strong></td>
+        <td>
+            &nbsp;
+            <select name="ixp" style="width: 100px;" class="chzn-select" onchange="this.form.submit();">
+                {foreach $ixps as $i}
+                    <option value="{$i->getId()}" {if $ixp->getId() eq $i->getId()}selected="selected"{/if}>{$i->getShortname()}</option>
+                {/foreach}
+            </select>
+        </td>
+        <td width="20"></td>
+    {else}
+        <input type="hidden" name="ixp" value="{$ixp->getId()}" />
+    {/if}
+    <td valign="middle"><strong>Infrastructure:</strong></td>
+    <td>
+        &nbsp;
+        <select name="infra" style="width: 50px;" class="chzn-select">
+            {foreach $ixp->getInfrastructures() as $inf}
+                <option value="{$inf->getId()}" {if $infra->getId() eq $inf->getId()}selected="selected"{/if}>{$inf->getShortname()}</option>
+            {/foreach}
+        </select>
+    </td>
     <td width="20"></td>
     <td valign="middle"><strong>Graph Type:</strong></td>
     <td>
@@ -63,16 +94,6 @@
         <select name="proto" style="width: 100px;" class="chzn-select">
             {foreach from=$protocols key=pname item=pvalue}
                 <option value="{$pvalue}" {if $proto eq $pvalue}selected="selected"{/if}>{$pname}</option>
-            {/foreach}
-        </select>
-    </td>
-    <td width="20"></td>
-    <td valign="middle"><strong>Infrastructure:</strong></td>
-    <td>
-        &nbsp;
-        <select name="infra" style="width: 150px;" class="chzn-select">
-            {foreach $infrastructures as $ivalue => $iname}
-                <option value="{$ivalue}" {if $infra->getId() eq $ivalue}selected="selected"{/if}>{$iname}</option>
             {/foreach}
         </select>
     </td>
@@ -124,9 +145,9 @@
         
                     <p>
                         <br />
-                        <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname() svid=$svid dvid=$vcust.id category=$category period=$period proto=$proto infra=$infra->getId()}">
+                        <a href="{genUrl controller="statistics" action="p2p" ixp=$ixp->getId() shortname=$cust->getShortname() svid=$svid dvid=$vcust.id category=$category period=$period proto=$proto infra=$infra->getId()}">
                             <img
-                                src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$vcust.id category=$category proto=$proto period=$period infra=$infra->getId()}"
+                                src="{genMrtgP2pImgUrl ixp=$ixp->getId() shortname=$cust->getShortname() svid=$svid dvid=$vcust.id category=$category proto=$proto period=$period infra=$infra->getId()}"
                                 width="300"
                             />
                         </a>

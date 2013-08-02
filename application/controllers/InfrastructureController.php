@@ -55,14 +55,19 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $this->_feParams->listColumns = [
-                    'id'        => [ 'title' => 'UID', 'display' => false ],
-                    'name'      => 'Name',
-                    'shortname' => 'Shortname',
-                    'isPrimary'   => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ]
+                    'id'        => [ 'title' => 'UID', 'display' => false ]
                 ];
-
+                
                 if( $this->multiIXP() )
-                    $this->_feParams->listColumns[ 'ixp_name' ] = 'IXP';
+                    $this->_feParams->listColumns = array_merge( $this->_feParams->listColumns, [ 'ixp_name' => 'IXP' ] );
+                
+                $this->_feParams->listColumns = array_merge( $this->_feParams->listColumns, [
+                        'name'      => 'Name',
+                        'shortname' => 'Shortname',
+                        'isPrimary'   => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
+                        'aggregate_graph_name' => 'Aggregate Graph Name'
+                    ]
+                );
                 
                 // display the same information in the view as the list
                 $this->_feParams->viewColumns = $this->_feParams->listColumns;
@@ -85,7 +90,7 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'i.id AS id, i.name AS name, i.isPrimary AS isPrimary,
                 i.shortname AS shortname, ix.shortname AS ixp_name,
-                ix.id AS ixp_id'
+                ix.id AS ixp_id, i.aggregate_graph_name AS aggregate_graph_name'
             )
             ->from( '\\Entities\\Infrastructure', 'i' )
             ->leftJoin( 'i.IXP', 'ix' );
@@ -122,7 +127,11 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         if( !$form->getElement( 'isPrimary' )->getValue() )
         {
             // is any other infrastructure primary?
-            $primaryInfra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary();
+            
+            $primaryInfra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary(
+                    $this->loadIxpById( $this->getParam( 'ixp', false ) ), false
+            );
+            
             if( !$primaryInfra || $primaryInfra->getId() == $object->getId() )
             {
                 $this->addMessage(

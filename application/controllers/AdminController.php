@@ -71,20 +71,60 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             else
             {
                 $admin_home_stats = [];
-            
-                foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
+                $graphs = [];
+                $stats  = [];
+                
+                if( $this->multiIXP() )
                 {
-                    $p = explode( '::', $g );
-                    $graphs[$p[0]] = $p[1];
-                    $images[]      = $p[0];
-                
-                    $mrtg = new IXP_Mrtg(
-                        $this->_options['mrtg']['path']
-                            . DIRECTORY_SEPARATOR . 'ixp_peering-' . $p[0]
-                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                    );
-                
-                    $stats[$p[0]] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                    $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
+                    
+                    foreach( $ixps as $ixp )
+                    {
+                        if( $ixp->getAggregateGraphName() )
+                        {
+                            $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
+                            $graphs[ $ixp->getId() ]['title'] = $ixp->getName();
+                        }
+                    }
+                    
+                    foreach( $graphs as $id => $data )
+                    {
+                        $mrtg = new IXP_Mrtg(
+                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
+                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                        );
+                    
+                        $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                    }
+                }
+                else
+                {
+                    $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
+                    
+                    if( $ixp->getAggregateGraphName() )
+                    {
+                        $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
+                        $graphs[ $ixp->getId() ]['title'] = 'IXP Aggregate Graph';
+                    }
+
+                    foreach( $ixp->getInfrastructures() as $inf )
+                    {
+                        if( $inf->getAggregateGraphName() )
+                        {
+                            $graphs[ $ixp->getId() . '-' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
+                            $graphs[ $ixp->getId() . '-' . $inf->getId() ]['title'] = $inf->getName();
+                        }
+                    }
+                    
+                    foreach( $graphs as $id => $data )
+                    {
+                        $mrtg = new IXP_Mrtg(
+                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
+                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                        );
+                    
+                        $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                    }
                 }
             
                 $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
@@ -108,17 +148,32 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             
             $ints = $this->getD2EM()->getRepository( 'Entities\\VirtualInterface' )->getByLocation();
             
-            $speeds     = [];
+            $speeds = [];
             $bylocation = [];
-            $bylan      = [];
+            $bylan = [];
+            $byixp = [];
             
             foreach( $ints as $int )
             {
-                if( !isset( $bylocation[ $int['locationname'] ] ) )
-                    $bylocation[ $int['locationname'] ] = [];
+                if( $this->multiIXP() )
+                {
+                    $locationname = sprintf( "%s - %s", $int['locixp'], $int['locationname'] );
+                    $infrastructure = sprintf( "%s - %s", $int['locixp'], $int['infrastructure'] );
+                }
+                else
+                {
+                    $locationname = $int['locationname'];
+                    $infrastructure = $int['infrastructure'];
+                }
+            
+                if( !isset( $bylocation[ $locationname ] ) )
+                    $bylocation[ $locationname ] = [];
 
-                if( !isset( $bylan[ $int['infrastructure'] ] ) )
-                    $bylan[ $int['infrastructure'] ] = [];
+                if( !isset( $bylan[ $infrastructure ] ) )
+                    $bylan[ $infrastructure ] = [];
+
+                if( !isset( $byixp[ $int['ixp'] ] ) )
+                    $byixp[ $int['ixp'] ] = [];
 
                 if( !isset( $speeds[ $int['speed'] ] ) )
                     $speeds[ $int['speed'] ] = 1;
@@ -126,20 +181,26 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                     $speeds[ $int['speed'] ]++;
                                     
                 if( !isset( $bylocation[ $int['locationname'] ][ $int['speed'] ] ) )
-                    $bylocation[ $int['locationname'] ][ $int['speed'] ] = 1;
+                    $bylocation[ $locationname ][ $int['speed'] ] = 1;
                 else
-                    $bylocation[ $int['locationname'] ][ $int['speed'] ] = $bylocation[ $int['locationname'] ][ $int['speed'] ] + 1;
+                    $bylocation[ $locationname ][ $int['speed'] ]++;
 
-                if( !isset( $bylan[ $int['infrastructure'] ][ $int['speed'] ] ) )
-                    $bylan[ $int['infrastructure'] ][ $int['speed'] ] = 1;
+                if( !isset( $byixp[ $int['ixp'] ][ $int['speed'] ] ) )
+                    $byixp[ $int['ixp'] ][ $int['speed'] ] = 1;
                 else
-                    $bylan[ $int['infrastructure'] ][ $int['speed'] ] = $bylan[ $int['infrastructure'] ][ $int['speed'] ] + 1;
+                    $byixp[ $int['ixp'] ][ $int['speed'] ]++;
+
+                if( !isset( $bylan[ $infrastructure ][ $int['speed'] ] ) )
+                    $bylan[ $infrastructure ][ $int['speed'] ] = 1;
+                else
+                    $bylan[ $infrastructure ][ $int['speed'] ]++;
             }
             
             ksort( $speeds, SORT_NUMERIC );
             $this->view->speeds      = $admin_home_ctypes['speeds']      = $speeds;
             $this->view->bylocation  = $admin_home_ctypes['bylocation']  = $bylocation;
             $this->view->bylan       = $admin_home_ctypes['bylan']       = $bylan;
+            $this->view->byixp       = $admin_home_ctypes['byixp']       = $byixp;
             
             $this->getD2Cache()->save( 'admin_home_ctypes', $admin_home_ctypes, 3600 );
         }
@@ -148,6 +209,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
         $this->view->speeds      = $admin_home_ctypes['speeds'];
         $this->view->bylocation  = $admin_home_ctypes['bylocation'];
         $this->view->bylan       = $admin_home_ctypes['bylan'];
+        $this->view->byixp       = $admin_home_ctypes['byixp'];
     }
     
     public function staticAction()

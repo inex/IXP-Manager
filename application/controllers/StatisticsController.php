@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,12 +28,39 @@
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
  * @package    IXP_Controller
- * @copyright  Copyright (c) 2009 - 2012, Internet Neutral Exchange Association Ltd
+ * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsController extends IXP_Controller_AuthRequiredAction
 {
-
+    /**
+     * The selected / default IXP. Available in the view as `$ixp`. Set in `_setIXP()`.
+     * @var \Entities\IXP The IXP / default IXP
+     */
+    private $ixp = null;
+    
+    /**
+     * All available IXPs. Available in the view as `$ixps`. Set in `_setIXP()`.
+     * @var \Entities\IXP[] All available IXPs
+     */
+    private $ixps = null;
+    
+    /**
+     * The selected infrastructure (or `aggregate`). Set in `_setInfrastructure()` and available in the view as `$infra`.
+     * @var \Entities\Infrastructure The selected infrastructure (or `aggregate`).
+     */
+    private $infra = null;
+    
+    /**
+     * The selected infrastructure ID or `aggregate`. Set in `_setInfrastructure()` and available in the view as `$infraid`.
+     *
+     * Useful as the infrastructure is either an object or 'aggregate' - using this variable allows direct use without
+     * bounding if's.
+     *
+     * @var string|int The selected infrastructure ID or `aggregate`.
+     */
+    private $infraid = null;
+    
     public function preDispatch()
     {}
 
@@ -41,12 +68,114 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     public function listAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer')->getCurrentActive( false, true, true );
+
+        $this->_setIXP();
+        $this->_setInfrastructure();
+        
+        $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+        
+        if( !is_string( $this->infra ) && $this->infra )
+            $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
     }
+
+    public function membersAction()
+    {
+        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+    
+        $this->_setIXP();
+        $this->_setInfrastructure();
+        $this->_setCategory();
+        $this->_setPeriod();
+        
+        $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+        
+        if( !is_string( $this->infra ) && $this->infra )
+            $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
+    }
+    
+    public function memberAction()
+    {
+        if( $this->getUser()->getPrivs() < \Entities\User::AUTH_SUPERUSER )
+            $shortname = $this->getCustomer()->getShortname();
+        else
+            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
+    
+        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
+        
+        $this->_setIXP( $cust );
+        
+        $this->_setCategory();
+    }
+    
+    public function memberDrilldownAction()
+    {
+        $category = $this->_setCategory();
+        $this->view->monitorindex = $monitorindex = $this->getParam( 'monitorindex', 1 );
+    
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $shortname = $this->getCustomer()->getShortname();
+        else
+            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
+    
+        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
+
+        $this->_setIXP( $cust );
+        
+        if( $monitorindex != 'aggregate' )
+        {
+            $vint = false;
+            $pi = null;
+            foreach( $cust->getVirtualInterfaces() as $vi )
+            {
+                foreach( $vi->getPhysicalInterfaces() as $pi )
+                {
+                    if( $pi->getMonitorindex() == $monitorindex )
+                    {
+                        $this->view->pi   = $pi;
+                        $this->view->vint = $vint = $vi;
+                        break 2;
+                    }
+                }
+            }
+    
+            if( !$vint )
+                throw new IXP_Exception( 'Member statistics drilldown requested for unknown monitor index' );
+    
+            $this->view->switchname = $pi->getSwitchPort()->getSwitcher()->getName();
+            $this->view->portname   = $pi->getSwitchPort()->getName();
+        }
+        else
+        {
+            $this->view->switchname = '';
+            $this->view->portname   = '';
+        }
+    
+        $this->view->periods      = IXP_Mrtg::$PERIODS;
+    
+        $stats = array();
+        foreach( IXP_Mrtg::$PERIODS as $period )
+        {
+            $mrtg = new IXP_Mrtg(
+                    IXP_Mrtg::getMrtgFilePath( $this->ixp->getMrtgPath() . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
+            );
+    
+            $stats[$period] = $mrtg->getValues( $period, $this->view->category );
+        }
+        $this->view->stats     = $stats;
+    
+        if( $this->getParam( 'mini', false ) )
+        {
+            Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+            $this->view->display( 'statistics/member-drilldown-mini.phtml' );
+        }
+    }
+    
     
     public function leagueTableAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
+        
+        $this->_setIXP();
         
         $this->view->metrics = $metrics = [
             'Total'   => 'data',
@@ -66,13 +195,37 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         
         $category = $this->_setCategory();
                 
-        $this->view->trafficDaily = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->load( $day, $category );
+        $this->view->trafficDaily = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->load( $day, $category, $this->ixp );
     }
     
     
     public function publicAction()
     {
-        if( !isset( $this->_options['mrtg']['traffic_graphs'] ) || !is_array( $this->_options['mrtg']['traffic_graphs'] ) || !count( $this->_options['mrtg']['traffic_graphs'] ) )
+        // get the available graphs
+        $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
+        
+        $graphs = [];
+        foreach( $ixps as $ixp )
+        {
+            if( $ixp->getAggregateGraphName() )
+            {
+                $graphs[ $ixp->getShortname() ]['name']  = $ixp->getAggregateGraphName();
+                $graphs[ $ixp->getShortname() ]['title'] = ( $this->multiIXP() ? $ixp->getShortname() . ' - ' : ' ' ) . 'Aggregate';
+                $graphs[ $ixp->getShortname() ]['mrtg']  = $ixp->getMrtgPath();
+            }
+                
+            foreach( $ixp->getInfrastructures() as $inf )
+            {
+                if( $inf->getAggregateGraphName() )
+                {
+                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
+                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['title'] = ( $this->multiIXP() ? $ixp->getShortname() . ' - ' : ' ' ) . $inf->getName();
+                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['mrtg']  = $ixp->getMrtgPath();
+                }
+            }
+        }
+        
+        if( !count( $graphs ) )
         {
             $this->addMessage(
                 "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
@@ -80,31 +233,25 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             );
             $this->redirect();
         }
-    
-        // get the available graphs
-        foreach( $this->_options['mrtg']['traffic_graphs'] as $g )
-        {
-            $p = explode( '::', $g );
-            $graphs[$p[0]] = $p[1];
-            $images[]      = $p[0];
-        }
+        
         $this->view->graphs     = $graphs;
         
-        $graph = $this->getParam( 'graph', $images[0] );
-        if( !in_array( $graph, $images ) )
-            $graph = $images[0];
+        $graph = $this->getParam( 'graph', array_keys( $graphs )[0] );
+        if( !isset( $graphs[ $graph ] ) )
+            $graph = array_keys( $graphs )[0];
         $this->view->graph      = $graph;
         
         $category = $this->_setCategory();
-    
+
         $stats = array();
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new IXP_Mrtg( $this->_options['mrtg']['path'] . '/ixp_peering-' . $graph . '-' . $category . '.log' );
+            $mrtg = new IXP_Mrtg(
+                $graphs[ $graph ][ 'mrtg' ] . '/ixp_peering-' . $graphs[ $graph ][ 'name' ] . '-' . $category . '.log' );
             $stats[$period] = $mrtg->getValues( $period, $category );
         }
-        $this->view->stats      = $stats;
         
+        $this->view->stats      = $stats;
         $this->view->periods    = IXP_Mrtg::$PERIODS;
     }
     
@@ -123,8 +270,9 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         foreach( $this->_options['mrtg']['trunk_graphs'] as $g )
         {
             $p = explode( '::', $g );
-            $graphs[$p[0]] = $p[1];
-            $images[]      = $p[0];
+            $ixpid         = $p[0];
+            $images[]      = $p[1];
+            $graphs[$p[1]] = $p[2];
         }
         $this->view->graphs  = $graphs;
         
@@ -132,11 +280,14 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         if( !in_array( $graph, $images ) )
             $graph = $images[0];
         $this->view->graph   = $graph;
+
+        // load the IXP
+        $ixp = $this->loadIxpById( $ixpid );
         
         $stats = array();
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
-            $mrtg = new IXP_Mrtg( $this->_options['mrtg']['path'] . '/trunks/' . $graph . '.log' );
+            $mrtg = new IXP_Mrtg( $ixp->getMrtgPath() . '/trunks/' . $graph . '.log' );
             $stats[$period] = $mrtg->getValues( $period, IXP_Mrtg::CATEGORY_BITS );
         }
         $this->view->stats   = $stats;
@@ -146,9 +297,21 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
     public function switchesAction()
     {
-        $switches = $this->view->switches
-            = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames( true, \Entities\Switcher::TYPE_SWITCH );
+        $eSwitches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getAndCache( true, \Entities\Switcher::TYPE_SWITCH );
     
+        $switches = [];
+        foreach( $eSwitches as $s )
+        {
+            // if we're not doing infrastructure aggregates, we're probably not doing swicth aggregates:
+            if( $s->getInfrastructure()->getAggregateGraphName() )
+            {
+                $switches[ $s->getId() ][ 'name' ] = $s->getName();
+                $switches[ $s->getId() ][ 'mrtg' ] = $s->getInfrastructure()->getIXP()->getMrtgPath();
+            }
+        }
+        
+        $this->view->switches = $switches;
+        
         $switch = $this->getParam( 'switch', array_keys( $switches )[0] );
         if( !in_array( $switch, array_keys( $switches ) ) )
             $switch = array_keys( $switches )[0];
@@ -157,114 +320,22 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $category = $this->_setCategory();
         
         // override allowed categories as some aren't available here
-        $this->view->categories = [
-            'Bits'     => IXP_Mrtg::CATEGORY_BITS,
-            'Packets'  => IXP_Mrtg::CATEGORY_PACKETS
-        ];
+        $this->view->categories = IXP_Mrtg::$CATEGORIES_AGGREGATE;
         
         $this->_setPeriod();
         
         $stats = array();
+        
         foreach( IXP_Mrtg::$PERIODS as $period )
         {
             $mrtg = new IXP_Mrtg(
-                $this->_options['mrtg']['path'] . '/switches/' . 'switch-aggregate-'
-                    . $switches[$switch] . '-' . $category . '.log'
+                $switches[ $switch ][ 'mrtg' ] . '/switches/' . 'switch-aggregate-'
+                    . $switches[ $switch ][ 'name' ] . '-' . $category . '.log'
             );
     
             $stats[$period] = $mrtg->getValues( $period, $category );
         }
         $this->view->stats      = $stats;
-        
-    }
-    
-    
-    public function membersAction()
-    {
-        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
-        
-        $this->view->infras = $infras = IXP_Mrtg::$INFRASTRUCTURES_TEXT;
-        $this->view->infra  = $infra  = $this->getParam( 'infra', 'aggregate' );
-
-        if( $infra != 'aggregate' && !in_array( $infra, $infras ) )
-            $infra = 'aggregate';
-        
-        $this->_setCategory();
-        $this->_setPeriod();
-        $this->view->custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
-    }
-    
-    public function memberAction()
-    {
-        if( $this->getUser()->getPrivs() < \Entities\User::AUTH_SUPERUSER )
-            $shortname = $this->getCustomer()->getShortname();
-        else
-            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
-    
-        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
-        
-        $this->_setCategory();
-    }
-    
-    public function memberDrilldownAction()
-    {
-        $category = $this->_setCategory();
-        $this->view->monitorindex = $monitorindex = $this->getParam( 'monitorindex', 1 );
-        
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $shortname = $this->getCustomer()->getShortname();
-        else
-            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
-    
-        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
-    
-        if( $monitorindex != 'aggregate' )
-        {
-            $vint = false;
-            $pi = null;
-            foreach( $cust->getVirtualInterfaces() as $vi )
-            {
-                foreach( $vi->getPhysicalInterfaces() as $pi )
-                {
-                    if( $pi->getMonitorindex() == $monitorindex )
-                    {
-                        $this->view->pi   = $pi;
-                        $this->view->vint = $vint = $vi;
-                        break 2;
-                    }
-                }
-            }
-            
-            if( !$vint )
-                throw new IXP_Exception( 'Member statistics drilldown requested for unknown monitor index' );
-    
-            $this->view->switchname = $pi->getSwitchPort()->getSwitcher()->getName();
-            $this->view->portname   = $pi->getSwitchPort()->getName();
-        }
-        else
-        {
-            $this->view->switchname = '';
-            $this->view->portname   = '';
-        }
-    
-        $this->view->periods      = IXP_Mrtg::$PERIODS;
-    
-        $stats = array();
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg(
-                IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
-            );
-    
-            $stats[$period] = $mrtg->getValues( $period, $this->view->category );
-        }
-        $this->view->stats     = $stats;
-    
-        if( $this->_request->getParam( 'mini', false ) )
-        {
-            Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
-            $this->view->display( 'statistics/member-drilldown-mini.phtml' );
-        }
     }
     
     /**
@@ -279,9 +350,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
         $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
 
-        $category = $this->_setCategory();
+        $this->_setIXP( $cust );
+        $this->_setInfrastructure( false );
+        $category = $this->_setCategory( 'category', true );
         $period   = $this->_setPeriod();
-        $infra    = $this->_setInfrastructure();
         $proto    = $this->_setProtocol();
         $dvid     = $this->view->dvid = $this->getParam( 'dvid', false );
     
@@ -305,11 +377,11 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             
             foreach( $vi->getPhysicalInterfaces() as $pi )
             {
-                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $infra->getId() )
+                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $this->infra->getId() )
                     $vints[ $vi->getId() ] = $vi;
             }
         }
-        
+
         $this->view->vints = $vints;
         $this->view->customersWithVirtualInterfaces = false;
         
@@ -332,7 +404,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
             // find the possible virtual interfaces that this customer peers with
             
-            $pvints = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->getForInfrastructure( $infra, $proto );
+            $pvints = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )
+                ->getForInfrastructure( $this->infra, $proto );
 
             if( $dvid )
             {
@@ -366,6 +439,89 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     }
     
     /**
+     * Set the IXP based on submitted parameters
+     *
+     * @param \Entities\Customer $cust Limit list of IXPs to this customer and ensure this customer is part of the selected IXP
+     */
+    protected function _setIXP( $cust = false )
+    {
+        if( $this->multiIXP() )
+        {
+            // need to handle this two ways - one for customers and one for admins
+            if( $cust )
+            {
+                $this->ixps = $this->view->ixps = $this->getD2R( "\\Entities\\IXP" )->getForCustomer( $cust );
+                
+                if( $this->getParam( 'ixp', false ) )
+                    $this->view->ixp = $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ) );
+                else
+                    $this->view->ixp = $this->ixp = $cust->getIXPs()[0];
+                    
+                $valid = false;
+                foreach( $cust->getIXPs() as $i )
+                {
+                    if( $this->ixp->getId() == $i->getId() )
+                    {
+                        $valid = true;
+                        break;
+                    }
+                }
+                
+                if( !$valid )
+                {
+                    $this->getLogger()->alert( "{$this->getUser()->getUsername()} tried to access an invalid IXP" );
+                    $this->addMessage( "Invalid IXP for you :(", OSS_Message::ERROR );
+                    $this->redirectAndEnsureDie('');
+                }
+            }
+            else
+            {
+                $this->ixps = $this->view->ixps = $this->getD2R( "\\Entities\\IXP" )->findAll();
+        
+                if( $this->getParam( 'ixp', false ) )
+                    $this->view->ixp = $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ) );
+                else if( $this->ixps )
+                    $this->view->ixp = $this->ixp = $this->ixps[0];
+                else
+                    throw new IXP_Exception( "No IXPs defined!" );
+            }
+        }
+        else
+        {
+            // in non-multiIXP environments, there is only one IXP and it has ID 1
+            $this->ixp = $this->view->ixp = $this->loadIxpById( 1 );
+        }
+    }
+        
+    /**
+     * Set the IXP based on submitted parameters
+     */
+    protected function _setInfrastructure( $defaultToAggregate = true )
+    {
+        $this->view->infra = $this->view->infraid = $this->infra = $this->infraid
+            = $this->getParam( 'infra', ( $defaultToAggregate ? 'aggregate' : false ) );
+        
+        if( $this->infra != "aggregate" )
+        {
+            foreach( $this->ixp->getInfrastructures() as $inf )
+            {
+                if( $inf->getId() == $this->infra )
+                {
+                    $this->view->infra   = $this->infra   = $inf;
+                    $this->view->infraid = $this->infraid = $inf->getId();
+                    break;
+                }
+            }
+        
+            if( !( $this->infra instanceof \Entities\Infrastructure ) )
+            {
+                $this->view->infra   = $this->infra   = $this->ixp->getInfrastructures()[0];
+                $this->view->infraid = $this->infraid = $this->infra->getId();
+            }
+        }
+    }
+    
+    /**
      * Utility function to extract, validate (and default if necessary) a
      * category from request parameters.
      *
@@ -373,15 +529,16 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
      * and `$categories` to all available categories.
      *
      * @param string $pname The name of the parameter to extract the category from
+     * @param bool $aggregate Use aggregate categories only (i.e. bits, pkts, no errs, no discs)
      * @return string The chosen / defaulted category
      */
-    protected function _setCategory( $pname = 'category' )
+    protected function _setCategory( $pname = 'category', $aggregate = false )
     {
         $category = $this->getParam( $pname, IXP_Mrtg::$CATEGORIES['Bits'] );
-        if( !in_array( $category, IXP_Mrtg::$CATEGORIES ) )
+        if( !in_array( $category, $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES ) )
             $category = IXP_Mrtg::$CATEGORIES['Bits'];
         $this->view->category   = $category;
-        $this->view->categories = IXP_Mrtg::$CATEGORIES;
+        $this->view->categories = $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES;
         return $category;
     }
     
@@ -404,28 +561,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->view->periods    = IXP_Mrtg::$PERIODS;
         return $period;
     }
-    
-    /**
-     * Utility function to extract, validate (and default if necessary) an
-     * infrastructure from request parameters.
-     *
-     * Sets the view variables `$infra` to the chosen / defaulted infrastructure
-     * and `$infrastructures` to all available infrastructures.
-     *
-     * @param string $pname The name of the parameter to extract the infrastructure from
-     * @return string The chosen / defaulted infrastructure
-     */
-    protected function _setInfrastructure( $pname = 'infra' )
-    {
-        if( !$this->getParam( $pname, false ) || !( $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( $pname ) ) ) )
-            $infra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary();
-        
-        $this->view->infra           = $infra;
-        $this->view->infrastructures = $this->getD2R( '\\Entities\\Infrastructure' )->getAllAsArray();
-        
-        return $infra;
-    }
-    
     
     /**
      * Utility function to extract, validate (and default if necessary) a

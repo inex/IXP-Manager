@@ -68,7 +68,6 @@
         
               
     <li class="nav-header">IXP Admin Actions</li>
-        
         {if $multiIXP }
             <li {if $controller eq 'ixp'}class="active"{/if}>
                 <a href="{genUrl controller='ixp' action='list'}">IXPs</a>
@@ -99,7 +98,7 @@
             {/if}
             
         </li>
-
+        
         <li>
             <a href="{genUrl controller='ipv6-address' action='list'}">IP Addressing</a>
             

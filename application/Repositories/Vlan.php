@@ -74,14 +74,18 @@ class Vlan extends EntityRepository
     /**
      * Return an array of all VLAN names where the array key is the VLAN id (**not tag**).
      *
-     * @param $type int The VLAN types to return (see TYPE_ constants).
+     * @param int           $type The VLAN types to return (see TYPE_ constants).
+     * @param \Entities\IXP $ixp  IXP to filter vlan names
      * @return array An array of all VLAN names with the vlan id as the key.
      */
-    public function getNames( $type = self::TYPE_NORMAL )
+    public function getNames( $type = self::TYPE_NORMAL, $ixp = false )
     {
         $vlans = [];
         foreach( $this->getAndCache( $type ) as $a )
-            $vlans[ $a->getId() ] = $a->getName();
+        {
+            if( ( $ixp && $a->getInfrastructure()->getIXP() == $ixp ) || !$ixp )
+                $vlans[ $a->getId() ] = $a->getName();
+        }
 
         return $vlans;
     }
@@ -264,16 +268,16 @@ class Vlan extends EntityRepository
      */
     public function getPrivateVlanDetails( $infra = null )
     {
-        $q = "SELECT vli, v, vi, pi, sp, s, l, cab, c, i
-
+        $q = "SELECT vli, v, vi, pi, sp, s, l, cab, c, i, ixp
                 FROM \\Entities\\Vlan v
                     LEFT JOIN v.VlanInterfaces vli
+                    LEFT JOIN v.Infrastructure i
+                    LEFT JOIN i.IXP ixp
                     LEFT JOIN vli.VirtualInterface vi
                     LEFT JOIN vi.Customer c
                     LEFT JOIN vi.PhysicalInterfaces pi
                     LEFT JOIN pi.SwitchPort sp
                     LEFT JOIN sp.Switcher s
-                    LEFT JOIN s.Infrastructure i
                     LEFT JOIN s.Cabinet cab
                     LEFT JOIN cab.Location l
 
@@ -304,6 +308,8 @@ class Vlan extends EntityRepository
             $pvs[ $v['id'] ]['name']     = $v['name'];
             $pvs[ $v['id'] ]['number']   = $v['number'];
             $pvs[ $v['id'] ]['members']  = [];
+            $pvs[ $v['id'] ]['infrastructure']    = $v['Infrastructure']['shortname'];
+            $pvs[ $v['id'] ]['ixp']      = $v['Infrastructure']['IXP']['shortname'];
 
             foreach( $v['VlanInterfaces'] as $vli )
             {
@@ -313,8 +319,6 @@ class Vlan extends EntityRepository
                     $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['id']     = $vli['VirtualInterface']['Customer']['id'];
                     $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['name']   = $vli['VirtualInterface']['Customer']['name'];
                     $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['vintid'] = $vli['VirtualInterface']['id'];
-
-                    $pvs[ $v['id'] ]['infra'] = $vli['VirtualInterface']['PhysicalInterfaces'][0]['SwitchPort']['Switcher']['Infrastructure']['shortname'];
                 }
 
                 foreach( $vli['VirtualInterface']['PhysicalInterfaces'] as $pi )

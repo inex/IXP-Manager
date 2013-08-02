@@ -10,13 +10,13 @@
             Switch Aggregate Graphs <span class="divider">/</span>
         </li>
         <li class="active">
-            {$switches.$switch} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
+            {$switches.$switch.name} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
         </li>
     </ul>
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>Switch Aggregate Graphs - {$switches.$switch} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})</h1>
+            <h1>Switch Aggregate Graphs - {$switches.$switch.name} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})</h1>
         </div>
 {/if}
 
@@ -28,8 +28,8 @@
         <form action="{genUrl controller="statistics" action="switches"}" method="post" class="form-horizontal">
             <strong>Select Switch:</strong>
             <select name="switch" onchange="this.form.submit();" class="chzn-select">
-                {foreach $switches as $id => $name}
-                    <option value="{$id}" {if $switch eq $id}selected="selected"{/if}>{$name}</option>
+                {foreach $switches as $id => $data}
+                    <option value="{$id}" {if $switch eq $id}selected="selected"{/if}>{$data.name}</option>
                 {/foreach}
             </select>
             <strong>Category:</strong>
@@ -62,7 +62,7 @@
                     period=$pvalue
                     category=$category
                     values=$stats.$pvalue
-                    graph=$switches.$switch
+                    graph=$switches.$switch.name
             }
         </p>
         </div>

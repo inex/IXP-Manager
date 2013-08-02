@@ -32,7 +32,12 @@
     <field name="year_tot_out" type="bigint" nullable="true"/>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="TrafficDailies">
       <join-columns>
-        <join-column name="cust_id" referenced-column-name="id"/>
+        <join-column name="cust_id" referenced-column-name="id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="IXP" target-entity="Entities\IXP" inversed-by="TrafficDaily">
+      <join-columns>
+        <join-column name="ixp_id" referenced-column-name="id" nullable="false"/>
       </join-columns>
     </many-to-one>
   </entity>

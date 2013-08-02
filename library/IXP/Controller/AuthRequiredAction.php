@@ -62,6 +62,53 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
         return $c;
     }
     
+    /**
+     * Load a customer from the database by ID but redirect to `error/error` if no such customer.
+     *
+     * @param int $id The customer ID to load
+     * @param string $redirect Alternative location to redirect to
+     * @return \Entities\Customer The customer object
+     */
+    protected function loadCustomerById( $id, $redirect = null )
+    {
+        if( $id )
+            $c = $this->getD2R( '\\Entities\\Customer' )->find( $id );
+    
+        if( !$id || !$c )
+        {
+            $this->addMessage( "Could not load the requested customer object", OSS_Message::ERROR );
+            $this->redirect( $redirect === null ? 'error/error' : $redirect );
+        }
+    
+        return $c;
+    }
+    
+    /**
+     * Load an IXP from the database by ID but redirect to `error/error` if no such IXP.
+     *
+     * @param int $id The IXP ID to load
+     * @param string $redirect Alternative location to redirect to (if null, `error/error`, if false, return false on error)
+     * @return \Entities\IXP The IXP object
+     */
+    protected function loadIxpById( $id, $redirect = null )
+    {
+        if( $this->getD2Cache()->contains( "ixp_{$id}" ) )
+            return $this->getD2Cache()->fetch( "ixp_{$id}" );
+        
+        $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
+    
+        if( !$id || !$i )
+        {
+            if( $redirect === false )
+                return false;
+            
+            $this->addMessage( "Could not load the IXP object", OSS_Message::ERROR );
+            $this->redirect( $redirect === null ? '' : $redirect );
+        }
+        
+        $this->getD2Cache()->save( "ixp_{$id}", $i );
+        return $i;
+    }
     
     
     /**

@@ -126,6 +126,16 @@ class IXP_Mrtg
     );
 
     /**
+     * The reverse array of $CATEGORIES - human readable form.
+     */
+    public static $GRAPH_CATEGORIES = array (
+            'bits' => 'Bits',
+            'pkts' => 'Packets',
+            'errs' => 'Errors',
+            'discs' => 'Discards',
+    );
+    
+    /**
      * Array of valid categories for aggregate graphs
      */
     public static $CATEGORIES_AGGREGATE = array(
@@ -296,6 +306,11 @@ class IXP_Mrtg
             $url .= '/mrtg/retrieve-p2p-image';
         else
             $url .= '/mrtg/retrieve-image';
+
+        if( isset( $params['ixp'] ) && $params['ixp'] )
+            $url .= "/ixp/{$params['ixp']}";
+        else
+            $url .= '/ixp/1';
 
         if( isset( $params['shortname'] ) )
             $url .= "/shortname/{$params['shortname']}";

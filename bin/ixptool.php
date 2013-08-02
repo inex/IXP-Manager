@@ -35,8 +35,6 @@
  *
  */
 
-date_default_timezone_set( 'Europe/Dublin' );
-
 require_once( dirname( __FILE__ ) . '/utils.inc' );
 define( 'APPLICATION_ENV', scriptutils_get_application_env() );
 
@@ -83,6 +81,7 @@ try
     $opts = new Zend_Console_Getopt(
         array(
             'help|h'         => 'Displays usage information.',
+            'force|f'        => 'Run even if maintenance mode is enabled.',
             'action|a=s'     => 'Action to perform in format of module.controller.action',
             'verbose|v'      => 'Verbose messages will be dumped to the default output.',
             'development|d'  => 'Enables development mode.',
@@ -98,6 +97,11 @@ catch( Zend_Console_Getopt_Exception $e )
     exit( $e->getMessage() ."\n\n". $e->getUsageMessage() );
 }
 
+if( !isset( $opts->f ) && file_exists( '../MAINT_MODE_ENABLED' ) )
+{
+    die( "IXPtool - CLI tool exiting as maintenance mode is enabled. Use -f to force.\n" );
+}
+    
 if( isset( $opts->h ) )
 {
     echo SCRIPT_NAME . "\n" . SCRIPT_COPY . "\n\n";

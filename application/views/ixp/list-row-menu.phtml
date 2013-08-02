@@ -1,7 +1,17 @@
 <div class="btn-group">
-    <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='infrastructure' action='list' ixp=$row.id}"
-        title="View infrastructures in this IXP"><i class="icon-folder-open"></i></a>
-    <a class="btn btn-mini have-tooltip-below" href="{genUrl controller=$controller action='view' id=$row.id}" title="Preview"><i class="icon-eye-open"></i></a>
-    <a class="btn btn-mini have-tooltip-below" href="{genUrl controller=$controller action='edit' id=$row.id}" title="Edit"><i class="icon-pencil"></i></a>
-    <a class="btn btn-mini have-tooltip-below" id='list-delete-{$row.id}' href="{genUrl controller=$controller action='delete' id=$row.id}" title="Delete"><i class="icon-trash"></i></a>
+    <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='view' id=$row.id}" title="Preview"><i class="icon-eye-open"></i></a>
+    {if !isset( $feParams->readonly ) or !$feParams->readonly}
+        <a class="btn btn-mini have-tooltip-below" href="{genUrl module=$module controller=$controller action='edit' id=$row.id}" title="Edit"><i class="icon-pencil"></i></a>
+        <a class="btn btn-mini have-tooltip-below" id='list-delete-{$row.id}' href="{genUrl module=$module controller=$controller action='delete' id=$row.id}" title="Delete"><i class="icon-trash"></i></a>
+    {/if}
+    <a class="btn btn-mini dropdown-toggle" href="#" data-toggle="dropdown">
+        <span class="caret"></span>
+    </a>
+
+    <ul class="dropdown-menu">
+        <li>
+            <a href="{genUrl controller='customer' action='list' ixp=$row.id}">View / Edit Customers</a>
+            <a href="{genUrl controller='infrastructure' action='list' ixp=$row.id}">View Infrastructures</a>
+        </li>
+    </ul>
 </div>

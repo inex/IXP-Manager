@@ -120,6 +120,12 @@
             <a href="#overview" data-toggle="tab">Overview</a>
         </li>
 
+        {if $multiIXP }
+            <li>
+                <a href="#ixps" data-toggle="tab">IXPs</a>
+            </li>
+        {/if}
+
         <li>
             <a href="#details" data-toggle="tab">Details</a>
         </li>
@@ -197,6 +203,12 @@
         <div class="tab-pane active" id="overview">
             {tmplinclude file="customer/overview-tabs/overview.phtml"}
         </div>
+
+        {if $multiIXP}
+            <div class="tab-pane" id="ixps">
+                {tmplinclude file="customer/overview-tabs/ixps.phtml"}
+            </div>
+        {/if}
 
         <div class="tab-pane" id="details">
             {tmplinclude file="customer/overview-tabs/details.phtml"}

@@ -1,0 +1,12 @@
+
+<div class="btn-group">
+    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+        {if isset( $ixp ) }{$ixp->getName()}{else}Limit to IXP...{/if}
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu pull-right">
+        {foreach $ixps as $i}
+            <li> <a href="{genUrl controller=$controller action=$action ixp=$i->getId()}">{$i->getName()}</a> </li>
+        {/foreach}
+    </ul>
+</div>

@@ -37,6 +37,9 @@
 
                 <th>VLAN Name</th>
                 <th>Tag</th>
+                {if $multiIXP}
+                    <th>IXP</th>
+                {/if}
                 <th>Infrastructure</th>
                 <th>Members</th>
                 <th>Locations</th>
@@ -51,7 +54,10 @@
                     <tr>
                         <td>{$pv.name}</td>
                         <td>{$pv.number}</td>
-                        <td>{if isset( $pv.infra )}{$pv.infra}{/if}</td>
+                        {if $multiIXP}
+                            <td>{if isset( $pv.ixp )}{$pv.ixp}{/if}</td>
+                        {/if}
+                        <td>{if isset( $pv.infrastructure )}{$pv.infrastructure}{/if}</td>
                         <td>
                             {foreach $pv.members as $custid => $cust}
                                 <a href="{genUrl controller="customer" action="overview" id=$custid}">{$cust.name}</a>

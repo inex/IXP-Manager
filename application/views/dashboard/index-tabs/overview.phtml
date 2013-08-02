@@ -3,12 +3,25 @@
 
     <div class="span6">
         <h3>Aggregate Peering Statistics</h3>
-        <br />
-        <div class="well">
-        	<a href="{genUrl controller="statistics" action="member-drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex='aggregate'}">
-                {genMrtgImgUrlTag shortname=$user->getCustomer()->getShortname() category='bits' monitorindex='aggregate'}
-            </a>
-        </div>
+        
+        {if $multiIXP}
+            {foreach $cust->getIXPs() as $ixp}
+                <br />
+                <div class="well">
+                    <h3>{$ixp->getName()}</h3>
+                	<a href="{genUrl controller="statistics" action="member-drilldown" ixp=$ixp->getId() shortname=$cust->getShortname() category='bits' monitorindex='aggregate'}">
+                        {genMrtgImgUrlTag ixp=$ixp->getId() shortname=$cust->getShortname() category='bits' monitorindex='aggregate'}
+                    </a>
+                </div>
+            {/foreach}
+        {else}
+            <br />
+            <div class="well">
+            	<a href="{genUrl controller="statistics" action="member-drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex='aggregate'}">
+                    {genMrtgImgUrlTag shortname=$user->getCustomer()->getShortname() category='bits' monitorindex='aggregate'}
+                </a>
+            </div>
+        {/if}
     </div>
     
     <div class="span6">
@@ -49,5 +62,5 @@
     </div>
 </div>
         
-{tmplinclude file="dashboard/index-tab-overview-news.phtml"}
+{tmplinclude file="dashboard/index-tabs/overview-news.phtml"}
         

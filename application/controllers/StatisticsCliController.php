@@ -66,7 +66,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
                     $speed = $pi->getSpeed() * 1024 * 1024;
     
                     $mrtg = new IXP_Mrtg(
-                            IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
+                            IXP_Mrtg::getMrtgFilePath(
+                                    $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP()->getMrtgPath() . '/members',
                                     'LOG', $pi->getMonitorindex(), IXP_Mrtg::CATEGORY_BITS,
                                     $c->getShortname()
                             )
@@ -98,7 +99,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
                         $mrtg = $mail->createAttachment(
                             file_get_contents(
                                 IXP_Mrtg::getMrtgFilePath(
-                                    $this->_options['mrtg']['path'] . '/members',
+                                    $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP()->getMrtgPath() . '/members',
                                     'PNG',
                                     $pi->getMonitorindex(),
                                     IXP_Mrtg::CATEGORY_BITS,
@@ -233,7 +234,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
                 $mrtg = $mail->createAttachment(
                     @file_get_contents(
                         IXP_Mrtg::getMrtgFilePath(
-                            $this->_options['mrtg']['path'] . '/members',
+                            // FIXME plastering over multiIXP here for now
+                            $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/members',
                             'PNG',
                             'aggregate',
                             'bits',
@@ -266,46 +268,58 @@ class StatisticsCliController extends IXP_Controller_CliAction
     
     public function uploadTrafficStatsToDbAction()
     {
-        // This should only be done once a day and if values already exist for 'today',
-        // just delete them.
-        $day = date( 'Y-m-d' );
-        $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->deleteForDay( $day );
-    
-        $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
-    
-        foreach( $custs as $cust )
+        // do this for all IXPs
+        $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
+        
+        foreach( $ixps as $ixp )
         {
-            $stats = array();
-    
-            foreach( IXP_Mrtg::$CATEGORIES as $category )
+            $this->verbose( "Processing IXP " . $ixp->getName() );
+            
+            // This should only be done once a day and if values already exist for 'today',
+            // just delete them.
+            $day = date( 'Y-m-d' );
+            $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->deleteForDay( $day, $ixp );
+        
+            $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, $ixp );
+        
+            foreach( $custs as $cust )
             {
-                $mrtg = new IXP_Mrtg(
-                        IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
-                                'LOG', 'aggregate', $category,
-                                $cust->getShortname()
-                        )
-                );
-    
-                $td = new \Entities\TrafficDaily();
-                $td->setDay( new DateTime( $day ) );
-                $td->setCategory( $category );
-                $td->setCustomer( $cust );
-    
-                foreach( IXP_Mrtg::$PERIODS as $name => $period )
+                $this->verbose( "\t- processing customer " . $cust->getName() );
+                $stats = array();
+        
+                foreach( IXP_Mrtg::$CATEGORIES as $category )
                 {
-                    $stats = $mrtg->getValues( $period, $category, false );
-    
-                    $fn = "set{$name}AvgIn";  $td->$fn( $stats['averagein']  );
-                    $fn = "set{$name}AvgOut"; $td->$fn( $stats['averageout'] );
-                    $fn = "set{$name}MaxIn";  $td->$fn( $stats['maxin']      );
-                    $fn = "set{$name}MaxOut"; $td->$fn( $stats['maxout']     );
-                    $fn = "set{$name}TotIn";  $td->$fn( $stats['totalin']    );
-                    $fn = "set{$name}TotOut"; $td->$fn( $stats['totalout']   );
+                    $mrtg = new IXP_Mrtg(
+                        IXP_Mrtg::getMrtgFilePath(
+                            $ixp->getMrtgPath() . '/members',
+                            'LOG', 'aggregate', $category,
+                            $cust->getShortname()
+                        )
+                    );
+        
+                    $td = new \Entities\TrafficDaily();
+                    $td->setDay( new DateTime( $day ) );
+                    $td->setCategory( $category );
+                    $td->setCustomer( $cust );
+                    $td->setIXP( $ixp );
+        
+                    foreach( IXP_Mrtg::$PERIODS as $name => $period )
+                    {
+                        $stats = $mrtg->getValues( $period, $category, false );
+        
+                        $fn = "set{$name}AvgIn";  $td->$fn( $stats['averagein']  );
+                        $fn = "set{$name}AvgOut"; $td->$fn( $stats['averageout'] );
+                        $fn = "set{$name}MaxIn";  $td->$fn( $stats['maxin']      );
+                        $fn = "set{$name}MaxOut"; $td->$fn( $stats['maxout']     );
+                        $fn = "set{$name}TotIn";  $td->$fn( $stats['totalin']    );
+                        $fn = "set{$name}TotOut"; $td->$fn( $stats['totalout']   );
+                    }
+        
+                    $this->getD2EM()->persist( $td );
                 }
-    
-                $this->getD2EM()->persist( $td );
+                
+                $this->getD2EM()->flush();
             }
-            $this->getD2EM()->flush();
         }
     }
     
@@ -351,7 +365,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
             $mrtg = $mail->createAttachment(
                 file_get_contents(
                     IXP_Mrtg::getMrtgFilePath(
-                        $this->_options['mrtg']['path'] . '/members',
+                        // FIXME plastering over multiIXP here for now
+                        $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/members',
                         'PNG',
                         'aggregate',
                         $category,

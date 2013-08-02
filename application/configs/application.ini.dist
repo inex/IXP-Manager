@@ -331,31 +331,21 @@ identity.default_country = 'IE'
 ;;
 ;; MRTG Details
 ;;
-;; This is poorly documented but we will endeavour to do a better
-;; job of ut
+;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
 ;;
 
-;; For displaying graphs, we normally get the PNG (or RRD) file from a
-;; secure backend server using HTTP. We use file_get_contents() so you
-;; can use various URIs here including local file system:
-
-;; This is for standard interface graphs
+;; We support aggregate IXP and aggregate infrastructure graphs assuming you
+;; have set up MRTG to support these. 
+;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
-mrtg.path = http://mrtg.example.com/mrtg
-
-;; This is for P2P graphs (which are a work in progress)
-mrtg.p2ppath = http://mrtg.example.com/sflow/sflow-graph.php
-
-;; We have publically available overall graphs which are defined here
-;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
-;mrtg.traffic_graphs[] = "aggregate::Aggregate Graphs"
-;mrtg.traffic_graphs[] = "network1::Infrastructure #1"
-;mrtg.traffic_graphs[] = "network2::Infrastructure #2"
 
 ;; We also show intra-switch graphs
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
-;mrtg.trunk_graphs[] = "core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
-;mrtg.trunk_graphs[] = "core-sw1-sw3-lan1::PoP 1 to PoP 3 (LAN1)"
+;;
+;; Reference:  mrtg.trunk_graphs[] = "{$ixpid}::{$graph_file_name}::{$graph_title}"
+;
+;mrtg.trunk_graphs[] = "1::core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
+;mrtg.trunk_graphs[] = "1::core-sw1-sw3-lan1::PoP 1 to PoP 3 (LAN1)"
 ;; ...
 
 ; sflow parameters (peer to peer graphs)

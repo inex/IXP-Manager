@@ -186,6 +186,26 @@ class CustomerController extends IXP_Controller_FrontEnd
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
     
+        if( $this->multiIXP() && $this->getParam( 'ixp', false ) )
+        {
+            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+            if( !$ixp )
+            {
+                $this->addMessage( "Could not load the requested IXP object", OSS_Message::ERROR );
+                $this->redirectAndEnsureDie( "/ixp" );
+            }
+
+            $qb->leftJoin( 'c.IXPs', 'ixp' )
+                ->andWhere( 'ixp.id = :ixpid' )
+                ->setParameter( 'ixpid', $ixp->getId() );
+
+            $this->view->validCustomers = $this->getD2R( '\\Entities\\Customer' )->getNamesNotAssignedToIXP( $ixp );
+            $this->_feParams->addWhenEmpty = false;
+        }
+
+        if( $this->multiIXP() )
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
+
         if( $id !== null )
             $qb->andWhere( 'c.id = ?3' )->setParameter( 3, $id );
     
@@ -227,6 +247,9 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         if( $cust->isRouteServerClient() )
             $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummariesForCustomer( $cust->getId() );
+
+        if( $this->multiIXP() )
+            $this->view->validIXPs = $this->getD2R( "\\Entities\\IXP" )->getNamesNotAssignedToCustomer( $cust->getId() );
         
         // does the customer have any graphs?
         $this->view->hasAggregateGraph = false;
@@ -298,6 +321,8 @@ class CustomerController extends IXP_Controller_FrontEnd
             $rdetail = new \Entities\CompanyRegisteredDetail();
             $this->getD2EM()->persist( $rdetail );
             $object->setRegistrationDetails( $rdetail );
+        
+            $object->setIsReseller( 0 );
         }
         
         if( ( $form->getValue( 'type' ) == \Entities\Customer::TYPE_FULL || $form->getValue( 'type' ) == \Entities\Customer::TYPE_PROBONO )
@@ -320,6 +345,13 @@ class CustomerController extends IXP_Controller_FrontEnd
         else
         {
             $object->setIRRDB( null );
+        }
+
+        if( !$isEdit )
+        {
+            $object->addIXP(
+                $this->loadIxpById( $form->getValue( "ixp" ) )
+            );
         }
 
         return $this->_setReseller( $form, $object );
@@ -465,6 +497,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             $form->getElement( 'irrdb' )->setValue( $object->getIRRDB()->getId() );
 
         $form->enableResller( $this->resellerMode() );
+        $form->setMultiIXP( $this->multiIXP(), $isEdit );
         
         if( $this->resellerMode() )
         {
@@ -581,13 +614,49 @@ class CustomerController extends IXP_Controller_FrontEnd
     
     public function detailsAction()
     {
-        $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true );
+        if( $this->getParam( 'ixp', false ) )
+        {
+            $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
+            if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER && !$this->getUser()->getCustomer()->getIXPs()->contains( $ixp ) )
+                $this->redirectAndEnsureDie( '/erro/insufficient-permissions' );
+        }
+        else if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $this->view->ixp = $ixp = $this->getUser()->getCustomer()->getIXPs()[0];
+        else
+        {
+            $ixp = $this->getD2R( "\\Entities\\IXP" )->findAll();
+            if( $ixp )
+                $this->view->ixp = $ixp = $ixp[0];
+            else
+                $ixp = false;
+        }
+
+        $this->view->details = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( true, false, false, $ixp ? $ixp : false );
+
+        if( $this->multiIXP() )
+            $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
     }
         
     public function detailAction()
     {
         $this->view->cust = $c = $this->_loadCustomer( $this->getParam( 'id', null ), 'customer/details' );
         $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+        
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+        {
+            $notallow = true;
+            foreach( $this->getUser()->getCustomer()->getIXPs() as $ixp )
+            {
+                if( $ixp->getCustomers()->contains( $c ) )
+                {
+                    $notallow = false;
+                    break;
+                }
+            }
+            
+            if( $notallow )
+                $this->redirectAndEnsureDie( '/erro/insufficient-permissions' );
+        }
     }
         
     

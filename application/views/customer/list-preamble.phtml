@@ -1,0 +1,11 @@
+{if isset( $ixp )}
+    <div class="row-fluid">
+        <div class="alert alert-info">
+            Only showing customers for: <strong>{$ixp->getName()}</strong>.
+            You can also assign or unassign customers from this IXP on this page.
+            <span class="pull-right">
+                <a href="{genUrl controller='customer' action='list'}" class='btn btn-small'>Show All</a>
+            </span>
+        </div>
+    </div>
+{/if}

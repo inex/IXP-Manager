@@ -265,4 +265,164 @@ class IXP
     {
         return $this->Infrastructures;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Customers;
+
+
+    /**
+     * Add Customers
+     *
+     * @param \Entities\Customer $customers
+     * @return IXP
+     */
+    public function addCustomer(\Entities\Customer $customers)
+    {
+        $this->Customers[] = $customers;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Customers
+     *
+     * @param \Entities\Customer $customers
+     */
+    public function removeCustomer(\Entities\Customer $customers)
+    {
+        $this->Customers->removeElement($customers);
+    }
+
+    /**
+     * Get Customers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCustomers()
+    {
+        return $this->Customers;
+    }
+    /**
+     * @var string
+     */
+    private $mrtg_path;
+
+    /**
+     * @var string
+     */
+    private $mrtg_p2p_path;
+
+
+    /**
+     * Set mrtg_path
+     *
+     * @param string $mrtgPath
+     * @return IXP
+     */
+    public function setMrtgPath($mrtgPath)
+    {
+        $this->mrtg_path = $mrtgPath;
+    
+        return $this;
+    }
+
+    /**
+     * Get mrtg_path
+     *
+     * @return string 
+     */
+    public function getMrtgPath()
+    {
+        return $this->mrtg_path;
+    }
+
+    /**
+     * Set mrtg_p2p_path
+     *
+     * @param string $mrtgP2pPath
+     * @return IXP
+     */
+    public function setMrtgP2pPath($mrtgP2pPath)
+    {
+        $this->mrtg_p2p_path = $mrtgP2pPath;
+    
+        return $this;
+    }
+
+    /**
+     * Get mrtg_p2p_path
+     *
+     * @return string 
+     */
+    public function getMrtgP2pPath()
+    {
+        return $this->mrtg_p2p_path;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $TrafficDaily;
+
+
+    /**
+     * Add TrafficDaily
+     *
+     * @param \Entities\TrafficDaily $trafficDaily
+     * @return IXP
+     */
+    public function addTrafficDaily(\Entities\TrafficDaily $trafficDaily)
+    {
+        $this->TrafficDaily[] = $trafficDaily;
+    
+        return $this;
+    }
+
+    /**
+     * Remove TrafficDaily
+     *
+     * @param \Entities\TrafficDaily $trafficDaily
+     */
+    public function removeTrafficDaily(\Entities\TrafficDaily $trafficDaily)
+    {
+        $this->TrafficDaily->removeElement($trafficDaily);
+    }
+
+    /**
+     * Get TrafficDaily
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTrafficDaily()
+    {
+        return $this->TrafficDaily;
+    }
+    /**
+     * @var string
+     */
+    private $aggregate_graph_name;
+
+
+    /**
+     * Set aggregate_graph_name
+     *
+     * @param string $aggregateGraphName
+     * @return IXP
+     */
+    public function setAggregateGraphName($aggregateGraphName)
+    {
+        $this->aggregate_graph_name = $aggregateGraphName;
+    
+        return $this;
+    }
+
+    /**
+     * Get aggregate_graph_name
+     *
+     * @return string 
+     */
+    public function getAggregateGraphName()
+    {
+        return $this->aggregate_graph_name;
+    }
 }

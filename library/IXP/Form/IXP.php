@@ -94,6 +94,24 @@ class IXP_Form_IXP extends IXP_Form
             ->setAttrib( 'chzn-fix-width', '1' );
         $this->addElement( $country );
 
+        $mrtgPath = $this->createElement( 'text', 'mrtg_path' );
+        $mrtgPath->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setRequired( true )
+            ->setLabel( 'MRTG Path' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $mrtgPath  );
+        
+        $p2pPath = $this->createElement( 'text', 'mrtg_p2p_path' );
+        $p2pPath->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setRequired( true )
+            ->setLabel( 'MRTG P2P Path' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $p2pPath  );
+        
+        $this->addElement( self::createAggregateGraphNameElement() );
+        
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
@@ -108,21 +126,32 @@ class IXP_Form_IXP extends IXP_Form
     {
         $sw = new Zend_Form_Element_Select( $name );
 
-        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
-            ->select( 'e.id AS id, e.shortname AS name' )
-            ->from( '\\Entities\\IXP', 'e' )
-            ->orderBy( "e.name", 'ASC' );
-        
-        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\IXP', 'id', 'name', 'name', 'ASC' );
+        $maxId = self::populateSelectFromDatabase( $sw, '\\Entities\\IXP', 'id', 'name', 'name', 'ASC' );
     
         $sw->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( _( 'IXP' ) )
             ->setAttrib( 'class', 'chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
-            ->setErrorMessages( [ 'Please select a IXP' ] );
+            ->setErrorMessages( [ 'Please select an IXP' ] );
     
         return $sw;
+    }
+    
+    /**
+     * Create a 'Aggregate Graph Name element used by the IXP and infrastructre forms
+     *
+     * @param string $name The element name (defaults to `aggregate_graph_name`)
+     * @return Zend_Form_Element_Text
+     */
+    public static function createAggregateGraphNameElement( $name = 'aggregate_graph_name' )
+    {
+        $agn = new Zend_Form_Element_Text( $name );
+        
+        return $agn->setRequired( false )
+            ->setLabel( 'Aggregate Graph Name' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
     }
 
 }

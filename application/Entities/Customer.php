@@ -110,11 +110,6 @@ class Customer
     protected $nocphone;
 
     /**
-     * @var string $noc24hrphone
-     */
-    protected $noc24hrphone;
-
-    /**
      * @var string $nocfax
      */
     protected $nocfax;
@@ -263,6 +258,13 @@ class Customer
      * @var \Entities\CompanyBillingDetail
      */
     protected $BillingDetails;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    protected $IXPs;
+
+
 
     /**
      * Constructor
@@ -443,29 +445,6 @@ class Customer
     public function getNocphone()
     {
         return $this->nocphone;
-    }
-
-    /**
-     * Set noc24hrphone
-     *
-     * @param string $noc24hrphone
-     * @return Customer
-     */
-    public function setNoc24hrphone($noc24hrphone)
-    {
-        $this->noc24hrphone = $noc24hrphone;
-
-        return $this;
-    }
-
-    /**
-     * Get noc24hrphone
-     *
-     * @return string
-     */
-    public function getNoc24hrphone()
-    {
-        return $this->noc24hrphone;
     }
 
     /**
@@ -1227,6 +1206,7 @@ class Customer
     {
         return $this->TrafficDailies;
     }
+    
     /**
      * @var string $noc24hphone
      */
@@ -1255,11 +1235,11 @@ class Customer
     {
         return $this->noc24hphone;
     }
+
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $SecEvents;
-
 
     /**
      * Add SecEvents
@@ -1432,7 +1412,6 @@ class Customer
         return $pvlans;
     }
 
-
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -1496,7 +1475,6 @@ class Customer
      */
     protected $IRRDB;
 
-
     /**
      * Set IRRDB
      *
@@ -1548,11 +1526,11 @@ class Customer
     {
         return $this->peeringDb;
     }
+    
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
     protected $Notes;
-
 
     /**
      * Add Notes
@@ -1586,6 +1564,7 @@ class Customer
     {
         return $this->Notes;
     }
+
     /**
      * @var string
      */
@@ -1659,6 +1638,7 @@ class Customer
     {
         return $this->BillingDetails;
     }
+    
     /**
      * @var string
      */
@@ -1668,7 +1648,6 @@ class Customer
      * @var string
      */
     protected $MD5Support;
-
 
     /**
      * Set abbreviatedName
@@ -1715,6 +1694,7 @@ class Customer
     {
         return $this->MD5Support;
     }
+    
     /**
      * @var boolean
      */
@@ -1828,5 +1808,38 @@ class Customer
     public function getReseller()
     {
         return $this->Reseller;
+    }
+
+    /**
+     * Add IXPs
+     *
+     * @param \Entities\IXP $iXPs
+     * @return Customer
+     */
+    public function addIXP(\Entities\IXP $iXPs)
+    {
+        $this->IXPs[] = $iXPs;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IXPs
+     *
+     * @param \Entities\IXP $iXPs
+     */
+    public function removeIXP(\Entities\IXP $iXPs)
+    {
+        $this->IXPs->removeElement($iXPs);
+    }
+
+    /**
+     * Get IXPs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getIXPs()
+    {
+        return $this->IXPs;
     }
 }

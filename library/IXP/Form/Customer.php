@@ -47,9 +47,10 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $name  );
 
         $type = $this->createElement( 'select', 'type' );
-        $type->setMultiOptions( [ '0' => '' ] + \Entities\Customer::$CUST_TYPES_TEXT )
+        $type->setMultiOptions( [ '' => '' ] + \Entities\Customer::$CUST_TYPES_TEXT )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Type' )
+            ->setRequired( true )
             ->setAttrib( 'class', 'chzn-select span4' )
             ->setErrorMessages( array( 'Please select a customer type' ) );
         $this->addElement( $type );
@@ -97,7 +98,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $dateleave );
 
         $status = $this->createElement( 'select', 'status' );
-        $status->setMultiOptions( [ '0' => '' ] + \Entities\Customer::$CUST_STATUS_TEXT )
+        $status->setMultiOptions( [ '' => '' ] + \Entities\Customer::$CUST_STATUS_TEXT )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Status' )
             ->setRequired( true )
@@ -106,7 +107,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $status );
         
         $MD5Support = $this->createElement( 'select', 'MD5Support' );
-        $MD5Support->setMultiOptions( [ '' => '' ] + \Entities\Customer::$MD5_SUPPORT )
+        $MD5Support->setMultiOptions( \Entities\Customer::$MD5_SUPPORT )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'MD5 Support' )
             ->setRequired( false )
@@ -172,7 +173,8 @@ class IXP_Form_Customer extends IXP_Form
 
         $activepeeringmatrix = $this->createElement( 'checkbox', 'activepeeringmatrix' );
         $activepeeringmatrix->setLabel( 'Active Peering Matrix' )
-            ->setCheckedValue( '1' );
+            ->setCheckedValue( '1' )
+            ->setChecked( true );
         $this->addElement( $activepeeringmatrix );
 
 
@@ -303,6 +305,31 @@ class IXP_Form_Customer extends IXP_Form
             ->setAttrib( 'chzn-fix-width', '1' )
             ->setAttrib( 'class', 'chzn-select' );
         $this->addElement( $reseller );
+
+        return $this;
+    }
+
+    /**
+     * Sets IXP form element to drop down or hidden depends on
+     * multi IXP is enabled or not.
+     *
+     * @param bool $multiIXP Flag if multi ixp mode enabled
+     * @return IXP_Form_Infrastructure
+     */
+    public function setMultiIXP( $multiIXP, $isEdit )
+    {
+        if( !$multiIXP )
+        {
+            $ixp = $this->createElement( 'hidden', 'ixp' );
+            $ixp->setValue( '1' );
+            $this->addElement( $ixp  );
+        }
+        else if( !$isEdit )
+        {
+            $ixp = IXP_Form_IXP::getPopulatedSelect( 'ixp' );
+            $ixp->setLabel( "Intial IXP" );
+            $this->addElement( $ixp  );
+        }
 
         return $this;
     }

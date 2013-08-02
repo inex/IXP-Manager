@@ -35,6 +35,11 @@ class Infrastructure
     protected $Switchers;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $Vlans;
+
+    /**
      * Set name
      *
      * @param string $name
@@ -50,7 +55,7 @@ class Infrastructure
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -73,7 +78,7 @@ class Infrastructure
     /**
      * Get shortname
      *
-     * @return string 
+     * @return string
      */
     public function getShortname()
     {
@@ -83,7 +88,7 @@ class Infrastructure
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -106,7 +111,7 @@ class Infrastructure
     /**
      * Get IXP
      *
-     * @return \Entities\IXP 
+     * @return \Entities\IXP
      */
     public function getIXP()
     {
@@ -147,13 +152,46 @@ class Infrastructure
     /**
      * Get Switchers
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getSwitchers()
     {
         return $this->Switchers;
     }
+
+    /**
+     * Add Vlans
+     *
+     * @param \Entities\Vlan $vlans
+     * @return Infrastructure
+     */
+    public function addVlan(\Entities\Vlan $vlans)
+    {
+        $this->Vlans[] = $vlans;
     
+        return $this;
+    }
+
+    /**
+     * Remove Vlans
+     *
+     * @param \Entities\Vlan $vlans
+     */
+    public function removeVlan(\Entities\Vlan $vlans)
+    {
+        $this->Vlans->removeElement($vlans);
+    }
+
+    /**
+     * Get Vlans
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getVlans()
+    {
+        return $this->Vlans;
+    }
+
     /**
      * @var boolean
      */
@@ -169,17 +207,44 @@ class Infrastructure
     public function setIsPrimary($isPrimary)
     {
         $this->isPrimary = $isPrimary;
+        return $this;
+    }
+
+    /*
+     * Get isPrimary
+     *
+     * @return boolean
+     */
+    public function getIsPrimary()
+    {
+        return $this->isPrimary;
+    }
+    /**
+     * @var string
+     */
+    private $aggregate_graph_name;
+
+
+    /**
+     * Set aggregate_graph_name
+     *
+     * @param string $aggregateGraphName
+     * @return Infrastructure
+     */
+    public function setAggregateGraphName($aggregateGraphName)
+    {
+        $this->aggregate_graph_name = $aggregateGraphName;
     
         return $this;
     }
 
     /**
-     * Get isPrimary
+     * Get aggregate_graph_name
      *
-     * @return boolean 
+     * @return string 
      */
-    public function getIsPrimary()
+    public function getAggregateGraphName()
     {
-        return $this->isPrimary;
+        return $this->aggregate_graph_name;
     }
 }
