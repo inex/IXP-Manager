@@ -416,6 +416,11 @@ class StatisticsCliController extends IXP_Controller_CliAction
         // get all active trafficing customers
         $this->view->custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $ixp );
         
+        // Smarty has variable scope which OSS' skinning does not yet support so we need to use the native {include}
+        // As such, we need to resolve here for skinning for these templates:
+        $this->view->tmplMemberPort          = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-port.cfg' );
+        $this->view->tmplMemberAggregatePort = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-aggregate-port.cfg' );
+        
         echo $this->view->render( 'statistics-cli/mrtg/index.cfg' );
     }
     
