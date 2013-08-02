@@ -33,6 +33,9 @@
  */
 class IXP_Controller_CliAction extends OSS_Controller_CliAction
 {
+    
+    use IXP_Controller_Trait_Common;
+    
     /**
      * Override the Zend_Controller_Action's constructor (which is called
      * at the very beginning of this function anyway).
@@ -48,6 +51,15 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
     {
         // call the parent's version where all the Zend magic happens
         parent::__construct( $request, $response, $invokeArgs );
+        
+        // we need this for access to class constants in the template
+        $this->view->registerClass( 'USER',       '\\Entities\\User' );
+        $this->view->registerClass( 'CUSTOMER',   '\\Entities\\Customer' );
+        $this->view->registerClass( 'SWITCHER',   '\\Entities\\Switcher' );
+        $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
+         
+        $this->view->resellerMode = $this->resellerMode();
+        $this->view->multiIXP     = $this->multiIXP();
     }
 
 }

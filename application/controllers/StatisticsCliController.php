@@ -396,5 +396,99 @@ class StatisticsCliController extends IXP_Controller_CliAction
         }
     }
     
+    public function genMrtgConfAction()
+    {
+        // what IXP are we running on here?
+        if( $this->multiIXP() )
+        {
+            $ixpid = $this->getParam( 'ixp', false );
+            
+            if( !$ixpid || !( $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $ixpid ) ) )
+                die( "ERROR: Invalid or no IXP specified.\n" );
+        }
+        else
+            $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
+        
+        $this->view->ixp                   = $ixp;
+        $this->view->TRAFFIC_TYPES         = IXP_Mrtg::$TRAFFIC_TYPES;
+        $this->view->portsByInfrastructure = $this->genMrtgConf_getPeeringPortsByInfrastructure( $ixp );
+
+        // get all active trafficing customers
+        $this->view->custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $ixp );
+        
+        echo $this->view->render( 'statistics-cli/mrtg/index.cfg' );
+    }
+    
+    /**
+     * Utility function to slurp all peering ports from the database and arrange them in
+     * arrays by infrastructure and switch.
+     *
+     * @param \Entities\IXP $ixp
+     */
+    private function genMrtgConf_getPeeringPortsByInfrastructure( $ixp )
+    {
+        $data = [];
+        
+        foreach( $ixp->getInfrastructures() as $infra )
+        {
+            if( !$infra->getAggregateGraphName() )
+                continue;
+            
+            $data[ $infra->getId() ]['mrtgIds']              = [];
+            $data[ $infra->getId() ]['name']                 = $infra->getName();
+            $data[ $infra->getId() ]['aggregate_graph_name'] = $infra->getAggregateGraphName();
+            $data[ $infra->getId() ]['switches']             = '';
+            
+            foreach( $infra->getSwitchers() as $switch )
+            {
+                if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+                    continue;
+
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]            = [];
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['name']    = $switch->getName();
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'] = [];
+                
+                foreach( $switch->getPorts() as $port )
+                {
+                    if( $port->getType() != \Entities\SwitchPort::TYPE_PEERING )
+                        continue;
+                    
+                    $snmpId = $port->ifnameToSNMPIdentifier();
+
+                    foreach( IXP_Mrtg::$TRAFFIC_TYPES as $type => $vars )
+                    {
+                        $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
+                        $data[ $infra->getId() ]['mrtgIds'][$type][]                          = $id;
+                        $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'][$type][] = $id;
+                    }
+                }
+            }
+        }
+        
+        return $data;
+    }
+
+    /**
+     * Utility function to slurp all member ports from the database
+     *
+     * @param \Entities\IXP $ixp
+     */
+    private function genMrtgConf_getCustomerPortsByInfrastructure( $ixp )
+    {
+        $data = [];
+        
+        // get all active trafficing customers
+        $custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $ixp );
+        
+        foreach( $custs as $c )
+        {
+            $data[ $c->getId() ]['name']            = $c->getName();
+            $data[ $c->getId() ]['shortname']       = $c->getShortname();
+            $data[ $c->getId() ]['abbreviatedname'] = $c->getAbbreviatedName();
+            
+        }
+        
+        return $data;
+    }
 }
 
