@@ -88,6 +88,7 @@ $em->persist( $ixp );
 $infra1 = new \Entities\Infrastructure;
 $infra1->setName( "Infrastructure #1" );
 $infra1->setShortname( "#1" );
+$infra1->setIsPrimary( true );  // only one infrastructure can be primary!
 $infra1->setIXP( $ixp );
 $em->persist( $infra1 );
 $ixp->addInfrastructure( $infra1 );
