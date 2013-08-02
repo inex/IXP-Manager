@@ -4,5 +4,5 @@
 #
 
 define( 'APPLICATION_VERSION', '3.4.0' );
-define( 'APPLICATION_VERDATE', '2013xxxxxxxxxx' );
+define( 'APPLICATION_VERDATE', '20130802133000' );
 

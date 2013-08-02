@@ -5,11 +5,13 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-# v3.4.0 (2013xxxx)
+# v3.4.0 (20130802)
 
 This is a major new update which supports multiple IXPs with customers being members of one or more.
 
 A "separate IXP" is an IXP that is not connected in anyway to another. E.g. in different cities with no inter-connection.
+
+See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
 
 This update also links VLANs to infrastructures so you can now use the same VLAN tag in different infrastructures. 
 
@@ -121,6 +123,46 @@ Please update these by preceeding them with `1::`:
     mrtg.trunk_graphs[] = "1::core-sw1-sw2-lan1::PoP 1 to PoP 2 (LAN1)"
 
 The `1::` represents the IXP ID where these graphs reside. For an upgrade to this new multi-IXP code, all your existing entries will be for IXP ID 1.
+
+
+Rather then enumerating the many commits, I will try and enumerate the highlights here:
+
+- [NF] Maintenance mode - allow an admin to put IXP Manager into maintenance to lock out users while an upgrade is in process (41047b2 - Barry O'Donovan - 2013-08-02)
+- [IM] Trunk graphs now multi-IXP aware (0def35d - Barry O'Donovan - 2013-08-01)
+- [IM] Switch aggregate graphs now multi-IXP aware (f4bd5c2 - Barry O'Donovan - 2013-08-01)
+- [IM] Allow single-IXP mode to edit their only IXP with some safety barriers (07e8339 - Barry O'Donovan - 2013-08-01)
+- [IM] Make public graphs multi-IXP aware and move config from application.ini to database (ceab79d - Barry O'Donovan - 2013-08-01)
+- [BF] RIPE seem to have changed their whois server (via @listerr) (4cc0fc7 - Barry O'Donovan - 2013-08-01)
+- [NF] Exporting Member Details (93e049b - Barry O'Donovan - 2013-08-01)
+- [IM] League tables / daily traffic updated for multi-IXP support (47c7e6a - Barry O'Donovan - 2013-07-31)
+- [IM] P2P graphs multi-IXP aware (6041354 - Barry O'Donovan - 2013-07-31)
+- [IM] Member and member drilldown graphs for multi IXP in member portal (4d7b415 - Barry O'Donovan - 2013-07-31)
+- [IM] Member dashboard supports multiple IXPs for aggregrate graph (5a3ef39 - Barry O'Donovan - 2013-07-31)
+- [IM] Member drilldown IXP aware (3a5ea3e - Barry O'Donovan - 2013-07-31)
+- [IM] Member overview graphs IXP aware (5bb558e - Barry O'Donovan - 2013-07-31)
+- [IM] Better stats overview <-> p2p navigation (fe384ac - Barry O'Donovan - 2013-07-31)
+- [IM] Remove config options for MRTG paths and migrate them to the database (0bfbeed - Barry O'Donovan - 2013-07-31)
+- [IM] Member stats list and view updated for multi-IXP / infra (652d990 - Barry O'Donovan - 2013-07-31)
+- [DB] Migration script to link existing customers with the default / original IXP (2363fc5 - Barry O'Donovan - 2013-07-30)
+- [DB] Schema changes needed for v3.4.0 (04632d7 - Barry O'Donovan - 2013-07-24)
+- [NF] Filter private VLANs for a specific infrastructure (5ac1d83 - Barry O'Donovan - 2013-07-23)
+- [IM] Tidy up IXP/infra and add filter to list infras for a given IXP (177a1db - Barry O'Donovan - 2013-07-23)
+- [BF] Check for infras and custs before deleting an IXP (4d61f94 - Barry O'Donovan - 2013-07-23)
+- [NF] Show switches for a specific infrastructure (dc017e5 - Barry O'Donovan - 2013-07-23)
+- [IM] Catch deletion exceptions if the infra has switches assigned to it (0a2b97c - Barry O'Donovan - 2013-07-23)
+- [DB] Private properties cause a lot of errors when serializing objects (bcc7731 - Barry O'Donovan - 2013-07-23)
+- [DB] Adding mrtg_path and mrtg_p2p_path fields to Infrastructure table (e1b34ae - Nerijus Barauskas - 2013-07-11)
+- [IM] New table in dashbord showing customer ports by IXP. And also location and infrastructure names prpendend by ixp short name if multiIXP mode enabled. (f627d88 - Nerijus Barauskas - 2013-07-10)
+- [IM] On siwtch configuration allows user to select IXP if multiIXP mode enabled (040053d - Nerijus Barauskas - 2013-07-10)
+- [IM] application/views/customer/overview-tabs/ports/port.phtml more IXP information if multiIXP mode enabled (a6c3aaf - Nerijus Barauskas - 2013-07-10)
+- [IM] Hidding private Vlans then adding adding IPv4 or IPv6 addresses (aa7fae0 - Nerijus Barauskas - 2013-07-09)
+- [DB] Adding relation between Vlan and Infrastructure (167226c - Nerijus Barauskas - 2013-07-08)
+- [IM] Customer detail list can be filtered by ixp (b56936e - Nerijus Barauskas - 2013-07-08)
+- [IM] Adding IXPs list to customer overview menu (c7bb07f - Nerijus Barauskas - 2013-07-08)
+- [IM] Adding IXP information to customer detail page (e39ffdb - Nerijus Barauskas - 2013-07-08)
+- [IM] Sorting customer names in page header (e297632 - Nerijus Barauskas - 2013-07-05)
+- [DB] Adding relation many to many between Customers and IXPs (07e1527 - Nerijus Barauskas - 2013-07-05)
+- [IM] Allow to enable multi IXP mode (89e27aa - Nerijus Barauskas - 2013-07-05)
 
 # v3.3.4 (20130801)
 
