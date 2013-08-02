@@ -11,7 +11,7 @@
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Vlans">
       <join-columns>
-        <join-column name="infrastructureid" referenced-column-name="id"/>
+        <join-column name="infrastructureid" referenced-column-name="id" nullable="false"/>
       </join-columns>
     </many-to-one>
     <one-to-many field="NetInfo" target-entity="Entities\NetInfo" mapped-by="Vlan"/>

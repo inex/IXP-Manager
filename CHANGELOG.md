@@ -70,15 +70,17 @@ A schema update is required:
             FOREIGN KEY (ixp_id) REFERENCES ixp (id);
     
     CREATE INDEX IDX_1F0F81A7A5A4E881 
-        ON traffic_daily (ixp_id)
+        ON traffic_daily (ixp_id);
 
-VLANs must be linked with infrastructures. Immediately of the frontend will not work. You can use a simple SQL query as follows and then, correct the VLANs to the correct infrastructures in the web interface:
+VLANs must be linked with infrastructures - immediately or the frontend will not work. You can use a simple SQL query as follows and then, correct the VLANs to the correct infrastructures in the web interface:
 
     UPDATE `vlan` SET `infrastructureid` = 1;
+    ALTER TABLE vlan 
+       CHANGE infrastructureid infrastructureid INT NOT NULL;
 
 All existing customers must be linked to the default / pre-existing IXP. To achieve this, run:
 
-    bin/ixptool.php -a database-migration-cli.v340-customers-to-ixps
+    bin/ixptool.php -f -a database-migration-cli.v340-customers-to-ixps
 
 In the below, you will see references to *edit you IXP(s)* - for multi-IXP mode, there is a new menu option on the left called *IXPs*. For single-IXP mode users, there is a link to edit IXPs on the *Infrastructures* page.
 
@@ -124,6 +126,13 @@ Please update these by preceeding them with `1::`:
 
 The `1::` represents the IXP ID where these graphs reside. For an upgrade to this new multi-IXP code, all your existing entries will be for IXP ID 1.
 
+
+This release also adds support for a maintenance mode - please see [the documentation here](https://github.com/inex/IXP-Manager/wiki/Maintenance-Mode).
+
+
+There has been a lot of schema changes in this release. You should validate your schema as follows:
+
+    APPLICATION_PATH/bin/doctrine2-cli.php orm:validate-schema
 
 Rather then enumerating the many commits, I will try and enumerate the highlights here:
 

@@ -371,7 +371,7 @@
     </association>
     <entity name="Vlan" uuid="1b90f411-dfed-48a8-acd0-97cbf599e069">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="947c18c6-133a-42ba-a7e2-1346d7cc7e44"/>
-      <field name="infrastructureid" type="integer" uuid="6bd09753-b303-4f0d-b85d-0324f9728200"/>
+      <field name="infrastructureid" type="integer" required="true" uuid="6bd09753-b303-4f0d-b85d-0324f9728200"/>
       <field name="name" type="string" size="255" uuid="34caf8b1-714c-4ffd-87d9-c5e6b3834c70"/>
       <field name="number" type="integer" uuid="156b2f6b-7ce1-4558-9e7e-27f484e0a95f"/>
       <field name="rcvrfname" type="string" size="255" uuid="dc73bea4-6ccb-48cc-831f-a1a1116a3d0b"/>
