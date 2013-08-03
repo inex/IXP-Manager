@@ -117,9 +117,6 @@ trait IXP_Controller_Trait_Common
      */
     protected function loadIxpById( $id, $redirect = null )
     {
-        if( $this->getD2Cache()->contains( "ixp_{$id}" ) )
-            return $this->getD2Cache()->fetch( "ixp_{$id}" );
-        
         $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
     
         if( !$id || !$i )
@@ -131,7 +128,6 @@ trait IXP_Controller_Trait_Common
             $this->redirect( $redirect === null ? '' : $redirect );
         }
         
-        $this->getD2Cache()->save( "ixp_{$id}", $i );
         return $i;
     }
     

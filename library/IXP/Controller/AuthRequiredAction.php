@@ -35,8 +35,7 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
 {
     use OSS_Controller_Action_Trait_AuthRequired;
     use IXP_Controller_Trait_Common;
-    
-    
+
     /**
      * Utility function to load a customer's notes and calculate the amount of unread / updated notes
      * for the logged in user and the given customer
@@ -71,8 +70,6 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
         $this->view->notesLastRead = $lr;
         $this->view->unreadNotes   = $unreadNotes;
     }
-    
-    
     
 }
 

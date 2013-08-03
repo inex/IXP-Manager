@@ -5,6 +5,17 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.4.1 (20130803)
+
+Bug fix release from v3.4.0 for issues discovered when going to production.
+
+Ensure you perform a `git submodule update`.
+
+- [BF] Remove references to old conf options for aggregate graphs (9b12871 - Barry O'Donovan - 2013-08-03)
+- [BF] Better to not assume all users on all machines have set a default timezone. (5bdd94c - Barry O'Donovan - 2013-08-03)
+- [BF] Doctrine entities cannot be cached (a973b7e - Barry O'Donovan - 2013-08-03)
+- [IM] Make it abuntently clear to the admin when maintenance mode is enabled (b9b5efe - Barry O'Donovan - 2013-08-03)
+
 # v3.4.0 (20130802)
 
 This is a major new update which supports multiple IXPs with customers being members of one or more.
