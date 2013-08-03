@@ -442,6 +442,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
             $data[ $infra->getId() ]['mrtgIds']              = [];
             $data[ $infra->getId() ]['name']                 = $infra->getName();
             $data[ $infra->getId() ]['aggregate_graph_name'] = $infra->getAggregateGraphName();
+            $data[ $infra->getId() ]['maxbytes']             = 0;
             $data[ $infra->getId() ]['switches']             = '';
             
             foreach( $infra->getSwitchers() as $switch )
@@ -449,14 +450,17 @@ class StatisticsCliController extends IXP_Controller_CliAction
                 if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
                     continue;
 
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]            = [];
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['name']    = $switch->getName();
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'] = [];
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]             = [];
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['name']     = $switch->getName();
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] = 0;
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds']  = [];
                 
                 foreach( $switch->getPorts() as $port )
                 {
                     $snmpId = $port->ifnameToSNMPIdentifier();
-
+                    $data[ $infra->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
+                    $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8;
+                    
                     foreach( IXP_Mrtg::$TRAFFIC_TYPES as $type => $vars )
                     {
                         $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
