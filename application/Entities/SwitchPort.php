@@ -591,4 +591,20 @@ class SwitchPort
         
         return $this;
     }
+    
+
+    
+    public function ifnameToSNMPIdentifier()
+    {
+        # escape special characters in ifName as per
+        # http://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html - "Interface by Name" section
+        
+        $ifname = preg_replace( '/:/', '\\:', $this->getIfName() );
+        $ifname = preg_replace( '/&/', '\\&', $ifname );
+        $ifname = preg_replace( '/@/', '\\@', $ifname );
+        $ifname = preg_replace( '/\ /', '\\\ ', $ifname );
+         
+        return $ifname;
+    }
+    
 }

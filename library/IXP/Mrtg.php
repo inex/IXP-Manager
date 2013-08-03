@@ -191,6 +191,23 @@ class IXP_Mrtg
     
     
     
+    public static $TRAFFIC_TYPES = [
+        'bits'   => [
+            'in'      => 'ifHCInOctets',
+            'out'     => 'ifHCOutOctets',
+            'options' => 'growright,bits',
+            'name'    => 'Bits'
+        ],
+        'pkts'   => [
+            'in'      => 'ifHCInUcastPkts',
+            'out'     => 'ifHCOutUcastPkts',
+            'options' => 'growright',
+            'name'    => 'Packets'
+        ]
+    ];
+    
+    
+    
     /**
      * Class constructor.
      *

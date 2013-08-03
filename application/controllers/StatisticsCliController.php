@@ -396,5 +396,92 @@ class StatisticsCliController extends IXP_Controller_CliAction
         }
     }
     
+    public function genMrtgConfAction()
+    {
+        // what IXP are we running on here?
+        if( $this->multiIXP() )
+        {
+            $ixpid = $this->getParam( 'ixp', false );
+            
+            if( !$ixpid || !( $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $ixpid ) ) )
+                die( "ERROR: Invalid or no IXP specified.\n" );
+        }
+        else
+            $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
+        
+        $this->view->ixp                   = $ixp;
+        $this->view->TRAFFIC_TYPES         = IXP_Mrtg::$TRAFFIC_TYPES;
+        $this->view->portsByInfrastructure = $this->genMrtgConf_getPeeringPortsByInfrastructure( $ixp );
+
+        // get all active trafficing customers
+        $this->view->custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $ixp );
+        
+        // Smarty has variable scope which OSS' skinning does not yet support so we need to use the native {include}
+        // As such, we need to resolve here for skinning for these templates:
+        $this->view->tmplMemberPort          = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-port.cfg' );
+        $this->view->tmplMemberAggregatePort = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-aggregate-port.cfg' );
+        
+        if( isset( $this->_options['mrtg']['conf']['dstfile'] ) )
+        {
+            if( !$this->writeConfig( $this->_options['mrtg']['conf']['dstfile'], $this->view->render( 'statistics-cli/mrtg/index.cfg' ) ) )
+                fwrite( STDERR, "Error: could not save configuration data\n" );
+        }
+        else
+            echo $this->view->render( 'statistics-cli/mrtg/index.cfg' );
+    }
+    
+    /**
+     * Utility function to slurp all peering ports from the database and arrange them in
+     * arrays by infrastructure and switch.
+     *
+     * @param \Entities\IXP $ixp
+     */
+    private function genMrtgConf_getPeeringPortsByInfrastructure( $ixp )
+    {
+        $data = [];
+        
+        foreach( $ixp->getInfrastructures() as $infra )
+        {
+            if( !$infra->getAggregateGraphName() )
+                continue;
+            
+            $data[ $infra->getId() ]['mrtgIds']              = [];
+            $data[ $infra->getId() ]['name']                 = $infra->getName();
+            $data[ $infra->getId() ]['aggregate_graph_name'] = $infra->getAggregateGraphName();
+            $data[ $infra->getId() ]['maxbytes']             = 0;
+            $data[ $infra->getId() ]['switches']             = '';
+            
+            foreach( $infra->getSwitchers() as $switch )
+            {
+                if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+                    continue;
+
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]             = [];
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['name']     = $switch->getName();
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] = 0;
+                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds']  = [];
+                
+                foreach( $switch->getPorts() as $port )
+                {
+                    $snmpId = $port->ifnameToSNMPIdentifier();
+                    $data[ $infra->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
+                    $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8;
+                    
+                    foreach( IXP_Mrtg::$TRAFFIC_TYPES as $type => $vars )
+                    {
+                        $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
+                        
+                        if( $port->getType() == \Entities\SwitchPort::TYPE_PEERING )
+                            $data[ $infra->getId() ]['mrtgIds'][$type][] = $id;
+                        
+                        $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'][$type][] = $id;
+                    }
+                }
+            }
+        }
+        
+        return $data;
+    }
+
 }
 

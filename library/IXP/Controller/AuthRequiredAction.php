@@ -34,79 +34,8 @@
 class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
 {
     use OSS_Controller_Action_Trait_AuthRequired;
-    
-    
-    /**
-     * Load a customer from the database by shortname but redirect to `error/error` if no such customer.
-     *
-     * Will use 'shortname' parameter is no shortname provided
-     *
-     * @param string|bool $shortname The customer shortname to load (or, if false, look for `shortname` parameter)
-     * @param string $redirect Alternative location to redirect to
-     * @return \Entities\Customer The customer object
-     */
-    protected function loadCustomerByShortname( $shortname = false, $redirect = null )
-    {
-        if( $shortname === false )
-            $shortname = $this->getParam( 'shortname', false );
-    
-        if( $shortname )
-            $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
-    
-        if( !$shortname || !$c )
-        {
-            $this->addMessage( 'Invalid customer', OSS_Message::ERROR );
-            $this->redirect( $redirect === null ? 'error/error' : $redirect );
-        }
-    
-        return $c;
-    }
-    
-    /**
-     * Load a customer from the database by ID but redirect to `error/error` if no such customer.
-     *
-     * @param int $id The customer ID to load
-     * @param string $redirect Alternative location to redirect to
-     * @return \Entities\Customer The customer object
-     */
-    protected function loadCustomerById( $id, $redirect = null )
-    {
-        if( $id )
-            $c = $this->getD2R( '\\Entities\\Customer' )->find( $id );
-    
-        if( !$id || !$c )
-        {
-            $this->addMessage( "Could not load the requested customer object", OSS_Message::ERROR );
-            $this->redirect( $redirect === null ? 'error/error' : $redirect );
-        }
-    
-        return $c;
-    }
-    
-    /**
-     * Load an IXP from the database by ID but redirect to `error/error` if no such IXP.
-     *
-     * @param int $id The IXP ID to load
-     * @param string $redirect Alternative location to redirect to (if null, `error/error`, if false, return false on error)
-     * @return \Entities\IXP The IXP object
-     */
-    protected function loadIxpById( $id, $redirect = null )
-    {
-        $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
-    
-        if( !$id || !$i )
-        {
-            if( $redirect === false )
-                return false;
-            
-            $this->addMessage( "Could not load the IXP object", OSS_Message::ERROR );
-            $this->redirect( $redirect === null ? '' : $redirect );
-        }
-        
-        return $i;
-    }
-    
-    
+    use IXP_Controller_Trait_Common;
+
     /**
      * Utility function to load a customer's notes and calculate the amount of unread / updated notes
      * for the logged in user and the given customer
@@ -141,8 +70,6 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
         $this->view->notesLastRead = $lr;
         $this->view->unreadNotes   = $unreadNotes;
     }
-    
-    
     
 }
 

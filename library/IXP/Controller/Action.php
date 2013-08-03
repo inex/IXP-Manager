@@ -50,6 +50,7 @@ class IXP_Controller_Action extends OSS_Controller_Action
     use OSS_Controller_Action_Trait_Messages;
     // use OSS_Controller_Action_Trait_News;
     
+    use IXP_Controller_Trait_Common;
     
     
     /**
@@ -146,33 +147,5 @@ class IXP_Controller_Action extends OSS_Controller_Action
         $this->view->customers = $this->_customers;
     }
 
-    /**
-     * Checks if reseller mode is enabled.
-     *
-     * To enable resller mode set reseller.enable to true in application.ini
-     *
-     * @see https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
-     * 
-     * @return bool
-     */
-    protected function resellerMode()
-    {
-        return ( isset( $this->_options['reseller']['enabled'] ) && $this->_options['reseller']['enabled'] );
-    }
-
-    /**
-     * Checks if multi IXP mode is enabled.
-     *
-     * To enable multi IXP mode set multiixp.enable to true in application.ini
-     * 
-     * @see https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
-     *
-     * @return bool
-     */
-    protected function multiIXP()
-    {
-        return ( isset( $this->_options['multiixp']['enabled'] ) && $this->_options['multiixp']['enabled'] );
-    }
-    
 }
 

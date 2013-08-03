@@ -334,6 +334,14 @@ identity.default_country = 'IE'
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
 ;;
 
+;; the following mrtg.conf variables are used by the MRTG configuration generator.
+;;
+;; destination for all MRTG output (log files, pngs, etc)
+mrtg.conf.workdir = '/home/mrtg'
+;; destintation file for the MRTG configuration. If not set, the generator sends it to stdout
+;mrtg.conf.dstfile = '/tmp/mrtg.cfg'
+
+
 ;; We support aggregate IXP and aggregate infrastructure graphs assuming you
 ;; have set up MRTG to support these. 
 ;;
