@@ -5,6 +5,12 @@
     </div><!--/row-->
 {/if}
 
+{if $smarty.const.MAINTENANCE_MODE}
+    <div class="alert alert-info" style="text-align: center;">
+        <strong>*** MAINTENANCE MODE ENABLED ***</strong>
+    </div>
+{/if}
+
 {tmplinclude file='footer-content.phtml'}
 
 {if !isset( $mode ) or $mode neq 'fluid'}
