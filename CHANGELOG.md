@@ -5,6 +5,21 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.4.2 (20130803)
+
+This version brings an integrated MRTG configuration generator to replace the Perl version we have been using. See the following link for documentation:
+
+https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
+
+Using an integrated generator removes the amount of configuration necessary compared to the Perl version, adds new features such as automated *MaxBytes* calculation and makes the configuration much more easy to add to and to skin.
+
+- [IM] Allow writing of MRTG config directly to file (a9263b6 - Barry O'Donovan - 2013-08-03)
+- [IM] Dynamically calculate max bytes / packets for the exchange (aab4c26 - Barry O'Donovan - 2013-08-03)
+- [IM] Do not assume we have aggregates (068583e - Barry O'Donovan - 2013-08-03)
+- [IM] Fix types, ensure consisitency with Perl equivalent (fc99924 - Barry O'Donovan - 2013-08-03)
+- [IM] Refactored some templates and fixed skinning issues for MRTG conf generation (3aeee83 - Barry O'Donovan - 2013-08-02)
+- [NF] Internal / IXPtool based Mrtg Configuration Generator (first pass) (a955648 - Barry O'Donovan - 2013-08-02)
+
 # v3.4.1 (20130803)
 
 Bug fix release from v3.4.0 for issues discovered when going to production.
