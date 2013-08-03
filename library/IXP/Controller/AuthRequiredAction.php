@@ -92,9 +92,6 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
      */
     protected function loadIxpById( $id, $redirect = null )
     {
-        if( $this->getD2Cache()->contains( "ixp_{$id}" ) )
-            return $this->getD2Cache()->fetch( "ixp_{$id}" );
-        
         $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
     
         if( !$id || !$i )
@@ -106,7 +103,6 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
             $this->redirect( $redirect === null ? '' : $redirect );
         }
         
-        $this->getD2Cache()->save( "ixp_{$id}", $i );
         return $i;
     }
     

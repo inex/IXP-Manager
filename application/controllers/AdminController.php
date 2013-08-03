@@ -61,77 +61,74 @@ class AdminController extends IXP_Controller_AuthRequiredAction
     private function _publicPeeringGraphs()
     {
         // only do this once every five minutes
-        if( isset( $this->_options['mrtg']['traffic_graphs'] ) && $this->_options['mrtg']['traffic_graphs'] )
+        if( $admin_home_stats = $this->getD2Cache()->fetch( 'admin_home_stats' ) )
         {
-            if( $admin_home_stats = $this->getD2Cache()->fetch( 'admin_home_stats' ) )
+            $this->view->graphs = $admin_home_stats['graphs'];
+            $this->view->stats  = $admin_home_stats['stats'];
+        }
+        else
+        {
+            $admin_home_stats = [];
+            $graphs = [];
+            $stats  = [];
+            
+            if( $this->multiIXP() )
             {
-                $this->view->graphs = $admin_home_stats['graphs'];
-                $this->view->stats  = $admin_home_stats['stats'];
-            }
-            else
-            {
-                $admin_home_stats = [];
-                $graphs = [];
-                $stats  = [];
+                $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
                 
-                if( $this->multiIXP() )
+                foreach( $ixps as $ixp )
                 {
-                    $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
-                    
-                    foreach( $ixps as $ixp )
-                    {
-                        if( $ixp->getAggregateGraphName() )
-                        {
-                            $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
-                            $graphs[ $ixp->getId() ]['title'] = $ixp->getName();
-                        }
-                    }
-                    
-                    foreach( $graphs as $id => $data )
-                    {
-                        $mrtg = new IXP_Mrtg(
-                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
-                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                        );
-                    
-                        $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
-                    }
-                }
-                else
-                {
-                    $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
-                    
                     if( $ixp->getAggregateGraphName() )
                     {
                         $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
-                        $graphs[ $ixp->getId() ]['title'] = 'IXP Aggregate Graph';
-                    }
-
-                    foreach( $ixp->getInfrastructures() as $inf )
-                    {
-                        if( $inf->getAggregateGraphName() )
-                        {
-                            $graphs[ $ixp->getId() . '-' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
-                            $graphs[ $ixp->getId() . '-' . $inf->getId() ]['title'] = $inf->getName();
-                        }
-                    }
-                    
-                    foreach( $graphs as $id => $data )
-                    {
-                        $mrtg = new IXP_Mrtg(
-                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
-                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                        );
-                    
-                        $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                        $graphs[ $ixp->getId() ]['title'] = $ixp->getName();
                     }
                 }
-            
-                $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
-                $admin_home_stats['stats']  = $this->view->stats      = $stats;
-            
-                $this->getD2Cache()->save( 'admin_home_stats', $admin_home_stats, 300 );
+                
+                foreach( $graphs as $id => $data )
+                {
+                    $mrtg = new IXP_Mrtg(
+                        $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
+                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                    );
+                
+                    $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                }
             }
+            else
+            {
+                $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
+                
+                if( $ixp->getAggregateGraphName() )
+                {
+                    $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
+                    $graphs[ $ixp->getId() ]['title'] = 'IXP Aggregate Graph';
+                }
+
+                foreach( $ixp->getInfrastructures() as $inf )
+                {
+                    if( $inf->getAggregateGraphName() )
+                    {
+                        $graphs[ $ixp->getId() . '-' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
+                        $graphs[ $ixp->getId() . '-' . $inf->getId() ]['title'] = $inf->getName();
+                    }
+                }
+                
+                foreach( $graphs as $id => $data )
+                {
+                    $mrtg = new IXP_Mrtg(
+                        $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
+                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                    );
+                
+                    $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
+                }
+            }
+        
+            $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
+            $admin_home_stats['stats']  = $this->view->stats      = $stats;
+        
+            $this->getD2Cache()->save( 'admin_home_stats', $admin_home_stats, 300 );
         }
     }
 
