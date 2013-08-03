@@ -421,7 +421,13 @@ class StatisticsCliController extends IXP_Controller_CliAction
         $this->view->tmplMemberPort          = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-port.cfg' );
         $this->view->tmplMemberAggregatePort = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-aggregate-port.cfg' );
         
-        echo $this->view->render( 'statistics-cli/mrtg/index.cfg' );
+        if( isset( $this->_options['mrtg']['conf']['dstfile'] ) )
+        {
+            if( !$this->writeConfig( $this->_options['mrtg']['conf']['dstfile'], $this->view->render( 'statistics-cli/mrtg/index.cfg' ) ) )
+                fwrite( STDERR, "Error: could not save configuration data\n" );
+        }
+        else
+            echo $this->view->render( 'statistics-cli/mrtg/index.cfg' );
     }
     
     /**
