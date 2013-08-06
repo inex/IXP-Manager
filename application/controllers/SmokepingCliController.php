@@ -52,7 +52,7 @@ class SmokepingCliController extends IXP_Controller_CliAction
         
         if( isset( $this->_options['smokeping']['conf']['dstfile'] ) )
         {
-            if( !$this->writeConfig( $this->_options['mrtg']['conf']['dstfile'], $this->view->render( 'statistics-cli/mrtg/index.cfg' ) ) )
+            if( !$this->writeConfig( $this->_options['smokeping']['conf']['dstfile'], $this->view->render( 'smokeping-cli/conf/index.cfg' ) ) )
                 fwrite( STDERR, "Error: could not save configuration data\n" );
         }
         else
@@ -71,8 +71,8 @@ class SmokepingCliController extends IXP_Controller_CliAction
     
         foreach( $ixp->getInfrastructures() as $infra )
         {
-            $data[ $infra->getId() ]['name']      = $infra->getName();
-            $data[ $infra->getId() ]['shortname'] = $infra->getShortname();
+            $data[ $infra->getId() ]['name']      = preg_replace( '/#/', '', $infra->getName() );
+            $data[ $infra->getId() ]['shortname'] = preg_replace( '/#/', '', $infra->getShortname() );
             $data[ $infra->getId() ]['vlans']     = [];
             
             foreach( $infra->getVLANs() as $v )
@@ -81,8 +81,8 @@ class SmokepingCliController extends IXP_Controller_CliAction
                     continue;
 
                 $vlan = [];
-                $vlan[ 'name' ]   = $v->getName();
-                $vlan[ 'number' ] = $v->getNumber();
+                $vlan[ 'name' ]   = preg_replace( '/#/', '', $v->getName() );
+                $vlan[ 'number' ] = preg_replace( '/#/', '', $v->getNumber() );
                 $vlan[ 'ints' ]   = [];
                 
                 foreach( $v->getVlanInterfaces() as $vli )
@@ -103,9 +103,9 @@ class SmokepingCliController extends IXP_Controller_CliAction
                     if( !$havePhysInt )
                         continue;
                     
-                    $vlan[ 'ints' ][ $vli->getId() ]['name']            = $vli->getVirtualInterface()->getCustomer()->getName();
-                    $vlan[ 'ints' ][ $vli->getId() ]['shortname']       = $vli->getVirtualInterface()->getCustomer()->getShortname();
-                    $vlan[ 'ints' ][ $vli->getId() ]['abbreviatedname'] = $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName();
+                    $vlan[ 'ints' ][ $vli->getId() ]['name']            = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getName() );
+                    $vlan[ 'ints' ][ $vli->getId() ]['shortname']       = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getShortname() );
+                    $vlan[ 'ints' ][ $vli->getId() ]['abbreviatedname'] = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName() );
 
                     if( $vli->getIpv4enabled() && $vli->getIpv4canping() )
                         $vlan[ 'ints' ][ $vli->getId() ]['ipv4'] =  $vli->getIpv4Address()->getAddress();
@@ -121,7 +121,7 @@ class SmokepingCliController extends IXP_Controller_CliAction
                 $data[ $infra->getId() ]['vlans'][ $v->getId() ] = $vlan;
             }
         }
-        
+
         // print_r( $data ); die();
         return $data;
     }
