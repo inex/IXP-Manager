@@ -255,6 +255,12 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::snmpUpdate($host, $logger);
     }
 
+    public function ifnameToSNMPIdentifier()
+    {
+        $this->__load();
+        return parent::ifnameToSNMPIdentifier();
+    }
+
 
     public function __sleep()
     {
