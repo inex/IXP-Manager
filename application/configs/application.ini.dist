@@ -390,6 +390,9 @@ smokeping.conf.piddir = "/usr/local/var/smokeping"
 ;; form <##keyword##>. There is a sample template included with SmokePing. (mandatory)
 smokeping.conf.smokemail = "/usr/local/etc/smokeping/smokemail"
 
+;; Smokeping typically includess a file with paths to various executables 
+;; Set the full path and filename for that include here if you wish
+smokeping.conf.pathnames = "/etc/smokeping/config.d/pathnames"
 
 ;; The above cover all the mandatory settings. You can add other options as follows and
 ;; they will be included in the general section of the Smokeping config.
