@@ -119,6 +119,8 @@ $c->setPeeringmacrov6( 'AS-SIEP6' );
 $c->setPeeringpolicy( \Entities\Customer::PEERING_POLICY_MANDATORY );
 $c->setMD5Support( \Entities\Customer::MD5_SUPPORT_YES );
 
+$c->setIsReseller( false );
+
 $c->setNocphone( '+353 1 123 4567' );
 $c->setNoc24hphone( '+353 1 123 4567' );
 $c->setNocfax( '+353 1 123 4568' );
