@@ -87,12 +87,35 @@ class SmokepingCliController extends IXP_Controller_CliAction
                 
                 foreach( $v->getVlanInterfaces() as $vli )
                 {
+                    if( $vli->getVirtualInterface()->getCustomer()->getStatus() != \Entities\Customer::STATUS_NORMAL )
+                        continue;
+                    
+                    $havePhysInt = false;
+                    foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi )
+                    {
+                        if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED )
+                        {
+                            $havePhysInt = true;
+                            break;
+                        }
+                    }
+                    
+                    if( !$havePhysInt )
+                        continue;
+                    
                     $vlan[ 'ints' ][ $vli->getId() ]['name']            = $vli->getVirtualInterface()->getCustomer()->getName();
                     $vlan[ 'ints' ][ $vli->getId() ]['shortname']       = $vli->getVirtualInterface()->getCustomer()->getShortname();
                     $vlan[ 'ints' ][ $vli->getId() ]['abbreviatedname'] = $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName();
+
+                    if( $vli->getIpv4enabled() && $vli->getIpv4canping() )
+                        $vlan[ 'ints' ][ $vli->getId() ]['ipv4'] =  $vli->getIpv4Address()->getAddress();
+                    else
+                        $vlan[ 'ints' ][ $vli->getId() ]['ipv4'] =  false;
                     
-                    $vlan[ 'ints' ][ $vli->getId() ]['ipv4'] = $vli->getIpv4enabled() ? $vli->getIpv4Address()->getAddress() : false;
-                    $vlan[ 'ints' ][ $vli->getId() ]['ipv6'] = $vli->getIpv6enabled() ? $vli->getIpv6Address()->getAddress() : false;
+                    if( $vli->getIpv6enabled() && $vli->getIpv6canping() )
+                        $vlan[ 'ints' ][ $vli->getId() ]['ipv6'] = $vli->getIpv6Address()->getAddress();
+                    else
+                        $vlan[ 'ints' ][ $vli->getId() ]['ipv6'] = false;
                 }
                 
                 $data[ $infra->getId() ]['vlans'][ $v->getId() ] = $vlan;
