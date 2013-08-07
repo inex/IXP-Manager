@@ -284,7 +284,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
         
             foreach( $custs as $cust )
             {
-                $this->verbose( "\n\t- processing customer " . $cust->getName(), false );
+                $this->verbose( "\n\t- processing customer " . $cust->getName() . "\t ", false );
                 $stats = array();
         
                 foreach( IXP_Mrtg::$CATEGORIES as $category )
@@ -323,6 +323,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
                 $this->getD2EM()->flush();
             }
         }
+        
+        $this->verbose();
     }
     
     
