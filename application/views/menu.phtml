@@ -115,9 +115,11 @@
             
         </li>
         
-        <li {if $controller eq 'mac-address'}class="active"{/if}>
-            <a href="{genUrl controller='mac-address' action='list'}">MAC Addresses</a>
-        </li>
+        {if not isset( $options['frontend']['disabled']['mac-address'] ) or not $options['frontend']['disabled']['mac-address'] }
+            <li {if $controller eq 'mac-address'}class="active"{/if}>
+                 <a href="{genUrl controller='mac-address' action='list'}">MAC Addresses</a>
+            </li>
+        {/if}
         
         <li {if $controller eq 'vendor'}class="active"{/if}>
             <a href="{genUrl controller='vendor' action='list'}">Vendors</a>
