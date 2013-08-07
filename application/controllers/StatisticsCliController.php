@@ -275,10 +275,14 @@ class StatisticsCliController extends IXP_Controller_CliAction
     
         foreach( $custs as $cust )
         {
+            $this->verbose( "\n{$cust->getName()}: ", false );
+            
             $stats = array();
     
             foreach( IXP_Mrtg::$CATEGORIES as $category )
             {
+                $this->verbose( "{$category} ", false );
+                
                 $mrtg = new IXP_Mrtg(
                         IXP_Mrtg::getMrtgFilePath( $this->_options['mrtg']['path'] . '/members',
                                 'LOG', 'aggregate', $category,
