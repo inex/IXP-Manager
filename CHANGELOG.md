@@ -5,6 +5,10 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+
+ALTER TABLE ixp ADD smokeping VARCHAR(255) DEFAULT NULL
+
+
 # v3.4.2 (20130803)
 
 This version brings an integrated MRTG configuration generator to replace the Perl version we have been using. See the following link for documentation:
