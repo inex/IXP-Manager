@@ -607,4 +607,32 @@ class SwitchPort
         return $ifname;
     }
     
+    /**
+     * @var integer
+     */
+    private $lagIfIndex;
+
+
+    /**
+     * Set lagIfIndex
+     *
+     * @param integer $lagIfIndex
+     * @return SwitchPort
+     */
+    public function setLagIfIndex($lagIfIndex)
+    {
+        $this->lagIfIndex = $lagIfIndex;
+    
+        return $this;
+    }
+
+    /**
+     * Get lagIfIndex
+     *
+     * @return integer 
+     */
+    public function getLagIfIndex()
+    {
+        return $this->lagIfIndex;
+    }
 }

@@ -5,8 +5,10 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.x.x
 
-ALTER TABLE ixp ADD smokeping VARCHAR(255) DEFAULT NULL
+    ALTER TABLE switchport ADD lagIfIndex INT DEFAULT NULL;
+    ALTER TABLE ixp ADD smokeping VARCHAR(255) DEFAULT NULL
 
 
 # v3.4.2 (20130803)

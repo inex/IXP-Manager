@@ -294,6 +294,7 @@
       <field name="ifOperStatus" type="integer" uuid="eff27ac4-b0e5-4001-a4b1-85253f7f141a"/>
       <field name="ifLastChange" type="integer" uuid="9d032cd9-6905-4df5-8422-ec5e72e4620f"/>
       <field name="lastSnmpPoll" type="datetime" uuid="142ea587-8758-466b-9612-a8be6e4220f2"/>
+      <field name="lagIfIndex" type="integer" uuid="bea9ef74-edd5-4a94-a776-ce90caf78ca4"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\SwitchPort</attribute>
         <attribute name="table">switchport</attribute>
