@@ -65,8 +65,8 @@ class IXP_Form_Switch extends IXP_Form
 
         $this->addElement( IXP_Form_Cabinet::getPopulatedSelect( 'cabinetid' ) );
 
-        $infrastructre = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
-        $this->addElement( $infrastructre );
+        $infrastructure = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
+        $this->addElement( $infrastructure );
 
         $ipv4addr = $this->createElement( 'text', 'ipv4addr' );
         $ipv4addr->addValidator( 'stringLength', false, array( 1, 255 ) )

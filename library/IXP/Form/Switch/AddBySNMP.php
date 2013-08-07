@@ -65,8 +65,8 @@ class IXP_Form_Switch_AddBySNMP extends IXP_Form
 
         $this->addElement( IXP_Form_Cabinet::getPopulatedSelect( 'cabinetid' ) );
 
-        $infrastructre = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructre' );
-        $this->addElement( $infrastructre );
+        $infrastructure = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
+        $this->addElement( $infrastructure );
 
         $snmppasswd = $this->createElement( 'text', 'snmppasswd' );
         $snmppasswd->addValidator( 'stringLength', false, array( 1, 255 ) )
