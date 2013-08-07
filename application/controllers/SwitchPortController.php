@@ -39,24 +39,24 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     protected function _feInit()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-    
+
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\SwitchPort',
             'form'          => 'IXP_Form_Switch_Port',
             'pagetitle'     => 'Switch Ports',
-        
+
             'titleSingular' => 'Switch Port',
             'nameSingular'  => 'a switch port',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
+
             'listOrderBy'    => 'name',
             'listOrderByDir' => 'ASC',
-        
+
             'listColumns'    => [
-        
+
                 'id'        => [ 'title' => 'UID', 'display' => false ],
-                
+
                 'switch'  => [
                     'title'      => 'Switch',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -64,7 +64,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                     'action'     => 'view',
                     'idField'    => 'switchid'
                 ],
-            
+
                 'name'           => 'Description',
                 'ifName'         => 'Name',
                 'ifAlias'        => 'Alias',
@@ -74,7 +74,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                         'script'   => 'frontend/list-column-active.phtml',
                         'colname'  => 'active'
                 ],
-                
+
                 'type'  => [
                     'title'    => 'Type',
                     'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
@@ -82,12 +82,12 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 ]
             ]
         ];
-    
+
         // display the same information in the view as the list
         $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
-    
-    
+
+
     /**
      * Provide array of users for the listAction and viewAction
      *
@@ -96,35 +96,36 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
-        
+
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'sp.id AS id, sp.name AS name, sp.type AS type, s.name AS switch,
                 sp.ifName AS ifName, sp.ifAlias AS ifAlias, sp.ifHighSpeed AS ifHighSpeed,
                 sp.ifMtu AS ifMtu, sp.ifPhysAddress AS ifPhysAddress, sp.active AS active,
                 sp.ifAdminStatus AS ifAdminStatus, sp.ifOperStatus AS ifOperStatus,
                 sp.ifLastChange AS ifLastChange, sp.lastSnmpPoll AS lastSnmpPoll,
+                sp.lagIfIndex AS lagIfIndex, sp.ifIndex AS ifIndex,
                 s.id AS switchid'
             )
             ->from( '\\Entities\\SwitchPort', 'sp' )
             ->leftJoin( 'sp.Switcher', 's' );
-    
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $id !== null )
             $qb->andWhere( 'sp.id = ?1' )->setParameter( 1, $id );
-    
+
         if( ( $sid = $this->getParam( 'switch', false ) ) && isset( $switches[$sid] ) )
         {
             $this->view->sid = $sid;
             $qb->where( 's.id = ?2' )->setParameter( 2, $sid );
         }
-        
+
         return $qb->getQuery()->getResult();
     }
-    
-    
-    
+
+
+
     public function opStatusAction()
     {
         if( $this->getParam( 'switch' ) && ( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switch' ) ) ) )
@@ -133,7 +134,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             {
                 if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
                     throw new \OSS_SNMP\Exception();
-                
+
                 $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
                 $switch->snmpPoll( $host, $this->getLogger() );
                 if( $switch->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
@@ -147,23 +148,25 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                         . "Could not update switch and switch port details via SNMP poll.", OSS_Message::ALERT );
             }
         }
-        
+
         $this->_feParams->listColumns = [
             'id'            => [ 'title' => 'UID', 'display' => false ],
+            'ifIndex'       => 'Index',
             'name'          => 'Description',
             'ifName'        => 'Name',
             'ifAlias'       => 'Alias',
+            'lagIfIndex'    => 'LAG',
             'ifHighSpeed'   => 'Speed',
             'ifMtu'         => 'MTU',
             // 'ifPhysAddress' => 'Physical Address',
-            
+
             'ifAdminStatus' => [
                 'title'    => 'Admin State',
                 'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
                 'script'   => 'switch-port/list-column-port-status.phtml',
                 'colname'  => 'ifAdminStatus'
             ],
-            
+
             'ifOperStatus' => [
                 'title'    => 'Operational State',
                 'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
@@ -176,15 +179,18 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                     'script'   => 'frontend/list-column-active.phtml',
                     'colname'  => 'active'
             ],
-            
+
         ];
-    
+
+        $this->_feParams->listOrderBy = 'ifIndex';
+
+
         $this->view->portStates = \OSS_SNMP\MIBS\Iface::$IF_OPER_STATES;
-        
+
         return $this->listAction();
     }
-    
-    
+
+
     /**
      *
      * @param IXP_Form_SwitchPort $form The form object
@@ -199,7 +205,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         if( $isEdit )
             $form->getElement( 'switchid' )->setValue( $object->getSwitcher()->getId() );
     }
-    
+
 
     /**
      * Prevalidation hook that can be overridden by subclasses for add and edit.
@@ -215,10 +221,10 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     {
         // ensure the port name is unique for a given switch
         // FIXME - for add and edit
-        
+
         return true;
     }
-    
+
     /**
      *
      * @param IXP_Form_SwitchPort $form The form object
@@ -231,16 +237,16 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         $object->setSwitcher(
             $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->find( $form->getElement( 'switchid' )->getValue() )
         );
-    
+
         return true;
     }
-    
-        
+
+
     public function addAction()
     {
         $this->addMessage(
             "<h4>Use of this method is discouraged!</h4>
-                
+
                 Switch ports are best added using the
                 <a href=\"https://github.com/inex/IXP-Manager/wiki/Updating-Switches-and-Ports-via-SNMP\">CLI scripts</a>
                 or the <em>View / Edit Ports (with SNMP poll)</em> option from the <a href=\""
@@ -249,14 +255,14 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 for more information</a>.",
             OSS_Message::INFO, OSS_Message::TYPE_BLOCK
         );
-        
+
         $this->view->form = $form = new IXP_Form_Switch_AddPorts();
-    
+
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
             if( !( $switch = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->find( $form->getValue( 'switchid' ) ) ) )
                 throw new IXP_Exception( 'Unknown switch in request' );
-            
+
             for( $i = 0; $i < $form->getValue( 'numports' ); $i++ )
             {
                 $sp = new \Entities\SwitchPort();
@@ -269,36 +275,36 @@ class SwitchPortController extends IXP_Controller_FrontEnd
 
             $this->getD2EM()->flush();
 
-            
+
             $msg = "{$form->getValue( 'numports' )} new ports created for switch {$switch->getName()}.";
             $this->getLogger()->info( $msg );
             $this->addMessage( $msg, OSS_Message::SUCCESS );
-            
+
             $this->redirect( 'switch-port/list/switch/' . $switch->getId() );
         }
-        
+
         $this->render( 'add-ports' );
     }
-    
-    
+
+
     // we have overridden the standard addAction() and so we need a dedicated editAction():
     public function editAction()
     {
         $this->view->isEdit = $isEdit = true;
-    
+
         $eid = $this->editResolveId();
-    
+
         if( !$eid || !is_numeric( $eid ) )
             throw new IXP_Exception( 'Bad switch port id for switch-port/edit' );
-        
+
         $this->view->object = $object = $this->loadObject( $eid );
         $this->view->form = $form = $this->getForm( $isEdit, $object );
         $form->assignEntityToForm( $object, $this );
         if( $form->getElement( 'submit' ) )
             $form->getElement( 'submit' )->setLabel( 'Save Changes' );
-    
+
         $this->addPrepare( $form, $object, $isEdit );
-    
+
         if( $this->getRequest()->isPost() && $this->addPreValidate( $form, $object, $isEdit ) && $form->isValid( $_POST ) )
         {
             if( $this->addProcessForm( $form, $object, $isEdit ) )
@@ -310,15 +316,15 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                 }
             }
         }
-    
+
         $this->view->addPreamble  = $this->_resolveTemplate( 'add-preamble.phtml'  );
         $this->view->addPostamble = $this->_resolveTemplate( 'add-postamble.phtml' );
         $this->view->addToolbar   = $this->_resolveTemplate( 'add-toolbar.phtml' );
         $this->view->addScript    = $this->_resolveTemplate( 'js/add.js' );
-    
+
         $this->_display( 'add.phtml' );
     }
-    
+
     /**
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful add / edit operation.
@@ -338,7 +344,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         $this->addMessage( $this->feGetParam( 'titleSingular' ) . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
         $this->redirectAndEnsureDie( 'switch-port/list/switch/' . $object->getSwitcher()->getId() );
     }
-    
+
     public function ajaxGetAction()
     {
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
@@ -347,12 +353,12 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                         LEFT JOIN sp.PhysicalInterface pi
                     WHERE
                         s.id = ?1 ";
-        
+
         if( $this->getParam( 'id', null ) !== null )
             $dql .= 'AND ( pi.id IS NULL OR pi.id = ?2 )';
         else
             $dql .= 'AND pi.id IS NULL';
-        
+
         // limit to ports suitable for peering?
         if( $this->getParam( 'type', null ) == 'peering' )
             $dql .= 'AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_PEERING . ', ' . \Entities\SwitchPort::TYPE_UNSET . ') )';
@@ -360,28 +366,28 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             $dql .= 'AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_FANOUT . ', ' . \Entities\SwitchPort::TYPE_UNSET . ' ) )';
 
         $dql .= " ORDER BY sp.id ASC";
-        
+
         $query = $this->getD2EM()->createQuery( $dql );
         $query->setParameter( 1, $this->getParam( 'switchid', 0 ) );
-        
+
         if( $this->getParam( 'id', null ) !== null )
             $query->setParameter( 2, $this->getParam( 'id' ) );
-        
+
         $ports = $query->getArrayResult();
-    
+
         foreach( $ports as $id => $port )
             $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
-    
+
         $this->getResponse()
             ->setHeader('Content-Type', 'application/json')
             ->setBody( Zend_Json::encode( $ports ) )
             ->sendResponse();
-        
+
         die(); //FIXME I shouldn't have to die() here...
     }
-    
-    
-    
+
+
+
     /**
      * This action will find all ports on a switch, match them (where possible) to existing
      * ports of that switch in the database and allow the user to:
@@ -397,7 +403,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     public function snmpPollAction()
     {
         $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
-        
+
         if( $this->getParam( 'switch' ) == null || !( $switch = $this->getD2R( '\\Entities\\Switcher' )->find( $this->getParam( 'switch' ) ) ) )
         {
             $this->addMessage( 'Unknown switch', OSS_Message::ERROR );
@@ -405,13 +411,13 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         }
         else
             $this->view->sid = $switch->getId();
-        
+
         if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
         {
             $this->addMessage( 'SNMP Polling of ports is only valid for switches (e.g. not console servers) that are active', OSS_Message::ERROR );
             $this->redirect( 'switch/list' );
         }
-        
+
         if( isset( $_POST ) && isset( $_POST['poll-action'] ) )
         {
             foreach( $_POST['switch-port'] as $id )
@@ -433,22 +439,22 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                             else
                                 $this->getD2EM()->remove( $port );
                             break;
-                            
+
                         case 'type':
                             $port->setType( $_POST['shared-type'] );
                             break;
-                            
+
                         case 'active':
                             $port->setActive( true );
                             break;
-                            
+
                         case 'inactive':
                             $port->setActive( false );
                             break;
                     }
                 }
             }
-            
+
             // helpful message for people trying to delete ports:
             if( $_POST['poll-action'] == "delete" )
             {
@@ -460,14 +466,14 @@ class SwitchPortController extends IXP_Controller_FrontEnd
                     OSS_Message::INFO
                 );
             }
-                
+
             $this->getD2EM()->flush();
             $this->addMessage( "Switch ports updated", OSS_Message::SUCCESS );
             $this->redirect( "switch-port/snmp-poll/switch/{$switch->getId()}" );
         }
-        
+
         $results = [];
-        
+
         try
         {
             $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
@@ -484,7 +490,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             $this->redirect( 'switch/list' );
         }
     }
-    
+
     /**
      * Sets port type for port loaded by id form url.
      *
@@ -494,7 +500,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     public function ajaxSetTypeAction()
     {
         $port = $this->loadObject( $this->getParam( 'id', false ), false );
-        
+
         if( $port && isset( $_POST['type'] ) && array_key_exists( $_POST['type'], \Entities\SwitchPort::$TYPES ) )
         {
             $port->setType( $_POST['type'] );
@@ -502,7 +508,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             echo "ok";
         }
     }
-    
+
     /**
      * Function which can be over-ridden to perform any pre-deletion tasks
      *
@@ -517,7 +523,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         if( $object->getPhysicalInterface() )
         {
             $c = $object->getPhysicalInterface()->getVirtualInterface()->getCustomer();
-            
+
             $this->addMessage(
                 "Could not delete switch port {$object->getName()} as it is assigned to a physical interface for <a href=\""
                     . OSS_Utils::genUrl( 'customer', 'overview', false, [ 'tab' => 'ports', 'id' => $c->getId() ] )
@@ -526,10 +532,10 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             );
             return false;
         }
-        
+
         return true;
     }
-    
+
 }
 
 

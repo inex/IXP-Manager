@@ -9,14 +9,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SwitchPort
 {
-    
+
     const TYPE_UNSET          = 0;
     const TYPE_PEERING        = 1;
     const TYPE_MONITOR        = 2;
     const TYPE_CORE           = 3;
     const TYPE_OTHER          = 4;
     const TYPE_MANAGEMENT     = 5;
-    
+
     /**
      * For resellers, we need to enforce the one port - one mac - one address rule
      * on the peering LAN. Depending on switch technology, this will be done using
@@ -29,7 +29,7 @@ class SwitchPort
      * @var int
      */
     const TYPE_FANOUT         = 6;
-    
+
     /**
      * For resellers, we need an uplink port(s) through which they deliver reseller
      * connections.
@@ -37,7 +37,7 @@ class SwitchPort
      * @var int
      */
     const TYPE_RESELLER       = 7;
-    
+
     public static $TYPES = array(
         self::TYPE_UNSET      => 'Unset / Unknown',
         self::TYPE_PEERING    => 'Peering',
@@ -48,7 +48,7 @@ class SwitchPort
         self::TYPE_FANOUT     => 'Fanout',
         self::TYPE_RESELLER   => 'Reseller'
     );
-    
+
     // This array is for matching data from OSS_SNMP to the switchport database table.
     // See snmpUpdate() below
     public static $OSS_SNMP_MAP = [
@@ -62,7 +62,7 @@ class SwitchPort
             'operationStates' => 'IfOperStatus',
             'lastChanges'     => 'IfLastChange'
         ];
-    
+
     /**
      * @var integer $type
      */
@@ -158,7 +158,7 @@ class SwitchPort
     public function setType($type)
     {
         $this->type = $type;
-    
+
         return $this;
     }
 
@@ -181,7 +181,7 @@ class SwitchPort
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -214,7 +214,7 @@ class SwitchPort
     public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = null)
     {
         $this->PhysicalInterface = $physicalInterface;
-    
+
         return $this;
     }
 
@@ -237,7 +237,7 @@ class SwitchPort
     public function setSwitcher(\Entities\Switcher $switcher = null)
     {
         $this->Switcher = $switcher;
-    
+
         return $this;
     }
 
@@ -258,7 +258,7 @@ class SwitchPort
     {
         $this->SecEvents = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Add SecEvents
      *
@@ -268,7 +268,7 @@ class SwitchPort
     public function addSecEvent(\Entities\SecEvent $secEvents)
     {
         $this->SecEvents[] = $secEvents;
-    
+
         return $this;
     }
 
@@ -301,7 +301,7 @@ class SwitchPort
     public function setIfName($ifName)
     {
         $this->ifName = $ifName;
-    
+
         return $this;
     }
 
@@ -324,7 +324,7 @@ class SwitchPort
     public function setIfAlias($ifAlias)
     {
         $this->ifAlias = $ifAlias;
-    
+
         return $this;
     }
 
@@ -347,7 +347,7 @@ class SwitchPort
     public function setIfHighSpeed($ifHighSpeed)
     {
         $this->ifHighSpeed = $ifHighSpeed;
-    
+
         return $this;
     }
 
@@ -370,7 +370,7 @@ class SwitchPort
     public function setIfMtu($ifMtu)
     {
         $this->ifMtu = $ifMtu;
-    
+
         return $this;
     }
 
@@ -393,7 +393,7 @@ class SwitchPort
     public function setIfPhysAddress($ifPhysAddress)
     {
         $this->ifPhysAddress = $ifPhysAddress;
-    
+
         return $this;
     }
 
@@ -416,7 +416,7 @@ class SwitchPort
     public function setIfAdminStatus($ifAdminStatus)
     {
         $this->ifAdminStatus = $ifAdminStatus;
-    
+
         return $this;
     }
 
@@ -439,7 +439,7 @@ class SwitchPort
     public function setIfOperStatus($ifOperStatus)
     {
         $this->ifOperStatus = $ifOperStatus;
-    
+
         return $this;
     }
 
@@ -462,7 +462,7 @@ class SwitchPort
     public function setIfLastChange($ifLastChange)
     {
         $this->ifLastChange = $ifLastChange;
-    
+
         return $this;
     }
 
@@ -485,7 +485,7 @@ class SwitchPort
     public function setLastSnmpPoll($lastSnmpPoll)
     {
         $this->lastSnmpPoll = $lastSnmpPoll;
-    
+
         return $this;
     }
 
@@ -509,7 +509,7 @@ class SwitchPort
     public function setIfIndex($ifIndex)
     {
         $this->ifIndex = $ifIndex;
-    
+
         return $this;
     }
 
@@ -544,7 +544,7 @@ class SwitchPort
     {
         return $this->active;
     }
-    
+
 
     /**
      * Update switch port details from a SNMP poll of the device.
@@ -564,49 +564,55 @@ class SwitchPort
         foreach( self::$OSS_SNMP_MAP as $snmp => $entity )
         {
             $fn = "get{$entity}";
-            
+
             switch( $snmp )
             {
                 case 'lastChanges':
                     $n = $host->useIface()->$snmp( true )[ $this->getIfIndex() ];
-                    
+
                     // need to allow for small changes due to rounding errors
                     if( $logger && $this->$fn() != $n && abs( $this->$fn() - $n ) > 60 )
                         $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
                     break;
-                    
+
                 default:
                     $n = $host->useIface()->$snmp()[ $this->getIfIndex() ];
-                    
+
                     if( $logger && $this->$fn() != $n )
                         $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
                     break;
             }
-        
+
             $fn = "set{$entity}";
             $this->$fn( $n );
         }
-        
+        // are we a LAG port?
+        $isAggregatePorts = $host->useLAG()->isAggregatePorts();
+        if( isset( $isAggregatePorts[ $this->getIfIndex() ] ) && $isAggregatePorts[ $this->getIfIndex() ] )
+            $this->setLagIfIndex( $host->useLAG()->portAttachedIds()[ $this->getIfIndex() ] );
+        else
+            $this->setLagIfIndex( null );
+
         $this->setLastSnmpPoll( new \DateTime() );
-        
+
         return $this;
     }
-    
 
-    
+
+
     public function ifnameToSNMPIdentifier()
     {
         # escape special characters in ifName as per
         # http://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html - "Interface by Name" section
-        
+
         $ifname = preg_replace( '/:/', '\\:', $this->getIfName() );
         $ifname = preg_replace( '/&/', '\\&', $ifname );
         $ifname = preg_replace( '/@/', '\\@', $ifname );
         $ifname = preg_replace( '/\ /', '\\\ ', $ifname );
-         
+
         return $ifname;
     }
-    
+
     /**
      * @var integer
      */
@@ -622,14 +628,14 @@ class SwitchPort
     public function setLagIfIndex($lagIfIndex)
     {
         $this->lagIfIndex = $lagIfIndex;
-    
+
         return $this;
     }
 
     /**
      * Get lagIfIndex
      *
-     * @return integer 
+     * @return integer
      */
     public function getLagIfIndex()
     {
