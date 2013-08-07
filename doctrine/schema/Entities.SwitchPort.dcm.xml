@@ -17,6 +17,7 @@
     <field name="ifOperStatus" type="integer" nullable="true"/>
     <field name="ifLastChange" type="integer" nullable="true"/>
     <field name="lastSnmpPoll" type="datetime" nullable="true"/>
+    <field name="lagIfIndex" type="integer" nullable="true"/>
     <many-to-one field="Switcher" target-entity="Entities\Switcher" inversed-by="Ports">
       <join-columns>
         <join-column name="switchid" referenced-column-name="id"/>
