@@ -65,7 +65,7 @@ class SmokepingCliController extends IXP_Controller_CliAction
      *
      * @param \Entities\IXP $ixp
      */
-    private function genConf_getTargets( $ixp )
+    public static function genConf_getTargets( $ixp )
     {
         $data = [];
     
@@ -122,7 +122,6 @@ class SmokepingCliController extends IXP_Controller_CliAction
             }
         }
 
-        // print_r( $data ); die();
         return $data;
     }
     
