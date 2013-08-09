@@ -89,6 +89,7 @@
       <field name="mrtg_path" type="string" size="255" uuid="1328ffc2-7a48-4aea-9e9c-3e1e9e50489f"/>
       <field name="mrtg_p2p_path" type="string" size="255" uuid="f3a641a9-5f10-42ab-8a7c-97da577dad11"/>
       <field name="aggregate_graph_name" type="string" size="255" uuid="6880fa9c-3176-45bb-9775-0bf0a5be549a"/>
+      <field name="smokeping" type="string" size="255" uuid="20548855-3a72-4b18-bb6e-5ac03fa6aff8"/>
       <orm-attributes>
         <attribute name="table">ixp</attribute>
         <attribute name="tableName">ixp</attribute>

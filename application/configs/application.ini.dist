@@ -356,6 +356,53 @@ mrtg.conf.workdir = '/home/mrtg'
 ;mrtg.trunk_graphs[] = "1::core-sw1-sw3-lan1::PoP 1 to PoP 3 (LAN1)"
 ;; ...
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Smokeping Details
+;;
+;; See: https://github.com/inex/IXP-Manager/wiki/Smokeping
+;;
+
+;; the following mrtg.conf variables are used by the Smokeping configuration generator.
+;;
+;; See also: http://oss.oetiker.ch/smokeping/doc/smokeping_config.en.html
+
+;; destintation file for the configuration. If not set, the generator sends it to stdout
+;smokeping.conf.dstfile = '/etc/smokeping/config'
+
+;; Complete URL path of the SmokePing.cgi (mandatory)
+smokeping.conf.cgiurl = "https://www.example.com/smokeping/smokeping.cgi"
+
+;; A directory which is visible on your webserver where SmokePing can cache graphs. (mandatory)
+smokeping.conf.imgcache = "/usr/local/smokeping/htdocs/img"
+
+;; Either an absolute URL to the imgcache directory or one relative to the directory where you keep the SmokePing cgi. (mandatory)
+smokeping.conf.imgurl = "/smokeping/img"
+
+;; The directory where SmokePing can keep its rrd files. (mandatory)
+smokeping.conf.datadir = "/usr/local/var/smokeping"
+
+;; The directory where SmokePing keeps its pid when daemonised. (mandatory)
+smokeping.conf.piddir = "/usr/local/var/smokeping"
+
+;; Path to the mail template for DYNAMIC hosts. This mail template must contain keywords of the 
+;; form <##keyword##>. There is a sample template included with SmokePing. (mandatory)
+smokeping.conf.smokemail = "/usr/local/etc/smokeping/smokemail"
+
+;; Smokeping typically includess a file with paths to various executables 
+;; Set the full path and filename for that include here if you wish
+smokeping.conf.pathnames = "/etc/smokeping/config.d/pathnames"
+
+;; The above cover all the mandatory settings. You can add other options as follows and
+;; they will be included in the general section of the Smokeping config.
+
+smokeping.oconf.tmail = "/usr/local/etc/smokeping/tmail"
+smokeping.oconf.syslogfacility = "local0"
+
+
+
+
 ; sflow parameters (peer to peer graphs)
 sflow.enabled = true
 sflow.rootdir = /path/to/rrd/files

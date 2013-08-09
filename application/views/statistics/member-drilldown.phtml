@@ -87,7 +87,12 @@
             <a class="btn btn-primary" href="{genUrl controller="statistics" action="member" ixp=$ixp->getId()}{if $user->getPrivs() eq 3}/shortname/{$cust->getShortname()}{/if}">
                 Statistics Overview
             </a>
-            
+            {if $ixp->getSmokeping() and $switchname neq ''}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-primary" href="{genUrl controller="smokeping" action="member-drilldown" ixp=$ixp->getId() vi=$pi->getVirtualInterface()->getId()}{if $user->getPrivs() eq 3}{/if}">
+                    Smokeping
+                </a>
+            {/if}
         </form>
 
     </div>

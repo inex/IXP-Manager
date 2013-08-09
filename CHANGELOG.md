@@ -8,7 +8,7 @@ Please see the following page for upgrade instructions:
 # v3.x.x
 
     ALTER TABLE switchport ADD lagIfIndex INT DEFAULT NULL;
-
+    ALTER TABLE ixp ADD smokeping VARCHAR(255) DEFAULT NULL
 
 
 # v3.4.2 (20130803)

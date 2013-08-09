@@ -273,7 +273,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
         
         foreach( $ixps as $ixp )
         {
-            $this->verbose( "Processing IXP " . $ixp->getName() );
+            $this->verbose( "\nProcessing IXP " . $ixp->getName(), false );
             
             // This should only be done once a day and if values already exist for 'today',
             // just delete them.
@@ -284,11 +284,13 @@ class StatisticsCliController extends IXP_Controller_CliAction
         
             foreach( $custs as $cust )
             {
-                $this->verbose( "\t- processing customer " . $cust->getName() );
+                $this->verbose( "\n\t- processing customer " . $cust->getName() . "\t ", false );
                 $stats = array();
         
                 foreach( IXP_Mrtg::$CATEGORIES as $category )
                 {
+                    $this->verbose( "({$category}) ", false );
+                    
                     $mrtg = new IXP_Mrtg(
                         IXP_Mrtg::getMrtgFilePath(
                             $ixp->getMrtgPath() . '/members',
@@ -321,6 +323,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
                 $this->getD2EM()->flush();
             }
         }
+        
+        $this->verbose();
     }
     
     

@@ -225,10 +225,22 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         return parent::getAggregateGraphName();
     }
 
+    public function setSmokeping($smokeping)
+    {
+        $this->__load();
+        return parent::setSmokeping($smokeping);
+    }
+
+    public function getSmokeping()
+    {
+        $this->__load();
+        return parent::getSmokeping();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'mrtg_path', 'mrtg_p2p_path', 'aggregate_graph_name', 'id', 'Infrastructures', 'TrafficDaily', 'Customers');
+        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'mrtg_path', 'mrtg_p2p_path', 'aggregate_graph_name', 'smokeping', 'id', 'Infrastructures', 'TrafficDaily', 'Customers');
     }
 
     public function __clone()
