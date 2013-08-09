@@ -260,7 +260,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $s->setIpv4addr( $this->_resolve( $s->getHostname(), DNS_A    ) );
                 $s->setIpv6addr( $this->_resolve( $s->getHostname(), DNS_AAAA ) );
                 $s->setSnmppasswd( $f->getValue( 'snmppasswd' ) );
-                $s->setInfrastructure( $this->getD2R( '\\Entities\\Infrastructure' )->findOneBy( $f->getValue( 'infrastructure' ) ) );
+                $s->setInfrastructure( $this->getD2R( '\\Entities\\Infrastructure' )->find( $f->getValue( 'infrastructure' ) ) );
                 $s->setSwitchtype( $f->getValue( 'switchtype' ) );
                 $s->setModel( $snmp->getPlatform()->getModel() );
                 $s->setActive( true );

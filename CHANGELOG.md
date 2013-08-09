@@ -5,6 +5,19 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+
+# v3.4.x 
+
+
+- [BF] Bad logic in admin overview graphs (5d7f2a8 - Barry O'Donovan - 2013-08-07)
+- [BF] Some leftovers from multi IXP graph work (07f6642 - Barry O'Donovan - 2013-08-07)
+- [NF] Support for polling whether a port is a lag or not (baa5842 - Barry O'Donovan - 2013-08-07)
+- [DB] Add new field to switchport to identify LAG ports (beba464 - Barry O'Donovan - 2013-08-07)
+- [BF] s/findOneBy/find (4d5ec32 - Barry O'Donovan - 2013-08-07)
+- [BF] Weed out mis-spellings causing issues (ecb788f - Barry O'Donovan - 2013-08-07)
+
+
+
 # v3.4.3 (20130809)
 
 Add Smokeping support. 
