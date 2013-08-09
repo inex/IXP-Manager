@@ -23,7 +23,7 @@ A schema update is required:
 Ensure you perform a `git submodule update`.
 
 
-- [NF] Add verbosity to daily traffic stats - 06541721db5c3b42c5bc1e99d6a6470efee1f319 - Barry O'Donovan - 2013-08-07
+- [NF] Add verbosity to daily traffic stats - SHA: 06541721db5c3b42c5bc1e99d6a6470efee1f319 - Barry O'Donovan - 2013-08-07
 - [NF] Make Smokeping graphs available within IXP Manager - e13aabbe235d7934f268b02062a488f4f0b15fc0 - Barry O'Donovan - 2013-08-07
 - [DB] Add new field to switchport to identify LAG ports - beba464b461a01ccd2e3eaec67fd0acf2c42b014 - Barry O'Donovan - 2013-08-07
 - [DB] Add URL for Smokeping to the database (per IXP) - e0c5a29c9bef4ab5284f7d4d00a3f1f62f40b32a - Barry O'Donovan - 2013-08-06
