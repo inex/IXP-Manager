@@ -23,15 +23,15 @@ A schema update is required:
 Ensure you perform a `git submodule update`.
 
 
-- [NF] Add verbosity to daily traffic stats (06541721db5c3b42c5bc1e99d6a6470efee1f319 - Barry O'Donovan - 2013-08-07)
-- [NF] Make Smokeping graphs available within IXP Manager (e13aabbe235d7934f268b02062a488f4f0b15fc0 - Barry O'Donovan - 2013-08-07)
-- [DB] Add new field to switchport to identify LAG ports (beba464b461a01ccd2e3eaec67fd0acf2c42b014 - Barry O'Donovan - 2013-08-07)
-- [DB] Add URL for Smokeping to the database (per IXP) (e0c5a29c9bef4ab5284f7d4d00a3f1f62f40b32a - Barry O'Donovan - 2013-08-06)
-- [IM] Ensure the interface is connected and trafficing - and that we are allowed send pings (98746aa72d68d67a1e6944586b0a041d26b45833 - Barry O'Donovan - 2013-08-06)
-- [BF] Reseller must be set (1ddaddcd4ec967c3c7d834518debf6f7e540d538 - Barry O'Donovan - 2013-08-06)
-- [NF] Smokeping configuration generator (first pass) (1b8fa05dad442d886c4d4c0a3054232225821080 - Barry O'Donovan - 2013-08-03)
-- [IM] Updates as part of updating the MRTG documentation (dee177303e4aa6c2713d37a37c95a5917e4ff5b5 - Barry O'Donovan - 2013-08-03)
-- [IM] Updates as part of updating the MRTG documentation (b20dc3b8a6b3f64905dc368214ce73f19da09c43 - Barry O'Donovan - 2013-08-03)
+- [NF] Add verbosity to daily traffic stats - 06541721db5c3b42c5bc1e99d6a6470efee1f319 - Barry O'Donovan - 2013-08-07
+- [NF] Make Smokeping graphs available within IXP Manager - e13aabbe235d7934f268b02062a488f4f0b15fc0 - Barry O'Donovan - 2013-08-07
+- [DB] Add new field to switchport to identify LAG ports - beba464b461a01ccd2e3eaec67fd0acf2c42b014 - Barry O'Donovan - 2013-08-07
+- [DB] Add URL for Smokeping to the database (per IXP) - e0c5a29c9bef4ab5284f7d4d00a3f1f62f40b32a - Barry O'Donovan - 2013-08-06
+- [IM] Ensure the interface is connected and trafficing - and that we are allowed send pings - 98746aa72d68d67a1e6944586b0a041d26b45833 - Barry O'Donovan - 2013-08-06
+- [BF] Reseller must be set - 1ddaddcd4ec967c3c7d834518debf6f7e540d538 - Barry O'Donovan - 2013-08-06
+- [NF] Smokeping configuration generator (first pass) - 1b8fa05dad442d886c4d4c0a3054232225821080 - Barry O'Donovan - 2013-08-03
+- [IM] Updates as part of updating the MRTG documentation - dee177303e4aa6c2713d37a37c95a5917e4ff5b5 - Barry O'Donovan - 2013-08-03
+- [IM] Updates as part of updating the MRTG documentation - b20dc3b8a6b3f64905dc368214ce73f19da09c43 - Barry O'Donovan - 2013-08-03
 
 
 # v3.4.2 (20130803)
