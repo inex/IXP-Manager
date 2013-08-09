@@ -20,6 +20,9 @@ A schema update is required:
 Ensure you perform a `git submodule update`.
 
 
+- [IM] Only show Smokeping link if there are graphs (f034406 - Barry O'Donovan - 2013-08-09)
+- [BF] Misnamed variable (9e3c8c6 - Barry O'Donovan - 2013-08-09)
+- [BF] Ensure pinging is enabled for at least one protocol (4474ecf - Barry O'Donovan - 2013-08-09)
 - [NF] Add verbosity to daily traffic stats (0654172 - Barry O'Donovan - 2013-08-07)
 - [NF] Make Smokeping graphs available within IXP Manager (e13aabb - Barry O'Donovan - 2013-08-07)
 - [DB] Add new field to switchport to identify LAG ports (beba464 - Barry O'Donovan - 2013-08-07)
