@@ -88,10 +88,19 @@
                 Statistics Overview
             </a>
             {if $ixp->getSmokeping() and $switchname neq ''}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a class="btn btn-primary" href="{genUrl controller="smokeping" action="member-drilldown" ixp=$ixp->getId() vi=$pi->getVirtualInterface()->getId()}{if $user->getPrivs() eq 3}{/if}">
-                    Smokeping
-                </a>
+                {$canPing = 0}
+                {foreach $pi->getVirtualInterface()->getVlanInterfaces() as $vli}
+                    {if ( $vli->getIpv4enabled() and $vli->getIpv4canping() ) or ( $vli->getIpv6enabled() and $vli->getIpv6canping() )}
+                        {$canPing = 1}
+                        {break}
+                    {/if}
+                {/foreach}
+                {if $canPing}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="btn btn-primary" href="{genUrl controller="smokeping" action="member-drilldown" ixp=$ixp->getId() vi=$pi->getVirtualInterface()->getId()}{if $user->getPrivs() eq 3}{/if}">
+                        Smokeping
+                    </a>
+                {/if}
             {/if}
         </form>
 
