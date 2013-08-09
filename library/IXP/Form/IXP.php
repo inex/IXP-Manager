@@ -147,7 +147,7 @@ class IXP_Form_IXP extends IXP_Form
     }
     
     /**
-     * Create a 'Aggregate Graph Name element used by the IXP and infrastructre forms
+     * Create a 'Aggregate Graph Name element used by the IXP and infrastructure forms
      *
      * @param string $name The element name (defaults to `aggregate_graph_name`)
      * @return Zend_Form_Element_Text

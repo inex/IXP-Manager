@@ -53,7 +53,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
         $this->_dashboardStats();
     }
 
-    
+
     /**
      * Get public peering graphs
      *
@@ -71,34 +71,31 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             $admin_home_stats = [];
             $graphs = [];
             $stats  = [];
-            
+
             if( $this->multiIXP() )
             {
                 $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
-                
+
                 foreach( $ixps as $ixp )
                 {
                     if( $ixp->getAggregateGraphName() )
                     {
                         $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
                         $graphs[ $ixp->getId() ]['title'] = $ixp->getName();
+
+                        $mrtg = new IXP_Mrtg(
+                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $ixp->getAggregateGraphName()
+                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                        );
+
+                        $stats[ $ixp->getId() ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
                     }
-                }
-                
-                foreach( $graphs as $id => $data )
-                {
-                    $mrtg = new IXP_Mrtg(
-                        $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
-                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                    );
-                
-                    $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
                 }
             }
             else
             {
                 $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
-                
+
                 if( $ixp->getAggregateGraphName() )
                 {
                     $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
@@ -111,23 +108,20 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                     {
                         $graphs[ $ixp->getId() . '-' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
                         $graphs[ $ixp->getId() . '-' . $inf->getId() ]['title'] = $inf->getName();
+
+                        $mrtg = new IXP_Mrtg(
+                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $inf->getAggregateGraphName()
+                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                        );
+
+                        $stats[ $ixp->getId() . '-' . $inf->getId() ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
                     }
                 }
-                
-                foreach( $graphs as $id => $data )
-                {
-                    $mrtg = new IXP_Mrtg(
-                        $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $data['name']
-                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                    );
-                
-                    $stats[ $id ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
-                }
             }
-        
+
             $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
             $admin_home_stats['stats']  = $this->view->stats      = $stats;
-        
+
             $this->getD2Cache()->save( 'admin_home_stats', $admin_home_stats, 300 );
         }
     }
@@ -142,14 +136,14 @@ class AdminController extends IXP_Controller_AuthRequiredAction
         if( !( $admin_home_ctypes = $this->getD2Cache()->fetch( 'admin_home_ctypes' ) ) )
         {
             $admin_home_ctypes['types'] = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getTypeCounts();
-            
+
             $ints = $this->getD2EM()->getRepository( 'Entities\\VirtualInterface' )->getByLocation();
-            
+
             $speeds = [];
             $bylocation = [];
             $bylan = [];
             $byixp = [];
-            
+
             foreach( $ints as $int )
             {
                 if( $this->multiIXP() )
@@ -162,7 +156,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                     $locationname = $int['locationname'];
                     $infrastructure = $int['infrastructure'];
                 }
-            
+
                 if( !isset( $bylocation[ $locationname ] ) )
                     $bylocation[ $locationname ] = [];
 
@@ -176,7 +170,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                     $speeds[ $int['speed'] ] = 1;
                 else
                     $speeds[ $int['speed'] ]++;
-                                    
+
                 if( !isset( $bylocation[ $int['locationname'] ][ $int['speed'] ] ) )
                     $bylocation[ $locationname ][ $int['speed'] ] = 1;
                 else
@@ -192,23 +186,23 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                 else
                     $bylan[ $infrastructure ][ $int['speed'] ]++;
             }
-            
+
             ksort( $speeds, SORT_NUMERIC );
             $this->view->speeds      = $admin_home_ctypes['speeds']      = $speeds;
             $this->view->bylocation  = $admin_home_ctypes['bylocation']  = $bylocation;
             $this->view->bylan       = $admin_home_ctypes['bylan']       = $bylan;
             $this->view->byixp       = $admin_home_ctypes['byixp']       = $byixp;
-            
+
             $this->getD2Cache()->save( 'admin_home_ctypes', $admin_home_ctypes, 3600 );
         }
-        
+
         $this->view->ctypes      = $admin_home_ctypes['types'];
         $this->view->speeds      = $admin_home_ctypes['speeds'];
         $this->view->bylocation  = $admin_home_ctypes['bylocation'];
         $this->view->bylan       = $admin_home_ctypes['bylan'];
         $this->view->byixp       = $admin_home_ctypes['byixp'];
     }
-    
+
     public function staticAction()
     {
         $page = $this->_request->getParam( 'page', null );
