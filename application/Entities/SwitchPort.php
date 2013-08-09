@@ -586,13 +586,21 @@ class SwitchPort
             $fn = "set{$entity}";
             $this->$fn( $n );
         }
-        // are we a LAG port?
-        $isAggregatePorts = $host->useLAG()->isAggregatePorts();
-        if( isset( $isAggregatePorts[ $this->getIfIndex() ] ) && $isAggregatePorts[ $this->getIfIndex() ] )
-            $this->setLagIfIndex( $host->useLAG()->portAttachedIds()[ $this->getIfIndex() ] );
-        else
-            $this->setLagIfIndex( null );
-
+        
+        try
+        {
+            // not all switches support this
+            // FIXME is there a vendor agnostic way of doing this?
+            
+            // are we a LAG port?
+            $isAggregatePorts = $host->useLAG()->isAggregatePorts();
+            if( isset( $isAggregatePorts[ $this->getIfIndex() ] ) && $isAggregatePorts[ $this->getIfIndex() ] )
+                $this->setLagIfIndex( $host->useLAG()->portAttachedIds()[ $this->getIfIndex() ] );
+            else
+                $this->setLagIfIndex( null );
+        }
+        catch( \OSS_SNMP\Exception $e ){}
+        
         $this->setLastSnmpPoll( new \DateTime() );
 
         return $this;
