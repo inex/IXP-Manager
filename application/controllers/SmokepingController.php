@@ -50,7 +50,6 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
     
     public function memberDrilldownAction()
     {
-        // FIXME make this customer accessable also
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
             
@@ -131,6 +130,57 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
                 || !( $vli instanceof \Entities\VlanInterface )
         )
             $this->redirect( "statistics/member/ixp/{$ixp->getId()}/shortname/{$cust->getShortname()}" );
+    }
+    
+    
+    function retrieveImageAction()
+    {
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
+            $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        
+        // there's no HTML output from this controller - just images
+        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+        
+        header( 'Content-Type: image/png' );
+        header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
+        
+        $ixp = $this->loadIxpById( $this->getParam( 'ixp', false ) );
+        
+        $scale = $this->getParam( 'scale', array_keys( self::$PERIODS )[0] );
+        if( !in_array( $scale, array_keys( self::$PERIODS ) ) )
+            $scale = array_keys( self::$PERIODS )[0];
+        
+        $infra = intval( $this->getParam( 'infra', 0 ) );
+        if( !is_numeric( $infra ) )
+            die( 'ERR: Bad infrastructure' );
+
+        $vlan = intval( $this->getParam( 'vlan', 0 ) );
+        if( !is_numeric( $vlan ) )
+            die( 'ERR: Bad VLAN' );
+        
+        $vlanint = intval( $this->getParam( 'vlanint', 0 ) );
+        if( !is_numeric( $vlanint ) )
+            die( 'ERR: Bad VLAN interface' );
+        
+        $proto = $this->getParam( 'proto', array_keys( self::$PROTOCOLS )[0] );
+        if( !in_array( $proto, array_keys( self::$PROTOCOLS ) ) )
+            $scale = array_keys( self::$PROTOCOLS )[0];
+        
+        $target = "infra_{$infra}.vlan_{$vlan}.vlanint_{$vlanint}_{$proto}";
+
+        $filename = "{$ixp->getSmokeping()}/?displaymode=a;start=now-{$scale};end=now;target={$target}";
+        
+        $this->getLogger()->debug( "Serving Smokeping {$target} to {$this->getUser()->getUsername()}" );
+        
+        if( @readfile( $filename ) === false )
+        {
+            $this->getLogger()->notice( "Could not load Smokeping {$filename}" );
+            @readfile(
+                    APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
+                    . 'public' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR
+                    . 'image-missing.png'
+            );
+        }
     }
     
     

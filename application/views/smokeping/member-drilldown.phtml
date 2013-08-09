@@ -83,7 +83,10 @@
             <h4>{$name}</h4>
     
             <p>
-                <img src="{$ixp->getSmokeping()}/?displaymode=a;start=now-{$scale};end=now;target=infra_{$pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId()}.vlan_{$vli->getVLAN()->getId()}.vlanint_{$vli->getId()}_ipv4">
+                <img src="{genUrl controller="smokeping" action="retrieve-image" ixp=$ixp->getId() scale=$scale
+                    infra=$pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId()
+                    vlan=$vli->getVLAN()->getId() vlanint=$vli->getId() proto=$proto}"
+                />
             </p>
     
         </div>
