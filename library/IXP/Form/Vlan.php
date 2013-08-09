@@ -102,7 +102,7 @@ class IXP_Form_VLAN extends IXP_Form
             ->from( '\\Entities\\Vlan', 'v' )
             ->orderBy( "v.name", 'ASC' );
 
-        if( $public )
+        if( $publicOnly )
             $qb->where( "v.private = 0" );
     
         $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $vlan, '\\Entities\\Vlan', 'id', 'name', 'name', 'ASC' );
