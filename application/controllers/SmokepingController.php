@@ -98,22 +98,32 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
             if( !$vli->$enabled() || !$vli->$canping() )
                 unset( $protos[ $p ] );
         }
-        
-        $proto = $this->getParam( 'proto' );
-        if( !in_array( $proto, array_keys( $protos ) ) )
-            $proto = array_keys( $protos )[0];
-        
-        $ipfn = 'get' . $protos[ $proto ] . 'Address';
-        $this->view->ip     = $vli->$ipfn()->getAddress();
-        
-        $this->view->protos = $protos;
-        $this->view->proto  = $proto;
+
         $this->view->cust   = $cust = $vi->getCustomer();
         $this->view->vi     = $vi;
         $this->view->vli    = $vli;
         $this->view->pi     = $vi->getPhysicalInterfaces()[0];
         $this->view->inf    = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getInfrastructure();
         $this->view->ixp    = $ixp = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getIXP();
+        
+        $proto = $this->getParam( 'proto' );
+        
+        if( count( $protos ) )
+        {
+            if( !in_array( $proto, array_keys( $protos ) ) )
+                $proto = array_keys( $protos )[0];
+            
+            $ipfn = 'get' . $protos[ $proto ] . 'Address';
+            $this->view->ip     = $vli->$ipfn()->getAddress();
+        }
+        else
+        {
+            $this->addMessage( 'This customer does not have pinging enabled for any IP address(es) on the requested interface', OSS_Message::INFO );
+            $this->redirect( "statistics/member/ixp/{$ixp->getId()}/shortname/{$cust->getShortname()}" );
+        }
+        
+        $this->view->protos = $protos;
+        $this->view->proto  = $proto;
         
         // sanity check
         if( count( $protos ) == 0
