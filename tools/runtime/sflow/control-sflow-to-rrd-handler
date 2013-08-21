@@ -37,6 +37,7 @@ Daemon::Control->new({
 	lsb_desc	=>	'Controller for the sflow-to-rrd-daemon.',
 	path		=>	'/usr/local/sbin',
 	program		=>	'sflow-to-rrd-handler',
+	program_args	=>	[],
 	pid_file	=>	'/var/run/sflow-to-rrd-handler.pid',
 	fork		=>	2,
 })->run;
