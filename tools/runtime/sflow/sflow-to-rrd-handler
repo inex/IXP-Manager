@@ -42,6 +42,7 @@ my $dbh = $ixp->{db};
 my $debug = defined($ixp->{ixp}->{debug}) ? $ixp->{ixp}->{debug} : 0;
 my $rrdcached = defined($ixp->{ixp}->{sflow_rrdcached}) ? $ixp->{ixp}->{sflow_rrdcached} : 1;
 my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/sflowtool';
+my $sflowtool_opts = defined($ixp->{ixp}->{sflowtool_opts}) ? $ixp->{ixp}->{sflowtool_opts} : '-l';
 my $basedir = defined($ixp->{ixp}->{sflow_rrddir}) ? $ixp->{ixp}->{sflow_rrddir} : '/data/ixpmatrix';
 my $timer_period = 60;
 my $daemon = 1;
@@ -55,6 +56,7 @@ GetOptions(
 	'debug!'		=> \$debug,
 	'daemon!'		=> \$daemon,
 	'sflowtool=s'		=> \$sflowtool,
+	'sflowtool_opts=s'	=> \$sflowtool_opts,
 	'sflow_rrddir=s'	=> \$basedir,
 	'flushtimer=i'		=> \$timer_period
 );
@@ -80,7 +82,9 @@ ualarm ( $timer_period*1000000, $timer_period*1000000);
 
 my $tv = [gettimeofday()];
 
-my $sflowpid = open (SFLOWTOOL, "$sflowtool -l |");
+# FIXME - spaces embedded *within* sflowtool args will be split too
+#         Should only ever matter for the "-r" option if the filename has spaces in it...
+my $sflowpid = open (SFLOWTOOL, '-|', $sflowtool, split(' ', $sflowtool_opts));
 
 # methodology is to throw away as much crap as possible before parsing
 while (<SFLOWTOOL>) {
@@ -361,7 +365,7 @@ ORDER BY
 sub reload_mactable
 {
 	my ($dbh) = @_;
-	my ($sth, $mactable);
+	my ($sth, $pmactable);
 
 	my $query = "
 SELECT DISTINCT
@@ -382,13 +386,14 @@ ORDER BY
 	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 	$sth->execute() or die "$dbh->errstr\n";
 	while (my $rec = $sth->fetchrow_hashref) {
-		push (@{$mactable->{mac}->{$rec->{mac}}}, $rec->{id});
+		push (@{$pmactable->{mac}->{$rec->{mac}}}, $rec->{id});
 	}
 
-#	$debug &&
-	foreach my $mac (keys %{$mactable->{mac}}) {
-		$debug && print STDERR "DEBUG: mac-map $mac vlid: ".join (",", @{$mactable->{mac}->{$mac}})."\n";
+	my $mac;
+	if ($debug) {
+		for $mac (keys %{$pmactable->{mac}}) {
+			print STDERR "DEBUG: mac-map $mac vlid: ".join (",", @{$pmactable->{mac}->{$mac}})."\n";
+		}
 	}
-
-	return $mactable;
+	return $pmactable;
 }
