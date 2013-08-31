@@ -6,7 +6,7 @@ Please see the following page for upgrade instructions:
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
 
-# v3.4.x 
+# v3.4.4 (20130831)
 
 - [BF] not all switches support this (91a04fa - Barry O'Donovan - 2013-08-09)
 - [BF] Bad logic in admin overview graphs (5d7f2a8 - Barry O'Donovan - 2013-08-07)
