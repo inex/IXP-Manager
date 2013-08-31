@@ -12,4 +12,63 @@ use Doctrine\ORM\EntityRepository;
  */
 class VlanInterface extends EntityRepository
 {
+    
+    /**
+     * Utility function to provide an array of all VLAN interfaces on a given
+     * VLAN for a given protocol.
+     *
+     * Returns an array of elements such as:
+     *
+     *     [
+     *         [cid] => 999
+     *         [cname] => Customer Name
+     *         [cshortname] => shortname
+     *         [autsys] => 65500
+     *         [gmaxprefixes] => 20        // from cust table (global)
+     *         [peeringmacro] => ABC
+     *         [peeringmacrov6] => ABC
+     *         [vliid] => 159
+     *         [enabled] => 1              // VLAN interface enabled for requested protocol?
+     *         [address] => 192.0.2.123    // assigned address for requested protocol?
+     *         [bgpmd5secret] => qwertyui  // MD5 for requested protocol
+     *         [maxbgpprefix] => 20        // VLAN interface max prefixes
+     *     ]
+     *
+     * @param \Entities\Vlan $vlan The VLAN
+     * @param int $proto Either 4 or 6
+     * @param bool $useResultCache If true, use Doctrine's result cache (ttl set to one hour)
+     * @return array As defined above.
+     * @throws \IXP_Exception On bad / no protocol
+     */
+    public function getForProto( $vlan, $proto, $useResultCache = true )
+    {
+        if( !in_array( $proto, [ 4, 6 ] ) )
+            throw new \IXP_Exception( 'Invalid protocol specified' );
+        
+        
+        $qstr = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname, c.autsys AS autsys,
+                       c.maxprefixes AS gmaxprefixes, c.peeringmacro as peeringmacro, c.peeringmacrov6 as peeringmacrov6,
+                       vli.id AS vliid, vli.ipv{$proto}enabled AS enabled, addr.address AS address,
+                       vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix
+                    FROM Entities\\VlanInterface vli
+                        JOIN vli.VirtualInterface vi
+                        JOIN vli.IPv{$proto}Address addr
+                        JOIN vi.Customer c
+                        JOIN vi.PhysicalInterfaces pi
+                        JOIN vli.Vlan v
+                    WHERE
+                        v = :vlan
+                        AND " . Customer::DQL_CUST_ACTIVE     . "
+                        AND " . Customer::DQL_CUST_CURRENT    . "
+                        AND " . Customer::DQL_CUST_TRAFFICING . "
+                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
+         
+        $qstr .= " ORDER BY c.autsys ASC";
+    
+        $q = $this->getEntityManager()->createQuery( $qstr );
+        $q->setParameter( 'vlan', $vlan );
+        $q->useResultCache( $useResultCache, 3600 );
+        return $q->getArrayResult();
+    }
+    
 }
