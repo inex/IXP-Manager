@@ -36,16 +36,18 @@ class RouterCliController extends IXP_Controller_CliAction
     public function genCollectorConfAction()
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
-                
+
         // what is the destination router type?
         if( !isset( $this->_options['router']['collector']['conf']['target'] ) )
             die( "ERROR: No target router type configured in application.ini\n");
 
         $target = $this->_options['router']['collector']['conf']['target'];
 
+        $this->collectorConfSanityCheck( $vlan );
+
         $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
         $this->view->v6ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
-        
+
         if( isset( $this->_options['router']['collector']['conf']['dstfile'] ) )
         {
             if( !$this->writeConfig( $this->_options['smokeping']['conf']['dstfile'], $this->view->render( 'smokeping-cli/conf/index.cfg' ) ) )
@@ -54,7 +56,29 @@ class RouterCliController extends IXP_Controller_CliAction
         else
             echo $this->view->render( "router-cli/collector/{$target}/index.cfg" );
     }
-    
+
+
+    /**
+     * The collector configuration expects some data to be available. This function
+     * gathers and checks that data.
+     */
+    private function collectorConfSanityCheck( $vlan )
+    {
+        // get the available reoute collectors and set the IP of the first as
+        // the route collector router ID.
+        $collectors = $vlan->getRouteCollectors( \Entities\Vlan::PROTOCOL_IPv4 );
+
+        if( !is_array( $collectors ) || !count( $collectors ) )
+        {
+            die(
+                "ERROR: Not IPv4 route collectors defined in the VLANs network information table\n"
+                    . "    See: https://github.com/inex/IXP-Manager/wiki/Network-Information\n"
+            );
+        }
+
+        $this->view->routerId = $collectors[0];
+    }
+
     /**
      * Utility function to get and return active VLAN interfaces on the requested protocol
      * suitable for route collector configuration.
@@ -81,39 +105,39 @@ class RouterCliController extends IXP_Controller_CliAction
     {
         $ints = $this->getD2R( '\\Entities\\VlanInterface' )->getForProto( $vlan, $proto, false );
         $newints = [];
-        
+
         foreach( $ints as $int )
         {
             if( !$int['enabled'] )
                 continue;
-            
+
             unset( $int['enabled'] );
-            
+
             if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] )
                 $int['maxprefixes'] = $int['maxbgpprefix'];
             else
                 $int['maxprefixes'] = $int['gmaxprefixes'];
-            
+
             if( !$int['maxprefixes'] )
                 $int['maxprefixes'] = 20;
-            
+
             unset( $int['gmaxprefixes'] );
             unset( $int['maxbgpprefix'] );
-            
+
             if( $proto == 6 && $int['peeringmacrov6'] )
                 $int['peeringmacro'] = $int['peeringmacrov6'];
-            
+
             if( !$int['peeringmacro'] )
                 $int['peeringmacro'] = 'AS' . $int['autsys'];
-            
+
             unset( $int['peeringmacrov6'] );
-            
+
             if( !$int['bgpmd5secret'] )
                 $int['bgpmd5secret'] = false;
-            
+
             $newints[] = $int;
         }
-        
+
         return $newints;
     }
 }
