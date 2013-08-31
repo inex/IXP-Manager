@@ -43,6 +43,8 @@ class RouterCliController extends IXP_Controller_CliAction
 
         $target = $this->_options['router']['collector']['conf']['target'];
 
+        $this->collectorConfSanityCheck( $vlan );
+        
         $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
         $this->view->v6ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
 
@@ -63,11 +65,10 @@ class RouterCliController extends IXP_Controller_CliAction
      * The collector configuration expects some data to be available. This function
      * gathers and checks that data.
      *
-     * NB: This isn't used but is kept as it could be used for a complete automated
-     * route collector configuration without templates. But would one want this..?
      */
     private function collectorConfSanityCheck( $vlan )
     {
+        /*
         // get the available reoute collectors and set the IP of the first as
         // the route collector router ID.
         $collectors = $vlan->getRouteCollectors( \Entities\Vlan::PROTOCOL_IPv4 );
@@ -81,8 +82,7 @@ class RouterCliController extends IXP_Controller_CliAction
         }
 
         $this->view->routerId = $collectors[0];
-
-
+        */
 
         if( !isset( $this->_options['router']['collector']['conf']['asn'] ) )
             die( "ERROR: No route collector ASN configured in application.ini\n");
