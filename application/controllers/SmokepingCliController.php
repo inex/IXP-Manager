@@ -35,18 +35,7 @@ class SmokepingCliController extends IXP_Controller_CliAction
 {
     public function genConfAction()
     {
-        // what IXP are we running on here?
-        if( $this->multiIXP() )
-        {
-            $ixpid = $this->getParam( 'ixp', false );
-            
-            if( !$ixpid || !( $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $ixpid ) ) )
-                die( "ERROR: Invalid or no IXP specified.\n" );
-        }
-        else
-            $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
-        
-        $this->view->ixp                   = $ixp;
+        $this->view->ixp = $ixp = $this->cliResolveIXP();
         
         $this->view->targets = $this->genConf_getTargets( $ixp );
         

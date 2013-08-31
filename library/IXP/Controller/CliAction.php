@@ -62,5 +62,31 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
         $this->view->multiIXP     = $this->multiIXP();
     }
 
+    
+    /**
+     * CLI utility function to get the requested IXP.
+     *
+     * Most CLI actions require a specific IXP in multi-IXP mode. This function looks for
+     * that paramater, validates it, loads and returns the requested IXP. In non-multi-IXP
+     * environments, it returns the default IXP.
+     *
+     *  @return \Entities\IXP The requested / default IXP
+     */
+    public function cliResolveIXP()
+    {
+        // what IXP are we running on here?
+        if( $this->multiIXP() )
+        {
+            $ixpid = $this->getParam( 'ixp', false );
+        
+            if( !$ixpid || !( $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $ixpid ) ) )
+                die( "ERROR: Invalid or no IXP specified.\n" );
+        }
+        else
+            $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
+        
+        return $ixp;
+    }
+        
 }
 
