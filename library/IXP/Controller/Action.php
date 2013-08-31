@@ -83,10 +83,11 @@ class IXP_Controller_Action extends OSS_Controller_Action
         parent::__construct( $request, $response, $invokeArgs );
 
         // we need this for access to class constants in the template
-        $this->view->registerClass( 'USER',     '\\Entities\\User' );
-        $this->view->registerClass( 'CUSTOMER', '\\Entities\\Customer' );
+        $this->view->registerClass( 'USER',       '\\Entities\\User' );
+        $this->view->registerClass( 'CUSTOMER',   '\\Entities\\Customer' );
         $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
-       
+        $this->view->registerClass( 'VLAN',       '\\Entities\\Vlan' );
+        
         $this->view->resellerMode = $this->resellerMode();
         $this->view->multiIXP     = $this->multiIXP();
         

@@ -57,7 +57,8 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
         $this->view->registerClass( 'CUSTOMER',   '\\Entities\\Customer' );
         $this->view->registerClass( 'SWITCHER',   '\\Entities\\Switcher' );
         $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
-         
+        $this->view->registerClass( 'VLAN',       '\\Entities\\Vlan' );
+        
         $this->view->resellerMode = $this->resellerMode();
         $this->view->multiIXP     = $this->multiIXP();
     }
@@ -70,9 +71,10 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
      * that paramater, validates it, loads and returns the requested IXP. In non-multi-IXP
      * environments, it returns the default IXP.
      *
-     *  @return \Entities\IXP The requested / default IXP
+     * @param bool $required If false, will return false in multi-IXP mode if no / invalid IXP specified
+     * @return \Entities\IXP The requested / default IXP
      */
-    public function cliResolveIXP()
+    public function cliResolveIXP( $required = true )
     {
         // what IXP are we running on here?
         if( $this->multiIXP() )
@@ -80,12 +82,38 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
             $ixpid = $this->getParam( 'ixp', false );
         
             if( !$ixpid || !( $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $ixpid ) ) )
-                die( "ERROR: Invalid or no IXP specified.\n" );
+            {
+                if( $required )
+                    die( "ERROR: Invalid or no IXP specified.\n" );
+                
+                return false;
+            }
         }
         else
             $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
         
         return $ixp;
+    }
+        
+    /**
+     * CLI utility function to get and validate a given VLAN by ID
+     *
+     * @param bool $required If false, will return false if no / invalid VLAN ID specified
+     * @return \Entities\Vlan The requested VLAN
+     */
+    public function cliResolveVlanId( $required = true )
+    {
+        $vlanid = $this->getParam( 'vlanid', false );
+        
+        if( !$vlanid || !( $vlan = $this->getD2R( '\\Entities\\Vlan' )->find( $vlanid ) ) )
+        {
+            if( $required )
+                die( "ERROR: Invalid or no VLAN ID specified.\n" );
+                
+            return false;
+        }
+        
+        return $vlan;
     }
         
 }
