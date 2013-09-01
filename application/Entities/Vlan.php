@@ -18,6 +18,10 @@ class Vlan
             self::PRIVATE_YES => 'Yes'
     );
 
+    const PROTOCOL_IPv4 = 4;
+    const PROTOCOL_IPv6 = 6;
+    
+    
     /**
      * @var string $name
      */
@@ -374,7 +378,7 @@ class Vlan
     /**
      * Get NetInfo
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getNetInfos()
     {
@@ -398,10 +402,10 @@ class Vlan
      * Get route servers array for given protocol
      *
      * Return array structure: [
-     *    $ix1 => [ 'ipaddress' => $ip, 'type' => $type ], 
+     *    $ix1 => [ 'ipaddress' => $ip, 'type' => $type ],
      *    $ix2 => [ 'ipaddress' => $ip, 'type' => $type ],
      *    ... ]
-     * 
+     *
      * If no rout servers is set returs empty array
      *
      * @param int    $protocol The protocol to check for. One of \Entities\NetInfo::PROTOCOL_IPV constants.
@@ -457,10 +461,10 @@ class Vlan
      * Get ping beacons array for given protocol
      *
      * Return array structure: [
-     *    $ix1 => [ 'ipaddress' => $ip, 'ratelimited' => $ratelimited ], 
+     *    $ix1 => [ 'ipaddress' => $ip, 'ratelimited' => $ratelimited ],
      *    $ix2 => [ 'ipaddress' => $ip, 'ratelimited' => $ratelimited ],
      *    ... ]
-     * 
+     *
      * If no rout servers is set returs empty array
      *
      * @param int    $protocol The protocol to check for. One of \Entities\NetInfo::PROTOCOL_IPV constants.
@@ -501,7 +505,7 @@ class Vlan
      * @return int The number of preferences deleted
      */
     public function deleteNetInfo( $property, $protocol, $index = null )
-    {    
+    {
         $count = 0;
         $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
         foreach( $this->getNetInfos() as $pref )
@@ -511,7 +515,7 @@ class Vlan
                 if( $index === null || $pref->getIx() == $index )
                 {
                     $count++;
-                    $this->getNetInfos()->removeElement( $pref );                    
+                    $this->getNetInfos()->removeElement( $pref );
                     $em->remove( $pref );
                 }
             }
@@ -831,7 +835,7 @@ class Vlan
     /**
      * Get Infrastructure
      *
-     * @return \Entities\Infrastructure 
+     * @return \Entities\Infrastructure
      */
     public function getInfrastructure()
     {
