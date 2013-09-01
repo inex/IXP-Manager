@@ -401,6 +401,16 @@ smokeping.oconf.tmail = "/usr/local/etc/smokeping/tmail"
 smokeping.oconf.syslogfacility = "local0"
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Route Collector Details
+;;
+;; See: https://github.com/inex/IXP-Manager/wiki/Route-Collector
+;;
+
+;router.collector.conf.target = "quagga"
+;router.collector.conf.asn = 65500
+;router.collector.conf.dstpath = APPLICATION_PATH "/../var/spool"
 
 
 ; sflow parameters (peer to peer graphs)
