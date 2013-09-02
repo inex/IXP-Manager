@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class VlanInterface extends EntityRepository
 {
-    
+
     /**
      * Utility function to provide an array of all VLAN interfaces on a given
      * VLAN for a given protocol.
@@ -32,6 +32,8 @@ class VlanInterface extends EntityRepository
      *         [address] => 192.0.2.123    // assigned address for requested protocol?
      *         [bgpmd5secret] => qwertyui  // MD5 for requested protocol
      *         [maxbgpprefix] => 20        // VLAN interface max prefixes
+     *         [as112client] => 1          // if the member is an as112 client or not
+     *         [rsclient] => 1             // if the member is a route server client or not
      *     ]
      *
      * @param \Entities\Vlan $vlan The VLAN
@@ -44,12 +46,13 @@ class VlanInterface extends EntityRepository
     {
         if( !in_array( $proto, [ 4, 6 ] ) )
             throw new \IXP_Exception( 'Invalid protocol specified' );
-        
-        
+
+
         $qstr = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname, c.autsys AS autsys,
                        c.maxprefixes AS gmaxprefixes, c.peeringmacro as peeringmacro, c.peeringmacrov6 as peeringmacrov6,
                        vli.id AS vliid, vli.ipv{$proto}enabled AS enabled, addr.address AS address,
-                       vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix
+                       vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix,
+                       vli.as112client AS as112client, vli.rsclient AS rsclient
                     FROM Entities\\VlanInterface vli
                         JOIN vli.VirtualInterface vi
                         JOIN vli.IPv{$proto}Address addr
@@ -62,13 +65,13 @@ class VlanInterface extends EntityRepository
                         AND " . Customer::DQL_CUST_CURRENT    . "
                         AND " . Customer::DQL_CUST_TRAFFICING . "
                         AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
-         
+
         $qstr .= " ORDER BY c.autsys ASC";
-    
+
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'vlan', $vlan );
         $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }
-    
+
 }
