@@ -33,6 +33,9 @@
  */
 class RouterCliController extends IXP_Controller_CliAction
 {
+    /**
+     * Action to generate a route collector configuration
+     */
     public function genCollectorConfAction()
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
@@ -48,14 +51,14 @@ class RouterCliController extends IXP_Controller_CliAction
                 ? $this->_options['router']['collector']['conf']['asn']
                 : false
         );
-        
+
         $this->collectorConfSanityCheck( $vlan );
-        
+
         $this->view->proto = $proto = $this->cliResolveProtocol( false );
-        
+
         if( !$proto || $proto == 4 )
             $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
-        
+
         if( !$proto || $proto == 6 )
             $this->view->v6ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
 
@@ -71,7 +74,40 @@ class RouterCliController extends IXP_Controller_CliAction
             echo $this->view->render( "router-cli/collector/{$target}/index.cfg" );
     }
 
-    
+
+    /**
+     * Action to generate an AS112 router configuration
+     */
+    public function genAs112ConfAction()
+    {
+        $this->view->vlan = $vlan = $this->cliResolveVlanId();
+
+        $target = $this->resolveTarget(
+            isset( $this->_options['router']['as112']['conf']['target'] )
+                ? $this->_options['router']['as112']['conf']['target']
+                : false
+        );
+
+        if( $this->getParam( 'rc', false ) )
+        {
+            $this->view->routeCollectors   = $vlan->getRouteCollectors( \Entities\Vlan::PROTOCOL_IPv4 );
+            $this->view->routeCollectorASN = $this->getParam( 'rcasn', 65500 );
+        }
+
+        $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
+
+        if( isset( $this->_options['router']['as112']['conf']['dstpath'] ) )
+        {
+            if( !$this->writeConfig( $this->_options['router']['as112']['conf']['dstpath'] . "/as112-{$vlan->getId()}.conf",
+                    $this->view->render( "router-cli/as112/{$target}/index.cfg" ) ) )
+            {
+                fwrite( STDERR, "Error: could not save configuration data\n" );
+            }
+        }
+        else
+            echo $this->view->render( "router-cli/as112/{$target}/index.cfg" );
+    }
+
     /**
      * Looks for a ''target'' parameter, or defaults to ''$default'', or throws an error.
      *
@@ -86,10 +122,10 @@ class RouterCliController extends IXP_Controller_CliAction
     {
         if( $t = $this->getParam( 'target', false ) )
             return $t;
-        
+
         if( $default )
             return $default;
-        
+
         die( "ERROR: No target router type configured in application.ini or passed as a parameter\n");
     }
 
@@ -137,6 +173,8 @@ class RouterCliController extends IXP_Controller_CliAction
      *         [vliid] => 159
      *         [address] => 192.0.2.123
      *         [bgpmd5secret] => qwertyui  // or false
+     *         [as112client] => 1          // if the member is an as112 client or not
+     *         [rsclient] => 1             // if the member is a route server client or not
      *         [maxprefixes] => 20
      *     ]
      *

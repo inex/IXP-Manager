@@ -5,6 +5,16 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.4.6 (20130902)
+
+Add AS112 configuration generation support.
+
+See https://github.com/inex/IXP-Manager/wiki/AS112
+
+- [IM] Change file to path (6b68b10 - Barry O'Donovan - 2013-09-02)
+- [NF] AS112 automated configuration (0fba814 - Barry O'Donovan - 2013-09-02)
+- [BF] Need explicit permit to overcome the implicit deny (aaef856 - Barry O'Donovan - 2013-09-02)
+
 # v3.4.5 (20130901)
 
 Add route collector configuration generator support. 
