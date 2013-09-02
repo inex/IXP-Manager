@@ -45,8 +45,13 @@ class RouterCliController extends IXP_Controller_CliAction
 
         $this->collectorConfSanityCheck( $vlan );
         
-        $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
-        $this->view->v6ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
+        $this->view->proto = $proto = $this->cliResolveProtocol( false );
+        
+        if( !$proto || $proto == 4 )
+            $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
+        
+        if( !$proto || $proto == 6 )
+            $this->view->v6ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
 
         if( isset( $this->_options['router']['collector']['conf']['dstpath'] ) )
         {

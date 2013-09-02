@@ -116,5 +116,26 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
         return $vlan;
     }
         
+    /**
+     * CLI utility function to get and validate a given IP protocol
+     *
+     * @param bool $required If false, will return false if no / invalid protocol specified
+     * @return int|bool The specified protocol (4/6) or false
+     */
+    public function cliResolveProtocol( $required = true )
+    {
+        $p = $this->getParam( 'proto', false );
+        
+        if( !$p || !in_array( $p, [ 4, 6 ] ) )
+        {
+            if( $required )
+                die( "ERROR: Invalid or no protocol specified.\n" );
+                
+            return false;
+        }
+        
+        return $p;
+    }
+        
 }
 
