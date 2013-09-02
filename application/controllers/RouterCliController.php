@@ -37,11 +37,11 @@ class RouterCliController extends IXP_Controller_CliAction
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
 
-        // what is the destination router type?
-        if( !isset( $this->_options['router']['collector']['conf']['target'] ) )
-            die( "ERROR: No target router type configured in application.ini\n");
-
-        $target = $this->_options['router']['collector']['conf']['target'];
+        $target = $this->resolveTarget(
+            isset( $this->_options['router']['collector']['conf']['target'] )
+                ? $this->_options['router']['collector']['conf']['target']
+                : false
+        );
 
         $this->collectorConfSanityCheck( $vlan );
         
@@ -65,6 +65,27 @@ class RouterCliController extends IXP_Controller_CliAction
             echo $this->view->render( "router-cli/collector/{$target}/index.cfg" );
     }
 
+    
+    /**
+     * Looks for a ''target'' parameter, or defaults to ''$default'', or throws an error.
+     *
+     * The generation of route configuration requires a target template directory. We allow
+     * the user to specify a target directory on the command line (highest precedence) or via
+     * ''application.ini'' (the default). If neither are specified, we throw an error.
+     *
+     * @param string $default Typically from ''application.ini'' but any string can be passed
+     * @return string The target template directory
+     */
+    private function resolveTarget( $default = false )
+    {
+        if( $t = $this->getParam( 'target', false ) )
+            return $t;
+        
+        if( $default )
+            return $default;
+        
+        die( "ERROR: No target router type configured in application.ini or passed as a parameter\n");
+    }
 
     /**
      * The collector configuration expects some data to be available. This function
