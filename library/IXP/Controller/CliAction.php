@@ -158,6 +158,29 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
         die( "ERROR: No ASN configured in application.ini or passed as a parameter\n" );
     }
     
+    
+    /**
+     * Looks for a ''target'' parameter, or defaults to ''$default'', or throws an error.
+     *
+     * The generation of route configuration requires a target template directory. We allow
+     * the user to specify a target directory on the command line (highest precedence) or via
+     * ''application.ini'' (the default). If neither are specified, we throw an error.
+     *
+     * @param string $default Typically from ''application.ini'' but any string can be passed
+     * @return string The target template directory
+     */
+    protected function cliResolveTarget( $default = false )
+    {
+        if( $t = $this->getParam( 'target', false ) )
+            return $t;
+    
+        if( $default )
+            return $default;
+    
+        die( "ERROR: No target router type configured in application.ini or passed as a parameter\n");
+    }
+    
+    
         
 }
 

@@ -40,7 +40,7 @@ class RouterCliController extends IXP_Controller_CliAction
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
 
-        $target = $this->resolveTarget(
+        $target = $this->cliResolveTarget(
             isset( $this->_options['router']['collector']['conf']['target'] )
                 ? $this->_options['router']['collector']['conf']['target']
                 : false
@@ -82,7 +82,7 @@ class RouterCliController extends IXP_Controller_CliAction
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
 
-        $target = $this->resolveTarget(
+        $target = $this->cliResolveTarget(
             isset( $this->_options['router']['as112']['conf']['target'] )
                 ? $this->_options['router']['as112']['conf']['target']
                 : false
@@ -106,27 +106,6 @@ class RouterCliController extends IXP_Controller_CliAction
         }
         else
             echo $this->view->render( "router-cli/as112/{$target}/index.cfg" );
-    }
-
-    /**
-     * Looks for a ''target'' parameter, or defaults to ''$default'', or throws an error.
-     *
-     * The generation of route configuration requires a target template directory. We allow
-     * the user to specify a target directory on the command line (highest precedence) or via
-     * ''application.ini'' (the default). If neither are specified, we throw an error.
-     *
-     * @param string $default Typically from ''application.ini'' but any string can be passed
-     * @return string The target template directory
-     */
-    private function resolveTarget( $default = false )
-    {
-        if( $t = $this->getParam( 'target', false ) )
-            return $t;
-
-        if( $default )
-            return $default;
-
-        die( "ERROR: No target router type configured in application.ini or passed as a parameter\n");
     }
 
     /**
