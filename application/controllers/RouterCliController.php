@@ -96,9 +96,9 @@ class RouterCliController extends IXP_Controller_CliAction
 
         $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
 
-        if( isset( $this->_options['router']['as112']['conf']['dstfile'] ) )
+        if( isset( $this->_options['router']['as112']['conf']['dstpath'] ) )
         {
-            if( !$this->writeConfig( $this->_options['router']['as112']['conf']['dstfile'] . "/as112-{$vlan->getId()}.conf",
+            if( !$this->writeConfig( $this->_options['router']['as112']['conf']['dstpath'] . "/as112-{$vlan->getId()}.conf",
                     $this->view->render( "router-cli/as112/{$target}/index.cfg" ) ) )
             {
                 fwrite( STDERR, "Error: could not save configuration data\n" );
