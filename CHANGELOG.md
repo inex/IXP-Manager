@@ -5,6 +5,10 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.4.7 (201309xx)
+
+- [IM] AS112 documentation is now dynamic for available AS112 services (764c43e - Barry O'Donovan - 2013-09-02)
+
 # v3.4.6 (20130902)
 
 Add AS112 configuration generation support.

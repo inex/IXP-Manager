@@ -9,14 +9,14 @@
             Documentation <span class="divider">/</span>
         </li>
         <li class="active">
-            Details of the INEX AS112 Service
+            Details of the {$options.identity.orgname} AS112 Service
         </li>
     </ul>
     <div>
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>Details of the INEX AS112 Service</h1>
+            <h1>Details of the {$options.identity.orgname} AS112 Service</h1>
         </div>
 {/if}
 
@@ -27,19 +27,19 @@
     <div id="overviewMessage">
         {if $as112}
             <div class="alert alert-success">
-                You are enabled to use INEX's AS112 service. Please see configuration details below.
+                You are enabled to use {$options.identity.orgname}'s AS112 service. Please see configuration details below.
             </div>
         {elseif $rsclient and not $as112}
             <div class="alert alert-info">
     	        There are no bilateral BGP sessions configured for you on the AS112 server. However, as
     	        you have route server sessions, you receive the AS112 prefixes via this. If you would like
     	        to additionally enable bilateral peering, please
-    	        <a href="{genUrl controller="static" action="contact"}">contact INEX Operations</a>.
+    	        <a href="{genUrl controller="static" action="contact"}">contact {$options.identity.orgname} Operations</a>.
     	    </div>
         {else}
     	    <div class="alert">
-    	        You are not enabled to use INEX's AS112 service. Please
-                <a href="{genUrl controller="static" action="contact"}">contact INEX Operations</a>
+    	        You are not enabled to use {$options.identity.orgname}'s AS112 service. Please
+                <a href="{genUrl controller="static" action="contact"}">contact {$options.identity.orgname} Operations</a>
                 to enable the AS112 service.
     	    </div>
         {/if}
@@ -68,7 +68,7 @@ DNS updates and other ambiguous addresses, as follows:
 </ul>
 
 <p>
-There are now separate (non-root) servers for these queries [such as INEX's AS112 service].
+There are now separate (non-root) servers for these queries [such as {$options.identity.orgname}'s AS112 service].
 </p>
 
 <p>
@@ -133,10 +133,10 @@ For Cisco routers, you will need something like the following example BGP config
 <pre>
     router bgp 99999
 
-     ! INEX Peering LAN #1
+     ! {$options.identity.orgname} Peering LAN #1
 
      neighbor 193.242.111.6 remote-as 112
-     neighbor 193.242.111.6 description INEX AS112 Service
+     neighbor 193.242.111.6 description {$options.identity.orgname} AS112 Service
      address-family ipv4
      neighbor 193.242.111.6 password s00persekr1t
      neighbor 193.242.111.6 activate
