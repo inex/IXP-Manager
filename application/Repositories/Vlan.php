@@ -335,4 +335,46 @@ class Vlan extends EntityRepository
         return $pvs;
     }
 
+    
+    /**
+     * Utility function to provide an array of all VLAN interface IP addresses
+     * and hostnames on a given VLAN for a given protocol for the purpose of generating
+     * an ARPA DNS zone.
+     *
+     * Returns an array of elements such as:
+     *
+     *     [
+     *         [enabled]  => 1/0
+     *         [hostname] => ixp.rtr.example.com
+     *         [address]  => 192.0.2.0 / 2001:db8:67::56f
+     *     ]
+     *
+     * @param \Entities\Vlan $vlan The VLAN
+     * @param int $proto Either 4 or 6
+     * @param bool $useResultCache If true, use Doctrine's result cache (ttl set to one hour)
+     * @return array As defined above.
+     * @throws \IXP_Exception On bad / no protocol
+     */
+    public function getArpaDetails( $vlan, $proto, $useResultCache = true )
+    {
+        if( !in_array( $proto, [ 4, 6 ] ) )
+            throw new \IXP_Exception( 'Invalid protocol specified' );
+    
+    
+        $qstr = "SELECT vli.ipv{$proto}enabled AS enabled, addr.address AS address,
+                        vli.ipv{$proto}hostname AS hostname
+                    FROM Entities\\VlanInterface vli
+                        JOIN vli.IPv{$proto}Address addr
+                        JOIN vli.Vlan v
+                    WHERE
+                        v = :vlan";
+    
+        $qstr .= " ORDER BY addr.address ASC";
+    
+        $q = $this->getEntityManager()->createQuery( $qstr );
+        $q->setParameter( 'vlan', $vlan );
+        $q->useResultCache( $useResultCache, 3600 );
+        return $q->getArrayResult();
+    }
+    
 }
