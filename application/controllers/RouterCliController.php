@@ -43,6 +43,12 @@ class RouterCliController extends IXP_Controller_CliAction
                 : false
         );
 
+        $this->view->asn = $this->cliResolveASN(
+                isset( $this->_options['router']['collector']['conf']['asn'] )
+                ? $this->_options['router']['collector']['conf']['asn']
+                : false
+        );
+        
         $this->collectorConfSanityCheck( $vlan );
         
         $this->view->proto = $proto = $this->cliResolveProtocol( false );
@@ -110,8 +116,10 @@ class RouterCliController extends IXP_Controller_CliAction
         $this->view->routerId = $collectors[0];
         */
 
+        /*
         if( !isset( $this->_options['router']['collector']['conf']['asn'] ) )
             die( "ERROR: No route collector ASN configured in application.ini\n");
+        */
     }
 
     /**

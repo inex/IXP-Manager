@@ -136,6 +136,28 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
         
         return $p;
     }
+    
+    /**
+     * Looks for a ''asn'' parameter, or defaults to ''$default'', or throws an error.
+     *
+     * The generation of some configurations requires an ASN. We allow the user to specify
+     * an ASN on the command line (highest precedence) or via ''application.ini'' (the default).
+     * If neither are specified, we throw an error.
+     *
+     * @param string $default Typically from ''application.ini'' but any string can be passed
+     * @return string The ASN
+     */
+    public function cliResolveASN( $default = false )
+    {
+        if( $a = $this->getParam( 'asn', false ) )
+            return $a;
+    
+        if( $default )
+            return $default;
+    
+        die( "ERROR: No ASN configured in application.ini or passed as a parameter\n" );
+    }
+    
         
 }
 
