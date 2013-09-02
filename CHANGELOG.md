@@ -6,18 +6,25 @@ Please see the following page for upgrade instructions:
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
 
+# v3.4.6 (201309xx)
+
+- [IM] Route Collector - allow user to specify ASN on the command line (677536d - Barry O'Donovan - 2013-09-02)
+- [IM] Route Collector - allow user to specify target on the command line (5bc50df - Barry O'Donovan - 2013-09-02)
+- [IM] Route Collector - allow limiting by protocol on command line (0662a30 - Barry O'Donovan - 2013-09-02)
+
+
 # v3.4.5 (20130901)
 
 Add route collector configuration generator support. 
 
 See https://github.com/inex/IXP-Manager/wiki/Route-Collector
 
-[IM] Update / improve route collector code (ad5c0b9 - Barry O'Donovan - 2013-08-31)
-[IM] Check for defined route collector IPv4 address (53d2466 - Barry O'Donovan - 2013-08-31)
-[NF] First pass at new route collector generation (3eb62cf - Barry O'Donovan - 2013-08-31)
-[IM] New CLI utility fn for resolving VLAN IDs (943ada9 - Barry O'Donovan - 2013-08-31)
-[IM] Move CLI IXP resolution up to action class (b642cbc - Barry O'Donovan - 2013-08-31)
-[BF] Incorrect calculation of max values for aggregate ports (7ddf4bb - Barry O'Donovan - 2013-08-26)
+- [IM] Update / improve route collector code (ad5c0b9 - Barry O'Donovan - 2013-08-31)
+- [IM] Check for defined route collector IPv4 address (53d2466 - Barry O'Donovan - 2013-08-31)
+- [NF] First pass at new route collector generation (3eb62cf - Barry O'Donovan - 2013-08-31)
+- [IM] New CLI utility fn for resolving VLAN IDs (943ada9 - Barry O'Donovan - 2013-08-31)
+- [IM] Move CLI IXP resolution up to action class (b642cbc - Barry O'Donovan - 2013-08-31)
+- [BF] Incorrect calculation of max values for aggregate ports (7ddf4bb - Barry O'Donovan - 2013-08-26)
 
 
 
