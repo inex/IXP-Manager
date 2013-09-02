@@ -337,26 +337,16 @@ class Vlan extends EntityRepository
 
     
     /**
-     * Utility function to provide an array of all VLAN interfaces on a given
-     * VLAN for a given protocol.
+     * Utility function to provide an array of all VLAN interface IP addresses
+     * and hostnames on a given VLAN for a given protocol for the purpose of generating
+     * an ARPA DNS zone.
      *
      * Returns an array of elements such as:
      *
      *     [
-     *         [cid] => 999
-     *         [cname] => Customer Name
-     *         [cshortname] => shortname
-     *         [autsys] => 65500
-     *         [gmaxprefixes] => 20        // from cust table (global)
-     *         [peeringmacro] => ABC
-     *         [peeringmacrov6] => ABC
-     *         [vliid] => 159
-     *         [enabled] => 1              // VLAN interface enabled for requested protocol?
-     *         [address] => 192.0.2.123    // assigned address for requested protocol?
-     *         [bgpmd5secret] => qwertyui  // MD5 for requested protocol
-     *         [maxbgpprefix] => 20        // VLAN interface max prefixes
-     *         [as112client] => 1          // if the member is an as112 client or not
-     *         [rsclient] => 1             // if the member is a route server client or not
+     *         [enabled]  => 1/0
+     *         [hostname] => ixp.rtr.example.com
+     *         [address]  => 192.0.2.0 / 2001:db8:67::56f
      *     ]
      *
      * @param \Entities\Vlan $vlan The VLAN
