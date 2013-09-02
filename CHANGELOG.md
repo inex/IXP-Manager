@@ -5,9 +5,17 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-# v3.4.7 (201309xx)
+# v3.4.7 (20130902)
 
+Add ARPA DNS zone generation.
+
+See: https://github.com/inex/IXP-Manager/wiki/ARPA-DNS-Population
+
+
+- [IM] Doc updates and only include enabled interfaces (0d3d964 - Barry O'Donovan - 2013-09-02)
+- [NF] Arpa DNS Zone generation (7442925 - Barry O'Donovan - 2013-09-02)
 - [IM] AS112 documentation is now dynamic for available AS112 services (764c43e - Barry O'Donovan - 2013-09-02)
+
 
 # v3.4.6 (20130902)
 
