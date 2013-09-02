@@ -134,6 +134,33 @@ class StaticController extends IXP_Controller_Action
                     $this->view->rsclient = true;
             }
         }
+        
+        // also get all available AS112 services
+        $as112services = [];
+        $i = 0;
+        
+        foreach( $this->getD2R( '\\Entities\\Vlan' )->findAll() as $v )
+        {
+            if( count( $as112s = $v->getAS112Servers( \Entities\Vlan::PROTOCOL_IPv4 ) ) )
+            {
+                foreach( $as112s as $as112 )
+                {
+                    $as112services[ $i ]['ip']    = $as112;
+                    $as112services[ $i ]['vlan']  = $v->getName();
+                    $as112services[ $i ]['infra'] = $v->getInfrastructure()->getName();
+                    $as112services[ $i ]['ixp']   = $v->getInfrastructure()->getIXP()->getName();
+                    $i++;
+                }
+            }
+        }
+        
+        if( !count( $as112services ) )
+        {
+            $this->addMessage( 'No AS112 servers defined in VLAN network information.', OSS_Message::ERROR );
+            $this->redirect();
+        }
+
+        $this->view->as112services = $as112services;
     }
 
 }

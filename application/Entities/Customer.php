@@ -1471,6 +1471,24 @@ class Customer
     }
 
     /**
+     * Is the customer an AS112 client on any of their VLAN interfaces?
+     * @return boolean
+     */
+    public function isAS112Client()
+    {
+        foreach( $this->getVirtualInterfaces() as $vi )
+        {
+            foreach( $vi->getVlanInterfaces() as $vli )
+            {
+                if( $vli->getAs112client() )
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @var \Entities\IRRDBConfig
      */
     protected $IRRDB;
@@ -1727,7 +1745,7 @@ class Customer
     /**
      * Get isReseller
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsReseller()
     {
@@ -1737,7 +1755,7 @@ class Customer
     /**
      * Checks if customer is reseller
      *
-     * @return boolean 
+     * @return boolean
      */
     public function isReseller()
     {
@@ -1747,7 +1765,7 @@ class Customer
     /**
      * Checks if customer is resold customer
      *
-     * @return boolean 
+     * @return boolean
      */
     public function isResoldCustomer()
     {
@@ -1780,7 +1798,7 @@ class Customer
     /**
      * Get ResoldCustomers
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getResoldCustomers()
     {
@@ -1803,7 +1821,7 @@ class Customer
     /**
      * Get Reseller
      *
-     * @return \Entities\Customer 
+     * @return \Entities\Customer
      */
     public function getReseller()
     {
@@ -1836,7 +1854,7 @@ class Customer
     /**
      * Get IXPs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getIXPs()
     {

@@ -583,7 +583,7 @@ class Vlan
      * @param string $property The named attribute / preference to check for
      * @param int    $protocol The protocol to check for
      * @param boolean $withIndex default false Include index values. Default false.
-     * @return boolean|array False if no such preference(s) exist, otherwise an array.
+     * @return array
      */
     public function getIndexedNetInfo( $property, $protocol, $withIndex = false )
     {
