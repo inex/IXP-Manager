@@ -33,9 +33,9 @@
  */
 class IXP_Controller_CliAction extends OSS_Controller_CliAction
 {
-    
+
     use IXP_Controller_Trait_Common;
-    
+
     /**
      * Override the Zend_Controller_Action's constructor (which is called
      * at the very beginning of this function anyway).
@@ -51,19 +51,19 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
     {
         // call the parent's version where all the Zend magic happens
         parent::__construct( $request, $response, $invokeArgs );
-        
+
         // we need this for access to class constants in the template
         $this->view->registerClass( 'USER',       '\\Entities\\User' );
         $this->view->registerClass( 'CUSTOMER',   '\\Entities\\Customer' );
         $this->view->registerClass( 'SWITCHER',   '\\Entities\\Switcher' );
         $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
         $this->view->registerClass( 'VLAN',       '\\Entities\\Vlan' );
-        
+
         $this->view->resellerMode = $this->resellerMode();
         $this->view->multiIXP     = $this->multiIXP();
     }
 
-    
+
     /**
      * CLI utility function to get the requested IXP.
      *
@@ -80,21 +80,21 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
         if( $this->multiIXP() )
         {
             $ixpid = $this->getParam( 'ixp', false );
-        
+
             if( !$ixpid || !( $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $ixpid ) ) )
             {
                 if( $required )
                     die( "ERROR: Invalid or no IXP specified.\n" );
-                
+
                 return false;
             }
         }
         else
             $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
-        
+
         return $ixp;
     }
-        
+
     /**
      * CLI utility function to get and validate a given VLAN by ID
      *
@@ -104,18 +104,18 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
     public function cliResolveVlanId( $required = true )
     {
         $vlanid = $this->getParam( 'vlanid', false );
-        
+
         if( !$vlanid || !( $vlan = $this->getD2R( '\\Entities\\Vlan' )->find( $vlanid ) ) )
         {
             if( $required )
                 die( "ERROR: Invalid or no VLAN ID specified.\n" );
-                
+
             return false;
         }
-        
+
         return $vlan;
     }
-        
+
     /**
      * CLI utility function to get and validate a given IP protocol
      *
@@ -125,18 +125,18 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
     public function cliResolveProtocol( $required = true )
     {
         $p = $this->getParam( 'proto', false );
-        
+
         if( !$p || !in_array( $p, [ 4, 6 ] ) )
         {
             if( $required )
                 die( "ERROR: Invalid or no protocol specified.\n" );
-                
+
             return false;
         }
-        
+
         return $p;
     }
-    
+
     /**
      * Looks for a ''asn'' parameter, or defaults to ''$default'', or throws an error.
      *
@@ -151,13 +151,33 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
     {
         if( $a = $this->getParam( 'asn', false ) )
             return $a;
-    
+
         if( $default )
             return $default;
-    
+
         die( "ERROR: No ASN configured in application.ini or passed as a parameter\n" );
     }
-    
-        
+
+    /**
+     * Utility function to get a named CLI parameter
+     *
+     * @param string $param The name of the parameter to get
+     * @param bool $required If true, will throw an error and die if not present
+     * @param string $default If not set in the CLI parameters, default to this (if not false)
+     * @return int|bool The requested parameter or false
+     */
+    public function cliResolveParam( $param, $required = false, $default = false )
+    {
+        $p = $this->getParam( $param, false );
+
+        if( !$p && $default )
+            $p = $default;
+
+        if( !$p && $required )
+            die( "ERROR: Required paramater '{$param}' missing\n" );
+
+        return $p;
+    }
+
 }
 

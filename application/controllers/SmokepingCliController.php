@@ -36,9 +36,16 @@ class SmokepingCliController extends IXP_Controller_CliAction
     public function genConfAction()
     {
         $this->view->ixp = $ixp = $this->cliResolveIXP();
-        
+
         $this->view->targets = $this->genConf_getTargets( $ixp );
-        
+
+        $this->view->cgiurl    = $this->cliResolveParam( 'cgiurl',    true, $this->_options['smokeping']['conf']['cgiurl']    );
+        $this->view->imgcache  = $this->cliResolveParam( 'imgcache',  true, $this->_options['smokeping']['conf']['imgcache']  );
+        $this->view->imgurl    = $this->cliResolveParam( 'imgurl',    true, $this->_options['smokeping']['conf']['imgurl']    );
+        $this->view->datadir   = $this->cliResolveParam( 'datadir',   true, $this->_options['smokeping']['conf']['datadir']   );
+        $this->view->piddir    = $this->cliResolveParam( 'piddir',    true, $this->_options['smokeping']['conf']['piddir']    );
+        $this->view->smokemail = $this->cliResolveParam( 'smokemail', true, $this->_options['smokeping']['conf']['smokemail'] );
+
         if( isset( $this->_options['smokeping']['conf']['dstfile'] ) )
         {
             if( !$this->writeConfig( $this->_options['smokeping']['conf']['dstfile'], $this->view->render( 'smokeping-cli/conf/index.cfg' ) ) )
@@ -47,7 +54,7 @@ class SmokepingCliController extends IXP_Controller_CliAction
         else
             echo $this->view->render( 'smokeping-cli/conf/index.cfg' );
     }
-    
+
     /**
      * Utility function to slurp all VLAN interfaces ports from the database and arrange them in
      * arrays by infrastructure.
@@ -57,13 +64,13 @@ class SmokepingCliController extends IXP_Controller_CliAction
     public static function genConf_getTargets( $ixp )
     {
         $data = [];
-    
+
         foreach( $ixp->getInfrastructures() as $infra )
         {
             $data[ $infra->getId() ]['name']      = preg_replace( '/#/', '', $infra->getName() );
             $data[ $infra->getId() ]['shortname'] = preg_replace( '/#/', '', $infra->getShortname() );
             $data[ $infra->getId() ]['vlans']     = [];
-            
+
             foreach( $infra->getVLANs() as $v )
             {
                 if( $v->getPrivate() )
@@ -73,12 +80,12 @@ class SmokepingCliController extends IXP_Controller_CliAction
                 $vlan[ 'name' ]   = preg_replace( '/#/', '', $v->getName() );
                 $vlan[ 'number' ] = preg_replace( '/#/', '', $v->getNumber() );
                 $vlan[ 'ints' ]   = [];
-                
+
                 foreach( $v->getVlanInterfaces() as $vli )
                 {
                     if( $vli->getVirtualInterface()->getCustomer()->getStatus() != \Entities\Customer::STATUS_NORMAL )
                         continue;
-                    
+
                     $havePhysInt = false;
                     foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi )
                     {
@@ -88,10 +95,10 @@ class SmokepingCliController extends IXP_Controller_CliAction
                             break;
                         }
                     }
-                    
+
                     if( !$havePhysInt )
                         continue;
-                    
+
                     $vlan[ 'ints' ][ $vli->getId() ]['name']            = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getName() );
                     $vlan[ 'ints' ][ $vli->getId() ]['shortname']       = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getShortname() );
                     $vlan[ 'ints' ][ $vli->getId() ]['abbreviatedname'] = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName() );
@@ -100,19 +107,20 @@ class SmokepingCliController extends IXP_Controller_CliAction
                         $vlan[ 'ints' ][ $vli->getId() ]['ipv4'] =  $vli->getIpv4Address()->getAddress();
                     else
                         $vlan[ 'ints' ][ $vli->getId() ]['ipv4'] =  false;
-                    
+
                     if( $vli->getIpv6enabled() && $vli->getIpv6canping() )
                         $vlan[ 'ints' ][ $vli->getId() ]['ipv6'] = $vli->getIpv6Address()->getAddress();
                     else
                         $vlan[ 'ints' ][ $vli->getId() ]['ipv6'] = false;
                 }
-                
+
                 $data[ $infra->getId() ]['vlans'][ $v->getId() ] = $vlan;
             }
         }
 
         return $data;
     }
-    
+
+
 }
 
