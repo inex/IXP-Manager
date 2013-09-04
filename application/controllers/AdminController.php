@@ -100,6 +100,13 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                 {
                     $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
                     $graphs[ $ixp->getId() ]['title'] = 'IXP Aggregate Graph';
+                    
+                    $mrtg = new IXP_Mrtg(
+                        $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $ixp->getAggregateGraphName()
+                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
+                    );
+
+                    $stats[ $ixp->getId() ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
                 }
 
                 foreach( $ixp->getInfrastructures() as $inf )
