@@ -327,6 +327,25 @@ identity.switch_domain = ".example.com"
 ; Used to set the default country in various forms (use two letter format)
 identity.default_country = 'IE'
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Peering Manager
+;;
+;; The Peering Manager allows your members to send peering requests to other members
+;; that contain all the necessary peering details.
+;;
+;; For testing / experimentation you can enabled test mode below and, when enabled, all
+;; peering requests will be send to the testemail. 
+;;
+;; NB: This does not apply to any BCC emails you add. The CC recipient in the request
+;; dialog will be ignored in test mode.
+;;
+
+peeringmanager.testmode = false
+peeringmanager.testemail = "user@example.com"
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; MRTG Details
