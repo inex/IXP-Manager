@@ -8,7 +8,20 @@ Please see the following page for upgrade instructions:
 # v3.4.8 (201309xx)
 
 
+New ''application.ini'' parameters:
+
+    ;; The Peering Manager allows your members to send peering requests to other members
+    ;; that contain all the necessary peering details.
+    ;;
+    ;; For testing / experimentation you can enabled test mode below and, when enabled, all
+    ;; peering requests will be send to the testemail. 
+    ;;
+    ;; NB: This does not apply to any BCC emails you add. The CC recipient in the request
+    ;; dialog will be ignored in test mode.
+
+- [IM] Allow peering manager test mode via application.ini (93e26e3 - Barry O'Donovan - 2013-09-04)
 - [BF] Do not forget to calculate the IXP statistics (7b5eb17 - Barry O'Donovan - 2013-09-04)
+
 
 # v3.4.7 (20130902)
 
