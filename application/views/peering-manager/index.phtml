@@ -8,6 +8,23 @@
 
 {OSS_Message}
 
+{if isset( $options.peeringmanager.testmode ) and $options.peeringmanager.testmode}
+    <div class="row-fluid">
+        <div class="alert alert-{if isset( $options.peeringmanager.testemail )}info{else}error{/if}">
+            <strong>Test mode enabled.</strong>
+            {if isset( $options.peeringmanager.testemail )}
+                All peering requests (with the exception of any BCC entries you add) will
+                be sent to <code>{$options.peeringmanager.testemail}</code>. The CC recipient
+                will be ignored.
+                This can be changed in <code>application.ini</code>.
+            {else}
+                The test mode destination email is not configured in <code>application.ini</code>.
+                Please set this via the <code>peeringmanager.testemail</code> parameter.
+            {/if}
+        </div>
+    </div>
+{/if}
+
 <ul class="nav nav-tabs">
     <li class="active">
         <a href="#potential" data-toggle="tab">Potential Peers</a></li>

@@ -194,8 +194,6 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
 
     public function peeringRequestAction()
     {
-        $TESTMODE = false;
-        
         $peer = $this->_loadPeer( $this->getParam( 'custid', null ) );
         $f = new IXP_Form_PeeringRequest();
         
@@ -257,7 +255,6 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                                 
                 if( $bccOk )
                 {
-                
                     $mail = new Zend_Mail();
                     $mail->setFrom( 'no-reply@inex.ie', $this->getCustomer()->getName() . ' Peering Team' )
                          ->setReplyTo( $this->getCustomer()->getPeeringemail(), $this->getCustomer()->getName() . ' Peering Team' )
@@ -265,13 +262,24 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                          ->setBodyText( $f->getValue( 'message' ) );
 
                     if( $sendtome )
-                    {
                         $mail->addTo( $this->getUser()->getEmail() );
-                    }
                     else
                     {
-                        $mail->addTo( $TESTMODE ? 'barryo@inex.ie' : $peer->getPeeringemail(), "{$peer->getName()} Peering Team" )
-                             ->addCc( $TESTMODE ? 'barryo@inex.ie' : $this->getCustomer()->getPeeringemail(), "{$this->getCustomer()->getName()} Peering Team" );
+                        if( isset( $this->_options['peeringmanager']['testmode'] ) && $this->_options['peeringmanager']['testmode'] )
+                        {
+                            if( !isset( $this->_options['peeringmanager']['testemail'] ) )
+                            {
+                                $this->getLogger()->alert( "Peering Manager test mode enabled but testemail not defined" );
+                                echo "ERR:Peering Manager test mode enabled but testemail not defined in application.ini.";
+                                return true;
+                            }
+                            $mail->addTo( $this->_options['peeringmanager']['testemail'] );
+                        }
+                        else
+                        {
+                            $mail->addTo( $peer->getPeeringemail(), "{$peer->getName()} Peering Team" )
+                                 ->addCc( $this->getCustomer()->getPeeringemail(), "{$this->getCustomer()->getName()} Peering Team" );
+                        }
                     }
                     
                     if( count( $bcc ) )
@@ -286,13 +294,23 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                         {
                             // get this customer/peer peering manager table entry
                             $pm = $this->_loadPeeringManagerEntry( $this->getCustomer(), $peer );
-                            $pm->setEmailLastSent( new DateTime() );
-                            $pm->setEmailsSent( $pm->getEmailsSent() + 1 );
-                            $pm->setUpdated( new DateTime() );
-                            $pm->setNotes(
-                                date( 'Y-m-d' ) . " [{$this->getUser()->getUsername()}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n" . $pm->getNotes()
-                            );
-                                                                
+                            
+                            if( isset( $this->_options['peeringmanager']['testmode'] ) && $this->_options['peeringmanager']['testmode']
+                                    && isset( $this->_options['peeringmanager']['testdate'] ) && $this->_options['peeringmanager']['testdate'] )
+                            {
+                                $pm->setEmailLastSent( new DateTime() );
+                                $pm->setEmailsSent( $pm->getEmailsSent() + 1 );
+                                $pm->setUpdated( new DateTime() );
+                            }
+                            
+                            if( isset( $this->_options['peeringmanager']['testmode'] ) && $this->_options['peeringmanager']['testmode']
+                                    && isset( $this->_options['peeringmanager']['testnote'] ) && $this->_options['peeringmanager']['testnote'] )
+                            {
+                                $pm->setNotes(
+                                    date( 'Y-m-d' ) . " [{$this->getUser()->getUsername()}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n" . $pm->getNotes()
+                                );
+                            }
+                                                                                            
                             $this->getD2EM()->flush();
                         }
                     }
@@ -397,9 +415,10 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
      */
     private function _loadPeer()
     {
-        $this->view->peer = $peer = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid', null ) );
+        if( $this->getParam( 'custid', false ) )
+            $this->view->peer = $peer = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) );
         
-        if( !$peer )
+        if( !isset( $peer ) || !$peer )
         {
             echo "ERR:Could not find peer's information in the database. Please contact support.";
             die;
