@@ -13,16 +13,26 @@ New ''application.ini'' parameters:
     ;; The Peering Manager allows your members to send peering requests to other members
     ;; that contain all the necessary peering details.
     ;;
+    ;; See: https://github.com/inex/IXP-Manager/wiki/Peering-Manager
+    ;;
     ;; For testing / experimentation you can enabled test mode below and, when enabled, all
     ;; peering requests will be send to the testemail. 
     ;;
     ;; NB: This does not apply to any BCC emails you add. The CC recipient in the request
     ;; dialog will be ignored in test mode.
+    ;;
+    ;; Normally, the peering manager adds a note to the peer's notes and sets a request last 
+    ;; sent date when a peering request is sent. In test mode, this will not happen. 
+    ;; If you want this to happen in test mode, set testnote and testdate to true below.
     
     peeringmanager.testmode = false
     peeringmanager.testemail = "user@example.com"
+    peeringmanager.testnote = false
+    peeringmanager.testdate = false
 
+ 
 
+- [IM] Peering Manager - disable recording or requests in test mode (111f1ff - Barry O'Donovan - 2013-09-04)
 - [IM] Allow peering manager test mode via application.ini (93e26e3 - Barry O'Donovan - 2013-09-04)
 - [BF] Do not forget to calculate the IXP statistics (7b5eb17 - Barry O'Donovan - 2013-09-04)
 
