@@ -18,6 +18,10 @@ New ''application.ini'' parameters:
     ;;
     ;; NB: This does not apply to any BCC emails you add. The CC recipient in the request
     ;; dialog will be ignored in test mode.
+    
+    peeringmanager.testmode = false
+    peeringmanager.testemail = "user@example.com"
+
 
 - [IM] Allow peering manager test mode via application.ini (93e26e3 - Barry O'Donovan - 2013-09-04)
 - [BF] Do not forget to calculate the IXP statistics (7b5eb17 - Barry O'Donovan - 2013-09-04)
