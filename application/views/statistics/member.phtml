@@ -22,7 +22,7 @@
             )
         </li>
     </ul>
-    
+
     <div>
 {else}
     <div class="page-content">
@@ -71,12 +71,14 @@
             {else}
                 Graph Options
             {/if}
-            
-            <a class="btn btn-primary pull-right" href="{genUrl controller="statistics" action="p2p" ixp=$ixp->getId() shortname=$cust->getShortname()}">
-                See Peer to Peer Graphs
-            </a>
+
+            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
+                <a class="btn btn-primary pull-right" href="{genUrl controller="statistics" action="p2p" ixp=$ixp->getId() shortname=$cust->getShortname()}">
+                    See Peer to Peer Graphs
+                </a>
+            {/if}
         </h3>
-        
+
         <p>
             Click on a graph for longer term statistics (daily, weekly, monthly and yearly).
             Change the graph type in the drop down below.
@@ -84,7 +86,7 @@
 
         <form action="{genUrl controller="statistics" action="member"}" method="post" class="form-inline">
             <input type="hidden" name="shortname" value="{$cust->getShortname()}" />
-            
+
             {if $multiIXP}
                 <strong>IXP:</strong>
                 <select name="ixp" class="chzn-select span3" onchange="this.form.submit();">
@@ -95,7 +97,7 @@
             {else}
                 <input type="hidden" name="ixp" value="{$ixp->getId()}" />
             {/if}
-            
+
             <strong>Graph Type:</strong>&nbsp;&nbsp;&nbsp;&nbsp;
             <select name="category" onchange="this.form.submit();" class="chzn-select span3">
                 {foreach from=$categories key=cname item=cvalue}
@@ -115,7 +117,7 @@
 {foreach $cust->getVirtualInterfaces() as $vi}
 
     {foreach $vi->getPhysicalInterfaces() as $pi}
-    
+
         {* ensure we're looking at a graph on the correct IXP *}
         {if $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP() neq $ixp }
             {continue}
@@ -145,7 +147,7 @@
                     {/if}
 
                 </h4>
-                
+
                 <p>
                     <br />
                     <a href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex=$pi->getMonitorindex() category=$category shortname=$cust->getShortname()}">
