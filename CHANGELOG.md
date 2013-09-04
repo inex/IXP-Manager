@@ -5,6 +5,11 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.4.8 (201309xx)
+
+
+- [BF] Do not forget to calculate the IXP statistics (7b5eb17 - Barry O'Donovan - 2013-09-04)
+
 # v3.4.7 (20130902)
 
 Add ARPA DNS zone generation.
