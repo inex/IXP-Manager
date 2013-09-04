@@ -324,7 +324,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
             }
         }
         
-        $this->verbose();
+        $this->verbose("");
     }
     
     
