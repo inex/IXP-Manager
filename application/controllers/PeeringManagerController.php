@@ -294,13 +294,23 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                         {
                             // get this customer/peer peering manager table entry
                             $pm = $this->_loadPeeringManagerEntry( $this->getCustomer(), $peer );
-                            $pm->setEmailLastSent( new DateTime() );
-                            $pm->setEmailsSent( $pm->getEmailsSent() + 1 );
-                            $pm->setUpdated( new DateTime() );
-                            $pm->setNotes(
-                                date( 'Y-m-d' ) . " [{$this->getUser()->getUsername()}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n" . $pm->getNotes()
-                            );
-                                                                
+                            
+                            if( isset( $this->_options['peeringmanager']['testmode'] ) && $this->_options['peeringmanager']['testmode']
+                                    && isset( $this->_options['peeringmanager']['testdate'] ) && $this->_options['peeringmanager']['testdate'] )
+                            {
+                                $pm->setEmailLastSent( new DateTime() );
+                                $pm->setEmailsSent( $pm->getEmailsSent() + 1 );
+                                $pm->setUpdated( new DateTime() );
+                            }
+                            
+                            if( isset( $this->_options['peeringmanager']['testmode'] ) && $this->_options['peeringmanager']['testmode']
+                                    && isset( $this->_options['peeringmanager']['testnote'] ) && $this->_options['peeringmanager']['testnote'] )
+                            {
+                                $pm->setNotes(
+                                    date( 'Y-m-d' ) . " [{$this->getUser()->getUsername()}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n" . $pm->getNotes()
+                                );
+                            }
+                                                                                            
                             $this->getD2EM()->flush();
                         }
                     }
