@@ -28,3 +28,5 @@ tools/perl-lib/IXPManager/blib/
 tools/perl-lib/IXPManager/pm_to_blib
 *.sublime-project
 *.sublime-workspace
+application/views/router-cli/tacacs/tacplus/key.cfg
+application/views/_skins/*/router-cli/tacacs/tacplus/key.cfg
