@@ -30,8 +30,7 @@ New ''application.ini'' parameters:
     peeringmanager.testnote = false
     peeringmanager.testdate = false
 
- 
-
+- [IM] Make Smokeping more configurable for multi-IXP mode (1437274 - Barry O'Donovan - 2013-09-04)
 - [IM] Peering Manager - disable recording or requests in test mode (111f1ff - Barry O'Donovan - 2013-09-04)
 - [IM] Allow peering manager test mode via application.ini (93e26e3 - Barry O'Donovan - 2013-09-04)
 - [BF] Do not forget to calculate the IXP statistics (7b5eb17 - Barry O'Donovan - 2013-09-04)
