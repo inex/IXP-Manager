@@ -5,7 +5,7 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-# v3.4.8 (201309xx)
+# v3.4.8 (20130905)
 
 
 Add TACACS (and RADIUS) configuration generation.
@@ -36,6 +36,7 @@ New ''application.ini'' parameters:
     peeringmanager.testnote = false
     peeringmanager.testdate = false
 
+- [NF] TACACS configuration imported from Perl scripts (first pass) (3ed8738 - Barry O'Donovan - 2013-09-05)
 - [IM] Make Smokeping more configurable for multi-IXP mode (1437274 - Barry O'Donovan - 2013-09-04)
 - [IM] Peering Manager - disable recording or requests in test mode (111f1ff - Barry O'Donovan - 2013-09-04)
 - [IM] Allow peering manager test mode via application.ini (93e26e3 - Barry O'Donovan - 2013-09-04)
