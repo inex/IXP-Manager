@@ -8,9 +8,10 @@ Please see the following page for upgrade instructions:
 # v3.4.8 (201309xx)
 
 
-Add TACACS configuration generation.
+Add TACACS (and RADIUS) configuration generation.
 
 See: https://github.com/inex/IXP-Manager/wiki/TACACS
+See: https://github.com/inex/IXP-Manager/wiki/RADIUS
 
 
 New ''application.ini'' parameters:
