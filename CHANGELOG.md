@@ -8,6 +8,11 @@ Please see the following page for upgrade instructions:
 # v3.4.8 (201309xx)
 
 
+Add TACACS configuration generation.
+
+See: https://github.com/inex/IXP-Manager/wiki/TACACS
+
+
 New ''application.ini'' parameters:
 
     ;; The Peering Manager allows your members to send peering requests to other members
