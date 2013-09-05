@@ -109,6 +109,27 @@ class RouterCliController extends IXP_Controller_CliAction
     }
 
     /**
+     * Action to generate a TACACS+ configuration
+     */
+    public function genTacacsConfAction()
+    {
+        $this->view->users = $this->getD2R( '\\Entities\\User' )->arrangeByType();
+    
+        $dstfile                    = $this->cliResolveParam( 'dstfile',        false );
+        $target                     = $this->cliResolveParam( 'target',         true, 'tacplus' );
+        $this->view->secret         = $this->cliResolveParam( 'secret',         true, 'soopersecret' );
+        $this->view->accountingfile = $this->cliResolveParam( 'accountingfile', true, '/var/log/tac_plus/tac_plus.log' );
+        
+        if( isset( $dstfile ) )
+        {
+            if( !$this->writeConfig( $dstfile, $this->view->render( "router-cli/tacacs/{$target}/index.cfg" ) ) )
+                fwrite( STDERR, "Error: could not save configuration data\n" );
+        }
+        else
+            echo $this->view->render( "router-cli/tacacs/{$target}/index.cfg" );
+    }
+    
+    /**
      * The collector configuration expects some data to be available. This function
      * gathers and checks that data.
      *
