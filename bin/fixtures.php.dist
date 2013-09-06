@@ -225,24 +225,26 @@ $em->flush();
 ## Vendors
 
 $vendors = [
-    "Cisco Systems",
-    "Foundry Networks",
-    "Extreme Networks",
-    "Force10 Networks",
-    "Glimmerglass",
-    "Allied Telesyn",
-    "Enterasys",
-    "Dell",
-    "Hitachi Cable",
-    "MRV",
-    "Transmode",
-    "Brocade"
+    [ "Cisco Systems", 'Cisco', 'cisco' ],
+    [ "Foundry Networks", 'Brocade', 'brocade' ],
+    [ "Extreme Networks", 'Extreme', 'extreme' ],
+    [ "Force10 Networks", 'Force10', 'force10' ],
+    [ "Glimmerglass", 'Glimmerglass', 'glimmerglass' ],
+    [ "Allied Telesyn", 'AlliedTel', 'alliedtel' ],
+    [ "Enterasys", 'Enterasys', 'enterasys' ],
+    [ "Dell", 'Dell', 'dell' ],
+    [ "Hitachi Cable", 'Hitachi', 'hitachi' ],
+    [ "MRV", 'MRV', 'mrv' ],
+    [ "Transmode", 'Transmode', 'transmode' ],
+    [ "Brocade", 'Brocade', 'brocade' ]
 ];
 
 foreach( $vendors as $vendor )
 {
     $e = new \Entities\Vendor();
-    $e->setName( $vendor );
+    $e->setName(       $vendor[0] );
+    $e->setShortname(  $vendor[1] );
+    $e->setNagiosName( $vendor[2] );
     $em->persist( $e );
 }
 
