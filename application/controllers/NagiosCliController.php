@@ -47,9 +47,9 @@ class NagiosCliController extends IXP_Controller_CliAction
     
         echo $this->view->render( 'nagios-cli/conf/switch-definitions.phtml' );
     
-        $brocade = array();
-        $cisco   = array();
-        $mrv     = array();
+        $brocade = array(); $vendor_brocade = "";
+        $cisco   = array(); $vendor_cisco   = "";
+        $mrv     = array(); $vendor_mrv     = "";
     
         $all     = [];
     
@@ -61,18 +61,21 @@ class NagiosCliController extends IXP_Controller_CliAction
             switch( $s->getVendor()->getName() )
             {
                 case 'Foundry Networks':
-                    $brocade[] = $s->getName();
+                    $brocade[] = $s;
+                    $vendor_brocade .= ( strlen( $vendor_brocade ) ? ', ' : '' ) . $s->getName();
                     break;
     
                 case 'Cisco Systems':
-                    $cisco[] = $s->getName();
+                    $cisco[] = $s;
+                    $vendor_cisco .= ( strlen( $vendor_cisco ) ? ', ' : '' ) . $s->getName();
                     break;
     
                 case 'MRV':
-                    $mrv[] = $s->getName();
+                    $mrv[] = $s;
+                    $vendor_mrv .= ( strlen( $vendor_mrv ) ? ', ' : '' ) . $s->getName();
                     break;
             }
-    
+
             $all[] = $s->getName();
     
             if( isset( $locations[ $s->getCabinet()->getLocation()->getShortname() ] ) )
@@ -85,9 +88,9 @@ class NagiosCliController extends IXP_Controller_CliAction
     
         $this->view->locations = $locations;
     
-        $this->view->vendor_brocade = implode( ', ', $brocade );
-        $this->view->vendor_cisco   = implode( ', ', $cisco   );
-        $this->view->vendor_mrv     = implode( ', ', $mrv     );
+        $this->view->brocade = $brocade;   $this->view->vendor_brocade = $vendor_brocade;
+        $this->view->cisco   = $cisco;     $this->view->vendor_cisco   = $vendor_cisco;
+        $this->view->mrv     = $mrv;       $this->view->vendor_mrv     = $vendor_mrv;
     
         echo $this->view->render( 'nagios-cli/conf/switch-templates.phtml' );
     }

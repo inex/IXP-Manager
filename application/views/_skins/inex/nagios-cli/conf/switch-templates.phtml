@@ -2,8 +2,8 @@
 {foreach $locations as $name => $switches}
 
 define hostgroup {
-        hostgroup_name          INEX-Switches-{$name}
-        alias                   INEX Switches at {$name}
+        hostgroup_name          IXP-Switches-{$name}
+        alias                   IXP Switches at {$name}
         members                 {$switches}
 
 }
@@ -12,65 +12,72 @@ define hostgroup {
 
 
 define hostgroup {
-        hostgroup_name          INEX-Production-Switches
-        alias                   INEX Production Switches (all)
+        hostgroup_name          IXP-Production-Switches
+        alias                   IXP Production Switches (all)
         members                 {$all}
 
 }
 
 
+{if count( $brocade )}
 define hostgroup {
-        hostgroup_name          INEX-Switches-Brocade
-        alias                   INEX Brocade Switches
+        hostgroup_name          IXP-Switches-Brocade
+        alias                   IXP Brocade Switches
         members                 {$vendor_brocade}
 
 }
+{/if}
 
 
-#define hostgroup {
-#        hostgroup_name          INEX-Switches-Cisco
-#        alias                   INEX Cisco Switches
-#        members                 {$vendor_cisco}
-#
-#}
-
-
+{if count( $cisco )}
 define hostgroup {
-        hostgroup_name          INEX-Switches-MRV
-        alias                   INEX MRV Switches
+        hostgroup_name          IXP-Switches-Cisco
+        alias                   IXP Cisco Switches
+        members                 {$vendor_cisco}
+
+}
+{/if}
+
+{if count( $mrv )}
+define hostgroup {
+        hostgroup_name          IXP-Switches-MRV
+        alias                   IXP MRV Switches
         members                 {$vendor_mrv}
 
 }
+{/if}
 
 
-
-define service{ldelim}
-        use                             inex-production-switch-service
-        hostgroup_name                  INEX-Switches-Brocade
+{if count( $brocade )}
+define service{
+        use                             ixp-production-switch-service
+        hostgroup_name                  IXP-Switches-Brocade
         service_description             Chassis
-        check_command                   check_foundry_chassis!fjvrGzHqr
-{rdelim}
+        check_command                   check_foundry_chassis!{$brocade[0]->getSnmppasswd()}
+}
+{/if}
 
-#define service  {ldelim}
-#        use                             inex-production-switch-service
-#        service_description             Temperature
-#        hostgroup_name                  INEX-Switches-Cisco
-#        check_command                   check_cisco_temperature!fjvrGzHqr!32!38
-#{rdelim}
+{if count( $cisco )}
+define service  {
+        use                             ixp-production-switch-service
+        service_description             Temperature
+        hostgroup_name                  IXP-Switches-Cisco
+        check_command                   check_cisco_temperature!{$cisco[0]->getSnmppasswd()}!32!38
+}
+{/if}
 
 
-
-define service{ldelim}
-        use                             inex-production-switch-service
-        hostgroup_name                  INEX-Production-Switches
+define service{
+        use                             ixp-production-switch-service
+        hostgroup_name                  IXP-Production-Switches
         service_description             ping - IPv4
         check_command                   check_ping_ipv4!10!100.0,10%!200.0,20%
-{rdelim}
+}
 
-define service  {ldelim}
-        use                             inex-production-switch-service
+define service  {
+        use                             ixp-production-switch-service
         service_description             SSH
-        hostgroup_name                  INEX-Production-Switches
+        hostgroup_name                  IXP-Production-Switches
         check_command                   check_ssh
-{rdelim}
+}
 
