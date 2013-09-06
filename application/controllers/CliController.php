@@ -63,61 +63,6 @@ class CliController extends IXP_Controller_Action
     {
         print "This is a demo action.\n";
     }
-
-
-    /**
-     * Generates a Nagios configuration for supported switches in the database
-     */
-    public function generateNagiosConfigAction()
-    {
-        $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getAndCache( true );
-        
-        echo $this->view->render( 'cli/nagios/switch-definitions.phtml' );
-
-        $brocade = array();
-        $cisco   = array();
-        $mrv     = array();
-
-        $all     = [];
-
-        foreach( $switches as $s )
-        {
-            $this->view->sw = $s;
-            echo $this->view->render( 'cli/nagios/switch-hosts.phtml' );
-
-            switch( $s->getVendor()->getName() )
-            {
-                case 'Foundry Networks':
-                    $brocade[] = $s->getName();
-                    break;
-
-                case 'Cisco Systems':
-                    $cisco[] = $s->getName();
-                    break;
-
-                case 'MRV':
-                    $mrv[] = $s->getName();
-                    break;
-            }
-
-            $all[] = $s->getName();
-
-            if( isset( $locations[ $s->getCabinet()->getLocation()->getShortname() ] ) )
-                $locations[ $s->getCabinet()->getLocation()->getShortname() ] .= ", " . $s->getName();
-            else
-                $locations[ $s->getCabinet()->getLocation()->getShortname() ] = $s->getName();
-        }
-
-        $this->view->all = implode( ', ', $all );
-
-        $this->view->locations = $locations;
-        
-        $this->view->vendor_brocade = implode( ', ', $brocade );
-        $this->view->vendor_cisco   = implode( ', ', $cisco   );
-        $this->view->vendor_mrv     = implode( ', ', $mrv     );
-
-        echo $this->view->render( 'cli/nagios/switch-templates.phtml' );
-    }
     
     
     /**
