@@ -47,35 +47,23 @@ class NagiosCliController extends IXP_Controller_CliAction
     
         echo $this->view->render( 'nagios-cli/conf/switch-definitions.phtml' );
     
-        $brocade = array(); $vendor_brocade = "";
-        $cisco   = array(); $vendor_cisco   = "";
-        $mrv     = array(); $vendor_mrv     = "";
-    
-        $all     = [];
+        $vendors        = [];
+        $vendor_strings = '';
+        $all            = [];
     
         foreach( $switches as $s )
         {
             $this->view->sw = $s;
             echo $this->view->render( 'nagios-cli/conf/switch-hosts.phtml' );
-    
-            switch( $s->getVendor()->getName() )
-            {
-                case 'Foundry Networks':
-                    $brocade[] = $s;
-                    $vendor_brocade .= ( strlen( $vendor_brocade ) ? ', ' : '' ) . $s->getName();
-                    break;
-    
-                case 'Cisco Systems':
-                    $cisco[] = $s;
-                    $vendor_cisco .= ( strlen( $vendor_cisco ) ? ', ' : '' ) . $s->getName();
-                    break;
-    
-                case 'MRV':
-                    $mrv[] = $s;
-                    $vendor_mrv .= ( strlen( $vendor_mrv ) ? ', ' : '' ) . $s->getName();
-                    break;
-            }
 
+            $vendors[ $s->getVendor()->getShortname() ][] = $s;
+            
+            if( !isset( $vendor_strings[ $s->getVendor()->getShortname() ] ) )
+                $vendor_strings[ $s->getVendor()->getShortname() ] = '';
+            
+            $vendor_strings[ $s->getVendor()->getShortname() ]
+                .= ( strlen( $vendor_strings[ $s->getVendor()->getShortname() ] ) ? ', ' : '' ) . $s->getName();
+            
             $all[] = $s->getName();
     
             if( isset( $locations[ $s->getCabinet()->getLocation()->getShortname() ] ) )
@@ -84,14 +72,12 @@ class NagiosCliController extends IXP_Controller_CliAction
                 $locations[ $s->getCabinet()->getLocation()->getShortname() ] = $s->getName();
         }
     
-        $this->view->all = implode( ', ', $all );
-    
         $this->view->locations = $locations;
     
-        $this->view->brocade = $brocade;   $this->view->vendor_brocade = $vendor_brocade;
-        $this->view->cisco   = $cisco;     $this->view->vendor_cisco   = $vendor_cisco;
-        $this->view->mrv     = $mrv;       $this->view->vendor_mrv     = $vendor_mrv;
-    
+        $this->view->vendors = $vendors;
+        $this->view->vendor_strings = $vendor_strings;
+        $this->view->all = implode( ', ', $all );
+        
         echo $this->view->render( 'nagios-cli/conf/switch-templates.phtml' );
     }
     

@@ -18,53 +18,35 @@ define hostgroup {
 
 }
 
-
-{if count( $brocade )}
+{foreach $vendors as $shortname => $v}
 define hostgroup {
-        hostgroup_name          IXP-Switches-Brocade
-        alias                   IXP Brocade Switches
-        members                 {$vendor_brocade}
+        hostgroup_name          IXP-Switches-{$shortname}
+        alias                   IXP {$shortname} Switches
+        members                 {$vendor_strings.$shortname}
 
 }
-{/if}
+
+{/foreach}
 
 
-{if count( $cisco )}
-define hostgroup {
-        hostgroup_name          IXP-Switches-Cisco
-        alias                   IXP Cisco Switches
-        members                 {$vendor_cisco}
-
-}
-{/if}
-
-{if count( $mrv )}
-define hostgroup {
-        hostgroup_name          IXP-Switches-MRV
-        alias                   IXP MRV Switches
-        members                 {$vendor_mrv}
-
-}
-{/if}
-
-
-{if count( $brocade )}
+{foreach $vendors as $shortname => $v}
 define service{
         use                             ixp-production-switch-service
-        hostgroup_name                  IXP-Switches-Brocade
+        hostgroup_name                  IXP-Switches-{$shortname}
         service_description             Chassis
-        check_command                   check_foundry_chassis!{$brocade[0]->getSnmppasswd()}
+        check_command                   check_{$v[0]->getVendor()->getNagiosName()}_chassis!{$v[0]->getSnmppasswd()}
 }
-{/if}
 
-{if count( $cisco )}
+{if $shortname eq 'Cisco'}
 define service  {
         use                             ixp-production-switch-service
         service_description             Temperature
-        hostgroup_name                  IXP-Switches-Cisco
-        check_command                   check_cisco_temperature!{$cisco[0]->getSnmppasswd()}!32!38
+        hostgroup_name                  IXP-Switches-{$shortname}
+        check_command                   check_{$v[0]->getVendor()->getNagiosName()}_temperature!{$v[0]->getSnmppasswd()}!32!38
 }
 {/if}
+
+{/foreach}
 
 
 define service{
