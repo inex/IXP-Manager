@@ -5,6 +5,15 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.4.9 (201309xx)
+
+Schema update required:
+
+    ALTER TABLE vendor 
+        ADD shortname VARCHAR(255) DEFAULT NULL, 
+        ADD nagios_name VARCHAR(255) DEFAULT NULL;
+
+
 # v3.4.8 (20130905)
 
 

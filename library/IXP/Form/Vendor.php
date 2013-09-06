@@ -45,6 +45,26 @@ class IXP_Form_Vendor extends IXP_Form
 
         $this->addElement( $name );
 
+        $shortname = $this->createElement( 'text', 'shortname' );
+        $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setRequired( true )
+            ->setAttrib( 'class', 'span3' )
+            ->setLabel( 'Short Name' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+
+        $this->addElement( $shortname );
+
+        $nagios_name = $this->createElement( 'text', 'nagios_name' );
+        $nagios_name->addValidator( 'stringLength', false, array( 1, 255 ) )
+            ->setRequired( true )
+            ->setAttrib( 'class', 'span3' )
+            ->setLabel( 'Nagios Name' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+
+        $this->addElement( $nagios_name );
+
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }

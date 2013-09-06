@@ -54,8 +54,10 @@ class VendorController extends IXP_Controller_FrontEnd
             'listOrderByDir' => 'ASC',
         
             'listColumns'    => [
-                'id'        => [ 'title' => 'UID', 'display' => false ],
-                'name'      => 'Name'
+                'id'             => [ 'title' => 'UID', 'display' => false ],
+                'name'           => 'Name',
+                'shortname'      => 'Short Name',
+                'nagios_name'    => 'Nagios Name'
             ]
         ];
     
@@ -71,7 +73,7 @@ class VendorController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $qb = $this->getD2EM()->createQueryBuilder()
-            ->select( 'v.id AS id, v.name AS name' )
+            ->select( 'v.id AS id, v.name AS name, v.shortname AS shortname, v.nagios_name AS nagios_name' )
             ->from( '\\Entities\\Vendor', 'v' );
     
         if( isset( $this->_feParams->listOrderBy ) )
