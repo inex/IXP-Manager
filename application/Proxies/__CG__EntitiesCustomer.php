@@ -633,6 +633,12 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::isRouteServerClient();
     }
 
+    public function isAS112Client()
+    {
+        $this->__load();
+        return parent::isAS112Client();
+    }
+
     public function setIRRDB(\Entities\IRRDBConfig $iRRDB = NULL)
     {
         $this->__load();

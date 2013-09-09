@@ -1,0 +1,66 @@
+
+{foreach $locations as $name => $switches}
+
+define hostgroup {
+        hostgroup_name          IXP-Switches-{$name}
+        alias                   IXP Switches at {$name}
+        members                 {$switches}
+}
+
+{/foreach}
+
+
+define hostgroup {
+        hostgroup_name          IXP-Production-Switches
+        alias                   IXP Production Switches (all)
+        members                 {$all}
+}
+
+{foreach $vendors as $shortname => $v}
+define hostgroup {
+        hostgroup_name          IXP-Switches-{$shortname}
+        alias                   IXP {$shortname} Switches
+        members                 {$vendor_strings.$shortname}
+}
+
+{/foreach}
+
+
+{foreach $vendors as $shortname => $v}
+
+{* currently don't have a MRV chassis check @ INEX *}
+{if $shortname neq 'MRV'}
+define service{
+        use                             ixp-production-switch-service
+        hostgroup_name                  IXP-Switches-{$shortname}
+        service_description             Chassis
+        check_command                   check_{$v[0]->getVendor()->getNagiosName()}_chassis!{$v[0]->getSnmppasswd()}
+}
+{/if}
+
+{if $shortname eq 'Cisco'}
+define service  {
+        use                             ixp-production-switch-service
+        service_description             Temperature
+        hostgroup_name                  IXP-Switches-{$shortname}
+        check_command                   check_{$v[0]->getVendor()->getNagiosName()}_temperature!{$v[0]->getSnmppasswd()}!32!38
+}
+{/if}
+
+{/foreach}
+
+
+define service{
+        use                             ixp-production-switch-service
+        hostgroup_name                  IXP-Production-Switches
+        service_description             ping - IPv4
+        check_command                   check_ping_ipv4!10!100.0,10%!200.0,20%
+}
+
+define service  {
+        use                             ixp-production-switch-service
+        service_description             SSH
+        hostgroup_name                  IXP-Production-Switches
+        check_command                   check_ssh
+}
+

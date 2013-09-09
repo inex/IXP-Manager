@@ -1,0 +1,12 @@
+#
+# {$sw->getName()} - {$sw->getCabinet()->getCololocation()}, {$sw->getCabinet()->getLocation()->getName()}
+#
+
+define host {
+        use                     ixp-production-switch
+        host_name               {$sw->getName()}
+        alias                   {$sw->getName()}
+        address                 {$sw->getIpv4addr()}
+}
+
+

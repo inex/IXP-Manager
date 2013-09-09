@@ -5,6 +5,8 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="name" type="string" length="255" nullable="true"/>
+    <field name="shortname" type="string" length="255" nullable="true"/>
+    <field name="nagios_name" type="string" length="255" nullable="true"/>
     <one-to-many field="Switches" target-entity="Entities\Switcher" mapped-by="Vendor"/>
   </entity>
 </doctrine-mapping>

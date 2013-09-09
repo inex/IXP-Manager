@@ -272,6 +272,8 @@
     <entity name="Vendor" uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="ec333e95-5325-419e-a114-d47cd5b622e9"/>
       <field name="name" type="string" size="255" uuid="3f0a1fff-6d39-4baf-99c2-15f90685c9bd"/>
+      <field name="shortname" type="string" size="255" uuid="d9673ae5-0cf2-4d6e-9d9b-e357e053940c"/>
+      <field name="nagios_name" type="string" size="255" uuid="eb2ee353-93bd-4997-bdb6-3bc5c21d2051"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Vendor</attribute>
         <attribute name="table">vendor</attribute>
@@ -923,7 +925,7 @@
     <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
     <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-26" center-position-y="0"/>
     <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" position-x="1391" position-y="479" size-x="0" size-x2="114" size-y="0" size-y2="87"/>
-    <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" position-x="629" position-y="256" size-x="0" size-x2="104" size-y="0" size-y2="45"/>
+    <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
     <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bk-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="1829" size-y="353" size-y2="1170"/>
     <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
     <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" position-x="1166" position-y="564" size-x="0" size-x2="122" size-y="0" size-y2="171"/>

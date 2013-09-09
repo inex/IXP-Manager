@@ -81,10 +81,34 @@ class Vendor extends \Entities\Vendor implements \Doctrine\ORM\Proxy\Proxy
         return parent::getSwitches();
     }
 
+    public function setShortname($shortname)
+    {
+        $this->__load();
+        return parent::setShortname($shortname);
+    }
+
+    public function getShortname()
+    {
+        $this->__load();
+        return parent::getShortname();
+    }
+
+    public function setNagiosName($nagiosName)
+    {
+        $this->__load();
+        return parent::setNagiosName($nagiosName);
+    }
+
+    public function getNagiosName()
+    {
+        $this->__load();
+        return parent::getNagiosName();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'id', 'Switches');
+        return array('__isInitialized__', 'name', 'shortname', 'nagios_name', 'id', 'Switches');
     }
 
     public function __clone()

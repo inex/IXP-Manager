@@ -3,13 +3,17 @@
 # Nagios configuration templates and is following by dynamic host
 # configurations.
 #
-# To edit the static definitions, edit:
-#    applicationviews/cli/nagios/switch-definitions.tpl
-# rather than this file directly as it is automatically generated.
+#  Please see: https://github.com/inex/IXP-Manager/wiki/Nagios
+#
+# You should not need to edit these files - instead use your own custom skins. If
+# you can't effect the changes you need with skinning, consider posting to the mailing
+# list to see if it can be achieved / incorporated.
+#
+# Skinning: https://github.com/inex/IXP-Manager/wiki/Skinning
 #
 
-define host{ldelim}
-        name                            inex-production-switch
+define host{
+        name                            ixp-production-switch
         notifications_enabled           1               ; Host notifications are enabled
         event_handler_enabled           0               ; Host event handler is enabled
         flap_detection_enabled          1               ; Flap detection is enabled
@@ -34,12 +38,12 @@ define host{ldelim}
 
         register                        0               ; DONT REGISTER THIS DEFINITION - ITS NOT A REAL HOST, JUST A TEMPLATE!
 
-        contact_groups                  inex-operations
-{rdelim}
+        contact_groups                  ixp-operations
+}
 
 
-define service{ldelim}
-        name                            inex-production-switch-service    ; The 'name' of this service template, referenced in other service definitions
+define service{
+        name                            ixp-production-switch-service    ; The 'name' of this service template, referenced in other service definitions
         active_checks_enabled           1               ; Active service checks are enabled
         passive_checks_enabled          1               ; Passive service checks are enabled/accepted
         parallelize_check               1               ; Active service checks should be parallelized (disabling this can lead to major performance problems)
@@ -51,7 +55,7 @@ define service{ldelim}
         process_perf_data               1               ; Process performance data
         retain_status_information       1               ; Retain status information across program restarts
         retain_nonstatus_information    1               ; Retain non-status information across program restarts
-        contact_groups                  inex-operations
+        contact_groups                  ixp-operations
 
         max_check_attempts              3
         normal_check_interval           5
@@ -68,7 +72,7 @@ define service{ldelim}
         is_volatile                     0
 
         register                        0               ; DONT REGISTER THIS DEFINITION - ITS NOT A REAL SERVICE, JUST A TEMPLATE!
-{rdelim}
+}
 
 
 #
