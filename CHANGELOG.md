@@ -5,13 +5,25 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-# v3.4.9 (201309xx)
+# v3.4.9 (20130909)
+
+Improve and refactor Nagios configuration generation for IXP switches.
+
+See: https://github.com/inex/IXP-Manager/wiki/Nagios
 
 Schema update required:
 
     ALTER TABLE vendor 
         ADD shortname VARCHAR(255) DEFAULT NULL, 
         ADD nagios_name VARCHAR(255) DEFAULT NULL;
+
+
+- [IM] Update Nagios switch config generator with changes to vendor table (3768516 - Barry O'Donovan - 2013-09-06)
+- [DB] Update fixtures to reflect changes to vendor table (4468595 - Barry O'Donovan - 2013-09-06)
+- [DB] Add two new columns to vendor table (a12bb02 - Barry O'Donovan - 2013-09-06)
+- [IM] Nagios config more dynamic (051aa57 - Barry O'Donovan - 2013-09-06)
+- [HK] s/inex/ixp (f84d075 - Barry O'Donovan - 2013-09-06)
+- [HK] Migrate Nagios config to dedicated controller (47e3164 - Barry O'Donovan - 2013-09-06)
 
 
 # v3.4.8 (20130905)
