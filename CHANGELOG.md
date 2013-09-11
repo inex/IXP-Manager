@@ -34,7 +34,12 @@ Schema update required:
             FOREIGN KEY (customer_id) REFERENCES cust (id);
 
 
-
+- [IM] BGPQ CLI tool now with documentation (e29864b - Barry O'Donovan - 2013-09-11)
+- [DB] Rename IRRDB prefix table and add repository (9005e60 - Barry O'Donovan - 2013-09-11)
+- [NF] [First pass] Get member prefixes from whois servers via BGPQ (ae149d7 - Barry O'Donovan - 2013-09-11)
+- [NF] Function to get the appropriate AS macro or ASN for a customer  for a given protocol (7aca76e - Barry O'Donovan - 2013-09-11)
+- [DB] New table to store registered IRRDB prefixes for members (72afbe6 - Barry O'Donovan - 2013-09-11)
+- [BF] Ignore hosts that are not connected (870f6c9 - Barry O'Donovan - 2013-09-11)
 
 
 # v3.4.10 (20130911)
