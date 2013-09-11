@@ -1860,4 +1860,42 @@ class Customer
     {
         return $this->IXPs;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $IrrdbPrefixes;
+
+
+    /**
+     * Add IrrdbPrefixes
+     *
+     * @param \Entities\IrrdbPrefix $irrdbPrefixes
+     * @return Customer
+     */
+    public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->IrrdbPrefixes[] = $irrdbPrefixes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IrrdbPrefixes
+     *
+     * @param \Entities\IrrdbPrefix $irrdbPrefixes
+     */
+    public function removeIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->IrrdbPrefixes->removeElement($irrdbPrefixes);
+    }
+
+    /**
+     * Get IrrdbPrefixes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getIrrdbPrefixes()
+    {
+        return $this->IrrdbPrefixes;
+    }
 }
