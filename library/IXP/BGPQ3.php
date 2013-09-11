@@ -51,6 +51,13 @@ class IXP_BGPQ3 extends Zend_Exception
     private $sources = false;
     
     
+    /**
+     * Constructor
+     *
+     * @param string $path The full executable path of the BGPQ3 utility
+     * @param string $whois Whois server - defaults to BGPQ's own default
+     * @param string $sources Whois server sources - defaults to BGPQ's own default
+     */
     public function __construct( $path, $whois = false, $sources = false )
     {
         $this->path = $path;
@@ -62,23 +69,42 @@ class IXP_BGPQ3 extends Zend_Exception
             $this->sources = $sources;
     }
     
-    public function getPrefixList( $asmacro, $proto = 4, $name = 'pl' )
+    /**
+     * Get the IRRDB prefix list (based on route[6]: objects) for a given AS
+     * number / macro and protocol.
+     *
+     * Returns an array of prefixes (or empty array).
+     *
+     * @param string $asmacro As number (of the form as1234) or AS macro
+     * @param int $proto The IP protocol - 4 or 6.
+     * @throws IXP_Exception
+     * @return array The array of prefixes (or empty array).
+     */
+    public function getPrefixList( $asmacro, $proto = 4 )
     {
-        $json = $this->execute( '-l ' . escapeshellarg( $name ) . ' -j ' . escapeshellarg( $asmacro ), $proto );
+        $json = $this->execute( '-l pl -j ' . escapeshellarg( $asmacro ), $proto );
         $array = json_decode( $json, true );
         
-        if( !isset( $array[ $name ] ) )
-            throw new IXP_Exception( "Named prefix list [{$name}] expected but not found!" );
+        if( !isset( $array[ 'pl' ] ) )
+            throw new IXP_Exception( "Named prefix list expected but not found!" );
         
         $prefixes = [];
         // we're going to ignore the 'exact' for now.
-        foreach( $array[ $name ] as $ar )
+        foreach( $array[ 'pl' ] as $ar )
             $prefixes[] = $ar['prefix'];
         
         return $prefixes;
     }
     
-    
+    /**
+     * Ececute the BGPQ command line utility using the defined (or default)
+     * whois host and sources.
+     *
+     * @param string $cmd The query part ot the BGPQ command. I.e. other switches besides -6, -h, -S.
+     * @param int $proto The protocol. If 6, adds the -6 switch
+     * @throws IXP_Exception
+     * @return string The output from the shell command.
+     */
     private function execute( $cmd, $proto = 4 )
     {
         if( $this->whois )

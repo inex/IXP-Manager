@@ -34,6 +34,8 @@
 class IrrdbCliController extends IXP_Controller_CliAction
 {
     /**
+     * Update the IrrdbPrefix table with the members' registered route: and route6: IRRDB
+     * objects. These are used for filtering in the route server configuration generator.
      */
     public function updatePrefixDbAction()
     {
@@ -42,8 +44,8 @@ class IrrdbCliController extends IXP_Controller_CliAction
         
         foreach( $customers as $c )
         {
-            //$bgpq3->setWhois( $c->getIRRDB()->getHost() )
-            //      ->setSources( $c->getIRRDB()->getSource() );
+            //$bgpq3->setWhois( $c->getIRRDB()->getHost() );
+            $bgpq3->setSources( $c->getIRRDB()->getSource() );
             
             foreach( [ 4, 6 ] as $protocol )
             {
@@ -53,7 +55,25 @@ class IrrdbCliController extends IXP_Controller_CliAction
             }
         }
     }
-    
+
+    /**
+     * Update the database IrrdbPrefix table with the member's prefixes for a given protocol.
+     *
+     * This is transaction safe and works as follows:
+     *
+     * * Record the current time and use for last seen stamps
+     * * For each prefix:
+     *   * try to UPDATE a row of the same details stamping a last seen time
+     *   * if UPDATE fails, INSERT instead
+     * * delete any prefixes for this customer and protocol with a last seen before the recorded current time.
+     *
+     * The above is all one transaction ensuring the member's prefixes are available to any script requiring them.
+     *
+     * @param \Entities\Customer $cust The customer to update the prefixes of
+     * @param array $prefixes An array of prefixes
+     * @param int $protocol The protocol to use (4 or 6)
+     * @throws Exception
+     */
     private function updateCustomerPrefixes( $cust, $prefixes, $protocol )
     {
         $conn = $this->getD2EM()->getConnection();
@@ -69,14 +89,14 @@ class IrrdbCliController extends IXP_Controller_CliAction
             foreach( $prefixes as $prefix )
             {
                 $update = $conn->executeUpdate(
-                    "UPDATE IrrdbPrefix SET last_seen = ? WHERE customer_id = ? AND prefix = ? AND protocol = ?",
+                    "UPDATE irrdb_prefix SET last_seen = ? WHERE customer_id = ? AND prefix = ? AND protocol = ?",
                         [ $currtime, $cust->getId(), $prefix, $protocol ]
                 );
                 
                 if( !$update )
                 {
                     $conn->executeUpdate(
-                        "INSERT INTO IrrdbPrefix ( customer_id, prefix, protocol, last_seen, first_seen ) VALUES ( ?, ?, ?, ?, ? )",
+                        "INSERT INTO irrdb_prefix ( customer_id, prefix, protocol, last_seen, first_seen ) VALUES ( ?, ?, ?, ?, ? )",
                             [ $cust->getId(), $prefix, $protocol, $currtime, $currtime ]
                     );
                 }
@@ -84,7 +104,7 @@ class IrrdbCliController extends IXP_Controller_CliAction
             
             // remove any old prefixes
             $conn->executeUpdate(
-                    "DELETE FROM IrrdbPrefix WHERE customer_id = ? AND protocol = ? AND last_seen < ?",
+                    "DELETE FROM irrdb_prefix WHERE customer_id = ? AND protocol = ? AND last_seen < ?",
                     [ $cust->getId(), $protocol, $currtime ]
             );
                 
