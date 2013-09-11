@@ -19,7 +19,11 @@ and as such the following has been added to `application.ini.dist`:
 If it is not set, that service will not be added to Nagios by default. Remember - skin
 the Nagios configuration directory rather than editing those files directly.
 
-
+- [BF] Ignore hosts that are not connected (870f6c9 - Barry O'Donovan - 2013-09-11)
+- [IM] Reimplement busy hosts flag for Nagios (78e4e6a - Barry O'Donovan - 2013-09-11)
+- [IM] Reimplement busy hosts flag for Nagios (8a225b1 - Barry O'Donovan - 2013-09-11)
+- [BF] Only add customer hostgroup if there are hosts (76b7b3e - Barry O'Donovan - 2013-09-11)
+- [BF] Check correct protocol enabled and limit hosts to those that can be pinged (80af008 - Barry O'Donovan - 2013-09-11)
 - [BF] Typo on default route masklen (5e6da1d - Barry O'Donovan - 2013-09-11)
 - [IM] Nagios member monitoring (3c7cd7b - Barry O'Donovan - 2013-09-11)
 - [IM] Route collector Nagios monitoring service (dd6191a - Barry O'Donovan - 2013-09-11)
