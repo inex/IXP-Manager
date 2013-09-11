@@ -7,7 +7,7 @@ Please see the following page for upgrade instructions:
 
 # v3.4.10 (20130911)
 
-Contiinue adding Nagios improvements - this time for monitoring members.
+Continue adding Nagios improvements - this time for monitoring members.
 
 One of the templates (`views/nagios-cli/conf/members-service-rcmon.cfg`) monitors 
 member BGP sessions to the route collector. For this, an SNMP v2 password is required
@@ -19,6 +19,11 @@ and as such the following has been added to `application.ini.dist`:
 If it is not set, that service will not be added to Nagios by default. Remember - skin
 the Nagios configuration directory rather than editing those files directly.
 
+
+- [BF] Typo on default route masklen (5e6da1d - Barry O'Donovan - 2013-09-11)
+- [IM] Nagios member monitoring (3c7cd7b - Barry O'Donovan - 2013-09-11)
+- [IM] Route collector Nagios monitoring service (dd6191a - Barry O'Donovan - 2013-09-11)
+- [IM] Utility function to provide an array of all VLAN interfaces on a given IXP (5d7d210 - Barry O'Donovan - 2013-09-11)
 
 
 # v3.4.9 (20130909)
