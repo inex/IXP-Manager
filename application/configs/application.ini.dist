@@ -439,6 +439,9 @@ smokeping.oconf.syslogfacility = "local0"
 ;router.collector.conf.asn = 65500
 ;router.collector.conf.dstpath = APPLICATION_PATH "/../var/spool"
 
+; Used by nagios-cli.gen-members-conf action to monitor route collector BGP sessions
+;router.collector.conf.snmppasswd = 'xxxx'
+
 
 ; sflow parameters (peer to peer graphs)
 sflow.enabled = true
