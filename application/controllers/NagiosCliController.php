@@ -120,6 +120,18 @@ class NagiosCliController extends IXP_Controller_CliAction
             
             foreach( $c->getVirtualInterfaces() as $vi )
             {
+                // make sure we have a phsyical connection
+                $haveConnection = false;
+                
+                foreach( $vi->getPhysicalInterfaces() as $pi )
+                {
+                    if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED )
+                        $haveConnection = true;
+                }
+                
+                if( !$haveConnection )
+                    continue;
+                
                 foreach( $vi->getVlanInterfaces() as $vli )
                 {
                     if( $vli->getVlan()->getPrivate() )
@@ -127,12 +139,13 @@ class NagiosCliController extends IXP_Controller_CliAction
                     
                     foreach( [ 'v4', 'v6' ] as $proto )
                     {
-                        if( $vli->getIpv4enabled() )
+                        $getIpEnabled = "getIp{$proto}enabled";
+                        $getIpCanping = "getIp{$proto}canping";
+                        $getIpAddress = "getIP{$proto}Address";
+                        $getIpMonBGP  = "getIp{$proto}monitorrcbgp";
+                         
+                        if( $vli->$getIpEnabled() && $vli->$getIpCanping() )
                         {
-                            $getIpAddress = "getIP{$proto}Address";
-                            $getIpCanping = "getIp{$proto}canping";
-                            $getIpMonBGP  = "getIp{$proto}monitorrcbgp";
-                            
                             if( !$vli->$getIpAddress() )
                                 continue;
                             
@@ -144,6 +157,7 @@ class NagiosCliController extends IXP_Controller_CliAction
                             $custs[ $c->getId() ]['vints'][ $vli->getId() ][$proto]['canping']  = $vli->$getIpCanping();
                             $custs[ $c->getId() ]['vints'][ $vli->getId() ][$proto]['monrc']    = $vli->$getIpMonBGP();
                             $custs[ $c->getId() ]['vints'][ $vli->getId() ][$proto]['vlan']     = $vli->getVlan()->getName();
+                            $custs[ $c->getId() ]['vints'][ $vli->getId() ][$proto]['busyhost'] = $vli->getBusyhost();
                             
                             $pi = $vi->getPhysicalInterfaces()[0];
                             $sw = $pi->getSwitchPort()->getSwitcher();
