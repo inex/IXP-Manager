@@ -5,6 +5,22 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.4.10 (20130911)
+
+Contiinue adding Nagios improvements - this time for monitoring members.
+
+One of the templates (`views/nagios-cli/conf/members-service-rcmon.cfg`) monitors 
+member BGP sessions to the route collector. For this, an SNMP v2 password is required
+and as such the following has been added to `application.ini.dist`:
+
+    ; Used by nagios-cli.gen-members-conf action to monitor route collector BGP sessions
+    ;router.collector.conf.snmppasswd = 'xxxx'
+
+If it is not set, that service will not be added to Nagios by default. Remember - skin
+the Nagios configuration directory rather than editing those files directly.
+
+
+
 # v3.4.9 (20130909)
 
 Improve and refactor Nagios configuration generation for IXP switches.
