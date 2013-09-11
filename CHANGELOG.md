@@ -5,6 +5,38 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.5.0 (20120911)
+
+See: https://github.com/inex/IXP-Manager/wiki/IRRDB-Prefixes
+
+IXP Manager can now maintain a list of member `route:/route6:` prefixes as registered in 
+IRRDBs in its database and then use these to, for example, generate strict inbound filters 
+on route servers.
+
+Schema update required:
+
+    CREATE TABLE irrdb_prefix (
+        id BIGINT AUTO_INCREMENT NOT NULL, 
+        customer_id INT NOT NULL, 
+        prefix VARCHAR(255) NOT NULL, 
+        protocol INT NOT NULL, 
+        first_seen DATETIME NOT NULL, 
+        last_seen DATETIME NOT NULL, 
+        
+        INDEX IDX_873CF9E69395C3F3 (customer_id), 
+        UNIQUE INDEX custprefix (prefix, protocol, customer_id), 
+        PRIMARY KEY(id)
+    ) 
+        DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    ALTER TABLE irrdb_prefix 
+        ADD CONSTRAINT FK_873CF9E69395C3F3 
+            FOREIGN KEY (customer_id) REFERENCES cust (id);
+
+
+
+
+
 # v3.4.10 (20130911)
 
 Continue adding Nagios improvements - this time for monitoring members.

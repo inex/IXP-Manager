@@ -1860,4 +1860,70 @@ class Customer
     {
         return $this->IXPs;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $IrrdbPrefixes;
+
+
+    /**
+     * Add IrrdbPrefixes
+     *
+     * @param \Entities\IrrdbPrefix $irrdbPrefixes
+     * @return Customer
+     */
+    public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->IrrdbPrefixes[] = $irrdbPrefixes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IrrdbPrefixes
+     *
+     * @param \Entities\IrrdbPrefix $irrdbPrefixes
+     */
+    public function removeIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->IrrdbPrefixes->removeElement($irrdbPrefixes);
+    }
+
+    /**
+     * Get IrrdbPrefixes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getIrrdbPrefixes()
+    {
+        return $this->IrrdbPrefixes;
+    }
+    
+    /**
+     * Useful function to get the appropriate AS macro or ASN for a customer
+     * for a given protocol.
+     *
+     * One example usage is in IrrdbCli for bgpq3. bgpq3 requires ASNs to
+     * be formatted as `asxxxx` so we set `$asnPrefix = 'as'` in this case.
+     *
+     * @param int $protocol One of 4 or 6 (defaults to 4)
+     * @param string $asnPrefix A prefix for the ASN if no macro is present. See above.
+     * @return The ASN / AS macro as appropriate
+     */
+    public function resolveAsMacro( $protocol = 4, $asnPrefix = '' )
+    {
+        if( !in_array( $protocol, [ 4, 6 ] ) )
+            throw new \IXP_Exception( 'Invalid / unknown protocol. 4/6 accepted only.' );
+        
+        // find the appropriate ASN or macro
+        if( $protocol == 6 && strlen( $this->getPeeringmacrov6() ) > 3 )
+            $asmacro = $this->getPeeringmacrov6();
+        else if( strlen( $this->getPeeringmacro() ) > 3 )
+            $asmacro = $this->getPeeringmacro();
+        else
+            $asmacro = $asnPrefix . $this->getAutsys();
+
+        return $asmacro;
+    }
+    
 }

@@ -430,7 +430,7 @@ smokeping.oconf.syslogfacility = "local0"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Route Collector Details
+;; Route Collector / Server Details
 ;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/Route-Collector
 ;;
@@ -442,6 +442,7 @@ smokeping.oconf.syslogfacility = "local0"
 ; Used by nagios-cli.gen-members-conf action to monitor route collector BGP sessions
 ;router.collector.conf.snmppasswd = 'xxxx'
 
+;irrdb.bgpq.path = '/path/to/bgpq3'
 
 ; sflow parameters (peer to peer graphs)
 sflow.enabled = true

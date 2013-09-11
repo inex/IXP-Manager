@@ -813,10 +813,34 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getIXPs();
     }
 
+    public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->__load();
+        return parent::addIrrdbPrefixe($irrdbPrefixes);
+    }
+
+    public function removeIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->__load();
+        return parent::removeIrrdbPrefixe($irrdbPrefixes);
+    }
+
+    public function getIrrdbPrefixes()
+    {
+        $this->__load();
+        return parent::getIrrdbPrefixes();
+    }
+
+    public function resolveAsMacro($protocol = 4, $asnPrefix = '')
+    {
+        $this->__load();
+        return parent::resolveAsMacro($protocol, $asnPrefix);
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'abbreviatedName', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'MD5Support', 'isReseller', 'id', 'Notes', 'VirtualInterfaces', 'ResoldCustomers', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails', 'Reseller', 'IXPs');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'abbreviatedName', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'MD5Support', 'isReseller', 'id', 'IrrdbPrefixes', 'Notes', 'VirtualInterfaces', 'ResoldCustomers', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails', 'Reseller', 'IXPs');
     }
 
     public function __clone()
