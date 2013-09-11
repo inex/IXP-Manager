@@ -127,12 +127,13 @@ class NagiosCliController extends IXP_Controller_CliAction
                     
                     foreach( [ 'v4', 'v6' ] as $proto )
                     {
-                        if( $vli->getIpv4enabled() )
+                        $getIpEnabled = "getIp{$proto}enabled";
+                        $getIpCanping = "getIp{$proto}canping";
+                        $getIpAddress = "getIP{$proto}Address";
+                        $getIpMonBGP  = "getIp{$proto}monitorrcbgp";
+                         
+                        if( $vli->$getIpEnabled() && $vli->$getIpCanping() )
                         {
-                            $getIpAddress = "getIP{$proto}Address";
-                            $getIpCanping = "getIp{$proto}canping";
-                            $getIpMonBGP  = "getIp{$proto}monitorrcbgp";
-                            
                             if( !$vli->$getIpAddress() )
                                 continue;
                             
