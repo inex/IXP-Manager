@@ -13,6 +13,12 @@
         <index-field name="protocol"/>
         <index-field name="customer_id"/>
       </index>
+      <orm-attributes>
+        <attribute name="schema">irrdb_prefix</attribute>
+        <attribute name="table">irrdb_prefix</attribute>
+        <attribute name="tableName">irrdb_prefix</attribute>
+        <attribute name="repository-class">Repositories\IrrdbPrefix</attribute>
+      </orm-attributes>
     </entity>
     <association from="IrrdbPrefix" to="Customer" owner-alias="IrrdbPrefixes" inverse-alias="Customer" uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726">
       <association-field from="customer_id" to="id"/>

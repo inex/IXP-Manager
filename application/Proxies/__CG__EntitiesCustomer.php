@@ -831,6 +831,12 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getIrrdbPrefixes();
     }
 
+    public function resolveAsMacro($protocol = 4, $asnPrefix = '')
+    {
+        $this->__load();
+        return parent::resolveAsMacro($protocol, $asnPrefix);
+    }
+
 
     public function __sleep()
     {

@@ -9,7 +9,7 @@ Please see the following page for upgrade instructions:
 
 Schema update required:
 
-    CREATE TABLE IrrdbPrefix (
+    CREATE TABLE irrdb_prefix (
         id BIGINT AUTO_INCREMENT NOT NULL, 
         customer_id INT NOT NULL, 
         prefix VARCHAR(255) NOT NULL, 
@@ -23,10 +23,9 @@ Schema update required:
     ) 
         DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
     
-    ALTER TABLE IrrdbPrefix 
+    ALTER TABLE irrdb_prefix 
         ADD CONSTRAINT FK_873CF9E69395C3F3 
             FOREIGN KEY (customer_id) REFERENCES cust (id);
-
 
 
 # v3.4.10 (20130911)
