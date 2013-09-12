@@ -71,11 +71,11 @@ class AuthController extends IXP_Controller_Action
     
     
     /**
-     * Create a Drupal login button for admin users
+     * Create a CMS login button for admin users
      */
-    protected function drupalLoginAction()
+    protected function cmsLoginAction()
     {
-        // let's be clear - you have to be an INEX member to access this!
+        // let's be clear - you have to be a superuser to access this!
         if( !$this->getAuth()->hasIdentity() || $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             $this->redirectAndEnsureDie( 'error/insufficient-privileges' );
     }
