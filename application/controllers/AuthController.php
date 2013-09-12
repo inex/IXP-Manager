@@ -72,10 +72,13 @@ class AuthController extends IXP_Controller_Action
     
     /**
      * Create a CMS login button for admin users
+     * 
+     * The default template is a working bersion for Drupal. Copy that template and skin for your own.
      */
     protected function cmsLoginAction()
     {
         // let's be clear - you have to be a superuser to access this!
+        // (or at least at INEX, only super users can access this)
         if( !$this->getAuth()->hasIdentity() || $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             $this->redirectAndEnsureDie( 'error/insufficient-privileges' );
     }
