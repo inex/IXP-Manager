@@ -825,10 +825,10 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::removeIrrdbPrefixe($irrdbPrefixes);
     }
 
-    public function getIrrdbPrefixes()
+    public function getIrrdbPrefixes($proto = false)
     {
         $this->__load();
-        return parent::getIrrdbPrefixes();
+        return parent::getIrrdbPrefixes($proto);
     }
 
     public function resolveAsMacro($protocol = 4, $asnPrefix = '')

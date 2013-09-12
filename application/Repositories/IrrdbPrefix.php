@@ -12,4 +12,21 @@ use Doctrine\ORM\EntityRepository;
  */
 class IrrdbPrefix extends EntityRepository
 {
+    /**
+     * Utility function to get the number of prefixes a customer has for a given protocol
+     *
+     * @param \Entities\Customer $cust The customer entity
+     * @param int $protocol The IP protocol (4/6)
+     * @return int The number of prefixes found
+     */
+    public function getCountForCustomerAndProtocol( $cust, $protocol )
+    {
+        return $this->getEntityManager()->createQuery(
+                    "SELECT COUNT(p.id) FROM \\Entities\\IrrdbPrefix p
+                        WHERE p.Customer = :cust AND p.protocol = :protocol"
+                )
+                ->setParameter( 'cust', $cust )
+                ->setParameter( 'protocol', $protocol )
+                ->getSingleScalarResult();
+    }
 }

@@ -1892,11 +1892,20 @@ class Customer
     /**
      * Get IrrdbPrefixes
      *
+     * @param int $proto Optionally limit to a given protocol (4/6)
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getIrrdbPrefixes()
+    public function getIrrdbPrefixes( $proto = false )
     {
-        return $this->IrrdbPrefixes;
+        if( $proto === false )
+            return $this->IrrdbPrefixes;
+        
+        $prefixes = [];
+        foreach( $this->IrrdbPrefixes as $p )
+            if( $p->getProtocol() == $proto )
+                $prefixes[] = $p;
+            
+        return $prefixes;
     }
     
     /**
