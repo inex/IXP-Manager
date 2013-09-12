@@ -1,7 +1,7 @@
 {if isset( $hasIdentity ) and $hasIdentity}
     {tmplinclude file="header.phtml" mode="fluid"}
 {else}
-    {tmplinclude file="header.phtml" mode="fluid" brand="INEX - Internet Neutral Exchange - Peering Matrix"}
+    {tmplinclude file="header.phtml" mode="fluid" brand="{$options.identity.orgname} - {$options.identity.name} - Peering Matrix"}
 {/if}
 
 <ul class="breadcrumb">
@@ -159,17 +159,17 @@
                     cells in the body will freeze the dynamic highlighting.
                 </li>
                 <li>
-                    Where an INEX member is not listed on this peering matrix, it is because they are
-                    currently not actively peering at INEX, or because they have opted out of presenting
+                    Where a {$options.identity.orgname} member is not listed on this peering matrix, it is because they are
+                    currently not actively peering at {$options.identity.orgname}, or because they have opted out of presenting
                     their peering information in this database.
                 </li>
                 <li>
-                    This peering matrix is based on Netflow traffic accounting data from the INEX peering
+                    This peering matrix is based on Netflow traffic accounting data from the {$options.identity.orgname} peering
                     LANs and route server BGP peerings.
                 </li>
                 <li>
                     This peering matrix only detects if there is bidirectional TCP flow between routers at
-                    INEX. It cannot detect whether there are actually prefixes swapped betwen routers.
+                    {$options.identity.orgname}. It cannot detect whether there are actually prefixes swapped betwen routers.
                 </li>
             </ul>
         
