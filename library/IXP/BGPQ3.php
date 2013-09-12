@@ -77,7 +77,7 @@ class IXP_BGPQ3 extends Zend_Exception
      *
      * @param string $asmacro As number (of the form as1234) or AS macro
      * @param int $proto The IP protocol - 4 or 6.
-     * @throws IXP_Exception
+     * @throws IXP_Exception On a JSON decoding error
      * @return array The array of prefixes (or empty array).
      */
     public function getPrefixList( $asmacro, $proto = 4 )
@@ -85,8 +85,11 @@ class IXP_BGPQ3 extends Zend_Exception
         $json = $this->execute( '-l pl -j ' . escapeshellarg( $asmacro ), $proto );
         $array = json_decode( $json, true );
         
+        if( $array === null )
+            throw new Exception( "Could not decode JSON response from BGPQ" );
+        
         if( !isset( $array[ 'pl' ] ) )
-            throw new IXP_Exception( "Named prefix list expected but not found!" );
+            throw new IXP_Exception( "Named prefix list [pl] expected in decoded JSON but not found!" );
         
         $prefixes = [];
         // we're going to ignore the 'exact' for now.
@@ -102,7 +105,7 @@ class IXP_BGPQ3 extends Zend_Exception
      *
      * @param string $cmd The query part ot the BGPQ command. I.e. other switches besides -6, -h, -S.
      * @param int $proto The protocol. If 6, adds the -6 switch
-     * @throws IXP_Exception
+     * @throws IXP_Exception If return code from BGPQ3 is != 0
      * @return string The output from the shell command.
      */
     private function execute( $cmd, $proto = 4 )
@@ -118,12 +121,15 @@ class IXP_BGPQ3 extends Zend_Exception
         
         $cmd = $this->path . ' ' . $cmd;
 
-        $output = shell_exec( $cmd );
+        $output = [];
+        $return_var = 0;
         
-        if( $output === null )
+        exec( $cmd, $output, $return_var );
+        
+        if( $return_var != 0 )
             throw new IXP_Exception( 'Error executed BGPQ3 with: ' . $cmd );
         
-        return $output;
+        return implode( "\n", $output );
     }
     
 
