@@ -44,6 +44,9 @@ class IrrdbCliController extends IXP_Controller_CliAction
         
         foreach( $customers as $c )
         {
+            if( !$c->isRouteServerClient() )
+                continue;
+            
             $this->verbose( "Processing {$c->getAbbreviatedName()}: ", false );
             
             //$bgpq3->setWhois( $c->getIRRDB()->getHost() );
@@ -54,11 +57,23 @@ class IrrdbCliController extends IXP_Controller_CliAction
                 $asmacro = $c->resolveAsMacro( $protocol, 'as' );
                 
                 $this->verbose( "[IPv{$protocol}: ", false );
-                $prefixes = $bgpq3->getPrefixList( $asmacro, $protocol );
-                $this->verbose( "found " . count( $prefixes ), false );
                 
-                $this->updateCustomerPrefixes( $c, $prefixes, $protocol );
-                $this->verbose( "; DB updated] ", false );
+                try
+                {
+                    $prefixes = $bgpq3->getPrefixList( $asmacro, $protocol );
+                    $this->verbose( "found " . count( $prefixes ), false );
+                    
+                    if( $this->updateCustomerPrefixes( $c, $prefixes, $protocol ) )
+                        $this->verbose( "; DB updated] ", false );
+                    else
+                        $this->verbose( "; DB not updated] ", false );
+                }
+                catch( IXP_Exception $e )
+                {
+                    $this->getLogger()->alert( "\nERROR executing BGPQ3 utility: {$e->getMessage()}" );
+                    $this->verbose( "ERROR] ", false );
+                }
+                
             }
             
             $this->verbose();
@@ -86,6 +101,26 @@ class IrrdbCliController extends IXP_Controller_CliAction
     private function updateCustomerPrefixes( $cust, $prefixes, $protocol )
     {
         $conn = $this->getD2EM()->getConnection();
+        
+        // The calling function and the IXP_BGPQ3 class does a lot of validation and error
+        // checking. But the last thing we need to do is start filtering all prefixes if
+        // something falls through to here. So, as a basic check, make sure we do not accept
+        // an empty array of prefixes for a customer that has a lot.
+        
+        if( count( $prefixes ) == 0 )
+        {
+            // make sure the customer doesn't have a non-empty prefix set that we're about to delete
+            if( $this->getD2R( '\\Entities\\IrrdbPrefix' )->getCountForCustomerAndProtocol( $cust, $protocol ) != 0 )
+            {
+                $msg = "IRRDB PREFIX: {$cust->getName()} has a non-zero prefix count for IPv{$protocol} in the database but "
+                        . "BGPQ3 returned no prefixes. Please examine manually. No databases changes made for this customer.";
+                $this->getLogger()->alert( $msg );
+                echo $msg;
+            }
+            
+            return false;
+        }
+        
         
         $conn->beginTransaction();
         
@@ -126,7 +161,7 @@ class IrrdbCliController extends IXP_Controller_CliAction
             throw $e;
         }
         
-        
+        return true;
     }
     
 }
