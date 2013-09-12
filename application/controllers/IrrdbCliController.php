@@ -44,15 +44,24 @@ class IrrdbCliController extends IXP_Controller_CliAction
         
         foreach( $customers as $c )
         {
+            $this->verbose( "Processing {$c->getAbbreviatedName()}: ", false );
+            
             //$bgpq3->setWhois( $c->getIRRDB()->getHost() );
             $bgpq3->setSources( $c->getIRRDB()->getSource() );
             
             foreach( [ 4, 6 ] as $protocol )
             {
                 $asmacro = $c->resolveAsMacro( $protocol, 'as' );
+                
+                $this->verbose( "[IPv{$protocol}: ", false );
                 $prefixes = $bgpq3->getPrefixList( $asmacro, $protocol );
+                $this->verbose( "found " . count( $prefixes ), false );
+                
                 $this->updateCustomerPrefixes( $c, $prefixes, $protocol );
+                $this->verbose( "; DB updated] ", false );
             }
+            
+            $this->verbose();
         }
     }
 
