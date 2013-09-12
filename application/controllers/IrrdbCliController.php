@@ -118,6 +118,7 @@ class IrrdbCliController extends IXP_Controller_CliAction
                 echo $msg;
             }
             
+            // in either case, we have nothing to do with an empty prefix list:
             return false;
         }
         
