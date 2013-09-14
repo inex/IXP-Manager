@@ -70,7 +70,7 @@ class IrrdbCliController extends IXP_Controller_CliAction
                     
                     $this->verbose( "IRRDB " . count( $prefixes ), false );
                     
-                    if( $this->updateCustomerPrefixesViaArray( $c, $prefixes, $protocol ) )
+                    if( $this->updateCustomerPrefixes( $c, $prefixes, $protocol ) )
                         $this->verbose( "; DB updated] ", false );
                     else
                         $this->verbose( "; DB not updated] ", false );
@@ -91,104 +91,6 @@ class IrrdbCliController extends IXP_Controller_CliAction
         $this->verbose( "Network time   : " . $this->netTime );
     }
 
-    /**
-     * Update the database IrrdbPrefix table with the member's prefixes for a given protocol.
-     *
-     * This is transaction safe and works as follows:
-     *
-     * * Record the current time and use for last seen stamps
-     * * For each prefix:
-     *   * try to UPDATE a row of the same details stamping a last seen time
-     *   * if UPDATE fails, INSERT instead
-     * * delete any prefixes for this customer and protocol with a last seen before the recorded current time.
-     *
-     * The above is all one transaction ensuring the member's prefixes are available to any script requiring them.
-     *
-     * This function allows the database to do the heavy lifting and it's timings break down as follows:
-     *
-     *
-     * @param \Entities\Customer $cust The customer to update the prefixes of
-     * @param array $prefixes An array of prefixes
-     * @param int $protocol The protocol to use (4 or 6)
-     * @throws Exception
-     */
-    private function updateCustomerPrefixesViaDatabase( $cust, $prefixes, $protocol )
-    {
-        // The calling function and the IXP_BGPQ3 class does a lot of validation and error
-        // checking. But the last thing we need to do is start filtering all prefixes if
-        // something falls through to here. So, as a basic check, make sure we do not accept
-        // an empty array of prefixes for a customer that has a lot.
-        
-        if( count( $prefixes ) == 0 )
-        {
-            $timing = microtime( true );
-            // make sure the customer doesn't have a non-empty prefix set that we're about to delete
-            if( $this->getD2R( '\\Entities\\IrrdbPrefix' )->getCountForCustomerAndProtocol( $cust, $protocol ) != 0 )
-            {
-                $msg = "IRRDB PREFIX: {$cust->getName()} has a non-zero prefix count for IPv{$protocol} in the database but "
-                        . "BGPQ3 returned no prefixes. Please examine manually. No databases changes made for this customer.";
-                $this->getLogger()->alert( $msg );
-                echo $msg;
-            }
-            
-            $this->dbTime += ( microtime( true ) - $timing );
-            
-            // in either case, we have nothing to do with an empty prefix list:
-            return false;
-        }
-        
-        // validate IRRDB prefixes before we put them near the database
-        
-        $timing = microtime( true );
-        $prefixes = $this->validatePrefixes( $prefixes, $protocol );
-        $this->procTime += ( microtime( true ) - $timing );
-        
-        $timing = microtime( true );
-        $conn = $this->getD2EM()->getConnection();
-        $conn->beginTransaction();
-        
-        try
-        {
-            // get current time
-            $stmt = $conn->query( "SELECT NOW() AS 'now'" );
-            $currtime = $stmt->fetch()['now'];
-            
-            foreach( $prefixes as $prefix )
-            {
-                $update = $conn->executeUpdate(
-                    "UPDATE irrdb_prefix SET last_seen = ? WHERE customer_id = ? AND prefix = ? AND protocol = ?",
-                        [ $currtime, $cust->getId(), $prefix, $protocol ]
-                );
-                
-                if( !$update )
-                {
-                    $conn->executeUpdate(
-                        "INSERT INTO irrdb_prefix ( customer_id, prefix, protocol, last_seen, first_seen ) VALUES ( ?, ?, ?, ?, ? )",
-                            [ $cust->getId(), $prefix, $protocol, $currtime, $currtime ]
-                    );
-                }
-            }
-            
-            // remove any old prefixes
-            $conn->executeUpdate(
-                    "DELETE FROM irrdb_prefix WHERE customer_id = ? AND protocol = ? AND last_seen < ?",
-                    [ $cust->getId(), $protocol, $currtime ]
-            );
-                
-            
-            $conn->commit();
-            
-            $this->dbTime += ( microtime( true ) - $timing );
-        }
-        catch( Exception $e )
-        {
-            $conn->rollback();
-            $this->dbTime += ( microtime( true ) - $timing );
-            throw $e;
-        }
-        
-        return true;
-    }
     
     /**
      * Update the database IrrdbPrefix table with the member's prefixes for a given protocol.
@@ -201,7 +103,7 @@ class IrrdbCliController extends IXP_Controller_CliAction
      * @param int $protocol The protocol to use (4 or 6)
      * @throws Exception
      */
-    private function updateCustomerPrefixesViaArray( $cust, $prefixes, $protocol )
+    private function updateCustomerPrefixes( $cust, $prefixes, $protocol )
     {
         $conn = $this->getD2EM()->getConnection();
         $timing = microtime( true );
