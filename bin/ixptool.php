@@ -85,7 +85,7 @@ try
             'force|f'        => 'Run even if maintenance mode is enabled.',
             'action|a=s'     => 'Action to perform in format of module.controller.action',
             'verbose|v'      => 'Verbose messages will be dumped to the default output.',
-            'development|d'  => 'Enables development mode.',
+            'debug|d'        => 'Enables debug mode.',
             'p1=s'           => 'Generic paramater #1 for various actions',
             'parameters|p=s' => 'Set parameters you want to pass for script. E.g. cust_id=3,type=resller or cust_id=1',
         )
@@ -158,6 +158,11 @@ if( isset( $opts->a ) )
             $front->setParam( 'verbose', true );
         else
             $front->setParam( 'verbose', false );
+
+        if( $opts->d )
+            $front->setParam( 'debug', true );
+        else
+            $front->setParam( 'debug', false );
 
         if( $opts->p1 )
             $front->setParam( 'param1', $opts->p1 );
