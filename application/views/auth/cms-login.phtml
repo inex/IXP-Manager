@@ -1,4 +1,4 @@
-{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Drupal Login"}
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: CMS Login"}
 
 {OSS_Message}
 
@@ -6,13 +6,13 @@
 
     <div class="span6 offset3">
 
-    <h2>Drupal Login</h2>
+    <h2>CMS Login</h2>
     
-    <p>Use this form to login to the INEX's Drupal content management system.</p>
+    <p>Use this form to login to the {$options.identity.orgname}'s content management system.</p>
     
     <p>For security reasons, we require you to re-enter your password.</p>
     
-    <form action="https://www.inex.ie/user" method="post" name="loginForm" id="loginForm" class="horizontal-form">
+    <form action="{$options.identity.urlbase}/user" method="post" name="loginForm" id="loginForm" class="horizontal-form">
 
         <fieldset class="control-group" id="div-form-name">
             <label for="name" class="control-label">Username</label>
