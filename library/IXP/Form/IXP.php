@@ -159,6 +159,7 @@ class IXP_Form_IXP extends IXP_Form
         return $agn->setRequired( false )
             ->setLabel( 'Aggregate Graph Name' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StringToLower' )
             ->addFilter( new OSS_Filter_StripSlashes() );
     }
 
