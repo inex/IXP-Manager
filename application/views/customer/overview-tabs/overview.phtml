@@ -87,7 +87,7 @@
                 {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE}
                     {if $cust->getNochours()}    {$cust->getNochours()}<br />    {/if}
                     {if $cust->getNocemail()}    {mailto address=$cust->getNocemail()}<br />{/if}
-                    {if $cust->getNocwww()}      {$cust->getNocwww()}<br />      {/if}
+                    {if $cust->getNocwww()}      <a href="{$cust->getNocwww()}">{$cust->getNocwww()}</a><br />      {/if}
                     {if $cust->getNocphone()}    {$cust->getNocphone()}<br />    {/if}
                     {if $cust->getNoc24hphone()} {$cust->getNoc24hphone()} (24h) {/if}
                 {/if}
