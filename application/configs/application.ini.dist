@@ -304,6 +304,9 @@ identity.sitename = "XXX IXP Manager"
 ;; e.g. we use "https://www.inex.ie/ixp/" here
 identity.url = "https://www.example.com/ixp/"
 
+;; e.g. we use "https://www.inex.ie" here
+identity.urlbase = "https://www.example.com"
+
 ;; PLEASE USE YOU OWN LOGO HERE!!!
 identity.logo = APPLICATION_PATH "/../public/images/inex-logo-150x73.jpg"
 
