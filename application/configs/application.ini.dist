@@ -301,6 +301,9 @@ identity.mailer.email  = "do-not-reply@example.com"
 ;; e.g. we use "INEX IXP Manager" here
 identity.sitename = "XXX IXP Manager"
 
+;; e.g. we use "https://www.inex.ie" here
+identity.urlbase = "https://www.example.com"
+
 ;; e.g. we use "https://www.inex.ie/ixp/" here
 identity.url = "https://www.example.com/ixp/"
 
