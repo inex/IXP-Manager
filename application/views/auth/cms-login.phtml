@@ -1,0 +1,57 @@
+{*
+ * Example login form for a CMS system.
+ *
+ * For example, at INEX, our homepage is a Drupal CMS instance and we have hijacked the Drupal
+ * login area to log people directly into IXP Manager.
+ *
+ * However, our staff still need to login to Drupal and so this page allows them to do that.
+ *
+ * This is very IXP specific so your own milage may vary considerably - skin this and edit as appropriate.
+ *
+ * See _skins/inex/auth/cms-login.phtml for our live version.
+ *}
+{tmplinclude file="header.phtml" pageTitle="IXP Manager :: Drupal Login"}
+
+{OSS_Message}
+
+<div class="row">
+
+    <div class="span6 offset3">
+
+    <h2>CMS Login</h2>
+    
+    <p>Use this form to login to {$options.identity.orgname}'s content management system.</p>
+    
+    <p>For security reasons, we require you to re-enter your password.</p>
+    
+    <form action="{* XXX Enter the POST location of your CMS login form here *}" method="post" name="loginForm" id="loginForm" class="horizontal-form">
+
+        {* The name of the username and password fields may be different for your DMS - the below are Drupal examples *}
+
+        <fieldset class="control-group" id="div-form-name">
+            <label for="name" class="control-label">Username</label>
+            <div id="div-controls-name" class="controls">
+                <input id="name" name="name" type="text" value="{$user->getUsername()}" />
+            </div>
+        </fieldset>
+
+        <fieldset class="control-group" id="div-form-pass">
+            <label for="pass" class="control-label">Password</label>
+            <div id="div-controls-pass" class="controls">
+                <input id="pass" name="pass" type="password" value="" />
+            </div>
+        </fieldset>
+
+        <fieldset class="form-actions">
+            {* This hidden element is also a Drupal requirement *}
+            <input type="hidden" name="form_id" id="edit-user-login" value="user_login" />
+
+            <input type="submit" name="op" class="btn btn-success" value="Log in" />
+        </fieldset>
+        
+        </form>
+    </div>
+</div>
+
+
+{tmplinclude file="footer.phtml"}
