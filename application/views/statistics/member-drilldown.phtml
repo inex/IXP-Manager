@@ -78,7 +78,7 @@
             
             <strong>Graph Type:&nbsp;&nbsp;&nbsp;</strong>
 
-            <select name="category" onchange="this.form.submit();" class="chzn-select">
+            <select name="category" onchange="this.form.submit();" class="chzn-select span2">
                 {foreach from=$categories key=cname item=cvalue}
                     <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
                 {/foreach}
