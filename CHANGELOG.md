@@ -5,7 +5,25 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-# v3.5.0 (20120911)
+# v3.5.1 (20130918)
+
+Various bug fixes, improvements as well as substanial improvements to the BGPQ / prefix code.
+
+
+- [IM] made nocwww clickable on customer overview page
+- [IM] Added per @rowanthorpe (468198a - Barry O'Donovan - 2013-09-17)
+- [IM] Make it clearer what the CMS login form is about. (2523924 - Barry O'Donovan - 2013-09-17)
+- [BF] Force these to lower case to avoid confusion (c79049a - Barry O'Donovan - 2013-09-17)
+- [IM] Remove database method of prefix updates. (27fa169 - Barry O'Donovan - 2013-09-14)
+- [IM] Complete yesterday's optimisation work (c7d6d7a - Barry O'Donovan - 2013-09-14)
+- [BF] record debug option (e17e4c5 - Barry O'Donovan - 2013-09-14)
+- [IM] Shoring up validation and tests so we do not remove prefixes in error (b196f58 - Barry O'Donovan - 2013-09-12)
+- [IM] Function to get prefix count for customer and protocol. Both bad way and good way ;) (c8ec86b - Barry O'Donovan - 2013-09-12)
+- [IM] MOre robust execution and validation of the BGPQ3 utility (00166cf - Barry O'Donovan - 2013-09-12)
+- [IM] Added verbosity to IRRDB prefix database update (fc06bf5 - Barry O'Donovan - 2013-09-12)
+
+
+# v3.5.0 (20130911)
 
 See: https://github.com/inex/IXP-Manager/wiki/IRRDB-Prefixes
 
