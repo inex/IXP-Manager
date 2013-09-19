@@ -32,6 +32,7 @@
 
 use strict;
 use Net_SNMP_util;
+use Getopt::Long;
 use Data::Dumper;
 
 use IXPManager::Config;
@@ -41,9 +42,16 @@ my $ixpconfig = new IXPManager::Config;
 my $dbh = $ixpconfig->{db};
 my $debug = 0;
 my $do_nothing = 0;
+my $vlan;
 my $debug_output;
 
 my ($query, $sth, $l2mapping);
+
+GetOptions(
+	'debug!'		=> \$debug,
+	'do-nothing!'		=> \$do_nothing,
+	'vlan=i'		=> \$vlan,
+);
 
 $query = "SELECT name, snmppasswd FROM switch WHERE active AND switchtype = ?";
 
@@ -52,7 +60,7 @@ $sth->execute(SWITCHTYPE_SWITCH) or die "$dbh->errstr\n";
 my $switches = $sth->fetchall_hashref('name');
 
 foreach my $switch (keys %{$switches}) {
-	$l2mapping->{$switch} = trawl_switch_snmp($switch, $switches->{$switch}->{snmppasswd});
+	$l2mapping->{$switch} = trawl_switch_snmp($switch, $switches->{$switch}->{snmppasswd}, $vlan);
 }
 
 if ($debug) {
@@ -129,14 +137,33 @@ sub normalize_mac {
 }
 
 sub trawl_switch_snmp ($$) {
-	my($host, $snmpcommunity) = @_;
+	my($host, $snmpcommunity, $vlan) = @_;
 
 	$host = $snmpcommunity.'@'.$host;
 
 	my @ifindex2descr = &snmpwalk($host, ".1.3.6.1.2.1.2.2.1.2");
 	my @interface2ifindex = &snmpwalk($host, ".1.3.6.1.2.1.17.1.4.1.2");
-	my @bridgehash2ifindex = &snmpwalk($host, ".1.3.6.1.2.1.17.4.3.1.2");
-	my @bridgehash2mac = &snmpwalk($host, ".1.3.6.1.2.1.17.4.3.1.1");
+
+	my @pbridgehash2ifindex; my @bridgehash2ifindex;
+
+	# first try PBRIDGE-MIB
+	if ($vlan) {
+		$debug && print STDERR "DEBUG: attempting PBRIDGE-MIB (.1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan) on $host\n";
+		@pbridgehash2ifindex = &snmpwalk($host, ".1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan");
+	}
+
+	# if vlan wasn't specified or there's nothing coming in from the
+	# P-BRIDGE mib, then use rfc1493 BRIDGE-MIB.
+	if (($vlan && $#pbridgehash2ifindex == -1) || !$vlan) {
+		$debug && print STDERR "DEBUG: attempting BRIDGE-MIB (.1.3.6.1.2.1.17.4.3.1.2) on $host\n";
+		@bridgehash2ifindex = &snmpwalk($host, ".1.3.6.1.2.1.17.4.3.1.2");
+	}
+
+	# if this isn't supported, then panic.  We could probably try
+	# community@vlan syntax, but this should be good enough.
+	if ($#pbridgehash2ifindex == -1 && $#bridgehash2ifindex == -1) {
+		die "cannot read BRIDGE-MIB or PBRIDGE-MIB from switch $host\n";
+	}
 
 	my ($ifindex, $interfaces, $bridgehash, $macaddr);
 
@@ -152,18 +179,29 @@ sub trawl_switch_snmp ($$) {
 		$interfaces->{$oid} = $descr;
 	}
 
-	# '136.67.225.163.42.128' => '49'	
-	foreach my $entry (@bridgehash2ifindex) {
-		my ($oid, $descr) = split(':', $entry, 2);
-		$bridgehash->{$oid} = $descr;
-	}
+	if ($#pbridgehash2ifindex >= 0) {
+		# '136.67.225.163.42.128' => '49'
+		foreach my $entry (@bridgehash2ifindex, @pbridgehash2ifindex) {
+			my ($decmac, $index) = split(':', $entry, 2);
+			my $mac = join ("", map { sprintf ('%02x', $_) } split(/\./, $decmac));
 
-	# 136.67.225.163.42.128 - 0x8843e1a32a80
-	foreach my $entry (@bridgehash2mac) {
-		my ($oid, $descr) = split(':', $entry, 2);
+			if (defined($ifindex->{$interfaces->{$index}})) {
+				push (@{$macaddr->{$ifindex->{$interfaces->{$index}}}}, $mac);
+			}
+		}
+	} else {
+		my @bridgehash2mac = &snmpwalk($host, ".1.3.6.1.2.1.17.4.3.1.1");
 
-		if (defined($ifindex->{ $interfaces->{ $bridgehash->{$oid} } })) {
-			push (@{$macaddr->{$ifindex->{ $interfaces->{ $bridgehash->{$oid} } } }}, normalize_mac($descr));
+		foreach my $entry (@bridgehash2ifindex) {
+			my ($oid, $descr) = split(':', $entry, 2);
+			$bridgehash->{$oid} = $descr;
+		}
+
+		foreach my $entry (@bridgehash2mac) {
+			my ($oid, $descr) = split(':', $entry, 2);
+			if (defined($ifindex->{ $interfaces->{ $bridgehash->{$oid} } })) {
+				push (@{$macaddr->{$ifindex->{ $interfaces->{ $bridgehash->{$oid} } } }}, normalize_mac($descr));
+			}
 		}
 	}
 
