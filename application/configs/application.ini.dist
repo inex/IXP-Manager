@@ -135,8 +135,13 @@ resources.modules[] =
 
 resources.auth.enabled = 1
 resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
+;; this saves user passwords in clear text into the data base which is isecure
+;; plaintext ist NOT recommended
 resources.auth.oss.pwhash  = "plaintext"
+;; passwords should be crypted, but this might break radius/tacacs integration 
+;resources.auth.oss.pwhash  = "bcrypt"
 ;resources.auth.oss.hash_cost  = 9
+;
 resources.auth.oss.entity  = "\\Entities\\User"
 resources.auth.oss.login_history.enabled = 1
 resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
