@@ -48,7 +48,7 @@ for protocol in 4 6; do
 
 	echo configuring: ${destfile}
 	build-tt-member-configuration.pl	\
-		--vlan 10			\
+		--vlan ${vlan}			\
 		--protocol ${protocol}		\
 		--routeserver ${routeserver}	\
 		${sourcett}			> ${rstmpfile} 2> ${tmpfile}
