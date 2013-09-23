@@ -150,6 +150,8 @@ sub trawl_switch_snmp ($$) {
 	if ($vlan) {
 		$debug && print STDERR "DEBUG: attempting PBRIDGE-MIB (.1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan) on $host\n";
 		@pbridgehash2ifindex = &snmpwalk($host, ".1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan");
+	} else {
+		$debug && print STDERR "DEBUG: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
 	}
 
 	# if vlan wasn't specified or there's nothing coming in from the
