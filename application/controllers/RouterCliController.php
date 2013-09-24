@@ -103,29 +103,22 @@ class RouterCliController extends IXP_Controller_CliAction
             $ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
             $this->view->proto = $proto = 4;
         }
-
+        
+        // should we limit this to one customer only?
+        $lcustomer = $this->cliResolveParam( 'cust', false, false );
+        
         // load Smary config file
         $this->getView()->configLoad( $this->loadConfig() );
         
-        if( $this->getView()->templateExists( "router-cli/server/{$target}/header.cfg" ) )
+        if( !$lcustomer && $this->getView()->templateExists( "router-cli/server/{$target}/header.cfg" ) )
             echo $this->view->render( "router-cli/server/{$target}/header.cfg" );
         
-        /*
-         *         [cid] => 999
-         *         [cname] => Customer Name
-         *         [cshortname] => shortname
-         *         [autsys] => 65000
-         *         [peeringmacro] => QWE       // or AS65500 if not defined
-         *         [vliid] => 159
-         *         [address] => 192.0.2.123
-         *         [bgpmd5secret] => qwertyui  // or false
-         *         [as112client] => 1          // if the member is an as112 client or not
-         *         [rsclient] => 1             // if the member is a route server client or not
-         *         [maxprefixes] => 20
-         */
         foreach( $ints as $int )
         {
             if( !$int['rsclient'] )
+                continue;
+            
+            if( $lcustomer && $int['cshortname'] != $lcustomer )
                 continue;
             
             // $this->view->cust = $this->getD2R( '\\Entities\\Customer' )->find( $int[ 'cid' ] );
@@ -134,7 +127,7 @@ class RouterCliController extends IXP_Controller_CliAction
             echo $this->view->render( "router-cli/server/{$target}/neighbor.cfg" );
         }
         
-        if( $this->getView()->templateExists( "router-cli/server/{$target}/footer.cfg" ) )
+        if( !$lcustomer && $this->getView()->templateExists( "router-cli/server/{$target}/footer.cfg" ) )
             echo $this->view->render( "router-cli/server/{$target}/footer.cfg" );
     }
     
