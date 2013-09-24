@@ -26,9 +26,19 @@
 # A script to poll all switches and update a database table of the known
 # MAC addresses attached to each port.
 #
-# Tested on Brocade TurboIron, FES-X6xx and
-# Extreme BD-8806, X460-48t, X650-24x(SSns) and X670V-48x. Possibly may
-# squeak on other vendors' kit due to implementation issues.
+# This is full of fail by the various switch vendors.  They all do things
+# slightly differently.
+# 
+# Implementation Notes:
+#
+# Brocade TurboIron >= 4.2.00c:	Q-BRIDGE-MIB, BRIDGE-MIB
+# Brocade FES-X6xx <= 5.4.00c:	BRIDGE-MIB
+# Brocade FES-X6xx >= 5.4.00e:	Q-BRIDGE-MIB, BRIDGE-MIB
+# Brocade NetIron > 5.1.00:	Q-BRIDGE-MIB, BRIDGE-MIB
+# Dell FTOS S4810:		Q-BRIDGE-MIB. Uses separate Port-Channel interface.
+# Extreme BD-8806, X series:	BRIDGE-MIB.  Requires dot1dTpFdbAddress support.
+# Cisco Anything:		BRIDGE-MIB.  Per vlan support implemented with community@vlan hack, argh.
+# Juniper EX4550:		no BRIDGE-MIB. partial Q-BRIDGE-MIB support.  Requires jnxExVlanTag support.
 
 use strict;
 use Net_SNMP_util;
@@ -42,6 +52,7 @@ my $ixpconfig = new IXPManager::Config;
 my $dbh = $ixpconfig->{db};
 my $debug = 0;
 my $do_nothing = 0;
+my $qbridge_support = 1;
 my $vlan;
 my $debug_output;
 
@@ -50,6 +61,7 @@ my ($query, $sth, $l2mapping);
 GetOptions(
 	'debug!'		=> \$debug,
 	'do-nothing!'		=> \$do_nothing,
+	'qbridge-support!'	=> \$qbridge_support,
 	'vlan=i'		=> \$vlan,
 );
 
@@ -136,76 +148,82 @@ sub normalize_mac {
 	return $norm_address;
 }
 
+# oid2mac: converts from dotted decimal format to nonseparated hex
+
+sub oid2mac {
+	my ($mac) = @_;
+
+	return join ("", map { sprintf ('%02x', $_) } split(/\./, $mac))
+}
+
 sub trawl_switch_snmp ($$) {
-	my($host, $snmpcommunity, $vlan) = @_;
+	my ($host, $snmpcommunity, $vlan) = @_;
+	my ($dbridgehash, $qbridgehash, $macaddr);
 
-	$host = $snmpcommunity.'@'.$host;
+	$debug && print STDERR "DEBUG: processing $host\n";
 
-	my @ifindex2descr = &snmpwalk($host, ".1.3.6.1.2.1.2.2.1.2");
-	my @interface2ifindex = &snmpwalk($host, ".1.3.6.1.2.1.17.1.4.1.2");
+	my $ifindex = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.2.2.1.2");
+	my $interfaces = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.1.4.1.2");
 
-	my @pbridgehash2ifindex; my @bridgehash2ifindex;
-
-	# first try PBRIDGE-MIB
-	if ($vlan) {
-		$debug && print STDERR "DEBUG: attempting PBRIDGE-MIB (.1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan) on $host\n";
-		@pbridgehash2ifindex = &snmpwalk($host, ".1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan");
+	# first try Q-BRIDGE-MIB
+	if ($vlan && $qbridge_support) {
+		$debug && print STDERR "DEBUG: attempting Q-BRIDGE-MIB (.1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan) on $host\n";
+		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan", \&oid2mac, undef);
 	} else {
-		$debug && print STDERR "DEBUG: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
+		$debug && $qbridge_support && print STDERR "DEBUG: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
 	}
 
 	# if vlan wasn't specified or there's nothing coming in from the
-	# P-BRIDGE mib, then use rfc1493 BRIDGE-MIB.
-	if (($vlan && $#pbridgehash2ifindex == -1) || !$vlan) {
+	# Q-BRIDGE mib, then use rfc1493 BRIDGE-MIB.
+	if (($vlan && !$qbridgehash) || !$vlan) {
 		$debug && print STDERR "DEBUG: attempting BRIDGE-MIB (.1.3.6.1.2.1.17.4.3.1.2) on $host\n";
-		@bridgehash2ifindex = &snmpwalk($host, ".1.3.6.1.2.1.17.4.3.1.2");
+		$dbridgehash = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.4.3.1.2");
 	}
 
 	# if this isn't supported, then panic.  We could probably try
 	# community@vlan syntax, but this should be good enough.
-	if ($#pbridgehash2ifindex == -1 && $#bridgehash2ifindex == -1) {
-		die "cannot read BRIDGE-MIB or PBRIDGE-MIB from switch $host\n";
+	if (!$qbridgehash && !$dbridgehash) {
+		die "cannot read BRIDGE-MIB or Q-BRIDGE-MIB from switch $host\n";
 	}
 
-	my ($ifindex, $interfaces, $bridgehash, $macaddr);
-
-	# ifindex2descr - oid -> 1001 - descr -> X460-48x Port 1
-	foreach my $entry (@ifindex2descr) {
-		my ($oid, $descr) = split(':', $entry, 2);
-		$ifindex->{$oid} = $descr;
-	}
-
-	# interface2ifindex - oid -> 7 - descr -> 1007
-	foreach my $entry (@interface2ifindex) {
-		my ($oid, $descr) = split(':', $entry, 2);
-		$interfaces->{$oid} = $descr;
-	}
-
-	if ($#pbridgehash2ifindex >= 0) {
+	if ($qbridgehash) {
 		# '136.67.225.163.42.128' => '49'
-		foreach my $entry (@bridgehash2ifindex, @pbridgehash2ifindex) {
-			my ($decmac, $index) = split(':', $entry, 2);
-			my $mac = join ("", map { sprintf ('%02x', $_) } split(/\./, $decmac));
-
-			if (defined($ifindex->{$interfaces->{$index}})) {
-				push (@{$macaddr->{$ifindex->{$interfaces->{$index}}}}, $mac);
+		foreach my $entry (keys %{$qbridgehash}) {
+			if (defined($ifindex->{$interfaces->{$qbridgehash->{$entry}}})) {
+				push (@{$macaddr->{$ifindex->{$interfaces->{$qbridgehash->{$entry}}}}}, $entry);
 			}
 		}
 	} else {
-		my @bridgehash2mac = &snmpwalk($host, ".1.3.6.1.2.1.17.4.3.1.1");
+		my $bridgehash2mac = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.4.3.1.1", undef, \&normalize_mac);
 
-		foreach my $entry (@bridgehash2ifindex) {
-			my ($oid, $descr) = split(':', $entry, 2);
-			$bridgehash->{$oid} = $descr;
-		}
-
-		foreach my $entry (@bridgehash2mac) {
-			my ($oid, $descr) = split(':', $entry, 2);
-			if (defined($ifindex->{ $interfaces->{ $bridgehash->{$oid} } })) {
-				push (@{$macaddr->{$ifindex->{ $interfaces->{ $bridgehash->{$oid} } } }}, normalize_mac($descr));
+		foreach my $entry (keys %{$bridgehash2mac}) {
+			if (defined($ifindex->{ $interfaces->{ $dbridgehash->{$entry} } })) {
+				push (@{$macaddr->{$ifindex->{ $interfaces->{ $dbridgehash->{$entry} } } }}, $bridgehash2mac->{$entry});
 			}
 		}
 	}
 
 	return $macaddr;
+}
+
+sub snmpwalk2hash {
+	my($host, $snmpcommunity, $queryoid, $keycallback, $valuecallback) = @_;
+	my $returnhash;
+
+	my $comm = $snmpcommunity.'@'.$host;
+
+	my @resultarray = &snmpwalk($comm, $queryoid);
+
+	foreach my $entry (@resultarray) {
+		my ($returnoid, $descr) = split(':', $entry, 2);
+		if ($keycallback) {
+			$returnoid = &$keycallback($returnoid);
+		}
+		if ($valuecallback) {
+			$descr = &$valuecallback($descr);
+		}
+		$returnhash->{$returnoid} = $descr;
+	}
+
+	return $returnhash;
 }
