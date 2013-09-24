@@ -52,7 +52,7 @@ class VlanInterface extends EntityRepository
                        c.maxprefixes AS gmaxprefixes, c.peeringmacro as peeringmacro, c.peeringmacrov6 as peeringmacrov6,
                        vli.id AS vliid, vli.ipv{$proto}enabled AS enabled, addr.address AS address,
                        vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix,
-                       vli.as112client AS as112client, vli.rsclient AS rsclient
+                       vli.as112client AS as112client, vli.rsclient AS rsclient, vli.irrdbfilter AS irrdbfilter
                     FROM Entities\\VlanInterface vli
                         JOIN vli.VirtualInterface vi
                         JOIN vli.IPv{$proto}Address addr

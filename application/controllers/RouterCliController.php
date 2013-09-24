@@ -97,10 +97,10 @@ class RouterCliController extends IXP_Controller_CliAction
         $this->view->proto = $proto = $this->cliResolveProtocol( false );
     
         if( $proto == 6 )
-            $ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
+            $ints = $this->sanitiseVlanInterfaces( $vlan, 6, true );
         else
         {
-            $ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
+            $ints = $this->sanitiseVlanInterfaces( $vlan, 4, true );
             $this->view->proto = $proto = 4;
         }
         
@@ -115,9 +115,6 @@ class RouterCliController extends IXP_Controller_CliAction
         
         foreach( $ints as $int )
         {
-            if( !$int['rsclient'] )
-                continue;
-            
             if( $lcustomer && $int['cshortname'] != $lcustomer )
                 continue;
             
@@ -247,13 +244,14 @@ class RouterCliController extends IXP_Controller_CliAction
      *         [as112client] => 1          // if the member is an as112 client or not
      *         [rsclient] => 1             // if the member is a route server client or not
      *         [maxprefixes] => 20
+     *         [irrdbfilter] => 0/1        // if IRRDB filtering should be applied
      *     ]
      *
      * @param \Entities\Vlan $vlan
      * @param int $proto
      * @return array As defined above
      */
-    private function sanitiseVlanInterfaces( $vlan, $proto )
+    private function sanitiseVlanInterfaces( $vlan, $proto, $rsclient = false )
     {
         $ints = $this->getD2R( '\\Entities\\VlanInterface' )->getForProto( $vlan, $proto, false );
         $newints = [];
@@ -263,6 +261,9 @@ class RouterCliController extends IXP_Controller_CliAction
             if( !$int['enabled'] )
                 continue;
 
+            if( $rsclient && !$int['rsclient'] )
+                continue;
+            
             // Due the the way we format the SQL query to join with physical
             // interfaces (of which there may be multiple per VLAN interface),
             // we need to weed out duplicates
