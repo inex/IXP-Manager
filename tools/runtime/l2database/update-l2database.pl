@@ -162,8 +162,8 @@ sub trawl_switch_snmp ($$) {
 
 	$debug && print STDERR "DEBUG: processing $host\n";
 
-	my $ifindex = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.2.2.1.2");
-	my $interfaces = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.1.4.1.2");
+	my $ifindex = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.2.2.1.2") || die "cannot read ifDescr from $host";
+	my $interfaces = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.1.4.1.2") || die "cannot read dot1dBasePortIfIndex from $host";
 
 	# attempt to use Q-BRIDGE-MIB.
 
