@@ -76,7 +76,69 @@ class RouterCliController extends IXP_Controller_CliAction
             echo $this->view->render( "router-cli/collector/{$target}/index.cfg" );
     }
 
+    
+    /**
+     * Action to generate a route server configuration
+     *
+     * @see https://github.com/inex/IXP-Manager/wiki/Route-Server
+     */
+    public function genServerConfAction()
+    {
+        $this->view->vlan = $vlan = $this->cliResolveVlanId();
+    
+        $target = $this->cliResolveTarget(
+                isset( $this->_options['router']['collector']['conf']['target'] )
+                ? $this->_options['router']['collector']['conf']['target']
+                : false
+        );
+    
+        $this->collectorConfSanityCheck( $vlan );
+    
+        $this->view->proto = $proto = $this->cliResolveProtocol( false );
+    
+        if( $proto == 6 )
+            $ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
+        else
+        {
+            $ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
+            $this->view->proto = $proto = 4;
+        }
 
+        // load Smary config file
+        $this->getView()->configLoad( $this->loadConfig() );
+        
+        if( $this->getView()->templateExists( "router-cli/server/{$target}/header.cfg" ) )
+            echo $this->view->render( "router-cli/server/{$target}/header.cfg" );
+        
+        /*
+         *         [cid] => 999
+         *         [cname] => Customer Name
+         *         [cshortname] => shortname
+         *         [autsys] => 65000
+         *         [peeringmacro] => QWE       // or AS65500 if not defined
+         *         [vliid] => 159
+         *         [address] => 192.0.2.123
+         *         [bgpmd5secret] => qwertyui  // or false
+         *         [as112client] => 1          // if the member is an as112 client or not
+         *         [rsclient] => 1             // if the member is a route server client or not
+         *         [maxprefixes] => 20
+         */
+        foreach( $ints as $int )
+        {
+            if( !$int['rsclient'] )
+                continue;
+            
+            // $this->view->cust = $this->getD2R( '\\Entities\\Customer' )->find( $int[ 'cid' ] );
+            $this->view->int  = $int;
+            $this->view->prefixes = $this->getD2R( '\\Entities\\IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
+            echo $this->view->render( "router-cli/server/{$target}/neighbor.cfg" );
+        }
+        
+        if( $this->getView()->templateExists( "router-cli/server/{$target}/footer.cfg" ) )
+            echo $this->view->render( "router-cli/server/{$target}/footer.cfg" );
+    }
+    
+    
     /**
      * Action to generate an AS112 router configuration
      *
@@ -176,7 +238,7 @@ class RouterCliController extends IXP_Controller_CliAction
 
     /**
      * Utility function to get and return active VLAN interfaces on the requested protocol
-     * suitable for route collector configuration.
+     * suitable for route collector / server configuration.
      *
      * Sample return:
      *
