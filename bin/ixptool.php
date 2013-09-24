@@ -86,6 +86,7 @@ try
             'action|a=s'     => 'Action to perform in format of module.controller.action',
             'verbose|v'      => 'Verbose messages will be dumped to the default output.',
             'debug|d'        => 'Enables debug mode.',
+            'config|c=s'     => 'Some actions require an external config file - put the full path here',
             'p1=s'           => 'Generic paramater #1 for various actions',
             'parameters|p=s' => 'Set parameters you want to pass for script. E.g. cust_id=3,type=resller or cust_id=1',
         )
@@ -166,6 +167,9 @@ if( isset( $opts->a ) )
 
         if( $opts->p1 )
             $front->setParam( 'param1', $opts->p1 );
+
+        if( $opts->c )
+            $front->setParam( 'config', $opts->c );
 
         // $front->addModuleDirectory( APPLICATION_PATH . '/modules');
 
