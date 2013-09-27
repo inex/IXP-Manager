@@ -5,6 +5,8 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+- [IM] Q-BRIDGE-MIB and vlan support added to update-l2database.pl
+
 # v3.5.1 (20130918)
 
 Various bug fixes, improvements as well as substanial improvements to the BGPQ / prefix code.
