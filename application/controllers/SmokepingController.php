@@ -50,9 +50,6 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
     
     public function memberDrilldownAction()
     {
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
-            
         $this->view->periods   = self::$PERIODS;
         
         if( !( $viid = $this->getParam( 'vi', false ) ) )
@@ -135,9 +132,6 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
     
     function retrieveImageAction()
     {
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
-        
         // there's no HTML output from this controller - just images
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
         
@@ -161,6 +155,16 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
         $vlanint = intval( $this->getParam( 'vlanint', 0 ) );
         if( !is_numeric( $vlanint ) )
             die( 'ERR: Bad VLAN interface' );
+
+        if( !( $vli = $this->getD2R( '\\Entities\\VlanInterface' )->find( $vlanint ) ) )
+            die( 'ERR: Very bad VLAN interface' );
+        
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER
+                && $this->getCustomer()->getId() != $vli->getVirtualInterface()->getCustomer()->getId() )
+        {
+            $this->getLogger()->alert( "{$this->getUser()->getUsername()} tried to access Smokeping graphs of {$vli->getVirtualInterface()->getCustomer()->getName()}" );
+            $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
         
         $proto = $this->getParam( 'proto', array_keys( self::$PROTOCOLS )[0] );
         if( !in_array( $proto, array_keys( self::$PROTOCOLS ) ) )

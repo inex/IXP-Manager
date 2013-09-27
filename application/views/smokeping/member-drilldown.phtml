@@ -24,6 +24,10 @@
         <div class="page-header">
             <h1>
                 IXP Smokeping Graphs
+                <a class="btn btn-primary pull-right"
+                        href="{genUrl controller="statistics" action="member" ixp=$ixp->getId() shortname=$cust->getShortname()}">
+                    Return to Statistics Overview
+                </a>
             </h1>
         </div>
 {/if}
@@ -62,10 +66,12 @@
                 
                 on {$ip}
         
-                <a class="btn btn-primary pull-right"
-                        href="{genUrl controller="statistics" action="member" ixp=$ixp->getId() shortname=$cust->getShortname()}">
-                    Return to Statistics Overview
-                </a>
+                {if $user->getPrivs() eq 3}
+                    <a class="btn btn-primary pull-right"
+                            href="{genUrl controller="statistics" action="member" ixp=$ixp->getId() shortname=$cust->getShortname()}">
+                        Return to Statistics Overview
+                    </a>
+                {/if}
                 </h4>
         </form>
         <br />
