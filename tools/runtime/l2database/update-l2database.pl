@@ -181,14 +181,24 @@ sub trawl_switch_snmp ($$) {
 			$debug && print STDERR "DEBUG: that didn't work. let's try Juniper EX jnxExVlanTag mapping instead (.1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5) on $host\n";
 			$vlanmapping = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5");
 		}
+
+		# At this stage we should have a dot1qVlanFdbId mapping, but
+		# some switches don't support it (e.g.  Dell F10-S4810), so
+		# if it doesn't exist we'll attempt Q-BRIDGE-MIB with the
+		# VLAN IDs instead of mapped IDs.
+
+		my $vlanid;
 		if ($vlanmapping) {	# if this fails too, Q-BRIDGE-MIB is out
 			my $vlan2idx = {reverse %{$vlanmapping}};
-
-			$debug && print STDERR "DEBUG: attempting Q-BRIDGE-MIB (.1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan2idx->{$vlan}) on $host\n";
-			$qbridgehash = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.2.2.1.2.$vlan2idx->{$vlan}", \&oid2mac, undef);
+			$vlanid = $vlan2idx->{$vlan};
+			$debug && print STDERR "DEBUG: got mapping index: $vlan maps to $vlanid on $host\n";
 		} else {
-			$debug && print STDERR "DEBUG: dot1qVlanFdbId/jnxExVlanTag retrieval failed. Q-BRIDGE-MIB not supported on $host.\n";
+			$debug && print STDERR "DEBUG: that didn't work either. attempting Q-BRIDGE-MIB with no mapping on $host\n";
+			$vlanid = $vlan;
 		}
+		$debug && print STDERR "DEBUG: attempting Q-BRIDGE-MIB (.1.3.6.1.2.1.17.7.1.2.2.1.2.$vlanid) on $host\n";
+		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.2.2.1.2.$vlanid", \&oid2mac, undef);
+		$qbridgehash || $debug && print STDERR "DEBUG: failed to retrieve Q-BRIDGE-MIB on $host. falling back to BRIDGE-MIB\n";
 	} else {
 		$debug && $qbridge_support && print STDERR "DEBUG: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
 	}
