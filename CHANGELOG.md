@@ -36,6 +36,10 @@ Views changed since v3.5.1:
     application/views/smokeping/member-drilldown.phtml
     application/views/statistics/member-drilldown.phtml
 
+Changes to `application.ini`:
+
+- `identity.switch_domain` can be removed as it is no longer used (unless you are using it in your own custom skins).
+
 
 # v3.5.1 (20130918)
 
