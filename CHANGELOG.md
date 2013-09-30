@@ -24,7 +24,18 @@ Minor new features, bug fixes and improvements.
 - [IM] add warning in debug mode if vlan is not specified (6a9086a - Nick Hilliard - 2013-09-23)
 - [IM] added command-line options for debugging [IM] added support for PBRIDGE-MIB with fallback to BRIDGE-MIB [IM] added support for vlans (a761ffc - Nick Hilliard - 2013-09-19)
 - [NF] Encapsulated git command for #69 (ada8824 - Barry O'Donovan - 2013-09-18)
--  [NF] Make Smokeping graphs available to members also (48d0d71 - Barry O'Donovan - 2013-09-18)
+- [NF] Make Smokeping graphs available to members also (48d0d71 - Barry O'Donovan - 2013-09-18)
+
+Views changed since v3.5.1:
+
+    application/views/auth/reset-password.phtml
+    application/views/customer/detail.phtml
+    application/views/customer/overview-tabs/ports/port.phtml
+    application/views/peering-manager/index-potential-bilateral.phtml
+    application/views/profile/index.phtml
+    application/views/smokeping/member-drilldown.phtml
+    application/views/statistics/member-drilldown.phtml
+
 
 # v3.5.1 (20130918)
 
