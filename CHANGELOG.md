@@ -7,6 +7,25 @@ Please see the following page for upgrade instructions:
 
 - [IM] Q-BRIDGE-MIB and vlan support added to update-l2database.pl
 
+# v3.5.2 (20130930)
+
+Minor new features, bug fixes and improvements.
+
+- [IM] Make contact controller aware of password hashing. Fixes / addresses #35 #56 #76 (9c5882e - Barry O'Donovan - 2013-09-30)
+- [BF] Addresses #56 (b39c95b - Barry O'Donovan - 2013-09-30)
+- [IM] Ensure end users know if plaintext password storage is being used. Also addresses #35 (5675f00 - Barry O'Donovan - 2013-09-30)
+- [IM] Default to BCrypt password hashing - "secure out of the box" - closes #35 (0a165db - Barry O'Donovan - 2013-09-30)
+- [IM] Do not add a domain to switches anymore. Closes #81 (74169d3 - Barry O'Donovan - 2013-09-30)
+- [IM] Q-BRIDGE-MIB and vlan support added to update-l2database.pl (14025a8 - Nick Hilliard - 2013-09-27)
+- [BF] Dell F10 S4810 doesn't support dot1qVlanFdbId or any other sort of vlan mapping (1864be6 - Nick Hilliard - 2013-09-27)
+- [BF] fixed IXP customer labels for peak output [IM] Added IXP Manager name to graphs (b4c5429 - Nick Hilliard - 2013-09-25)
+- [IM] support dot1qVlanFdbId/jnxExVlanTag vlan mapping (a9a0c61 - Nick Hilliard - 2013-09-24)
+- [IM] refactor code to abstract some functions and clean things up (4f24c0b - Nick Hilliard - 2013-09-24)
+- [IM] add warning in debug mode if vlan is not specified (6a9086a - Nick Hilliard - 2013-09-23)
+- [IM] added command-line options for debugging [IM] added support for PBRIDGE-MIB with fallback to BRIDGE-MIB [IM] added support for vlans (a761ffc - Nick Hilliard - 2013-09-19)
+- [NF] Encapsulated git command for #69 (ada8824 - Barry O'Donovan - 2013-09-18)
+-  [NF] Make Smokeping graphs available to members also (48d0d71 - Barry O'Donovan - 2013-09-18)
+
 # v3.5.1 (20130918)
 
 Various bug fixes, improvements as well as substanial improvements to the BGPQ / prefix code.
