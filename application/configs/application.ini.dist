@@ -133,13 +133,24 @@ resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
 resources.modules[] =
 
 
-resources.auth.enabled = 1
+;;;;;;;;
+;;
+;; Authentication options
+;;
+;; The default password hash method is bcrypt (with a iteration count of 9).
+;;
+;; You can (and may) want to use 'plaintext' 
+;;   - see https://github.com/inex/IXP-Manager/wiki/Password-Hashing
+;;
+resources.auth.oss.pwhash  = "bcrypt"
+resources.auth.oss.hash_cost  = 9
+
 resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
-resources.auth.oss.pwhash  = "plaintext"
-;resources.auth.oss.hash_cost  = 9
+resources.auth.enabled = 1
 resources.auth.oss.entity  = "\\Entities\\User"
 resources.auth.oss.login_history.enabled = 1
 resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
+
 
 
 ;; You'll want to allow your users find their usernames and reset
