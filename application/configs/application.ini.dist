@@ -325,9 +325,6 @@ identity.misc.irc_password = "xxx"
 ;; defines the default LAN on some pages and reflects the id column of the vlan table.
 identity.vlans.default = 1
 
-; Appended to switch names in some places. If you use FQDNs for your switches in IXP Manager then leave blank.
-identity.switch_domain = ".example.com"
-
 ; Used to set the default country in various forms (use two letter format)
 identity.default_country = 'IE'
 
