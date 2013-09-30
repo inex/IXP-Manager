@@ -331,7 +331,7 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             $form->getElement( 'login'    )->setValue( 1 );
             $form->getElement( 'username' )->setValue( $object->getUser()->getUsername() );
-            $form->getElement( 'password' )->setValue( $object->getUser()->getPassword() );
+            $form->getElement( 'password' )->setAttrib( 'placeholder', 'Set to change password' );
             $form->getElement( 'privs'    )->setValue( $object->getUser()->getPrivs() );
             $form->getElement( 'disabled' )->setValue( $object->getUser()->getDisabled() );
         }
@@ -546,7 +546,7 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             $form->getElement( "username" )->setRequired( true );
 
-            if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+            if( !$isEdit && $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
             {
                 $form->getElement( "password" )->setRequired( true );
                 $form->getElement( "privs"    )->setRequired( true );
@@ -731,10 +731,18 @@ class ContactController extends IXP_Controller_FrontEnd
                 if( $this->getUser()->getPrivs() <= \Entities\User::AUTH_CUSTADMIN )
                 {
                     $user->setPrivs( \Entities\User::AUTH_CUSTUSER );
-                    $user->setPassword( OSS_String::random( 16 ) );
+                    $user->setPassword(
+                        OSS_Auth_Password::hash( OSS_String::random( 16 ), $this->_options['resources']['auth']['oss'] )
+                    );
                     $user->setUsername( $form->getValue( "username" ) );
                 }
-
+                else
+                {
+                    // if this is an admin user, let them start with no unread notes
+                    if( $form->getValue( "privs" ) == \Entities\User::AUTH_SUPERUSER )
+                        $user->setPreference( 'customer-notes.read_upto', time() );
+                }
+                                
                 $this->getD2EM()->persist( $user );
                 $this->_feParams->userStatus = "created";
             }
@@ -749,13 +757,15 @@ class ContactController extends IXP_Controller_FrontEnd
             // SUPERADMIN can update these always
             if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
             {
+                if( $form->getValue( "password", '' ) != '' )
+                {
+                    $user->setPassword(
+                        OSS_Auth_Password::hash( $form->getValue( "password" ), $this->_options['resources']['auth']['oss'] )
+                     );
+                }
+                   
                 $user->setUsername( $form->getValue( "username" ) );
-                $user->setPassword( $form->getValue( "password" ) );
-                $user->setPrivs( $form->getValue(    "privs"    ) );
-                
-                // if this is an admin user, let them start with no unread notes
-                if( $user->getPrivs() == \Entities\User::AUTH_SUPERUSER )
-                    $user->setPreference( 'customer-notes.read_upto', time() );
+                $user->setPrivs( $form->getValue( "privs" ) );
             }
 
             $this->getLogger()->info( "{$this->getUser()->getUsername()} created user {$user->getUsername()}" );

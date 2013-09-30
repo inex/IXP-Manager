@@ -56,7 +56,7 @@ class IXP_Form_Contact extends IXP_Form
 
         $this->addElement( IXP_Form_Customer::getPopulatedSelect( 'custid' ) );
         $this->getElement( 'custid' )
-            ->setAttrib( 'class', "chzn-select" );        
+            ->setAttrib( 'class', "chzn-select" );
         
         $this->addElement( OSS_Form_User::createEmailElement( 'email' ) );
         $this->getElement( 'email' )
