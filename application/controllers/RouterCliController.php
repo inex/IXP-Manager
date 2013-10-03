@@ -371,14 +371,17 @@ class RouterCliController extends IXP_Controller_CliAction
      *         [cname] => Customer Name
      *         [cshortname] => shortname
      *         [autsys] => 65000
-     *         [peeringmacro] => QWE       // or AS65500 if not defined
+     *         [peeringmacro] => QWE              // or AS65500 if not defined
      *         [vliid] => 159
      *         [address] => 192.0.2.123
-     *         [bgpmd5secret] => qwertyui  // or false
-     *         [as112client] => 1          // if the member is an as112 client or not
-     *         [rsclient] => 1             // if the member is a route server client or not
+     *         [bgpmd5secret] => qwertyui         // or false
+     *         [as112client] => 1                 // if the member is an as112 client or not
+     *         [rsclient] => 1                    // if the member is a route server client or not
      *         [maxprefixes] => 20
-     *         [irrdbfilter] => 0/1        // if IRRDB filtering should be applied
+     *         [irrdbfilter] => 0/1               // if IRRDB filtering should be applied
+     *         [location_name] => Interxion DUB1
+     *         [location_shortname] => IX-DUB1
+     *         [location_tag] => ix1
      *     ]
      *
      * @param \Entities\Vlan $vlan
@@ -388,6 +391,7 @@ class RouterCliController extends IXP_Controller_CliAction
     private function sanitiseVlanInterfaces( $vlan, $proto, $rsclient = false )
     {
         $ints = $this->getD2R( '\\Entities\\VlanInterface' )->getForProto( $vlan, $proto, false );
+        
         $newints = [];
 
         foreach( $ints as $int )

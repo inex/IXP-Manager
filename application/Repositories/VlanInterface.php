@@ -52,12 +52,17 @@ class VlanInterface extends EntityRepository
                        c.maxprefixes AS gmaxprefixes, c.peeringmacro as peeringmacro, c.peeringmacrov6 as peeringmacrov6,
                        vli.id AS vliid, vli.ipv{$proto}enabled AS enabled, addr.address AS address,
                        vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix,
-                       vli.as112client AS as112client, vli.rsclient AS rsclient, vli.irrdbfilter AS irrdbfilter
+                       vli.as112client AS as112client, vli.rsclient AS rsclient, vli.irrdbfilter AS irrdbfilter,
+                       l.name AS location_name, l.shortname AS location_shortname, l.tag AS location_tag
                     FROM Entities\\VlanInterface vli
                         JOIN vli.VirtualInterface vi
                         JOIN vli.IPv{$proto}Address addr
                         JOIN vi.Customer c
                         JOIN vi.PhysicalInterfaces pi
+                        JOIN pi.SwitchPort sp
+                        JOIN sp.Switcher s
+                        JOIN s.Cabinet cab
+                        JOIN cab.Location l
                         JOIN vli.Vlan v
                     WHERE
                         v = :vlan
