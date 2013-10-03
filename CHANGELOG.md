@@ -5,19 +5,43 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-- [IM] Q-BRIDGE-MIB and vlan support added to update-l2database.pl
+# v3.5.3 (20131003)
+
+Route Server configuration generation for Bird and Quagga as well as test platform created.
+
+See: https://github.com/inex/IXP-Manager/wiki/Route-Server
+See: https://github.com/inex/IXP-Manager/wiki/Route-Server-Testing
+
+
+New / changed views:
+
+    application/views/router-cli/server-testing/quagga-linux-setup-down.cfg
+    application/views/router-cli/server-testing/quagga-linux-setup-up.cfg
+    application/views/router-cli/server-testing/quagga.cfg
+    application/views/router-cli/server/bird/footer.cfg
+    application/views/router-cli/server/bird/header.cfg
+    application/views/router-cli/server/bird/neighbor.cfg
+    application/views/router-cli/server/quagga/footer.cfg
+    application/views/router-cli/server/quagga/header.cfg
+    application/views/router-cli/server/quagga/neighbor.cfg
+
+
+- [NF] Route server testing framework (fcc4f05 - Barry O'Donovan - 2013-10-03)
+- [BF] Proper check for false (3cd56a3 - Barry O'Donovan - 2013-10-03)
+- [IM] Fixes to route server Quagga configuration which includes: (36cb63d - Barry O'Donovan - 2013-10-03)
+- [IM] Language (02ad8b8 - Barry O'Donovan - 2013-10-03)
+- [IM] Make IRRDB filtering optional for Bird. Quagga TBD. (baf909a - Barry O'Donovan - 2013-09-24)
+- [IM] New argument to limit config generation to single customer (4d86883 - Barry O'Donovan - 2013-09-24)
+- [BF] Route server configuration generation - first (untested) pass (88c9feb - Barry O'Donovan - 2013-09-24)
+- [IM] Support for --config parameter (090656e - Barry O'Donovan - 2013-09-24)
+
+
+
 
 # v3.5.2 (20130930)
 
 Minor new features, bug fixes and improvements.
 
-- [IM] Make contact controller aware of password hashing. Fixes / addresses #35 #56 #76 (9c5882e - Barry O'Donovan - 2013-09-30)
-- [BF] Addresses #56 (b39c95b - Barry O'Donovan - 2013-09-30)
-- [IM] Ensure end users know if plaintext password storage is being used. Also addresses #35 (5675f00 - Barry O'Donovan - 2013-09-30)
-- [IM] Default to BCrypt password hashing - "secure out of the box" - closes #35 (0a165db - Barry O'Donovan - 2013-09-30)
-- [IM] Do not add a domain to switches anymore. Closes #81 (74169d3 - Barry O'Donovan - 2013-09-30)
-- [IM] Q-BRIDGE-MIB and vlan support added to update-l2database.pl (14025a8 - Nick Hilliard - 2013-09-27)
-- [BF] Dell F10 S4810 doesn't support dot1qVlanFdbId or any other sort of vlan mapping (1864be6 - Nick Hilliard - 2013-09-27)
 - [BF] fixed IXP customer labels for peak output [IM] Added IXP Manager name to graphs (b4c5429 - Nick Hilliard - 2013-09-25)
 - [IM] support dot1qVlanFdbId/jnxExVlanTag vlan mapping (a9a0c61 - Nick Hilliard - 2013-09-24)
 - [IM] refactor code to abstract some functions and clean things up (4f24c0b - Nick Hilliard - 2013-09-24)
