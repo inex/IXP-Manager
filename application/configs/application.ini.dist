@@ -133,13 +133,24 @@ resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
 resources.modules[] =
 
 
-resources.auth.enabled = 1
+;;;;;;;;
+;;
+;; Authentication options
+;;
+;; The default password hash method is bcrypt (with a iteration count of 9).
+;;
+;; You can (and may) want to use 'plaintext' 
+;;   - see https://github.com/inex/IXP-Manager/wiki/Password-Hashing
+;;
+resources.auth.oss.pwhash  = "bcrypt"
+resources.auth.oss.hash_cost  = 9
+
 resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
-resources.auth.oss.pwhash  = "plaintext"
-;resources.auth.oss.hash_cost  = 9
+resources.auth.enabled = 1
 resources.auth.oss.entity  = "\\Entities\\User"
 resources.auth.oss.login_history.enabled = 1
 resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
+
 
 
 ;; You'll want to allow your users find their usernames and reset
@@ -324,9 +335,6 @@ identity.misc.irc_password = "xxx"
 ;; INEX has a primary and a secondary peering LAN as well as other LANs. This option
 ;; defines the default LAN on some pages and reflects the id column of the vlan table.
 identity.vlans.default = 1
-
-; Appended to switch names in some places. If you use FQDNs for your switches in IXP Manager then leave blank.
-identity.switch_domain = ".example.com"
 
 ; Used to set the default country in various forms (use two letter format)
 identity.default_country = 'IE'
