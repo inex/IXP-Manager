@@ -1,4 +1,3 @@
-
 # Upgrade Instructions
 
 Please see the following page for upgrade instructions:
@@ -10,6 +9,7 @@ Please see the following page for upgrade instructions:
 Route Server configuration generation for Bird and Quagga as well as test platform created.
 
 See: https://github.com/inex/IXP-Manager/wiki/Route-Server
+
 See: https://github.com/inex/IXP-Manager/wiki/Route-Server-Testing
 
 
