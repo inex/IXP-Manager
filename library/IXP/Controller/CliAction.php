@@ -170,10 +170,10 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
     {
         $p = $this->getParam( $param, false );
 
-        if( !$p && $default )
+        if( $p === false && $default )
             $p = $default;
 
-        if( !$p && $required )
+        if( $p === false && $required )
             die( "ERROR: Required paramater '{$param}' missing\n" );
 
         return $p;
