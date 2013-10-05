@@ -70,13 +70,13 @@
         </select>
     </td>
     *}
-    {if count( $vints ) > 1}
+    {if count( $vlints ) > 1}
         <td width="20"></td>
         <td valign="middle"><strong>Interface:</strong></td>
         <td>
             &nbsp;
             <select name="interface" style="width: 100px;" class="chzn-select">
-                {foreach $vints as $id => $vi}
+                {foreach $vlints as $id => $vi}
                     <option value="{$id}" {if isset( $interface ) and $interface eq $id}selected="selected"{/if}>{$id}</option>
                 {/foreach}
             </select>
@@ -94,7 +94,7 @@
 </p>
 
 
-{if count( $vints ) > 1}
+{if count( $vlints ) > 1}
     <div class="alert alert-info">
         <h4 class="alert-heading">Multiple Interfaces on this Infrastructure Found</h4>
         We've detected that you have multiple interfaces on this infrastructure. You can view your other
@@ -118,7 +118,7 @@
                 <p>
                     <br />
                     <img
-                        src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$dvid category=$category proto=$proto period=$pid infra=$infra->getId()}"
+                        src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svli=$svli dvli=$dvli category=$category proto=$proto period=$pid infra=$infra->getId()}"
                         width="600"
                     />
                 </p>

@@ -376,7 +376,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             {
                 foreach( $pvlints as $idx => $pvlint )
                 {
-                    if( $pvlint['id'] == $dvli )
+                    if( $pvlint['vlanid'] == $dvli )
                     {
                         $pvlints = [ $pvlint ];
                         $this->view->dcust = $pvlint;
