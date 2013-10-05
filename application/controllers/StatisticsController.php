@@ -327,83 +327,76 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $category = $this->_setCategory( 'category', true );
         $period   = $this->_setPeriod();
         $proto    = $this->_setProtocol();
-        $dvid     = $this->view->dvid = $this->getParam( 'dvid', false );
+        $dvli     = $this->view->dvli = $this->getParam( 'dvli', false );
     
-        // find the possible virtual interfaces that this customer peers with
-        $vints = [];
+        // find the possible VLAN interfaces that this customer peers with
+        $vlints = [];
         foreach( $cust->getVirtualInterfaces() as $vi )
         {
-            $enabled = false;
             foreach( $vi->getVlanInterfaces() as $vli )
             {
                 $fn = "getIpv{$proto}enabled";
-                if( $vli->$fn() )
+                if( !$vli->$fn() )
+                    continue;
+            
+                foreach( $vi->getPhysicalInterfaces() as $pi )
                 {
-                    $enabled = true;
-                    break;
+                    if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $this->infra->getId() )
+                        $vlints[ $vli->getId() ] = $vli;
                 }
-            }
-            
-            if( !$enabled )
-                continue;
-            
-            foreach( $vi->getPhysicalInterfaces() as $pi )
-            {
-                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $this->infra->getId() )
-                    $vints[ $vi->getId() ] = $vi;
             }
         }
 
-        $this->view->vints = $vints;
+        $this->view->vlints = $vlints;
         $this->view->customersWithVirtualInterfaces = false;
         
-        if( count( $vints ) )
+        if( count( $vlints ) )
         {
-            if( count( $vints ) > 1 )
+            if( count( $vlints ) > 1 )
             {
-                $interfaces = array();
-                foreach( $vints as $vi )
-                    $interfaces[] = $vi->getId();
+                $interfaces = [];
+                foreach( $vlints as $vli )
+                    $interfaces[] = $vli->getId();
     
                 $interface = $this->view->interface = $this->getParam( 'interface', $interfaces[0] );
                 if( !in_array( $interface, $interfaces ) )
                     $interface = $this->view->interface = $interfaces[0];
     
-                $this->view->svid = $interface;
+                $this->view->svli = $interface;
             }
             else
-                $this->view->svid = $vints[ ( array_keys( $vints )[0] ) ]->getId();
+                $this->view->svli = $vlints[ ( array_keys( $vlints )[0] ) ]->getId();
     
             // find the possible virtual interfaces that this customer peers with
             
-            $pvints = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )
+            $pvlints = $this->getD2EM()->getRepository( '\\Entities\\VlanInterface' )
                 ->getForInfrastructure( $this->infra, $proto );
-
-            if( $dvid )
+            
+            if( $dvli )
             {
-                foreach( $pvints as $idx => $pvint )
+                foreach( $pvlints as $idx => $pvlint )
                 {
-                    if( $pvint['id'] == $dvid )
+                    if( $pvlint['id'] == $dvli )
                     {
-                        $pvints = [ $pvint ];
-                        $this->view->dcust = $pvint;
+                        $pvlints = [ $pvlint ];
+                        $this->view->dcust = $pvlint;
                         break;
                     }
                 }
             }
             else
             {
-                foreach( $pvints as $idx => $pvint )
+                foreach( $pvlints as $idx => $pvlint )
                 {
-                    if( $pvint['cshortname'] == $shortname )
-                        unset( $pvints[ $idx ] );
+                    if( $pvlint['cshortname'] == $shortname )
+                        unset( $pvlints[ $idx ] );
                 }
             }
             
-            $this->view->customersWithVirtualInterfaces = $pvints;
+            $this->view->customersWithVirtualInterfaces = $pvlints;
         }
     
-        if( $dvid )
+        if( $dvli )
         {
             Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
             $this->view->display( 'statistics/p2p-single.phtml' );

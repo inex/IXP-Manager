@@ -128,8 +128,8 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
     {
         $period       = $this->getParam( 'period',    IXP_Mrtg::$PERIODS['Day'] );
         $shortname    = $this->getParam( 'shortname', false );
-        $svid         = $this->getParam( 'svid',      false );
-        $dvid         = $this->getParam( 'dvid',      false );
+        $svli         = $this->getParam( 'svli',      false );
+        $dvli         = $this->getParam( 'dvli',      false );
         $category     = $this->getParam( 'category',  IXP_Mrtg::$CATEGORIES['Bits'] );
         $proto        = $this->getParam( 'proto',     IXP_Mrtg::PROTOCOL_IPV4 );
         $infra        = $this->getParam( 'infra',     false );
@@ -155,57 +155,60 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
         }
         
         // make sure the svid and dvid is valid
-        if( !$svid || !$dvid )
+        if( !$svli || !$dvli )
         {
-            $this->getLogger()->alert( "P2P file request with svid={$svid} and pvid={$pvid}" );
+            $this->getLogger()->alert( "P2P file request with svid={$svli} and dvid={$dvli}" );
             die();
         }
         
-        $svidOk = false;
+        $svliOk = false;
         foreach( $_cust->getVirtualInterfaces() as $vint )
         {
-            if( $vint->getId() == $svid )
+            foreach( $vint->getVlanInterfaces() as $vlint )
             {
-                $svidOk = true;
-                break;
+                if( $vlint->getId() == $svli )
+                {
+                    $svliOk = true;
+                    break 2;
+                }
             }
         }
 
         // make sure the svid and dvid is valid
-        if( !$svidOk )
+        if( !$svliOk )
         {
-            $this->getLogger()->alert( "P2P file request with illegal svid={$svid} for {$shortname}" );
+            $this->getLogger()->alert( "P2P file request with illegal svli={$svli} for {$shortname}" );
             die();
         }
         
         // find the possible virtual interfaces that this customer peers with
-        $dvidOk = false;
+        $dvliOk = false;
         $dshortname = '';
         
-        $customersWithVirtualInterfaces = $this->getD2R( '\\Entities\\VirtualInterface' )->getForInfrastructure( $infra, $proto );
+        $customersWithVirtualInterfaces = $this->getD2R( '\\Entities\\VlanInterface' )->getForInfrastructure( $infra, $proto );
         
         foreach( $customersWithVirtualInterfaces as $c )
         {
             if( $c['cshortname'] == $shortname )
                 continue;
                 
-            if( $c['id'] == $dvid )
+            if( $c['vlanid'] == $dvli )
             {
                 $dshortname = $c['cshortname'];
-                $dvidOk = true;
+                $dvliOk = true;
                 break;
             }
         }
         
         // make sure the svid and dvid is valid
-        if( !$dvidOk )
+        if( !$dvliOk )
         {
-            $this->getLogger()->alert( "P2P file request with illegal pvid={$dvid} for {$shortname}" );
+            $this->getLogger()->alert( "P2P file request with illegal pvid={$dvli} for {$shortname}" );
             die();
         }
         
         $filename = IXP_Mrtg::getMrtgP2pFilePath( $this->ixp->getMrtgP2pPath(),
-            $svid, $dvid, $category, $period, $proto
+            $svli, $dvli, $category, $period, $proto
         );
         
         $this->getLogger()->debug( "Serving $filename to {$this->getUser()->getUsername()}" );
