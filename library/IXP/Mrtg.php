@@ -363,11 +363,6 @@ class IXP_Mrtg
                 $url .= "/proto/{$params['proto']}";
             else
                 $url .= "/proto/4";
-            
-            if( isset( $params['infra'] ) )
-                $url .= "/infra/{$params['infra']}";
-            else
-                $url .= "/infra/1";
         }
         
         if( isset( $params['graph'] ) )

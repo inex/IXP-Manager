@@ -34,13 +34,13 @@
 trait IXP_Controller_Trait_Statistics
 {
     /**
-     * The selected / default IXP. Available in the view as `$ixp`. Set in `_setIXP()`.
+     * The selected / default IXP. Available in the view as `$ixp`. Set in `setIXP()`.
      * @var \Entities\IXP The IXP / default IXP
      */
     private $ixp = null;
     
     /**
-     * All available IXPs. Available in the view as `$ixps`. Set in `_setIXP()`.
+     * All available IXPs. Available in the view as `$ixps`. Set in `setIXP()`.
      * @var \Entities\IXP[] All available IXPs
      */
     private $ixps = null;
@@ -51,7 +51,7 @@ trait IXP_Controller_Trait_Statistics
      *
      * @param \Entities\Customer $cust Limit list of IXPs to this customer and ensure this customer is part of the selected IXP
      */
-    protected function _setIXP( $cust = false )
+    protected function setIXP( $cust = false )
     {
         if( $this->multiIXP() )
         {
@@ -103,13 +103,13 @@ trait IXP_Controller_Trait_Statistics
 
     
     /**
-     * The selected infrastructure (or `aggregate`). Set in `_setInfrastructure()` and available in the view as `$infra`.
+     * The selected infrastructure (or `aggregate`). Set in `setInfrastructure()` and available in the view as `$infra`.
      * @var \Entities\Infrastructure The selected infrastructure (or `aggregate`).
      */
     private $infra = null;
     
     /**
-     * The selected infrastructure ID or `aggregate`. Set in `_setInfrastructure()` and available in the view as `$infraid`.
+     * The selected infrastructure ID or `aggregate`. Set in `setInfrastructure()` and available in the view as `$infraid`.
      *
      * Useful as the infrastructure is either an object or 'aggregate' - using this variable allows direct use without
      * bounding if's.
@@ -122,7 +122,7 @@ trait IXP_Controller_Trait_Statistics
     /**
      * Set the IXP based on submitted parameters
      */
-    protected function _setInfrastructure( $defaultToAggregate = true )
+    protected function setInfrastructure( $defaultToAggregate = true )
     {
         $this->view->infra = $this->view->infraid = $this->infra = $this->infraid
             = $this->getParam( 'infra', ( $defaultToAggregate ? 'aggregate' : false ) );
@@ -149,7 +149,7 @@ trait IXP_Controller_Trait_Statistics
     
     
     /**
-     * The selected VLAN. Set in `_setVLAN()` and available in the view as `$vlan`.
+     * The selected VLAN. Set in `setVLAN()` and available in the view as `$vlan`.
      * @var \Entities\VLAN The selected VLAN.
      */
     private $vlan = null;
@@ -158,7 +158,7 @@ trait IXP_Controller_Trait_Statistics
     /**
      * Set the VLAN based on submitted parameters
      */
-    protected function _setVLAN()
+    protected function setVLAN()
     {
         foreach( $this->infra->getVlans() as $v )
         {
@@ -184,7 +184,7 @@ trait IXP_Controller_Trait_Statistics
      * @param string $pname The name of the parameter to extract the protocol from
      * @return string The chosen / defaulted protocol
      */
-    protected function _setProtocol( $pname = 'proto' )
+    protected function setProtocol( $pname = 'proto' )
     {
         $proto = $this->getParam( $pname, 4 );
         if( !in_array( $proto, IXP_Mrtg::$PROTOCOLS ) )
@@ -197,7 +197,46 @@ trait IXP_Controller_Trait_Statistics
     }
     
     
+    /**
+     * Utility function to extract, validate (and default if necessary) a
+     * category from request parameters.
+     *
+     * Sets the view variables `$category` to the chosen / defaulted category
+     * and `$categories` to all available categories.
+     *
+     * @param string $pname The name of the parameter to extract the category from
+     * @param bool $aggregate Use aggregate categories only (i.e. bits, pkts, no errs, no discs)
+     * @return string The chosen / defaulted category
+     */
+    protected function setCategory( $pname = 'category', $aggregate = false )
+    {
+        $category = $this->getParam( $pname, IXP_Mrtg::$CATEGORIES['Bits'] );
+        if( !in_array( $category, $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES ) )
+            $category = IXP_Mrtg::$CATEGORIES['Bits'];
+        $this->view->category   = $category;
+        $this->view->categories = $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES;
+        return $category;
+    }
     
+    /**
+     * Utility function to extract, validate (and default if necessary) a
+     * period from request parameters.
+     *
+     * Sets the view variables `$period` to the chosen / defaulted category
+     * and `$periods` to all available periods.
+     *
+     * @param string $pname The name of the parameter to extract the period from
+     * @return string The chosen / defaulted period
+     */
+    protected function setPeriod( $pname = 'period' )
+    {
+        $period = $this->getParam( $pname, IXP_Mrtg::$PERIODS['Day'] );
+        if( !in_array( $period, IXP_Mrtg::$PERIODS ) )
+            $period = IXP_Mrtg::$PERIODS['Day'];
+        $this->view->period     = $period;
+        $this->view->periods    = IXP_Mrtg::$PERIODS;
+        return $period;
+    }
     
 }
 
