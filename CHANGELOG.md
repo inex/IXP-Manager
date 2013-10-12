@@ -4,6 +4,21 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.5.4 (20131012)
+
+Migrate to new sflow backend for P2P graphs - see #82.
+
+
+Updated views:
+
+    application/views/statistics/p2p-single.phtml
+    application/views/statistics/p2p.phtml
+
+- [IM] Complete migration to new sflow p2p graphs backend API - relates to #82 (2bc365a - Barry O'Donovan - 2013-10-12)
+- [I+] And first pass at drill down for p2p (4b34ba7 - Barry O'Donovan - 2013-10-05)
+- [IM] First pass at new sflow p2p graphs backend API - relates to #82 (7b36ee2 - Barry O'Donovan - 2013-10-05)
+- [NF] Include location information with route server / collector VLAN interface details - closes #83 (2f0411d - Barry O'Donovan - 2013-10-03)
+
 # v3.5.3 (20131003)
 
 Route Server configuration generation for Bird and Quagga as well as test platform created.
