@@ -20,6 +20,7 @@
         <join-column name="custid" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
+    <one-to-many field="ApiKeys" target-entity="Entities\ApiKey" mapped-by="User"/>
     <one-to-many field="LastLogins" target-entity="Entities\UserLoginHistory" mapped-by="User"/>
     <one-to-one field="Contact" target-entity="Entities\Contact" mapped-by="User"/>
     <one-to-many field="Meetings" target-entity="Entities\Meeting" mapped-by="CreatedBy"/>
