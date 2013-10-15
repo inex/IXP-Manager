@@ -123,6 +123,12 @@ class ApiKeyController extends IXP_Controller_FrontEnd
     
     public function addAction()
     {
+        if( count( $this->getUser()->getApiKeys() ) >= 10 )
+        {
+            $this->addMessage( 'We currently have a limit of 10 API keys per user. Please contact us if you require more.', OSS_Message::ERROR );
+            $this->redirect( 'api-key/list' );
+        }
+        
         $key = new \Entities\ApiKey();
         $key->setUser( $this->getUser() );
         $key->setCreated( new DateTime() );
