@@ -125,6 +125,33 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
         return $this->getUser()->getCustomer();
     }
     
+    /**
+     * Assert that a valid API key has been provided and that the user has the specified permissions
+     *
+     * Throws an exception which is caught by the API Error Controller if tests fail.
+     *
+     * @param int $priv From \Entities\User::AUTH_XXX
+     * @return \Entities\User
+     */
+    protected function assertUserPriv( $priv )
+    {
+        $u = $this->getUser();
+        
+        if( $u && $u->getPrivs() == $priv )
+            return $u;
+        else if( $u )
+            throw new Zend_Controller_Action_Exception( 'Invalid user privileges', 401 );
+        else
+            throw new Zend_Controller_Action_Exception( 'Valid API key required', 401 );
+    }
+    
+    
+    /**
+     * Dummy function to allow CLI and API code to intermingle.
+     */
+    protected function verbose( $msg, $implictNewline = true )
+    {}
+    
 
 }
 

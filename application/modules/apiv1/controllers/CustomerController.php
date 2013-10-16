@@ -38,26 +38,16 @@ class Apiv1_CustomerController extends IXP_Controller_API_V1Action
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
         
-        if( $this->getUser() && $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
-        {
-            $customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive(
-                true,
-                $this->getParam( 'trafficing',   false ) ? true : false,
-                $this->getParam( 'externalonly', false ) ? true : false,
-                is_int( $this->getParam( 'ixp', false ) ) ? $this->getParam( 'ixp', false ) : false
-            );
-            
-            $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
-            echo json_encode( $customers );
-            die();
-        }
-        else if( $this->getUser() && $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-        {
-            throw new Zend_Controller_Action_Exception( 'You are not a superuser', 401 );
-        }
-        else
-        {
-            throw new Zend_Controller_Action_Exception( 'Valid API key required', 401 );
-        }
+        $user = $this->assertUserPriv( \Entities\User::AUTH_SUPERUSER );
+        
+        $customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive(
+            true,
+            $this->getParam( 'trafficing',   false ) ? true : false,
+            $this->getParam( 'externalonly', false ) ? true : false,
+            is_int( $this->getParam( 'ixp', false ) ) ? $this->getParam( 'ixp', false ) : false
+        );
+        
+        $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
+        echo json_encode( $customers );
     }
 }
