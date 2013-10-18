@@ -21,10 +21,10 @@ KEY="MyKey"
 ##
 
 # Set default subsciption settings for any new IXP Manager users
-{$options.mailinglist.cmd.list_members} {$name} >{$apppath}/../tmp/ml-{$name}.txt
-curl -f --data-urlencode addresses@{$apppath}/../tmp/ml-{$name}.txt \
+{$options.mailinglist.cmd.list_members} {$name} >{$apppath}/../var/tmp/ml-{$name}.txt
+curl -f --data-urlencode addresses@{$apppath}/../var/tmp/ml-{$name}.txt \
     "$URL/apiv1/mailing-list/init/key/$KEY/list/{$name}"
-rm {$apppath}/../tmp/ml-{$name}.txt
+rm {$apppath}/../var/tmp/ml-{$name}.txt
 
 # Add new subscriptions to the list
 curl -f "$URL/apiv1/mailing-list/get-subscribed/key/$KEY/list/{$name}" | \
