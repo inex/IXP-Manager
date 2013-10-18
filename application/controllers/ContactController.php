@@ -465,6 +465,13 @@ class ContactController extends IXP_Controller_FrontEnd
             $this->getD2EM()->remove( $ll );
         }
 
+        // delete all the user's API keys
+        foreach( $user->getApiKeys() as $ak )
+        {
+            $user->removeApiKey( $ak );
+            $this->getD2EM()->remove( $ak );
+        }
+
         // clear the user from the contact and remove the user then
         $contact->unsetUser();
         $this->getD2EM()->remove( $user );
