@@ -117,7 +117,10 @@ class MailingListCliController extends IXP_Controller_CliAction
         $this->view->apppath = APPLICATION_PATH;
         $this->view->date = date( 'Y-m-d H:i:s' );
 
-        echo $this->view->render( 'cli/mailing-list-sync-script.sh' );
+        if( $this->getFrontController()->getParam( 'param1', false ) == 'apiv1' )
+            echo $this->view->render( 'mailing-list-cli/mailing-list-sync-script-apiv1.sh' );
+        else
+            echo $this->view->render( 'mailing-list-cli/mailing-list-sync-script.sh' );
     }
     
     private function getMailingList()
