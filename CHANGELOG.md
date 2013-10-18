@@ -5,7 +5,13 @@ Please see the following page for upgrade instructions:
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
 
-# v3.x.x (201310xx)
+# v3.6.0 (20131018)
+
+Add API V1 with proof of concept API functionality for mailing list management. 
+
+See: https://github.com/inex/IXP-Manager/wiki/API-V1
+See: https://github.com/inex/IXP-Manager/wiki/Mailing-List-Management#api-v1-interface
+
 
 Schema change required:
 
@@ -33,6 +39,33 @@ Schema change required:
         REFERENCES user (id);
 
 
+Templates changed / added:
+
+    application/views/api-key/list-row-menu.phtml
+    application/views/cli/mailing-list-sync-script.sh => application/views/mailing-list-cli/mailing-list-sync-script.sh
+    application/views/frontend/view.phtml
+    application/views/header.phtml
+    application/views/mailing-list-cli/mailing-list-sync-script-apiv1.sh
+    application/views/mailing-list-cli/mailing-list-sync-script.sh
+    application/views/profile/index.phtml
+
+
+
+- [I+] Keep Curl quiet (4235ead - Barry O'Donovan - 2013-10-18)
+- [BF] Fix tmp path (857e1db - Barry O'Donovan - 2013-10-18)
+- [BF] Fix verbosity (c76482d - Barry O'Donovan - 2013-10-18)
+- [I+] Update references to mailing list CLI actions (e64ea94 - Barry O'Donovan - 2013-10-18)
+- [I+] Update references to mailing list CLI actions (98f76d0 - Barry O'Donovan - 2013-10-18)
+- [BF] Update foreign ref to OSS-Framework for reset password fix (8cf5acb - Barry O'Donovan - 2013-10-18)
+- [BF] Update foreign ref to OSS-Framework for reset password fix (7103bd0 - Barry O'Donovan - 2013-10-18)
+- [IM] Delete a user's API keys when deleting the user (408b228 - Barry O'Donovan - 2013-10-18)
+- [N+] Complete API V1 mailing list management functions. (f33f765 - Barry O'Donovan - 2013-10-18)
+- [IM] Use the correct password hashing (59ae043 - Barry O'Donovan - 2013-10-18)
+- [NF] Mailing List management via APIv1 (WIP) (851d823 - Barry O'Donovan - 2013-10-16)
+- [N+] POC of a sample API call (220f049 - Barry O'Donovan - 2013-10-16)
+- [N+] API key management complete (414b1ec - Barry O'Donovan - 2013-10-15)
+- [NF] API (v1) - work in progress (777a64b - Barry O'Donovan - 2013-10-15)
+- [DB] Add schema for API keys (38d681e - Barry O'Donovan - 2013-10-15)
 
 
 # v3.5.4 (20131012)
