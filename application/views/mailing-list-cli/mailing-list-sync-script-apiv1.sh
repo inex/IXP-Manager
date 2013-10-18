@@ -21,21 +21,21 @@ KEY="MyKey"
 ##
 
 # Set default subsciption settings for any new IXP Manager users
-{$options.mailinglist.cmd.list_members} {$name} >{$apppath}/../tmp/ml-{$name}.txt
-curl -f --data-urlencode addresses@{$apppath}/../tmp/ml-{$name}.txt \
+{$options.mailinglist.cmd.list_members} {$name} >{$apppath}/../var/tmp/ml-{$name}.txt
+curl -sf --data-urlencode addresses@{$apppath}/../var/tmp/ml-{$name}.txt \
     "$URL/apiv1/mailing-list/init/key/$KEY/list/{$name}"
-rm {$apppath}/../tmp/ml-{$name}.txt
+rm {$apppath}/../var/tmp/ml-{$name}.txt
 
 # Add new subscriptions to the list
-curl -f "$URL/apiv1/mailing-list/get-subscribed/key/$KEY/list/{$name}" | \
+curl -sf "$URL/apiv1/mailing-list/get-subscribed/key/$KEY/list/{$name}" | \
     {$options.mailinglist.cmd.add_members} {$name} >/dev/null
 
 # Remove subscriptions from the list
-curl -f "$URL/apiv1/mailing-list/get-unsubscribed/key/$KEY/list/{$name}" | \
+curl -sf "$URL/apiv1/mailing-list/get-unsubscribed/key/$KEY/list/{$name}" | \
     {$options.mailinglist.cmd.remove_members} {$name} >/dev/null
 
 # Sync passwords
-curl -f "$URL/apiv1/mailing-list/password-sync/key/$KEY/list/{$name}" | \
+curl -sf "$URL/apiv1/mailing-list/password-sync/key/$KEY/list/{$name}" | \
     egrep "^{$options.mailinglist.cmd.changepw} '.+' '.+' '.+'$" | /bin/sh >/dev/null
 
 {/foreach}

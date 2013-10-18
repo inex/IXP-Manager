@@ -60,7 +60,7 @@ class MailingListCliController extends IXP_Controller_CliAction
 
         fclose( $stdin );
         
-        if( $this->_verbose ) echo "Setting mailing list subscription for all users without a subscription setting...\n";
+        $this->verbose( "Setting mailing list subscription for all users without a subscription setting...\n" );
         
         $this->initList( $list, $addresses );
     }
