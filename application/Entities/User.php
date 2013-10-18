@@ -637,4 +637,42 @@ class User
     {
         return $this->LastLogins;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $ApiKeys;
+
+
+    /**
+     * Add ApiKeys
+     *
+     * @param \Entities\ApiKey $apiKeys
+     * @return User
+     */
+    public function addApiKey(\Entities\ApiKey $apiKeys)
+    {
+        $this->ApiKeys[] = $apiKeys;
+    
+        return $this;
+    }
+
+    /**
+     * Remove ApiKeys
+     *
+     * @param \Entities\ApiKey $apiKeys
+     */
+    public function removeApiKey(\Entities\ApiKey $apiKeys)
+    {
+        $this->ApiKeys->removeElement($apiKeys);
+    }
+
+    /**
+     * Get ApiKeys
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getApiKeys()
+    {
+        return $this->ApiKeys;
+    }
 }

@@ -4,6 +4,37 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+
+# v3.x.x (201310xx)
+
+Schema change required:
+
+    CREATE TABLE api_keys (
+        id BIGINT AUTO_INCREMENT NOT NULL, 
+        user_id INT NOT NULL, 
+        apiKey VARCHAR(255) NOT NULL, 
+        expires DATETIME DEFAULT NULL, 
+        allowedIPs VARCHAR(65500) DEFAULT NULL, 
+        created DATETIME NOT NULL, 
+        lastseenAt DATETIME DEFAULT NULL, 
+        lastseenFrom VARCHAR(255) DEFAULT NULL, 
+    
+        UNIQUE INDEX UNIQ_87A61477800A1141 (apiKey), 
+        INDEX IDX_87A61477A76ED395 (user_id), 
+        PRIMARY KEY(id)
+    ) 
+        DEFAULT CHARACTER SET utf8 
+        COLLATE utf8_unicode_ci 
+        ENGINE = InnoDB;
+    
+    ALTER TABLE api_keys 
+        ADD CONSTRAINT FK_87A61477A76ED395 
+        FOREIGN KEY (user_id) 
+        REFERENCES user (id);
+
+
+
+
 # v3.5.4 (20131012)
 
 Migrate to new sflow backend for P2P graphs - see #82.

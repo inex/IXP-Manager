@@ -107,9 +107,21 @@
                         {/if}
 
                         {if $user->getPrivs() neq 3}
-	                        <li class="{if $controller eq 'profile'}active{/if}">
-	                            <a href="{genUrl controller="profile"}">Profile</a>
-	                        </li>
+	                        <li class="dropdown">
+							    <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
+							    <ul class="dropdown-menu">
+							        <li>
+							            <a href="{genUrl controller="profile"}">Profile</a>
+							        </li>
+							        <li>
+							            <a href="{genUrl controller="api-key"}">API Keys</a>
+							        </li>
+							        <li class="divider"></li>
+							        <li>
+		                                <a href="{genUrl controller="auth" action="logout"}">Logout</a>
+        							</li>
+							    </ul>
+							</li>
                         {/if}
 
                     </ul>
@@ -133,6 +145,9 @@
 							    <ul class="dropdown-menu">
 							        <li>
 							            <a href="{genUrl controller="profile"}">Profile</a>
+							        </li>
+							        <li>
+							            <a href="{genUrl controller="api-key"}">API Keys</a>
 							        </li>
 							        <li class="divider"></li>
 							        <li>
