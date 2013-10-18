@@ -100,11 +100,17 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
                 if( !( $apiKey = $this->getParam( 'key', false ) ) )
                     return false;
                 
-                $this->_user = $this->getD2EM()->createQuery(
-                        "SELECT u FROM \\Entities\\User u LEFT JOIN u.ApiKeys a WHERE a.apiKey = ?1" )
+                $key = $this->getD2EM()->createQuery(
+                        "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
                     ->setParameter( 1, $apiKey )
                     ->useResultCache( true, 3600, 'oss_d2u_user_apikey_' . $apiKey )
                     ->getSingleResult();
+                
+                $this->_user = $key->getUser();
+                
+                $key->setLastseenAt( new \DateTime() );
+                $key->setLastseenFrom( $_SERVER['REMOTE_ADDR'] );
+                $this->getD2EM()->flush();
             }
             catch( \Doctrine\ORM\NoResultException $e )
             {
