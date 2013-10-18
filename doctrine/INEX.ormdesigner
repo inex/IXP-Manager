@@ -1,6 +1,25 @@
 <?xml version="1.0"?>
-<orm-designer version="2.2.1.736" name="INEX" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<orm-designer version="2.2.4.749" name="INEX" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="INEX" import-format="Doctrine2Xml" import-path="schema" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
+    <entity name="ApiKey" uuid="3da990c1-6ab8-436e-8800-e09a08ebee16">
+      <field name="id" type="bigint" unique="true" primary="true" auto-increment="true" uuid="e7921411-de32-4a53-a946-d829a0a07f91"/>
+      <field name="apiKey" type="string" size="255" required="true" unique="true" uuid="e2e30fb0-01ac-431a-99b7-5c40b4c9d9ce"/>
+      <field name="expires" type="datetime" uuid="a4ca6f2b-63ec-4289-9172-28dea39d6bca"/>
+      <field name="allowedIPs" type="string" size="65500" uuid="7e487825-6517-454c-a154-49c69cd0f8bd"/>
+      <field name="created" type="datetime" required="true" uuid="ef6ca1f2-d589-4cb4-92af-acaa874c6840"/>
+      <field name="lastseenAt" type="datetime" uuid="0349d5b6-e543-4d97-bc08-100b540f9230"/>
+      <field name="lastseenFrom" type="string" size="255" uuid="199a2c38-0862-41c4-816f-61009a4ee933"/>
+      <field name="user_id" type="integer" required="true" uuid="d95d7c90-25ae-4369-8a70-6a3d14cb2751"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\ApiKey</attribute>
+        <attribute name="schema">api_keys</attribute>
+        <attribute name="table">api_keys</attribute>
+        <attribute name="tableName">api_keys</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="ApiKey" to="User" owner-alias="ApiKeys" inverse-alias="User" uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a">
+      <association-field from="user_id" to="id"/>
+    </association>
     <entity name="IrrdbPrefix" uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3dba3446-ee45-49f0-8435-7765a5078a5a"/>
       <field name="customer_id" type="integer" required="true" uuid="acd87918-2791-4530-90fd-65e46f8a774d"/>
@@ -907,6 +926,7 @@
     <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
     <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20"/>
     <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
+    <association uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" position-x="1235" position-y="193" size-x="0" size-x2="122" size-y="0" size-y2="101"/>
     <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0"/>
     <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
@@ -916,6 +936,7 @@
     <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <association uuid="39ad3dd5-487b-4152-9190-558bd7e80668" center-position-x="-7" center-position-y="0"/>
     <entity uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d" position-x="1608" position-y="80" size-x="0" size-x2="122" size-y="0" size-y2="129"/>
+    <entity uuid="3da990c1-6ab8-436e-8800-e09a08ebee16" position-x="1032" position-y="1017" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
     <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <entity uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786" position-x="1688" position-y="-279" size-x="0" size-x2="113" size-y="0" size-y2="74"/>
     <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" position-x="809" position-y="653" size-x="0" size-x2="145" size-y="0" size-y2="213"/>
@@ -926,7 +947,7 @@
     <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="0" center-position-y="0"/>
     <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
     <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
-    <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" position-x="598" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="143"/>
+    <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" position-x="590" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
     <association uuid="670582b5-1394-4b90-b827-0a331ea5b4aa" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20"/>
     <entity uuid="6747622b-df14-45da-828f-3c676799d963" position-x="1439" position-y="193" size-x="0" size-x2="113" size-y="0" size-y2="101"/>
     <entity uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64" position-x="160" position-y="880" size-x="0" size-x2="112" size-y="0" size-y2="87"/>
@@ -937,7 +958,7 @@
     <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0"/>
     <entity uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b" position-x="1112" position-y="839" size-x="0" size-x2="114" size-y="0" size-y2="129"/>
     <association uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
-    <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" position-x="953" position-y="933" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
+    <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
     <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" position-x="805" position-y="323" size-x="0" size-x2="126" size-y="0" size-y2="101"/>
     <association uuid="ab08b405-788c-4579-bc8d-3445b6ba3821" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-56"/>
@@ -962,6 +983,6 @@
     <association uuid="f18aceae-d3e6-452d-9e28-0c32f340b245" center-position-x="0" center-position-y="0"/>
     <association uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0"/>
-    <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" position-x="741" position-y="928" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
+    <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
   </visual-data>
 </orm-designer>

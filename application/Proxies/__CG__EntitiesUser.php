@@ -309,6 +309,24 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::getLastLogins();
     }
 
+    public function addApiKey(\Entities\ApiKey $apiKeys)
+    {
+        $this->__load();
+        return parent::addApiKey($apiKeys);
+    }
+
+    public function removeApiKey(\Entities\ApiKey $apiKeys)
+    {
+        $this->__load();
+        return parent::removeApiKey($apiKeys);
+    }
+
+    public function getApiKeys()
+    {
+        $this->__load();
+        return parent::getApiKeys();
+    }
+
     public function loadPreference($attribute, $index = 0, $includeExpired = false)
     {
         $this->__load();
@@ -384,7 +402,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Contact', 'LastLogins', 'Meetings', 'Preferences', 'ChangeLogs', 'Customer');
+        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Contact', 'ApiKeys', 'LastLogins', 'Meetings', 'Preferences', 'ChangeLogs', 'Customer');
     }
 
     public function __clone()
