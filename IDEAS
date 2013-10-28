@@ -2,6 +2,11 @@
 Potential Todo / Feature Ideas
 ------------------------------
 
+* "the peer2peer stats page does not scale well for networks with many peers.  
+  I think it could be an idea to make it configurable if you want the
+  actual graphs or just a list where you can select which graphs you would
+  like to see in one view"
+
 * <nick-2128> you know what would be incredibly useful? an ixpmanager.php 
   file which bleated about whether the correct modules are installed or not
 
