@@ -5,6 +5,21 @@ Please see the following page for upgrade instructions:
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
 
+# v3.6.1 (201311xx)
+
+
+New application.ini parameter (which is not required):
+    
+    ; the traffic_daily table can get pretty full and most of the long term information
+    ; are in the MRTG / other stats files anyway. If you want to keep this data in the
+    ; database, set the following to false. If it is true, when the daily task runs
+    ; to populate this table, it will also delete any entries older than
+    ; cli.traffic_differentials.stddev_calc_length days (this parameter is set above).
+    
+    cli.traffic_daily.delete_old = true
+
+
+
 # v3.6.0 (20131018)
 
 Add API V1 with proof of concept API functionality for mailing list management. 
