@@ -324,6 +324,18 @@ class StatisticsCliController extends IXP_Controller_CliAction
             }
         }
         
+        if( isset( $this->_options['cli']['traffic_daily']['delete_old'] ) && $this->_options['cli']['traffic_daily']['delete_old'] )
+        {
+            if( isset( $this->_options['cli']['traffic_differentials']['stddev_calc_length'] ) && $this->_options['cli']['traffic_differentials']['stddev_calc_length'] )
+            {
+                $this->verbose( "\nDeleting old daily traffic records that are no longer required" );
+                
+                $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->deleteBefore(
+                    new DateTime( "-{$this->_options['cli']['traffic_differentials']['stddev_calc_length']} days" ), $ixp
+                );
+            }
+        }
+        
         $this->verbose("");
     }
     

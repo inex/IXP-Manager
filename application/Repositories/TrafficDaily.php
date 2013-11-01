@@ -76,7 +76,7 @@ class TrafficDaily extends EntityRepository
      * Delete all entries for a given day
      *
      * @param string $day The day to delete all entries for
-     * @param \Entities\IXP $ixp The IXP to load results for (or false)
+     * @param \Entities\IXP $ixp The IXP to delet entries for (or false)
      * @return int The number of entries removed
      */
     public function deleteForDay( $day, $ixp = false  )
@@ -90,6 +90,27 @@ class TrafficDaily extends EntityRepository
         
         if( $ixp ) $q->setParameter( 'ixp', $ixp );
         
+        return $q->execute();
+    }
+    
+    /**
+     * Delete all entries before a given day
+     *
+     * @param string $day The day to delete all entries before
+     * @param \Entities\IXP $ixp The IXP to delete entries for (or false)
+     * @return int The number of entries removed
+     */
+    public function deleteBefore( $day, $ixp = false  )
+    {
+        $dql = "DELETE \\Entities\\TrafficDaily td WHERE td.day < :day";
+    
+        if( $ixp ) $dql .= " AND td.IXP = :ixp";
+    
+        $q = $this->getEntityManager()->createQuery( $dql )
+            ->setParameter( 'day', $day );
+    
+        if( $ixp ) $q->setParameter( 'ixp', $ixp );
+    
         return $q->execute();
     }
     
