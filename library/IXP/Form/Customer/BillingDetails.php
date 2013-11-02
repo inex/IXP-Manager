@@ -61,6 +61,15 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress2 );
 
+        $billingAddress3 = $this->createElement( 'text', 'billingAddress3' );
+        $billingAddress3->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setLabel( '' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $billingAddress3 );
+
         $billingCity = $this->createElement( 'text', 'billingTownCity' );
         $billingCity->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
@@ -143,7 +152,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         $this->addElement( $invoiceEmail );
 
         $this->addDisplayGroup(
-            [ 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity',
+            [ 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingAddress3', 'billingTownCity',
                 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone',
                 'invoiceEmail'
             ],
