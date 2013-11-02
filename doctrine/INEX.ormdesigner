@@ -160,6 +160,7 @@
       <field name="billingContactName" type="string" uuid="b797975d-1d9d-48fd-84fe-917e08d3297d"/>
       <field name="billingAddress1" type="string" uuid="1401ac3e-a825-4181-b879-d5d1dca03b1a"/>
       <field name="billingAddress2" type="string" uuid="1d661987-d0e7-4309-a2f1-4ee996ea2c7e"/>
+      <field name="billingAddress3" type="string" uuid="be644d27-93e8-41f4-a06c-6363a571021a"/>
       <field name="billingTownCity" type="string" uuid="2ade8305-73f5-4334-81b7-d5f7e77f6f17"/>
       <field name="billingPostcode" type="string" uuid="45748105-15d5-415d-b7fe-f06c77187d62"/>
       <field name="billingCountry" type="string" uuid="cda12b9e-c01f-43ae-9d9e-ae6cb48a0fd6"/>

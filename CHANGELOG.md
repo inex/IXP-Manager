@@ -8,6 +8,14 @@ Please see the following page for upgrade instructions:
 # v3.6.1 (201311xx)
 
 
+Schema update required:
+
+    ALTER TABLE api_keys 
+        CHANGE allowedIPs allowedIPs VARCHAR(65500) DEFAULT NULL;
+    
+    ALTER TABLE company_billing_detail 
+        ADD billingAddress3 VARCHAR(255) DEFAULT NULL AFTER billingAddress2;
+
 New application.ini parameter (which is not required):
     
     ; the traffic_daily table can get pretty full and most of the long term information

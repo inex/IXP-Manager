@@ -482,4 +482,32 @@ class CompanyBillingDetail
     {
         return $this->billingFrequency;
     }
+    /**
+     * @var string
+     */
+    private $billingAddress3;
+
+
+    /**
+     * Set billingAddress3
+     *
+     * @param string $billingAddress3
+     * @return CompanyBillingDetail
+     */
+    public function setBillingAddress3($billingAddress3)
+    {
+        $this->billingAddress3 = $billingAddress3;
+    
+        return $this;
+    }
+
+    /**
+     * Get billingAddress3
+     *
+     * @return string 
+     */
+    public function getBillingAddress3()
+    {
+        return $this->billingAddress3;
+    }
 }
