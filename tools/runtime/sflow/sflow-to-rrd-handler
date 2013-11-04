@@ -40,6 +40,7 @@ my $ixp = new IXPManager::Config;	# (configfile => $configfile);
 my $dbh = $ixp->{db};
 
 my $debug = defined($ixp->{ixp}->{debug}) ? $ixp->{ixp}->{debug} : 0;
+my $insanedebug = 0;
 my $rrdcached = defined($ixp->{ixp}->{sflow_rrdcached}) ? $ixp->{ixp}->{sflow_rrdcached} : 1;
 my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/sflowtool';
 my $sflowtool_opts = defined($ixp->{ixp}->{sflowtool_opts}) ? $ixp->{ixp}->{sflowtool_opts} : '-l';
@@ -54,12 +55,17 @@ my $daemon = 1;
 
 GetOptions(
 	'debug!'		=> \$debug,
+	'insanedebug!'		=> \$insanedebug,
 	'daemon!'		=> \$daemon,
 	'sflowtool=s'		=> \$sflowtool,
 	'sflowtool_opts=s'	=> \$sflowtool_opts,
 	'sflow_rrddir=s'	=> \$basedir,
 	'flushtimer=i'		=> \$timer_period
 );
+
+if ($insanedebug) {
+	$debug = 1;
+}
 
 my $mactable = reload_mactable($dbh);
 my $matrix = matrix_init($dbh);
@@ -93,6 +99,8 @@ while (<SFLOWTOOL>) {
 
 	chomp;
 
+	$insanedebug && print STDERR "DEBUG: $_\n";
+
 	# parse and split out all the data.  most of this is unused at the
 	# moment, but it's useful to collect it anyway
 	# FLOW,193.242.111.152,2,21,0013136f2fc0,0010a52f261f,0x0800,10,10,94.1.115.114,80.1.2.222,6,0x00,124,1863,750,0x18,179,165,1024
@@ -124,6 +132,9 @@ while (<SFLOWTOOL>) {
 		}
 	}
 
+	my $srcname = defined ($matrix->{names}->{$srcvli}) ? $matrix->{names}->{$srcvli} : '(unknown)';
+	my $dstname = defined ($matrix->{names}->{$dstvli}) ? $matrix->{names}->{$dstvli} : '(unknown)';
+
 	# the sflow accounting perimeter on the switches will ensure that
 	# each packet will be counted exactly once.  because of this, the
 	# packet sample needs to be added to both the source vlaninterface
@@ -131,6 +142,14 @@ while (<SFLOWTOOL>) {
 	# the individual counts.
 
 	if ($ipprotocol && $srcvli && $dstvli && ($srcvli != $dstvli) ) {
+		$insanedebug && print STDERR "DEBUG: accepted update for: ".
+			"protocol: $ipprotocol ".
+			"vlan: $vlan ".
+			"srcvli: $srcvli / '$srcname' ".
+			"dstvli: $dstvli / '$dstname' ".
+			"pktsize: $pktsize ".
+			"samplerate: $samplerate ".
+			"\n";
 		$matrix->{p2p}->{$ipprotocol}->{bytes}->{$srcvli}->{$dstvli} += $pktsize * $samplerate;
 		$matrix->{p2p}->{$ipprotocol}->{pkts}->{$srcvli}->{$dstvli} += $samplerate;
 		$matrix->{individual}->{$ipprotocol}->{bytes}->{$srcvli}->{in}  += $pktsize * $samplerate;
@@ -138,9 +157,6 @@ while (<SFLOWTOOL>) {
 		$matrix->{individual}->{$ipprotocol}->{pkts}->{$srcvli}->{in}   += $samplerate;
 		$matrix->{individual}->{$ipprotocol}->{pkts}->{$dstvli}->{out}  += $samplerate;
 	} else {
-		my $srcname = defined ($matrix->{names}->{$srcvli}) ? $matrix->{names}->{$srcvli} : '(unknown)';
-		my $dstname = defined ($matrix->{names}->{$dstvli}) ? $matrix->{names}->{$dstvli} : '(unknown)';
-
 		$debug && print STDERR "DEBUG: dropped update for: ".
 			"protocol: $ipprotocol ".
 			"vlan: $vlan ".
@@ -202,13 +218,13 @@ sub process_rrd {
 						my $out = $matrix->{p2p}->{$ipprotocol}->{$rrdtype}->{$srcvli}->{$dstvli};
 
 						# this is too noisy for normal debugging.
-#						$debug && print STDERR "DEBUG: p2p: building update for ".
-#								"protocol: $ipprotocol ".
-#								"type: $rrdtype ".
-#								"srcvli: $srcvli / '$matrix->{names}->{$srcvli}' ".
-#								"dstvli: $dstvli / '$matrix->{names}->{$dstvli}' ".
-#								"in: $in out: $out ".
-#								"\n";
+						$insanedebug && print STDERR "DEBUG: p2p: building update for ".
+								"protocol: $ipprotocol ".
+								"type: $rrdtype ".
+								"srcvli: $srcvli / '$matrix->{names}->{$srcvli}' ".
+								"dstvli: $dstvli / '$matrix->{names}->{$dstvli}' ".
+								"in: $in out: $out ".
+								"\n";
 						build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
 					}
 
@@ -228,14 +244,14 @@ sub process_rrd {
 							"vlan: $vlan ".
 							"type: $rrdtype ".
 							"protocol: $ipprotocol ".
-							"cust: $srcvli / '$matrix->{names}->{$srcvli}' ".
+							"srcvli: $srcvli / '$matrix->{names}->{$srcvli}' ".
 							"\n";
 					build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
 				}
 
 				# write per-vlan aggregates out to rrd
 				$rrdfile = sprintf ("$basedir/ipv$ipprotocol/$rrdtype/aggregate/aggregate.ipv$ipprotocol.$rrdtype.vlan%05d.rrd", $vlan);
-				$debug && print STDERR "DEBUG: aggregate: building update for vlan: $vlan type: $rrdtype protocol: $ipprotocol\n";
+				$debug && print STDERR "DEBUG: aggregate: building update for vlan: $vlan type: $rrdtype protocol: $ipprotocol file: $rrdfile\n";
 
 				my $in =  $matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{in};
 				my $out = $matrix->{aggregate}->{$ipprotocol}->{$rrdtype}->{$vlan}->{out};
