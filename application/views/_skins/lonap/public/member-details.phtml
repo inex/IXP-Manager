@@ -35,12 +35,14 @@
                 <td>
                     {foreach $c->getVirtualInterfaces() as $vi}
                         {$pi = $vi->getPhysicalInterfaces()}
+                        {if not $pi}{continue}{/if}
                         {$pi = $pi.0}
+                        {if not $pi}{continue}{/if}
+                        {if not $vi@first}&nbsp;+&nbsp;{/if}
                         {if count( $vi->getPhysicalInterfaces() ) > 1}{count( $vi->getPhysicalInterfaces() )}*{/if}{if
                             $pi->getSpeed() eq 100}FE{elseif $pi->getSpeed() eq 1000}GE{elseif
                             $pi->getSpeed() eq 10000}10GE{else}{$pi->getSpeed()}
                         {/if}
-                        {if not $vi@last}&nbsp;+&nbsp;{/if}
                     {/foreach}
                 </td>
             </tr>
