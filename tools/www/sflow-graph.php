@@ -146,17 +146,19 @@ if ($separated_maxima) {
 }
 
 $avg_label = $separated_maxima ? 'Avg. ' : '';
-$options[] = 'AREA:cdefa#00CF00:'.$avg_label.$dstvliowner.' to '.$srcvliowner;
+
+$options[] = 'AREA:cdefc#00CF00:'.$avg_label.$srcvliowner.' to '.$dstvliowner;
+if (!$separated_maxima)
+	$options[] = 'GPRINT:max_out:\tMax\\:%8.2lf%s';
+$options[] = 'GPRINT:avg_out:\tAvg\\:%8.2lf%s';
+$options[] = 'GPRINT:last_out:\tCur\\:%8.2lf%s\l';
+
+$options[] = 'LINE1:cdefa#002A97FF:'.$avg_label.$dstvliowner.' to '.$srcvliowner;
 if (!$separated_maxima)
 	$options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s';
 $options[] = 'GPRINT:avg_in:\tAvg\\:%8.2lf%s';
 $options[] = 'GPRINT:last_in:\tCur\\:%8.2lf%s\l';
 
-$options[] = 'LINE1:cdefc#002A97FF:'.$avg_label.$srcvliowner.' to '.$dstvliowner;
-if (!$separated_maxima)
-	$options[] = 'GPRINT:max_out:\tMax\\:%8.2lf%s';
-$options[] = 'GPRINT:avg_out:\tAvg\\:%8.2lf%s';
-$options[] = 'GPRINT:last_out:\tCur\\:%8.2lf%s\l';
 $options[] = 'COMMENT:\s';
 $options[] = 'COMMENT:\s';
 $options[] = 'COMMENT:\s';
