@@ -74,6 +74,10 @@
                             {if isset($cconf.xlator[ $object.$col ])}{$cconf.xlator[ $object.$col ]}{else}{$object.$col}{/if}
                         {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
                             {if $object.$col}{$object.$col|date_format:'%Y-%m-%d %H:%M:%S'}{/if}
+                        {elseif $cconf.type eq $FE_COL_TYPES.DATE}
+                            {if $object.$col}{$row.$col|date_format:'%Y-%m-%d'}{/if}
+                        {elseif $cconf.type eq $FE_COL_TYPES.TIME}
+                            {if $object.$col}{$row.$col|date_format:'%H:%M:%S'}{/if}
                         {elseif $cconf.type eq $FE_COL_TYPES.SCRIPT}
                             {tmplinclude file=$cconf.script}
                         {else}

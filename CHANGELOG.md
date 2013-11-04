@@ -1,11 +1,171 @@
-
 # Upgrade Instructions
 
 Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-- [IM] Q-BRIDGE-MIB and vlan support added to update-l2database.pl
+
+# v3.6.1 (201311xx)
+
+
+Schema update required:
+
+    ALTER TABLE api_keys 
+        CHANGE allowedIPs allowedIPs VARCHAR(65500) DEFAULT NULL;
+    
+    ALTER TABLE company_billing_detail 
+        ADD billingAddress3 VARCHAR(255) DEFAULT NULL AFTER billingAddress2;
+
+New application.ini parameter (which is not required):
+    
+    ; the traffic_daily table can get pretty full and most of the long term information
+    ; are in the MRTG / other stats files anyway. If you want to keep this data in the
+    ; database, set the following to false. If it is true, when the daily task runs
+    ; to populate this table, it will also delete any entries older than
+    ; cli.traffic_differentials.stddev_calc_length days (this parameter is set above).
+    
+    cli.traffic_daily.delete_old = true
+
+
+
+# v3.6.0 (20131018)
+
+Add API V1 with proof of concept API functionality for mailing list management. 
+
+See: https://github.com/inex/IXP-Manager/wiki/API-V1
+See: https://github.com/inex/IXP-Manager/wiki/Mailing-List-Management#api-v1-interface
+
+
+Schema change required:
+
+    CREATE TABLE api_keys (
+        id BIGINT AUTO_INCREMENT NOT NULL, 
+        user_id INT NOT NULL, 
+        apiKey VARCHAR(255) NOT NULL, 
+        expires DATETIME DEFAULT NULL, 
+        allowedIPs VARCHAR(65500) DEFAULT NULL, 
+        created DATETIME NOT NULL, 
+        lastseenAt DATETIME DEFAULT NULL, 
+        lastseenFrom VARCHAR(255) DEFAULT NULL, 
+    
+        UNIQUE INDEX UNIQ_87A61477800A1141 (apiKey), 
+        INDEX IDX_87A61477A76ED395 (user_id), 
+        PRIMARY KEY(id)
+    ) 
+        DEFAULT CHARACTER SET utf8 
+        COLLATE utf8_unicode_ci 
+        ENGINE = InnoDB;
+    
+    ALTER TABLE api_keys 
+        ADD CONSTRAINT FK_87A61477A76ED395 
+        FOREIGN KEY (user_id) 
+        REFERENCES user (id);
+
+
+Templates changed / added:
+
+    application/views/api-key/list-row-menu.phtml
+    application/views/cli/mailing-list-sync-script.sh => application/views/mailing-list-cli/mailing-list-sync-script.sh
+    application/views/frontend/view.phtml
+    application/views/header.phtml
+    application/views/mailing-list-cli/mailing-list-sync-script-apiv1.sh
+    application/views/mailing-list-cli/mailing-list-sync-script.sh
+    application/views/profile/index.phtml
+
+
+
+- [I+] Keep Curl quiet (4235ead - Barry O'Donovan - 2013-10-18)
+- [BF] Fix tmp path (857e1db - Barry O'Donovan - 2013-10-18)
+- [BF] Fix verbosity (c76482d - Barry O'Donovan - 2013-10-18)
+- [I+] Update references to mailing list CLI actions (e64ea94 - Barry O'Donovan - 2013-10-18)
+- [I+] Update references to mailing list CLI actions (98f76d0 - Barry O'Donovan - 2013-10-18)
+- [BF] Update foreign ref to OSS-Framework for reset password fix (8cf5acb - Barry O'Donovan - 2013-10-18)
+- [BF] Update foreign ref to OSS-Framework for reset password fix (7103bd0 - Barry O'Donovan - 2013-10-18)
+- [IM] Delete a user's API keys when deleting the user (408b228 - Barry O'Donovan - 2013-10-18)
+- [N+] Complete API V1 mailing list management functions. (f33f765 - Barry O'Donovan - 2013-10-18)
+- [IM] Use the correct password hashing (59ae043 - Barry O'Donovan - 2013-10-18)
+- [NF] Mailing List management via APIv1 (WIP) (851d823 - Barry O'Donovan - 2013-10-16)
+- [N+] POC of a sample API call (220f049 - Barry O'Donovan - 2013-10-16)
+- [N+] API key management complete (414b1ec - Barry O'Donovan - 2013-10-15)
+- [NF] API (v1) - work in progress (777a64b - Barry O'Donovan - 2013-10-15)
+- [DB] Add schema for API keys (38d681e - Barry O'Donovan - 2013-10-15)
+
+
+# v3.5.4 (20131012)
+
+Migrate to new sflow backend for P2P graphs - see #82.
+
+
+Updated views:
+
+    application/views/statistics/p2p-single.phtml
+    application/views/statistics/p2p.phtml
+
+- [IM] Complete migration to new sflow p2p graphs backend API - relates to #82 (2bc365a - Barry O'Donovan - 2013-10-12)
+- [I+] And first pass at drill down for p2p (4b34ba7 - Barry O'Donovan - 2013-10-05)
+- [IM] First pass at new sflow p2p graphs backend API - relates to #82 (7b36ee2 - Barry O'Donovan - 2013-10-05)
+- [NF] Include location information with route server / collector VLAN interface details - closes #83 (2f0411d - Barry O'Donovan - 2013-10-03)
+
+# v3.5.3 (20131003)
+
+Route Server configuration generation for Bird and Quagga as well as test platform created.
+
+See: https://github.com/inex/IXP-Manager/wiki/Route-Server
+
+See: https://github.com/inex/IXP-Manager/wiki/Route-Server-Testing
+
+
+New / changed views:
+
+    application/views/router-cli/server-testing/quagga-linux-setup-down.cfg
+    application/views/router-cli/server-testing/quagga-linux-setup-up.cfg
+    application/views/router-cli/server-testing/quagga.cfg
+    application/views/router-cli/server/bird/footer.cfg
+    application/views/router-cli/server/bird/header.cfg
+    application/views/router-cli/server/bird/neighbor.cfg
+    application/views/router-cli/server/quagga/footer.cfg
+    application/views/router-cli/server/quagga/header.cfg
+    application/views/router-cli/server/quagga/neighbor.cfg
+
+
+- [NF] Route server testing framework (fcc4f05 - Barry O'Donovan - 2013-10-03)
+- [BF] Proper check for false (3cd56a3 - Barry O'Donovan - 2013-10-03)
+- [IM] Fixes to route server Quagga configuration which includes: (36cb63d - Barry O'Donovan - 2013-10-03)
+- [IM] Language (02ad8b8 - Barry O'Donovan - 2013-10-03)
+- [IM] Make IRRDB filtering optional for Bird. Quagga TBD. (baf909a - Barry O'Donovan - 2013-09-24)
+- [IM] New argument to limit config generation to single customer (4d86883 - Barry O'Donovan - 2013-09-24)
+- [BF] Route server configuration generation - first (untested) pass (88c9feb - Barry O'Donovan - 2013-09-24)
+- [IM] Support for --config parameter (090656e - Barry O'Donovan - 2013-09-24)
+
+
+
+
+# v3.5.2 (20130930)
+
+Minor new features, bug fixes and improvements.
+
+- [BF] fixed IXP customer labels for peak output [IM] Added IXP Manager name to graphs (b4c5429 - Nick Hilliard - 2013-09-25)
+- [IM] support dot1qVlanFdbId/jnxExVlanTag vlan mapping (a9a0c61 - Nick Hilliard - 2013-09-24)
+- [IM] refactor code to abstract some functions and clean things up (4f24c0b - Nick Hilliard - 2013-09-24)
+- [IM] add warning in debug mode if vlan is not specified (6a9086a - Nick Hilliard - 2013-09-23)
+- [IM] added command-line options for debugging [IM] added support for PBRIDGE-MIB with fallback to BRIDGE-MIB [IM] added support for vlans (a761ffc - Nick Hilliard - 2013-09-19)
+- [NF] Encapsulated git command for #69 (ada8824 - Barry O'Donovan - 2013-09-18)
+- [NF] Make Smokeping graphs available to members also (48d0d71 - Barry O'Donovan - 2013-09-18)
+
+Views changed since v3.5.1:
+
+    application/views/auth/reset-password.phtml
+    application/views/customer/detail.phtml
+    application/views/customer/overview-tabs/ports/port.phtml
+    application/views/peering-manager/index-potential-bilateral.phtml
+    application/views/profile/index.phtml
+    application/views/smokeping/member-drilldown.phtml
+    application/views/statistics/member-drilldown.phtml
+
+Changes to `application.ini`:
+
+- `identity.switch_domain` can be removed as it is no longer used (unless you are using it in your own custom skins).
+
 
 # v3.5.1 (20130918)
 

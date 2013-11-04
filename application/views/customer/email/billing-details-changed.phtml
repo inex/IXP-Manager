@@ -27,6 +27,7 @@ Billing details have been updated for <em>{$customer->getName()}</em>.
         <td style="border: 1px solid black;">
             {$oldDetails->getBillingAddress1()}<br/>
             {$oldDetails->getBillingAddress2()}<br/>
+            {$oldDetails->getBillingAddress3()}<br/>
             {$oldDetails->getBillingTownCity()}<br/>
             {$oldDetails->getBillingPostcode()}<br/>
             {$oldDetails->getBillingCountry()}
@@ -34,6 +35,7 @@ Billing details have been updated for <em>{$customer->getName()}</em>.
         <td style="border: 1px solid black;">
             {$customer->getBillingDetails()->getBillingAddress1()}<br/>
             {$customer->getBillingDetails()->getBillingAddress2()}<br/>
+            {$customer->getBillingDetails()->getBillingAddress3()}<br/>
             {$customer->getBillingDetails()->getBillingTownCity()}<br/>
             {$customer->getBillingDetails()->getBillingPostcode()}<br/>
             {$customer->getBillingDetails()->getBillingCountry()}

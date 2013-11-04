@@ -49,7 +49,7 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
         
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
             
-            'readonly'      => true,
+            'readonly'      => false,
         
             'listOrderBy'    => 'id',
             'listOrderByDir' => 'ASC',
@@ -201,6 +201,16 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
             $this->redirect( strtolower( $addrfam ) . '-address/list/vlan/' . $vlan->getId() );
         }
     }
+    
+    public function editAction()
+    {
+        $this->addMessage(
+            'Editing IP addresses is not currently implemented. '
+                . 'You can acheive the same outcome by deleting / adding.',
+            OSS_Message::INFO
+        );
+        $this->forward( 'list' );
+    }
 
     public function ajaxGetForVlanAction()
     {
@@ -243,6 +253,32 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
         die(); //FIXME I shouldn't have to die() here...
     }
     
+    
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param \Entities\IPv4Address $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( $object->getVlanInterface() )
+        {
+            $this->addMessage(
+                'This IP address is assigned to a VLAN interface. Please remove <a href="'
+                    . OSS_Utils::genUrl( 'vlan-interface', 'edit', false,
+                        [ 'id' => $object->getVlanInterface()->getId() ]
+                    ) . '">this assignment</a> before deleting the address.',
+                OSS_Message::ERROR
+            );
+            return false;
+        }
+        
+        return true;
+    }
 
 }
 

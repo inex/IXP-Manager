@@ -61,6 +61,61 @@ trait IXP_Controller_Trait_Common
         return ( isset( $this->_options['multiixp']['enabled'] ) && $this->_options['multiixp']['enabled'] );
     }
     
+
+    /**
+     * Loads a customer object via an optional posted / getted `shortname` parameter.
+     *
+     * Specifically:
+     *
+     * * if the logged in user is not a SUPERADMIN, then the currently logged in
+     *   user's owning customer is returned;
+     * * however, if the suer is not a SUPERADMIN and a different customer's
+     *   shortname is passed, an error is thrown;
+     * * if the user is a SUPERUSER, the customer with the passed `shortname` is
+     *   returned;
+     * * if the user is a SUPERUSER and no `shortname` is passed, an error is thrown.
+     *
+     * @return \Entities\Customer
+     */
+    protected function resolveCustomerByShortnameParam()
+    {
+        // resolve the requested customer (from admin) or force to the currently logged in customer
+        if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
+        {
+            $shortname = $this->getParam( 'shortname', false );
+            
+            if( !$shortname )
+            {
+                $this->addMessage( 'Customer shortname expected but not found.', OSS_Message::ERROR );
+                $this->redirect();
+            }
+        }
+        else
+        {
+            $shortname = $this->getCustomer()->getShortname();
+            
+            if( $this->getParam( 'shortname', $shortname ) != $this->getCustomer()->getShortname() )
+            {
+                $this->addMessage( 'Illegal attempt to access another customer. This event has been logged.',
+                            OSS_Message::ERROR );
+                $this->getLogger()->alert(
+                    "{$shortname}/{$this->getUser()->getUsername()} tried to access customer {$this->getParam( 'shortname' )}"
+                );
+                $this->redirect( '' );
+            }
+        }
+        
+        $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
+    
+        if( !$c )
+        {
+            $this->addMessage( 'Invalid customer', OSS_Message::ERROR );
+            $this->redirect();
+        }
+    
+        return $c;
+    }
+    
     /**
      * Load a customer from the database by shortname but redirect to `error/error` if no such customer.
      *

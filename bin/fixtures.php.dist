@@ -198,8 +198,13 @@ $u = new \Entities\User();
 $contact->setUser( $u );
 
 $u->setUsername( 'username' );
-$u->setPassword( 'letmein1' );        // if you're not using plaintext passwords, put anything here and
-                                      // use the forgotten password facility
+
+// Please choose a secure password below (in place of 'letmein1') or
+// immeidately change your password when logged in for the first time.
+$u->setPassword(
+    OSS_Auth_Password::hash( 'letmein1', $config['auth']['oss'] );
+);
+
 $u->setEmail( $contact->getEmail() );
 $u->setPrivs( \Entities\User::AUTH_SUPERUSER );
 $u->setDisabled( false );

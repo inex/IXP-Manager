@@ -52,12 +52,17 @@ class VlanInterface extends EntityRepository
                        c.maxprefixes AS gmaxprefixes, c.peeringmacro as peeringmacro, c.peeringmacrov6 as peeringmacrov6,
                        vli.id AS vliid, vli.ipv{$proto}enabled AS enabled, addr.address AS address,
                        vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix,
-                       vli.as112client AS as112client, vli.rsclient AS rsclient
+                       vli.as112client AS as112client, vli.rsclient AS rsclient, vli.irrdbfilter AS irrdbfilter,
+                       l.name AS location_name, l.shortname AS location_shortname, l.tag AS location_tag
                     FROM Entities\\VlanInterface vli
                         JOIN vli.VirtualInterface vi
                         JOIN vli.IPv{$proto}Address addr
                         JOIN vi.Customer c
                         JOIN vi.PhysicalInterfaces pi
+                        JOIN pi.SwitchPort sp
+                        JOIN sp.Switcher s
+                        JOIN s.Cabinet cab
+                        JOIN cab.Location l
                         JOIN vli.Vlan v
                     WHERE
                         v = :vlan
@@ -170,5 +175,157 @@ class VlanInterface extends EntityRepository
         $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }
+    
+    /**
+     * Utility function to provide an array of all VLAN interfaces on a given
+     * VLAN (optionally with active VLAN Interfaces for a given protocol).
+     *
+     * Returns an array of:
+     *
+     *     * Customer ID (cid)
+     *     * Customer Name (cname)
+     *     * Customer Shortname (cshortname)
+     *     * VirtualInterface ID (id)
+     *     * Physical Interface ID (pid)
+     *     * VLAN Interface ID (vlanid)
+     *     * SwithPort ID (spid)
+     *     * Switch ID (swid)
+     *
+     * @param \Entities\Infrastructure $infra The infrastructure to gather VirtualInterfaces for
+     * @param int $proto Either 4 or 6 to limit the results to interface with IPv4 / IPv6
+     * @param bool $externalOnly If true (default) then only external (non-internal) interfaces will be returned
+     * @param bool $useResultCache If true, use Doctrine's result cache to prevent needless database overhead
+     * @return array As defined above.
+     * @throws \IXP_Exception
+     */
+    public function getForVlan( $vlan, $proto = false, $externalOnly = true, $useResultCache = true )
+    {
+        $qstr = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname,
+                       vi.id AS id, pi.id AS pid, vli.id AS vlanid, sp.id AS spid, sw.id as swid
+                    FROM Entities\\VlanInterface vli
+                        JOIN vli.Vlan v
+                        JOIN vli.VirtualInterface vi
+                        JOIN vi.Customer c
+                        JOIN vi.PhysicalInterfaces pi
+                        JOIN pi.SwitchPort sp
+                        JOIN sp.Switcher sw
+                        JOIN sw.Infrastructure i
+                    WHERE
+                        v = :vlan
+                        AND " . Customer::DQL_CUST_ACTIVE     . "
+                        AND " . Customer::DQL_CUST_CURRENT    . "
+                        AND " . Customer::DQL_CUST_TRAFFICING . "
+                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
+         
+        if( $proto )
+        {
+            if( !in_array( $proto, [ 4, 6 ] ) )
+                throw new \IXP_Exception( 'Invalid protocol specified' );
+    
+            $qstr .= "AND vli.ipv{$proto}enabled = 1 ";
+        }
+    
+        if( $externalOnly )
+            $qstr .= "AND " . Customer::DQL_CUST_EXTERNAL;
+    
+        $qstr .= " ORDER BY c.name ASC";
+    
+        $q = $this->getEntityManager()->createQuery( $qstr );
+        $q->setParameter( 'vlan', $vlan );
+        $q->useResultCache( $useResultCache, 3600 );
+        return $q->getArrayResult();
+    }
+
+    /**
+     * Utility function to provide an array of VLAN interface objects on a given VLAN.
+     *
+     * @param \Entities\Vlan $vlan The VLAN to gather VlanInterfaces for
+     * @param bool $useResultCache If true, use Doctrine's result cache.
+     * @return \Entities\VlanInterface[] Indexed by VlanInterface ID
+     */
+    public function getObjectsForVlan( $vlan, $useResultCache = true )
+    {
+        $qstr = "SELECT vli
+                    FROM Entities\\VlanInterface vli
+                        JOIN vli.Vlan v
+                        JOIN vli.VirtualInterface vi
+                        JOIN vi.PhysicalInterfaces pi
+                        JOIN vi.Customer c
+                
+                    WHERE
+                        v = :vlan
+                        AND " . Customer::DQL_CUST_ACTIVE     . "
+                        AND " . Customer::DQL_CUST_CURRENT    . "
+                        AND " . Customer::DQL_CUST_TRAFFICING . "
+                        AND " . Customer::DQL_CUST_EXTERNAL   . "
+                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED . "
+                
+                    ORDER BY c.name ASC";
+         
+        $q = $this->getEntityManager()->createQuery( $qstr );
+        $q->setParameter( 'vlan', $vlan );
+        $q->useResultCache( $useResultCache, 3600 );
+
+        $vlis = [];
+        foreach( $q->getResult() as $vli )
+            $vlis[ $vli->getId() ] = $vli;
+        
+        return $vlis;
+    }
+    
+    
+    /**
+     * Utility function to provide an array of all VLAN interface objects for a given
+     * customer at an optionally given IXP.
+     *
+     * @param \Entities\Customer $customer The customer
+     * @param \Entities\IXP      $ixp      The optional IXP
+     * @param bool $useResultCache If true, use Doctrine's result cache
+     * @return \Entities\VlanInterface[] Index by the VlanInterface ID
+     */
+    public function getForCustomer( $customer, $ixp = false, $useResultCache = true )
+    {
+        $qstr = "SELECT vli
+                    FROM Entities\\VlanInterface vli
+                        JOIN vli.VirtualInterface vi
+                        JOIN vi.Customer c
+                        JOIN vli.Vlan v";
+        
+        if( $ixp )
+        {
+            $qstr .= " JOIN vi.PhysicalInterfaces pi
+                        JOIN pi.SwitchPort sp
+                        JOIN sp.Switcher sw
+                        JOIN sw.Infrastructure i
+                        JOIN i.IXP ixp";
+        }
+        
+        $qstr .= " WHERE c = :customer";
+        
+        if( $ixp )
+        {
+            $qstr .= " AND ixp = :ixp
+                        ORDER BY ixp.id, v.number";
+        }
+        else
+            $qstr .= " ORDER BY v.number";
+        
+    
+        $q = $this->getEntityManager()->createQuery( $qstr );
+        $q->setParameter( 'customer', $customer );
+        
+        if( $ixp )
+            $q->setParameter( 'ixp', $ixp );
+        
+        $q->useResultCache( $useResultCache, 3600 );
+        
+        $vlis = [];
+        
+        foreach( $q->getResult() as $vli )
+            $vlis[ $vli->getId() ] = $vli;
+        
+        return $vlis;
+    }
+    
     
 }

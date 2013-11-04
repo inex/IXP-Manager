@@ -41,8 +41,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
 
-        $this->_setIXP();
-        $this->_setInfrastructure();
+        $this->setIXP();
+        $this->setInfrastructure();
         
         $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
         
@@ -54,10 +54,10 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
     
-        $this->_setIXP();
-        $this->_setInfrastructure();
-        $this->_setCategory();
-        $this->_setPeriod();
+        $this->setIXP();
+        $this->setInfrastructure();
+        $this->setCategory();
+        $this->setPeriod();
         
         $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
         
@@ -67,31 +67,19 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     
     public function memberAction()
     {
-        if( $this->getUser()->getPrivs() < \Entities\User::AUTH_SUPERUSER )
-            $shortname = $this->getCustomer()->getShortname();
-        else
-            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
-    
-        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
-        
-        $this->_setIXP( $cust );
-        
-        $this->_setCategory();
+        $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
+        $this->setIXP( $cust );
+        $this->setCategory();
     }
     
     public function memberDrilldownAction()
     {
-        $category = $this->_setCategory();
+        $category = $this->setCategory();
         $this->view->monitorindex = $monitorindex = $this->getParam( 'monitorindex', 1 );
     
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $shortname = $this->getCustomer()->getShortname();
-        else
-            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
-    
-        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
-
-        $this->_setIXP( $cust );
+        $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
+        
+        $this->setIXP( $cust );
         
         if( $monitorindex != 'aggregate' )
         {
@@ -147,7 +135,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
         
-        $this->_setIXP();
+        $this->setIXP();
         
         $this->view->metrics = $metrics = [
             'Total'   => 'data',
@@ -165,7 +153,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $day = date( 'Y-m-d' );
         $this->view->day = $day = new \DateTime( $day );
         
-        $category = $this->_setCategory();
+        $category = $this->setCategory();
                 
         $this->view->trafficDaily = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->load( $day, $category, $this->ixp );
     }
@@ -213,7 +201,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $graph = array_keys( $graphs )[0];
         $this->view->graph      = $graph;
         
-        $category = $this->_setCategory();
+        $category = $this->setCategory();
 
         $stats = array();
         foreach( IXP_Mrtg::$PERIODS as $period )
@@ -289,12 +277,12 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $switch = array_keys( $switches )[0];
         $this->view->switch     = $switch;
         
-        $category = $this->_setCategory();
+        $category = $this->setCategory();
         
         // override allowed categories as some aren't available here
         $this->view->categories = IXP_Mrtg::$CATEGORIES_AGGREGATE;
         
-        $this->_setPeriod();
+        $this->setPeriod();
         
         $stats = array();
         
@@ -315,144 +303,47 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
      */
     public function p2pAction()
     {
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-            $shortname = $this->getCustomer()->getShortname();
-        else
-            $shortname = $this->getParam( 'shortname', $this->getCustomer()->getShortname() );
-    
-        $this->view->cust = $cust = $this->loadCustomerByShortname( $shortname );  // redirects on failure
-
-        $this->_setIXP( $cust );
-        $this->_setInfrastructure( false );
-        $category = $this->_setCategory( 'category', true );
-        $period   = $this->_setPeriod();
-        $proto    = $this->_setProtocol();
-        $dvid     = $this->view->dvid = $this->getParam( 'dvid', false );
-    
-        // find the possible virtual interfaces that this customer peers with
-        $vints = [];
-        foreach( $cust->getVirtualInterfaces() as $vi )
-        {
-            $enabled = false;
-            foreach( $vi->getVlanInterfaces() as $vli )
-            {
-                $fn = "getIpv{$proto}enabled";
-                if( $vli->$fn() )
-                {
-                    $enabled = true;
-                    break;
-                }
-            }
-            
-            if( !$enabled )
-                continue;
-            
-            foreach( $vi->getPhysicalInterfaces() as $pi )
-            {
-                if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() == $this->infra->getId() )
-                    $vints[ $vi->getId() ] = $vi;
-            }
-        }
-
-        $this->view->vints = $vints;
-        $this->view->customersWithVirtualInterfaces = false;
+        $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
         
-        if( count( $vints ) )
+        $this->setIXP( $cust );
+        $category = $this->setCategory( 'category', false );
+        $period   = $this->setPeriod();
+        $proto    = $this->setProtocol();
+        
+        // Find the possible VLAN interfaces that this customer has for the given IXP
+        if( !count( $srcVlis = $this->view->srcVlis = $this->getD2R( '\\Entities\\VlanInterface' )->getForCustomer( $cust, $this->ixp ) ) )
         {
-            if( count( $vints ) > 1 )
-            {
-                $interfaces = array();
-                foreach( $vints as $vi )
-                    $interfaces[] = $vi->getId();
-    
-                $interface = $this->view->interface = $this->getParam( 'interface', $interfaces[0] );
-                if( !in_array( $interface, $interfaces ) )
-                    $interface = $this->view->interface = $interfaces[0];
-    
-                $this->view->svid = $interface;
-            }
-            else
-                $this->view->svid = $vints[ ( array_keys( $vints )[0] ) ]->getId();
-    
-            // find the possible virtual interfaces that this customer peers with
-            
-            $pvints = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )
-                ->getForInfrastructure( $this->infra, $proto );
-
-            if( $dvid )
-            {
-                foreach( $pvints as $idx => $pvint )
-                {
-                    if( $pvint['id'] == $dvid )
-                    {
-                        $pvints = [ $pvint ];
-                        $this->view->dcust = $pvint;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                foreach( $pvints as $idx => $pvint )
-                {
-                    if( $pvint['cshortname'] == $shortname )
-                        unset( $pvints[ $idx ] );
-                }
-            }
-            
-            $this->view->customersWithVirtualInterfaces = $pvints;
+            $this->addMessage( 'There were no interfaces available for the given criteria. Returning to default view.' );
+            $this->redirect( 'statistics/p2p' );
         }
-    
-        if( $dvid )
+
+        if( ( $svlid = $this->getParam( 'svli', false ) ) && isset( $srcVlis[ $svlid ] ) )
+            $this->view->srcVli = $srcVli = $srcVlis[ $svlid ];
+        else
+            $this->view->srcVli = $srcVli = $srcVlis[ array_keys( $srcVlis )[0] ];
+        
+        // Now find the possible other VLAN interfaces that this customer could exchange traffic with
+        // (as well as removing the source vli)
+        $dstVlis = $this->getD2R( '\\Entities\\VlanInterface' )->getObjectsForVlan( $srcVli->getVlan() );
+        unset( $dstVlis[ $srcVli->getId() ] );
+        $this->view->dstVlis = $dstVlis;
+        
+        if( !count( $dstVlis ) )
+        {
+            $this->addMessage( 'There were no other interfaces available for traffic exchange for the given criteria. Returning to default view.' );
+            $this->redirect( 'statistics/p2p' );
+        }
+
+        if( ( $dvlid = $this->getParam( 'dvli', false ) ) && isset( $dstVlis[ $dvlid ] ) )
+            $this->view->dstVli = $dstVli = $dstVlis[ $dvlid ];
+        else
+            $this->view->dstVli = $dstVli = false;
+        
+        if( $dstVli )
         {
             Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
             $this->view->display( 'statistics/p2p-single.phtml' );
         }
     }
-    
-        
-    
-    /**
-     * Utility function to extract, validate (and default if necessary) a
-     * category from request parameters.
-     *
-     * Sets the view variables `$category` to the chosen / defaulted category
-     * and `$categories` to all available categories.
-     *
-     * @param string $pname The name of the parameter to extract the category from
-     * @param bool $aggregate Use aggregate categories only (i.e. bits, pkts, no errs, no discs)
-     * @return string The chosen / defaulted category
-     */
-    protected function _setCategory( $pname = 'category', $aggregate = false )
-    {
-        $category = $this->getParam( $pname, IXP_Mrtg::$CATEGORIES['Bits'] );
-        if( !in_array( $category, $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES ) )
-            $category = IXP_Mrtg::$CATEGORIES['Bits'];
-        $this->view->category   = $category;
-        $this->view->categories = $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES;
-        return $category;
-    }
-    
-    /**
-     * Utility function to extract, validate (and default if necessary) a
-     * period from request parameters.
-     *
-     * Sets the view variables `$period` to the chosen / defaulted category
-     * and `$periods` to all available periods.
-     *
-     * @param string $pname The name of the parameter to extract the period from
-     * @return string The chosen / defaulted period
-     */
-    protected function _setPeriod( $pname = 'period' )
-    {
-        $period = $this->getParam( $pname, IXP_Mrtg::$PERIODS['Day'] );
-        if( !in_array( $period, IXP_Mrtg::$PERIODS ) )
-            $period = IXP_Mrtg::$PERIODS['Day'];
-        $this->view->period     = $period;
-        $this->view->periods    = IXP_Mrtg::$PERIODS;
-        return $period;
-    }
-    
-
 }
 

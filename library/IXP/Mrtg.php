@@ -290,8 +290,8 @@ class IXP_Mrtg
      * @return string The full absolute path and filename
      */
     static function getMrtgP2pFilePath( $mrtgPath,
-            $svid,
-            $dvid,
+            $svli,
+            $dvli,
             $category = 'bits',
             $period = 'day',
             $proto = 4
@@ -299,8 +299,8 @@ class IXP_Mrtg
     {
         // sanitise these things carefully
         return $mrtgPath
-            . "?srcvid={$svid}"
-            . "&dstvid={$dvid}"
+            . "?srcvli={$svli}"
+            . "&dstvli={$dvli}"
             . "&protocol={$proto}"
             . "&type={$category}"
             . "&period={$period}";
@@ -346,16 +346,16 @@ class IXP_Mrtg
             $url .= "/category/{$params['category']}";
         else
             $url .= "/category/bits";
-
+        
         if( isset( $params['p2p'] ) && $params['p2p'] )
         {
-            if( isset( $params['svid'] ) )
-                $url .= "/svid/{$params['svid']}";
+            if( isset( $params['svli'] ) )
+                $url .= "/svli/{$params['svli']}";
             else
                 die();
             
-            if( isset( $params['dvid'] ) )
-                $url .= "/dvid/{$params['dvid']}";
+            if( isset( $params['dvli'] ) )
+                $url .= "/dvli/{$params['dvli']}";
             else
                 die();
             
@@ -363,11 +363,6 @@ class IXP_Mrtg
                 $url .= "/proto/{$params['proto']}";
             else
                 $url .= "/proto/4";
-            
-            if( isset( $params['infra'] ) )
-                $url .= "/infra/{$params['infra']}";
-            else
-                $url .= "/infra/1";
         }
         
         if( isset( $params['graph'] ) )

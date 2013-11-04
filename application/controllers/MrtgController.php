@@ -33,13 +33,9 @@
  */
 class MrtgController extends IXP_Controller_AuthRequiredAction
 {
-    protected $_flock = null;
+    use IXP_Controller_Trait_Statistics;
     
-    /**
-     * The requested IXP
-     * @var \Entities\IXP
-     */
-    protected $ixp = null;
+    protected $_flock = null;
     
     public function preDispatch()
     {
@@ -48,14 +44,6 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
         
         header( 'Content-Type: image/png' );
         header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
-        
-        if( $this->multiIXP() && !$this->getParam( 'ixp', false ) )
-                $this->errorAction();
-        else if( !$this->multiIXP() )
-            $this->setParam( 'ixp', 1 );
-        
-        if( !( $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ), false ) ) )
-            $this->errorAction();
     }
 
     private function checkShortname( $shortname )
@@ -75,12 +63,14 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
     
     function retrieveImageAction()
     {
+        $this->setIXP();
         $monitorindex = $this->getParam( 'monitorindex', 'aggregate' );
         $period       = $this->getParam( 'period', IXP_Mrtg::$PERIODS['Day'] );
         $shortname    = $this->getParam( 'shortname' );
         $category     = $this->getParam( 'category', IXP_Mrtg::$CATEGORIES['Bits'] );
         $graph        = $this->getParam( 'graph', '' );
-
+        
+        
         $this->getLogger()->debug( "Request for {$shortname}-{$monitorindex}-{$category}-{$period}-{$graph} by {$this->getUser()->getUsername()}" );
 
         if( $shortname == 'X_Trunks' )
@@ -126,92 +116,39 @@ class MrtgController extends IXP_Controller_AuthRequiredAction
 
     function retrieveP2pImageAction()
     {
-        $period       = $this->getParam( 'period',    IXP_Mrtg::$PERIODS['Day'] );
-        $shortname    = $this->getParam( 'shortname', false );
-        $svid         = $this->getParam( 'svid',      false );
-        $dvid         = $this->getParam( 'dvid',      false );
-        $category     = $this->getParam( 'category',  IXP_Mrtg::$CATEGORIES['Bits'] );
-        $proto        = $this->getParam( 'proto',     IXP_Mrtg::PROTOCOL_IPV4 );
-        $infra        = $this->getParam( 'infra',     false );
-        $period       = $this->getParam( 'period',    IXP_Mrtg::PERIOD_DAY );
+        $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
         
-        if( $infra === false )
-        {
-            // we default to the primary infrastructure
-            $infra = $this->getD2R( '\\Entities\\Infrastructure' )->getPrimary( $this->ixp );
-        }
-        else
-        {
-            if( !( $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $infra ) ) || $infra->getIXP()->getId() != $this->ixp->getId() )
-                exit( 0 );
-        }
-        
-        $_cust = $this->checkShortname( $shortname );
-        
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER || !$_cust )
-        {
-            $shortname = $this->getUser()->getCustomer()->getShortname();
-            $_cust = $this->getUser()->getCustomer();
-        }
-        
-        // make sure the svid and dvid is valid
-        if( !$svid || !$dvid )
-        {
-            $this->getLogger()->alert( "P2P file request with svid={$svid} and pvid={$pvid}" );
-            die();
-        }
-        
-        $svidOk = false;
-        foreach( $_cust->getVirtualInterfaces() as $vint )
-        {
-            if( $vint->getId() == $svid )
-            {
-                $svidOk = true;
-                break;
-            }
-        }
+        $this->setIXP( $cust );
+        $category = $this->setCategory( 'category', false );
+        $period   = $this->setPeriod();
+        $proto    = $this->setProtocol();
 
-        // make sure the svid and dvid is valid
-        if( !$svidOk )
+        // Find the possible VLAN interfaces that this customer has for the given IXP
+        // and ensure we have a valid svli
+        $srcVlis = $this->getD2R( '\\Entities\\VlanInterface' )->getForCustomer( $cust, $this->ixp );
+        
+        if( !( $svli = $this->getParam( 'svli', false ) ) || !isset( $svli, $srcVlis ) )
         {
-            $this->getLogger()->alert( "P2P file request with illegal svid={$svid} for {$shortname}" );
+            $this->getLogger()->alert( "P2P file request with illegal svli={$svli} for {$cust->getShortname()}/{$this->getUser()->getUsername()}" );
             die();
         }
         
-        // find the possible virtual interfaces that this customer peers with
-        $dvidOk = false;
-        $dshortname = '';
+        // Find the possible interfaces that this customer peers with and ensure we have a valid dvli
+        $dstVlis = $this->getD2R( '\\Entities\\VlanInterface' )->getObjectsForVlan( $srcVlis[ $svli ]->getVlan() );
+        unset( $dstVlis[ $svli ] );
         
-        $customersWithVirtualInterfaces = $this->getD2R( '\\Entities\\VirtualInterface' )->getForInfrastructure( $infra, $proto );
-        
-        foreach( $customersWithVirtualInterfaces as $c )
+        if( !( $dvli = $this->getParam( 'dvli', false ) ) || !isset( $dvli, $dstVlis ) )
         {
-            if( $c['cshortname'] == $shortname )
-                continue;
-                
-            if( $c['id'] == $dvid )
-            {
-                $dshortname = $c['cshortname'];
-                $dvidOk = true;
-                break;
-            }
-        }
-        
-        // make sure the svid and dvid is valid
-        if( !$dvidOk )
-        {
-            $this->getLogger()->alert( "P2P file request with illegal pvid={$dvid} for {$shortname}" );
+            $this->getLogger()->alert( "P2P file request with illegal dvli={$dvli} for {$cust->getShortname()}/{$this->getUser()->getUsername()}" );
             die();
         }
         
         $filename = IXP_Mrtg::getMrtgP2pFilePath( $this->ixp->getMrtgP2pPath(),
-            $svid, $dvid, $category, $period, $proto
+            $svli, $dvli, $category, $period, $proto
         );
         
-        $this->getLogger()->debug( "Serving $filename to {$this->getUser()->getUsername()}" );
+        $this->getLogger()->debug( "Serving P2P $filename to {$this->getUser()->getUsername()}" );
 
-        $this->getLogger()->info( "P2P request for {$shortname}-{$dshortname}-{$category}-{$period}-ipv{$proto} by {$this->getUser()->getUsername()}" );
-        
         if( @readfile( $filename ) === false )
         {
             $this->getLogger()->notice( 'Could not load ' . $filename . ' for mrtg/retrieveImageAction' );

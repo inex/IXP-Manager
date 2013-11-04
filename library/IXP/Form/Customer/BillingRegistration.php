@@ -64,6 +64,15 @@ class IXP_Form_Customer_BillingRegistration extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress2 );
 
+        $billingAddress3 = $this->createElement( 'text', 'billingAddress3' );
+        $billingAddress3->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->setRequired( false )
+            ->setAttrib( 'class', 'span6' )
+            ->setLabel( '' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $billingAddress3 );
+
         $billingTownCity = $this->createElement( 'text', 'billingTownCity' );
         $billingTownCity->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )

@@ -1,6 +1,6 @@
 {tmplinclude file="header.phtml"}
 
-{if $user->getPrivs() eq 3}
+{if $user->getPrivs() eq USER::AUTH_SUPERUSER}
     <ul class="breadcrumb">
         <li>
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
@@ -13,7 +13,9 @@
         </li>
         <li class="active">
             <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">Peer to Peer Statistics</a>
-            {if isset( $dcust ) and $dcust}for {$dcust.cname}{/if}
+            with <a href="{genUrl controller="statistics" action="p2p" shortname=$dstVli->getVirtualInterface()->getCustomer()->getShortname()}">
+                {$dstVli->getVirtualInterface()->getCustomer()->getName()}
+            </a>
             (
              {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
              {if isset( $period )}
@@ -33,9 +35,21 @@
 {OSS_Message}
 
 <p>
-<form action="{genUrl controller="statistics" action="p2p"}" method="post">
+<form action="{genUrl controller="statistics" action="p2p"}{if $user->getPrivs() eq USER::AUTH_SUPERUSER}/shortname/{$cust->getShortname()}{/if}" method="post">
 <table>
 <tr>
+    <td width="20"></td>
+    <td valign="middle"><strong>LAN:</strong></td>
+    <td>
+        &nbsp;
+        <select name="svli" style="width: 200px;">
+            {foreach $srcVlis as $id => $vli}
+                <option value="{$id}" {if $srcVli eq $vli}selected="selected"{/if}>
+                    {$vli->getVlan()->getName()}
+                </option>
+            {/foreach}
+        </select>
+    </td>
     <td width="20"></td>
     <td valign="middle"><strong>Graph Type:</strong></td>
     <td>
@@ -58,34 +72,9 @@
             {/foreach}
         </select>
     </td>
-    {*
-    <td width="20"></td>
-    <td valign="middle"><strong>Infrastructure:</strong></td>
-    <td>
-        &nbsp;
-        <select name="infra" style="width: 150px;" class="chzn-select">
-            {foreach $infrastructures as $ivalue => $iname}
-                <option value="{$ivalue}" {if $infra->getId() eq $ivalue}selected="selected"{/if}>{$iname}</option>
-            {/foreach}
-        </select>
-    </td>
-    *}
-    {if count( $vints ) > 1}
-        <td width="20"></td>
-        <td valign="middle"><strong>Interface:</strong></td>
-        <td>
-            &nbsp;
-            <select name="interface" style="width: 100px;" class="chzn-select">
-                {foreach $vints as $id => $vi}
-                    <option value="{$id}" {if isset( $interface ) and $interface eq $id}selected="selected"{/if}>{$id}</option>
-                {/foreach}
-            </select>
-        </td>
-    {/if}
     <td width="20"></td>
     <td valign="middle">
-        <input type="hidden" name="shortname" value="{$cust->getShortname()}" />
-        {if isset( $dvid )}<input type="hidden" name="dvid" value="{$dvid}" />{/if}
+        {if isset( $dstVli )}<input type="hidden" name="dvli" value="{$dstVli->getId()}" />{/if}
         <input class="btn" type="submit" value="Submit &raquo;" />
     </td>
     </tr>
@@ -94,15 +83,7 @@
 </p>
 
 
-{if count( $vints ) > 1}
-    <div class="alert alert-info">
-        <h4 class="alert-heading">Multiple Interfaces on this Infrastructure Found</h4>
-        We've detected that you have multiple interfaces on this infrastructure. You can view your other
-        interface(s) by changing the interface index above.
-    </div>
-{/if}
-
-{if isset( $dcust ) and $dcust}
+{if isset( $dstVli ) and $dstVli}
     <div class="row-fluid">
     
     {assign var='count' value=0}
@@ -118,7 +99,12 @@
                 <p>
                     <br />
                     <img
-                        src="{genMrtgP2pImgUrl shortname=$cust->getShortname() svid=$svid dvid=$dvid category=$category proto=$proto period=$pid infra=$infra->getId()}"
+                        src="{genMrtgP2pImgUrl shortname=$cust->getShortname()
+                                svli=$srcVli->getId()
+                                dvli=$dstVli->getId()
+                                category=$category
+                                proto=$proto
+                                period=$pid}"
                         width="600"
                     />
                 </p>
@@ -151,7 +137,7 @@
 
 {/if} {* customer has an interface for given infra and proto *}
 
-{if $user->getPrivs() neq 3}
+{if $user->getPrivs() neq USER::AUTH_SUPERUSER}
 </div>
 {/if}
 

@@ -237,10 +237,22 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
         return parent::getBillingFrequency();
     }
 
+    public function setBillingAddress3($billingAddress3)
+    {
+        $this->__load();
+        return parent::setBillingAddress3($billingAddress3);
+    }
+
+    public function getBillingAddress3()
+    {
+        $this->__load();
+        return parent::getBillingAddress3();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'purchaseOrderRequired', 'invoiceMethod', 'invoiceEmail', 'billingFrequency', 'id', 'Customer');
+        return array('__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingAddress3', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'purchaseOrderRequired', 'invoiceMethod', 'invoiceEmail', 'billingFrequency', 'id', 'Customer');
     }
 
     public function __clone()
