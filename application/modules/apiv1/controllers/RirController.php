@@ -24,6 +24,8 @@
 
 /**
  * Controller: API V1 RIR controller
+ * 
+ * @see https://github.com/inex/IXP-Manager/wiki/RIR-Objects
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
@@ -39,15 +41,22 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
     }
 
+    /**
+     * @see https://github.com/inex/IXP-Manager/wiki/RIR-Objects
+     * @throws Zend_Controller_Action_Exception
+     */
     public function updateObjectAction()
     {
         if( !$tmpl = $this->getParam( 'tmpl', false ) )
             throw new Zend_Controller_Action_Exception( 'You must specify a RIR template to update', 412 );
 
+        // sanitise template name
+        $tmpl = preg_replace( '/[^\da-z_\-]/i', '', $tmpl );
+        
         if( !$this->view->templateExists( 'rir/tmpl/' . $tmpl . '.tpl' ) )
             throw new Zend_Controller_Action_Exception( 'The specified RIR template does not exist', 412 );
         
-        $email = $this->getParam( 'email', 'auto-dbm@ripe.net' );
+        $email = $this->getParam( 'email', false );
 
         $customers = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
 
@@ -61,7 +70,54 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
         ksort( $asns, SORT_NUMERIC );
         $this->view->asns = $asns;
         
-        echo $this->view->render( 'rir/tmpl/' . $tmpl . '.tpl' );
+        $content = $this->view->render( 'rir/tmpl/' . $tmpl . '.tpl' );
+        
+        if( $email )
+            $this->emailRIR( $tmpl, $content, $email, $this->getParam( 'force', false ) );
+        else
+            echo $content;
     }
     
+    /**
+     * Send an email to RIPE / RIR as per the address provided 
+     * 
+     * Keeps a local cached file which, it it exists and is the same as the newly generated content
+     * (and force was requested), will prevent the email from being sent unnecessarily.
+     * 
+     * @param string $tmpl The name of the template file for the email; used to name the local cache file
+     * @param string $content The generated contect for the RIR update email
+     * @param string $email The destination for the email - e.g. auto-dbm@ripe.net
+     * @param bool $force Force the email to be sent even if the local cache is the same
+     * @throws Zend_Controller_Action_Exception
+     * @see https://github.com/inex/IXP-Manager/wiki/RIR-Objects
+     */
+    private function emailRIR( $tmpl, $content, $email, $force = false )
+    {
+        if( !Zend_Validate::is( $email, 'EmailAddress' ) )
+            throw new Zend_Controller_Action_Exception( 'Invalid email address specified', 412 );
+        
+        // if we're not forcing, check to see if the object has changed from the previous version
+        if( !$force && ( $last = file_get_contents( APPLICATION_PATH . '/../var/cache/rir-' . $tmpl . '.txt' ) ) )
+            if( $last == $content )
+                return;
+
+        // record the contents for the next time
+        file_put_contents( APPLICATION_PATH . '/../var/cache/rir-' . $tmpl . '.txt', $content );
+        
+        $mailer = $this->getMailer()
+                    ->setBodyText( $content )
+                    ->addTo( $email )
+                    ->setFrom( $this->_options['identity']['autobot']['email'], $this->_options['identity']['autobot']['name'] )
+                    ->setSubject( "Changes to {$tmpl} - KEYWORDS: diff" );
+        
+        try
+        {
+            $mailer->send();
+        }
+        catch( Zend_Mail_Exception $e )
+        {
+            throw new Zend_Controller_Action_Exception( 'Could not send email: ' . $e->getMessage(), 412 );
+        }
+                    
+    }
 }

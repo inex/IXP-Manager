@@ -26,6 +26,18 @@ New application.ini parameter (which is not required):
     
     cli.traffic_daily.delete_old = true
 
+New optional application.ini parameter for RIR object generation:
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;
+    ;; Generated RIR objects  
+    ;;
+    ;; See: https://github.com/inex/IXP-Manager/wiki/RIR-Objects
+    ;;
+    
+    ;rir.ripe_password = 'supersecret'
+
+
 
 
 # v3.6.0 (20131018)
