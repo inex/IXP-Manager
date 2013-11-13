@@ -4,6 +4,16 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.6.2 (20131113)
+
+- [NF] Example of separate RS AS sets for v4 and v6 (4b2d759 - Barry O'Donovan - 2013-11-13)
+- [IM] Include new module views in the changed views finder (61c0de7 - Barry O'Donovan - 2013-11-13)- [NF] Add RIR objects for IXP connected ASs and IXP route server connected ASs (6bf476c - Barry O'Donovan - 2013-11-13)
+
+Views updated / changed in this release:
+
+    application/modules/apiv1/views/rir/tmpl/as-set-ixp-rs-v4.tpl
+    application/modules/apiv1/views/rir/tmpl/as-set-ixp-rs-v6.tpl
+
 
 # v3.6.1 (20131113)
 
