@@ -58,24 +58,145 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
         
         $email = $this->getParam( 'email', false );
 
-        $customers = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
-
-        $asns = [];
-        foreach( $customers as $c )
-            $asns[ $c->getAutsys() ] = [ 
-                'asmacro' => $c->resolveAsMacro( 4, 'AS' ),
-                'name'    => $c->getName()
-            ];
+        // populate the template variables
+        $this->view->customers = $customers = OSS_Array::reindexObjects( 
+                OSS_Array::reorderObjects( $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, true ), 'getAutsys', SORT_NUMERIC ), 
+                'getId' 
+        );
         
-        ksort( $asns, SORT_NUMERIC );
-        $this->view->asns = $asns;
+        $this->view->asns      = $this->generateASNs( $customers );
+        $this->view->rsclients = $this->generateRouteServerClientDetails( $customers );
+        $this->view->protocols = [ 4, 6 ];
+        
         
         $content = $this->view->render( 'rir/tmpl/' . $tmpl . '.tpl' );
         
         if( $email )
             $this->emailRIR( $tmpl, $content, $email, $this->getParam( 'force', false ) );
         else
-            echo $content;
+            echo preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $content );
+    }
+
+    /**
+     * Gather and create the IXP customer ASN details. 
+     * 
+     * Returns an associate array indexed by ordered ASNs of active external trafficing customers:
+     * 
+     *     [
+     *         [65500] => [
+     *                        ['name']    => Customer Name
+     *                        ['asmacro'] => AS-CUSTOMER
+     *                    ],
+     *                    ...
+     *     ]
+     *     
+     * @param \Entities\Customer[] $customers Array of all active external trafficing customers
+     * @return array Associate array indexed by ordered ASNs 
+     */
+    private function generateASNs( $customers )
+    {
+        $asns = [];
+        foreach( $customers as $c )
+            $asns[ $c->getAutsys() ] = [
+                'asmacro' => $c->resolveAsMacro( 4, 'AS' ),
+                'name'    => $c->getName()
+            ];
+        
+        ksort( $asns, SORT_NUMERIC );
+        return $asns;
+    }
+    
+    /**
+     * Gather up route server client information for building RIR objects
+     * 
+     * Returns an array of the form:
+     * 
+     *     [
+     *             [ $vlanid ] => [
+     *                 [servers] => [   // route server IP addresses by protocol
+     *                     [4] => [  
+     *                         [0] => 193.242.111.8
+     *                         ...
+     *                     ],
+     *                     [6] => [
+     *                         ...
+     *                     ]
+     *                 ],
+     *                 
+     *                 [clients] => [
+     *                     [$customer_id] => [
+     *                         [$vlan_interface_id] => [    // customer's IP addresses by protocol
+     *                             [4] => 193.242.111.xx
+     *                             [6] => 2001:7f8:18::xx
+     *                         ],
+     *                         ...   // if the user has more than one VLAN interface on this VLAN
+     *                     ],
+     *                     ...
+     *                 ],
+     *             ],
+     *             ...
+     *     ]
+     * 
+     * @param \Entities\Customer[] $customers
+     * @return array As defined above
+     */
+    private function generateRouteServerClientDetails( $customers )
+    {
+        // get the public peering VLANs
+        $vlans = $this->getD2R( '\\Entities\\Vlan' )->getAndCache( \Repositories\Vlan::TYPE_NORMAL );
+        
+        $rsclients = [];
+        
+        foreach( $vlans as $vlan )
+        {
+            foreach( [ 4, 6 ] as $proto )
+            {
+                // get the available route servers
+                $servers = $vlan->getRouteServers( $proto );
+                
+                if( !count( $servers ) )
+                    continue;
+                
+                if( !isset( $rsclients[ $vlan->getId() ] ) )
+                    $rsclients[ $vlan->getId() ] = [];
+                
+                $rsclients[ $vlan->getId() ]['servers'][ $proto ] = [];
+                                
+                foreach( $servers as $server )
+                    $rsclients[ $vlan->getId() ]['servers'][ $proto ][] = $server['ipaddress'];
+               
+                foreach( $vlan->getVlanInterfaces() as $vli )
+                {
+                    if( !$vli->getRsclient() )
+                        continue;
+                    
+                    $cust = $vli->getVirtualInterface()->getCustomer();
+                    
+                    // is this customer still active?
+                    if( !isset( $customers[ $cust->getId() ] ) )
+                        continue;
+
+                    if( !isset( $rsclients[ $vlan->getId() ]['clients'] ) )
+                        $rsclients[ $vlan->getId() ]['clients'] = [];
+                    
+                    if( !isset( $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ] ) )
+                        $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ] = [];
+                        
+                    if( !isset( $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ][ $vli->getId() ] ) )
+                        $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ][ $vli->getId() ] = [];
+                    
+                    $fnEnabled = "getIpv{$proto}enabled";
+                    
+                    if( $vli->$fnEnabled() )
+                    {
+                        $fnIpaddress = "getIPv{$proto}Address";
+                        $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ][ $vli->getId() ][ $proto ] = $vli->$fnIpaddress()->getAddress();
+                    }
+                }
+            }
+        }
+        
+        return $rsclients;
     }
     
     /**
