@@ -64,11 +64,11 @@ foreach ($sth as $row) {
 	$vlanname[$row['number']] = $row['name'];
 }
 
-$srcvli = $_REQUEST['srcvli'];
-$dstvli = $_REQUEST['dstvli'];
+$srcvli = isset( $_REQUEST['srcvli'] ) ? $_REQUEST['srcvli'] : false;
+$dstvli = isset( $_REQUEST['dstvli'] ) ? $_REQUEST['dstvli'] : false;
 
 // does $srcvli point to a valid array structure and is the vlan
-if (!is_numeric($custinfo[$srcvli]['vlan']) || !is_numeric($custinfo[$dstvli]['vlan']) || ($custinfo[$srcvli]['vlan'] != $custinfo[$dstvli]['vlan']) || ($srcvli == $dstvli)) {
+if (!$srcvli || !$dstvli || !is_numeric($custinfo[$srcvli]['vlan']) || !is_numeric($custinfo[$dstvli]['vlan']) || ($custinfo[$srcvli]['vlan'] != $custinfo[$dstvli]['vlan']) || ($srcvli == $dstvli)) {
 	header("HTTP/1.0 404");
 	die();
 }
