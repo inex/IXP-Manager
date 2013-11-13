@@ -5,7 +5,13 @@ Please see the following page for upgrade instructions:
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
 
-# v3.6.1 (201311xx)
+# v3.6.1 (20131113)
+
+This release contains a number of small bug fixes, minor features and a new
+API function to create and email RIR objects. 
+
+See: https://github.com/inex/IXP-Manager/wiki/RIR-Objects
+
 
 
 Schema update required:
@@ -37,6 +43,39 @@ New optional application.ini parameter for RIR object generation:
     
     ;rir.ripe_password = 'supersecret'
 
+
+Views updated / changed in this release:
+
+    application/modules/apiv1/views/_skins/inex/rir/tmpl/as-set-inex-connected.tpl
+    application/modules/apiv1/views/_skins/inex/rir/tmpl/as-set-inex-rs.tpl
+    application/modules/apiv1/views/_skins/inex/rir/tmpl/autnum-as2128.tpl
+    application/modules/apiv1/views/_skins/inex/rir/tmpl/autnum-as43760.tpl
+    application/modules/apiv1/views/rir/tmpl/as-set-ixp-connected.tpl
+    application/modules/apiv1/views/rir/tmpl/as-set-ixp-rs.tpl
+    application/modules/apiv1/views/rir/tmpl/autnum.tpl
+    application/views/_skins/lonap/public/member-details.phtml
+    application/views/customer/email/billing-details-changed.phtml
+    application/views/customer/forms/billing-registration.phtml
+    application/views/router-cli/server/bird/neighbor.cfg
+
+
+
+- [NF] Add RIR objects for IXP connected ASs and IXP route server connected ASs (6bf476c - Barry O'Donovan - 2013-11-13)
+- [NF] Add RIR objects for IXP connected ASs and IXP route server connected ASs (2c9f7bb - Barry O'Donovan - 2013-11-13)
+- [NF] Route server AS object generation for RIRs (df8929b - Barry O'Donovan - 2013-11-13)
+- [BF] Harden variable checks for sflow presentation script (d601dd3 - Barry O'Donovan - 2013-11-13)
+- [NF] Working implementation or rIR object generation for autnum: (d1e1d9b - Barry O'Donovan - 2013-11-12)
+- [NF] Early stages of code to update and IXP's RIPE database objects (f74c000 - Barry O'Donovan - 2013-11-12)
+- [IM] added --insanedebug to allow debugging of all sflowtool input (c94877f - Nick Hilliard - 2013-11-04)
+- [BF] fixed #91 (sflow graph coloring is reverse to mrtg graph coloring) (efe18df - Nick Hilliard - 2013-11-04)
+- [BF] Issue with member details fixed (84dcdd8 - Barry O'Donovan - 2013-11-04)
+- [BF] Untested fix for issue #100 (27a8d49 - Barry O'Donovan - 2013-11-02)
+- [IM] Forgot to add the new field to the email notification (cf59ee3 - Barry O'Donovan - 2013-11-02)
+- [IM] Add extra address field for billing - Fixes #96 (8200d34 - Barry O'Donovan - 2013-11-02)
+- [DB] Schema update for issue #96 (8e8e3f7 - Barry O'Donovan - 2013-11-02)
+- [NF] Delete old traffic_daily entries that are no longer needed (31236e7 - Barry O'Donovan - 2013-11-01)
+- [NF] Allow the deletion of IP addresses (if not in use) (9033095 - Barry O'Donovan - 2013-10-28)
+- [IM] Record last API key usage (54d8a83 - Barry O'Donovan - 2013-10-18)
 
 
 
