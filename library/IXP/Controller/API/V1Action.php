@@ -44,7 +44,7 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
     use OSS_Controller_Action_Trait_Mailer;
     // use OSS_Controller_Action_Trait_License;
     use OSS_Controller_Action_Trait_Logger;
-    // use OSS_Controller_Action_Trait_Smarty;
+    use OSS_Controller_Action_Trait_Smarty;
     // use OSS_Controller_Action_Trait_StatsD;
     // use OSS_Controller_Action_Trait_Freshbooks;
     // use OSS_Controller_Action_Trait_Messages;

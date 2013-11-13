@@ -44,7 +44,7 @@ class Vlan extends EntityRepository
      * VLANs by default.
      *
      * @param $type int The VLAN types to return (see TYPE_ constants).
-     * @return array An array of all VLAN objects
+     * @return \Entities\Vlan[] An array of all VLAN objects
      */
     public function getAndCache( $type = self::TYPE_NORMAL )
     {

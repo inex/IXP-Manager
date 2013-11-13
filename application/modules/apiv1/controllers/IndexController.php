@@ -33,10 +33,4 @@
  */
 class Apiv1_IndexController extends IXP_Controller_API_V1Action
 {
-
-    public function indexAction()
-    {
-        OSS_Debug::dd( $this->getUser() );
-        die('12weerrt');
-    }
 }

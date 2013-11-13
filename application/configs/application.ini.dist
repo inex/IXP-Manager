@@ -560,6 +560,14 @@ meeting.rsvp_to_name  = "Person Who Looks After This Stuff"
 ; billing_updates.notify = "accounts1@example.com"
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Generated RIR objects
+;;
+;; See: https://github.com/inex/IXP-Manager/wiki/RIR-Objects
+;;
+
+;rir.ripe_password = 'supersecret'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
