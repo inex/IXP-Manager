@@ -1,4 +1,4 @@
 #!/bin/sh
 
-git diff --name-only $1 HEAD | grep 'application/views/'
+git diff --name-only $1 HEAD | egrep 'application(/modules/.+)*/views/'
 
