@@ -1454,15 +1454,21 @@ class Customer
 
     /**
      * Is the customer a route server client on any of their VLAN interfaces?
+     * @param int $proto One of [4,6]. Defaults to 4.
      * @return boolean
      */
-    public function isRouteServerClient()
+    public function isRouteServerClient( $proto = 4 )
     {
+        if( !in_array( $proto, [ 4, 6 ] ) )
+            throw new \IXP_Exception( 'Invalid protocol' );
+        
+        $fnEnabled = "getIpv{$proto}enabled";
+         
         foreach( $this->getVirtualInterfaces() as $vi )
         {
             foreach( $vi->getVlanInterfaces() as $vli )
             {
-                if( $vli->getRsclient() )
+                if( $vli->$fnEnabled() && $vli->getRsclient() )
                     return true;
             }
         }
