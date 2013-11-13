@@ -60,7 +60,8 @@ Views updated / changed in this release:
 
 
 
-- [NF] Add RIR objects for IXP connected ASs and IXP route server connected ASs (6bf476c - Barry O'Donovan - 2013-11-13)
+- [NF] Example of separate RS AS sets for v4 and v6 (4b2d759 - Barry O'Donovan - 2013-11-13)
+- [IM] Include new module views in the changed views finder (61c0de7 - Barry O'Donovan - 2013-11-13)- [NF] Add RIR objects for IXP connected ASs and IXP route server connected ASs (6bf476c - Barry O'Donovan - 2013-11-13)
 - [NF] Add RIR objects for IXP connected ASs and IXP route server connected ASs (2c9f7bb - Barry O'Donovan - 2013-11-13)
 - [NF] Route server AS object generation for RIRs (df8929b - Barry O'Donovan - 2013-11-13)
 - [BF] Harden variable checks for sflow presentation script (d601dd3 - Barry O'Donovan - 2013-11-13)
