@@ -250,7 +250,7 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
                     ->setBodyText( $content )
                     ->addTo( $email )
                     ->setFrom( $this->_options['identity']['autobot']['email'], $this->_options['identity']['autobot']['name'] )
-                    ->setSubject( "Changes to {$tmpl} - KEYWORDS: diff" );
+                    ->setSubject( "Changes to {$tmpl} via IXP Manager" );
         
         try
         {
