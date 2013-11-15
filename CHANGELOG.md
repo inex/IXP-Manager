@@ -4,6 +4,15 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.6.3 (20131115)
+
+ - [IM] Final pass at RIR object generation (34f2ee3 - Barry O'Donovan - 2013-11-15)
+
+Views updated:
+
+    application/modules/apiv1/views/_skins/inex/rir/tmpl/as-set-inex-connected.tpl
+    application/modules/apiv1/views/_skins/inex/rir/tmpl/autnum-as43760.tpl
+
 # v3.6.2 (20131113)
 
 - [NF] Example of separate RS AS sets for v4 and v6 (4b2d759 - Barry O'Donovan - 2013-11-13)
