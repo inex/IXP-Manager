@@ -60,7 +60,7 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
 
         // populate the template variables
         $this->view->customers = $customers = OSS_Array::reindexObjects( 
-                OSS_Array::reorderObjects( $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, true ), 'getAutsys', SORT_NUMERIC ), 
+                OSS_Array::reorderObjects( $this->getD2R( '\\Entities\\Customer' )->getConnected( false, false, true ), 'getAutsys', SORT_NUMERIC ), 
                 'getId' 
         );
         
@@ -106,25 +106,35 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
         return $asns;
     }
     
+
     /**
      * Gather up route server client information for building RIR objects
-     * 
+     *
      * Returns an array of the form:
-     * 
+     *
      *     [
+     *         [ vlans ] => [
      *             [ $vlanid ] => [
      *                 [servers] => [   // route server IP addresses by protocol
-     *                     [4] => [  
+     *                     [4] => [
      *                         [0] => 193.242.111.8
      *                         ...
      *                     ],
      *                     [6] => [
      *                         ...
      *                     ]
-     *                 ],
-     *                 
-     *                 [clients] => [
-     *                     [$customer_id] => [
+     *                 ]
+     *             ],
+     *             [ $another_vlanid ] => [
+     *                 ...
+     *             ],
+     *             ...
+     *         ],
+     *         [clients] => [
+     *             [$customer_asn] => [
+     *                 [id] => customer id,
+     *                 [ vlans ] => [
+     *                     [ vlanid ] => [
      *                         [$vlan_interface_id] => [    // customer's IP addresses by protocol
      *                             [4] => 193.242.111.xx
      *                             [6] => 2001:7f8:18::xx
@@ -134,9 +144,9 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
      *                     ...
      *                 ],
      *             ],
-     *             ...
+     *         ],
      *     ]
-     * 
+     *
      * @param \Entities\Customer[] $customers
      * @return array As defined above
      */
@@ -144,58 +154,69 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
     {
         // get the public peering VLANs
         $vlans = $this->getD2R( '\\Entities\\Vlan' )->getAndCache( \Repositories\Vlan::TYPE_NORMAL );
-        
+    
         $rsclients = [];
-        
+    
         foreach( $vlans as $vlan )
         {
             foreach( [ 4, 6 ] as $proto )
             {
                 // get the available route servers
                 $servers = $vlan->getRouteServers( $proto );
-                
+    
                 if( !count( $servers ) )
                     continue;
-                
-                if( !isset( $rsclients[ $vlan->getId() ] ) )
-                    $rsclients[ $vlan->getId() ] = [];
-                
-                $rsclients[ $vlan->getId() ]['servers'][ $proto ] = [];
-                                
+    
+                $rsclients[ 'vlans' ][ $vlan->getId() ]['servers'][ $proto ] = [];
+    
                 foreach( $servers as $server )
-                    $rsclients[ $vlan->getId() ]['servers'][ $proto ][] = $server['ipaddress'];
-               
+                    $rsclients[ 'vlans' ][ $vlan->getId() ]['servers'][ $proto ][] = $server['ipaddress'];
+                 
                 foreach( $vlan->getVlanInterfaces() as $vli )
                 {
                     if( !$vli->getRsclient() )
                         continue;
+
+                    $oneConnectedInterface = false;
+                    foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi )
+                    {
+                        if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED )
+                        {
+                            $oneConnectedInterface = true;
+                            break;
+                        }
+                    }
                     
+                    if( !$oneConnectedInterface )
+                        continue;
+                        
                     $cust = $vli->getVirtualInterface()->getCustomer();
+
+                    if( $cust->getStatus() != \Entities\Customer::STATUS_NORMAL )
+                        continue;
                     
                     // is this customer still active?
                     if( !isset( $customers[ $cust->getId() ] ) )
                         continue;
+    
+                    if( !isset( $rsclients['clients'][ $cust->getAutsys() ] ) )
+                    {
+                        $rsclients['clients'][ $cust->getAutsys() ]['id'] = $cust->getId();
+                        $rsclients['clients'][ $cust->getAutsys() ]['vlans'] = [];
+                    }
 
-                    if( !isset( $rsclients[ $vlan->getId() ]['clients'] ) )
-                        $rsclients[ $vlan->getId() ]['clients'] = [];
-                    
-                    if( !isset( $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ] ) )
-                        $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ] = [];
-                        
-                    if( !isset( $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ][ $vli->getId() ] ) )
-                        $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ][ $vli->getId() ] = [];
-                    
                     $fnEnabled = "getIpv{$proto}enabled";
-                    
+    
                     if( $vli->$fnEnabled() )
                     {
                         $fnIpaddress = "getIPv{$proto}Address";
-                        $rsclients[ $vlan->getId() ]['clients'][ $cust->getId() ][ $vli->getId() ][ $proto ] = $vli->$fnIpaddress()->getAddress();
+                        $rsclients['clients'][ $cust->getAutsys() ]['vlans'][ $vlan->getId() ][ $vli->getId() ][ $proto ] = $vli->$fnIpaddress()->getAddress();
                     }
                 }
             }
         }
-        
+
+        ksort( $rsclients['clients'], SORT_NUMERIC );
         return $rsclients;
     }
     

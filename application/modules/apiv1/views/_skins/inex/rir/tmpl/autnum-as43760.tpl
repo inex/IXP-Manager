@@ -35,32 +35,32 @@ mnt-by:         INEX-NOC
 mnt-routes:     INEX-NOC
 changed:        ripe-admin@inex.ie
 
-{foreach $rsclients as $vlanid => $vlan}
-    {foreach $vlan.clients as $custid => $vlanints}
-        {$cust = $customers.$custid}
-	    {foreach $protocols as $proto}
-            {foreach $vlanints as $vliid => $addresses}
-                {if not isset( $addresses.$proto ) }
-                    {continue}
-                {/if}
-                {foreach $vlan.servers.$proto as $serverip}
-                    {if $proto eq 4}
-
-import:         from AS{$cust->getAutsys()} {$addresses.$proto} at {$serverip} 
+{foreach $rsclients.clients as $asn => $cdetails}
+    {$cust = $customers[$cdetails.id]}
+    {foreach $cdetails.vlans as $vlanid => $vli}
+    	{foreach $vli as $vliid => $interface}
+		    {foreach $protocols as $proto}
+	            {if not isset( $interface.$proto ) }
+	                {continue}
+	            {/if}
+	            {foreach $rsclients.vlans.$vlanid.servers.$proto as $serverip}
+	                {if $proto eq 4}
+	
+import:         from AS{$cust->getAutsys()} {$interface.$proto} at {$serverip} 
                 accept {$cust->resolveAsMacro( $proto, 'AS' )}  # {$cust->getName()}
-export:         to AS{$cust->getAutsys()} {$addresses.$proto} at {$serverip}
+export:         to AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
                 announce AS-SET-INEX-RS
-                    {else}
+                {else}
 
 mp-import:      afi ipv6.unicast
-                from AS{$cust->getAutsys()} {$addresses.$proto} at {$serverip}
+                from AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
                 accept {$cust->resolveAsMacro( $proto, 'AS' )}  # {$cust->getName()}
 mp-export:      afi ipv6.unicast
-                to AS{$cust->resolveAsMacro( $proto, 'AS' )}  # {$cust->getName()}
+                to AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
                 announce AS-SET-INEX-RS
-                    {/if}
-                {/foreach}
-            {/foreach}
+	                {/if}
+	            {/foreach}
+	        {/foreach}
         {/foreach}
     {/foreach}
 {/foreach}

@@ -627,10 +627,10 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getRSPrefixes();
     }
 
-    public function isRouteServerClient()
+    public function isRouteServerClient($proto = 4)
     {
         $this->__load();
-        return parent::isRouteServerClient();
+        return parent::isRouteServerClient($proto);
     }
 
     public function isAS112Client()
