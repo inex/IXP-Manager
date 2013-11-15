@@ -65,7 +65,7 @@ class Vlan extends EntityRepository
         }
 
         return $this->getEntityManager()->createQuery(
-                "SELECT v FROM Entities\\Vlan v {$where}"
+                "SELECT v FROM Entities\\Vlan v {$where} ORDER BY v.number ASC"
             )
             ->useResultCache( true, 3600, self::ALL_CACHE_KEY . "_{$type}" )
             ->getResult();

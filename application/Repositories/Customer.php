@@ -40,6 +40,13 @@ class Customer extends EntityRepository
      */
     const DQL_CUST_TRAFFICING = "c.type != 2";
     
+    /**
+     * DQL for selecting all "connected" customers
+     *
+     * @var string DQL for selecting all "connected" customers
+     */
+    const DQL_CUST_CONNECTED = "c.status = 1";
+    
     
     /**
      * Utility function to provide a count of different customer types as `type => count`
@@ -79,6 +86,39 @@ class Customer extends EntityRepository
 
         if( $trafficing )
             $dql .= " AND " . self::DQL_CUST_TRAFFICING;
+        
+        if( $externalOnly )
+            $dql .= " AND " . self::DQL_CUST_EXTERNAL;
+
+        if( $ixp !== false )
+            $dql .= " AND :ixp MEMBER OF c.IXPs";
+
+        $dql .= " ORDER BY c.name ASC";
+        
+        $custs = $this->getEntityManager()->createQuery( $dql );
+
+        if( $ixp !== false )
+            $custs->setParameter( 'ixp', $ixp );
+        
+        return $asArray ? $custs->getArrayResult() : $custs->getResult();
+    }
+    
+    /**
+     * Utility function to provide a array of all members connected to the exchange (including at 
+     * least one physical interface with status 'CONNECTED').
+     *
+     * @param bool $asArray If `true`, return an associative array, else an array of Customer objects
+     * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
+     * @param \Entities\IXP $ixp Limit to a specific IXP
+     * @return array
+     */
+    public function getConnected( $asArray = false, $externalOnly = false, $ixp = false )
+    {
+        $dql = "SELECT c FROM \\Entities\\Customer c
+                    LEFT JOIN c.VirtualInterfaces vi
+                    LEFT JOIN vi.PhysicalInterfaces pi
+                WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_TRAFFICING . " 
+                    AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
         
         if( $externalOnly )
             $dql .= " AND " . self::DQL_CUST_EXTERNAL;
