@@ -223,5 +223,33 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
         return $p;
     }
     
+    /**
+     * Utility function to (optionally) load a Smarty config file specified by a 'config' parameter.
+     * 
+     * This config parameter must reference the name of a config file as follows:
+     * 
+     *     APPLICATION_PATH . "/configs/" . preg_replace( '/[^\da-z_\-]/i', '', $cfile ) . ".conf";
+     * 
+     * @throws Zend_Controller_Action_Exception If the file cannot be read
+     * @return bool True if a config file was specified and loaded. False otherwise.
+     */
+    public function apiLoadConfig()
+    {
+        $cfile = $this->getParam( 'config', false );
+        if( $cfile )
+        {
+            $cfile = APPLICATION_PATH . "/configs/" . preg_replace( '/[^\da-z_\-]/i', '', $cfile ) . ".conf";
+            if( file_exists( $cfile ) && is_readable( $cfile ) )
+            {
+                $this->getView()->configLoad( $cfile );
+                return true;
+            }
+    
+            throw new Zend_Controller_Action_Exception( 'Cannot open / read specificed configuration file', 401 );
+        }
+        
+        return false;
+    }
+    
 }
 
