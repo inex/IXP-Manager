@@ -30,3 +30,4 @@ tools/perl-lib/IXPManager/pm_to_blib
 *.sublime-workspace
 application/views/router-cli/tacacs/tacplus/key.cfg
 application/views/_skins/*/router-cli/tacacs/*/key.cfg
+application/configs/rc-inex-*conf

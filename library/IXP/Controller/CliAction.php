@@ -199,5 +199,35 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
     
         die( "ERROR: No target router type configured in application.ini or passed as a parameter\n");
     }
+    
+    
+    /**
+     * Utility function to (optionally) load a Smarty config file specified by a 'config' parameter.
+     *
+     * This config parameter must reference the name of a config file as follows:
+     *
+     *     APPLICATION_PATH . "/configs/" . preg_replace( '/[^\da-z_\-]/i', '', $cfile ) . ".conf";
+     *
+     * @throws IXP_Exception If the file cannot be read
+     * @return bool True if a config file was specified and loaded. False otherwise.
+     */
+    public function cliLoadConfig()
+    {
+        $cfile = $this->getParam( 'config', false );
+        if( $cfile )
+        {
+            $cfile = APPLICATION_PATH . "/configs/" . preg_replace( '/[^\da-z_\-]/i', '', $cfile ) . ".conf";
+            if( file_exists( $cfile ) && is_readable( $cfile ) )
+            {
+                $this->getView()->configLoad( $cfile );
+                return true;
+            }
+    
+            throw new IXP_Exception( 'Cannot open / read specificed configuration file' );
+        }
+    
+        return false;
+    }
+    
 }
 

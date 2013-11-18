@@ -158,6 +158,98 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
     protected function verbose( $msg, $implictNewline = true )
     {}
     
-
+    
+    
+    /**
+     * API utility function to get and validate a given VLAN by ID
+     *
+     * @param bool $required If false, will return false if no / invalid VLAN ID specified
+     * @return \Entities\Vlan The requested VLAN
+     */
+    public function apiGetParamVlan( $required = true )
+    {
+        $vlanid = $this->getParam( 'vlanid', false );
+    
+        if( !$vlanid || !( $vlan = $this->getD2R( '\\Entities\\Vlan' )->find( $vlanid ) ) )
+        {
+            if( $required )
+                throw new Zend_Controller_Action_Exception( 'Invalid or no VLAN ID specified.', 401 );
+    
+            return false;
+        }
+    
+        return $vlan;
+    }
+    
+    /**
+     * API utility function to get and validate a given IP protocol
+     *
+     * @param bool $required If false, will return false if no / invalid protocol specified
+     * @return int|bool The specified protocol (4/6) or false
+     */
+    public function apiGetParamProtocol( $required = true )
+    {
+        $p = $this->getParam( 'proto', false );
+    
+        if( !$p || !in_array( $p, [ 4, 6 ] ) )
+        {
+            if( $required )
+                throw new Zend_Controller_Action_Exception( 'Invalid or no protocol specified.', 401 );
+                
+            return false;
+        }
+    
+        return $p;
+    }
+    
+    /**
+     * API utility function to get a named parameter
+     *
+     * @param string $param The name of the parameter to get
+     * @param bool $required If true, will throw an error and die if not present
+     * @param string $default If not set in the CLI parameters, default to this (if not false)
+     * @return int|bool The requested parameter or false
+     */
+    public function apiGetParam( $param, $required = false, $default = false )
+    {
+        $p = $this->getParam( $param, false );
+    
+        if( $p === false && $default )
+            $p = $default;
+    
+        if( $p === false && $required )
+            throw new Zend_Controller_Action_Exception( "Required parameter {$param} missing", 401 );
+        
+        return $p;
+    }
+    
+    /**
+     * Utility function to (optionally) load a Smarty config file specified by a 'config' parameter.
+     * 
+     * This config parameter must reference the name of a config file as follows:
+     * 
+     *     APPLICATION_PATH . "/configs/" . preg_replace( '/[^\da-z_\-]/i', '', $cfile ) . ".conf";
+     * 
+     * @throws Zend_Controller_Action_Exception If the file cannot be read
+     * @return bool True if a config file was specified and loaded. False otherwise.
+     */
+    public function apiLoadConfig()
+    {
+        $cfile = $this->getParam( 'config', false );
+        if( $cfile )
+        {
+            $cfile = APPLICATION_PATH . "/configs/" . preg_replace( '/[^\da-z_\-]/i', '', $cfile ) . ".conf";
+            if( file_exists( $cfile ) && is_readable( $cfile ) )
+            {
+                $this->getView()->configLoad( $cfile );
+                return true;
+            }
+    
+            throw new Zend_Controller_Action_Exception( 'Cannot open / read specificed configuration file', 401 );
+        }
+        
+        return false;
+    }
+    
 }
 

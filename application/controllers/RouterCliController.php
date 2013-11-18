@@ -33,6 +33,8 @@
  */
 class RouterCliController extends IXP_Controller_CliAction
 {
+    use IXP_Controller_Trait_Router;
+    
     /**
      * Action to generate a route collector configuration
      *
@@ -48,11 +50,7 @@ class RouterCliController extends IXP_Controller_CliAction
                 : false
         );
 
-        $this->view->asn = $this->cliResolveASN(
-                isset( $this->_options['router']['collector']['conf']['asn'] )
-                ? $this->_options['router']['collector']['conf']['asn']
-                : false
-        );
+        $this->cliLoadConfig();
 
         $this->collectorConfSanityCheck( $vlan );
 
@@ -331,111 +329,5 @@ class RouterCliController extends IXP_Controller_CliAction
         $this->forward( 'gen-tacacs-conf' );
     }
     
-    /**
-     * The collector configuration expects some data to be available. This function
-     * gathers and checks that data.
-     *
-     */
-    private function collectorConfSanityCheck( $vlan )
-    {
-        /*
-        // get the available reoute collectors and set the IP of the first as
-        // the route collector router ID.
-        $collectors = $vlan->getRouteCollectors( \Entities\Vlan::PROTOCOL_IPv4 );
-
-        if( !is_array( $collectors ) || !count( $collectors ) )
-        {
-            die(
-                "ERROR: Not IPv4 route collectors defined in the VLANs network information table\n"
-                    . "    See: https://github.com/inex/IXP-Manager/wiki/Network-Information\n"
-            );
-        }
-
-        $this->view->routerId = $collectors[0];
-        */
-
-        /*
-        if( !isset( $this->_options['router']['collector']['conf']['asn'] ) )
-            die( "ERROR: No route collector ASN configured in application.ini\n");
-        */
-    }
-
-    /**
-     * Utility function to get and return active VLAN interfaces on the requested protocol
-     * suitable for route collector / server configuration.
-     *
-     * Sample return:
-     *
-     *     [
-     *         [cid] => 999
-     *         [cname] => Customer Name
-     *         [cshortname] => shortname
-     *         [autsys] => 65000
-     *         [peeringmacro] => QWE              // or AS65500 if not defined
-     *         [vliid] => 159
-     *         [address] => 192.0.2.123
-     *         [bgpmd5secret] => qwertyui         // or false
-     *         [as112client] => 1                 // if the member is an as112 client or not
-     *         [rsclient] => 1                    // if the member is a route server client or not
-     *         [maxprefixes] => 20
-     *         [irrdbfilter] => 0/1               // if IRRDB filtering should be applied
-     *         [location_name] => Interxion DUB1
-     *         [location_shortname] => IX-DUB1
-     *         [location_tag] => ix1
-     *     ]
-     *
-     * @param \Entities\Vlan $vlan
-     * @param int $proto
-     * @return array As defined above
-     */
-    private function sanitiseVlanInterfaces( $vlan, $proto, $rsclient = false )
-    {
-        $ints = $this->getD2R( '\\Entities\\VlanInterface' )->getForProto( $vlan, $proto, false );
-        
-        $newints = [];
-
-        foreach( $ints as $int )
-        {
-            if( !$int['enabled'] )
-                continue;
-
-            if( $rsclient && !$int['rsclient'] )
-                continue;
-            
-            // Due the the way we format the SQL query to join with physical
-            // interfaces (of which there may be multiple per VLAN interface),
-            // we need to weed out duplicates
-            if( isset( $newints[ $int['address'] ] ) )
-                continue;
-
-            unset( $int['enabled'] );
-
-            if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] )
-                $int['maxprefixes'] = $int['maxbgpprefix'];
-            else
-                $int['maxprefixes'] = $int['gmaxprefixes'];
-
-            if( !$int['maxprefixes'] )
-                $int['maxprefixes'] = 20;
-
-            unset( $int['gmaxprefixes'] );
-            unset( $int['maxbgpprefix'] );
-
-            if( $proto == 6 && $int['peeringmacrov6'] )
-                $int['peeringmacro'] = $int['peeringmacrov6'];
-
-            if( !$int['peeringmacro'] )
-                $int['peeringmacro'] = 'AS' . $int['autsys'];
-
-            unset( $int['peeringmacrov6'] );
-
-            if( !$int['bgpmd5secret'] )
-                $int['bgpmd5secret'] = false;
-
-            $newints[ $int['address'] ] = $int;
-        }
-
-        return $newints;
-    }
 }
 
