@@ -54,12 +54,6 @@ class Apiv1_RouterController extends IXP_Controller_API_V1Action
     {
         $vlan   = $this->view->vlan = $this->apiGetParamVlan();
                 
-        $this->view->asn = $this->apiGetParam( 'asn', true, 
-            isset( $this->_options['router']['collector']['conf']['asn'] )
-                ? $this->_options['router']['collector']['conf']['asn']
-                : false
-        );
-
         // get, sanitise and verify the target name
         $target = preg_replace( '/[^\da-z_\-]/i', '', $this->apiGetParam( 'target', true ) );
         if( !$this->view->templateExists( "router-cli/collector/{$target}/index.cfg" ) )

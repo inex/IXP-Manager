@@ -50,12 +50,6 @@ class RouterCliController extends IXP_Controller_CliAction
                 : false
         );
 
-        $this->view->asn = $this->cliResolveASN(
-                isset( $this->_options['router']['collector']['conf']['asn'] )
-                ? $this->_options['router']['collector']['conf']['asn']
-                : false
-        );
-        
         $this->cliLoadConfig();
 
         $this->collectorConfSanityCheck( $vlan );
