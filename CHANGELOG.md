@@ -4,6 +4,35 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.6.4 (20131118)
+
+Generation of route collector configurations has been updated to allow it to be
+accessed via APIv1. Bird configuration target also added.
+
+Significant changes from the previous incarnation include:
+
+- route collector generation can now take an optional Smarty configuration file
+  just as the route server generators do. 
+- The ASN parameter has been deprecated in favour of the above.
+
+See: https://github.com/inex/IXP-Manager/wiki/Route-Collector
+
+Templates added / changed:
+
+    application/views/router-cli/collector/bird/footer.cfg
+    application/views/router-cli/collector/bird/header.cfg
+    application/views/router-cli/collector/bird/index.cfg
+    application/views/router-cli/collector/bird/neighbor.cfg
+    application/views/router-cli/collector/quagga/bgp.cfg
+ 
+- [IM] Fixes to Bird RC configuration (5aa25dc - Barry O'Donovan - 2013-11-18)
+- [IM] Remove config variable in favour of Smarty config files (b23d19e - Barry O'Donovan - 2013-11-18)
+- [NF] Route collector via Bird - first pass for quarantine system (629175d - Barry O'Donovan - 2013-11-15)
+- [NF] Route collector configuration generation now also available via APIv1 (8cb6112 - Barry O'Donovan - 2013-11-15)
+- [BF] RIPE does not like blank lines... (c0528bc - Barry O'Donovan - 2013-11-15)
+- [BF] Looks like RIPE no longer supports this keyword - LONGACK is now the default (fefdc56 - Barry O'Donovan - 2013-11-15)
+
+
 # v3.6.3 (20131115)
 
  - [IM] Final pass at RIR object generation (34f2ee3 - Barry O'Donovan - 2013-11-15)
