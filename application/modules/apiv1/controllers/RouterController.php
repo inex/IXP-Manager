@@ -52,7 +52,7 @@ class Apiv1_RouterController extends IXP_Controller_API_V1Action
      */
     public function collectorConfAction()
     {
-        $vlan   = $this->view->vlan = $this->apiGetParamVlan();
+        $vlan = $this->view->vlan = $this->apiGetParamVlan();
                 
         // get, sanitise and verify the target name
         $target = preg_replace( '/[^\da-z_\-]/i', '', $this->apiGetParam( 'target', true ) );
@@ -72,4 +72,57 @@ class Apiv1_RouterController extends IXP_Controller_API_V1Action
         echo $this->view->render( "router-cli/collector/{$target}/index.cfg" );
     }
 
+    /**
+     * Action to generate a route server configuration
+     *
+     * @see https://github.com/inex/IXP-Manager/wiki/Route-Server
+     */
+    public function serverConfAction()
+    {
+        $vlan = $this->view->vlan = $this->apiGetParamVlan();
+            
+        // get, sanitise and verify the target name
+        $target = preg_replace( '/[^\da-z_\-]/i', '', $this->apiGetParam( 'target', true ) );
+        if( !$this->view->templateExists( "router-cli/collector/{$target}/index.cfg" ) )
+            throw new Zend_Controller_Action_Exception( 'The specified target template does not exist', 401 );
+        
+        $this->apiLoadConfig();
+        
+        $this->view->proto = $proto = $this->apiGetParamProtocol( false );
+            
+        if( $proto == 6 )
+            $ints = $this->sanitiseVlanInterfaces( $vlan, 6, true );
+        else
+        {
+            $ints = $this->sanitiseVlanInterfaces( $vlan, 4, true );
+            $this->view->proto = $proto = 4;
+        }
+    
+        // should we limit this to one customer only?
+        $lcustomer = $this->apiGetParam( 'cust', false, false );
+    
+        // should we wrap the output with the header and footer
+        $wrappers = (bool)$this->apiGetParam( 'wrappers', false, true );
+    
+        // is test mode enabled?
+        $this->view->testmode = (bool)$this->apiGetParam( 'testmode', false, false );
+    
+        if( !$lcustomer && $wrappers && $this->getView()->templateExists( "router-cli/server/{$target}/header.cfg" ) )
+            echo $this->view->render( "router-cli/server/{$target}/header.cfg" );
+    
+        foreach( $ints as $int )
+        {
+            if( $lcustomer && $int['cshortname'] != $lcustomer )
+                continue;
+    
+            // $this->view->cust = $this->getD2R( '\\Entities\\Customer' )->find( $int[ 'cid' ] );
+            $this->view->int  = $int;
+            $this->view->prefixes = $this->getD2R( '\\Entities\\IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
+            echo $this->view->render( "router-cli/server/{$target}/neighbor.cfg" );
+        }
+    
+        if( !$lcustomer && $wrappers && $this->getView()->templateExists( "router-cli/server/{$target}/footer.cfg" ) )
+            echo $this->view->render( "router-cli/server/{$target}/footer.cfg" );
+    }
+    
 }

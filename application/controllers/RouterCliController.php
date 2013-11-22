@@ -109,7 +109,7 @@ class RouterCliController extends IXP_Controller_CliAction
         // is test mode enabled?
         $this->view->testmode = (bool)$this->cliResolveParam( 'testmode', false, false );
 
-        // load Smary config file
+        // load Smarty config file
         $this->getView()->configLoad( $this->loadConfig() );
         
         if( !$lcustomer && $wrappers && $this->getView()->templateExists( "router-cli/server/{$target}/header.cfg" ) )
