@@ -12,6 +12,9 @@
         <index-field name="protocol"/>
         <index-field name="customer_id"/>
       </index>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\IrrdbAsns</attribute>
+      </orm-attributes>
     </entity>
     <association from="IrrdbAsns" to="Customer" owner-alias="IrrdbASNs" inverse-alias="Customer" uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd">
       <association-field from="customer_id" to="id"/>
