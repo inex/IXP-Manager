@@ -5,9 +5,9 @@ namespace Entities;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * IrrdbAsns
+ * IrrdbAsn
  */
-class IrrdbAsns
+class IrrdbAsn
 {
     /**
      * @var integer
@@ -39,7 +39,7 @@ class IrrdbAsns
      * Set asn
      *
      * @param integer $asn
-     * @return IrrdbAsns
+     * @return IrrdbAsn
      */
     public function setAsn($asn)
     {
@@ -62,7 +62,7 @@ class IrrdbAsns
      * Set protocol
      *
      * @param integer $protocol
-     * @return IrrdbAsns
+     * @return IrrdbAsn
      */
     public function setProtocol($protocol)
     {
@@ -85,7 +85,7 @@ class IrrdbAsns
      * Set first_seen
      *
      * @param \DateTime $firstSeen
-     * @return IrrdbAsns
+     * @return IrrdbAsn
      */
     public function setFirstSeen($firstSeen)
     {
@@ -118,7 +118,7 @@ class IrrdbAsns
      * Set Customer
      *
      * @param \Entities\Customer $customer
-     * @return IrrdbAsns
+     * @return IrrdbAsn
      */
     public function setCustomer(\Entities\Customer $customer)
     {
