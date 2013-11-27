@@ -7,9 +7,8 @@ Please see the following page for upgrade instructions:
 # v3.x.x (WIP)
 
 
-    CREATE TABLE IrrdbAsns (id BIGINT AUTO_INCREMENT NOT NULL, customer_id INT NOT NULL, asn INT NOT NULL, protocol INT NOT NULL, first_seen DATETIME NOT NULL, INDEX IDX_364010829395C3F3 (customer_id), UNIQUE INDEX custasn (asn, protocol, customer_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-    ALTER TABLE IrrdbAsns ADD CONSTRAINT FK_364010829395C3F3 FOREIGN KEY (customer_id) REFERENCES cust (id);
-    ALTER TABLE api_keys CHANGE allowedIPs allowedIPs VARCHAR(65500) DEFAULT NULL
+    CREATE TABLE irrdb_asn (id BIGINT AUTO_INCREMENT NOT NULL, customer_id INT NOT NULL, asn INT NOT NULL, protocol INT NOT NULL, first_seen DATETIME NOT NULL, INDEX IDX_87BFC5569395C3F3 (customer_id), UNIQUE INDEX custasn (asn, protocol, customer_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    ALTER TABLE irrdb_asn ADD CONSTRAINT FK_87BFC5569395C3F3 FOREIGN KEY (customer_id) REFERENCES cust (id);
 
 # v3.6.4 (20131118)
 
