@@ -122,9 +122,16 @@ class RouterCliController extends IXP_Controller_CliAction
                 continue;
 
             // $this->view->cust = $this->getD2R( '\\Entities\\Customer' )->find( $int[ 'cid' ] );
-            $this->view->int      = $int;
-            $this->view->prefixes = $this->getD2R( '\\Entities\\IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
+            $this->view->int           = $int;
+            $this->view->prefixes      = $this->getD2R( '\\Entities\\IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
+            $this->view->irrdbAsns     = $this->getD2R( '\\Entities\\IrrdbAsn'    )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
             $this->view->asnsProcessed = $asnsProcessed;
+
+            // some sanity checks
+            if( !count( $this->view->prefixes ) && !count( $this->view->irrdbAsns ) )
+                $this->getLogger()->alert( sprintf( "WARNING: no prefixes and ASNs found for %s/IPv%d in route server config generation",
+                    $int['cname'], $proto
+                ) );
 
             echo $this->view->render( "router-cli/server/{$target}/neighbor.cfg" );
             $asnsProcessed[] = $int['autsys'];
