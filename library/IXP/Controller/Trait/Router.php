@@ -85,7 +85,7 @@ trait IXP_Controller_Trait_Router
 
             unset( $int['enabled'] );
 
-            $int['fvliid'] = sprintf( '%05d', $int['vliid'] );
+            $int['fvliid'] = sprintf( '%04d', $int['vliid'] );
 
             if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] )
                 $int['maxprefixes'] = $int['maxbgpprefix'];

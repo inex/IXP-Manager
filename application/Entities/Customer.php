@@ -1941,4 +1941,42 @@ class Customer
         return $asmacro;
     }
     
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $IrrdbASNs;
+
+
+    /**
+     * Add IrrdbASNs
+     *
+     * @param \Entities\IrrdbAsns $irrdbASNs
+     * @return Customer
+     */
+    public function addIrrdbASN(\Entities\IrrdbAsns $irrdbASNs)
+    {
+        $this->IrrdbASNs[] = $irrdbASNs;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IrrdbASNs
+     *
+     * @param \Entities\IrrdbAsns $irrdbASNs
+     */
+    public function removeIrrdbASN(\Entities\IrrdbAsns $irrdbASNs)
+    {
+        $this->IrrdbASNs->removeElement($irrdbASNs);
+    }
+
+    /**
+     * Get IrrdbASNs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getIrrdbASNs()
+    {
+        return $this->IrrdbASNs;
+    }
 }

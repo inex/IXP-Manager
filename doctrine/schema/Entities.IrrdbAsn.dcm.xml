@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\IrrdbAsn" repository-class="Repositories\IrrdbAsn" schema="irrdb_asn" table="irrdb_asn" tableName="irrdb_asn">
+    <id name="id" type="bigint">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="asn" type="integer" nullable="false"/>
+    <field name="protocol" type="integer" nullable="false"/>
+    <field name="first_seen" type="datetime" nullable="false"/>
+    <unique-constraints>
+      <unique-constraint name="custasn" columns="asn,protocol,customer_id"/>
+    </unique-constraints>
+    <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="IrrdbASNs">
+      <join-columns>
+        <join-column name="customer_id" referenced-column-name="id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

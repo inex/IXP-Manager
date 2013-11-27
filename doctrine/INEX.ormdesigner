@@ -1,6 +1,27 @@
 <?xml version="1.0"?>
-<orm-designer version="2.2.4.749" name="INEX" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<orm-designer version="2.2.5.754" name="INEX" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="INEX" import-format="Doctrine2Xml" import-path="schema" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
+    <entity name="IrrdbAsn" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
+      <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
+      <field name="customer_id" type="integer" required="true" uuid="07bd2228-73b4-479f-ad50-1438f9905e5f"/>
+      <field name="asn" type="integer" required="true" uuid="ad41fc97-061a-4e76-bcef-01146a05f2e6"/>
+      <field name="protocol" type="integer" required="true" uuid="d7b4ff15-0fbd-4e2b-85a0-7397c3d932ab"/>
+      <field name="first_seen" type="datetime" required="true" uuid="30730a88-58d8-4bee-aaf5-981fa1a49dff"/>
+      <index name="custasn" unique="true">
+        <index-field name="asn"/>
+        <index-field name="protocol"/>
+        <index-field name="customer_id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\IrrdbAsn</attribute>
+        <attribute name="schema">irrdb_asn</attribute>
+        <attribute name="table">irrdb_asn</attribute>
+        <attribute name="tableName">irrdb_asn</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="IrrdbAsn" to="Customer" owner-alias="IrrdbASNs" inverse-alias="Customer" uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd">
+      <association-field from="customer_id" to="id"/>
+    </association>
     <entity name="ApiKey" uuid="3da990c1-6ab8-436e-8800-e09a08ebee16">
       <field name="id" type="bigint" unique="true" primary="true" auto-increment="true" uuid="e7921411-de32-4a53-a946-d829a0a07f91"/>
       <field name="apiKey" type="string" size="255" required="true" unique="true" uuid="e2e30fb0-01ac-431a-99b7-5c40b4c9d9ce"/>
@@ -942,6 +963,7 @@
     <entity uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786" position-x="1688" position-y="-279" size-x="0" size-x2="113" size-y="0" size-y2="74"/>
     <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" position-x="809" position-y="653" size-x="0" size-x2="145" size-y="0" size-y2="213"/>
     <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" position-x="228" position-y="34" size-x="0" size-x2="131" size-y="0" size-y2="171"/>
+    <entity uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c" position-x="131" position-y="1030" size-x="0" size-x2="106" size-y="0" size-y2="73"/>
     <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0"/>
     <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" position-x="175" position-y="631" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
     <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="1791" size-y="212" size-y2="1381"/>
@@ -983,6 +1005,7 @@
     <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" position-x="1466" position-y="-215" size-x="0" size-x2="175" size-y="0" size-y2="101"/>
     <association uuid="f18aceae-d3e6-452d-9e28-0c32f340b245" center-position-x="0" center-position-y="0"/>
     <association uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
+    <association uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0"/>
     <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0"/>
     <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
   </visual-data>
