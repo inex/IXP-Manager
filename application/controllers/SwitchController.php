@@ -229,7 +229,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 if( $vendor == 'Unknown' )
                 {
                     $this->addMessage( "Could not interpret switch system description string - most likely
-                            because no platform interpretor exists  for it.<br/><br/>Please see
+                            because no platform interpretor exists for it.<br/><br/>Please see
                             <a href=\"https://github.com/opensolutions/OSS_SNMP/wiki/Device-Discovery\">this OSS_SNMP page</a>
                             and consider adding one.<br /><br />
                             Otherwise use the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>.",

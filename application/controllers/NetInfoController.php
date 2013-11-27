@@ -118,7 +118,7 @@ class NetInfoController extends IXP_Controller_FrontEnd
                 {
                     if( $vlan->hasNetInfo( $property, $protocol ) )
                     {
-                        $this->addMessage( "This property already exists use edit instead.", OSS_Message::ERROR );
+                        $this->addMessage( "This property already exists. Use edit instead.", OSS_Message::ERROR );
                         $this->redirect( "net-info/list/vlid/" . $vlan->getId() );
                     }
 

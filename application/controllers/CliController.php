@@ -183,7 +183,7 @@ class CliController extends IXP_Controller_Action
     {
         // do we have mailing lists defined?
         if( !isset( $this->_options['mailinglist']['enabled'] ) || !$this->_options['mailinglist']['enabled'] )
-            die( "ERR: Mailing lists disabled in configuration( use: mailinglist.enabled = 1 to enabled)\n" );
+            die( "ERR: Mailing lists disabled in configuration( use: mailinglist.enabled = 1 to enable)\n" );
         
         if( !( $list = $this->getFrontController()->getParam( 'param1', false ) ) )
             die( "ERR: You must specify a list name (e.g. --p1 listname)\n" );

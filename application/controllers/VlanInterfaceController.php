@@ -105,7 +105,7 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                         'ipv4monitorrcbgp' => 'Monitor Route Collector IPv4 BGP Session',
                         'ipv6monitorrcbgp' => 'Monitor Route Collector IPv6 BGP Session',
                         'as112client'      => 'AS112 Client',
-                        'busyhost'         => 'Bust Host?',
+                        'busyhost'         => 'Busy Host?',
                         'notes'            => 'Notes'
                     ]
                 );

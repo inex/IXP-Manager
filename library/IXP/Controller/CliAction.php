@@ -223,7 +223,7 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
                 return true;
             }
     
-            throw new IXP_Exception( 'Cannot open / read specificed configuration file' );
+            throw new IXP_Exception( 'Cannot open / read specified configuration file' );
         }
     
         return false;
