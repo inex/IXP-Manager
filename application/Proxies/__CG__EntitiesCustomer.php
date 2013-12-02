@@ -837,10 +837,28 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::resolveAsMacro($protocol, $asnPrefix);
     }
 
+    public function addIrrdbASN(\Entities\IrrdbAsns $irrdbASNs)
+    {
+        $this->__load();
+        return parent::addIrrdbASN($irrdbASNs);
+    }
+
+    public function removeIrrdbASN(\Entities\IrrdbAsns $irrdbASNs)
+    {
+        $this->__load();
+        return parent::removeIrrdbASN($irrdbASNs);
+    }
+
+    public function getIrrdbASNs()
+    {
+        $this->__load();
+        return parent::getIrrdbASNs();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'abbreviatedName', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'MD5Support', 'isReseller', 'id', 'IrrdbPrefixes', 'Notes', 'VirtualInterfaces', 'ResoldCustomers', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails', 'Reseller', 'IXPs');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'abbreviatedName', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'peeringDb', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'MD5Support', 'isReseller', 'id', 'IrrdbASNs', 'IrrdbPrefixes', 'Notes', 'VirtualInterfaces', 'ResoldCustomers', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'RSPrefixes', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'SecEvents', 'IRRDB', 'RegistrationDetails', 'BillingDetails', 'Reseller', 'IXPs');
     }
 
     public function __clone()

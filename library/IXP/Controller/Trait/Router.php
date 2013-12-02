@@ -33,7 +33,7 @@
  */
 trait IXP_Controller_Trait_Router
 {
-    
+
     /**
      * Utility function to get and return active VLAN interfaces on the requested protocol
      * suitable for route collector / server configuration.
@@ -47,6 +47,7 @@ trait IXP_Controller_Trait_Router
      *         [autsys] => 65000
      *         [peeringmacro] => QWE              // or AS65500 if not defined
      *         [vliid] => 159
+     *         [fvliid] => 00159                  // formatted %05d
      *         [address] => 192.0.2.123
      *         [bgpmd5secret] => qwertyui         // or false
      *         [as112client] => 1                 // if the member is an as112 client or not
@@ -65,7 +66,7 @@ trait IXP_Controller_Trait_Router
     private function sanitiseVlanInterfaces( $vlan, $proto, $rsclient = false )
     {
         $ints = $this->getD2R( '\\Entities\\VlanInterface' )->getForProto( $vlan, $proto, false );
-        
+
         $newints = [];
 
         foreach( $ints as $int )
@@ -75,7 +76,7 @@ trait IXP_Controller_Trait_Router
 
             if( $rsclient && !$int['rsclient'] )
                 continue;
-            
+
             // Due the the way we format the SQL query to join with physical
             // interfaces (of which there may be multiple per VLAN interface),
             // we need to weed out duplicates
@@ -83,6 +84,8 @@ trait IXP_Controller_Trait_Router
                 continue;
 
             unset( $int['enabled'] );
+
+            $int['fvliid'] = sprintf( '%04d', $int['vliid'] );
 
             if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] )
                 $int['maxprefixes'] = $int['maxbgpprefix'];
@@ -111,7 +114,7 @@ trait IXP_Controller_Trait_Router
 
         return $newints;
     }
-    
+
     /**
      * The collector configuration expects some data to be available. This function
      * gathers and checks that data.
@@ -123,7 +126,7 @@ trait IXP_Controller_Trait_Router
          // get the available reoute collectors and set the IP of the first as
         // the route collector router ID.
         $collectors = $vlan->getRouteCollectors( \Entities\Vlan::PROTOCOL_IPv4 );
-    
+
         if( !is_array( $collectors ) || !count( $collectors ) )
         {
         die(
@@ -131,16 +134,16 @@ trait IXP_Controller_Trait_Router
             . "    See: https://github.com/inex/IXP-Manager/wiki/Network-Information\n"
         );
         }
-    
+
         $this->view->routerId = $collectors[0];
         */
-    
+
         /*
          if( !isset( $this->_options['router']['collector']['conf']['asn'] ) )
             die( "ERROR: No route collector ASN configured in application.ini\n");
         */
     }
-    
-    
+
+
 }
 

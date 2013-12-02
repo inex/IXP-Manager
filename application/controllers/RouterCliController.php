@@ -34,7 +34,7 @@
 class RouterCliController extends IXP_Controller_CliAction
 {
     use IXP_Controller_Trait_Router;
-    
+
     /**
      * Action to generate a route collector configuration
      *
@@ -74,7 +74,7 @@ class RouterCliController extends IXP_Controller_CliAction
             echo $this->view->render( "router-cli/collector/{$target}/index.cfg" );
     }
 
-    
+
     /**
      * Action to generate a route server configuration
      *
@@ -83,15 +83,15 @@ class RouterCliController extends IXP_Controller_CliAction
     public function genServerConfAction()
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
-    
+
         $target = $this->cliResolveTarget(
                 isset( $this->_options['router']['collector']['conf']['target'] )
                 ? $this->_options['router']['collector']['conf']['target']
                 : false
         );
-    
+
         $this->view->proto = $proto = $this->cliResolveProtocol( false );
-    
+
         if( $proto == 6 )
             $ints = $this->sanitiseVlanInterfaces( $vlan, 6, true );
         else
@@ -99,37 +99,48 @@ class RouterCliController extends IXP_Controller_CliAction
             $ints = $this->sanitiseVlanInterfaces( $vlan, 4, true );
             $this->view->proto = $proto = 4;
         }
-        
+
         // should we limit this to one customer only?
         $lcustomer = $this->cliResolveParam( 'cust', false, false );
-        
+
         // should we wrap the output with the header and footer
         $wrappers = (bool)$this->cliResolveParam( 'wrappers', false, true );
 
         // is test mode enabled?
         $this->view->testmode = (bool)$this->cliResolveParam( 'testmode', false, false );
 
-        // load Smary config file
+        // load Smarty config file
         $this->getView()->configLoad( $this->loadConfig() );
-        
+
         if( !$lcustomer && $wrappers && $this->getView()->templateExists( "router-cli/server/{$target}/header.cfg" ) )
             echo $this->view->render( "router-cli/server/{$target}/header.cfg" );
-        
+
+        $asnsProcessed = [];
         foreach( $ints as $int )
         {
             if( $lcustomer && $int['cshortname'] != $lcustomer )
                 continue;
-            
+
             // $this->view->cust = $this->getD2R( '\\Entities\\Customer' )->find( $int[ 'cid' ] );
-            $this->view->int  = $int;
-            $this->view->prefixes = $this->getD2R( '\\Entities\\IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
+            $this->view->int           = $int;
+            $this->view->prefixes      = $this->getD2R( '\\Entities\\IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
+            $this->view->irrdbAsns     = $this->getD2R( '\\Entities\\IrrdbAsn'    )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
+            $this->view->asnsProcessed = $asnsProcessed;
+
+            // some sanity checks
+            if( !count( $this->view->prefixes ) && !count( $this->view->irrdbAsns ) )
+                $this->getLogger()->alert( sprintf( "WARNING: no prefixes and ASNs found for %s/IPv%d in route server config generation",
+                    $int['cname'], $proto
+                ) );
+
             echo $this->view->render( "router-cli/server/{$target}/neighbor.cfg" );
+            $asnsProcessed[] = $int['autsys'];
         }
-        
+
         if( !$lcustomer && $wrappers && $this->getView()->templateExists( "router-cli/server/{$target}/footer.cfg" ) )
             echo $this->view->render( "router-cli/server/{$target}/footer.cfg" );
     }
-    
+
     /**
      * Action to generate test route server client configurations
      *
@@ -138,15 +149,15 @@ class RouterCliController extends IXP_Controller_CliAction
     public function genServerTestConfsAction()
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
-    
+
         $target = $this->cliResolveTarget(
                 isset( $this->_options['router']['collector']['conf']['target'] )
                 ? $this->_options['router']['collector']['conf']['target']
                 : false
         );
-    
+
         $this->view->proto = $proto = $this->cliResolveProtocol( false );
-    
+
         if( $proto == 6 )
             $ints = $this->sanitiseVlanInterfaces( $vlan, 6, true );
         else
@@ -157,21 +168,21 @@ class RouterCliController extends IXP_Controller_CliAction
 
         // prepare the test directory and its subdirectories
         $dir = $this->prepareTestDirectory();
-        
+
         // should we limit this to one customer only?
         $lcustomer = $this->cliResolveParam( 'cust', false, false );
-    
+
         // load Smary config file
         $this->getView()->configLoad( $this->loadConfig() );
-    
+
         foreach( $ints as $int )
         {
             if( $lcustomer && $int['cshortname'] != $lcustomer )
                 continue;
-    
-            $this->view->int  = $int;
-            $this->view->prefixes = $this->getD2R( '\\Entities\\IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
-            file_put_contents( "{$dir}/confs/{$int['cshortname']}-vlanid{$vlan->getId()}-ipv{$proto}.conf", $this->view->render( "router-cli/server-testing/{$target}.cfg" ) );
+
+            $this->view->int           = $int;
+            $this->view->prefixes      = $this->getD2R( '\\Entities\\IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
+            file_put_contents( "{$dir}/confs/{$int['cshortname']}-vlanid{$vlan->getId()}-vliid{$int['vliid']}-ipv{$proto}.conf", $this->view->render( "router-cli/server-testing/{$target}.cfg" ) );
         }
     }
 
@@ -183,15 +194,15 @@ class RouterCliController extends IXP_Controller_CliAction
     public function genServerTestSetupAction()
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
-    
+
         $target = $this->cliResolveTarget(
                 isset( $this->_options['router']['collector']['conf']['target'] )
                 ? $this->_options['router']['collector']['conf']['target']
                 : false
         );
-    
+
         $this->view->proto = $proto = $this->cliResolveProtocol( false );
-    
+
         if( $proto == 6 )
             $ints = $this->sanitiseVlanInterfaces( $vlan, 6, true );
         else
@@ -202,27 +213,27 @@ class RouterCliController extends IXP_Controller_CliAction
 
         if( $vlan->getSubnetSize( $proto ) === false )
             throw new IXP_Exception( "Subnet size for this VLAN is not defined. See http://git.io/TkSVVw" );
-        
+
         // should we limit this to one customer only?
         $lcustomer = $this->cliResolveParam( 'cust', false, false );
-    
+
         // prepare the test directory and its subdirectories
         $this->view->dir = $this->prepareTestDirectory();
-        
+
         // the OS to generate commands for
         $os = $this->cliResolveParam( 'os', false, 'linux' );
-        
+
         // generate down rather than up commands?
         $down = $this->cliResolveParam( 'down', false, false );
-        
+
         // load Smary config file
         $this->getView()->configLoad( $this->loadConfig() );
-    
+
         foreach( $ints as $int )
         {
             if( $lcustomer && $int['cshortname'] != $lcustomer )
                 continue;
-    
+
             $this->view->int  = $int;
             if( $down )
                 echo $this->view->render( "router-cli/server-testing/{$target}-{$os}-setup-down.cfg" );
@@ -230,7 +241,7 @@ class RouterCliController extends IXP_Controller_CliAction
                 echo $this->view->render( "router-cli/server-testing/{$target}-{$os}-setup-up.cfg" );
         }
     }
-    
+
     /**
      * Used by the route server test generator to create and prepare a test
      * directory.
@@ -248,7 +259,7 @@ class RouterCliController extends IXP_Controller_CliAction
             throw new IXP_Exception( "{$dir} exists but is not a directory" );
         else if( !is_writable( $dir ) )
             throw new IXP_Exception( "{$dir} is not writable" );
-        
+
         if( !file_exists( "{$dir}/confs" ) )
         {
             if( !mkdir( "{$dir}/confs" ) )
@@ -257,10 +268,10 @@ class RouterCliController extends IXP_Controller_CliAction
                 return;
             }
         }
-        
+
         return $dir;
     }
-    
+
     /**
      * Action to generate an AS112 router configuration
      *
@@ -304,12 +315,12 @@ class RouterCliController extends IXP_Controller_CliAction
     public function genTacacsConfAction()
     {
         $this->view->users = $this->getD2R( '\\Entities\\User' )->arrangeByType();
-    
+
         $dstfile                    = $this->cliResolveParam( 'dstfile',        false );
         $target                     = $this->cliResolveParam( 'target',         true, 'tacplus' );
         $this->view->secret         = $this->cliResolveParam( 'secret',         true, 'soopersecret' );
         $this->view->accountingfile = $this->cliResolveParam( 'accountingfile', true, '/var/log/tac_plus/tac_plus.log' );
-        
+
         if( $dstfile )
         {
             if( !$this->writeConfig( $dstfile, $this->view->render( "router-cli/tacacs/{$target}/index.cfg" ) ) )
@@ -318,7 +329,7 @@ class RouterCliController extends IXP_Controller_CliAction
         else
             echo $this->view->render( "router-cli/tacacs/{$target}/index.cfg" );
     }
-    
+
     /**
      * This is a summy function for gen-tacacs-conf.
      *
@@ -328,6 +339,6 @@ class RouterCliController extends IXP_Controller_CliAction
     {
         $this->forward( 'gen-tacacs-conf' );
     }
-    
+
 }
 
