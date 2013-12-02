@@ -4,11 +4,60 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-# v3.x.x (WIP)
+# v3.6.5 (20131202)
+
+Primarily some major improvements to the Bird route server configuration generation which is now
+live in INEX. This includes:
+
+ - querying RADB databases for all possible origin ASNs for an AS-SET / number 
+   and this is checked by the Bird configuration generator; 
+ - next hop hijacking no longer possible;
+ - multiple vlan interfaces for one member on one vlan now supported;
+ - configuration generation available via API now as well as the CLI; and
+ - updated martian lists for IPv4 and v6 from IANA special purpose registries.
 
 
-    CREATE TABLE irrdb_asn (id BIGINT AUTO_INCREMENT NOT NULL, customer_id INT NOT NULL, asn INT NOT NULL, protocol INT NOT NULL, first_seen DATETIME NOT NULL, INDEX IDX_87BFC5569395C3F3 (customer_id), UNIQUE INDEX custasn (asn, protocol, customer_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
-    ALTER TABLE irrdb_asn ADD CONSTRAINT FK_87BFC5569395C3F3 FOREIGN KEY (customer_id) REFERENCES cust (id);
+Database schema update required:
+
+    CREATE TABLE irrdb_asn (
+        id BIGINT AUTO_INCREMENT NOT NULL, 
+        customer_id INT NOT NULL, 
+        asn INT NOT NULL, 
+        protocol INT NOT NULL, 
+        first_seen DATETIME NOT NULL, 
+        INDEX IDX_87BFC5569395C3F3 (customer_id), 
+        UNIQUE INDEX custasn (asn, protocol, customer_id), 
+        PRIMARY KEY(id)
+    ) 
+        DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+    
+    ALTER TABLE irrdb_asn 
+        ADD CONSTRAINT FK_87BFC5569395C3F3 
+        FOREIGN KEY (customer_id) 
+        REFERENCES cust (id);
+
+The following views were updated / added:
+
+    application/views/router-cli/collector/bird/header.cfg
+    application/views/router-cli/server-testing/quagga-linux-setup-up.cfg
+    application/views/router-cli/server/bird/header.cfg
+    application/views/router-cli/server/bird/neighbor.cfg
+
+
+- [HK] Ignore INEX conf files (3be071d - Barry O'Donovan - 2013-12-02)
+- [IM] Double up on filters for the prefix analysis tool (for now) (d1a02b5 - Barry O'Donovan - 2013-11-27)
+- [IM] It is easier to browse the file when we do not have hundreds of lines of prefixes (0f17612 - Barry O'Donovan - 2013-11-27)
+- [IM] corrected some spelling mistakes (db87cae - Nick Hilliard - 2013-11-27)
+- [IM] Add in AS path check and some sanity checks (f0377dc - Barry O'Donovan - 2013-11-27)
+- [NF] Populate possible ASNs in AS paths for route collectors (c49f698 - Barry O'Donovan - 2013-11-27)
+- [DB] Proper names (6563f07 - Barry O'Donovan - 2013-11-26)
+- [DB] Do not forget the repo (7a54a11 - Barry O'Donovan - 2013-11-26)
+- [DB] Table to hold ASNs that may appear in a rs client's path (03d5b0c - Barry O'Donovan - 2013-11-26)
+- [IM] Better error logging (cd6c7e3 - Barry O'Donovan - 2013-11-26)
+- [IM] More improvements for multiple members on the same vlan (8136ad1 - Barry O'Donovan - 2013-11-26)
+- [IM] Prevent BGP NEXT_HOP Hijacking, move to templates and allow multiple interfaces per customer on the same vlan (fad673a - Barry O'Donovan - 2013-11-26)
+- [NF] Router server conf now available via API and some improvements also (f218f28 - Barry O'Donovan - 2013-11-22)
+- [IM] updated BIRD martian lists with IANA special purpose registry entries (54e6c71 - Nick Hilliard - 2013-11-20)
 
 # v3.6.4 (20131118)
 
