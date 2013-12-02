@@ -4,6 +4,13 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+# v3.6.x (WIP)
+
+Added example scripts to reconfigure Bird route servers via an API call and referenced
+these in the wiki: https://github.com/inex/IXP-Manager/wiki/Route-Server
+
+
+
 # v3.6.5 (20131202)
 
 Primarily some major improvements to the Bird route server configuration generation which is now
