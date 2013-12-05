@@ -53,6 +53,7 @@ class Apiv1_RouterController extends IXP_Controller_API_V1Action
     public function collectorConfAction()
     {
         $vlan = $this->view->vlan = $this->apiGetParamVlan();
+        $quarantine = $this->apiGetParam( 'quarantine', false, false );
 
         // get, sanitise and verify the target name
         $target = preg_replace( '/[^\da-z_\-]/i', '', $this->apiGetParam( 'target', true ) );
@@ -63,13 +64,7 @@ class Apiv1_RouterController extends IXP_Controller_API_V1Action
 
         $this->view->proto = $proto = $this->apiGetParamProtocol( false );
 
-        if( !$proto || $proto == 4 )
-            $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
-
-        if( !$proto || $proto == 6 )
-            $this->view->v6ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
-
-        echo $this->view->render( "router-cli/collector/{$target}/index.cfg" );
+        echo $this->generateCollectorConfiguration( $vlan, $proto, $target, $quarantine );
     }
 
     /**
