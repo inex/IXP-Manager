@@ -42,22 +42,22 @@ class CustomerController extends IXP_Controller_FrontEnd
             'entity'        => '\\Entities\\Customer',
             'form'          => 'IXP_Form_Customer',
             'pagetitle'     => 'Customers',
-        
+
             'titleSingular' => 'Customer',
             'nameSingular'  => 'a customer',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
+
             'listOrderBy'    => 'c.name',
             'listOrderByDir' => 'ASC',
         ];
-    
+
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $this->_feParams->listColumns = [
                     'id' => [ 'title' => 'UID', 'display' => false ],
-        
+
                     'name'        => [
                         'title'      => 'Name',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -65,13 +65,13 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'action'     => 'overview',
                         'idField'    => 'id'
                     ],
-        
+
                     'autsys'      => [
                         'title'      => 'AS',
                         'type'       => self::$FE_COL_TYPES[ 'SCRIPT' ],
                         'script'     => 'customer/list-autsys.phtml'
                     ],
-                    
+
                     'shortname'     => [
                         'title'      => 'Shortname',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -79,49 +79,49 @@ class CustomerController extends IXP_Controller_FrontEnd
                         'action'     => 'overview',
                         'idField'    => 'id'
                     ],
-                    
+
                     'peeringpolicy'   => 'Peering Policy',
 
                     'isReseller'    => [
                         'title'         => 'Reseller',
                         'type'          => self::$FE_COL_TYPES[ 'YES_NO' ],
                     ],
-                    
+
                     'type'          => [
                         'title'         => 'Type',
                         'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
                         'xlator'        => \Entities\Customer::$CUST_TYPES_TEXT,
                         'script'        => 'customer/list-type.phtml'
                     ],
-                    
+
                     'status'        => [
                         'title'         => 'Status',
                         'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
                         'mapper'        => \Entities\Customer::$CUST_STATUS_TEXT,
                         'script'        => 'customer/list-status.phtml'
                     ],
-                    
+
                     'datejoin'       => [
                         'title'     => 'Joined',
                         'type'      => self::$FE_COL_TYPES[ 'DATE' ]
                     ]
                 ];
-                
+
                 if( !$this->resellerMode() )
                     unset( $this->_feParams->listColumns[ 'isReseller' ] );
-                
+
                 break;
-    
+
             case \Entities\User::AUTH_CUSTUSER:
                 $this->_feParams->listColumns = [];
                 $this->_feParams->allowedActions = [ 'details', 'detail' ];
                 $this->_feParams->defaultAction = 'details';
                 break;
-                
+
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
-    
+
         // display the same information in the view as the list
         $this->_feParams->viewColumns = array_merge(
             $this->_feParams->listColumns,
@@ -158,7 +158,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             ]
         );
     }
-    
+
     /**
      * Provide array of customers for the listAction and viewAction
      *
@@ -182,10 +182,10 @@ class CustomerController extends IXP_Controller_FrontEnd
                         )
                 ->from( '\\Entities\\Customer', 'c' )
                 ->join( 'c.BillingDetails', 'bd' );
-    
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $this->multiIXP() && $this->getParam( 'ixp', false ) )
         {
             $this->view->ixp = $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $this->getParam( 'ixp' ) );
@@ -208,17 +208,17 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         if( $id !== null )
             $qb->andWhere( 'c.id = ?3' )->setParameter( 3, $id );
-    
+
         return $qb->getQuery()->getResult();
     }
-    
-    
+
+
     public function viewAction()
     {
         $this->forward( 'overview' );
     }
 
-    
+
     /**
      * The Customer Overview
      */
@@ -231,17 +231,17 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->view->registerClass( 'Countries', 'OSS_Countries' );
         $this->view->registerClass( 'BillingDetails', '\\Entities\\CompanyBillingDetail' );
         $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
-        
+
         // is this user watching all notes for this customer?
         if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
             $this->view->co_notify_all = true;
-           
+
         // what specific notes is this cusomer watching?
         if( $this->getUser()->getAssocPreference( "customer-notes.watching" ) )
             $this->view->co_notify = $this->getUser()->getAssocPreference( "customer-notes.watching" )[0];
         else
             $this->view->co_notify = [];
-        
+
         // load customer notes and the amount of unread notes for this user and customer
         $this->_fetchCustomerNotes( $cust->getId() );
 
@@ -250,7 +250,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         if( $this->multiIXP() )
             $this->view->validIXPs = $this->getD2R( "\\Entities\\IXP" )->getNamesNotAssignedToCustomer( $cust->getId() );
-        
+
         // does the customer have any graphs?
         $this->view->hasAggregateGraph = false;
         if( $cust->getType() != \Entities\Customer::TYPE_ASSOCIATE && !$cust->hasLeft() )
@@ -283,8 +283,8 @@ class CustomerController extends IXP_Controller_FrontEnd
             }
         }
     }
-    
-    
+
+
     /**
      *
      * @param IXP_Form_Customer $form The Send form object
@@ -299,12 +299,12 @@ class CustomerController extends IXP_Controller_FrontEnd
             $form->getElement( 'shortname' )->addError( 'This shortname is not available' );
             return false;
         }
-            
+
         if( $isEdit )
         {
             $object->setLastupdated( new DateTime() );
             $object->setLastupdatedby( $this->getUser()->getId() );
-            
+
             $bdetail = $object->getBillingDetails();
             $rdetail = $object->getRegistrationDetails();
         }
@@ -312,19 +312,19 @@ class CustomerController extends IXP_Controller_FrontEnd
         {
             $object->setCreated( new DateTime() );
             $object->setCreator( $this->getUser()->getUsername() );
-            
+
             $bdetail = new \Entities\CompanyBillingDetail();
             $this->getD2EM()->persist( $bdetail );
             $object->setBillingDetails( $bdetail );
             $bdetail->setPurchaseOrderRequired( 0 );
-            
+
             $rdetail = new \Entities\CompanyRegisteredDetail();
             $this->getD2EM()->persist( $rdetail );
             $object->setRegistrationDetails( $rdetail );
-        
+
             $object->setIsReseller( 0 );
         }
-        
+
         if( ( $form->getValue( 'type' ) == \Entities\Customer::TYPE_FULL || $form->getValue( 'type' ) == \Entities\Customer::TYPE_PROBONO )
                 && !$form->getElement( 'irrdb' )->getValue() )
         {
@@ -339,7 +339,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                 $form->getElement( 'irrdb' )->setErrorMessages( [ 'Invalid IRRDB source' ] )->markAsError();
                 return false;
             }
-            
+
             $object->setIRRDB( $irrdb );
         }
         else
@@ -357,7 +357,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         return $this->_setReseller( $form, $object );
     }
 
-    
+
     /**
      * Sets reseller to customer from form
      *
@@ -369,11 +369,11 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         if( !$this->resellerMode() )
             return true;
-        
+
         if( $form->getValue( 'isResold' ) )
         {
             $reseller = $this->getD2R( "\\Entities\\Customer" )->find( $form->getValue( "reseller" ) );
-            
+
             if( !$reseller )
             {
                 $form->getElement( "resller" )->setErrorMessages( ['Select Reseller'] )->markAsError();
@@ -396,7 +396,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                     }
                 }
             }
-            
+
             $object->setReseller( $reseller );
         }
         else if( $object->getReseller() )
@@ -424,7 +424,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             $this->addMessage( 'You can not change the reseller state because this customer still has resold customers. You need to reassign these first.', OSS_Message::INFO );
             return false;
         }
-        
+
         return true;
     }
 
@@ -450,7 +450,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         else
             $this->redirect( 'customer/billing-registration/id/' . $object->getId() );
     }
-    
+
     /**
      *
      * @param IXP_Form_Customer $form The Send form object
@@ -460,10 +460,10 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
     protected function addPreFlush( $form, $object, $isEdit )
     {
-        
+
         if( !( $object->getDatejoin() instanceof DateTime ) )
             $object->setDatejoin( new DateTime( $form->getValue( 'datejoin' ) ) );
-        
+
         if( !( $object->getDateleave() instanceof DateTime ) )
         {
             if( !$form->getValue( 'dateleave' ) )
@@ -471,7 +471,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             else
                 $object->setDateleave( new DateTime( $form->getValue( 'dateleave' ) ) );
         }
-            
+
         return true;
     }
 
@@ -498,7 +498,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $form->enableResller( $this->resellerMode() );
         $form->setMultiIXP( $this->multiIXP(), $isEdit );
-        
+
         if( $this->resellerMode() )
         {
             if( $object->getReseller() instanceof \Entities\Customer )
@@ -514,7 +514,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             $form->assignEntityToForm( $object->getRegistrationDetails(), $this );
             $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $object->getId() ] ) );
         }
-         
+
         return true;
      }
 
@@ -527,17 +527,17 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->view->cust = $c = $this->_loadCustomer();
         $this->view->form = $form = new IXP_Form_Customer_BillingRegistration();
-        
+
         $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', null, [ 'id' => $c->getId() ] ) );
 
         if( ( !isset( $this->_options['reseller']['no_billing_for_resold_customers'] ) || !$this->_options['reseller']['no_billing_for_resold_customers']  )
-            || !$this->resellerMode() || !$c->isResoldCustomer() )
+                || !$this->resellerMode() || !$c->isResoldCustomer() )
             $form->assignEntityToForm( $c->getBillingDetails(), $this );
-        
+
         $old = clone $c->getBillingDetails();
-        
+
         $form->assignEntityToForm( $c->getRegistrationDetails(), $this );
-        
+
         // Process a submitted form if it passes initial validation
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
@@ -545,12 +545,12 @@ class CustomerController extends IXP_Controller_FrontEnd
             $form->assignFormToEntity( $c->getRegistrationDetails(), $this, true );
 
             $this->getD2EM()->flush();
-            
+
             if( isset( $this->_options['billing_updates']['notify'] ) )
             {
                 $this->view->oldDetails = $old;
                 $this->view->customer   = $c;
-                
+
                 $this->getMailer()
                     ->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
                     ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Change Notification' ) )
@@ -574,12 +574,12 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->view->customer = $c = $this->_loadCustomer();
         $this->view->admins = $c->getAdminUsers();
-        
+
         // Let's get the information we need for the welcome mail from the database.
         $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-        
+
         $this->view->form = $form = new IXP_Form_Customer_SendEmail();
-        
+
         $form->getElement( 'to' )->setValue( $c->getNocemail() );
 
         $emails = array();
@@ -591,7 +591,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         $form->getElement( 'bcc' )->setValue( $this->_options['identity']['email'] );
         $form->getElement( 'subject' )->setValue( $this->_options['identity']['name'] . ' :: Welcome Mail' );
         $form->getElement( 'message' )->setValue( $this->view->render( "customer/email/welcome-email.phtml" ) );
-        
+
         // Process a submitted form if it passes initial validation
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
@@ -611,7 +611,7 @@ class CustomerController extends IXP_Controller_FrontEnd
     }
 
 
-    
+
     public function detailsAction()
     {
         if( $this->getParam( 'ixp', false ) )
@@ -636,12 +636,12 @@ class CustomerController extends IXP_Controller_FrontEnd
         if( $this->multiIXP() )
             $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
     }
-        
+
     public function detailAction()
     {
         $this->view->cust = $c = $this->_loadCustomer( $this->getParam( 'id', null ), 'customer/details' );
         $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-        
+
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
         {
             $notallow = true;
@@ -653,13 +653,13 @@ class CustomerController extends IXP_Controller_FrontEnd
                     break;
                 }
             }
-            
+
             if( $notallow )
                 $this->redirectAndEnsureDie( '/erro/insufficient-permissions' );
         }
     }
-        
-    
+
+
     /**
      * Load a customer from the database with the given ID (or ID in request) but
      * redirect to `customer/list` if no ID or no such customer.
@@ -672,19 +672,19 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         if( $id === false )
             $id = $this->getParam( 'id', false );
-        
+
         if( $id )
             $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $id );
-        
+
         if( !$id || !$c )
         {
             $this->addMessage( 'Invalid customer ID', OSS_Message::ERROR );
             $this->redirect( $redirect === null ? 'customer/list' : $redirect );
         }
-        
+
         return $c;
     }
-    
+
     /**
      * A utility function to process the To / CC / BCC fields of the Send Email
      * form and return a populated Zend_Mail object.
@@ -718,24 +718,24 @@ class CustomerController extends IXP_Controller_FrontEnd
                 }
             }
         }
-        
+
         return $emailsOkay ? $mail : false;
     }
-    
-    
-    
+
+
+
     public function unreadNotesAction()
     {
         $lastReads = $this->getUser()->getAssocPreference( 'customer-notes' )[0];
-        
+
         $latestNotes = [];
         foreach( $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->getLatestUpdate() as $ln )
         {
-        
+
             if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) )
                 && ( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) )
                 $latestNotes[] = $ln;
-            
+
         }
 
         $this->view->notes = $latestNotes;
