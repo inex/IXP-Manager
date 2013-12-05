@@ -80,7 +80,7 @@ class IxpController extends IXP_Controller_FrontEnd
             $this->addMessage(
                     'Multi-IXP mode has not been enabled. '
                     . 'Please see <a href="https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality">this page</a> '
-                    . 'for more information and documentation. <strong>DO NOT ADD MORE THAN ONE IXP WITHOUT ENABLED MUTLI-IXP MODE!</strong>',
+                    . 'for more information and documentation. <strong>DO NOT ADD MORE THAN ONE IXP WITHOUT ENABLING MULTI-IXP MODE!</strong>',
                     OSS_Message::WARNING
             );
         }
@@ -101,7 +101,7 @@ class IxpController extends IXP_Controller_FrontEnd
         if( !$this->multiIXP() && !$isEdit )
         {
             $this->addMessage(
-                'Seriously dude - Multi-IXP mode has not been enabled. <strong>DO NOT ADD MORE THAN ONE IXP WITHOUT ENABLED MUTLI-IXP MODE!</strong>',
+                'Seriously dude - Multi-IXP mode has not been enabled. <strong>DO NOT ADD MORE THAN ONE IXP WITHOUT ENABLING MULTI-IXP MODE!</strong>',
                 OSS_Message::ERROR
             );
             $this->redirect( 'ixp/list' );

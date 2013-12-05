@@ -63,7 +63,7 @@ class StaticController extends IXP_Controller_Action
         // e,g, auth- or auth1/2/3-
         
         if( substr( $method, -6 ) != 'Action' )
-            throw new Zend_Exception( "Bad action is static controller" );
+            throw new Zend_Exception( "Bad action in static controller" );
 
         $method = substr( $method, 0, -6 );
     }

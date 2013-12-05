@@ -245,7 +245,7 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
                 return true;
             }
     
-            throw new Zend_Controller_Action_Exception( 'Cannot open / read specificed configuration file', 401 );
+            throw new Zend_Controller_Action_Exception( 'Cannot open / read specified configuration file', 401 );
         }
         
         return false;

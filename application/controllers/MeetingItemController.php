@@ -259,7 +259,7 @@ class MeetingItemController extends IXP_Controller_FrontEnd
             $ePres = $meeting_dir . DIRECTORY_SEPARATOR . $object->getPresentation();
             if( @file_exists( $ePres ) )
             {
-                $this->getLogger()->debug( 'Pre-existing file exists so deleteing' );
+                $this->getLogger()->debug( 'Pre-existing file exists so deleting' );
                 @unlink( $ePres );
             }
 

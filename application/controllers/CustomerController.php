@@ -390,7 +390,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                                 && $phInt->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $object->getReseller()->getId() )
                         {
                             $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
-                            $this->addMessage( 'You can not change the reseller because there are still fanout ports from the current reseller linked to this customer\'s phsyical interfaces. You nead to reassign these first.', OSS_Message::INFO );
+                            $this->addMessage( 'You can not change the reseller because there are still fanout ports from the current reseller linked to this customer\'s physical interfaces. You need to reassign these first.', OSS_Message::INFO );
                             return false;
                         }
                     }
@@ -410,7 +410,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                     {
                         $form->getElement( 'isResold' )->setValue(1);
                         $form->getElement( 'isResold' )->setErrorMessages( [''] )->markAsError();
-                        $this->addMessage( 'You can not change this resold customer state because there are still phsyical interface(s) of this customer linked to fanout ports or the current reseller. You nead to reassign these first.', OSS_Message::INFO );
+                        $this->addMessage( 'You can not change this resold customer state because there are still physical interface(s) of this customer linked to fanout ports or the current reseller. You need to reassign these first.', OSS_Message::INFO );
                         return false;
                     }
                 }
@@ -421,7 +421,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         if( !$form->getValue( 'isReseller' ) && $object->getIsReseller() && count( $object->getResoldCustomers() ) )
         {
             $form->getElement( 'isReseller' )->setErrorMessages( [''] )->markAsError();
-            $this->addMessage( 'You can not change the reseller state because this customer still has resold customers. You nead to reassign these first.', OSS_Message::INFO );
+            $this->addMessage( 'You can not change the reseller state because this customer still has resold customers. You need to reassign these first.', OSS_Message::INFO );
             return false;
         }
         

@@ -281,7 +281,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
             return false;
         
         $this->addMessage(
-            'Physical interface successfuly ' . ( $isEdit ? 'edited.' : 'added.' ), OSS_Message::SUCCESS
+            'Physical interface successfully ' . ( $isEdit ? 'edited.' : 'added.' ), OSS_Message::SUCCESS
         );
         
         $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $object->getVirtualInterface()->getId() );
@@ -299,7 +299,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
             return false;
         
         $this->addMessage(
-            'Physical interface deleted successfuly.', OSS_Message::SUCCESS
+            'Physical interface deleted successfully.', OSS_Message::SUCCESS
         );
         
         $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $this->getParam( 'vintid' ) );
