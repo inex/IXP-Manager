@@ -19,7 +19,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="mrtg"
 NAME=mrtg
 DAEMON=/usr/bin/$NAME
-DAEMON_ARGS="/etc/mrtg/mrtg.cfg"
+DAEMON_ARGS="--daemon /etc/mrtg/mrtg.cfg"
 PIDFILE=/etc/mrtg/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
