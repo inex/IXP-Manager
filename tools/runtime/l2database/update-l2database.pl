@@ -158,7 +158,7 @@ sub oid2mac {
 
 sub trawl_switch_snmp ($$) {
 	my ($host, $snmpcommunity, $vlan) = @_;
-	my ($dbridgehash, $qbridgehash, $macaddr);
+	my ($dbridgehash, $qbridgehash, $macaddr, $junipermapping);
 
 	$debug && print STDERR "DEBUG: processing $host\n";
 
@@ -180,6 +180,10 @@ sub trawl_switch_snmp ($$) {
 		if (!$vlanmapping) { 	# then either Q-BRIDGE-MIB isn't supported, or else it's broken badly
 			$debug && print STDERR "DEBUG: that didn't work. let's try Juniper EX jnxExVlanTag mapping instead (.1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5) on $host\n";
 			$vlanmapping = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5");
+
+			# if jnxExVlanTag returns something, then this is a juniper and we need to
+			# handle the interface mapping separately on these boxes
+			$junipermapping = 1 if ($vlanmapping);
 		}
 
 		# At this stage we should have a dot1qVlanFdbId mapping, but
@@ -228,7 +232,11 @@ sub trawl_switch_snmp ($$) {
 
 		foreach my $entry (keys %{$bridgehash2mac}) {
 			if (defined($ifindex->{ $interfaces->{ $dbridgehash->{$entry} } })) {
-				push (@{$macaddr->{$ifindex->{ $interfaces->{ $dbridgehash->{$entry} } } }}, $bridgehash2mac->{$entry});
+				my $int = $ifindex->{ $interfaces->{ $dbridgehash->{$entry} } };
+				if ($junipermapping && $int =~ /\.\d+$/) {
+					$int =~ s/(\.\d+)$//;
+				}
+				push (@{$macaddr->{$int}}, $bridgehash2mac->{$entry});
 			}
 		}
 	}
