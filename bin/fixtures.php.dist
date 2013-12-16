@@ -241,7 +241,8 @@ $vendors = [
     [ "Hitachi Cable", 'Hitachi', 'hitachi' ],
     [ "MRV", 'MRV', 'mrv' ],
     [ "Transmode", 'Transmode', 'transmode' ],
-    [ "Brocade", 'Brocade', 'brocade' ]
+    [ "Brocade", 'Brocade', 'brocade' ],
+    [ "Juniper Networks", 'Juniper', 'juniper' ]
 ];
 
 foreach( $vendors as $vendor )
