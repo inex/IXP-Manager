@@ -31,14 +31,25 @@
 # 
 # Implementation Notes:
 #
+# Standard SNMP implementations: 
+#
 # Brocade TurboIron >= 4.2.00c:	Q-BRIDGE-MIB, BRIDGE-MIB
 # Brocade FES-X6xx <= 5.4.00c:	BRIDGE-MIB
 # Brocade FES-X6xx >= 5.4.00e:	Q-BRIDGE-MIB, BRIDGE-MIB
 # Brocade NetIron > 5.1.00:	Q-BRIDGE-MIB, BRIDGE-MIB
 # Dell FTOS S4810:		Q-BRIDGE-MIB. Uses separate Port-Channel interface.
 # Extreme BD-8806, X series:	BRIDGE-MIB.  Requires dot1dTpFdbAddress support.
-# Cisco Anything:		BRIDGE-MIB.  Per vlan support implemented with community@vlan hack, argh.
-# Juniper EX4550:		no BRIDGE-MIB. partial Q-BRIDGE-MIB support.  Requires jnxExVlanTag support.
+#
+# Broken stuff which causes headwreck:
+# Cisco Anything:		BRIDGE-MIB.  Per vlan support implemented with community@vlan,
+#				argh.  Documented in Cisco Document ID 13503: "How To Get MAC and
+#				IP Address Accounting Information Using SNMP"
+# Juniper EX Series:		no BRIDGE-MIB. partial Q-BRIDGE-MIB support.  Complete weirdness. 
+#				Reference Juniper KB26533: "How to identify which MAC address
+#				(non-default VLAN) is learnt from which interface via SNMP" and
+#				Juniper KB20833 "How to find which MAC address (default VLAN) is
+#				learnt from which interface via SNMP".  Requires jnxExVlanTag
+#				support.
 
 use strict;
 use Net_SNMP_util;
@@ -158,32 +169,31 @@ sub oid2mac {
 
 sub trawl_switch_snmp ($$) {
 	my ($host, $snmpcommunity, $vlan) = @_;
-	my ($dbridgehash, $qbridgehash, $macaddr, $junipermapping);
+	my ($dbridgehash, $qbridgehash, $macaddr, $junipermapping, $vlanmapping);
 
 	$debug && print STDERR "DEBUG: processing $host\n";
 
 	my $ifindex = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.2.2.1.2") || die "cannot read ifDescr from $host";
 	my $interfaces = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.1.4.1.2") || die "cannot read dot1dBasePortIfIndex from $host";
 
+	$debug && print STDERR "DEBUG: pre-emptively trying Juniper jnxExVlanTag to see if we're on a J-EX box (.1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5) on $host\n";
+	$vlanmapping = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5");
+	# if jnxExVlanTag returns something, then this is a juniper and we need to
+	# handle the interface mapping separately on these boxes
+	if ($vlanmapping) {
+		$junipermapping = 1;
+		$debug && print STDERR "DEBUG: looks like we're running on a Juniper EX box on $host\n";
+	} else {
+		$debug && print STDERR "DEBUG: this isn't a Juniper EX box on $host\n";
+	}
+
 	# attempt to use Q-BRIDGE-MIB.
-
-	# The approach here is to check dot1qVlanFdbId first to see if this
-	# exists to map vlan IDs to vlan numbers.  This doesn't work on
-	# Juniper EX series boxes, so we need to check jnxExVlanTag on them.
-
 	if ($vlan && $qbridge_support) {
 		$debug && print STDERR "DEBUG: attempting to retrieve dot1qVlanFdbId mapping (.1.3.6.1.2.1.17.7.1.4.2.1.3) on $host\n";
 
 		# FIXME: the .0 at the end of this URL cannot be discarded like this
-		my $vlanmapping = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.4.2.1.3.0", undef, undef);
-
-		if (!$vlanmapping) { 	# then either Q-BRIDGE-MIB isn't supported, or else it's broken badly
-			$debug && print STDERR "DEBUG: that didn't work. let's try Juniper EX jnxExVlanTag mapping instead (.1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5) on $host\n";
-			$vlanmapping = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5");
-
-			# if jnxExVlanTag returns something, then this is a juniper and we need to
-			# handle the interface mapping separately on these boxes
-			$junipermapping = 1 if ($vlanmapping);
+		if (!$vlanmapping) {
+			$vlanmapping = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.4.2.1.3.0", undef, undef);
 		}
 
 		# At this stage we should have a dot1qVlanFdbId mapping, but
