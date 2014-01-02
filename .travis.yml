@@ -7,4 +7,8 @@ notifications:
   email:
     - barryo@inex.ie
 
+before_install:
+    - sudo apt-get update
+
+script: "./data/travis-ci/run_tests.sh"
 
