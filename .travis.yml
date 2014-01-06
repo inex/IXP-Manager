@@ -3,12 +3,16 @@ language: php
 php:
     - "5.4"
 
+services:
+    - memcached
+
 notifications:
   email:
     - barryo@inex.ie
 
 before_install:
     - sudo apt-get update
+    - "./data/travis-ci/setup_tests.sh"
 
 script: "./data/travis-ci/run_tests.sh"
 
