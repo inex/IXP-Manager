@@ -215,9 +215,9 @@ sub trawl_switch_snmp ($$) {
 			$qbridgehash = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.2.2.1.2.$vlanid", \&oid2mac, undef);
 			$qbridgehash || $debug && print STDERR "DEBUG: failed to retrieve Q-BRIDGE-MIB on $host. falling back to BRIDGE-MIB\n";
 		} elsif($junipermapping) {
-			# if vlan wasn't specified for a Juniper EX, then attempt Q-BRIDGE-MIB
-			# with no appended ID at all (the closest Juniper EXes seem to come
-			# to "BRIDGE-MIB")
+			# if vlan wasn't specified for a Juniper EX, or is 0, then attempt
+			# Q-BRIDGE-MIB with no appended ID at all (the closest Juniper EXes
+			# seem to have to "BRIDGE-MIB")
 			$debug && print STDERR "DEBUG: attempting special-case Juniper EX Q-BRIDGE-MIB with no appended \$vlan (.1.3.6.1.2.1.17.7.1.2.2.1.2), emulating BRIDGE-MIB, on $host\n";
 			$qbridgehash = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.2.2.1.2", \&oid2mac, undef);
 			$qbridgehash || $debug && print STDERR "DEBUG: failed to retrieve special-case Juniper EX Q-BRIDGE-MIB with no \$vlan on $host - falling back to BRIDGE-MIB which is expected not to work either\n";
