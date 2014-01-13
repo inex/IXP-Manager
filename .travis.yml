@@ -14,5 +14,4 @@ before_install:
     - sudo apt-get update
     - "./data/travis-ci/setup_tests.sh"
 
-script: "./data/travis-ci/run_tests.sh"
 

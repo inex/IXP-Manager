@@ -1,0 +1,7 @@
+<phpunit>
+    <testsuites>
+        <testsuite name="IXP_Manager">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
