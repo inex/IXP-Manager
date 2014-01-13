@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pwd 
+
 # install requirements
 sudo apt-get update
 # sudo apt-get upgrade
@@ -12,12 +14,12 @@ sudo pear channel-discover pear.doctrine-project.org
 sudo pear install doctrine/DoctrineORM
 cd /usr/share/php/Doctrine
 sudo ln -s ../Symfony
-cd -
+cd /home/travis/build/inex/IXP-Manager
 
 # setup Apache
 sudo a2enmod rewrite
-sudo rm /etc/apache2/sites-enabled/000-default.conf
-sudo cp data/travis/apache.conf /etc/apache2/sites-enabled/000-default.conf
+sudo rm /etc/apache2/sites-enabled/*
+sudo cp data/travis-ci/apache.conf /etc/apache2/sites-enabled/000-default.conf
 sudo service apache2 restart
 
 sudo chown -R www-data: .
