@@ -2,7 +2,7 @@
 
 # install requirements
 sudo apt-get update
-sudo apt-get upgrade
+# sudo apt-get upgrade
 sudo apt-get install php5-memcache php5-snmp php-pear apache2 libapache2-mod-php5
 
 # install Doctrine ORM
