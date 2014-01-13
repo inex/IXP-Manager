@@ -16,4 +16,14 @@ cd -
 
 # setup Apache
 sudo a2enmod rewrite
+sudo rm /etc/apache2/sites-enabled/000-default.conf
+sudo cp data/travis/apache.conf /etc/apache2/sites-enabled/000-default.conf
+sudo service apache2 restart
 
+sudo chown -R www-data: .
+sudo chmod -R u+rX .
+sudo chmod -R u+w ./var
+
+# Set up IXP Manager
+cp data/travis-ci/configs/* application/configs
+cp data/travis-ci/htaccess-noskin public/.htaccess

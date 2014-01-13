@@ -1,0 +1,6 @@
+
+This directory contains "known good" generated configurations from the
+Travis database which Travis can test against to ensure no bugs /
+regressions have been introduced into the code.
+
+See the regenerate.sh script to build new versions of these.
