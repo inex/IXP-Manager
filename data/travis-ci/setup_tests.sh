@@ -29,6 +29,9 @@ sudo service apache2 restart
 sudo cp data/travis-ci/configs/* application/configs
 sudo cp data/travis-ci/htaccess-noskin public/.htaccess
 
+bzcat data/travis-ci/travis_ci_test_db.sql.bz2  | mysql -h 127.0.0.1 -u travis myapp_test 
+
+
 sudo chown -R www-data: .
 sudo chmod -R u+rX .
 sudo chmod -R u+w ./var
