@@ -27,10 +27,10 @@ sudo service apache2 restart
 
 # Set up IXP Manager
 sudo cp data/travis-ci/configs/* application/configs
-sudo cp data/travis-ci/htaccess-noskin public/.htaccess
+sudo cp data/travis-ci/htaccess-none-skin public/.htaccess
 
 bzcat data/travis-ci/travis_ci_test_db.sql.bz2  | mysql -h 127.0.0.1 -u travis myapp_test 
-
+sudo cp data/travis-ci/phpunit.xml ./phpunit.xml
 
 sudo chown -R www-data: .
 sudo chmod -R u+rX .

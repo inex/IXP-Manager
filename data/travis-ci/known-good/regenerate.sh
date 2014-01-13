@@ -7,13 +7,8 @@ BIRD="/usr/sbin/bird"
 
 for skin in none inex; do
 
-    if [[ "${skin}" = "inex" ]]; then
-        cp htaccess-inex-skin ../../../public/.htaccess
-        SKIN='inex-'
-    else
-        cp htaccess-noskin ../../../public/.htaccess
-        SKIN=''
-    fi
+    cp htaccess-${skin}-skin ../../../public/.htaccess
+    SKIN="${skin}-"
         
     for proto in 4 6; do
         for vlanid in 1 2; do
