@@ -14,4 +14,6 @@ before_install:
     - sudo apt-get update
     - "./data/travis-ci/setup_tests.sh"
 
+after_failure:
+    - "./data/travis-ci/after_failure.sh"
 
