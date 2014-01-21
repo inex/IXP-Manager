@@ -174,7 +174,7 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
 
         $filename = "{$ixp->getSmokeping()}/?displaymode=a;start=now-{$scale};end=now;target={$target}";
         
-        $this->getLogger()->debug( "Serving Smokeping {$target} to {$this->getUser()->getUsername()}" );
+        $this->getLogger()->debug( "Serving Smokeping {$target} to {$this->getUser()->getUsername()} from [{$filename}]" );
         
         if( @readfile( $filename ) === false )
         {
