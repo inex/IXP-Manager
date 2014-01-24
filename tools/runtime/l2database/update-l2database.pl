@@ -234,7 +234,11 @@ sub trawl_switch_snmp ($$) {
 		# '136.67.225.163.42.128' => '49'
 		foreach my $entry (keys %{$qbridgehash}) {
 			if (defined($ifindex->{$interfaces->{$qbridgehash->{$entry}}})) {
-				push (@{$macaddr->{$ifindex->{$interfaces->{$qbridgehash->{$entry}}}}}, $entry);
+                                my $int = $ifindex->{ $interfaces->{ $qbridgehash->{$entry} } };
+                                if ($junipermapping && $int =~ /\.\d+$/) {
+                                        $int =~ s/(\.\d+)$//;
+                                }
+			        push (@{$macaddr->{$int}}, $entry);
 			}
 		}
 	} else {
