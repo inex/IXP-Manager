@@ -235,9 +235,23 @@ sub trawl_switch_snmp ($$) {
 		$debug && $qbridge_support && print STDERR "DEBUG: $host: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
 	}
 
+	# special case: when the vlan is not specified, juniper EX boxes
+	# return data on Q-BRIDGE-MIB rather than BRIDGE-MIB
+	if (!$vlan && $junipermapping) {
+		$debug && print STDERR "DEBUG: $host: attempting special Juniper EX Q-BRIDGE-MIB query for unspecified vlan\n";
+		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1qTpFdbPort}, \&oid2mac, undef);
+		if ($debug) {
+			if ($qbridgehash) {
+				print STDERR "DEBUG: $host: Juniper EX Q-BRIDGE-MIB query successful\n";
+			} else {
+				print STDERR "DEBUG: $host: failed Juniper EX Q-BRIDGE-MIB retrieval\n";
+			}
+		}			
+	}
+
 	# if vlan wasn't specified or there's nothing coming in from the
 	# Q-BRIDGE mib, then use rfc1493 BRIDGE-MIB.
-	if (($vlan && !$qbridgehash) || !$vlan) {
+	if (($vlan && !$qbridgehash) || (!$vlan && !$junipermapping)) {
 		$debug && print STDERR "DEBUG: $host: attempting BRIDGE-MIB ($oids->{dot1dTpFdbPort})\n";
 		$dbridgehash = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dTpFdbPort});
 		$dbridgehash && $debug && print STDERR "DEBUG: $host: BRIDGE-MIB query successful\n";
@@ -249,24 +263,26 @@ sub trawl_switch_snmp ($$) {
 		die "$host: cannot read BRIDGE-MIB or Q-BRIDGE-MIB\n";
 	}
 
-	if ($qbridgehash) {
-		# '136.67.225.163.42.128' => '49'
-		foreach my $entry (keys %{$qbridgehash}) {
-			if (defined($ifindex->{$interfaces->{$qbridgehash->{$entry}}})) {
-				push (@{$macaddr->{$ifindex->{$interfaces->{$qbridgehash->{$entry}}}}}, $entry);
-			}
-		}
+	my ($bridgehash, $maptable, $bridgehash2mac);
+	if ($dbridgehash) {
+		$bridgehash2mac = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dTpFdbAddress}, undef, \&normalize_mac);
+		$bridgehash = $dbridgehash;
+		$maptable = $bridgehash2mac;
 	} else {
-		my $bridgehash2mac = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dTpFdbAddress}, undef, \&normalize_mac);
-
-		foreach my $entry (keys %{$bridgehash2mac}) {
-			if (defined($ifindex->{ $interfaces->{ $dbridgehash->{$entry} } })) {
-				my $int = $ifindex->{ $interfaces->{ $dbridgehash->{$entry} } };
-				if ($junipermapping && $int =~ /\.\d+$/) {
-					$int =~ s/(\.\d+)$//;
-				}
-				push (@{$macaddr->{$int}}, $bridgehash2mac->{$entry});
+		$bridgehash = $qbridgehash;
+		$maptable = $qbridgehash;
+	}
+		
+	foreach my $entry (keys %{$maptable}) {
+		if (defined($ifindex->{$interfaces->{$bridgehash->{$entry}}})) {
+			my $int = $ifindex->{$interfaces->{$bridgehash->{$entry}}};
+			if ($junipermapping && $int =~ /\.\d+$/) {
+				$int =~ s/(\.\d+)$//;
 			}
+			if ($dbridgehash) {
+				$entry = $bridgehash2mac->{$entry};
+			}
+			push (@{$macaddr->{$int}}, $entry);
 		}
 	}
 
