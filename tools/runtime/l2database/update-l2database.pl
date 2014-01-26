@@ -183,7 +183,7 @@ sub trawl_switch_snmp ($$) {
 		'jnxExVlanTag'		=> '.1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5',
 	};
 
-	$debug && print STDERR "DEBUG: $host: started querying\n";
+	$debug && print STDERR "DEBUG: $host: started query process\n";
 
 	my $ifindex = snmpwalk2hash($host, $snmpcommunity, $oids->{ifDescr}) || die "$host: cannot read ifDescr";
 	my $interfaces = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dBasePortIfIndex}) || die "$host: cannot read dot1dBasePortIfIndex";
@@ -219,12 +219,18 @@ sub trawl_switch_snmp ($$) {
 			$vlanid = $vlan2idx->{$vlan};
 			$debug && print STDERR "DEBUG: $host: got mapping index: $vlan maps to $vlanid\n";
 		} else {
-			$debug && print STDERR "DEBUG: $host: that didn't work either. attempting Q-BRIDGE-MIB with no fdb->ifindex mapping\n";
+			$debug && print STDERR "DEBUG: $host: that didn't work either. attempting Q-BRIDGE-MIB with no fdb->ifIndex mapping\n";
 			$vlanid = $vlan;
 		}
 		$debug && print STDERR "DEBUG: $host: attempting Q-BRIDGE-MIB ($oids->{dot1qTpFdbPort}.$vlanid)\n";
 		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, "$oids->{dot1qTpFdbPort}.$vlanid", \&oid2mac, undef);
-		$qbridgehash || $debug && print STDERR "DEBUG: $host: failed to retrieve Q-BRIDGE-MIB. falling back to BRIDGE-MIB\n";
+		if ($debug) {
+			if ($qbridgehash) {
+				print STDERR "DEBUG: $host: Q-BRIDGE-MIB query successful\n";
+			} else {
+				print STDERR "DEBUG: $host: failed to retrieve Q-BRIDGE-MIB. falling back to BRIDGE-MIB\n";
+			}
+		}
 	} else {
 		$debug && $qbridge_support && print STDERR "DEBUG: $host: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
 	}
@@ -234,6 +240,7 @@ sub trawl_switch_snmp ($$) {
 	if (($vlan && !$qbridgehash) || !$vlan) {
 		$debug && print STDERR "DEBUG: $host: attempting BRIDGE-MIB ($oids->{dot1dTpFdbPort})\n";
 		$dbridgehash = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dTpFdbPort});
+		$dbridgehash && $debug && print STDERR "DEBUG: $host: BRIDGE-MIB query successful\n";
 	}
 
 	# if this isn't supported, then panic.  We could probably try
