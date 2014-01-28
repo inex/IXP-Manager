@@ -43,7 +43,6 @@ sudo cp data/travis-ci/phpunit.xml ./phpunit.xml
 #sudo chmod -R u+w ./var
 
 cd public
-phpenv global 5.4
 php -S 127.0.0.1:8080 &
 cd ..
 
