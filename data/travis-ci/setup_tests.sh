@@ -5,7 +5,9 @@ pwd
 # install requirements
 sudo apt-get update
 # sudo apt-get upgrade
-sudo apt-get install php5-memcache php5-snmp php-pear apache2 libapache2-mod-php5
+sudo apt-get install php5-memcache php5-snmp php-pear 
+
+#apache2 libapache2-mod-php5
 
 # install Doctrine ORM
 sudo pear channel-discover pear.symfony.com
@@ -20,10 +22,11 @@ echo cd /home/travis/build/inex/IXP-Manager
 cd /home/travis/build/inex/IXP-Manager
 
 # setup Apache
-sudo a2enmod rewrite
-sudo rm /etc/apache2/sites-enabled/*
-sudo cp data/travis-ci/apache.conf /etc/apache2/sites-enabled/000-default.conf
-sudo service apache2 restart
+#sudo a2enmod rewrite
+#sudo rm /etc/apache2/sites-enabled/*
+#sudo cp data/travis-ci/apache.conf /etc/apache2/sites-enabled/000-default.conf
+#sudo service apache2 restart
+sudo service apache2 stop
 
 # Set up IXP Manager
 sudo cp data/travis-ci/configs/* application/configs
@@ -36,4 +39,11 @@ sudo cp data/travis-ci/phpunit.xml ./phpunit.xml
 sudo chown -R www-data: .
 sudo chmod -R u+rX .
 sudo chmod -R u+w ./var
+
+cd public
+sudo php -S 127.0.0.1:80 &
+cd ..
+
+
+
 
