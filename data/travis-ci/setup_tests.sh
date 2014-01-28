@@ -3,9 +3,9 @@
 pwd 
 
 # install requirements
-sudo apt-get update
+sudo apt-get update >/dev/null
 # sudo apt-get upgrade
-sudo apt-get install php5-memcache php5-snmp php-pear 
+sudo apt-get install php5-memcache php5-snmp php-pear  >/dev/null
 
 #apache2 libapache2-mod-php5
 
@@ -26,7 +26,7 @@ cd /home/travis/build/inex/IXP-Manager
 #sudo rm /etc/apache2/sites-enabled/*
 #sudo cp data/travis-ci/apache.conf /etc/apache2/sites-enabled/000-default.conf
 #sudo service apache2 restart
-sudo service apache2 stop
+#sudo service apache2 stop
 
 # Set up IXP Manager
 sudo cp data/travis-ci/configs/* application/configs
@@ -36,13 +36,13 @@ mysql -e 'create database myapp_test;'
 bzcat data/travis-ci/travis_ci_test_db.sql.bz2  | mysql -h 127.0.0.1 -u travis myapp_test 
 sudo cp data/travis-ci/phpunit.xml ./phpunit.xml
 
-sudo chown -R www-data: .
-sudo chmod -R u+rX .
-sudo chmod -R u+w ./var
+#sudo chown -R www-data: .
+#sudo chmod -R u+rX .
+#sudo chmod -R u+w ./var
 
 cd public
 phpenv global 5.4
-sudo php -S 127.0.0.1:8080 &
+php -S 127.0.0.1:8080 &
 cd ..
 
 
