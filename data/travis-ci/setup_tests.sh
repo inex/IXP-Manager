@@ -44,7 +44,7 @@ sudo cp data/travis-ci/phpunit.xml ./phpunit.xml
 #sudo chmod -R u+w ./var
 
 cd public
-php -S 127.0.0.1:8080 >/dev/null &
+php -S 127.0.0.1:8080 &>php-built-in.log &
 cd ..
 
 
