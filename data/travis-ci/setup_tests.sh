@@ -20,6 +20,8 @@ echo sudo ln -s ../Symfony
 sudo ln -s ../Symfony
 echo cd /home/travis/build/inex/IXP-Manager
 cd /home/travis/build/inex/IXP-Manager
+echo phpenv rehash
+phpenv rehash
 
 # setup Apache
 #sudo a2enmod rewrite
