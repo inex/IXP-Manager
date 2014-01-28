@@ -5,7 +5,7 @@ pwd
 # install requirements
 sudo apt-get update >/dev/null
 # sudo apt-get upgrade
-sudo apt-get install php5-memcache php5-snmp php-pear  >/dev/null
+sudo apt-get install php5-memcache php5-snmp php-pear
 
 #apache2 libapache2-mod-php5
 
