@@ -41,6 +41,8 @@ sudo chmod -R u+rX .
 sudo chmod -R u+w ./var
 
 cd public
+php -h
+php -v
 sudo php -S 127.0.0.1:80 &
 cd ..
 
