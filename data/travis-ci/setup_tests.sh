@@ -41,6 +41,7 @@ sudo chmod -R u+rX .
 sudo chmod -R u+w ./var
 
 cd public
+phpenv global 5.4
 php -h
 php -v
 sudo php -S 127.0.0.1:80 &
