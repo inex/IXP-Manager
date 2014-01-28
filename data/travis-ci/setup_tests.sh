@@ -6,6 +6,7 @@ pwd
 sudo apt-get update >/dev/null
 # sudo apt-get upgrade
 sudo apt-get install php5-memcache php5-snmp php-pear
+phpenv config-add data/travis-ci/configs/ixp-php.ini
 
 #apache2 libapache2-mod-php5
 
