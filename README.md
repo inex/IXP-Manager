@@ -1,9 +1,10 @@
-
 # IXP Manager
 
 INEX are pleased to release "IXP Manager" under an open source license (the
 GNU Public License V2) which we hope will benefit the wider IXP community,
 and especially new and small IXPs looking to expand.
+
+[![Build Status](https://travis-ci.org/inex/IXP-Manager.png?branch=master)](https://travis-ci.org/inex/IXP-Manager) - curtosey of [Travis CI](https://travis-ci.org/inex/IXP-Manager).
 
 ## Documentation
 
