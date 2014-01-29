@@ -1,7 +1,7 @@
 #! /bin/bash
 
 KEY="Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9"
-URL="http://127.0.0.1/ixp/apiv1"
+URL="http://127.0.0.1:8080/apiv1"
 WGET="/usr/bin/wget"
 BIRD="/usr/sbin/bird"
 
