@@ -36,9 +36,20 @@ define( 'APPLICATION_STARTTIME', microtime( true ) );
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
 
-// Define application environment
-defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+// Define application environment 
+if( php_sapi_name() == 'cli-server' )
+{
+    // running under PHP's built in web server: php -S
+    // as such, .htaccess is not processed
+    include( dirname( __FILE__ ) . '/../bin/utils.inc' );
+    define( 'APPLICATION_ENV', scriptutils_get_application_env() );
+}
+else
+{
+    // probably Apache or other web server
+    defined('APPLICATION_ENV')
+        || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+}
 
 // Ensure library/ is on include_path
 set_include_path(
