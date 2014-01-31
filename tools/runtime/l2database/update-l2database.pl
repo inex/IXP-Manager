@@ -24,12 +24,17 @@
 # Description:
 #
 # A script to poll all switches and update a database table of the known
-# MAC addresses attached to each port.
+# MAC addresses attached to each port.  The general approach here pulls
+# the bridge info from SNMP, which encodes the mac address as part of the
+# OID and maps it to the bridge index.  The bridge index is then mapped to
+# the ifIndex which in turn is mapped to the text-format ifDescr.
 #
 # This is full of fail by the various switch vendors.  They all do things
 # slightly differently.
 # 
 # Implementation Notes:
+#
+# Standard SNMP implementations: 
 #
 # Brocade TurboIron >= 4.2.00c:	Q-BRIDGE-MIB, BRIDGE-MIB
 # Brocade FES-X6xx <= 5.4.00c:	BRIDGE-MIB
@@ -37,8 +42,17 @@
 # Brocade NetIron > 5.1.00:	Q-BRIDGE-MIB, BRIDGE-MIB
 # Dell FTOS S4810:		Q-BRIDGE-MIB. Uses separate Port-Channel interface.
 # Extreme BD-8806, X series:	BRIDGE-MIB.  Requires dot1dTpFdbAddress support.
-# Cisco Anything:		BRIDGE-MIB.  Per vlan support implemented with community@vlan hack, argh.
-# Juniper EX4550:		no BRIDGE-MIB. partial Q-BRIDGE-MIB support.  Requires jnxExVlanTag support.
+#
+# Broken stuff which causes headwreck:
+# Cisco Anything:		BRIDGE-MIB.  Per vlan support implemented with community@vlan,
+#				argh.  Documented in Cisco Document ID 44800: "Using SNMP to Find a
+#				Port Number from a MAC Address on a Catalyst Switch"
+# Juniper EX Series:		no BRIDGE-MIB. partial Q-BRIDGE-MIB support.  Complete weirdness. 
+#				Reference Juniper KB26533: "How to identify which MAC address
+#				(non-default VLAN) is learnt from which interface via SNMP" and
+#				Juniper KB20833 "How to find which MAC address (default VLAN) is
+#				learnt from which interface via SNMP".  Requires jnxExVlanTag
+#				support.
 
 use strict;
 use Net_SNMP_util;
@@ -158,28 +172,40 @@ sub oid2mac {
 
 sub trawl_switch_snmp ($$) {
 	my ($host, $snmpcommunity, $vlan) = @_;
-	my ($dbridgehash, $qbridgehash, $macaddr);
+	my ($dbridgehash, $qbridgehash, $macaddr, $junipermapping, $vlanmapping);
+	my $oids = {
+		'ifDescr'		=> '.1.3.6.1.2.1.2.2.1.2',
+		'dot1dBasePortIfIndex'	=> '.1.3.6.1.2.1.17.1.4.1.2',
+		'dot1qVlanFdbId'	=> '.1.3.6.1.2.1.17.7.1.4.2.1.3',
+		'dot1qTpFdbPort'	=> '.1.3.6.1.2.1.17.7.1.2.2.1.2',
+		'dot1dTpFdbPort'	=> '.1.3.6.1.2.1.17.4.3.1.2',
+		'dot1dTpFdbAddress'	=> '.1.3.6.1.2.1.17.4.3.1.1',
+		'jnxExVlanTag'		=> '.1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5',
+	};
 
-	$debug && print STDERR "DEBUG: processing $host\n";
+	$debug && print STDERR "DEBUG: $host: started query process\n";
 
-	my $ifindex = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.2.2.1.2") || die "cannot read ifDescr from $host";
-	my $interfaces = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.1.4.1.2") || die "cannot read dot1dBasePortIfIndex from $host";
+	my $ifindex = snmpwalk2hash($host, $snmpcommunity, $oids->{ifDescr}) || die "$host: cannot read ifDescr";
+	my $interfaces = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dBasePortIfIndex}) || die "$host: cannot read dot1dBasePortIfIndex";
+
+	$debug && print STDERR "DEBUG: $host: pre-emptively trying Juniper jnxExVlanTag to see if we're on a J-EX box (".$oids->{jnxExVlanTag}.")\n";
+	$vlanmapping = snmpwalk2hash($host, $snmpcommunity, $oids->{jnxExVlanTag});
+	# if jnxExVlanTag returns something, then this is a juniper and we need to
+	# handle the interface mapping separately on these boxes
+	if ($vlanmapping) {
+		$junipermapping = 1;
+		$debug && print STDERR "DEBUG: $host: looks like this is a Juniper EX\n";
+	} else {
+		$debug && print STDERR "DEBUG: $host: this isn't a Juniper EX\n";
+	}
 
 	# attempt to use Q-BRIDGE-MIB.
-
-	# The approach here is to check dot1qVlanFdbId first to see if this
-	# exists to map vlan IDs to vlan numbers.  This doesn't work on
-	# Juniper EX series boxes, so we need to check jnxExVlanTag on them.
-
 	if ($vlan && $qbridge_support) {
-		$debug && print STDERR "DEBUG: attempting to retrieve dot1qVlanFdbId mapping (.1.3.6.1.2.1.17.7.1.4.2.1.3) on $host\n";
+		$debug && print STDERR "DEBUG: $host: attempting to retrieve dot1qVlanFdbId mapping (".$oids->{dot1qVlanFdbId}.")\n";
 
 		# FIXME: the .0 at the end of this URL cannot be discarded like this
-		my $vlanmapping = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.4.2.1.3.0", undef, undef);
-
-		if (!$vlanmapping) { 	# then either Q-BRIDGE-MIB isn't supported, or else it's broken badly
-			$debug && print STDERR "DEBUG: that didn't work. let's try Juniper EX jnxExVlanTag mapping instead (.1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5) on $host\n";
-			$vlanmapping = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5");
+		if (!$vlanmapping) {
+			$vlanmapping = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1qVlanFdbId}.".0", undef, undef);
 		}
 
 		# At this stage we should have a dot1qVlanFdbId mapping, but
@@ -191,45 +217,72 @@ sub trawl_switch_snmp ($$) {
 		if ($vlanmapping) {	# if this fails too, Q-BRIDGE-MIB is out
 			my $vlan2idx = {reverse %{$vlanmapping}};
 			$vlanid = $vlan2idx->{$vlan};
-			$debug && print STDERR "DEBUG: got mapping index: $vlan maps to $vlanid on $host\n";
+			$debug && print STDERR "DEBUG: $host: got mapping index: $vlan maps to $vlanid\n";
 		} else {
-			$debug && print STDERR "DEBUG: that didn't work either. attempting Q-BRIDGE-MIB with no mapping on $host\n";
+			$debug && print STDERR "DEBUG: $host: that didn't work either. attempting Q-BRIDGE-MIB with no fdb->ifIndex mapping\n";
 			$vlanid = $vlan;
 		}
-		$debug && print STDERR "DEBUG: attempting Q-BRIDGE-MIB (.1.3.6.1.2.1.17.7.1.2.2.1.2.$vlanid) on $host\n";
-		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.7.1.2.2.1.2.$vlanid", \&oid2mac, undef);
-		$qbridgehash || $debug && print STDERR "DEBUG: failed to retrieve Q-BRIDGE-MIB on $host. falling back to BRIDGE-MIB\n";
+		$debug && print STDERR "DEBUG: $host: attempting Q-BRIDGE-MIB ($oids->{dot1qTpFdbPort}.$vlanid)\n";
+		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, "$oids->{dot1qTpFdbPort}.$vlanid", \&oid2mac, undef);
+		if ($debug) {
+			if ($qbridgehash) {
+				print STDERR "DEBUG: $host: Q-BRIDGE-MIB query successful\n";
+			} else {
+				print STDERR "DEBUG: $host: failed to retrieve Q-BRIDGE-MIB. falling back to BRIDGE-MIB\n";
+			}
+		}
 	} else {
-		$debug && $qbridge_support && print STDERR "DEBUG: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
+		$debug && $qbridge_support && print STDERR "DEBUG: $host: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
+	}
+
+	# special case: when the vlan is not specified, juniper EX boxes
+	# return data on Q-BRIDGE-MIB rather than BRIDGE-MIB
+	if (!$vlan && $junipermapping) {
+		$debug && print STDERR "DEBUG: $host: attempting special Juniper EX Q-BRIDGE-MIB query for unspecified vlan\n";
+		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1qTpFdbPort}, \&oid2mac, undef);
+		if ($debug) {
+			if ($qbridgehash) {
+				print STDERR "DEBUG: $host: Juniper EX Q-BRIDGE-MIB query successful\n";
+			} else {
+				print STDERR "DEBUG: $host: failed Juniper EX Q-BRIDGE-MIB retrieval\n";
+			}
+		}			
 	}
 
 	# if vlan wasn't specified or there's nothing coming in from the
 	# Q-BRIDGE mib, then use rfc1493 BRIDGE-MIB.
-	if (($vlan && !$qbridgehash) || !$vlan) {
-		$debug && print STDERR "DEBUG: attempting BRIDGE-MIB (.1.3.6.1.2.1.17.4.3.1.2) on $host\n";
-		$dbridgehash = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.4.3.1.2");
+	if (($vlan && !$qbridgehash) || (!$vlan && !$junipermapping)) {
+		$debug && print STDERR "DEBUG: $host: attempting BRIDGE-MIB ($oids->{dot1dTpFdbPort})\n";
+		$dbridgehash = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dTpFdbPort});
+		$dbridgehash && $debug && print STDERR "DEBUG: $host: BRIDGE-MIB query successful\n";
 	}
 
 	# if this isn't supported, then panic.  We could probably try
 	# community@vlan syntax, but this should be good enough.
 	if (!$qbridgehash && !$dbridgehash) {
-		die "cannot read BRIDGE-MIB or Q-BRIDGE-MIB from switch $host\n";
+		die "$host: cannot read BRIDGE-MIB or Q-BRIDGE-MIB\n";
 	}
 
-	if ($qbridgehash) {
-		# '136.67.225.163.42.128' => '49'
-		foreach my $entry (keys %{$qbridgehash}) {
-			if (defined($ifindex->{$interfaces->{$qbridgehash->{$entry}}})) {
-				push (@{$macaddr->{$ifindex->{$interfaces->{$qbridgehash->{$entry}}}}}, $entry);
-			}
-		}
+	my ($bridgehash, $maptable, $bridgehash2mac);
+	if ($dbridgehash) {
+		$bridgehash2mac = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dTpFdbAddress}, undef, \&normalize_mac);
+		$bridgehash = $dbridgehash;
+		$maptable = $bridgehash2mac;
 	} else {
-		my $bridgehash2mac = snmpwalk2hash($host, $snmpcommunity, ".1.3.6.1.2.1.17.4.3.1.1", undef, \&normalize_mac);
-
-		foreach my $entry (keys %{$bridgehash2mac}) {
-			if (defined($ifindex->{ $interfaces->{ $dbridgehash->{$entry} } })) {
-				push (@{$macaddr->{$ifindex->{ $interfaces->{ $dbridgehash->{$entry} } } }}, $bridgehash2mac->{$entry});
+		$bridgehash = $qbridgehash;
+		$maptable = $qbridgehash;
+	}
+		
+	foreach my $entry (keys %{$maptable}) {
+		if (defined($ifindex->{$interfaces->{$bridgehash->{$entry}}})) {
+			my $int = $ifindex->{$interfaces->{$bridgehash->{$entry}}};
+			if ($junipermapping && $int =~ /\.\d+$/) {
+				$int =~ s/(\.\d+)$//;
 			}
+			if ($dbridgehash) {
+				$entry = $bridgehash2mac->{$entry};
+			}
+			push (@{$macaddr->{$int}}, $entry);
 		}
 	}
 
