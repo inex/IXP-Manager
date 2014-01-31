@@ -83,6 +83,15 @@ if [[ $( cat $dest | grep "protocol bgp pb_" | wc -l ) -lt 2 ]]; then
     exit 4
 fi
 
+# parse and check the config
+cmd="${BIN}${PROTOCOL} -p -c $dest"
+if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+eval $cmd &>/dev/null
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: non-zero return from bird${PROTOCOL} when parsing $dest"
+    exit 7
+fi
+        
 # config file should be okay; back up the current one
 if [[ -e ${ETCPATH}/bird-vlanid${vlanid}-ipv${proto}.conf ]]; then
     cp "${ETCPATH}/bird-vlanid${vlanid}-ipv${proto}.conf" "${ETCPATH}/bird-vlanid${vlanid}-ipv${proto}.conf.old"
