@@ -1,0 +1,14 @@
+<phpunit>
+    <testsuites>
+        <testsuite name="IXP_Manager">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+    	<includePath>/usr/share/php</includePath>
+        <const name="IXP_PHPUNIT_PREFIX"  value="" />
+        <const name="IXP_PHPUNIT_API_URL" value="http://127.0.0.1:8080/apiv1" />
+        <const name="IXP_PHPUNIT_API_KEY" value="Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9" />
+        <const name="IXP_PHPUNIT_HOMEDIR" value="/home/travis/build/inex/IXP-Manager" />
+    </php>
+</phpunit>

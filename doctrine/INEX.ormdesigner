@@ -26,7 +26,7 @@
       <field name="id" type="bigint" unique="true" primary="true" auto-increment="true" uuid="e7921411-de32-4a53-a946-d829a0a07f91"/>
       <field name="apiKey" type="string" size="255" required="true" unique="true" uuid="e2e30fb0-01ac-431a-99b7-5c40b4c9d9ce"/>
       <field name="expires" type="datetime" uuid="a4ca6f2b-63ec-4289-9172-28dea39d6bca"/>
-      <field name="allowedIPs" type="string" size="65500" uuid="7e487825-6517-454c-a154-49c69cd0f8bd"/>
+      <field name="allowedIPs" type="text" uuid="7e487825-6517-454c-a154-49c69cd0f8bd"/>
       <field name="created" type="datetime" required="true" uuid="ef6ca1f2-d589-4cb4-92af-acaa874c6840"/>
       <field name="lastseenAt" type="datetime" uuid="0349d5b6-e543-4d97-bc08-100b540f9230"/>
       <field name="lastseenFrom" type="string" size="255" uuid="199a2c38-0862-41c4-816f-61009a4ee933"/>

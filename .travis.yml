@@ -1,0 +1,18 @@
+language: php
+
+php:
+    - "5.4"
+
+services:
+    - memcached
+
+notifications:
+  email:
+    - barryo@inex.ie
+
+before_install:
+    - "./data/travis-ci/setup_tests.sh"
+
+after_failure:
+    - "./data/travis-ci/after_failure.sh"
+

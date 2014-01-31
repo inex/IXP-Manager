@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2014 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  * 
  * This file is part of IXP Manager.
@@ -41,7 +41,7 @@ function scriptutils_get_application_env()
     $htaccess = file_get_contents( $htaccess_path );
 
     $matches = array();
-    preg_match_all( '/SetEnv\s+APPLICATION_ENV\s+(\w+)/i', $htaccess, $matches );
+    preg_match_all( '/SetEnv\s+APPLICATION_ENV\s+([a-zA-Z0-9_\-\.]+)/i', $htaccess, $matches );
 
     if( isset( $matches[1][0] ) && strlen( $matches[1][0] ) )
         return trim( $matches[1][0] );

@@ -97,6 +97,7 @@ $ixp->addInfrastructure( $infra1 );
 // $infra2->setName( "Infrastructure #2" );
 // $infra2->setShortname( "#2" );
 // $infra2->setIXP( $ixp );
+// $infra2->setIsPrimary( false );
 // $em->persist( $infra2 );
 // $ixp->addInfrastructure( $infra2 );
 
@@ -202,7 +203,7 @@ $u->setUsername( 'username' );
 // Please choose a secure password below (in place of 'letmein1') or
 // immeidately change your password when logged in for the first time.
 $u->setPassword(
-    OSS_Auth_Password::hash( 'letmein1', $config['auth']['oss'] );
+    OSS_Auth_Password::hash( 'letmein1', $config['auth']['oss'] )
 );
 
 $u->setEmail( $contact->getEmail() );
@@ -241,7 +242,8 @@ $vendors = [
     [ "Hitachi Cable", 'Hitachi', 'hitachi' ],
     [ "MRV", 'MRV', 'mrv' ],
     [ "Transmode", 'Transmode', 'transmode' ],
-    [ "Brocade", 'Brocade', 'brocade' ]
+    [ "Brocade", 'Brocade', 'brocade' ],
+    [ "Juniper Networks", 'Juniper', 'juniper' ]
 ];
 
 foreach( $vendors as $vendor )

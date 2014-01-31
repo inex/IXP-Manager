@@ -9,6 +9,10 @@ Please see the following page for upgrade instructions:
 Added example scripts to reconfigure Bird route servers via an API call and referenced
 these in the wiki: https://github.com/inex/IXP-Manager/wiki/Route-Server
 
+Integrated Travis-CI to test route server configuration generation:
+ - https://github.com/inex/IXP-Manager/wiki/Continuous-Integration
+ - https://github.com/inex/IXP-Manager/wiki/CI%20-%20Configuration%20Generation
+
 
 
 # v3.6.5 (20131202)
