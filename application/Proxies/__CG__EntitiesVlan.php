@@ -117,16 +117,16 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
         return parent::getVlanInterfaces();
     }
 
-    public function addIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    public function addIPv4Addresses(\Entities\IPv4Address $iPv4Addresses)
     {
         $this->__load();
-        return parent::addIPv4Addresse($iPv4Addresses);
+        return parent::addIPv4Addresses($iPv4Addresses);
     }
 
-    public function removeIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    public function removeIPv4Addresses(\Entities\IPv4Address $iPv4Addresses)
     {
         $this->__load();
-        return parent::removeIPv4Addresse($iPv4Addresses);
+        return parent::removeIPv4Addresses($iPv4Addresses);
     }
 
     public function getIPv4Addresses()
@@ -135,16 +135,16 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
         return parent::getIPv4Addresses();
     }
 
-    public function addIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    public function addIPv6Addresses(\Entities\IPv6Address $iPv6Addresses)
     {
         $this->__load();
-        return parent::addIPv6Addresse($iPv6Addresses);
+        return parent::addIPv6Addresses($iPv6Addresses);
     }
 
-    public function removeIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    public function removeIPv6Addresses(\Entities\IPv6Address $iPv6Addresses)
     {
         $this->__load();
-        return parent::removeIPv6Addresse($iPv6Addresses);
+        return parent::removeIPv6Addresses($iPv6Addresses);
     }
 
     public function getIPv6Addresses()

@@ -1424,7 +1424,7 @@ class Customer
      * @param \Entities\RSPrefix $rSPrefixes
      * @return Customer
      */
-    public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    public function addRSPrefixes(\Entities\RSPrefix $rSPrefixes)
     {
         $this->RSPrefixes[] = $rSPrefixes;
 
@@ -1436,7 +1436,7 @@ class Customer
      *
      * @param \Entities\RSPrefix $rSPrefixes
      */
-    public function removeRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    public function removeRSPrefixes(\Entities\RSPrefix $rSPrefixes)
     {
         $this->RSPrefixes->removeElement($rSPrefixes);
     }
@@ -1878,7 +1878,7 @@ class Customer
      * @param \Entities\IrrdbPrefix $irrdbPrefixes
      * @return Customer
      */
-    public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    public function addIrrdbPrefixes(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
         $this->IrrdbPrefixes[] = $irrdbPrefixes;
     
@@ -1890,7 +1890,7 @@ class Customer
      *
      * @param \Entities\IrrdbPrefix $irrdbPrefixes
      */
-    public function removeIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    public function removeIrrdbPrefixes(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
         $this->IrrdbPrefixes->removeElement($irrdbPrefixes);
     }
