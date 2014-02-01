@@ -13,6 +13,7 @@ Integrated Travis-CI to test route server configuration generation:
  - https://github.com/inex/IXP-Manager/wiki/Continuous-Integration
  - https://github.com/inex/IXP-Manager/wiki/CI%20-%20Configuration%20Generation
 
+Fixed Juniper support in l2database
 
 
 # v3.6.5 (20131202)
