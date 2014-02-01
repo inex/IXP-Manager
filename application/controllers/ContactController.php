@@ -77,6 +77,10 @@ class ContactController extends IXP_Controller_FrontEnd
                     'created'       => [
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ],
+                    'lastupdated'       => [
+                        'title'     => 'Updated',
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ]
                 ];
                 break;

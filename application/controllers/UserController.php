@@ -87,6 +87,11 @@ class UserController extends IXP_Controller_FrontEnd
                     'created'       => [
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ],
+
+                    'lastupdated'   => [
+                        'title'     => 'Updated',
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ]
                 ];
                 break;
@@ -144,7 +149,7 @@ class UserController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'u.id as id, u.username as username, u.email as email, u.privs AS privileges,
                     u.created as created, u.disabled as disabled, c.id as custid, c.name as customer,
-                    contact.id AS contactid' )
+                    u.lastupdated AS lastupdated, contact.id AS contactid' )
             ->from( '\\Entities\\User', 'u' )
             ->leftJoin( 'u.Customer', 'c' )
             ->leftJoin( 'u.Contact', 'contact' );
