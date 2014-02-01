@@ -609,16 +609,16 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getPrivateVlanDetails();
     }
 
-    public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    public function addRSPrefixes(\Entities\RSPrefix $rSPrefixes)
     {
         $this->__load();
-        return parent::addRSPrefixe($rSPrefixes);
+        return parent::addRSPrefixes($rSPrefixes);
     }
 
-    public function removeRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    public function removeRSPrefixes(\Entities\RSPrefix $rSPrefixes)
     {
         $this->__load();
-        return parent::removeRSPrefixe($rSPrefixes);
+        return parent::removeRSPrefixes($rSPrefixes);
     }
 
     public function getRSPrefixes()
@@ -813,16 +813,16 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getIXPs();
     }
 
-    public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    public function addIrrdbPrefixes(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
         $this->__load();
-        return parent::addIrrdbPrefixe($irrdbPrefixes);
+        return parent::addIrrdbPrefixes($irrdbPrefixes);
     }
 
-    public function removeIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    public function removeIrrdbPrefixes(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
         $this->__load();
-        return parent::removeIrrdbPrefixe($irrdbPrefixes);
+        return parent::removeIrrdbPrefixes($irrdbPrefixes);
     }
 
     public function getIrrdbPrefixes($proto = false)

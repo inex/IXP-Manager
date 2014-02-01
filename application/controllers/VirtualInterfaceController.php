@@ -174,7 +174,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         foreach( $vi->getMACAddresses() as $ma )
         {
             $this->getLogger()->info( "Deleting MAC Address record #{$ma->getMac()} while deleting virtual interface #{$vi->getId()}" );
-            $vi->removeMACAddresse( $ma );
+            $vi->removeMACAddresses( $ma );
             $this->getD2EM()->remove( $ma );
         }
         

@@ -461,7 +461,7 @@ function createLoadIPv6( $port, $vlan, $em )
             $em->persist( $ip6 );
             $ip6->setAddress( $port['ipv6addr'] );
             $ip6->setVlan( $vlan );
-            $vlan->addIPv6Addresse( $ip6 );
+            $vlan->addIPv6Addresses( $ip6 );
         }
     }
     
