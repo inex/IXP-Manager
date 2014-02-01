@@ -74,3 +74,10 @@ Potential Todo / Feature Ideas
   to add a tab that also shows this."
 
 
+* Maintenance Announcements / Diary  -was issue #30. 
+  * Page for upcoming scheduled maintenance
+  * Select affected switches and generate a list of affected members (Name, ASN, IPv4, IPv6 addresses)
+  * Add notification when members login, especially affected members, link to maintenance pages.
+
+* Have a "private" directory analogous to the "public" one,with files only
+  loadable by logged in users. See issue #71.
