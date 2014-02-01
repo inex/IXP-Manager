@@ -546,7 +546,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
             $this->getD2EM()->flush();
 
-            if( isset( $this->_options['billing_updates']['notify'] ) )
+            if( isset( $this->_options['billing_updates']['notify'] ) && !$c->getReseller() )
             {
                 $this->view->oldDetails = $old;
                 $this->view->customer   = $c;
