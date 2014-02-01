@@ -31,7 +31,7 @@
 function smarty_modifier_asnumber( $value )
 {
     return '<a href="#cb' . $value . '" '
-        . 'onClick=\'$.colorbox({href:"http://www.db.ripe.net/search/query.html?searchtext=as'
+        . 'onClick=\'$.colorbox({href:"https://apps.db.ripe.net/search/query.html?searchtext=as'
             . $value . '", iframe: true, width: "75%", height: "75%"});'
             . 'return false;\'>' . $value . '</a>';
 }
