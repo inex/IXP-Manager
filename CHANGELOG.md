@@ -16,6 +16,14 @@ Integrated Travis-CI to test route server configuration generation:
 Fixed Juniper support in l2database
 
 
+Pull request https://github.com/inex/IXP-Manager/pull/68 closed. This means if you
+were relying on the `application.ini` parameter, you should check your login pages:
+
+    ;; offset to use on auth pages (Bootstrap CSS classes)
+    identity.biglogoconf.offset = offset4
+
+This parameter is now obsolite and has been removed.
+
 # v3.6.5 (20131202)
 
 Primarily some major improvements to the Bird route server configuration generation which is now

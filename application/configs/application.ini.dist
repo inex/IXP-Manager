@@ -324,9 +324,6 @@ identity.logo = APPLICATION_PATH "/../public/images/inex-logo-150x73.jpg"
 ;; PLEASE USE YOU OWN LOGO HERE!!!
 identity.biglogo = "https://www.inex.ie/ixp/images/inex-logo-600x165.gif"
 
-;; offset to use on auth pages (Bootstrap CSS classes)
-identity.biglogoconf.offset = offset4
-
 ;; We have a miscellaneous benefits page which includes details for an
 ;; operations IRC channel including a password:
 identity.misc.irc_password = "xxx"
