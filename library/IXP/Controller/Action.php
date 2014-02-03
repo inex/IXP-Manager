@@ -141,7 +141,7 @@ class IXP_Controller_Action extends OSS_Controller_Action
         // get an array of customer id => names
         if( !( $this->_customers = $this->getD2Cache()->fetch( 'admin_home_customers' ) ) )
         {
-            $this->_customers = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getNames();
+            $this->_customers = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getNames( true );
             $this->getD2Cache()->save( 'admin_home_customers', $this->_customers, 3600 );
         }
         

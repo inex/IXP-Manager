@@ -171,12 +171,16 @@ class Customer extends EntityRepository
     /**
      * Return an array of all customer names where the array key is the customer id.
      *
+     * @param bool $activeOnly If true, only return active / current customers
      * @return array An array of all customer names with the customer id as the key.
      */
-    public function getNames()
+    public function getNames( $activeOnly = false )
     {
         $acusts = $this->getEntityManager()->createQuery(
-            "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c ORDER BY name ASC"
+            "SELECT c.id AS id, c.name AS name "
+                . "FROM Entities\\Customer c "
+                . ( $activeOnly ? "WHERE " . self::DQL_CUST_CURRENT : '' ) 
+                . "ORDER BY name ASC"
         )->getResult();
         
         $customers = [];
