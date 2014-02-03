@@ -303,6 +303,30 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
         return parent::getInfrastructure();
     }
 
+    public function addIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    {
+        $this->__load();
+        return parent::addIPv4Addresse($iPv4Addresses);
+    }
+
+    public function removeIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    {
+        $this->__load();
+        return parent::removeIPv4Addresse($iPv4Addresses);
+    }
+
+    public function addIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    {
+        $this->__load();
+        return parent::addIPv6Addresse($iPv6Addresses);
+    }
+
+    public function removeIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    {
+        $this->__load();
+        return parent::removeIPv6Addresse($iPv6Addresses);
+    }
+
 
     public function __sleep()
     {

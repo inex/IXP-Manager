@@ -841,4 +841,50 @@ class Vlan
     {
         return $this->Infrastructure;
     }
+
+    /**
+     * Add IPv4Addresses
+     *
+     * @param \Entities\IPv4Address $iPv4Addresses
+     * @return Vlan
+     */
+    public function addIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    {
+        $this->IPv4Addresses[] = $iPv4Addresses;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IPv4Addresses
+     *
+     * @param \Entities\IPv4Address $iPv4Addresses
+     */
+    public function removeIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    {
+        $this->IPv4Addresses->removeElement($iPv4Addresses);
+    }
+
+    /**
+     * Add IPv6Addresses
+     *
+     * @param \Entities\IPv6Address $iPv6Addresses
+     * @return Vlan
+     */
+    public function addIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    {
+        $this->IPv6Addresses[] = $iPv6Addresses;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IPv6Addresses
+     *
+     * @param \Entities\IPv6Address $iPv6Addresses
+     */
+    public function removeIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    {
+        $this->IPv6Addresses->removeElement($iPv6Addresses);
+    }
 }

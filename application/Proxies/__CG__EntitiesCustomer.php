@@ -837,13 +837,37 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::resolveAsMacro($protocol, $asnPrefix);
     }
 
-    public function addIrrdbASN(\Entities\IrrdbAsns $irrdbASNs)
+    public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->__load();
+        return parent::addIrrdbPrefixe($irrdbPrefixes);
+    }
+
+    public function removeIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->__load();
+        return parent::removeIrrdbPrefixe($irrdbPrefixes);
+    }
+
+    public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->__load();
+        return parent::addRSPrefixe($rSPrefixes);
+    }
+
+    public function removeRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->__load();
+        return parent::removeRSPrefixe($rSPrefixes);
+    }
+
+    public function addIrrdbASN(\Entities\IrrdbAsn $irrdbASNs)
     {
         $this->__load();
         return parent::addIrrdbASN($irrdbASNs);
     }
 
-    public function removeIrrdbASN(\Entities\IrrdbAsns $irrdbASNs)
+    public function removeIrrdbASN(\Entities\IrrdbAsn $irrdbASNs)
     {
         $this->__load();
         return parent::removeIrrdbASN($irrdbASNs);

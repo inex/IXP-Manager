@@ -183,6 +183,18 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         return parent::getType();
     }
 
+    public function addMACAddresse(\Entities\MACAddress $mACAddresses)
+    {
+        $this->__load();
+        return parent::addMACAddresse($mACAddresses);
+    }
+
+    public function removeMACAddresse(\Entities\MACAddress $mACAddresses)
+    {
+        $this->__load();
+        return parent::removeMACAddresse($mACAddresses);
+    }
+
 
     public function __sleep()
     {
