@@ -24,6 +24,15 @@ were relying on the `application.ini` parameter, you should check your login pag
 
 This parameter is now obsolite and has been removed.
 
+
+Schema update required:
+
+    ALTER TABLE `switch` 
+        ADD `serialNumber` VARCHAR(255) DEFAULT NULL AFTER `osVersion`;
+
+
+
+
 # v3.6.5 (20131202)
 
 Primarily some major improvements to the Bird route server configuration generation which is now
