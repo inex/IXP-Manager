@@ -4,7 +4,7 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
-# v3.6.x (WIP)
+# v3.6.6 (20140203)
 
 Added example scripts to reconfigure Bird route servers via an API call and referenced
 these in the wiki: https://github.com/inex/IXP-Manager/wiki/Route-Server
@@ -13,8 +13,7 @@ Integrated Travis-CI to test route server configuration generation:
  - https://github.com/inex/IXP-Manager/wiki/Continuous-Integration
  - https://github.com/inex/IXP-Manager/wiki/CI%20-%20Configuration%20Generation
 
-Fixed Juniper support in l2database
-
+Fixed Juniper support in l2database.
 
 Pull request https://github.com/inex/IXP-Manager/pull/68 closed. This means if you
 were relying on the `application.ini` parameter, you should check your login pages:
@@ -24,14 +23,60 @@ were relying on the `application.ini` parameter, you should check your login pag
 
 This parameter is now obsolite and has been removed.
 
-
 Schema update required:
 
     ALTER TABLE `switch` 
         ADD `serialNumber` VARCHAR(255) DEFAULT NULL AFTER `osVersion`;
 
+- [NF] Ensure the API is aware of mainteance mode (9cffb45 - Barry O'Donovan - 2014-02-03)
+- [IM] Test API function (e994547 - Barry O'Donovan - 2014-02-03)
+- [BF] Use a default HTTP status code if none specified (b63c146 - Barry O'Donovan - 2014-02-03)
+- [NF] Store switch serial number. Closes #109 (87138f4 - Barry O'Donovan - 2014-02-03)
+- [DB] Add column to the switch table to store serial numbers (6a09719 - Barry O'Donovan - 2014-02-03)
+- [DB] Doctrine creates these functions by default - relates to #41 (0223a6a - Barry O'Donovan - 2014-02-03)
+- [HK] Missed this file from the last commit (2d33434 - Barry O'Donovan - 2014-02-03)
+- [NF] Filter by contact rolls / display contact roles. Closes #98 (4082d3f - Barry O'Donovan - 2014-02-03)
+- [NF] Adding ability to filter customers by state and closed / current. Fixes #97 (fb5f6ae - Barry O'Donovan - 2014-02-03)
+- [NF] Adding ability to filter customers by type (see #97) (788030a - Barry O'Donovan - 2014-02-03)
+- [IM] Only show current customers in top right drop down (e32e77d - Barry O'Donovan - 2014-02-03)
+- [BF] Fix #80 - no overall aggregate graphs for errors / discards (398b57c - Barry O'Donovan - 2014-02-03)
+- [DB] Address character set issues raised by issue #60 (7b49864 - Barry O'Donovan - 2014-02-03)
+- [BF] Fixes #68 - positioning of logo on login pages [skip ci] (abd3b08 - Barry O'Donovan - 2014-02-01)
+- [IM] Implement #29 - show contact / user last updated timestamp (eea853c - Barry O'Donovan - 2014-02-01)
+- [BF] Fixes long standing #7 - nav bar covering content [skip-ci] (ef681b6 - Barry O'Donovan - 2014-02-01)
+- [IM] Close #127 - allow >100 entries is DataTables pagination options [skip-ci] (4dde392 - Barry O'Donovan - 2014-02-01)
+- [BF] Fix #108 - blank email when updating resold customer details (a231647 - Barry O'Donovan - 2014-02-01)
+- [BF] Fix #129 - loaded ASN details from RIPE (d86a889 - Barry O'Donovan - 2014-02-01)
+- [IM] Focus on username on login page [skip-ci] (37749d9 - Barry O'Donovan - 2014-02-01)
+- [TP] Upgrade to jQuery 1.11 and press all JS/CSS bundles [skip-ci] (68f9d03 - Barry O'Donovan - 2014-02-01)
+- [BF] added note about fixing junpier ex series support (ab142d2 - Nick Hilliard - 2014-01-31)
+- [IM] Add new Bird config check and sample cron file (2ae9b1d - Barry O'Donovan - 2014-01-31)
+- [BF] fixed support for juniper ex switches based on commits 96e61a6 and 6c3edc8 [IM] refactored mapping code (0848952 - Nick Hilliard - 2014-01-26)
+- [IM] better debugging (d6541d6 - Nick Hilliard - 2014-01-26)
+- [IM] use textual representation of OIDs instead of numerical [IM] updated debugging output format (f579136 - Nick Hilliard - 2014-01-26)
+- [DB] Fixes #110 - ORM Designer type string used incorrectly instead of text (fdfc40e - Barry O'Donovan - 2014-01-24)
+- [BF] Foreign ref update for fix Juniper detection (d884256 - Barry O'Donovan - 2014-01-13)
+- [BF] Code errors fixed (cb63326 - Barry O'Donovan - 2014-01-13)
+- [HK] Adding / playing with Travis for CI (ee383ff - Barry O'Donovan - 2014-01-02)
+- [BF] check if juniper early on so we can do some juniper specific stuff later (8cbbbf2 - Nick Hilliard - 2013-12-16)
+- [IM] le hacque to work around juniper semantics (fa302a3 - Nick Hilliard - 2013-12-14)
+- [NF] Add sample scripts to reconfigured Bird route servers via API (3e7e36a - Barry O'Donovan - 2013-12-02)
 
 
+Views updated / changed / add:
+
+```
+application/views/auth/login.phtml
+application/views/auth/lost-password.phtml
+application/views/auth/lost-username.phtml
+application/views/auth/reset-password.phtml
+application/views/contact/list-toolbar.phtml
+application/views/customer/list-toolbar.phtml
+application/views/customer/overview-tabs/contacts.phtml
+application/views/frontend/js/list.js
+application/views/header-css.phtml
+application/views/header-js.phtml
+```
 
 # v3.6.5 (20131202)
 
