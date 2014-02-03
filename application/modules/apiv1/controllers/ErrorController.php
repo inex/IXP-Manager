@@ -47,7 +47,7 @@ class Apiv1_ErrorController extends IXP_Controller_API_V1Action
             
             $this->getResponse()->clearBody();
             $this->getResponse()->clearHeaders();
-            $this->getResponse()->setHttpResponseCode( $e->getCode() );
+            $this->getResponse()->setHttpResponseCode( ( $e && $e->getCode() ? $e->getCode() : 400 ) );
             $this->getResponse()->setRawHeader( "HTTP/1.1 {$e->getCode()} {$e->getMessage()}" );
         }
         else
