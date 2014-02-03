@@ -16,6 +16,41 @@
     {/if}
     
     <div class="btn-group">
+        {if $currentCustomersOnly}{$showCustomers = 0}{else}{$showCustomers = 1}{/if}
+        <a class="btn btn-mini" href="{genUrl controller='customer' action=$action currentonly=$showCustomers}">
+            {if $currentCustomersOnly}Show All Customers{else}Show Current Customers{/if}
+        </a>
+    </div>
+
+    <div class="btn-group">
+        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+            {if isset( $cstate ) and $cstate}{$customerStates.$cstate}{else}Limit to state...{/if}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <li {if not $cstate}class="active"{/if}> <a href="{genUrl controller='customer' action=$action cstate=0}">All states</a> </li>
+            <li class="divider"></li>
+            {foreach $customerStates as $cstateid => $cstatename}
+                <li {if $cstate eq $cstateid}class="active"{/if}> <a href="{genUrl controller='customer' action=$action cstate=$cstateid}">{$cstatename}</a> </li>
+            {/foreach}
+        </ul>
+    </div>
+
+    <div class="btn-group">
+        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+            {if isset( $ctype ) and $ctype}{$customerTypes.$ctype}{else}Limit to type...{/if}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <li {if not $ctype}class="active"{/if}> <a href="{genUrl controller='customer' action=$action ctype=0}">All types</a> </li>
+            <li class="divider"></li>
+            {foreach $customerTypes as $ctypeid => $ctypename}
+                <li {if $ctype eq $ctypeid}class="active"{/if}> <a href="{genUrl controller='customer' action=$action ctype=$ctypeid}">{$ctypename}</a> </li>
+            {/foreach}
+        </ul>
+    </div>
+
+    <div class="btn-group">
         {if !isset( $feParams->readonly ) or !$feParams->readonly}
             <a class="btn btn-mini" id="assign-customer-btn" href="{genUrl controller='customer' action='add'}"><i class="icon-plus"></i></a>
         {/if}

@@ -1,0 +1,14 @@
+SHELL=/bin/bash
+MAILTO=ops-auto@example.com
+
+LAN1ID=1
+LAN2ID=2
+
+# Stagger builds so if there is a code / IXP Manager issue, all route
+# servers will no be taken out at the same time.
+47 11,15,19	* * *	root	/usr/local/sbin/inex-reconfigure-rs2.sh -v $LAN1ID -p 4 -q
+47 12,16,20	* * *	root	/usr/local/sbin/inex-reconfigure-rs2.sh -v $LAN1ID -p 6 -q
+47 13,17,21	* * *	root	/usr/local/sbin/inex-reconfigure-rs2.sh -v $LAN2ID -p 4 -q
+47 14,18,22	* * *	root	/usr/local/sbin/inex-reconfigure-rs2.sh -v $LAN2ID -p 6 -q
+
+18 10,14,18	* * *	root    /usr/local/sbin/compare-route-server-prefixes.pl

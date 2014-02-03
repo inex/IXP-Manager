@@ -31,7 +31,8 @@ class Switcher
         'Model',
         'Os',
         'OsDate',
-        'OsVersion'
+        'OsVersion',
+        'SerialNumber'
     ];
     
     /**
@@ -759,4 +760,32 @@ class Switcher
         return $this;
     }
 
+    /**
+     * @var string
+     */
+    private $serialNumber;
+
+
+    /**
+     * Set serialNumber
+     *
+     * @param string $serialNumber
+     * @return Switcher
+     */
+    public function setSerialNumber($serialNumber)
+    {
+        $this->serialNumber = $serialNumber;
+    
+        return $this;
+    }
+
+    /**
+     * Get serialNumber
+     *
+     * @return string 
+     */
+    public function getSerialNumber()
+    {
+        return $this->serialNumber;
+    }
 }

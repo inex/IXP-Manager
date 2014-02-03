@@ -309,10 +309,22 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         return parent::snmpPollSwitchPorts($host, $logger, $result);
     }
 
+    public function setSerialNumber($serialNumber)
+    {
+        $this->__load();
+        return parent::setSerialNumber($serialNumber);
+    }
+
+    public function getSerialNumber()
+    {
+        $this->__load();
+        return parent::getSerialNumber();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'switchtype', 'model', 'active', 'os', 'osDate', 'osVersion', 'lastPolled', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Infrastructure', 'Cabinet', 'Vendor');
+        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'switchtype', 'model', 'active', 'os', 'osDate', 'osVersion', 'serialNumber', 'lastPolled', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Infrastructure', 'Cabinet', 'Vendor');
     }
 
     public function __clone()

@@ -266,7 +266,7 @@ class VirtualInterface
      * @param Entities\MACAddress $mACAddresses
      * @return VirtualInterface
      */
-    public function addMACAddresse(\Entities\MACAddress $mACAddresses)
+    public function addMACAddresses(\Entities\MACAddress $mACAddresses)
     {
         $this->MACAddresses[] = $mACAddresses;
     
@@ -278,7 +278,7 @@ class VirtualInterface
      *
      * @param Entities\MACAddress $mACAddresses
      */
-    public function removeMACAddresse(\Entities\MACAddress $mACAddresses)
+    public function removeMACAddresses(\Entities\MACAddress $mACAddresses)
     {
         $this->MACAddresses->removeElement($mACAddresses);
     }
@@ -333,5 +333,28 @@ class VirtualInterface
             return $this->getPhysicalInterfaces()[0]->getSwitchPort()->getType();
         else
             return false;
+    }
+
+    /**
+     * Add MACAddresses
+     *
+     * @param \Entities\MACAddress $mACAddresses
+     * @return VirtualInterface
+     */
+    public function addMACAddresse(\Entities\MACAddress $mACAddresses)
+    {
+        $this->MACAddresses[] = $mACAddresses;
+    
+        return $this;
+    }
+
+    /**
+     * Remove MACAddresses
+     *
+     * @param \Entities\MACAddress $mACAddresses
+     */
+    public function removeMACAddresse(\Entities\MACAddress $mACAddresses)
+    {
+        $this->MACAddresses->removeElement($mACAddresses);
     }
 }

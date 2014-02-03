@@ -47,7 +47,7 @@ class Apiv1_ErrorController extends IXP_Controller_API_V1Action
             
             $this->getResponse()->clearBody();
             $this->getResponse()->clearHeaders();
-            $this->getResponse()->setHttpResponseCode( $e->getCode() );
+            $this->getResponse()->setHttpResponseCode( ( $e && $e->getCode() ? $e->getCode() : 400 ) );
             $this->getResponse()->setRawHeader( "HTTP/1.1 {$e->getCode()} {$e->getMessage()}" );
         }
         else
@@ -89,8 +89,8 @@ class Apiv1_ErrorController extends IXP_Controller_API_V1Action
     
         $log .= "------------------------\n\n"
             . "HTTP_HOST : {$_SERVER['HTTP_HOST']}\n"
-            . "HTTP_USER_AGENT: {$_SERVER['HTTP_USER_AGENT']}\n"
-            . ( isset( $_SERVER['HTTP_COOKIE'] ) ? "HTTP_COOKIE: {$_SERVER['HTTP_COOKIE']}\n" : "" )
+            . ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? "HTTP_USER_AGENT: {$_SERVER['HTTP_USER_AGENT']}\n" : "" )
+            . ( isset( $_SERVER['HTTP_COOKIE']     ) ? "HTTP_COOKIE: {$_SERVER['HTTP_COOKIE']}\n" : "" )
             . "REMOTE_PORT: {$_SERVER['REMOTE_PORT']}\n"
             . "REQUEST_METHOD: {$_SERVER['REQUEST_METHOD']}\n"
             . "REQUEST_URI: {$_SERVER['REQUEST_URI']}\n\n";

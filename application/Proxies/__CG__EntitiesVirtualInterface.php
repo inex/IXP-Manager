@@ -147,16 +147,16 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         return parent::getVlanInterfaces();
     }
 
-    public function addMACAddresse(\Entities\MACAddress $mACAddresses)
+    public function addMACAddresses(\Entities\MACAddress $mACAddresses)
     {
         $this->__load();
-        return parent::addMACAddresse($mACAddresses);
+        return parent::addMACAddresses($mACAddresses);
     }
 
-    public function removeMACAddresse(\Entities\MACAddress $mACAddresses)
+    public function removeMACAddresses(\Entities\MACAddress $mACAddresses)
     {
         $this->__load();
-        return parent::removeMACAddresse($mACAddresses);
+        return parent::removeMACAddresses($mACAddresses);
     }
 
     public function getMACAddresses()
@@ -181,6 +181,18 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     {
         $this->__load();
         return parent::getType();
+    }
+
+    public function addMACAddresse(\Entities\MACAddress $mACAddresses)
+    {
+        $this->__load();
+        return parent::addMACAddresse($mACAddresses);
+    }
+
+    public function removeMACAddresse(\Entities\MACAddress $mACAddresses)
+    {
+        $this->__load();
+        return parent::removeMACAddresse($mACAddresses);
     }
 
 

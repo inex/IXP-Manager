@@ -33,4 +33,11 @@
  */
 class Apiv1_IndexController extends IXP_Controller_API_V1Action
 {
+
+    public function helloAction()
+    {
+        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+        $this->getResponse()->setHeader( 'Content-Type', 'text/plain' );
+        echo 'Hello, world!';
+    }  
 }

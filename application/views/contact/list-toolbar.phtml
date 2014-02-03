@@ -1,0 +1,24 @@
+<li class="pull-right" style="margin-top: -12px;">
+<div class="btn-toolbar">
+    
+    <div class="btn-group">
+        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+            {if isset( $role ) and $role}{$roles.$role.name}{else}Limit to role...{/if}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <li {if not $role}class="active"{/if}> <a href="{genUrl controller='contact' action=$action}">All roles</a> </li>
+            <li class="divider"></li>
+            {foreach $roles as $roleid => $rolename}
+                <li {if $role eq $roleid}class="active"{/if}> <a href="{genUrl controller='contact' action=$action role=$roleid}">{$rolename.name}</a> </li>
+            {/foreach}
+        </ul>
+    </div>
+
+    <div class="btn-group">
+        {if !isset( $feParams->readonly ) or !$feParams->readonly}
+            <a class="btn btn-mini" id="assign-customer-btn" href="{genUrl controller='contact' action='add'}"><i class="icon-plus"></i></a>
+        {/if}
+    </div>
+</div>
+</li>

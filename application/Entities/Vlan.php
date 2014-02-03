@@ -87,7 +87,7 @@ class Vlan
         $this->IPv6Addresses = new \Doctrine\Common\Collections\ArrayCollection();
         $this->NetworkInfo = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Set name
      *
@@ -97,7 +97,7 @@ class Vlan
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -120,7 +120,7 @@ class Vlan
     public function setNumber($number)
     {
         $this->number = $number;
-    
+
         return $this;
     }
 
@@ -143,7 +143,7 @@ class Vlan
     public function setRcvrfname($rcvrfname)
     {
         $this->rcvrfname = $rcvrfname;
-    
+
         return $this;
     }
 
@@ -166,7 +166,7 @@ class Vlan
     public function setNotes($notes)
     {
         $this->notes = $notes;
-    
+
         return $this;
     }
 
@@ -199,7 +199,7 @@ class Vlan
     public function addVlanInterface(\Entities\VlanInterface $vlanInterfaces)
     {
         $this->VlanInterfaces[] = $vlanInterfaces;
-    
+
         return $this;
     }
 
@@ -229,10 +229,10 @@ class Vlan
      * @param Entities\IPv4Address $iPv4Addresses
      * @return Vlan
      */
-    public function addIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    public function addIPv4Addresses(\Entities\IPv4Address $iPv4Addresses)
     {
         $this->IPv4Addresses[] = $iPv4Addresses;
-    
+
         return $this;
     }
 
@@ -241,7 +241,7 @@ class Vlan
      *
      * @param Entities\IPv4Address $iPv4Addresses
      */
-    public function removeIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    public function removeIPv4Addresses(\Entities\IPv4Address $iPv4Addresses)
     {
         $this->IPv4Addresses->removeElement($iPv4Addresses);
     }
@@ -262,10 +262,10 @@ class Vlan
      * @param Entities\IPv6Address $iPv6Addresses
      * @return Vlan
      */
-    public function addIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    public function addIPv6Addresses(\Entities\IPv6Address $iPv6Addresses)
     {
         $this->IPv6Addresses[] = $iPv6Addresses;
-    
+
         return $this;
     }
 
@@ -274,7 +274,7 @@ class Vlan
      *
      * @param Entities\IPv6Address $iPv6Addresses
      */
-    public function removeIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    public function removeIPv6Addresses(\Entities\IPv6Address $iPv6Addresses)
     {
         $this->IPv6Addresses->removeElement($iPv6Addresses);
     }
@@ -298,7 +298,7 @@ class Vlan
     public function addNetworkInfo(\Entities\NetworkInfo $networkInfo)
     {
         $this->NetworkInfo[] = $networkInfo;
-    
+
         return $this;
     }
 
@@ -336,7 +336,7 @@ class Vlan
     public function setPrivate($private)
     {
         $this->private = $private;
-    
+
         return $this;
     }
 
@@ -349,7 +349,7 @@ class Vlan
     {
         return $this->private;
     }
-    
+
 
 
     /**
@@ -361,7 +361,7 @@ class Vlan
     public function addNetInfo(\Entities\NetInfo $netInfo)
     {
         $this->NetInfo[] = $netInfo;
-    
+
         return $this;
     }
 
@@ -384,7 +384,7 @@ class Vlan
     {
         return $this->NetInfo;
     }
-    
+
     /**
      * Get subent size for given protocol
      *
@@ -397,7 +397,7 @@ class Vlan
     {
         return $this->getNetInfo( 'masklen', $protocol );
     }
-    
+
     /**
      * Get route servers array for given protocol
      *
@@ -406,7 +406,7 @@ class Vlan
      *    $ix2 => [ 'ipaddress' => $ip, 'type' => $type ],
      *    ... ]
      *
-     * If no rout servers is set returs empty array
+     * If no route servers are set returns empty array
      *
      * @param int    $protocol The protocol to check for. One of \Entities\NetInfo::PROTOCOL_IPV constants.
      * @return array
@@ -415,7 +415,7 @@ class Vlan
     {
         return $this->getAssocNetInfo( 'routeserver', $protocol );
     }
-    
+
     /**
      * Get dns file for given protocol
      *
@@ -428,7 +428,7 @@ class Vlan
     {
         return $this->getNetInfo( 'dnsfile', $protocol );
     }
-    
+
     /**
      * Get array off as 112 servers for given protocol
      *
@@ -442,7 +442,7 @@ class Vlan
     {
         return $this->getIndexedNetInfo( 'as112server', $protocol );
     }
-    
+
     /**
      * Get array off route collectors for given protocol
      *
@@ -456,7 +456,7 @@ class Vlan
     {
         return $this->getIndexedNetInfo( 'routecollector', $protocol );
     }
-    
+
     /**
      * Get ping beacons array for given protocol
      *
@@ -465,7 +465,7 @@ class Vlan
      *    $ix2 => [ 'ipaddress' => $ip, 'ratelimited' => $ratelimited ],
      *    ... ]
      *
-     * If no rout servers is set returs empty array
+     * If no route servers are set returns empty array
      *
      * @param int    $protocol The protocol to check for. One of \Entities\NetInfo::PROTOCOL_IPV constants.
      * @return array
@@ -493,7 +493,7 @@ class Vlan
 
         return false;
     }
-    
+
     /**
      * Delete the named Net infos
      *
@@ -523,8 +523,8 @@ class Vlan
 
         return $count;
     }
-    
-    
+
+
     /**
      * Does the named net info exist or not?
      *
@@ -563,7 +563,7 @@ class Vlan
 
         return false;
     }
-    
+
     /**
      * Get indexed preferences as an array
      *
@@ -655,7 +655,7 @@ class Vlan
         if( !isset( \Entities\NetInfo::$PROTOCOLS[ $protocol ] ) )
             throw new Exception( "Unknown protocol" );
 
-        // what's the current highest index and how many is there?
+        // what's the current highest index and how many are there?
         $highest = -1;
 
         foreach( $this->getNetInfos() as $pref )
@@ -677,7 +677,7 @@ class Vlan
                 $pref->setProtocol( $protocol );
                 $pref->setValue( $v );
                 $pref->setIx( ++$highest );
-                
+
                 $em->persist( $pref );
             }
         }
@@ -694,7 +694,7 @@ class Vlan
 
         return $this;
     }
-    
+
     /**
      * Get associative net infos as an array.
      *
@@ -741,7 +741,7 @@ class Vlan
     public function deleteAssocNetInfo( $property, $protocol, $index = null )
     {
         $cnt = 0;
-        
+
         $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
         foreach( $this->getNetInfos() as $pref )
         {
@@ -776,7 +776,7 @@ class Vlan
 
         return $pref;
     }
-    
+
     /**
      * Assign the key's value to the property list. Handles the
      * nest separator for sub-properties.
@@ -840,5 +840,51 @@ class Vlan
     public function getInfrastructure()
     {
         return $this->Infrastructure;
+    }
+
+    /**
+     * Add IPv4Addresses
+     *
+     * @param \Entities\IPv4Address $iPv4Addresses
+     * @return Vlan
+     */
+    public function addIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    {
+        $this->IPv4Addresses[] = $iPv4Addresses;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IPv4Addresses
+     *
+     * @param \Entities\IPv4Address $iPv4Addresses
+     */
+    public function removeIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
+    {
+        $this->IPv4Addresses->removeElement($iPv4Addresses);
+    }
+
+    /**
+     * Add IPv6Addresses
+     *
+     * @param \Entities\IPv6Address $iPv6Addresses
+     * @return Vlan
+     */
+    public function addIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    {
+        $this->IPv6Addresses[] = $iPv6Addresses;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IPv6Addresses
+     *
+     * @param \Entities\IPv6Address $iPv6Addresses
+     */
+    public function removeIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
+    {
+        $this->IPv6Addresses->removeElement($iPv6Addresses);
     }
 }

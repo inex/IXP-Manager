@@ -1424,7 +1424,7 @@ class Customer
      * @param \Entities\RSPrefix $rSPrefixes
      * @return Customer
      */
-    public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    public function addRSPrefixes(\Entities\RSPrefix $rSPrefixes)
     {
         $this->RSPrefixes[] = $rSPrefixes;
 
@@ -1436,7 +1436,7 @@ class Customer
      *
      * @param \Entities\RSPrefix $rSPrefixes
      */
-    public function removeRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    public function removeRSPrefixes(\Entities\RSPrefix $rSPrefixes)
     {
         $this->RSPrefixes->removeElement($rSPrefixes);
     }
@@ -1878,7 +1878,7 @@ class Customer
      * @param \Entities\IrrdbPrefix $irrdbPrefixes
      * @return Customer
      */
-    public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    public function addIrrdbPrefixes(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
         $this->IrrdbPrefixes[] = $irrdbPrefixes;
     
@@ -1890,7 +1890,7 @@ class Customer
      *
      * @param \Entities\IrrdbPrefix $irrdbPrefixes
      */
-    public function removeIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    public function removeIrrdbPrefixes(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
         $this->IrrdbPrefixes->removeElement($irrdbPrefixes);
     }
@@ -1942,6 +1942,51 @@ class Customer
     }
     
     /**
+     * Add IrrdbPrefixes
+     *
+     * @param \Entities\IrrdbPrefix $irrdbPrefixes
+     * @return Customer
+     */
+    public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->IrrdbPrefixes[] = $irrdbPrefixes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove IrrdbPrefixes
+     *
+     * @param \Entities\IrrdbPrefix $irrdbPrefixes
+     */
+    public function removeIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->IrrdbPrefixes->removeElement($irrdbPrefixes);
+    }
+
+    /**
+     * Add RSPrefixes
+     *
+     * @param \Entities\RSPrefix $rSPrefixes
+     * @return Customer
+     */
+    public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->RSPrefixes[] = $rSPrefixes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove RSPrefixes
+     *
+     * @param \Entities\RSPrefix $rSPrefixes
+     */
+    public function removeRSPrefixe(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->RSPrefixes->removeElement($rSPrefixes);
+    }
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $IrrdbASNs;
@@ -1950,10 +1995,10 @@ class Customer
     /**
      * Add IrrdbASNs
      *
-     * @param \Entities\IrrdbAsns $irrdbASNs
+     * @param \Entities\IrrdbAsn $irrdbASNs
      * @return Customer
      */
-    public function addIrrdbASN(\Entities\IrrdbAsns $irrdbASNs)
+    public function addIrrdbASN(\Entities\IrrdbAsn $irrdbASNs)
     {
         $this->IrrdbASNs[] = $irrdbASNs;
     
@@ -1963,9 +2008,9 @@ class Customer
     /**
      * Remove IrrdbASNs
      *
-     * @param \Entities\IrrdbAsns $irrdbASNs
+     * @param \Entities\IrrdbAsn $irrdbASNs
      */
-    public function removeIrrdbASN(\Entities\IrrdbAsns $irrdbASNs)
+    public function removeIrrdbASN(\Entities\IrrdbAsn $irrdbASNs)
     {
         $this->IrrdbASNs->removeElement($irrdbASNs);
     }

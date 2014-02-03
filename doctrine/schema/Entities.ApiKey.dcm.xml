@@ -6,7 +6,7 @@
     </id>
     <field name="apiKey" type="string" unique="true" length="255" nullable="false"/>
     <field name="expires" type="datetime" nullable="true"/>
-    <field name="allowedIPs" type="string" length="65500" nullable="true"/>
+    <field name="allowedIPs" type="text" nullable="true"/>
     <field name="created" type="datetime" nullable="false"/>
     <field name="lastseenAt" type="datetime" nullable="true"/>
     <field name="lastseenFrom" type="string" length="255" nullable="true"/>

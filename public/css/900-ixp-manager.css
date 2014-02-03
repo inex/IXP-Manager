@@ -6,6 +6,12 @@ body {
     padding-bottom: 40px;
 }
 
+@media ( max-width: 1245px ) {
+    body {
+        padding-top: 100px;
+    }
+}
+
 .sidebar-nav {
     padding: 9px 0;
 }

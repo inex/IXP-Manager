@@ -18,7 +18,7 @@
                 <br /><br /><br /><br />
             </p>
     {else}
-        <div class="span6 {if isset( $options.identity.biglogoconf.offset )}{$options.identity.biglogoconf.offset}{/if}">
+        <div class="span12">
             <p align="center">
                 <img src="{$options.identity.biglogo}" />
             </p>
@@ -38,5 +38,11 @@
 </p>
 
 </div>
+
+<script type="text/javascript">
+    $( document ).ready( function(){
+        $('#username').focus();
+    });
+</script>
 
 {tmplinclude file="footer.phtml"}

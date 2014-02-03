@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<orm-designer version="2.2.5.754" name="INEX" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<orm-designer version="2.2.10.815" name="INEX" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="INEX" import-format="Doctrine2Xml" import-path="schema" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="IrrdbAsn" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -26,7 +26,7 @@
       <field name="id" type="bigint" unique="true" primary="true" auto-increment="true" uuid="e7921411-de32-4a53-a946-d829a0a07f91"/>
       <field name="apiKey" type="string" size="255" required="true" unique="true" uuid="e2e30fb0-01ac-431a-99b7-5c40b4c9d9ce"/>
       <field name="expires" type="datetime" uuid="a4ca6f2b-63ec-4289-9172-28dea39d6bca"/>
-      <field name="allowedIPs" type="string" size="65500" uuid="7e487825-6517-454c-a154-49c69cd0f8bd"/>
+      <field name="allowedIPs" type="text" uuid="7e487825-6517-454c-a154-49c69cd0f8bd"/>
       <field name="created" type="datetime" required="true" uuid="ef6ca1f2-d589-4cb4-92af-acaa874c6840"/>
       <field name="lastseenAt" type="datetime" uuid="0349d5b6-e543-4d97-bc08-100b540f9230"/>
       <field name="lastseenFrom" type="string" size="255" uuid="199a2c38-0862-41c4-816f-61009a4ee933"/>
@@ -315,6 +315,7 @@
       <field name="os" type="string" uuid="948b7f1a-2f02-4c90-8e13-adb4b7556751"/>
       <field name="osDate" type="datetime" uuid="d5e22be1-91be-46ae-b5fe-25626a5db35e"/>
       <field name="osVersion" type="string" uuid="110a1e41-bd8e-49d5-8b9d-d8f048553b32"/>
+      <field name="serialNumber" type="string" size="255" uuid="2b89be24-50a0-410f-986a-37636d9d2edc"/>
       <field name="lastPolled" type="datetime" uuid="dfa1e20f-3393-452a-a0d5-95b079c54da4"/>
       <field name="notes" type="text" uuid="c56c30fa-0c98-4025-ae71-6c653d0b9624"/>
       <orm-attributes>

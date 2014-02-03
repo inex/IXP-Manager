@@ -201,7 +201,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $graph = array_keys( $graphs )[0];
         $this->view->graph      = $graph;
         
-        $category = $this->setCategory();
+        $category = $this->setCategory( 'category', true );
 
         $stats = array();
         foreach( IXP_Mrtg::$PERIODS as $period )

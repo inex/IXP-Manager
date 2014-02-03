@@ -33,6 +33,7 @@ $(document).ready(function() {
         'iDisplayLength': ( typeof oss_prefs != 'undefined' && 'iLength' in oss_prefs )
         		? oss_prefs['iLength']
             	: {if isset( $options.defaults.table.entries )}{$options.defaults.table.entries}{else}10{/if},
+        "aLengthMenu": [ [ 10, 25, 50, 100, 500, -1 ], [ 10, 25, 50, 100, 500, "All" ] ],
         "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
         "sPaginationType": "bootstrap",
         "bAutoWidth": false,
