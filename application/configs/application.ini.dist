@@ -205,7 +205,9 @@ resources.doctrine2.connection.options.dbname   = 'ixp'
 resources.doctrine2.connection.options.user     = 'ixp'
 resources.doctrine2.connection.options.password = 'password'
 resources.doctrine2.connection.options.host     = '127.0.0.1'
-resources.doctrine2.connection.options.charset  = 'utf8'
+resources.doctrine2.connection.options.charset  = 'utf8mb4'
+; if using MySQL <5.5.3, replace the above with:
+; resources.doctrine2.connection.options.charset  = 'utf8'
 
 
 
