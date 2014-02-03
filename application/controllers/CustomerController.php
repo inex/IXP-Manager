@@ -183,6 +183,13 @@ class CustomerController extends IXP_Controller_FrontEnd
                 ->from( '\\Entities\\Customer', 'c' )
                 ->join( 'c.BillingDetails', 'bd' );
 
+
+        $this->view->customerTypes = $customerTypes = \Entities\Customer::$CUST_TYPES_TEXT;
+        $this->view->ctype = $ctype = $this->getParam( 'ctype', false );
+        if( $ctype && isset( $customerTypes[$ctype] ) )
+            $qb->andWhere( 'c.type = :ctype' )->setParameter( 'ctype', $ctype );
+
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
