@@ -31,7 +31,8 @@ class Switcher
         'Model',
         'Os',
         'OsDate',
-        'OsVersion'
+        'OsVersion',
+        'SerialNumber'
     ];
     
     /**
