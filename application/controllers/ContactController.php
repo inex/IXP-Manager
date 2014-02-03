@@ -129,11 +129,22 @@ class ContactController extends IXP_Controller_FrontEnd
                 c.facilityaccess AS facilityaccess, c.mayauthorize AS mayauthorize,
                 c.lastupdated AS lastupdated, c.lastupdatedby AS lastupdatedby, c.position AS position,
                 c.creator AS creator, c.created AS created, cust.name AS customer, cust.id AS custid,
-                u.id AS uid'
+                u.id AS uid, g.name as gname'
             )
             ->from( '\\Entities\\Contact', 'c' )
             ->leftJoin( 'c.User', 'u' )
+            ->leftJoin( 'c.Groups', 'g' )
             ->leftJoin( 'c.Customer', 'cust' );
+
+        $roles = $this->getD2R( '\\Entities\\ContactGroup' )->getGroupNamesTypeArray( 'ROLE' );
+
+        if( isset( $roles['ROLE'] ) )
+        {
+            $this->view->roles = $roles = $roles['ROLE'];
+            $this->view->role = $role = $this->getParam( 'role', false );
+            if( isset( $roles[ $role ] ) )
+                $qb->andWhere( "g.id = :role" )->setParameter( 'role', $role );
+        }
 
         if( $this->getParam( "cgid", false ) )
         {

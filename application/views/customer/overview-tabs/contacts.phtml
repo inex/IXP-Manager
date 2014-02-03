@@ -6,15 +6,21 @@
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
-            <th>Mobile</th>
+            <th>Role(s)</th>
             <th><a class="btn btn-mini" href="{genUrl controller='contact' action="add" custid=$cust->getId() cid=$cust->getId()}"><i class="icon-plus"></i> Add new...</a></th>        </thead>
         <tbody>
             {foreach $cust->getContacts() as $c}
                 <tr>
                     <td>{$c->getName()}</td>
                     <td>{$c->getEmail()}</td>
-                    <td>{$c->getPhone()}</td>
-                    <td>{$c->getMobile()}</td>
+                    <td>{$c->getPhone()}{if $c->getPhone() and $c->getMobile()} / {/if}{$c->getMobile()}</td>
+                    <td>
+                        {foreach $c->getGroups() as $group}
+                            {if $group->getType() eq 'ROLE'}
+                                <span class="label label-info">{$group->getName()}</span>
+                            {/if}
+                        {/foreach}
+                    </td>
                     <td>
                         <div class="btn-group">
                             <a class="btn btn-mini" href="{genUrl controller='contact' action="edit" id=$c->getId() cid=$cust->getId()}"><i class="icon-pencil"></i></a>
