@@ -183,6 +183,26 @@ class CustomerController extends IXP_Controller_FrontEnd
                 ->from( '\\Entities\\Customer', 'c' )
                 ->join( 'c.BillingDetails', 'bd' );
 
+
+        $this->view->customerTypes = $customerTypes = \Entities\Customer::$CUST_TYPES_TEXT;
+        $this->view->ctype = $ctype = $this->getSessionNamespace()->cust_list_ctype
+            = $this->getParam( 'ctype', ( $this->getSessionNamespace()->cust_list_ctype !== null ? $this->getSessionNamespace()->cust_list_ctype : false ) );
+        if( $ctype && isset( $customerTypes[$ctype] ) )
+            $qb->andWhere( 'c.type = :ctype' )->setParameter( 'ctype', $ctype );
+
+        $this->view->customerStates = $customerStates = \Entities\Customer::$CUST_STATUS_TEXT;
+        $this->view->cstate = $cstate = $this->getSessionNamespace()->cust_list_cstate  
+            = $this->getParam( 'cstate', ( $this->getSessionNamespace()->cust_list_cstate !== null ? $this->getSessionNamespace()->cust_list_cstate : false ) );
+        if( $cstate && isset( $customerStates[$cstate] ) )
+            $qb->andWhere( 'c.status = :cstate' )->setParameter( 'cstate', $cstate );
+
+
+        $this->view->currentCustomersOnly = $currentCustomersOnly = $this->getSessionNamespace()->cust_list_current
+            = $this->getParam( 'currentonly', ( $this->getSessionNamespace()->cust_list_current !== null ? $this->getSessionNamespace()->cust_list_current : true ) );
+        if( $currentCustomersOnly )
+            $qb->andWhere( \Repositories\Customer::DQL_CUST_CURRENT );
+
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
