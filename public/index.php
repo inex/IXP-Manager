@@ -24,6 +24,13 @@
 if( file_exists( '../MAINT_MODE_ENABLED' ) )
 {
     define( 'MAINTENANCE_MODE', true );
+    
+    // if it's an API request, we need to handle that differently
+    if( strpos( $_SERVER['REQUEST_URI'], '/apiv1/' ) !== false )
+    {
+        header( "HTTP/1.0 503 Service Unavailable - Maintenance Mode Enabled" );
+        die();
+    }
     require_once( 'maintenance.php' );
 }
 else
