@@ -94,6 +94,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                         'switchtype'     => 'Type',
                         'os'             => 'OS',
                         'osVersion'      => 'OS Version',
+                        'serialNumber'   => 'Serial Number',
                         'osDate'         => [
                             'title'      => 'OS Date',
                             'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -132,6 +133,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 i.name AS infrastructure, s.switchtype AS switchtype, s.model AS model,
                 s.active AS active, s.notes AS notes, s.lastPolled AS lastPolled,
                 s.hostname AS hostname, s.os AS os, s.osDate AS osDate, s.osVersion AS osVersion,
+                s.serialNumber AS serialNumber,
                 v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
             )
             ->from( '\\Entities\\Switcher', 's' )
@@ -172,6 +174,7 @@ class SwitchController extends IXP_Controller_FrontEnd
             'model'          => 'Model',
             'os'             => 'OS',
             'osVersion'      => 'OS Version',
+            'serialNumber'   => 'Serial Number',
 
             'osDate'         => [
                 'title'      => 'OS Date',
