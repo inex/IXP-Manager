@@ -257,10 +257,10 @@ sub trawl_switch_snmp ($$) {
 		$dbridgehash && $debug && print STDERR "DEBUG: $host: BRIDGE-MIB query successful\n";
 	}
 
-	# if this isn't supported, then panic.  We could probably try
-	# community@vlan syntax, but this should be good enough.
-	if (!$qbridgehash && !$dbridgehash) {
-		die "$host: cannot read BRIDGE-MIB or Q-BRIDGE-MIB\n";
+	# vlan specified but not working, Keep Calm and Carry On
+	# community@vlan syntax
+	if (!$qbridgehash && !$dbridgehash && $vlan) {
+		$dbridgehash = snmpwalk2hash($host, $snmpcommunity + "@" + $vlan, $oids->{dot1dTpFdbPort});
 	}
 
 	my ($bridgehash, $maptable, $bridgehash2mac);
