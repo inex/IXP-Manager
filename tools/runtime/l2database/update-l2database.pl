@@ -260,7 +260,8 @@ sub trawl_switch_snmp ($$) {
 	# if this isn't supported, then panic.  We could probably try
 	# community@vlan syntax, but this should be good enough.
 	if (!$qbridgehash && !$dbridgehash) {
-		die "$host: cannot read BRIDGE-MIB or Q-BRIDGE-MIB\n";
+		print STDERR "$host: cannot read BRIDGE-MIB or Q-BRIDGE-MIB\n";
+		return;
 	}
 
 	my ($bridgehash, $maptable, $bridgehash2mac);
