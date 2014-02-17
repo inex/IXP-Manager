@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\OUI" table="oui" tableName="oui" schema="oui" repository-class="Repositories\OUI">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="oui" type="string" unique="true" length="6" nullable="false"/>
+    <field name="organisation" type="string" length="255" nullable="false"/>
+  </entity>
+</doctrine-mapping>

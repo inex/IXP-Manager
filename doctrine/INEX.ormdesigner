@@ -933,6 +933,16 @@
     <association from="SecEvent" to="SwitchPort" owner-alias="SecEvents" inverse-alias="SwitchPort" uuid="b7535ca1-a516-46b8-b21a-3ca58a497acb">
       <association-field from="switchportid" to="id"/>
     </association>
+    <entity name="OUI" description="Organizationally Unique Identifiers" uuid="0be9b477-a199-4d85-a892-4287cf858f4d">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="75d46f98-6371-47cd-a841-019284ebd0e2"/>
+      <field name="oui" type="string" size="6" required="true" unique="true" uuid="6379c2cd-ec05-48d4-a804-1428b3b132a2"/>
+      <field name="organisation" type="string" size="255" required="true" uuid="a81a1738-67b3-414b-a06c-347e4af16405"/>
+      <orm-attributes>
+        <attribute name="table">oui</attribute>
+        <attribute name="tableName">oui</attribute>
+        <attribute name="schema">oui</attribute>
+      </orm-attributes>
+    </entity>
     <orm-attributes>
       <attribute name="namespace">Entities</attribute>
     </orm-attributes>
@@ -946,6 +956,7 @@
     <entity uuid="076963b5-cef4-4b77-8d41-8c1c8f1916a1" position-x="1194" position-y="-327" size-x="0" size-x2="137" size-y="0" size-y2="129"/>
     <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" position-x="802" position-y="145" size-x="0" size-x2="183" size-y="0" size-y2="143"/>
     <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
+    <entity uuid="0be9b477-a199-4d85-a892-4287cf858f4d" position-x="47" position-y="-145" size-x="0" size-x2="124" size-y="0" size-y2="59"/>
     <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
     <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20"/>
     <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
