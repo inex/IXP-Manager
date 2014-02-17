@@ -86,6 +86,7 @@ class OuiCliController extends IXP_Controller_CliAction
         }
 
         $this->getD2EM()->flush();
+        $this->verbose("");
     }
 
 }
