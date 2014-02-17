@@ -1,6 +1,0 @@
-
-These were used by SEC when auto-emailing members leaking packets into the
-peering LAN. This is done separately now but will be integrated back into
-IXP Manager in time.
-
- - Barry 20121212

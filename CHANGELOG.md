@@ -4,6 +4,18 @@ Please see the following page for upgrade instructions:
 
 > https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager
 
+----------------------------------
+
+# CHANGE LOG DEPRECATED
+
+As of version v3.6.8, GitHub's [release
+management](https://github.com/inex/IXP-Manager/releases) will replace this
+changelog. GitHub's release manager allows is to track tags more
+efficiently, uses syntax highlighting and hot linking of GitHub commit SHAs,
+issues, etc. It should provide an all round better experience.
+
+----------------------------------
+
 # v3.6.6 (20140203)
 
 Added example scripts to reconfigure Bird route servers via an API call and referenced

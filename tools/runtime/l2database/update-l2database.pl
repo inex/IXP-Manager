@@ -185,8 +185,16 @@ sub trawl_switch_snmp ($$) {
 
 	$debug && print STDERR "DEBUG: $host: started query process\n";
 
-	my $ifindex = snmpwalk2hash($host, $snmpcommunity, $oids->{ifDescr}) || die "$host: cannot read ifDescr";
-	my $interfaces = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dBasePortIfIndex}) || die "$host: cannot read dot1dBasePortIfIndex";
+	my $ifindex = snmpwalk2hash($host, $snmpcommunity, $oids->{ifDescr});
+	if (!$ifindex) {
+		print STDERR "WARNING: $host: cannot read ifDescr. Not processing $host further.\n";
+		return;
+	}
+	my $interfaces = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dBasePortIfIndex});
+	if (!$interfaces) {
+		print STDERR "WARNING: $host: cannot read dot1dBasePortIfIndex. Not processing $host further.\n";
+		return;
+	}
 
 	$debug && print STDERR "DEBUG: $host: pre-emptively trying Juniper jnxExVlanTag to see if we're on a J-EX box (".$oids->{jnxExVlanTag}.")\n";
 	$vlanmapping = snmpwalk2hash($host, $snmpcommunity, $oids->{jnxExVlanTag});
@@ -260,7 +268,8 @@ sub trawl_switch_snmp ($$) {
 	# if this isn't supported, then panic.  We could probably try
 	# community@vlan syntax, but this should be good enough.
 	if (!$qbridgehash && !$dbridgehash) {
-		die "$host: cannot read BRIDGE-MIB or Q-BRIDGE-MIB\n";
+		print STDERR "WARNING: $host: cannot read BRIDGE-MIB or Q-BRIDGE-MIB. Not processing $host further.\n";
+		return;
 	}
 
 	my ($bridgehash, $maptable, $bridgehash2mac);
