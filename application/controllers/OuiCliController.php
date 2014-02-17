@@ -59,13 +59,19 @@ class OuiCliController extends IXP_Controller_CliAction
 
         $ouiRepo = $this->getD2R( '\\Entities\OUI' );
 
-        $this->getD2EM()->getConnection()->beginTransaction();
-        
         if( $refresh = $this->getParam( 'refresh', false ) )
-            $ouiRepo->clear();
+            $this->verbose( "Deleted " . $ouiRepo->clear() . " OUI entries during refresh" );
 
+        $cnt = 0;
         foreach( $ouitool->loadList()->processRawData() as $oui => $organisation )
         {
+            if( $cnt++ >= 1000 )
+            {
+                $this->getD2EM()->flush();
+                $this->verbose( '.', false );
+                $cnt = 0;
+            }
+
             if( !$refresh && ( $o = $ouiRepo->findOneBy( [ 'oui' => $oui ] ) ) )
             {
                 if( $o->getOrganisation() != $organisation )
