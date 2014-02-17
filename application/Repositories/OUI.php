@@ -13,8 +13,40 @@ use Doctrine\ORM\EntityRepository;
 class OUI extends EntityRepository
 {
 
+    /**
+     * Delete all entries from the OUI table.
+     * 
+     * @return int Number of records deleted
+     */
     public function clear()
     {
         return $this->getEntityManager()->createQuery( "DELETE FROM Entities\\OUI" )->execute();
+    }
+
+    /**
+     * Get the organisation / manufacturer behind a given six character OUI.
+     *
+     * The OUI should be all lower case with no punctuation.
+     * 
+     * @param  string $oui The six character OUI
+     * @return string      The organisation name (or 'Unknown')
+     */
+    public function getOrganisation( $oui )
+    {
+        try
+        {
+            return $this->getEntityManager()->createQuery(
+                    "SELECT o.organisation
+                     FROM \\Entities\\OUI o
+                     WHERE  o.oui = :oui"
+                )
+                ->setParameter( 'oui', $oui )
+                ->useResultCache( true, 86400 )
+                ->getSingleScalarResult();
+        }
+        catch( \Doctrine\ORM\NoResultException $e )
+        {
+            return 'Unknown';
+        }
     }
 }

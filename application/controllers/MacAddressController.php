@@ -77,11 +77,13 @@ class MacAddressController extends IXP_Controller_FrontEnd
                 'ipv4'           => 'IPv4',
                 'ipv6'           => 'IPv6',
                 'mac'            => 'MAC Address',
+
+                'manufacturer'   => 'Manufacturer'
                 
-                'firstseen'      => [
-                    'title'          => 'Last Seen',
-                    'type'           => self::$FE_COL_TYPES[ 'DATETIME' ]
-                ]
+                //'firstseen'      => [
+                //    'title'          => 'Last Seen',
+                //    'type'           => self::$FE_COL_TYPES[ 'DATETIME' ]
+                //]
             ]
         ];
     
@@ -113,6 +115,8 @@ class MacAddressController extends IXP_Controller_FrontEnd
 
         $objects = $qb->getQuery()->getResult();
         
+        $ouiRepo = $this->getD2R( '\Entities\OUI' );
+
         $data = [];
         
         foreach( $objects as $m )
@@ -151,6 +155,9 @@ class MacAddressController extends IXP_Controller_FrontEnd
                 if( !isset( $data[ $m->getId() ]['ipv6'] ) )
                     $data[ $m->getId() ]['ipv6'] = '';
             }
+
+            if( $m->getMac() )
+                $data[ $m->getId() ]['manufacturer'] = $ouiRepo->getOrganisation( strtolower( substr( $m->getMac(), 0, 6 ) ) );
         }
         
         return $data;
