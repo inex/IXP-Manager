@@ -33,6 +33,26 @@
  */
 class OuiCliController extends IXP_Controller_CliAction
 {
+    /**
+     * Update OUI database from named file or IEEE website - for issue #87
+     *
+     * Typically called as:
+     *
+     *     bin/ixptool.php -a oui-cli.update-database
+     *
+     * which will create / update the OUI database directly from the latest IEEE file from their website.
+     *
+     * A specific file can be passed via the `fromfile` parameter. You can also force a
+     * database reset (drop all OUI entries and re-populate) via the `refresh` parameter.
+     *
+     * Neither of these options are typically necessary:
+     *
+     *     bin/ixptool.php -a oui-cli.update-database -p fromfile=/path/to/oui.txt,refresh=1
+     *
+     * Note that we bundle a recent OUI file in `date/oui` also.
+     * 
+     * @return null
+     */
     public function updateDatabaseAction()
     {
         $ouitool = new IXP_OUI( $this->getParam( 'fromfile', false ) );
