@@ -2,7 +2,7 @@
 <div class="well">
     <h5>MAC Address: {$search}</h5>
     <ul>
-    {foreach $interfaces as $vi}
+    {foreach $interfaces[ $cust->getId() ] as $vi}
         {foreach $vi->getPhysicalInterfaces() as $pi}
             <li>
                 <a href="{genUrl controller="virtual-interface" action="edit" id=$vi->getId()}"> 

@@ -78,8 +78,8 @@ class SearchController extends IXP_Controller_AuthRequiredAction
         $interfaces = [];
         foreach( $this->getD2R( '\\Entities\\MACAddress' )->findVirtualInterface( $search ) as $vi )
         {
-            $results[] = $vi->getCustomer();
-            $interfaces[ $vi->getCustomer()->getId() ] = $vi;
+            $results[ $vi->getCustomer()->getId() ] = $vi->getCustomer();
+            $interfaces[ $vi->getCustomer()->getId() ][] = $vi;
         }
 
         $this->view->results    = $results;
@@ -91,7 +91,7 @@ class SearchController extends IXP_Controller_AuthRequiredAction
         $results = [];
         foreach( $vlis as $vli )
         {
-            $results[] = $vli->getVirtualInterface()->getCustomer();
+            $results[$vli->getVirtualInterface()->getCustomer()->getId()] = $vli->getVirtualInterface()->getCustomer();
             $interfaces[ $vli->getVirtualInterface()->getCustomer()->getId() ][] = $vli;
         }
 
