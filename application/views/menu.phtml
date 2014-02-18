@@ -5,6 +5,11 @@
         
 <ul class="nav nav-list">
 
+    <form class="form-search" method="get" action="{genUrl controller="search" action="do"}">
+        <input type="text" class="search-query" style="width: 50%" placeholder="Search..." name="search">
+        <a class="btn btn-small" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal"><i class="icon-question-sign"></i></a>
+    </form>
+
     <li class="nav-header">IXP Customer Actions</li>
     
         <li {if $controller eq 'customer' and ( $action eq 'list' or $action eq 'add' or $action eq 'edit' or $action eq 'dashboard' )}class="active"{/if}>
@@ -188,5 +193,48 @@
     </ul>
     
 </div><!--/.well -->
+
+<div id="searchHelpModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="searchHelpModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="searchHelpModalLabel">Search Help</h3>
+    </div>
+    <div class="modal-body">
+        <p>
+            The search box allows for an efficient database search via a number of parameters: 
+        </p>
+        <div class="row-fluid">
+            <div class="span6">
+                <dl>
+                    <dt>IPv4 Address</dt>
+                    <dd>
+                        Full address as <code>a.b.c.d</code> or last octet as <code>.d</code>
+                    </dd>
+                    <dt>AS Number / Macro</dt>
+                    <dd>
+                        Enter ASN <code>asXXX</code> and AS macro as <code>as-XXX</code>
+                    </dd>
+                </dl>
+            </div>
+            <div class="span6">
+                <dl>
+                    <dt>IPv6 Address</dt>
+                    <dd>
+                        Full (compact) address as <code>a:b::h</code> or last section as <code>:h</code>
+                    </dd>
+                    <dt>MAC Address</dt>
+                    <dd>
+                        Enter as <code>xxxxxxxxxxxx</code> or <code>xx:xx:xx:xx:xx:xx</code>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+
 </div><!--/span-->
 <div class="span10">

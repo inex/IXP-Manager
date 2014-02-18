@@ -1,0 +1,21 @@
+{if $cust->getType() eq CUSTOMER::TYPE_ASSOCIATE}
+    <span class="label label-warning">ASSOCIATE MEMBER</span>
+{elseif $cust->getType() eq CUSTOMER::TYPE_PROBONO}
+    <span class="label label-info">PROBONO MEMBER</span>
+{elseif $cust->getType() eq CUSTOMER::TYPE_INTERNAL}
+    <span class="label label-inverse">INTERNAL INFRASTRUCTURE</span>
+{elseif $cust->getType() eq CUSTOMER::TYPE_FULL}
+    <span class="label label-success">FULL MEMBER</span>
+{else}
+    <span class="label">UNKNOWN MEMBER TYPE</span>
+{/if}
+{if $cust->hasLeft()}
+    <span class="label label-important">ACCOUNT CLOSED</span>
+{/if}
+{if $resellerMode}
+    {if $cust->getIsReseller()}
+        <span class="label">RESELLER</span>
+    {elseif $cust->getReseller()}
+        <span class="label">RESOLD CUSTOMER</span>
+    {/if}
+{/if}

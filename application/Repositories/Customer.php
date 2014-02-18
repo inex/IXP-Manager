@@ -361,5 +361,48 @@ class Customer extends EntityRepository
         return $custs;
     }
                         
+    /**
+     * Find customers by ASN
+     * 
+     * @param  string $asn The ASN number to search for
+     * @return \Entities\Customer[] Matching customers
+     */
+    public function findByASN( $asn )
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT c
+        
+                 FROM \\Entities\\Customer c
+
+                 WHERE c.autsys = :asn
+
+                 ORDER BY c.name ASC"
+        
+            )
+            ->setParameter( 'asn', $asn )
+            ->getResult();
+    }
+    
+    /**
+     * Find customers by AS Macro
+     * 
+     * @param  string $asm The AS macro to search for
+     * @return \Entities\Customer[] Matching customers
+     */
+    public function findByASMacro( $asm )
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT c
+        
+                 FROM \\Entities\\Customer c
+
+                 WHERE c.peeringmacro = :asm OR c.peeringmacrov6 = :asm
+
+                 ORDER BY c.name ASC"
+        
+            )
+            ->setParameter( 'asm', strtoupper( $asm ) )
+            ->getResult();
+    }
     
 }
