@@ -1,0 +1,45 @@
+
+<div class="well">
+    {foreach $interfaces[$cust->getId()] as $vli}
+        <h5>
+            IP Address: {if $type eq 'ipv4'}{$vli->getIPv4Address()->getAddress()}{else}{$vli->getIPv6Address()->getAddress()}{/if}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-small" 
+                    href="{genUrl controller="virtual-interface" action="edit" id=$vli->getVirtualInterface()->getId()}">
+                Virtual Interface
+            </a>
+        </h5>
+
+        <div class="row-fluid">
+            <div class="span6">
+                <ul>
+                {foreach $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi}
+                    <li> {$pi->getSwitchport()->getSwitcher()->getName()} :: {$pi->getSwitchport()->getName()} </li>
+                {/foreach}
+                </ul>
+            </div>
+            <div class="span6">
+                <ul>
+                    {if $vli->getIPv4Address()}
+                        <li>
+                            <a href="{genUrl controller="vlan-interface" action="edit" id=$vli->getId()}"> 
+                                <span class="label label-{if $vli->getIpv4enabled()}success{else}danger{/if}">
+                                     {$vli->getIPv4Address()->getAddress()}
+                                 </span>
+                             </a>
+                        </li>
+                     {/if}
+                    {if $vli->getIPv6Address()}
+                        <li>
+                            <a href="{genUrl controller="vlan-interface" action="edit" id=$vli->getId()}"> 
+                                <span class="label label-{if $vli->getIpv6enabled()}success{else}danger{/if}">
+                                     {$vli->getIPv6Address()->getAddress()}
+                                 </span>
+                             </a>
+                        </li>
+                     {/if}
+                </ul>
+            </div>
+        </div>
+    {/foreach}
+</div>

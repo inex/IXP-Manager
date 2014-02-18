@@ -12,4 +12,24 @@ use Doctrine\ORM\EntityRepository;
  */
 class IPv4Address extends EntityRepository
 {
+    /** 
+     * Find VLAN interfaces by (partial) IP address
+     * 
+     * @param  string $ip The IP address to search for
+     * @return \Entities\VlanInterface[] Matching interfaces
+     */
+    public function findVlanInterfaces( $ip )
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT vli
+        
+                 FROM \\Entities\\VlanInterface vli
+                 LEFT JOIN vli.IPv4Address ip
+
+                 WHERE ip.address LIKE :ip"
+            )
+            ->setParameter( 'ip', strtolower( "%{$ip}" ) )
+            ->getResult();
+    }
+
 }
