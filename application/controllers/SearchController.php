@@ -60,7 +60,7 @@ class SearchController extends IXP_Controller_AuthRequiredAction
             $this->view->type = 'ipv6';
             $this->processIPSearch( $this->getD2R( '\\Entities\\IPv6Address' )->findVlanInterfaces( $search ) );
         }
-        else if( preg_match( '/^as(\d+)$/', strtolower( $search ), $matches ) )
+        else if( preg_match( '/^as(\d+)$/', strtolower( $search ), $matches ) || preg_match( '/^(\d+)$/', $search, $matches ) )
         {
             $this->view->type = 'asn';
             $this->view->results = $this->getD2R( '\\Entities\\Customer' )->findByASN( $matches[1] );
@@ -69,6 +69,11 @@ class SearchController extends IXP_Controller_AuthRequiredAction
         {
             $this->view->type = 'asmacro';
             $this->view->results = $this->getD2R( '\\Entities\\Customer' )->findByASMacro( $search );
+        }
+        else if( preg_match( '/^@([a-zA-Z0-9]+)$/', $search, $matches ) )
+        {
+            $this->view->type = 'username';
+            $this->view->results = $this->getD2R( '\\Entities\\Contact' )->findByUsername( $matches[1] . '%' );
         }
     }
 

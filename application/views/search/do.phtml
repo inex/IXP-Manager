@@ -15,6 +15,12 @@
     </div>
 </div>
 
+{if $type = 'username'}
+
+    {tmplinclude file='search/contacts.phtml'}
+
+{else}
+
 {foreach $results as $cust}
 <div class="row-fluid">
     <div class="span11 offset1">
@@ -52,6 +58,8 @@
     </div>
 </div>
 {/foreach}
+
+{/if}
 
 {/if}
 

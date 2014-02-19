@@ -1,0 +1,49 @@
+
+<div class="row-fluid">
+    <div class="span11 offset1">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>E-Mail</th>
+                    <th>Username (history)</th>
+                    <th>Customer</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach $results as $contact}
+            
+                <tr>
+                    <td>
+                        <a href="{genUrl controller="contact" action="edit" id=$contact->getId() cid=$contact->getCustomer()->getId()}">
+                            {$contact->getName()}
+                        </a>
+                    </td>
+                    <td>
+                            {$contact->getEmail()}
+                    </td>
+                    <td>
+                        <a href="{genUrl controller="login-history" action="list" uid=$contact->getUser()->getId() limit=1}">
+                            {$contact->getUser()->getUsername()}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{genUrl controller="customer" action="overview" id=$contact->getCustomer()->getId()}">
+                            {$contact->getCustomer()->getName()}
+                        </a>
+                    </td>
+                    <td>
+                        {$contact->getCreated()->format( 'Y-m-d H:i:s' )}
+                    </td>
+                </tr>
+
+            {/foreach}
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
