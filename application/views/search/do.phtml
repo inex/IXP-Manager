@@ -15,6 +15,16 @@
     </div>
 </div>
 
+{if $type eq 'username' or $type eq 'email'}
+
+    {tmplinclude file='search/contacts.phtml'}
+
+{elseif $type eq 'rsprefix'}
+
+    {tmplinclude file='search/rsprefixes.phtml'}
+
+{else}
+
 {foreach $results as $cust}
 <div class="row-fluid">
     <div class="span11 offset1">
@@ -52,6 +62,8 @@
     </div>
 </div>
 {/foreach}
+
+{/if}
 
 {/if}
 
