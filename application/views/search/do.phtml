@@ -19,6 +19,10 @@
 
     {tmplinclude file='search/contacts.phtml'}
 
+{elseif $type eq 'rsprefix'}
+
+    {tmplinclude file='search/rsprefixes.phtml'}
+
 {else}
 
 {foreach $results as $cust}

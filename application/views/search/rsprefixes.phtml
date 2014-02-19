@@ -1,0 +1,43 @@
+
+<div class="row-fluid">
+    <div class="span11 offset1">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Prefix</th>
+                    <th>Customer</th>
+                    <th>IRRDB Entry</th>
+                    <th>Origin ASN</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach $results as $prefix}
+            
+                <tr>
+                    <td>
+                        <a href="{genUrl controller="rs-prefixes" action="list" custid=$prefix->getCustomer()->getId()}">
+                            {$prefix->getPrefix()}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{genUrl controller="customer" action="overview" id=$prefix->getCustomer()->getId()}">
+                            {$prefix->getCustomer()->getName()}
+                        </a>
+                    </td>
+                    <td>
+                        {if $prefix->getIrrdb()}Yes{else}No{/if}
+                    </td>
+                    <td>
+                        {$prefix->getRsOrigin()}
+                    </td>
+                </tr>
+
+            {/foreach}
+            </tbody>
+
+        </table>
+
+    </div>
+</div>

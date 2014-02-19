@@ -80,6 +80,12 @@ class SearchController extends IXP_Controller_AuthRequiredAction
             $this->view->type = 'email';
             $this->view->results = $this->getD2R( '\\Entities\\Contact' )->findByEmail( $search );
         }
+        else if( preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/', $search ) 
+                || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{0,4}\/\d{1,3}$/', $search ) )
+        {
+            $this->view->type = 'rsprefix';
+            $this->view->results = $this->getD2R( '\\Entities\\RSPrefix' )->findBy( [ 'prefix' => $search ] );
+        }
     }
 
     private function processMACSearch( $search )
