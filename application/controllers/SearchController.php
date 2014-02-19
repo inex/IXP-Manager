@@ -86,6 +86,11 @@ class SearchController extends IXP_Controller_AuthRequiredAction
             $this->view->type = 'rsprefix';
             $this->view->results = $this->getD2R( '\\Entities\\RSPrefix' )->findBy( [ 'prefix' => $search ] );
         }
+        else
+        {
+            $this->view->type = 'cust_wild';
+            $this->view->results = $this->getD2R( '\\Entities\\Customer' )->findWild( $search );
+        }
     }
 
     private function processMACSearch( $search )
