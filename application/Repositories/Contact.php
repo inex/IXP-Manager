@@ -102,4 +102,24 @@ class Contact extends EntityRepository
             ->getResult();
     }
 
+    /** 
+     * Find contacts by contact / user email
+     * 
+     * @param  string $email The email to search for
+     * @return \Entities\Contact[] Matching contacts
+     */
+    public function findByEmail( $email )
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT c
+        
+                 FROM \\Entities\\Contact c
+                 LEFT JOIN c.User u
+
+                 WHERE c.email = :email OR u.email = :email"
+            )
+            ->setParameter( 'email', $email )
+            ->getResult();
+    }
+
 }

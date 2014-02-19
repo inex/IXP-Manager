@@ -75,6 +75,11 @@ class SearchController extends IXP_Controller_AuthRequiredAction
             $this->view->type = 'username';
             $this->view->results = $this->getD2R( '\\Entities\\Contact' )->findByUsername( $matches[1] . '%' );
         }
+        else if( filter_var( $search, FILTER_VALIDATE_EMAIL ) !== false )
+        {
+            $this->view->type = 'email';
+            $this->view->results = $this->getD2R( '\\Entities\\Contact' )->findByEmail( $search );
+        }
     }
 
     private function processMACSearch( $search )
