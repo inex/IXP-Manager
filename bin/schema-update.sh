@@ -1,5 +1,13 @@
 #!/bin/sh
 
+echo '*** NOT MEANT TO BE EXECUTED ***'
+echo
+echo 'Reference only'
+echo 
+echo 'See https://github.com/inex/IXP-Manager/wiki/Installation-09-Upgrading-IXP-Manager#wiki-correcting-database-issues--verifying-your-schema for more details'
+
+exit
+
 sudo /etc/init.d/memcached restart
 rm ../doctrine/schema/*
 # gen XML from ORM Designer
