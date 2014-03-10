@@ -33,6 +33,25 @@
  */
 trait IXP_Controller_Trait_Router
 {
+    /**
+     * Common generation tasks for route collectors shared between CLI and API interfaces.
+     *
+     * @param \Entities\Vlan $vlan The VLAN object
+     * @param int $proto 4/6
+     * @param string $target The directory containing the Smarty templates
+     * @param bool $quarantine If true, select only interfaces in the quaratine lan
+     * @return string The configuration
+     */
+    protected function generateCollectorConfiguration( $vlan, $proto, $target, $quarantine = false )
+    {
+        if( !$proto || $proto == 4 )
+            $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4, false, $quarantine );
+
+        if( !$proto || $proto == 6 )
+            $this->view->v6ints = $this->sanitiseVlanInterfaces( $vlan, 6, false, $quarantine );
+
+        return $this->view->render( "router-cli/collector/{$target}/index.cfg" );
+    }
 
     /**
      * Utility function to get and return active VLAN interfaces on the requested protocol
@@ -61,11 +80,15 @@ trait IXP_Controller_Trait_Router
      *
      * @param \Entities\Vlan $vlan
      * @param int $proto
+     * @param bool $rsclient Find VLAN interfaces for route server config
+     * @param bool $quarantine Use interfaces in quarantine rather than production
      * @return array As defined above
      */
-    private function sanitiseVlanInterfaces( $vlan, $proto, $rsclient = false )
+    private function sanitiseVlanInterfaces( $vlan, $proto, $rsclient = false, $quarantine = false )
     {
-        $ints = $this->getD2R( '\\Entities\\VlanInterface' )->getForProto( $vlan, $proto, false );
+        $ints = $this->getD2R( '\\Entities\\VlanInterface' )->getForProto( $vlan, $proto, false,
+            ( $quarantine ? \Entities\PhysicalInterface::STATUS_QUARANTINE : \Entities\PhysicalInterface::STATUS_CONNECTED )
+        );
 
         $newints = [];
 

@@ -43,6 +43,7 @@ class RouterCliController extends IXP_Controller_CliAction
     public function genCollectorConfAction()
     {
         $this->view->vlan = $vlan = $this->cliResolveVlanId();
+        $quarantine = $this->cliResolveParam( 'quarantine', false, false );
 
         $target = $this->cliResolveTarget(
             isset( $this->_options['router']['collector']['conf']['target'] )
@@ -56,22 +57,15 @@ class RouterCliController extends IXP_Controller_CliAction
 
         $this->view->proto = $proto = $this->cliResolveProtocol( false );
 
-        if( !$proto || $proto == 4 )
-            $this->view->v4ints = $this->sanitiseVlanInterfaces( $vlan, 4 );
-
-        if( !$proto || $proto == 6 )
-            $this->view->v6ints = $this->sanitiseVlanInterfaces( $vlan, 6 );
+        $conf = $this->generateCollectorConfiguration( $vlan, $proto, $target, $quarantine );
 
         if( isset( $this->_options['router']['collector']['conf']['dstpath'] ) )
         {
-            if( !$this->writeConfig( $this->_options['router']['collector']['conf']['dstpath'] . "/rc-{$vlan->getId()}.conf",
-                    $this->view->render( "router-cli/collector/{$target}/index.cfg" ) ) )
-            {
+            if( !$this->writeConfig( $this->_options['router']['collector']['conf']['dstpath'] . "/rc-{$vlan->getId()}.conf", $conf ) )
                 fwrite( STDERR, "Error: could not save configuration data\n" );
-            }
         }
         else
-            echo $this->view->render( "router-cli/collector/{$target}/index.cfg" );
+            echo $conf;
     }
 
 
