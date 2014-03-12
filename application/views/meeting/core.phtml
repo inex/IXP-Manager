@@ -95,8 +95,16 @@
         </div>
     
         <div class="meeting content">{$e->getAfterText()}</div>
-    
-        {if not $simple and $smarty.now < $e->getDate()->format( 'U' ) and $user->getPrivs() eq 1}
+
+	{if not $simple and $smarty.now < $e->getDate()->format( 'U' ) and $user->getPrivs() eq 1}
+        <p class="alert alert-info">
+            <strong>
+		Please RSVP for this meeting: 
+                <a href="mailto:{$options.meeting.rsvp_to_email}">{$options.meeting.rsvp_to_email}</a>
+            </strong>
+        </p>
+        {/if}    
+        {* if not $simple and $smarty.now < $e->getDate()->format( 'U' ) and $user->getPrivs() eq 1}
             <div class="meeting buttons" id="rsvp_div_{$e->getId()}">
         
                 {if $user->getPreference( 'meeting.attending.'|cat:$e->getId() ) eq 'ATTENDING'
@@ -119,7 +127,7 @@
         
             <script type="text/javascript">{tmplinclude file="meeting/js/core.js"}</script>
             
-        {/if}
+        {/if *}
 
     </div>
         
