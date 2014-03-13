@@ -463,7 +463,7 @@ sflow.rrd.rrdcached.sock = unix:/var/run/rrdcached.sock
 ;; LANs available for public and member's own peering matrix.
 
 peering_matrix.public.0.name   = "Public Peering LAN #1"
-;; the vlan tag as entered in the 'number' colume in the vlan table
+;; the vlan tag as entered in the 'number' column in the vlan table
 peering_matrix.public.0.number = 100
 
 peering_matrix.public.1.name   = "Public Peering LAN #2"
