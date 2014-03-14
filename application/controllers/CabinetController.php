@@ -39,24 +39,24 @@ class CabinetController extends IXP_Controller_FrontEnd
     protected function _feInit()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-    
+
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Cabinet',
             'form'          => 'IXP_Form_Cabinet',
             'pagetitle'     => 'Cabinets',
-        
+
             'titleSingular' => 'Cabinet',
             'nameSingular'  => 'a cabinet',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
+
             'listOrderBy'    => 'name',
             'listOrderByDir' => 'ASC',
-        
+
             'listColumns'    => [
-            
+
                 'id'        => [ 'title' => 'UID', 'display' => false ],
-            
+
                 'location'  => [
                     'title'      => 'Location',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -64,13 +64,13 @@ class CabinetController extends IXP_Controller_FrontEnd
                     'action'     => 'view',
                     'idField'    => 'locationid'
                 ],
-            
+
                 'name'         => 'Name',
                 'cololocation' => 'Colo Location',
                 'height'       => 'Height'
             ]
         ];
-    
+
         // display the same information in the view as the list
         $this->_feParams->viewColumns = array_merge(
             $this->_feParams->listColumns,
@@ -80,8 +80,8 @@ class CabinetController extends IXP_Controller_FrontEnd
             ]
         );
     }
-    
-    
+
+
     /**
      * Provide array of users for the listAction and viewAction
      *
@@ -95,17 +95,17 @@ class CabinetController extends IXP_Controller_FrontEnd
             )
         ->from( '\\Entities\\Cabinet', 'c' )
         ->leftJoin( 'c.Location', 'l' );
-    
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $id !== null )
             $qb->andWhere( 'c.id = ?1' )->setParameter( 1, $id );
-    
+
         return $qb->getQuery()->getResult();
     }
-    
-    
+
+
     /**
      *
      * @param IXP_Form_Cabinet $form The form object
@@ -120,8 +120,8 @@ class CabinetController extends IXP_Controller_FrontEnd
         if( $isEdit )
             $form->getElement( 'locationid' )->setValue( $object->getLocation()->getId() );
     }
-    
-    
+
+
     /**
      *
      * @param IXP_Form_Cabinet $form The form object
@@ -134,9 +134,40 @@ class CabinetController extends IXP_Controller_FrontEnd
         $object->setLocation(
             $this->getD2EM()->getRepository( '\\Entities\\Location' )->find( $form->getElement( 'locationid' )->getValue() )
         );
-    
+
         return true;
     }
-    
-}
 
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( count( $object->getCustomerEquipment() ) )
+        {
+            $this->addMessage(
+                "Could not delete the cabinet as at least one piece of customer equipment is located here. Reassign or delete that kit first.",
+                OSS_Message::ERROR
+            );
+            return false;
+        }
+
+        if( count( $object->getSwitches() ) )
+        {
+            $this->addMessage(
+                "Could not delete the cabinet as at least one switch is located here. Reassign or delete the switch first.",
+                OSS_Message::ERROR
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+}
