@@ -2,6 +2,34 @@
 <div class="btn-toolbar" style="display: inline;">
 
     <div class="btn-group">
+        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+            {if isset( $stype ) and $stype}Type: {$switchTypes.$stype}{else}Limit to type...{/if}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <li {if not $stype}class="active"{/if}> 
+                <a href="{genUrl controller='switch' action=$action stype=0}">All types</a> </li>
+            <li class="divider"></li>
+            {foreach $switchTypes as $stypeid => $stypename}
+                <li {if $stype eq $stypeid}class="active"{/if}> <a href="{genUrl controller='switch' action=$action stype=$stypeid}">
+                    {$stypename}</a> </li>
+            {/foreach}
+        </ul>
+    </div>
+
+    <div class="btn-group">
+        {if $activeOnly}
+            <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action=$action activeOnly=0}">
+                Include Inactive
+            </a>
+        {else}
+            <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action=$action activeOnly=1}">
+                Show Active
+            </a>
+        {/if}
+    </div>
+
+    <div class="btn-group">
         {if $action eq 'os-view'}
             <a class="btn btn-mini pull-right" href="{genUrl controller=$controller action="list"}">Standard View</a>
         {else}

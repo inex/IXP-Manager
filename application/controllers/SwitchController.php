@@ -146,6 +146,19 @@ class SwitchController extends IXP_Controller_FrontEnd
             $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
             $this->view->infra = $infra;
         }
+
+        $this->view->switchTypes = $switchTypes = \Entities\Switcher::$TYPES;
+        $this->view->stype = $stype = $this->getSessionNamespace()->switch_list_stype
+            = $this->getParam( 'stype', ( $this->getSessionNamespace()->switch_list_stype !== null 
+                ? $this->getSessionNamespace()->switch_list_stype : \Entities\Switcher::TYPE_SWITCH ) );
+        if( $stype && isset( $switchTypes[$stype] ) )
+            $qb->andWhere( 's.switchtype = :stype' )->setParameter( 'stype', $stype );
+
+        $this->view->activeOnly = $activeOnly = $this->getSessionNamespace()->switch_list_active_only  
+            = $this->getParam( 'activeOnly', ( $this->getSessionNamespace()->switch_list_active_only !== null 
+                ? $this->getSessionNamespace()->switch_list_active_only : true ) );
+        if( $activeOnly )
+            $qb->andWhere( 's.active = :active' )->setParameter( 'active', true );
         
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
@@ -186,7 +199,12 @@ class SwitchController extends IXP_Controller_FrontEnd
                 'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
             ],
 
-            'active'         => 'Active'
+            'active'       => [
+                    'title'    => 'Active',
+                    'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                    'script'   => 'frontend/list-column-active.phtml',
+                    'colname'  => 'active'
+            ]
         ];
 
         return $this->listAction();
