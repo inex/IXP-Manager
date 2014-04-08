@@ -131,7 +131,7 @@ class MeetingItemController extends IXP_Controller_FrontEnd
             $this->redirect( 'meeting/read' );
         }
 
-        $fn = "IXP_Members_Meeting_{$pres->getMeeting()->getDate()}_({$pres->getId()}).";
+        $fn = "IXP_Members_Meeting_{$pres->getMeeting()->getDate()->format( 'Y-m-d' )}_({$pres->getId()}).";
 
         // What kind of file do we have?
         if( preg_match( '/pdf$/i', $pres->getFilename() ) ) {
