@@ -11,14 +11,14 @@ class Switcher
 {
     const TYPE_SWITCH        = 1;
     const TYPE_CONSOLESERVER = 2;
-    
-    
+
+
     public static $TYPES = [
         self::TYPE_SWITCH        => 'Switch',
         self::TYPE_CONSOLESERVER => 'Console Server'
     ];
-    
-    
+
+
     /**
      * Elements for SNMP polling via the OSS_SNMP library
      *
@@ -34,7 +34,7 @@ class Switcher
         'OsVersion',
         'SerialNumber'
     ];
-    
+
     /**
      * @var string $name
      */
@@ -108,7 +108,7 @@ class Switcher
         $this->Ports = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ConsoleServerConnections = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Set name
      *
@@ -118,7 +118,7 @@ class Switcher
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -141,7 +141,7 @@ class Switcher
     public function setIpv4addr($ipv4addr)
     {
         $this->ipv4addr = $ipv4addr;
-    
+
         return $this;
     }
 
@@ -164,7 +164,7 @@ class Switcher
     public function setIpv6addr($ipv6addr)
     {
         $this->ipv6addr = $ipv6addr;
-    
+
         return $this;
     }
 
@@ -187,7 +187,7 @@ class Switcher
     public function setSnmppasswd($snmppasswd)
     {
         $this->snmppasswd = $snmppasswd;
-    
+
         return $this;
     }
 
@@ -210,7 +210,7 @@ class Switcher
     public function setInfrastructure($infrastructure)
     {
         $this->Infrastructure = $infrastructure;
-    
+
         return $this;
     }
 
@@ -233,7 +233,7 @@ class Switcher
     public function setSwitchtype($switchtype)
     {
         $this->switchtype = $switchtype;
-    
+
         return $this;
     }
 
@@ -256,7 +256,7 @@ class Switcher
     public function setModel($model)
     {
         $this->model = $model;
-    
+
         return $this;
     }
 
@@ -279,7 +279,7 @@ class Switcher
     public function setNotes($notes)
     {
         $this->notes = $notes;
-    
+
         return $this;
     }
 
@@ -312,7 +312,7 @@ class Switcher
     public function addPort(\Entities\SwitchPort $ports)
     {
         $this->Ports[] = $ports;
-    
+
         return $this;
     }
 
@@ -345,7 +345,7 @@ class Switcher
     public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
     {
         $this->ConsoleServerConnections[] = $consoleServerConnections;
-    
+
         return $this;
     }
 
@@ -378,7 +378,7 @@ class Switcher
     public function setCabinet(\Entities\Cabinet $cabinet = null)
     {
         $this->Cabinet = $cabinet;
-    
+
         return $this;
     }
 
@@ -401,7 +401,7 @@ class Switcher
     public function setVendor(\Entities\Vendor $vendor = null)
     {
         $this->Vendor = $vendor;
-    
+
         return $this;
     }
 
@@ -429,7 +429,7 @@ class Switcher
     public function addSecEvent(\Entities\SecEvent $secEvents)
     {
         $this->SecEvents[] = $secEvents;
-    
+
         return $this;
     }
 
@@ -467,7 +467,7 @@ class Switcher
     public function setActive($active)
     {
         $this->active = $active;
-    
+
         return $this;
     }
 
@@ -495,7 +495,7 @@ class Switcher
     public function setHostname($hostname)
     {
         $this->hostname = $hostname;
-    
+
         return $this;
     }
 
@@ -538,7 +538,7 @@ class Switcher
     public function setOs($os)
     {
         $this->os = $os;
-    
+
         return $this;
     }
 
@@ -561,7 +561,7 @@ class Switcher
     public function setOsDate($osDate)
     {
         $this->osDate = $osDate;
-    
+
         return $this;
     }
 
@@ -584,7 +584,7 @@ class Switcher
     public function setOsVersion($osVersion)
     {
         $this->osVersion = $osVersion;
-    
+
         return $this;
     }
 
@@ -607,7 +607,7 @@ class Switcher
     public function setLastPolled($lastPolled)
     {
         $this->lastPolled = $lastPolled;
-    
+
         return $this;
     }
 
@@ -620,9 +620,9 @@ class Switcher
     {
         return $this->lastPolled;
     }
-    
-    
-    
+
+
+
     /**
      * Update switch's details using SNMP polling
      *
@@ -639,35 +639,42 @@ class Switcher
         $formatDate = function( $d ) {
             return $d instanceof \DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
         };
-    
+
         foreach( self::$OSS_SNMP_SWITCH_ELEMENTS as $p )
         {
             $fn = "get{$p}";
             $n = $host->getPlatform()->$fn();
-    
-            switch( $p )
+
+            if( $logger )
             {
-                case 'OsDate':
-                    if( $logger && $formatDate( $this->$fn() ) != $formatDate( $n ) )
-                        $logger->info( " [{$this->getName()}] Updating {$p} from " . $formatDate( $this->$fn() ) . " to " . $formatDate( $n ) );
-                    break;
-                    
-                default:
-                    if( $logger && $this->$fn() != $n )
-                        $logger->info( " [{$this->getName()}] Updating {$p} from {$this->$fn()} to {$n}" );
-                    break;
+                switch( $p )
+                {
+                    case 'OsDate':
+                        if( $formatDate( $this->$fn() ) != $formatDate( $n ) )
+                            $logger->info( " [{$this->getName()}] Platform: Updating {$p} from " . $formatDate( $this->$fn() ) . " to " . $formatDate( $n ) );
+                        else
+                            $logger->info( " [{$this->getName()}] Platform: Found {$p}: " . $formatDate( $n ) );
+                        break;
+
+                    default:
+                        if( $logger && $this->$fn() != $n )
+                            $logger->info( " [{$this->getName()}] Platform: Updating {$p} from {$this->$fn()} to {$n}" );
+                        else
+                            $logger->info( " [{$this->getName()}] Platform: Found {$p}: {$n}" );
+                        break;
+                }
             }
-            
+
             $fn = "set{$p}";
             $this->$fn( $n );
         }
-    
+
         $this->setLastPolled( new \DateTime() );
         return $this;
     }
-    
-    
-    
+
+
+
     /**
      * Update a switches ports using SNMP polling
      *
@@ -706,7 +713,7 @@ class Switcher
 
             // find the matching switchport that may already be in the database (or create a new one)
             $switchport = false;
-            
+
             foreach( $existingPorts as $ix => $ep )
             {
                 if( $ep->getIfIndex() == $index )
@@ -714,7 +721,7 @@ class Switcher
                     $switchport = $ep;
                     if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => false ];
                     if( $logger ) { $logger->info( " - {$this->getName()} - found pre-existing port for ifIndex {$index}" ); };
-                    
+
                     // remove this from the array so later we'll know what ports exist only in the database
                     unset( $existingPorts[ $ix ] );
                     break;
@@ -738,14 +745,14 @@ class Switcher
 
                 if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => "new" ];
                 $new = true;
-                
+
                 if( $logger ) { $logger->info( "Found new port for {$this->getName()} with index $index" ); };
             }
 
             // update / set port details from SNMP
             $switchport->snmpUpdate( $host, $logger );
         }
-    
+
         if( count( $existingPorts ) )
         {
             $i = -1;
@@ -756,7 +763,7 @@ class Switcher
                         . " [{$ep->getId()}] {$ep->getName()}" ); };
             }
         }
-    
+
         return $this;
     }
 
@@ -775,14 +782,14 @@ class Switcher
     public function setSerialNumber($serialNumber)
     {
         $this->serialNumber = $serialNumber;
-    
+
         return $this;
     }
 
     /**
      * Get serialNumber
      *
-     * @return string 
+     * @return string
      */
     public function getSerialNumber()
     {
