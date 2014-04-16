@@ -45,14 +45,23 @@ class IXP_Form_Location extends IXP_Form
         $this->addElement( $name );
 
 
-        $shortname = $this->createElement( 'text', 'shortname' );
-        $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
-            ->setAttrib( 'class', 'span3' )
-            ->setRequired( true )
-            ->setLabel( 'Short Name' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $shortname );
+    $shortname = $this->createElement( 'text', 'shortname' );
+    $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
+        ->setAttrib( 'class', 'span3' )
+        ->setRequired( true )
+        ->setLabel( 'Short Name' )
+        ->addFilter( 'StringTrim' )
+        ->addFilter( new OSS_Filter_StripSlashes() );
+    $this->addElement( $shortname );
+
+    $tag = $this->createElement( 'text', 'tag' );
+    $tag->addValidator( 'stringLength', false, array( 1, 255 ) )
+        ->setAttrib( 'class', 'span3' )
+        ->setRequired( true )
+        ->setLabel( 'Tag' )
+        ->addFilter( 'StringTrim' )
+        ->addFilter( new OSS_Filter_StripSlashes() );
+    $this->addElement( $tag );
 
         $address = $this->createElement( 'textarea', 'address' );
         $address->addValidator( 'stringLength', false, array( 1, 255 ) )
@@ -153,17 +162,16 @@ class IXP_Form_Location extends IXP_Form
     public static function getPopulatedSelect( $name = 'locationid' )
     {
         $loc = new Zend_Form_Element_Select( $name );
-        
+
         $maxId = self::populateSelectFromDatabase( $loc, '\\Entities\\Location', 'id', 'name', 'name', 'ASC' );
-        
+
         $loc->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( _( 'Location' ) )
             ->setAttrib( 'class', 'span3 chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select a location' ) ) );
-        
+
         return $loc;
     }
 }
-
