@@ -55,6 +55,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         $ipv4addressid->setRequired( false )
             ->setChosenOptions( [ "0" => "" ] )
             ->setLabel( 'IPv4 Address' )
+            ->addFilter( 'StringTrim' )
             ->setErrorMessages( array( 'Please select or enter a IPv4 address' ) );
         $this->addElement( $ipv4addressid );
 
@@ -99,6 +100,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
         $ipv6addressid->setRequired( false )
             ->setLabel( 'IPv6 Address' )
             ->setChosenOptions( [ "0" => "" ] )
+            ->addFilter( 'StringTrim' )
             ->setErrorMessages( array( 'Please select or enter a IPv6 address' ) );
         $this->addElement( $ipv6addressid );
         
