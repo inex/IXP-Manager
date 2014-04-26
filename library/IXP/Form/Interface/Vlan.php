@@ -43,9 +43,9 @@ class IXP_Form_Interface_Vlan extends IXP_Form
 
         $this->addElement( IXP_Form_Vlan::getPopulatedSelect( 'vlanid' ) );
         $this->getElement( 'vlanid' )
-            ->setAttrib( 'class', 'chzn-select span6' );            
-        
-        
+            ->setAttrib( 'class', 'chzn-select span6' );
+
+
         $ipv4enabled = $this->createElement( 'checkbox', 'ipv4enabled' );
         $ipv4enabled->setLabel( 'IPv4 Enabled' )
             ->setCheckedValue( '1' );
@@ -103,7 +103,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->setErrorMessages( array( 'Please select or enter a IPv6 address' ) );
         $this->addElement( $ipv6addressid );
-        
+
         $ipv6hostname = $this->createElement( 'text', 'ipv6hostname' );
         $ipv6hostname->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv6 Hostname' )
@@ -139,6 +139,7 @@ class IXP_Form_Interface_Vlan extends IXP_Form
 
         $irrdbfilter = $this->createElement( 'checkbox', 'irrdbfilter' );
         $irrdbfilter->setLabel( 'Apply IRRDB Filtering' )
+            ->setValue( '1' )
             ->setCheckedValue( '1' );
         $this->addElement( $irrdbfilter );
 
@@ -177,23 +178,22 @@ class IXP_Form_Interface_Vlan extends IXP_Form
             ->setAttrib( 'cols', 60 )
             ->setAttrib( 'rows', 5 );
         $this->addElement( $notes );
-        
+
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
-            
+
         $preselectIPv4Address = $this->createElement( 'hidden', 'preselectIPv4Address' );
         $this->addElement( $preselectIPv4Address );
-        
+
         $preselectIPv6Address = $this->createElement( 'hidden', 'preselectIPv6Address' );
         $this->addElement( $preselectIPv6Address );
-        
+
         $preselectVlanInterface = $this->createElement( 'hidden', 'preselectVlanInterface' );
         $this->addElement( $preselectVlanInterface );
 
         $preselectCustomer = $this->createElement( 'hidden', 'preselectCustomer' );
         $this->addElement( $preselectCustomer );
-            
+
     }
 
 }
-
