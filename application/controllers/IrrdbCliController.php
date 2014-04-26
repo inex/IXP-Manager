@@ -48,8 +48,16 @@ class IrrdbCliController extends IXP_Controller_CliAction
 
         foreach( $customers as $c )
         {
-            if( !$c->isRouteServerClient() )
+            if( !$c->isRouteServerClient() || !$c->isIrrdbFiltered() )
+            {
+                // delete any pre-existing entries just in case this has changed
+                $this->getD2EM()->getConnection()->executeUpdate(
+                    "DELETE FROM irrdb_prefix WHERE customer_id = ?", [ $c->getId() ]
+                );
+
                 continue;
+            }
+
 
             $this->verbose( "Processing {$c->getAbbreviatedName()}: ", false );
 
@@ -405,15 +413,3 @@ class IrrdbCliController extends IXP_Controller_CliAction
         return $asns;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
