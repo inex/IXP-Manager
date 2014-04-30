@@ -33,29 +33,29 @@
  */
 class LocationController extends IXP_Controller_FrontEnd
 {
-    
+
     /**
      * This function sets up the frontend controller
      */
     protected function _feInit()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-    
+
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Location',
             'form'          => 'IXP_Form_Location',
             'pagetitle'     => 'Locations',
-        
+
             'titleSingular' => 'Location',
             'nameSingular'  => 'a location',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
+
             'listOrderBy'    => 'name',
             'listOrderByDir' => 'ASC',
-        
+
             'listColumns'    => [
-        
+
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'      => 'Name',
                 'shortname' => 'Shortname',
@@ -64,7 +64,7 @@ class LocationController extends IXP_Controller_FrontEnd
                 'nocemail'  => 'NOC Email'
             ]
         ];
-    
+
         // display the same information in the view as the list
         $this->_feParams->viewColumns = array_merge(
             $this->_feParams->listColumns,
@@ -78,8 +78,8 @@ class LocationController extends IXP_Controller_FrontEnd
             ]
         );
     }
-    
-    
+
+
     /**
      * Provide array of users for the listAction and viewAction
      *
@@ -95,15 +95,37 @@ class LocationController extends IXP_Controller_FrontEnd
                 l.officeemail AS officeemail, l.notes AS notes'
             )
         ->from( '\\Entities\\Location', 'l' );
-    
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $id !== null )
             $qb->andWhere( 'l.id = ?1' )->setParameter( 1, $id );
-    
+
         return $qb->getQuery()->getResult();
     }
-    
-}
 
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why.
+     *
+     * @param object $object The Doctrine2 entity to delete
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete( $object )
+    {
+        if( count( $object->getCabinets() ) )
+        {
+            $this->addMessage(
+                "Could not delete the location as at least one cabinet is located here. Reassign or delete the cabinet first.",
+                OSS_Message::ERROR
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+}

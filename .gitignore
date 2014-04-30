@@ -33,3 +33,4 @@ application/views/_skins/*/router-cli/tacacs/*/key.cfg
 application/configs/rc-inex-*conf
 application/configs/rs*-inex-*.conf
 application/configs/ci-*
+*.DS_Store

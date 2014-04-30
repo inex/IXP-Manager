@@ -173,7 +173,7 @@ class ContactController extends IXP_Controller_FrontEnd
             return $data;
 
         $data = $this->setRolesAndGroups( $data, $id );
-        
+
         return $data;
     }
 
@@ -196,6 +196,7 @@ class ContactController extends IXP_Controller_FrontEnd
             $ids[] = $row['id'];
 
         $roles = $this->getD2R( '\\Entities\\Contact' )->getRolesByIds( $ids );
+
         if( $id !== null )
             $groups = $this->getD2R( '\\Entities\\Contact' )->getGroupsByIds( $ids );
 
@@ -764,7 +765,7 @@ class ContactController extends IXP_Controller_FrontEnd
                     if( $form->getValue( "privs" ) == \Entities\User::AUTH_SUPERUSER )
                         $user->setPreference( 'customer-notes.read_upto', time() );
                 }
-                                
+
                 $this->getD2EM()->persist( $user );
                 $this->_feParams->userStatus = "created";
             }
@@ -785,7 +786,7 @@ class ContactController extends IXP_Controller_FrontEnd
                         OSS_Auth_Password::hash( $form->getValue( "password" ), $this->_options['resources']['auth']['oss'] )
                      );
                 }
-                   
+
                 $user->setUsername( $form->getValue( "username" ) );
                 $user->setPrivs( $form->getValue( "privs" ) );
             }

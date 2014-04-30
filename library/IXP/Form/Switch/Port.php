@@ -36,7 +36,7 @@ class IXP_Form_Switch_Port extends IXP_Form
     public function init()
     {
         $this->addElement( IXP_Form_Switch::getPopulatedSelect( 'switchid' ) );
-        
+
         $name = $this->createElement( 'text', 'name' );
         $name->setLabel( 'Name' )
              ->setAttrib( 'class', 'span3' );
@@ -45,7 +45,6 @@ class IXP_Form_Switch_Port extends IXP_Form
         $type = $this->createElement( 'select', 'type' );
         $type->setMultiOptions( \Entities\SwitchPort::$TYPES )
             ->setRegisterInArrayValidator( true )
-            ->addValidator( 'greaterThan', true, array( 0 ) )
             ->setLabel( 'Type' )
             ->setAttrib( 'class', 'span3 chzn-select' )
             ->setErrorMessages( array( 'Please set the port type' ) );
@@ -62,4 +61,3 @@ class IXP_Form_Switch_Port extends IXP_Form
         $this->addElement( $this->createCancelElement() );
     }
 }
-
