@@ -630,7 +630,8 @@ class ContactController extends IXP_Controller_FrontEnd
         $object->setLastupdated( new DateTime() );
         $object->setLastupdatedby( $this->getUser()->getId() );
 
-        $this->_processUser( $form, $object, $isEdit );
+        if( !$this->_processUser( $form, $object, $isEdit ) )
+            return false;
 
         // let the group processor have the final say as to whether post validation
         // passes or not
@@ -787,6 +788,14 @@ class ContactController extends IXP_Controller_FrontEnd
                      );
                 }
 
+                // ensure the username is not already taken
+                if( $user->getUsername() != $form->getValue( "username" )
+                        && $this->getD2R( '\\Entities\\User' )->findOneBy( [ 'username' => $form->getValue( "username" ) ] ) )
+                {
+                    $this->addMessage( 'That username is already is use by another user', OSS_Message::ERROR );
+                    return false;
+                }
+
                 $user->setUsername( $form->getValue( "username" ) );
                 $user->setPrivs( $form->getValue( "privs" ) );
             }
@@ -798,6 +807,8 @@ class ContactController extends IXP_Controller_FrontEnd
             if( $contact->getUser() )
                 $this->_deleteUser( $contact );
         }
+
+        return true;
     }
 
 
