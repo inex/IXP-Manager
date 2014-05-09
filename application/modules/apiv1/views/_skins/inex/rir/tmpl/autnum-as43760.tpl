@@ -2,7 +2,6 @@ password: {$options.rir.ripe_password}
 
 aut-num:        AS43760
 as-name:        INEX-RS
-descr:          INEX Route Server ASN
 descr:          Internet Neutral Exchange Association Ltd.
 remarks:        -------------------------------------------------------
 remarks:
@@ -31,6 +30,7 @@ remarks:        -------------------------------------------------------
 org:            ORG-INEX1-RIPE
 admin-c:        INO7-RIPE
 tech-c:         INO7-RIPE
+mnt-by:         RIPE-NCC-END-MNT
 mnt-by:         INEX-NOC
 mnt-routes:     INEX-NOC
 changed:        ripe-admin@inex.ie

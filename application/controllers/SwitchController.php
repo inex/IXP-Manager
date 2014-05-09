@@ -514,6 +514,9 @@ class SwitchController extends IXP_Controller_FrontEnd
         foreach( $object->getPorts() as $p )
             $this->getD2EM()->remove( $p );
 
+        foreach( $object->getSecEvents() as $se )
+            $this->getD2EM()->remove( $se );
+
         return true;
     }
 
