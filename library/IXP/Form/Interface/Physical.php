@@ -38,13 +38,15 @@ class IXP_Form_Interface_Physical extends IXP_Form
     {
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'physical-interface/forms/edit.phtml' ] ] ] );
 
-        $this->addElement( IXP_Form_Switch::getPopulatedSelect( 'switchid' ) );
+        $switch = IXP_Form_Switch::getPopulatedSelect( 'switchid' )
+                      ->setAttrib( 'class', 'chzn-select span8' );
+        $this->addElement( $switch );
         
         $switchPorts = $this->createElement( 'select', 'switchportid' );
         $switchPorts->setRequired( true )
             ->setRegisterInArrayValidator( false )
             ->setLabel( 'Port' )
-            ->setAttrib( 'class', 'chzn-select span4' )
+            ->setAttrib( 'class', 'chzn-select span8' )
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a switch port' ) );
         $this->addElement( $switchPorts );
