@@ -65,4 +65,5 @@ mp-export:      afi ipv6.unicast
     {/foreach}
 {/foreach}
 
+status:         ASSIGNED
 source:         RIPE
