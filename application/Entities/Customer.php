@@ -1206,7 +1206,7 @@ class Customer
     {
         return $this->TrafficDailies;
     }
-    
+
     /**
      * @var string $noc24hphone
      */
@@ -1461,9 +1461,9 @@ class Customer
     {
         if( !in_array( $proto, [ 4, 6 ] ) )
             throw new \IXP_Exception( 'Invalid protocol' );
-        
+
         $fnEnabled = "getIpv{$proto}enabled";
-         
+
         foreach( $this->getVirtualInterfaces() as $vi )
         {
             foreach( $vi->getVlanInterfaces() as $vli )
@@ -1475,6 +1475,25 @@ class Customer
 
         return false;
     }
+
+    /**
+     * Is the customer IRRDB filtered (usually for route server clients) on any of their VLAN interfaces?
+     * @return boolean
+     */
+    public function isIrrdbFiltered()
+    {
+        foreach( $this->getVirtualInterfaces() as $vi )
+        {
+            foreach( $vi->getVlanInterfaces() as $vli )
+            {
+                if( $vli->getIrrdbfilter() )
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * Is the customer an AS112 client on any of their VLAN interfaces?
@@ -1550,7 +1569,7 @@ class Customer
     {
         return $this->peeringDb;
     }
-    
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -1662,7 +1681,7 @@ class Customer
     {
         return $this->BillingDetails;
     }
-    
+
     /**
      * @var string
      */
@@ -1718,7 +1737,7 @@ class Customer
     {
         return $this->MD5Support;
     }
-    
+
     /**
      * @var boolean
      */
@@ -1744,7 +1763,7 @@ class Customer
     public function setIsReseller($isReseller)
     {
         $this->isReseller = $isReseller;
-    
+
         return $this;
     }
 
@@ -1787,7 +1806,7 @@ class Customer
     public function addResoldCustomer(\Entities\Customer $resoldCustomers)
     {
         $this->ResoldCustomers[] = $resoldCustomers;
-    
+
         return $this;
     }
 
@@ -1820,7 +1839,7 @@ class Customer
     public function setReseller(\Entities\Customer $reseller = null)
     {
         $this->Reseller = $reseller;
-    
+
         return $this;
     }
 
@@ -1843,7 +1862,7 @@ class Customer
     public function addIXP(\Entities\IXP $iXPs)
     {
         $this->IXPs[] = $iXPs;
-    
+
         return $this;
     }
 
@@ -1881,7 +1900,7 @@ class Customer
     public function addIrrdbPrefixes(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
         $this->IrrdbPrefixes[] = $irrdbPrefixes;
-    
+
         return $this;
     }
 
@@ -1905,15 +1924,15 @@ class Customer
     {
         if( $proto === false )
             return $this->IrrdbPrefixes;
-        
+
         $prefixes = [];
         foreach( $this->IrrdbPrefixes as $p )
             if( $p->getProtocol() == $proto )
                 $prefixes[] = $p;
-            
+
         return $prefixes;
     }
-    
+
     /**
      * Useful function to get the appropriate AS macro or ASN for a customer
      * for a given protocol.
@@ -1929,7 +1948,7 @@ class Customer
     {
         if( !in_array( $protocol, [ 4, 6 ] ) )
             throw new \IXP_Exception( 'Invalid / unknown protocol. 4/6 accepted only.' );
-        
+
         // find the appropriate ASN or macro
         if( $protocol == 6 && strlen( $this->getPeeringmacrov6() ) > 3 )
             $asmacro = $this->getPeeringmacrov6();
@@ -1940,7 +1959,7 @@ class Customer
 
         return $asmacro;
     }
-    
+
     /**
      * Add IrrdbPrefixes
      *
@@ -1950,7 +1969,7 @@ class Customer
     public function addIrrdbPrefixe(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
         $this->IrrdbPrefixes[] = $irrdbPrefixes;
-    
+
         return $this;
     }
 
@@ -1973,7 +1992,7 @@ class Customer
     public function addRSPrefixe(\Entities\RSPrefix $rSPrefixes)
     {
         $this->RSPrefixes[] = $rSPrefixes;
-    
+
         return $this;
     }
 
@@ -2001,7 +2020,7 @@ class Customer
     public function addIrrdbASN(\Entities\IrrdbAsn $irrdbASNs)
     {
         $this->IrrdbASNs[] = $irrdbASNs;
-    
+
         return $this;
     }
 
@@ -2018,7 +2037,7 @@ class Customer
     /**
      * Get IrrdbASNs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getIrrdbASNs()
     {

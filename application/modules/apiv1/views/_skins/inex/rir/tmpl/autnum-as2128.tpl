@@ -26,4 +26,5 @@ changed:        nick-ripe@inex.ie 20050611
 changed:        nick-ripe@inex.ie 20060512
 changed:        ripe-admin@inex.ie 20071119
 changed:        ripe-admin@inex.ie
+status:         ASSIGNED
 source:         RIPE

@@ -36,10 +36,10 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
     public function init()
     {
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'virtual-interface/forms/add-wizard.phtml' ] ] ] );
-        
+
         $this->addElement( IXP_Form_Customer::getPopulatedSelect( 'custid' ) );
         $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span12' );
-                
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // VIRTUAL INTERFACE DETAILS
 
@@ -80,21 +80,21 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $trunk->setLabel( 'Is 802.1q Trunk?' )
             ->setCheckedValue( '1' );
         $this->addElement( $trunk );
-        
+
         $this->addDisplayGroup(
             array( 'name', 'description', 'channelgroup', 'mtu', 'trunk' ),
             'virtualInterfaceDisplayGroup'
         );
-            
+
         $this->getDisplayGroup( 'virtualInterfaceDisplayGroup' )->setLegend( 'Virtual Interface Details' );
 
-        
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////
         // PHYSICAL INTERFACE DETAILS
 
         $this->addElement( IXP_Form_Switch::getPopulatedSelect( 'switchid' ) );
         $this->getElement( 'switchid' )->setAttrib( 'class', 'chzn-select span12' );
-        
+
         $switchPorts = $this->createElement( 'select', 'switchportid' );
         $switchPorts->setRequired( true )
             ->setRegisterInArrayValidator( false )
@@ -103,8 +103,8 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
             ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
             ->setErrorMessages( array( 'Please select a switch port' ) );
         $this->addElement( $switchPorts );
-        
-        
+
+
         $status = $this->createElement( 'select', 'status' );
         $status->setMultiOptions( \Entities\PhysicalInterface::$STATES )
             ->setRegisterInArrayValidator( true )
@@ -135,9 +135,9 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
             [ 'switchid', 'switchportid', 'status', 'speed', 'duplex' ],
             'physicalInterfaceDisplayGroup'
         );
-        
+
         $this->getDisplayGroup( 'physicalInterfaceDisplayGroup' )->setLegend( 'Physical Interface Details' );
-        
+
 
         //////////////////////////////////////////////////////////////////////////
         // VLAN INTERFACE DETAILS
@@ -145,8 +145,8 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $this->addElement( IXP_Form_Vlan::getPopulatedSelect( 'vlanid' ) );
         $this->getElement( 'vlanid' )
             ->setAttrib( 'class', 'chzn-select span12' );
-        
-        
+
+
         $ipv4enabled = $this->createElement( 'checkbox', 'ipv4enabled' );
         $ipv4enabled->setLabel( 'IPv4 Enabled' )
             ->setCheckedValue( '1' );
@@ -156,39 +156,40 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $ipv4addressid->setRequired( false )
             ->setChosenOptions( [ "0" => "" ] )
             ->setLabel( 'IPv4 Address' )
+            ->addFilter( 'StringTrim' )
             ->setErrorMessages( array( 'Please select or enter a IPv4 address' ) );
         $this->addElement( $ipv4addressid );
-        
+
         $ipv4hostname = $this->createElement( 'text', 'ipv4hostname' );
         $ipv4hostname->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv4 Hostname' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv4hostname  );
-        
+
         $ipv4bgpmd5secret = $this->createElement( 'text', 'ipv4bgpmd5secret' );
         $ipv4bgpmd5secret->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv4 BGP MD5 Secret' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv4bgpmd5secret  );
-        
+
         $ipv4canping = $this->createElement( 'checkbox', 'ipv4canping' );
         $ipv4canping->setLabel( 'IPv4 Can Ping' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv4canping );
-        
+
         $ipv4monitorrcbgp = $this->createElement( 'checkbox', 'ipv4monitorrcbgp' );
         $ipv4monitorrcbgp->setLabel( 'IPv4 Monitor RC BGP' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv4monitorrcbgp );
-        
+
         $this->addDisplayGroup(
             [ 'ipv4addressid', 'ipv4hostname', 'ipv4bgpmd5secret', 'ipv4canping', 'ipv4monitorrcbgp' ],
             'ipv4DisplayGroup'
         );
         $this->getDisplayGroup( 'ipv4DisplayGroup' )->setLegend( 'IPv4 Details' );
-                
+
 
 
 
@@ -202,102 +203,104 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $ipv6addressid->setRequired( false )
             ->setLabel( 'IPv6 Address' )
             ->setChosenOptions( [ "0" => "" ] )
+            ->addFilter( 'StringTrim' )
             ->setErrorMessages( array( 'Please select or enter a IPv6 address' ) );
         $this->addElement( $ipv6addressid );
-        
+
         $ipv6hostname = $this->createElement( 'text', 'ipv6hostname' );
         $ipv6hostname->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv6 Hostname' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv6hostname  );
-        
+
         $ipv6bgpmd5secret = $this->createElement( 'text', 'ipv6bgpmd5secret' );
         $ipv6bgpmd5secret->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv6 BGP MD5 Secret' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv6bgpmd5secret  );
-        
-        
+
+
         $ipv6canping = $this->createElement( 'checkbox', 'ipv6canping' );
         $ipv6canping->setLabel( 'IPv6 Can Ping' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv6canping );
-        
+
         $ipv6monitorrcbgp = $this->createElement( 'checkbox', 'ipv6monitorrcbgp' );
         $ipv6monitorrcbgp->setLabel( 'IPv6 Monitor RC BGP' )
             ->setCheckedValue( '1' );
         $this->addElement( $ipv6monitorrcbgp );
-        
+
         $this->addDisplayGroup(
             [ 'ipv6addressid', 'ipv6hostname', 'ipv6bgpmd5secret', 'ipv6canping', 'ipv6monitorrcbgp' ],
         	'ipv6DisplayGroup'
         );
-        
+
         $this->getDisplayGroup( 'ipv6DisplayGroup' )->setLegend( 'IPv6 Details' );
 
 
-        
+
         $irrdbfilter = $this->createElement( 'checkbox', 'irrdbfilter' );
         $irrdbfilter->setLabel( 'Apply IRRDB Filtering' )
+            ->setValue( '1' )
             ->setCheckedValue( '1' );
         $this->addElement( $irrdbfilter );
-        
+
         $mcastenabled = $this->createElement( 'checkbox', 'mcastenabled' );
         $mcastenabled->setLabel( 'Multicast Enabled' )
             ->setCheckedValue( '1' );
         $this->addElement( $mcastenabled );
-        
+
         $maxbgpprefix = $this->createElement( 'text', 'maxbgpprefix' );
         $maxbgpprefix->addValidator('int')
             ->addValidator( 'greaterThan', false, array( -1 ) )
             ->setRequired( false )
             ->setLabel( 'Max BGP Prefixes' );
         $this->addElement( $maxbgpprefix  );
-        
+
         $rsclient = $this->createElement( 'checkbox', 'rsclient' );
         $rsclient->setLabel( 'Route Server Client' )
             ->setCheckedValue( '1' );
         $this->addElement( $rsclient );
-        
+
         $as112client = $this->createElement( 'checkbox', 'as112client' );
         $as112client->setLabel( 'AS112 Client' )
             ->setCheckedValue( '1' );
         $this->addElement( $as112client );
-        
+
         $busyhost = $this->createElement( 'checkbox', 'busyhost' );
         $busyhost->setLabel( 'Busy host' )
             ->setCheckedValue( '1' );
         $this->addElement( $busyhost );
-        
-        
+
+
         $this->addDisplayGroup(
             [ 'irrdbfilter', 'mcastenabled', 'maxbgpprefix', 'rsclient', 'as112client', 'busyhost' ],
         	'vlanInterfaceDisplayGroup'
         );
-        
+
         $this->getDisplayGroup( 'vlanInterfaceDisplayGroup' )->setLegend( 'Other VLAN Interface Settings' );
-        
+
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
-            
+
         $preselectIPv4Address = $this->createElement( 'hidden', 'preselectIPv4Address' );
         $this->addElement( $preselectIPv4Address );
-        
+
         $preselectIPv6Address = $this->createElement( 'hidden', 'preselectIPv6Address' );
         $this->addElement( $preselectIPv6Address );
-        
+
         $preselectVlanInterface = $this->createElement( 'hidden', 'preselectVlanInterface' );
         $this->addElement( $preselectVlanInterface );
 
         $preselectSwitchPort = $this->createElement( 'hidden', 'preselectSwitchPort' );
         $this->addElement( $preselectSwitchPort );
-        
+
         $preselectPhysicalInterface = $this->createElement( 'hidden', 'preselectPhysicalInterface' );
         $this->addElement( $preselectPhysicalInterface );
-        
+
     }
 
     /**
@@ -315,7 +318,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $fanout->setLabel( 'Associate a fanout port' )
             ->setCheckedValue( '1' );
         $this->addElement( $fanout );
-        
+
         $switcher = IXP_Form_Switch::getPopulatedSelect( 'fn_switchid' );
         $switcher->setRequired( false )
             ->setAttrib( 'class', 'chzn-select' )
@@ -335,7 +338,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
 
         $preselectSwitchPort = $this->createElement( 'hidden', 'fn_preselectSwitchPort' );
         $this->addElement( $preselectSwitchPort );
-        
+
         $preselectPhysicalInterface = $this->createElement( 'hidden', 'fn_preselectPhysicalInterface' );
         $this->addElement( $preselectPhysicalInterface );
 
@@ -343,7 +346,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
             [ 'fn_switchid', 'fn_switchportid', 'fn_preselectSwitchPort', 'fn_preselectPhysicalInterface' ],
             'fanoutDisplayGroup'
         );
-        
+
         $this->getDisplayGroup( 'fanoutDisplayGroup' )->setLegend( 'Fanout Port' );
 
         return $this;
