@@ -27,9 +27,9 @@ WriteMakefile(
 	VERSION_FROM	=> 'lib/IXPManager/Config.pm',
 
 	PREREQ_PM	=> {
-		Config::General => '',
-		NetAddr::IP => '',
-		DBI => '',
+		Config::General => 0,
+		NetAddr::IP => 0,
+		DBI => 0,
 	},
 
 	'dist'		=> {
