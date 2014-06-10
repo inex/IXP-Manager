@@ -37,17 +37,39 @@ class Apiv1_CustomerController extends IXP_Controller_API_V1Action
     public function detailsAction()
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
-        
+
         $user = $this->assertUserPriv( \Entities\User::AUTH_SUPERUSER );
-        
+
         $customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive(
             true,
             $this->getParam( 'trafficing',   false ) ? true : false,
             $this->getParam( 'externalonly', false ) ? true : false,
             is_int( $this->getParam( 'ixp', false ) ) ? $this->getParam( 'ixp', false ) : false
         );
-        
+
         $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
         echo json_encode( $customers );
+    }
+
+    public function euroixExportAction()
+    {
+        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+
+        $customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive(
+            false,
+            $this->getParam( 'trafficing',   true ) ? true : false,
+            $this->getParam( 'externalonly', true ) ? true : false,
+            is_int( $this->getParam( 'ixp', false ) ) ? $this->getParam( 'ixp', false ) : false
+        );
+
+        $this->getResponse()->setHeader( 'Content-Type', 'text/plain' );
+
+        foreach( $customers as $c )
+        {
+            echo sprintf( "%s;%s;%s;%s\n", str_replace( ';', '-', $c->getName() ),
+                $c->getAutsys(), $c->getCorpwww(),
+                $c->isRouteServerClient() ? 'Yes' : 'No'
+            );
+        }
     }
 }
