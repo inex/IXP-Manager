@@ -1477,6 +1477,28 @@ class Customer
     }
 
     /**
+     * Is the customer IPvX enabled on any of their VLAN interfaces?
+     * @param int $proto One of [4,6]. Defaults to 4.
+     * @return boolean
+     */
+    public function isIPvXEnabled( $proto = 4 )
+    {
+        if( !in_array( $proto, [ 4, 6 ] ) )
+            throw new \IXP_Exception( 'Invalid protocol' );
+
+        $fnEnabled = "getIpv{$proto}enabled";
+
+        foreach( $this->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getVlanInterfaces() as $vli ) {
+                if( $vli->$fnEnabled() )
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Is the customer IRRDB filtered (usually for route server clients) on any of their VLAN interfaces?
      * @return boolean
      */

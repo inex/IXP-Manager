@@ -68,7 +68,7 @@ class Apiv1_CustomerController extends IXP_Controller_API_V1Action
         {
             echo sprintf( "%s;%s;%s;%s\n", str_replace( ';', '-', $c->getName() ),
                 $c->getAutsys(), $c->getCorpwww(),
-                $c->isRouteServerClient() ? 'Yes' : 'No'
+                $c->isIPvXEnabled( 6 ) ? 'Yes' : 'No'
             );
         }
     }
