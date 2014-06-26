@@ -11,26 +11,26 @@
             <th>Connections</th>
         </tr>
     </thead>
-    
+
     <tbody>
-    
+
         {foreach $customers as $c}
-        
+
             {* let's ignore associate and internal members here, we can add them in using a second loop later if we wish *}
             {* we can also ignore TYPE_PROBONO if we wish *}
             {if $c->getType() eq CUSTOMER::TYPE_ASSOCIATE or $c->getType() eq CUSTOMER::TYPE_INTERNAL}
                 {continue}
             {/if}
-            
+
             <tr>
-            
+
                 <td>
                     <a href="{$c->getCorpwww()}">{$c->getName()}</a>
                 </td>
                 <td>
                     <a href="http://www.ripe.net/perl/whois?searchtext=as{$c->getAutsys()}&form_type=simple">{$c->getAutsys()}</a>
                 </td>
-                
+
                 {* LONAP shows connects as items such as FE + GE, GE, 10GE + GE, 4*10GE, etc *}
                 <td>
                     {foreach $c->getVirtualInterfaces() as $vi}
@@ -38,6 +38,7 @@
                         {if not $pi}{continue}{/if}
                         {$pi = $pi.0}
                         {if not $pi}{continue}{/if}
+                        {if $pi->getSwitchPort()->getType() neq SWITCHPORT::TYPE_PEERING}{continue}{/if}
                         {if not $vi@first}&nbsp;+&nbsp;{/if}
                         {if count( $vi->getPhysicalInterfaces() ) > 1}{count( $vi->getPhysicalInterfaces() )}*{/if}{if
                             $pi->getSpeed() eq 100}FE{elseif $pi->getSpeed() eq 1000}GE{elseif
@@ -46,9 +47,9 @@
                     {/foreach}
                 </td>
             </tr>
-        
+
         {/foreach}
-    
+
     </tbody>
 
 </table>
