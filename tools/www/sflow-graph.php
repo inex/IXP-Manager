@@ -112,7 +112,7 @@ $separated_maxima = ($timeperiod > 60*60*24*2) ? 1: 0;
 $multiplier = ($rrdtype == 'bytes') ? 8 : 1;
 
 $options = array (
-	'--daemon', $config->sflow->rrd->rrdcached->sock,
+	'--daemon', isset( $config->sflow->rrd->rrdcached->sock ) ? $config->sflow->rrd->rrdcached->sock : null,
 	'--width=600',
 	'--height=150',
 	'--slope-mode',
