@@ -243,7 +243,9 @@ $vendors = [
     [ "MRV", 'MRV', 'mrv' ],
     [ "Transmode", 'Transmode', 'transmode' ],
     [ "Brocade", 'Brocade', 'brocade' ],
-    [ "Juniper Networks", 'Juniper', 'juniper' ]
+    [ "Juniper Networks", 'Juniper', 'juniper' ],
+    [ "Cumulus Networks", 'Cumulus', 'cumulus' ],
+    [ "Linux", 'Linux', 'linux' ]
 ];
 
 foreach( $vendors as $vendor )
