@@ -293,7 +293,7 @@ class CliController extends IXP_Controller_Action
      * This CLI action just lists the files to merge to and from.
      *
      * Use a merger such as: http://bangbangsoundslikemachinery.blogspot.ie/2012/02/mrtg-log-aggregator.html
-     * And set $MERGER and $PATH accordingly before running the resultant commands.
+     * And set $MERGER and $MRTGPATH accordingly before running the resultant commands.
      */
     public function cliLagHistoryToFromAction()
     {
@@ -313,11 +313,11 @@ class CliController extends IXP_Controller_Action
                     echo '$MERGER';
                     foreach( $vi->getPhysicalInterfaces() as $pi )
                     {
-                        echo ' $PATH/' . IXP_Mrtg::getMrtgFilePath( 'members', 'LOG', $pi->getMonitorIndex(), $category, $c->getShortname() );
+                        echo ' $MRTGPATH/' . IXP_Mrtg::getMrtgFilePath( 'members', 'LOG', $pi->getMonitorIndex(), $category, $c->getShortname() );
                     }
 
                     echo ' >';
-                    echo IXP_Mrtg::getMrtgFilePath( 'members', 'LOG', 'lag-viid-' . $vi->getId(), $category, $c->getShortname() );
+                    echo ' $MRTGPATH/' . IXP_Mrtg::getMrtgFilePath( 'members', 'LOG', 'lag-viid-' . $vi->getId(), $category, $c->getShortname() );
                     echo "\n";
                 }
             }
