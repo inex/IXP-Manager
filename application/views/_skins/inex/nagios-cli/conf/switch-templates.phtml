@@ -57,10 +57,11 @@ define service{
         check_command                   check_ping_ipv4!10!100.0,10%!200.0,20%
 }
 
-define service  {
-        use                             ixp-production-switch-service
-        service_description             SSH
-        hostgroup_name                  IXP-Production-Switches
-        check_command                   check_ssh
-}
+# Brocade IronWare has dropbox ssh bug
+#define service  {
+#        use                             ixp-production-switch-service
+#        service_description             SSH
+#        hostgroup_name                  IXP-Production-Switches
+#        check_command                   check_ssh
+#}
 
