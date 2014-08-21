@@ -22,25 +22,25 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$physInts[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getName()}
             {elseif $vi->getType() eq SWITCHPORT::TYPE_FANOUT}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
-                
+
                 {if count( $physInts ) and $physInts[0]->getRelatedInterface()}
                     for <a
-                    
+
                     {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                         href="{genUrl controller="customer" action="overview" id=$physInts[0]->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}"
                     {else}
                         href="{genUrl controller="customer" action="detail" id=$physInts[0]->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId()}"
                     {/if}
-                    
+
                     >{$physInts[0]->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName()}</a>
                 {else}
                     <em>(unassigned)</em>
                 {/if}
-                 
+
             {elseif $vi->getType() eq SWITCHPORT::TYPE_RESELLER}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Resller Uplink
             {/if}
-            
+
             {if $vi->getPhysicalInterfaces()|@count > 1}
                 {assign var='isLAG' value=1}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
@@ -48,13 +48,13 @@
                 {assign var='isLAG' value=0}
             {/if}
         </small>
-        
+
         {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
             <div class="btn-group" style="padding-left: 20px;">
                 <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='virtual-interface' action='edit' id=$vi->getId()}" title="Edit"><i class="icon-pencil"></i></a>
             </div>
         {/if}
-        
+
     </h3>
 
     {foreach $vi->getPhysicalInterfaces() as $pi}
@@ -226,6 +226,19 @@
 
     </div>
     <div class="span6">
+
+        {if $isLAG}
+            <br /><br />
+            <div class="well">
+                <h4>Aggregate Day Graph for LAG</h4>
+                <br />
+                <a href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex="lag-viid-`$vi->getId()`"}">
+                    {$pi = $vi->getPhysicalInterfaces()}
+                    {$pi = $pi.0}
+                    {genMrtgImgUrlTag ixp=$pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getIXP()->getId() shortname=$cust->getShortname() monitorindex="lag-viid-`$vi->getId()`"}
+                </a>
+            </div>
+        {/if}
 
         {foreach $vi->getPhysicalInterfaces() as $pi}
             <br /><br />
