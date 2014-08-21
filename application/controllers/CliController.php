@@ -63,8 +63,8 @@ class CliController extends IXP_Controller_Action
     {
         print "This is a demo action.\n";
     }
-    
-    
+
+
     /**
      * Mailing list initialisation script
      *
@@ -84,12 +84,12 @@ class CliController extends IXP_Controller_Action
 
         $stdin = fopen( "php://stdin","r" );
         $addresses = array();
-        
+
         while( $address = strtolower( trim( fgets( $stdin ) ) ) )
             $addresses[] = $address;
 
         fclose( $stdin );
-        
+
         if( $this->_verbose ) echo "Setting mailing list subscription for all users without a subscription setting...\n";
         $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->findAll();
 
@@ -103,7 +103,7 @@ class CliController extends IXP_Controller_Action
             else
                 $u->setPreference( "mailinglist.{$list}.subscribed", 0 );
         }
-        
+
         $this->getD2EM()->flush();
     }
 
@@ -119,7 +119,7 @@ class CliController extends IXP_Controller_Action
         foreach( $users as $user )
             echo "{$user['email']}\n";
     }
-    
+
     /**
      * Mailing list unsubscribed action - list all addresses not subscribed to the given list
      */
@@ -132,7 +132,7 @@ class CliController extends IXP_Controller_Action
         foreach( $users as $user )
             echo "{$user['email']}\n";
     }
-    
+
     /**
      * Mailing list password sync - create and execute commands to set mailing list p/w of subscribers
      */
@@ -149,20 +149,20 @@ class CliController extends IXP_Controller_Action
         }
 
         $users = $this->getD2EM()->getRepository( '\\Entities\\User' )->getMailingListSubscribers( $list, 1 );
-                
+
         foreach( $users as $user )
         {
             $cmd = sprintf( "{$this->_options['mailinglist']['cmd']['changepw']} %s %s %s",
                 escapeshellarg( $list ), escapeshellarg( $user['email'] ), escapeshellarg( $user['password'] )
             );
-            
+
             if( $this->_verbose ) echo "$cmd\n";
-            
+
             if( !$this->getParam( 'noexec', false ) )
                 exec( $cmd );
         }
     }
-    
+
     /**
      * Mailing list syncronisation - generates a shell script for all mailing lists
      */
@@ -171,35 +171,35 @@ class CliController extends IXP_Controller_Action
         // do we have mailing lists defined?
         if( !isset( $this->_options['mailinglists'] ) || !count( $this->_options['mailinglists'] ) )
             die( "ERR: No valid mailing lists defined in your application.ini\n" );
-        
+
         $this->view->apppath = APPLICATION_PATH;
         $this->view->date = date( 'Y-m-d H:i:s' );
 
         echo $this->view->render( 'cli/mailing-list-sync-script.sh' );
     }
-    
-    
+
+
     private function _getMailingList()
     {
         // do we have mailing lists defined?
         if( !isset( $this->_options['mailinglist']['enabled'] ) || !$this->_options['mailinglist']['enabled'] )
             die( "ERR: Mailing lists disabled in configuration( use: mailinglist.enabled = 1 to enable)\n" );
-        
+
         if( !( $list = $this->getFrontController()->getParam( 'param1', false ) ) )
             die( "ERR: You must specify a list name (e.g. --p1 listname)\n" );
-        
+
         // do we have mailing lists defined?
         if( !isset( $this->_options['mailinglists'] ) || !count( $this->_options['mailinglists'] ) )
             die( "ERR: No valid mailing lists defined in your application.ini\n" );
-        
+
         // is it a valid list?
         if( !isset( $this->_options['mailinglists'][$list] ) )
             die( "ERR: The specifed list ({$list}) is not defined in your application.ini\n" );
 
         return $list;
     }
-    
-    
+
+
     /**
      * Generate a JSON or CSV list of all contacts by a given group
      *
@@ -216,7 +216,7 @@ class CliController extends IXP_Controller_Action
      * * **cid:** Customer id to limit results to
      *
      */
-    
+
     public function cliExportGroupAction()
     {
         $type   = $this->getParam( 'type',   false );
@@ -224,52 +224,52 @@ class CliController extends IXP_Controller_Action
         $format = $this->getParam( 'format', false );
         $sn     = $this->getParam( 'sn',     false );
         $cid    = $this->getParam( 'cid',    false );
-        
+
         if( ( !$type && !$name ) || ( $type && $name ) )
         {
             echo "ERR: Group name or type must be set (and not both).\n";
             return;
         }
-            
+
         if( !$format )
             $format = 'json';
-        
+
         $dql =  "SELECT c.name AS name, c.position as position, c.email AS email, c.phone AS phone, c.mobile AS mobile,
                     c.facilityaccess AS facilityacces, c.mayauthorize AS mayauthorize, c.notes as notes
-                
+
              FROM \\Entities\\Contact c
                 LEFT JOIN c.Groups cg
                 LEFT JOIN c.Customer cu\n";
-             
+
         if( $type )
             $dql .= " WHERE cg.type = :type";
         else
             $dql .= " WHERE cg.name = :name";
-        
+
         if( $cid )
             $dql .= " AND cu.id = :cid";
         else if( $sn )
             $dql .= " AND cu.shortname = :sn";
-            
+
         $dql .= " GROUP BY c.id";
-        
+
         $q = $this->getEntityManager()->createQuery( $dql );
-            
+
         if( $type )
             $q->setParameter( 'type', $type );
         else
             $q->setParameter( 'name', $name );
-        
+
         if( $cid )
             $q->setParameter( 'cid', $cid );
         else if( $sn )
             $q->setParameter( 'sn', $sn );
-            
+
         $contacts = $q->getArrayResult();
-        
+
         if( !$contacts )
             return;
-        
+
         if( $format == "csv" )
         {
             $names= [];
@@ -283,6 +283,44 @@ class CliController extends IXP_Controller_Action
         else
             echo json_encode( $contacts );
     }
+
+
+
+    /**
+     * With the introduction of LAG graphs in 3.6.14, we wanted to merge past
+     * traffic data form individual ports into the new lag files
+     *
+     * This CLI action just lists the files to merge to and from.
+     *
+     * Use a merger such as: http://bangbangsoundslikemachinery.blogspot.ie/2012/02/mrtg-log-aggregator.html
+     * And set $MERGER and $PATH accordingly before running the resultant commands.
+     */
+    public function cliLagHistoryToFromAction()
+    {
+        // get all active trafficing customers
+        $custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $this->getD2R( '\\Entities\\IXP' )->getDefault() );
+
+        foreach( $custs as $c )
+        {
+            foreach( $c->getVirtualInterfaces() as $vi )
+            {
+                if( count( $vi->getPhysicalInterfaces() ) <= 1 )
+                    continue;
+
+                foreach( IXP_Mrtg::$CATEGORIES as $category )
+                {
+
+                    echo '$MERGER';
+                    foreach( $vi->getPhysicalInterfaces() as $pi )
+                    {
+                        echo ' $PATH/' . IXP_Mrtg::getMrtgFilePath( 'members', 'LOG', $pi->getMonitorIndex(), $category, $c->getShortname() );
+                    }
+
+                    echo ' >';
+                    echo IXP_Mrtg::getMrtgFilePath( 'members', 'LOG', 'lag-viid-' . $vi->getId(), $category, $c->getShortname() );
+                    echo "\n";
+                }
+            }
+        }
+    }
 }
-
-
