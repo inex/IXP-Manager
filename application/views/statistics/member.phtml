@@ -116,12 +116,51 @@
 
 {foreach $cust->getVirtualInterfaces() as $vi}
 
-    {foreach $vi->getPhysicalInterfaces() as $pi}
+    {* ensure we're looking at a graph on the correct IXP *}
+    {$pi = $vi->getPhysicalInterfaces()}
+    {$pi = $pi.0}
+    {if $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP() neq $ixp }
+        {continue}
+    {/if}
 
-        {* ensure we're looking at a graph on the correct IXP *}
-        {if $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP() neq $ixp }
-            {continue}
+    {if count( $vi->getPhysicalInterfaces() ) > 1}
+
+        <div class="span6">
+
+            <div class="well">
+
+                <h4>
+                    LAG on {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
+                        / {$pi->getSwitchPort()->getSwitcher()->getName()}
+                    <small>
+                        <br />
+                        Ports:
+                        {foreach $vi->getPhysicalInterfaces() as $pi}
+                            {$pi->getSwitchPort()->getName()}
+                        {/foreach}
+                    </small>
+                </h4>
+
+                <p>
+                    <br />
+                    <a href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex="lag-viid-`$vi->getId()`" category=$category shortname=$cust->getShortname()}">
+                        {genMrtgImgUrlTag ixp=$ixp->getId() shortname=$cust->getShortname() category=$category monitorindex="lag-viid-`$vi->getId()`"}
+                    </a>
+                </p>
+
+            </div>
+
+        </div>
+
+        {assign var='count' value=$count+1}
+
+        {if $count%2 eq 0}
+            </div><br /><div class="row-fluid">
         {/if}
+
+    {/if}
+
+    {foreach $vi->getPhysicalInterfaces() as $pi}
 
         <div class="span6">
 
@@ -177,4 +216,3 @@
 </div>
 
 {tmplinclude file="footer.phtml"}
-

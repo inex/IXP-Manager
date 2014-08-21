@@ -134,7 +134,7 @@ class IXP_Mrtg
             'errs' => 'Errors',
             'discs' => 'Discards',
     );
-    
+
     /**
      * Array of valid categories for aggregate graphs
      */
@@ -147,12 +147,12 @@ class IXP_Mrtg
      * Protocols for MRTG data and graphs
      */
     const PROTOCOL_IPV4 = 4;
-    
+
     /**
      * Protocols for MRTG data and graphs
      */
     const PROTOCOL_IPV6 = 6;
-    
+
     /**
      * Array of valid protocols
      */
@@ -160,19 +160,19 @@ class IXP_Mrtg
         'IPv4'     => IXP_Mrtg::PROTOCOL_IPV4,
         'IPv6'     => IXP_Mrtg::PROTOCOL_IPV6
     );
-    
-    
+
+
     /**
      * Infrastructures for MRTG data and graphs
      */
     const INFRASTRUCTURE_PRIMARY = 1;
-    
+
     /**
      * Infrastructures for MRTG data and graphs
      */
     const INFRASTRUCTURE_SECONDARY = 2;
-    
-    
+
+
     /**
      * Array of valid infrastructures
      */
@@ -180,7 +180,7 @@ class IXP_Mrtg
         'Primary'     => IXP_Mrtg::INFRASTRUCTURE_PRIMARY,
         'Secondary'   => IXP_Mrtg::INFRASTRUCTURE_SECONDARY
     );
-    
+
     /**
      * Infrastructures
      */
@@ -188,9 +188,9 @@ class IXP_Mrtg
         self::INFRASTRUCTURE_PRIMARY     => 'Primary Infrastructure',
         self::INFRASTRUCTURE_SECONDARY   => 'Secondary Infrastructure'
     );
-    
-    
-    
+
+
+
     public static $TRAFFIC_TYPES = [
         'bits'   => [
             'in'      => 'ifHCInOctets',
@@ -205,9 +205,9 @@ class IXP_Mrtg
             'name'    => 'Packets'
         ]
     ];
-    
-    
-    
+
+
+
     /**
      * Class constructor.
      *
@@ -244,10 +244,10 @@ class IXP_Mrtg
         )
     {
         // sanitise these things carefully
-        if( is_numeric( $monitorindex ) && $monitorindex > 10 )
+        if( is_numeric( $monitorindex ) && $monitorindex > 100 )
             $monitorindex = '1';
 
-        if( !is_numeric( $monitorindex ) && $monitorindex != 'aggregate' )
+        if( !is_numeric( $monitorindex ) && substr( $monitorindex, 0, 9 ) != 'lag-viid-' && $monitorindex != 'aggregate' )
             $monitorindex = 'aggregate';
 
         if( !in_array( $period, IXP_Mrtg::$PERIODS ) )
@@ -318,7 +318,7 @@ class IXP_Mrtg
     public static function generateZendFrontendUrl( $params )
     {
         $url = Zend_Controller_Front::getInstance()->getBaseUrl();
-        
+
         if( isset( $params['p2p'] ) && $params['p2p'] )
             $url .= '/mrtg/retrieve-p2p-image';
         else
@@ -346,25 +346,25 @@ class IXP_Mrtg
             $url .= "/category/{$params['category']}";
         else
             $url .= "/category/bits";
-        
+
         if( isset( $params['p2p'] ) && $params['p2p'] )
         {
             if( isset( $params['svli'] ) )
                 $url .= "/svli/{$params['svli']}";
             else
                 die();
-            
+
             if( isset( $params['dvli'] ) )
                 $url .= "/dvli/{$params['dvli']}";
             else
                 die();
-            
+
             if( isset( $params['proto'] ) )
                 $url .= "/proto/{$params['proto']}";
             else
                 $url .= "/proto/4";
         }
-        
+
         if( isset( $params['graph'] ) )
             $url .= "/graph/{$params['graph']}";
 
@@ -587,4 +587,3 @@ class IXP_Mrtg
     }
 
 }
-
