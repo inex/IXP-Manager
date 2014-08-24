@@ -44,7 +44,7 @@ class SwitchCliController extends IXP_Controller_CliAction
     public function snmpPollAction()
     {
         $sws = [];
-        
+
         // have we been given a specific switch?
         if( $this->getParam( 'switch', false ) )
         {
@@ -61,7 +61,7 @@ class SwitchCliController extends IXP_Controller_CliAction
             // find all active switches
             $sws = $this->getD2R( '\\Entities\\Switcher' )->getActive();
         }
-        
+
         if( count( $sws ) )
         {
             // create a logger for stdout
@@ -69,22 +69,27 @@ class SwitchCliController extends IXP_Controller_CliAction
             {
                 $writer = new Zend_Log_Writer_Stream( 'php://output' );
                 $logger = new OSS_Log();
-                
+
                 if( !$this->isDebug() );
                     $logger->addFilter( new Zend_Log_Filter_Priority( OSS_Log::INFO ) );
-                    
+
                 $logger->addWriter( $writer );
             }
             else
                 $logger = false;
-            
+
             foreach( $sws as $sw )
             {
+                if( trim( $sw->getSnmppasswd() ) == '' ) {
+                    $this->verbose( "Skipping {$sw->getName()} as no SNMP password set" );
+                    continue;
+                }
+
                 if( $sw->getLastPolled() == null )
                     echo "First time polling of {$sw->getName()} with SNMP request to {$sw->getHostname()}\n";
                 else
                     $this->verbose( "Polling {$sw->getName()} with SNMP request to {$sw->getHostname()}" );
-                
+
                 $swPolled = false;
                 try
                 {
@@ -92,10 +97,10 @@ class SwitchCliController extends IXP_Controller_CliAction
                     $host = new \OSS_SNMP\SNMP( $sw->getHostname(), $sw->getSnmppasswd() );
                     $sw->snmpPoll( $host, $logger );
                     $swPolled = true;
-                    
+
                     if( $sw->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
                         $sw->snmpPollSwitchPorts( $host, $logger );
-                    
+
                     if( $this->getParam( 'noflush', false ) )
                         $this->verbose( '*** noflush parameter set - NO CHANGES MADE TO DATABASE' );
                     else
@@ -112,4 +117,3 @@ class SwitchCliController extends IXP_Controller_CliAction
         }
     }
 }
-
