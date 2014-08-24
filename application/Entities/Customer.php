@@ -2096,4 +2096,21 @@ class Customer
     {
         return $this->getStatus() == self::STATUS_SUSPENDED;
     }
+
+    /**
+     * Determines if a given monitor index is unique for the customer.
+     *
+     * @param int $i The monitor index to check
+     * @return bool
+     */
+    public function isUniqueMonitorIndex( $i )
+    {
+        foreach( $this->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                if( $pi->getMonitorindex() == $i )
+                    return false;
+            }
+        }
+        return true;
+    }
 }
