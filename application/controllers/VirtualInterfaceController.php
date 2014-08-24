@@ -33,10 +33,10 @@
  */
 class VirtualInterfaceController extends IXP_Controller_FrontEnd
 {
-    
+
     use IXP_Controller_Trait_Interfaces;
-    
-    
+
+
     /**
      * This function sets up the frontend controller
      */
@@ -46,22 +46,22 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             'entity'        => '\\Entities\\VirtualInterface',
             'form'          => 'IXP_Form_Interface_Virtual',
             'pagetitle'     => '(Virtual) Interfaces',
-        
+
             'titleSingular' => 'Virtual Interface',
             'nameSingular'  => 'a virtual interface',
-        
+
             'defaultAction' => 'list',
-        
+
             'listOrderBy'    => 'customer',
             'listOrderByDir' => 'ASC',
         ];
-    
+
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $this->_feParams->listColumns = [
                     'id' => [ 'title' => 'UID', 'display' => false ],
-        
+
                     'customer'  => [
                         'title'      => 'Customer',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -69,7 +69,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                         'action'     => 'overview',
                         'idField'    => 'custid'
                     ],
-    
+
                     'shortname'  => [
                         'title'      => 'Shortname',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -77,10 +77,10 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                         'action'     => 'overview',
                         'idField'    => 'custid'
                     ],
-    
+
                     'location'      => 'Location',
                     'switch'        => 'Switch',
-                    
+
                     'port'       => [
                         'title'         => 'Port',
                         'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
@@ -90,18 +90,18 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                     'speed'         => 'Speed'
                 ];
                 break;
-    
+
             case \Entities\User::AUTH_CUSTADMIN:
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
     }
-    
+
     public function viewAction()
     {
         $this->forward( 'add' );
     }
-    
+
     /**
      * Provide array of virtual interfaces for the listAction
      *
@@ -127,11 +127,11 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             ->leftJoin( 's.Cabinet', 'cab' )
             ->leftJoin( 'cab.Location', 'l' )
             ->groupBy( 'vi' );
-    
+
         return $qb->getQuery()->getArrayResult();
     }
-    
-    
+
+
 
     /*
      * If deleting a virtual interface, we should also the delete the physical and vlan interfaces
@@ -145,7 +145,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         {
             $this->getLogger()->info( "Deleting physical interface with id #{$pi->getId()} while deleting virtual interface #{$vi->getId()}" );
             $vi->removePhysicalInterface( $pi );
-            
+
             if( $pi->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $pi->getFanoutPhysicalInterface() )
             {
                 $pi->getSwitchPort()->setPhysicalInterface( null );
@@ -159,28 +159,28 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                 $pi->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
             }
             $this->getD2EM()->remove( $pi );
-           
+
             if( $this->getParam( 'related', false ) && $pi->getRelatedInterface() )
                 $this->removeRelatedInterface( $pi );
         }
-        
+
         foreach( $vi->getVlanInterfaces() as $vli )
         {
             $this->getLogger()->info( "Deleting VLAN interface with id #{$vli->getId()} while deleting virtual interface #{$vi->getId()}" );
             $vi->removeVlanInterface( $vli );
             $this->getD2EM()->remove( $vli );
         }
-        
+
         foreach( $vi->getMACAddresses() as $ma )
         {
             $this->getLogger()->info( "Deleting MAC Address record #{$ma->getMac()} while deleting virtual interface #{$vi->getId()}" );
             $vi->removeMACAddresses( $ma );
             $this->getD2EM()->remove( $ma );
         }
-        
+
         return true;
     }
-    
+
     /**
      * @param IXP_Form_Interface_Virtual $form The form object
      * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
@@ -202,7 +202,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             $this->view->type     = $object->getType();
         }
     }
-    
+
     /**
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful add / edit operation.
@@ -222,8 +222,8 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         $this->addMessage( 'Virtual interface successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
         $this->redirect( 'virtual-interface/edit/id/' . $object->getId() );
     }
-    
-    
+
+
     /**
      * @param IXP_Form_Interface_Virtual $form The form object
      * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
@@ -235,10 +235,10 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         $object->setCustomer(
             $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
         );
-    
+
         return true;
     }
-    
+
 
     public function addWizardAction()
     {
@@ -247,14 +247,14 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             $this->view->resoldCusts = json_encode( $this->getD2R( "\\Entities\\Customer" )->getResoldCustomerNames() );
 
         $form->enableFanoutPort( $this->resellerMode() );
-    
+
         // Process a submitted form if it passes initial validation
         if( $this->getRequest()->isPost() )
         {
             // make sure we have a custid
             if( !isset( $_POST['custid'] ) && $this->getParam( 'custid', false ) )
                 $_POST['custid'] = $this->getParam( 'custid' );
- 
+
             if( $form->isValid( $_POST ) )
             {
                 // check customer information
@@ -268,20 +268,20 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                     $form->assignFormToEntity( $vi, $this, false );
                     $vi->setCustomer( $cust );
                     $this->getD2EM()->persist( $vi );
-        
+
                     $pi = new \Entities\PhysicalInterface();
                     $form->assignFormToEntity( $pi, $this, false );
                     $pi->setVirtualInterface( $vi );
-                    
+
                     $sp = $this->getD2R( '\\Entities\\SwitchPort' )->find( $form->getValue( 'switchportid' ) );
                     $sp->setType( \Entities\SwitchPort::TYPE_PEERING );
                     $pi->setSwitchPort( $sp );
-                    
+
                     $pi->setMonitorindex(
                         $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $cust )
                     );
                     $this->getD2EM()->persist( $pi );
-                
+
                     if( $form->getElement( 'fanout' ) )
                     {
                         if( !$this->processFanoutPhysicalInterface( $form, $pi, $vi ) )
@@ -294,7 +294,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                             $pi->getRelatedInterface()->setDuplex( $form->getValue( "duplex" ) );
                         }
                     }
-                    
+
                     $vli = new \Entities\VlanInterface();
                     $form->assignFormToEntity( $vli, $this, false );
 
@@ -307,33 +307,29 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
 
                     $vli->setVirtualInterface( $vi );
                     $this->getD2EM()->persist( $vli );
-                    
+
                     $this->getD2EM()->flush();
-                    
+
                     $this->getLogger()->info( 'New virtual, physical and VLAN interface created for ' . $cust->getName() );
                     $this->addMessage( "New interface created!", OSS_Message::SUCCESS );
-                    
+
                     $this->redirect( 'customer/overview/tab/ports/id/' . $cust->getId() );
                 }
             }
         }
-        
+
         if( !isset( $cust ) && ( $cid = $this->getParam( 'custid', false ) ) )
             $cust = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $cid );
-        
+
         if( !$this->getRequest()->isPost() )
         {
-            // make BGP MD5 easy
-            $form->getElement( 'ipv4bgpmd5secret' )->setValue( OSS_String::random() );
-            $form->getElement( 'ipv6bgpmd5secret' )->setValue(  $form->getElement( 'ipv4bgpmd5secret' )->getValue() );
-            
             if( isset( $cust ) )
             {
                 $form->getElement( 'custid' )->setValue( $cust->getId() );
                 $form->getElement( 'maxbgpprefix' )->setValue( $cust->getMaxprefixes() );
             }
         }
-                
+
         if( $this->getParam( 'rtn', false ) == 'ov' )
         {
             $form->getElement( 'custid' )->setAttrib( 'disabled', 'disabled' );
@@ -347,4 +343,3 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         }
     }
 }
-

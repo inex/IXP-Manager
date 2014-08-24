@@ -2,10 +2,29 @@
 $( "#switchid" ).on( 'change', updateSwitchPort );
 $( "#fn_switchid" ).on( 'change', updateSwitchPort );
 
+function randomString( length ) {
+    var result = '';
+    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
+}
+
+$( "#ipv4bgpmd5secret" ).wrap( '<div class="input-append"></div>' );
+$( "#ipv4bgpmd5secret" ).after( '<button class="btn" type="button" id="genipv4bgpmd5secret"><i class="icon-refresh"></i></button>')
+$( "#genipv4bgpmd5secret" ).on( 'click', function( e ) {
+    $( "#ipv4bgpmd5secret" ).val( randomString( 12 ) );
+});
+
+$( "#ipv6bgpmd5secret" ).wrap( '<div class="input-append"></div>' );
+$( "#ipv6bgpmd5secret" ).after( '<button class="btn" type="button" id="genipv6bgpmd5secret"><i class="icon-retweet"></i></button>')
+$( "#genipv6bgpmd5secret" ).on( 'click', function( e ) {
+    $( "#ipv6bgpmd5secret" ).val( $( "#ipv4bgpmd5secret" ).val().trim() == '' ? randomString( 12 ) : $( "#ipv4bgpmd5secret" ).val() );
+});
+
 function updateSwitchPort(){
-    
+
     $( this ).attr( 'disabled', 'disabled' );
-    
+
     var prep = "#";
     var type = "peering";
     if( $( this ).attr( "id" ).substr( 0, 3 ) == "fn_" )
@@ -13,18 +32,18 @@ function updateSwitchPort(){
         prep += "fn_";
         type = "fanout";
     }
-    
+
     if( $(this).val() != '0' ) {
         ossChosenClear( prep + "switchportid", "<option>Please wait, loading data...</option>" );
-        
+
         $.getJSON( "{genUrl controller='switch-port' action='ajax-get'}/id/"
         + $( prep + "preselectPhysicalInterface" ).val() + "/type/" + type +  "/switchid/" + $(this).val(), function( j ) {
-            
+
             var options = "<option value=\"\">- select -</option>\n";
-            
+
             for( var i = 0; i < j.length; i++ )
                 options += "<option value=\"" + j[i].id + "\">" + j[i].name + " (" + j[i].type + ")</option>\n";
-            
+
             // do we have a preselect?
             if( $( prep + "preselectSwitchPort" ).val() ) {
                 ossChosenSet( prep + "switchportid", options, $( prep + "preselectSwitchPort" ).val() );
@@ -33,9 +52,9 @@ function updateSwitchPort(){
             }
         });
     }
-    
+
     $( this).removeAttr( 'disabled' );
-    
+
 };
 
 $( "#switchportid" ).change( function() {
@@ -108,8 +127,8 @@ $(document).ready( function() {
     $("#switchid").trigger( 'change' );
     $("#custid").trigger( 'change' );
     $("#vlanid").trigger( 'change' );
-    
-    
+
+
     $(
         '#ipv4enabled' ).on( 'click', function( event ){
 
@@ -136,20 +155,20 @@ $(document).ready( function() {
 
     if( $( '#ipv6enabled' ).is(':checked') )
         $( '#ipv6details' ).show();
-    
+
     {if $resellerMode }
         $("#fn_switchid").trigger( 'change' );
-        
+
         $( '#fanout' ).on( 'click', function( event ){
             if( $( this ).prop( 'checked' ) )
                 $( '#fanoutdetails' ).slideDown();
             else
                 $( '#fanoutdetails' ).slideUp();
         });
-        
+
         if( $( '#fanout' ).prop( 'checked' ) )
             $( '#fanoutdetails' ).show();
-        
+
         $( '#custid' ).on( 'change', function(){
             var resoldCusts = {$resoldCusts};
             if( resoldCusts[ $(this).val() ] == undefined )

@@ -170,6 +170,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $ipv4bgpmd5secret = $this->createElement( 'text', 'ipv4bgpmd5secret' );
         $ipv4bgpmd5secret->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv4 BGP MD5 Secret' )
+            ->setAttrib( 'class', 'span10' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv4bgpmd5secret  );
@@ -217,6 +218,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
         $ipv6bgpmd5secret = $this->createElement( 'text', 'ipv6bgpmd5secret' );
         $ipv6bgpmd5secret->addValidator( 'stringLength', false, array( 1, 64 ) )
             ->setLabel( 'IPv6 BGP MD5 Secret' )
+            ->setAttrib( 'class', 'span10' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $ipv6bgpmd5secret  );
