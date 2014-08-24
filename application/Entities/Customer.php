@@ -2065,4 +2065,35 @@ class Customer
     {
         return $this->IrrdbASNs;
     }
+
+
+    /**
+     * Returns true if the customer's status is NORMAL
+     *
+     * @return bool True if the customer's status is NORMAL
+     */
+    public function statusIsNormal()
+    {
+        return $this->getStatus() == self::STATUS_NORMAL;
+    }
+
+    /**
+     * Returns true if the customer's status is NOTCONNECTED
+     *
+     * @return bool True if the customer's status is NOTCONNECTED
+     */
+    public function statusIsNotConnected()
+    {
+        return $this->getStatus() == self::STATUS_NOTCONNECTED;
+    }
+
+    /**
+     * Returns true if the customer's status is SUSPENDED
+     *
+     * @return bool True if the customer's status is SUSPENDED
+     */
+    public function statusIsSuspended()
+    {
+        return $this->getStatus() == self::STATUS_SUSPENDED;
+    }
 }

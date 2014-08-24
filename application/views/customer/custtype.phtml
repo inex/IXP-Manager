@@ -19,3 +19,14 @@
         <span class="label">RESOLD CUSTOMER</span>
     {/if}
 {/if}
+
+{if ( not $cust->isTypeAssociate() ) and ( not $cust->statusIsNormal() )}
+
+    {if $cust->statusIsNotConnected()}
+        <span class="label label-warning">NOT CONNECTED</span>
+    {else if $cust->statusIsSuspended()}
+        <span class="label label-important">SUSPENDED</span>
+    {else}
+        <span class="label label-inverse">UNKNOWN CUSTOMER STATUS</span>
+    {/if}
+{/if}
