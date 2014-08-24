@@ -55,9 +55,10 @@ trait IXP_Controller_Trait_Interfaces
         $iptype = $ipv6 ? "ipv6" : "ipv4";
         $ipVer  = $ipv6 ? "IPv6" : "IPv4";
         $setter = "set{$ipVer}Address";
+        $getter = "get{$ipVer}Address";
         $entity = "\\Entities\\{$ipVer}Address";
         $vlan = $vli->getVlan();
-    
+
         if( $form->getValue( $iptype . "enabled" ) )
         {
             if( !$form->getElement( $iptype . 'addressid' )->getValue() )
@@ -65,11 +66,11 @@ trait IXP_Controller_Trait_Interfaces
                 $form->getElement( $iptype . 'addressid' )->setErrors( ["Please select or enter an {$ipVer} address."] );
                 return false;
             }
-    
+
             $ip = $this->getD2EM()->getRepository( $entity )->findOneBy(
                     [ "Vlan" => $vlan->getId(), 'address' => $form->getElement( $iptype . 'addressid' )->getValue() ]
             );
-    
+
             if( !$ip )
             {
                 $ip = new $entity();
@@ -83,10 +84,19 @@ trait IXP_Controller_Trait_Interfaces
                 $form->getElement( $iptype . 'addressid' )->setErrors( ["{$ipVer} address '{$address}' is already in use." ] );
                 return false;
             }
-    
+
             $vli->$setter( $ip );
         }
-    
+        else
+        {
+            // ipvX has been disabled - see if we need to remove an assigned IP address
+            if( !$form->getElement( $iptype . 'addressid' )->getValue() && $vli->$getter() )
+            {
+                // need to unset the IP address
+                $vli->$setter( null );
+            }
+        }
+
         return true;
     }
 
@@ -119,25 +129,25 @@ trait IXP_Controller_Trait_Interfaces
                 $this->removeRelatedInterface( $pi );
                 $pi->setFanoutPhysicalInterface( null );
             }
-            
+
             return true;
         }
-        
+
         // from here on, we assume $form->getValue( 'fanout' ) is true
-        
+
         if( !$form->getValue( 'fn_switchid' ) )
         {
             $form->getElement( 'fn_switchid' )->setErrorMessages( ['Please select a switch'] )->markAsError();
             $form->getElement( 'fn_switchportid' )->setErrorMessages( ['Please select a switchport'] )->markAsError();
             return false;
         }
-        
+
         if( !$form->getValue( 'fn_switchportid' ) )
         {
             $form->getElement( 'fn_switchportid' )->setErrorMessages( ['Please select a switchport'] )->markAsError();
             return false;
         }
-        
+
         if( $form->getElement( 'fn_monitorindex' ) )
         {
             if( !$form->getValue( 'fn_monitorindex' ) )
@@ -156,11 +166,11 @@ trait IXP_Controller_Trait_Interfaces
 
         $fnsp = $this->getD2R( '\\Entities\\SwitchPort' )->find( $form->getElement( 'fn_switchportid' )->getValue() );
         $fnsp->setType( \Entities\SwitchPort::TYPE_FANOUT );
-        
+
         // if switchport does not have a physical interface then create one for it
         if( !$fnsp->getPhysicalInterface() )
         {
-            
+
             $fnphi = new \Entities\PhysicalInterface();
             $fnphi->setSwitchPort( $fnsp );
             $fnsp->setPhysicalInterface( $fnphi );
@@ -170,7 +180,7 @@ trait IXP_Controller_Trait_Interfaces
         else
         {
             $fnphi = $fnsp->getPhysicalInterface();
-            
+
             // checking if the fanout port already has physical interface and it is not this one
             if( $fnsp->getPhysicalInterface()->getRelatedInterface() && $fnsp->getPhysicalInterface()->getRelatedInterface()->getId() != $pi->getId() )
             {
@@ -178,7 +188,7 @@ trait IXP_Controller_Trait_Interfaces
                 return false;
             }
         }
-        
+
         // if the physical interace already has a related physical interface and it's not the same as the fanout physical interface
         if( $pi->getRelatedInterface() &&  $pi->getRelatedInterface()->getId() != $fnphi->getId() )
         {
@@ -188,7 +198,7 @@ trait IXP_Controller_Trait_Interfaces
                 $pi->getRelatedInterface()->getVirtualInterface()->addPhysicalInterface( $fnphi );
                 $fnphi->setVirtualInterface( $pi->getRelatedInterface()->getVirtualInterface() );
             }
-            
+
             $this->removeRelatedInterface( $pi );
         }
         else if( !$fnphi->getVirtualInterface() )
@@ -235,4 +245,3 @@ trait IXP_Controller_Trait_Interfaces
         }
     }
 }
-
