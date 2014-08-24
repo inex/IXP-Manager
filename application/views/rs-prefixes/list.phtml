@@ -20,16 +20,16 @@
             </div>
         </li>
     </ul>
-    
+
     <div>
 
 {else}
 
     <div class="page-content" >
-    
+
         <div class="page-header" >
             <h1 style="display: inline;">Route Server Prefix Analysis</h1>
-            
+
             <span style="float: right; margin-top: -10px;">
                 <div class="btn-toolbar">
                     {tmplinclude file='rs-prefixes/list-filter.phtml'}
@@ -37,54 +37,68 @@
             </span>
         </div>
 {/if}
-    
+
 {OSS_Message}
+
+{if $totalVlanInts neq $filteredVlanInts}
+    {* Some or all of this customers VLANs are not actually filtered *}
+    <div class="alert alert-block">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <h4>Warning!</h4>
+        {if $filteredVlanInts}
+            Not all ports have IRRDB filtered applied.
+        {else}
+            No ports have IRRDB filtering applied so, while this information is useful,
+            it has no impact on your services.
+        {/if}
+    </div>
+{/if}
 
 
 <div class="row-fluid">
     <div class="span12 tabbable">
 
     	<ul class="nav nav-tabs" id='routes-type-tabs'>
-    	
+
 			<li class="active">
 			    <a href="#adv_nacc" data-toggle="tab">Advertised but Not Accepted ({$aggRoutes.adv_nacc|@count})</a>
 			</li>
-        
+
 			<li>
 			    <a href="#adv_acc" data-toggle="tab">Advertised &amp; Accepted ({$aggRoutes.adv_acc|@count})</a>
 			</li>
-        
+
 			<li>
 			    <a href="#nadv_acc" data-toggle="tab">Not Advertised but Acceptable ({$aggRoutes.nadv_acc|@count})</a>
 			</li>
-        
+
 			<li>
 			    <a href="#help" data-toggle="tab">Help</a>
 			</li>
-        
+
 		</ul>
-        
+
         <div class="tab-content">
-        
+
 	        <div class="tab-pane active" id="adv_nacc">
 	            {$type = "adv_nacc"}
 	        	{tmplinclude file="rs-prefixes/table-routes.phtml"}
 	        </div>
-        
+
 	        <div class="tab-pane" id="adv_acc">
 	            {$type = "adv_acc"}
 	            {tmplinclude file="rs-prefixes/table-routes.phtml"}
 	        </div>
-        
+
 	        <div class="tab-pane" id="nadv_acc">
 	            {$type = "nadv_acc"}
 	            {tmplinclude file="rs-prefixes/table-routes.phtml"}
 	        </div>
-        
+
 	        <div class="tab-pane" id="help">
 	            {tmplinclude file="rs-prefixes/list-help.phtml"}
 	        </div>
-        
+
         </div>
     </div>
 </div>

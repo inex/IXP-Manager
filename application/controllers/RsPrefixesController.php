@@ -46,16 +46,16 @@ class RsPrefixesController extends IXP_Controller_AuthRequiredAction
     public function indexAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-        
+
         $this->view->types         = \Entities\RSPrefix::$SUMMARY_TYPES_FNS;
         $this->view->rsRouteTypes  = array_keys( \Entities\RSPrefix::$ROUTES_TYPES_FNS );
         $this->view->cust_prefixes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRouteSummaries();
     }
-    
+
     public function listAction()
     {
         $this->assertPrivilege( \Entities\User::AUTH_CUSTUSER, false );
-        
+
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
         {
             $cust = $this->getCustomer();
@@ -68,7 +68,24 @@ class RsPrefixesController extends IXP_Controller_AuthRequiredAction
                 return $this->forward( 'index' );
             }
         }
-                
+
+        // does the customer have VLAN interfaces that filtering is disabled on?
+        $totalVlanInts = 0;
+        $filteredVlanInts = 0;
+        foreach( $cust->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getVlanInterfaces() as $vli ) {
+                if( $vli->getVlan()->getPrivate() )
+                    continue;
+
+                $totalVlanInts++;
+                if( $vli->getIrrdbfilter() )
+                    $filteredVlanInts++;
+            }
+        }
+
+        $this->view->totalVlanInts    = $totalVlanInts;
+        $this->view->filteredVlanInts = $filteredVlanInts;
+
         $protocol = $this->getParam( 'protocol', null );
         if( !in_array( $protocol, [ 4, 6 ] ) )
             $protocol = null;
@@ -77,8 +94,7 @@ class RsPrefixesController extends IXP_Controller_AuthRequiredAction
         $this->view->cust         = $cust;
         $this->view->protocol     = $protocol;
         $this->view->rsRouteTypes = array_keys( \Entities\RSPrefix::$ROUTES_TYPES_FNS );
-        
+
         $this->view->aggRoutes    = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )->aggregateRoutes( $cust->getId(), $protocol );
     }
 }
-
