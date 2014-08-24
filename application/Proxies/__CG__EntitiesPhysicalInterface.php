@@ -165,6 +165,36 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         return parent::getRelatedInterface();
     }
 
+    public function statusIsConnected()
+    {
+        $this->__load();
+        return parent::statusIsConnected();
+    }
+
+    public function statusIsDisabled()
+    {
+        $this->__load();
+        return parent::statusIsDisabled();
+    }
+
+    public function statusIsNotConnected()
+    {
+        $this->__load();
+        return parent::statusIsNotConnected();
+    }
+
+    public function statusIsAwaitingXConnect()
+    {
+        $this->__load();
+        return parent::statusIsAwaitingXConnect();
+    }
+
+    public function statusIsQuarantine()
+    {
+        $this->__load();
+        return parent::statusIsQuarantine();
+    }
+
 
     public function __sleep()
     {

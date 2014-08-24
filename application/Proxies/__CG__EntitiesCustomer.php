@@ -633,6 +633,18 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::isRouteServerClient($proto);
     }
 
+    public function isIPvXEnabled($proto = 4)
+    {
+        $this->__load();
+        return parent::isIPvXEnabled($proto);
+    }
+
+    public function isIrrdbFiltered()
+    {
+        $this->__load();
+        return parent::isIrrdbFiltered();
+    }
+
     public function isAS112Client()
     {
         $this->__load();
@@ -877,6 +889,24 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     {
         $this->__load();
         return parent::getIrrdbASNs();
+    }
+
+    public function statusIsNormal()
+    {
+        $this->__load();
+        return parent::statusIsNormal();
+    }
+
+    public function statusIsNotConnected()
+    {
+        $this->__load();
+        return parent::statusIsNotConnected();
+    }
+
+    public function statusIsSuspended()
+    {
+        $this->__load();
+        return parent::statusIsSuspended();
     }
 
 
