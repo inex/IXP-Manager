@@ -99,20 +99,25 @@ class SmokepingCliController extends IXP_Controller_CliAction
                     if( !$havePhysInt )
                         continue;
 
-                    $vlan[ 'ints' ][ $vli->getId() ]['name']            = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getName() );
-                    $vlan[ 'ints' ][ $vli->getId() ]['shortname']       = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getShortname() );
-                    $vlan[ 'ints' ][ $vli->getId() ]['abbreviatedname'] = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName() );
+                    $key = $vli->getVirtualInterface()->getCustomer()->getName() . '___' . $vli->getId();
+
+                    $vlan[ 'ints' ][ $key ]['vliid']           = $vli->getId();
+                    $vlan[ 'ints' ][ $key ]['name']            = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getName() );
+                    $vlan[ 'ints' ][ $key ]['shortname']       = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getShortname() );
+                    $vlan[ 'ints' ][ $key ]['abbreviatedname'] = preg_replace( '/#/', '', $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName() );
 
                     if( $vli->getIpv4enabled() && $vli->getIpv4canping() )
-                        $vlan[ 'ints' ][ $vli->getId() ]['ipv4'] =  $vli->getIpv4Address()->getAddress();
+                        $vlan[ 'ints' ][ $key ]['ipv4'] =  $vli->getIpv4Address()->getAddress();
                     else
-                        $vlan[ 'ints' ][ $vli->getId() ]['ipv4'] =  false;
+                        $vlan[ 'ints' ][ $key ]['ipv4'] =  false;
 
                     if( $vli->getIpv6enabled() && $vli->getIpv6canping() )
-                        $vlan[ 'ints' ][ $vli->getId() ]['ipv6'] = $vli->getIpv6Address()->getAddress();
+                        $vlan[ 'ints' ][ $key ]['ipv6'] = $vli->getIpv6Address()->getAddress();
                     else
-                        $vlan[ 'ints' ][ $vli->getId() ]['ipv6'] = false;
+                        $vlan[ 'ints' ][ $key ]['ipv6'] = false;
                 }
+
+                ksort( $vlan['ints'], SORT_STRING|SORT_FLAG_CASE );
 
                 $data[ $infra->getId() ]['vlans'][ $v->getId() ] = $vlan;
             }
@@ -123,4 +128,3 @@ class SmokepingCliController extends IXP_Controller_CliAction
 
 
 }
-
