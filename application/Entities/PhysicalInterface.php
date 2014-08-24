@@ -14,7 +14,7 @@ class PhysicalInterface
     const STATUS_NOTCONNECTED    = 3;
     const STATUS_XCONNECT        = 4;
     const STATUS_QUARANTINE      = 5;
-    
+
     public static $STATES = array(
         self::STATUS_CONNECTED    => 'Connected',
         self::STATUS_DISABLED     => 'Disabled',
@@ -22,20 +22,20 @@ class PhysicalInterface
         self::STATUS_XCONNECT     => 'Awaiting X-Connect',
         self::STATUS_QUARANTINE   => 'Quarantine'
     );
-    
+
     public static $SPEED = array(
         10    => '10 Mbps',
         100   => '100 Mbps',
         1000  => '1 Gbps',
         10000 => '10 Gbps'
     );
-    
+
     public static $DUPLEX = array(
         'full'   => 'full',
         'half'   => 'half'
     );
-    
-    
+
+
     /**
      * @var integer $status
      */
@@ -95,7 +95,7 @@ class PhysicalInterface
     public function setStatus($status)
     {
         $this->status = $status;
-    
+
         return $this;
     }
 
@@ -118,7 +118,7 @@ class PhysicalInterface
     public function setSpeed($speed)
     {
         $this->speed = $speed;
-    
+
         return $this;
     }
 
@@ -141,7 +141,7 @@ class PhysicalInterface
     public function setDuplex($duplex)
     {
         $this->duplex = $duplex;
-    
+
         return $this;
     }
 
@@ -164,7 +164,7 @@ class PhysicalInterface
     public function setMonitorindex($monitorindex)
     {
         $this->monitorindex = $monitorindex;
-    
+
         return $this;
     }
 
@@ -187,7 +187,7 @@ class PhysicalInterface
     public function setNotes($notes)
     {
         $this->notes = $notes;
-    
+
         return $this;
     }
 
@@ -220,7 +220,7 @@ class PhysicalInterface
     public function setSwitchPort(\Entities\SwitchPort $switchPort = null)
     {
         $this->SwitchPort = $switchPort;
-    
+
         return $this;
     }
 
@@ -243,7 +243,7 @@ class PhysicalInterface
     public function setVirtualInterface(\Entities\VirtualInterface $virtualInterface = null)
     {
         $this->VirtualInterface = $virtualInterface;
-    
+
         return $this;
     }
 
@@ -267,7 +267,7 @@ class PhysicalInterface
     public function setFanoutPhysicalInterface(\Entities\PhysicalInterface $fanoutPhysicalInterface = null)
     {
         $this->FanoutPhysicalInterface = $fanoutPhysicalInterface;
-    
+
         return $this;
     }
 
@@ -290,7 +290,7 @@ class PhysicalInterface
     public function setPeeringPhysicalInterface(\Entities\PhysicalInterface $peeringPhysicalInterface = null)
     {
         $this->PeeringPhysicalInterface = $peeringPhysicalInterface;
-    
+
         return $this;
     }
 
@@ -321,5 +321,51 @@ class PhysicalInterface
             return $this->getFanoutPhysicalInterface();
         else
             return false;
+    }
+
+
+    /**
+     * Determine if the port's status is set to CONNECTED
+     * @return bool True if the port's status is CONNECTED
+     */
+    public function statusIsConnected()
+    {
+        return $this->getStatus() == self::STATUS_CONNECTED;
+    }
+
+    /**
+     * Determine if the port's status is set to DISABLED
+     * @return bool True if the port's status is DISABLED
+     */
+    public function statusIsDisabled()
+    {
+        return $this->getStatus() == self::STATUS_DISABLED;
+    }
+
+    /**
+     * Determine if the port's status is set to NOTCONNECTED
+     * @return bool True if the port's status is NOTCONNECTED
+     */
+    public function statusIsNotConnected()
+    {
+        return $this->getStatus() == self::STATUS_NOTCONNECTED;
+    }
+
+    /**
+     * Determine if the port's status is set to XCONNECT
+     * @return bool True if the port's status is XCONNECT
+     */
+    public function statusIsAwaitingXConnect()
+    {
+        return $this->getStatus() == self::STATUS_XCONNECT;
+    }
+
+    /**
+     * Determine if the port's status is set to QUARANTINE
+     * @return bool True if the port's status is QUARANTINE
+     */
+    public function statusIsQuarantine()
+    {
+        return $this->getStatus() == self::STATUS_QUARANTINE;
     }
 }

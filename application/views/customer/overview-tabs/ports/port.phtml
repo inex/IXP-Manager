@@ -19,9 +19,9 @@
         <small>
             {assign var=physInts value=$vi->getPhysicalInterfaces()}
             {if $vi->getType() eq SWITCHPORT::TYPE_PEERING and  count( $physInts )}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$physInts[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getName()}
+                &nbsp;&nbsp;&nbsp;&nbsp;{$physInts[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getName()}
             {elseif $vi->getType() eq SWITCHPORT::TYPE_FANOUT}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
+                &nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
 
                 {if count( $physInts ) and $physInts[0]->getRelatedInterface()}
                     for <a
@@ -45,6 +45,7 @@
                 {assign var='isLAG' value=1}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
             {else}
+                {tmplinclude file='customer/overview-tabs/ports/physintstatus.phtml'}
                 {assign var='isLAG' value=0}
             {/if}
         </small>
@@ -59,7 +60,12 @@
 
     {foreach $vi->getPhysicalInterfaces() as $pi}
 
-        {if $isLAG}<h5>Port {counter name=numphysports} of {$vi->getPhysicalInterfaces()|@count} in LAG</h5>{/if}
+        {if $isLAG}
+            <h5>
+                Port {counter name=numphysports} of {$vi->getPhysicalInterfaces()|@count} in LAG
+                {tmplinclude file='customer/overview-tabs/ports/physintstatus.phtml'}
+            </h5>
+        {/if}
 
         <table id="myDetailsTable">
             {if $multiIXP}

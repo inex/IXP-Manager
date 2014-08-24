@@ -1,4 +1,15 @@
 
+{if not $cust->statusIsNormal()}
+    <div class="alert alert-block">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <h4>Warning! Customer status is not normal.</h4>
+        Many backend processes that configure interface related systems (for example
+        MRTG, P2P statistics, Nagios, Smokeping, route collector, route servers, etc.)
+        will skip members that do not have a normal status.
+    </div>
+{/if}
+
+
 {foreach $cust->getVirtualInterfaces() as $vi}
 
     {include file='customer/overview-tabs/ports/port.phtml'}
