@@ -36,12 +36,12 @@ class IXP_Form_Customer extends IXP_Form
     public function init()
     {
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'customer/forms/edit.phtml' ] ] ] );
-        
+
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
-            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'class', 'span10' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name  );
@@ -51,7 +51,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Type' )
             ->setRequired( true )
-            ->setAttrib( 'class', 'chzn-select span4' )
+            ->setAttrib( 'class', 'chzn-select span8' )
             ->setErrorMessages( array( 'Please select a customer type' ) );
         $this->addElement( $type );
 
@@ -60,7 +60,7 @@ class IXP_Form_Customer extends IXP_Form
             ->addValidator( 'alnum' )
             ->addValidator( 'regex', false, array('/^[a-z0-9]+/' ) )
             ->setRequired( true )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span8' )
             ->setLabel( 'Short Name' )
             ->addFilter( 'StringToLower' )
             ->addFilter( 'StringTrim' );
@@ -70,7 +70,7 @@ class IXP_Form_Customer extends IXP_Form
         $corpwww->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', 'http://www.example.com/' )
-            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'class', 'span10' )
             ->setLabel( 'Corporate Website' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -102,21 +102,21 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Status' )
             ->setRequired( true )
-            ->setAttrib( 'class', 'chzn-select span3' )
+            ->setAttrib( 'class', 'chzn-select span8' )
             ->setErrorMessages( array( 'Please set the customer\'s status' ) );
         $this->addElement( $status );
-        
+
         $MD5Support = $this->createElement( 'select', 'MD5Support' );
         $MD5Support->setMultiOptions( \Entities\Customer::$MD5_SUPPORT )
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'MD5 Support' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span6' );
+            ->setAttrib( 'class', 'chzn-select span8' );
         $this->addElement( $MD5Support );
-        
+
         $abbreviatedName = $this->createElement( 'text', 'abbreviatedName' );
         $abbreviatedName->setRequired( false )
-            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'class', 'span10' )
             ->setLabel( 'Abbreviated Name' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -127,7 +127,7 @@ class IXP_Form_Customer extends IXP_Form
         $autsys->addValidator('int')
             ->addValidator( 'greaterThan', false, array( -1 ) )
             ->setRequired( false )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span6' )
             ->setLabel( 'AS Number' );
         $this->addElement( $autsys  );
 
@@ -135,7 +135,7 @@ class IXP_Form_Customer extends IXP_Form
         $maxprefixes->addValidator('int')
             ->addValidator( 'greaterThan', false, array( -1 ) )
             ->setRequired( false )
-            ->setAttrib( 'class', 'span2' )
+            ->setAttrib( 'class', 'span6' )
             ->setLabel( 'Max Prefixes' );
         $this->addElement( $maxprefixes  );
 
@@ -143,7 +143,7 @@ class IXP_Form_Customer extends IXP_Form
         $peeringemail->addValidator('emailAddress' )
             ->addValidator( 'stringLength', false, array( 0, 64 ) )
             ->setRequired( false )
-            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'class', 'span8' )
             ->setAttrib( 'placeholder', 'peering@example.com' )
             ->setLabel( 'Email' );
         $this->addElement( $peeringemail );
@@ -153,17 +153,17 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Peering Policy' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span3' );
-        
+            ->setAttrib( 'class', 'chzn-select span8' );
+
         $this->addElement( $peeringpolicy );
-        
-        
+
+
         $peeringmacro = $this->createElement( 'text', 'peeringmacro' );
         $peeringmacro->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
             ->setLabel( 'Peering Macro' )
             ->addFilter( 'StringTrim' )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span8' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $peeringmacro );
 
@@ -183,13 +183,13 @@ class IXP_Form_Customer extends IXP_Form
     		'peeringDisplayGroup'
         );
         $this->getDisplayGroup( 'peeringDisplayGroup' )->setLegend( 'Peering Details' );
-        
+
         $nocphone = $this->createElement( 'text', 'nocphone' );
         $nocphone->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
             ->setLabel( 'Phone' )
             ->setAttrib( 'placeholder', '+353 1 123 4567' )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span8' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocphone );
@@ -198,7 +198,7 @@ class IXP_Form_Customer extends IXP_Form
         $noc24hphone->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', '+353 86 876 5432' )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span8' )
             ->setLabel( '24h Phone' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -209,7 +209,7 @@ class IXP_Form_Customer extends IXP_Form
             ->setRequired( false )
             ->setLabel( 'Fax' )
             ->setAttrib( 'placeholder', '+353 1 765 4321' )
-            ->setAttrib( 'class', 'span4' )
+            ->setAttrib( 'class', 'span8' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocfax );
@@ -218,7 +218,7 @@ class IXP_Form_Customer extends IXP_Form
         $nocemail->addValidator('emailAddress' )
             ->addValidator( 'stringLength', false, array( 0, 40 ) )
             ->setRequired( false )
-            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'class', 'span8' )
             ->setAttrib( 'placeholder', 'noc@example.com' )
             ->setLabel( 'E-Mail' );
         $this->addElement( $nocemail );
@@ -228,16 +228,16 @@ class IXP_Form_Customer extends IXP_Form
             ->setRegisterInArrayValidator( true )
             ->setLabel( 'Hours' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select span2' );
+            ->setAttrib( 'class', 'chzn-select span8' );
         $this->addElement( $nochours );
-        
-        
+
+
         $nocwww = $this->createElement( 'text', 'nocwww' );
         $nocwww->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
             ->setLabel( 'Website' )
             ->setAttrib( 'placeholder', 'http://www.noc.example.com/' )
-            ->setAttrib( 'class', 'span6' )
+            ->setAttrib( 'class', 'span10' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocwww );
@@ -253,7 +253,7 @@ class IXP_Form_Customer extends IXP_Form
     }
 
 
-    
+
     /**
      * Create a SELECT / dropdown element of all customer names indexed by their id.
      *
@@ -263,16 +263,16 @@ class IXP_Form_Customer extends IXP_Form
     public static function getPopulatedSelect( $name = 'custid' )
     {
         $cust = new Zend_Form_Element_Select( $name );
-        
+
         $maxId = self::populateSelectFromDatabase( $cust, '\\Entities\\Customer', 'id', 'name', 'name', 'ASC' );
-        
+
         $cust->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( _( 'Customer' ) )
             ->setAttrib( 'class', 'span2 chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select a customer' ) ) );
-        
+
         return $cust;
     }
 
@@ -335,4 +335,3 @@ class IXP_Form_Customer extends IXP_Form
     }
 
 }
-

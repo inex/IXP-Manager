@@ -37,10 +37,10 @@ class IXP_Form_Interface_Virtual extends IXP_Form
     public function init()
     {
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'virtual-interface/forms/virtual-interface.phtml' ] ] ] );
-        
+
         $this->addElement( IXP_Form_Customer::getPopulatedSelect( 'custid' ) );
-        $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span4' );
-        
+        $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span8' );
+
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 0, 255 ) )
             ->setRequired( false )
@@ -84,13 +84,12 @@ class IXP_Form_Interface_Virtual extends IXP_Form
             [ 'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk' ],
             'virtualInterfaceDisplayGroup'
         );
-            
+
         $this->getDisplayGroup( 'virtualInterfaceDisplayGroup' )->setLegend( 'Customer Connection Details' );
 
-        
+
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
 
 }
-
