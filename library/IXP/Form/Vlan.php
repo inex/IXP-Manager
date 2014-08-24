@@ -55,7 +55,9 @@ class IXP_Form_VLAN extends IXP_Form
         $this->addElement( $number );
 
         $infrastructure = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' )
-            ->setRequired( true )
+            ->setRequired( true );
+
+        $infrastructure->addValidator( 'between', false, array( 1, $infrastructure->getAttrib( 'data-maxId' ) ) )
             ->setAttrib( 'class', 'chzn-select' );
         $this->addElement( $infrastructure );
 
@@ -71,7 +73,7 @@ class IXP_Form_VLAN extends IXP_Form
         $private->setLabel( 'Private VLAN between a subset of members' )
             ->setCheckedValue( '1' );
         $this->addElement( $private );
-        
+
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
             ->setRequired( false )
@@ -80,7 +82,7 @@ class IXP_Form_VLAN extends IXP_Form
             ->setAttrib( 'class', 'span3' )
             ->setAttrib( 'rows', 5 );
         $this->addElement( $notes );
-        
+
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
@@ -104,17 +106,17 @@ class IXP_Form_VLAN extends IXP_Form
 
         if( $publicOnly )
             $qb->where( "v.private = 0" );
-    
+
         $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $vlan, '\\Entities\\Vlan', 'id', 'name', 'name', 'ASC' );
-    
+
         $vlan->setRegisterInArrayValidator( true )
             ->setRequired( true )
             ->setLabel( _( 'VLAN' ) )
             ->setAttrib( 'class', 'span3 chzn-select' )
             ->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( array( _( 'Please select a VLAN' ) ) );
-    
+
         return $vlan;
     }
-    
+
 }

@@ -52,14 +52,14 @@ class IXP_Form_Infrastructure extends IXP_Form
             ->addFilter( 'StringToLower' )
             ->addFilter( 'StringTrim' );
         $this->addElement( $shortname  );
-        
+
         $isPrimary = $this->createElement( 'checkbox', 'isPrimary' );
         $isPrimary->setLabel( 'This is the <em>primary</em> infrastructure' )
             ->setValue( '0' )
             ->addValidator( 'InArray', false, [ [ 0, 1 ] ] )
             ->addFilter( 'Int' );
         $this->addElement( $isPrimary );
-        
+
         $this->addElement( IXP_Form_IXP::createAggregateGraphNameElement() );
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
@@ -107,17 +107,17 @@ class IXP_Form_Infrastructure extends IXP_Form
             ->from( '\\Entities\\Infrastructure', 'e' )
             ->join( 'e.IXP', 'ix' )
             ->add( 'orderBy', "ixp ASC, name ASC" );
-        
+
         $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\Infrastructure', 'id', [ 'ixp', 'name' ], 'ixp', 'ASC' );
-    
+
         $sw->setRegisterInArrayValidator( true )
             ->setRequired( false )
+            ->setAttrib( 'data-maxId', $maxId )
             ->setLabel( _( 'infrastructure' ) )
             ->setAttrib( 'class', 'chzn-select-deselect' )
             //->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( [ 'Please select an infrastructure' ] );
-    
+
         return $sw;
     }
 }
-
