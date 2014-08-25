@@ -23,16 +23,22 @@
             <td><strong>Abreviated Name</strong></td>
             <td>{$cust->getAbbreviatedName()}</td>
             <td colspan="2">
-                <span class="label label-{if $rsclient}success{else}important{/if}">RS Client</span>
-                &nbsp;&nbsp;&nbsp;
-                <span class="label label-{if $as112client}success{else}important{/if}">AS112</span>
+                {if not $cust->isTypeAssociate()}
+                    <span class="label label-{if $rsclient}success{else}important{/if}">RS Client</span>
+                    &nbsp;&nbsp;&nbsp;
+                    <span class="label label-{if $as112client}success{else}important{/if}">AS112</span>
+                {/if}
             </td>
         </tr>
         <tr>
             <td><strong>Corporate Site</strong></td>
             <td><a href="{$cust->getCorpwww()}">{$cust->getCorpwww()}</a></td>
-            <td><strong>Peering Email</strong></td>
-            <td>{if $cust->getpeeringemail()}{mailto address=$cust->getpeeringemail()}{/if}</td>
+            {if $cust->isTypeAssociate()}
+                <td colspan="2"></td>
+            {else}
+                <td><strong>Peering Email</strong></td>
+                <td>{if $cust->getpeeringemail()}{mailto address=$cust->getpeeringemail()}{/if}</td>
+            {/if}
         </tr>
         <tr>
             <td><strong>Status</strong></td>
@@ -46,7 +52,7 @@
             <td><strong>Left</strong></td>
             <td>{if $cust->hasLeft()}{$cust->getDateleave()->format( 'Y-m-d' )}{/if}</td>
         </tr>
-        {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE}
+        {if not $cust->isTypeAssociate()}
             <tr>
                 <td><strong>Peering Policy</strong></td>
                 <td>{$cust->getPeeringpolicy()}</td>
@@ -82,9 +88,9 @@
             </tr>
         {/if}
         <tr>
-            <td>{if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE}<strong>NOC Details</strong>{/if}</td>
+            <td>{if not $cust->isTypeAssociate()}<strong>NOC Details</strong>{/if}</td>
             <td>
-                {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE}
+                {if not $cust->isTypeAssociate()}
                     {if $cust->getNochours()}    {$cust->getNochours()}<br />    {/if}
                     {if $cust->getNocemail()}    {mailto address=$cust->getNocemail()}<br />{/if}
                     {if $cust->getNocwww()}      <a href="{$cust->getNocwww()}">{$cust->getNocwww()}</a><br />      {/if}
@@ -98,5 +104,3 @@
 
     </tbody>
 </table>
-
-
