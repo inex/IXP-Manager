@@ -251,7 +251,8 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
         $vi =  $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $form->getElement( 'virtualinterfaceid' )->getValue() );
         $object->setVirtualInterface( $vi );
 
-        if( !$vi->getCustomer()->isUniqueMonitorIndex( $form->getValue( 'monitorindex' ) ) ) {
+        // FIXME We should do more than just ensure it's not an edit here. You could edit to a non-unique value...
+        if( !$isEdit && !$vi->getCustomer()->isUniqueMonitorIndex( $form->getValue( 'monitorindex' ) ) ) {
             $this->addMessage( 'The monitor index must be unique. It has been reset below to a unique value.', OSS_Message::ERROR );
             $form->getElement( 'monitorindex' )->setValue( $this->getD2R( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $vi->getCustomer() ) );
             return false;
