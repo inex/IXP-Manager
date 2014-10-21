@@ -89,7 +89,7 @@ class IXP_Form_IrrdbConfig extends IXP_Form
     
         $e->setRegisterInArrayValidator( true )
             ->setLabel( _( 'IRRDB Source' ) )
-            ->setAttrib( 'class', 'span4 chzn-select' )
+            ->setAttrib( 'class', 'span8 chzn-select' )
             ->setErrorMessages( array( _( 'Please select an IRRDB source' ) ) );
     
         return $e;
