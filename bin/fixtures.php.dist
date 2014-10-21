@@ -81,7 +81,7 @@ $em->persist( $ixp );
 
 ### An IXP has one or more infrastructures. An infrastructure is an
 ### interconnected group of switches. IXPs such as INEX and LINX (as
-### examples) run two infrastructures on different hardware for 
+### examples) run two infrastructures on different hardware for
 ### resiliency. Define your one or more infrastructures here.
 ### (or you can also add these later in the application)
 
@@ -245,7 +245,8 @@ $vendors = [
     [ "Brocade", 'Brocade', 'brocade' ],
     [ "Juniper Networks", 'Juniper', 'juniper' ],
     [ "Cumulus Networks", 'Cumulus', 'cumulus' ],
-    [ "Linux", 'Linux', 'linux' ]
+    [ "Linux", 'Linux', 'linux' ],
+    [ "Hewlett-Packard", 'HP', 'hp' ]
 ];
 
 foreach( $vendors as $vendor )
@@ -384,4 +385,3 @@ $em->flush();
 
 
 echo "Fixtures installed successfully\n";
-
