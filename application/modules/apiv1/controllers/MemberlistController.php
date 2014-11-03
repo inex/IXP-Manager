@@ -52,13 +52,13 @@ class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
         $ixpinfo = array();
         
         $ixpinfo['shortname'] = $this->_options['identity']['orgname'];
+        $ixpinfo['name'] = $this->_options['identity']['legalname'];
+        $ixpinfo['ixp_id'] = $this->_options['identity']['ixfid'];
+        $ixpinfo['country'] = $this->_options['identity']['location']['country'];
 
-        // FIXME: need extra term in application.ini
-        $ixpinfo['country'] = 'IE';
-
-#        $ixpinfo['vlan'] = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanEuroIXExportArray();
- 
+        $ixpinfo['vlan'] = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanEuroIXExportArray();
         $ixpinfo['switch'] = $this->getListSwitchInfo();
+
         return $ixpinfo;    
     }
 
@@ -71,6 +71,41 @@ class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
         );
 
         foreach( $customers as $c ) {
+            $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
+
+            $conn = array();
+            $iflist = array();
+            foreach( $c->getVirtualInterfaces() as $vi ) {
+                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                    if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED ) {
+                        $iflist[] = array (
+                            'switch_id'	=> $pi->getSwitchPort()->getSwitcher()->getID(),
+                            'if_speed'	=> $pi->getSpeed(),
+                        );
+                    }
+                }
+            
+                $vlanlist = array();
+                foreach( $vi->getVlanInterfaces() as $vli ) {
+                    $vlanentry['vlan_id'] = $vli->getVlan()->getId();
+                    if ($vli->getIpv4enabled()) {
+                        $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
+                        $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
+                        $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
+                        $vlanentry['ipv4']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 4, "AS");
+                    }
+                    if ($vli->getIpv6enabled()) {
+                        $vlanentry['ipv6']['address'] = $vli->getIPv6Address()->getAddress();
+                        $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
+                        $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
+                        $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
+                    }
+                }
+
+                $conn['state'] = 'active';
+                $conn['if_list'] = $iflist;
+                $conn['vlan_id'] = $vlanentry;
+            }
             $memberinfo[] = [
                 'asnum'			=> $c->getAutsys(),
                 'name'			=> $c->getName(),
@@ -81,6 +116,7 @@ class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
                 'peering_policy'	=> $c->getPeeringpolicy(),
                 'peering_policy_url'	=> $c->getNocwww(),
                 'member_since'		=> $c->getDatejoin()->format( 'Y-m-d' ),
+                'connection_list'	=> $conn,
             ];
         }
 
@@ -98,6 +134,8 @@ class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
 
                  $data[ $switch->getId() ]['name'] = $switch->getName();
                  $data[ $switch->getId() ]['colo'] = $switch->getCabinet()->getLocation()->getName();
+                 $data[ $switch->getId() ]['city'] = $this->_options['identity']['location']['city'];
+                 $data[ $switch->getId() ]['country'] = $this->_options['identity']['location']['country'];
             }
         }
         return $data;
