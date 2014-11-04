@@ -84,15 +84,19 @@ class NetworkInfo extends EntityRepository
             )->useResultCache( true, 3600 )
             ->getArrayResult();
 
-        $data = array();
+        $vlanentry = array();
         foreach( $networkInfo as $ni )
         {
-            $vlanentry = array();
-            $vlanentry['id']                                   = $ni['Vlan']['id'];
-            $vlanentry['name']                                 = $ni['Vlan']['name'];
-            $vlanentry[ 'ipv'.$ni['protocol'] ]['prefix']      = $ni[ 'network' ];
-            $vlanentry[ 'ipv'.$ni['protocol'] ]['mask_length'] = $ni[ 'masklen' ];
-            $data[] = $vlanentry;
+            $id = $ni['Vlan']['id'];
+            $vlanentry[$id]['id']                                   = $ni['Vlan']['id'];
+            $vlanentry[$id]['name']                                 = $ni['Vlan']['name'];
+            $vlanentry[$id][ 'ipv'.$ni['protocol'] ]['prefix']      = $ni[ 'network' ];
+            $vlanentry[$id][ 'ipv'.$ni['protocol'] ]['mask_length'] = $ni[ 'masklen' ];
+        }
+
+        $data = array();
+        foreach(array_keys($vlanentry) as $id){
+            $data[] = $vlanentry[$id];
         }
 
         return $data;
