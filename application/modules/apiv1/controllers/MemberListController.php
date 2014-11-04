@@ -48,6 +48,9 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 
         $jsonoutput = array('version' => '2014110301');
 
+        date_default_timezone_set('UTC');
+        $jsonoutput['timestamp'] = date('Y-m-d', time()).'T'.date('H:i:s', time()).'Z';
+        
         $jsonoutput['ixp_info'] = $this->getListIXPInfo();
 
         $jsonoutput['member_list'] = $this->getListMemberInfo();
@@ -96,8 +99,9 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
             $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
 
             $conn = array();
-            $iflist = array();
+            $connlist = array();
             foreach( $c->getVirtualInterfaces() as $vi ) {
+                $iflist = array();
                 foreach( $vi->getPhysicalInterfaces() as $pi ) {
                     if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED ) {
                         $iflist[] = array (
@@ -107,7 +111,7 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
                     }
                 }
 
-                $vlanlist = array();
+                $vlanentry = array();
                 foreach( $vi->getVlanInterfaces() as $vli ) {
                     $vlanentry['vlan_id'] = $vli->getVlan()->getId();
                     if ($vli->getIpv4enabled()) {
@@ -124,21 +128,23 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
                     }
                 }
 
+                $conn = array();
                 $conn['state'] = 'active';
                 $conn['if_list'] = $iflist;
                 $conn['vlan_list'][] = $vlanentry;
+                $connlist[] = $conn;
             }
             $memberinfo[] = [
                 'asnum'			=> $c->getAutsys(),
                 'name'			=> $c->getName(),
                 'url'			=> $c->getCorpwww(),
-                'contact_email'		=> $c->getPeeringemail(),
-                'contact_phone'		=> $c->getNocphone(),
+                'contact_email'		=> array( $c->getPeeringemail() ),
+                'contact_phone'		=> array( $c->getNocphone() ),
                 'contact_hours'		=> $c->getNochours(),
                 'peering_policy'	=> $c->getPeeringpolicy(),
                 'peering_policy_url'	=> $c->getNocwww(),
-                'member_since'		=> $c->getDatejoin()->format( 'Y-m-d' ),
-                'connection_list'	=> $conn,
+                'member_since'		=> $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
+                'connection_list'	=> $connlist,
             ];
         }
 
