@@ -37,6 +37,8 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
     public function listAction()
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+        $this->preflight();
+
         $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
 
         $jsonoutput = array('version' => '2014110301');
@@ -48,13 +50,28 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
         print json_encode($jsonoutput, JSON_PRETTY_PRINT)."\n";
     }
 
+    private function preflight() {
+        if( !isset( $this->_options['identity']['orgname'] )
+            || !isset( $this->_options['identity']['legalname'] )
+            || !isset( $this->_options['identity']['ixfid'] )
+            || !isset( $this->_options['identity']['location']['country'] )
+            || !isset( $this->_options['identity']['location']['city'] ) )
+        {
+            die( 'ERROR: Please ensure you have completed the [identity] section in application.ini. '
+                . 'There may be new values that you need to copy over from application.ini.dist.'
+            );
+        }
+
+        return;
+    }
+
     private function getListIXPInfo() {
         $ixpinfo = array();
 
         $ixpinfo['shortname'] = $this->_options['identity']['orgname'];
-        $ixpinfo['name'] = $this->_options['identity']['legalname'];
-        $ixpinfo['ixp_id'] = $this->_options['identity']['ixfid'];
-        $ixpinfo['country'] = $this->_options['identity']['location']['country'];
+        $ixpinfo['name']      = $this->_options['identity']['legalname'];
+        $ixpinfo['ixp_id']    = $this->_options['identity']['ixfid'];
+        $ixpinfo['country']   = $this->_options['identity']['location']['country'];
 
         $ixpinfo['vlan'] = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanEuroIXExportArray();
         $ixpinfo['switch'] = $this->getListSwitchInfo();
