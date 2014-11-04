@@ -33,10 +33,15 @@
  */
 class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 {
+    public function preDispatch()
+    {
+        $this->assertUserPriv( \Entities\User::AUTH_CUSTUSER );
+        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+    }
+
 
     public function listAction()
     {
-        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
         $this->preflight();
 
         $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
