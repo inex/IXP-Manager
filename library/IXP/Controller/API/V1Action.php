@@ -49,18 +49,18 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
     // use OSS_Controller_Action_Trait_Freshbooks;
     // use OSS_Controller_Action_Trait_Messages;
     // use OSS_Controller_Action_Trait_News;
-    
+
     use IXP_Controller_Trait_Common;
-    
-    
+
+
     /**
      * A variable to hold the user record
      *
      * @var \Entities\User An instance of the user record
      */
     protected $_user = false;
-    
-    
+
+
     /**
      * Override the Zend_Controller_Action's constructor (which is called
      * at the very beginning of this function anyway).
@@ -83,7 +83,7 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
         $errorHandler->setErrorHandlerAction( 'error' );
     }
 
-    
+
     /**
      * Get the user ORM object.
      *
@@ -99,15 +99,15 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
             {
                 if( !( $apiKey = $this->getParam( 'key', false ) ) )
                     return false;
-                
+
                 $key = $this->getD2EM()->createQuery(
                         "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
                     ->setParameter( 1, $apiKey )
                     ->useResultCache( true, 3600, 'oss_d2u_user_apikey_' . $apiKey )
                     ->getSingleResult();
-                
+
                 $this->_user = $key->getUser();
-                
+
                 $key->setLastseenAt( new \DateTime() );
                 $key->setLastseenFrom( $_SERVER['REMOTE_ADDR'] );
                 $this->getD2EM()->flush();
@@ -117,10 +117,10 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
                 return false;
             }
         }
-    
+
         return $this->_user;
     }
-    
+
     /**
      * Get the customer object
      *
@@ -130,7 +130,7 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
     {
         return $this->getUser()->getCustomer();
     }
-    
+
     /**
      * Assert that a valid API key has been provided and that the user has the specified permissions
      *
@@ -142,7 +142,7 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
     protected function assertUserPriv( $priv )
     {
         $u = $this->getUser();
-        
+
         if( $u && $u->getPrivs() == $priv )
             return $u;
         else if( $u )
@@ -150,16 +150,36 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
         else
             throw new Zend_Controller_Action_Exception( 'Valid API key required', 401 );
     }
-    
-    
+
+    /**
+     * Assert that a valid API key has been provided and that the user has the minimum specified permissions
+     *
+     * Throws an exception which is caught by the API Error Controller if tests fail.
+     *
+     * @param int $priv From \Entities\User::AUTH_XXX
+     * @return \Entities\User
+     */
+    protected function assertMinUserPriv( $priv )
+    {
+        $u = $this->getUser();
+
+        if( $u && $u->getPrivs() >= $priv )
+            return $u;
+        else if( $u )
+            throw new Zend_Controller_Action_Exception( 'Invalid user privileges', 401 );
+        else
+            throw new Zend_Controller_Action_Exception( 'Valid API key required', 401 );
+    }
+
+
     /**
      * Dummy function to allow CLI and API code to intermingle.
      */
     protected function verbose( $msg, $implictNewline = true )
     {}
-    
-    
-    
+
+
+
     /**
      * API utility function to get and validate a given VLAN by ID
      *
@@ -169,18 +189,18 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
     public function apiGetParamVlan( $required = true )
     {
         $vlanid = $this->getParam( 'vlanid', false );
-    
+
         if( !$vlanid || !( $vlan = $this->getD2R( '\\Entities\\Vlan' )->find( $vlanid ) ) )
         {
             if( $required )
                 throw new Zend_Controller_Action_Exception( 'Invalid or no VLAN ID specified.', 401 );
-    
+
             return false;
         }
-    
+
         return $vlan;
     }
-    
+
     /**
      * API utility function to get and validate a given IP protocol
      *
@@ -190,18 +210,18 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
     public function apiGetParamProtocol( $required = true )
     {
         $p = $this->getParam( 'proto', false );
-    
+
         if( !$p || !in_array( $p, [ 4, 6 ] ) )
         {
             if( $required )
                 throw new Zend_Controller_Action_Exception( 'Invalid or no protocol specified.', 401 );
-                
+
             return false;
         }
-    
+
         return $p;
     }
-    
+
     /**
      * API utility function to get a named parameter
      *
@@ -213,23 +233,23 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
     public function apiGetParam( $param, $required = false, $default = false )
     {
         $p = $this->getParam( $param, false );
-    
+
         if( $p === false && $default )
             $p = $default;
-    
+
         if( $p === false && $required )
             throw new Zend_Controller_Action_Exception( "Required parameter {$param} missing", 401 );
-        
+
         return $p;
     }
-    
+
     /**
      * Utility function to (optionally) load a Smarty config file specified by a 'config' parameter.
-     * 
+     *
      * This config parameter must reference the name of a config file as follows:
-     * 
+     *
      *     APPLICATION_PATH . "/configs/" . preg_replace( '/[^\da-z_\-]/i', '', $cfile ) . ".conf";
-     * 
+     *
      * @throws Zend_Controller_Action_Exception If the file cannot be read
      * @return bool True if a config file was specified and loaded. False otherwise.
      */
@@ -244,12 +264,11 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
                 $this->getView()->configLoad( $cfile );
                 return true;
             }
-    
+
             throw new Zend_Controller_Action_Exception( 'Cannot open / read specified configuration file', 401 );
         }
-        
+
         return false;
     }
-    
-}
 
+}
