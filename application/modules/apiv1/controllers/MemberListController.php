@@ -37,7 +37,7 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
     public function listAction()
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
-        $this->getResponse()->setHeader( 'Content-Type', 'text/plain' );
+        $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
 
         $jsonoutput = array('version' => '2014110301');
 
