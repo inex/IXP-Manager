@@ -31,7 +31,7 @@
  * @copyright  Copyright (c) 2009 - 2014, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
+class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 {
 
     public function listAction()
@@ -46,11 +46,11 @@ class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
         $jsonoutput['member_list'] = $this->getListMemberInfo();
 
         print json_encode($jsonoutput, JSON_PRETTY_PRINT)."\n";
-    }  
+    }
 
     private function getListIXPInfo() {
         $ixpinfo = array();
-        
+
         $ixpinfo['shortname'] = $this->_options['identity']['orgname'];
         $ixpinfo['name'] = $this->_options['identity']['legalname'];
         $ixpinfo['ixp_id'] = $this->_options['identity']['ixfid'];
@@ -59,12 +59,12 @@ class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
         $ixpinfo['vlan'] = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanEuroIXExportArray();
         $ixpinfo['switch'] = $this->getListSwitchInfo();
 
-        return $ixpinfo;    
+        return $ixpinfo;
     }
 
     private function getListMemberInfo() {
         $memberinfo = array();
-        
+
         $customers = OSS_Array::reindexObjects(
                 OSS_Array::reorderObjects( $this->getD2R( '\\Entities\\Customer' )->getConnected( false, false, true ), 'getAutsys', SORT_NUMERIC ),
                 'getId'
@@ -84,7 +84,7 @@ class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
                         );
                     }
                 }
-            
+
                 $vlanlist = array();
                 foreach( $vi->getVlanInterfaces() as $vli ) {
                     $vlanentry['vlan_id'] = $vli->getVlan()->getId();
@@ -120,13 +120,13 @@ class Apiv1_MemberlistController extends IXP_Controller_API_V1Action
             ];
         }
 
-        return $memberinfo;    
+        return $memberinfo;
     }
 
     private function getListSwitchInfo() {
         $data = array();
 
-        $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();        
+        $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
         foreach( $ixp->getInfrastructures() as $infra ) {
             foreach( $infra->getSwitchers() as $switch ) {
                 if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
