@@ -56,7 +56,7 @@ class NetworkInfo extends EntityRepository
      *
      * @return array As described above
      */
-    
+
     public function asVlanProtoArray()
     {
         $networkInfo = $this->getEntityManager()->createQuery(
@@ -71,7 +71,7 @@ class NetworkInfo extends EntityRepository
         {
             $data[ $ni['Vlan']['id'] ][ $ni['protocol'] ] = $ni;
         }
-        
+
         return $data;
     }
 
@@ -87,11 +87,11 @@ class NetworkInfo extends EntityRepository
         $data = array();
         foreach( $networkInfo as $ni )
         {
-            $data [$ni['Vlan']['id'] ]['name'] = $ni['Vlan']['name'];
-            $data [$ni['Vlan']['id'] ][ 'ipv'.$ni['protocol']] ['prefix'] = $ni[ 'network' ];
-            $data [$ni['Vlan']['id'] ][ 'ipv'.$ni['protocol']] ['mask_length'] = $ni[ 'masklen' ];
+            $data[ $ni['Vlan']['id'] ]['name']                                 = $ni['Vlan']['name'];
+            $data[ $ni['Vlan']['id'] ][ 'ipv'.$ni['protocol'] ]['prefix']      = $ni[ 'network' ];
+            $data[ $ni['Vlan']['id'] ][ 'ipv'.$ni['protocol'] ]['mask_length'] = $ni[ 'masklen' ];
         }
-        
+
         return $data;
     }
 
