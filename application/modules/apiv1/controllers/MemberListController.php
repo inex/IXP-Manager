@@ -34,7 +34,7 @@
 class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 {
 
-    public function indexAction()
+    public function listAction()
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
         $this->preflight();
@@ -145,15 +145,18 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 
         $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
         foreach( $ixp->getInfrastructures() as $infra ) {
+            $switchentry = array();
             foreach( $infra->getSwitchers() as $switch ) {
                 if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
                     continue;
 
-                 $data[ $switch->getId() ]['name']    = $switch->getName();
-                 $data[ $switch->getId() ]['colo']    = $switch->getCabinet()->getLocation()->getName();
-                 $data[ $switch->getId() ]['city']    = $this->_options['identity']['location']['city'];
-                 $data[ $switch->getId() ]['country'] = $this->_options['identity']['location']['country'];
+                 $switchentry['id']      = $switch->getId();
+                 $switchentry['name']    = $switch->getName();
+                 $switchentry['colo']    = $switch->getCabinet()->getLocation()->getName();
+                 $switchentry['city']    = $this->_options['identity']['location']['city'];
+                 $switchentry['country'] = $this->_options['identity']['location']['country'];
             }
+            $data[] = $switchentry;
         }
         return $data;
     }
