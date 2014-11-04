@@ -296,6 +296,18 @@ frontend.disabled.rs-prefixes = 1
 ;; e.g. we use "INEX" here
 identity.orgname  = "XXX"
 
+;; e.g. we use "Internet Neutral Exchange Association Ltd" here
+identity.legalname  = "XXX"
+
+;; e.g. we use "Dublin"
+identity.location.city  = "XXX"
+
+;; e.g. we use "IE"
+identity.location.country  = "XXX"
+
+;; This is the IX-Federation ID Code
+identity.ixfid  = "XXX"
+
 ;; e.g. we use "INEX Operations" here
 identity.name  = "XXX Operations"
 

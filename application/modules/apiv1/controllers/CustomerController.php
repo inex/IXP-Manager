@@ -38,7 +38,7 @@ class Apiv1_CustomerController extends IXP_Controller_API_V1Action
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
 
-        $user = $this->assertUserPriv( \Entities\User::AUTH_SUPERUSER );
+        $user = $this->assertMinUserPriv( \Entities\User::AUTH_SUPERUSER );
 
         $customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive(
             true,
