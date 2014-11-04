@@ -126,7 +126,7 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 
                 $conn['state'] = 'active';
                 $conn['if_list'] = $iflist;
-                $conn['vlan_list'] = $vlanentry;
+                $conn['vlan_list'][] = $vlanentry;
             }
             $memberinfo[] = [
                 'asnum'			=> $c->getAutsys(),
