@@ -34,7 +34,7 @@
 class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 {
 
-    public function listAction()
+    public function indexAction()
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
         $this->preflight();
