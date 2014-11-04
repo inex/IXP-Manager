@@ -73,7 +73,7 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
         $ixpinfo['ixp_id']    = $this->_options['identity']['ixfid'];
         $ixpinfo['country']   = $this->_options['identity']['location']['country'];
 
-        $ixpinfo['vlan'] = $this->getD2R( '\\Entities\\NetworkInfo' )->asVlanEuroIXExportArray();
+        $ixpinfo['vlan']   = $this->getD2R( '\\Entities\\NetworkInfo' )->asVlanEuroIXExportArray();
         $ixpinfo['switch'] = $this->getListSwitchInfo();
 
         return $ixpinfo;
@@ -149,9 +149,9 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
                 if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
                     continue;
 
-                 $data[ $switch->getId() ]['name'] = $switch->getName();
-                 $data[ $switch->getId() ]['colo'] = $switch->getCabinet()->getLocation()->getName();
-                 $data[ $switch->getId() ]['city'] = $this->_options['identity']['location']['city'];
+                 $data[ $switch->getId() ]['name']    = $switch->getName();
+                 $data[ $switch->getId() ]['colo']    = $switch->getCabinet()->getLocation()->getName();
+                 $data[ $switch->getId() ]['city']    = $this->_options['identity']['location']['city'];
                  $data[ $switch->getId() ]['country'] = $this->_options['identity']['location']['country'];
             }
         }
