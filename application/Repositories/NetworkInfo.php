@@ -87,9 +87,12 @@ class NetworkInfo extends EntityRepository
         $data = array();
         foreach( $networkInfo as $ni )
         {
-            $data[ $ni['Vlan']['id'] ]['name']                                 = $ni['Vlan']['name'];
-            $data[ $ni['Vlan']['id'] ][ 'ipv'.$ni['protocol'] ]['prefix']      = $ni[ 'network' ];
-            $data[ $ni['Vlan']['id'] ][ 'ipv'.$ni['protocol'] ]['mask_length'] = $ni[ 'masklen' ];
+            $vlanentry = array();
+            $vlanentry['id']                                   = $ni['Vlan']['id'];
+            $vlanentry['name']                                 = $ni['Vlan']['name'];
+            $vlanentry[ 'ipv'.$ni['protocol'] ]['prefix']      = $ni[ 'network' ];
+            $vlanentry[ 'ipv'.$ni['protocol'] ]['mask_length'] = $ni[ 'masklen' ];
+            $data[] = $vlanentry;
         }
 
         return $data;
