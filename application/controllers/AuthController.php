@@ -58,7 +58,7 @@ class AuthController extends IXP_Controller_Action
     {
         return new IXP_Form_Auth_ResetPassword();
     }
-    
+
     /**
      * Return the appropriate lost username form for your application
      */
@@ -66,13 +66,33 @@ class AuthController extends IXP_Controller_Action
     {
         return new IXP_Form_Auth_LostUsername();
     }
-    
-    
-    
-    
+
+
+    /**
+     * Overridable fucntion to perform custom post (successful) login checks (allowing
+     * the login to be cancelled).
+     *
+     * Override this function to add custom code.
+     *
+     * @param Zend_Auth $auth The authentication object
+     * @param \Entities\User $user The user logging in
+     * @param string $message A message to be displayed if returning false (cancelling the login)
+     * @param Zend_Form $form Login for to get more information
+     * @return bool False to prevent the user from logging in, else true
+     */
+    protected function _postLoginChecks( $auth, $user, &$message, $form = null )
+    {
+        if( $user->getDisabled() ) {
+            $message = "You're account has been disabled. Please contact your administrator.";
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Create a CMS login button for admin users
-     * 
+     *
      * The default template is a working bersion for Drupal. Copy that template and skin for your own.
      */
     protected function cmsLoginAction()
@@ -83,8 +103,8 @@ class AuthController extends IXP_Controller_Action
             $this->redirectAndEnsureDie( 'error/insufficient-privileges' );
     }
 
-    
-    
+
+
     /**
      * This function is called just before `switchUserAction()` processes anything.
      *
@@ -97,15 +117,15 @@ class AuthController extends IXP_Controller_Action
             $this->getLogger()->notice( 'User ' . $this->getUser()->getUsername() . ' illegally tried to switch to user with ID '
                 . $this->_getParam( 'id', '[unknown]' )
             );
-            
+
             $this->addMessage(
                 'You are not allowed to switch users! This attempt has been logged and the administrators notified.',
                 OSS_Message::ERROR
             );
-            
+
             $this->redirectAndEnsureDie( '' );
         }
-        
+
         return true;
     }
 
@@ -119,7 +139,7 @@ class AuthController extends IXP_Controller_Action
     {
         return true;
     }
-    
+
     /**
      * This function is called just before `switchUserBackAction()` actually switches
      * the user back.
@@ -132,10 +152,10 @@ class AuthController extends IXP_Controller_Action
     {
         // record current user customer ID
         $custid = $this->getUser()->custid;
-        
+
         $params['url'] = 'customer/overview/tab/users/id/' . $subUser->getCustomer()->getId();
-        
+
         return $params;
     }
-    
+
 }
