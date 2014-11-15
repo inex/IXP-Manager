@@ -47,22 +47,23 @@ class IXP_Form_User extends IXP_Form
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'Name' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name );
-        
-        
-        
-        
+
+
+
+
         $username = OSS_Form_Auth::createUsernameElement();
-        
+
         $username->addValidator( 'stringLength', false, array( 2, 30 ) )
             ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\-_\.]+$/' ) );
 
         $this->addElement( $username );
 
-        
-        
-        
+
+
+
         $password = $this->createElement( 'text', 'password' );
         $password->addValidator( 'stringLength', false, array( 8, 30 ) )
             ->setRequired( true )
@@ -71,11 +72,11 @@ class IXP_Form_User extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $password );
-        
 
-        
-        
-        
+
+
+
+
         $privileges = $this->createElement( 'select', 'privs' );
         $privileges->setMultiOptions( \Entities\User::$PRIVILEGES_TEXT )
             ->setRegisterInArrayValidator( true )
@@ -85,12 +86,12 @@ class IXP_Form_User extends IXP_Form
 
         $this->addElement( $privileges );
 
-        
-        
+
+
         $this->addElement( OSS_Form_User::createEmailElement() );
-        
-        
-        
+
+
+
         $this->addElement( self::createMobileElement( 'authorisedMobile' ) );
 
         $this->addElement( IXP_Form_Customer::getPopulatedSelect( 'custid' ) );
@@ -101,25 +102,25 @@ class IXP_Form_User extends IXP_Form
             ->setCheckedValue( '1' );
         $this->addElement( $disabled );
 
-        
+
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
-        
+
     }
 
-    
+
     public static function createMobileElement( $name = 'mobile' )
     {
         $mobile = new Zend_Form_Element_Text( $name );
-        
+
         $mobile->addValidator( 'stringLength', false, array( 0, 30 ) )
                ->setRequired( false )
                ->setLabel( 'Mobile' )
                ->setAttrib( 'placeholder', '+353 86 123 4567' )
                ->addFilter( 'StringTrim' )
+               ->addFilter( 'StripTags' )
                ->addFilter( new OSS_Filter_StripSlashes() );
-    
+
         return $mobile;
     }
 }
-

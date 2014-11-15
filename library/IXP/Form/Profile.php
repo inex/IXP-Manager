@@ -36,25 +36,27 @@ class IXP_Form_Profile extends IXP_Form
     public function init()
     {
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'profile/forms/profile.phtml' ] ] ] );
-        
+
         $this->setAttrib( 'id', 'profile' )
             ->setAttrib( 'name', 'profile' )
             ->setAction( OSS_Utils::genUrl( 'profile', 'change-profile' ) );
-        
+
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255 ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
             ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $name );
-        
+
         $position = $this->createElement( 'text', 'position' );
         $position->addValidator( 'stringLength', false, array( 1, 50 ) )
             ->setRequired( true )
             ->setLabel( 'Position' )
             ->setAttrib( 'class', 'span6' )
+            ->addFilter( 'StripTags' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $position );
@@ -62,16 +64,17 @@ class IXP_Form_Profile extends IXP_Form
         $email = OSS_Form_User::createEmailElement();
         $email->setAttrib( 'class', 'span9' );
         $this->addElement( $email );
-        
+
         $mobile = IXP_Form_User::createMobileElement()
                     ->setAttrib( 'class', 'span6' );
         $this->addElement( $mobile );
-        
+
         $phone = $this->createElement( 'text', 'phone' );
         $phone->addValidator( 'stringLength', false, array( 1, 32 ) )
             ->setLabel( _( 'Phone' ) )
             ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $phone );
 
@@ -80,9 +83,8 @@ class IXP_Form_Profile extends IXP_Form
                 ->setLabel( _( 'Current Password' ) )
                 ->setAttrib( 'class', 'span6' )
         );
-        
+
         $this->addElement( self::createSubmitElement( 'submit', _( 'Update' ) ) );
     }
 
 }
-
