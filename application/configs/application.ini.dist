@@ -139,7 +139,7 @@ resources.modules[] =
 ;;
 ;; The default password hash method is bcrypt (with a iteration count of 9).
 ;;
-;; You can (and may) want to use 'plaintext' 
+;; You can (and may) want to use 'plaintext'
 ;;   - see https://github.com/inex/IXP-Manager/wiki/Password-Hashing
 ;;
 resources.auth.oss.pwhash  = "bcrypt"
@@ -173,7 +173,7 @@ resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
 ;; for Ubuntu. For FreeBSD, try "/usr/local/share/pear/Doctrine/ORM"
 resources.doctrine2cache.path               = "/usr/share/php/Doctrine/ORM"
 resources.doctrine2cache.autoload_method    = "pear"
-resources.doctrine2cache.namespace                          = 'IXPManager' 
+resources.doctrine2cache.namespace                          = 'IXPManager'
 ; resources.doctrine2cache.type                               = 'ArrayCache'
 resources.doctrine2cache.type                               = 'MemcacheCache'
 resources.doctrine2cache.memcache.servers.0.host       = '127.0.0.1'
@@ -235,11 +235,16 @@ ondemand_resources.logger.writers.stream.group = www-data
 ;; Set to 1 if you want the session manager to ensure same IP addresses for a user session.
 ;; This will cause issues for users in IPv6 with Pricacy Extensions (http://tools.ietf.org/html/rfc4941)
 resources.namespace.checkip = 0
+
+;; You should not change these as session management is handled via cookies using
+;; the default PHP mechanism. Thus, other session cookies (relating to other login
+;; sessions of the same user) are not expired on a logout.
 resources.namespace.timeout = 3600
+resources.session.remember_me_seconds = 3600
+
 
 resources.session.save_path = APPLICATION_PATH "/../var/session"
 resources.session.use_only_cookies = true
-resources.session.remember_me_seconds = 3600
 resources.session.name = IXP_Manager
 
 ;; Put your email relay host here
@@ -364,13 +369,13 @@ identity.default_country = 'IE'
 ;; that contain all the necessary peering details.
 ;;
 ;; For testing / experimentation you can enabled test mode below and, when enabled, all
-;; peering requests will be sent to the testemail. 
+;; peering requests will be sent to the testemail.
 ;;
 ;; NB: This does not apply to any BCC emails you add. The CC recipient in the request
 ;; dialog will be ignored in test mode.
 ;;
-;; Normally, the peering manager adds a note to the peer's notes and sets a request last 
-;; sent date when a peering request is sent. In test mode, this will not happen. 
+;; Normally, the peering manager adds a note to the peer's notes and sets a request last
+;; sent date when a peering request is sent. In test mode, this will not happen.
 ;; If you want this to happen in test mode, set testnote and testdate to true below.
 ;;
 
@@ -396,7 +401,7 @@ mrtg.conf.workdir = '/home/mrtg'
 
 
 ;; We support aggregate IXP and aggregate infrastructure graphs assuming you
-;; have set up MRTG to support these. 
+;; have set up MRTG to support these.
 ;;
 ;; See: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
 
@@ -439,11 +444,11 @@ smokeping.conf.datadir = "/usr/local/var/smokeping"
 ;; The directory where SmokePing keeps its pid when daemonised. (mandatory)
 smokeping.conf.piddir = "/usr/local/var/smokeping"
 
-;; Path to the mail template for DYNAMIC hosts. This mail template must contain keywords of the 
+;; Path to the mail template for DYNAMIC hosts. This mail template must contain keywords of the
 ;; form <##keyword##>. There is a sample template included with SmokePing. (mandatory)
 smokeping.conf.smokemail = "/usr/local/etc/smokeping/smokemail"
 
-;; Smokeping typically includess a file with paths to various executables 
+;; Smokeping typically includess a file with paths to various executables
 ;; Set the full path and filename for that include here if you wish
 smokeping.conf.pathnames = "/etc/smokeping/config.d/pathnames"
 
@@ -537,7 +542,7 @@ cli.port_utilisation.subject = "XXX Port Utilisation Report"
 cli.port_utilisation.recipients[] = "someone@example.com"
 cli.port_utilisation.recipients[] = "someone-else@example.com"
 
-; note that the %s in the subject below is replaced with Errors / Discards as appropriate by the script 
+; note that the %s in the subject below is replaced with Errors / Discards as appropriate by the script
 cli.ports_with_counts.from_email = "ops@example.com"
 cli.ports_with_counts.from_name  = "IXP Operations"
 cli.ports_with_counts.subject = "IXP - Ports with %s"
@@ -604,7 +609,7 @@ weathermap.1.height = 1200
 ;;
 ;; The below defines the default key / value pairs allowable
 ;; in the VLAN network information editor within IXP Manager
-;; 
+;;
 ;; Feel free to customise for your own IXP.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -616,7 +621,7 @@ netinfo.property.masklen.singleton = true
 
 ; Define route servers available as well as their types from a predefined list
 netinfo.property.routeserver.name = "Route Server"
-; multiple route servers allowed for each vlan/protocol 
+; multiple route servers allowed for each vlan/protocol
 netinfo.property.routeserver.singleton = false
 ; when there are two (or more) properties, indicate which one to display in the table
 netinfo.property.routeserver.display = "ipaddress"
@@ -630,7 +635,7 @@ netinfo.property.routeserver.properties.type.values[] = 'OpenBGPd'
 
 ; Note that singleton is the default. We use the below to write out
 ; reverse DNS / ARPA entries
-netinfo.property.dnsfile.name = "Reverse DNS File" 
+netinfo.property.dnsfile.name = "Reverse DNS File"
 
 ; We have an AS112 service - this defines its IP address(es)
 netinfo.property.as112server.name = "AS112 Server"
@@ -647,10 +652,10 @@ netinfo.property.pingbeacon.properties.ipaddress = "IP Address"
 netinfo.property.pingbeacon.properties.ratelimited = "Rate Limited"
 ; Help messages are displayed on the UI data entry dialog:
 netinfo.property.pingbeacon.help = "If this ping beacon is not rate limited, just enter 'No'. If it is, provide details of the rate limiting so the end user may know how many pings / sec they can push at this box."
-    
-    
-    
-    
+
+
+
+
 [staging : production]
 
 ;; if you want to set up a staging environment with a different database.
@@ -668,4 +673,3 @@ mini_css = 1
 
 phpSettings.display_startup_errors = 1
 phpSettings.display_errors = 1
-
