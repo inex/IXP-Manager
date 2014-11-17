@@ -38,24 +38,24 @@ class IXP_Form_PeeringRequest extends IXP_Form
     {
         $this->setAttrib( 'id', 'peering-request-form' )
             ->setAttrib( 'name', 'peering-request-form' );
-        
+
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'peering-manager/peering-request-form.phtml' ] ] ] );
 
         $custid = $this->createElement( 'hidden', 'custid' )
             ->setAttrib( 'id', 'peering-request-form-custid' );
         $this->addElement( $custid );
-        
+
         $marksent = $this->createElement( 'hidden', 'marksent' )
             ->setValue( '0' )
             ->setAttrib( 'id', 'peering-request-form-marksent' );
         $this->addElement( $marksent );
-        
+
         $sendtome = $this->createElement( 'hidden', 'sendtome' )
             ->setValue( '0' )
             ->setAttrib( 'id', 'peering-request-form-sendtome' );
         $this->addElement( $sendtome );
-        
-                
+
+
         $to = $this->createElement( 'text', 'to' );
         $to->addValidator( 'stringLength', false, array( 1, 4096 ) )
             ->setRequired( true )
@@ -63,6 +63,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
             ->setAttrib( 'class', 'span5' )
             ->setAttrib( 'readonly', 'readonly' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $to );
@@ -74,6 +75,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
             ->setAttrib( 'class', 'span5' )
             ->setAttrib( 'readonly', 'readonly' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $cc );
@@ -84,6 +86,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
             ->setLabel( 'BCC' )
             ->setAttrib( 'class', 'span5' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $bcc );
@@ -93,6 +96,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
             ->setRequired( true )
             ->setLabel( 'Subject' )
             ->setAttrib( 'class', 'span5' )
+            ->addFilter( 'StripTags' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
 
@@ -108,6 +112,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
             ->setLabel( 'Message' )
             ->setAttrib( 'class', 'span5 mono' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
 
         $this->addElement( $message );

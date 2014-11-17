@@ -39,6 +39,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setRequired( false )
             ->setLabel( 'Contact' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->setAttrib( 'class', 'span6' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingContact );
@@ -49,6 +50,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setLabel( 'Address' )
             ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress1 );
 
@@ -58,6 +60,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setAttrib( 'class', 'span6' )
             ->setLabel( '' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress2 );
 
@@ -66,6 +69,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
             ->setLabel( '' )
+            ->addFilter( 'StripTags' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingAddress3 );
@@ -76,6 +80,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setAttrib( 'class', 'span4' )
             ->setLabel( 'City' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingCity );
 
@@ -85,6 +90,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setAttrib( 'class', 'span4' )
             ->setLabel( 'Postcode' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingPostcode );
 
@@ -107,6 +113,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setAttrib( 'placeholder', 'billing@gmail.com' )
             ->setLabel( 'E-Mail' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingEmail );
 
@@ -116,6 +123,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setAttrib( 'class', 'span6' )
             ->setAttrib( 'placeholder', '+353 1 234 5678' )
             ->setLabel( 'Telephone' )
+            ->addFilter( 'StripTags' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $billingTelephone );
@@ -128,6 +136,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
                 ->setAttrib( 'class', 'span6' )
                 ->setLabel( 'VAT Number' )
                 ->addFilter( 'StringTrim' )
+                ->addFilter( 'StripTags' )
                 ->addFilter( new OSS_Filter_StripSlashes() );
             $this->addElement( $vatNumber );
 
@@ -137,6 +146,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
                 ->setAttrib( 'class', 'span4' )
                 ->setLabel( 'VAT Rate' )
                 ->addFilter( 'StringTrim' )
+                ->addFilter( 'StripTags' )
                 ->addFilter( new OSS_Filter_StripSlashes() );
             $this->addElement( $vatRate );
         */
@@ -148,6 +158,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setAttrib( 'placeholder', 'invoicing@example.com' )
             ->setLabel( 'Invoice E-Mail' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $invoiceEmail );
 
@@ -164,4 +175,3 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
     }
 
 }
-

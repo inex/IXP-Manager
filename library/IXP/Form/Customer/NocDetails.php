@@ -43,6 +43,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
             ->setAttrib( 'placeholder', '+353 1 123 4567' )
             ->setAttrib( 'class', 'span4' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocphone );
 
@@ -53,6 +54,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
             ->setAttrib( 'class', 'span4' )
             ->setLabel( '24h Phone' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $noc24hphone );
 
@@ -63,6 +65,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
             ->setAttrib( 'placeholder', '+353 1 765 4321' )
             ->setAttrib( 'class', 'span4' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocfax );
 
@@ -72,6 +75,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
             ->setAttrib( 'placeholder', 'noc@example.com' )
+            ->addFilter( 'StripTags' )
             ->setLabel( 'E-Mail' );
         $this->addElement( $nocemail );
 
@@ -81,6 +85,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
             ->setLabel( 'Hours' )
             ->setRequired( false )
             ->setAttrib( 'class', 'chzn-select span12' )
+            ->addFilter( 'StripTags' )
             ->setAttrib( 'chzn-fix-width', '1' );
         $this->addElement( $nochours );
 
@@ -92,6 +97,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
             ->setAttrib( 'placeholder', 'http://www.noc.example.com/' )
             ->setAttrib( 'class', 'span6' )
             ->addFilter( 'StringTrim' )
+            ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $nocwww );
 
@@ -105,4 +111,3 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
     }
 
 }
-
