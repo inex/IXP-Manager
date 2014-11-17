@@ -69,7 +69,7 @@ class AuthController extends IXP_Controller_Action
 
 
     /**
-     * Overridable fucntion to perform custom post (successful) login checks (allowing
+     * Overridable function to perform custom post (successful) login checks (allowing
      * the login to be cancelled).
      *
      * Override this function to add custom code.
@@ -83,7 +83,7 @@ class AuthController extends IXP_Controller_Action
     protected function _postLoginChecks( $auth, $user, &$message, $form = null )
     {
         if( $user->getDisabled() ) {
-            $message = "You're account has been disabled. Please contact your administrator.";
+            $message = "Your account has been disabled. Please contact your administrator.";
             return false;
         }
 
@@ -93,7 +93,7 @@ class AuthController extends IXP_Controller_Action
     /**
      * Create a CMS login button for admin users
      *
-     * The default template is a working bersion for Drupal. Copy that template and skin for your own.
+     * The default template is a working version for Drupal. Copy that template and skin for your own.
      */
     protected function cmsLoginAction()
     {
