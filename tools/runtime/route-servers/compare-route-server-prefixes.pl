@@ -31,7 +31,8 @@
 # https://github.com/inex/IXP-Manager/wiki/Installation-08-Setting-Up-Your-IXP#perl-libraries
 #
 #
-# NB: Ensure you set $conffile and $sockfile in the protocols loop below (search for XXX-SET-ME)
+# NB: Ensure you set $vlanid, $conffile and $sockfile in the protocols loop
+# below (search for XXX-SET-ME)
 
 
 use strict;
@@ -45,6 +46,9 @@ use IXPManager::Const;
 my $devmode = 1;
 my $debug = 1;
 my $do_nothing = 1;
+
+# XXX-SET-ME
+my $vlanid = "1";
 
 my $ixpconfig = new IXPManager::Config;
 my $dbh = $ixpconfig->{db};
@@ -99,8 +103,8 @@ while (my $rec = $sth->fetchrow_hashref) {
 
 foreach my $protocol (qw(4 6)) {
 	# XXX-SET-ME
-	my $conffile = "/usr/local/etc/bird/bird-vlanidXXX-ipv".$protocol.".conf";
-	my $sockfile = "/var/run/bird/bird-vlanidXXX-ipv".$protocol.".ctl";
+	my $conffile = "/etc/bird/bird-vlanid".$vlanid."-ipv".$protocol.".conf";
+	my $sockfile = "/var/run/bird/bird-vlanid".$vlanid."-ipv".$protocol.".ctl";
 
 	open (INPUT, $conffile);
 	my ($asn, $address, $prefixes);
@@ -147,7 +151,9 @@ foreach my $protocol (qw(4 6)) {
 	$dbh->do('START TRANSACTION') or die $dbh->errstr;
                                    
 	foreach my $asn (@asnlist) {
-		open (INPUT, '/usr/sbin/birdc -s '.$sockfile.' show route table t_' . $vliidhash{ $asn } . '_as'.$asn.' protocol pb_as'.$asn.' |');
+		my $cmd = '/usr/sbin/birdc -s '.$sockfile.' show route table t_' . $vliidhash{ $asn } . '_as'.$asn.' protocol pb_' . $vliidhash{ $asn } . '_as'.$asn;
+		print "BIRD: $cmd\n" if ($debug);
+		open (INPUT, $cmd.' |');
 		while (<INPUT>) {
 			# 195.189.221.0/24   via 193.242.111.17 on vlan10 [pb_as2110 May17] * (100) [AS22711i]
 			next unless (/^([A-Fa-f0-9:\.]+\/\d+)\s+via\s+.*\[AS(\d+)\S*\]/);
