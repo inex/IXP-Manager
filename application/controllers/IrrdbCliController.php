@@ -131,7 +131,7 @@ class IrrdbCliController extends IXP_Controller_CliAction
                 $msg = "IRRDB PREFIX: {$cust->getName()} has a non-zero prefix count for IPv{$protocol} in the database but "
                         . "BGPQ3 returned no prefixes. Please examine manually. No databases changes made for this customer.";
                 $this->getLogger()->alert( $msg );
-                echo $msg;
+                echo $msg."\n";
             }
 
             // in either case, we have nothing to do with an empty prefix list:
@@ -320,7 +320,7 @@ class IrrdbCliController extends IXP_Controller_CliAction
                 $msg = "IRRDB ASN: {$cust->getName()} has a non-zero ASN count for IPv{$protocol} in the database but "
                         . "BGPQ3 returned no ASNs. Please examine manually. No databases changes made for this customer.";
                 $this->getLogger()->alert( $msg );
-                echo $msg;
+                echo $msg."\n";
             }
 
             // in either case, we have nothing to do with an empty prefix list:
