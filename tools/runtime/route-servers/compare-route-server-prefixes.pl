@@ -45,7 +45,7 @@ use IXPManager::Const;
 
 my $devmode = 1;
 my $debug = 1;
-my $do_nothing = 1;
+my $do_nothing = 0;
 
 # XXX-SET-ME
 my $vlanid = "1";
