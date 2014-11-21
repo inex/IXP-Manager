@@ -9,7 +9,7 @@ import:         from AS{$asn} accept {$details.asmacro} # {$details.name}
 export:         to   AS{$asn} announce AS-INEXIE
 {/if}
 {/foreach}
-org:            ORG-INEX1-RIPE
+org:            ORG-INEA1-RIPE
 admin-c:        INO7-RIPE
 tech-c:         INO7-RIPE
 notify:         ripe-notify@inex.ie
