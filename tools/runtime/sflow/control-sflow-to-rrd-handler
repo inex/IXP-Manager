@@ -29,15 +29,17 @@ use warnings;
 use strict;
 use Daemon::Control;
 
+my $progname = 'sflow-to-rrd-handler';
+
 Daemon::Control->new({
-	name		=>	"control-sflow-to-rrd-handler",
+	name		=>	"control-$progname",
 	lsb_start	=>	'$syslog $remote_fs',
 	lsb_stop	=>	'$syslog',
-	lsb_sdesc	=>	'Sflow control daemon',
-	lsb_desc	=>	'Controller for the sflow-to-rrd-daemon.',
+	lsb_sdesc	=>	'Sflow to RRD control daemon',
+	lsb_desc	=>	'Controller for $progname',
 	path		=>	'/usr/local/sbin',
-	program		=>	'sflow-to-rrd-handler',
+	program		=>	$progname,
 	program_args	=>	[],
-	pid_file	=>	'/var/run/sflow-to-rrd-handler.pid',
+	pid_file	=>	'/var/run/$progname.pid',
 	fork		=>	2,
 })->run;

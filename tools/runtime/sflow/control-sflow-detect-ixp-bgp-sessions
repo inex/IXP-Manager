@@ -23,21 +23,23 @@
 #
 # Description:
 #
-# startup script for control-sflow-detect-ixp-bgp-sessions
+# startup script for sflow-detect-ixp-bgp-sessions
 
 use warnings;
 use strict;
 use Daemon::Control;
 
+my $progname = 'sflow-detect-ixp-bgp-sessions';
+
 Daemon::Control->new({
-	name		=>	"control-sflow-detect-ixp-bgp-sessions",
+	name		=>	"control-$progname",
 	lsb_start	=>	'$syslog $remote_fs',
 	lsb_stop	=>	'$syslog',
 	lsb_sdesc	=>	'BGP session sflow control daemon',
-	lsb_desc	=>	'Controller for the sflow-detect-ixp-bgp-sessions.',
+	lsb_desc	=>	'Controller for $progname',
 	path		=>	'/usr/local/sbin',
-	program		=>	'sflow-detect-ixp-bgp-sessions',
+	program		=>	$progname,
 	program_args	=>	[],
-	pid_file	=>	'/var/run/sflow-detect-ixp-bgp-sessions.pid',
+	pid_file	=>	'/var/run/$progname.pid',
 	fork		=>	2,
 })->run;
