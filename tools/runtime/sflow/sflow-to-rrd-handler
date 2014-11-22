@@ -4,21 +4,21 @@
 #
 # Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
 # All Rights Reserved.
-# 
+#
 # This file is part of IXP Manager.
-# 
+#
 # IXP Manager is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
 # Software Foundation, version v2.0 of the License.
-# 
+#
 # IXP Manager is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 # more details.
-# 
+#
 # You should have received a copy of the GNU General Public License v2.0
 # along with IXP Manager.  If not, see:
-# 
+#
 # http://www.gnu.org/licenses/gpl-2.0.html
 #
 # Description:
@@ -70,20 +70,20 @@ if ($insanedebug) {
 my $mactable = reload_mactable($dbh);
 my $matrix = matrix_init($dbh);
 
-my $flush_stuff_to_disk = 0;
-my $quit_after_flush = 0;
+my $execute_periodic = 0;
+my $quit_after_periodic = 0;
 
 # handle signals gracefully
-$SIG{TERM} = sub { $flush_stuff_to_disk = 1; $quit_after_flush = 1; };
-$SIG{QUIT} = sub { $flush_stuff_to_disk = 1; $quit_after_flush = 1; };
-$SIG{HUP} = sub { $flush_stuff_to_disk = 1; };
+$SIG{TERM} = sub { $execute_periodic = 1; $quit_after_periodic = 1; };
+$SIG{QUIT} = sub { $execute_periodic = 1; $quit_after_periodic = 1; };
+$SIG{HUP} = sub { $execute_periodic = 1; };
 
 # set up a periodic timer to signal that stuff should be flushed out.  The
 # flush isn't performed in the SIGALRM callback function because perl has
-# historical problems doing complicated stuff in signal handler functions. 
+# historical problems doing complicated stuff in signal handler functions.
 # Much more sensible to raise a flag and have the main code body handle this
 # during normal code exceution.
-$SIG{ALRM} = sub { $flush_stuff_to_disk = 1 };
+$SIG{ALRM} = sub { $execute_periodic = 1 };
 ualarm ( $timer_period*1000000, $timer_period*1000000);
 
 my $tv = [gettimeofday()];
@@ -168,8 +168,8 @@ while (<SFLOWTOOL>) {
 		$debug && print STDERR "DEBUG: rejected: ".$_."\n";
 	}
 	
-	if ($flush_stuff_to_disk) {
-		if ($quit_after_flush) {
+	if ($execute_periodic) {
+		if ($quit_after_periodic) {
 			# sometimes sflowtool doesn't die properly. Need to prioritise kill.
 			kill 9, $sflowpid;
 		}
@@ -178,11 +178,11 @@ while (<SFLOWTOOL>) {
 		$tv = $newtv;
 		$debug && print STDERR "DEBUG: starting rrd flush at time interval: $interval, time: ".time()."\n";
 		process_rrd($interval, $matrix, $rrdcached);
-		if ($quit_after_flush) {
+		if ($quit_after_periodic) {
 			$debug && print STDERR "DEBUG: orderly quit at ".time()."\n";
 			exit 0;
 		}
-		$flush_stuff_to_disk = 0;
+		$execute_periodic = 0;
 		$mactable = reload_mactable($dbh);
 		$matrix = matrix_init($dbh);
 		$debug && print STDERR "DEBUG: flush completed at ".time()."\n";
