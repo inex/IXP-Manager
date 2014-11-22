@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+#
+# control-sflow-detect-ixp-bgp-sessions
+#
+# Copyright (C) 2009-2014 Internet Neutral Exchange Association Limited.
+# All Rights Reserved.
+# 
+# This file is part of IXP Manager.
+# 
+# IXP Manager is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation, version v2.0 of the License.
+# 
+# IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or   
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+# 
+# You should have received a copy of the GNU General Public License v2.0
+# along with IXP Manager.  If not, see:
+# 
+# http://www.gnu.org/licenses/gpl-2.0.html
+#
+# Description:
+#
+# startup script for control-sflow-detect-ixp-bgp-sessions
+
+use warnings;
+use strict;
+use Daemon::Control;
+
+Daemon::Control->new({
+	name		=>	"control-sflow-detect-ixp-bgp-sessions",
+	lsb_start	=>	'$syslog $remote_fs',
+	lsb_stop	=>	'$syslog',
+	lsb_sdesc	=>	'BGP session sflow control daemon',
+	lsb_desc	=>	'Controller for the sflow-detect-ixp-bgp-sessions.',
+	path		=>	'/usr/local/sbin',
+	program		=>	'sflow-detect-ixp-bgp-sessions',
+	program_args	=>	[],
+	pid_file	=>	'/var/run/sflow-detect-ixp-bgp-sessions.pid',
+	fork		=>	2,
+})->run;
