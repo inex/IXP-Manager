@@ -53,7 +53,7 @@ GetOptions(
 	'daemon!'		=> \$daemon,
 	'sflowtool=s'		=> \$sflowtool,
 	'sflowtool_bgp_opts=s'	=> \$sflowtool_opts,
-	'flushtimer=i'		=> \$timer_period
+	'periodictimer=i'	=> \$timer_period
 );
 
 if ($insanedebug) {
@@ -154,6 +154,7 @@ while (<SFLOWTOOL>) {
 		$execute_periodic = 0;
 		$ipmappings = reload_ipmappings($dbh);
 		$debug && print STDERR "DEBUG: periodic reload completed at ".time()."\n";
+		$debug && print Dumper ($ipmappings);
 	}
 }
 
@@ -190,19 +191,20 @@ sub debug_tcpflags
 #
 sub reload_ipmappings
 {
-	my ($dbh) = @_;
+	my ($d) = @_;
+	my ($rec, $s, $mapping);
 
-	$sth = $dbh->prepare('SELECT id, address FROM ipv4address');
-	$sth->execute();
-	while (my $rec = $sth->fetchrow_hashref) {
-		$ipmappings->{4}->{$rec->{address}} = $rec->{id};
+	$s = $d->prepare('SELECT id, address FROM ipv4address');
+	$s->execute();
+	while (my $rec = $s->fetchrow_hashref) {
+		$mapping->{4}->{$rec->{address}} = $rec->{id};
 	}
 
-	$sth = $dbh->prepare('SELECT id, address FROM ipv6address');
-	$sth->execute();
-	while (my $rec = $sth->fetchrow_hashref) {
-		$ipmappings->{6}->{NetAddr::IP->new($rec->{address})->short()} = $rec->{id};
+	$s = $d->prepare('SELECT id, address FROM ipv6address');
+	$s->execute();
+	while (my $rec = $s->fetchrow_hashref) {
+		$mapping->{6}->{NetAddr::IP->new($rec->{address})->short()} = $rec->{id};
 	}
 
-	return $ipmappings;
+	return $mapping;
 }
