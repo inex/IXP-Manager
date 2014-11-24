@@ -122,7 +122,7 @@ class BGPSessionData extends EntityRepository
         foreach( $apeers as $asn => $p )
             ksort( $apeers[ $asn ][ 'peers' ], SORT_NUMERIC );
 
-        \Zend_Registry::get( 'd2cache' )->save( $key, $apeers, 86400 );
+        \Zend_Registry::get( 'd2cache' )->save( $key, $apeers, 3600 );
                 
         return $apeers;
     }
