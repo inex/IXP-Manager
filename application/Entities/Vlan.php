@@ -20,8 +20,8 @@ class Vlan
 
     const PROTOCOL_IPv4 = 4;
     const PROTOCOL_IPv6 = 6;
-    
-    
+
+
     /**
      * @var string $name
      */
@@ -321,7 +321,7 @@ class Vlan
     {
         return $this->NetworkInfo;
     }
-    
+
     /**
      * @var boolean
      */
@@ -828,7 +828,7 @@ class Vlan
     public function setInfrastructure(\Entities\Infrastructure $infrastructure = null)
     {
         $this->Infrastructure = $infrastructure;
-    
+
         return $this;
     }
 
@@ -851,7 +851,7 @@ class Vlan
     public function addIPv4Addresse(\Entities\IPv4Address $iPv4Addresses)
     {
         $this->IPv4Addresses[] = $iPv4Addresses;
-    
+
         return $this;
     }
 
@@ -874,7 +874,7 @@ class Vlan
     public function addIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
     {
         $this->IPv6Addresses[] = $iPv6Addresses;
-    
+
         return $this;
     }
 
@@ -886,5 +886,61 @@ class Vlan
     public function removeIPv6Addresse(\Entities\IPv6Address $iPv6Addresses)
     {
         $this->IPv6Addresses->removeElement($iPv6Addresses);
+    }
+    /**
+     * @var boolean
+     */
+    private $peering_matrix = 0;
+
+    /**
+     * @var boolean
+     */
+    private $peering_manager = 0;
+
+
+    /**
+     * Set peering_matrix
+     *
+     * @param boolean $peeringMatrix
+     * @return Vlan
+     */
+    public function setPeeringMatrix($peeringMatrix)
+    {
+        $this->peering_matrix = $peeringMatrix;
+
+        return $this;
+    }
+
+    /**
+     * Get peering_matrix
+     *
+     * @return boolean
+     */
+    public function getPeeringMatrix()
+    {
+        return $this->peering_matrix;
+    }
+
+    /**
+     * Set peering_manager
+     *
+     * @param boolean $peeringManager
+     * @return Vlan
+     */
+    public function setPeeringManager($peeringManager)
+    {
+        $this->peering_manager = $peeringManager;
+
+        return $this;
+    }
+
+    /**
+     * Get peering_manager
+     *
+     * @return boolean
+     */
+    public function getPeeringManager()
+    {
+        return $this->peering_manager;
     }
 }

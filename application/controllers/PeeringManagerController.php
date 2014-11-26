@@ -42,7 +42,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
             $this->addMessage( _( 'This controller has been disabled.' ), OSS_Message::ERROR );
             $this->redirect( '' );
         }
-        
+
         // we should only be available to CUSTUSERs
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_CUSTUSER )
         {
@@ -51,19 +51,29 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
             );
             $this->_redirect( '' );
         }
-        
+
     }
 
     public function indexAction()
     {
-        $this->view->vlans  = $vlans  = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getPeeringVLANs();
+        $this->view->vlans  = $vlans  = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getPeeringManagerVLANs();
+
+        if( !count( $vlans ) ) {
+            $this->addMessage( 'No VLANs have been enabled for the peering manager. Please see <a href="'
+                    . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
+                    . ' / contact our support team.',
+                OSS_Message::ERROR
+            );
+            $this->_redirect( '' );
+        }
+
         $this->view->protos = $protos = [ 4, 6 ];
-        
+
         $bilat = array();
         foreach( $vlans as $vlan )
             foreach( $protos as $proto )
                 $bilat[ $vlan->getNumber() ][$proto ] = $this->getD2EM()->getRepository( '\\Entities\\BGPSessionData' )->getPeers( $vlan->getId(), $proto );
-        
+
         $this->view->bilat = $bilat;
 
         $peers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getPeers( $this->getCustomer()->getId() );
@@ -76,22 +86,22 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                 $peers[ $i ]['email_days'] = floor( ( time() - $p['email_last_sent']->getTimestamp() ) / 86400 );
         }
         $this->view->peers = $peers;
-        
+
         $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getForPeeringManager();
 
         $this->view->me = $me = $custs[ $this->getCustomer()->getAutsys() ];
         $this->view->myasn = $this->getCustomer()->getAutsys();
         unset( $custs[ $this->getCustomer()->getAutsys() ] );
-        
+
         $potential       = [];
         $potential_bilat = [];
         $peered          = [];
         $rejected        = [];
-        
+
         foreach( $custs as $c )
         {
             $custs[ $c['autsys' ] ]['ispotential'] = false;
-            
+
             foreach( $vlans as $vlan )
             {
                 if( isset( $me['vlaninterfaces'][ $vlan->getNumber() ] ) )
@@ -120,14 +130,14 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                 }
             }
         }
-        
+
         foreach( $custs as $c )
         {
             $peered[          $c['autsys' ] ] = false;
             $potential_bilat[ $c['autsys' ] ] = false;
             $potential[       $c['autsys' ] ] = false;
             $rejected[        $c['autsys' ] ] = false;
-            
+
             foreach( $vlans as $vlan )
             {
                 foreach( $protos as $proto )
@@ -139,17 +149,17 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                             case 2:
                                 $peered[ $c['autsys' ] ] = true;
                                 break;
-                                
+
                             case 1:
                                 $peered[          $c['autsys' ] ] = true;
                                 $potential_bilat[ $c['autsys' ] ] = true;
                                 break;
-                                
+
                             case 0:
                                 $potential[       $c['autsys' ] ] = true;
                                 $potential_bilat[ $c['autsys' ] ] = true;
                                 break;
-                                
+
                         }
                     }
                 }
@@ -176,16 +186,16 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                 }
             }
         }
-        
+
         $this->view->custs = $custs;
-        
+
         $this->view->potential       = $potential;
         $this->view->potential_bilat = $potential_bilat;
         $this->view->peered          = $peered;
         $this->view->rejected        = $rejected;
-        
+
         //echo '<pre>'; print_r( $custs ); die();
-        
+
         $this->view->date = date( 'Y-m-d' );
     }
 
@@ -196,10 +206,10 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
     {
         $peer = $this->_loadPeer( $this->getParam( 'custid', null ) );
         $f = new IXP_Form_PeeringRequest();
-        
+
         // potential peerings
         $pp = array(); $count = 0;
-        
+
         foreach( $this->getCustomer()->getVirtualInterfaces() as $myvis )
         {
             foreach( $myvis->getVlanInterfaces() as $myvli )
@@ -219,10 +229,10 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                 }
             }
         }
-        
+
         // IXP_Debug::dd( $pp );
         $this->view->pp = $pp;
-        
+
         $f->getElement( 'to' )->setValue( $peer->getPeeringemail() );
         $f->getElement( 'cc' )->setValue( $this->getCustomer()->getPeeringemail() );
 
@@ -232,7 +242,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
             {
                 $sendtome = $f->getValue( 'sendtome' ) == '1' ? true : false;
                 $marksent = $f->getValue( 'marksent' ) == '1' ? true : false;
-                
+
                 $bccOk = true;
                 $bcc = [];
                 if( !$sendtome )
@@ -252,7 +262,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                         }
                     }
                 }
-                                
+
                 if( $bccOk )
                 {
                     $mail = new Zend_Mail();
@@ -281,20 +291,20 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                                  ->addCc( $this->getCustomer()->getPeeringemail(), "{$this->getCustomer()->getName()} Peering Team" );
                         }
                     }
-                    
+
                     if( count( $bcc ) )
                         foreach( $bcc as $b )
                             $mail->addBcc( $b );
-                    
+
                     try {
                         if( !$marksent )
                             $mail->send();
-                        
+
                         if( !$sendtome )
                         {
                             // get this customer/peer peering manager table entry
                             $pm = $this->_loadPeeringManagerEntry( $this->getCustomer(), $peer );
-                            
+
                             if( isset( $this->_options['peeringmanager']['testmode'] ) && $this->_options['peeringmanager']['testmode']
                                     && isset( $this->_options['peeringmanager']['testdate'] ) && $this->_options['peeringmanager']['testdate'] )
                             {
@@ -302,7 +312,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                                 $pm->setEmailsSent( $pm->getEmailsSent() + 1 );
                                 $pm->setUpdated( new DateTime() );
                             }
-                            
+
                             if( isset( $this->_options['peeringmanager']['testmode'] ) && $this->_options['peeringmanager']['testmode']
                                     && isset( $this->_options['peeringmanager']['testnote'] ) && $this->_options['peeringmanager']['testnote'] )
                             {
@@ -310,7 +320,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                                     date( 'Y-m-d' ) . " [{$this->getUser()->getUsername()}]: peering request " . ( $marksent ? 'marked ' : '' ) . "sent\n\n" . $pm->getNotes()
                                 );
                             }
-                                                                                            
+
                             $this->getD2EM()->flush();
                         }
                     }
@@ -320,14 +330,14 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                         echo "ERR:Could not send the peering email. Please send manually yourself or contact support.";
                         return true;
                     }
-                    
+
                     if( $sendtome )
                         echo "OK:Peering request sample sent to your own email address ({$this->getUser()->getEmail()}).";
                     else if( $marksent )
                         echo "OK:Peering request marked as sent in your Peering Manager.";
                     else
                         echo "OK:Peering request sent to {$peer->getName()} Peering Team.";
-                    
+
                     return true;
                 }
             }
@@ -338,24 +348,24 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
             $f->getElement( 'subject' )->setValue( "[INEX] Peering Request from {$this->getCustomer()->getName()} (ASN{$this->getCustomer()->getAutsys()})" );
             $f->getElement( 'message' )->setValue( $this->view->render( 'peering-manager/peering-request-message.phtml' ) );
         }
-        
+
         $this->view->form = $f;
     }
-    
+
     public function peeringNotesAction()
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
-        
+
         $peer = $this->_loadPeer( $this->getParam( 'custid', null ) );
         $pm = $this->_loadPeeringManagerEntry( $this->getCustomer(), $peer );
-        
+
         if( $this->getRequest()->isPost() )
         {
             $pm->setUpdated( new DateTime() );
-            
+
             if( trim( stripslashes( $this->getParam( 'message', '' ) ) ) )
                 $pm->setNotes( trim( stripslashes( $this->getParam( 'message' ) ) ) );
-            
+
             try
             {
                 $this->getD2EM()->flush();
@@ -366,7 +376,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                 echo "ERR:Could not update peering notes due to an unexpected error.";
                 return true;
             }
-            
+
             echo "OK:Peering notes updated for {$peer->getName()}.";
         }
         else
@@ -374,40 +384,40 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
             echo 'OK:' . $pm->getNotes();
         }
     }
-    
-    
+
+
     public function markPeeredAction()
     {
         $peer = $this->_loadPeer( $this->getParam( 'custid' ) );
         $pm = $this->_loadPeeringManagerEntry( $this->getCustomer(), $peer );
-    
+
         $pm->setPeered( $pm->getPeered() ? false : true );
         if( $pm->getPeered() && $pm->getRejected() )
             $pm->setRejected( false );
-        
+
         $this->getD2EM()->flush();
-        
+
         $this->addMessage( "Peered flag " . ( $pm->getPeered() ? 'set' : 'cleared' ) . " for {$peer->getName()}.", OSS_Message::SUCCESS );
         return $this->_redirect( 'peering-manager/index' );
     }
-    
-    
+
+
     public function markRejectedAction()
     {
         $peer = $this->_loadPeer( $this->getParam( 'custid' ) );
         $pm = $this->_loadPeeringManagerEntry( $this->getCustomer(), $peer );
-    
+
         $pm->setRejected( $pm->getRejected() ? false : true );
         if( $pm->getPeered() && $pm->getRejected() )
             $pm->setPeered( false );
-    
+
         $this->getD2EM()->flush();
-            
+
         $this->addMessage( "Ignored / rejected flag " . ( $pm->getRejected() ? 'set' : 'cleared' ) . " for {$peer->getName()}.", OSS_Message::SUCCESS );
         return $this->_redirect( 'peering-manager/index' );
     }
-    
-    
+
+
     /**
      * Utility function to load a peer from a submitted ID and issue an error and die() if not found.
      *
@@ -417,17 +427,17 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
     {
         if( $this->getParam( 'custid', false ) )
             $this->view->peer = $peer = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) );
-        
+
         if( !isset( $peer ) || !$peer )
         {
             echo "ERR:Could not find peer's information in the database. Please contact support.";
             die;
         }
-        
+
         return $peer;
     }
 
-    
+
     /**
      * Utility function to load a PeeringManager entity and initialise one if not found
      *
@@ -439,7 +449,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
         $pm = $this->getD2EM()->getRepository( '\\Entities\\PeeringManager' )->findOneBy(
             [ 'Customer' => $cust, 'Peer' => $peer ]
         );
-        
+
         if( !$pm )
         {
             $pm = new \Entities\PeeringManager();
@@ -452,7 +462,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
             $this->getD2EM()->persist( $pm );
             $this->getD2EM()->flush();
         }
-        
+
         return $pm;
     }
 
