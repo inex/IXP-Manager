@@ -8,6 +8,8 @@
     <field name="number" type="integer" nullable="true"/>
     <field name="rcvrfname" type="string" length="255" nullable="true"/>
     <field name="private" type="boolean" nullable="false"/>
+    <field name="peering_matrix" type="boolean" nullable="false"/>
+    <field name="peering_manager" type="boolean" nullable="false"/>
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Vlans">
       <join-columns>
