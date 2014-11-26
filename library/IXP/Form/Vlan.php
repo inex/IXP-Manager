@@ -74,6 +74,16 @@ class IXP_Form_VLAN extends IXP_Form
             ->setCheckedValue( '1' );
         $this->addElement( $private );
 
+        $peering_matrix = $this->createElement( 'checkbox', 'peering_matrix' );
+        $peering_matrix->setLabel( 'Include VLAN in the peering matrix (see notes below)' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $peering_matrix );
+
+        $peering_manager = $this->createElement( 'checkbox', 'peering_manager' );
+        $peering_manager->setLabel( 'Include VLAN in the peering manager (see notes below)' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $peering_manager );
+
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
             ->setRequired( false )

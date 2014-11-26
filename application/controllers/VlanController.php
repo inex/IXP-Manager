@@ -39,22 +39,22 @@ class VlanController extends IXP_Controller_FrontEnd
     protected function _feInit()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-    
+
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\Vlan',
             'form'          => 'IXP_Form_Vlan',
             'pagetitle'     => 'VLANs',
-        
+
             'titleSingular' => 'VLAN',
             'nameSingular'  => 'a VLAN',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
+
             'listOrderBy'    => 'number',
             'listOrderByDir' => 'ASC',
-        
+
             'listColumns'    => [
-            
+
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'      => 'Name',
                 'number'    => 'Tag',
@@ -66,21 +66,35 @@ class VlanController extends IXP_Controller_FrontEnd
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
                     'xlator'         => \Entities\Vlan::$PRIVATE_YES_NO
                 ],
-                
+
                 'rcvrfname' => 'VRF Name'
             ]
         ];
-        
+
         if( !$this->multiIXP() )
             unset( $this->_feParams->listColumns['ixp'] );
-        
+
         // display the same information in the view as the list
         $this->_feParams->viewColumns = array_merge(
             $this->_feParams->listColumns,
-            [ 'notes' => 'Notes' ]
+            [
+                'peering_matrix' => [
+                    'title'          => 'Peering Matrix',
+                    'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'         => \Entities\Vlan::$PRIVATE_YES_NO
+                ],
+
+                'peering_manager' => [
+                    'title'          => 'Peering Manager',
+                    'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'         => \Entities\Vlan::$PRIVATE_YES_NO
+                ],
+
+                'notes' => 'Notes' 
+            ]
         );
     }
-    
+
     /**
      * Provide array of VLANs for the listAction and viewAction
      *
@@ -91,7 +105,9 @@ class VlanController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'v.id AS id, v.name AS name, v.number AS number,
                     v.rcvrfname AS rcvrfname, v.notes AS notes,
-                    v.private AS private, i.shortname AS infrastructure,
+                    v.private AS private, v.peering_matrix AS peering_matrix,
+                    v.peering_manager AS peering_manager,
+                    i.shortname AS infrastructure,
                     ix.shortname AS ixp'
             )
             ->from( '\\Entities\\Vlan', 'v' )
@@ -109,10 +125,10 @@ class VlanController extends IXP_Controller_FrontEnd
             $qb->andWhere( 'v.private = 0' );
             $this->view->publiconly = 1;
         }
-        
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $id !== null )
             $qb->andWhere( 'v.id = ?1' )->setParameter( 1, $id );
 
@@ -139,10 +155,10 @@ class VlanController extends IXP_Controller_FrontEnd
      {
         if( $isEdit )
             $form->getElement( 'infrastructure' )->setValue( $object->getInfrastructure()->getId() );
-         
+
         return true;
      }
-    
+
     /**
      *
      * @param IXP_Form $form The form object
@@ -159,7 +175,7 @@ class VlanController extends IXP_Controller_FrontEnd
 
         return true;
     }
-    
+
     /**
      * Clear the cache after a change to a VLAN
      *
@@ -172,8 +188,8 @@ class VlanController extends IXP_Controller_FrontEnd
         $this->getD2Cache()->delete( \Repositories\Vlan::ALL_CACHE_KEY );
         return true;
     }
-    
-    
+
+
     /**
      * Show details of private VLANs
      */
@@ -182,9 +198,8 @@ class VlanController extends IXP_Controller_FrontEnd
         $infra = null;
         if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
             $this->view->infra = $infra;
-        
+
     	$this->view->pvs = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getPrivateVlanDetails( $infra );
     }
-    
-}
 
+}
