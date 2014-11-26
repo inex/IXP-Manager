@@ -224,14 +224,24 @@ class Vlan extends EntityRepository
     public function getPeeringManagerVLANs()
     {
         return $this->getEntityManager()->createQuery(
-                "SELECT v
-
-                    FROM \\Entities\\Vlan v
-
+                "SELECT v FROM \\Entities\\Vlan v
                     WHERE
-
                         v.peering_manager = 1
+                    ORDER BY v.number ASC"
+            )
+            ->getResult();
+    }
 
+    /**
+    * Find all VLANs marked for inclusion in the peering matrices.
+    *
+    * @return Entities\Vlan[]
+    */
+    public function getPeeringMatrixVLANs()
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT v FROM \\Entities\\Vlan v
+                    WHERE v.peering_matrix = 1
                 ORDER BY v.number ASC"
             )
             ->getResult();
