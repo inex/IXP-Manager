@@ -217,10 +217,11 @@ class Vlan extends EntityRepository
     }
 
     /**
-     * Tempory INEX function until I have a better way of doing this. Used by the
-     * `PeeringManagerController`. FIXME.
+     * Find all VLANs marked for inclusion in the peering manager.
+     *
+     * @return Entities\Vlan[]
      */
-    public function getPeeringVLANs()
+    public function getPeeringManagerVLANs()
     {
         return $this->getEntityManager()->createQuery(
                 "SELECT v
@@ -229,7 +230,7 @@ class Vlan extends EntityRepository
 
                     WHERE
 
-                        v.number IN ( 10, 12 )
+                        v.peering_manager = 1
 
                 ORDER BY v.number ASC"
             )
@@ -284,17 +285,17 @@ class Vlan extends EntityRepository
                 WHERE
 
                     v.private = 1 ";
-        
+
         if( $infra )
             $q .= ' AND i = :infra ';
 
         $q .= 'ORDER BY v.number ASC';
-    
+
         $q = $this->getEntityManager()->createQuery( $q );
-        
+
         if( $infra )
             $q->setParameter( 'infra', $infra );
-        
+
         $vlans = $q->getArrayResult();
 
         if( !$vlans || !count( $vlans ) )
@@ -335,7 +336,7 @@ class Vlan extends EntityRepository
         return $pvs;
     }
 
-    
+
     /**
      * Utility function to provide an array of all VLAN interface IP addresses
      * and hostnames on a given VLAN for a given protocol for the purpose of generating
@@ -359,8 +360,8 @@ class Vlan extends EntityRepository
     {
         if( !in_array( $proto, [ 4, 6 ] ) )
             throw new \IXP_Exception( 'Invalid protocol specified' );
-    
-    
+
+
         $qstr = "SELECT vli.ipv{$proto}enabled AS enabled, addr.address AS address,
                         vli.ipv{$proto}hostname AS hostname
                     FROM Entities\\VlanInterface vli
@@ -368,13 +369,13 @@ class Vlan extends EntityRepository
                         JOIN vli.Vlan v
                     WHERE
                         v = :vlan";
-    
+
         $qstr .= " ORDER BY addr.address ASC";
-    
+
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'vlan', $vlan );
         $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }
-    
+
 }
