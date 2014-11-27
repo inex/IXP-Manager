@@ -1,7 +1,7 @@
 
 Dear {$peer->getName()} Peering Team,
 
-We are {$user->getCustomer()->getName()} ({$user->getCustomer()->getCorpwww()}) and we are fellow members of INEX, Ireland's IXP.
+We are {$user->getCustomer()->getName()} ({$user->getCustomer()->getCorpwww()}) and we are fellow members of {$options.identity.orgname} ({$options.identity.location.city}, {$options.identity.location.country}).
 
 We would like to arrange peering session(s) with you on the following interface(s):
 
@@ -50,7 +50,5 @@ The {$user->getCustomer()->getName()} Peering Team
 
 
 --
-  
-INEX (https://www.inex.ie/) is Ireland's IXP. This email was composed with the assistance of INEX's Peering Manager which is part of your member area at: {genUrl}.
 
-
+This email was composed with the assistance of the {$options.identity.orgname} Peering Manager which is part of your members' area at: {genUrl}.

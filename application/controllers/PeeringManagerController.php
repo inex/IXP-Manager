@@ -266,7 +266,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                 if( $bccOk )
                 {
                     $mail = new Zend_Mail();
-                    $mail->setFrom( 'no-reply@inex.ie', $this->getCustomer()->getName() . ' Peering Team' )
+                    $mail->setFrom( $this->_options['identity']['mailer']['email'], $this->getCustomer()->getName() . ' Peering Team' )
                          ->setReplyTo( $this->getCustomer()->getPeeringemail(), $this->getCustomer()->getName() . ' Peering Team' )
                          ->setSubject( $f->getValue( 'subject' ) )
                          ->setBodyText( $f->getValue( 'message' ) );
@@ -345,7 +345,10 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
         else
         {
             $f->getElement( 'bcc' )->setValue( $this->getUser()->getEmail() );
-            $f->getElement( 'subject' )->setValue( "[INEX] Peering Request from {$this->getCustomer()->getName()} (ASN{$this->getCustomer()->getAutsys()})" );
+            $f->getElement( 'subject' )->setValue(
+                "[" . $this->_options['identity']['orgname'] . "] Peering Request from "
+                    . $this->getCustomer()->getName() . " (ASN{$this->getCustomer()->getAutsys()})"
+            );
             $f->getElement( 'message' )->setValue( $this->view->render( 'peering-manager/peering-request-message.phtml' ) );
         }
 
