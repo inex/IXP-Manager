@@ -24,11 +24,11 @@ ROUTE_SERVERS='0 1 2'
 RS_TARGETS='bird'
 PEERING_LANS='100'
 IP_VERSIONS='4 6'
-
 MAIL_RECIPIENTS="noc@example-ixp.com"
-DATABASE_NAME='ixp'
+
 APP_PATH="/opt/ixpmanager"
 CONF_DIR="/etc/ixpmanager"
+IXPM_CONF_FILE='/etc/ixpmanager.conf'
 OUTPUT_DIR="/var/lib/ixpmanager/rsconfigs"
 DEBUG=0
 STDOUT=0
@@ -47,6 +47,8 @@ quote_list() {
         printf "%s" "$arg" | sed -e "s/'/'\\\\''/g; s/^/'/; s/\$/', /"
     done | sed -e 's/, $//'
 }
+
+test 0 -eq `id -u` || bork $? 'not running as root'
 
 # Getopts
 while test 0 -ne $#; do
@@ -126,11 +128,38 @@ if test 0 -eq $STDOUT; then
       bork $? "creating output dir \"$OUTPUT_DIR\""
 fi
 
+# Get database details from config file
+ixpm_conf="$(cat "$IXPM_CONF_FILE")"
+for field in dbase_type dbase_database dbase_username dbase_password dbase_hostname dbase_portname; do
+    eval "${field}"'=`printf "%s" "$ixpm_conf" | sed -n -e "s/^[ \\t]*${field}[ \\t]*=[ \\t]*\\([^ \\t].*\\)\$/\1/; t PRINT; b; : PRINT; s/ \\+\$//; p; q"`'
+done
+case "$dbase_type" in
+    mysql)
+        # Create temp mysql defaults file
+        trap 'test -z "$temp_defaults" || rm -f "$temp_defaults" 2>/dev/null' EXIT
+        temp_defaults="`mktemp`" && chmod go= "$temp_defaults" || \
+          bork $? 'creating temp defaults file'
+        cat <<EOF >"$temp_defaults" || bork $? 'populating temp defaults file'
+[mysql]
+user=$dbase_username
+password=$dbase_password
+database=$dbase_database
+`test -z "$dbase_hostname" || printf 'host=%s' "$dbase_hostname"`
+`test -z "$dbase_portname" || printf 'port=%s' "$dbase_portname"`
+skip-column-names
+batch
+EOF
+        database_cmd="mysql --defaults-file=\"$temp_defaults\" | tr '\\n' ' ' | sed -e 's/\\t/|/g; s/ \$//'"
+        ;;
+    *)
+        bork 1 "$dbase_type database type handling not yet implemented"
+        ;;
+esac
+
 # Get peering lan ID mappings from the DB
 peering_lan_maps="$(
-    printf "select id, number from vlan where number in (%s);" "$(quote_list $PEERING_LANS)" \
-      | mysql -B -N "${DATABASE_NAME}" | tr '\n' ' ' | sed -e 's/\t/|/g; s/ $//'
-)" || bork $? "getting IDs for peering lans \"$PEERING_LANS\" from database \"$DATABASE_NAME\""
+    eval "printf 'select id, number from vlan where number in (%s);' \"\$(quote_list \$PEERING_LANS)\" | $database_cmd"
+)" || bork $? "getting IDs for peering lans \"$PEERING_LANS\" from database \"$dbase_database\""
 
 # Enter output dir
 cd "${OUTPUT_DIR}" || bork $? 'entering the output directory'
