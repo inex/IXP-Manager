@@ -17,9 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#NB: This presumes running as root with passwordless local mysql login.
-#    Tweak the commands for your usage if it differs.
-
 ROUTE_SERVERS='0 1 2'
 RS_TARGETS='bird'
 PEERING_LANS='100'
