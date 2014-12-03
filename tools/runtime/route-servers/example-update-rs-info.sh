@@ -211,10 +211,15 @@ if test 0 -eq $STDOUT && test 1 -eq $USE_GIT && test -n "`git status --porcelain
 
     # Email
     if test 1 -eq `git rev-list --min-parents=0 'HEAD' 2>/dev/null | wc -l` || \
-       test -n "`git diff --patch-with-raw 'HEAD^' 2>/dev/null | grep -v '^\([^+-]\|--- \|+++ \|[+-]# \+Generated: \)'`"; then
-        git show 'HEAD' 2>/dev/null | \
-         mail -s "Route Server config changes on `hostname`" $MAIL_RECIPIENTS >/dev/null 2>&1 || \
-           bork $? 'emailing config-changes'
+      test -n "`git diff --patch-with-raw 'HEAD^' 2>/dev/null | grep -v '^\([^+-]\|--- \|+++ \|[+-]# \+Generated: \)'`"; then
+        hostname="`hostname`"
+        {
+            printf 'Route server config changes on $hostname, git-diff output:\n\n'
+            # try "previous -> present commit", fallback to show whole log if only one commit
+            git log -p --stat 'HEAD^..HEAD' 2>/dev/null || \
+              git log -p --stat 2>/dev/null
+        } | mail -a "From: IXP-Manager <root@example-ixp.com>" -s "Route server config changes on $hostname" $MAIL_RECIPIENTS >/dev/null 2>&1 || \
+          bork $? 'emailing config-changes'
     fi
 
 fi
