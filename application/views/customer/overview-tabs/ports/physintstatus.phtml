@@ -1,18 +1,20 @@
-{$pi = $vi->getPhysicalInterfaces()}
-{$pi = $pi[0]}
+{if count( $vi->getPhysicalInterfaces() )}
+    {$pi = $vi->getPhysicalInterfaces()}
+    {$pi = $pi[0]}
 
-{if not $pi->statusIsConnected()}
-    <a href="{genUrl controller='physical-interface' action='edit' id=$pi->getId() vintid=$vi->getId()}">
-    {if $pi->statusIsQuarantine()}
-        <span class="label label-warning">IN QUARANTINE</span>
-    {elseif $pi->statusIsDisabled()}
-        <span class="label label-important">DISABLED</span>
-    {elseif $pi->statusIsNotConnected()}
-        <span class="label label-important">NOT CONNECTED</span>
-    {elseif $pi->statusIsAwaitingXConnect()}
-        <span class="label label-warning">AWAITING XCONNECT</span>
-    {else}
-        <span class="label label-inverse">UNKNOWN STATE</span>
+    {if not $pi->statusIsConnected()}
+        <a href="{genUrl controller='physical-interface' action='edit' id=$pi->getId() vintid=$vi->getId()}">
+        {if $pi->statusIsQuarantine()}
+            <span class="label label-warning">IN QUARANTINE</span>
+        {elseif $pi->statusIsDisabled()}
+            <span class="label label-important">DISABLED</span>
+        {elseif $pi->statusIsNotConnected()}
+            <span class="label label-important">NOT CONNECTED</span>
+        {elseif $pi->statusIsAwaitingXConnect()}
+            <span class="label label-warning">AWAITING XCONNECT</span>
+        {else}
+            <span class="label label-inverse">UNKNOWN STATE</span>
+        {/if}
+        </a>
     {/if}
-    </a>
 {/if}
