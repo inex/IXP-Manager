@@ -27,7 +27,7 @@ remarks:          applies to IPv6 prefixes.
 remarks:        - community 43760:43760 is really just a NOP
 remarks:
 remarks:        -------------------------------------------------------
-org:            ORG-INEX1-RIPE
+org:            ORG-INEA1-RIPE
 admin-c:        INO7-RIPE
 tech-c:         INO7-RIPE
 mnt-by:         RIPE-NCC-END-MNT

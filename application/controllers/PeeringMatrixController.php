@@ -42,19 +42,34 @@ class PeeringMatrixController extends IXP_Controller_Action
             $this->redirect( '' );
         }
     }
-    
+
     public function indexAction()
     {
-        $this->view->protos = array(
+        $protos = $this->view->protos = [
             4 => 'IPv4',
             6 => 'IPv6'
-        );
+        ];
 
         $proto = $this->getParam( 'proto', 4 );
-        if( !isset( $this->view->protos[$proto] ) || !in_array( $proto, $this->view->protos ) )
+        if( !isset( $protos[$proto] ) )
             $proto = 4;
 
-        $this->view->vlans = $vlans = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getNames();
+        $vlanEnts = $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->getPeeringMatrixVLANs();
+
+        if( !count( $vlanEnts ) ) {
+            $this->addMessage( 'No VLANs have been enabled for the peering matrix. Please see <a href="'
+                . 'https://github.com/inex/IXP-Manager/wiki/Peering-Matrix">these instructions</a>'
+                . ' / contact our support team.',
+                OSS_Message::ERROR
+            );
+            $this->_redirect( '' );
+        }
+
+        $vlans = [];
+        foreach( $vlanEnts as $v )
+            $vlans[ $v->getId() ] = $v->getName();
+
+        $this->view->vlans = $vlans;
 
         $vid = $this->getParam( 'vid', $this->_options['identity']['vlans']['default'] );
         if( !isset( $vlans[ $vid ] ) )
@@ -75,5 +90,3 @@ class PeeringMatrixController extends IXP_Controller_Action
     }
 
 }
-
-

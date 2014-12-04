@@ -28,17 +28,19 @@
                     <li> <a id="peer-filter-rs">Route Server Peerings</a> </li>
                 </ul>
             </div>
-            <div class="btn-group">
-                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
-                    {$vlans.$vid}
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    {foreach $vlans as $id => $vname}
-                        <li> <a href="{genUrl controller="peering-matrix" action="index" vid=$id proto=$proto}">{$vname}</a> </li>
-                    {/foreach}
-                </ul>
-            </div>
+            {if count( $vlans ) > 1}
+                <div class="btn-group">
+                    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                        {$vlans.$vid}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {foreach $vlans as $id => $vname}
+                            <li> <a href="{genUrl controller="peering-matrix" action="index" vid=$id proto=$proto}">{$vname}</a> </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            {/if}
             <div class="btn-group">
                 <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
                     {$protos.$proto}
@@ -73,12 +75,12 @@
 <thead>
 
     <tr>
-    
+
         <th id="th-name" class="name zoom3"></th>
         <th id="th-asn" class="asn zoom3"></th>
-    
+
         {foreach from=$custs key=x_as item=peers}
-    
+
             <th id="th-as-{$x_as}" class="zoom3 asn">
                 {assign var=asn value=$x_as|string_format:$asnStringFormat}
                 {assign var=len value=strlen( $asn )}
@@ -87,9 +89,9 @@
                     {assign var=asn value=substr( $asn, 1 )}
                 {/for}
             </th>
-    
+
         {/foreach}
-    
+
     </tr>
 
 </thead>
@@ -146,13 +148,13 @@
 <div class="row-fluid" style="margin-top: 40px;">
 
     <div class="span2">&nbsp;</div>
-    
+
     <div class="span8">
 
         <div class="well">
-        
+
             <h3>Notes on the Peering Matrix</h3>
-            
+
             <ul>
                 <li>
                     Clicking the AS number in the table header will isolate that column. Clicking individual
@@ -172,13 +174,13 @@
                     {$options.identity.orgname}. It cannot detect whether there are actually prefixes swapped between routers.
                 </li>
             </ul>
-        
+
         </div>
 
     </div>
-    
+
     <div class="span2">&nbsp;</div>
-    
+
 </div>
 
 {if isset( $user ) and $user->getPrivs() eq 3}
@@ -190,4 +192,3 @@
 </script>
 
 {tmplinclude file="footer.phtml"}
-

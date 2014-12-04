@@ -909,6 +909,12 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::statusIsSuspended();
     }
 
+    public function isUniqueMonitorIndex($i)
+    {
+        $this->__load();
+        return parent::isUniqueMonitorIndex($i);
+    }
+
 
     public function __sleep()
     {

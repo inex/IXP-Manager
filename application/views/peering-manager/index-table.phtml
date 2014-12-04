@@ -8,15 +8,15 @@
             <th>Member</th>
             <th>ASN</th>
             <th>Policy</th>
-            
-            {if isset( $me.vlaninterfaces.10 )}
-                <th>LAN 1</th>
-            {/if}
-            
-            {if isset( $me.vlaninterfaces.12 )}
-                <th>LAN 2</th>
-            {/if}
-            
+
+            {foreach $vlans as $vlan}
+
+                {if isset( $me[ 'vlaninterfaces' ][ $vlan->getNumber() ] )}
+                    <th>{$vlan->getName()}</th>
+                {/if}
+
+            {/foreach}
+
             <th></th>
         </tr>
     </thead>
@@ -24,16 +24,16 @@
     <tbody>
 
         {foreach from=$listOfCusts key=as item=p}
-        
+
             {assign var=c value=$custs.$as}
             {assign var=cid value=$c.id}
-        
+
             {if $p}
             <tr>
                 <td id="peer-name-{$cid}">{$c.name}</td>
                 <td>{$c.autsys}</td>
                 <td>{$c.peeringpolicy}</td>
-                
+
                 {foreach $vlans as $avlan}
                     {$vlan = $avlan->getNumber()}
                     {if isset( $c.$vlan )}
@@ -52,7 +52,7 @@
                         <td></td>
                     {/if}
                 {/foreach}
-                
+
                 <td width="220px">
                     <div class="btn-group">
                         <button id="peering-request-{$cid}"
@@ -91,10 +91,8 @@
                 </td>
             </tr>
             {/if}
-            
+
         {/foreach}
 
     </tbody>
 </table>
-
-

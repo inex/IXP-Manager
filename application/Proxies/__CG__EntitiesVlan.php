@@ -327,10 +327,34 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
         return parent::removeIPv6Addresse($iPv6Addresses);
     }
 
+    public function setPeeringMatrix($peeringMatrix)
+    {
+        $this->__load();
+        return parent::setPeeringMatrix($peeringMatrix);
+    }
+
+    public function getPeeringMatrix()
+    {
+        $this->__load();
+        return parent::getPeeringMatrix();
+    }
+
+    public function setPeeringManager($peeringManager)
+    {
+        $this->__load();
+        return parent::setPeeringManager($peeringManager);
+    }
+
+    public function getPeeringManager()
+    {
+        $this->__load();
+        return parent::getPeeringManager();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'number', 'rcvrfname', 'private', 'notes', 'id', 'NetInfo', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'Infrastructure');
+        return array('__isInitialized__', 'name', 'number', 'rcvrfname', 'private', 'peering_matrix', 'peering_manager', 'notes', 'id', 'NetInfo', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'Infrastructure');
     }
 
     public function __clone()
