@@ -943,6 +943,7 @@
         <attribute name="table">oui</attribute>
         <attribute name="tableName">oui</attribute>
         <attribute name="schema">oui</attribute>
+        <attribute name="repository-class">Repositories\OUI</attribute>
       </orm-attributes>
     </entity>
     <orm-attributes>
