@@ -15,12 +15,15 @@
     </thead>
     <tbody>
 
+    {$i = 0}
     {foreach from=$recentMembers item=member}
         <tr>
             <td>{$member->getName()}</td>
             <td>{$member->getAutsys()|asnumber}</td>
             <td>{$member->getDatejoin()->format( 'Y-m-d' )}</td>
         </tr>
+        {if $i >= 2}{break}{/if}
+	{$i = $i + 1}
     {/foreach}
 
     </tbody>
