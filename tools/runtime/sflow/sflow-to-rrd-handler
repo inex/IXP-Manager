@@ -27,7 +27,6 @@
 # traffic matrix + aggregate stats and periodically writes the results out
 # to a stash of RRD files.
 
-use v5.10.1;
 use warnings;
 use strict;
 use Getopt::Long;
@@ -109,10 +108,12 @@ while (<SFLOWTOOL>) {
 		$srcip, $dstip, $protocol, $tos, $ttl,
 		$srcport, $dstport, $tcpflags, $pktsize, $payloadsize, $samplerate) = @sample;
 
-	given ($ethertype) {
-		when ('0x0800') { $ipprotocol = 4 }
-		when ('0x86dd') { $ipprotocol = 6 }
-		default { next }
+	if ($ethertype eq '0x0800') {
+		$ipprotocol = 4;
+	} elsif ($ethertype eq '0x86dd') {
+		$ipprotocol = 6;
+	} else {
+		next;
 	}
 
 	# each vid may have multiple VLIs associated with it.  The only way
