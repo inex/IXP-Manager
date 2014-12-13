@@ -28,7 +28,6 @@
 # not.
 
 use strict;
-use v5.10.1;
 use Data::Dumper;
 
 # FIXME:
@@ -59,23 +58,22 @@ my @dependencies = (
 );
 
 my ($pkginstaller, $deptype);
-given ($^O) {
-	when ('freebsd') { $pkginstaller = 'pkg install'; $deptype = 'pkgng'; }
-	when ('darwin')	{ $pkginstaller = 'port install'; $deptype = 'pkgng'; }
-	when ('linux') {
-		if (-f '/etc/redhat-release') {
-			$pkginstaller = 'yum install'; $deptype = 'redhat';
+if ($^O eq 'freebsd') { $pkginstaller = 'pkg install'; $deptype = 'pkgng'; }
+elsif ($^O eq 'darwin')	{ $pkginstaller = 'port install'; $deptype = 'pkgng'; }
+elsif ($^O eq 'linux') {
+	if (-f '/etc/redhat-release') {
+		$pkginstaller = 'yum install'; $deptype = 'redhat';
+	} else {
+		my $distro = lc(`lsb_release -i -s`);
+		chomp ($distro);
+		if ($distro =~ /ubuntu|debian/) {
+			$pkginstaller = 'apt-get install'; $deptype = 'apt';
 		} else {
-			my $distro = lc(`lsb_release -i -s`);
-			chomp ($distro);
-			if ($distro =~ /ubuntu|debian/) {
-				$pkginstaller = 'apt-get install'; $deptype = 'apt';
-			} else {
-				warn "unknown linux distribution o/s.\n";
-			}
+			warn "unknown linux distribution o/s.\n";
 		}
 	}
-	default { warn "unsupported o/s.\n"; }
+} else {
+	warn "unsupported o/s.\n";
 }
 
 print "Checking IXP Manager Perl dependencies:\n\n";
