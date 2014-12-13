@@ -281,7 +281,7 @@ sub build_update_rrd
 		if (!-d $dir) {
 			make_path($dir) or die "Could not make directory: $dir: $!\n";
 		}
-		@rrds_options = (
+		my @rrds_create_options = (
 			'DS:traffic_in:GAUGE:600:U:U',
 			'DS:traffic_out:GAUGE:600:U:U',
 			'RRA:AVERAGE:0.5:1:600',    'RRA:MAX:0.5:1:600',
@@ -290,7 +290,7 @@ sub build_update_rrd
 			'RRA:AVERAGE:0.5:288:3650', 'RRA:MAX:0.5:288:3650',
 		);
 
-		RRDs::create ($rrdfile, @rrds_options);
+		RRDs::create ($rrdfile, @rrds_create_options);
 		$rrd_err = RRDs::error;
 		print STDERR "WARNING: while updating $rrdfile: $rrd_err\n" if $rrd_err;
 	}
