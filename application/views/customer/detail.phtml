@@ -230,8 +230,8 @@
 	    <td><strong>Multicast Enabled:</strong></td>
 	    <td id="value">{if $vli->getMcastenabled()}Yes{else}No{/if}</td>
 	    <td></td>
-	    <td><strong></strong></td>
-	    <td id="value"></td>
+	    <td><strong>Max Prefixes:</strong></td>
+	    <td id="value">global: {$cust->getMaxprefixes()}, per-interface: {$vli->getMaxbgpprefix()}</td>
 	</tr>
 	
 	<tr>
