@@ -72,7 +72,7 @@ class VlanInterface extends EntityRepository
                         AND " . Customer::DQL_CUST_TRAFFICING . "
                         AND pi.status = :pistatus";
 
-        $qstr .= " ORDER BY c.autsys ASC";
+        $qstr .= " ORDER BY c.autsys ASC, c.id ASC";
 
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'vlan', $vlan );
