@@ -7,7 +7,7 @@ BIRD="/usr/sbin/bird"
 
 for skin in none inex; do
 
-    cp htaccess-${skin}-skin ../../../public/.htaccess
+    cp ../htaccess-${skin}-skin ../../../public/.htaccess
     SKIN="${skin}-"
         
     for proto in 4 6; do
