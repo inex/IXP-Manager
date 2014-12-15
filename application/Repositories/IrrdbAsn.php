@@ -23,7 +23,8 @@ class IrrdbAsn extends EntityRepository
     {
         return $this->getEntityManager()->createQuery(
                     "SELECT p.asn FROM \\Entities\\IrrdbAsn p
-                        WHERE p.Customer = :cust AND p.protocol = :protocol"
+                        WHERE p.Customer = :cust AND p.protocol = :protocol
+                        ORDER BY p.asn ASC, p.id ASC"
                 )
                 ->setParameter( 'cust', $cust )
                 ->setParameter( 'protocol', $protocol )

@@ -23,13 +23,14 @@ class IrrdbPrefix extends EntityRepository
     {
         return $this->getEntityManager()->createQuery(
                     "SELECT p.prefix FROM \\Entities\\IrrdbPrefix p
-                        WHERE p.Customer = :cust AND p.protocol = :protocol"
+                        WHERE p.Customer = :cust AND p.protocol = :protocol
+                        ORDER BY p.prefix ASC, p.id ASC"
                 )
                 ->setParameter( 'cust', $cust )
                 ->setParameter( 'protocol', $protocol )
                 ->getScalarResult();
     }
-    
+
     /**
      * Utility function to get the number of prefixes a customer has for a given protocol
      *
