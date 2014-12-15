@@ -117,12 +117,21 @@ class Apiv1_RouterController extends IXP_Controller_API_V1Action
             $this->view->irrdbAsns     = $this->getD2R( '\\Entities\\IrrdbAsn'    )->getForCustomerAndProtocol( $int[ 'cid' ], $proto );
             $this->view->asnsProcessed = $asnsProcessed;
 
-            // some sanity checks
-            if( !count( $this->view->prefixes ) && !count( $this->view->irrdbAsns ) )
-                $this->getLogger()->alert( sprintf( "WARNING: no prefixes and ASNs found for %s/IPv%d in route server config generation",
+            // some sanity warnings
+            if( $int['irrdbfilter'] && ( !count( $this->view->prefixes ) || !count( $this->view->irrdbAsns ) ) ) {
+                if( !count( $this->view->prefixes ) ) {
+                    $this->getLogger()->alert( sprintf( "WARNING: no prefixes found for %s/IPv%d in route server config generation",
                     $int['cname'], $proto
-                ) );
+                    ) );
+                }
 
+                if( !count( $this->view->irrdbAsns ) ) {
+                    $this->getLogger()->alert( sprintf( "WARNING: no ASNs found for %s/IPv%d in route server config generation",
+                    $int['cname'], $proto
+                    ) );
+                }
+            }
+            
             echo $this->view->render( "router-cli/server/{$target}/neighbor.cfg" );
             $asnsProcessed[] = $int['autsys'];
         }
