@@ -9,10 +9,10 @@
 echo "Reconfiguring all bird instances:"
 
 for vlanid in x y z; do
-    echo -ne "VLAN ID ${vlandid}: "
+    echo -ne "VLAN ID ${vlanid}: "
     for proto in 4 6; do
         echo -ne "\tIPv${proto}: "
-        /usr/local/sbin/ap-reconfigure-example.sh -v $vlanid -p $proto -q
+        /usr/local/sbin/api-reconfigure-example.sh -v $vlanid -p $proto -q
         if [[ $? -eq 0 ]]; then
             echo -ne "OK    "
         else
