@@ -160,7 +160,7 @@ class IXP_BGPQ3 extends Zend_Exception
         exec( $cmd, $output, $return_var );
 
         if( $return_var != 0 )
-            throw new IXP_Exception( 'Error executed BGPQ3 with: ' . $cmd );
+            throw new IXP_Exception( 'Error executing BGPQ3 with: ' . $cmd );
 
         return implode( "\n", $output );
     }
