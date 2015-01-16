@@ -28,6 +28,10 @@
             {$data.$cid.ports = $data.$cid.ports|cat:'GE'}
         {elseif $pi->getSpeed() eq 10000}
             {$data.$cid.ports = $data.$cid.ports|cat:'10GE'}
+        {elseif $pi->getSpeed() eq 40000}
+            {$data.$cid.ports = $data.$cid.ports|cat:'40GE'}
+        {elseif $pi->getSpeed() eq 100000}
+            {$data.$cid.ports = $data.$cid.ports|cat:'100GE'}
         {else}
             {$data.$cid.ports = $data.$cid.ports|cat:$pi->getSpeed()}
         {/if}
