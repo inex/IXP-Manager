@@ -38,7 +38,9 @@
                         {$pi = $pi.0}
                         {if count( $vi->getPhysicalInterfaces() ) > 1}{count( $vi->getPhysicalInterfaces() )}*{/if}{if
                             $pi->getSpeed() eq 100}FE{elseif $pi->getSpeed() eq 1000}GE{elseif
-                            $pi->getSpeed() eq 10000}10GE{else}{$pi->getSpeed()}
+                            $pi->getSpeed() eq 10000}10GE{elseif
+                            $pi->getSpeed() eq 40000}40GE{elseif
+                            $pi->getSpeed() eq 100000}100GE{else}{$pi->getSpeed()}
                         {/if}
                         {if not $vi@last}&nbsp;+&nbsp;{/if}
                     {/foreach}
