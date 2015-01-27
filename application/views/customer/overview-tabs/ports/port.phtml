@@ -88,10 +88,17 @@
             </tr>
             <tr>
                 <td><strong>Speed:</strong></td>
-                <td id="value">{$pi->getSpeed()} Mbps</td>
+                <td id="value">
+                    {$pi->getSpeed()} Mbps {if $pi->getDuplex() neq 'full'}(HD){/if}
+                </td>
                 <td></td>
-                <td><strong>Duplex:</strong></td>
-                <td id="value">{$pi->getDuplex()}</td>
+                {if $pi->getSwitchPort()->getSwitcher()->getMauSupported()}
+                    <td><strong>Media:</strong></td>
+                    <td id="value">{$pi->getSwitchPort()->getMauType()}</td>
+                {else}
+                    <td><strong>Duplex:</strong></td>
+                    <td id="value">{$pi->getDuplex()}</td>
+                {/if}
             </tr>
             {if $pi->getSwitchPort()->getSwitcher()->getCabinet()}
             <tr>
