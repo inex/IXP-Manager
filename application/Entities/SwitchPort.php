@@ -649,4 +649,172 @@ class SwitchPort
     {
         return $this->lagIfIndex;
     }
+    /**
+     * @var string
+     */
+    private $mauType;
+
+    /**
+     * @var string
+     */
+    private $mauState;
+
+    /**
+     * @var string
+     */
+    private $mauAvailability;
+
+    /**
+     * @var string
+     */
+    private $mauJacktype;
+
+    /**
+     * @var boolean
+     */
+    private $mauAutoNegSupported;
+
+    /**
+     * @var boolean
+     */
+    private $mauAutoNegAdminState;
+
+
+    /**
+     * Set mauType
+     *
+     * @param string $mauType
+     * @return SwitchPort
+     */
+    public function setMauType($mauType)
+    {
+        $this->mauType = $mauType;
+    
+        return $this;
+    }
+
+    /**
+     * Get mauType
+     *
+     * @return string 
+     */
+    public function getMauType()
+    {
+        return $this->mauType;
+    }
+
+    /**
+     * Set mauState
+     *
+     * @param string $mauState
+     * @return SwitchPort
+     */
+    public function setMauState($mauState)
+    {
+        $this->mauState = $mauState;
+    
+        return $this;
+    }
+
+    /**
+     * Get mauState
+     *
+     * @return string 
+     */
+    public function getMauState()
+    {
+        return $this->mauState;
+    }
+
+    /**
+     * Set mauAvailability
+     *
+     * @param string $mauAvailability
+     * @return SwitchPort
+     */
+    public function setMauAvailability($mauAvailability)
+    {
+        $this->mauAvailability = $mauAvailability;
+    
+        return $this;
+    }
+
+    /**
+     * Get mauAvailability
+     *
+     * @return string 
+     */
+    public function getMauAvailability()
+    {
+        return $this->mauAvailability;
+    }
+
+    /**
+     * Set mauJacktype
+     *
+     * @param string $mauJacktype
+     * @return SwitchPort
+     */
+    public function setMauJacktype($mauJacktype)
+    {
+        $this->mauJacktype = $mauJacktype;
+    
+        return $this;
+    }
+
+    /**
+     * Get mauJacktype
+     *
+     * @return string 
+     */
+    public function getMauJacktype()
+    {
+        return $this->mauJacktype;
+    }
+
+    /**
+     * Set mauAutoNegSupported
+     *
+     * @param boolean $mauAutoNegSupported
+     * @return SwitchPort
+     */
+    public function setMauAutoNegSupported($mauAutoNegSupported)
+    {
+        $this->mauAutoNegSupported = $mauAutoNegSupported;
+    
+        return $this;
+    }
+
+    /**
+     * Get mauAutoNegSupported
+     *
+     * @return boolean 
+     */
+    public function getMauAutoNegSupported()
+    {
+        return $this->mauAutoNegSupported;
+    }
+
+    /**
+     * Set mauAutoNegAdminState
+     *
+     * @param boolean $mauAutoNegAdminState
+     * @return SwitchPort
+     */
+    public function setMauAutoNegAdminState($mauAutoNegAdminState)
+    {
+        $this->mauAutoNegAdminState = $mauAutoNegAdminState;
+    
+        return $this;
+    }
+
+    /**
+     * Get mauAutoNegAdminState
+     *
+     * @return boolean 
+     */
+    public function getMauAutoNegAdminState()
+    {
+        return $this->mauAutoNegAdminState;
+    }
 }

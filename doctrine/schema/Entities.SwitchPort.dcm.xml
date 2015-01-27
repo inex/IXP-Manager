@@ -18,6 +18,12 @@
     <field name="ifLastChange" type="integer" nullable="true"/>
     <field name="lastSnmpPoll" type="datetime" nullable="true"/>
     <field name="lagIfIndex" type="integer" nullable="true"/>
+    <field name="mauType" type="string" nullable="true"/>
+    <field name="mauState" type="string" nullable="true"/>
+    <field name="mauAvailability" type="string" nullable="true"/>
+    <field name="mauJacktype" type="string" nullable="true"/>
+    <field name="mauAutoNegSupported" type="boolean" nullable="true"/>
+    <field name="mauAutoNegAdminState" type="boolean" nullable="true"/>
     <many-to-one field="Switcher" target-entity="Entities\Switcher" inversed-by="Ports">
       <join-columns>
         <join-column name="switchid" referenced-column-name="id"/>

@@ -273,10 +273,82 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::getLagIfIndex();
     }
 
+    public function setMauType($mauType)
+    {
+        $this->__load();
+        return parent::setMauType($mauType);
+    }
+
+    public function getMauType()
+    {
+        $this->__load();
+        return parent::getMauType();
+    }
+
+    public function setMauState($mauState)
+    {
+        $this->__load();
+        return parent::setMauState($mauState);
+    }
+
+    public function getMauState()
+    {
+        $this->__load();
+        return parent::getMauState();
+    }
+
+    public function setMauAvailability($mauAvailability)
+    {
+        $this->__load();
+        return parent::setMauAvailability($mauAvailability);
+    }
+
+    public function getMauAvailability()
+    {
+        $this->__load();
+        return parent::getMauAvailability();
+    }
+
+    public function setMauJacktype($mauJacktype)
+    {
+        $this->__load();
+        return parent::setMauJacktype($mauJacktype);
+    }
+
+    public function getMauJacktype()
+    {
+        $this->__load();
+        return parent::getMauJacktype();
+    }
+
+    public function setMauAutoNegSupported($mauAutoNegSupported)
+    {
+        $this->__load();
+        return parent::setMauAutoNegSupported($mauAutoNegSupported);
+    }
+
+    public function getMauAutoNegSupported()
+    {
+        $this->__load();
+        return parent::getMauAutoNegSupported();
+    }
+
+    public function setMauAutoNegAdminState($mauAutoNegAdminState)
+    {
+        $this->__load();
+        return parent::setMauAutoNegAdminState($mauAutoNegAdminState);
+    }
+
+    public function getMauAutoNegAdminState()
+    {
+        $this->__load();
+        return parent::getMauAutoNegAdminState();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'type', 'name', 'active', 'ifIndex', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'lagIfIndex', 'id', 'PhysicalInterface', 'SecEvents', 'Switcher');
+        return array('__isInitialized__', 'type', 'name', 'active', 'ifIndex', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'lagIfIndex', 'mauType', 'mauState', 'mauAvailability', 'mauJacktype', 'mauAutoNegSupported', 'mauAutoNegAdminState', 'id', 'PhysicalInterface', 'SecEvents', 'Switcher');
     }
 
     public function __clone()
