@@ -133,7 +133,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 i.name AS infrastructure, s.switchtype AS switchtype, s.model AS model,
                 s.active AS active, s.notes AS notes, s.lastPolled AS lastPolled,
                 s.hostname AS hostname, s.os AS os, s.osDate AS osDate, s.osVersion AS osVersion,
-                s.serialNumber AS serialNumber,
+                s.serialNumber AS serialNumber, s.mauSupported AS mauSupported,
                 v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
             )
             ->from( '\\Entities\\Switcher', 's' )
@@ -149,17 +149,17 @@ class SwitchController extends IXP_Controller_FrontEnd
 
         $this->view->switchTypes = $switchTypes = \Entities\Switcher::$TYPES;
         $this->view->stype = $stype = $this->getSessionNamespace()->switch_list_stype
-            = $this->getParam( 'stype', ( $this->getSessionNamespace()->switch_list_stype !== null 
+            = $this->getParam( 'stype', ( $this->getSessionNamespace()->switch_list_stype !== null
                 ? $this->getSessionNamespace()->switch_list_stype : \Entities\Switcher::TYPE_SWITCH ) );
         if( $stype && isset( $switchTypes[$stype] ) )
             $qb->andWhere( 's.switchtype = :stype' )->setParameter( 'stype', $stype );
 
-        $this->view->activeOnly = $activeOnly = $this->getSessionNamespace()->switch_list_active_only  
-            = $this->getParam( 'activeOnly', ( $this->getSessionNamespace()->switch_list_active_only !== null 
+        $this->view->activeOnly = $activeOnly = $this->getSessionNamespace()->switch_list_active_only
+            = $this->getParam( 'activeOnly', ( $this->getSessionNamespace()->switch_list_active_only !== null
                 ? $this->getSessionNamespace()->switch_list_active_only : true ) );
         if( $activeOnly )
             $qb->andWhere( 's.active = :active' )->setParameter( 'active', true );
-        
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
@@ -352,7 +352,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $form->getElement( 'cabinetid' )->setValue( $object->getCabinet()->getId() );
             if( $object->getVendor() )
                 $form->getElement( 'vendorid'  )->setValue( $object->getVendor()->getId()  );
-            
+
             if( $object->getInfrastructure() )
                 $form->getElement( 'infrastructure' )->setValue( $object->getInfrastructure()->getId() );
             else
@@ -522,4 +522,3 @@ class SwitchController extends IXP_Controller_FrontEnd
 
 
 }
-

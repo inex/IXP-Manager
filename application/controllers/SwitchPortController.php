@@ -132,7 +132,12 @@ class SwitchPortController extends IXP_Controller_FrontEnd
      */
     protected function listMauGetData( $id = null )
     {
-        $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
+        $switches = [];
+        $s = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->findBy( [ 'mauSupported' => true ] );
+        foreach( $s as $switch )
+            $switches[ $switch->getId() ] = $switch;
+
+        $this->view->switches = $switches;
 
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'sp.id AS id, sp.name AS name, sp.type AS type, s.name AS switch,
@@ -150,7 +155,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         if( $id !== null )
             $qb->andWhere( 'sp.id = ?1' )->setParameter( 1, $id );
 
-        if( ( $sid = $this->getParam( 'switch', false ) ) && isset( $switches[$sid] ) ) {
+        if( ( $sid = $this->getParam( 'switch', false ) ) && isset( $switches[$sid] ) && $switches[$sid]->getMauSupported() ) {
             $this->view->sid = $sid;
             $qb->where( 's.id = ?2' )->setParameter( 2, $sid );
         } else {
