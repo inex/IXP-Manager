@@ -795,4 +795,32 @@ class Switcher
     {
         return $this->serialNumber;
     }
+    /**
+     * @var boolean
+     */
+    private $mauSupported;
+
+
+    /**
+     * Set mauSupported
+     *
+     * @param boolean $mauSupported
+     * @return Switcher
+     */
+    public function setMauSupported($mauSupported)
+    {
+        $this->mauSupported = $mauSupported;
+    
+        return $this;
+    }
+
+    /**
+     * Get mauSupported
+     *
+     * @return boolean 
+     */
+    public function getMauSupported()
+    {
+        return $this->mauSupported;
+    }
 }

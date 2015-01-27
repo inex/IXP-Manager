@@ -321,10 +321,22 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         return parent::getSerialNumber();
     }
 
+    public function setMauSupported($mauSupported)
+    {
+        $this->__load();
+        return parent::setMauSupported($mauSupported);
+    }
+
+    public function getMauSupported()
+    {
+        $this->__load();
+        return parent::getMauSupported();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'switchtype', 'model', 'active', 'os', 'osDate', 'osVersion', 'serialNumber', 'lastPolled', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Infrastructure', 'Cabinet', 'Vendor');
+        return array('__isInitialized__', 'name', 'hostname', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'switchtype', 'model', 'active', 'os', 'osDate', 'osVersion', 'serialNumber', 'mauSupported', 'lastPolled', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'SecEvents', 'Infrastructure', 'Cabinet', 'Vendor');
     }
 
     public function __clone()
