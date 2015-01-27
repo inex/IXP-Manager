@@ -52,16 +52,29 @@ class SwitchPort
     // This array is for matching data from OSS_SNMP to the switchport database table.
     // See snmpUpdate() below
     public static $OSS_SNMP_MAP = [
-            'descriptions'    => 'Name',
-            'names'           => 'IfName',
-            'aliases'         => 'IfAlias',
-            'highSpeeds'      => 'IfHighspeed',
-            'mtus'            => 'IfMtu',
-            'physAddresses'   => 'IfPhysAddress',
-            'adminStates'     => 'IfAdminStatus',
-            'operationStates' => 'IfOperStatus',
-            'lastChanges'     => 'IfLastChange'
-        ];
+        'descriptions'    => 'Name',
+        'names'           => 'IfName',
+        'aliases'         => 'IfAlias',
+        'highSpeeds'      => 'IfHighspeed',
+        'mtus'            => 'IfMtu',
+        'physAddresses'   => 'IfPhysAddress',
+        'adminStates'     => 'IfAdminStatus',
+        'operationStates' => 'IfOperStatus',
+        'lastChanges'     => 'IfLastChange'
+    ];
+
+
+    /**
+     * Mappings for OSS_SNMP fucntions to SwitchPort members
+     */
+    public static $OSS_SNMP_MAU_MAP = [
+        'types'             => [ 'fn' => 'MauType',         'xlate' => true ],
+        'states'            => [ 'fn' => 'MauState',        'xlate' => true ],
+        'mediaAvailable'    => [ 'fn' => 'MauAvailability', 'xlate' => true ],
+        'jackTypes'         => [ 'fn' => 'MauJacktype',     'xlate' => true ],
+        'autonegSupported'  => [ 'fn' => 'MauAutoNegSupported'  ],
+        'autonegAdminState' => [ 'fn' => 'MauAutoNegAdminState' ]
+    ];
 
     /**
      * @var integer $type
@@ -586,12 +599,31 @@ class SwitchPort
             $fn = "set{$entity}";
             $this->$fn( $n );
         }
-        
+
+        // try and find MAU / optic types
+        // not all switches support this
+        try {
+            foreach( self::$OSS_SNMP_MAU_MAP as $snmp => $entity ) {
+                $getfn = "get{$entity['fn']}";
+                $setfn = "set{$entity['fn']}";
+
+                if( isset( $entity['xlate'] ) )
+                    $n = $host->useMAU()->$snmp( $entity['xlate'] )[ $this->getIfIndex() ];
+                else
+                    $n = $host->useMAU()->$snmp()[ $this->getIfIndex() ];
+
+                if( $logger && $this->$getfn() != $n )
+                    $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$getfn()}] to [{$n}]" );
+
+                $this->$setfn( $n );
+            }
+        } catch( \OSS_SNMP\Exception $e ){};
+
         try
         {
             // not all switches support this
             // FIXME is there a vendor agnostic way of doing this?
-            
+
             // are we a LAG port?
             $isAggregatePorts = $host->useLAG()->isAggregatePorts();
             if( isset( $isAggregatePorts[ $this->getIfIndex() ] ) && $isAggregatePorts[ $this->getIfIndex() ] )
@@ -600,7 +632,7 @@ class SwitchPort
                 $this->setLagIfIndex( null );
         }
         catch( \OSS_SNMP\Exception $e ){}
-        
+
         $this->setLastSnmpPoll( new \DateTime() );
 
         return $this;
@@ -689,14 +721,14 @@ class SwitchPort
     public function setMauType($mauType)
     {
         $this->mauType = $mauType;
-    
+
         return $this;
     }
 
     /**
      * Get mauType
      *
-     * @return string 
+     * @return string
      */
     public function getMauType()
     {
@@ -712,14 +744,14 @@ class SwitchPort
     public function setMauState($mauState)
     {
         $this->mauState = $mauState;
-    
+
         return $this;
     }
 
     /**
      * Get mauState
      *
-     * @return string 
+     * @return string
      */
     public function getMauState()
     {
@@ -735,14 +767,14 @@ class SwitchPort
     public function setMauAvailability($mauAvailability)
     {
         $this->mauAvailability = $mauAvailability;
-    
+
         return $this;
     }
 
     /**
      * Get mauAvailability
      *
-     * @return string 
+     * @return string
      */
     public function getMauAvailability()
     {
@@ -758,14 +790,14 @@ class SwitchPort
     public function setMauJacktype($mauJacktype)
     {
         $this->mauJacktype = $mauJacktype;
-    
+
         return $this;
     }
 
     /**
      * Get mauJacktype
      *
-     * @return string 
+     * @return string
      */
     public function getMauJacktype()
     {
@@ -781,14 +813,14 @@ class SwitchPort
     public function setMauAutoNegSupported($mauAutoNegSupported)
     {
         $this->mauAutoNegSupported = $mauAutoNegSupported;
-    
+
         return $this;
     }
 
     /**
      * Get mauAutoNegSupported
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getMauAutoNegSupported()
     {
@@ -804,14 +836,14 @@ class SwitchPort
     public function setMauAutoNegAdminState($mauAutoNegAdminState)
     {
         $this->mauAutoNegAdminState = $mauAutoNegAdminState;
-    
+
         return $this;
     }
 
     /**
      * Get mauAutoNegAdminState
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getMauAutoNegAdminState()
     {
