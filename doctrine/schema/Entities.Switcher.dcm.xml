@@ -16,6 +16,7 @@
     <field name="osDate" type="datetime" nullable="true"/>
     <field name="osVersion" type="string" nullable="true"/>
     <field name="serialNumber" type="string" length="255" nullable="true"/>
+    <field name="mauSupported" type="boolean" nullable="true"/>
     <field name="lastPolled" type="datetime" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Switchers">

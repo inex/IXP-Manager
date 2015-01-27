@@ -125,6 +125,50 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     }
 
 
+    /**
+     * Provide array of users for the listAction and viewAction
+     *
+     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
+     */
+    protected function listMauGetData( $id = null )
+    {
+        $this->view->switches = $switches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getNames();
+
+        $qb = $this->getD2EM()->createQueryBuilder()
+            ->select( 'sp.id AS id, sp.name AS name, sp.type AS type, s.name AS switch,
+                sp.ifName AS ifName, sp.ifAlias AS ifAlias, sp.lastSnmpPoll AS lastSnmpPoll,
+                sp.ifAdminStatus AS ifAdminStatus, sp.ifOperStatus AS ifOperStatus,
+                sp.mauType AS mauType, sp.mauState AS mauState,
+                sp.mauAvailability AS mauAvailability, sp.mauJacktype AS mauJacktype,
+                sp.mauAutoNegSupported AS mauAutoNegSupported, sp.mauAutoNegAdminState AS mauAutoNegAdminState,
+                sp.ifIndex AS ifIndex, s.id AS switchid'
+            )
+            ->from( '\\Entities\\SwitchPort', 'sp' )
+            ->orderBy( 'sp.ifIndex', 'ASC' )
+            ->leftJoin( 'sp.Switcher', 's' );
+
+        if( $id !== null )
+            $qb->andWhere( 'sp.id = ?1' )->setParameter( 1, $id );
+
+        if( ( $sid = $this->getParam( 'switch', false ) ) && isset( $switches[$sid] ) ) {
+            $this->view->sid = $sid;
+            $qb->where( 's.id = ?2' )->setParameter( 2, $sid );
+        } else {
+            $this->redirect( 'switch/list' );
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * List the MAU details of a switches interfaces
+     */
+    public function listMauAction()
+    {
+        $this->view->data = $this->listMauGetData();
+        $this->_display( 'list-mau.phtml' );
+    }
+
 
     public function opStatusAction()
     {
@@ -537,6 +581,3 @@ class SwitchPortController extends IXP_Controller_FrontEnd
     }
 
 }
-
-
-

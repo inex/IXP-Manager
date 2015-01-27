@@ -316,6 +316,7 @@
       <field name="osDate" type="datetime" uuid="d5e22be1-91be-46ae-b5fe-25626a5db35e"/>
       <field name="osVersion" type="string" uuid="110a1e41-bd8e-49d5-8b9d-d8f048553b32"/>
       <field name="serialNumber" type="string" size="255" uuid="2b89be24-50a0-410f-986a-37636d9d2edc"/>
+      <field name="mauSupported" type="boolean" uuid="ceceb2aa-cb49-4ff3-ad96-8fffca87f101"/>
       <field name="lastPolled" type="datetime" uuid="dfa1e20f-3393-452a-a0d5-95b079c54da4"/>
       <field name="notes" type="text" uuid="c56c30fa-0c98-4025-ae71-6c653d0b9624"/>
       <orm-attributes>
