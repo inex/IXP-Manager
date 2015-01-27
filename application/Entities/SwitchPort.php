@@ -600,9 +600,7 @@ class SwitchPort
             $this->$fn( $n );
         }
 
-        // try and find MAU / optic types
-        // not all switches support this
-        try {
+        if( $this->getSwitcher()->getMauSupported() ) {
             foreach( self::$OSS_SNMP_MAU_MAP as $snmp => $entity ) {
                 $getfn = "get{$entity['fn']}";
                 $setfn = "set{$entity['fn']}";
@@ -614,13 +612,13 @@ class SwitchPort
 
                 if( $n == '*** UNKNOWN ***' && $snmp == 'types' )
                     $n = '(empty)';
-                    
+
                 if( $logger && $this->$getfn() != $n )
                     $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity['fn']} from [{$this->$getfn()}] to [{$n}]" );
 
                 $this->$setfn( $n );
             }
-        } catch( \OSS_SNMP\Exception $e ){};
+        }
 
         try
         {

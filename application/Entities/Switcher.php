@@ -669,6 +669,14 @@ class Switcher
             $this->$fn( $n );
         }
 
+        // does this switch support the IANA MAU MIB?
+        try {
+            $host->useMAU()->types();
+            $this->setMauSupported( true );
+        } catch( \OSS_SNMP\Exception $e ) {
+            $this->setMauSupported( false );
+        }
+
         $this->setLastPolled( new \DateTime() );
         return $this;
     }
@@ -810,14 +818,14 @@ class Switcher
     public function setMauSupported($mauSupported)
     {
         $this->mauSupported = $mauSupported;
-    
+
         return $this;
     }
 
     /**
      * Get mauSupported
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getMauSupported()
     {
