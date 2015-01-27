@@ -2,7 +2,7 @@
 <div class="row-fluid">
 <div class="span2">
 <div class="well sidebar-nav">
-        
+
 <ul class="nav nav-list">
 
     <form class="form-search" method="get" action="{genUrl controller="search" action="do"}">
@@ -11,7 +11,7 @@
     </form>
 
     <li class="nav-header">IXP Customer Actions</li>
-    
+
         <li {if $controller eq 'customer' and ( $action eq 'list' or $action eq 'add' or $action eq 'edit' or $action eq 'dashboard' )}class="active"{/if}>
             <a href="{genUrl controller='customer' action='list'}">Customers</a>
         </li>
@@ -29,7 +29,7 @@
             {else}
                 <a href="{genUrl controller='virtual-interface' action='list'}">Interfaces</a>
             {/if}
-            
+
         </li>
         <li {if $controller eq 'user' and $action neq 'last'}class="active"{/if}>
             <a href="{genUrl controller='user' action='list'}">Users</a>
@@ -54,7 +54,7 @@
 	{if not isset( $options['frontend']['disabled']['meeting'] ) or not $options['frontend']['disabled']['meeting'] }
             <li {if $controller eq 'meeting' and $controller neq 'meeting-item' and $action neq 'read'}class="active"{/if}>
                 <a href="{genUrl controller='meeting' action='list'}">Meetings</a>
-             
+
                 {if $controller eq 'meeting' or $controller eq 'meeting-item' or ( $controller eq 'static' and $action eq 'meetings-instructions' )}
                     <ul class="nav nav-list">
                         <li {if $controller eq 'meeting-item'}class="active"{/if}>
@@ -70,8 +70,8 @@
                 {/if}
             </li>
         {/if}
-        
-              
+
+
     <li class="nav-header">IXP Admin Actions</li>
         {if $multiIXP }
             <li {if $controller eq 'ixp'}class="active"{/if}>
@@ -82,7 +82,7 @@
         <li {if $controller eq 'infrastructure'}class="active"{/if}>
             <a href="{genUrl controller='infrastructure' action='list'}">Infrastructures</a>
         </li>
-        
+
         <li {if $controller eq 'location'}class="active"{/if}>
             <a href="{genUrl controller='location' action='list'}">Locations</a>
         </li>
@@ -90,23 +90,26 @@
         <li {if $controller eq 'cabinet'}class="active"{/if}>
             <a href="{genUrl controller='cabinet' action='list'}">Cabinets</a>
         </li>
-        
+
         <li {if $controller eq 'switch' and $action neq 'add-ports'}class="active"{/if}>
             <a href="{genUrl controller='switch' action='list'}">Switches</a>
-            
+
             {if $controller eq 'switch' or $controller eq 'switch-port'}
                 <ul class="nav nav-list">
-                    <li {if $controller eq 'switch-port'}class="active"{/if}>
+                    <li {if $controller eq 'switch-port' and $action neq 'unused-optics'}class="active"{/if}>
                         <a href="{genUrl controller='switch-port' action='list'}">Switch Ports</a>
+                    </li>
+                    <li {if $controller eq 'switch-port' and $action eq 'unused-optics'}class="active"{/if}>
+                        <a href="{genUrl controller='switch-port' action='unused-optics'}">Unused Optics</a>
                     </li>
                 </ul>
             {/if}
-            
+
         </li>
-        
+
         <li>
             <a href="{genUrl controller='ipv6-address' action='list'}">IP Addressing</a>
-            
+
             {if $controller eq 'ipv4-address' or $controller eq 'ipv6-address'}
                 <ul class="nav nav-list">
                     <li {if $controller eq 'ipv4-address' and $action neq 'add-addresses'}class="active"{/if}>
@@ -117,28 +120,28 @@
                     </li>
                 </ul>
             {/if}
-            
+
         </li>
-        
+
         {if not isset( $options['frontend']['disabled']['mac-address'] ) or not $options['frontend']['disabled']['mac-address'] }
             <li {if $controller eq 'mac-address'}class="active"{/if}>
                  <a href="{genUrl controller='mac-address' action='list'}">MAC Addresses</a>
             </li>
         {/if}
-        
+
         <li {if $controller eq 'vendor'}class="active"{/if}>
             <a href="{genUrl controller='vendor' action='list'}">Vendors</a>
         </li>
-        
+
         {if not isset( $options['frontend']['disabled']['console-server-connection'] ) or not $options['frontend']['disabled']['console-server-connection'] }
             <li {if $controller eq 'console-server-connection'}class="active"{/if}>
                 <a href="{genUrl controller='console-server-connection' action='list'}">Console Server Connections</a>
             </li>
         {/if}
-        
+
         <li {if $controller eq 'vlan' and $action neq 'private'}class="active"{/if}>
             <a href="{genUrl controller='vlan' action='list'}">VLANs</a>
-            
+
             {if $controller eq 'vlan'}
                 <ul class="nav nav-list">
                     <li {if $controller eq 'vlan' and $action eq 'private'}class="active"{/if}>
@@ -146,22 +149,22 @@
                     </li>
                 </ul>
             {/if}
-                        
+
         </li>
-    
+
         <li {if $controller eq 'irrdb-config'}class="active"{/if}>
             <a href="{genUrl controller='irrdb-config' action='list'}">IRRDB Configuration</a>
         </li>
-    
+
         {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
             <li {if $controller eq 'rs-prefixes'}class="active"{/if}>
                 <a href="{genUrl controller='rs-prefixes' action='index'}">Route Server Prefixes</a>
             </li>
         {/if}
-        
-              
+
+
     <li class="nav-header">IXP Statistics</li>
-        
+
         <li {if $controller eq 'statistics' and $action eq 'members'}class="active"{/if}>
             <a href="{genUrl controller='statistics' action='members'}">Member Statistics - Graphs</a>
         </li>
@@ -171,14 +174,14 @@
         <li {if $controller eq 'statistics' and $action eq 'league-table'}class="active"{/if}>
             <a href="{genUrl controller='statistics' action='league-table'}">League Table</a>
         </li>
-                
+
         {* 95th Percentiles {genUrl controller="customer" action="ninety-fifth"} *}
         {* Last Logins      {genUrl controller="user" action="last"} *}
-        
 
-        
+
+
     <li class="nav-header">IXP Utilities</li>
-        
+
         <li {if $controller eq 'utils' and $action eq 'phpinfo'}class="active"{/if}>
             <a href="{genUrl controller='utils' action='phpinfo'}">PHP Info</a>
         </li>
@@ -188,10 +191,10 @@
         <li {if $controller eq 'user' and $action eq 'last'}class="active"{/if}>
             <a href="{genUrl controller='user' action='last'}">Last Logins</a>
         </li>
-        
-                
+
+
     </ul>
-    
+
 </div><!--/.well -->
 
 <div id="searchHelpModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="searchHelpModalLabel" aria-hidden="true">
@@ -201,7 +204,7 @@
     </div>
     <div class="modal-body">
         <p>
-            The search box allows for an efficient database search via a number of parameters: 
+            The search box allows for an efficient database search via a number of parameters:
         </p>
         <div class="row-fluid">
             <div class="span6">

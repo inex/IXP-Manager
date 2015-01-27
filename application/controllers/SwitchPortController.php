@@ -174,6 +174,22 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         $this->_display( 'list-mau.phtml' );
     }
 
+    public function unusedOpticsAction()
+    {
+        $this->view->data = $this->getD2EM()->createQueryBuilder()
+            ->select( 'sp' )
+            ->from( '\\Entities\\SwitchPort', 'sp' )
+            ->leftJoin( 'sp.Switcher', 's' )
+            ->orderBy( 's.name', 'ASC' )
+            ->where( 's.mauSupported = 1 AND sp.ifOperStatus != 1 AND sp.mauType != :mauType AND sp.type != :type' )
+            ->setParameter( 'mauType', '(empty)' )
+            ->setParameter( 'type',    \Entities\SwitchPort::TYPE_MANAGEMENT )
+            ->getQuery()
+            ->getResult();
+
+        $this->_display( 'unused-optics.phtml' );
+    }
+
 
     public function opStatusAction()
     {
