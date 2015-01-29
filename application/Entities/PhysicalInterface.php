@@ -27,7 +27,9 @@ class PhysicalInterface
         10    => '10 Mbps',
         100   => '100 Mbps',
         1000  => '1 Gbps',
-        10000 => '10 Gbps'
+        10000 => '10 Gbps',
+        40000 => '40 Gbps',
+        100000 => '100 Gbps'
     );
 
     public static $DUPLEX = array(

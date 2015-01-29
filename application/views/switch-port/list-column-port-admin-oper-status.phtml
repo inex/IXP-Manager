@@ -1,0 +1,28 @@
+<td>
+    {if $adminState == 1 }
+        <span class="label label-success">Up</span>
+    {else if $adminState == 2 }
+        <span class="label label-important">Down</span>
+    {else if $adminState == 3 }
+        <span class="label label-warning">Testing</span>
+    {/if}
+
+    &nbsp;/&nbsp;
+
+    {if $operState == 1 }
+        <span class="label label-success">Up</span>
+    {else if $operState == 2 }
+        <span class="label label-important">Down</span>
+    {else if $operState == 3 }
+        <span class="label label-warning">Testing</span>
+    {else if $operState == 4 }
+        <span class="label label-warning">Unknown</span>
+    {else if $operState == 5 }
+        <span class="label label-warning">Dormant</span>
+    {else if $operState == 6 }
+        <span class="label label-info">Not Present</span>
+    {else if $operState == 7 }
+        <span class="label label-warning">Lower Layer Down</span>
+    {/if}
+
+</td>

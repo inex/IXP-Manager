@@ -316,6 +316,7 @@
       <field name="osDate" type="datetime" uuid="d5e22be1-91be-46ae-b5fe-25626a5db35e"/>
       <field name="osVersion" type="string" uuid="110a1e41-bd8e-49d5-8b9d-d8f048553b32"/>
       <field name="serialNumber" type="string" size="255" uuid="2b89be24-50a0-410f-986a-37636d9d2edc"/>
+      <field name="mauSupported" type="boolean" uuid="ceceb2aa-cb49-4ff3-ad96-8fffca87f101"/>
       <field name="lastPolled" type="datetime" uuid="dfa1e20f-3393-452a-a0d5-95b079c54da4"/>
       <field name="notes" type="text" uuid="c56c30fa-0c98-4025-ae71-6c653d0b9624"/>
       <orm-attributes>
@@ -361,6 +362,12 @@
       <field name="ifLastChange" type="integer" uuid="9d032cd9-6905-4df5-8422-ec5e72e4620f"/>
       <field name="lastSnmpPoll" type="datetime" uuid="142ea587-8758-466b-9612-a8be6e4220f2"/>
       <field name="lagIfIndex" type="integer" uuid="bea9ef74-edd5-4a94-a776-ce90caf78ca4"/>
+      <field name="mauType" type="string" uuid="d0fc3cfa-c076-4121-81be-dbf50eb44137"/>
+      <field name="mauState" type="string" uuid="217935d8-1b3f-49ac-8388-08351cfe3bc0"/>
+      <field name="mauAvailability" type="string" uuid="0dcde129-755e-4d4a-be69-ae593284cbf6"/>
+      <field name="mauJacktype" type="string" uuid="efbcd5eb-27d4-4a36-b2ea-5efff71fe0c8"/>
+      <field name="mauAutoNegSupported" type="boolean" uuid="a542a80f-f1dd-4f21-a02d-b9e5a218949f"/>
+      <field name="mauAutoNegAdminState" type="boolean" uuid="59e1bb59-a3bc-448a-935d-3c945c852802"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\SwitchPort</attribute>
         <attribute name="table">switchport</attribute>
@@ -971,7 +978,7 @@
     <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0" color="4288059030"/>
     <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" bg-color="4294967295" hdr-color="4292006610" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
     <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" bg-color="4294967295" hdr-color="4292006610" position-x="421" position-y="186" size-x="0" size-x2="128" size-y="0" size-y2="171"/>
-    <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" bg-color="4294967295" hdr-color="4292006610" position-x="861" position-y="-161" size-x="0" size-x2="135" size-y="0" size-y2="227"/>
+    <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" bg-color="4294967295" hdr-color="4292006610" position-x="787" position-y="-325" size-x="0" size-x2="163" size-y="0" size-y2="325"/>
     <association uuid="2fe65b4f-c179-4c71-b5d0-e6177fdcea61" color="4288059030"/>
     <entity uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10" bg-color="4294967295" hdr-color="4292006610" position-x="1395" position-y="396" size-x="0" size-x2="109" size-y="0" size-y2="59"/>
     <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>

@@ -9,6 +9,8 @@
                 Ports (database only)
             {else if $action eq 'snmp-poll'}
                 Ports (with SNMP poll)
+            {else if $action eq 'list-mau'}
+                Port MAU Detail (database only)
             {else}
                 Unknown action?
             {/if}
@@ -37,10 +39,6 @@
                 <li> <a href="{genUrl controller='switch-port' action=$action switch=$sid}">{$sname}</a> </li>
             {/foreach}
         </ul>
-    </div>
-
-    <div class="btn-group">
-        <a class="btn btn-mini" href="{genUrl controller='switch-port' action="add"}"><i class="icon-plus"></i></a>
     </div>
 </div>
 </li>

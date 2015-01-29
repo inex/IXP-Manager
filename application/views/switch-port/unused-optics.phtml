@@ -1,0 +1,102 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller=$controller action="list"}">Switches</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Unused Optics
+    </li>
+</ul>
+
+<div>
+
+    {OSS_Message}
+
+    <div class="alert alert-info">
+        A list of ports from <strong>switches that support the IANA MAU MIB</strong> where the operational status
+        is down, the port is populated with an optic / SFP and the port type is not management.
+        Data valid at time of last SNMP poll.
+    </div>
+
+
+    {if count( $data )}
+    <table id='frontend-list-table' class="table hide">
+
+    <thead>
+        <tr>
+            <th>ifIndex</th>
+            <th>Switch</th>
+            <th>Port</th>
+            <th>Type</th>
+            <th>MAU Type</th>
+            <th>MAU State</th>
+            <th>Jack Type</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {foreach $data as $idx => $sp}
+        <tr>
+            <td>{$sp->getSwitcher()->getId()}</td>
+            <td>{$sp->getSwitcher()->getName()}</td>
+            <td>{$sp->getIfName()}</td>
+            <td>{SWITCHPORT::$TYPES[ $sp->getType() ]}</td>
+            <td>{$sp->getMauType()}</td>
+            <td>{$sp->getMauState()}</td>
+            <td>{$sp->getMauJacktype()}</td>
+        </tr>
+        {/foreach}
+    </tbody>
+
+    </table>
+    {else}
+        <p>
+            There are no entries.
+            {if ( !isset( $feParams->addWhenEmpty ) || $feParams->addWhenEmpty ) && ( !isset( $feParams->readonly ) || !$feParams->readonly )} Do you want to <a href="{genUrl controller=$controller action='add'}">add one...</a>{/if}
+        </p>
+    {/if} {* end if count( $data ) *}
+
+</div>
+
+
+<script type="text/javascript">
+
+
+var oDataTable;
+
+$(document).ready(function() {
+
+    oDataTable = $( '#frontend-list-table' ).dataTable({
+        'iDisplayLength': {if isset( $options.defaults.table.entries )}{$options.defaults.table.entries}{else}50{/if},
+        "aLengthMenu": [ [ 10, 25, 50, 100, 500, -1 ], [ 10, 25, 50, 100, 500, "All" ] ],
+        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+        "sPaginationType": "bootstrap",
+        "bAutoWidth": false,
+        'aaSorting': [[ 1, 'asc' ]],
+        'aoColumns': [
+            { bVisible: false },
+            { iDataSort: 0 },
+            null,
+            null,
+            null,
+            null,
+            null
+        ]
+    });
+
+    $( '#frontend-list-table' ).show();
+
+});
+
+
+
+
+
+
+</script>
+
+{tmplinclude file="footer.phtml"}

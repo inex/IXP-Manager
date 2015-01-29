@@ -1,0 +1,169 @@
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller=$controller action="list"}">Switches</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        MAU Interface Detail for {$switches[$sid]->getName()}
+    </li>
+
+
+    <li class="pull-right" style="margin-top: -12px;">
+        <div class="btn-toolbar" style="display: inline-block;">
+
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    {if $action eq 'op-status'}
+                        Live Port States (with SNMP poll)
+                    {else if $action eq 'list'}
+                        Ports (database only)
+                    {else if $action eq 'snmp-poll'}
+                        Ports (with SNMP poll)
+                    {else if $action eq 'list-mau'}
+                        Port MAU Detail (database only)
+                    {else}
+                        Unknown action?
+                    {/if}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li {if $action eq 'op-status'}class="active"{/if}>
+                        <a href="{genUrl controller='switch-port' action='op-status' switch=$sid}">View Live Port States (with SNMP poll)</a>
+                    </li>
+                    <li {if $action eq 'list'}class="active"{/if}>
+                        <a href="{genUrl controller='switch-port' action='list'      switch=$sid}">View / Edit Ports (database only)</a>
+                    </li>
+                    <li {if $action eq 'snmp-poll'}class="active"{/if}>
+                        <a href="{genUrl controller='switch-port' action='snmp-poll' switch=$sid}">View / Edit Ports (with SNMP poll)</a>
+                    </li>
+                    <li {if $action eq 'list-mau'}class="active"{/if}>
+                        <a href="{genUrl controller='switch-port' action='list-mau' switch=$sid}">View Port MAU Detail (database only)</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                    {if isset( $sid ) and $sid}{$switches.$sid->getName()}{else}Limit to switch...{/if}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    {foreach $switches as $sid => $sname}
+                    <li> <a href="{genUrl controller='switch-port' action=$action switch=$sid}">{$sname->getName()}</a> </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </li>
+
+
+</ul>
+
+<div>
+
+
+
+    {OSS_Message}
+
+    <div class="alert alert-info">
+        Data valid at time of last SNMP poll: {$switches.$sid->getLastPolled()->format( 'Y-m-d H:i:s' )}
+    </div>
+
+
+    {if count( $data )}
+    <table id='frontend-list-table' class="table hide">
+
+    <thead>
+        <tr>
+            <th>ifIndex</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>State (Admin/Op)</th>
+            <th>MAU Type</th>
+            <th>MAU State</th>
+            <th>MAU Availability</th>
+            <th>Jack Type</th>
+            <th>Auto Neg</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {foreach $data as $idx => $row}
+        <tr>
+            <td>{$row.ifIndex}</td>
+            <td>{$row.ifName}</td>
+            <td>{SWITCHPORT::$TYPES[ $row.type ]}</td>
+
+            {tmplinclude file='switch-port/list-column-port-admin-oper-status.phtml' operState=$row.ifOperStatus adminState=$row.ifAdminStatus}
+
+            <td>{$row.mauType}</td>
+            <td>{$row.mauState}</td>
+            <td>{$row.mauAvailability}</td>
+            <td>{$row.mauJacktype}</td>
+            <td>
+                {if not $row.mauAutoNegAdminState}
+                    <span class="label label-info">Not Supported / Disabled</span>
+                {elseif $row.mauAutoNegAdminState}
+                    <span class="label label-success">Enabled</span>
+                {else}
+                    <span class="label label-important">Disabled</span>
+                {/if}
+            </td>
+        </tr>
+        {/foreach}
+    </tbody>
+
+    </table>
+    {else}
+        <p>
+            There are no entries.
+            {if ( !isset( $feParams->addWhenEmpty ) || $feParams->addWhenEmpty ) && ( !isset( $feParams->readonly ) || !$feParams->readonly )} Do you want to <a href="{genUrl controller=$controller action='add'}">add one...</a>{/if}
+        </p>
+    {/if} {* end if count( $data ) *}
+
+</div>
+
+
+<script type="text/javascript">
+
+
+var oDataTable;
+
+$(document).ready(function() {
+
+    oDataTable = $( '#frontend-list-table' ).dataTable({
+        'iDisplayLength': {if isset( $options.defaults.table.entries )}{$options.defaults.table.entries}{else}10{/if},
+        "aLengthMenu": [ [ 10, 25, 50, 100, 500, -1 ], [ 10, 25, 50, 100, 500, "All" ] ],
+        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+        "sPaginationType": "bootstrap",
+        "bAutoWidth": false,
+        'aaSorting': [[ 1, 'asc' ]],
+        'aoColumns': [
+            { bVisible: false },
+            { iDataSort: 0 },
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        ]
+    });
+
+    $( '#frontend-list-table' ).show();
+
+});
+
+
+
+
+
+
+</script>
+
+{tmplinclude file="footer.phtml"}

@@ -18,6 +18,11 @@
         <li>
             <a href="{genUrl controller='switch-port' action='list' switch=$row.id}">View / Edit Ports (database only)</a>
         </li>
+        {if $row.mauSupported}
+            <li>
+                <a href="{genUrl controller='switch-port' action='list-mau' switch=$row.id}">View Port MAU Detail (database only)</a>
+            </li>
+        {/if}
         <li>
             <a href="{genUrl controller='switch' action='port-report' id=$row.id}">View Port Report</a>
         </li>
