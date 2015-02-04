@@ -171,8 +171,8 @@ resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
 
 ;; Set this to wherever PEAR installed Doctrine. The given example is typical
 ;; for Ubuntu. For FreeBSD, try "/usr/local/share/pear/Doctrine/ORM"
-resources.doctrine2cache.path               = "/usr/share/php/Doctrine/ORM"
-resources.doctrine2cache.autoload_method    = "pear"
+;; resources.doctrine2cache.path               = "/usr/share/php/Doctrine/ORM"
+resources.doctrine2cache.autoload_method    = "composer"
 resources.doctrine2cache.namespace                          = 'IXPManager'
 ; resources.doctrine2cache.type                               = 'ArrayCache'
 resources.doctrine2cache.type                               = 'MemcacheCache'

@@ -21,6 +21,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+require_once( '../vendor/autoload.php' );
+
 // load version information
 require_once( dirname( __FILE__ ) . '/../library/IXP/Version.php' );    
 

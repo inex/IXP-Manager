@@ -39,6 +39,8 @@ else
 // let's time how long it takes to execute
 define( 'APPLICATION_STARTTIME', microtime( true ) );
 
+require_once( '../vendor/autoload.php' );
+
 // Define path to application directory
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
