@@ -153,4 +153,27 @@ class Vendor
     {
         return $this->nagios_name;
     }
+
+    /**
+     * Add Switches
+     *
+     * @param \Entities\Switcher $switches
+     * @return Vendor
+     */
+    public function addSwitch(\Entities\Switcher $switches)
+    {
+        $this->Switches[] = $switches;
+
+        return $this;
+    }
+
+    /**
+     * Remove Switches
+     *
+     * @param \Entities\Switcher $switches
+     */
+    public function removeSwitch(\Entities\Switcher $switches)
+    {
+        $this->Switches->removeElement($switches);
+    }
 }

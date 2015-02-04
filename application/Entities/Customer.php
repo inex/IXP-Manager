@@ -2113,4 +2113,73 @@ class Customer
         }
         return true;
     }
+
+    /**
+     * Add IrrdbPrefixes
+     *
+     * @param \Entities\IrrdbPrefix $irrdbPrefixes
+     * @return Customer
+     */
+    public function addIrrdbPrefix(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->IrrdbPrefixes[] = $irrdbPrefixes;
+
+        return $this;
+    }
+
+    /**
+     * Remove IrrdbPrefixes
+     *
+     * @param \Entities\IrrdbPrefix $irrdbPrefixes
+     */
+    public function removeIrrdbPrefix(\Entities\IrrdbPrefix $irrdbPrefixes)
+    {
+        $this->IrrdbPrefixes->removeElement($irrdbPrefixes);
+    }
+
+    /**
+     * Add RSPrefixes
+     *
+     * @param \Entities\RSPrefix $rSPrefixes
+     * @return Customer
+     */
+    public function addRSPrefix(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->RSPrefixes[] = $rSPrefixes;
+
+        return $this;
+    }
+
+    /**
+     * Remove RSPrefixes
+     *
+     * @param \Entities\RSPrefix $rSPrefixes
+     */
+    public function removeRSPrefix(\Entities\RSPrefix $rSPrefixes)
+    {
+        $this->RSPrefixes->removeElement($rSPrefixes);
+    }
+
+    /**
+     * Add TrafficDailies
+     *
+     * @param \Entities\TrafficDaily $trafficDailies
+     * @return Customer
+     */
+    public function addTrafficDaily(\Entities\TrafficDaily $trafficDailies)
+    {
+        $this->TrafficDailies[] = $trafficDailies;
+
+        return $this;
+    }
+
+    /**
+     * Remove TrafficDailies
+     *
+     * @param \Entities\TrafficDaily $trafficDailies
+     */
+    public function removeTrafficDaily(\Entities\TrafficDaily $trafficDailies)
+    {
+        $this->TrafficDailies->removeElement($trafficDailies);
+    }
 }

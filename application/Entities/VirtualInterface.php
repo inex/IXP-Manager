@@ -357,4 +357,27 @@ class VirtualInterface
     {
         $this->MACAddresses->removeElement($mACAddresses);
     }
+
+    /**
+     * Add MACAddresses
+     *
+     * @param \Entities\MACAddress $mACAddresses
+     * @return VirtualInterface
+     */
+    public function addMACAddress(\Entities\MACAddress $mACAddresses)
+    {
+        $this->MACAddresses[] = $mACAddresses;
+
+        return $this;
+    }
+
+    /**
+     * Remove MACAddresses
+     *
+     * @param \Entities\MACAddress $mACAddresses
+     */
+    public function removeMACAddress(\Entities\MACAddress $mACAddresses)
+    {
+        $this->MACAddresses->removeElement($mACAddresses);
+    }
 }

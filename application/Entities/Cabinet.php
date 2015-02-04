@@ -304,4 +304,27 @@ class Cabinet
     {
         return $this->cololocation;
     }
+
+    /**
+     * Add Switches
+     *
+     * @param \Entities\Switcher $switches
+     * @return Cabinet
+     */
+    public function addSwitch(\Entities\Switcher $switches)
+    {
+        $this->Switches[] = $switches;
+
+        return $this;
+    }
+
+    /**
+     * Remove Switches
+     *
+     * @param \Entities\Switcher $switches
+     */
+    public function removeSwitch(\Entities\Switcher $switches)
+    {
+        $this->Switches->removeElement($switches);
+    }
 }
