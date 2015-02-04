@@ -1,5 +1,7 @@
 .project
 .buildpath
+composer.lock
+vendor/
 MAINT_MODE_ENABLED
 .settings/
 ixp-manager.sublime-workspace

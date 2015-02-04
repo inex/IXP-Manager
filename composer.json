@@ -1,0 +1,70 @@
+{
+    "name": "inex/IXP-Manager",
+    "description": "An application by INEX to manage Internet Exchange Points (IXPs)",
+    "type": "project",
+    "keywords": ["ixp manager", "ixpm", "inex", "ixp"],
+    "homepage": "https://github.com/inex/IXP-Manager/wiki",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Barry O'Donovan",
+            "email": "barry.odonovan@inex.ie",
+            "homepage": "https://www.inex.ie/",
+            "role": "Senior Coding Dude & INEX Network Consultant"
+        },
+        {
+            "name": "Nick Hilliard",
+            "email": "nick@inex.ie",
+            "homepage": "https://www.inex.ie/",
+            "role": "Junior Coding Dweeb & Chief Technical Officer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/opensolutions/Bootstrap-Zend-Framework"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "smarty/smarty",
+                "version": "3.1.18",
+                "dist": {
+                    "url": "http://www.smarty.net/files/Smarty-3.1.18.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "http://smarty-php.googlecode.com/svn/",
+                    "type": "svn",
+                    "reference": "tags/v3.1.18/distribution/"
+                }
+            }
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "doctrine/orm": "2.4.*",
+        "opensolutions/oss-framework": "dev-master",
+        "zendframework/zendframework1": "~1.12",
+        "smarty/smarty": "3.1.18",
+        "opensolutions/minify": "1.*",
+        "komola/bootstrap-zend-framework": "dev-master",
+        "opensolutions/oss-snmp": "dev-master"
+    },
+    "support": {
+        "issues": "https://github.com/inex/IXP-Manager/issues",
+        "wiki": "https://github.com/inex/IXP-Manager/wiki",
+        "source": "https://github.com/inex/IXP-Manager"
+    },
+    "autoload": {
+        "classmap": [
+            "vendor/smarty/smarty/libs/Smarty.class.php",
+            "vendor/smarty/smarty/libs/SmartyBC.class.php",
+            "vendor/smarty/smarty/libs/sysplugins/smarty_security.php"
+        ],
+        "psr-0": {
+        "IXP_": "library/"
+        }
+    },
+    "minimum-stability": "dev"
+}
