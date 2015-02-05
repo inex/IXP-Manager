@@ -39,6 +39,14 @@
                     "reference": "tags/v3.1.18/distribution/"
                 }
             }
+        },
+        {
+            "url": "git@github.com:oss2/doctrine2.git",
+            "type": "vcs"
+        },
+        {
+            "url": "git@github.com:oss2/var-utils.git",
+            "type": "vcs"
         }
     ],
     "require": {
@@ -50,7 +58,13 @@
         "opensolutions/minify": "1.*",
         "komola/bootstrap-zend-framework": "dev-master",
         "opensolutions/oss-snmp": "dev-master",
-        "opensolutions/doctrine2bridge": "2.4.*"
+        "opensolutions/doctrine2bridge": "2.4.*",
+
+        "laravel/framework": "5.0.*",
+        "oss2/doctrine2": "dev-master",
+        "oss2/var-utils": "dev-master",
+
+        "league/plates": "3.*"
     },
     "support": {
         "issues": "https://github.com/inex/IXP-Manager/issues",
