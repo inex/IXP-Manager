@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<skipper version="3.0.1.1129" name="INEX" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
-  <module name="INEX" import-format="Doctrine2Xml" import-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
+<skipper version="3.0.1.1129" name="IXP-Manager" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+  <module name="IXP-Manager" import-format="Doctrine2Xml" import-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="IrrdbAsn" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
       <field name="customer_id" type="integer" required="true" uuid="07bd2228-73b4-479f-ad50-1438f9905e5f"/>
