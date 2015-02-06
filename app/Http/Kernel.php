@@ -42,6 +42,9 @@ class Kernel extends HttpKernel {
  	 */
  	public function handle( $request )
 	{
+		// remove CSRF middleware as it's not available in ZF1
+		$this->middleware = array_diff($this->middleware, ['App\Http\Middleware\VerifyCsrfToken'] );
+
 		try
 		{
 			return $this->sendRequestThroughRouter($request);
