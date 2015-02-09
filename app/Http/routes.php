@@ -10,3 +10,16 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+
+$auth = Zend_Auth::getInstance();
+
+if( $auth->hasIdentity() && \Auth::guest() ) {
+    // log the user is for Laravel5
+    \Auth::login( $auth->getIdentity()['user'] );
+} else if( !$auth->hasIdentity() ) {
+    \Auth::logout();
+}
+
+Route::get('/test', function() {
+    return view( 'test' );
+});

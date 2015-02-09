@@ -7,28 +7,28 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Entities\User
  */
-class User
+class User implements \Illuminate\Contracts\Auth\Authenticatable
 {
     use \OSS_Doctrine2_WithPreferences;
-    
+
     const AUTH_PUBLIC    = 0;
     const AUTH_CUSTUSER  = 1;
     const AUTH_CUSTADMIN = 2;
     const AUTH_SUPERUSER = 3;
-    
+
     public static $PRIVILEGES = array(
         User::AUTH_CUSTUSER  => 'CUSTUSER',
         User::AUTH_CUSTADMIN => 'CUSTADMIN',
         User::AUTH_SUPERUSER => 'SUPERUSER'
     );
-    
+
     public static $PRIVILEGES_TEXT = array(
         User::AUTH_CUSTUSER  => 'Customer User',
         User::AUTH_CUSTADMIN => 'Customer Superuser',
         User::AUTH_SUPERUSER => 'Superuser'
     );
-    
-    
+
+
     /**
      * @var string $username
      */
@@ -117,7 +117,7 @@ class User
         $this->Preferences = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ChangeLogs = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Set username
      *
@@ -127,7 +127,7 @@ class User
     public function setUsername($username)
     {
         $this->username = $username;
-    
+
         return $this;
     }
 
@@ -150,7 +150,7 @@ class User
     public function setPassword($password)
     {
         $this->password = $password;
-    
+
         return $this;
     }
 
@@ -173,7 +173,7 @@ class User
     public function setEmail($email)
     {
         $this->email = $email;
-    
+
         return $this;
     }
 
@@ -196,7 +196,7 @@ class User
     public function setAuthorisedMobile($authorisedMobile)
     {
         $this->authorisedMobile = $authorisedMobile;
-    
+
         return $this;
     }
 
@@ -219,7 +219,7 @@ class User
     public function setUid($uid)
     {
         $this->uid = $uid;
-    
+
         return $this;
     }
 
@@ -242,7 +242,7 @@ class User
     public function setPrivs($privs)
     {
         $this->privs = $privs;
-    
+
         return $this;
     }
 
@@ -265,7 +265,7 @@ class User
     public function setDisabled($disabled)
     {
         $this->disabled = $disabled;
-    
+
         return $this;
     }
 
@@ -288,7 +288,7 @@ class User
     public function setLastupdated($lastupdated)
     {
         $this->lastupdated = $lastupdated;
-    
+
         return $this;
     }
 
@@ -311,7 +311,7 @@ class User
     public function setLastupdatedby($lastupdatedby)
     {
         $this->lastupdatedby = $lastupdatedby;
-    
+
         return $this;
     }
 
@@ -334,7 +334,7 @@ class User
     public function setCreator($creator)
     {
         $this->creator = $creator;
-    
+
         return $this;
     }
 
@@ -357,7 +357,7 @@ class User
     public function setCreated($created)
     {
         $this->created = $created;
-    
+
         return $this;
     }
 
@@ -390,7 +390,7 @@ class User
     public function addPreference(\Entities\UserPreference $preferences)
     {
         $this->Preferences[] = $preferences;
-    
+
         return $this;
     }
 
@@ -423,7 +423,7 @@ class User
     public function addChangeLog(\Entities\ChangeLog $changeLogs)
     {
         $this->ChangeLogs[] = $changeLogs;
-    
+
         return $this;
     }
 
@@ -456,7 +456,7 @@ class User
     public function setCustomer(\Entities\Customer $customer = null)
     {
         $this->Customer = $customer;
-    
+
         return $this;
     }
 
@@ -479,7 +479,7 @@ class User
     public function setChildren(\Entities\User $children = null)
     {
         $this->Children = $children;
-    
+
         return $this;
     }
 
@@ -518,7 +518,7 @@ class User
     public function addChildren(\Entities\User $children)
     {
         $this->Children[] = $children;
-    
+
         return $this;
     }
 
@@ -547,7 +547,7 @@ class User
     public function addMeeting(\Entities\Meeting $meetings)
     {
         $this->Meetings[] = $meetings;
-    
+
         return $this;
     }
 
@@ -585,7 +585,7 @@ class User
     public function setContact(\Entities\Contact $contact = null)
     {
         $this->Contact = $contact;
-    
+
         return $this;
     }
 
@@ -598,7 +598,7 @@ class User
     {
         return $this->Contact;
     }
-    
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -614,7 +614,7 @@ class User
     public function addLastLogin(\Entities\UserLoginHistory $lastLogins)
     {
         $this->LastLogins[] = $lastLogins;
-    
+
         return $this;
     }
 
@@ -631,7 +631,7 @@ class User
     /**
      * Get LastLogins
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getLastLogins()
     {
@@ -652,7 +652,7 @@ class User
     public function addApiKey(\Entities\ApiKey $apiKeys)
     {
         $this->ApiKeys[] = $apiKeys;
-    
+
         return $this;
     }
 
@@ -669,10 +669,76 @@ class User
     /**
      * Get ApiKeys
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getApiKeys()
     {
         return $this->ApiKeys;
     }
+
+
+    /***************************************************************************
+     | LARAVEL 5 USER PROVIDER INTERFACE METHODS
+     ***************************************************************************/
+
+    /**
+     * Get the unique identifier for the user.
+     *
+     * Required as we implement `\Illuminate\Auth\UserInterface`
+     *
+     * @return mixed
+     */
+    public function getAuthIdentifier()
+    {
+        return $this->getId();
+    }
+
+    /**
+     * Get the password for the user.
+     *
+     * Required as we implement `\Illuminate\Auth\UserInterface`
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->getPassword();
+    }
+
+
+    /**
+     * Get the token value for the "remember me" session.
+     *
+     * @return string
+     */
+    public function getRememberToken()
+    {
+        return $this->remember_token;
+    }
+
+    /**
+     * Set the token value for the "remember me" session.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setRememberToken($value)
+    {
+        $this->remember_token = $value;
+    }
+
+    /**
+     * Get the column name for the "remember me" token.
+     *
+     * @return string
+     */
+    public function getRememberTokenName()
+    {
+        return 'remember_token';
+    }
+
+    /***************************************************************************
+     | END LARAVEL 5 USER PROVIDER INTERFACE METHODS
+     ***************************************************************************/
+
 }

@@ -157,5 +157,4 @@ class AuthController extends IXP_Controller_Action
 
         return $params;
     }
-
 }

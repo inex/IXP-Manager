@@ -1,3 +1,4 @@
+.env
 .project
 .buildpath
 composer.lock
