@@ -1,4 +1,4 @@
-<?php namespace App\Commands;
+<?php namespace IXP\Commands;
 
 abstract class Command {
 

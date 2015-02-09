@@ -1,4 +1,4 @@
-<?php namespace App\Http;
+<?php namespace IXP\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -15,7 +15,7 @@ class Kernel extends HttpKernel {
 		'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
 		'Illuminate\Session\Middleware\StartSession',
 		'Illuminate\View\Middleware\ShareErrorsFromSession',
-		'App\Http\Middleware\VerifyCsrfToken',
+		'IXP\Http\Middleware\VerifyCsrfToken',
 	];
 
 	/**
@@ -24,9 +24,9 @@ class Kernel extends HttpKernel {
 	 * @var array
 	 */
 	protected $routeMiddleware = [
-		'auth' => 'App\Http\Middleware\Authenticate',
+		'auth' => 'IXP\Http\Middleware\Authenticate',
 		'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
-		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
+		'guest' => 'IXP\Http\Middleware\RedirectIfAuthenticated',
 	];
 
 
@@ -43,7 +43,7 @@ class Kernel extends HttpKernel {
  	public function handle( $request )
 	{
 		// remove CSRF middleware as it's not available in ZF1
-		$this->middleware = array_diff($this->middleware, ['App\Http\Middleware\VerifyCsrfToken'] );
+		$this->middleware = array_diff($this->middleware, ['IXP\Http\Middleware\VerifyCsrfToken'] );
 
 		try
 		{

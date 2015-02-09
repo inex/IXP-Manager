@@ -139,11 +139,18 @@ return [
 		/*
 		 * Application Service Providers...
 		 */
-		'App\Providers\AppServiceProvider',
-		'App\Providers\BusServiceProvider',
-		'App\Providers\ConfigServiceProvider',
-		'App\Providers\EventServiceProvider',
-		'App\Providers\RouteServiceProvider',
+		'IXP\Providers\AppServiceProvider',
+		'IXP\Providers\BusServiceProvider',
+		'IXP\Providers\ConfigServiceProvider',
+		'IXP\Providers\EventServiceProvider',
+		'IXP\Providers\RouteServiceProvider',
+
+
+		/*
+		 * Third party providers
+		 */
+		'Doctrine2Bridge\Doctrine2CacheBridgeServiceProvider',
+		'Doctrine2Bridge\Doctrine2BridgeServiceProvider',
 
 	],
 
