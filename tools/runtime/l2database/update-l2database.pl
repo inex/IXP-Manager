@@ -119,10 +119,12 @@ foreach my $switch (keys %{$ports}) {
 			$do_nothing or $insertsth->execute($ports->{$switch}->{$port}->{id}, $mac) or die "$dbh->errstr\n";
 #			$ports->{$switch}->{$port}->{mac} = $l2mapping->{$switch}->{$port};
 		}
-                my $virtualinterfacename = $ports->{$switch}->{$port}->{'virtualinterfacename'};
-                foreach my $mac (@{$l2mapping->{$switch}->{$virtualinterfacename}}) {
-                        $debug && print STDERR "INSERT: $mac -> $switch:$virtualinterfacename\n";
-                        $do_nothing or $insertsth->execute($ports->{$switch}->{$port}->{id}, $mac) or die "$dbh->errstr\n";
+                if ($ports->{$switch}->{$port}->{'virtualinterfacename'} ne "") {
+                        my $virtualinterfacename = $ports->{$switch}->{$port}->{'virtualinterfacename'};
+                        foreach my $mac (@{$l2mapping->{$switch}->{$virtualinterfacename}}) {
+                                $debug && print STDERR "INSERT: $mac -> $switch:$virtualinterfacename\n";
+                                $do_nothing or $insertsth->execute($ports->{$switch}->{$port}->{id}, $mac) or die "$dbh->errstr\n";
+                        }
                 }
 	}
 }
