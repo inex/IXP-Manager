@@ -480,18 +480,21 @@ class StatisticsCliController extends IXP_Controller_CliAction
 
                 foreach( $switch->getPorts() as $port )
                 {
-                    $snmpId = $port->ifnameToSNMPIdentifier();
-                    $data[ $infra->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
-                    $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8;
-
-                    foreach( IXP_Mrtg::$TRAFFIC_TYPES as $type => $vars )
+                    if( $port->getIfName() )
                     {
-                        $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
-
-                        if( $port->getType() == \Entities\SwitchPort::TYPE_PEERING )
-                            $data[ $infra->getId() ]['mrtgIds'][$type][] = $id;
-
-                        $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'][$type][] = $id;
+                        $snmpId = $port->ifnameToSNMPIdentifier();
+                        $data[ $infra->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
+                        $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8;
+    
+                        foreach( IXP_Mrtg::$TRAFFIC_TYPES as $type => $vars )
+                        {
+                            $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
+    
+                            if( $port->getType() == \Entities\SwitchPort::TYPE_PEERING )
+                                $data[ $infra->getId() ]['mrtgIds'][$type][] = $id;
+    
+                            $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'][$type][] = $id;
+                        }
                     }
                 }
             }
