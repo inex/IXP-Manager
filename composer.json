@@ -47,6 +47,10 @@
         {
             "url": "git@github.com:oss2/var-utils.git",
             "type": "vcs"
+        },
+        {
+            "url": "git@github.com:oss2/auth.git",
+            "type": "vcs"
         }
     ],
     "require": {
@@ -63,6 +67,7 @@
         "laravel/framework": "5.0.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
+	"oss2/auth": "dev-master",
 
         "league/plates": "3.*",
         "franzl/laravel-plates": "dev-master"
