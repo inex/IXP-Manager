@@ -72,6 +72,7 @@ CREATE VIEW view_switch_details_by_custid AS
 	SELECT
 		vi.id AS id,
 		vi.custid,
+		vi.name AS virtualinterfacename,
 		pi.virtualinterfaceid,
 		pi.status,
 		pi.speed,
