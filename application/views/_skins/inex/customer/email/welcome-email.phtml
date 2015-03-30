@@ -52,16 +52,6 @@ IPv4 Hostname: {$vi->getIpv4hostname()}
 IPv4:          Please contact us at {$options.identity.email} to enable IPv4
 {/if}
 
-{if $vi->getVlan()->getNumber() eq 10 and not isset( $ipv4md510 )}
-    {assign var='ipv4md510' value=$vi->getIpv4bgpmd5secret()}
-    {assign var='ipv6md510' value=$vi->getIpv6bgpmd5secret()}
-{/if}
-
-{if $vi->getVlan()->getNumber() eq 12 and not isset( $ipv4md512 )}
-    {assign var='ipv4md512' value=$vi->getIpv4bgpmd5secret()}
-    {assign var='ipv6md512' value=$vi->getIpv6bgpmd5secret()}
-{/if}
-
 {/foreach}
 
 {/foreach}
@@ -214,23 +204,28 @@ INEX's details are:
 remote-as:      AS2128
 AS Macro:       AS-INEXIE
 
-{if isset( $ipv4md510 )}
+{foreach $customer->getVirtualInterfaces() as $connection}
+    {foreach $connection->getVlanInterfaces() as $vli}
+        {if $vli->getVlan()->getNumber() eq 10}
+
 Peering VLAN #1
     IPv6 address:       2001:7F8:18::F:0:1
-    IPv6 session MD5:   {$ipv6md510}
+    IPv6 session MD5:   {$vli->getIpv6bgpmd5secret()}
 
     IPv4 address:       193.242.111.126
-    IPv4 session MD5:   {$ipv4md510}
-{/if}
+    IPv4 session MD5:   {$vli->getIpv4bgpmd5secret()}
+{elseif $vli->getVlan()->getNumber() eq 12}
 
-{if isset( $ipv4md512 )}
 Peering VLAN #2
     IPv6 address:       2001:7F8:18:12::9999
-    IPv6 session MD5:   {$ipv6md512}
+    IPv6 session MD5:   {$vli->getIpv6bgpmd5secret()}
 
     IPv4 address  :     194.88.240.126
-    IPv4 session MD5:   {$ipv4md512}
-{/if}
+    IPv4 session MD5:   {$vli->getIpv4bgpmd5secret()}
+        {/if}
+
+    {/foreach}
+{/foreach}
 
 No prefixes are announced by the route collector and it will not forward traffic.
 
