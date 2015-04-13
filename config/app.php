@@ -146,6 +146,8 @@ return [
         'IXP\Providers\RouteServiceProvider',
 
 
+        'IXP\Providers\HelpdeskServiceProvider',
+
         /*
          * Third party providers
          */

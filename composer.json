@@ -56,6 +56,7 @@
     "require": {
         "php": ">=5.5.0",
         "doctrine/orm": "2.4.*",
+        "doctrine/dbal": ">=2.4",
         "opensolutions/oss-framework": "dev-master",
         "zendframework/zendframework1": "~1.12",
         "smarty/smarty": "3.1.18",
@@ -67,10 +68,12 @@
         "laravel/framework": "5.0.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
-	"oss2/auth": "dev-master",
+	    "oss2/auth": "dev-master",
 
         "league/plates": "3.*",
-        "franzl/laravel-plates": "dev-master"
+        "franzl/laravel-plates": "dev-master",
+
+        "zendesk/zendesk_api_client_php": "dev-master"
 
     },
     "require-dev": {
