@@ -66,4 +66,61 @@ class Zendesk implements HelpdeskContract {
     }
 
 
+    /**
+     * Create  organisations
+     */
+    public function organisationsCreate( array $custs ) {
+
+        $params = [];
+
+        // Zendesk has a limit of 100 objects per request
+        $count = 0;
+        foreach( $custs as $cust ) {
+            $data['external_id']  = $cust->getId();
+            $data['name']         = $cust->getName() . ' [AS' . $cust->getAutsys() . ']';
+            if( preg_match( '/^(http[s]*\:\/\/)?www\.([a-zA-Z0-9\.\-]+).*$/', $cust->getCorpwww(), $matches ) )
+                $data['domain_names'] = $matches[2];
+
+            $data['organization_fields'] = [
+                'asn'           => $cust->getAutsys(),
+                'as_set'        => $cust->getPeeringmacro(),
+                'peering_email' => $cust->getPeeringemail(),
+                'noc_email'     => $cust->getNocemail(),
+                'shortname'     => $cust->getShortname(),
+                'type'          => $cust->getType(),
+                'type'          => $cust->getType(),
+                'addresses'     => '',
+                'status'        => $cust->hasLeft() ? 'CLOSED' : $cust->getStatus()
+            ];
+
+            foreach( $cust->getVirtualInterfaces() as $vi ) {
+                foreach( $vi->getVlanInterfaces() as $vli ) {
+                    if( $vli->getIpv4enabled() && $vli->getIPv4Address() )
+                        $data['organization_fields']['addresses'] .= $vli->getIPv4Address()->getAddress() . "\n";
+                    if( $vli->getIpv6enabled() && $vli->getIPv6Address() )
+                        $data['organization_fields']['addresses'] .= $vli->getIPv6Address()->getAddress() . "\n";
+                }
+            }
+
+            $params[] = $data;
+
+            if( ++$count % 100 == 0 ) {
+                try {
+                    $this->client->organizations()->createMany( $params );
+                    $params = [];
+                } catch( \Zendesk\API\ResponseException $re ) {
+                    var_dump( $this->client->getDebug() );
+                }
+            }
+        }
+
+        try {
+            return $this->client->organizations()->createMany( $params );
+        } catch( \Zendesk\API\ResponseException $re ) {
+            var_dump( $this->client->getDebug() );
+        }
+    }
+
+
+
 }

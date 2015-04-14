@@ -38,4 +38,16 @@ interface Helpdesk {
      */
     public function ticketsFindAll();
 
+
+
+
+    /**
+     * Create a single organisation
+     *
+     * @param \IXP\Entities\Customer[] custs
+     */
+    public function organisationsCreate( array $custs );
+
+
+
 }
