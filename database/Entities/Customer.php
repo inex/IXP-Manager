@@ -4,6 +4,8 @@ namespace Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use IXP\Exceptions\GeneralException;
+
 /**
  * Entities\Customer
  */
@@ -330,6 +332,32 @@ class Customer
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Get type of customer as text via self::$CUST_TYPES_TEXT
+     *
+     * @return string
+     */
+    public function getTypeText()
+    {
+        return self::$CUST_TYPES_TEXT[ $this->getType() ];
+    }
+
+    /**
+     * Set type of customer via its text representation via self::$CUST_TYPES_TEXT
+     *
+     * @param string $t The type as its text representation
+     * @return Customer
+     * @throws \IXP\Exceptions\GeneralException
+     */
+    public function setTypeText( $t )
+    {
+        foreach( self::$CUST_TYPES_TEXT as $id => $text )
+            if( strtoupper( $t ) == strtoupper( $text ) )
+                return $this->setType( $id );
+
+        throw new GeneralException( 'Unknown customer type' );
     }
 
     /**
@@ -684,6 +712,32 @@ class Customer
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Get state of customer as text via self::$CUST_STATES_TEXT
+     *
+     * @return string
+     */
+    public function getStatusText()
+    {
+        return self::$CUST_STATES_TEXT[ $this->getState() ];
+    }
+
+    /**
+     * Set state of customer via its text representation via self::$CUST_STATES_TEXT
+     *
+     * @param string $t The state as its text representation
+     * @return Customer
+     * @throws \IXP\Exceptions\GeneralException
+     */
+    public function setStatusText( $t )
+    {
+        foreach( self::$CUST_STATES_TEXT as $id => $text )
+            if( strtoupper( $t ) == strtoupper( $text ) )
+                return $this->setState( $id );
+
+        throw new GeneralException( 'Unknown customer state' );
     }
 
     /**

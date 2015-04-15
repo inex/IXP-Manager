@@ -25,6 +25,7 @@
   * Helpdesk Contract - any concrete implementation of a Helpdesk provider must
   * implement this interface
   *
+  * @see        http://laravel.com/docs/5.0/contracts
   * @author     Barry O'Donovan <barry@opensolutions.ie>
   * @category   Helpdesk
   * @package    IXP\Contracts
@@ -42,11 +43,24 @@ interface Helpdesk {
 
 
     /**
-     * Create a single organisation
+     * Create organisation(s)
      *
-     * @param \IXP\Entities\Customer[] custs
+     * Create organisations on the helpdesk. Tickets are usually aligned to
+     * users and they in turn to organisations.
+     *
+     * @param \IXP\Entities\Customer[] custs An array of IXP Manager customers to create as organisations
+     * @return int The number of organisations successfully created
+     * @throws \IXP\Services\Helpdesk\ApiException
      */
     public function organisationsCreate( array $custs );
+
+    /**
+     * Find an organisation by our own customer ID
+     *
+     * @param int $id Our own customer ID to find the organisation from
+     * @return \IXP\Entities\Customer|bool A shallow disassociated customer object or false
+     */
+    public function organisationFind( $id );
 
 
 

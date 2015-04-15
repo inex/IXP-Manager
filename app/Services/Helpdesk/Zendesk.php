@@ -24,7 +24,11 @@
 
 
 use IXP\Contracts\Helpdesk as HelpdeskContract;
+
+
+
 use Zendesk\API\Client as ZendeskAPI;
+
 
 
 
@@ -87,10 +91,9 @@ class Zendesk implements HelpdeskContract {
                 'peering_email' => $cust->getPeeringemail(),
                 'noc_email'     => $cust->getNocemail(),
                 'shortname'     => $cust->getShortname(),
-                'type'          => $cust->getType(),
-                'type'          => $cust->getType(),
+                'type'          => $cust->getTypeText(),
                 'addresses'     => '',
-                'status'        => $cust->hasLeft() ? 'CLOSED' : $cust->getStatus()
+                'status'        => $cust->hasLeft() ? 'CLOSED' : $cust->getStatusText()
             ];
 
             foreach( $cust->getVirtualInterfaces() as $vi ) {
@@ -116,6 +119,42 @@ class Zendesk implements HelpdeskContract {
 
         try {
             return $this->client->organizations()->createMany( $params );
+        } catch( \Zendesk\API\ResponseException $re ) {
+            var_dump( $this->client->getDebug() );
+        }
+    }
+
+
+    /**
+     * Find an organisation by our own customer ID
+     *
+     * @param int $id
+     */
+    public function organisationFind( $id )
+    {
+        try {
+            usleep( 60/200 );
+            $response = $this->client->organizations()->search( [ 'external_id' => $id ] );
+
+            if( !isset( $response->organizations[0] ) )
+                return false;
+
+            $org = $response->organizations[0];
+
+            $cust = new \Entities\Customer;
+
+            $cust->setId(           $id                 );
+            $cust->setName(         $org->name          );
+            $cust->setAutsys(       $org->asn           );
+            $cust->setPeeringmacro( $org->as_set        );
+            $cust->setPeeringemail( $org->peering_email );
+            $cust->getNocemail(     $org->noc_email     );
+            $cust->getShortname(    $org->shortname     );
+            $cust->setTypeText(     $org->type          );
+            $cust->setStatusText(   $org->status        );
+
+            return $cust;
+
         } catch( \Zendesk\API\ResponseException $re ) {
             var_dump( $this->client->getDebug() );
         }
