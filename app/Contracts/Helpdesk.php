@@ -34,6 +34,15 @@
   */
 interface Helpdesk {
 
+
+    /**
+     * Return the helpdesk debug information
+     *
+     * Your implentation should catch API errors, set the $debug member with additional details and throw an ApiException
+     */
+    public function getDebug();
+
+    
     /**
      * Find all tickets on the helpdesk
      */
@@ -94,6 +103,7 @@ interface Helpdesk {
      *
      * @param int $id Our own customer ID to find the organisation from
      * @return \IXP\Entities\Customer|bool A shallow disassociated customer object or false
+     * @throws \IXP\Services\Helpdesk\ApiException
      */
     public function organisationFind( $id );
 

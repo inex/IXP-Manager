@@ -43,6 +43,12 @@ class Zendesk implements HelpdeskContract {
      */
     private $client;
 
+    /**
+     * Debug object
+     *
+     * No specific rules around this yet. Usually means something bad happened...
+     */
+    private $debug;
 
     public function __construct( $config ) {
         if( !isset( $config['subdomain'] ) || !isset( $config['token'] ) || !isset( $config['email'] ) )
@@ -53,13 +59,24 @@ class Zendesk implements HelpdeskContract {
     }
 
     /**
+     * Return the Zendesk debug information
+     */
+    public function getDebug() {
+        return $this->debug;
+    }
+
+
+    /**
      * Find all tickets on the helpdesk
+     *
+     * @throws \IXP\Services\Helpdesk\ApiException
      */
     public function ticketsFindAll() {
         try {
             return $this->client->tickets()->findAll();
-        } catch( \Zendesk\API\ResponseException $re ) {
-            var_dump( $this->client->getDebug() );
+        } catch( \Exception $e ) {
+            $this->debug = $this->client->getDebug();
+            throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
         }
     }
 
@@ -196,9 +213,9 @@ class Zendesk implements HelpdeskContract {
                     usleep( 60/200 );
                     $response = $this->client->organizations()->createMany( $params );
                     $params = [];
-                } catch( \Zendesk\API\ResponseException $re ) {
-                    var_dump( $this->client->getDebug() );
-                    return false;
+                } catch( \Exception $e ) {
+                    $this->debug = $this->client->getDebug();
+                    throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
                 }
             }
         }
@@ -227,8 +244,9 @@ class Zendesk implements HelpdeskContract {
             usleep( 60/200 );
             $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
             return true;
-        } catch( \Zendesk\API\ResponseException $re ) {
-            var_dump( $this->client->getDebug() );
+        } catch( \Exception $e ) {
+            $this->debug = $this->client->getDebug();
+            throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
         }
     }
 
@@ -246,6 +264,7 @@ class Zendesk implements HelpdeskContract {
      *
      * @param int $id Our own customer ID to find the organisation from
      * @return \IXP\Entities\Customer|bool A shallow disassociated customer object or false
+     * @throws \IXP\Services\Helpdesk\ApiException
      */
     public function organisationFind( $id )
     {
@@ -258,8 +277,9 @@ class Zendesk implements HelpdeskContract {
 
             return $this->zendeskObjectToCustomerEntity( $response->organizations[0] );
 
-        } catch( \Zendesk\API\ResponseException $re ) {
-            var_dump( $this->client->getDebug() );
+        } catch( \Exception $e ) {
+            $this->debug = $this->client->getDebug();
+            throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
         }
     }
 
