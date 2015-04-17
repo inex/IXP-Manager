@@ -38,42 +38,53 @@ use Config;
  */
 class HelpdeskServiceProvider extends ServiceProvider {
 
-	protected $defer = true;
+    protected $defer = true;
 
-	/**
-	 * Bootstrap the application services.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		//
-	}
 
-	/**
-	 * Register the application services.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-		$this->app->singleton( 'IXP\Contracts\Helpdesk', function($app)
+    protected $commands = [
+        'IXP\Console\Commands\Helpdesk\UpdateOrganisations'
+    ];
+
+    /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton( 'IXP\Contracts\Helpdesk', function($app)
         {
-			$backend = $app['config']['helpdesk']['backend'];
+            $backend = $app['config']['helpdesk']['backend'];
 
-			switch( $backend ) {
-				case 'zendesk':
-					return new \IXP\Services\Helpdesk\Zendesk( $app['config']['helpdesk']['backends'][ $backend ] );
-					break;
+            switch( $backend ) {
+                case 'none':
+                    return false;
+                    break;
 
-				default:
-					throw new ConfigurationException( 'Invalid, no or unimplemented helpdesk backend requested' );
-			}
+                case 'zendesk':
+                    return new \IXP\Services\Helpdesk\Zendesk( $app['config']['helpdesk']['backends'][ $backend ] );
+                    break;
+
+                default:
+                    throw new ConfigurationException( 'Invalid, no or unimplemented helpdesk backend requested' );
+            }
         });
-	}
+
+        $this->commands( $this->commands );
+    }
 
 
-	/**
+    /**
      * Get the services provided by the provider.
      *
      * @return array

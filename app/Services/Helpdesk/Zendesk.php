@@ -21,15 +21,9 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-
 use IXP\Contracts\Helpdesk as HelpdeskContract;
 
-
-
 use Zendesk\API\Client as ZendeskAPI;
-
-
 
 
 /**
@@ -69,56 +63,170 @@ class Zendesk implements HelpdeskContract {
         }
     }
 
+    /**
+     * Convert a IXP Customer entitiy into an associated array as rerquired by Zendesk's API
+     *
+     * @param \Entity\Customer $cust     The IXP Manager customer entity
+     * @param bool             $id       If updating, set to Zendesk organisation ID
+     * @return array Data in associate array format as required by Zendesk PHP API
+     */
+    private function customerEntityToZendeskObject( $cust, $id = false )
+    {
+        $data = [];
+
+        $data['external_id']  = $cust->getId();
+        $data['name']         = $cust->getName();
+
+        if( $id ) {
+            // updating so set the Zendesk ID:
+            $data['id'] = $id;
+        } else {
+            // creating - set the initial domains:
+            if( preg_match( '/^(http[s]*\:\/\/)?www\.([a-zA-Z0-9\.\-]+).*$/', $cust->getCorpwww(), $matches ) )
+                $data['domain_names'] = $matches[2];
+        }
+
+        $data['organization_fields'] = [
+            'asn'           => $cust->getAutsys(),
+            'as_set'        => $cust->getPeeringmacro(),
+            'peering_email' => $cust->getPeeringemail(),
+            'noc_email'     => $cust->getNocemail(),
+            'shortname'     => $cust->getShortname(),
+            'type'          => $cust->getTypeText(),
+            'addresses'     => '',
+            'status'        => $cust->getStatusText(),
+            'has_left'      => $cust->hasLeft()
+        ];
+
+        foreach( $cust->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getVlanInterfaces() as $vli ) {
+                if( $vli->getIpv4enabled() && $vli->getIPv4Address() )
+                    $data['organization_fields']['addresses'] .= $vli->getIPv4Address()->getAddress() . "\n";
+                if( $vli->getIpv6enabled() && $vli->getIPv6Address() )
+                    $data['organization_fields']['addresses'] .= $vli->getIPv6Address()->getAddress() . "\n";
+            }
+        }
+
+        $data['organization_fields']['addresses'] = trim( $data['organization_fields']['addresses'] );
+
+        return $data;
+    }
 
     /**
-     * Create  organisations
+     * Convert a Zendesk organisation object to a IXP Customer entity
+     *
+     * @param object $org The Zendesk organisation object
+     * @return \Entity\Customer $cust  The IXP Manager customer entity
      */
-    public function organisationsCreate( array $custs ) {
+    private function zendeskObjectToCustomerEntity( $org )
+    {
+        $cust = new \Entities\Customer;
 
+        $cust->setName(         $org->name          );
+        $cust->setAutsys(       isset( $org->organization_fields->asn           ) ? $org->organization_fields->asn           : null );
+        $cust->setPeeringmacro( isset( $org->organization_fields->as_set        ) ? $org->organization_fields->as_set        : null );
+        $cust->setPeeringemail( isset( $org->organization_fields->peering_email ) ? $org->organization_fields->peering_email : null );
+        $cust->setNocemail(     isset( $org->organization_fields->noc_email     ) ? $org->organization_fields->noc_email     : null );
+        $cust->setShortname(    isset( $org->organization_fields->shortname     ) ? $org->organization_fields->shortname     : null );
+
+        // these throw an exception if we send an unknow value but the source of the data is external here so we ignore:
+        try { $cust->setTypeText(   isset( $org->organization_fields->type   ) ? $org->organization_fields->type   : null ); } catch( \IXP\Exceptions\GeneralException $e ) {}
+        try { $cust->setStatusText( isset( $org->organization_fields->status ) ? $org->organization_fields->status : null ); } catch( \IXP\Exceptions\GeneralException $e ) {}
+
+        // fake has left:
+        if( isset( $org->organization_fields->has_left ) && $org->organization_fields->has_left )
+            $cust->setDateLeave( new \DateTime );
+
+        // store Zendesk's own ID for this organisation
+        $cust->helpdesk_id = $org->id;
+
+        return $cust;
+    }
+
+    /**
+     * Examine customer and Zendesk object and see if Zendesk needs to be updated
+     *
+     * @param \Entities\Customer $cdb The IXP customer entity as known here in the database
+     * @param \Entities\Customer $chd The IXP customer entity as known in the helpdesk
+     * @return bool True if these objects are not in sync
+     */
+    public function organisationNeedsUpdating( \Entities\Customer $cdb, \Entities\Customer $chd )
+    {
+        try {
+            return $cdb->getName()         != $chd->getName()
+                || $cdb->getAutsys()       != $chd->getAutsys()
+                || $cdb->getPeeringmacro() != $chd->getPeeringmacro()
+                || $cdb->getPeeringemail() != $chd->getPeeringemail()
+                || $cdb->getNocemail()     != $chd->getNocemail()
+                || $cdb->getShortname()    != $chd->getShortname()
+                || $cdb->getTypeText()     != $chd->getTypeText()
+                || $cdb->getStatusText()   != $chd->getStatusText()
+                || $cdb->hasLeft()         != $chd->hasLeft();
+
+                // FIXME IP addresses
+        } catch( \IXP\Exceptions\GeneralException $e ) {
+            // some issue with type / status - means the customer needs updating
+            return true;
+        }
+    }
+
+    /**
+     * Create organisation(s)
+     *
+     * Create organisations on the helpdesk. Tickets are usually aligned to
+     * users and they in turn to organisations.
+     *
+     * @param \IXP\Entities\Customer[] custs An array of IXP Manager customers to create as organisations
+     * @return bool
+     * @throws \IXP\Services\Helpdesk\ApiException
+     */
+    public function organisationsCreate( array $custs )
+    {
         $params = [];
 
         // Zendesk has a limit of 100 objects per request
         $count = 0;
+        $total = count( $custs );
+
         foreach( $custs as $cust ) {
-            $data['external_id']  = $cust->getId();
-            $data['name']         = $cust->getName() . ' [AS' . $cust->getAutsys() . ']';
-            if( preg_match( '/^(http[s]*\:\/\/)?www\.([a-zA-Z0-9\.\-]+).*$/', $cust->getCorpwww(), $matches ) )
-                $data['domain_names'] = $matches[2];
+            $params[] = $this->customerEntityToZendeskObject( $cust );
 
-            $data['organization_fields'] = [
-                'asn'           => $cust->getAutsys(),
-                'as_set'        => $cust->getPeeringmacro(),
-                'peering_email' => $cust->getPeeringemail(),
-                'noc_email'     => $cust->getNocemail(),
-                'shortname'     => $cust->getShortname(),
-                'type'          => $cust->getTypeText(),
-                'addresses'     => '',
-                'status'        => $cust->hasLeft() ? 'CLOSED' : $cust->getStatusText()
-            ];
-
-            foreach( $cust->getVirtualInterfaces() as $vi ) {
-                foreach( $vi->getVlanInterfaces() as $vli ) {
-                    if( $vli->getIpv4enabled() && $vli->getIPv4Address() )
-                        $data['organization_fields']['addresses'] .= $vli->getIPv4Address()->getAddress() . "\n";
-                    if( $vli->getIpv6enabled() && $vli->getIPv6Address() )
-                        $data['organization_fields']['addresses'] .= $vli->getIPv6Address()->getAddress() . "\n";
-                }
-            }
-
-            $params[] = $data;
-
-            if( ++$count % 100 == 0 ) {
+            if( ++$count == $total || $count % 100 == 0 ) {
                 try {
-                    $this->client->organizations()->createMany( $params );
+                    usleep( 60/200 );
+                    $response = $this->client->organizations()->createMany( $params );
                     $params = [];
                 } catch( \Zendesk\API\ResponseException $re ) {
                     var_dump( $this->client->getDebug() );
+                    return false;
                 }
             }
         }
 
+        return true;
+    }
+
+
+
+
+    /**
+     * Update an organisation **where the helpdesk ID is known!**
+     *
+     * Updates an organisation already found via `organisationFind()` as some implementations
+     * (such as Zendesk's PHP client as of Apr 2015) require knowledge of the helpdesk's ID for
+     * an organisatoin.
+     *
+     * @param int                $helpdeskId The ID of the helpdesk's organisation object
+     * @param \Entities\Customer $cust       An IXP Manager customer as returned by `organisationFind()`
+     * @return bool
+     * @throws \IXP\Services\Helpdesk\ApiException
+     */
+    public function organisationUpdate( $helpdeskId, \Entities\Customer $cust )
+    {
         try {
-            return $this->client->organizations()->createMany( $params );
+            usleep( 60/200 );
+            $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
+            return true;
         } catch( \Zendesk\API\ResponseException $re ) {
             var_dump( $this->client->getDebug() );
         }
@@ -128,7 +236,16 @@ class Zendesk implements HelpdeskContract {
     /**
      * Find an organisation by our own customer ID
      *
-     * @param int $id
+     * **NB:** the returned entity shouldn't have an ID parameter set - you should already know it!
+     *
+     * The reason for this is that the returned customer object is incomplete and is only intended
+     * to be used to compare local with Zendesk and/or identify if a customer exists.
+     *
+     * The returned customer object MUST have a member `helpdesk_id` containing the helpdesk provider's
+     * ID for this organisation.
+     *
+     * @param int $id Our own customer ID to find the organisation from
+     * @return \IXP\Entities\Customer|bool A shallow disassociated customer object or false
      */
     public function organisationFind( $id )
     {
@@ -139,27 +256,12 @@ class Zendesk implements HelpdeskContract {
             if( !isset( $response->organizations[0] ) )
                 return false;
 
-            $org = $response->organizations[0];
-
-            $cust = new \Entities\Customer;
-
-            $cust->setId(           $id                 );
-            $cust->setName(         $org->name          );
-            $cust->setAutsys(       $org->asn           );
-            $cust->setPeeringmacro( $org->as_set        );
-            $cust->setPeeringemail( $org->peering_email );
-            $cust->getNocemail(     $org->noc_email     );
-            $cust->getShortname(    $org->shortname     );
-            $cust->setTypeText(     $org->type          );
-            $cust->setStatusText(   $org->status        );
-
-            return $cust;
+            return $this->zendeskObjectToCustomerEntity( $response->organizations[0] );
 
         } catch( \Zendesk\API\ResponseException $re ) {
             var_dump( $this->client->getDebug() );
         }
     }
-
 
 
 }

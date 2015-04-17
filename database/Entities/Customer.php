@@ -338,10 +338,14 @@ class Customer
      * Get type of customer as text via self::$CUST_TYPES_TEXT
      *
      * @return string
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function getTypeText()
     {
-        return self::$CUST_TYPES_TEXT[ $this->getType() ];
+        if( isset( self::$CUST_TYPES_TEXT[ $this->getType() ] ) )
+            return self::$CUST_TYPES_TEXT[ $this->getType() ];
+
+        throw new GeneralException( 'Unknown customer type' );
     }
 
     /**
@@ -718,10 +722,14 @@ class Customer
      * Get state of customer as text via self::$CUST_STATES_TEXT
      *
      * @return string
+     * @throws \IXP\Exceptions\GeneralException 
      */
     public function getStatusText()
     {
-        return self::$CUST_STATES_TEXT[ $this->getState() ];
+        if( isset( self::$CUST_STATUS_TEXT[ $this->getStatus() ] ) )
+            return self::$CUST_STATUS_TEXT[ $this->getStatus() ];
+
+        throw new GeneralException( 'Unknown customer state' );
     }
 
     /**
@@ -733,9 +741,9 @@ class Customer
      */
     public function setStatusText( $t )
     {
-        foreach( self::$CUST_STATES_TEXT as $id => $text )
+        foreach( self::$CUST_STATUS_TEXT as $id => $text )
             if( strtoupper( $t ) == strtoupper( $text ) )
-                return $this->setState( $id );
+                return $this->setStatus( $id );
 
         throw new GeneralException( 'Unknown customer state' );
     }
