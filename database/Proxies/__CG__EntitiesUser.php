@@ -697,6 +697,61 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getAuthIdentifier()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAuthIdentifier', array());
+
+        return parent::getAuthIdentifier();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAuthPassword()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAuthPassword', array());
+
+        return parent::getAuthPassword();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRememberToken()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRememberToken', array());
+
+        return parent::getRememberToken();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setRememberToken($value)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRememberToken', array($value));
+
+        return parent::setRememberToken($value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRememberTokenName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRememberTokenName', array());
+
+        return parent::getRememberTokenName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function loadPreference($attribute, $index = 0, $includeExpired = false)
     {
 

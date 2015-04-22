@@ -42,13 +42,22 @@ interface Helpdesk {
      */
     public function getDebug();
 
-    
+
     /**
      * Find all tickets on the helpdesk
      */
     public function ticketsFindAll();
 
 
+    // ********************************************************************************************
+    // ********************************************************************************************
+    // ********************************************************************************************
+    //
+    // COMPANIES / ORGANISATIONS
+    //
+    // ********************************************************************************************
+    // ********************************************************************************************
+    // ********************************************************************************************
 
     /**
      * Examine customer and Zendesk object and see if Zendesk needs to be updated
@@ -64,16 +73,16 @@ interface Helpdesk {
 
 
     /**
-     * Create organisation(s)
+     * Create organisation
      *
-     * Create organisations on the helpdesk. Tickets are usually aligned to
+     * Create an organisation on the helpdesk. Tickets are usually aligned to
      * users and they in turn to organisations.
      *
-     * @param \IXP\Entities\Customer[] custs An array of IXP Manager customers to create as organisations
-     * @return int The number of organisations successfully created
+     * @param \IXP\Entities\Customer cust An IXP Manager customer to create as organisation
+     * @return \Entities\Customer|false A decoupled customer entity (including `helpdesk_id`)
      * @throws \IXP\Services\Helpdesk\ApiException
      */
-    public function organisationsCreate( array $custs );
+    public function organisationCreate( $cust );
 
     /**
      * Update an organisation **where the helpdesk ID is known!**
@@ -84,7 +93,7 @@ interface Helpdesk {
      *
      * @param int                $helpdeskId The ID of the helpdesk's organisation object
      * @param \Entities\Customer $cust       An IXP Manager customer as returned by `organisationFind()`
-     * @return bool
+     * @return \Entities\Customer|bool A decoupled customer entity (including `helpdesk_id`)
      * @throws \IXP\Services\Helpdesk\ApiException
      */
     public function organisationUpdate( $helpdeskId, \Entities\Customer $cust );
@@ -107,6 +116,69 @@ interface Helpdesk {
      */
     public function organisationFind( $id );
 
+
+    // ********************************************************************************************
+    // ********************************************************************************************
+    // ********************************************************************************************
+    //
+    // CONTACTS / USERS
+    //
+    // ********************************************************************************************
+    // ********************************************************************************************
+    // ********************************************************************************************
+
+
+    /**
+     * Examine contact and Zendesk object and see if Zendesk needs to be updated
+     *
+     * @param \Entities\Contact $cdb The IXP contact entity as known here in the database
+     * @param \Entities\Comtact $chd The IXP contact entity as known in the helpdesk
+     * @return bool True if these objects are not in sync
+     */
+    public function contactNeedsUpdating( \Entities\Contact $cdb, \Entities\Contact $chd );
+
+    /**
+     * Create user
+     *
+     * Create user on the helpdesk.
+     *
+     * @param \IXP\Entities\Contact contact An IXP Manager contact to create
+     * @return \Entities\Contact|bool Decoupled contact object with `helpdesk_id`
+     * @throws \IXP\Services\Helpdesk\ApiException
+     */
+    public function userCreate( $contact, $org_id );
+
+
+    /**
+     * Update an user **where the helpdesk ID is known!**
+     *
+     * Updates an user already found via `userFind()` as some implementations
+     * (such as Zendesk's PHP client as of Apr 2015) require knowledge of the helpdesk's ID for
+     * an user.
+     *
+     * @param int                $helpdeskId The ID of the helpdesk's user object
+     * @param \Entities\Contact  $contact    An IXP Manager contact as returned by `userFind()`
+     * @return \Entities\Contact Decoupled contact object with `helpdesk_id`
+     * @throws \IXP\Services\Helpdesk\ApiException
+     */
+    public function userUpdate( $helpdeskId, \Entities\Contact $contact );
+
+    /**
+     * Find an user by our own contact ID
+     *
+     * **NB:** the returned entity shouldn't have an ID parameter set - you should already know it!
+     *
+     * The reason for this is that the returned contact object is incomplete and is only intended
+     * to be used to compare local with Zendesk and/or identify if a contact exists.
+     *
+     * The returned contact object MUST have a member `helpdesk_id` containing the helpdesk provider's
+     * ID for this organisation.
+     *
+     * @param int $id Our own contact ID to find the contact from
+     * @return \IXP\Entities\Contact|bool A shallow disassociated contact object or false
+     * @throws \IXP\Services\Helpdesk\ApiException
+     */
+    public function userFind( $id );
 
 
 }
