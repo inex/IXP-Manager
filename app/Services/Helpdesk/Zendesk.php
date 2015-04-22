@@ -59,6 +59,23 @@ class Zendesk implements HelpdeskContract {
     }
 
     /**
+     * Centralised function to perform the Zendesk API call, throw exceptions, etc
+     *
+     * @param function $fn Anonymous function containing API call
+     * @throws \IXP\Services\Helpdesk\ApiException
+     */
+    protected function callApi( $fn )
+    {
+        try {
+            usleep( 60/200 );
+            return call_user_func( $fn );
+        } catch( \Exception $e ) {
+            $this->debug = $this->client->getDebug();
+            throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
+        }
+    }
+
+    /**
      * Return the Zendesk debug information
      */
     public function getDebug() {
@@ -72,12 +89,7 @@ class Zendesk implements HelpdeskContract {
      * @throws \IXP\Services\Helpdesk\ApiException
      */
     public function ticketsFindAll() {
-        try {
-            return $this->client->tickets()->findAll();
-        } catch( \Exception $e ) {
-            $this->debug = $this->client->getDebug();
-            throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
-        }
+        $this->callApi( function() { $this->client->tickets()->findAll(); } );
     }
 
     /**
@@ -209,14 +221,11 @@ class Zendesk implements HelpdeskContract {
             $params[] = $this->customerEntityToZendeskObject( $cust );
 
             if( ++$count == $total || $count % 100 == 0 ) {
-                try {
-                    usleep( 60/200 );
-                    $response = $this->client->organizations()->createMany( $params );
-                    $params = [];
-                } catch( \Exception $e ) {
-                    $this->debug = $this->client->getDebug();
-                    throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
-                }
+                $this->callApi( function() use ( $params ) {
+                    $this->client->organizations()->createMany( $params );
+                });
+
+                $params = [];
             }
         }
 
@@ -240,14 +249,11 @@ class Zendesk implements HelpdeskContract {
      */
     public function organisationUpdate( $helpdeskId, \Entities\Customer $cust )
     {
-        try {
-            usleep( 60/200 );
-            $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
+            $this->callApi( function() use ( $cust, $helpdeskId ) {
+                $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
+            });
+
             return true;
-        } catch( \Exception $e ) {
-            $this->debug = $this->client->getDebug();
-            throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
-        }
     }
 
 
@@ -268,19 +274,14 @@ class Zendesk implements HelpdeskContract {
      */
     public function organisationFind( $id )
     {
-        try {
-            usleep( 60/200 );
-            $response = $this->client->organizations()->search( [ 'external_id' => $id ] );
+            $response = $this->callApi( function() use ( $id ) {
+                return $this->client->organizations()->search( [ 'external_id' => $id ] );
+            });
 
             if( !isset( $response->organizations[0] ) )
                 return false;
 
             return $this->zendeskObjectToCustomerEntity( $response->organizations[0] );
-
-        } catch( \Exception $e ) {
-            $this->debug = $this->client->getDebug();
-            throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
-        }
     }
 
 
