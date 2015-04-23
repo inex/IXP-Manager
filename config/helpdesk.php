@@ -22,9 +22,9 @@ return [
     'backends' => [
 
         'zendesk' => [
-            'subdomain' => 'inex',
-            'token'     => 'fN5yQ3NY2xJfke5bOhgXzuQBNbEkKyE7dwZpWH5Z',
-            'email'     => 'barry.odonovan@inex.ie	'
+            'subdomain' => env('HELPDESK_ZENDESK_SUBDOMAIN', 'xxx'),
+            'token'     => env('HELPDESK_ZENDESK_TOKEN',     'xxx'),
+            'email'     => env('HELPDESK_ZENDESK_EMAIL',     'xxx')
         ],
 
     ],
