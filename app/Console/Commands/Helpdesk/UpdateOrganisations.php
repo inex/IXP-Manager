@@ -115,7 +115,7 @@ class UpdateOrganisations extends HelpdeskCommand {
         else
         {
             // create it:
-            if( $org = $this->getHelpdesk()->organisationsCreate( $cust ) ) {
+            if( $org = $this->getHelpdesk()->organisationCreate( $cust ) ) {
                 $this->info( "{$this->name}} :: created {$cust->getName()}" );
                 $this->createNetworkUsers( $cust, $org );
                 return $org;

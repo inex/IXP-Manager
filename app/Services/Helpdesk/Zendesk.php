@@ -225,11 +225,11 @@ class Zendesk implements HelpdeskContract {
     public function organisationCreate( $cust )
     {
         $response = $this->callApi( function() use ( $cust ) {
-            return $this->client->organizations()->create( $param );
+            return $this->client->organizations()->create( $this->customerEntityToZendeskObject( $cust ) );
         });
 
-        if( isset( $response['organization'] ) )
-            return $this->zendeskObjectToCustomerEntity( $response['organization'] );
+        if( isset( $response->organization ) )
+            return $this->zendeskObjectToCustomerEntity( $response->organization );
 
         return false;
     }
@@ -252,11 +252,11 @@ class Zendesk implements HelpdeskContract {
     public function organisationUpdate( $helpdeskId, \Entities\Customer $cust )
     {
             $response = $this->callApi( function() use ( $cust, $helpdeskId ) {
-                $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
+                return $this->client->organizations()->update( $this->customerEntityToZendeskObject( $cust, $helpdeskId ) );
             });
 
-            if( isset( $response['organization'] ) )
-                return $this->zendeskObjectToCustomerEntity( $response['organization'] );
+            if( isset( $response->organization ) )
+                return $this->zendeskObjectToCustomerEntity( $response->organization );
 
             return false;
     }
@@ -401,7 +401,7 @@ class Zendesk implements HelpdeskContract {
         });
 
         if( isset( $response->user ) )
-            return $thios->zendeskObjectToContactEntity( $response->user );
+            return $this->zendeskObjectToContactEntity( $response->user );
 
         return false;
     }
