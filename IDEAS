@@ -76,8 +76,18 @@ Potential Todo / Feature Ideas
 
 * Maintenance Announcements / Diary  -was issue #30. 
   * Page for upcoming scheduled maintenance
-  * Select affected switches and generate a list of affected members (Name, ASN, IPv4, IPv6 addresses)
-  * Add notification when members login, especially affected members, link to maintenance pages.
+  * Select affected switches and generate a list of affected members (Name, 
+    ASN, IPv4, IPv6 addresses)
+  * Add notification when members login, especially affected members, link 
+    to maintenance pages.
 
 * Have a "private" directory analogous to the "public" one,with files only
   loadable by logged in users. See issue #71.
+
+* Per location member statistics graphs to show all member traffic is a 
+  specific location - see issue #204
+
+* An annual (or more frequent?) email to members reminding them of their 
+  subscriptions. Also email to custadmins reminding them of their users.
+  Probably staggered over the year to prevent a flux of inbound emails.
+

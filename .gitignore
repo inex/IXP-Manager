@@ -26,6 +26,7 @@ tools/perl-lib/IXPManager/MYMETA.yml
 tools/perl-lib/IXPManager/Makefile
 tools/perl-lib/IXPManager/blib/
 tools/perl-lib/IXPManager/pm_to_blib
+tools/perl-lib/IXPManager/ixpmanager.conf
 *.sublime-project
 *.sublime-workspace
 application/views/router-cli/tacacs/tacplus/key.cfg
