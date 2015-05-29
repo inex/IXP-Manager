@@ -120,7 +120,7 @@ foreach my $protocol (qw(4 6)) {
 			next;
 		}
 
-		my @pfxlist = split(/,\s*/, $prefixes);
+		my @pfxlist = split(/\s*,\s*/, $prefixes);
 		foreach my $prefix (@pfxlist) {
 			my $ip = new NetAddr::IP::Lite $prefix;
 			next unless $ip;
