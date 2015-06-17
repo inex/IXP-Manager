@@ -186,6 +186,18 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::getPeeringmacro();
     }
 
+    public function setPeeringmacrov6($peeringmacrov6)
+    {
+        $this->__load();
+        return parent::setPeeringmacrov6($peeringmacrov6);
+    }
+
+    public function getPeeringmacrov6()
+    {
+        $this->__load();
+        return parent::getPeeringmacrov6();
+    }
+
     public function setPeeringpolicy($peeringpolicy)
     {
         $this->__load();
