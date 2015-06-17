@@ -36,7 +36,7 @@ class IXP_Form_ContactGroup extends IXP_Form
     public function init()
     {
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 20 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 20, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
             ->setAttrib( 'class', 'span3' )
@@ -45,7 +45,7 @@ class IXP_Form_ContactGroup extends IXP_Form
         $this->addElement( $name );
         
         $description = $this->createElement( 'text', 'description' );
-        $description->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $description->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Description' )
             ->setAttrib( 'class', 'span3' )

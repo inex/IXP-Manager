@@ -56,7 +56,7 @@ class IXP_Form_Provision_InterfaceEmail extends Zend_Form
                 'size' => 100
             )
         );
-        $to->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $to->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'To' )
             ->addFilter( 'StringTrim' )
@@ -70,7 +70,7 @@ class IXP_Form_Provision_InterfaceEmail extends Zend_Form
             )
         );
 
-        $cc->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $cc->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'CC' )
             ->addFilter( 'StringTrim' )
@@ -84,7 +84,7 @@ class IXP_Form_Provision_InterfaceEmail extends Zend_Form
             )
         );
 
-        $bcc->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $bcc->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'BCC' )
             ->addFilter( 'StringTrim' )
@@ -98,7 +98,7 @@ class IXP_Form_Provision_InterfaceEmail extends Zend_Form
             )
         );
 
-        $subject->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $subject->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Subject' )
             ->addFilter( 'StringTrim' )
@@ -115,7 +115,7 @@ class IXP_Form_Provision_InterfaceEmail extends Zend_Form
             )
         );
 
-        $message->addValidator( 'stringLength', false, array( 1, 40960 ) )
+        $message->addValidator( 'stringLength', false, array( 1, 40960, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Message' )
             ->addFilter( 'StringTrim' )

@@ -36,7 +36,7 @@ class IXP_Form_Location extends IXP_Form
     public function init()
     {
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'Name' )
@@ -46,7 +46,7 @@ class IXP_Form_Location extends IXP_Form
 
 
     $shortname = $this->createElement( 'text', 'shortname' );
-    $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
+    $shortname->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
         ->setAttrib( 'class', 'span3' )
         ->setRequired( true )
         ->setLabel( 'Short Name' )
@@ -55,7 +55,7 @@ class IXP_Form_Location extends IXP_Form
     $this->addElement( $shortname );
 
     $tag = $this->createElement( 'text', 'tag' );
-    $tag->addValidator( 'stringLength', false, array( 1, 255 ) )
+    $tag->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
         ->setAttrib( 'class', 'span3' )
         ->setRequired( true )
         ->setLabel( 'Tag' )
@@ -64,7 +64,7 @@ class IXP_Form_Location extends IXP_Form
     $this->addElement( $tag );
 
         $address = $this->createElement( 'textarea', 'address' );
-        $address->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $address->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setLabel( 'Address' )
             ->addFilter( new OSS_Filter_StripSlashes() )
             ->setAttrib( 'cols', 60 )
@@ -73,7 +73,7 @@ class IXP_Form_Location extends IXP_Form
         $this->addElement( $address );
 
         $nocphone = $this->createElement( 'text', 'nocphone' );
-        $nocphone->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $nocphone->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( false )
             ->setLabel( 'Phone' )
@@ -82,7 +82,7 @@ class IXP_Form_Location extends IXP_Form
         $this->addElement( $nocphone );
 
         $nocfax = $this->createElement( 'text', 'nocfax' );
-        $nocfax->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $nocfax->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( false )
             ->setLabel( 'Fax' )
@@ -93,7 +93,7 @@ class IXP_Form_Location extends IXP_Form
         $nocemail = $this->createElement( 'text', 'nocemail' );
         $nocemail->addValidator('emailAddress' )
             ->setAttrib( 'class', 'span3' )
-            ->addValidator( 'stringLength', false, array( 0, 255 ) )
+            ->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'E-Mail' );
         $this->addElement( $nocemail );
@@ -106,7 +106,7 @@ class IXP_Form_Location extends IXP_Form
         $this->getDisplayGroup( 'nocDisplayGroup' )->setLegend( 'NOC Details' );
 
         $officephone = $this->createElement( 'text', 'officephone' );
-        $officephone->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $officephone->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( false )
             ->setLabel( 'Phone' )
@@ -115,7 +115,7 @@ class IXP_Form_Location extends IXP_Form
         $this->addElement( $officephone );
 
         $officefax = $this->createElement( 'text', 'officefax' );
-        $officefax->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $officefax->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( false )
             ->setLabel( 'Fax' )
@@ -126,7 +126,7 @@ class IXP_Form_Location extends IXP_Form
         $officeemail = $this->createElement( 'text', 'officeemail' );
         $officeemail->addValidator('emailAddress' )
             ->setAttrib( 'class', 'span3' )
-            ->addValidator( 'stringLength', false, array( 0, 255 ) )
+            ->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'E-Mail' );
         $this->addElement( $officeemail );
