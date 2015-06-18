@@ -55,7 +55,7 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 
         $jsonoutput['member_list'] = $this->getListMemberInfo();
 
-        print json_encode($jsonoutput, JSON_PRETTY_PRINT)."\n";
+        print json_encode($jsonoutput, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n";
     }
 
     private function preflight() {
