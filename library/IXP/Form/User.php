@@ -41,7 +41,7 @@ class IXP_Form_User extends IXP_Form
 
         // let's capture the user's name and add them to the contact table also
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 2, 64 ) )
+        $name->addValidator( 'stringLength', false, array( 2, 64, 'UTF-8' ) )
             ->setRequired( true )
             ->setAttrib( 'size', 50 )
             ->setAttrib( 'class', 'span3' )
@@ -56,7 +56,7 @@ class IXP_Form_User extends IXP_Form
 
         $username = OSS_Form_Auth::createUsernameElement();
 
-        $username->addValidator( 'stringLength', false, array( 2, 30 ) )
+        $username->addValidator( 'stringLength', false, array( 2, 30, 'UTF-8' ) )
             ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\-_\.]+$/' ) );
 
         $this->addElement( $username );
@@ -65,7 +65,7 @@ class IXP_Form_User extends IXP_Form
 
 
         $password = $this->createElement( 'text', 'password' );
-        $password->addValidator( 'stringLength', false, array( 8, 30 ) )
+        $password->addValidator( 'stringLength', false, array( 8, 30, 'UTF-8' ) )
             ->setRequired( true )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'Password' )
@@ -113,7 +113,7 @@ class IXP_Form_User extends IXP_Form
     {
         $mobile = new Zend_Form_Element_Text( $name );
 
-        $mobile->addValidator( 'stringLength', false, array( 0, 30 ) )
+        $mobile->addValidator( 'stringLength', false, array( 0, 30, 'UTF-8' ) )
                ->setRequired( false )
                ->setLabel( 'Mobile' )
                ->setAttrib( 'placeholder', '+353 86 123 4567' )
