@@ -37,7 +37,7 @@ class IXP_Form_VLAN extends IXP_Form
     {
 
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
             ->setAttrib( 'class', 'span3' )
@@ -62,7 +62,7 @@ class IXP_Form_VLAN extends IXP_Form
         $this->addElement( $infrastructure );
 
         $rcvrfname = $this->createElement( 'text', 'rcvrfname' );
-        $rcvrfname->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $rcvrfname->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setLabel( 'RC VRF Name' )
             ->addFilter( 'StringTrim' )
             ->setAttrib( 'class', 'span3' )

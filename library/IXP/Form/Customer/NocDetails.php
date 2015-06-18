@@ -37,7 +37,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
     public function init()
     {
         $nocphone = $this->createElement( 'text', 'nocphone' );
-        $nocphone->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $nocphone->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Phone' )
             ->setAttrib( 'placeholder', '+353 1 123 4567' )
@@ -48,7 +48,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
         $this->addElement( $nocphone );
 
         $noc24hphone = $this->createElement( 'text', 'noc24hphone' );
-        $noc24hphone->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $noc24hphone->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', '+353 86 876 5432' )
             ->setAttrib( 'class', 'span4' )
@@ -59,7 +59,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
         $this->addElement( $noc24hphone );
 
         $nocfax = $this->createElement( 'text', 'nocfax' );
-        $nocfax->addValidator( 'stringLength', false, array( 0, 40 ) )
+        $nocfax->addValidator( 'stringLength', false, array( 0, 40, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Fax' )
             ->setAttrib( 'placeholder', '+353 1 765 4321' )
@@ -71,7 +71,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
 
         $nocemail = $this->createElement( 'text', 'nocemail' );
         $nocemail->addValidator('emailAddress' )
-            ->addValidator( 'stringLength', false, array( 0, 40 ) )
+            ->addValidator( 'stringLength', false, array( 0, 40, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
             ->setAttrib( 'placeholder', 'noc@example.com' )
@@ -91,7 +91,7 @@ class IXP_Form_Customer_NocDetails extends IXP_Form
 
 
         $nocwww = $this->createElement( 'text', 'nocwww' );
-        $nocwww->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $nocwww->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Website' )
             ->setAttrib( 'placeholder', 'http://www.noc.example.com/' )

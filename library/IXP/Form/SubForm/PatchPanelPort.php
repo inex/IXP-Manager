@@ -63,7 +63,7 @@ class IXP_Form_SubForm_PatchPanelPort extends IXP_Form_SubForm
         $this->addElement( $side );
 
         $colo_ref = $this->createElement( 'text', 'colo_ref' );
-        $colo_ref->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $colo_ref->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib('size', 40 )
             ->setAttrib('maxlength', 255)
             ->setRequired( true )

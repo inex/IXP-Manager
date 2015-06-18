@@ -37,7 +37,7 @@ class IXP_Form_IXP extends IXP_Form
     {
 
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
             ->addFilter( 'StringTrim' )
@@ -45,7 +45,7 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( $name  );
 
         $shortname = $this->createElement( 'text', 'shortname' );
-        $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $shortname->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->addValidator( 'alnum' )
             ->setRequired( true )
             ->setLabel( 'Shortname' )
@@ -53,7 +53,7 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( $shortname  );
 
         $address1 = $this->createElement( 'text', 'address1' );
-        $address1->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $address1->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Address' )
             ->addFilter( 'StringTrim' )
@@ -61,7 +61,7 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( $address1 );
 
         $address2 = $this->createElement( 'text', 'address2' );
-        $address2->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $address2->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( '' )
             ->addFilter( 'StringTrim' )
@@ -69,7 +69,7 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( $address2 );
 
         $address3 = $this->createElement( 'text', 'address3' );
-        $address3->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $address3->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( '' )
             ->addFilter( 'StringTrim' )
@@ -77,7 +77,7 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( $address3 );
 
         $address4 = $this->createElement( 'text', 'address4' );
-        $address4->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $address4->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( '' )
             ->addFilter( 'StringTrim' )
@@ -95,7 +95,7 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( $country );
 
         $mrtgPath = $this->createElement( 'text', 'mrtg_path' );
-        $mrtgPath->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $mrtgPath->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'MRTG Path' )
             ->addFilter( 'StringTrim' )
@@ -103,7 +103,7 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( $mrtgPath  );
         
         $p2pPath = $this->createElement( 'text', 'mrtg_p2p_path' );
-        $p2pPath->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $p2pPath->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'MRTG P2P Path' )
             ->addFilter( 'StringTrim' )
@@ -113,7 +113,7 @@ class IXP_Form_IXP extends IXP_Form
         $this->addElement( self::createAggregateGraphNameElement() );
         
         $smokeping = $this->createElement( 'text', 'smokeping' );
-        $smokeping->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $smokeping->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Smokeping URL' )
             ->addFilter( 'StringTrim' )

@@ -35,7 +35,7 @@ class IXP_Form_ConsoleServerConnection extends IXP_Form
     public function init()
     {
         $description = $this->createElement( 'text', 'description' );
-        $description->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $description->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'Description' )
@@ -48,7 +48,7 @@ class IXP_Form_ConsoleServerConnection extends IXP_Form
         $this->addElement( IXP_Form_Switch::getPopulatedSelect( 'switchid', \Entities\Switcher::TYPE_CONSOLESERVER ) );
         
         $port = $this->createElement( 'text', 'port' );
-        $port->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $port->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Port' )
             ->setAttrib( 'class', 'span3' )
