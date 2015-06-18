@@ -59,8 +59,9 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
         $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
         $this->view->registerClass( 'VLAN',       '\\Entities\\Vlan' );
 
-        $this->view->resellerMode = $this->resellerMode();
-        $this->view->multiIXP     = $this->multiIXP();
+        $this->view->resellerMode  = $this->resellerMode();
+        $this->view->multiIXP      = $this->multiIXP();
+        $this->view->as112UiActive = $this->as112UiActive();
     }
 
 

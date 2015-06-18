@@ -104,10 +104,10 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                         'ipv6canping'      => 'Monitoring Enabled via IPv6 ICMP',
                         'ipv4monitorrcbgp' => 'Monitor Route Collector IPv4 BGP Session',
                         'ipv6monitorrcbgp' => 'Monitor Route Collector IPv6 BGP Session',
-                        'as112client'      => 'AS112 Client',
                         'busyhost'         => 'Busy Host?',
                         'notes'            => 'Notes'
-                    ]
+                    ],
+                    ( $this->as112UiActive() ? ['as112client' => 'AS112 Client'] : [] )
                 );
                 
                 break;
