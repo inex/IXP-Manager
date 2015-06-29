@@ -168,6 +168,16 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $peeringmacro );
 
 
+        $peeringmacrov6 = $this->createElement( 'text', 'peeringmacrov6' );
+        $peeringmacrov6->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
+            ->setRequired( false )
+            ->setLabel( 'IPv6-Specific Peering Macro' )
+            ->addFilter( 'StringTrim' )
+            ->setAttrib( 'class', 'span8' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $peeringmacrov6 );
+
+
         $this->addElement( IXP_Form_IrrdbConfig::getPopulatedSelect() );
 
 
@@ -179,7 +189,7 @@ class IXP_Form_Customer extends IXP_Form
 
 
         $this->addDisplayGroup(
-            [ 'autsys', 'maxprefixes', 'peeringemail', 'peeringmacro', 'peeringpolicy', 'irrdb', 'activepeeringmatrix' ],
+            [ 'autsys', 'maxprefixes', 'peeringemail', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'irrdb', 'activepeeringmatrix' ],
     		'peeringDisplayGroup'
         );
         $this->getDisplayGroup( 'peeringDisplayGroup' )->setLegend( 'Peering Details' );
