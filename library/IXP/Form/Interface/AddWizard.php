@@ -162,6 +162,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
 
         $ipv4hostname = $this->createElement( 'text', 'ipv4hostname' );
         $ipv4hostname->addValidator( 'stringLength', false, array( 1, 64, 'UTF-8' ) )
+            ->addValidator( 'hostname', false, [ 'allow' => Zend_Validate_Hostname::ALLOW_DNS ] )
             ->setLabel( 'IPv4 Hostname' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -210,6 +211,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
 
         $ipv6hostname = $this->createElement( 'text', 'ipv6hostname' );
         $ipv6hostname->addValidator( 'stringLength', false, array( 1, 64, 'UTF-8' ) )
+            ->addValidator( 'hostname', false, [ 'allow' => Zend_Validate_Hostname::ALLOW_DNS ] )
             ->setLabel( 'IPv6 Hostname' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -236,7 +238,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
 
         $this->addDisplayGroup(
             [ 'ipv6addressid', 'ipv6hostname', 'ipv6bgpmd5secret', 'ipv6canping', 'ipv6monitorrcbgp' ],
-        	'ipv6DisplayGroup'
+            'ipv6DisplayGroup'
         );
 
         $this->getDisplayGroup( 'ipv6DisplayGroup' )->setLegend( 'IPv6 Details' );
@@ -279,7 +281,7 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
 
         $this->addDisplayGroup(
             [ 'irrdbfilter', 'mcastenabled', 'maxbgpprefix', 'rsclient', 'as112client', 'busyhost' ],
-        	'vlanInterfaceDisplayGroup'
+            'vlanInterfaceDisplayGroup'
         );
 
         $this->getDisplayGroup( 'vlanInterfaceDisplayGroup' )->setLegend( 'Other VLAN Interface Settings' );
