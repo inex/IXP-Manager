@@ -46,7 +46,7 @@ trait IXP_Controller_Trait_Common
     {
         return ( isset( $this->_options['reseller']['enabled'] ) && $this->_options['reseller']['enabled'] );
     }
-    
+
     /**
      * Checks if multi IXP mode is enabled.
      *
@@ -60,11 +60,14 @@ trait IXP_Controller_Trait_Common
     {
         return ( isset( $this->_options['multiixp']['enabled'] ) && $this->_options['multiixp']['enabled'] );
     }
-    
+
     /**
      * Checks if as112 is activated in the UI.
      *
-     * To enable as112 in the UI set as112_ui_active to true in application.ini
+     * To disable as112 in the UI set as112_ui_active to false in application.ini
+     *
+     * NB: set to false is required to maintain backwards compatibility without user
+     * intervention. Defaulting to false will be implemented in v4.
      *
      * @see https://github.com/inex/IXP-Manager/wiki/AS112
      *
@@ -72,9 +75,9 @@ trait IXP_Controller_Trait_Common
      */
     protected function as112UiActive()
     {
-        return ( isset( $this->_options['as112_ui_active'] ) && $this->_options['as112_ui_active'] );
+        return ( !isset( $this->_options['as112_ui_active'] ) || $this->_options['as112_ui_active'] );
     }
-    
+
 
     /**
      * Loads a customer object via an optional posted / getted `shortname` parameter.
@@ -97,7 +100,7 @@ trait IXP_Controller_Trait_Common
         if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
         {
             $shortname = $this->getParam( 'shortname', false );
-            
+
             if( !$shortname )
             {
                 $this->addMessage( 'Customer shortname expected but not found.', OSS_Message::ERROR );
@@ -107,7 +110,7 @@ trait IXP_Controller_Trait_Common
         else
         {
             $shortname = $this->getCustomer()->getShortname();
-            
+
             if( $this->getParam( 'shortname', $shortname ) != $this->getCustomer()->getShortname() )
             {
                 $this->addMessage( 'Illegal attempt to access another customer. This event has been logged.',
@@ -118,18 +121,18 @@ trait IXP_Controller_Trait_Common
                 $this->redirect( '' );
             }
         }
-        
+
         $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
-    
+
         if( !$c )
         {
             $this->addMessage( 'Invalid customer', OSS_Message::ERROR );
             $this->redirect();
         }
-    
+
         return $c;
     }
-    
+
     /**
      * Load a customer from the database by shortname but redirect to `error/error` if no such customer.
      *
@@ -143,19 +146,19 @@ trait IXP_Controller_Trait_Common
     {
         if( $shortname === false )
             $shortname = $this->getParam( 'shortname', false );
-    
+
         if( $shortname )
             $c = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->findOneBy( [ 'shortname' => $shortname ] );
-    
+
         if( !$shortname || !$c )
         {
             $this->addMessage( 'Invalid customer', OSS_Message::ERROR );
             $this->redirect( $redirect === null ? 'error/error' : $redirect );
         }
-    
+
         return $c;
     }
-    
+
     /**
      * Load a customer from the database by ID but redirect to `error/error` if no such customer.
      *
@@ -167,16 +170,16 @@ trait IXP_Controller_Trait_Common
     {
         if( $id )
             $c = $this->getD2R( '\\Entities\\Customer' )->find( $id );
-    
+
         if( !$id || !$c )
         {
             $this->addMessage( "Could not load the requested customer object", OSS_Message::ERROR );
             $this->redirect( $redirect === null ? 'error/error' : $redirect );
         }
-    
+
         return $c;
     }
-    
+
     /**
      * Load an IXP from the database by ID but redirect to `error/error` if no such IXP.
      *
@@ -187,18 +190,17 @@ trait IXP_Controller_Trait_Common
     protected function loadIxpById( $id, $redirect = null )
     {
         $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
-    
+
         if( !$id || !$i )
         {
             if( $redirect === false )
                 return false;
-            
+
             $this->addMessage( "Could not load the IXP object", OSS_Message::ERROR );
             $this->redirect( $redirect === null ? '' : $redirect );
         }
-        
+
         return $i;
     }
-    
-}
 
+}
