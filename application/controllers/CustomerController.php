@@ -518,6 +518,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $form->enableResller( $this->resellerMode() );
         $form->setMultiIXP( $this->multiIXP(), $isEdit );
+        $form->setAs112client( $this->as112UiActive(), $isEdit );
 
         if( $this->resellerMode() )
         {
