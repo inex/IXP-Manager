@@ -70,23 +70,14 @@
                         </em>
                     {/if}
                 </td>
-                <td><strong>AS-SET</strong></td>
+                <td><strong>IPv4 AS-SET</strong></td>
                 <td>{$cust->getPeeringmacro()}</td>
             </tr>
             <tr>
                 <td><strong>IRRDB</strong></td>
                 <td>{if $cust->getIRRDB()}{$cust->getIRRDB()->getSource()}{/if}</td>
-                <td><strong>Max Prefixes</strong></td>
-                <td>
-                    {$cust->getMaxprefixes()}
-                    {if $cust->getVirtualInterfaces()|@count}
-                        ({foreach $cust->getVirtualInterfaces() as $vi}
-                            {foreach $vi->getVlanInterfaces() as $vli}
-                                {$vli->getMaxbgpprefix()}{if not ( $vi@last and $vli@last )}, {/if}
-                            {/foreach}
-                        {/foreach})
-                    {/if}
-                </td>
+                <td><strong>IPv6 AS-SET</strong></td>
+                <td>{$cust->getPeeringmacrov6()}</td>
             </tr>
         {/if}
         <tr>
@@ -100,8 +91,17 @@
                     {if $cust->getNoc24hphone()} {$cust->getNoc24hphone()} (24h) {/if}
                 {/if}
             </td>
-            <td></td>
-            <td></td>
+            <td><strong>Max Prefixes</strong></td>
+            <td>
+                {$cust->getMaxprefixes()}
+                {if $cust->getVirtualInterfaces()|@count}
+                    ({foreach $cust->getVirtualInterfaces() as $vi}
+                        {foreach $vi->getVlanInterfaces() as $vli}
+                            {$vli->getMaxbgpprefix()}{if not ( $vi@last and $vli@last )}, {/if}
+                        {/foreach}
+                    {/foreach})
+                {/if}
+            </td>
         </tr>
 
     </tbody>
