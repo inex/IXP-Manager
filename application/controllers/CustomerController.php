@@ -191,7 +191,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             $qb->andWhere( 'c.type = :ctype' )->setParameter( 'ctype', $ctype );
 
         $this->view->customerStates = $customerStates = \Entities\Customer::$CUST_STATUS_TEXT;
-        $this->view->cstate = $cstate = $this->getSessionNamespace()->cust_list_cstate  
+        $this->view->cstate = $cstate = $this->getSessionNamespace()->cust_list_cstate
             = $this->getParam( 'cstate', ( $this->getSessionNamespace()->cust_list_cstate !== null ? $this->getSessionNamespace()->cust_list_cstate : false ) );
         if( $cstate && isset( $customerStates[$cstate] ) )
             $qb->andWhere( 'c.status = :cstate' )->setParameter( 'cstate', $cstate );
@@ -518,7 +518,6 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $form->enableResller( $this->resellerMode() );
         $form->setMultiIXP( $this->multiIXP(), $isEdit );
-        $form->setAs112client( $this->as112UiActive(), $isEdit );
 
         if( $this->resellerMode() )
         {
@@ -762,4 +761,3 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->view->notes = $latestNotes;
     }
 }
-

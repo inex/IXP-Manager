@@ -45,7 +45,7 @@
                 {assign var='isLAG' value=1}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
             {else}
-                {tmplinclude file='customer/overview-tabs/ports/physintstatus.phtml'}
+                {tmplinclude file='customer/overview-tabs/ports/physintstatus.phtml' pi=$physInts[0]}
                 {assign var='isLAG' value=0}
             {/if}
         </small>
