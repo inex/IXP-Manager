@@ -105,6 +105,15 @@ reseller.enabled = true
 ;;
 reseller.no_billing_for_resold_customers = true
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Specifies whether to display and enable control of AS112 functionality for customers
+;;
+;; See https://github.com/inex/IXP-Manager/wiki/AS112
+;;
+
+as112_ui_active = true
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; We use Minify to bundle and compress CSS and JS in

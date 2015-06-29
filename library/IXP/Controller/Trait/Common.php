@@ -61,6 +61,20 @@ trait IXP_Controller_Trait_Common
         return ( isset( $this->_options['multiixp']['enabled'] ) && $this->_options['multiixp']['enabled'] );
     }
     
+    /**
+     * Checks if as112 is activated in the UI.
+     *
+     * To enable as112 in the UI set as112_ui_active to true in application.ini
+     *
+     * @see https://github.com/inex/IXP-Manager/wiki/AS112
+     *
+     * @return bool
+     */
+    protected function as112UiActive()
+    {
+        return ( isset( $this->_options['as112_ui_active'] ) && $this->_options['as112_ui_active'] );
+    }
+    
 
     /**
      * Loads a customer object via an optional posted / getted `shortname` parameter.

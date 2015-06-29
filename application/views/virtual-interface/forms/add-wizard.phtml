@@ -47,7 +47,9 @@
             {$element->irrdbfilter}
             {$element->mcastenabled}
             {$element->rsclient}
-            {$element->as112client}
+            {if $as112UiActive}
+                {$element->as112client}
+            {/if}
                         
         </fieldset>
 
