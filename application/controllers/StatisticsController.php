@@ -336,7 +336,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
 
         $this->setIXP( $cust );
-        $category = $this->setCategory( 'category', false );
+        $category = $this->setCategory( 'category', true );
         $period   = $this->setPeriod();
         $proto    = $this->setProtocol();
 
