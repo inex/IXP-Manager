@@ -44,7 +44,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->setIXP();
         $this->setInfrastructure();
 
-        $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+        $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getConnected( false, false, $this->ixp );
 
         if( !is_string( $this->infra ) && $this->infra )
             $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );

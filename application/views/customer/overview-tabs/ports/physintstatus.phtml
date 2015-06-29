@@ -1,4 +1,4 @@
-{if not $pi->statusIsConnected()}
+{if $pi and not $pi->statusIsConnected()}
     <a href="{genUrl controller='physical-interface' action='edit' id=$pi->getId() vintid=$vi->getId()}">
     {if $pi->statusIsQuarantine()}
         <span class="label label-warning">IN QUARANTINE</span>
