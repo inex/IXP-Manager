@@ -86,7 +86,7 @@ trait IXP_Controller_Trait_Common
      *
      * * if the logged in user is not a SUPERADMIN, then the currently logged in
      *   user's owning customer is returned;
-     * * however, if the suer is not a SUPERADMIN and a different customer's
+     * * however, if the user is not a SUPERADMIN and a different customer's
      *   shortname is passed, an error is thrown;
      * * if the user is a SUPERUSER, the customer with the passed `shortname` is
      *   returned;
@@ -104,7 +104,7 @@ trait IXP_Controller_Trait_Common
             if( !$shortname )
             {
                 $this->addMessage( 'Customer shortname expected but not found.', OSS_Message::ERROR );
-                $this->redirect();
+                $this->redirect('');
             }
         }
         else
@@ -127,7 +127,7 @@ trait IXP_Controller_Trait_Common
         if( !$c )
         {
             $this->addMessage( 'Invalid customer', OSS_Message::ERROR );
-            $this->redirect();
+            $this->redirect('');
         }
 
         return $c;
