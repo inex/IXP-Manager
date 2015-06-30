@@ -37,7 +37,7 @@ class IXP_Form_Switch extends IXP_Form
     {
 
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'Name' )
@@ -46,7 +46,7 @@ class IXP_Form_Switch extends IXP_Form
         $this->addElement( $name );
 
         $hostname = $this->createElement( 'text', 'hostname' );
-        $hostname->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $hostname->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'Hostname' )
@@ -69,7 +69,7 @@ class IXP_Form_Switch extends IXP_Form
         $this->addElement( $infrastructure );
 
         $ipv4addr = $this->createElement( 'text', 'ipv4addr' );
-        $ipv4addr->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $ipv4addr->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'IPv4 Address' )
@@ -78,7 +78,7 @@ class IXP_Form_Switch extends IXP_Form
         $this->addElement( $ipv4addr );
 
         $ipv6addr = $this->createElement( 'text', 'ipv6addr' );
-        $ipv6addr->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $ipv6addr->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'IPv6 Address' )
             ->addFilter( 'StringTrim' )
@@ -86,7 +86,7 @@ class IXP_Form_Switch extends IXP_Form
         $this->addElement( $ipv6addr );
 
         $snmppasswd = $this->createElement( 'text', 'snmppasswd' );
-        $snmppasswd->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $snmppasswd->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'SNMP Community' )
             ->addFilter( 'StringTrim' )
@@ -97,7 +97,7 @@ class IXP_Form_Switch extends IXP_Form
         
 
         $model = $this->createElement( 'text', 'model' );
-        $model->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $model->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setLabel( 'Model' )
             ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )

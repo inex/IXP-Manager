@@ -42,7 +42,7 @@ class IXP_Form_Customer_Notes extends IXP_Form
         $this->addElement( $noteid );
 
         $title = $this->createElement( 'text', 'title' );
-        $title->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $title->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Title' )
             ->addFilter( 'StringTrim' )

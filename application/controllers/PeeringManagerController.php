@@ -265,7 +265,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
 
                 if( $bccOk )
                 {
-                    $mail = new Zend_Mail();
+                    $mail = new Zend_Mail('UTF-8');
                     $mail->setFrom( $this->_options['identity']['mailer']['email'], $this->getCustomer()->getName() . ' Peering Team' )
                          ->setReplyTo( $this->getCustomer()->getPeeringemail(), $this->getCustomer()->getName() . ' Peering Team' )
                          ->setSubject( $f->getValue( 'subject' ) )

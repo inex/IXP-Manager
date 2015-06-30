@@ -121,12 +121,12 @@
                         {$int->getVlan()->getNumber()}
                     </td>
                     <td>
-                        {if $int->getIPv4Address()}
+                        {if $int->getIPv4Enabled() and $int->getIPv4Address()}
                             {$int->getIPv4Address()->getAddress()}
                         {/if}
                     </td>
                     <td>
-                        {if $int->getIPv6Address()}
+                        {if $int->getIPv6Enabled() and $int->getIPv6Address()}
                             {$int->getIPv6Address()->getAddress()}
                         {/if}
                     </td>

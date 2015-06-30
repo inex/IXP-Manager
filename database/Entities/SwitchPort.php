@@ -605,10 +605,16 @@ class SwitchPort
                 $getfn = "get{$entity['fn']}";
                 $setfn = "set{$entity['fn']}";
 
-                if( isset( $entity['xlate'] ) )
-                    $n = $host->useMAU()->$snmp( $entity['xlate'] )[ $this->getIfIndex() ];
-                else
-                    $n = $host->useMAU()->$snmp()[ $this->getIfIndex() ];
+                try {
+                    if( isset( $entity['xlate'] ) )
+                        $n = $host->useMAU()->$snmp( $entity['xlate'] )[ $this->getIfIndex() ];
+                    else
+                        $n = $host->useMAU()->$snmp()[ $this->getIfIndex() ];
+                } catch( \OSS_SNMP\Exception $e ) {
+                    // looks like the switch supports MAU but not all of the MIBs
+                    $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                    $n = null;
+                }
 
                 if( $n == '*** UNKNOWN ***' && $snmp == 'types' )
                     $n = '(empty)';

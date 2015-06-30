@@ -36,7 +36,7 @@ class IXP_Form_Vendor extends IXP_Form
     public function init()
     {
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'Name' )
@@ -46,7 +46,7 @@ class IXP_Form_Vendor extends IXP_Form
         $this->addElement( $name );
 
         $shortname = $this->createElement( 'text', 'shortname' );
-        $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $shortname->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'Short Name' )
@@ -56,7 +56,7 @@ class IXP_Form_Vendor extends IXP_Form
         $this->addElement( $shortname );
 
         $nagios_name = $this->createElement( 'text', 'nagios_name' );
-        $nagios_name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $nagios_name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'Nagios Name' )

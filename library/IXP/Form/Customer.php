@@ -38,7 +38,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'customer/forms/edit.phtml' ] ] ] );
 
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
             ->setAttrib( 'class', 'span10' )
@@ -56,7 +56,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $type );
 
         $shortname = $this->createElement( 'text', 'shortname' );
-        $shortname->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $shortname->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->addValidator( 'alnum' )
             ->addValidator( 'regex', false, array('/^[a-z0-9]+/' ) )
             ->setRequired( true )
@@ -67,7 +67,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $shortname  );
 
         $corpwww = $this->createElement( 'text', 'corpwww' );
-        $corpwww->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $corpwww->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', 'http://www.example.com/' )
             ->setAttrib( 'class', 'span10' )
@@ -77,7 +77,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $corpwww );
 
         $datejoin = $this->createElement( 'text', 'datejoin' );
-        $datejoin->addValidator( 'stringLength', false, array( 10, 10 ) )
+        $datejoin->addValidator( 'stringLength', false, array( 10, 10, 'UTF-8' ) )
             ->addValidator( 'regex', false, array('/^\d\d\d\d-\d\d-\d\d/' ) )
             ->setRequired( false )
             ->setLabel( 'Date Joined' )
@@ -88,7 +88,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $datejoin );
 
         $dateleave = $this->createElement( 'text', 'dateleave' );
-        $dateleave->addValidator( 'stringLength', false, array( 10, 10 ) )
+        $dateleave->addValidator( 'stringLength', false, array( 10, 10, 'UTF-8' ) )
             ->addValidator( 'regex', false, array('/^\d\d\d\d-\d\d-\d\d/' ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', 'YYYY-MM-DD' )
@@ -141,7 +141,7 @@ class IXP_Form_Customer extends IXP_Form
 
         $peeringemail = $this->createElement( 'text', 'peeringemail' );
         $peeringemail->addValidator('emailAddress' )
-            ->addValidator( 'stringLength', false, array( 0, 64 ) )
+            ->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span8' )
             ->setAttrib( 'placeholder', 'peering@example.com' )
@@ -159,13 +159,22 @@ class IXP_Form_Customer extends IXP_Form
 
 
         $peeringmacro = $this->createElement( 'text', 'peeringmacro' );
-        $peeringmacro->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $peeringmacro->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
-            ->setLabel( 'Peering Macro' )
+            ->setLabel( 'IPv4 Peering Macro' )
             ->addFilter( 'StringTrim' )
             ->setAttrib( 'class', 'span8' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $peeringmacro );
+
+        $peeringmacrov6 = $this->createElement( 'text', 'peeringmacrov6' );
+        $peeringmacrov6->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
+            ->setRequired( false )
+            ->setLabel( 'IPv6 Peering Macro' )
+            ->addFilter( 'StringTrim' )
+            ->setAttrib( 'class', 'span8' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $peeringmacrov6 );
 
 
         $this->addElement( IXP_Form_IrrdbConfig::getPopulatedSelect() );
@@ -179,13 +188,13 @@ class IXP_Form_Customer extends IXP_Form
 
 
         $this->addDisplayGroup(
-            [ 'autsys', 'maxprefixes', 'peeringemail', 'peeringmacro', 'peeringpolicy', 'irrdb', 'activepeeringmatrix' ],
-    		'peeringDisplayGroup'
+            [ 'autsys', 'maxprefixes', 'peeringemail', 'peeringmacro', 'peeringmacrov6', 'peeringpolicy', 'irrdb', 'activepeeringmatrix' ],
+            'peeringDisplayGroup'
         );
         $this->getDisplayGroup( 'peeringDisplayGroup' )->setLegend( 'Peering Details' );
 
         $nocphone = $this->createElement( 'text', 'nocphone' );
-        $nocphone->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $nocphone->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Phone' )
             ->setAttrib( 'placeholder', '+353 1 123 4567' )
@@ -195,7 +204,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $nocphone );
 
         $noc24hphone = $this->createElement( 'text', 'noc24hphone' );
-        $noc24hphone->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $noc24hphone->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'placeholder', '+353 86 876 5432' )
             ->setAttrib( 'class', 'span8' )
@@ -205,7 +214,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $noc24hphone );
 
         $nocfax = $this->createElement( 'text', 'nocfax' );
-        $nocfax->addValidator( 'stringLength', false, array( 0, 40 ) )
+        $nocfax->addValidator( 'stringLength', false, array( 0, 40, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Fax' )
             ->setAttrib( 'placeholder', '+353 1 765 4321' )
@@ -216,7 +225,7 @@ class IXP_Form_Customer extends IXP_Form
 
         $nocemail = $this->createElement( 'text', 'nocemail' );
         $nocemail->addValidator('emailAddress' )
-            ->addValidator( 'stringLength', false, array( 0, 40 ) )
+            ->addValidator( 'stringLength', false, array( 0, 40, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span8' )
             ->setAttrib( 'placeholder', 'noc@example.com' )
@@ -233,7 +242,7 @@ class IXP_Form_Customer extends IXP_Form
 
 
         $nocwww = $this->createElement( 'text', 'nocwww' );
-        $nocwww->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $nocwww->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Website' )
             ->setAttrib( 'placeholder', 'http://www.noc.example.com/' )
@@ -244,7 +253,7 @@ class IXP_Form_Customer extends IXP_Form
 
         $this->addDisplayGroup(
             array( 'nocphone', 'noc24hphone', 'nocfax', 'nocemail', 'nochours', 'nocwww' ),
-        	'nocDisplayGroup'
+            'nocDisplayGroup'
         );
         $this->getDisplayGroup( 'nocDisplayGroup' )->setLegend( 'NOC Details' );
 

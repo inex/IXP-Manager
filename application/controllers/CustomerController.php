@@ -140,7 +140,8 @@ class CustomerController extends IXP_Controller_FrontEnd
                 ],
                 'activepeeringmatrix' => 'Active Peering Matrix',
                 'peeringemail'   => 'Peering Email',
-                'peeringmacro'    => 'Peering Macro',
+                'peeringmacro'    => 'IPv4 Peering Macro',
+                'peeringmacrov6'  => 'IPv6 Peering Macro',
                 'billingContact'  => 'Billing Contact',
                 'billingAddress1' => 'Billing Address1',
                 'billingAddress2' => 'Billing Address2',
@@ -172,8 +173,8 @@ class CustomerController extends IXP_Controller_FrontEnd
                             c.nocphone AS nocphone, c.noc24hphone AS noc24hphone, c.nocfax AS nocfax,
                             c.nochours AS nochours, c.nocemail AS nocemail, c.nocwww AS nocwww,
                             c.status AS status, c.activepeeringmatrix AS activepeeringmatrix,
-                            c.peeringmacro AS peeringmacro, c.peeringpolicy AS peeringpolicy,
-                            c.isReseller AS isReseller,
+                            c.peeringmacro AS peeringmacro, c.peeringmacrov6 AS peeringmacrov6,
+                            c.isReseller AS isReseller, c.peeringpolicy AS peeringpolicy,
                             bd.billingContactName AS billingContact, bd.billingAddress1 AS billingAddress1,
                             bd.billingAddress2 AS billingAddress2, bd.billingTownCity AS billingCity, bd.billingCountry AS billingCountry,
                             c.corpwww AS corpwww, c.datejoin AS datejoin, c.dateleave AS dateleave,
@@ -191,7 +192,7 @@ class CustomerController extends IXP_Controller_FrontEnd
             $qb->andWhere( 'c.type = :ctype' )->setParameter( 'ctype', $ctype );
 
         $this->view->customerStates = $customerStates = \Entities\Customer::$CUST_STATUS_TEXT;
-        $this->view->cstate = $cstate = $this->getSessionNamespace()->cust_list_cstate  
+        $this->view->cstate = $cstate = $this->getSessionNamespace()->cust_list_cstate
             = $this->getParam( 'cstate', ( $this->getSessionNamespace()->cust_list_cstate !== null ? $this->getSessionNamespace()->cust_list_cstate : false ) );
         if( $cstate && isset( $customerStates[$cstate] ) )
             $qb->andWhere( 'c.status = :cstate' )->setParameter( 'cstate', $cstate );
@@ -761,4 +762,3 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->view->notes = $latestNotes;
     }
 }
-

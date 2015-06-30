@@ -45,7 +45,7 @@
                 {assign var='isLAG' value=1}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
             {else}
-                {tmplinclude file='customer/overview-tabs/ports/physintstatus.phtml'}
+                {tmplinclude file='customer/overview-tabs/ports/physintstatus.phtml' pi=$physInts[0]}
                 {assign var='isLAG' value=0}
             {/if}
         </small>
@@ -58,6 +58,7 @@
 
     </h3>
 
+    {counter name=numphysports print=0 start=0}
     {foreach $vi->getPhysicalInterfaces() as $pi}
 
         {if $isLAG}
@@ -216,8 +217,13 @@
                 <td><strong>Route Server Client:</strong></td>
                 <td id="value">{if $vli->getRsclient()}Yes{else}No{/if}</td>
                 <td></td>
-                <td><strong>AS112 Client:</strong></td>
-                <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
+                {if $as112UiActive}
+                    <td><strong>AS112 Client:</strong></td>
+                    <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
+                {else}
+                    <td></td>
+                    <td></td>
+                {/if}
             </tr>
 
             </table>

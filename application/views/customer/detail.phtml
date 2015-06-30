@@ -12,16 +12,16 @@
             {$cust->getName()}
         </li>
     </ul>
-    
+
     <div>
 {else}
     <div class="page-content">
-    
+
         <div class="page-header">
             <h1>Member Details - {$cust->getName()}</h1>
         </div>
 {/if}
-    
+
 {OSS_Message}
 
 <table id="ixpDataTable">
@@ -157,9 +157,9 @@
 </h3>
 
 {foreach $vi->getPhysicalInterfaces() as $pi}
-    
+
     {if $isLAG}<h5>Port {counter name=numphysports} of {$vi->getPhysicalInterfaces()|@count} in LAG</h5>{/if}
-    
+
     <table id="myDetailsTable">
         <tr>
             <td width="200"><strong>Switch:</strong></td>
@@ -196,61 +196,66 @@
 
 {if not $vli->getVlan()->getPrivate()}
 
-	<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vli->getVlan()->getName()}:</h4>
-	
-	<table id="myDetailsTable">
-	
-	<tr>
-	    <td width="40"></td>
-	    <td width="200"><strong>IPv6 Address:</strong></td>
-	    <td width="200" id="value">
-	        {if $vli->getIpv6enabled() and $vli->getIpv6address()}
-	            {$vli->getIPv6Address()->getAddress()}/{$netinfo.$vlanid.6.masklen}
-	        {else}
-	            IPv6 not enabled.
-	        {/if}
-	    </td>
-	    <td width="40"></td>
-	    <td width="200"><strong>IPv4 Address:</strong></td>
-	    <td width="200" id="value">
-	        {if $vli->getIpv4enabled() and $vli->getIpv4address()}
-	            {$vli->getIPv4Address()->getAddress()}/{$netinfo.$vlanid.4.masklen}
-	        {else}
-	            IPv4 not enabled.
-	        {/if}
-	    </td>
-	</tr>
-	
-	<tr>
-	    <td></td><td></td><td></td><td></td><td></td><td></td>
-	</tr>
-	
-	<tr>
-	    <td></td>
-	    <td><strong>Multicast Enabled:</strong></td>
-	    <td id="value">{if $vli->getMcastenabled()}Yes{else}No{/if}</td>
-	    <td></td>
-	    <td><strong>Max Prefixes:</strong></td>
-	    <td id="value">global: {$cust->getMaxprefixes()}, per-interface: {$vli->getMaxbgpprefix()}</td>
-	</tr>
-	
-	<tr>
-	    <td></td><td></td><td></td><td></td><td></td><td></td>
-	</tr>
-	
-	<tr>
-	    <td></td>
-	    <td><strong>Route Server Client:</strong></td>
-	    <td id="value">{if $vli->getRsclient()}Yes{else}No{/if}</td>
-	    <td></td>
-	    <td><strong>AS112 Client:</strong></td>
-	    <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
-	</tr>
-	
-	</table>
+    <h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vli->getVlan()->getName()}:</h4>
+
+    <table id="myDetailsTable">
+
+    <tr>
+        <td width="40"></td>
+        <td width="200"><strong>IPv6 Address:</strong></td>
+        <td width="200" id="value">
+            {if $vli->getIpv6enabled() and $vli->getIpv6address()}
+                {$vli->getIPv6Address()->getAddress()}/{$netinfo.$vlanid.6.masklen}
+            {else}
+                IPv6 not enabled.
+            {/if}
+        </td>
+        <td width="40"></td>
+        <td width="200"><strong>IPv4 Address:</strong></td>
+        <td width="200" id="value">
+            {if $vli->getIpv4enabled() and $vli->getIpv4address()}
+                {$vli->getIPv4Address()->getAddress()}/{$netinfo.$vlanid.4.masklen}
+            {else}
+                IPv4 not enabled.
+            {/if}
+        </td>
+    </tr>
+
+    <tr>
+        <td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td><strong>Multicast Enabled:</strong></td>
+        <td id="value">{if $vli->getMcastenabled()}Yes{else}No{/if}</td>
+        <td></td>
+        <td><strong>Max Prefixes:</strong></td>
+        <td id="value">global: {$cust->getMaxprefixes()}, per-interface: {$vli->getMaxbgpprefix()}</td>
+    </tr>
+
+    <tr>
+        <td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td><strong>Route Server Client:</strong></td>
+        <td id="value">{if $vli->getRsclient()}Yes{else}No{/if}</td>
+        <td></td>
+        {if $as112UiActive}
+            <td><strong>AS112 Client:</strong></td>
+            <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
+        {else}
+            <td></td>
+            <td></td>
+        {/if}
+    </tr>
+
+    </table>
 
 {/if} {* end is private vlan *}
-	
+
 {/foreach}
 
 <br /><br />
