@@ -33,9 +33,9 @@
  */
 class VlanInterfaceController extends IXP_Controller_FrontEnd
 {
-    
+
     use IXP_Controller_Trait_Interfaces;
-    
+
     /**
      * This function sets up the frontend controller
      */
@@ -45,22 +45,22 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
             'entity'        => '\\Entities\\VlanInterface',
             'form'          => 'IXP_Form_Interface_Vlan',
             'pagetitle'     => 'VLAN Interfaces',
-        
+
             'titleSingular' => 'VLAN Interface',
             'nameSingular'  => 'a VLAN interface',
-        
+
             'defaultAction' => 'list',
-        
+
             'listOrderBy'    => 'customer',
             'listOrderByDir' => 'ASC',
         ];
-    
+
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $this->_feParams->listColumns = [
                     'id' => [ 'title' => 'UID', 'display' => false ],
-        
+
                     'customer'  => [
                         'title'      => 'Customer',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -68,7 +68,7 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                         'action'     => 'overview',
                         'idField'    => 'custid'
                     ],
-        
+
                     'vlan'  => [
                         'title'      => 'VLAN Name',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -85,7 +85,7 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                     'ipv4'          => 'ipv4',
                     'ipv6'          => 'ipv6'
                 ];
-                
+
                 $this->_feParams->viewColumns = array_merge(
                     $this->_feParams->listColumns,
                     [
@@ -104,23 +104,23 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                         'ipv6canping'      => 'Monitoring Enabled via IPv6 ICMP',
                         'ipv4monitorrcbgp' => 'Monitor Route Collector IPv4 BGP Session',
                         'ipv6monitorrcbgp' => 'Monitor Route Collector IPv6 BGP Session',
-                        'as112client'      => 'AS112 Client',
                         'busyhost'         => 'Busy Host?',
                         'notes'            => 'Notes'
-                    ]
+                    ],
+                    ( $this->as112UiActive() ? ['as112client' => 'AS112 Client'] : [] )
                 );
-                
+
                 break;
-    
+
             case \Entities\User::AUTH_CUSTADMIN:
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
-    
+
     }
-    
-    
-    
+
+
+
     /**
      * Provide array of virtual interfaces for the listAction
      *
@@ -149,14 +149,14 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
             ->leftJoin( 'vli.IPv4Address', 'ip4' )
             ->leftJoin( 'vli.IPv6Address', 'ip6' )
             ->leftJoin( 'vi.Customer', 'c' );
-    
+
         if( $id !== null )
             $qb->where( 'vli.id = ' . intval( $id ) );
-        
+
         return $qb->getQuery()->getArrayResult();
     }
-    
-    
+
+
     /**
      * @param IXP_Form_Interface_Vlan $form The form object
      * @param \Entities\VlanInterface $object The Doctrine2 entity (being edited or blank for add)
@@ -172,11 +172,11 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
             $form->getElement( 'virtualinterfaceid' )->setValue( $object->getVirtualInterface()->getId() );
             $form->getElement( 'preselectCustomer'  )->setValue( $object->getVirtualInterface()->getCustomer()->getId() );
             $form->getElement( 'vlanid'             )->setValue( $object->getVlan()->getId()             );
-            
+
             $form->getElement( 'preselectIPv4Address'   )->setValue( $object->getIPv4Address() ? $object->getIPv4Address()->getAddress() : null );
             $form->getElement( 'preselectIPv6Address'   )->setValue( $object->getIPv6Address() ? $object->getIPv6Address()->getAddress() : null );
             $form->getElement( 'preselectVlanInterface' )->setValue( $object->getId()        );
-            
+
             if( $this->getParam( 'rtn', false ) == 'vli' )
                 $form->setAction( OSS_Utils::genUrl( 'vlan-interface', 'edit', false, [ 'id' => $object->getId(), 'rtn' => 'vli' ] ) );
             else
@@ -188,19 +188,19 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
                 $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $_POST['virtualinterfaceid'] );
             else if( ( $vintid = $this->getRequest()->getParam( 'vintid' ) ) !== null )
                 $vint = $this->getD2EM()->getRepository( '\\Entities\\VirtualInterface' )->find( $vintid );
-    
+
             if( !isset( $vint ) || !$vint )
             {
                 $this->addMessage( 'You need a containing virtual interface before you add a VLAN interface', OSS_Message::ERROR );
                 $this->redirect( 'virtual-interface/add' );
             }
-            
-            
+
+
             // make BGP MD5 easy
             $form->getElement( 'ipv4bgpmd5secret' )->setValue( OSS_String::random() );
             $form->getElement( 'ipv6bgpmd5secret' )->setValue(  $form->getElement( 'ipv4bgpmd5secret' )->getValue() );
             $form->getElement( 'maxbgpprefix' )->setValue( $vint->getCustomer()->getMaxprefixes() );
-            
+
             $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
             $form->getElement( 'preselectCustomer'  )->setValue( $vint->getCustomer()->getId() );
 
@@ -227,11 +227,11 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
 
          if( !$this->setIp( $form, $object->getVirtualInterface(), $object, false ) || !$this->setIp( $form, $object->getVirtualInterface(), $object, true ) )
             return false;
-    
+
         return true;
     }
-    
-    
+
+
     /**
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful add / edit operation.
@@ -245,14 +245,14 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
     {
         if( $this->getParam( 'rtn', false ) == 'vli' )
             return false;
-    
+
         $this->addMessage(
             'VLAN interface successfuly ' . ( $isEdit ? 'edited.' : 'added.' ), OSS_Message::SUCCESS
         );
-    
+
         $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $object->getVirtualInterface()->getId() );
     }
-    
+
     /**
      * You can add `OSS_Message`s here and redirect to a custom destination after a
      * successful deletion operation.
@@ -263,13 +263,12 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
     {
         if( $this->getParam( 'rtn', false ) == 'vli' )
             return false;
-    
+
         $this->addMessage(
             'VLAN interface deleted successfuly.', OSS_Message::SUCCESS
         );
-    
+
         $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $this->getParam( 'vintid' ) );
     }
 
 }
-

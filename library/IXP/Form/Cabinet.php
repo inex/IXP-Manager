@@ -36,7 +36,7 @@ class IXP_Form_Cabinet extends IXP_Form
     public function init()
     {
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'Name' )
@@ -49,7 +49,7 @@ class IXP_Form_Cabinet extends IXP_Form
 
 
         $cololocation = $this->createElement( 'text', 'cololocation' );
-        $cololocation->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $cololocation->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'Colo Location' )
@@ -59,7 +59,7 @@ class IXP_Form_Cabinet extends IXP_Form
 
         
         $type = $this->createElement( 'text', 'type' );
-        $type->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $type->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( false )
             ->setLabel( 'Type' )

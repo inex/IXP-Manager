@@ -14,7 +14,8 @@ are advertising to the {$options.identity.orgname} Route Servers.
 
 <p>
 {if $cust->getPeeringmacro()}
-    We are using your AS-SET <code>{$cust->getPeeringmacro()}</code> when querying the IRRDB database(s).
+    We are using your IPv4 AS-SET <code>{$cust->getPeeringmacro()}</code>
+    (and IPv6 AS-SET <code>{$cust->resolveAsMacro(6)}</code>) when querying the IRRDB database(s).
 {else}
     We have no AS-SET on record for you and as such, we are just querying the IRRDB database(s) using
     the single ASN {$cust->getAutsys()|asnumber}.
@@ -49,25 +50,25 @@ A typical <code>route:</code> / <code>route6:</code> object for your organisatio
 <div class="row-fluid">
 
     <div class="span4 offset1">
-    
+
         <pre>
   route:          192.0.2.0/24
   descr:          {$cust->getName()}
   origin:         AS{$cust->getAutsys()}
   mnt-by:         YOURORG-MNT
 </pre>
-    
+
     </div>
 
     <div class="span4 offset1">
-    
+
         <pre>
   route6:         2001:DB8::/32
   descr:          {$cust->getName()}
   origin:         AS{$cust->getAutsys()}
   mnt-by:         YOURORG-MNT
 </pre>
-    
+
     </div>
 
 </div>
@@ -96,8 +97,3 @@ These are routes that you are advertising to the route servers and that the rout
 As such, these routes are distributed to the other route server users.
 <br /><br />
 </p>
-
-
-
-
-

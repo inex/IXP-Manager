@@ -3,7 +3,7 @@
         accept-charset="UTF-8" method="post" horizontal="1"
         action="{genUrl controller="virtual-interface" action="add-wizard"}"
 >
-        
+
 <div class="row-fluid">
     <div class="span4">
 
@@ -15,9 +15,9 @@
             {$element->trunk}
             {$element->ipv4enabled}
             {$element->ipv6enabled}
-            
+
         </fieldset>
-        
+
     </div>
     <div class="span4">
 
@@ -33,7 +33,7 @@
             {$element->status}
             {$element->speed}
             {$element->duplex}
-            
+
         </fieldset>
 
     </div>
@@ -47,13 +47,15 @@
             {$element->irrdbfilter}
             {$element->mcastenabled}
             {$element->rsclient}
-            {$element->as112client}
-                        
+            {if $as112UiActive}
+                {$element->as112client}
+            {/if}
+
         </fieldset>
 
     </div>
 </div>
-    
+
 <div class="row-fluid">
 
     <div class="span4">
@@ -67,15 +69,15 @@
             {$element->ipv6DisplayGroup}
         </div>
     </div>
-    
+
     <div class="span4">
          <div id="fanoutdetails" class="hide">
             {$element->fanoutDisplayGroup}
         </div>
     </div>
-    
+
 </div>
-        
+
 
 {$element->preselectIPv4Address}
 {$element->preselectIPv6Address}
@@ -88,6 +90,5 @@
     {$element->submit}
 </div>
 
-    
-</form>
 
+</form>

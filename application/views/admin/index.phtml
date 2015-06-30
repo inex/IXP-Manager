@@ -156,6 +156,7 @@
                     {/foreach}
 
                     <th>Total</th>
+                    <th>Connected<br>Capacity</th>
                 </tr>
             </thead>
             <tbody>
@@ -163,6 +164,7 @@
                 {foreach from=$bylan key=n item=spds}
 
                     {assign var=rowcount value=0}
+                    {assign var=rowcap value=0}
 
                     <tr>
                         <td>{$n}</td>
@@ -171,24 +173,29 @@
                                 {if isset( $spds.$k )}
                                     {$spds.$k}
                                     {assign var=rowcount value=$rowcount+$spds.$k}
+                                    {assign var=rowcap value=$rowcap+$spds.$k*$k}
                                 {else}
                                     0
                                 {/if}
                             </td>
                         {/foreach}
                         <td>{$rowcount}</td>
+                        <td>{$rowcap/1000}G</td>
                     </tr>
                     {assign var=colcount value=$rowcount+$colcount}
                 {/foreach}
 
                 <tr>
                     <td><strong>Totals</strong></td>
+                    {assign var=rowcap value=0}
                     {foreach from=$speeds key=k item=i}
+                        {assign var=rowcap value=$rowcap+$i*$k}
                         <td>
                             <strong>{$i}</strong>
                         </td>
                     {/foreach}
                     <td><strong>{$colcount}</strong></td>
+                    <td><strong>{$rowcap/1000}G</strong></td>
                 </tr>
 
             </tbody>

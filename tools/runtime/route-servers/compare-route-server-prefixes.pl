@@ -32,7 +32,7 @@
 #
 #
 # NB: Ensure you set $vlanid, $conffile and $sockfile in the protocols loop
-# below (search for XXX-SET-ME)
+#     below (search for XXX-SET-ME)
 
 
 use strict;
@@ -120,7 +120,7 @@ foreach my $protocol (qw(4 6)) {
 			next;
 		}
 
-		my @pfxlist = split(/,\s*/, $prefixes);
+		my @pfxlist = split(/\s*,\s*/, $prefixes);
 		foreach my $prefix (@pfxlist) {
 			my $ip = new NetAddr::IP::Lite $prefix;
 			next unless $ip;
@@ -130,7 +130,7 @@ foreach my $protocol (qw(4 6)) {
 				$p->{irrdb} = 1;
 				$p->{changed} = 1;
 			}
-		} 
+		}
 		$asn = undef; $address = undef; $prefixes = '';
 	}
 	close (INPUT);
@@ -148,7 +148,7 @@ foreach my $protocol (qw(4 6)) {
 	}
 	close (INPUT);
 
-	$dbh->do('START TRANSACTION') or die $dbh->errstr;
+	$do_nothing or $dbh->do('START TRANSACTION') or die $dbh->errstr;
                                    
 	foreach my $asn (@asnlist) {
 		my $cmd = '/usr/sbin/birdc -s '.$sockfile.' show route table t_' . $vliidhash{ $asn } . '_as'.$asn.' protocol pb_' . $vliidhash{ $asn } . '_as'.$asn;
@@ -195,6 +195,5 @@ foreach my $protocol (qw(4 6)) {
 		}
 	}
 
-	$dbh->do('COMMIT') or die $dbh->errstr;
+	$do_nothing or $dbh->do('COMMIT') or die $dbh->errstr;
 }
-

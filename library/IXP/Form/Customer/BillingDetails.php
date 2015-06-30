@@ -35,7 +35,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
     public function init()
     {
         $billingContact = $this->createElement( 'text', 'billingContactName' );
-        $billingContact->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingContact->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Contact' )
             ->addFilter( 'StringTrim' )
@@ -45,7 +45,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         $this->addElement( $billingContact );
 
         $billingAddress1 = $this->createElement( 'text', 'billingAddress1' );
-        $billingAddress1->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingAddress1->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Address' )
             ->setAttrib( 'class', 'span6' )
@@ -55,7 +55,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         $this->addElement( $billingAddress1 );
 
         $billingAddress2 = $this->createElement( 'text', 'billingAddress2' );
-        $billingAddress2->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingAddress2->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
             ->setLabel( '' )
@@ -65,7 +65,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         $this->addElement( $billingAddress2 );
 
         $billingAddress3 = $this->createElement( 'text', 'billingAddress3' );
-        $billingAddress3->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingAddress3->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
             ->setLabel( '' )
@@ -75,7 +75,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         $this->addElement( $billingAddress3 );
 
         $billingCity = $this->createElement( 'text', 'billingTownCity' );
-        $billingCity->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingCity->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span4' )
             ->setLabel( 'City' )
@@ -85,7 +85,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         $this->addElement( $billingCity );
 
         $billingPostcode = $this->createElement( 'text', 'billingPostcode' );
-        $billingPostcode->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingPostcode->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span4' )
             ->setLabel( 'Postcode' )
@@ -118,7 +118,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         $this->addElement( $billingEmail );
 
         $billingTelephone = $this->createElement( 'text', 'billingTelephone' );
-        $billingTelephone->addValidator( 'stringLength', false, array( 0, 64 ) )
+        $billingTelephone->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
             ->setAttrib( 'placeholder', '+353 1 234 5678' )
@@ -131,7 +131,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
         /* Probably do not want to let the customer update this themselves...
 
             $vatNumber = $this->createElement( 'text', 'vatNumber' );
-            $vatNumber->addValidator( 'stringLength', false, array( 0, 64 ) )
+            $vatNumber->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
                 ->setRequired( false )
                 ->setAttrib( 'class', 'span6' )
                 ->setLabel( 'VAT Number' )
@@ -141,7 +141,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             $this->addElement( $vatNumber );
 
             $vatRate = $this->createElement( 'text', 'vatRate' );
-            $vatRate->addValidator( 'stringLength', false, array( 0, 64 ) )
+            $vatRate->addValidator( 'stringLength', false, array( 0, 64, 'UTF-8' ) )
                 ->setRequired( false )
                 ->setAttrib( 'class', 'span4' )
                 ->setLabel( 'VAT Rate' )

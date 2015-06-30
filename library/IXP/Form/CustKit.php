@@ -36,7 +36,7 @@ class IXP_Form_CustKit extends IXP_Form
     public function init()
     {
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
             ->setAttrib( 'class', 'span3' )

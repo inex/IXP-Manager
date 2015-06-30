@@ -37,7 +37,7 @@ class IXP_Form_Switch_AddBySNMP extends IXP_Form
     {
 
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'Name' )
@@ -46,7 +46,7 @@ class IXP_Form_Switch_AddBySNMP extends IXP_Form
         $this->addElement( $name );
 
         $hostname = $this->createElement( 'text', 'hostname' );
-        $hostname->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $hostname->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setRequired( true )
             ->setLabel( 'Hostname' )
@@ -69,7 +69,7 @@ class IXP_Form_Switch_AddBySNMP extends IXP_Form
         $this->addElement( $infrastructure );
 
         $snmppasswd = $this->createElement( 'text', 'snmppasswd' );
-        $snmppasswd->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $snmppasswd->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
             ->setLabel( 'SNMP Community' )
             ->addFilter( 'StringTrim' )
