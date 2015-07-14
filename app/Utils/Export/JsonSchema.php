@@ -42,7 +42,7 @@ use OSS_Array;
 class JsonSchema
 {
     // Supported versions:
-    const EUROIX_JSON_VERSION_0_3 = "2014110401";
+    const EUROIX_JSON_VERSION_0_3 = "0.3";
     const EUROIX_JSON_VERSION_0_4 = "0.4";
     const EUROIX_JSON_VERSION_0_5 = "0.5";
     // adding a new version? update sanitiseVersion() below also!
@@ -62,7 +62,12 @@ class JsonSchema
         else
             $version = $this->sanitiseVersion( $version );
 
-        $output = [ 'version' => $version ];
+        // slightly awkward as v0.3 used a date type versioning. internally we use 0.3
+        // for numeric comparisons
+        if( $version == self::EUROIX_JSON_VERSION_0_3 )
+            $output = [ 'version' => '2014110401' ];
+        else
+            $output = [ 'version' => $version ];
 
         // normalise times to UTC for exports
         date_default_timezone_set('UTC');
@@ -93,7 +98,7 @@ class JsonSchema
         switch ( $version )
         {
             // alias for v0.3
-            case '0.3':
+            case '2014110401':
                 return self::EUROIX_JSON_VERSION_0_3;
 
             case self::EUROIX_JSON_VERSION_0_3:
@@ -133,7 +138,7 @@ class JsonSchema
         $ixp_info['support_phone']             = config( 'identity.support_phone' );
         $ixp_info['support_contact_hours']     = config( 'identity.support_hours' );
 
-        if( $version != self::EUROIX_JSON_VERSION_0_3 ) {
+        if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
             // $ixpinfo['stats_api'] = FIXME;
             $ixp_info['emergency_email']           = config( 'identity.support_email' );
             $ixp_info['emergency_phone']           = config( 'identity.support_phone' );
@@ -168,16 +173,17 @@ class JsonSchema
                 if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
                     continue;
 
-                 $switchentry = [];
-                 $switchentry['id']      = $switch->getId();
-                 $switchentry['name']    = $switch->getName();
-                 $switchentry['colo']    = $switch->getCabinet()->getLocation()->getName();
-                 $switchentry['city']    = config( 'identity.location.city'    );
-                 $switchentry['country'] = config( 'identity.location.country' );
+                $switchentry = [];
+                $switchentry['id']      = $switch->getId();
+                $switchentry['name']    = $switch->getName();
+                $switchentry['colo']    = $switch->getCabinet()->getLocation()->getName();
+                $switchentry['city']    = config( 'identity.location.city'    );
+                $switchentry['country'] = config( 'identity.location.country' );
 
-                 // FIXME for complete v0.5 support, add pdb facility ID
+                if( $version >= self::EUROIX_JSON_VERSION_0_5 && $switch->getCabinet()->getLocation()->getPdbFacilityId() )
+                    $switchentry['pdb_facility_id'] = $switch->getCabinet()->getLocation()->getPdbFacilityId();
 
-                 $data[] = $switchentry;
+                $data[] = $switchentry;
             }
         }
 
@@ -222,7 +228,7 @@ class JsonSchema
                 $vlanentry = [];
 
                 // MAC addresses added in 0.4
-                if( $version != self::EUROIX_JSON_VERSION_0_3 ) {
+                if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
                     $macaddrs = $vi->getMACAddresses();
                     if( $macaddrs[0] )
                         $vlanentry['mac_address'] = implode( ":", str_split( $macaddrs[0]->getMac(), 2 ) );
@@ -247,7 +253,7 @@ class JsonSchema
 
                 $conn = [];
 
-                if( $version != self::EUROIX_JSON_VERSION_0_3 )
+                if( $version > self::EUROIX_JSON_VERSION_0_3 )
                     $conn['ixp_id'] = 1;
 
                 $conn['state']       = 'active';
@@ -269,7 +275,7 @@ class JsonSchema
                 'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z'
             ];
 
-            if( $version != self::EUROIX_JSON_VERSION_0_3 ) {
+            if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
                 $memberinfo[$cnt][ 'type' ] = $this->xlateMemberType( $c->getType() );
             }
 
