@@ -15,7 +15,7 @@ return [
             'country'    => "IE",
         ],
 
-    'ixfid'       => "1111",		/* this refers to the ID in https://db.ix-f.net/api/ixp */
+    'ixfid'       => "400",		/* this refers to the ID in https://db.ix-f.net/api/ixp */
     'orgname'     => "SCIX",
     'name'        => "SCIX Operations",
     'email'       => "operations@example.org",
