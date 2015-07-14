@@ -8,7 +8,11 @@
     <field name="dstipaddressid" type="integer" nullable="true"/>
     <field name="protocol" type="integer" nullable="true"/>
     <field name="vlan" type="integer" nullable="true"/>
-    <field name="packetcount" type="integer" nullable="true"/>
+    <field name="packetcount" type="integer" nullable="true">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
     <field name="timestamp" type="datetime" nullable="true"/>
     <field name="source" type="string" length="40" nullable="true"/>
   </entity>

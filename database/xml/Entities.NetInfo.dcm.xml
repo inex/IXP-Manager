@@ -6,7 +6,11 @@
     </id>
     <field name="protocol" type="integer" nullable="false"/>
     <field name="property" type="string" length="255" nullable="false"/>
-    <field name="ix" type="integer" nullable="false"/>
+    <field name="ix" type="integer" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
     <field name="value" type="text" nullable="false"/>
     <indexes>
       <index name="VlanProtoProp" columns="protocol,property,vlan_id"/>
