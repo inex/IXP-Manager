@@ -102,11 +102,6 @@ class SwitchPort
     protected $Switcher;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $SecEvents;
-
-    /**
      * @var string
      */
     protected $ifName;
@@ -269,40 +264,6 @@ class SwitchPort
      */
     public function __construct()
     {
-        $this->SecEvents = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add SecEvents
-     *
-     * @param Entities\SecEvent $secEvents
-     * @return SwitchPort
-     */
-    public function addSecEvent(\Entities\SecEvent $secEvents)
-    {
-        $this->SecEvents[] = $secEvents;
-
-        return $this;
-    }
-
-    /**
-     * Remove SecEvents
-     *
-     * @param Entities\SecEvent $secEvents
-     */
-    public function removeSecEvent(\Entities\SecEvent $secEvents)
-    {
-        $this->SecEvents->removeElement($secEvents);
-    }
-
-    /**
-     * Get SecEvents
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getSecEvents()
-    {
-        return $this->SecEvents;
     }
 
     /**

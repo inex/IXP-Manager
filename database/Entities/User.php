@@ -95,11 +95,6 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     protected $Preferences;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $ChangeLogs;
-
-    /**
      * @var Entities\Customer
      */
     protected $Customer;
@@ -115,7 +110,6 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     public function __construct()
     {
         $this->Preferences = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->ChangeLogs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -412,39 +406,6 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     public function getPreferences()
     {
         return $this->Preferences;
-    }
-
-    /**
-     * Add ChangeLogs
-     *
-     * @param Entities\ChangeLog $changeLogs
-     * @return User
-     */
-    public function addChangeLog(\Entities\ChangeLog $changeLogs)
-    {
-        $this->ChangeLogs[] = $changeLogs;
-
-        return $this;
-    }
-
-    /**
-     * Remove ChangeLogs
-     *
-     * @param Entities\ChangeLog $changeLogs
-     */
-    public function removeChangeLog(\Entities\ChangeLog $changeLogs)
-    {
-        $this->ChangeLogs->removeElement($changeLogs);
-    }
-
-    /**
-     * Get ChangeLogs
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getChangeLogs()
-    {
-        return $this->ChangeLogs;
     }
 
     /**

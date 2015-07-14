@@ -64,10 +64,10 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'noc24hphone', 'SecEvents', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs');
+            return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs');
         }
 
-        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'noc24hphone', 'SecEvents', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs');
+        return array('__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs');
     }
 
     /**
@@ -1088,39 +1088,6 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNoc24hphone', array());
 
         return parent::getNoc24hphone();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addSecEvent(\Entities\SecEvent $secEvents)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addSecEvent', array($secEvents));
-
-        return parent::addSecEvent($secEvents);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeSecEvent(\Entities\SecEvent $secEvents)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSecEvent', array($secEvents));
-
-        return parent::removeSecEvent($secEvents);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSecEvents()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSecEvents', array());
-
-        return parent::getSecEvents();
     }
 
     /**

@@ -64,10 +64,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'ChangeLogs', 'Customer', 'Children', 'Meetings', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace');
+            return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'Customer', 'Children', 'Meetings', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace');
         }
 
-        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'ChangeLogs', 'Customer', 'Children', 'Meetings', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace');
+        return array('__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'Customer', 'Children', 'Meetings', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace');
     }
 
     /**
@@ -461,39 +461,6 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPreferences', array());
 
         return parent::getPreferences();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addChangeLog(\Entities\ChangeLog $changeLogs)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addChangeLog', array($changeLogs));
-
-        return parent::addChangeLog($changeLogs);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeChangeLog(\Entities\ChangeLog $changeLogs)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeChangeLog', array($changeLogs));
-
-        return parent::removeChangeLog($changeLogs);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getChangeLogs()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChangeLogs', array());
-
-        return parent::getChangeLogs();
     }
 
     /**

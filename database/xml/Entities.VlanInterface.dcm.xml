@@ -6,13 +6,13 @@
     </id>
     <field name="ipv4enabled" type="boolean" nullable="true">
       <options>
-        <option name="default">1</option>
+        <option name="default">0</option>
       </options>
     </field>
     <field name="ipv4hostname" type="string" length="255" nullable="true"/>
     <field name="ipv6enabled" type="boolean" nullable="true">
       <options>
-        <option name="default">1</option>
+        <option name="default">0</option>
       </options>
     </field>
     <field name="ipv6hostname" type="string" length="255" nullable="true"/>

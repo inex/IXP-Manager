@@ -40,6 +40,5 @@
     </many-to-one>
     <one-to-many field="Ports" target-entity="Entities\SwitchPort" mapped-by="Switcher"/>
     <one-to-many field="ConsoleServerConnections" target-entity="Entities\ConsoleServerConnection" mapped-by="Switcher"/>
-    <one-to-many field="SecEvents" target-entity="Entities\SecEvent" mapped-by="Switch"/>
   </entity>
 </doctrine-mapping>
