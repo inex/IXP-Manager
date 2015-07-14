@@ -152,7 +152,7 @@ class JsonSchema
         $ixp_info['peering_policy_list'] = array_values( \Entities\Customer::$PEERING_POLICIES );
 
         $ixpinfo['vlan']   = D2R::r( 'NetworkInfo' )->asVlanEuroIXExportArray();
-        $ixpinfo['switch'] = $this->getSwitchInfo();
+        $ixpinfo['switch'] = $this->getSwitchInfo( $version );
 
         return $ixpinfo;
     }
@@ -162,7 +162,7 @@ class JsonSchema
      *
      * @return array
      */
-    private function getSwitchInfo()
+    private function getSwitchInfo( $version )
     {
         $data = [];
 
