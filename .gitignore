@@ -25,6 +25,7 @@ public/maintenance.php
 public/images/.directory
 public/images/joomla-admin/.directory
 public/images/joomla-admin/menu/.directory
+public/bower_components/
 tools/perl-lib/IXPManager/MYMETA.yml
 tools/perl-lib/IXPManager/Makefile
 tools/perl-lib/IXPManager/blib/
