@@ -119,7 +119,7 @@
     {* ensure we're looking at a graph on the correct IXP *}
     {$pi = $vi->getPhysicalInterfaces()}
     {$pi = $pi.0}
-    {if $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP() neq $ixp }
+    {if not $p or $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP() neq $ixp }
         {continue}
     {/if}
 
