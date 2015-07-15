@@ -40,4 +40,4 @@ application/configs/rs*-inex-*.conf
 application/configs/ci-*
 *.DS_Store
 
-config/identiy.php
+config/identity.php
