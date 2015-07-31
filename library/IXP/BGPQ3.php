@@ -126,7 +126,9 @@ class IXP_BGPQ3 extends Zend_Exception
 
             $acl = substr( $acl, $preludeLen, -2 ); // also cut off the end
 
-            $asns = array_merge( $asns, explode( '|', $acl ) );
+            if ($acl) {
+                $asns = array_merge( $asns, explode( '|', $acl ) );
+            }
         }
 
         return $asns;
