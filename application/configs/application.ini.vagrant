@@ -283,9 +283,11 @@ resources.smarty.debugging = 0
 ;    frontend.disabled.cust-kit = 1
 ;    frontend.disabled.console-server-connection = 1
 
+frontend.disabled.meeting = 1
+
 ; Set this up before enabling:
 ; See: https://github.com/inex/IXP-Manager/wiki/Route-Server-Prefix-Analysis-Tool
-frontend.disabled.rs-prefixes = 1
+; frontend.disabled.rs-prefixes = 1
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

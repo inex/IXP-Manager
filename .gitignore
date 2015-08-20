@@ -1,6 +1,7 @@
 .env
 .project
 .buildpath
+.vagrant/
 composer.lock
 vendor/
 MAINT_MODE_ENABLED
