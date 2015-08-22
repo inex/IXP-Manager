@@ -473,7 +473,7 @@ smokeping.oconf.syslogfacility = "local0"
 ; Used by nagios-cli.gen-members-conf action to monitor route collector BGP sessions
 ;router.collector.conf.snmppasswd = 'xxxx'
 
-;irrdb.bgpq.path = '/path/to/bgpq3'
+irrdb.bgpq.path = '/usr/local/bin/bgpq3'
 
 ; sflow parameters (peer to peer graphs)
 sflow.enabled = true

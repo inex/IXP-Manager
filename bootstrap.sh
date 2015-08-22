@@ -13,7 +13,7 @@ echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf
 
 apt-get install -y apache2 php5 php5-intl php5-mysql php5-rrd php5-cgi php5-cli php5-snmp php5-curl php5-mcrypt \
     php5-memcache libapache2-mod-php5 mysql-server mysql-client joe memcached snmp nodejs nodejs-legacy npm     \
-    phpmyadmin
+    phpmyadmin build-essential
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
@@ -88,3 +88,15 @@ cp /vagrant/application/configs/application.ini.vagrant /vagrant/application/con
 a2enmod rewrite
 chmod -R a+rwX /vagrant/storage /vagrant/var
 service apache2 restart
+
+# Install BGPQ3
+cd /usr/local
+wget http://snar.spb.ru/prog/bgpq3/bgpq3-0.1.31.tgz
+tar zxf bgpq3-0.1.31.tgz
+cd bgpq3-0.1.31/
+./configure
+make
+make install
+
+
+cd /vagrant
