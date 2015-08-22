@@ -20,13 +20,13 @@
             {/if}
             <li><a href="#tab-details" data-toggle="tab">My Details</a></li>
             <li><a href="#tab3" data-toggle="tab">Ports</a></li>
-            
+
             {if $resellerMode && $cust->isReseller()}
                 <li>
                     <a href="#tab-resold-customers" data-toggle="tab">Resold Customers</a>
                 </li>
             {/if}
-            
+
             {if count( $custNotes )}
                 <li>
                     <a href="#tab-content-notes" id="tab-notes" data-toggle="tab">
@@ -42,9 +42,9 @@
                     <li>
                         <a href="{genUrl controller="rs-prefixes" action="list" tab='adv_nacc'}">
                             Prefixes
-		    	            {if $rsRoutes.adv_nacc.total gt 0}
-		    	                <span class="badge badge-important">{$rsRoutes.adv_nacc.total}</span>
-		                    {/if}
+                            {if $rsRoutes.adv_nacc.total gt 0}
+                                <span class="badge badge-important">{$rsRoutes.adv_nacc.total}</span>
+                            {/if}
                             &raquo;
                         </a>
                     </li>
@@ -68,7 +68,7 @@
             <!-- Overview Tab -->
             {tmplinclude file="dashboard/index-tabs/overview.phtml"}
         </div>
-        
+
         {if $multiIXP}
             <div class="tab-pane" id="tab-ixps">
                 {tmplinclude file="dashboard/index-tabs/ixps.phtml"}
@@ -93,7 +93,7 @@
                 {tmplinclude file="customer/overview-tabs/resold-customers.phtml"}
             </div>
         {/if}
-        
+
         {if count( $custNotes )}
             <div class="tab-pane" id="tab-content-notes">
                 {tmplinclude file="customer/overview-tabs/notes.phtml"}
