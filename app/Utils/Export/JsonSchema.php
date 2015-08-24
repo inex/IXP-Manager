@@ -128,9 +128,9 @@ class JsonSchema
 
         # oops, messy.  ixp_id was renamed as ixf_id in v0.4
         if( $version == self::EUROIX_JSON_VERSION_0_3 ) {
-            $ixpinfo['ixp_id'] = config( 'identity.ixfid' );
+            $ixpinfo['ixp_id'] = intval( config( 'identity.ixfid' ) );
         } else {
-            $ixpinfo['ixf_id'] = config( 'identity.ixfid' );
+            $ixpinfo['ixf_id'] = intval( config( 'identity.ixfid' ) );
             $ixpinfo['ixp_id'] = 1;                            // referenced in member's connections section
         }
 
@@ -181,7 +181,7 @@ class JsonSchema
                 $switchentry['country'] = config( 'identity.location.country' );
 
                 if( $version >= self::EUROIX_JSON_VERSION_0_5 && $switch->getCabinet()->getLocation()->getPdbFacilityId() )
-                    $switchentry['pdb_facility_id'] = $switch->getCabinet()->getLocation()->getPdbFacilityId();
+                    $switchentry['pdb_facility_id'] = intval( $switch->getCabinet()->getLocation()->getPdbFacilityId() );
 
                 $data[] = $switchentry;
             }
