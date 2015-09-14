@@ -8,7 +8,6 @@ tech-c:         INO7-RIPE
 notify:         ripe-notify@inex.ie
 remarks:        INEX route server ASNs are listed in AS-SET-INEX-RS
 mnt-by:         INEX-NOC
-changed:        ripe-admin@inex.ie
 {foreach $asns as $asn => $details}
 {if $asn != 43760}
 members:        {$details.asmacro}

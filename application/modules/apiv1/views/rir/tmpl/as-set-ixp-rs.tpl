@@ -7,7 +7,6 @@ tech-c:         XYZ-RIPE
 notify:         ripe-notify@example.com
 remarks:        IXP member ASNs are listed in AS-SET-IXP-CONNECTED
 mnt-by:         IXP-NOC
-changed:        ripe-admin@example.com
 {foreach $customers as $c}
 {if $c->isRouteServerClient()}
 members:        {$c->resolveAsMacro( 4, 'AS' )}
