@@ -33,7 +33,6 @@ tech-c:         INO7-RIPE
 mnt-by:         RIPE-NCC-END-MNT
 mnt-by:         INEX-NOC
 mnt-routes:     INEX-NOC
-changed:        ripe-admin@inex.ie
 
 {foreach $rsclients.clients as $asn => $cdetails}
     {$cust = $customers[$cdetails.id]}
@@ -45,8 +44,8 @@ changed:        ripe-admin@inex.ie
 	            {/if}
 	            {foreach $rsclients.vlans.$vlanid.servers.$proto as $serverip}
 	                {if $proto eq 4}
-	
-import:         from AS{$cust->getAutsys()} {$interface.$proto} at {$serverip} 
+
+import:         from AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
                 accept {$cust->resolveAsMacro( $proto, 'AS' )}  # {$cust->getName()}
 export:         to AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
                 announce AS-SET-INEX-RS

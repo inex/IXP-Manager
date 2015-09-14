@@ -7,7 +7,6 @@ tech-c:         XYZ-RIPE
 notify:         ripe-notify@example.com
 remarks:        IXP member ASNs connected to the route servers are listed in AS-SET-IXP-RS
 mnt-by:         IXP-NOC
-changed:        ripe-admin@example.com
 {foreach $asns as $asn => $details}
 members:        {$details.asmacro}
 {/foreach}
