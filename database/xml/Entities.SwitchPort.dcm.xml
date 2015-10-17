@@ -6,7 +6,11 @@
     </id>
     <field name="type" type="integer" nullable="true"/>
     <field name="name" type="string" nullable="true"/>
-    <field name="active" type="boolean" nullable="false"/>
+    <field name="active" type="boolean" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
     <field name="ifIndex" type="integer" nullable="true"/>
     <field name="ifName" type="string" nullable="true"/>
     <field name="ifAlias" type="string" nullable="true"/>
@@ -30,6 +34,5 @@
       </join-columns>
     </many-to-one>
     <one-to-one field="PhysicalInterface" target-entity="Entities\PhysicalInterface" mapped-by="SwitchPort"/>
-    <one-to-many field="SecEvents" target-entity="Entities\SecEvent" mapped-by="SwitchPort"/>
   </entity>
 </doctrine-mapping>

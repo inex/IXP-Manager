@@ -64,10 +64,10 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'name', 'shortname', 'tag', 'address', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes');
+            return array('__isInitialized__', 'name', 'shortname', 'tag', 'address', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id');
         }
 
-        return array('__isInitialized__', 'name', 'shortname', 'tag', 'address', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes');
+        return array('__isInitialized__', 'name', 'shortname', 'tag', 'address', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id');
     }
 
     /**
@@ -461,6 +461,28 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', array());
 
         return parent::getNotes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPdbFacilityId($pdbFacilityId)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPdbFacilityId', array($pdbFacilityId));
+
+        return parent::setPdbFacilityId($pdbFacilityId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPdbFacilityId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPdbFacilityId', array());
+
+        return parent::getPdbFacilityId();
     }
 
 }

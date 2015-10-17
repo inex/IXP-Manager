@@ -414,44 +414,8 @@ class Switcher
     {
         return $this->Vendor;
     }
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $SecEvents;
 
 
-    /**
-     * Add SecEvents
-     *
-     * @param Entities\SecEvent $secEvents
-     * @return Switcher
-     */
-    public function addSecEvent(\Entities\SecEvent $secEvents)
-    {
-        $this->SecEvents[] = $secEvents;
-
-        return $this;
-    }
-
-    /**
-     * Remove SecEvents
-     *
-     * @param Entities\SecEvent $secEvents
-     */
-    public function removeSecEvent(\Entities\SecEvent $secEvents)
-    {
-        $this->SecEvents->removeElement($secEvents);
-    }
-
-    /**
-     * Get SecEvents
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getSecEvents()
-    {
-        return $this->SecEvents;
-    }
     /**
      * @var boolean $active
      */

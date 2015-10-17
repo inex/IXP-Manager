@@ -64,10 +64,10 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'SecEvents', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState');
+            return array('__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState');
         }
 
-        return array('__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'SecEvents', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState');
+        return array('__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState');
     }
 
     /**
@@ -274,39 +274,6 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitcher', array());
 
         return parent::getSwitcher();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addSecEvent(\Entities\SecEvent $secEvents)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addSecEvent', array($secEvents));
-
-        return parent::addSecEvent($secEvents);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeSecEvent(\Entities\SecEvent $secEvents)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSecEvent', array($secEvents));
-
-        return parent::removeSecEvent($secEvents);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSecEvents()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSecEvents', array());
-
-        return parent::getSecEvents();
     }
 
     /**

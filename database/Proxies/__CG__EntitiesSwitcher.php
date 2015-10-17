@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'SecEvents', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported');
+            return array('__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported');
         }
 
-        return array('__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'SecEvents', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported');
+        return array('__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported');
     }
 
     /**
@@ -472,39 +472,6 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVendor', array());
 
         return parent::getVendor();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addSecEvent(\Entities\SecEvent $secEvents)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addSecEvent', array($secEvents));
-
-        return parent::addSecEvent($secEvents);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeSecEvent(\Entities\SecEvent $secEvents)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSecEvent', array($secEvents));
-
-        return parent::removeSecEvent($secEvents);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSecEvents()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSecEvents', array());
-
-        return parent::getSecEvents();
     }
 
     /**

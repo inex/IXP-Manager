@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<skipper version="3.0.1.1129" name="IXP-Manager" mvc="Without MVC" orm="Doctrine2" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
-  <module name="IXP-Manager" import-format="Doctrine2Xml" import-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
-    <entity name="IrrdbAsn" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
+<skipper version="3.2.3.1247" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+  <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
+    <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
       <field name="customer_id" type="integer" required="true" uuid="07bd2228-73b4-479f-ad50-1438f9905e5f"/>
       <field name="asn" type="integer" required="true" uuid="ad41fc97-061a-4e76-bcef-01146a05f2e6"/>
@@ -19,10 +19,10 @@
         <attribute name="tableName">irrdb_asn</attribute>
       </orm-attributes>
     </entity>
-    <association from="IrrdbAsn" to="Customer" owner-alias="IrrdbASNs" inverse-alias="Customer" uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd">
+    <association from="\Entities\IrrdbAsn" to="\Entities\Customer" owner-alias="IrrdbASNs" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd">
       <association-field from="customer_id" to="id"/>
     </association>
-    <entity name="ApiKey" uuid="3da990c1-6ab8-436e-8800-e09a08ebee16">
+    <entity name="\Entities\ApiKey" local-name="ApiKey" namespace="\Entities" uuid="3da990c1-6ab8-436e-8800-e09a08ebee16">
       <field name="id" type="bigint" unique="true" primary="true" auto-increment="true" uuid="e7921411-de32-4a53-a946-d829a0a07f91"/>
       <field name="apiKey" type="string" size="255" required="true" unique="true" uuid="e2e30fb0-01ac-431a-99b7-5c40b4c9d9ce"/>
       <field name="expires" type="datetime" uuid="a4ca6f2b-63ec-4289-9172-28dea39d6bca"/>
@@ -38,10 +38,10 @@
         <attribute name="tableName">api_keys</attribute>
       </orm-attributes>
     </entity>
-    <association from="ApiKey" to="User" owner-alias="ApiKeys" inverse-alias="User" uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a">
+    <association from="\Entities\ApiKey" to="\Entities\User" owner-alias="ApiKeys" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a">
       <association-field from="user_id" to="id"/>
     </association>
-    <entity name="IrrdbPrefix" uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64">
+    <entity name="\Entities\IrrdbPrefix" local-name="IrrdbPrefix" namespace="\Entities" uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3dba3446-ee45-49f0-8435-7765a5078a5a"/>
       <field name="customer_id" type="integer" required="true" uuid="acd87918-2791-4530-90fd-65e46f8a774d"/>
       <field name="prefix" type="string" size="255" required="true" uuid="552d465a-f969-4d73-88f0-9aceb239cf15"/>
@@ -60,10 +60,10 @@
         <attribute name="repository-class">Repositories\IrrdbPrefix</attribute>
       </orm-attributes>
     </entity>
-    <association from="IrrdbPrefix" to="Customer" owner-alias="IrrdbPrefixes" inverse-alias="Customer" uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726">
+    <association from="\Entities\IrrdbPrefix" to="\Entities\Customer" owner-alias="IrrdbPrefixes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726">
       <association-field from="customer_id" to="id"/>
     </association>
-    <entity name="UserLoginHistory" uuid="9f26679f-99e4-48b9-b544-4d7377988044">
+    <entity name="\Entities\UserLoginHistory" local-name="UserLoginHistory" namespace="\Entities" uuid="9f26679f-99e4-48b9-b544-4d7377988044">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="2ec9db54-1a9e-4bea-b669-1842199f515f"/>
       <field name="user_id" type="integer" required="true" uuid="99836e5c-d45b-4622-af11-a66b52ef9d93"/>
       <field name="ip" type="string" size="39" required="true" uuid="cb30ab15-2f18-462f-81b7-6304e752aad2"/>
@@ -78,10 +78,10 @@
         <attribute name="repository-class">Repositories\UserLoginHistory</attribute>
       </orm-attributes>
     </entity>
-    <association from="UserLoginHistory" to="User" owner-alias="LastLogins" inverse-alias="User" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
+    <association from="\Entities\UserLoginHistory" to="\Entities\User" owner-alias="LastLogins" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
       <association-field from="user_id" to="id"/>
     </association>
-    <entity name="NetInfo" uuid="6747622b-df14-45da-828f-3c676799d963">
+    <entity name="\Entities\NetInfo" local-name="NetInfo" namespace="\Entities" uuid="6747622b-df14-45da-828f-3c676799d963">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="690436d3-2110-4c40-a6de-d2d79f286469"/>
       <field name="vlan_id" type="integer" required="true" uuid="f1c5895d-c306-4b6f-ae5a-f178f30ccce6"/>
       <field name="protocol" type="integer" required="true" uuid="3b6e8a1f-d428-4c83-b140-5b4603da56b5"/>
@@ -99,10 +99,10 @@
         <attribute name="repository-class">Repositories\NetInfo</attribute>
       </orm-attributes>
     </entity>
-    <association from="NetInfo" to="Vlan" owner-alias="NetInfo" inverse-alias="Vlan" uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e">
+    <association from="\Entities\NetInfo" to="\Entities\Vlan" owner-alias="NetInfo" inverse-alias="Vlan" many-owner="true" many-inverse="false" parent-required="true" uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e">
       <association-field from="vlan_id" to="id"/>
     </association>
-    <entity name="CompanyRegisteredDetail" uuid="6070e4d5-359b-4047-a550-8e130118632e">
+    <entity name="\Entities\CompanyRegisteredDetail" local-name="CompanyRegisteredDetail" namespace="\Entities" uuid="6070e4d5-359b-4047-a550-8e130118632e">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="320b1911-25df-4909-ace7-575ed60fa4e5"/>
       <field name="registeredName" type="string" uuid="d2e5b288-fd9a-4e11-9d53-1dfd48686381"/>
       <field name="companyNumber" type="string" uuid="3faaabb3-de13-449a-8c5a-b65db2c5edb0"/>
@@ -119,7 +119,7 @@
         <attribute name="repository-class">Repositories\CompanyRegistrationDetail</attribute>
       </orm-attributes>
     </entity>
-    <entity name="Infrastructure" uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b">
+    <entity name="\Entities\Infrastructure" local-name="Infrastructure" namespace="\Entities" uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="e904a0c2-3aad-427e-95c9-221727a33e39"/>
       <field name="name" type="string" size="255" uuid="02357757-59b4-470c-8c32-d56c3370bad9"/>
       <field name="shortname" type="string" size="255" uuid="20582920-be04-4962-939f-b5638e02740a"/>
@@ -136,10 +136,10 @@
         <attribute name="repository-class">Repositories\Infrastructure</attribute>
       </orm-attributes>
     </entity>
-    <association from="Infrastructure" to="IXP" owner-alias="Infrastructures" inverse-alias="IXP" uuid="a93d8c93-6456-462f-a524-9fcda1180727">
+    <association from="\Entities\Infrastructure" to="\Entities\IXP" owner-alias="Infrastructures" inverse-alias="IXP" many-owner="true" many-inverse="false" parent-required="true" uuid="a93d8c93-6456-462f-a524-9fcda1180727">
       <association-field from="ixp_id" to="id"/>
     </association>
-    <entity name="IXP" uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d">
+    <entity name="\Entities\IXP" local-name="IXP" namespace="\Entities" uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="644cca3f-b189-4b43-a44c-ba3e19c325d4"/>
       <field name="name" type="string" size="255" uuid="afac262b-b479-47dc-ba75-e1fe2eb8ea81"/>
       <field name="shortname" type="string" size="255" unique="true" uuid="1272442a-a57c-4bbd-a9f8-619fcdbf38d4"/>
@@ -158,7 +158,7 @@
         <attribute name="repository-class">Repositories\IXP</attribute>
       </orm-attributes>
     </entity>
-    <entity name="CustomerToIXP" uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786">
+    <entity name="\Entities\CustomerToIXP" local-name="CustomerToIXP" namespace="\Entities" uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="62186e23-ae8b-40e5-9681-a26bac3fa365"/>
       <field name="customer_id" type="integer" required="true" primary="true" uuid="64570dc3-2fab-4829-a0df-cf4e18bcca3a"/>
       <field name="ixp_id" type="integer" required="true" primary="true" uuid="d15a0b5b-3334-4079-9b9e-59c9e5d8c72b"/>
@@ -168,15 +168,15 @@
         <attribute name="tableName">customer_to_ixp</attribute>
       </orm-attributes>
     </entity>
-    <many-to-many mn-entity="CustomerToIXP" uuid="3e003c57-9922-4820-a7b3-897360e1d984">
-      <many-to-many-entity name="Customer" owning-side="true" alias="Customers" uuid="3ddb207a-b135-469a-8c60-8bdd1856f642">
+    <many-to-many mn-entity="\Entities\CustomerToIXP" uuid="3e003c57-9922-4820-a7b3-897360e1d984">
+      <many-to-many-entity name="\Entities\Customer" owning-side="true" alias="Customers" uuid="3ddb207a-b135-469a-8c60-8bdd1856f642">
         <many-to-many-field from="customer_id" to="id"/>
       </many-to-many-entity>
-      <many-to-many-entity name="IXP" owning-side="false" alias="IXPs" uuid="5305218b-7fb0-4351-aaa8-39ce0d4e7d19">
+      <many-to-many-entity name="\Entities\IXP" owning-side="false" alias="IXPs" uuid="5305218b-7fb0-4351-aaa8-39ce0d4e7d19">
         <many-to-many-field from="ixp_id" to="id"/>
       </many-to-many-entity>
     </many-to-many>
-    <entity name="CompanyBillingDetail" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
+    <entity name="\Entities\CompanyBillingDetail" local-name="CompanyBillingDetail" namespace="\Entities" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="a67b06c1-d18c-4196-90ed-d8987633c48b"/>
       <field name="billingContactName" type="string" uuid="b797975d-1d9d-48fd-84fe-917e08d3297d"/>
       <field name="billingAddress1" type="string" uuid="1401ac3e-a825-4181-b879-d5d1dca03b1a"/>
@@ -199,7 +199,7 @@
         <attribute name="tableName">company_billing_detail</attribute>
       </orm-attributes>
     </entity>
-    <entity name="ContactGroup" uuid="0c1cb743-444a-4fea-ab68-7150272fc55b">
+    <entity name="\Entities\ContactGroup" local-name="ContactGroup" namespace="\Entities" uuid="0c1cb743-444a-4fea-ab68-7150272fc55b">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3d4b50db-5775-4991-8836-6c5002afa75b"/>
       <field name="name" type="string" size="20" required="true" unique="true" uuid="30e37e8e-e3ed-4060-8b9e-7000b8cf69ab"/>
       <field name="description" type="string" size="255" required="true" uuid="ddd12f3a-179f-4144-a0d4-6c213ce3205e"/>
@@ -213,7 +213,7 @@
         <attribute name="tableName">contact_group</attribute>
       </orm-attributes>
     </entity>
-    <entity name="ContactToGroup" uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135">
+    <entity name="\Entities\ContactToGroup" local-name="ContactToGroup" namespace="\Entities" uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="35ed765e-3477-4068-abc8-24a9025419ca"/>
       <field name="contact_group_id" type="bigint" required="true" primary="true" uuid="12cb73c0-0eaa-4ff5-83e3-bf55e5f58cdd"/>
       <field name="contact_id" type="integer" required="true" primary="true" uuid="22632fe8-624e-4c3f-8863-62676367f7e0"/>
@@ -223,15 +223,15 @@
         <attribute name="tableName">contact_to_group</attribute>
       </orm-attributes>
     </entity>
-    <many-to-many mn-entity="ContactToGroup" uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a">
-      <many-to-many-entity name="Contact" owning-side="true" alias="Contacts" uuid="1c683287-f504-4267-acea-e3d264f6aa21">
+    <many-to-many mn-entity="\Entities\ContactToGroup" uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a">
+      <many-to-many-entity name="\Entities\Contact" owning-side="true" alias="Contacts" uuid="1c683287-f504-4267-acea-e3d264f6aa21">
         <many-to-many-field from="contact_id" to="id"/>
       </many-to-many-entity>
-      <many-to-many-entity name="ContactGroup" owning-side="false" alias="Groups" uuid="bcddb68b-f602-44d4-9240-46cc31b0055b">
+      <many-to-many-entity name="\Entities\ContactGroup" owning-side="false" alias="Groups" uuid="bcddb68b-f602-44d4-9240-46cc31b0055b">
         <many-to-many-field from="contact_group_id" to="id"/>
       </many-to-many-entity>
     </many-to-many>
-    <entity name="CustomerNote" uuid="783a63d3-7ca8-42bc-b949-a99a889d724a">
+    <entity name="\Entities\CustomerNote" local-name="CustomerNote" namespace="\Entities" uuid="783a63d3-7ca8-42bc-b949-a99a889d724a">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3aaea8aa-e370-4b2d-9bbf-e8c089289e3e"/>
       <field name="customer_id" type="integer" required="true" uuid="5da1c492-9b92-4669-bd84-684bf027867b"/>
       <field name="private" type="boolean" default="1" required="true" uuid="9bbfda6b-23a8-46f3-aab5-41eeeda6b1a7"/>
@@ -245,10 +245,10 @@
         <attribute name="repository-class">Repositories\CustomerNotes</attribute>
       </orm-attributes>
     </entity>
-    <association from="CustomerNote" to="Customer" owner-alias="Notes" inverse-alias="Customer" uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2">
+    <association from="\Entities\CustomerNote" to="\Entities\Customer" owner-alias="Notes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2">
       <association-field from="customer_id" to="id"/>
     </association>
-    <entity name="BGPSessionData" uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d">
+    <entity name="\Entities\BGPSessionData" local-name="BGPSessionData" namespace="\Entities" uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="cd0ddadb-8250-4d15-8b5a-bc466fa3457f"/>
       <field name="srcipaddressid" type="integer" uuid="9ea89f0e-eb57-4beb-ab92-b3077c08a30d"/>
       <field name="dstipaddressid" type="integer" uuid="62d7f206-57c6-4d2d-a18d-d5b35ec6c92f"/>
@@ -263,8 +263,9 @@
         <attribute name="tableName">bgpsessiondata</attribute>
       </orm-attributes>
     </entity>
-    <entity name="Location" uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4">
+    <entity name="\Entities\Location" local-name="Location" namespace="\Entities" uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="af724c25-3d1e-4fea-bfac-428f8460b909"/>
+      <field name="pdb_facility_id" description="PeeringDB facility ID" type="bigint" uuid="5789d6ac-fc5d-4f70-905b-de51e41ae30c"/>
       <field name="name" type="string" size="255" uuid="be0b898f-da9c-44f1-86cc-f31d4ea52ced"/>
       <field name="shortname" type="string" size="255" unique="true" uuid="448524b7-b818-46b1-9635-cb1088cfacdd"/>
       <field name="tag" type="string" size="255" uuid="cdd75bf6-1d5a-4570-8190-ebd6adf2b59e"/>
@@ -282,7 +283,7 @@
         <attribute name="tableName">location</attribute>
       </orm-attributes>
     </entity>
-    <entity name="Cabinet" uuid="a4eeb330-c86b-4443-968b-c166863303b1">
+    <entity name="\Entities\Cabinet" local-name="Cabinet" namespace="\Entities" uuid="a4eeb330-c86b-4443-968b-c166863303b1">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="faa5888c-6746-47a9-a5a6-daa17e179d40"/>
       <field name="locationid" type="integer" uuid="dbb07064-89b9-4d3e-9d3c-52e586652b51"/>
       <field name="name" type="string" size="255" unique="true" uuid="27783e63-e505-403c-bddd-a57a952eb6e4"/>
@@ -296,10 +297,10 @@
         <attribute name="tableName">cabinet</attribute>
       </orm-attributes>
     </entity>
-    <association from="Cabinet" to="Location" owner-alias="Cabinets" inverse-alias="Location" uuid="d9075ce3-753a-432f-a009-c9e386509484">
+    <association from="\Entities\Cabinet" to="\Entities\Location" owner-alias="Cabinets" inverse-alias="Location" many-owner="true" many-inverse="false" uuid="d9075ce3-753a-432f-a009-c9e386509484">
       <association-field from="locationid" to="id"/>
     </association>
-    <entity name="Switcher" uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667">
+    <entity name="\Entities\Switcher" local-name="Switcher" namespace="\Entities" uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="80d579c5-bcf2-447f-8eec-7492157d3a02"/>
       <field name="name" type="string" size="255" unique="true" uuid="5c094e0a-6fa7-4321-a695-6c3c26c2f517"/>
       <field name="hostname" type="string" size="255" uuid="108ec5d0-e19d-44dd-a142-ac8d33fc48b4"/>
@@ -325,16 +326,16 @@
         <attribute name="repository-class">Repositories\Switcher</attribute>
       </orm-attributes>
     </entity>
-    <association from="Switcher" to="Infrastructure" owner-alias="Switchers" inverse-alias="Infrastructure" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
+    <association from="\Entities\Switcher" to="\Entities\Infrastructure" owner-alias="Switchers" inverse-alias="Infrastructure" many-owner="true" many-inverse="false" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
       <association-field from="infrastructure" to="id"/>
     </association>
-    <association from="Switcher" to="Cabinet" owner-alias="Switches" inverse-alias="Cabinet" uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765">
+    <association from="\Entities\Switcher" to="\Entities\Cabinet" owner-alias="Switches" inverse-alias="Cabinet" many-owner="true" many-inverse="false" uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765">
       <association-field from="cabinetid" to="id"/>
     </association>
-    <association from="Switcher" to="Vendor" owner-alias="Switches" inverse-alias="Vendor" uuid="e8f4931c-82ef-4c5d-83c3-61a0b4271727">
+    <association from="\Entities\Switcher" to="\Entities\Vendor" owner-alias="Switches" inverse-alias="Vendor" many-owner="true" many-inverse="false" uuid="e8f4931c-82ef-4c5d-83c3-61a0b4271727">
       <association-field from="vendorid" to="id"/>
     </association>
-    <entity name="Vendor" uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502">
+    <entity name="\Entities\Vendor" local-name="Vendor" namespace="\Entities" uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="ec333e95-5325-419e-a114-d47cd5b622e9"/>
       <field name="name" type="string" size="255" uuid="3f0a1fff-6d39-4baf-99c2-15f90685c9bd"/>
       <field name="shortname" type="string" size="255" uuid="d9673ae5-0cf2-4d6e-9d9b-e357e053940c"/>
@@ -345,7 +346,7 @@
         <attribute name="tableName">vendor</attribute>
       </orm-attributes>
     </entity>
-    <entity name="SwitchPort" uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291">
+    <entity name="\Entities\SwitchPort" local-name="SwitchPort" namespace="\Entities" uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="a6c65ce1-6466-4c09-afa9-6b1278c45867"/>
       <field name="switchid" type="integer" uuid="930dfe01-28bb-43e4-9b63-cea471f3097b"/>
       <field name="type" type="integer" uuid="12c83a2a-75d3-4cbe-bbd8-aa74fd5c8ba1"/>
@@ -374,10 +375,10 @@
         <attribute name="tableName">switchport</attribute>
       </orm-attributes>
     </entity>
-    <association from="SwitchPort" to="Switcher" owner-alias="Ports" inverse-alias="Switcher" uuid="93708a18-58db-4061-add9-24991ccd3ce0">
+    <association from="\Entities\SwitchPort" to="\Entities\Switcher" owner-alias="Ports" inverse-alias="Switcher" many-owner="true" many-inverse="false" uuid="93708a18-58db-4061-add9-24991ccd3ce0">
       <association-field from="switchid" to="id"/>
     </association>
-    <entity name="PhysicalInterface" uuid="09ab0078-0545-4696-a0cf-f825906ff6b8">
+    <entity name="\Entities\PhysicalInterface" local-name="PhysicalInterface" namespace="\Entities" uuid="09ab0078-0545-4696-a0cf-f825906ff6b8">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="845abe13-fa32-44d1-a6b5-c1bbf02c9f5f"/>
       <field name="switchportid" type="integer" unique="true" uuid="2688941a-801e-4543-8192-d3c4ed6fa944"/>
       <field name="virtualinterfaceid" type="integer" uuid="983fbec5-615e-450c-82d7-a3d26aed9987"/>
@@ -393,23 +394,23 @@
         <attribute name="tableName">physicalinterface</attribute>
       </orm-attributes>
     </entity>
-    <association from="PhysicalInterface" to="SwitchPort" owner-alias="PhysicalInterface" inverse-alias="SwitchPort" uuid="f18aceae-d3e6-452d-9e28-0c32f340b245">
+    <association from="\Entities\PhysicalInterface" to="\Entities\SwitchPort" owner-alias="PhysicalInterface" inverse-alias="SwitchPort" many-owner="false" many-inverse="false" uuid="f18aceae-d3e6-452d-9e28-0c32f340b245">
       <association-field from="switchportid" to="id"/>
     </association>
-    <association from="PhysicalInterface" to="VirtualInterface" owner-alias="PhysicalInterfaces" inverse-alias="VirtualInterface" uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6">
+    <association from="\Entities\PhysicalInterface" to="\Entities\VirtualInterface" owner-alias="PhysicalInterfaces" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6">
       <association-field from="virtualinterfaceid" to="id"/>
     </association>
-    <association from="PhysicalInterface" to="PhysicalInterface" owner-alias="PeeringPhysicalInterface" inverse-alias="FanoutPhysicalInterface" uuid="1166ebf0-8024-4783-9af3-61e1b4f61070">
+    <association from="\Entities\PhysicalInterface" to="\Entities\PhysicalInterface" owner-alias="PeeringPhysicalInterface" inverse-alias="FanoutPhysicalInterface" many-owner="false" many-inverse="false" uuid="1166ebf0-8024-4783-9af3-61e1b4f61070">
       <association-field from="fanout_physical_interface_id" to="id"/>
     </association>
-    <entity name="VlanInterface" uuid="bad4f785-8f04-4d84-8cc9-36f638715559">
+    <entity name="\Entities\VlanInterface" local-name="VlanInterface" namespace="\Entities" uuid="bad4f785-8f04-4d84-8cc9-36f638715559">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="7ee46365-d03c-4418-b7be-ddfebaf9420e"/>
       <field name="virtualinterfaceid" type="integer" uuid="2ef3f425-a1af-4810-b0e1-8f21db8e5e43"/>
       <field name="vlanid" type="integer" uuid="18053fb8-ad45-4d15-81ce-1435d7a33178"/>
-      <field name="ipv4enabled" type="boolean" default="1" uuid="c6984375-12ee-470d-932b-982769101a85"/>
+      <field name="ipv4enabled" type="boolean" default="0" uuid="c6984375-12ee-470d-932b-982769101a85"/>
       <field name="ipv4addressid" type="integer" unique="true" uuid="8f0cfdc9-d6c6-4e19-a128-ecb8d12e1f73"/>
       <field name="ipv4hostname" type="string" size="255" uuid="bc480e24-3f71-4df5-9c62-f6bee164a335"/>
-      <field name="ipv6enabled" type="boolean" default="1" uuid="38929c42-57b3-458d-8888-bcab1c296e69"/>
+      <field name="ipv6enabled" type="boolean" default="0" uuid="38929c42-57b3-458d-8888-bcab1c296e69"/>
       <field name="ipv6addressid" type="integer" unique="true" uuid="66a778b1-8747-40b8-9043-80036dd68b1f"/>
       <field name="ipv6hostname" type="string" size="255" uuid="497552a4-50f8-45aa-9ab8-71622b131318"/>
       <field name="mcastenabled" type="boolean" default="0" uuid="4806cba2-d349-4897-a6fc-10a1d875868d"/>
@@ -432,19 +433,19 @@
         <attribute name="tableName">vlaninterface</attribute>
       </orm-attributes>
     </entity>
-    <association from="VlanInterface" to="VirtualInterface" owner-alias="VlanInterfaces" inverse-alias="VirtualInterface" uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4">
+    <association from="\Entities\VlanInterface" to="\Entities\VirtualInterface" owner-alias="VlanInterfaces" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4">
       <association-field from="virtualinterfaceid" to="id"/>
     </association>
-    <association from="VlanInterface" to="Vlan" owner-alias="VlanInterfaces" inverse-alias="Vlan" uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73">
+    <association from="\Entities\VlanInterface" to="\Entities\Vlan" owner-alias="VlanInterfaces" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73">
       <association-field from="vlanid" to="id"/>
     </association>
-    <association from="VlanInterface" to="IPv4Address" owner-alias="VlanInterface" inverse-alias="IPv4Address" uuid="39ad3dd5-487b-4152-9190-558bd7e80668">
+    <association from="\Entities\VlanInterface" to="\Entities\IPv4Address" owner-alias="VlanInterface" inverse-alias="IPv4Address" many-owner="false" many-inverse="false" uuid="39ad3dd5-487b-4152-9190-558bd7e80668">
       <association-field from="ipv4addressid" to="id"/>
     </association>
-    <association from="VlanInterface" to="IPv6Address" owner-alias="VlanInterface" inverse-alias="IPv6Address" uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f">
+    <association from="\Entities\VlanInterface" to="\Entities\IPv6Address" owner-alias="VlanInterface" inverse-alias="IPv6Address" many-owner="false" many-inverse="false" uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f">
       <association-field from="ipv6addressid" to="id"/>
     </association>
-    <entity name="Vlan" uuid="1b90f411-dfed-48a8-acd0-97cbf599e069">
+    <entity name="\Entities\Vlan" local-name="Vlan" namespace="\Entities" uuid="1b90f411-dfed-48a8-acd0-97cbf599e069">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="947c18c6-133a-42ba-a7e2-1346d7cc7e44"/>
       <field name="infrastructureid" type="integer" required="true" uuid="6bd09753-b303-4f0d-b85d-0324f9728200"/>
       <field name="name" type="string" size="255" uuid="34caf8b1-714c-4ffd-87d9-c5e6b3834c70"/>
@@ -460,10 +461,10 @@
         <attribute name="tableName">vlan</attribute>
       </orm-attributes>
     </entity>
-    <association from="Vlan" to="Infrastructure" owner-alias="Vlans" inverse-alias="Infrastructure" uuid="c3779c0a-b590-4cf8-9495-984270d7496a">
+    <association from="\Entities\Vlan" to="\Entities\Infrastructure" owner-alias="Vlans" inverse-alias="Infrastructure" many-owner="true" many-inverse="false" parent-required="true" uuid="c3779c0a-b590-4cf8-9495-984270d7496a">
       <association-field from="infrastructureid" to="id"/>
     </association>
-    <entity name="VirtualInterface" uuid="aa930c08-4f0b-4947-b15b-840caa7455cb">
+    <entity name="\Entities\VirtualInterface" local-name="VirtualInterface" namespace="\Entities" uuid="aa930c08-4f0b-4947-b15b-840caa7455cb">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="5c0ba88f-afec-4008-93e7-b3447d5ac484"/>
       <field name="custid" type="integer" uuid="c0e1e95c-baca-45c1-b2b9-52f04b4911a9"/>
       <field name="name" type="string" size="255" uuid="0229e59a-c66c-4138-80ed-c0993c42f2e0"/>
@@ -477,10 +478,10 @@
         <attribute name="tableName">virtualinterface</attribute>
       </orm-attributes>
     </entity>
-    <association from="VirtualInterface" to="Customer" owner-alias="VirtualInterfaces" inverse-alias="Customer" uuid="a6cd1017-f136-4839-a577-7477c6a5a287">
+    <association from="\Entities\VirtualInterface" to="\Entities\Customer" owner-alias="VirtualInterfaces" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="a6cd1017-f136-4839-a577-7477c6a5a287">
       <association-field from="custid" to="id"/>
     </association>
-    <entity name="IPv4Address" uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd">
+    <entity name="\Entities\IPv4Address" local-name="IPv4Address" namespace="\Entities" uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="d2d715d5-e7fc-452c-9081-72e65fc1a1a0"/>
       <field name="vlanid" type="integer" uuid="14095112-c078-4c94-81e3-fc45e77cbc7c"/>
       <field name="address" type="string" size="16" uuid="4a92224d-c1af-4846-8157-0798b5e86d11"/>
@@ -490,10 +491,10 @@
         <attribute name="tableName">ipv4address</attribute>
       </orm-attributes>
     </entity>
-    <association from="IPv4Address" to="Vlan" owner-alias="IPv4Addresses" inverse-alias="Vlan" uuid="e52b85f7-fca3-4ba3-aadb-758ad65f2c4d">
+    <association from="\Entities\IPv4Address" to="\Entities\Vlan" owner-alias="IPv4Addresses" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="e52b85f7-fca3-4ba3-aadb-758ad65f2c4d">
       <association-field from="vlanid" to="id"/>
     </association>
-    <entity name="IPv6Address" uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10">
+    <entity name="\Entities\IPv6Address" local-name="IPv6Address" namespace="\Entities" uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="bf599b69-6460-4456-8394-382a4e66adab"/>
       <field name="vlanid" type="integer" uuid="526ef53a-689f-487f-90e7-cb2ca8bac3c9"/>
       <field name="address" type="string" size="40" uuid="09bbfb44-9bc3-40ac-b87f-c54e783f2f3b"/>
@@ -503,10 +504,10 @@
         <attribute name="tableName">ipv6address</attribute>
       </orm-attributes>
     </entity>
-    <association from="IPv6Address" to="Vlan" owner-alias="IPv6Addresses" inverse-alias="Vlan" uuid="bc7fc00c-039c-4e6a-ad73-f571f5761bfe">
+    <association from="\Entities\IPv6Address" to="\Entities\Vlan" owner-alias="IPv6Addresses" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="bc7fc00c-039c-4e6a-ad73-f571f5761bfe">
       <association-field from="vlanid" to="id"/>
     </association>
-    <entity name="Customer" uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43">
+    <entity name="\Entities\Customer" local-name="Customer" namespace="\Entities" uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="e5ece1fb-d3f0-4d51-aab1-52068bb60399"/>
       <field name="name" type="string" size="255" uuid="334f3001-30d1-4cc6-8169-66cccbc6b06c"/>
       <field name="type" type="integer" uuid="371315d4-81a7-49be-a6ec-7c5ce0bf5968"/>
@@ -546,19 +547,19 @@
         <attribute name="tableName">cust</attribute>
       </orm-attributes>
     </entity>
-    <association from="Customer" to="IRRDBConfig" owner-alias="Customers" inverse-alias="IRRDB" uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d">
+    <association from="\Entities\Customer" to="\Entities\IRRDBConfig" owner-alias="Customers" inverse-alias="IRRDB" many-owner="true" many-inverse="false" uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d">
       <association-field from="irrdb" to="id"/>
     </association>
-    <association from="Customer" to="CompanyRegisteredDetail" owner-alias="Customer" inverse-alias="RegistrationDetails" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
+    <association from="\Entities\Customer" to="\Entities\CompanyRegisteredDetail" owner-alias="Customer" inverse-alias="RegistrationDetails" many-owner="true" many-inverse="false" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
       <association-field from="company_registered_detail_id" to="id"/>
     </association>
-    <association from="Customer" to="CompanyBillingDetail" owner-alias="Customer" inverse-alias="BillingDetails" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
+    <association from="\Entities\Customer" to="\Entities\CompanyBillingDetail" owner-alias="Customer" inverse-alias="BillingDetails" many-owner="true" many-inverse="false" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
       <association-field from="company_billing_details_id" to="id"/>
     </association>
-    <association from="Customer" to="Customer" owner-alias="ResoldCustomers" inverse-alias="Reseller" uuid="670582b5-1394-4b90-b827-0a331ea5b4aa">
+    <association from="\Entities\Customer" to="\Entities\Customer" owner-alias="ResoldCustomers" inverse-alias="Reseller" many-owner="true" many-inverse="false" uuid="670582b5-1394-4b90-b827-0a331ea5b4aa">
       <association-field from="reseller" to="id"/>
     </association>
-    <entity name="Contact" uuid="cc05d49f-a5cf-4650-9300-be430837e73b">
+    <entity name="\Entities\Contact" local-name="Contact" namespace="\Entities" uuid="cc05d49f-a5cf-4650-9300-be430837e73b">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="8db1b416-2452-4121-8c07-d4539f7d2142"/>
       <field name="custid" type="integer" uuid="e622e4a0-3547-467c-8e65-d1564da84290"/>
       <field name="name" type="string" size="255" required="true" uuid="cee01d36-8e0e-4bd5-a514-ab29f07bf54d"/>
@@ -580,13 +581,13 @@
         <attribute name="tableName">contact</attribute>
       </orm-attributes>
     </entity>
-    <association from="Contact" to="Customer" owner-alias="Contacts" inverse-alias="Customer" uuid="3de69308-a3d5-4138-97be-111724303344">
+    <association from="\Entities\Contact" to="\Entities\Customer" owner-alias="Contacts" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="3de69308-a3d5-4138-97be-111724303344">
       <association-field from="custid" to="id"/>
     </association>
-    <association from="Contact" to="User" owner-alias="Contact" inverse-alias="User" uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287">
+    <association from="\Entities\Contact" to="\Entities\User" owner-alias="Contact" inverse-alias="User" many-owner="false" many-inverse="false" uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287">
       <association-field from="user_id" to="id"/>
     </association>
-    <entity name="ConsoleServerConnection" uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8">
+    <entity name="\Entities\ConsoleServerConnection" local-name="ConsoleServerConnection" namespace="\Entities" uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="a1f3d63b-a238-4760-a2e7-ad5045394acf"/>
       <field name="custid" type="integer" uuid="3e10c4e1-6381-43d4-b13d-434db9ac8679"/>
       <field name="description" type="string" size="255" uuid="74b670af-325d-4c33-bcfa-4d379227823a"/>
@@ -604,13 +605,13 @@
         <attribute name="tableName">consoleserverconnection</attribute>
       </orm-attributes>
     </entity>
-    <association from="ConsoleServerConnection" to="Customer" owner-alias="ConsoleServerConnections" inverse-alias="Customer" uuid="f663287b-e38a-442b-9043-f37c176e6125">
+    <association from="\Entities\ConsoleServerConnection" to="\Entities\Customer" owner-alias="ConsoleServerConnections" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f663287b-e38a-442b-9043-f37c176e6125">
       <association-field from="custid" to="id"/>
     </association>
-    <association from="ConsoleServerConnection" to="Switcher" owner-alias="ConsoleServerConnections" inverse-alias="Switcher" uuid="518453f9-598d-4246-847d-f839117f1d0a">
+    <association from="\Entities\ConsoleServerConnection" to="\Entities\Switcher" owner-alias="ConsoleServerConnections" inverse-alias="Switcher" many-owner="true" many-inverse="false" uuid="518453f9-598d-4246-847d-f839117f1d0a">
       <association-field from="switchid" to="id"/>
     </association>
-    <entity name="CustomerEquipment" uuid="e980f96e-6b58-43c4-8822-a507f25a8885">
+    <entity name="\Entities\CustomerEquipment" local-name="CustomerEquipment" namespace="\Entities" uuid="e980f96e-6b58-43c4-8822-a507f25a8885">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="9beab59d-a930-4ea1-8e94-988b75b1b8af"/>
       <field name="custid" type="integer" uuid="b21031f2-79e9-4e21-ab75-3c07eb72b751"/>
       <field name="cabinetid" type="integer" uuid="0031c965-b377-432a-a716-7bce9af9f2e7"/>
@@ -622,13 +623,13 @@
         <attribute name="tableName">custkit</attribute>
       </orm-attributes>
     </entity>
-    <association from="CustomerEquipment" to="Customer" owner-alias="CustomerEquipment" inverse-alias="Customer" uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819">
+    <association from="\Entities\CustomerEquipment" to="\Entities\Customer" owner-alias="CustomerEquipment" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819">
       <association-field from="custid" to="id"/>
     </association>
-    <association from="CustomerEquipment" to="Cabinet" owner-alias="CustomerEquipment" inverse-alias="Cabinet" uuid="ab08b405-788c-4579-bc8d-3445b6ba3821">
+    <association from="\Entities\CustomerEquipment" to="\Entities\Cabinet" owner-alias="CustomerEquipment" inverse-alias="Cabinet" many-owner="true" many-inverse="false" uuid="ab08b405-788c-4579-bc8d-3445b6ba3821">
       <association-field from="cabinetid" to="id"/>
     </association>
-    <entity name="IRRDBConfig" uuid="ceaae170-210b-45f6-81b2-9094b57e3848">
+    <entity name="\Entities\IRRDBConfig" local-name="IRRDBConfig" namespace="\Entities" uuid="ceaae170-210b-45f6-81b2-9094b57e3848">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="e3eec488-aeeb-4b18-a155-e5a71fc733cc"/>
       <field name="host" type="string" size="255" uuid="3591adbe-f1ee-4043-b9cd-3e1445185e21"/>
       <field name="protocol" type="string" size="255" uuid="b83f45a1-666e-4a0e-a03c-3e8c0375b1df"/>
@@ -640,7 +641,7 @@
         <attribute name="tableName">irrdbconfig</attribute>
       </orm-attributes>
     </entity>
-    <entity name="MACAddress" uuid="d776f08f-235f-4431-b5c8-60a6e13295f8">
+    <entity name="\Entities\MACAddress" local-name="MACAddress" namespace="\Entities" uuid="d776f08f-235f-4431-b5c8-60a6e13295f8">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="ad5220fd-a2ef-4d35-986c-7b1c2c527aa4"/>
       <field name="firstseen" type="datetime" uuid="92502d95-62c3-4212-b35b-462b6f66de05"/>
       <field name="lastseen" type="datetime" uuid="44a8bd8c-a17a-4f96-b802-e0cc4aa9fb01"/>
@@ -652,10 +653,10 @@
         <attribute name="tableName">macaddress</attribute>
       </orm-attributes>
     </entity>
-    <association from="MACAddress" to="VirtualInterface" owner-alias="MACAddresses" inverse-alias="VirtualInterface" uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f">
+    <association from="\Entities\MACAddress" to="\Entities\VirtualInterface" owner-alias="MACAddresses" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f">
       <association-field from="virtualinterfaceid" to="id"/>
     </association>
-    <entity name="Meeting" uuid="d921acd2-7afa-40c6-b53e-73a113193916">
+    <entity name="\Entities\Meeting" local-name="Meeting" namespace="\Entities" uuid="d921acd2-7afa-40c6-b53e-73a113193916">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="4eddbdfa-8084-4fde-8b7c-7af0798e8522"/>
       <field name="title" type="string" size="255" uuid="5ac0d334-faa4-4189-9076-b52b47171655"/>
       <field name="before_text" type="text" uuid="e367494d-695e-4093-b799-771d26b63a76"/>
@@ -674,10 +675,10 @@
         <attribute name="tableName">meeting</attribute>
       </orm-attributes>
     </entity>
-    <association from="Meeting" to="User" owner-alias="Meetings" inverse-alias="CreatedBy" uuid="6aa96961-825e-462c-bccb-e68696cb64c0">
+    <association from="\Entities\Meeting" to="\Entities\User" owner-alias="Meetings" inverse-alias="CreatedBy" many-owner="true" many-inverse="false" uuid="6aa96961-825e-462c-bccb-e68696cb64c0">
       <association-field from="created_by" to="id"/>
     </association>
-    <entity name="MeetingItem" uuid="005af367-611e-4b83-81c7-f6f36dc00d9f">
+    <entity name="\Entities\MeetingItem" local-name="MeetingItem" namespace="\Entities" uuid="005af367-611e-4b83-81c7-f6f36dc00d9f">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="9b3fe453-51aa-4229-b00b-adcdd8647c0b"/>
       <field name="meeting_id" type="integer" uuid="84ac3933-10af-48ce-afad-8cedc6b88675"/>
       <field name="title" type="string" size="255" uuid="4b03175b-591a-4277-b2a2-f992f28381cd"/>
@@ -701,10 +702,10 @@
         <attribute name="tableName">meeting_item</attribute>
       </orm-attributes>
     </entity>
-    <association from="MeetingItem" to="Meeting" owner-alias="MeetingItems" inverse-alias="Meeting" uuid="2fe65b4f-c179-4c71-b5d0-e6177fdcea61">
+    <association from="\Entities\MeetingItem" to="\Entities\Meeting" owner-alias="MeetingItems" inverse-alias="Meeting" many-owner="true" many-inverse="false" uuid="2fe65b4f-c179-4c71-b5d0-e6177fdcea61">
       <association-field from="meeting_id" to="id"/>
     </association>
-    <entity name="NetworkInfo" uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189">
+    <entity name="\Entities\NetworkInfo" local-name="NetworkInfo" namespace="\Entities" uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="72dd316f-2a45-4376-b4fe-c4332431c5c3"/>
       <field name="protocol" type="integer" uuid="f3135547-33cb-4a29-b729-38edc4dcf2a8"/>
       <field name="network" type="string" size="255" uuid="eb4192e2-27a6-4789-96d8-27990c7a8289"/>
@@ -719,10 +720,10 @@
         <attribute name="tableName">networkinfo</attribute>
       </orm-attributes>
     </entity>
-    <association from="NetworkInfo" to="Vlan" owner-alias="NetworkInfo" inverse-alias="Vlan" uuid="f4d2208c-a2cb-4ee8-89dd-afef07118b96">
+    <association from="\Entities\NetworkInfo" to="\Entities\Vlan" owner-alias="NetworkInfo" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="f4d2208c-a2cb-4ee8-89dd-afef07118b96">
       <association-field from="vlanid" to="id"/>
     </association>
-    <entity name="PeeringManager" uuid="e8b4e227-f83c-413d-9e34-56dd493985fe">
+    <entity name="\Entities\PeeringManager" local-name="PeeringManager" namespace="\Entities" uuid="e8b4e227-f83c-413d-9e34-56dd493985fe">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="5b5cea33-1cea-41a0-908c-1237a591698b"/>
       <field name="custid" type="integer" uuid="a8fadee7-b36f-4ec3-9b0d-1be958e7a683"/>
       <field name="peerid" type="integer" uuid="902e4540-ea48-4195-8c8a-c30678676104"/>
@@ -739,13 +740,13 @@
         <attribute name="tableName">peering_manager</attribute>
       </orm-attributes>
     </entity>
-    <association from="PeeringManager" to="Customer" owner-alias="Peers" inverse-alias="Customer" uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc">
+    <association from="\Entities\PeeringManager" to="\Entities\Customer" owner-alias="Peers" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc">
       <association-field from="custid" to="id"/>
     </association>
-    <association from="PeeringManager" to="Customer" owner-alias="PeersWith" inverse-alias="Peer" uuid="c9431b23-72cb-4afa-a057-ced40869cfd0">
+    <association from="\Entities\PeeringManager" to="\Entities\Customer" owner-alias="PeersWith" inverse-alias="Peer" many-owner="true" many-inverse="false" uuid="c9431b23-72cb-4afa-a057-ced40869cfd0">
       <association-field from="peerid" to="id"/>
     </association>
-    <entity name="PeeringMatrix" uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e">
+    <entity name="\Entities\PeeringMatrix" local-name="PeeringMatrix" namespace="\Entities" uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="fdff273f-469c-4f98-bd74-8b69c4f51d17"/>
       <field name="vlan" type="integer" uuid="d097e5fc-95a6-4138-bb80-f41184b07d00"/>
       <field name="x_as" type="integer" uuid="65d550f7-1224-41e9-967a-6d013dbdb67b"/>
@@ -760,13 +761,13 @@
         <attribute name="tableName">peering_matrix</attribute>
       </orm-attributes>
     </entity>
-    <association from="PeeringMatrix" to="Customer" owner-alias="XCusts" inverse-alias="XCustomer" uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e">
+    <association from="\Entities\PeeringMatrix" to="\Entities\Customer" owner-alias="XCusts" inverse-alias="XCustomer" many-owner="true" many-inverse="false" uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e">
       <association-field from="x_custid" to="id"/>
     </association>
-    <association from="PeeringMatrix" to="Customer" owner-alias="YCusts" inverse-alias="YCustomer" uuid="73e14126-258d-4d70-b63e-7a90192e3492">
+    <association from="\Entities\PeeringMatrix" to="\Entities\Customer" owner-alias="YCusts" inverse-alias="YCustomer" many-owner="true" many-inverse="false" uuid="73e14126-258d-4d70-b63e-7a90192e3492">
       <association-field from="y_custid" to="id"/>
     </association>
-    <entity name="RSPrefix" uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb">
+    <entity name="\Entities\RSPrefix" local-name="RSPrefix" namespace="\Entities" uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="63ad0b95-2f36-48c4-916d-f95e2d8bced3"/>
       <field name="custid" type="integer" uuid="5b9998ba-c320-4c9a-9c01-d9b954ab40ee"/>
       <field name="timestamp" type="datetime" uuid="543857df-acf0-4b7b-b15b-103253d9f1d0"/>
@@ -780,10 +781,10 @@
         <attribute name="tableName">rs_prefixes</attribute>
       </orm-attributes>
     </entity>
-    <association from="RSPrefix" to="Customer" owner-alias="RSPrefixes" inverse-alias="Customer" uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622">
+    <association from="\Entities\RSPrefix" to="\Entities\Customer" owner-alias="RSPrefixes" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622">
       <association-field from="custid" to="id"/>
     </association>
-    <entity name="User" uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66">
+    <entity name="\Entities\User" local-name="User" namespace="\Entities" uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="627692b3-0d23-4011-b994-dbd3ff0a4909"/>
       <field name="username" type="string" size="255" unique="true" uuid="1d5e1545-7815-4067-9bb5-c8286cfe24b5"/>
       <field name="password" type="string" size="255" uuid="eab94e07-d600-49ca-88ce-0dd664f19425"/>
@@ -803,10 +804,10 @@
         <attribute name="tableName">user</attribute>
       </orm-attributes>
     </entity>
-    <association from="User" to="Customer" owner-alias="Users" inverse-alias="Customer" uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5">
+    <association from="\Entities\User" to="\Entities\Customer" owner-alias="Users" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5">
       <association-field from="custid" to="id"/>
     </association>
-    <entity name="UserPreference" uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326">
+    <entity name="\Entities\UserPreference" local-name="UserPreference" namespace="\Entities" uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="df440161-0912-420f-a7d1-7e0a7104419d"/>
       <field name="user_id" type="integer" uuid="93ddc87f-0881-4276-a917-2a8163a21dcd"/>
       <field name="attribute" type="string" size="255" uuid="904dbca5-1f98-488b-bad1-d1203f547a47"/>
@@ -826,10 +827,10 @@
         <attribute name="repository-class">Repositories\UserPreference</attribute>
       </orm-attributes>
     </entity>
-    <association from="UserPreference" to="User" owner-alias="Preferences" inverse-alias="User" uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db">
+    <association from="\Entities\UserPreference" to="\Entities\User" owner-alias="Preferences" inverse-alias="User" many-owner="true" many-inverse="false" uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db">
       <association-field from="user_id" to="id"/>
     </association>
-    <entity name="Traffic95th" uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a">
+    <entity name="\Entities\Traffic95th" local-name="Traffic95th" namespace="\Entities" uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a">
       <field name="id" type="bigint" primary="true" auto-increment="true" uuid="9c8f645f-8ba0-47f4-b17d-aefb89c3ca62"/>
       <field name="cust_id" type="integer" uuid="1dd8157b-9687-468a-86fa-a69623275e94"/>
       <field name="datetime" type="datetime" uuid="ab59ee7d-a4e8-4b32-84ab-ae6038f52db4"/>
@@ -841,10 +842,10 @@
         <attribute name="tableName">traffic_95th</attribute>
       </orm-attributes>
     </entity>
-    <association from="Traffic95th" to="Customer" owner-alias="Traffic95ths" inverse-alias="Customer" uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9">
+    <association from="\Entities\Traffic95th" to="\Entities\Customer" owner-alias="Traffic95ths" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9">
       <association-field from="cust_id" to="id"/>
     </association>
-    <entity name="Traffic95thMonthly" uuid="04f83672-40da-4802-ad22-809cfd3ab549">
+    <entity name="\Entities\Traffic95thMonthly" local-name="Traffic95thMonthly" namespace="\Entities" uuid="04f83672-40da-4802-ad22-809cfd3ab549">
       <field name="id" type="bigint" primary="true" auto-increment="true" uuid="d5365066-346d-493d-b84b-fb77d66d988c"/>
       <field name="cust_id" type="integer" uuid="af00cfda-cc98-4cf2-8b1b-658345ed588d"/>
       <field name="month" type="date" uuid="a208b4cd-fd42-4f82-bbfb-6b718e41e217"/>
@@ -855,10 +856,10 @@
         <attribute name="tableName">traffic_95th_monthly</attribute>
       </orm-attributes>
     </entity>
-    <association from="Traffic95thMonthly" to="Customer" owner-alias="Traffic95thMonthlys" inverse-alias="Customer" uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4">
+    <association from="\Entities\Traffic95thMonthly" to="\Entities\Customer" owner-alias="Traffic95thMonthlys" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4">
       <association-field from="cust_id" to="id"/>
     </association>
-    <entity name="TrafficDaily" uuid="e8daf53a-44b8-4798-b6a3-808bff907953">
+    <entity name="\Entities\TrafficDaily" local-name="TrafficDaily" namespace="\Entities" uuid="e8daf53a-44b8-4798-b6a3-808bff907953">
       <field name="id" type="bigint" primary="true" auto-increment="true" uuid="d4fa99e8-9f7e-4394-a49a-115de5739a2d"/>
       <field name="ixp_id" type="integer" required="true" uuid="877f40e0-7c9e-4587-a0c0-6e45000eec88"/>
       <field name="cust_id" type="integer" required="true" uuid="44e4925a-c9e5-4ecf-8b85-ffdf6e381d52"/>
@@ -894,55 +895,13 @@
         <attribute name="repository-class">Repositories\TrafficDaily</attribute>
       </orm-attributes>
     </entity>
-    <association from="TrafficDaily" to="Customer" owner-alias="TrafficDailies" inverse-alias="Customer" uuid="212269bb-5626-4a46-b864-1a94ecee88f3">
+    <association from="\Entities\TrafficDaily" to="\Entities\Customer" owner-alias="TrafficDailies" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="212269bb-5626-4a46-b864-1a94ecee88f3">
       <association-field from="cust_id" to="id"/>
     </association>
-    <association from="TrafficDaily" to="IXP" owner-alias="TrafficDaily" inverse-alias="IXP" uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68">
+    <association from="\Entities\TrafficDaily" to="\Entities\IXP" owner-alias="TrafficDaily" inverse-alias="IXP" many-owner="true" many-inverse="false" parent-required="true" uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68">
       <association-field from="ixp_id" to="id"/>
     </association>
-    <entity name="ChangeLog" uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b">
-      <field name="id" type="bigint" primary="true" auto-increment="true" uuid="c6a37161-a119-40dc-8322-53a9b3d1fe48"/>
-      <field name="title" type="string" size="255" required="true" uuid="9dd77c28-b800-478b-9644-7f9c7ea1b9c0"/>
-      <field name="details" type="text" required="true" uuid="47e260a0-3478-47a9-80a4-4a966e06c23c"/>
-      <field name="visibility" type="integer" required="true" uuid="612115a0-ac93-43dc-a088-da6f241aa472"/>
-      <field name="livedate" type="date" required="true" uuid="93dad41c-3520-459a-992b-0173e82aac9d"/>
-      <field name="version" type="bigint" required="true" uuid="6e7d8fd4-8942-4b70-b9e3-a1eb558c12ce"/>
-      <field name="created_by" type="integer" uuid="f9ea3540-9944-45cc-8298-f482f1940925"/>
-      <field name="created_at" type="datetime" required="true" uuid="03814310-c106-4a16-a1b9-87cb2d7433cc"/>
-      <orm-attributes>
-        <attribute name="table">change_log</attribute>
-        <attribute name="tableName">change_log</attribute>
-        <attribute name="repository-class">Repositories\ChangeLog</attribute>
-      </orm-attributes>
-    </entity>
-    <association from="ChangeLog" to="User" owner-alias="ChangeLogs" inverse-alias="User" uuid="a7f098e7-b929-449d-a843-4d0680ccbeb5">
-      <association-field from="created_by" to="id"/>
-    </association>
-    <entity name="SecEvent" uuid="076963b5-cef4-4b77-8d41-8c1c8f1916a1">
-      <field name="id" type="bigint" primary="true" auto-increment="true" uuid="e86f651b-4db7-4cd7-bd30-6366a8234dcd"/>
-      <field name="type" type="string" enum-values="SECURITY_VIOLATION,PORT_UPDOWN,LINEPROTO_UPDOWN,BGP_AUTH" required="true" uuid="e7e6bbca-5acd-4bf3-b79a-10a28a65197f"/>
-      <field name="message" type="text" uuid="09abef31-659b-4e5e-a569-de91c65fcbcb"/>
-      <field name="recorded_date" type="string" size="255" uuid="3d31564c-12db-44aa-bd89-c66041bf219d"/>
-      <field name="timestamp" type="datetime" uuid="7c6623cc-75c8-4707-aba2-47406db8b520"/>
-      <field name="custid" type="integer" uuid="d3a19b58-887b-416c-806d-45f591d6b33a"/>
-      <field name="switchid" type="integer" uuid="57f01df6-0163-4a99-a290-86361f5aba6b"/>
-      <field name="switchportid" type="integer" uuid="3fa96a77-29a1-4888-98dd-22a7679c0823"/>
-      <orm-attributes>
-        <attribute name="table">sec_event</attribute>
-        <attribute name="tableName">sec_event</attribute>
-        <attribute name="repository-class">Repositories\SecEvent</attribute>
-      </orm-attributes>
-    </entity>
-    <association from="SecEvent" to="Customer" owner-alias="SecEvents" inverse-alias="Customer" uuid="b07de887-fccd-487b-85a9-f3ec04d0e521">
-      <association-field from="custid" to="id"/>
-    </association>
-    <association from="SecEvent" to="Switcher" owner-alias="SecEvents" inverse-alias="Switch" uuid="13336efb-0945-455d-936c-1f8e625e430f">
-      <association-field from="switchid" to="id"/>
-    </association>
-    <association from="SecEvent" to="SwitchPort" owner-alias="SecEvents" inverse-alias="SwitchPort" uuid="b7535ca1-a516-46b8-b21a-3ca58a497acb">
-      <association-field from="switchportid" to="id"/>
-    </association>
-    <entity name="OUI" description="Organizationally Unique Identifiers" uuid="0be9b477-a199-4d85-a892-4287cf858f4d">
+    <entity name="\Entities\OUI" local-name="OUI" namespace="\Entities" description="Organizationally Unique Identifiers" uuid="0be9b477-a199-4d85-a892-4287cf858f4d">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="75d46f98-6371-47cd-a841-019284ebd0e2"/>
       <field name="oui" type="string" size="6" required="true" unique="true" uuid="6379c2cd-ec05-48d4-a804-1428b3b132a2"/>
       <field name="organisation" type="string" size="255" required="true" uuid="a81a1738-67b3-414b-a06c-347e4af16405"/>
@@ -953,102 +912,47 @@
         <attribute name="repository-class">Repositories\OUI</attribute>
       </orm-attributes>
     </entity>
-    <orm-attributes>
-      <attribute name="namespace">Entities</attribute>
-    </orm-attributes>
   </module>
   <visual-data>
-    <entity uuid="005af367-611e-4b83-81c7-f6f36dc00d9f" bg-color="4294967295" hdr-color="4292006610" position-x="1378" position-y="597" size-x="0" size-x2="135" size-y="0" size-y2="255"/>
     <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326" bg-color="4294967295" hdr-color="4292006610" position-x="1249" position-y="755" size-x="0" size-x2="112" size-y="0" size-y2="115"/>
-    <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" bg-color="4294967295" hdr-color="4292006610" position-x="250" position-y="1009" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
-    <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" bg-color="4294967295" hdr-color="4292006610" position-x="595" position-y="350" size-x="0" size-x2="186" size-y="0" size-y2="465"/>
-    <entity uuid="076963b5-cef4-4b77-8d41-8c1c8f1916a1" bg-color="4294967295" hdr-color="4292006610" position-x="1194" position-y="-327" size-x="0" size-x2="137" size-y="0" size-y2="129"/>
-    <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" bg-color="4294967295" hdr-color="4292006610" position-x="802" position-y="145" size-x="0" size-x2="183" size-y="0" size-y2="143"/>
-    <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" bg-color="4294967295" hdr-color="4292006610" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
-    <entity uuid="0be9b477-a199-4d85-a892-4287cf858f4d" bg-color="4294967295" hdr-color="4292006610" position-x="47" position-y="-145" size-x="0" size-x2="124" size-y="0" size-y2="59"/>
-    <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" bg-color="4294967295" hdr-color="4292006610" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
     <association uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f" color="4288059030"/>
     <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
-    <association uuid="13336efb-0945-455d-936c-1f8e625e430f" color="4288059030"/>
-    <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" bg-color="4294967295" hdr-color="4292006610" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <association uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" bg-color="4294967295" hdr-color="4292006610" position-x="1236" position-y="186" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
     <association uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622" color="4288059030"/>
     <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0" color="4288059030"/>
-    <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" bg-color="4294967295" hdr-color="4292006610" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
-    <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" bg-color="4294967295" hdr-color="4292006610" position-x="421" position-y="186" size-x="0" size-x2="128" size-y="0" size-y2="171"/>
-    <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" bg-color="4294967295" hdr-color="4292006610" position-x="787" position-y="-325" size-x="0" size-x2="163" size-y="0" size-y2="325"/>
     <association uuid="2fe65b4f-c179-4c71-b5d0-e6177fdcea61" color="4288059030"/>
-    <entity uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10" bg-color="4294967295" hdr-color="4292006610" position-x="1395" position-y="396" size-x="0" size-x2="109" size-y="0" size-y2="59"/>
     <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="39ad3dd5-487b-4152-9190-558bd7e80668" center-position-x="-7" center-position-y="0" color="4288059030"/>
-    <entity uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d" bg-color="4294967295" hdr-color="4292006610" position-x="1608" position-y="80" size-x="0" size-x2="122" size-y="0" size-y2="129"/>
-    <many-to-many-association uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a" color="4288059030"/>
-    <entity uuid="3da990c1-6ab8-436e-8800-e09a08ebee16" bg-color="4294967295" hdr-color="4292006610" position-x="1032" position-y="1017" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
     <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <many-to-many-association uuid="3e003c57-9922-4820-a7b3-897360e1d984" color="4288059030"/>
-    <entity uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786" bg-color="4294967295" hdr-color="4292006610" position-x="1688" position-y="-279" size-x="0" size-x2="113" size-y="0" size-y2="74"/>
-    <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" bg-color="4294967295" hdr-color="4292006610" position-x="809" position-y="653" size-x="0" size-x2="145" size-y="0" size-y2="213"/>
-    <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" bg-color="4294967295" hdr-color="4292006610" position-x="228" position-y="34" size-x="0" size-x2="131" size-y="0" size-y2="171"/>
-    <entity uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c" bg-color="4294967295" hdr-color="4292006610" position-x="131" position-y="1030" size-x="0" size-x2="106" size-y="0" size-y2="73"/>
     <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="175" position-y="631" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
     <association uuid="518453f9-598d-4246-847d-f839117f1d0a" color="4288059030"/>
-    <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="1791" size-y="212" size-y2="1381"/>
     <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" bg-color="4294967295" hdr-color="4292006610" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
     <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" bg-color="4294967295" hdr-color="4292006610" position-x="590" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
     <association uuid="670582b5-1394-4b90-b827-0a331ea5b4aa" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
-    <entity uuid="6747622b-df14-45da-828f-3c676799d963" bg-color="4294967295" hdr-color="4292006610" position-x="1439" position-y="193" size-x="0" size-x2="113" size-y="0" size-y2="101"/>
     <association uuid="6aa96961-825e-462c-bccb-e68696cb64c0" color="4288059030"/>
-    <entity uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64" bg-color="4294967295" hdr-color="4292006610" position-x="160" position-y="880" size-x="0" size-x2="112" size-y="0" size-y2="87"/>
     <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="4294967295" hdr-color="4292006610" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
-    <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <association uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="93708a18-58db-4061-add9-24991ccd3ce0" color="4288059030"/>
     <association uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765" color="4288059030"/>
     <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="9c600e0e-ec78-4b30-9eef-9028a917a67b" bg-color="4294967295" hdr-color="4292006610" position-x="1112" position-y="839" size-x="0" size-x2="114" size-y="0" size-y2="129"/>
     <association uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
-    <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="4294967295" hdr-color="4292006610" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
     <association uuid="a6cd1017-f136-4839-a577-7477c6a5a287" color="4288059030"/>
-    <association uuid="a7f098e7-b929-449d-a843-4d0680ccbeb5" color="4288059030"/>
     <association uuid="a93d8c93-6456-462f-a524-9fcda1180727" color="4288059030"/>
-    <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="4294967295" hdr-color="4292006610" position-x="805" position-y="323" size-x="0" size-x2="126" size-y="0" size-y2="101"/>
     <association uuid="ab08b405-788c-4579-bc8d-3445b6ba3821" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-56" color="4288059030"/>
-    <association uuid="b07de887-fccd-487b-85a9-f3ec04d0e521" color="4288059030"/>
     <association uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db" color="4288059030"/>
     <association uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4" color="4288059030"/>
-    <association uuid="b7535ca1-a516-46b8-b21a-3ca58a497acb" color="4288059030"/>
-    <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" bg-color="4294967295" hdr-color="4292006610" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>
     <association uuid="bc7fc00c-039c-4e6a-ad73-f571f5761bfe" color="4288059030"/>
-    <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" bg-color="4294967295" hdr-color="4292006610" position-x="531" position-y="-333" size-x="0" size-x2="132" size-y="0" size-y2="255"/>
     <association uuid="c3779c0a-b590-4cf8-9495-984270d7496a" color="4288059030"/>
     <association uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="c9431b23-72cb-4afa-a057-ced40869cfd0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" bg-color="4294967295" hdr-color="4292006610" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
     <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-26" center-position-y="0" color="4288059030"/>
-    <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" bg-color="4294967295" hdr-color="4292006610" position-x="1391" position-y="479" size-x="0" size-x2="114" size-y="0" size-y2="87"/>
-    <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="4294967295" hdr-color="4292006610" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
     <association uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819" color="4288059030"/>
-    <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bg-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="1829" size-y="353" size-y2="1170"/>
-    <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
     <association uuid="d9075ce3-753a-432f-a009-c9e386509484" color="4288059030"/>
-    <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" bg-color="4294967295" hdr-color="4292006610" position-x="1166" position-y="564" size-x="0" size-x2="122" size-y="0" size-y2="171"/>
     <association uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
     <association uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6" color="4288059030"/>
     <association uuid="e52b85f7-fca3-4ba3-aadb-758ad65f2c4d" color="4288059030"/>
-    <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
-    <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <association uuid="e8f4931c-82ef-4c5d-83c3-61a0b4271727" color="4288059030"/>
-    <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="294" position-y="321" size-x="0" size-x2="101" size-y="0" size-y2="87"/>
-    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="4294967295" hdr-color="4292006610" position-x="1466" position-y="-215" size-x="0" size-x2="175" size-y="0" size-y2="101"/>
     <association uuid="f18aceae-d3e6-452d-9e28-0c32f340b245" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5" color="4288059030"/>
@@ -1056,7 +960,53 @@
     <association uuid="f4d2208c-a2cb-4ee8-89dd-afef07118b96" color="4288059030"/>
     <association uuid="f663287b-e38a-442b-9043-f37c176e6125" color="4288059030"/>
     <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0" color="4288059030"/>
-    <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" bg-color="4294967295" hdr-color="4292006610" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
     <association uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f" color="4288059030"/>
+    <entity uuid="005af367-611e-4b83-81c7-f6f36dc00d9f" bg-color="4294967295" hdr-color="4292006610" position-x="1378" position-y="597" size-x="0" size-x2="135" size-y="0" size-y2="255"/>
+    <entity uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326" bg-color="4294967295" hdr-color="4292006610" position-x="1249" position-y="755" size-x="0" size-x2="112" size-y="0" size-y2="115"/>
+    <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" bg-color="4294967295" hdr-color="4292006610" position-x="250" position-y="1009" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
+    <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" bg-color="4294967295" hdr-color="4292006610" position-x="595" position-y="350" size-x="0" size-x2="186" size-y="0" size-y2="465"/>
+    <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" bg-color="4294967295" hdr-color="4292006610" position-x="802" position-y="145" size-x="0" size-x2="183" size-y="0" size-y2="143"/>
+    <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" bg-color="4294967295" hdr-color="4292006610" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
+    <entity uuid="0be9b477-a199-4d85-a892-4287cf858f4d" bg-color="4294967295" hdr-color="4292006610" position-x="47" position-y="-145" size-x="0" size-x2="124" size-y="0" size-y2="59"/>
+    <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" bg-color="4294967295" hdr-color="4292006610" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
+    <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" bg-color="4294967295" hdr-color="4292006610" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
+    <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" bg-color="4294967295" hdr-color="4292006610" position-x="1236" position-y="186" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
+    <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" bg-color="4294967295" hdr-color="4292006610" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
+    <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" bg-color="4294967295" hdr-color="4292006610" position-x="421" position-y="186" size-x="0" size-x2="128" size-y="0" size-y2="171"/>
+    <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" bg-color="4294967295" hdr-color="4292006610" position-x="787" position-y="-325" size-x="0" size-x2="163" size-y="0" size-y2="325"/>
+    <entity uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10" bg-color="4294967295" hdr-color="4292006610" position-x="1395" position-y="396" size-x="0" size-x2="109" size-y="0" size-y2="59"/>
+    <entity uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d" bg-color="4294967295" hdr-color="4292006610" position-x="1608" position-y="80" size-x="0" size-x2="122" size-y="0" size-y2="129"/>
+    <entity uuid="3da990c1-6ab8-436e-8800-e09a08ebee16" bg-color="4294967295" hdr-color="4292006610" position-x="1032" position-y="1017" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
+    <entity uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786" bg-color="4294967295" hdr-color="4292006610" position-x="1688" position-y="-279" size-x="0" size-x2="113" size-y="0" size-y2="74"/>
+    <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" bg-color="4294967295" hdr-color="4292006610" position-x="809" position-y="653" size-x="0" size-x2="145" size-y="0" size-y2="213"/>
+    <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="228" position-y="-191" size-x="0" size-x2="122" size-y="0" size-y2="185"/>
+    <entity uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c" bg-color="4294967295" hdr-color="4292006610" position-x="81" position-y="1042" size-x="0" size-x2="109" size-y="0" size-y2="87"/>
+    <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="175" position-y="631" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
+    <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" bg-color="4294967295" hdr-color="4292006610" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
+    <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" bg-color="4294967295" hdr-color="4292006610" position-x="590" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
+    <entity uuid="6747622b-df14-45da-828f-3c676799d963" bg-color="4294967295" hdr-color="4292006610" position-x="1439" position-y="193" size-x="0" size-x2="113" size-y="0" size-y2="101"/>
+    <entity uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64" bg-color="4294967295" hdr-color="4292006610" position-x="160" position-y="880" size-x="0" size-x2="112" size-y="0" size-y2="87"/>
+    <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="4294967295" hdr-color="4292006610" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
+    <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
+    <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
+    <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="4294967295" hdr-color="4292006610" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
+    <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="4294967295" hdr-color="4292006610" position-x="805" position-y="323" size-x="0" size-x2="126" size-y="0" size-y2="101"/>
+    <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>
+    <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" bg-color="4294967295" hdr-color="4292006610" position-x="531" position-y="-333" size-x="0" size-x2="132" size-y="0" size-y2="255"/>
+    <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" bg-color="4294967295" hdr-color="4292006610" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
+    <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" bg-color="4294967295" hdr-color="4292006610" position-x="1391" position-y="479" size-x="0" size-x2="114" size-y="0" size-y2="87"/>
+    <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="4294967295" hdr-color="4292006610" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
+    <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
+    <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" bg-color="4294967295" hdr-color="4292006610" position-x="1153" position-y="545" size-x="0" size-x2="115" size-y="0" size-y2="185"/>
+    <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
+    <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
+    <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
+    <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="272" position-y="321" size-x="0" size-x2="98" size-y="0" size-y2="87"/>
+    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="4294967295" hdr-color="4292006610" position-x="1466" position-y="-215" size-x="0" size-x2="175" size-y="0" size-y2="101"/>
+    <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" bg-color="4294967295" hdr-color="4292006610" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
+    <many-to-many-association uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a" color="4288059030"/>
+    <many-to-many-association uuid="3e003c57-9922-4820-a7b3-897360e1d984" color="4288059030"/>
+    <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bg-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="1829" size-y="353" size-y2="1170"/>
+    <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="1791" size-y="212" size-y2="1381"/>
   </visual-data>
 </skipper>

@@ -112,7 +112,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                         {
                             if( $me['vlaninterfaces'][$vlan->getNumber()][0]["ipv{$proto}enabled"] && $c['vlaninterfaces'][$vlan->getNumber()][0]["ipv{$proto}enabled"] )
                             {
-                                if( in_array( $c['autsys'], $bilat[$vlan->getNumber()][4][$me['autsys']]['peers'] ) )
+                                if( isset( $bilat[$vlan->getNumber()][4][$me['autsys']]['peers'] ) && in_array( $c['autsys'], $bilat[$vlan->getNumber()][4][$me['autsys']]['peers'] ) )
                                     $custs[ $c['autsys'] ][$vlan->getNumber()][$proto] = 2;
                                 else if( $me['vlaninterfaces'][$vlan->getNumber()][0]['rsclient'] && $c['vlaninterfaces'][$vlan->getNumber()][0]['rsclient'] )
                                 {
@@ -265,7 +265,7 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
 
                 if( $bccOk )
                 {
-                    $mail = new Zend_Mail();
+                    $mail = new Zend_Mail('UTF-8');
                     $mail->setFrom( $this->_options['identity']['mailer']['email'], $this->getCustomer()->getName() . ' Peering Team' )
                          ->setReplyTo( $this->getCustomer()->getPeeringemail(), $this->getCustomer()->getName() . ' Peering Team' )
                          ->setSubject( $f->getValue( 'subject' ) )

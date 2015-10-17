@@ -57,7 +57,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
 
 
         $to = $this->createElement( 'text', 'to' );
-        $to->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $to->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'To' )
             ->setAttrib( 'class', 'span5' )
@@ -69,7 +69,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
         $this->addElement( $to );
 
         $cc = $this->createElement( 'text', 'cc' );
-        $cc->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $cc->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'CC' )
             ->setAttrib( 'class', 'span5' )
@@ -81,7 +81,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
         $this->addElement( $cc );
 
         $bcc = $this->createElement( 'text', 'bcc' );
-        $bcc->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $bcc->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'BCC' )
             ->setAttrib( 'class', 'span5' )
@@ -92,7 +92,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
         $this->addElement( $bcc );
 
         $subject = $this->createElement( 'text', 'subject' );
-        $subject->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $subject->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Subject' )
             ->setAttrib( 'class', 'span5' )
@@ -107,7 +107,7 @@ class IXP_Form_PeeringRequest extends IXP_Form
             [ 'cols' => 50, 'rows' => 8 ]
         );
 
-        $message->addValidator( 'stringLength', false, array( 1, 40960 ) )
+        $message->addValidator( 'stringLength', false, array( 1, 40960, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Message' )
             ->setAttrib( 'class', 'span5 mono' )

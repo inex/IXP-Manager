@@ -38,13 +38,13 @@ trait IXP_Controller_Trait_Statistics
      * @var \Entities\IXP The IXP / default IXP
      */
     private $ixp = null;
-    
+
     /**
      * All available IXPs. Available in the view as `$ixps`. Set in `setIXP()`.
      * @var \Entities\IXP[] All available IXPs
      */
     private $ixps = null;
-        
+
 
     /**
      * Set the IXP based on submitted parameters
@@ -59,12 +59,12 @@ trait IXP_Controller_Trait_Statistics
             if( $cust )
             {
                 $this->ixps = $this->view->ixps = $this->getD2R( "\\Entities\\IXP" )->getForCustomer( $cust );
-                
+
                 if( $this->getParam( 'ixp', false ) )
                     $this->view->ixp = $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ) );
                 else
                     $this->view->ixp = $this->ixp = $cust->getIXPs()[0];
-                    
+
                 $valid = false;
                 foreach( $cust->getIXPs() as $i )
                 {
@@ -74,7 +74,7 @@ trait IXP_Controller_Trait_Statistics
                         break;
                     }
                 }
-                
+
                 if( !$valid )
                 {
                     $this->getLogger()->alert( "{$this->getUser()->getUsername()} tried to access an invalid IXP" );
@@ -85,7 +85,7 @@ trait IXP_Controller_Trait_Statistics
             else
             {
                 $this->ixps = $this->view->ixps = $this->getD2R( "\\Entities\\IXP" )->findAll();
-        
+
                 if( $this->getParam( 'ixp', false ) )
                     $this->view->ixp = $this->ixp = $this->loadIxpById( $this->getParam( 'ixp' ) );
                 else if( $this->ixps )
@@ -101,13 +101,13 @@ trait IXP_Controller_Trait_Statistics
         }
     }
 
-    
+
     /**
      * The selected infrastructure (or `aggregate`). Set in `setInfrastructure()` and available in the view as `$infra`.
      * @var \Entities\Infrastructure The selected infrastructure (or `aggregate`).
      */
     private $infra = null;
-    
+
     /**
      * The selected infrastructure ID or `aggregate`. Set in `setInfrastructure()` and available in the view as `$infraid`.
      *
@@ -117,8 +117,8 @@ trait IXP_Controller_Trait_Statistics
      * @var string|int The selected infrastructure ID or `aggregate`.
      */
     private $infraid = null;
-    
-    
+
+
     /**
      * Set the IXP based on submitted parameters
      */
@@ -126,7 +126,7 @@ trait IXP_Controller_Trait_Statistics
     {
         $this->view->infra = $this->view->infraid = $this->infra = $this->infraid
             = $this->getParam( 'infra', ( $defaultToAggregate ? 'aggregate' : false ) );
-    
+
         if( $this->infra != "aggregate" )
         {
             foreach( $this->ixp->getInfrastructures() as $inf )
@@ -138,7 +138,7 @@ trait IXP_Controller_Trait_Statistics
                     break;
                 }
             }
-    
+
             if( !( $this->infra instanceof \Entities\Infrastructure ) )
             {
                 $this->view->infra   = $this->infra   = $this->ixp->getInfrastructures()[0];
@@ -146,15 +146,15 @@ trait IXP_Controller_Trait_Statistics
             }
         }
     }
-    
-    
+
+
     /**
      * The selected VLAN. Set in `setVLAN()` and available in the view as `$vlan`.
      * @var \Entities\VLAN The selected VLAN.
      */
     private $vlan = null;
-    
-    
+
+
     /**
      * Set the VLAN based on submitted parameters
      */
@@ -164,7 +164,7 @@ trait IXP_Controller_Trait_Statistics
         {
             if( !$this->vlan && !$v->getPrivate() )
             $this->view->vlan = $this->vlan = $v;
-            
+
             if( $v->getId() == $this->getParam( 'vlan', false ) )
             {
                 $this->view->vlan = $this->vlan = $v;
@@ -172,8 +172,8 @@ trait IXP_Controller_Trait_Statistics
             }
         }
     }
-    
-    
+
+
     /**
      * Utility function to extract, validate (and default if necessary) a
      * protocol from request parameters.
@@ -189,14 +189,14 @@ trait IXP_Controller_Trait_Statistics
         $proto = $this->getParam( $pname, 4 );
         if( !in_array( $proto, IXP_Mrtg::$PROTOCOLS ) )
             $proto = IXP_Mrtg::PROTOCOL_IPV4;
-    
+
         $this->view->proto     = $proto;
         $this->view->protocols = IXP_Mrtg::$PROTOCOLS;
-    
+
         return $proto;
     }
-    
-    
+
+
     /**
      * Utility function to extract, validate (and default if necessary) a
      * category from request parameters.
@@ -217,7 +217,7 @@ trait IXP_Controller_Trait_Statistics
         $this->view->categories = $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES;
         return $category;
     }
-    
+
     /**
      * Utility function to extract, validate (and default if necessary) a
      * period from request parameters.
@@ -237,6 +237,5 @@ trait IXP_Controller_Trait_Statistics
         $this->view->periods    = IXP_Mrtg::$PERIODS;
         return $period;
     }
-    
-}
 
+}

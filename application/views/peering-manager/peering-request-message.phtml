@@ -12,13 +12,18 @@ We would like to arrange peering session(s) with you on the following interface(
 
 {$pmy->getVlan()->getName()|underline}
 
+Our AS Number:    {$user->getCustomer()->getAutsys()}
+
 {if $pmy->getIpv4enabled() and $pyour->getIpv4enabled()}
 Our IPv4 Address: {$pmy->getIpv4address()->getAddress()}
+{if $user->getCustomer()->getPeeringmacro()}Our IPv4 AS Macro:     {$user->getCustomer()->getPeeringmacro()}{/if}
+
+{/if}
+
 {if $pmy->getIpv6enabled() and $pyour->getIpv6enabled()}
 Our IPv6 Address: {$pmy->getIpv6address()->getAddress()}
-{/if}
-Our AS Number:    {$user->getCustomer()->getAutsys()}
-{if $user->getCustomer()->getPeeringmacro()}Our AS Macro:     {$user->getCustomer()->getPeeringmacro()}
+Our IPv6 AS Macro:     {$user->getCustomer()->resolveAsMacro(6)}
+
 {/if}
 
 Your IPv4 Address: {$pyour->getIpv4address()->getAddress()}
@@ -26,7 +31,6 @@ Your IPv4 Address: {$pyour->getIpv4address()->getAddress()}
 Your IPv6 Address: {$pyour->getIpv6address()->getAddress()}
 {/if}
 Your AS Number:    {$peer->getAutsys()}
-{/if}
 
 {/foreach}
 

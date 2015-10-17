@@ -24,7 +24,7 @@
 
 /**
  * Controller: API V1 RIR controller
- * 
+ *
  * @see https://github.com/inex/IXP-Manager/wiki/RIR-Objects
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
@@ -52,27 +52,27 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
 
         // sanitise template name
         $tmpl = preg_replace( '/[^\da-z_\-]/i', '', $tmpl );
-        
+
         if( !$this->view->templateExists( 'rir/tmpl/' . $tmpl . '.tpl' ) )
             throw new Zend_Controller_Action_Exception( 'The specified RIR template does not exist', 412 );
-        
+
         $email = $this->getParam( 'email', false );
 
         // populate the template variables
-        $this->view->customers = $customers = OSS_Array::reindexObjects( 
-                OSS_Array::reorderObjects( $this->getD2R( '\\Entities\\Customer' )->getConnected( false, false, true ), 'getAutsys', SORT_NUMERIC ), 
-                'getId' 
+        $this->view->customers = $customers = OSS_Array::reindexObjects(
+                OSS_Array::reorderObjects( $this->getD2R( '\\Entities\\Customer' )->getConnected( false, false, true ), 'getAutsys', SORT_NUMERIC ),
+                'getId'
         );
-        
+
         $this->view->asns      = $this->generateASNs( $customers );
         $this->view->rsclients = $this->generateRouteServerClientDetails( $customers );
         $this->view->protocols = [ 4, 6 ];
-        
-        
-        $content = preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", 
+
+
+        $content = preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n",
             $this->view->render( 'rir/tmpl/' . $tmpl . '.tpl' )
         );
-        
+
         if( $email )
             $this->emailRIR( $tmpl, $content, $email, $this->getParam( 'force', false ) );
         else
@@ -80,10 +80,10 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
     }
 
     /**
-     * Gather and create the IXP customer ASN details. 
-     * 
+     * Gather and create the IXP customer ASN details.
+     *
      * Returns an associate array indexed by ordered ASNs of active external trafficing customers:
-     * 
+     *
      *     [
      *         [65500] => [
      *                        ['name']    => Customer Name
@@ -91,9 +91,9 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
      *                    ],
      *                    ...
      *     ]
-     *     
+     *
      * @param \Entities\Customer[] $customers Array of all active external trafficing customers
-     * @return array Associate array indexed by ordered ASNs 
+     * @return array Associate array indexed by ordered ASNs
      */
     private function generateASNs( $customers )
     {
@@ -103,11 +103,11 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
                 'asmacro' => $c->resolveAsMacro( 4, 'AS' ),
                 'name'    => $c->getName()
             ];
-        
+
         ksort( $asns, SORT_NUMERIC );
         return $asns;
     }
-    
+
 
     /**
      * Gather up route server client information for building RIR objects
@@ -156,24 +156,24 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
     {
         // get the public peering VLANs
         $vlans = $this->getD2R( '\\Entities\\Vlan' )->getAndCache( \Repositories\Vlan::TYPE_NORMAL );
-    
+
         $rsclients = [];
-    
+
         foreach( $vlans as $vlan )
         {
             foreach( [ 4, 6 ] as $proto )
             {
                 // get the available route servers
                 $servers = $vlan->getRouteServers( $proto );
-    
+
                 if( !count( $servers ) )
                     continue;
-    
+
                 $rsclients[ 'vlans' ][ $vlan->getId() ]['servers'][ $proto ] = [];
-    
+
                 foreach( $servers as $server )
                     $rsclients[ 'vlans' ][ $vlan->getId() ]['servers'][ $proto ][] = $server['ipaddress'];
-                 
+
                 foreach( $vlan->getVlanInterfaces() as $vli )
                 {
                     if( !$vli->getRsclient() )
@@ -188,19 +188,19 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
                             break;
                         }
                     }
-                    
+
                     if( !$oneConnectedInterface )
                         continue;
-                        
+
                     $cust = $vli->getVirtualInterface()->getCustomer();
 
                     if( $cust->getStatus() != \Entities\Customer::STATUS_NORMAL )
                         continue;
-                    
+
                     // is this customer still active?
                     if( !isset( $customers[ $cust->getId() ] ) )
                         continue;
-    
+
                     if( !isset( $rsclients['clients'][ $cust->getAutsys() ] ) )
                     {
                         $rsclients['clients'][ $cust->getAutsys() ]['id'] = $cust->getId();
@@ -208,7 +208,7 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
                     }
 
                     $fnEnabled = "getIpv{$proto}enabled";
-    
+
                     if( $vli->$fnEnabled() )
                     {
                         $fnIpaddress = "getIPv{$proto}Address";
@@ -221,13 +221,13 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
         ksort( $rsclients['clients'], SORT_NUMERIC );
         return $rsclients;
     }
-    
+
     /**
-     * Send an email to RIPE / RIR as per the address provided 
-     * 
+     * Send an email to RIPE / RIR as per the address provided
+     *
      * Keeps a local cached file which, it it exists and is the same as the newly generated content
      * (and force was requested), will prevent the email from being sent unnecessarily.
-     * 
+     *
      * @param string $tmpl The name of the template file for the email; used to name the local cache file
      * @param string $content The generated contect for the RIR update email
      * @param string $email The destination for the email - e.g. auto-dbm@ripe.net
@@ -239,21 +239,23 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
     {
         if( !Zend_Validate::is( $email, 'EmailAddress' ) )
             throw new Zend_Controller_Action_Exception( 'Invalid email address specified', 412 );
-        
+
         // if we're not forcing, check to see if the object has changed from the previous version
-        if( !$force && ( $last = file_get_contents( APPLICATION_PATH . '/../var/cache/rir-' . $tmpl . '.txt' ) ) )
+        if( !$force && file_exists( APPLICATION_PATH . '/../var/cache/rir-' . $tmpl . '.txt' )
+                && ( $last = file_get_contents( APPLICATION_PATH . '/../var/cache/rir-' . $tmpl . '.txt' ) ) ) {
             if( $last == $content )
                 return;
-
+        }
+        
         // record the contents for the next time
         file_put_contents( APPLICATION_PATH . '/../var/cache/rir-' . $tmpl . '.txt', $content );
-        
+
         $mailer = $this->getMailer()
                     ->setBodyText( $content )
                     ->addTo( $email )
                     ->setFrom( $this->_options['identity']['autobot']['email'], $this->_options['identity']['autobot']['name'] )
                     ->setSubject( "Changes to {$tmpl} via IXP Manager" );
-        
+
         try
         {
             $mailer->send();
@@ -262,6 +264,6 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
         {
             throw new Zend_Controller_Action_Exception( 'Could not send email: ' . $e->getMessage(), 412 );
         }
-                    
+
     }
 }

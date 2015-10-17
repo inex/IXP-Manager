@@ -37,7 +37,7 @@ class IXP_Form_Contact extends IXP_Form
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'contact/forms/edit.phtml' ] ] ] );
 
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Name' )
             //->setAttrib( 'class', 'span3' )
@@ -47,7 +47,7 @@ class IXP_Form_Contact extends IXP_Form
         $this->addElement( $name );
 
         $position = $this->createElement( 'text', 'position' );
-        $position->addValidator( 'stringLength', false, array( 1, 50 ) )
+        $position->addValidator( 'stringLength', false, array( 1, 50, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Position' )
             //->setAttrib( 'class', 'span3' )
@@ -66,7 +66,7 @@ class IXP_Form_Contact extends IXP_Form
             ->setAttrib( 'class', "" );
 
         $phone = $this->createElement( 'text', 'phone' );
-        $phone->addValidator( 'stringLength', false, array( 1, 32 ) )
+        $phone->addValidator( 'stringLength', false, array( 1, 32, 'UTF-8' ) )
             ->setLabel( _( 'Phone' ) )
             //->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
@@ -75,7 +75,7 @@ class IXP_Form_Contact extends IXP_Form
         $this->addElement( $phone );
 
         $mobile = $this->createElement( 'text', 'mobile' );
-        $mobile->addValidator( 'stringLength', false, array( 1, 32 ) )
+        $mobile->addValidator( 'stringLength', false, array( 1, 32, 'UTF-8' ) )
             ->setLabel( _( 'Mobile' ) )
             ->addFilter( 'StringTrim' )
             ->addFilter( 'StripTags' )
@@ -125,14 +125,14 @@ class IXP_Form_Contact extends IXP_Form
         $this->addElement( $login );
 
         $username = OSS_Form_Auth::createUsernameElement();
-        $username->addValidator( 'stringLength', false, array( 2, 30 ) )
+        $username->addValidator( 'stringLength', false, array( 2, 30, 'UTF-8' ) )
             ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\-_\.]+$/' ) )
             ->setRequired( false )
             ->setAttrib( 'class', '' );
         $this->addElement( $username );
 
         $password = $this->createElement( 'text', 'password' );
-        $password->addValidator( 'stringLength', false, array( 8, 30 ) )
+        $password->addValidator( 'stringLength', false, array( 8, 30, 'UTF-8' ) )
             ->setRequired( false )
             //->setAttrib( 'class', 'span3' )
             ->setLabel( 'Password' )

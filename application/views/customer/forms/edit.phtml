@@ -6,14 +6,14 @@
         {else}
             action="{genUrl controller="customer" action="add"}"
         {/if}>
-            
+
 <div class="row-fluid">
 
     <div class="span6">
-    
+
         <fieldset>
             <legend>Customer Details</legend>
-            
+
             {$element->name}
             {$element->type}
             {$element->shortname}
@@ -23,13 +23,13 @@
             {$element->status}
             {$element->MD5Support}
             {$element->abbreviatedName}
-            
+
         </fieldset>
-        
+
     </div>
 
     <div class="span6">
-    
+
         <fieldset id="full-member-details" >
             <legend>Peering Details</legend>
 
@@ -37,17 +37,20 @@
             {$element->maxprefixes}
             {$element->peeringemail}
             {$element->peeringmacro}
+            {$element->peeringmacrov6}
             {$element->peeringpolicy}
             {$element->irrdb}
             {$element->activepeeringmatrix}
 
+            <p><em>Note that the IPv4 peering macro is used when there is no v6 macro set. To force no macro
+            for IPv6, set it as AS-NULL.</em></p>
         </fieldset>
-        
+
     </div>
 
-    
+
 </div>
-        
+
 <div id="full-member-details2" class="row-fluid">
 
     <div class="span6">
@@ -89,7 +92,7 @@
             {if $resellerMode }
                 <script type="text/javascript">
                     $( document ).ready( function(){
-                        
+
                         $( "#isResold" ).change( function(){
                             if( $( this ).prop( "checked" ) )
                             {
@@ -99,7 +102,7 @@
                             }
                             else
                                 $( '#reseller-element-div' ).hide();
-                            
+
                         });
 
                         $( "#isReseller" ).change( function(){
@@ -108,7 +111,7 @@
                                 if( $( '#isResold' ).prop( "checked" ) )
                                     $( '#isResold' ).prop( "checked", false ).trigger( "change" );
                             }
-                            
+
                         });
                     });
                 </script>
@@ -116,9 +119,9 @@
         {else}
             {$element->ixp}
         {/if}
-        
+
     </div>
-    
+
 </div>
 
 
@@ -129,20 +132,20 @@
 
 </div>
 
-    
+
 </form>
 
 
 <script type="text/javascript">
 
 $(document).ready( function(){
-	
+
     $('#datejoin').datepicker({
         changeMonth: true,
         changeYear: true,
         dateFormat: 'yy-mm-dd'
     });
-    
+
     $('#dateleave').datepicker({
         changeMonth: true,
         changeYear: true,
@@ -181,8 +184,7 @@ $(document).ready( function(){
     {/if}
 
     $( '#type' ).trigger( 'change' );
-    
+
 });
 
 </script>
-

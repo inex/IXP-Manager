@@ -280,7 +280,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
             $day = date( 'Y-m-d' );
             $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->deleteForDay( $day, $ixp );
 
-            $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true, $ixp );
+            $custs = $this->getD2R( '\\Entities\\Customer')->getConnected( false, true, $ixp );
 
             foreach( $custs as $cust )
             {
@@ -480,18 +480,21 @@ class StatisticsCliController extends IXP_Controller_CliAction
 
                 foreach( $switch->getPorts() as $port )
                 {
-                    $snmpId = $port->ifnameToSNMPIdentifier();
-                    $data[ $infra->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
-                    $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8;
-
-                    foreach( IXP_Mrtg::$TRAFFIC_TYPES as $type => $vars )
+                    if( $port->getIfName() )
                     {
-                        $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
+                        $snmpId = $port->ifnameToSNMPIdentifier();
+                        $data[ $infra->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
+                        $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8;
 
-                        if( $port->getType() == \Entities\SwitchPort::TYPE_PEERING )
-                            $data[ $infra->getId() ]['mrtgIds'][$type][] = $id;
+                        foreach( IXP_Mrtg::$TRAFFIC_TYPES as $type => $vars )
+                        {
+                            $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
 
-                        $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'][$type][] = $id;
+                            if( $port->getType() == \Entities\SwitchPort::TYPE_PEERING )
+                                $data[ $infra->getId() ]['mrtgIds'][$type][] = $id;
+
+                            $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'][$type][] = $id;
+                        }
                     }
                 }
             }

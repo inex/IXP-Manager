@@ -137,6 +137,14 @@ return [
         'Illuminate\View\ViewServiceProvider',
 
         /*
+         * Third party providers
+         */
+        'Doctrine2Bridge\Doctrine2CacheBridgeServiceProvider',
+        'Doctrine2Bridge\Doctrine2BridgeServiceProvider',
+
+        'Franzl\LaravelPlates\LaravelPlatesServiceProvider',
+
+        /*
          * Application Service Providers...
          */
         'IXP\Providers\AppServiceProvider',
@@ -155,8 +163,6 @@ return [
         'Doctrine2Bridge\Doctrine2BridgeServiceProvider',
 
         'Franzl\LaravelPlates\LaravelPlatesServiceProvider',
-
-
     ],
 
     /*

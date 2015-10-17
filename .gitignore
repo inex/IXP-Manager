@@ -1,6 +1,7 @@
 .env
 .project
 .buildpath
+.vagrant/
 composer.lock
 vendor/
 MAINT_MODE_ENABLED
@@ -25,10 +26,12 @@ public/maintenance.php
 public/images/.directory
 public/images/joomla-admin/.directory
 public/images/joomla-admin/menu/.directory
+public/bower_components/
 tools/perl-lib/IXPManager/MYMETA.yml
 tools/perl-lib/IXPManager/Makefile
 tools/perl-lib/IXPManager/blib/
 tools/perl-lib/IXPManager/pm_to_blib
+tools/perl-lib/IXPManager/ixpmanager.conf
 *.sublime-project
 *.sublime-workspace
 application/views/router-cli/tacacs/tacplus/key.cfg
@@ -37,3 +40,5 @@ application/configs/rc-inex-*conf
 application/configs/rs*-inex-*.conf
 application/configs/ci-*
 *.DS_Store
+
+config/identity.php

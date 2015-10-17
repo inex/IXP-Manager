@@ -44,5 +44,4 @@ class Command extends \Illuminate\Console\Command {
     //     return $this->getOutput()->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG;
     // }
 
-
 }

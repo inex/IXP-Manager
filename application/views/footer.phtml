@@ -14,14 +14,14 @@
 {tmplinclude file='footer-content.phtml'}
 
 {if !isset( $mode ) or $mode neq 'fluid'}
-    
+
     </div> <!-- </div class="container"> -->
 
 {/if}
 
 {if isset( $hasIdentity ) and $hasIdentity}
 <script>
-    $( ".chzn-select" ).chosen();
+    $( ".chzn-select" ).chosen( { width: '100%' } );
 
     {if isset( $user ) and $user->getPrivs() eq 3}
         $( "#menu-select-customer" ).chosen().change( function(){

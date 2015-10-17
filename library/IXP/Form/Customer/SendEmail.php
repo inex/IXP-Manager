@@ -41,7 +41,7 @@ class IXP_Form_Customer_SendEmail extends IXP_Form
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'customer/forms/send-email.phtml' ] ] ] );
 
         $to = $this->createElement( 'text', 'to', [ 'size' => 100 ] );
-        $to->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $to->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'To' )
             ->setAttrib( 'class', 'span9' )
@@ -50,7 +50,7 @@ class IXP_Form_Customer_SendEmail extends IXP_Form
         $this->addElement( $to );
 
         $cc = $this->createElement( 'text', 'cc', [ 'size' => 100 ] );
-        $cc->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $cc->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'CC' )
             ->setAttrib( 'class', 'span9' )
@@ -59,7 +59,7 @@ class IXP_Form_Customer_SendEmail extends IXP_Form
         $this->addElement( $cc );
 
         $bcc = $this->createElement( 'text', 'bcc', [ 'size' => 100 ] );
-        $bcc->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $bcc->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'BCC' )
             ->setAttrib( 'class', 'span9' )
@@ -68,7 +68,7 @@ class IXP_Form_Customer_SendEmail extends IXP_Form
         $this->addElement( $bcc );
 
         $subject = $this->createElement( 'text', 'subject', [ 'size' => 100 ] );
-        $subject->addValidator( 'stringLength', false, array( 1, 4096 ) )
+        $subject->addValidator( 'stringLength', false, array( 1, 4096, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Subject' )
             ->setAttrib( 'class', 'span9' )
@@ -78,7 +78,7 @@ class IXP_Form_Customer_SendEmail extends IXP_Form
 
 
         $message = $this->createElement( 'textarea', 'message', [ 'cols' => 80, 'rows' => 20 ] );
-        $message->addValidator( 'stringLength', false, array( 1, 40960 ) )
+        $message->addValidator( 'stringLength', false, array( 1, 40960, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Message' )
             ->setAttrib( 'class', 'span9' )

@@ -4,7 +4,11 @@
     <id name="id" type="bigint">
       <generator strategy="AUTO"/>
     </id>
-    <field name="private" type="boolean" nullable="false"/>
+    <field name="private" type="boolean" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
     <field name="title" type="string" length="255" nullable="false"/>
     <field name="note" type="text" nullable="false"/>
     <field name="created" type="datetime" nullable="false"/>

@@ -7,8 +7,16 @@
     <field name="name" type="string" unique="true" length="20" nullable="false"/>
     <field name="description" type="string" length="255" nullable="false"/>
     <field name="type" type="string" length="20" nullable="false"/>
-    <field name="active" type="boolean" nullable="false"/>
-    <field name="limited_to" type="integer" nullable="false"/>
+    <field name="active" type="boolean" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+    <field name="limited_to" type="integer" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
     <field name="created" type="datetime" nullable="false"/>
     <many-to-many field="Contacts" target-entity="Entities\Contact" mapped-by="Groups"/>
   </entity>

@@ -42,7 +42,7 @@ class IXP_Form_Interface_Virtual extends IXP_Form
         $this->getElement( 'custid' )->setAttrib( 'class', 'chzn-select span8' );
 
         $name = $this->createElement( 'text', 'name' );
-        $name->addValidator( 'stringLength', false, array( 0, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Virtual Interface Name' )
             ->addFilter( 'StringTrim' )
@@ -52,7 +52,7 @@ class IXP_Form_Interface_Virtual extends IXP_Form
 
         $descr = $this->createElement( 'text', 'description' );
         $descr->setLabel( 'Description' )
-            ->addValidator( 'stringLength', false, array( 0, 255 ) )
+            ->addValidator( 'stringLength', false, array( 0, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->addFilter( new OSS_Filter_StripSlashes() )
             ->addFilter( 'StringTrim' );

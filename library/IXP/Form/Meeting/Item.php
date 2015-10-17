@@ -39,7 +39,7 @@ class IXP_Form_Meeting_Item extends IXP_Form
         $this->getElement( 'meeting_id' )->setAttrib( 'class', 'chzn-select span6' );
         
         $title = $this->createElement( 'text', 'title', array( 'size' => '100' ) );
-        $title->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $title->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Title' )
             ->setAttrib( 'class', 'span6' )
@@ -48,7 +48,7 @@ class IXP_Form_Meeting_Item extends IXP_Form
         $this->addElement( $title );
 
         $name = $this->createElement( 'text', 'name', array( 'size' => '100' ) );
-        $name->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setAttrib( 'class', 'span6' )
             ->setLabel( 'Name' )
@@ -57,7 +57,7 @@ class IXP_Form_Meeting_Item extends IXP_Form
         $this->addElement( $name );
 
         $role = $this->createElement( 'text', 'role', array( 'size' => '100' ) );
-        $role->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $role->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setAttrib( 'class', 'span6' )
             ->setLabel( 'Role' )
@@ -66,7 +66,7 @@ class IXP_Form_Meeting_Item extends IXP_Form
         $this->addElement( $role );
 
         $email = $this->createElement( 'text', 'email', array( 'size' => '100' ) );
-        $email->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $email->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'E-Mail' )
             ->setAttrib( 'class', 'span6' )
@@ -75,7 +75,7 @@ class IXP_Form_Meeting_Item extends IXP_Form
         $this->addElement( $email );
 
         $company = $this->createElement( 'text', 'company', array( 'size' => '100' ) );
-        $company->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $company->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Company' )
             ->setAttrib( 'class', 'span6' )
@@ -84,7 +84,7 @@ class IXP_Form_Meeting_Item extends IXP_Form
         $this->addElement( $company );
 
         $company_url = $this->createElement( 'text', 'company_url', array( 'size' => '100' ) );
-        $company_url->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $company_url->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Company URL' )
             ->setAttrib( 'class', 'span6' )
@@ -109,7 +109,7 @@ class IXP_Form_Meeting_Item extends IXP_Form
         $this->addElement( $presentation );
 
         $video_url = $this->createElement( 'text', 'video_url', array( 'size' => '100' ) );
-        $video_url->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $video_url->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Video' )
             ->setAttrib( 'class', 'span6' )

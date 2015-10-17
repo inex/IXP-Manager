@@ -36,7 +36,7 @@ class IXP_Form_IrrdbConfig extends IXP_Form
     public function init()
     {
         $host = $this->createElement( 'text', 'host' );
-        $host->addValidator( 'stringLength', false, array( 1, 255 ) )
+        $host->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Host' )
             ->setAttrib( 'class', 'span3' )
@@ -45,7 +45,7 @@ class IXP_Form_IrrdbConfig extends IXP_Form
         $this->addElement( $host );
 
         $protocol = $this->createElement( 'text', 'protocol' );
-        $protocol->addValidator( 'stringLength', false, array( 1, 10 ) )
+        $protocol->addValidator( 'stringLength', false, array( 1, 10, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Protocol' )
             ->setAttrib( 'class', 'span3' )
@@ -54,7 +54,7 @@ class IXP_Form_IrrdbConfig extends IXP_Form
         $this->addElement( $protocol );
 
         $source = $this->createElement( 'text', 'source' );
-        $source->addValidator( 'stringLength', false, array( 1, 50 ) )
+        $source->addValidator( 'stringLength', false, array( 1, 50, 'UTF-8' ) )
             ->setRequired( true )
             ->setLabel( 'Source' )
             ->setAttrib( 'class', 'span3' )

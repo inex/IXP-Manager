@@ -9,8 +9,16 @@
     <field name="email" type="string" length="255" nullable="true"/>
     <field name="phone" type="string" length="50" nullable="true"/>
     <field name="mobile" type="string" length="50" nullable="true"/>
-    <field name="facilityaccess" type="boolean" nullable="false"/>
-    <field name="mayauthorize" type="boolean" nullable="false"/>
+    <field name="facilityaccess" type="boolean" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="mayauthorize" type="boolean" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
     <field name="notes" type="text" nullable="true"/>
     <field name="lastupdated" type="datetime" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>

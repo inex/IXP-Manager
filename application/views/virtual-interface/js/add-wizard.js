@@ -4,21 +4,32 @@ $( "#fn_switchid" ).on( 'change', updateSwitchPort );
 
 function randomString( length ) {
     var result = '';
-    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+
+    // if we do not have a cryptographically secure version of a PRNG, just alert and return
+    if( window.crypto.getRandomValues === undefined ) {
+        alert( 'No cryptographically secure PRNG available.' );
+    } else {
+        var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var array = new Uint32Array(length);
+
+        window.crypto.getRandomValues(array);
+        for( var i = 0; i < length; i++ )
+            result += chars[ array[i] % chars.length ];
+    }
+
     return result;
 }
 
 $( "#ipv4bgpmd5secret" ).wrap( '<div class="input-append"></div>' );
-$( "#ipv4bgpmd5secret" ).after( '<button class="btn" type="button" id="genipv4bgpmd5secret"><i class="icon-refresh"></i></button>')
+$( "#ipv4bgpmd5secret" ).after( '<button class="btn" type="button" id="genipv4bgpmd5secret"><i class="icon-refresh"></i></button>');
 $( "#genipv4bgpmd5secret" ).on( 'click', function( e ) {
     $( "#ipv4bgpmd5secret" ).val( randomString( 12 ) );
 });
 
 $( "#ipv6bgpmd5secret" ).wrap( '<div class="input-append"></div>' );
-$( "#ipv6bgpmd5secret" ).after( '<button class="btn" type="button" id="genipv6bgpmd5secret"><i class="icon-retweet"></i></button>')
+$( "#ipv6bgpmd5secret" ).after( '<button class="btn" type="button" id="genipv6bgpmd5secret"><i class="icon-retweet"></i></button>');
 $( "#genipv6bgpmd5secret" ).on( 'click', function( e ) {
-    $( "#ipv6bgpmd5secret" ).val( $( "#ipv4bgpmd5secret" ).val().trim() == '' ? randomString( 12 ) : $( "#ipv4bgpmd5secret" ).val() );
+    $( "#ipv6bgpmd5secret" ).val( $( "#ipv4bgpmd5secret" ).val().trim() === '' ? randomString( 12 ) : $( "#ipv4bgpmd5secret" ).val() );
 });
 
 function updateSwitchPort(){
@@ -36,8 +47,8 @@ function updateSwitchPort(){
     if( $(this).val() != '0' ) {
         ossChosenClear( prep + "switchportid", "<option>Please wait, loading data...</option>" );
 
-        $.getJSON( "{genUrl controller='switch-port' action='ajax-get'}/id/"
-        + $( prep + "preselectPhysicalInterface" ).val() + "/type/" + type +  "/switchid/" + $(this).val(), function( j ) {
+        $.getJSON( "{genUrl controller='switch-port' action='ajax-get'}/id/" +
+            $( prep + "preselectPhysicalInterface" ).val() + "/type/" + type +  "/switchid/" + $(this).val(), function( j ) {
 
             var options = "<option value=\"\">- select -</option>\n";
 
@@ -55,7 +66,7 @@ function updateSwitchPort(){
 
     $( this).removeAttr( 'disabled' );
 
-};
+}
 
 $( "#switchportid" ).change( function() {
     $( "#preselectSwitchPort" ).val( $( "#switchportid" ).val() );
@@ -74,8 +85,8 @@ $( "#vlanid" ).on( 'change', function( event ) {
         //ossChosenClear( "#ipv4addressid", "<option>Please wait, loading data...</option>" );
         //ossChosenClear( "#ipv6addressid", "<option>Please wait, loading data...</option>" );
 
-        $.getJSON( "{genUrl controller='ipv4-address' action='ajax-get-for-vlan'}/vliid/"
-                + $( "#preselectVlanInterface" ).val() + "/vlanid/" + $(this).val(), null, function( j ){
+        $.getJSON( "{genUrl controller='ipv4-address' action='ajax-get-for-vlan'}/vliid/" +
+                $( "#preselectVlanInterface" ).val() + "/vlanid/" + $(this).val(), null, function( j ){
 
             var options = "<option value=\"\">- select -</option>\n";
 
@@ -90,8 +101,8 @@ $( "#vlanid" ).on( 'change', function( event ) {
             }
         });
 
-        $.getJSON( "{genUrl controller='ipv6-address' action='ajax-get-for-vlan'}/vliid/"
-                + $( "#preselectVlanInterface" ).val() + "/vlanid/" + $(this).val(), null, function( j ){
+        $.getJSON( "{genUrl controller='ipv6-address' action='ajax-get-for-vlan'}/vliid/" +
+                $( "#preselectVlanInterface" ).val() + "/vlanid/" + $(this).val(), null, function( j ){
 
             var options = "<option value=\"\">- select -</option>\n";
 
@@ -171,7 +182,7 @@ $(document).ready( function() {
 
         $( '#custid' ).on( 'change', function(){
             var resoldCusts = {$resoldCusts};
-            if( resoldCusts[ $(this).val() ] == undefined )
+            if( resoldCusts[ $(this).val() ] === undefined )
             {
                 $( '#fanout' ).removeAttr( "checked" );
                 $( '#fanoutdetails' ).slideUp();

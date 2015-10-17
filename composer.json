@@ -68,12 +68,14 @@
         "laravel/framework": "5.0.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
-	    "oss2/auth": "dev-master",
+
+        "oss2/auth": "dev-master",
 
         "league/plates": "3.*",
         "franzl/laravel-plates": "dev-master",
 
-        "zendesk/zendesk_api_client_php": "dev-master"
+        "zendesk/zendesk_api_client_php": "dev-master",
+        "guzzlehttp/guzzle": "~6.0"
 
     },
     "require-dev": {

@@ -11,7 +11,11 @@
     <field name="snmppasswd" type="string" length="255" nullable="true"/>
     <field name="switchtype" type="integer" nullable="true"/>
     <field name="model" type="string" length="255" nullable="true"/>
-    <field name="active" type="boolean" nullable="true"/>
+    <field name="active" type="boolean" nullable="true">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
     <field name="os" type="string" nullable="true"/>
     <field name="osDate" type="datetime" nullable="true"/>
     <field name="osVersion" type="string" nullable="true"/>
@@ -36,6 +40,5 @@
     </many-to-one>
     <one-to-many field="Ports" target-entity="Entities\SwitchPort" mapped-by="Switcher"/>
     <one-to-many field="ConsoleServerConnections" target-entity="Entities\ConsoleServerConnection" mapped-by="Switcher"/>
-    <one-to-many field="SecEvents" target-entity="Entities\SecEvent" mapped-by="Switch"/>
   </entity>
 </doctrine-mapping>

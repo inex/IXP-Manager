@@ -11,17 +11,19 @@ use IXP\Exceptions\GeneralException;
  */
 class Customer
 {
-    const TYPE_FULL       = 1;
-    const TYPE_ASSOCIATE  = 2;
-    const TYPE_INTERNAL   = 3;
-    const TYPE_IXP        = 3;
-    const TYPE_PROBONO    = 4;
+    const TYPE_FULL        = 1;
+    const TYPE_ASSOCIATE   = 2;
+    const TYPE_INTERNAL    = 3;
+    const TYPE_IXP         = 3;
+    const TYPE_PROBONO     = 4;
+    const TYPE_ROUTESERVER = 5;
 
     public static $CUST_TYPES_TEXT = [
-        self::TYPE_FULL      => 'Full',
-        self::TYPE_ASSOCIATE => 'Associate',
-        self::TYPE_INTERNAL  => 'Internal',
-        self::TYPE_PROBONO   => 'Pro-bono'
+        self::TYPE_FULL          => 'Full',
+        self::TYPE_ASSOCIATE     => 'Associate',
+        self::TYPE_INTERNAL      => 'Internal',
+        self::TYPE_PROBONO       => 'Pro-bono',
+        self::TYPE_ROUTESERVER   => 'Routeserver'
     ];
 
 
@@ -1296,44 +1298,6 @@ class Customer
     public function getNoc24hphone()
     {
         return $this->noc24hphone;
-    }
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $SecEvents;
-
-    /**
-     * Add SecEvents
-     *
-     * @param Entities\SecEvent $secEvents
-     * @return Customer
-     */
-    public function addSecEvent(\Entities\SecEvent $secEvents)
-    {
-        $this->SecEvents[] = $secEvents;
-
-        return $this;
-    }
-
-    /**
-     * Remove SecEvents
-     *
-     * @param Entities\SecEvent $secEvents
-     */
-    public function removeSecEvent(\Entities\SecEvent $secEvents)
-    {
-        $this->SecEvents->removeElement($secEvents);
-    }
-
-    /**
-     * Get SecEvents
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getSecEvents()
-    {
-        return $this->SecEvents;
     }
 
 

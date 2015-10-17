@@ -102,11 +102,6 @@ class SwitchPort
     protected $Switcher;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $SecEvents;
-
-    /**
      * @var string
      */
     protected $ifName;
@@ -269,40 +264,6 @@ class SwitchPort
      */
     public function __construct()
     {
-        $this->SecEvents = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add SecEvents
-     *
-     * @param Entities\SecEvent $secEvents
-     * @return SwitchPort
-     */
-    public function addSecEvent(\Entities\SecEvent $secEvents)
-    {
-        $this->SecEvents[] = $secEvents;
-
-        return $this;
-    }
-
-    /**
-     * Remove SecEvents
-     *
-     * @param Entities\SecEvent $secEvents
-     */
-    public function removeSecEvent(\Entities\SecEvent $secEvents)
-    {
-        $this->SecEvents->removeElement($secEvents);
-    }
-
-    /**
-     * Get SecEvents
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getSecEvents()
-    {
-        return $this->SecEvents;
     }
 
     /**
@@ -605,10 +566,16 @@ class SwitchPort
                 $getfn = "get{$entity['fn']}";
                 $setfn = "set{$entity['fn']}";
 
-                if( isset( $entity['xlate'] ) )
-                    $n = $host->useMAU()->$snmp( $entity['xlate'] )[ $this->getIfIndex() ];
-                else
-                    $n = $host->useMAU()->$snmp()[ $this->getIfIndex() ];
+                try {
+                    if( isset( $entity['xlate'] ) )
+                        $n = $host->useMAU()->$snmp( $entity['xlate'] )[ $this->getIfIndex() ];
+                    else
+                        $n = $host->useMAU()->$snmp()[ $this->getIfIndex() ];
+                } catch( \OSS_SNMP\Exception $e ) {
+                    // looks like the switch supports MAU but not all of the MIBs
+                    $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                    $n = null;
+                }
 
                 if( $n == '*** UNKNOWN ***' && $snmp == 'types' )
                     $n = '(empty)';
