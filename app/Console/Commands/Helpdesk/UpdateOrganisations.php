@@ -81,6 +81,7 @@ class UpdateOrganisations extends HelpdeskCommand {
 
                 foreach( $cust->getContacts() as $contact ) {
 
+                    // weed out duplicates:
                     if( in_array( $contact->getEmail(), $contactemails ) )
                         continue;
                     else
