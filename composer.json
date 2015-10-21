@@ -74,7 +74,7 @@
         "league/plates": "3.*",
         "franzl/laravel-plates": "dev-master",
 
-        "zendesk/zendesk_api_client_php": "dev-master",
+        "zendesk/zendesk_api_client_php": "1.*",
         "guzzlehttp/guzzle": "~6.0"
 
     },

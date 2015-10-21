@@ -220,6 +220,28 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getTypeText()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeText', array());
+
+        return parent::getTypeText();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTypeText($t)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTypeText', array($t));
+
+        return parent::setTypeText($t);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setShortname($shortname)
     {
 
@@ -545,6 +567,28 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStatus', array());
 
         return parent::getStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getStatusText()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStatusText', array());
+
+        return parent::getStatusText();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setStatusText($t)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setStatusText', array($t));
+
+        return parent::setStatusText($t);
     }
 
     /**
