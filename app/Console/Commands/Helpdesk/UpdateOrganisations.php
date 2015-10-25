@@ -141,8 +141,8 @@ class UpdateOrganisations extends HelpdeskCommand {
         {
             if( $this->getHelpdesk()->contactNeedsUpdating( $contact, $user ) )
             {
-            this->error( "{$this->name} :: could not update {$contact->getName()} :: FIXME - UPDATES DISABLED" );
-            return; //FIXME!!!!!!
+                $this->error( "{$this->name} :: could not update {$contact->getName()} :: FIXME - UPDATES DISABLED" );
+                return; //FIXME!!!!!!
                 if( $this->getHelpdesk()->userUpdate( $user->helpdesk_id, $contact ) )
                     $this->info( "{$this->name} :: updated {$contact->getName()}" );
                 else
