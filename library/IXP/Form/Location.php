@@ -35,6 +35,9 @@ class IXP_Form_Location extends IXP_Form
 {
     public function init()
     {
+        $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'location/forms/location.phtml' ] ] ] );
+
+
         $name = $this->createElement( 'text', 'name' );
         $name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
             ->setAttrib( 'class', 'span3' )
@@ -146,6 +149,10 @@ class IXP_Form_Location extends IXP_Form
             ->setAttrib( 'cols', 60 )
             ->setAttrib( 'rows', 5 );
         $this->addElement( $notes );
+
+        $pdb_facility_id = $this->createElement( 'hidden', 'pdb_facility_id' );
+        $this->addElement( $pdb_facility_id );
+
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );

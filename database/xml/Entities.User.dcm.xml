@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\User" repository-class="Repositories\User" table="user" tableName="user">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="username" type="string" unique="true" length="255" nullable="true"/>
+    <field name="password" type="string" length="255" nullable="true"/>
+    <field name="email" type="string" length="255" nullable="true"/>
+    <field name="authorisedMobile" type="string" length="30" nullable="true"/>
+    <field name="uid" type="integer" nullable="true"/>
+    <field name="privs" type="integer" nullable="true"/>
+    <field name="disabled" type="boolean" nullable="true"/>
+    <field name="lastupdated" type="datetime" nullable="true"/>
+    <field name="lastupdatedby" type="integer" nullable="true"/>
+    <field name="creator" type="string" nullable="true"/>
+    <field name="created" type="datetime" nullable="true"/>
+    <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="Users">
+      <join-columns>
+        <join-column name="custid" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
+    <one-to-many field="ApiKeys" target-entity="Entities\ApiKey" mapped-by="User"/>
+    <one-to-many field="LastLogins" target-entity="Entities\UserLoginHistory" mapped-by="User"/>
+    <one-to-one field="Contact" target-entity="Entities\Contact" mapped-by="User"/>
+    <one-to-many field="Meetings" target-entity="Entities\Meeting" mapped-by="CreatedBy"/>
+    <one-to-many field="Preferences" target-entity="Entities\UserPreference" mapped-by="User"/>
+  </entity>
+</doctrine-mapping>

@@ -1,0 +1,1012 @@
+<?xml version="1.0"?>
+<skipper version="3.2.3.1247" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+  <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
+    <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
+      <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
+      <field name="customer_id" type="integer" required="true" uuid="07bd2228-73b4-479f-ad50-1438f9905e5f"/>
+      <field name="asn" type="integer" required="true" uuid="ad41fc97-061a-4e76-bcef-01146a05f2e6"/>
+      <field name="protocol" type="integer" required="true" uuid="d7b4ff15-0fbd-4e2b-85a0-7397c3d932ab"/>
+      <field name="first_seen" type="datetime" required="true" uuid="30730a88-58d8-4bee-aaf5-981fa1a49dff"/>
+      <index name="custasn" unique="true">
+        <index-field name="asn"/>
+        <index-field name="protocol"/>
+        <index-field name="customer_id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\IrrdbAsn</attribute>
+        <attribute name="schema">irrdb_asn</attribute>
+        <attribute name="table">irrdb_asn</attribute>
+        <attribute name="tableName">irrdb_asn</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\IrrdbAsn" to="\Entities\Customer" owner-alias="IrrdbASNs" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd">
+      <association-field from="customer_id" to="id"/>
+    </association>
+    <entity name="\Entities\ApiKey" local-name="ApiKey" namespace="\Entities" uuid="3da990c1-6ab8-436e-8800-e09a08ebee16">
+      <field name="id" type="bigint" unique="true" primary="true" auto-increment="true" uuid="e7921411-de32-4a53-a946-d829a0a07f91"/>
+      <field name="apiKey" type="string" size="255" required="true" unique="true" uuid="e2e30fb0-01ac-431a-99b7-5c40b4c9d9ce"/>
+      <field name="expires" type="datetime" uuid="a4ca6f2b-63ec-4289-9172-28dea39d6bca"/>
+      <field name="allowedIPs" type="text" uuid="7e487825-6517-454c-a154-49c69cd0f8bd"/>
+      <field name="created" type="datetime" required="true" uuid="ef6ca1f2-d589-4cb4-92af-acaa874c6840"/>
+      <field name="lastseenAt" type="datetime" uuid="0349d5b6-e543-4d97-bc08-100b540f9230"/>
+      <field name="lastseenFrom" type="string" size="255" uuid="199a2c38-0862-41c4-816f-61009a4ee933"/>
+      <field name="user_id" type="integer" required="true" uuid="d95d7c90-25ae-4369-8a70-6a3d14cb2751"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\ApiKey</attribute>
+        <attribute name="schema">api_keys</attribute>
+        <attribute name="table">api_keys</attribute>
+        <attribute name="tableName">api_keys</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\ApiKey" to="\Entities\User" owner-alias="ApiKeys" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a">
+      <association-field from="user_id" to="id"/>
+    </association>
+    <entity name="\Entities\IrrdbPrefix" local-name="IrrdbPrefix" namespace="\Entities" uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64">
+      <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3dba3446-ee45-49f0-8435-7765a5078a5a"/>
+      <field name="customer_id" type="integer" required="true" uuid="acd87918-2791-4530-90fd-65e46f8a774d"/>
+      <field name="prefix" type="string" size="255" required="true" uuid="552d465a-f969-4d73-88f0-9aceb239cf15"/>
+      <field name="protocol" type="integer" required="true" uuid="959cd9e3-0cdc-4e47-9db3-17617d470128"/>
+      <field name="first_seen" type="datetime" required="true" uuid="4d67869f-fb35-46a1-8664-938a168791b9"/>
+      <field name="last_seen" type="datetime" required="true" uuid="93f0f6bd-ab07-4564-ab3f-5262b7770bfa"/>
+      <index name="custprefix" unique="true">
+        <index-field name="prefix"/>
+        <index-field name="protocol"/>
+        <index-field name="customer_id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="schema">irrdb_prefix</attribute>
+        <attribute name="table">irrdb_prefix</attribute>
+        <attribute name="tableName">irrdb_prefix</attribute>
+        <attribute name="repository-class">Repositories\IrrdbPrefix</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\IrrdbPrefix" to="\Entities\Customer" owner-alias="IrrdbPrefixes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726">
+      <association-field from="customer_id" to="id"/>
+    </association>
+    <entity name="\Entities\UserLoginHistory" local-name="UserLoginHistory" namespace="\Entities" uuid="9f26679f-99e4-48b9-b544-4d7377988044">
+      <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="2ec9db54-1a9e-4bea-b669-1842199f515f"/>
+      <field name="user_id" type="integer" required="true" uuid="99836e5c-d45b-4622-af11-a66b52ef9d93"/>
+      <field name="ip" type="string" size="39" required="true" uuid="cb30ab15-2f18-462f-81b7-6304e752aad2"/>
+      <field name="at" type="datetime" required="true" uuid="0696d2a8-2a83-4330-9f7d-53f020738b1f"/>
+      <index name="at_idx">
+        <index-field name="at"/>
+        <index-field name="user_id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">user_logins</attribute>
+        <attribute name="tableName">user_logins</attribute>
+        <attribute name="repository-class">Repositories\UserLoginHistory</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\UserLoginHistory" to="\Entities\User" owner-alias="LastLogins" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
+      <association-field from="user_id" to="id"/>
+    </association>
+    <entity name="\Entities\NetInfo" local-name="NetInfo" namespace="\Entities" uuid="6747622b-df14-45da-828f-3c676799d963">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="690436d3-2110-4c40-a6de-d2d79f286469"/>
+      <field name="vlan_id" type="integer" required="true" uuid="f1c5895d-c306-4b6f-ae5a-f178f30ccce6"/>
+      <field name="protocol" type="integer" required="true" uuid="3b6e8a1f-d428-4c83-b140-5b4603da56b5"/>
+      <field name="property" type="string" size="255" required="true" uuid="1084f9d1-9222-401e-8bc0-8fd61ad15c44"/>
+      <field name="ix" type="integer" default="0" required="true" uuid="b83f957c-d5e7-4660-aac6-aa381f5daf14"/>
+      <field name="value" type="text" required="true" uuid="03002eb9-d649-47b7-90cc-b1c2cceae822"/>
+      <index name="VlanProtoProp">
+        <index-field name="protocol"/>
+        <index-field name="property"/>
+        <index-field name="vlan_id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">netinfo</attribute>
+        <attribute name="tableName">netinfo</attribute>
+        <attribute name="repository-class">Repositories\NetInfo</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\NetInfo" to="\Entities\Vlan" owner-alias="NetInfo" inverse-alias="Vlan" many-owner="true" many-inverse="false" parent-required="true" uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e">
+      <association-field from="vlan_id" to="id"/>
+    </association>
+    <entity name="\Entities\CompanyRegisteredDetail" local-name="CompanyRegisteredDetail" namespace="\Entities" uuid="6070e4d5-359b-4047-a550-8e130118632e">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="320b1911-25df-4909-ace7-575ed60fa4e5"/>
+      <field name="registeredName" type="string" uuid="d2e5b288-fd9a-4e11-9d53-1dfd48686381"/>
+      <field name="companyNumber" type="string" uuid="3faaabb3-de13-449a-8c5a-b65db2c5edb0"/>
+      <field name="jurisdiction" type="string" uuid="c01a7e33-2ae9-49f4-a4d5-ec55fc120279"/>
+      <field name="address1" type="string" uuid="b4c2d848-c644-4145-80f1-aacfeaec491e"/>
+      <field name="address2" type="string" uuid="a918cb34-89ed-48ad-80a8-fa6d0375fcba"/>
+      <field name="address3" type="string" uuid="a1f2590c-96ec-4945-aa0f-3185e2428df0"/>
+      <field name="townCity" type="string" uuid="41cbb01f-8642-4eb5-b256-499eb8b5617e"/>
+      <field name="postcode" type="string" uuid="ff5c25bc-0e55-4813-98ee-484df12d354e"/>
+      <field name="country" type="string" uuid="1d4e5d38-78db-4cc1-abf4-b43923cbf3f8"/>
+      <orm-attributes>
+        <attribute name="table">company_registration_detail</attribute>
+        <attribute name="tableName">company_registration_detail</attribute>
+        <attribute name="repository-class">Repositories\CompanyRegistrationDetail</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\Infrastructure" local-name="Infrastructure" namespace="\Entities" uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="e904a0c2-3aad-427e-95c9-221727a33e39"/>
+      <field name="name" type="string" size="255" uuid="02357757-59b4-470c-8c32-d56c3370bad9"/>
+      <field name="shortname" type="string" size="255" uuid="20582920-be04-4962-939f-b5638e02740a"/>
+      <field name="isPrimary" type="boolean" size="1" default="0" required="true" uuid="8e597898-cb1f-4894-9dcf-5219be025587"/>
+      <field name="aggregate_graph_name" type="string" size="255" uuid="3e884e1f-245b-4e9b-a67f-aa9b4dcbcc01"/>
+      <field name="ixp_id" type="integer" required="true" uuid="6d316694-a9c3-4547-9265-daf01edf6a88"/>
+      <index name="IXPSN" unique="true">
+        <index-field name="shortname"/>
+        <index-field name="ixp_id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">infrastructure</attribute>
+        <attribute name="tableName">infrastructure</attribute>
+        <attribute name="repository-class">Repositories\Infrastructure</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Infrastructure" to="\Entities\IXP" owner-alias="Infrastructures" inverse-alias="IXP" many-owner="true" many-inverse="false" parent-required="true" uuid="a93d8c93-6456-462f-a524-9fcda1180727">
+      <association-field from="ixp_id" to="id"/>
+    </association>
+    <entity name="\Entities\IXP" local-name="IXP" namespace="\Entities" uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="644cca3f-b189-4b43-a44c-ba3e19c325d4"/>
+      <field name="name" type="string" size="255" uuid="afac262b-b479-47dc-ba75-e1fe2eb8ea81"/>
+      <field name="shortname" type="string" size="255" unique="true" uuid="1272442a-a57c-4bbd-a9f8-619fcdbf38d4"/>
+      <field name="address1" type="string" uuid="ba0bb55e-6d31-4b1a-ab21-5b7954be5391"/>
+      <field name="address2" type="string" uuid="29ef683d-5872-456b-9e10-17ca8b46dc93"/>
+      <field name="address3" type="string" uuid="8e8b7fe8-e734-45b8-94cf-95657476c3e4"/>
+      <field name="address4" type="string" uuid="4d4b3b92-df16-4e11-805e-b77bfd582742"/>
+      <field name="country" type="string" uuid="72f9e0ee-d964-448f-ad2b-7e923aaf7435"/>
+      <field name="mrtg_path" type="string" size="255" uuid="1328ffc2-7a48-4aea-9e9c-3e1e9e50489f"/>
+      <field name="mrtg_p2p_path" type="string" size="255" uuid="f3a641a9-5f10-42ab-8a7c-97da577dad11"/>
+      <field name="aggregate_graph_name" type="string" size="255" uuid="6880fa9c-3176-45bb-9775-0bf0a5be549a"/>
+      <field name="smokeping" type="string" size="255" uuid="20548855-3a72-4b18-bb6e-5ac03fa6aff8"/>
+      <orm-attributes>
+        <attribute name="table">ixp</attribute>
+        <attribute name="tableName">ixp</attribute>
+        <attribute name="repository-class">Repositories\IXP</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\CustomerToIXP" local-name="CustomerToIXP" namespace="\Entities" uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="62186e23-ae8b-40e5-9681-a26bac3fa365"/>
+      <field name="customer_id" type="integer" required="true" primary="true" uuid="64570dc3-2fab-4829-a0df-cf4e18bcca3a"/>
+      <field name="ixp_id" type="integer" required="true" primary="true" uuid="d15a0b5b-3334-4079-9b9e-59c9e5d8c72b"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\CustomerToIXP</attribute>
+        <attribute name="table">customer_to_ixp</attribute>
+        <attribute name="tableName">customer_to_ixp</attribute>
+      </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="\Entities\CustomerToIXP" uuid="3e003c57-9922-4820-a7b3-897360e1d984">
+      <many-to-many-entity name="\Entities\Customer" owning-side="true" alias="Customers" uuid="3ddb207a-b135-469a-8c60-8bdd1856f642">
+        <many-to-many-field from="customer_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="\Entities\IXP" owning-side="false" alias="IXPs" uuid="5305218b-7fb0-4351-aaa8-39ce0d4e7d19">
+        <many-to-many-field from="ixp_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="\Entities\CompanyBillingDetail" local-name="CompanyBillingDetail" namespace="\Entities" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
+      <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="a67b06c1-d18c-4196-90ed-d8987633c48b"/>
+      <field name="billingContactName" type="string" uuid="b797975d-1d9d-48fd-84fe-917e08d3297d"/>
+      <field name="billingAddress1" type="string" uuid="1401ac3e-a825-4181-b879-d5d1dca03b1a"/>
+      <field name="billingAddress2" type="string" uuid="1d661987-d0e7-4309-a2f1-4ee996ea2c7e"/>
+      <field name="billingAddress3" type="string" uuid="be644d27-93e8-41f4-a06c-6363a571021a"/>
+      <field name="billingTownCity" type="string" uuid="2ade8305-73f5-4334-81b7-d5f7e77f6f17"/>
+      <field name="billingPostcode" type="string" uuid="45748105-15d5-415d-b7fe-f06c77187d62"/>
+      <field name="billingCountry" type="string" uuid="cda12b9e-c01f-43ae-9d9e-ae6cb48a0fd6"/>
+      <field name="billingEmail" type="string" uuid="650a85dc-f726-434d-b861-0caa97fcd382"/>
+      <field name="billingTelephone" type="string" uuid="932767a1-7093-413a-a7df-7400e196c133"/>
+      <field name="vatNumber" type="string" uuid="e6742d8c-f120-4ede-8cc3-57094f77f916"/>
+      <field name="vatRate" type="string" uuid="e5b6257a-2558-436d-8606-0e35d665aabf"/>
+      <field name="purchaseOrderRequired" type="boolean" default="0" required="true" uuid="f760dfb2-8626-46f4-86bd-80e7b545e347"/>
+      <field name="invoiceMethod" type="string" uuid="f48e1a39-cb6b-4a3d-86e0-9cd06197ea28"/>
+      <field name="invoiceEmail" type="string" uuid="0a7a5da1-c6a1-4243-bffc-396498d56383"/>
+      <field name="billingFrequency" type="string" uuid="bd5929d8-6562-4b12-b59b-93e832357db9"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\CompanyBillingDetail</attribute>
+        <attribute name="table">company_billing_detail</attribute>
+        <attribute name="tableName">company_billing_detail</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\ContactGroup" local-name="ContactGroup" namespace="\Entities" uuid="0c1cb743-444a-4fea-ab68-7150272fc55b">
+      <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3d4b50db-5775-4991-8836-6c5002afa75b"/>
+      <field name="name" type="string" size="20" required="true" unique="true" uuid="30e37e8e-e3ed-4060-8b9e-7000b8cf69ab"/>
+      <field name="description" type="string" size="255" required="true" uuid="ddd12f3a-179f-4144-a0d4-6c213ce3205e"/>
+      <field name="type" description="E.g. 'ROLE' for admin / billing / etc" type="string" size="20" required="true" uuid="63df8676-ac57-430d-a814-52e01baa5f54"/>
+      <field name="active" type="boolean" default="1" required="true" uuid="978ff8ec-0c51-4d4f-9d08-ab0beeae1016"/>
+      <field name="limited_to" type="integer" default="0" required="true" uuid="17a89689-f065-46c5-a719-5eedfa561a77"/>
+      <field name="created" type="datetime" required="true" uuid="f8aaef97-b05a-408c-bd59-c7890557e812"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\ContactGroup</attribute>
+        <attribute name="table">contact_group</attribute>
+        <attribute name="tableName">contact_group</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\ContactToGroup" local-name="ContactToGroup" namespace="\Entities" uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135">
+      <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="35ed765e-3477-4068-abc8-24a9025419ca"/>
+      <field name="contact_group_id" type="bigint" required="true" primary="true" uuid="12cb73c0-0eaa-4ff5-83e3-bf55e5f58cdd"/>
+      <field name="contact_id" type="integer" required="true" primary="true" uuid="22632fe8-624e-4c3f-8863-62676367f7e0"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\ContactToGroup</attribute>
+        <attribute name="table">contact_to_group</attribute>
+        <attribute name="tableName">contact_to_group</attribute>
+      </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="\Entities\ContactToGroup" uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a">
+      <many-to-many-entity name="\Entities\Contact" owning-side="true" alias="Contacts" uuid="1c683287-f504-4267-acea-e3d264f6aa21">
+        <many-to-many-field from="contact_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="\Entities\ContactGroup" owning-side="false" alias="Groups" uuid="bcddb68b-f602-44d4-9240-46cc31b0055b">
+        <many-to-many-field from="contact_group_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="\Entities\CustomerNote" local-name="CustomerNote" namespace="\Entities" uuid="783a63d3-7ca8-42bc-b949-a99a889d724a">
+      <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3aaea8aa-e370-4b2d-9bbf-e8c089289e3e"/>
+      <field name="customer_id" type="integer" required="true" uuid="5da1c492-9b92-4669-bd84-684bf027867b"/>
+      <field name="private" type="boolean" default="1" required="true" uuid="9bbfda6b-23a8-46f3-aab5-41eeeda6b1a7"/>
+      <field name="title" type="string" size="255" required="true" uuid="ac313cb2-f428-4ce9-bdfa-cb9c63c05569"/>
+      <field name="note" type="text" required="true" uuid="6b5232f9-6999-49ce-a2f7-d2b77fd1da71"/>
+      <field name="created" type="datetime" required="true" uuid="84305213-3cdd-42f2-90dd-569e8c5d630a"/>
+      <field name="updated" type="datetime" required="true" uuid="01d88a9c-85a5-4ad0-8c08-e41ac2094402"/>
+      <orm-attributes>
+        <attribute name="table">cust_notes</attribute>
+        <attribute name="tableName">cust_notes</attribute>
+        <attribute name="repository-class">Repositories\CustomerNotes</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\CustomerNote" to="\Entities\Customer" owner-alias="Notes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2">
+      <association-field from="customer_id" to="id"/>
+    </association>
+    <entity name="\Entities\BGPSessionData" local-name="BGPSessionData" namespace="\Entities" uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="cd0ddadb-8250-4d15-8b5a-bc466fa3457f"/>
+      <field name="srcipaddressid" type="integer" uuid="9ea89f0e-eb57-4beb-ab92-b3077c08a30d"/>
+      <field name="dstipaddressid" type="integer" uuid="62d7f206-57c6-4d2d-a18d-d5b35ec6c92f"/>
+      <field name="protocol" type="integer" uuid="89ccea1b-539e-4d5a-8e2b-d95b9f3f3bd4"/>
+      <field name="vlan" type="integer" uuid="e1bf34db-7da1-4456-8106-fe2e0330af12"/>
+      <field name="packetcount" type="integer" default="0" uuid="eb604e5d-18c0-4050-83c5-6a837d6b4b5d"/>
+      <field name="timestamp" type="datetime" uuid="c71b199c-d25d-4208-9b64-7fff911b9b87"/>
+      <field name="source" type="string" size="40" uuid="3ea5f9ae-e383-4532-9edf-ce430bd93255"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\BGPSessionData</attribute>
+        <attribute name="table">bgpsessiondata</attribute>
+        <attribute name="tableName">bgpsessiondata</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\Location" local-name="Location" namespace="\Entities" uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="af724c25-3d1e-4fea-bfac-428f8460b909"/>
+      <field name="pdb_facility_id" description="PeeringDB facility ID" type="bigint" uuid="5789d6ac-fc5d-4f70-905b-de51e41ae30c"/>
+      <field name="name" type="string" size="255" uuid="be0b898f-da9c-44f1-86cc-f31d4ea52ced"/>
+      <field name="shortname" type="string" size="255" unique="true" uuid="448524b7-b818-46b1-9635-cb1088cfacdd"/>
+      <field name="tag" type="string" size="255" uuid="cdd75bf6-1d5a-4570-8190-ebd6adf2b59e"/>
+      <field name="address" type="string" size="255" uuid="abafbf08-7aac-4492-8a10-e5fa396c9eba"/>
+      <field name="nocphone" type="string" size="255" uuid="cb01144f-1a94-46d3-85a7-3a8d339b7bf4"/>
+      <field name="nocfax" type="string" size="255" uuid="9a62d766-6422-4e6d-939f-8d946b1ff55d"/>
+      <field name="nocemail" type="string" size="255" uuid="cd1e2848-4e67-44c7-a0d4-f09b938a6709"/>
+      <field name="officephone" type="string" size="255" uuid="8b7cd8c4-e521-4e64-be13-14b4d8b99f85"/>
+      <field name="officefax" type="string" size="255" uuid="7d7d2da3-43ef-4596-84d3-e5507443788c"/>
+      <field name="officeemail" type="string" size="255" uuid="c6998daa-08a9-4083-81da-bae9eb79ee02"/>
+      <field name="notes" type="string" size="255" uuid="bd0477d5-9e1e-4161-93d6-38ab7b0dde94"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Location</attribute>
+        <attribute name="table">location</attribute>
+        <attribute name="tableName">location</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\Cabinet" local-name="Cabinet" namespace="\Entities" uuid="a4eeb330-c86b-4443-968b-c166863303b1">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="faa5888c-6746-47a9-a5a6-daa17e179d40"/>
+      <field name="locationid" type="integer" uuid="dbb07064-89b9-4d3e-9d3c-52e586652b51"/>
+      <field name="name" type="string" size="255" unique="true" uuid="27783e63-e505-403c-bddd-a57a952eb6e4"/>
+      <field name="cololocation" type="string" uuid="51918b07-b8d3-40f5-9703-b3c4c9c0a96a"/>
+      <field name="height" type="integer" uuid="3e0b9479-8765-45c3-bbb5-5e3c35a62e41"/>
+      <field name="type" type="string" size="255" uuid="bc44138d-545b-4d3d-b45c-599b6a40b9f6"/>
+      <field name="notes" type="text" uuid="9fd70a08-fa80-43cd-addf-cc79c817fd13"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Cabinet</attribute>
+        <attribute name="table">cabinet</attribute>
+        <attribute name="tableName">cabinet</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Cabinet" to="\Entities\Location" owner-alias="Cabinets" inverse-alias="Location" many-owner="true" many-inverse="false" uuid="d9075ce3-753a-432f-a009-c9e386509484">
+      <association-field from="locationid" to="id"/>
+    </association>
+    <entity name="\Entities\Switcher" local-name="Switcher" namespace="\Entities" uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="80d579c5-bcf2-447f-8eec-7492157d3a02"/>
+      <field name="name" type="string" size="255" unique="true" uuid="5c094e0a-6fa7-4321-a695-6c3c26c2f517"/>
+      <field name="hostname" type="string" size="255" uuid="108ec5d0-e19d-44dd-a142-ac8d33fc48b4"/>
+      <field name="cabinetid" type="integer" uuid="fde8b2e4-8181-4ed5-b088-ca21c459348d"/>
+      <field name="ipv4addr" type="string" size="255" uuid="db341555-090f-4992-86df-7d880066410f"/>
+      <field name="ipv6addr" type="string" size="255" uuid="c53d4076-8573-498f-a4ad-26c6584b85dd"/>
+      <field name="snmppasswd" type="string" size="255" uuid="4b73b930-a965-4e30-81e5-8c664891c88c"/>
+      <field name="infrastructure" type="integer" uuid="06791ab2-f917-4be2-9602-831d305c694a"/>
+      <field name="switchtype" type="integer" uuid="d9e9f4ea-bd98-4ab1-adda-0e34a8699ce8"/>
+      <field name="vendorid" type="integer" uuid="0c6b8117-2c7e-41f7-be3c-0c7c9cd5beb4"/>
+      <field name="model" type="string" size="255" uuid="5796046e-993c-474e-a188-74a6f946d460"/>
+      <field name="active" type="boolean" default="1" uuid="50f54b05-6a96-432b-99e1-6b9994b13d9a"/>
+      <field name="os" type="string" uuid="948b7f1a-2f02-4c90-8e13-adb4b7556751"/>
+      <field name="osDate" type="datetime" uuid="d5e22be1-91be-46ae-b5fe-25626a5db35e"/>
+      <field name="osVersion" type="string" uuid="110a1e41-bd8e-49d5-8b9d-d8f048553b32"/>
+      <field name="serialNumber" type="string" size="255" uuid="2b89be24-50a0-410f-986a-37636d9d2edc"/>
+      <field name="mauSupported" type="boolean" uuid="ceceb2aa-cb49-4ff3-ad96-8fffca87f101"/>
+      <field name="lastPolled" type="datetime" uuid="dfa1e20f-3393-452a-a0d5-95b079c54da4"/>
+      <field name="notes" type="text" uuid="c56c30fa-0c98-4025-ae71-6c653d0b9624"/>
+      <orm-attributes>
+        <attribute name="table">switch</attribute>
+        <attribute name="tableName">switch</attribute>
+        <attribute name="repository-class">Repositories\Switcher</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Switcher" to="\Entities\Infrastructure" owner-alias="Switchers" inverse-alias="Infrastructure" many-owner="true" many-inverse="false" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
+      <association-field from="infrastructure" to="id"/>
+    </association>
+    <association from="\Entities\Switcher" to="\Entities\Cabinet" owner-alias="Switches" inverse-alias="Cabinet" many-owner="true" many-inverse="false" uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765">
+      <association-field from="cabinetid" to="id"/>
+    </association>
+    <association from="\Entities\Switcher" to="\Entities\Vendor" owner-alias="Switches" inverse-alias="Vendor" many-owner="true" many-inverse="false" uuid="e8f4931c-82ef-4c5d-83c3-61a0b4271727">
+      <association-field from="vendorid" to="id"/>
+    </association>
+    <entity name="\Entities\Vendor" local-name="Vendor" namespace="\Entities" uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="ec333e95-5325-419e-a114-d47cd5b622e9"/>
+      <field name="name" type="string" size="255" uuid="3f0a1fff-6d39-4baf-99c2-15f90685c9bd"/>
+      <field name="shortname" type="string" size="255" uuid="d9673ae5-0cf2-4d6e-9d9b-e357e053940c"/>
+      <field name="nagios_name" type="string" size="255" uuid="eb2ee353-93bd-4997-bdb6-3bc5c21d2051"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Vendor</attribute>
+        <attribute name="table">vendor</attribute>
+        <attribute name="tableName">vendor</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\SwitchPort" local-name="SwitchPort" namespace="\Entities" uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="a6c65ce1-6466-4c09-afa9-6b1278c45867"/>
+      <field name="switchid" type="integer" uuid="930dfe01-28bb-43e4-9b63-cea471f3097b"/>
+      <field name="type" type="integer" uuid="12c83a2a-75d3-4cbe-bbd8-aa74fd5c8ba1"/>
+      <field name="name" type="string" uuid="394040cb-9679-4335-9cef-f8ba535bc8d3"/>
+      <field name="active" type="boolean" default="1" required="true" uuid="6f96fa47-0b29-40f3-a99a-9048a1643f3b"/>
+      <field name="ifIndex" type="integer" uuid="5907ca6d-dd76-42bd-9df6-152f7fdfe467"/>
+      <field name="ifName" type="string" uuid="0bca76d3-c24a-468c-9992-288a215959a3"/>
+      <field name="ifAlias" type="string" uuid="910f7489-ad5e-4af7-b816-c6dd85c4098a"/>
+      <field name="ifHighSpeed" type="integer" uuid="7eeba219-e6c6-4d51-852b-8438ed87b814"/>
+      <field name="ifMtu" type="integer" uuid="ab792ee6-9d2d-4292-8399-9513f59d9ae5"/>
+      <field name="ifPhysAddress" type="string" size="17" uuid="68a81a01-cd03-4c70-b28d-f127b3f0a3bc"/>
+      <field name="ifAdminStatus" type="integer" uuid="028d1c78-156e-42c4-a09e-b3ce67950aa9"/>
+      <field name="ifOperStatus" type="integer" uuid="eff27ac4-b0e5-4001-a4b1-85253f7f141a"/>
+      <field name="ifLastChange" type="integer" uuid="9d032cd9-6905-4df5-8422-ec5e72e4620f"/>
+      <field name="lastSnmpPoll" type="datetime" uuid="142ea587-8758-466b-9612-a8be6e4220f2"/>
+      <field name="lagIfIndex" type="integer" uuid="bea9ef74-edd5-4a94-a776-ce90caf78ca4"/>
+      <field name="mauType" type="string" uuid="d0fc3cfa-c076-4121-81be-dbf50eb44137"/>
+      <field name="mauState" type="string" uuid="217935d8-1b3f-49ac-8388-08351cfe3bc0"/>
+      <field name="mauAvailability" type="string" uuid="0dcde129-755e-4d4a-be69-ae593284cbf6"/>
+      <field name="mauJacktype" type="string" uuid="efbcd5eb-27d4-4a36-b2ea-5efff71fe0c8"/>
+      <field name="mauAutoNegSupported" type="boolean" uuid="a542a80f-f1dd-4f21-a02d-b9e5a218949f"/>
+      <field name="mauAutoNegAdminState" type="boolean" uuid="59e1bb59-a3bc-448a-935d-3c945c852802"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\SwitchPort</attribute>
+        <attribute name="table">switchport</attribute>
+        <attribute name="tableName">switchport</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\SwitchPort" to="\Entities\Switcher" owner-alias="Ports" inverse-alias="Switcher" many-owner="true" many-inverse="false" uuid="93708a18-58db-4061-add9-24991ccd3ce0">
+      <association-field from="switchid" to="id"/>
+    </association>
+    <entity name="\Entities\PhysicalInterface" local-name="PhysicalInterface" namespace="\Entities" uuid="09ab0078-0545-4696-a0cf-f825906ff6b8">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="845abe13-fa32-44d1-a6b5-c1bbf02c9f5f"/>
+      <field name="switchportid" type="integer" unique="true" uuid="2688941a-801e-4543-8192-d3c4ed6fa944"/>
+      <field name="virtualinterfaceid" type="integer" uuid="983fbec5-615e-450c-82d7-a3d26aed9987"/>
+      <field name="status" type="integer" uuid="2070c5b2-6fe8-4778-bf2a-d80c9eb5f64c"/>
+      <field name="speed" type="integer" uuid="0503f30c-b27d-4026-bf41-ef05388078d8"/>
+      <field name="duplex" type="string" size="16" uuid="ed6840cf-769f-40b8-bfb4-a68a30d480c4"/>
+      <field name="monitorindex" type="integer" uuid="c515c52e-8f2d-4cc0-8862-584c0bb8d636"/>
+      <field name="notes" type="text" uuid="eed9d024-c35e-4c89-802a-7fcbf392067f"/>
+      <field name="fanout_physical_interface_id" type="integer" unique="true" uuid="d8b65def-02ef-4aef-a766-dfa92e3b9284"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\PhysicalInterface</attribute>
+        <attribute name="table">physicalinterface</attribute>
+        <attribute name="tableName">physicalinterface</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\PhysicalInterface" to="\Entities\SwitchPort" owner-alias="PhysicalInterface" inverse-alias="SwitchPort" many-owner="false" many-inverse="false" uuid="f18aceae-d3e6-452d-9e28-0c32f340b245">
+      <association-field from="switchportid" to="id"/>
+    </association>
+    <association from="\Entities\PhysicalInterface" to="\Entities\VirtualInterface" owner-alias="PhysicalInterfaces" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6">
+      <association-field from="virtualinterfaceid" to="id"/>
+    </association>
+    <association from="\Entities\PhysicalInterface" to="\Entities\PhysicalInterface" owner-alias="PeeringPhysicalInterface" inverse-alias="FanoutPhysicalInterface" many-owner="false" many-inverse="false" uuid="1166ebf0-8024-4783-9af3-61e1b4f61070">
+      <association-field from="fanout_physical_interface_id" to="id"/>
+    </association>
+    <entity name="\Entities\VlanInterface" local-name="VlanInterface" namespace="\Entities" uuid="bad4f785-8f04-4d84-8cc9-36f638715559">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="7ee46365-d03c-4418-b7be-ddfebaf9420e"/>
+      <field name="virtualinterfaceid" type="integer" uuid="2ef3f425-a1af-4810-b0e1-8f21db8e5e43"/>
+      <field name="vlanid" type="integer" uuid="18053fb8-ad45-4d15-81ce-1435d7a33178"/>
+      <field name="ipv4enabled" type="boolean" default="0" uuid="c6984375-12ee-470d-932b-982769101a85"/>
+      <field name="ipv4addressid" type="integer" unique="true" uuid="8f0cfdc9-d6c6-4e19-a128-ecb8d12e1f73"/>
+      <field name="ipv4hostname" type="string" size="255" uuid="bc480e24-3f71-4df5-9c62-f6bee164a335"/>
+      <field name="ipv6enabled" type="boolean" default="0" uuid="38929c42-57b3-458d-8888-bcab1c296e69"/>
+      <field name="ipv6addressid" type="integer" unique="true" uuid="66a778b1-8747-40b8-9043-80036dd68b1f"/>
+      <field name="ipv6hostname" type="string" size="255" uuid="497552a4-50f8-45aa-9ab8-71622b131318"/>
+      <field name="mcastenabled" type="boolean" default="0" uuid="4806cba2-d349-4897-a6fc-10a1d875868d"/>
+      <field name="irrdbfilter" type="boolean" default="1" uuid="e377c638-45fb-417a-a11a-6f5f58e297ec"/>
+      <field name="bgpmd5secret" type="string" size="255" uuid="b302cb74-4d9e-4597-a186-591d0769adaf"/>
+      <field name="ipv4bgpmd5secret" type="string" size="255" uuid="568a3a08-ddcc-4644-84ec-f857a1349c45"/>
+      <field name="ipv6bgpmd5secret" type="string" size="255" uuid="07c7375a-f30d-491f-893b-cc9df202cd2a"/>
+      <field name="maxbgpprefix" type="integer" uuid="986b4ed6-d663-4780-9342-fa44212f67ff"/>
+      <field name="rsclient" type="boolean" uuid="6f2b1378-5ac9-4e65-91b0-c9ae121c97ba"/>
+      <field name="ipv4canping" type="boolean" uuid="b13304db-acc8-429d-bdfc-318f1fe3968f"/>
+      <field name="ipv6canping" type="boolean" uuid="02402654-787a-4e16-9987-fa77c786edf8"/>
+      <field name="ipv4monitorrcbgp" type="boolean" uuid="8c6b30ff-40b5-4daa-815d-98c62b4d3ca4"/>
+      <field name="ipv6monitorrcbgp" type="boolean" uuid="4314b5ad-0fbe-4692-b13d-3496049a1152"/>
+      <field name="as112client" type="boolean" uuid="9bde4ff7-ecc4-4992-9c77-cfbdbeb7f1c0"/>
+      <field name="busyhost" type="boolean" uuid="8fa3c042-a45c-4ebb-b76f-0e29a0cc4cc8"/>
+      <field name="notes" type="text" uuid="8df8264f-0280-440f-8724-398b4faef793"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\VlanInterface</attribute>
+        <attribute name="table">vlaninterface</attribute>
+        <attribute name="tableName">vlaninterface</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\VlanInterface" to="\Entities\VirtualInterface" owner-alias="VlanInterfaces" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4">
+      <association-field from="virtualinterfaceid" to="id"/>
+    </association>
+    <association from="\Entities\VlanInterface" to="\Entities\Vlan" owner-alias="VlanInterfaces" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73">
+      <association-field from="vlanid" to="id"/>
+    </association>
+    <association from="\Entities\VlanInterface" to="\Entities\IPv4Address" owner-alias="VlanInterface" inverse-alias="IPv4Address" many-owner="false" many-inverse="false" uuid="39ad3dd5-487b-4152-9190-558bd7e80668">
+      <association-field from="ipv4addressid" to="id"/>
+    </association>
+    <association from="\Entities\VlanInterface" to="\Entities\IPv6Address" owner-alias="VlanInterface" inverse-alias="IPv6Address" many-owner="false" many-inverse="false" uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f">
+      <association-field from="ipv6addressid" to="id"/>
+    </association>
+    <entity name="\Entities\Vlan" local-name="Vlan" namespace="\Entities" uuid="1b90f411-dfed-48a8-acd0-97cbf599e069">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="947c18c6-133a-42ba-a7e2-1346d7cc7e44"/>
+      <field name="infrastructureid" type="integer" required="true" uuid="6bd09753-b303-4f0d-b85d-0324f9728200"/>
+      <field name="name" type="string" size="255" uuid="34caf8b1-714c-4ffd-87d9-c5e6b3834c70"/>
+      <field name="number" type="integer" uuid="156b2f6b-7ce1-4558-9e7e-27f484e0a95f"/>
+      <field name="rcvrfname" type="string" size="255" uuid="dc73bea4-6ccb-48cc-831f-a1a1116a3d0b"/>
+      <field name="private" type="boolean" default="0" required="true" uuid="0dab2335-8f1b-446e-a53e-b669a132cf09"/>
+      <field name="peering_matrix" type="boolean" default="0" required="true" uuid="c2635dd8-8b82-420d-b0c4-a688b52cfc39"/>
+      <field name="peering_manager" type="boolean" default="0" required="true" uuid="8ccb17e4-b4f3-4a01-91e1-a639a49b6445"/>
+      <field name="notes" type="text" uuid="6f0d5a85-0441-4611-97a7-af2596fab0d0"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Vlan</attribute>
+        <attribute name="table">vlan</attribute>
+        <attribute name="tableName">vlan</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Vlan" to="\Entities\Infrastructure" owner-alias="Vlans" inverse-alias="Infrastructure" many-owner="true" many-inverse="false" parent-required="true" uuid="c3779c0a-b590-4cf8-9495-984270d7496a">
+      <association-field from="infrastructureid" to="id"/>
+    </association>
+    <entity name="\Entities\VirtualInterface" local-name="VirtualInterface" namespace="\Entities" uuid="aa930c08-4f0b-4947-b15b-840caa7455cb">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="5c0ba88f-afec-4008-93e7-b3447d5ac484"/>
+      <field name="custid" type="integer" uuid="c0e1e95c-baca-45c1-b2b9-52f04b4911a9"/>
+      <field name="name" type="string" size="255" uuid="0229e59a-c66c-4138-80ed-c0993c42f2e0"/>
+      <field name="description" type="string" size="255" uuid="8a8f6c9f-6ac2-4453-8a34-3e32c696150c"/>
+      <field name="mtu" type="integer" uuid="9d13a2bc-8e8f-4173-8237-7291cd2b2aab"/>
+      <field name="trunk" type="boolean" uuid="7bc0973f-b829-4e86-8fff-01cad0033d7b"/>
+      <field name="channelgroup" type="integer" uuid="5e0cb020-4918-4766-be8c-b8c2311178dd"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\VirtualInterface</attribute>
+        <attribute name="table">virtualinterface</attribute>
+        <attribute name="tableName">virtualinterface</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\VirtualInterface" to="\Entities\Customer" owner-alias="VirtualInterfaces" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="a6cd1017-f136-4839-a577-7477c6a5a287">
+      <association-field from="custid" to="id"/>
+    </association>
+    <entity name="\Entities\IPv4Address" local-name="IPv4Address" namespace="\Entities" uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="d2d715d5-e7fc-452c-9081-72e65fc1a1a0"/>
+      <field name="vlanid" type="integer" uuid="14095112-c078-4c94-81e3-fc45e77cbc7c"/>
+      <field name="address" type="string" size="16" uuid="4a92224d-c1af-4846-8157-0798b5e86d11"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\IPv4Address</attribute>
+        <attribute name="table">ipv4address</attribute>
+        <attribute name="tableName">ipv4address</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\IPv4Address" to="\Entities\Vlan" owner-alias="IPv4Addresses" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="e52b85f7-fca3-4ba3-aadb-758ad65f2c4d">
+      <association-field from="vlanid" to="id"/>
+    </association>
+    <entity name="\Entities\IPv6Address" local-name="IPv6Address" namespace="\Entities" uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="bf599b69-6460-4456-8394-382a4e66adab"/>
+      <field name="vlanid" type="integer" uuid="526ef53a-689f-487f-90e7-cb2ca8bac3c9"/>
+      <field name="address" type="string" size="40" uuid="09bbfb44-9bc3-40ac-b87f-c54e783f2f3b"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\IPv6Address</attribute>
+        <attribute name="table">ipv6address</attribute>
+        <attribute name="tableName">ipv6address</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\IPv6Address" to="\Entities\Vlan" owner-alias="IPv6Addresses" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="bc7fc00c-039c-4e6a-ad73-f571f5761bfe">
+      <association-field from="vlanid" to="id"/>
+    </association>
+    <entity name="\Entities\Customer" local-name="Customer" namespace="\Entities" uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="e5ece1fb-d3f0-4d51-aab1-52068bb60399"/>
+      <field name="name" type="string" size="255" uuid="334f3001-30d1-4cc6-8169-66cccbc6b06c"/>
+      <field name="type" type="integer" uuid="371315d4-81a7-49be-a6ec-7c5ce0bf5968"/>
+      <field name="shortname" type="string" size="255" unique="true" uuid="e45b5f3a-8c31-4eaa-a2c2-ee17ed8d44a3"/>
+      <field name="abbreviatedName" type="string" size="30" uuid="94f0f3ee-5379-4bbd-bcba-8d4f7e65f3ae"/>
+      <field name="autsys" type="integer" uuid="bc62f2c0-4c60-42d4-bf45-0a5a043ceb1e"/>
+      <field name="maxprefixes" type="integer" uuid="a7c55834-923d-47b3-a7cb-c9db1666b883"/>
+      <field name="peeringemail" type="string" size="255" uuid="1c9997f1-f8ee-4a8f-b291-1f767e51a8ed"/>
+      <field name="nocphone" type="string" size="255" uuid="8b39290e-b725-4882-9c68-c5f461fdb624"/>
+      <field name="noc24hphone" type="string" size="255" uuid="6871e5d1-459b-4c18-8dd5-5ca89ba77e07"/>
+      <field name="nocfax" type="string" size="255" uuid="52071d8d-8cd3-4b13-857a-1a9cdcb8d4b3"/>
+      <field name="nocemail" type="string" size="255" uuid="29732ea3-87ac-4c08-a10b-e5ccb17939cb"/>
+      <field name="nochours" type="string" size="255" uuid="3fbe489f-15ec-49ea-a3d4-7e943cfd5d48"/>
+      <field name="nocwww" type="string" size="255" uuid="c73ec8f4-836d-4b5e-81a0-4051c4f614e1"/>
+      <field name="irrdb" type="integer" uuid="54db8bfc-62c3-4317-94ac-b7b2bd6d1828"/>
+      <field name="peeringmacro" type="string" size="255" uuid="dc65db75-85cf-4610-ad5a-968ca000859d"/>
+      <field name="peeringmacrov6" type="string" size="255" uuid="d25cf8d7-5772-4e4d-84f5-827065b28a09"/>
+      <field name="peeringpolicy" type="string" size="255" uuid="1b6e954e-4c3b-48fe-8ee8-5df1f3ca2cf1"/>
+      <field name="corpwww" type="string" size="255" uuid="8f870788-286d-43bd-bfea-33f972666bc6"/>
+      <field name="datejoin" type="date" uuid="12b5c127-3c0e-4ec5-a4d9-dcd258704b27"/>
+      <field name="dateleave" type="date" uuid="8dbbf264-5d02-4ab3-bed9-1a1104ffe206"/>
+      <field name="status" type="smallint" uuid="14551730-f69d-4892-bf08-63eb2638959b"/>
+      <field name="activepeeringmatrix" type="boolean" uuid="7f62a0fe-057d-4ab8-ba5f-21a9c107a154"/>
+      <field name="peeringDb" type="string" size="255" uuid="1c7c232a-c9ef-4711-ba70-5c613453f7bc"/>
+      <field name="lastupdated" type="date" uuid="06a2a708-dcc5-41a1-96f9-d146c1deabfa"/>
+      <field name="lastupdatedby" type="integer" uuid="0dad4465-e86b-4934-abf0-ef105f15e9cf"/>
+      <field name="creator" type="string" size="255" uuid="c2152236-2b56-4088-9cb2-f161c10bb6c4"/>
+      <field name="created" type="date" uuid="085f44ec-c9e3-4dcc-8db0-451c688f423f"/>
+      <field name="company_registered_detail_id" type="integer" uuid="76dcfb1e-efda-44d9-bd00-083de3255e70"/>
+      <field name="company_billing_details_id" type="integer" uuid="0320ee04-426b-4d61-98e9-237980463824"/>
+      <field name="MD5Support" type="string" default="UNKNOWN" uuid="d1920f75-a18c-45ba-833b-4aaed4d50055"/>
+      <field name="isReseller" type="boolean" default="0" required="true" uuid="edf9c5a7-8ddc-4048-a8c3-2ec60d51c8e1"/>
+      <field name="reseller" type="integer" uuid="b021dc62-dad0-47c2-8fcd-6f537e9345f5"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Customer</attribute>
+        <attribute name="table">cust</attribute>
+        <attribute name="tableName">cust</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Customer" to="\Entities\IRRDBConfig" owner-alias="Customers" inverse-alias="IRRDB" many-owner="true" many-inverse="false" uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d">
+      <association-field from="irrdb" to="id"/>
+    </association>
+    <association from="\Entities\Customer" to="\Entities\CompanyRegisteredDetail" owner-alias="Customer" inverse-alias="RegistrationDetails" many-owner="true" many-inverse="false" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
+      <association-field from="company_registered_detail_id" to="id"/>
+    </association>
+    <association from="\Entities\Customer" to="\Entities\CompanyBillingDetail" owner-alias="Customer" inverse-alias="BillingDetails" many-owner="true" many-inverse="false" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
+      <association-field from="company_billing_details_id" to="id"/>
+    </association>
+    <association from="\Entities\Customer" to="\Entities\Customer" owner-alias="ResoldCustomers" inverse-alias="Reseller" many-owner="true" many-inverse="false" uuid="670582b5-1394-4b90-b827-0a331ea5b4aa">
+      <association-field from="reseller" to="id"/>
+    </association>
+    <entity name="\Entities\Contact" local-name="Contact" namespace="\Entities" uuid="cc05d49f-a5cf-4650-9300-be430837e73b">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="8db1b416-2452-4121-8c07-d4539f7d2142"/>
+      <field name="custid" type="integer" uuid="e622e4a0-3547-467c-8e65-d1564da84290"/>
+      <field name="name" type="string" size="255" required="true" uuid="cee01d36-8e0e-4bd5-a514-ab29f07bf54d"/>
+      <field name="position" type="string" size="50" uuid="6a02e5ae-64e9-4b55-98e4-4c8e8f3e0ca0"/>
+      <field name="email" type="string" size="255" uuid="f8c81a37-da7a-430a-960e-70e6f7796eff"/>
+      <field name="phone" type="string" size="50" uuid="3bda6664-6f50-4aa1-84d1-311a82c297f9"/>
+      <field name="mobile" type="string" size="50" uuid="63b46c65-9c81-4bc8-8530-f6ff90802b15"/>
+      <field name="facilityaccess" type="boolean" default="0" required="true" uuid="1ccaa106-2a9b-450a-a5ad-683c571e5248"/>
+      <field name="mayauthorize" type="boolean" default="0" required="true" uuid="fdcdbe88-54a2-43dc-b955-30d693c66a1b"/>
+      <field name="notes" type="text" uuid="e0b89c33-d403-4d28-bc5c-4307f9c2e135"/>
+      <field name="lastupdated" type="datetime" uuid="c7d7be2e-22f2-461b-9620-b92f6960187a"/>
+      <field name="lastupdatedby" type="integer" uuid="25eb724e-cdd4-4a4f-952b-1aa687125be5"/>
+      <field name="creator" type="string" size="32" uuid="c1f3b201-d3b2-418a-8277-f5b26c7a64ac"/>
+      <field name="created" type="datetime" uuid="fd89f19a-1739-463e-bedf-9f3432f946e0"/>
+      <field name="user_id" type="integer" unique="true" uuid="216c6fa2-5980-4e7c-ad04-4be5416614b8"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Contact</attribute>
+        <attribute name="table">contact</attribute>
+        <attribute name="tableName">contact</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Contact" to="\Entities\Customer" owner-alias="Contacts" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="3de69308-a3d5-4138-97be-111724303344">
+      <association-field from="custid" to="id"/>
+    </association>
+    <association from="\Entities\Contact" to="\Entities\User" owner-alias="Contact" inverse-alias="User" many-owner="false" many-inverse="false" uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287">
+      <association-field from="user_id" to="id"/>
+    </association>
+    <entity name="\Entities\ConsoleServerConnection" local-name="ConsoleServerConnection" namespace="\Entities" uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="a1f3d63b-a238-4760-a2e7-ad5045394acf"/>
+      <field name="custid" type="integer" uuid="3e10c4e1-6381-43d4-b13d-434db9ac8679"/>
+      <field name="description" type="string" size="255" uuid="74b670af-325d-4c33-bcfa-4d379227823a"/>
+      <field name="port" type="string" size="255" uuid="1f6c0300-810e-4acf-a9ab-9eb9a059cecc"/>
+      <field name="switchid" type="integer" uuid="d03dc71e-1b71-4a72-98d6-9a7fad82c0fd"/>
+      <field name="speed" type="integer" uuid="db1cc0af-f514-443b-bcee-046faa1f9047"/>
+      <field name="parity" type="integer" uuid="86852f4e-c8e3-452d-b8d7-0923199bc545"/>
+      <field name="stopbits" type="integer" uuid="df8dfab9-d453-4090-a697-5aa17ada3fc2"/>
+      <field name="flowcontrol" type="integer" uuid="1a41b714-5aef-48c6-b5b4-cd5dfa190f25"/>
+      <field name="autobaud" type="boolean" uuid="8c3747cd-8f2c-4786-affd-c6e4705b7c91"/>
+      <field name="notes" type="text" uuid="2c357ee1-effe-445c-b259-b5b672266a95"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\ConsoleServerConnection</attribute>
+        <attribute name="table">consoleserverconnection</attribute>
+        <attribute name="tableName">consoleserverconnection</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\ConsoleServerConnection" to="\Entities\Customer" owner-alias="ConsoleServerConnections" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f663287b-e38a-442b-9043-f37c176e6125">
+      <association-field from="custid" to="id"/>
+    </association>
+    <association from="\Entities\ConsoleServerConnection" to="\Entities\Switcher" owner-alias="ConsoleServerConnections" inverse-alias="Switcher" many-owner="true" many-inverse="false" uuid="518453f9-598d-4246-847d-f839117f1d0a">
+      <association-field from="switchid" to="id"/>
+    </association>
+    <entity name="\Entities\CustomerEquipment" local-name="CustomerEquipment" namespace="\Entities" uuid="e980f96e-6b58-43c4-8822-a507f25a8885">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="9beab59d-a930-4ea1-8e94-988b75b1b8af"/>
+      <field name="custid" type="integer" uuid="b21031f2-79e9-4e21-ab75-3c07eb72b751"/>
+      <field name="cabinetid" type="integer" uuid="0031c965-b377-432a-a716-7bce9af9f2e7"/>
+      <field name="name" type="string" size="255" uuid="e8187872-a048-470b-99aa-7c490e76a557"/>
+      <field name="descr" type="string" size="255" uuid="8e784aee-7cfc-42f9-afc0-e8ffb73de70f"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\CustomerEquipment</attribute>
+        <attribute name="table">custkit</attribute>
+        <attribute name="tableName">custkit</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\CustomerEquipment" to="\Entities\Customer" owner-alias="CustomerEquipment" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819">
+      <association-field from="custid" to="id"/>
+    </association>
+    <association from="\Entities\CustomerEquipment" to="\Entities\Cabinet" owner-alias="CustomerEquipment" inverse-alias="Cabinet" many-owner="true" many-inverse="false" uuid="ab08b405-788c-4579-bc8d-3445b6ba3821">
+      <association-field from="cabinetid" to="id"/>
+    </association>
+    <entity name="\Entities\IRRDBConfig" local-name="IRRDBConfig" namespace="\Entities" uuid="ceaae170-210b-45f6-81b2-9094b57e3848">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="e3eec488-aeeb-4b18-a155-e5a71fc733cc"/>
+      <field name="host" type="string" size="255" uuid="3591adbe-f1ee-4043-b9cd-3e1445185e21"/>
+      <field name="protocol" type="string" size="255" uuid="b83f45a1-666e-4a0e-a03c-3e8c0375b1df"/>
+      <field name="source" type="string" size="255" uuid="87a2db78-a981-4af7-8947-fabe7432a5d2"/>
+      <field name="notes" type="text" uuid="63c2684a-eee6-45c4-b0fd-7d39bb3228f6"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\IRRDBConfig</attribute>
+        <attribute name="table">irrdbconfig</attribute>
+        <attribute name="tableName">irrdbconfig</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\MACAddress" local-name="MACAddress" namespace="\Entities" uuid="d776f08f-235f-4431-b5c8-60a6e13295f8">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="ad5220fd-a2ef-4d35-986c-7b1c2c527aa4"/>
+      <field name="firstseen" type="datetime" uuid="92502d95-62c3-4212-b35b-462b6f66de05"/>
+      <field name="lastseen" type="datetime" uuid="44a8bd8c-a17a-4f96-b802-e0cc4aa9fb01"/>
+      <field name="virtualinterfaceid" type="integer" uuid="40527c68-be52-4dfa-beaf-77e8e5f47e69"/>
+      <field name="mac" type="string" size="12" uuid="933edee4-ed07-493e-97c0-4f7f2c430e50"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\MACAddress</attribute>
+        <attribute name="table">macaddress</attribute>
+        <attribute name="tableName">macaddress</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\MACAddress" to="\Entities\VirtualInterface" owner-alias="MACAddresses" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f">
+      <association-field from="virtualinterfaceid" to="id"/>
+    </association>
+    <entity name="\Entities\Meeting" local-name="Meeting" namespace="\Entities" uuid="d921acd2-7afa-40c6-b53e-73a113193916">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="4eddbdfa-8084-4fde-8b7c-7af0798e8522"/>
+      <field name="title" type="string" size="255" uuid="5ac0d334-faa4-4189-9076-b52b47171655"/>
+      <field name="before_text" type="text" uuid="e367494d-695e-4093-b799-771d26b63a76"/>
+      <field name="after_text" type="text" uuid="675f2d08-f908-4898-9dc6-34571b70657e"/>
+      <field name="date" type="date" uuid="38ddd653-98e4-45f8-9cef-05bc164bae97"/>
+      <field name="time" type="time" uuid="a6c38069-ed69-4271-8e9d-92f86b16e10b"/>
+      <field name="venue" type="string" size="255" uuid="0649baa5-5cdf-46b1-a6d0-8dfc118a0239"/>
+      <field name="venue_url" type="string" size="255" uuid="149057b5-54af-47f6-b4a4-dc13faa7f81d"/>
+      <field name="created_by" type="integer" uuid="80424a79-cd08-486a-a24b-fcf655f5dcd2"/>
+      <field name="created_at" type="datetime" uuid="086f9f70-c4df-4f83-ac9c-d5faf4c6f88d"/>
+      <field name="updated_by" type="integer" uuid="4fe61649-e846-4458-9359-9b43c0674148"/>
+      <field name="updated_at" type="datetime" uuid="f88261c0-eb75-432f-b12e-cc6ab0c83966"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Meeting</attribute>
+        <attribute name="table">meeting</attribute>
+        <attribute name="tableName">meeting</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Meeting" to="\Entities\User" owner-alias="Meetings" inverse-alias="CreatedBy" many-owner="true" many-inverse="false" uuid="6aa96961-825e-462c-bccb-e68696cb64c0">
+      <association-field from="created_by" to="id"/>
+    </association>
+    <entity name="\Entities\MeetingItem" local-name="MeetingItem" namespace="\Entities" uuid="005af367-611e-4b83-81c7-f6f36dc00d9f">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="9b3fe453-51aa-4229-b00b-adcdd8647c0b"/>
+      <field name="meeting_id" type="integer" uuid="84ac3933-10af-48ce-afad-8cedc6b88675"/>
+      <field name="title" type="string" size="255" uuid="4b03175b-591a-4277-b2a2-f992f28381cd"/>
+      <field name="name" type="string" size="255" uuid="40f4d06c-2cb5-4436-a51a-a962c831930d"/>
+      <field name="role" type="string" size="255" uuid="300bc901-ef29-49b8-ac06-703c06482775"/>
+      <field name="email" type="string" size="255" uuid="258c5efc-c614-4f5f-bbcb-c9d1d907d403"/>
+      <field name="company" type="string" size="255" uuid="6b8f2c35-b33c-4284-8af3-e7e88f415afd"/>
+      <field name="company_url" type="string" size="255" uuid="5b40a6fb-389e-41ce-8cf7-1c3d6d7e9821"/>
+      <field name="summary" type="text" uuid="14dc68e1-beac-4283-b86e-66779c893c62"/>
+      <field name="presentation" type="string" size="255" uuid="9ecf651a-7938-4466-879c-3be12c9a4c69"/>
+      <field name="filename" type="string" size="255" uuid="c19b88ae-3087-460b-ae71-77a9ab14d390"/>
+      <field name="video_url" type="string" size="255" uuid="d475b487-9bcf-4014-84ed-6fe6050f181d"/>
+      <field name="other_content" type="boolean" uuid="87fac00c-45cb-4047-ba35-db1a058a599f"/>
+      <field name="created_by" type="integer" uuid="c717aac8-dfbd-41da-942a-7ab202254218"/>
+      <field name="created_at" type="datetime" uuid="b6155d41-2b01-40eb-89a1-3d563e95fc07"/>
+      <field name="updated_by" type="integer" uuid="367cc5ef-60e3-4a5c-98f2-c63deedab29a"/>
+      <field name="updated_at" type="datetime" uuid="bc22531d-1786-4deb-88f4-fb7844855cd9"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\MeetingItem</attribute>
+        <attribute name="table">meeting_item</attribute>
+        <attribute name="tableName">meeting_item</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\MeetingItem" to="\Entities\Meeting" owner-alias="MeetingItems" inverse-alias="Meeting" many-owner="true" many-inverse="false" uuid="2fe65b4f-c179-4c71-b5d0-e6177fdcea61">
+      <association-field from="meeting_id" to="id"/>
+    </association>
+    <entity name="\Entities\NetworkInfo" local-name="NetworkInfo" namespace="\Entities" uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="72dd316f-2a45-4376-b4fe-c4332431c5c3"/>
+      <field name="protocol" type="integer" uuid="f3135547-33cb-4a29-b729-38edc4dcf2a8"/>
+      <field name="network" type="string" size="255" uuid="eb4192e2-27a6-4789-96d8-27990c7a8289"/>
+      <field name="masklen" type="integer" uuid="0380371b-d65f-4376-ae3a-ab14407c6304"/>
+      <field name="rs1address" type="string" size="40" uuid="56e10069-b2d1-4943-bb67-c78e35d9fd21"/>
+      <field name="rs2address" type="string" size="40" uuid="a5c6a2c5-fe49-4b5a-b94a-767905e29b4d"/>
+      <field name="dnsfile" type="string" size="255" uuid="dfcb3bc0-b94e-4e34-a543-42443e33cb51"/>
+      <field name="vlanid" type="integer" uuid="889b290e-dae4-4dbd-92f7-ca8def5f9970"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\NetworkInfo</attribute>
+        <attribute name="table">networkinfo</attribute>
+        <attribute name="tableName">networkinfo</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\NetworkInfo" to="\Entities\Vlan" owner-alias="NetworkInfo" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="f4d2208c-a2cb-4ee8-89dd-afef07118b96">
+      <association-field from="vlanid" to="id"/>
+    </association>
+    <entity name="\Entities\PeeringManager" local-name="PeeringManager" namespace="\Entities" uuid="e8b4e227-f83c-413d-9e34-56dd493985fe">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="5b5cea33-1cea-41a0-908c-1237a591698b"/>
+      <field name="custid" type="integer" uuid="a8fadee7-b36f-4ec3-9b0d-1be958e7a683"/>
+      <field name="peerid" type="integer" uuid="902e4540-ea48-4195-8c8a-c30678676104"/>
+      <field name="email_last_sent" type="datetime" uuid="804d01da-a728-4330-a0e3-7949667afb31"/>
+      <field name="emails_sent" type="integer" uuid="3654e6df-7b03-43d0-8f4a-254304cabb79"/>
+      <field name="peered" type="boolean" uuid="12775388-af18-4d13-8afd-9672dceb38e7"/>
+      <field name="rejected" type="boolean" uuid="e4ac3c58-c2b2-43f0-a352-0d52b925399a"/>
+      <field name="notes" type="text" uuid="d0215fb2-ec1a-4b97-ada3-865fcc8daf35"/>
+      <field name="created" type="datetime" uuid="5f6d5f9c-4b80-44c0-88e0-7a3080a93139"/>
+      <field name="updated" type="datetime" uuid="09d79ce6-5420-4732-9b95-8f5e1f837d8e"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\PeeringManager</attribute>
+        <attribute name="table">peering_manager</attribute>
+        <attribute name="tableName">peering_manager</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\PeeringManager" to="\Entities\Customer" owner-alias="Peers" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc">
+      <association-field from="custid" to="id"/>
+    </association>
+    <association from="\Entities\PeeringManager" to="\Entities\Customer" owner-alias="PeersWith" inverse-alias="Peer" many-owner="true" many-inverse="false" uuid="c9431b23-72cb-4afa-a057-ced40869cfd0">
+      <association-field from="peerid" to="id"/>
+    </association>
+    <entity name="\Entities\PeeringMatrix" local-name="PeeringMatrix" namespace="\Entities" uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="fdff273f-469c-4f98-bd74-8b69c4f51d17"/>
+      <field name="vlan" type="integer" uuid="d097e5fc-95a6-4138-bb80-f41184b07d00"/>
+      <field name="x_as" type="integer" uuid="65d550f7-1224-41e9-967a-6d013dbdb67b"/>
+      <field name="y_as" type="integer" uuid="223124f3-74d1-44bb-8178-dae79c13f17d"/>
+      <field name="peering_status" type="string" uuid="763da978-1667-4189-8657-ba631f5a8a79"/>
+      <field name="updated" type="datetime" uuid="33ec44e2-3a83-4884-882f-65a59fd22588"/>
+      <field name="x_custid" type="integer" uuid="83018b76-b166-4026-8b8b-bcce517f4142"/>
+      <field name="y_custid" type="integer" uuid="84f7181b-2692-43df-9431-4c180ad8ec4a"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\PeeringMatrix</attribute>
+        <attribute name="table">peering_matrix</attribute>
+        <attribute name="tableName">peering_matrix</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\PeeringMatrix" to="\Entities\Customer" owner-alias="XCusts" inverse-alias="XCustomer" many-owner="true" many-inverse="false" uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e">
+      <association-field from="x_custid" to="id"/>
+    </association>
+    <association from="\Entities\PeeringMatrix" to="\Entities\Customer" owner-alias="YCusts" inverse-alias="YCustomer" many-owner="true" many-inverse="false" uuid="73e14126-258d-4d70-b63e-7a90192e3492">
+      <association-field from="y_custid" to="id"/>
+    </association>
+    <entity name="\Entities\RSPrefix" local-name="RSPrefix" namespace="\Entities" uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="63ad0b95-2f36-48c4-916d-f95e2d8bced3"/>
+      <field name="custid" type="integer" uuid="5b9998ba-c320-4c9a-9c01-d9b954ab40ee"/>
+      <field name="timestamp" type="datetime" uuid="543857df-acf0-4b7b-b15b-103253d9f1d0"/>
+      <field name="prefix" type="string" size="64" uuid="a54be1e8-4a89-425c-a293-263c486919ed"/>
+      <field name="protocol" type="integer" uuid="68f83da0-e5e0-4214-bbf7-ac5e2feba079"/>
+      <field name="irrdb" type="integer" uuid="564fd91e-5ab1-4e3a-8a74-9043a6e8bf5e"/>
+      <field name="rs_origin" type="integer" uuid="a93bef89-ad97-4aca-80df-fa07b4db4047"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\RSPrefix</attribute>
+        <attribute name="table">rs_prefixes</attribute>
+        <attribute name="tableName">rs_prefixes</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\RSPrefix" to="\Entities\Customer" owner-alias="RSPrefixes" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622">
+      <association-field from="custid" to="id"/>
+    </association>
+    <entity name="\Entities\User" local-name="User" namespace="\Entities" uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="627692b3-0d23-4011-b994-dbd3ff0a4909"/>
+      <field name="username" type="string" size="255" unique="true" uuid="1d5e1545-7815-4067-9bb5-c8286cfe24b5"/>
+      <field name="password" type="string" size="255" uuid="eab94e07-d600-49ca-88ce-0dd664f19425"/>
+      <field name="email" type="string" size="255" uuid="7ce655e0-508e-444f-ac26-cb27e349bebf"/>
+      <field name="authorisedMobile" type="string" size="30" uuid="d36f8a6a-1f67-400e-9fad-33a12ec3d10a"/>
+      <field name="uid" type="integer" uuid="30421707-b832-47c6-af32-ed55f9c18f04"/>
+      <field name="custid" type="integer" uuid="8d40b436-fb93-4671-be7d-785155111f1a"/>
+      <field name="privs" type="integer" uuid="da9726a8-1cc7-46da-b701-6c58df4f6960"/>
+      <field name="disabled" type="boolean" uuid="df1d4412-12e7-4c05-91eb-4b0ff9c2098e"/>
+      <field name="lastupdated" type="datetime" uuid="5456a343-b43a-44e9-a633-6ef44b640d3c"/>
+      <field name="lastupdatedby" type="integer" uuid="86751fe0-5551-42d5-b173-ef12e424b449"/>
+      <field name="creator" type="string" uuid="f5fcc2f3-422a-493e-9fe1-736c3f5bb9f3"/>
+      <field name="created" type="datetime" uuid="55562999-5351-4be5-8988-79fed1348a36"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\User</attribute>
+        <attribute name="table">user</attribute>
+        <attribute name="tableName">user</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\User" to="\Entities\Customer" owner-alias="Users" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5">
+      <association-field from="custid" to="id"/>
+    </association>
+    <entity name="\Entities\UserPreference" local-name="UserPreference" namespace="\Entities" uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="df440161-0912-420f-a7d1-7e0a7104419d"/>
+      <field name="user_id" type="integer" uuid="93ddc87f-0881-4276-a917-2a8163a21dcd"/>
+      <field name="attribute" type="string" size="255" uuid="904dbca5-1f98-488b-bad1-d1203f547a47"/>
+      <field name="ix" type="integer" default="0" required="true" uuid="99211720-8dba-4cd9-9b5d-1e37cadcf364"/>
+      <field name="op" type="string" size="2" uuid="d12eb8f4-8a9e-4fe3-a230-2a20a7921903"/>
+      <field name="value" type="text" uuid="d7cdc510-310f-4ac7-a818-600e9d2404e9"/>
+      <field name="expire" type="bigint" default="0" required="true" uuid="4df2f73c-ca8f-4542-9d99-d20c4eb36ca6"/>
+      <index name="IX_UserPreference_1" unique="true">
+        <index-field name="user_id"/>
+        <index-field name="attribute"/>
+        <index-field name="op"/>
+        <index-field name="ix"/>
+      </index>
+      <orm-attributes>
+        <attribute name="tableName">user_pref</attribute>
+        <attribute name="table">user_pref</attribute>
+        <attribute name="repository-class">Repositories\UserPreference</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\UserPreference" to="\Entities\User" owner-alias="Preferences" inverse-alias="User" many-owner="true" many-inverse="false" uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db">
+      <association-field from="user_id" to="id"/>
+    </association>
+    <entity name="\Entities\Traffic95th" local-name="Traffic95th" namespace="\Entities" uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a">
+      <field name="id" type="bigint" primary="true" auto-increment="true" uuid="9c8f645f-8ba0-47f4-b17d-aefb89c3ca62"/>
+      <field name="cust_id" type="integer" uuid="1dd8157b-9687-468a-86fa-a69623275e94"/>
+      <field name="datetime" type="datetime" uuid="ab59ee7d-a4e8-4b32-84ab-ae6038f52db4"/>
+      <field name="average" type="bigint" uuid="45c512a1-2b62-41ad-93b5-4b50d9b2a408"/>
+      <field name="max" type="bigint" uuid="8c8c76f8-124e-490e-9f44-52372526a2f0"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Traffic95th</attribute>
+        <attribute name="table">traffic_95th</attribute>
+        <attribute name="tableName">traffic_95th</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Traffic95th" to="\Entities\Customer" owner-alias="Traffic95ths" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9">
+      <association-field from="cust_id" to="id"/>
+    </association>
+    <entity name="\Entities\Traffic95thMonthly" local-name="Traffic95thMonthly" namespace="\Entities" uuid="04f83672-40da-4802-ad22-809cfd3ab549">
+      <field name="id" type="bigint" primary="true" auto-increment="true" uuid="d5365066-346d-493d-b84b-fb77d66d988c"/>
+      <field name="cust_id" type="integer" uuid="af00cfda-cc98-4cf2-8b1b-658345ed588d"/>
+      <field name="month" type="date" uuid="a208b4cd-fd42-4f82-bbfb-6b718e41e217"/>
+      <field name="max_95th" type="bigint" uuid="3051533f-db37-4d78-9d9f-df5b3294e60d"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Traffic95thMonthly</attribute>
+        <attribute name="table">traffic_95th_monthly</attribute>
+        <attribute name="tableName">traffic_95th_monthly</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Traffic95thMonthly" to="\Entities\Customer" owner-alias="Traffic95thMonthlys" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4">
+      <association-field from="cust_id" to="id"/>
+    </association>
+    <entity name="\Entities\TrafficDaily" local-name="TrafficDaily" namespace="\Entities" uuid="e8daf53a-44b8-4798-b6a3-808bff907953">
+      <field name="id" type="bigint" primary="true" auto-increment="true" uuid="d4fa99e8-9f7e-4394-a49a-115de5739a2d"/>
+      <field name="ixp_id" type="integer" required="true" uuid="877f40e0-7c9e-4587-a0c0-6e45000eec88"/>
+      <field name="cust_id" type="integer" required="true" uuid="44e4925a-c9e5-4ecf-8b85-ffdf6e381d52"/>
+      <field name="day" type="date" uuid="aafe8444-8406-4c10-83e9-2e68330b8050"/>
+      <field name="category" type="string" size="10" uuid="714e62c0-a748-4893-a26a-138fd33f5916"/>
+      <field name="day_avg_in" type="bigint" uuid="56408f52-f017-4b1b-bd92-ace41b36bf27"/>
+      <field name="day_avg_out" type="bigint" uuid="7d37a6fb-f24c-43a7-83dd-84bd4103a8dc"/>
+      <field name="day_max_in" type="bigint" uuid="b2256c9a-6e8e-4b3c-b13f-a48a99b11b75"/>
+      <field name="day_max_out" type="bigint" uuid="5881d348-4068-4d17-96ed-f6028defa6cd"/>
+      <field name="day_tot_in" type="bigint" uuid="e3273642-4907-4884-a6e1-c0e16e142567"/>
+      <field name="day_tot_out" type="bigint" uuid="9f3c9b68-03dd-4199-9766-70f42be6486e"/>
+      <field name="week_avg_in" type="bigint" uuid="1b1460dc-c624-4217-bf36-16e0573e8b62"/>
+      <field name="week_avg_out" type="bigint" uuid="3d74214c-4f5e-42b5-86ee-3d0cb9794216"/>
+      <field name="week_max_in" type="bigint" uuid="088c7c0c-d2e9-45ff-a4d1-4bbe0e4cc0a2"/>
+      <field name="week_max_out" type="bigint" uuid="46f4f3f0-5c05-4084-a955-5f0d66a16a78"/>
+      <field name="week_tot_in" type="bigint" uuid="27f8f7d0-71d9-4f7a-802e-c17f2875054f"/>
+      <field name="week_tot_out" type="bigint" uuid="e9e7a275-d214-4368-9ce6-e47386861001"/>
+      <field name="month_avg_in" type="bigint" uuid="32ad5cdf-95f4-4899-91ef-fe2492ceb2c2"/>
+      <field name="month_avg_out" type="bigint" uuid="c5967795-e857-4e01-a4a4-b3221e3c28af"/>
+      <field name="month_max_in" type="bigint" uuid="dbcc4a8c-c44a-4796-a6ae-6dcbf040f0cc"/>
+      <field name="month_max_out" type="bigint" uuid="54a5139c-e3e9-4eca-83d4-85917efa5e27"/>
+      <field name="month_tot_in" type="bigint" uuid="d9089a09-c7cf-4168-af14-87003d429144"/>
+      <field name="month_tot_out" type="bigint" uuid="ddea5763-c7a6-4167-ac3e-4e2f88b0e50d"/>
+      <field name="year_avg_in" type="bigint" uuid="9a59d8cd-687b-4822-96a6-ec4bfa1a8cfc"/>
+      <field name="year_avg_out" type="bigint" uuid="0684a706-0127-4d5b-9a40-cac0d0d449ed"/>
+      <field name="year_max_in" type="bigint" uuid="71d1535a-8e55-4305-814c-40eddfb5e90f"/>
+      <field name="year_max_out" type="bigint" uuid="ef8a3ea9-755e-4bc6-8f6d-adc6bd2e071b"/>
+      <field name="year_tot_in" type="bigint" uuid="a64f67e4-fda2-426a-b400-2cfcf79add22"/>
+      <field name="year_tot_out" type="bigint" uuid="6fa07614-6c02-4c40-bdbc-f723069c21a6"/>
+      <orm-attributes>
+        <attribute name="table">traffic_daily</attribute>
+        <attribute name="tableName">traffic_daily</attribute>
+        <attribute name="repository-class">Repositories\TrafficDaily</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\TrafficDaily" to="\Entities\Customer" owner-alias="TrafficDailies" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="212269bb-5626-4a46-b864-1a94ecee88f3">
+      <association-field from="cust_id" to="id"/>
+    </association>
+    <association from="\Entities\TrafficDaily" to="\Entities\IXP" owner-alias="TrafficDaily" inverse-alias="IXP" many-owner="true" many-inverse="false" parent-required="true" uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68">
+      <association-field from="ixp_id" to="id"/>
+    </association>
+    <entity name="\Entities\OUI" local-name="OUI" namespace="\Entities" description="Organizationally Unique Identifiers" uuid="0be9b477-a199-4d85-a892-4287cf858f4d">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="75d46f98-6371-47cd-a841-019284ebd0e2"/>
+      <field name="oui" type="string" size="6" required="true" unique="true" uuid="6379c2cd-ec05-48d4-a804-1428b3b132a2"/>
+      <field name="organisation" type="string" size="255" required="true" uuid="a81a1738-67b3-414b-a06c-347e4af16405"/>
+      <orm-attributes>
+        <attribute name="table">oui</attribute>
+        <attribute name="tableName">oui</attribute>
+        <attribute name="schema">oui</attribute>
+        <attribute name="repository-class">Repositories\OUI</attribute>
+      </orm-attributes>
+    </entity>
+  </module>
+  <visual-data>
+    <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f" color="4288059030"/>
+    <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
+    <association uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622" color="4288059030"/>
+    <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0" color="4288059030"/>
+    <association uuid="2fe65b4f-c179-4c71-b5d0-e6177fdcea61" color="4288059030"/>
+    <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="39ad3dd5-487b-4152-9190-558bd7e80668" center-position-x="-7" center-position-y="0" color="4288059030"/>
+    <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="518453f9-598d-4246-847d-f839117f1d0a" color="4288059030"/>
+    <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="670582b5-1394-4b90-b827-0a331ea5b4aa" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
+    <association uuid="6aa96961-825e-462c-bccb-e68696cb64c0" color="4288059030"/>
+    <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="93708a18-58db-4061-add9-24991ccd3ce0" color="4288059030"/>
+    <association uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765" color="4288059030"/>
+    <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="a6cd1017-f136-4839-a577-7477c6a5a287" color="4288059030"/>
+    <association uuid="a93d8c93-6456-462f-a524-9fcda1180727" color="4288059030"/>
+    <association uuid="ab08b405-788c-4579-bc8d-3445b6ba3821" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-56" color="4288059030"/>
+    <association uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db" color="4288059030"/>
+    <association uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4" color="4288059030"/>
+    <association uuid="bc7fc00c-039c-4e6a-ad73-f571f5761bfe" color="4288059030"/>
+    <association uuid="c3779c0a-b590-4cf8-9495-984270d7496a" color="4288059030"/>
+    <association uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="c9431b23-72cb-4afa-a057-ced40869cfd0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-26" center-position-y="0" color="4288059030"/>
+    <association uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819" color="4288059030"/>
+    <association uuid="d9075ce3-753a-432f-a009-c9e386509484" color="4288059030"/>
+    <association uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6" color="4288059030"/>
+    <association uuid="e52b85f7-fca3-4ba3-aadb-758ad65f2c4d" color="4288059030"/>
+    <association uuid="e8f4931c-82ef-4c5d-83c3-61a0b4271727" color="4288059030"/>
+    <association uuid="f18aceae-d3e6-452d-9e28-0c32f340b245" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5" color="4288059030"/>
+    <association uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="f4d2208c-a2cb-4ee8-89dd-afef07118b96" color="4288059030"/>
+    <association uuid="f663287b-e38a-442b-9043-f37c176e6125" color="4288059030"/>
+    <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0" color="4288059030"/>
+    <association uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f" color="4288059030"/>
+    <entity uuid="005af367-611e-4b83-81c7-f6f36dc00d9f" bg-color="4294967295" hdr-color="4292006610" position-x="1378" position-y="597" size-x="0" size-x2="135" size-y="0" size-y2="255"/>
+    <entity uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326" bg-color="4294967295" hdr-color="4292006610" position-x="1249" position-y="755" size-x="0" size-x2="112" size-y="0" size-y2="115"/>
+    <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" bg-color="4294967295" hdr-color="4292006610" position-x="250" position-y="1009" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
+    <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" bg-color="4294967295" hdr-color="4292006610" position-x="595" position-y="350" size-x="0" size-x2="186" size-y="0" size-y2="465"/>
+    <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" bg-color="4294967295" hdr-color="4292006610" position-x="802" position-y="145" size-x="0" size-x2="183" size-y="0" size-y2="143"/>
+    <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" bg-color="4294967295" hdr-color="4292006610" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
+    <entity uuid="0be9b477-a199-4d85-a892-4287cf858f4d" bg-color="4294967295" hdr-color="4292006610" position-x="47" position-y="-145" size-x="0" size-x2="124" size-y="0" size-y2="59"/>
+    <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" bg-color="4294967295" hdr-color="4292006610" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
+    <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" bg-color="4294967295" hdr-color="4292006610" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
+    <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" bg-color="4294967295" hdr-color="4292006610" position-x="1236" position-y="186" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
+    <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" bg-color="4294967295" hdr-color="4292006610" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
+    <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" bg-color="4294967295" hdr-color="4292006610" position-x="421" position-y="186" size-x="0" size-x2="128" size-y="0" size-y2="171"/>
+    <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" bg-color="4294967295" hdr-color="4292006610" position-x="787" position-y="-325" size-x="0" size-x2="163" size-y="0" size-y2="325"/>
+    <entity uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10" bg-color="4294967295" hdr-color="4292006610" position-x="1395" position-y="396" size-x="0" size-x2="109" size-y="0" size-y2="59"/>
+    <entity uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d" bg-color="4294967295" hdr-color="4292006610" position-x="1608" position-y="80" size-x="0" size-x2="122" size-y="0" size-y2="129"/>
+    <entity uuid="3da990c1-6ab8-436e-8800-e09a08ebee16" bg-color="4294967295" hdr-color="4292006610" position-x="1032" position-y="1017" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
+    <entity uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786" bg-color="4294967295" hdr-color="4292006610" position-x="1688" position-y="-279" size-x="0" size-x2="113" size-y="0" size-y2="74"/>
+    <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" bg-color="4294967295" hdr-color="4292006610" position-x="809" position-y="653" size-x="0" size-x2="145" size-y="0" size-y2="213"/>
+    <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="228" position-y="-191" size-x="0" size-x2="122" size-y="0" size-y2="185"/>
+    <entity uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c" bg-color="4294967295" hdr-color="4292006610" position-x="81" position-y="1042" size-x="0" size-x2="109" size-y="0" size-y2="87"/>
+    <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="175" position-y="631" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
+    <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" bg-color="4294967295" hdr-color="4292006610" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
+    <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" bg-color="4294967295" hdr-color="4292006610" position-x="590" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
+    <entity uuid="6747622b-df14-45da-828f-3c676799d963" bg-color="4294967295" hdr-color="4292006610" position-x="1439" position-y="193" size-x="0" size-x2="113" size-y="0" size-y2="101"/>
+    <entity uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64" bg-color="4294967295" hdr-color="4292006610" position-x="160" position-y="880" size-x="0" size-x2="112" size-y="0" size-y2="87"/>
+    <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="4294967295" hdr-color="4292006610" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
+    <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
+    <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
+    <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="4294967295" hdr-color="4292006610" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
+    <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="4294967295" hdr-color="4292006610" position-x="805" position-y="323" size-x="0" size-x2="126" size-y="0" size-y2="101"/>
+    <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>
+    <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" bg-color="4294967295" hdr-color="4292006610" position-x="531" position-y="-333" size-x="0" size-x2="132" size-y="0" size-y2="255"/>
+    <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" bg-color="4294967295" hdr-color="4292006610" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
+    <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" bg-color="4294967295" hdr-color="4292006610" position-x="1391" position-y="479" size-x="0" size-x2="114" size-y="0" size-y2="87"/>
+    <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="4294967295" hdr-color="4292006610" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
+    <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
+    <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" bg-color="4294967295" hdr-color="4292006610" position-x="1153" position-y="545" size-x="0" size-x2="115" size-y="0" size-y2="185"/>
+    <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
+    <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
+    <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
+    <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="272" position-y="321" size-x="0" size-x2="98" size-y="0" size-y2="87"/>
+    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="4294967295" hdr-color="4292006610" position-x="1466" position-y="-215" size-x="0" size-x2="175" size-y="0" size-y2="101"/>
+    <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" bg-color="4294967295" hdr-color="4292006610" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
+    <many-to-many-association uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a" color="4288059030"/>
+    <many-to-many-association uuid="3e003c57-9922-4820-a7b3-897360e1d984" color="4288059030"/>
+    <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bg-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="1829" size-y="353" size-y2="1170"/>
+    <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="1791" size-y="212" size-y2="1381"/>
+  </visual-data>
+</skipper>

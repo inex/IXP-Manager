@@ -1,0 +1,66 @@
+<form class="form-horizontal" enctype="application/x-www-form-urlencoded"
+    accept-charset="UTF-8" method="post" horizontal="1"
+    cancelLocation="default/location/index" isEdit="1"
+    action="http://localhost:8000/default/location/edit/id/3"
+>
+
+
+<fieldset horizontal="1" cancelLocation="default/location/index" isEdit="1">
+
+    {$form->name}
+    {$form->shortname}
+    {$form->tag}
+    {$form->address}
+
+
+<dt id="nocDisplayGroup-label">&#160;</dt><dd id="nocDisplayGroup-element"><fieldset id="fieldset-nocDisplayGroup"><legend>NOC Details</legend>
+
+<dl>
+    {$form->nocphone}
+    {$form->nocfax}
+    {$form->nocemail}
+</dl>
+</fieldset>
+</dd>
+
+<dt id="officeDisplayGroup-label">&#160;</dt><dd id="officeDisplayGroup-element"><fieldset id="fieldset-officeDisplayGroup"><legend>Office Details</legend>
+<dl>
+    {$form->officephone}
+    {$form->officefax}
+    {$form->officeemail}
+</dl></fieldset></dd>
+
+
+{$form->notes}
+
+<dt id="nocDisplayGroup-label">&#160;</dt><dd id="nocDisplayGroup-element"><fieldset id="fieldset-nocDisplayGroup"><legend>PeeringDB Facility ID</legend>
+<dl>
+    <div id="loading_pdb_facility_id">
+        <div class="control-group"><label class="control-label optional">Loading...</label></div>
+    </div>
+
+    {$form->pdb_facility_id}
+
+    <div id="dd_pdb_facility_id" style="display: none;">
+        <div class="control-group">
+            <label for="select_pdb_facility_id" class="control-label optional">PeeringDB Facility</label>
+            <div class="controls">
+                <select name="select_pdb_facility_id" id="select_pdb_facility_id" class="span6">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+    </div>
+</dl></fieldset></dd>
+
+<div class="form-actions">
+
+<input type="submit" name="submit" id="submit" value="Save Changes" class="btn btn-primary">
+
+<a  class="btn"  id="cancel" href="default/location/index">Cancel</a></div></fieldset>
+
+</form>
+
+<script type="text/javascript">
+    {tmplinclude file="location/js/location-pdb-facility.js"}
+</script>

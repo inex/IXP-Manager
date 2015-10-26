@@ -150,12 +150,7 @@ class AuthController extends IXP_Controller_Action
      */
     protected function _switchUserBackCheck( $subUser, $origUser )
     {
-        // record current user customer ID
-        $custid = $this->getUser()->custid;
-
         $params['url'] = 'customer/overview/tab/users/id/' . $subUser->getCustomer()->getId();
-
         return $params;
     }
-
 }

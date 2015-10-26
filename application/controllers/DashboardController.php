@@ -32,30 +32,30 @@
  */
 class DashboardController extends IXP_Controller_AuthRequiredAction
 {
-    
+
     public function preDispatch()
     {
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_CUSTUSER )
             $this->_redirect( '' );
     }
-    
+
     public function indexAction()
     {
         // Get the three most recent members
         $this->view->recentMembers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getRecent();
 
         $this->view->cust = $this->getUser()->getCustomer();
-        
+
         /*
             // is there a meeting available to register for?
             $this->view->meeting = false;
-    
+
             if( ( $meeting = MeetingTable::getUpcomingMeeting() ) !== false
                 && ( !isset( $this->session->dashboard_skip_meeting ) || !$this->session->dashboard_skip_meeting )
             )
             {
                 $rsvp = $this->getUser()->hasPreference( 'meeting.attending.' . $meeting['id'] );
-    
+
                 if( $rsvp === false )
                 {
                     $this->view->meeting = $meeting;
@@ -72,7 +72,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 
             $this->getNocDetailsForm();
             $this->getBillingDetailsForm();
-            
+
             if( $this->getCustomer()->isRouteServerClient() )
             {
                 $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )
@@ -82,15 +82,15 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 
         if( $this->multiIXP() )
             $this->view->validIXPs = $this->getD2R( "\\Entities\\IXP" )->getNamesNotAssignedToCustomer( $this->getUser()->getCustomer()->getId() );
-        
+
         // do we have any notes?
         $this->_fetchCustomerNotes( $this->getCustomer()->getId(), true );
     }
-    
+
     public function updateNocAction()
     {
         $form = $this->getNocDetailsForm();
-        
+
         if( $this->getRequest()->isPost() )
         {
             if( $form->isValid( $_POST ) )
@@ -104,19 +104,19 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
                 $this->addMessage( 'There was an error updating your NOC details', OSS_Message::ERROR );
             }
         }
-        
+
         $this->forward( 'index' );
     }
-    
+
     protected function getNocDetailsForm()
     {
         $form = new IXP_Form_Customer_NocDetails();
         $form->assignEntityToForm( $this->getCustomer(), $this, true );
         $form->setAction( OSS_Utils::genUrl( 'dashboard', 'update-noc' ) );
-        
+
         if( !isset( $this->view->nocDetails ) )
             $this->view->nocDetails = $form;
-        
+
         return $form;
     }
 
@@ -124,23 +124,23 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
     public function updateBillingAction()
     {
         $form = $this->getBillingDetailsForm();
-        
+
         if( $this->getRequest()->isPost() )
         {
             if( $form->isValid( $_POST ) )
             {
-                if( $this->_options['billing_updates']['notify'] )
+                if( isset( $this->_options['billing_updates'] ) && $this->_options['billing_updates']['notify'] )
                     $old = clone $this->getCustomer()->getBillingDetails();
 
                 $form->assignFormToEntity( $this->getCustomer()->getBillingDetails(), $this, true );
                 $this->getD2EM()->flush();
                 $this->addMessage( 'Your billing details have been updated', OSS_Message::SUCCESS );
-                
+
                 if( isset( $this->_options['billing_updates']['notify'] )  )
                 {
                     $this->view->oldDetails = $old;
                     $this->view->customer = $this->getCustomer();
-                    
+
                     $this->getMailer()
                         ->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
                         ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Change Notification' ) )
@@ -155,21 +155,19 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
                 $this->addMessage( 'There was an error updating your billing details', OSS_Message::ERROR );
             }
         }
-        
+
         $this->forward( 'index' );
     }
-    
+
     protected function getBillingDetailsForm()
     {
         $form = new IXP_Form_Customer_BillingDetails();
-        
+
         if( !isset( $this->view->billingDetails ) )
             $this->view->billingDetails = $form;
-        
+
         $form->assignEntityToForm( $this->getCustomer()->getBillingDetails(), $this, true );
         $form->setAction( OSS_Utils::genUrl( 'dashboard', 'update-billing' ) );
         return $form;
     }
 }
-
-
