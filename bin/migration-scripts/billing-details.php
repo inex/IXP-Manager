@@ -77,6 +77,7 @@ foreach( $em->getRepository( '\\Entities\\Customer' )->findAll() as $cust )
         $bdetail->setBillingContactName( $cust->getBillingContact()  );
         $bdetail->setBillingAddress1(    $cust->getBillingAddress1() );
         $bdetail->setBillingAddress2(    $cust->getBillingAddress2() );
+        $bdetail->setBillingAddress3(    $cust->getBillingAddress3() );
         $bdetail->setBillingTownCity(    $cust->getBillingCity()     );
         $bdetail->setBillingCountry(     $cust->getBillingCountry()  );
         
