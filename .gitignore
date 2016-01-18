@@ -42,3 +42,7 @@ application/configs/ci-*
 *.DS_Store
 
 config/identity.php
+
+
+# local INEX dev stuff:
+ixpmanager-dump.sql.bz2
