@@ -55,17 +55,15 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "doctrine/orm": "2.4.*",
-        "doctrine/dbal": ">=2.4",
         "opensolutions/oss-framework": "dev-master",
         "zendframework/zendframework1": "~1.12",
         "smarty/smarty": "3.1.18",
         "opensolutions/minify": "1.*",
         "komola/bootstrap-zend-framework": "dev-master",
         "opensolutions/oss-snmp": "dev-master",
-        "opensolutions/doctrine2bridge-l5": "2.4.*",
 
         "laravel/framework": "5.2.*",
+        "laravel-doctrine/orm": "1.1.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
 
@@ -100,9 +98,12 @@
         "psr-0": {
             "IXP_": "library/"
         },
-         "psr-4": {
+        "psr-4": {
              "IXP\\": "app/"
-         }
+        },
+        "files": [
+            "app/Support/helpers.php" 
+        ]
      },
      "autoload-dev": {
          "classmap": [
