@@ -20,6 +20,8 @@ if( $auth->hasIdentity() && \Auth::guest() ) {
     \Auth::logout();
 }
 
-Route::get('/test', function() {
-    return view( 'test' );
+Route::group(['middleware' => ['web']], function () {
+    Route::get('/test', function() {
+        return view( 'test' );
+    });
 });

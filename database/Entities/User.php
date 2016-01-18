@@ -655,6 +655,19 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     }
 
     /**
+     * Get the unique identifier name for the user.
+     *
+     * Required as we implement `\Illuminate\Auth\UserInterface`
+     *
+     * @return mixed
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'id';
+    }
+
+
+    /**
      * Get the password for the user.
      *
      * Required as we implement `\Illuminate\Auth\UserInterface`
