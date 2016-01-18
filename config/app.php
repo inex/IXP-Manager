@@ -148,8 +148,6 @@ return [
          * Application Service Providers...
          */
         'IXP\Providers\AppServiceProvider',
-        'IXP\Providers\BusServiceProvider',
-        'IXP\Providers\ConfigServiceProvider',
         'IXP\Providers\EventServiceProvider',
         'IXP\Providers\RouteServiceProvider',
 
