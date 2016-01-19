@@ -28,3 +28,4 @@ ALTER TABLE vlan CHANGE private private TINYINT(1) DEFAULT '0' NOT NULL;
 ALTER TABLE vlaninterface CHANGE ipv4enabled ipv4enabled TINYINT(1) DEFAULT '0', CHANGE ipv6enabled ipv6enabled TINYINT(1) DEFAULT '0', CHANGE mcastenabled mcastenabled TINYINT(1) DEFAULT '0', CHANGE irrdbfilter irrdbfilter TINYINT(1) DEFAULT '1';
 DROP TABLE change_log;
 DROP TABLE sec_event;
+CREATE INDEX idx_timestamp ON bgpsessiondata (timestamp);
