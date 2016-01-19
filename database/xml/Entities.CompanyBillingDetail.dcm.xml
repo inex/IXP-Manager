@@ -4,25 +4,25 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
-    <field name="billingContactName" type="string" nullable="true"/>
-    <field name="billingAddress1" type="string" nullable="true"/>
-    <field name="billingAddress2" type="string" nullable="true"/>
-    <field name="billingAddress3" type="string" nullable="true"/>
-    <field name="billingTownCity" type="string" nullable="true"/>
-    <field name="billingPostcode" type="string" nullable="true"/>
-    <field name="billingCountry" type="string" nullable="true"/>
-    <field name="billingEmail" type="string" nullable="true"/>
-    <field name="billingTelephone" type="string" nullable="true"/>
-    <field name="vatNumber" type="string" nullable="true"/>
-    <field name="vatRate" type="string" nullable="true"/>
-    <field name="purchaseOrderRequired" type="boolean" nullable="false">
+    <field name="billingContactName" type="string" nullable="true" column="billingContactName"/>
+    <field name="billingAddress1" type="string" nullable="true" column="billingAddress1"/>
+    <field name="billingAddress2" type="string" nullable="true" column="billingAddress2"/>
+    <field name="billingAddress3" type="string" nullable="true" column="billingAddress3"/>
+    <field name="billingTownCity" type="string" nullable="true" column="billingTownCity"/>
+    <field name="billingPostcode" type="string" nullable="true" column="billingPostcode"/>
+    <field name="billingCountry" type="string" nullable="true" column="billingCountry"/>
+    <field name="billingEmail" type="string" nullable="true" column="billingEmail"/>
+    <field name="billingTelephone" type="string" nullable="true" column="billingTelephone"/>
+    <field name="vatNumber" type="string" nullable="true" column="vatNumber"/>
+    <field name="vatRate" type="string" nullable="true" column="vatRate"/>
+    <field name="purchaseOrderRequired" type="boolean" nullable="false" column="purchaseOrderRequired">
       <options>
         <option name="default">0</option>
       </options>
     </field>
-    <field name="invoiceMethod" type="string" nullable="true"/>
-    <field name="invoiceEmail" type="string" nullable="true"/>
-    <field name="billingFrequency" type="string" nullable="true"/>
+    <field name="invoiceMethod" type="string" nullable="true" column="invoiceMethod"/>
+    <field name="invoiceEmail" type="string" nullable="true" column="invoiceEmail"/>
+    <field name="billingFrequency" type="string" nullable="true" column="billingFrequency"/>
     <one-to-many field="Customer" target-entity="Entities\Customer" mapped-by="BillingDetails"/>
   </entity>
 </doctrine-mapping>

@@ -148,18 +148,12 @@ return [
          Illuminate\View\ViewServiceProvider::class,
 
         /*
-         * Third party providers
-         */
-        'Doctrine2Bridge\Doctrine2CacheBridgeServiceProvider',
-        'Doctrine2Bridge\Doctrine2BridgeServiceProvider',
-
-        /*
          * Application Service Providers...
          */
-         IXP\Providers\AppServiceProvider::class,
-         IXP\Providers\AuthServiceProvider::class,
-         IXP\Providers\EventServiceProvider::class,
-         IXP\Providers\RouteServiceProvider::class,
+        IXP\Providers\AppServiceProvider::class,
+        IXP\Providers\AuthServiceProvider::class,
+        IXP\Providers\EventServiceProvider::class,
+        IXP\Providers\RouteServiceProvider::class,
 
 
         IXP\Providers\HelpdeskServiceProvider::class,
@@ -168,10 +162,9 @@ return [
         /*
          * Third party providers
          */
-        'Doctrine2Bridge\Doctrine2CacheBridgeServiceProvider',
-        'Doctrine2Bridge\Doctrine2BridgeServiceProvider',
+        Franzl\LaravelPlates\LaravelPlatesServiceProvider::class,
+        LaravelDoctrine\ORM\DoctrineServiceProvider::class,
 
-        'Franzl\LaravelPlates\LaravelPlatesServiceProvider',
     ],
 
     /*
@@ -220,6 +213,9 @@ return [
         'Validator' => 'Illuminate\Support\Facades\Validator',
         'View'      => 'Illuminate\Support\Facades\View',
 
+        'D2EM'      => LaravelDoctrine\ORM\Facades\EntityManager::class,
+        'Registry'  => LaravelDoctrine\ORM\Facades\Registry::class,
+        'Doctrine'  => LaravelDoctrine\ORM\Facades\Doctrine::class,
     ],
 
 ];

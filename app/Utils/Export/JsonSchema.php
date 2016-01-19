@@ -1,6 +1,5 @@
 <?php namespace IXP\Utils\Export;
 
-use D2R;
 use OSS_Array;
 
 /*
@@ -151,7 +150,7 @@ class JsonSchema
 
         $ixp_info['peering_policy_list'] = array_values( \Entities\Customer::$PEERING_POLICIES );
 
-        $ixpinfo['vlan']   = D2R::r( 'NetworkInfo' )->asVlanEuroIXExportArray();
+        $ixpinfo['vlan']   = d2r( 'NetworkInfo' )->asVlanEuroIXExportArray();
         $ixpinfo['switch'] = $this->getSwitchInfo( $version );
 
         return $ixpinfo;
@@ -166,7 +165,7 @@ class JsonSchema
     {
         $data = [];
 
-        $ixp = D2R::r( 'IXP' )->getDefault();
+        $ixp = d2r( 'IXP' )->getDefault();
 
         foreach( $ixp->getInfrastructures() as $infra ) {
             foreach( $infra->getSwitchers() as $switch ) {
@@ -199,10 +198,10 @@ class JsonSchema
     private function getMemberInfo( $version )
     {
         $memberinfo = [];
-        $ixp = D2R::r( '\\Entities\\IXP' )->getDefault();
+        $ixp = d2r( 'IXP' )->getDefault();
 
         $customers = OSS_Array::reindexObjects(
-            OSS_Array::reorderObjects( D2R::r( '\\Entities\\Customer' )->getConnected( false, false, true ),
+            OSS_Array::reorderObjects( d2r( 'Customer' )->getConnected( false, false, true ),
                 'getAutsys', SORT_NUMERIC
             ),
             'getId'
