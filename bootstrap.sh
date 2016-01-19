@@ -11,9 +11,13 @@ echo 'phpmyadmin phpmyadmin/mysql/admin-pass password password' | debconf-set-se
 echo 'phpmyadmin phpmyadmin/mysql/app-pass password password' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
 
+# For PHP7.0 - https://launchpad.net/~ondrej/+archive/ubuntu/php
+add-apt-repository -y ppa:ondrej/php
+apt-get update
+
 apt-get install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql joe memcached snmp nodejs nodejs-legacy npm     \
-    phpmyadmin build-essential
+    build-essential
 
 # FIXME Add phpmyadmin back when working with PHP7...
 
