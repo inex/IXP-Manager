@@ -1,0 +1,24 @@
+
+{if isset( $data.0 )}
+    {assign var="example_api_key" value=$data.0.apiKey}
+{else}
+    {assign var="example_api_key" value="$your_api_key"}
+{/if}
+
+<br>
+<h3>Available API Endpoints</h3>
+
+<dl>
+
+<dt>IXP JSON Schema Export</dt>
+<dd>
+    See <a href="https://github.com/euro-ix/json-schemas">here for details and definition</a>.<br>
+    Example:
+        <code>
+            <a href="{genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}">
+                {genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}
+            </a>
+        </code>
+</dd>
+
+</dl>
