@@ -34,6 +34,15 @@
 
 {OSS_Message}
 
+<h3>
+    {if isset( $dstVli ) and $dstVli}
+        Traffic exchanged with: {$dstVli->getVirtualInterface()->getCustomer()->getName()}
+    {/if}
+    <div class="pull-right">
+        <a href="{genUrl controller="statistics" action="p2p"}" class="btn btn-default">Return</a>
+    </div>
+</h3>
+
 <p>
 <form action="{genUrl controller="statistics" action="p2p"}{if $user->getPrivs() eq USER::AUTH_SUPERUSER}/shortname/{$cust->getShortname()}{/if}" method="post">
 <table>
@@ -85,17 +94,17 @@
 
 {if isset( $dstVli ) and $dstVli}
     <div class="row-fluid">
-    
+
     {assign var='count' value=0}
     {foreach from=$periods key=pname item=pid}
 
         <div class="span6">
-    
+
             <div class="well">
                 <h4 style="vertical-align: middle">
                     {$pname}
                 </h4>
-    
+
                 <p>
                     <br />
                     <img
@@ -109,22 +118,22 @@
                     />
                 </p>
             </div>
-    
+
         </div>
-    
+
         {assign var='count' value=$count+1}
-    
+
         {if $count%2 eq 0}
             </div><br /><div class="row-fluid">
         {/if}
 
     {/foreach}
-    
+
     {if $count%2 neq 0}
         <div class="span6"></div>
         {assign var='count' value=$count+1}
     {/if}
-    
+
     </div>
 
 {else} {* customer has an interface for given infra and proto *}

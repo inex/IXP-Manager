@@ -10,7 +10,7 @@ return [
     |
     */
 
-    'backend' => 'zendesk',   // default: none
+    'backend' => env('HELPDESK_BACKEND', 'none' ),
 
     /*
     |--------------------------------------------------------------------------

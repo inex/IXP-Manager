@@ -36,7 +36,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'asn', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'Customer');
+            return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'asn', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'Customer'];
         }
 
-        return array('__isInitialized__', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'asn', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'Customer');
+        return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'asn', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'Customer'];
     }
 
     /**
@@ -97,7 +97,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function setAsn($asn)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAsn', array($asn));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAsn', [$asn]);
 
         return parent::setAsn($asn);
     }
@@ -190,7 +190,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function getAsn()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsn', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsn', []);
 
         return parent::getAsn();
     }
@@ -201,7 +201,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function setProtocol($protocol)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', array($protocol));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', [$protocol]);
 
         return parent::setProtocol($protocol);
     }
@@ -212,7 +212,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function getProtocol()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', []);
 
         return parent::getProtocol();
     }
@@ -223,7 +223,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function setFirstSeen($firstSeen)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFirstSeen', array($firstSeen));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFirstSeen', [$firstSeen]);
 
         return parent::setFirstSeen($firstSeen);
     }
@@ -234,7 +234,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function getFirstSeen()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFirstSeen', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFirstSeen', []);
 
         return parent::getFirstSeen();
     }
@@ -249,7 +249,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -260,7 +260,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function setCustomer(\Entities\Customer $customer)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', array($customer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
         return parent::setCustomer($customer);
     }
@@ -271,7 +271,7 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function getCustomer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
 
         return parent::getCustomer();
     }

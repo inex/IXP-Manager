@@ -36,7 +36,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported');
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
         }
 
-        return array('__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported');
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
     }
 
     /**
@@ -97,7 +97,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setName($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
 
         return parent::setName($name);
     }
@@ -190,7 +190,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
 
         return parent::getName();
     }
@@ -201,7 +201,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setIpv4addr($ipv4addr)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIpv4addr', array($ipv4addr));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIpv4addr', [$ipv4addr]);
 
         return parent::setIpv4addr($ipv4addr);
     }
@@ -212,7 +212,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getIpv4addr()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIpv4addr', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIpv4addr', []);
 
         return parent::getIpv4addr();
     }
@@ -223,7 +223,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setIpv6addr($ipv6addr)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIpv6addr', array($ipv6addr));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIpv6addr', [$ipv6addr]);
 
         return parent::setIpv6addr($ipv6addr);
     }
@@ -234,7 +234,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getIpv6addr()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIpv6addr', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIpv6addr', []);
 
         return parent::getIpv6addr();
     }
@@ -245,7 +245,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setSnmppasswd($snmppasswd)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSnmppasswd', array($snmppasswd));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSnmppasswd', [$snmppasswd]);
 
         return parent::setSnmppasswd($snmppasswd);
     }
@@ -256,7 +256,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getSnmppasswd()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSnmppasswd', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSnmppasswd', []);
 
         return parent::getSnmppasswd();
     }
@@ -267,7 +267,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setInfrastructure($infrastructure)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInfrastructure', array($infrastructure));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInfrastructure', [$infrastructure]);
 
         return parent::setInfrastructure($infrastructure);
     }
@@ -278,7 +278,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getInfrastructure()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInfrastructure', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInfrastructure', []);
 
         return parent::getInfrastructure();
     }
@@ -289,7 +289,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setSwitchtype($switchtype)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitchtype', array($switchtype));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitchtype', [$switchtype]);
 
         return parent::setSwitchtype($switchtype);
     }
@@ -300,7 +300,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getSwitchtype()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchtype', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchtype', []);
 
         return parent::getSwitchtype();
     }
@@ -311,7 +311,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setModel($model)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setModel', array($model));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setModel', [$model]);
 
         return parent::setModel($model);
     }
@@ -322,7 +322,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getModel()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getModel', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getModel', []);
 
         return parent::getModel();
     }
@@ -333,7 +333,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setNotes($notes)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', array($notes));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', [$notes]);
 
         return parent::setNotes($notes);
     }
@@ -344,7 +344,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getNotes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', []);
 
         return parent::getNotes();
     }
@@ -359,7 +359,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -370,7 +370,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function addPort(\Entities\SwitchPort $ports)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPort', array($ports));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPort', [$ports]);
 
         return parent::addPort($ports);
     }
@@ -381,7 +381,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function removePort(\Entities\SwitchPort $ports)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removePort', array($ports));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removePort', [$ports]);
 
         return parent::removePort($ports);
     }
@@ -392,7 +392,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getPorts()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPorts', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPorts', []);
 
         return parent::getPorts();
     }
@@ -403,7 +403,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addConsoleServerConnection', array($consoleServerConnections));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addConsoleServerConnection', [$consoleServerConnections]);
 
         return parent::addConsoleServerConnection($consoleServerConnections);
     }
@@ -414,7 +414,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeConsoleServerConnection', array($consoleServerConnections));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeConsoleServerConnection', [$consoleServerConnections]);
 
         return parent::removeConsoleServerConnection($consoleServerConnections);
     }
@@ -425,7 +425,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getConsoleServerConnections()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getConsoleServerConnections', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getConsoleServerConnections', []);
 
         return parent::getConsoleServerConnections();
     }
@@ -436,7 +436,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setCabinet(\Entities\Cabinet $cabinet = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCabinet', array($cabinet));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCabinet', [$cabinet]);
 
         return parent::setCabinet($cabinet);
     }
@@ -447,7 +447,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getCabinet()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', []);
 
         return parent::getCabinet();
     }
@@ -458,7 +458,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setVendor(\Entities\Vendor $vendor = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVendor', array($vendor));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVendor', [$vendor]);
 
         return parent::setVendor($vendor);
     }
@@ -469,7 +469,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getVendor()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVendor', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVendor', []);
 
         return parent::getVendor();
     }
@@ -480,7 +480,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setActive($active)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setActive', array($active));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setActive', [$active]);
 
         return parent::setActive($active);
     }
@@ -491,7 +491,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getActive()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActive', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActive', []);
 
         return parent::getActive();
     }
@@ -502,7 +502,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setHostname($hostname)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHostname', array($hostname));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHostname', [$hostname]);
 
         return parent::setHostname($hostname);
     }
@@ -513,7 +513,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getHostname()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHostname', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHostname', []);
 
         return parent::getHostname();
     }
@@ -524,7 +524,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setOs($os)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOs', array($os));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOs', [$os]);
 
         return parent::setOs($os);
     }
@@ -535,7 +535,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getOs()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOs', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOs', []);
 
         return parent::getOs();
     }
@@ -546,7 +546,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setOsDate($osDate)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOsDate', array($osDate));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOsDate', [$osDate]);
 
         return parent::setOsDate($osDate);
     }
@@ -557,7 +557,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getOsDate()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOsDate', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOsDate', []);
 
         return parent::getOsDate();
     }
@@ -568,7 +568,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setOsVersion($osVersion)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOsVersion', array($osVersion));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOsVersion', [$osVersion]);
 
         return parent::setOsVersion($osVersion);
     }
@@ -579,7 +579,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getOsVersion()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOsVersion', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOsVersion', []);
 
         return parent::getOsVersion();
     }
@@ -590,7 +590,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setLastPolled($lastPolled)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastPolled', array($lastPolled));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastPolled', [$lastPolled]);
 
         return parent::setLastPolled($lastPolled);
     }
@@ -601,7 +601,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getLastPolled()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastPolled', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastPolled', []);
 
         return parent::getLastPolled();
     }
@@ -612,7 +612,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function snmpPoll($host, $logger = false)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'snmpPoll', array($host, $logger));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'snmpPoll', [$host, $logger]);
 
         return parent::snmpPoll($host, $logger);
     }
@@ -623,7 +623,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function snmpPollSwitchPorts($host, $logger = false, &$result = false)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'snmpPollSwitchPorts', array($host, $logger, $result));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'snmpPollSwitchPorts', [$host, $logger, $result]);
 
         return parent::snmpPollSwitchPorts($host, $logger, $result);
     }
@@ -634,7 +634,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setSerialNumber($serialNumber)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSerialNumber', array($serialNumber));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSerialNumber', [$serialNumber]);
 
         return parent::setSerialNumber($serialNumber);
     }
@@ -645,7 +645,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getSerialNumber()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSerialNumber', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSerialNumber', []);
 
         return parent::getSerialNumber();
     }
@@ -656,7 +656,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function setMauSupported($mauSupported)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauSupported', array($mauSupported));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauSupported', [$mauSupported]);
 
         return parent::setMauSupported($mauSupported);
     }
@@ -667,7 +667,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function getMauSupported()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauSupported', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauSupported', []);
 
         return parent::getMauSupported();
     }

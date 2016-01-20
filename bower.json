@@ -18,8 +18,5 @@
   "dependencies": {
     "bootstrap": "~3.3.0",
     "chosen": "~1.4.2"
-  },
-  "resolutions": {
-    "jquery": ">=2.1.1"
   }
 }

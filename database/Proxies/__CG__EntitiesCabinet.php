@@ -36,7 +36,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation');
+            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation'];
         }
 
-        return array('__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation');
+        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation'];
     }
 
     /**
@@ -97,7 +97,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function setName($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
 
         return parent::setName($name);
     }
@@ -190,7 +190,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
 
         return parent::getName();
     }
@@ -201,7 +201,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function setColocation($colocation)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setColocation', array($colocation));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setColocation', [$colocation]);
 
         return parent::setColocation($colocation);
     }
@@ -212,7 +212,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getColocation()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getColocation', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getColocation', []);
 
         return parent::getColocation();
     }
@@ -223,7 +223,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function setHeight($height)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHeight', array($height));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHeight', [$height]);
 
         return parent::setHeight($height);
     }
@@ -234,7 +234,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getHeight()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHeight', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHeight', []);
 
         return parent::getHeight();
     }
@@ -245,7 +245,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function setType($type)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', array($type));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', [$type]);
 
         return parent::setType($type);
     }
@@ -256,7 +256,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getType()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', []);
 
         return parent::getType();
     }
@@ -267,7 +267,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function setNotes($notes)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', array($notes));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', [$notes]);
 
         return parent::setNotes($notes);
     }
@@ -278,7 +278,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getNotes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', []);
 
         return parent::getNotes();
     }
@@ -293,7 +293,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -304,7 +304,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function addSwitche(\Entities\Switcher $switches)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addSwitche', array($switches));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addSwitche', [$switches]);
 
         return parent::addSwitche($switches);
     }
@@ -315,7 +315,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function removeSwitche(\Entities\Switcher $switches)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSwitche', array($switches));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSwitche', [$switches]);
 
         return parent::removeSwitche($switches);
     }
@@ -326,7 +326,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getSwitches()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitches', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitches', []);
 
         return parent::getSwitches();
     }
@@ -337,7 +337,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function addCustomerEquipment(\Entities\CustomerEquipment $customerEquipment)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomerEquipment', array($customerEquipment));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomerEquipment', [$customerEquipment]);
 
         return parent::addCustomerEquipment($customerEquipment);
     }
@@ -348,7 +348,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function removeCustomerEquipment(\Entities\CustomerEquipment $customerEquipment)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomerEquipment', array($customerEquipment));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomerEquipment', [$customerEquipment]);
 
         return parent::removeCustomerEquipment($customerEquipment);
     }
@@ -359,7 +359,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getCustomerEquipment()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomerEquipment', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomerEquipment', []);
 
         return parent::getCustomerEquipment();
     }
@@ -370,7 +370,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function setLocation(\Entities\Location $location = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLocation', array($location));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLocation', [$location]);
 
         return parent::setLocation($location);
     }
@@ -381,7 +381,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getLocation()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLocation', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLocation', []);
 
         return parent::getLocation();
     }
@@ -392,7 +392,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function setCololocation($cololocation)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCololocation', array($cololocation));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCololocation', [$cololocation]);
 
         return parent::setCololocation($cololocation);
     }
@@ -403,7 +403,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function getCololocation()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCololocation', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCololocation', []);
 
         return parent::getCololocation();
     }
@@ -414,7 +414,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function addSwitch(\Entities\Switcher $switches)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addSwitch', array($switches));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addSwitch', [$switches]);
 
         return parent::addSwitch($switches);
     }
@@ -425,7 +425,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function removeSwitch(\Entities\Switcher $switches)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSwitch', array($switches));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSwitch', [$switches]);
 
         return parent::removeSwitch($switches);
     }

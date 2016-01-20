@@ -12,7 +12,13 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/vivid64"
+  config.vm.box = "ubuntu/wily64"
+
+  # in case you want to use VMware Fusion instead of Virtualbox we need a
+  # slightly different base box
+  config.vm.provider "vmware_fusion" do |v, override|
+    override.vm.box = "vmtrooper/ubuntu-15.04-x64"
+  end
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -59,16 +65,21 @@ Vagrant.configure(2) do |config|
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
-  # config.vm.provider "virtualbox" do |vb|
+  config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
   #   vb.gui = true
   #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
-  # end
+     # Customize the amount of memory on the VM:
+     vb.memory = "1536"
+  end
   #
   # View the documentation for the provider you are using for more
   # information on available options.
+
+  config.vm.provider "vmware_fusion" do |vm|
+    vm.vmx["memsize"] = "1024"
+    vm.vmx["numvcpus"] = "2"
+  end
 
   # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
   # such as FTP and Heroku are also available. See the documentation at

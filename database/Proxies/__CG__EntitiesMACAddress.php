@@ -36,7 +36,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'firstseen', 'lastseen', 'mac', 'id', 'VirtualInterface');
+            return ['__isInitialized__', 'firstseen', 'lastseen', 'mac', 'id', 'VirtualInterface'];
         }
 
-        return array('__isInitialized__', 'firstseen', 'lastseen', 'mac', 'id', 'VirtualInterface');
+        return ['__isInitialized__', 'firstseen', 'lastseen', 'mac', 'id', 'VirtualInterface'];
     }
 
     /**
@@ -97,7 +97,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function setFirstseen($firstseen)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFirstseen', array($firstseen));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFirstseen', [$firstseen]);
 
         return parent::setFirstseen($firstseen);
     }
@@ -190,7 +190,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function getFirstseen()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFirstseen', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFirstseen', []);
 
         return parent::getFirstseen();
     }
@@ -201,7 +201,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function setLastseen($lastseen)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastseen', array($lastseen));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastseen', [$lastseen]);
 
         return parent::setLastseen($lastseen);
     }
@@ -212,7 +212,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function getLastseen()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastseen', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastseen', []);
 
         return parent::getLastseen();
     }
@@ -223,7 +223,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function setMac($mac)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMac', array($mac));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMac', [$mac]);
 
         return parent::setMac($mac);
     }
@@ -234,7 +234,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function getMac()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMac', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMac', []);
 
         return parent::getMac();
     }
@@ -249,7 +249,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -260,7 +260,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function setVirtualInterface(\Entities\VirtualInterface $virtualInterface = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVirtualInterface', array($virtualInterface));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVirtualInterface', [$virtualInterface]);
 
         return parent::setVirtualInterface($virtualInterface);
     }
@@ -271,7 +271,7 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
     public function getVirtualInterface()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVirtualInterface', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVirtualInterface', []);
 
         return parent::getVirtualInterface();
     }

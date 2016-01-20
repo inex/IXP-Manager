@@ -36,7 +36,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'email_last_sent', 'emails_sent', 'peered', 'rejected', 'notes', 'id', 'Customer', 'Peer', 'created', 'updated');
+            return ['__isInitialized__', 'email_last_sent', 'emails_sent', 'peered', 'rejected', 'notes', 'id', 'Customer', 'Peer', 'created', 'updated'];
         }
 
-        return array('__isInitialized__', 'email_last_sent', 'emails_sent', 'peered', 'rejected', 'notes', 'id', 'Customer', 'Peer', 'created', 'updated');
+        return ['__isInitialized__', 'email_last_sent', 'emails_sent', 'peered', 'rejected', 'notes', 'id', 'Customer', 'Peer', 'created', 'updated'];
     }
 
     /**
@@ -97,7 +97,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setEmailLastSent($emailLastSent)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEmailLastSent', array($emailLastSent));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEmailLastSent', [$emailLastSent]);
 
         return parent::setEmailLastSent($emailLastSent);
     }
@@ -190,7 +190,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getEmailLastSent()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmailLastSent', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmailLastSent', []);
 
         return parent::getEmailLastSent();
     }
@@ -201,7 +201,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setEmailsSent($emailsSent)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEmailsSent', array($emailsSent));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEmailsSent', [$emailsSent]);
 
         return parent::setEmailsSent($emailsSent);
     }
@@ -212,7 +212,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getEmailsSent()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmailsSent', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmailsSent', []);
 
         return parent::getEmailsSent();
     }
@@ -223,7 +223,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setPeered($peered)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPeered', array($peered));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPeered', [$peered]);
 
         return parent::setPeered($peered);
     }
@@ -234,7 +234,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getPeered()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPeered', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPeered', []);
 
         return parent::getPeered();
     }
@@ -245,7 +245,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setRejected($rejected)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRejected', array($rejected));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRejected', [$rejected]);
 
         return parent::setRejected($rejected);
     }
@@ -256,7 +256,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getRejected()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRejected', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRejected', []);
 
         return parent::getRejected();
     }
@@ -267,7 +267,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setNotes($notes)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', array($notes));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', [$notes]);
 
         return parent::setNotes($notes);
     }
@@ -278,7 +278,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getNotes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', []);
 
         return parent::getNotes();
     }
@@ -293,7 +293,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -304,7 +304,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setCustomer(\Entities\Customer $customer = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', array($customer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
         return parent::setCustomer($customer);
     }
@@ -315,7 +315,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getCustomer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
 
         return parent::getCustomer();
     }
@@ -326,7 +326,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setPeer(\Entities\Customer $peer = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPeer', array($peer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPeer', [$peer]);
 
         return parent::setPeer($peer);
     }
@@ -337,7 +337,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getPeer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPeer', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPeer', []);
 
         return parent::getPeer();
     }
@@ -348,7 +348,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setCreated($created)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', array($created));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created]);
 
         return parent::setCreated($created);
     }
@@ -359,7 +359,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getCreated()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreated', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreated', []);
 
         return parent::getCreated();
     }
@@ -370,7 +370,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function setUpdated($updated)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdated', array($updated));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdated', [$updated]);
 
         return parent::setUpdated($updated);
     }
@@ -381,7 +381,7 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
     public function getUpdated()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdated', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdated', []);
 
         return parent::getUpdated();
     }

@@ -36,7 +36,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'address', 'id', 'VlanInterface', 'Vlan');
+            return ['__isInitialized__', 'address', 'id', 'VlanInterface', 'Vlan'];
         }
 
-        return array('__isInitialized__', 'address', 'id', 'VlanInterface', 'Vlan');
+        return ['__isInitialized__', 'address', 'id', 'VlanInterface', 'Vlan'];
     }
 
     /**
@@ -97,7 +97,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
     public function setAddress($address)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress', array($address));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress', [$address]);
 
         return parent::setAddress($address);
     }
@@ -190,7 +190,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
     public function getAddress()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress', []);
 
         return parent::getAddress();
     }
@@ -205,7 +205,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -216,7 +216,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
     public function setVlanInterface(\Entities\VlanInterface $vlanInterface = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlanInterface', array($vlanInterface));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlanInterface', [$vlanInterface]);
 
         return parent::setVlanInterface($vlanInterface);
     }
@@ -227,7 +227,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
     public function getVlanInterface()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlanInterface', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlanInterface', []);
 
         return parent::getVlanInterface();
     }
@@ -238,7 +238,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
     public function setVlan(\Entities\Vlan $vlan = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlan', array($vlan));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlan', [$vlan]);
 
         return parent::setVlan($vlan);
     }
@@ -249,7 +249,7 @@ class IPv4Address extends \Entities\IPv4Address implements \Doctrine\ORM\Proxy\P
     public function getVlan()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlan', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlan', []);
 
         return parent::getVlan();
     }

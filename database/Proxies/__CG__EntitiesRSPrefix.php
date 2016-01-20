@@ -36,7 +36,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'timestamp', 'prefix', 'protocol', 'irrdb', 'rs_origin', 'id', 'Customer');
+            return ['__isInitialized__', 'timestamp', 'prefix', 'protocol', 'irrdb', 'rs_origin', 'id', 'Customer'];
         }
 
-        return array('__isInitialized__', 'timestamp', 'prefix', 'protocol', 'irrdb', 'rs_origin', 'id', 'Customer');
+        return ['__isInitialized__', 'timestamp', 'prefix', 'protocol', 'irrdb', 'rs_origin', 'id', 'Customer'];
     }
 
     /**
@@ -97,7 +97,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function setTimestamp($timestamp)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTimestamp', array($timestamp));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTimestamp', [$timestamp]);
 
         return parent::setTimestamp($timestamp);
     }
@@ -190,7 +190,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function getTimestamp()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTimestamp', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTimestamp', []);
 
         return parent::getTimestamp();
     }
@@ -201,7 +201,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function setPrefix($prefix)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPrefix', array($prefix));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPrefix', [$prefix]);
 
         return parent::setPrefix($prefix);
     }
@@ -212,7 +212,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function getPrefix()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrefix', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrefix', []);
 
         return parent::getPrefix();
     }
@@ -223,7 +223,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function setProtocol($protocol)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', array($protocol));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', [$protocol]);
 
         return parent::setProtocol($protocol);
     }
@@ -234,7 +234,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function getProtocol()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', []);
 
         return parent::getProtocol();
     }
@@ -245,7 +245,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function setIrrdb($irrdb)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIrrdb', array($irrdb));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIrrdb', [$irrdb]);
 
         return parent::setIrrdb($irrdb);
     }
@@ -256,7 +256,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function getIrrdb()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIrrdb', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIrrdb', []);
 
         return parent::getIrrdb();
     }
@@ -267,7 +267,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function setRsOrigin($rsOrigin)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRsOrigin', array($rsOrigin));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRsOrigin', [$rsOrigin]);
 
         return parent::setRsOrigin($rsOrigin);
     }
@@ -278,7 +278,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function getRsOrigin()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRsOrigin', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRsOrigin', []);
 
         return parent::getRsOrigin();
     }
@@ -293,7 +293,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -304,7 +304,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function setCustomer(\Entities\Customer $customer = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', array($customer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
         return parent::setCustomer($customer);
     }
@@ -315,7 +315,7 @@ class RSPrefix extends \Entities\RSPrefix implements \Doctrine\ORM\Proxy\Proxy
     public function getCustomer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
 
         return parent::getCustomer();
     }

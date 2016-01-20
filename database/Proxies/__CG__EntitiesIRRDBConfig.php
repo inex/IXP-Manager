@@ -36,7 +36,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'host', 'protocol', 'source', 'notes', 'id', 'Customers');
+            return ['__isInitialized__', 'host', 'protocol', 'source', 'notes', 'id', 'Customers'];
         }
 
-        return array('__isInitialized__', 'host', 'protocol', 'source', 'notes', 'id', 'Customers');
+        return ['__isInitialized__', 'host', 'protocol', 'source', 'notes', 'id', 'Customers'];
     }
 
     /**
@@ -97,7 +97,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function setHost($host)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHost', array($host));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHost', [$host]);
 
         return parent::setHost($host);
     }
@@ -190,7 +190,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function getHost()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHost', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHost', []);
 
         return parent::getHost();
     }
@@ -201,7 +201,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function setProtocol($protocol)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', array($protocol));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', [$protocol]);
 
         return parent::setProtocol($protocol);
     }
@@ -212,7 +212,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function getProtocol()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', []);
 
         return parent::getProtocol();
     }
@@ -223,7 +223,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function setSource($source)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSource', array($source));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSource', [$source]);
 
         return parent::setSource($source);
     }
@@ -234,7 +234,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function getSource()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSource', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSource', []);
 
         return parent::getSource();
     }
@@ -245,7 +245,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function setNotes($notes)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', array($notes));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', [$notes]);
 
         return parent::setNotes($notes);
     }
@@ -256,7 +256,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function getNotes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', []);
 
         return parent::getNotes();
     }
@@ -271,7 +271,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -282,7 +282,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function addCustomer(\Entities\Customer $customers)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', array($customers));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customers]);
 
         return parent::addCustomer($customers);
     }
@@ -293,7 +293,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function removeCustomer(\Entities\Customer $customers)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', array($customers));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customers]);
 
         return parent::removeCustomer($customers);
     }
@@ -304,7 +304,7 @@ class IRRDBConfig extends \Entities\IRRDBConfig implements \Doctrine\ORM\Proxy\P
     public function getCustomers()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers', []);
 
         return parent::getCustomers();
     }

@@ -36,7 +36,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'ip', 'at', 'id', 'User');
+            return ['__isInitialized__', 'ip', 'at', 'id', 'User'];
         }
 
-        return array('__isInitialized__', 'ip', 'at', 'id', 'User');
+        return ['__isInitialized__', 'ip', 'at', 'id', 'User'];
     }
 
     /**
@@ -97,7 +97,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function setIp($ip)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIp', array($ip));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIp', [$ip]);
 
         return parent::setIp($ip);
     }
@@ -190,7 +190,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function getIp()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIp', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIp', []);
 
         return parent::getIp();
     }
@@ -201,7 +201,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function setAt($at)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAt', array($at));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAt', [$at]);
 
         return parent::setAt($at);
     }
@@ -212,7 +212,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function getAt()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAt', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAt', []);
 
         return parent::getAt();
     }
@@ -227,7 +227,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -238,7 +238,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function setUser(\Entities\User $user)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$user]);
 
         return parent::setUser($user);
     }
@@ -249,7 +249,7 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', []);
 
         return parent::getUser();
     }

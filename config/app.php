@@ -4,6 +4,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Environment
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "environment" your application is currently
+    | running in. This may determine how you prefer to configure various
+    | services your application utilizes. Set this in your ".env" file.
+    |
+    */
+    'env' => env('APP_ENV', 'production'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
     |
@@ -26,7 +38,7 @@ return [
     |
     */
 
-    'url' => 'http://localhost',
+    'url' => env( 'APP_URL', 'http://localhost' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +51,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env( 'APP_TIMEZONE', 'UTC' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +64,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env( 'APP_LOCALE', 'en' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -113,56 +125,46 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
-        'Illuminate\Foundation\Providers\ArtisanServiceProvider',
-        'Illuminate\Auth\AuthServiceProvider',
-        'Illuminate\Bus\BusServiceProvider',
-        'Illuminate\Cache\CacheServiceProvider',
-        'Illuminate\Foundation\Providers\ConsoleSupportServiceProvider',
-        'Illuminate\Routing\ControllerServiceProvider',
-        'Illuminate\Cookie\CookieServiceProvider',
-        'Illuminate\Database\DatabaseServiceProvider',
-        'Illuminate\Encryption\EncryptionServiceProvider',
-        'Illuminate\Filesystem\FilesystemServiceProvider',
-        'Illuminate\Foundation\Providers\FoundationServiceProvider',
-        'Illuminate\Hashing\HashServiceProvider',
-        'Illuminate\Mail\MailServiceProvider',
-        'Illuminate\Pagination\PaginationServiceProvider',
-        'Illuminate\Pipeline\PipelineServiceProvider',
-        'Illuminate\Queue\QueueServiceProvider',
-        'Illuminate\Redis\RedisServiceProvider',
-        'Illuminate\Auth\Passwords\PasswordResetServiceProvider',
-        'Illuminate\Session\SessionServiceProvider',
-        'Illuminate\Translation\TranslationServiceProvider',
-        'Illuminate\Validation\ValidationServiceProvider',
-        'Illuminate\View\ViewServiceProvider',
-
-        /*
-         * Third party providers
-         */
-        'Doctrine2Bridge\Doctrine2CacheBridgeServiceProvider',
-        'Doctrine2Bridge\Doctrine2BridgeServiceProvider',
-
-        'Franzl\LaravelPlates\LaravelPlatesServiceProvider',
+         Illuminate\Auth\AuthServiceProvider::class,
+         Illuminate\Broadcasting\BroadcastServiceProvider::class,
+         Illuminate\Bus\BusServiceProvider::class,
+         Illuminate\Cache\CacheServiceProvider::class,
+         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
+         Illuminate\Cookie\CookieServiceProvider::class,
+         Illuminate\Database\DatabaseServiceProvider::class,
+         Illuminate\Encryption\EncryptionServiceProvider::class,
+         Illuminate\Filesystem\FilesystemServiceProvider::class,
+         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
+         Illuminate\Hashing\HashServiceProvider::class,
+         Illuminate\Mail\MailServiceProvider::class,
+         Illuminate\Pagination\PaginationServiceProvider::class,
+         Illuminate\Pipeline\PipelineServiceProvider::class,
+         Illuminate\Queue\QueueServiceProvider::class,
+         Illuminate\Redis\RedisServiceProvider::class,
+         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+         Illuminate\Session\SessionServiceProvider::class,
+         Illuminate\Translation\TranslationServiceProvider::class,
+         Illuminate\Validation\ValidationServiceProvider::class,
+         Illuminate\View\ViewServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
-        'IXP\Providers\AppServiceProvider',
-        'IXP\Providers\BusServiceProvider',
-        'IXP\Providers\ConfigServiceProvider',
-        'IXP\Providers\EventServiceProvider',
-        'IXP\Providers\RouteServiceProvider',
+        IXP\Providers\AppServiceProvider::class,
+        IXP\Providers\AuthServiceProvider::class,
+        IXP\Providers\EventServiceProvider::class,
+        IXP\Providers\RouteServiceProvider::class,
 
 
-        'IXP\Providers\HelpdeskServiceProvider',
+        IXP\Providers\HelpdeskServiceProvider::class,
+        IXP\Providers\ZendFrameworkServiceProvider::class,
 
         /*
          * Third party providers
          */
-        'Doctrine2Bridge\Doctrine2CacheBridgeServiceProvider',
-        'Doctrine2Bridge\Doctrine2BridgeServiceProvider',
+        Franzl\LaravelPlates\LaravelPlatesServiceProvider::class,
+        LaravelDoctrine\ORM\DoctrineServiceProvider::class,
 
-        'Franzl\LaravelPlates\LaravelPlatesServiceProvider',
     ],
 
     /*
@@ -211,6 +213,9 @@ return [
         'Validator' => 'Illuminate\Support\Facades\Validator',
         'View'      => 'Illuminate\Support\Facades\View',
 
+        'D2EM'      => LaravelDoctrine\ORM\Facades\EntityManager::class,
+        'Registry'  => LaravelDoctrine\ORM\Facades\Registry::class,
+        'Doctrine'  => LaravelDoctrine\ORM\Facades\Doctrine::class,
     ],
 
 ];

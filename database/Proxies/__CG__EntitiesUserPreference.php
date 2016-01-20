@@ -36,7 +36,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'attribute', 'op', 'value', 'id', 'User', 'ix', 'expire');
+            return ['__isInitialized__', 'attribute', 'op', 'value', 'id', 'User', 'ix', 'expire'];
         }
 
-        return array('__isInitialized__', 'attribute', 'op', 'value', 'id', 'User', 'ix', 'expire');
+        return ['__isInitialized__', 'attribute', 'op', 'value', 'id', 'User', 'ix', 'expire'];
     }
 
     /**
@@ -97,7 +97,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function setAttribute($attribute)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAttribute', array($attribute));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAttribute', [$attribute]);
 
         return parent::setAttribute($attribute);
     }
@@ -190,7 +190,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function getAttribute()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAttribute', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAttribute', []);
 
         return parent::getAttribute();
     }
@@ -201,7 +201,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function setOp($op)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOp', array($op));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOp', [$op]);
 
         return parent::setOp($op);
     }
@@ -212,7 +212,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function getOp()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOp', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOp', []);
 
         return parent::getOp();
     }
@@ -223,7 +223,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function setValue($value)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValue', array($value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValue', [$value]);
 
         return parent::setValue($value);
     }
@@ -234,7 +234,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function getValue()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getValue', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getValue', []);
 
         return parent::getValue();
     }
@@ -249,7 +249,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -260,7 +260,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function setUser(\Entities\User $user = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', array($user));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$user]);
 
         return parent::setUser($user);
     }
@@ -271,7 +271,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function getUser()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', []);
 
         return parent::getUser();
     }
@@ -282,7 +282,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function setIx($ix)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIx', array($ix));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIx', [$ix]);
 
         return parent::setIx($ix);
     }
@@ -293,7 +293,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function getIx()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIx', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIx', []);
 
         return parent::getIx();
     }
@@ -304,7 +304,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function setExpire($expire)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setExpire', array($expire));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setExpire', [$expire]);
 
         return parent::setExpire($expire);
     }
@@ -315,7 +315,7 @@ class UserPreference extends \Entities\UserPreference implements \Doctrine\ORM\P
     public function getExpire()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getExpire', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getExpire', []);
 
         return parent::getExpire();
     }
