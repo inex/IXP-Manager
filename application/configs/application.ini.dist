@@ -497,6 +497,9 @@ sflow.rootdir = /path/to/rrd/files
 sflow.rrd.rrdtool = /usr/bin/rrdtool
 sflow.rrd.rrdcached.sock = unix:/var/run/rrdcached.sock
 
+; for larger IXPs, it's quite intensive to display all the graphs
+sflow.show_graphs_on_index_page = false
+
 ;; LANs available for public and member's own peering matrix.
 
 peering_matrix.public.0.name   = "Public Peering LAN #1"
