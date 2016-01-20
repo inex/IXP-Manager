@@ -30,7 +30,7 @@
 
         {if isset( $acust )}
             $( "#menu-select-customer" ).val( {$acust.id} );
-            $( "#menu-select-customer" ).trigger( "liszt:updated" );
+            $( "#menu-select-customer" ).trigger( "chosen:updated" );
         {/if}
     {/if}
 </script>

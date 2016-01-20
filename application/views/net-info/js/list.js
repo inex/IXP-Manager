@@ -11,18 +11,18 @@ function openEditDialog( event ){
 
     var id = substr( event.delegateTarget.id, 9 );
     var name = $( event.delegateTarget ).attr( 'data-name' );
-    
+
     $( '#dialog_title' ).html( "Edit" );
     $( '#add_dialog_save' ).html( "Save" );
     $( '#protocol-element' ).hide( 'fast' );
-    
+
     $( '#property-fields' ).html( getPropertyFields( name ) );
 
     $( '#values-' + id + ' > div' ).each( function(){
         var vid =  $( this ).attr( 'data-name' );
         $( '#' + vid ).val( $( this ).html() );
         if( vid == 'protocol' )
-            $( '#' + vid ).trigger( "liszt:updated" );
+            $( '#' + vid ).trigger( "chosen:updated" );
     });
 
 
@@ -37,7 +37,7 @@ function openAddDialog( event ){
     $( '#dialog_title' ).html( "Add new" );
     $( '#add_dialog_save' ).html( "Add" );
     $( '#property-fields' ).html( getPropertyFields( name ) );
-    $( '#protocol' ).val('{NetInfo::PROTOCOL_IPV4}').trigger( "liszt:updated" );
+    $( '#protocol' ).val('{NetInfo::PROTOCOL_IPV4}').trigger( "chosen:updated" );
 
     openDialog( name );
 };
@@ -55,7 +55,7 @@ function openDialog( name ){
         $( this ).chosen();
         ossChosenFixWidth( $( this ) );
     });
-    
+
     $( '#add_dialog_save' ).off( 'click' ).on( 'click', function(){
         $( '#form-add-property' ).trigger( 'submit' );
     });

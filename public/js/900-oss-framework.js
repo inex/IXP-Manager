@@ -403,13 +403,13 @@ function ossChosenFixWidth( obj, force ) {
 // clear a chosen dropdown
 function ossChosenClear( id ) {
     $( id ).html( "" ).val( "" );
-    $( id ).trigger( "liszt:updated" );
+    $( id ).trigger( "chosen:updated" );
 }
 
 //clear a chosen dropdown with a placeholder
 function ossChosenClear( id, ph ) {
     $( id ).html( ph ).val( "" );
-    $( id ).trigger( "liszt:updated" );
+    $( id ).trigger( "chosen:updated" );
 }
 
 
@@ -420,7 +420,7 @@ function ossChosenSet( id, options, value ) {
     if( value != undefined )
         $( id ).val( value );
 
-    $( id ).trigger( "liszt:updated" );
+    $( id ).trigger( "chosen:updated" );
 }
 
 //****************************************************************************
