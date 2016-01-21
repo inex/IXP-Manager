@@ -15,5 +15,8 @@
     </field>
     <field name="timestamp" type="datetime" nullable="true"/>
     <field name="source" type="string" length="40" nullable="true"/>
+    <indexes>
+      <index name="idx_timestamp" columns="timestamp"/>
+    </indexes>
   </entity>
 </doctrine-mapping>

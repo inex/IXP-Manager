@@ -36,7 +36,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState');
+            return ['__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState'];
         }
 
-        return array('__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState');
+        return ['__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState'];
     }
 
     /**
@@ -97,7 +97,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setType($type)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', array($type));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', [$type]);
 
         return parent::setType($type);
     }
@@ -190,7 +190,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getType()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', []);
 
         return parent::getType();
     }
@@ -201,7 +201,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setName($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
 
         return parent::setName($name);
     }
@@ -212,7 +212,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
 
         return parent::getName();
     }
@@ -227,7 +227,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -238,7 +238,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPhysicalInterface', array($physicalInterface));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPhysicalInterface', [$physicalInterface]);
 
         return parent::setPhysicalInterface($physicalInterface);
     }
@@ -249,7 +249,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getPhysicalInterface()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPhysicalInterface', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPhysicalInterface', []);
 
         return parent::getPhysicalInterface();
     }
@@ -260,7 +260,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setSwitcher(\Entities\Switcher $switcher = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitcher', array($switcher));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitcher', [$switcher]);
 
         return parent::setSwitcher($switcher);
     }
@@ -271,7 +271,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getSwitcher()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitcher', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitcher', []);
 
         return parent::getSwitcher();
     }
@@ -282,7 +282,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfName($ifName)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfName', array($ifName));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfName', [$ifName]);
 
         return parent::setIfName($ifName);
     }
@@ -293,7 +293,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfName', []);
 
         return parent::getIfName();
     }
@@ -304,7 +304,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfAlias($ifAlias)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfAlias', array($ifAlias));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfAlias', [$ifAlias]);
 
         return parent::setIfAlias($ifAlias);
     }
@@ -315,7 +315,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfAlias()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfAlias', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfAlias', []);
 
         return parent::getIfAlias();
     }
@@ -326,7 +326,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfHighSpeed($ifHighSpeed)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfHighSpeed', array($ifHighSpeed));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfHighSpeed', [$ifHighSpeed]);
 
         return parent::setIfHighSpeed($ifHighSpeed);
     }
@@ -337,7 +337,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfHighSpeed()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfHighSpeed', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfHighSpeed', []);
 
         return parent::getIfHighSpeed();
     }
@@ -348,7 +348,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfMtu($ifMtu)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfMtu', array($ifMtu));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfMtu', [$ifMtu]);
 
         return parent::setIfMtu($ifMtu);
     }
@@ -359,7 +359,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfMtu()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfMtu', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfMtu', []);
 
         return parent::getIfMtu();
     }
@@ -370,7 +370,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfPhysAddress($ifPhysAddress)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfPhysAddress', array($ifPhysAddress));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfPhysAddress', [$ifPhysAddress]);
 
         return parent::setIfPhysAddress($ifPhysAddress);
     }
@@ -381,7 +381,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfPhysAddress()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfPhysAddress', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfPhysAddress', []);
 
         return parent::getIfPhysAddress();
     }
@@ -392,7 +392,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfAdminStatus($ifAdminStatus)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfAdminStatus', array($ifAdminStatus));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfAdminStatus', [$ifAdminStatus]);
 
         return parent::setIfAdminStatus($ifAdminStatus);
     }
@@ -403,7 +403,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfAdminStatus()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfAdminStatus', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfAdminStatus', []);
 
         return parent::getIfAdminStatus();
     }
@@ -414,7 +414,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfOperStatus($ifOperStatus)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfOperStatus', array($ifOperStatus));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfOperStatus', [$ifOperStatus]);
 
         return parent::setIfOperStatus($ifOperStatus);
     }
@@ -425,7 +425,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfOperStatus()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfOperStatus', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfOperStatus', []);
 
         return parent::getIfOperStatus();
     }
@@ -436,7 +436,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfLastChange($ifLastChange)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfLastChange', array($ifLastChange));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfLastChange', [$ifLastChange]);
 
         return parent::setIfLastChange($ifLastChange);
     }
@@ -447,7 +447,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfLastChange()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfLastChange', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfLastChange', []);
 
         return parent::getIfLastChange();
     }
@@ -458,7 +458,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setLastSnmpPoll($lastSnmpPoll)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastSnmpPoll', array($lastSnmpPoll));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastSnmpPoll', [$lastSnmpPoll]);
 
         return parent::setLastSnmpPoll($lastSnmpPoll);
     }
@@ -469,7 +469,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getLastSnmpPoll()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastSnmpPoll', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastSnmpPoll', []);
 
         return parent::getLastSnmpPoll();
     }
@@ -480,7 +480,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setIfIndex($ifIndex)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfIndex', array($ifIndex));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIfIndex', [$ifIndex]);
 
         return parent::setIfIndex($ifIndex);
     }
@@ -491,7 +491,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getIfIndex()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfIndex', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIfIndex', []);
 
         return parent::getIfIndex();
     }
@@ -502,7 +502,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setActive($active)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setActive', array($active));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setActive', [$active]);
 
         return parent::setActive($active);
     }
@@ -513,7 +513,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getActive()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActive', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActive', []);
 
         return parent::getActive();
     }
@@ -524,7 +524,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function snmpUpdate($host, $logger = false)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'snmpUpdate', array($host, $logger));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'snmpUpdate', [$host, $logger]);
 
         return parent::snmpUpdate($host, $logger);
     }
@@ -535,7 +535,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function ifnameToSNMPIdentifier()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'ifnameToSNMPIdentifier', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'ifnameToSNMPIdentifier', []);
 
         return parent::ifnameToSNMPIdentifier();
     }
@@ -546,7 +546,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setLagIfIndex($lagIfIndex)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLagIfIndex', array($lagIfIndex));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLagIfIndex', [$lagIfIndex]);
 
         return parent::setLagIfIndex($lagIfIndex);
     }
@@ -557,7 +557,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getLagIfIndex()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLagIfIndex', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLagIfIndex', []);
 
         return parent::getLagIfIndex();
     }
@@ -568,7 +568,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setMauType($mauType)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauType', array($mauType));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauType', [$mauType]);
 
         return parent::setMauType($mauType);
     }
@@ -579,7 +579,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getMauType()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauType', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauType', []);
 
         return parent::getMauType();
     }
@@ -590,7 +590,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setMauState($mauState)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauState', array($mauState));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauState', [$mauState]);
 
         return parent::setMauState($mauState);
     }
@@ -601,7 +601,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getMauState()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauState', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauState', []);
 
         return parent::getMauState();
     }
@@ -612,7 +612,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setMauAvailability($mauAvailability)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauAvailability', array($mauAvailability));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauAvailability', [$mauAvailability]);
 
         return parent::setMauAvailability($mauAvailability);
     }
@@ -623,7 +623,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getMauAvailability()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauAvailability', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauAvailability', []);
 
         return parent::getMauAvailability();
     }
@@ -634,7 +634,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setMauJacktype($mauJacktype)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauJacktype', array($mauJacktype));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauJacktype', [$mauJacktype]);
 
         return parent::setMauJacktype($mauJacktype);
     }
@@ -645,7 +645,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getMauJacktype()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauJacktype', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauJacktype', []);
 
         return parent::getMauJacktype();
     }
@@ -656,7 +656,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setMauAutoNegSupported($mauAutoNegSupported)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauAutoNegSupported', array($mauAutoNegSupported));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauAutoNegSupported', [$mauAutoNegSupported]);
 
         return parent::setMauAutoNegSupported($mauAutoNegSupported);
     }
@@ -667,7 +667,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getMauAutoNegSupported()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauAutoNegSupported', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauAutoNegSupported', []);
 
         return parent::getMauAutoNegSupported();
     }
@@ -678,7 +678,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function setMauAutoNegAdminState($mauAutoNegAdminState)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauAutoNegAdminState', array($mauAutoNegAdminState));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMauAutoNegAdminState', [$mauAutoNegAdminState]);
 
         return parent::setMauAutoNegAdminState($mauAutoNegAdminState);
     }
@@ -689,7 +689,7 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function getMauAutoNegAdminState()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauAutoNegAdminState', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauAutoNegAdminState', []);
 
         return parent::getMauAutoNegAdminState();
     }

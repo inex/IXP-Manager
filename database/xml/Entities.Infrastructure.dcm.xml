@@ -6,7 +6,7 @@
     </id>
     <field name="name" type="string" length="255" nullable="true"/>
     <field name="shortname" type="string" length="255" nullable="true"/>
-    <field name="isPrimary" type="boolean" length="1" nullable="false">
+    <field name="isPrimary" type="boolean" length="1" nullable="false" column="isPrimary">
       <options>
         <option name="default">0</option>
       </options>

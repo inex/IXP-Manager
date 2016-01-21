@@ -36,7 +36,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'Switcher');
+            return ['__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'Switcher'];
         }
 
-        return array('__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'Switcher');
+        return ['__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'Switcher'];
     }
 
     /**
@@ -97,7 +97,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setDescription($description)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', array($description));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', [$description]);
 
         return parent::setDescription($description);
     }
@@ -190,7 +190,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getDescription()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', []);
 
         return parent::getDescription();
     }
@@ -201,7 +201,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setPort($port)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPort', array($port));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPort', [$port]);
 
         return parent::setPort($port);
     }
@@ -212,7 +212,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getPort()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPort', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPort', []);
 
         return parent::getPort();
     }
@@ -223,7 +223,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setSpeed($speed)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSpeed', array($speed));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSpeed', [$speed]);
 
         return parent::setSpeed($speed);
     }
@@ -234,7 +234,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getSpeed()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSpeed', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSpeed', []);
 
         return parent::getSpeed();
     }
@@ -245,7 +245,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setParity($parity)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setParity', array($parity));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setParity', [$parity]);
 
         return parent::setParity($parity);
     }
@@ -256,7 +256,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getParity()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParity', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParity', []);
 
         return parent::getParity();
     }
@@ -267,7 +267,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setStopbits($stopbits)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setStopbits', array($stopbits));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setStopbits', [$stopbits]);
 
         return parent::setStopbits($stopbits);
     }
@@ -278,7 +278,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getStopbits()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStopbits', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStopbits', []);
 
         return parent::getStopbits();
     }
@@ -289,7 +289,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setFlowcontrol($flowcontrol)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFlowcontrol', array($flowcontrol));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFlowcontrol', [$flowcontrol]);
 
         return parent::setFlowcontrol($flowcontrol);
     }
@@ -300,7 +300,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getFlowcontrol()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFlowcontrol', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFlowcontrol', []);
 
         return parent::getFlowcontrol();
     }
@@ -311,7 +311,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setAutobaud($autobaud)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAutobaud', array($autobaud));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAutobaud', [$autobaud]);
 
         return parent::setAutobaud($autobaud);
     }
@@ -322,7 +322,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getAutobaud()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAutobaud', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAutobaud', []);
 
         return parent::getAutobaud();
     }
@@ -333,7 +333,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setNotes($notes)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', array($notes));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotes', [$notes]);
 
         return parent::setNotes($notes);
     }
@@ -344,7 +344,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getNotes()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', []);
 
         return parent::getNotes();
     }
@@ -359,7 +359,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -370,7 +370,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setCustomer(\Entities\Customer $customer = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', array($customer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
         return parent::setCustomer($customer);
     }
@@ -381,7 +381,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getCustomer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
 
         return parent::getCustomer();
     }
@@ -392,7 +392,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function setSwitcher(\Entities\Switcher $switcher = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitcher', array($switcher));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitcher', [$switcher]);
 
         return parent::setSwitcher($switcher);
     }
@@ -403,7 +403,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function getSwitcher()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitcher', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitcher', []);
 
         return parent::getSwitcher();
     }

@@ -36,7 +36,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'protocol', 'property', 'ix', 'value', 'id', 'Vlan');
+            return ['__isInitialized__', 'protocol', 'property', 'ix', 'value', 'id', 'Vlan'];
         }
 
-        return array('__isInitialized__', 'protocol', 'property', 'ix', 'value', 'id', 'Vlan');
+        return ['__isInitialized__', 'protocol', 'property', 'ix', 'value', 'id', 'Vlan'];
     }
 
     /**
@@ -97,7 +97,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function setProtocol($protocol)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', array($protocol));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', [$protocol]);
 
         return parent::setProtocol($protocol);
     }
@@ -190,7 +190,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function getProtocol()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', []);
 
         return parent::getProtocol();
     }
@@ -201,7 +201,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function setProperty($property)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProperty', array($property));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProperty', [$property]);
 
         return parent::setProperty($property);
     }
@@ -212,7 +212,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function getProperty()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProperty', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProperty', []);
 
         return parent::getProperty();
     }
@@ -223,7 +223,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function setIx($ix)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIx', array($ix));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIx', [$ix]);
 
         return parent::setIx($ix);
     }
@@ -234,7 +234,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function getIx()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIx', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIx', []);
 
         return parent::getIx();
     }
@@ -245,7 +245,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function setValue($value)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValue', array($value));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValue', [$value]);
 
         return parent::setValue($value);
     }
@@ -256,7 +256,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function getValue()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getValue', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getValue', []);
 
         return parent::getValue();
     }
@@ -271,7 +271,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -282,7 +282,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function setVlan(\Entities\Vlan $vlan)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlan', array($vlan));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlan', [$vlan]);
 
         return parent::setVlan($vlan);
     }
@@ -293,7 +293,7 @@ class NetInfo extends \Entities\NetInfo implements \Doctrine\ORM\Proxy\Proxy
     public function getVlan()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlan', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlan', []);
 
         return parent::getVlan();
     }

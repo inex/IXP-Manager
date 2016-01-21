@@ -11,9 +11,15 @@ echo 'phpmyadmin phpmyadmin/mysql/admin-pass password password' | debconf-set-se
 echo 'phpmyadmin phpmyadmin/mysql/app-pass password password' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
 
-apt-get install -y apache2 php5 php5-intl php5-mysql php5-rrd php5-cgi php5-cli php5-snmp php5-curl php5-mcrypt \
-    php5-memcache libapache2-mod-php5 mysql-server mysql-client joe memcached snmp nodejs nodejs-legacy npm     \
-    phpmyadmin build-essential
+# For PHP7.0 - https://launchpad.net/~ondrej/+archive/ubuntu/php
+add-apt-repository -y ppa:ondrej/php
+apt-get update
+
+apt-get install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
+    php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql joe memcached snmp nodejs nodejs-legacy npm     \
+    build-essential
+
+# FIXME Add phpmyadmin back when working with PHP7...
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
@@ -50,11 +56,6 @@ cat >/vagrant/public/.htaccess <<END_HTACCESS
 SetEnv APPLICATION_ENV vagrant
 END_HTACCESS
 
-
-
-ln -s /etc/php5/mods-available/mcrypt.ini /etc/php5/apache2/conf.d/20-mcrypt.ini
-ln -s /etc/php5/mods-available/mcrypt.ini /etc/php5/cgi/conf.d/20-mcrypt.ini
-ln -s /etc/php5/mods-available/mcrypt.ini /etc/php5/cli/conf.d/20-mcrypt.ini
 
 cd /vagrant
 su - vagrant -c "cd /vagrant && composer install"

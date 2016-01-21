@@ -59,16 +59,21 @@ class BGPSessionData extends EntityRepository
 
         if( !$forceDb && ( $apeers = \Zend_Registry::get( 'd2cache' )->fetch( $key ) ) )
             return $apeers;
-        
+
         if( !in_array( $protocol, [ 4, 6 ] ) )
             throw new \IXP_Exception( 'Invalid protocol' );
-        
+
         if( $vlan !== null && !( $evlan = $this->getEntityManager()->getRepository( '\Entities\Vlan' )->find( $vlan ) ) )
             throw new \IXP_Exception( 'Invalid VLAN' );
-            
+
         $conn = $this->getEntityManager()->getConnection();
         $conn->setFetchMode( \PDO::FETCH_ASSOC );
-        
+
+        // we've added "bs.timestamp >= NOW() - INTERVAL 7 DAY" below as we don't
+        // dump old date (yet) and the time to run the query is O(n) on number
+        // of rows...
+        // also: CREATE INDEX idx_timestamp ON bgpsessiondata (timestamp)
+
         // need to construct a raw SQL here due to the schema design by NH
         $sql = "SELECT bs.*, srcip.*, dstip.*,
             vlis.virtualinterfaceid as visid, vlid.virtualinterfaceid as vidid,
@@ -76,7 +81,7 @@ class BGPSessionData extends EntityRepository
             cd.shortname AS cdshortname, cd.name AS cdname, cd.autsys AS cdautsys,
             vlan.id AS vlanid, vlan.name AS vlanname, vlan.number AS vlantag,
             COUNT( bs.packetcount ) AS packetcount
-                
+
             FROM bgpsessiondata AS bs
                 LEFT JOIN ipv{$protocol}address AS srcip ON bs.srcipaddressid = srcip.id
                 LEFT JOIN ipv{$protocol}address AS dstip ON bs.dstipaddressid = dstip.id
@@ -87,23 +92,24 @@ class BGPSessionData extends EntityRepository
                 LEFT JOIN cust AS cs ON vis.custid = cs.id
                 LEFT JOIN cust AS cd ON vid.custid = cd.id
                 LEFT JOIN vlan AS vlan ON vlan.number = bs.vlan
-         
+
         WHERE
-            bs.protocol = {$protocol}
+            bs.timestamp >= NOW() - INTERVAL 7 DAY
+            AND bs.protocol = {$protocol}
             AND packetcount >= 1";
-        
+
         if( $vlan !== null && $evlan )
             $sql .= "\n            AND vlan.id = " . $evlan->getId();
-        
+
         if( $asn !== null )
             $sql .= "\n            AND cs.autsys = " . intval( $asn );
-            
+
         $sql .= "\n        GROUP BY bs.srcipaddressid, bs.dstipaddressid";
-        
+
         $peers = $conn->fetchAll( $sql );
-        
+
         $apeers = [];
-    
+
         foreach( $peers as $p )
         {
             if( !isset( $apeers[ $p['csautsys'] ] ) )
@@ -113,18 +119,18 @@ class BGPSessionData extends EntityRepository
                 $apeers[ $p['csautsys'] ]['name']      = $p['csname'];
                 $apeers[ $p['csautsys'] ]['peers']     = [];
             }
-    
+
             $apeers[ $p['csautsys'] ]['peers'][ $p['cdautsys'] ] = $p['cdautsys'];
         }
-    
+
         ksort( $apeers, SORT_NUMERIC );
-    
+
         foreach( $apeers as $asn => $p )
             ksort( $apeers[ $asn ][ 'peers' ], SORT_NUMERIC );
 
         \Zend_Registry::get( 'd2cache' )->save( $key, $apeers, 3600 );
-                
+
         return $apeers;
     }
-    
+
 }

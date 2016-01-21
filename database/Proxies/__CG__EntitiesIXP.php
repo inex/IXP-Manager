@@ -36,7 +36,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_p2p_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily', '' . "\0" . 'Entities\\IXP' . "\0" . 'aggregate_graph_name', '' . "\0" . 'Entities\\IXP' . "\0" . 'smokeping');
+            return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_p2p_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily', '' . "\0" . 'Entities\\IXP' . "\0" . 'aggregate_graph_name', '' . "\0" . 'Entities\\IXP' . "\0" . 'smokeping'];
         }
 
-        return array('__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_p2p_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily', '' . "\0" . 'Entities\\IXP' . "\0" . 'aggregate_graph_name', '' . "\0" . 'Entities\\IXP' . "\0" . 'smokeping');
+        return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_p2p_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily', '' . "\0" . 'Entities\\IXP' . "\0" . 'aggregate_graph_name', '' . "\0" . 'Entities\\IXP' . "\0" . 'smokeping'];
     }
 
     /**
@@ -97,7 +97,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setName($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
 
         return parent::setName($name);
     }
@@ -190,7 +190,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
 
         return parent::getName();
     }
@@ -201,7 +201,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setShortname($shortname)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setShortname', array($shortname));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setShortname', [$shortname]);
 
         return parent::setShortname($shortname);
     }
@@ -212,7 +212,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getShortname()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getShortname', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getShortname', []);
 
         return parent::getShortname();
     }
@@ -223,7 +223,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setAddress1($address1)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress1', array($address1));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress1', [$address1]);
 
         return parent::setAddress1($address1);
     }
@@ -234,7 +234,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getAddress1()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress1', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress1', []);
 
         return parent::getAddress1();
     }
@@ -245,7 +245,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setAddress2($address2)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress2', array($address2));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress2', [$address2]);
 
         return parent::setAddress2($address2);
     }
@@ -256,7 +256,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getAddress2()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress2', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress2', []);
 
         return parent::getAddress2();
     }
@@ -267,7 +267,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setAddress3($address3)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress3', array($address3));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress3', [$address3]);
 
         return parent::setAddress3($address3);
     }
@@ -278,7 +278,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getAddress3()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress3', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress3', []);
 
         return parent::getAddress3();
     }
@@ -289,7 +289,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setAddress4($address4)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress4', array($address4));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddress4', [$address4]);
 
         return parent::setAddress4($address4);
     }
@@ -300,7 +300,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getAddress4()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress4', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddress4', []);
 
         return parent::getAddress4();
     }
@@ -311,7 +311,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setCountry($country)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCountry', array($country));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCountry', [$country]);
 
         return parent::setCountry($country);
     }
@@ -322,7 +322,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getCountry()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountry', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountry', []);
 
         return parent::getCountry();
     }
@@ -337,7 +337,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -348,7 +348,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function addInfrastructure(\Entities\Infrastructure $infrastructures)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addInfrastructure', array($infrastructures));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addInfrastructure', [$infrastructures]);
 
         return parent::addInfrastructure($infrastructures);
     }
@@ -359,7 +359,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function removeInfrastructure(\Entities\Infrastructure $infrastructures)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeInfrastructure', array($infrastructures));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeInfrastructure', [$infrastructures]);
 
         return parent::removeInfrastructure($infrastructures);
     }
@@ -370,7 +370,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getInfrastructures()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInfrastructures', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInfrastructures', []);
 
         return parent::getInfrastructures();
     }
@@ -381,7 +381,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function addCustomer(\Entities\Customer $customers)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', array($customers));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customers]);
 
         return parent::addCustomer($customers);
     }
@@ -392,7 +392,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function removeCustomer(\Entities\Customer $customers)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', array($customers));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customers]);
 
         return parent::removeCustomer($customers);
     }
@@ -403,7 +403,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getCustomers()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers', []);
 
         return parent::getCustomers();
     }
@@ -414,7 +414,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setMrtgPath($mrtgPath)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMrtgPath', array($mrtgPath));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMrtgPath', [$mrtgPath]);
 
         return parent::setMrtgPath($mrtgPath);
     }
@@ -425,7 +425,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getMrtgPath()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMrtgPath', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMrtgPath', []);
 
         return parent::getMrtgPath();
     }
@@ -436,7 +436,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setMrtgP2pPath($mrtgP2pPath)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMrtgP2pPath', array($mrtgP2pPath));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMrtgP2pPath', [$mrtgP2pPath]);
 
         return parent::setMrtgP2pPath($mrtgP2pPath);
     }
@@ -447,7 +447,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getMrtgP2pPath()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMrtgP2pPath', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMrtgP2pPath', []);
 
         return parent::getMrtgP2pPath();
     }
@@ -458,7 +458,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function addTrafficDaily(\Entities\TrafficDaily $trafficDaily)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addTrafficDaily', array($trafficDaily));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addTrafficDaily', [$trafficDaily]);
 
         return parent::addTrafficDaily($trafficDaily);
     }
@@ -469,7 +469,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function removeTrafficDaily(\Entities\TrafficDaily $trafficDaily)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeTrafficDaily', array($trafficDaily));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeTrafficDaily', [$trafficDaily]);
 
         return parent::removeTrafficDaily($trafficDaily);
     }
@@ -480,7 +480,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getTrafficDaily()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTrafficDaily', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTrafficDaily', []);
 
         return parent::getTrafficDaily();
     }
@@ -491,7 +491,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setAggregateGraphName($aggregateGraphName)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAggregateGraphName', array($aggregateGraphName));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAggregateGraphName', [$aggregateGraphName]);
 
         return parent::setAggregateGraphName($aggregateGraphName);
     }
@@ -502,7 +502,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getAggregateGraphName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAggregateGraphName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAggregateGraphName', []);
 
         return parent::getAggregateGraphName();
     }
@@ -513,7 +513,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function setSmokeping($smokeping)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSmokeping', array($smokeping));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSmokeping', [$smokeping]);
 
         return parent::setSmokeping($smokeping);
     }
@@ -524,7 +524,7 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function getSmokeping()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSmokeping', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSmokeping', []);
 
         return parent::getSmokeping();
     }

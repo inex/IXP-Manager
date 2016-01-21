@@ -36,7 +36,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'id', 'Customer', 'purchaseOrderRequired', 'invoiceMethod', 'invoiceEmail', 'billingFrequency', '' . "\0" . 'Entities\\CompanyBillingDetail' . "\0" . 'billingAddress3');
+            return ['__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'id', 'Customer', 'purchaseOrderRequired', 'invoiceMethod', 'invoiceEmail', 'billingFrequency', '' . "\0" . 'Entities\\CompanyBillingDetail' . "\0" . 'billingAddress3'];
         }
 
-        return array('__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'id', 'Customer', 'purchaseOrderRequired', 'invoiceMethod', 'invoiceEmail', 'billingFrequency', '' . "\0" . 'Entities\\CompanyBillingDetail' . "\0" . 'billingAddress3');
+        return ['__isInitialized__', 'billingContactName', 'billingAddress1', 'billingAddress2', 'billingTownCity', 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone', 'vatNumber', 'vatRate', 'id', 'Customer', 'purchaseOrderRequired', 'invoiceMethod', 'invoiceEmail', 'billingFrequency', '' . "\0" . 'Entities\\CompanyBillingDetail' . "\0" . 'billingAddress3'];
     }
 
     /**
@@ -97,7 +97,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingContactName($billingContactName)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingContactName', array($billingContactName));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingContactName', [$billingContactName]);
 
         return parent::setBillingContactName($billingContactName);
     }
@@ -190,7 +190,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingContactName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingContactName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingContactName', []);
 
         return parent::getBillingContactName();
     }
@@ -201,7 +201,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingAddress1($billingAddress1)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingAddress1', array($billingAddress1));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingAddress1', [$billingAddress1]);
 
         return parent::setBillingAddress1($billingAddress1);
     }
@@ -212,7 +212,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingAddress1()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingAddress1', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingAddress1', []);
 
         return parent::getBillingAddress1();
     }
@@ -223,7 +223,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingAddress2($billingAddress2)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingAddress2', array($billingAddress2));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingAddress2', [$billingAddress2]);
 
         return parent::setBillingAddress2($billingAddress2);
     }
@@ -234,7 +234,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingAddress2()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingAddress2', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingAddress2', []);
 
         return parent::getBillingAddress2();
     }
@@ -245,7 +245,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingTownCity($billingTownCity)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingTownCity', array($billingTownCity));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingTownCity', [$billingTownCity]);
 
         return parent::setBillingTownCity($billingTownCity);
     }
@@ -256,7 +256,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingTownCity()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingTownCity', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingTownCity', []);
 
         return parent::getBillingTownCity();
     }
@@ -267,7 +267,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingPostcode($billingPostcode)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingPostcode', array($billingPostcode));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingPostcode', [$billingPostcode]);
 
         return parent::setBillingPostcode($billingPostcode);
     }
@@ -278,7 +278,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingPostcode()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingPostcode', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingPostcode', []);
 
         return parent::getBillingPostcode();
     }
@@ -289,7 +289,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingCountry($billingCountry)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingCountry', array($billingCountry));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingCountry', [$billingCountry]);
 
         return parent::setBillingCountry($billingCountry);
     }
@@ -300,7 +300,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingCountry()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingCountry', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingCountry', []);
 
         return parent::getBillingCountry();
     }
@@ -311,7 +311,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingEmail($billingEmail)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingEmail', array($billingEmail));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingEmail', [$billingEmail]);
 
         return parent::setBillingEmail($billingEmail);
     }
@@ -322,7 +322,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingEmail()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingEmail', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingEmail', []);
 
         return parent::getBillingEmail();
     }
@@ -333,7 +333,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingTelephone($billingTelephone)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingTelephone', array($billingTelephone));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingTelephone', [$billingTelephone]);
 
         return parent::setBillingTelephone($billingTelephone);
     }
@@ -344,7 +344,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingTelephone()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingTelephone', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingTelephone', []);
 
         return parent::getBillingTelephone();
     }
@@ -355,7 +355,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setVatNumber($vatNumber)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVatNumber', array($vatNumber));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVatNumber', [$vatNumber]);
 
         return parent::setVatNumber($vatNumber);
     }
@@ -366,7 +366,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getVatNumber()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVatNumber', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVatNumber', []);
 
         return parent::getVatNumber();
     }
@@ -377,7 +377,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setVatRate($vatRate)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVatRate', array($vatRate));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVatRate', [$vatRate]);
 
         return parent::setVatRate($vatRate);
     }
@@ -388,7 +388,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getVatRate()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVatRate', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVatRate', []);
 
         return parent::getVatRate();
     }
@@ -403,7 +403,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -414,7 +414,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function addCustomer(\Entities\Customer $customer)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', array($customer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customer]);
 
         return parent::addCustomer($customer);
     }
@@ -425,7 +425,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function removeCustomer(\Entities\Customer $customer)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', array($customer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customer]);
 
         return parent::removeCustomer($customer);
     }
@@ -436,7 +436,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getCustomer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
 
         return parent::getCustomer();
     }
@@ -447,7 +447,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setPurchaseOrderRequired($purchaseOrderRequired)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPurchaseOrderRequired', array($purchaseOrderRequired));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPurchaseOrderRequired', [$purchaseOrderRequired]);
 
         return parent::setPurchaseOrderRequired($purchaseOrderRequired);
     }
@@ -458,7 +458,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getPurchaseOrderRequired()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPurchaseOrderRequired', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPurchaseOrderRequired', []);
 
         return parent::getPurchaseOrderRequired();
     }
@@ -469,7 +469,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setInvoiceMethod($invoiceMethod)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInvoiceMethod', array($invoiceMethod));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInvoiceMethod', [$invoiceMethod]);
 
         return parent::setInvoiceMethod($invoiceMethod);
     }
@@ -480,7 +480,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getInvoiceMethod()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInvoiceMethod', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInvoiceMethod', []);
 
         return parent::getInvoiceMethod();
     }
@@ -491,7 +491,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setInvoiceEmail($invoiceEmail)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInvoiceEmail', array($invoiceEmail));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInvoiceEmail', [$invoiceEmail]);
 
         return parent::setInvoiceEmail($invoiceEmail);
     }
@@ -502,7 +502,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getInvoiceEmail()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInvoiceEmail', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInvoiceEmail', []);
 
         return parent::getInvoiceEmail();
     }
@@ -513,7 +513,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingFrequency($billingFrequency)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingFrequency', array($billingFrequency));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingFrequency', [$billingFrequency]);
 
         return parent::setBillingFrequency($billingFrequency);
     }
@@ -524,7 +524,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingFrequency()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingFrequency', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingFrequency', []);
 
         return parent::getBillingFrequency();
     }
@@ -535,7 +535,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function setBillingAddress3($billingAddress3)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingAddress3', array($billingAddress3));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBillingAddress3', [$billingAddress3]);
 
         return parent::setBillingAddress3($billingAddress3);
     }
@@ -546,7 +546,7 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     public function getBillingAddress3()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingAddress3', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingAddress3', []);
 
         return parent::getBillingAddress3();
     }

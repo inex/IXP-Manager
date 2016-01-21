@@ -23,7 +23,7 @@
 
 use IXP\Contracts\Helpdesk as HelpdeskContract;
 
-use Zendesk\API\Client as ZendeskAPI;
+use Zendesk\API\HttpClient as ZendeskAPI;
 
 
 /**
@@ -55,7 +55,7 @@ class Zendesk implements HelpdeskContract {
             throw new ConfigurationException( "Zendesk requires that 'subdomain', 'token', 'email' be configured" );
 
         $this->client = new ZendeskAPI($config['subdomain'], $config['email']);
-        $this->client->setAuth('token', $config['token']);
+        $this->client->setAuth('basic', [ 'username' => $config['email'], 'token' => $config['token'] ] );
     }
 
     /**
@@ -71,7 +71,13 @@ class Zendesk implements HelpdeskContract {
             return call_user_func( $fn );
         } catch( \Exception $e ) {
             $this->debug = $this->client->getDebug();
-            throw new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug()" );
+
+            $apie = new ApiException( "Zendesk API error - further details available from \$helpdeskInstance->getDebug() / \$this->getErrorDetails()" );
+
+            if( $e instanceof \Zendesk\API\Exceptions\ApiResponseException )
+                $apie->setErrorDetails( json_decode( $e->getErrorDetails() ) );
+
+            throw $apie;
         }
     }
 
@@ -280,7 +286,7 @@ class Zendesk implements HelpdeskContract {
     public function organisationFind( $id )
     {
             $response = $this->callApi( function() use ( $id ) {
-                return $this->client->organizations()->search( [ 'external_id' => $id ] );
+                return $this->client->organizations()->search( $id );
             });
 
             if( !isset( $response->organizations[0] ) )
@@ -424,11 +430,11 @@ class Zendesk implements HelpdeskContract {
     public function userUpdate( $helpdeskId, \Entities\Contact $contact )
     {
         $response = $this->callApi( function() use ( $contact, $helpdeskId ) {
-            return $this->client->users()->update( $this->contactEntityToZendeskObject( $contact, $helpdeskId ) );
+            return $this->client->users()->update( $helpdeskId, $this->contactEntityToZendeskObject( $contact, null, $helpdeskId ) );
         });
 
         if( isset( $response->user ) )
-            return $thios->zendeskObjectToContactEntity( $response->user );
+            return $this->zendeskObjectToContactEntity( $response->user );
 
         return false;
     }

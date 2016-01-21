@@ -36,7 +36,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'protocol', 'network', 'masklen', 'rs1address', 'rs2address', 'dnsfile', 'id', 'Vlan');
+            return ['__isInitialized__', 'protocol', 'network', 'masklen', 'rs1address', 'rs2address', 'dnsfile', 'id', 'Vlan'];
         }
 
-        return array('__isInitialized__', 'protocol', 'network', 'masklen', 'rs1address', 'rs2address', 'dnsfile', 'id', 'Vlan');
+        return ['__isInitialized__', 'protocol', 'network', 'masklen', 'rs1address', 'rs2address', 'dnsfile', 'id', 'Vlan'];
     }
 
     /**
@@ -97,7 +97,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function setProtocol($protocol)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', array($protocol));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', [$protocol]);
 
         return parent::setProtocol($protocol);
     }
@@ -190,7 +190,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function getProtocol()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', []);
 
         return parent::getProtocol();
     }
@@ -201,7 +201,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function setNetwork($network)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNetwork', array($network));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNetwork', [$network]);
 
         return parent::setNetwork($network);
     }
@@ -212,7 +212,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function getNetwork()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNetwork', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNetwork', []);
 
         return parent::getNetwork();
     }
@@ -223,7 +223,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function setMasklen($masklen)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMasklen', array($masklen));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMasklen', [$masklen]);
 
         return parent::setMasklen($masklen);
     }
@@ -234,7 +234,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function getMasklen()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMasklen', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMasklen', []);
 
         return parent::getMasklen();
     }
@@ -245,7 +245,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function setRs1address($rs1address)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRs1address', array($rs1address));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRs1address', [$rs1address]);
 
         return parent::setRs1address($rs1address);
     }
@@ -256,7 +256,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function getRs1address()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRs1address', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRs1address', []);
 
         return parent::getRs1address();
     }
@@ -267,7 +267,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function setRs2address($rs2address)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRs2address', array($rs2address));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRs2address', [$rs2address]);
 
         return parent::setRs2address($rs2address);
     }
@@ -278,7 +278,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function getRs2address()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRs2address', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRs2address', []);
 
         return parent::getRs2address();
     }
@@ -289,7 +289,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function setDnsfile($dnsfile)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDnsfile', array($dnsfile));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDnsfile', [$dnsfile]);
 
         return parent::setDnsfile($dnsfile);
     }
@@ -300,7 +300,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function getDnsfile()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDnsfile', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDnsfile', []);
 
         return parent::getDnsfile();
     }
@@ -315,7 +315,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -326,7 +326,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function setVlan(\Entities\Vlan $vlan = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlan', array($vlan));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlan', [$vlan]);
 
         return parent::setVlan($vlan);
     }
@@ -337,7 +337,7 @@ class NetworkInfo extends \Entities\NetworkInfo implements \Doctrine\ORM\Proxy\P
     public function getVlan()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlan', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlan', []);
 
         return parent::getVlan();
     }

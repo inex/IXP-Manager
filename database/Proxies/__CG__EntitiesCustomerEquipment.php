@@ -36,7 +36,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'name', 'description', 'id', 'Customer', 'Cabinet', 'descr');
+            return ['__isInitialized__', 'name', 'description', 'id', 'Customer', 'Cabinet', 'descr'];
         }
 
-        return array('__isInitialized__', 'name', 'description', 'id', 'Customer', 'Cabinet', 'descr');
+        return ['__isInitialized__', 'name', 'description', 'id', 'Customer', 'Cabinet', 'descr'];
     }
 
     /**
@@ -97,7 +97,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function setName($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
 
         return parent::setName($name);
     }
@@ -190,7 +190,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function getName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
 
         return parent::getName();
     }
@@ -201,7 +201,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function setDescription($description)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', array($description));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', [$description]);
 
         return parent::setDescription($description);
     }
@@ -212,7 +212,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function getDescription()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', []);
 
         return parent::getDescription();
     }
@@ -227,7 +227,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -238,7 +238,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function setCustomer(\Entities\Customer $customer = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', array($customer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
         return parent::setCustomer($customer);
     }
@@ -249,7 +249,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function getCustomer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
 
         return parent::getCustomer();
     }
@@ -260,7 +260,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function setCabinet(\Entities\Cabinet $cabinet = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCabinet', array($cabinet));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCabinet', [$cabinet]);
 
         return parent::setCabinet($cabinet);
     }
@@ -271,7 +271,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function getCabinet()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', []);
 
         return parent::getCabinet();
     }
@@ -282,7 +282,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function setDescr($descr)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescr', array($descr));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescr', [$descr]);
 
         return parent::setDescr($descr);
     }
@@ -293,7 +293,7 @@ class CustomerEquipment extends \Entities\CustomerEquipment implements \Doctrine
     public function getDescr()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescr', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescr', []);
 
         return parent::getDescr();
     }

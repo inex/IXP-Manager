@@ -36,7 +36,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'title', 'name', 'role', 'email', 'company', 'company_url', 'summary', 'presentation', 'filename', 'video_url', 'other_content', 'created_by', 'created_at', 'updated_by', 'updated_ar', 'id', 'Meeting', 'updated_at');
+            return ['__isInitialized__', 'title', 'name', 'role', 'email', 'company', 'company_url', 'summary', 'presentation', 'filename', 'video_url', 'other_content', 'created_by', 'created_at', 'updated_by', 'updated_ar', 'id', 'Meeting', 'updated_at'];
         }
 
-        return array('__isInitialized__', 'title', 'name', 'role', 'email', 'company', 'company_url', 'summary', 'presentation', 'filename', 'video_url', 'other_content', 'created_by', 'created_at', 'updated_by', 'updated_ar', 'id', 'Meeting', 'updated_at');
+        return ['__isInitialized__', 'title', 'name', 'role', 'email', 'company', 'company_url', 'summary', 'presentation', 'filename', 'video_url', 'other_content', 'created_by', 'created_at', 'updated_by', 'updated_ar', 'id', 'Meeting', 'updated_at'];
     }
 
     /**
@@ -97,7 +97,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setTitle($title)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTitle', array($title));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTitle', [$title]);
 
         return parent::setTitle($title);
     }
@@ -190,7 +190,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getTitle()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTitle', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTitle', []);
 
         return parent::getTitle();
     }
@@ -201,7 +201,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setName($name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', array($name));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
 
         return parent::setName($name);
     }
@@ -212,7 +212,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
 
         return parent::getName();
     }
@@ -223,7 +223,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setRole($role)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRole', array($role));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRole', [$role]);
 
         return parent::setRole($role);
     }
@@ -234,7 +234,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getRole()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRole', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRole', []);
 
         return parent::getRole();
     }
@@ -245,7 +245,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setEmail($email)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEmail', array($email));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEmail', [$email]);
 
         return parent::setEmail($email);
     }
@@ -256,7 +256,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getEmail()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmail', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmail', []);
 
         return parent::getEmail();
     }
@@ -267,7 +267,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setCompany($company)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCompany', array($company));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCompany', [$company]);
 
         return parent::setCompany($company);
     }
@@ -278,7 +278,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getCompany()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCompany', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCompany', []);
 
         return parent::getCompany();
     }
@@ -289,7 +289,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setCompanyUrl($companyUrl)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCompanyUrl', array($companyUrl));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCompanyUrl', [$companyUrl]);
 
         return parent::setCompanyUrl($companyUrl);
     }
@@ -300,7 +300,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getCompanyUrl()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCompanyUrl', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCompanyUrl', []);
 
         return parent::getCompanyUrl();
     }
@@ -311,7 +311,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setSummary($summary)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSummary', array($summary));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSummary', [$summary]);
 
         return parent::setSummary($summary);
     }
@@ -322,7 +322,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getSummary()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSummary', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSummary', []);
 
         return parent::getSummary();
     }
@@ -333,7 +333,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setPresentation($presentation)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPresentation', array($presentation));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPresentation', [$presentation]);
 
         return parent::setPresentation($presentation);
     }
@@ -344,7 +344,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getPresentation()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPresentation', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPresentation', []);
 
         return parent::getPresentation();
     }
@@ -355,7 +355,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setFilename($filename)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFilename', array($filename));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFilename', [$filename]);
 
         return parent::setFilename($filename);
     }
@@ -366,7 +366,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getFilename()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFilename', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFilename', []);
 
         return parent::getFilename();
     }
@@ -377,7 +377,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setVideoUrl($videoUrl)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVideoUrl', array($videoUrl));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVideoUrl', [$videoUrl]);
 
         return parent::setVideoUrl($videoUrl);
     }
@@ -388,7 +388,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getVideoUrl()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVideoUrl', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVideoUrl', []);
 
         return parent::getVideoUrl();
     }
@@ -399,7 +399,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setOtherContent($otherContent)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOtherContent', array($otherContent));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOtherContent', [$otherContent]);
 
         return parent::setOtherContent($otherContent);
     }
@@ -410,7 +410,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getOtherContent()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOtherContent', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOtherContent', []);
 
         return parent::getOtherContent();
     }
@@ -421,7 +421,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setCreatedBy($createdBy)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedBy', array($createdBy));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedBy', [$createdBy]);
 
         return parent::setCreatedBy($createdBy);
     }
@@ -432,7 +432,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getCreatedBy()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedBy', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedBy', []);
 
         return parent::getCreatedBy();
     }
@@ -443,7 +443,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setCreatedAt($createdAt)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedAt', array($createdAt));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedAt', [$createdAt]);
 
         return parent::setCreatedAt($createdAt);
     }
@@ -454,7 +454,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getCreatedAt()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedAt', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedAt', []);
 
         return parent::getCreatedAt();
     }
@@ -465,7 +465,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setUpdatedBy($updatedBy)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdatedBy', array($updatedBy));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdatedBy', [$updatedBy]);
 
         return parent::setUpdatedBy($updatedBy);
     }
@@ -476,7 +476,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getUpdatedBy()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdatedBy', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdatedBy', []);
 
         return parent::getUpdatedBy();
     }
@@ -491,7 +491,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -502,7 +502,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setMeeting(\Entities\Meeting $meeting = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMeeting', array($meeting));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMeeting', [$meeting]);
 
         return parent::setMeeting($meeting);
     }
@@ -513,7 +513,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getMeeting()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMeeting', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMeeting', []);
 
         return parent::getMeeting();
     }
@@ -524,7 +524,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function setUpdatedAt($updatedAt)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdatedAt', array($updatedAt));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdatedAt', [$updatedAt]);
 
         return parent::setUpdatedAt($updatedAt);
     }
@@ -535,7 +535,7 @@ class MeetingItem extends \Entities\MeetingItem implements \Doctrine\ORM\Proxy\P
     public function getUpdatedAt()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdatedAt', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdatedAt', []);
 
         return parent::getUpdatedAt();
     }

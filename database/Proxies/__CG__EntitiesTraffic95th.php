@@ -36,7 +36,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = array();
+    public static $lazyPropertiesDefaults = [];
 
 
 
@@ -64,10 +64,10 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'datetime', 'average', 'max', 'id', 'Customer');
+            return ['__isInitialized__', 'datetime', 'average', 'max', 'id', 'Customer'];
         }
 
-        return array('__isInitialized__', 'datetime', 'average', 'max', 'id', 'Customer');
+        return ['__isInitialized__', 'datetime', 'average', 'max', 'id', 'Customer'];
     }
 
     /**
@@ -97,7 +97,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
      */
     public function __clone()
     {
-        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', array());
+        $this->__cloner__ && $this->__cloner__->__invoke($this, '__clone', []);
     }
 
     /**
@@ -105,7 +105,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
      */
     public function __load()
     {
-        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__load', []);
     }
 
     /**
@@ -179,7 +179,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function setDatetime($datetime)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDatetime', array($datetime));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDatetime', [$datetime]);
 
         return parent::setDatetime($datetime);
     }
@@ -190,7 +190,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function getDatetime()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDatetime', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDatetime', []);
 
         return parent::getDatetime();
     }
@@ -201,7 +201,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function setAverage($average)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAverage', array($average));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAverage', [$average]);
 
         return parent::setAverage($average);
     }
@@ -212,7 +212,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function getAverage()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAverage', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAverage', []);
 
         return parent::getAverage();
     }
@@ -223,7 +223,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function setMax($max)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMax', array($max));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMax', [$max]);
 
         return parent::setMax($max);
     }
@@ -234,7 +234,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function getMax()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMax', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMax', []);
 
         return parent::getMax();
     }
@@ -249,7 +249,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
         }
 
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
     }
@@ -260,7 +260,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function setCustomer(\Entities\Customer $customer = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', array($customer));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
         return parent::setCustomer($customer);
     }
@@ -271,7 +271,7 @@ class Traffic95th extends \Entities\Traffic95th implements \Doctrine\ORM\Proxy\P
     public function getCustomer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
 
         return parent::getCustomer();
     }
