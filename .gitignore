@@ -46,3 +46,7 @@ config/identity.php
 
 # local INEX dev stuff:
 ixpmanager-dump.sql.bz2
+
+# LONAP Skins
+application/modules/apiv1/views/_skins/lonap/
+application/views/_skins/lonap/
