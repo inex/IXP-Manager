@@ -43,6 +43,7 @@ application/configs/ci-*
 
 config/identity.php
 
+application/configs/rs*.conf
 
 # local INEX dev stuff:
 ixpmanager-dump.sql.bz2
