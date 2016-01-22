@@ -361,8 +361,7 @@ class ContactController extends IXP_Controller_FrontEnd
         }
 
         if( $cust && !$cust->isTypeInternal() ) {
-                $form->getElement( 'privs' )->setMultiOptions( array_except( \Entities\User::$PRIVILEGES_TEXT, [ \Entities\User::AUTH_SUPERUSER ] ) );
-            }
+            $form->getElement( 'privs' )->setMultiOptions( array_except( \Entities\User::$PRIVILEGES_TEXT, [ \Entities\User::AUTH_SUPERUSER ] ) );
         }
 
         switch( $this->getUser()->getPrivs() )
