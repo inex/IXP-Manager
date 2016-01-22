@@ -335,7 +335,8 @@ class ContactController extends IXP_Controller_FrontEnd
 
         if( $isEdit )
         {
-            $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
+            $cust = $object->getCustomer();
+            $form->getElement( 'custid' )->setValue( $cust->getId() );
             $this->view->contactGroups = $this->getD2R( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray( false, $object->getId() );
         }
         else if( $this->getParam( 'custid', false ) && ( $cust = $this->getD2R( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) ) ) )
@@ -357,6 +358,11 @@ class ContactController extends IXP_Controller_FrontEnd
             $form->getElement( 'username' )->addValidator( 'OSSDoctrine2Uniqueness', true,
                 [ 'entity' => '\\Entities\\User', 'property' => 'username' ]
             );
+        }
+
+        if( $cust && !$cust->isTypeInternal() ) {
+                $form->getElement( 'privs' )->setMultiOptions( array_except( \Entities\User::$PRIVILEGES_TEXT, [ \Entities\User::AUTH_SUPERUSER ] ) );
+            }
         }
 
         switch( $this->getUser()->getPrivs() )
@@ -543,7 +549,6 @@ class ContactController extends IXP_Controller_FrontEnd
                 $this->redirect('');
             }
         }
-
 
         if( !$isEdit )
         {
@@ -762,9 +767,12 @@ class ContactController extends IXP_Controller_FrontEnd
                 }
                 else
                 {
-                    // if this is an admin user, let them start with no unread notes
-                    if( $form->getValue( "privs" ) == \Entities\User::AUTH_SUPERUSER )
+                    // else we are currently a SUPERADMIN
+
+                    if( $form->getValue( "privs" ) == \Entities\User::AUTH_SUPERUSER ) {
+                        // if this is an admin user, let them start with no unread notes
                         $user->setPreference( 'customer-notes.read_upto', time() );
+                    }
                 }
 
                 $this->getD2EM()->persist( $user );
@@ -797,6 +805,13 @@ class ContactController extends IXP_Controller_FrontEnd
                 }
 
                 $user->setUsername( $form->getValue( "username" ) );
+
+                // we should only add admin users to customer type internal
+                if( $form->getValue( "privs" ) == \Entities\User::AUTH_SUPERUSER && !$contact->getCustomer()->isTypeInternal() ) {
+                    $this->addMessage( 'Users will full administrative access can only be added to internal customer types.', OSS_Message::ERROR );
+                    return false;
+                }
+
                 $user->setPrivs( $form->getValue( "privs" ) );
             }
 
