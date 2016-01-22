@@ -47,7 +47,7 @@ class IXP_Form_Interface_Physical extends IXP_Form
             ->setRegisterInArrayValidator( false )
             ->setLabel( 'Port' )
             ->setAttrib( 'class', 'chzn-select span8' )
-            ->addValidator( 'greaterThan', false, array( 'min' => 1 ) )
+            ->addValidator( 'greaterThan', false, array( 'min' => 0 ) )
             ->setErrorMessages( array( 'Please select a switch port' ) );
         $this->addElement( $switchPorts );
 
