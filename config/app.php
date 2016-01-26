@@ -158,6 +158,7 @@ return [
 
         IXP\Providers\HelpdeskServiceProvider::class,
         IXP\Providers\ZendFrameworkServiceProvider::class,
+        IXP\Providers\GrapherServiceProvider::class,
 
         /*
          * Third party providers
