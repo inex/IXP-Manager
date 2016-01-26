@@ -360,7 +360,9 @@ class ContactController extends IXP_Controller_FrontEnd
             );
         }
 
-        if( $cust && !$cust->isTypeInternal() ) {
+        if( ( isset( $cust ) && $cust instanceof \Entities\Customer && !$cust->isTypeInternal() )
+                || $this->getUser()->getPrivs() <= \Entities\User::AUTH_CUSTADMIN )
+        {
             $form->getElement( 'privs' )->setMultiOptions( array_except( \Entities\User::$PRIVILEGES_TEXT, [ \Entities\User::AUTH_SUPERUSER ] ) );
         }
 
