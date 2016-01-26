@@ -12,13 +12,28 @@
 
 <dt>IXP JSON Schema Export</dt>
 <dd>
-    See <a href="https://github.com/euro-ix/json-schemas">here for details and definition</a>.<br>
+    See <a href="https://github.com/euro-ix/json-schemas">here for details, versions and definition</a>.<br>
     Example:
         <code>
             <a href="{genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}">
                 {genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}
             </a>
         </code>
+        <br><br>
+    The above will always return the latest inplemented version (highest of the versions below). Other versions as available as
+    follows:
+    <ul>
+        {foreach $JSON_SCHEMAS as $version}
+        <li>
+            <code>
+                <a href="{genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}/version/{$version}">
+                    {genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}/version/{$version}
+                </a>
+            </code>
+        </li>
+        {/foreach}
+    </ul>
+    You are advised to specify the version you're developing against as the default will be updated as the specification is updated.
 </dd>
 
 </dl>

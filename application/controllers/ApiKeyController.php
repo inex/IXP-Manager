@@ -33,7 +33,7 @@
  */
 class ApiKeyController extends IXP_Controller_FrontEnd
 {
-    
+
     /**
      * This function sets up the frontend controller
      */
@@ -43,17 +43,17 @@ class ApiKeyController extends IXP_Controller_FrontEnd
             'entity'        => '\\Entities\\ApiKey',
             //'form'          => 'IXP_Form_ApiKey',
             'pagetitle'     => 'API Keys',
-        
+
             'titleSingular' => 'API Key',
             'nameSingular'  => 'an API key',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
+
             'listOrderBy'    => 'created',
             'listOrderByDir' => 'ASC',
-        
+
             'listColumns'    => [
-        
+
                 'id'           => [ 'title' => 'UID', 'display' => false ],
                 'apiKey'       => 'API Key',
                 'created'      => [
@@ -71,23 +71,23 @@ class ApiKeyController extends IXP_Controller_FrontEnd
                 'lastseenFrom' => 'Lastseen From'
             ]
         ];
-        
+
         switch( $this->getUser()->getPrivs() )
         {
             case \Entities\User::AUTH_SUPERUSER:
             case \Entities\User::AUTH_CUSTUSER:
                 break;
-        
+
             default:
                 $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
-        
-    
+
+
         // display the same information in the view as the list
         $this->_feParams->viewColumns = $this->_feParams->listColumns;
     }
-    
-    
+
+
     /**
      * Provide array of API keys for the listAction and viewAction
      *
@@ -104,23 +104,28 @@ class ApiKeyController extends IXP_Controller_FrontEnd
             ->leftJoin( 'a.User', 'u' )
             ->where( 'u = :user' )
             ->setParameter( 'user', $this->getUser() );
-    
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
-    
+
         if( $id !== null )
             $qb->andWhere( 'a.id = ?1' )->setParameter( 1, $id );
-        
+
         return $qb->getQuery()->getResult();
     }
-    
-    
+
+
     public function editAction()
     {
         $this->addMessage( 'You cannot edit API keys (at this time).', OSS_Message::ERROR );
         $this->redirect( 'api-key/list' );
     }
-    
+
+    protected function listPreamble()
+    {
+        $this->view->assign( 'JSON_SCHEMAS', \IXP\Utils\Export\JsonSchema::EUROIX_JSON_VERSIONS );
+    }
+
     public function addAction()
     {
         if( count( $this->getUser()->getApiKeys() ) >= 10 )
@@ -128,7 +133,7 @@ class ApiKeyController extends IXP_Controller_FrontEnd
             $this->addMessage( 'We currently have a limit of 10 API keys per user. Please contact us if you require more.', OSS_Message::ERROR );
             $this->redirect( 'api-key/list' );
         }
-        
+
         $key = new \Entities\ApiKey();
         $key->setUser( $this->getUser() );
         $key->setCreated( new DateTime() );
@@ -140,9 +145,8 @@ class ApiKeyController extends IXP_Controller_FrontEnd
         $this->getD2EM()->persist( $key );
         $this->getUser()->addApiKey( $key );
         $this->getD2EM()->flush();
-        
+
         $this->addMessage( 'Your new API key has been created - <code>' . $key->getApiKey() . '</code>', OSS_Message::SUCCESS );
         $this->redirect( 'api-key/list' );
     }
 }
-

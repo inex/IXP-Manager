@@ -47,6 +47,12 @@ class JsonSchema
     // adding a new version? update sanitiseVersion() below also!
     const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_0_5;
 
+    const EUROIX_JSON_VERSIONS = [
+        self::EUROIX_JSON_VERSION_0_3,
+        self::EUROIX_JSON_VERSION_0_4,
+        self::EUROIX_JSON_VERSION_0_5
+    ];
+
     /**
      * Get the JSON schema (for a given version or for the latest version)
      *
