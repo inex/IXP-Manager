@@ -46,5 +46,23 @@ class Mrtg implements GrapherContract {
         return true;
     }
 
+    /**
+     * This function indicates whether this graphing engine supports single monolithic text
+     *
+     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @return bool
+     */
+    public function isMonolithicConfigurationSupported(): bool {
+        return false;
+    }
 
+    /**
+     * This function indicates whether this graphing engine supports multiple files to a directory
+     *
+     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @return bool
+     */
+    public function isMultiFileConfigurationSupported(): bool {
+        return false;
+    }
 }

@@ -52,6 +52,29 @@ interface Grapher {
      */
     public function isConfigurationRequired(): bool;
 
+    /**
+     * Not all graphing backends are created equal and some will support / require different output formats.
+     *
+     * The types we are looking at are:
+     *
+     * * single monolithic text - standard output or to a specified file
+     * * multiple files (and optionally directories) to a specified directory
+     * * gzip'd bundle of one or more files
+     *
+     * This function indicates whether this graphing engine supports single monolithic text
+     *
+     * @return bool
+     */
+    public function isMonolithicConfigurationSupported(): bool;
 
+    /**
+    * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     *
+     * This function indicates whether this graphing engine supports multiple files to a directory
+     *
+     * @return bool
+     */
+    public function isMultiFileConfigurationSupported(): bool;
+    
 
 }
