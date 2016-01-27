@@ -40,14 +40,17 @@ interface Grapher {
      *
      * Your implentation should catch API errors, set the $debug member with additional details and throw an ApiException
      */
-    public function getDebug();
+    // public function getDebug();
 
 
     /**
-     * Find all tickets on the helpdesk
+     * Not all graphing backends will require a configuration. This function indicates whether the
+     * backend being implemented requires a configuration or not.
+     *
+     * Used, for example, by the Artisan grapher:generate-configuration console command.
+     * @return bool
      */
-    public function ticketsFindAll();
-
+    public function isConfigurationRequired(): bool;
 
 
 

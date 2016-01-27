@@ -1,4 +1,4 @@
-<?php namespace IXP\Services\Helpdesk;
+<?php namespace IXP\Services\Grapher;
 
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
@@ -35,5 +35,15 @@ use IXP\Contracts\Grapher as GrapherContract;
  */
 class Dummy implements GrapherContract {
 
+    /**
+     * The dummy backend required no configuration.
+     *
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    public function isConfigurationRequired(): bool {
+        return false;
+    }
 
 }

@@ -24,7 +24,7 @@
 
 
 use Illuminate\Support\ServiceProvider;
-use IXP\Services\Grapher\ConfigurationException;
+use IXP\Exceptions\Services\Grapher\ConfigurationException;
 use Config;
 
 /**
@@ -42,7 +42,7 @@ class GrapherServiceProvider extends ServiceProvider {
 
 
     protected $commands = [
-        // 'IXP\Console\Commands\Helpdesk\UpdateOrganisations'
+        'IXP\Console\Commands\Grapher\GenerateConfiguration'
     ];
 
     /**
@@ -52,7 +52,6 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        //
     }
 
     /**
@@ -62,28 +61,18 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app->singleton( 'IXP\Contracts\Grapher', function($app)
-        {
-            $backend = $app['config']['grapher']['backend'];
-
-            switch( $backend ) {
-                case 'none':
-                case 'dummy':
-                    return new \IXP\Services\Grapher\Dummy( $app['config']['grapher']['backends'][ $backend ] );
-                    break;
-
-                case 'mrtg':
-                    return new \IXP\Services\Grapher\Mrtg( $app['config']['grapher']['backends'][ $backend ] );
-                    break;
-
-                case 'sflow':
-                    return new \IXP\Services\Grapher\Sflow( $app['config']['grapher']['backends'][ $backend ] );
-                    break;
-
-                default:
-                    throw new ConfigurationException( 'Invalid, no or unimplemented graphing backend requested' );
+        // make sure the config is okay:
+        foreach( $this->app['config']['grapher']['backend'] as $backend ) {
+            if( !isset( $this->app['config']['grapher']['providers'][$backend] ) ) {
+                throw new ConfigurationException( "Requested grapher backend ({$backend}) is not available" );
             }
-        });
+        }
+
+        foreach( $this->app['config']['grapher']['backend'] as $backend ) {
+            $this->app->singleton( $this->app['config']['grapher']['providers'][$backend], function($app) use ($backend) {
+                return new $this->app['config']['grapher']['providers'][$backend]( $app['config']['grapher']['backends'][ $backend ] );
+            });
+        }
 
         $this->commands( $this->commands );
     }

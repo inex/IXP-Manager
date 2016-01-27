@@ -2,4 +2,4 @@
 
 use Exception;
 
-class GeneralException extends Exception {}
+class ConfigurationException extends Exception {}

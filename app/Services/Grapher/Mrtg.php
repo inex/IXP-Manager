@@ -1,4 +1,4 @@
-<?php namespace IXP\Services\Helpdesk;
+<?php namespace IXP\Services\Grapher;
 
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
@@ -34,6 +34,17 @@ use IXP\Contracts\Grapher as GrapherContract;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Mrtg implements GrapherContract {
+
+    /**
+     * The dummy backend requires no configuration.
+     *
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    public function isConfigurationRequired(): bool {
+        return true;
+    }
 
 
 }
