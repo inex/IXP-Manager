@@ -65,4 +65,18 @@ class Sflow implements GrapherContract {
     public function isMultiFileConfigurationSupported(): bool {
         return false;
     }
+
+    /**
+     * Generate the configuration file(s) for this graphing backend
+     *
+     * {inheritDoc}
+     *
+     * @param int $config_type The type of configuration to generate
+     * @return array
+     */
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    {
+        return [];
+    }
+
 }

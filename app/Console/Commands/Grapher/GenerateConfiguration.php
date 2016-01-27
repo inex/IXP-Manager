@@ -76,6 +76,10 @@ class GenerateConfiguration extends GrapherCommand {
         if( ( $retval = $this->verifyArgsAndOptions() ) !== 0 )
             return $retval;
 
+        // backend and options are now valid
+        // let's generate the configuration
+        echo $this->getGrapher()->generateConfiguration()[0];
+
         return 0;
     }
 
