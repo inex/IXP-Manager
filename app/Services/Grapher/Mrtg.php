@@ -87,16 +87,10 @@ class Mrtg implements GrapherContract {
                 [
                     'ixp'                   => $ixp,
                     'portsByInfrastructure' => $this->getPeeringPortsByInfrastructure( $ixp ),
+                    'custs'                 => d2r( 'Customer' )->getCurrentActive( false, true, false, $ixp ),
                 ]
             )->render()
         ];
-
-        // $this->view->TRAFFIC_TYPES         = IXP_Mrtg::$TRAFFIC_TYPES;
-
-        // get all active trafficing customers
-        $this->view->custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $ixp );
-
-        echo $this->view->render( 'statistics-cli/mrtg/index.cfg' );
     }
 
     /**

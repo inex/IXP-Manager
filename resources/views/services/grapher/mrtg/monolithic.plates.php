@@ -19,9 +19,8 @@
 
 # {tmplinclude file='statistics-cli/mrtg/trunks.cfg'}
 
-<?php $this->insert('services/grapher/mrtg/aggregates', ['ixp' => $ixp, 'portsByInfrastructure' => $portsByInfrastructure]); ?>
-
-{tmplinclude file='statistics-cli/mrtg/switch-aggregates.cfg'}
-{tmplinclude file='statistics-cli/mrtg/member-ports.cfg'}
+<?php $this->insert('services/grapher/mrtg/aggregates',        ['portsByInfrastructure' => $portsByInfrastructure, 'ixp' => $ixp]); ?>
+<?php $this->insert('services/grapher/mrtg/switch-aggregates', ['portsByInfrastructure' => $portsByInfrastructure]); ?>
+<?php $this->insert('services/grapher/mrtg/member-ports',      ['portsByInfrastructure' => $portsByInfrastructure]); ?>
 
 <?php $this->insert('services/grapher/mrtg/custom-footer'); ?>
