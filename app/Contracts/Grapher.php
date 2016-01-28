@@ -21,6 +21,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Entities\IXP;
+
  /**
   * Helpdesk Contract - any concrete implementation of a Helpdesk provider must
   * implement this interface
@@ -166,10 +168,11 @@ interface Grapher {
      * For monolithic files, returns a single element array. Otherwise
      * an array keyed by the filename (with optional local directory path).
      *
+     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @param int $config_type The type of configuration to generate
      * @return array
      */
-    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array;
+    public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array;
 
 
 }

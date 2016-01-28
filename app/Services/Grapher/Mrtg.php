@@ -23,7 +23,7 @@
 
 use IXP\Contracts\Grapher as GrapherContract;
 
-use Entities\{Switcher,SwitchPort};
+use Entities\{IXP,Switcher,SwitchPort};
 use IXP\Utils\Grapher\Mrtg as MrtgFile;
 
 use View;
@@ -76,16 +76,22 @@ class Mrtg implements GrapherContract {
      *
      * {inheritDoc}
      *
+     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @param int $config_type The type of configuration to generate
      * @return array
      */
-    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
     {
-        return [ View::make( 'services.grapher.mrtg.monolithic' )->render() ];
+        return [
+            View::make( 'services.grapher.mrtg.monolithic',
+                [
+                    'ixp'                   => $ixp,
+                    'portsByInfrastructure' => $this->getPeeringPortsByInfrastructure( $ixp ),
+                ]
+            )->render()
+        ];
 
-        dd( $this->getPeeringPortsByInfrastructure() );
         // $this->view->TRAFFIC_TYPES         = IXP_Mrtg::$TRAFFIC_TYPES;
-        $this->view->portsByInfrastructure = $this->genMrtgConf_getPeeringPortsByInfrastructure( $ixp );
 
         // get all active trafficing customers
         $this->view->custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $ixp );
@@ -105,16 +111,17 @@ class Mrtg implements GrapherContract {
      *
      * A 'qualifying port' is any port marked as a peering port.
      *
+     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @return array
      */
-    private function getPeeringPortsByInfrastructure(): array {
+    private function getPeeringPortsByInfrastructure( IXP $ixp ): array {
         $data = [];
 
-        foreach( d2r( 'Infrastructure' )->findAll() as $infra ) {
+        foreach( $ixp->getInfrastructures() as $infra ) {
 
             $data[ $infra->getId() ]['mrtgIds']              = [];
             $data[ $infra->getId() ]['name']                 = $infra->getName();
-            $data[ $infra->getId() ]['aggregate_graph_name'] = sprintf( 'infra%03d', $infra->getId() );
+            $data[ $infra->getId() ]['aggregate_graph_name'] = sprintf( 'ixp%03d-infra%03d', $ixp->getId(), $infra->getId() );
             $data[ $infra->getId() ]['maxbytes']             = 0;
             $data[ $infra->getId() ]['switches']             = '';
 

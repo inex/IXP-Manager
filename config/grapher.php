@@ -35,7 +35,9 @@ return [
         'dummy' => [],
 
         'mrtg'  => [
+            'dbtype'  => env( 'GRAPHER_BACKEND_MRTG_DBTYPE', 'log' ),  // options: log, rrd
 
+            'workdir' => env( 'GRAPHER_BACKEND_MRTG_WORKDIR', '/tmp' ), 
         ],
 
         'sflow' => [

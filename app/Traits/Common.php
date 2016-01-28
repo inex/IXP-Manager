@@ -1,7 +1,9 @@
 <?php
 
+namespace IXP\Traits;
+
 /*
- * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,11 +29,11 @@
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
- * @package    IXP_Controller_Trait
- * @copyright  Copyright (c) 2009 - 2013, Internet Neutral Exchange Association Ltd
+ * @package    Traits
+ * @copyright  Copyright (c) 2009 - 2016, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-trait IXP_Controller_Trait_Common
+trait Common
 {
     /**
      * Checks if reseller mode is enabled.
@@ -90,7 +92,7 @@ trait IXP_Controller_Trait_Common
      * * if the user is a SUPERUSER and no `shortname` is passed, an error is thrown.
      *
      * @return \Entities\Customer
-     */
+     *
     protected function resolveCustomerByShortnameParam()
     {
         // resolve the requested customer (from admin) or force to the currently logged in customer
@@ -138,7 +140,7 @@ trait IXP_Controller_Trait_Common
      * @param string|bool $shortname The customer shortname to load (or, if false, look for `shortname` parameter)
      * @param string $redirect Alternative location to redirect to
      * @return \Entities\Customer The customer object
-     */
+     *
     protected function loadCustomerByShortname( $shortname = false, $redirect = null )
     {
         if( $shortname === false )
@@ -162,7 +164,7 @@ trait IXP_Controller_Trait_Common
      * @param int $id The customer ID to load
      * @param string $redirect Alternative location to redirect to
      * @return \Entities\Customer The customer object
-     */
+     *
     protected function loadCustomerById( $id, $redirect = null )
     {
         if( $id )
@@ -183,7 +185,7 @@ trait IXP_Controller_Trait_Common
      * @param int $id The IXP ID to load
      * @param string $redirect Alternative location to redirect to (if null, `error/error`, if false, return false on error)
      * @return \Entities\IXP The IXP object
-     */
+     *
     protected function loadIxpById( $id, $redirect = null )
     {
         $i = $this->getD2R( '\\Entities\\IXP' )->find( $id );
@@ -199,5 +201,6 @@ trait IXP_Controller_Trait_Common
 
         return $i;
     }
+    */
 
 }

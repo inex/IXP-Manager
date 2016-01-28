@@ -22,7 +22,7 @@
  */
 
 use IXP\Contracts\Grapher as GrapherContract;
-
+use Entities\IXP;
 
 /**
  * Grapher Backend -> Mrtg
@@ -71,10 +71,11 @@ class Dummy implements GrapherContract {
      *
      * {inheritDoc}
      *
+     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @param int $config_type The type of configuration to generate
      * @return array
      */
-    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
     {
         return [];
     }
