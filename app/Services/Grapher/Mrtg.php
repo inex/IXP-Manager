@@ -57,7 +57,7 @@ class Mrtg implements GrapherContract {
      * @return bool
      */
     public function isMonolithicConfigurationSupported(): bool {
-        return false;
+        return true;
     }
 
     /**

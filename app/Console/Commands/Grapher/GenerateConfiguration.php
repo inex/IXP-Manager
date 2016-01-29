@@ -50,8 +50,7 @@ class GenerateConfiguration extends GrapherCommand {
      */
     protected $signature = 'grapher:generate-configuration
                         {--B|backend= : Which graphing backend to use}
-                        {--O|output= : Save configuration to specified file (default: stdout) [do not use with --directory]}
-                        {--D|directory= : Save configuration file(s) to specified directory} [do not use with --output]';
+                        {--O|output=- : Save configuration to specified file (default: stdout)}';
 
     /**
      * The console command description.
@@ -78,56 +77,53 @@ class GenerateConfiguration extends GrapherCommand {
 
         // backend and options are now valid
         // let's generate the configuration
-        echo $this->getGrapher()->generateConfiguration( $this->ixp() )[0];
+        return $this->outputConfiguration( $this->getGrapher()->generateConfiguration( $this->ixp() )[0] );
+    }
+
+    /**
+     * Output the configuration in the requested format
+     *
+     * @param string $conf The Configuration
+     * @return int Suggested status code for script exit (0 == success)
+     */
+    protected function outputConfiguration( $conf ): int {
+        if( $this->option('output') == '-' ) {
+            echo $conf;
+            return 0;
+        }
+
+        if( !@file_put_contents( $this->option('output'), $conf ) ) {
+            $this->error( "Could not save configuration to the specified file [{$this->option('output')}]" );
+            return -2;
+        }
 
         return 0;
     }
-
 
     /**
      * Check the various arguments and options that have been password to the console command
      * @return int 0 for success or else an error code
      */
     protected function verifyArgsAndOptions(): int {
-        if( $this->option('output') && $this->option('directory') ) {
-            $this->error( 'Options --output and --directory are mutually exclusive' );
-            return 254;
+        $fn = $this->option('output');
+
+        if( !$this->getGrapher()->isMonolithicConfigurationSupported() ) {
+            $this->error( "This backend ({$this->resolveBackend()}) does not support single configuration files" );
+            return 251;
         }
 
-        if( $this->option('output') ) {
-            $fn = $this->option('output');
+        if( $fn == '-' ) return 0;
 
-            // does it exist but is not writable?
-            if( is_file($fn)  && !is_writable($fn) ) {
-                $this->error( "The output file exists but is not writable" );
-                return 253;
-            }
-
-            // can we write to the directory?
-            if( !( dirname($fn) && is_dir( dirname($fn) ) && is_writable( dirname($fn) ) ) ) {
-                $this->error( "The output file does not exists and cannot be created" );
-                return 252;
-            }
-
-            if( !$this->getGrapher()->isMonolithicConfigurationSupported() ) {
-                $this->error( "This backend ({$this->resolveBackend()}) does not support single configuration files" );
-                return 251;
-            }
+        // does it exist but is not writable?
+        if( is_file($fn)  && !is_writable($fn) ) {
+            $this->error( "The output file exists but is not writable" );
+            return 253;
         }
 
-        if( $this->option('directory') ) {
-            $fn = $this->option('directory');
-
-            // can we write to the directory?
-            if( !( is_dir($fn) && is_writable($fn) ) ) {
-                $this->error( "The output directory does not exist or is not writable" );
-                return 248;
-            }
-
-            if( !$this->getGrapher()->isMultiFileConfigurationSupported() ) {
-                $this->error( "This backend ({$this->resolveBackend()}) does not support multi-file configuration" );
-                return 247;
-            }
+        // can we write to the directory?
+        if( !( dirname($fn) && is_dir( dirname($fn) ) && is_writable( dirname($fn) ) ) ) {
+            $this->error( "The output file does not exists and cannot be created" );
+            return 252;
         }
 
         // all good :-D
