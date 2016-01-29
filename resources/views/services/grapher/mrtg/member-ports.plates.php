@@ -25,39 +25,64 @@
 #####################################################################################################################
 
 <?php
-    foreach( $custs as $c ):
+    foreach( $data['custs'] as $c ):
 
-        $custPortsAggregateSpeed = 0;
-        $custPorts = [];
-
-        foreach( $c->getVirtualInterfaces() as $vi ):
-
-            $custLagPortsAggregateSpeed = 0;
-            $custLagPorts = [];
-
-            foreach( $vi->getPhysicalInterfaces() as $pi ):
-
-                $mrtgId                     = $pi->getSwitchPort()->ifnameToSNMPIdentifier();
-                $custPorts[]                = $mrtgId;
-                $custLagPorts[]             = $mrtgId;
-                $custPortsAggregateSpeed    += $pi->getSpeed();
-                $custLagPortsAggregateSpeed += $pi->getSpeed();
-
-                $this->insert('services/grapher/mrtg/member-port' , ['c' => $c, 'pi' => $pi, 'mrtgId' => $mrtgId]);
-
-            endforeach;
-
-        // add an aggregate for LAG ports
-        if( count( $vi->getPhysicalInterfaces() ) > 1 ):
-            $this->insert('services/grapher/mrtg/member-lag-port' , ['portsByInfrastructure' => $portsByInfrastructure, 'ixp' => $ixp]);
+        if( !isset( $data['custports'][$c->getId()] ) ):
+            continue;
         endif;
 
+        // individual member ports:
+        foreach( $data['custports'][$c->getId()] as $piid ):
+
+            $this->insert(
+                "services/grapher/mrtg/target", [
+                    'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                    'mrtgPrefix'   => sprintf( "%s-%d", $c->getShortname(), $data['pis'][$piid]->getMonitorindex() ),
+                    'portIds'      => [ $piid ],
+                    'data'         => $data,
+                    'graphTitle'   => sprintf( "%s -- %s -- %s -- %%s / second", $c->getAbbreviatedName(), $data['pis'][$piid]->getSwitchPort()->getName(),
+                            $data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
+                        ),
+                    'directory'    => sprintf("members/%s", $c->getShortname() ),
+                ]
+            );
+
+        endforeach;
+
+        // individual LAG aggregates
+        foreach( $c->getVirtualInterfaces() as $vi ):
+            if( isset( $data['custlags'][$vi->getId()] ) ):
+
+                $this->insert(
+                    "services/grapher/mrtg/target", [
+                        'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                        'mrtgPrefix'   => sprintf( "%s-lag-viid-%d", $c->getShortname(), $vi->getId() ),
+                        'portIds'      => $data['custlags'][$vi->getId()],
+                        'data'         => $data,
+                        'graphTitle'   => sprintf( "%s -- LAG Aggregate %%s / second", $c->getAbbreviatedName() ),
+                        'directory'    => sprintf("members/%s", $c->getShortname() ),
+                    ]
+                );
+
+            endif;
+        endforeach;
+
+        // overall aggregate
+        $this->insert(
+            "services/grapher/mrtg/target", [
+                'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                'mrtgPrefix'   => sprintf( "%s-aggregate", $c->getShortname() ),
+                'portIds'      => $data['custports'][$c->getId()],
+                'data'         => $data,
+                'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->getAbbreviatedName() ),
+                'directory'    => sprintf("members/%s", $c->getShortname() ),
+            ]
+        );
+
     endforeach;
+?>
 
-    $this->insert('services/grapher/mrtg/member-aggregate-port' , ['portsByInfrastructure' => $portsByInfrastructure, 'ixp' => $ixp]);
 
 #####################################################################################################################
 #####################################################################################################################
 #####################################################################################################################
-
-endforeach;

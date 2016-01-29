@@ -85,9 +85,8 @@ class Mrtg implements GrapherContract {
         return [
             View::make( 'services.grapher.mrtg.monolithic',
                 [
-                    'ixp'                   => $ixp,
-                    'portsByInfrastructure' => $this->getPeeringPortsByInfrastructure( $ixp ),
-                    'custs'                 => d2r( 'Customer' )->getCurrentActive( false, true, false, $ixp ),
+                    'ixp'       => $ixp,
+                    'data'      => $this->getPeeringPorts( $ixp )
                 ]
             )->render()
         ];
@@ -95,59 +94,73 @@ class Mrtg implements GrapherContract {
 
     /**
      * Utility function to slurp all peering ports from the database and arrange them in
-     * arrays by infrastructure and switch for genertaing Mrtg configuration files.
+     * arrays for genertaing Mrtg configuration files.
      *
-     * The array returned contains the:
+     * The array returned is an array of arrays containing:
      *
-     * * calculated maxbytes for the infrastructure and switches
-     * * the mrtg IDs for polling for each qualifying port and traffic type
-     * * other details such as infrastructure graph names, infra and switch names
+     * * array `['pis']` of PhysicalInterface objects indexed by their ID
+     * * array `['custs']` of Customer objects indexed by their ID
+     * * array `['sws']` of Switcher objects indexed by their ID
+     * * array `['infras']` of Infrastructure objects indexed by their ID
+     * * array `['custports']` containing an array of PhysicalInterface IDs indexed by customer ID
+     * * array `['custlags']` containing an array of PhysicalInterface IDs contained in an array indexed
+     *       by VirtualInterface IDs in turn in an array of customer IDs:
+     *       `['custlags'][$custid][$viid][]`
+     * * array `['swports']` indexed by Switcher ID conataining the PhysicalInterface IDs of peering ports
+     * * array `['infraports']` indexed by Infrastructure ID conataining the PhysicalInterface IDs of peering ports
+     * * array `['ixpports']` conataining the PhysicalInterface IDs of peering ports
      *
-     * A 'qualifying port' is any port marked as a peering port.
      *
      * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @return array
      */
-    private function getPeeringPortsByInfrastructure( IXP $ixp ): array {
+    private function getPeeringPorts( IXP $ixp ): array {
         $data = [];
 
-        foreach( $ixp->getInfrastructures() as $infra ) {
+        foreach( $ixp->getCustomers() as $c ) {
 
-            $data[ $infra->getId() ]['mrtgIds']              = [];
-            $data[ $infra->getId() ]['name']                 = $infra->getName();
-            $data[ $infra->getId() ]['aggregate_graph_name'] = sprintf( 'ixp%03d-infra%03d', $ixp->getId(), $infra->getId() );
-            $data[ $infra->getId() ]['maxbytes']             = 0;
-            $data[ $infra->getId() ]['switches']             = '';
+            foreach( $c->getVirtualInterfaces() as $vi ) {
 
-            foreach( $infra->getSwitchers() as $switch ) {
-                if( $switch->getSwitchtype() != Switcher::TYPE_SWITCH || !$switch->getActive() )
-                    continue;
+                foreach( $vi->getPhysicalInterfaces() as $pi ) {
 
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]             = [];
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['name']     = $switch->getName();
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] = 0;
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds']  = [];
-
-                foreach( $switch->getPorts() as $port ) {
-                    if( $port->getIfName() ) {
-                        $snmpId = $port->ifnameToSNMPIdentifier();
-
-                        foreach( MrtgFile::TRAFFIC_TYPES as $type => $vars ) {
-                            $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
-
-                            if( $port->getType() == SwitchPort::TYPE_PEERING ) {
-                                $data[ $infra->getId() ]['mrtgIds'][$type][] = $id;
-                                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'][$type][] = $id;
-
-                                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8;
-                                $data[ $infra->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
-                            }
-                        }
+                    // we're not multi-ixp in v4 but we'll catch non-relavent ports here
+                    if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getIXP()->getId() != $ixp->getId() ) {
+                        break 2;
                     }
+
+                    $data['pis'][$pi->getId()] = $pi;
+
+                    if( !isset( $data['custs'][ $c->getId() ] ) ) {
+                            $data['custs'][ $c->getId() ] = $c;
+                    }
+
+                    if( !isset( $data['sws'][ $pi->getSwitchPort()->getSwitcher()->getId() ] ) ) {
+                        $data['sws'][$pi->getSwitchPort()->getSwitcher()->getId() ] = $pi->getSwitchPort()->getSwitcher();
+                    }
+
+                    if( !isset( $data['infras'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] ) ) {
+                        $data['infras'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] = $pi->getSwitchPort()->getSwitcher()->getInfrastructure();
+                    }
+
+                    $data['custports'][$c->getId()][] = $pi->getId();
+
+                    if( count( $vi->getPhysicalInterfaces() ) > 1 ) {
+                        $data['custlags'][$vi->getId()][] = $pi->getId();
+                    }
+
+                    if( $pi->statusIsConnected() ) {
+                        $data['swports'][ $pi->getSwitchPort()->getSwitcher()->getId() ][] = $pi->getId();
+                        $data['infraports'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ][] = $pi->getId();
+                        $data['ixpports'][] = $pi->getId();
+                    }
+
                 }
             }
         }
+
         return $data;
     }
+
+
 
 }

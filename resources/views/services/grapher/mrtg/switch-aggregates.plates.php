@@ -25,31 +25,24 @@
 #####################################################################################################################
 
 <?php
-    foreach( $portsByInfrastructure as $infraid => $infra ):
-        foreach( $infra['switches'] as $switch ):
-            foreach( IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES as $ttype => $trafficType ):
+    foreach( $data['sws'] as $switchid => $switch ):
 
-                $mrtglabel = "switch-aggregate-{$switch['name']}-{$ttype}"; ?>
+        if( !isset( $data['swports'][$switch->getId()] ) ):
+            continue;
+        endif;
 
-#####################################################################################################################
-#
-# <?=$switch['name']?> <?=$trafficType['name']?> traffic
-#
+        $this->insert(
+            "services/grapher/mrtg/target", [
+                'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                'mrtgPrefix'   => sprintf( "switch-aggregate-%s", $switch->getName() ),
+                'portIds'      => $data['swports'][$switch->getId()],
+                'data'         => $data,
+                'graphTitle'   => sprintf( config('identity.orgname') . " - Peering %%s / second on %s", $switch->getName() ),
+            ]
+        );
 
-
-Target[<?=$mrtglabel?>]:   <?=implode(' + ', $switch['mrtgIds'][$ttype])."\n"?>
-MaxBytes[<?=$mrtglabel?>]: <?php if( $ttype == 'bits' ){echo $switch['maxbytes']."\n";} else {echo round( $switch['maxbytes'] / 64 )."\n";}?>
-Title[<?=$mrtglabel?>]:    <?=config("identity.orgname") . " - Peering {$trafficType['name']} / second on {$switch['name']}\n"?>
-Options[<?=$mrtglabel?>]:  <?=$trafficType['options']."\n"?>
-YLegend[<?=$mrtglabel?>]:  <?=$trafficType['name']?> / Second
-Directory[<?=$mrtglabel?>]: switches
-
-<?php
-            endforeach;
-        endforeach;
     endforeach;
 ?>
-
 
 #####################################################################################################################
 #####################################################################################################################
