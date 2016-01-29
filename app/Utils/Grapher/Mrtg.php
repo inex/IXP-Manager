@@ -66,17 +66,29 @@ class Mrtg
 
     const TRAFFIC_TYPES = [
         'bits'   => [
-            'in'      => 'ifHCInOctets',
-            'out'     => 'ifHCOutOctets',
+            'in'      => 'oidInOctets',
+            'out'     => 'oidOutOctets',
             'options' => 'growright,bits',
             'name'    => 'Bits'
         ],
         'pkts'   => [
-            'in'      => 'ifHCInUcastPkts',
-            'out'     => 'ifHCOutUcastPkts',
+            'in'      => 'oidInUnicastPackets',
+            'out'     => 'oidOutUnicastPackets',
             'options' => 'growright',
             'name'    => 'Packets'
-        ]
+        ],
+        'errs'   => [
+            'in'      => 'oidInErrors',
+            'out'     => 'oidOutErrors',
+            'options' => 'growright',
+            'name'    => 'Errors'
+        ],
+        'discs'   => [
+            'in'      => 'oidInDiscards',
+            'out'     => 'oidOutDiscards',
+            'options' => 'growright',
+            'name'    => 'Discards'
+        ],
     ];
 
 

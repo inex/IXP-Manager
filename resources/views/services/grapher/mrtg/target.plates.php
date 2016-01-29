@@ -19,7 +19,10 @@ Target[<?=$mrtglabel?>]:    <?php
                     echo ' + ';
             endif;
 
-            echo "{$trafficType['in']}#" . $data['pis'][$piid]->getSwitchPort()->ifnameToSNMPIdentifier() . "&{$trafficType['out']}#"
+            echo
+                substr( $data['pis'][$piid]->getSwitchPort()->{$trafficType['in']}(), 1 ) . "#"
+                . $data['pis'][$piid]->getSwitchPort()->ifnameToSNMPIdentifier()
+                . "&" . substr( $data['pis'][$piid]->getSwitchPort()->{$trafficType['out']}(), 1 ) . "#"
                 . $data['pis'][$piid]->getSwitchPort()->ifnameToSNMPIdentifier()
                 . ":" .  $data['pis'][$piid]->getSwitchPort()->getSwitcher()->getSnmppasswd()
                 . "@" . $data['pis'][$piid]->getSwitchPort()->getSwitcher()->getHostname() . ":::::2";
