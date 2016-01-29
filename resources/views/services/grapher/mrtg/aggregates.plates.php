@@ -25,53 +25,38 @@
 #####################################################################################################################
 
 <?php
-    $ixpMaxBytes = 0;
-    foreach( $portsByInfrastructure as $infraid => $infra ):
+    foreach( $data['infras'] as $infraid => $infra ):
 
-        $ixpMaxBytes += $infra['maxbytes'];
+        if( !isset( $data['infraports'][$infra->getId()] ) ):
+            continue;
+        endif;
 
-        foreach( \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES as $ttype => $trafficType ):
+        $this->insert(
+            "services/grapher/mrtg/target", [
+                'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                'mrtgPrefix'   => sprintf( "ixp%03d_infra%03d", $ixp->getId(), $infra->getId() ),
+                'portIds'      => $data['infraports'][$infra->getId()],
+                'data'         => $data,
+                'graphTitle'   => sprintf( config('identity.orgname') . " %%s / second on %s", $infra->getName() ),
+            ]
+        );
 
-            $mrtglabel = "ixp_peering-{$infra['aggregate_graph_name']}-{$ttype}"; ?>
+    endforeach; // foreach( $data['infras'] as $infraid => $infra ):
 
-#####################################################################################################################
-#
-# <?php echo "{$infra['name']} {$trafficType['name']} traffic\n"; ?>
-#
-
-Target[<?=$mrtglabel?>]:   <?=implode(' + ',$infra['mrtgIds'][$ttype])."\n"?>
-MaxBytes[<?=$mrtglabel?>]: <?php if( $ttype == 'bits' ){echo $infra['maxbytes']."\n";} else {echo round( $infra['maxbytes'] / 64 )."\n";} ?>
-Title[<?=$mrtglabel?>]:    <?=config('identity.orgname') . " {$trafficType['name']} / second on {$infra['name']}\n"?>
-Options[<?=$mrtglabel?>]:  <?=$trafficType['options']."\n"?>
-YLegend[<?=$mrtglabel?>]:  <?=$trafficType['name']?> / Second
-
-    <?php
-        endforeach; // foreach( \Utils\Grapher\Mrtg::TRAFFIC_TYPES as $ttype => $trafficType )
-    endforeach; // foreach( $portsByInfrastructure as $infraid => $infra ):
+    if( isset( $data['ixpports'] ) ):
+        $this->insert(
+            "services/grapher/mrtg/target", [
+                'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                'mrtgPrefix'   => sprintf( "ixp%03d", $ixp->getId() ),
+                'portIds'      => $data['ixpports'],
+                'data'         => $data,
+                'graphTitle'   => sprintf( config('identity.orgname') . " - %%s / second" ),
+            ]
+        );
+    endif;
 ?>
 
-<?php
-    $ixpAggregateGraphName = sprintf( "ixp%03d", $ixp->getId() );
 
-    foreach( \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES as $ttype => $trafficType ):
-
-        $mrtglabel = "ixp_peering-{$ixpAggregateGraphName}-{$ttype}"; ?>
-
-
-#####################################################################################################################
-#
-# Aggregate <?=$trafficType['name']?> on entire exchange (IXP ID <?=$ixp->getId()?>)
-#
-
-Target[<?=$mrtglabel?>]:   <?php $i=0; foreach( $portsByInfrastructure as $infra ){ $i++; echo implode(' + ',$infra['mrtgIds'][$ttype]); if( $i != count( $portsByInfrastructure ) ) { echo ' + '; } } echo "\n"; ?>
-MaxBytes[<?=$mrtglabel?>]: <?php if( $ttype == 'bits' ){ echo $ixpMaxBytes; } else { echo round( $ixpMaxBytes / 64 ); } echo "\n"; ?>
-Title[<?=$mrtglabel?>]:    <?=config('identity.orgname') . " Aggregate Traffic - {$trafficType['name']} / second\n"?>
-Options[<?=$mrtglabel?>]:  <?=$trafficType['options']."\n"?>
-YLegend[<?=$mrtglabel?>]:  <?=$trafficType['name']?> / Second
-
-<?php
-    endforeach; // foreach( \Utils\Grapher\Mrtg::TRAFFIC_TYPES as $ttype => $trafficType ):
-?>
 
 #####################################################################################################################
 #####################################################################################################################
