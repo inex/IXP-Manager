@@ -253,7 +253,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
                 "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
                 OSS_Message::ERROR
             );
-            $this->redirect();
+            $this->redirect(null);
         }
 
         // get the available graphs

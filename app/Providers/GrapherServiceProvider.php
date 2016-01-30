@@ -26,6 +26,7 @@
 use Illuminate\Support\ServiceProvider;
 use IXP\Exceptions\Services\Grapher\ConfigurationException;
 use Config;
+use Route;
 
 /**
  * Grapher Service Provider
@@ -38,7 +39,7 @@ use Config;
  */
 class GrapherServiceProvider extends ServiceProvider {
 
-    protected $defer = true;
+    protected $defer = false;
 
 
     protected $commands = [
@@ -52,6 +53,7 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
+        Route::get( '/grapher/test', function(){dd( 'test grapher');});
     }
 
     /**
@@ -85,7 +87,7 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function provides()
     {
-        return ['IXP\Contracts\Grapher'];
+        return array_merge( ['IXP\Contracts\Grapher'], array_values( $this->app['config']['grapher']['providers'] ) );
     }
 
 
