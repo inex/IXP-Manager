@@ -53,7 +53,28 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        Route::get( '/grapher/test', function(){dd( 'test grapher');});
+        /*
+
+                        ixp/n       (optional)
+                        graph/{switch,trunk,ixp,infra,customer}
+                        lag/vid
+
+                        period/day    (possible extension: period-from/period-to)
+                        category/{bits,pkts,errs,discs}
+
+                        protocol/{4,6}
+
+                        type/{png,rrd,log,json,...}
+
+                        type/resources -> what of the above is available?
+        */
+
+        Route::group(['namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::', 'prefix' => 'grapher', 'middleware' => 'grapher' ], function(){
+
+            Route::get( 'ixp/{id}/period/{period}/category/{category}/protocol/{protocol}/type/{type}',                   'Grapher@ixp' );
+            Route::get( 'ixp/{id}/period/{period}/category/{category}/protocol/{protocol}/type/{type}/backend/{backend}', 'Grapher@ixp' );
+
+        });
     }
 
     /**
