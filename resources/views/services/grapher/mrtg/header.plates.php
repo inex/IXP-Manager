@@ -26,6 +26,12 @@ RunAsDaemon:Yes
 Interval:5
 IconDir: /images/
 
+
+<?php if( config( 'grapher.backends.mrtg.dbtype' ) == 'rrd' ): ?>
+LogFormat: rrdtool
+<?php endif; ?>
+
+
 ### Global Defaults
 #  to get bits instead of bytes and graphs growing to the right
 Options[_]: growright, bits

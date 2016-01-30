@@ -35,9 +35,10 @@ return [
         'dummy' => [],
 
         'mrtg'  => [
+            // see: http://oss.oetiker.ch/mrtg/doc/mrtg-rrd.en.html
             'dbtype'  => env( 'GRAPHER_BACKEND_MRTG_DBTYPE', 'log' ),  // options: log, rrd
 
-            'workdir' => env( 'GRAPHER_BACKEND_MRTG_WORKDIR', '/tmp' ), 
+            'workdir' => env( 'GRAPHER_BACKEND_MRTG_WORKDIR', '/tmp' ),
         ],
 
         'sflow' => [
