@@ -27,7 +27,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-use IXP\Contracts\Grapger\Backend as GrapherBackend;
+use IXP\Contracts\Grapher\Backend as GrapherBackend;
 
 use D2EM;
 use Grapher;
