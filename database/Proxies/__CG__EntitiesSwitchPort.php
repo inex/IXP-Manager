@@ -694,4 +694,92 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::getMauAutoNegAdminState();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function oidInOctets(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidInOctets', []);
+
+        return parent::oidInOctets();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidOutOctets(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidOutOctets', []);
+
+        return parent::oidOutOctets();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidInUnicastPackets(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidInUnicastPackets', []);
+
+        return parent::oidInUnicastPackets();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidOutUnicastPackets(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidOutUnicastPackets', []);
+
+        return parent::oidOutUnicastPackets();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidInErrors(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidInErrors', []);
+
+        return parent::oidInErrors();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidOutErrors(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidOutErrors', []);
+
+        return parent::oidOutErrors();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidInDiscards(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidInDiscards', []);
+
+        return parent::oidInDiscards();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidOutDiscards(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidOutDiscards', []);
+
+        return parent::oidOutDiscards();
+    }
+
 }

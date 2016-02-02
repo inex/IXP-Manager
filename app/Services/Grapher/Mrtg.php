@@ -21,7 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Contracts\Grapher as GrapherContract;
+use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 
 use Entities\{IXP,Switcher,SwitchPort};
 use IXP\Utils\Grapher\Mrtg as MrtgFile;
@@ -37,7 +37,16 @@ use View;
  * @copyright  Copyright (c) 2009 - 2016, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Mrtg implements GrapherContract {
+class Mrtg implements GrapherBackendContract {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function name(): string {
+        return 'mrtg';
+    }
 
     /**
      * The dummy backend requires no configuration.

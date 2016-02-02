@@ -91,11 +91,9 @@ class GrapherServiceProvider extends ServiceProvider {
             }
         }
 
-        foreach( $this->app['config']['grapher']['backend'] as $backend ) {
-            $this->app->singleton( $this->app['config']['grapher']['providers'][$backend], function($app) use ($backend) {
-                return new $this->app['config']['grapher']['providers'][$backend]( $app['config']['grapher']['backends'][ $backend ] );
-            });
-        }
+        $this->app->singleton( 'IXP\Contracts\Grapher', function($app) {
+            return new \IXP\Services\Grapher;
+        });
 
         $this->commands( $this->commands );
     }
@@ -108,7 +106,7 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function provides()
     {
-        return array_merge( ['IXP\Contracts\Grapher'], array_values( $this->app['config']['grapher']['providers'] ) );
+        return [ 'IXP\Contracts\Grapher' ];
     }
 
 

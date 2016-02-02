@@ -21,7 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Contracts\Grapher as GrapherContract;
+use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use Entities\IXP;
 
 /**
@@ -33,7 +33,16 @@ use Entities\IXP;
  * @copyright  Copyright (c) 2009 - 2016, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Dummy implements GrapherContract {
+class Dummy implements GrapherBackendContract {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function name(): string {
+        return 'dummy';
+    }
 
     /**
      * The dummy backend required no configuration.

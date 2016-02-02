@@ -27,7 +27,10 @@ use Symfony\Component\Console\Input\InputArgument;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
+use IXP\Contracts\Grapger\Backend as GrapherBackend;
+
 use D2EM;
+use Grapher;
 
 
  /**
@@ -67,17 +70,19 @@ class GenerateConfiguration extends GrapherCommand {
      */
     public function handle(): int
     {
-        if( !$this->getGrapher()->isConfigurationRequired() ) {
-            $this->info("This grapher backend (" . $this->resolveBackend() . ") does not require any configuration to be generated");
+
+        $grapher = Grapher::getBackend( $this->option( 'backend' ) );
+        if( !$grapher->isConfigurationRequired() ) {
+            $this->info("This grapher backend (" . $grapher->name() . ") does not require any configuration to be generated");
             return 100;
         }
 
-        if( ( $retval = $this->verifyArgsAndOptions() ) !== 0 )
+        if( ( $retval = $this->verifyArgsAndOptions($grapher) ) !== 0 )
             return $retval;
 
         // backend and options are now valid
         // let's generate the configuration
-        return $this->outputConfiguration( $this->getGrapher()->generateConfiguration( $this->ixp() )[0] );
+        return $this->outputConfiguration( $grapher->generateConfiguration( $this->ixp() )[0] );
     }
 
     /**
@@ -104,11 +109,11 @@ class GenerateConfiguration extends GrapherCommand {
      * Check the various arguments and options that have been password to the console command
      * @return int 0 for success or else an error code
      */
-    protected function verifyArgsAndOptions(): int {
+    protected function verifyArgsAndOptions( GrapherBackend $grapher ): int {
         $fn = $this->option('output');
 
-        if( !$this->getGrapher()->isMonolithicConfigurationSupported() ) {
-            $this->error( "This backend ({$this->resolveBackend()}) does not support single configuration files" );
+        if( !$grapher->isMonolithicConfigurationSupported() ) {
+            $this->error( "This backend ({$grapher->name()}) does not support single configuration files" );
             return 251;
         }
 
