@@ -37,6 +37,6 @@ class Grapher extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'IXP\Contracts\Grapher';
+        return 'IXP\Services\Grapher';
     }
 }

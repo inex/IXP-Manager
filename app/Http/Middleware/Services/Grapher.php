@@ -3,6 +3,8 @@
 namespace IXP\Http\Middleware\Services;
 
 use Closure;
+use Grapher as GrapherFacade;
+
 use Illuminate\Http\Request;
 
 use IXP\Contracts\Grapher as GrapherContract;
@@ -20,52 +22,31 @@ class Grapher
      */
     public function handle($request, Closure $next)
     {
-        // Requests passing through this middleware are requests for graph images / logs / data.
-        // This middleware must reolve the appropriate backend that can process the request.
-
-        // if a specific backend has been requested, go straight there:
-        dd( $request->route()->parameters() );
-        if( $request->input( 'backend' ) ) {
-            $backend = $this->getBackend( $request->input('backend') );
-            if( !$backend->canHandle( $request ) ) {
-                throw new CannotHandleRequestException('Requested backend cannot handle this request');
-            }
-        } else {
-            die( 'FIXME BABY ONE MORE TIME' );
-            $backend = $this->resolveBackend( $request );
-        }
-
-
+        // all graph requests require a certain basic set of parameters / defaults.
+        // let's take care of that here
+        $this->processParameters( $request );
 
         return $next($request);
     }
 
     /**
-     * Return the required grapher for the specified backend
+     * All graphs have common parameters. We process these here for every request - and set sensible defaults.
      *
-     * The given backend is validated via `resolveBackend()`.
-     * @see IXP\Http\Middleware\Services\Grapher::resolveBackend()
-     *
-     * @param string $backend A specific backend to return.
-     * @return \IXP\Contracts\Grapher
+     * @param \Illuminate\Http\Request  $request
      */
-    private function getBackend( string $backend ): GrapherContract {
-        return App::make( config( 'grapher.providers.' . $this->validateBackend( $backend ) ) );
-    }
+    private function processParameters( Request $request ) {
 
-    /**
-     * As we allow multiple graphing backends, we need to be able to validate them
-     *
-     * @throws IXP\Exceptions\Services\Grapher\BadBackendException
-     * @param string $backend
-     * @return string
-     */
-    protected function validateBackend( string $backend ): string {
-        if( !in_array($backend,config('grapher.backend') ) ) {
-            throw new BadBackendException( 'No graphing provider enabled (see configs/grapher.php) for ' . $backend );
-        }
+        // while the Grapher service stores the processed parameters in its own object, we update the $request
+        // parameters here also just in case we need to final versions later in the request.
+        $request->ixp      = GrapherFacade::processParameterIXP(      $request->input( 'ixp',      0  ) );
+        $request->period   = GrapherFacade::processParameterPeriod(   $request->input( 'period',   '' ) );
+        $request->category = GrapherFacade::processParameterCategory( $request->input( 'category', '' ) );
+        $request->protocol = GrapherFacade::processParameterProtocol( $request->input( 'protocol', 0  ) );
+        $request->type     = GrapherFacade::processParameterType(     $request->input( 'type',     '' ) );
 
-        return $backend;
+        // future extension
+        // $request->period_from = GrapherFacade::processParameterPeriod($request->input( 'period', '' ) );
+        // $request->period_to   = GrapherFacade::processParameterPeriod($request->input( 'period', '' ) );
     }
 
 }

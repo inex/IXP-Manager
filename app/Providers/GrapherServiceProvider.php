@@ -71,6 +71,7 @@ class GrapherServiceProvider extends ServiceProvider {
 
         Route::group(['namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::', 'prefix' => 'grapher', 'middleware' => 'grapher' ], function(){
 
+            Route::get( 'ixp',                   'Grapher@ixp' );
             Route::get( 'ixp/{id}/period/{period}/category/{category}/protocol/{protocol}/type/{type}',                   'Grapher@ixp' );
             Route::get( 'ixp/{id}/period/{period}/category/{category}/protocol/{protocol}/type/{type}/backend/{backend}', 'Grapher@ixp' );
 
@@ -91,7 +92,7 @@ class GrapherServiceProvider extends ServiceProvider {
             }
         }
 
-        $this->app->singleton( 'IXP\Contracts\Grapher', function($app) {
+        $this->app->singleton( 'IXP\Services\Grapher', function($app) {
             return new \IXP\Services\Grapher;
         });
 
@@ -106,7 +107,7 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function provides()
     {
-        return [ 'IXP\Contracts\Grapher' ];
+        return [ 'IXP\Services\Grapher' ];
     }
 
 
