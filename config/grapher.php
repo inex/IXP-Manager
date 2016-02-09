@@ -6,9 +6,9 @@ return [
     | Providers - support providers.
     */
     'providers' => [
-        'dummy' => IXP\Services\Grapher\Dummy::class,
-        'mrtg'  => IXP\Services\Grapher\Mrtg::class,
-        'sflow' => IXP\Services\Grapher\Sflow::class,
+        'dummy' => IXP\Services\Grapher\Backend\Dummy::class,
+        'mrtg'  => IXP\Services\Grapher\Backend\Mrtg::class,
+        'sflow' => IXP\Services\Grapher\Backend\Sflow::class,
     ],
 
     /*

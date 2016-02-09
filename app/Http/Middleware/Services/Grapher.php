@@ -3,12 +3,10 @@
 namespace IXP\Http\Middleware\Services;
 
 use Closure;
-use Grapher as GrapherFacade;
 
 use Illuminate\Http\Request;
 
-use IXP\Contracts\Grapher as GrapherContract;
-
+use IXP\Services\Grapher\Graph;
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException};
 
 class Grapher
@@ -38,11 +36,11 @@ class Grapher
 
         // while the Grapher service stores the processed parameters in its own object, we update the $request
         // parameters here also just in case we need to final versions later in the request.
-        $request->ixp      = GrapherFacade::processParameterIXP(      $request->input( 'ixp',      0  ) );
-        $request->period   = GrapherFacade::processParameterPeriod(   $request->input( 'period',   '' ) );
-        $request->category = GrapherFacade::processParameterCategory( $request->input( 'category', '' ) );
-        $request->protocol = GrapherFacade::processParameterProtocol( $request->input( 'protocol', 0  ) );
-        $request->type     = GrapherFacade::processParameterType(     $request->input( 'type',     '' ) );
+        // $request->ixp      = Graph::processParameterIXP(      $request->input( 'ixp',      0  ) );
+        $request->period   = Graph::processParameterPeriod(   $request->input( 'period',   '' ) );
+        $request->category = Graph::processParameterCategory( $request->input( 'category', '' ) );
+        $request->protocol = Graph::processParameterProtocol( $request->input( 'protocol', 0  ) );
+        $request->type     = Graph::processParameterType(     $request->input( 'type',     '' ) );
 
         // future extension
         // $request->period_from = GrapherFacade::processParameterPeriod($request->input( 'period', '' ) );

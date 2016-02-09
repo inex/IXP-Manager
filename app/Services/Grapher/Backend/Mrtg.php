@@ -1,4 +1,4 @@
-<?php namespace IXP\Services\Grapher;
+<?php namespace IXP\Services\Grapher\Backend;
 
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
@@ -22,6 +22,7 @@
  */
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+use IXP\Services\Grapher\Graph;
 
 use Entities\{IXP,Switcher,SwitchPort};
 use IXP\Utils\Grapher\Mrtg as MrtgFile;
@@ -168,6 +169,38 @@ class Mrtg implements GrapherBackendContract {
         }
 
         return $data;
+    }
+
+    /**
+     * Examines the provided graph object and determines if this backend is able to
+     * process the request or not.
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return bool
+     */
+    public function canProcess( Graph $graph ): bool {
+        // The MRTG backend can process almost all graphs - except:
+
+        // no per protocol graphs
+        if( $graph->protocol !== Graph::PROTOCOL_ALL ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the data points for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return array
+     */
+    public function data( Graph $graph ): array {
+        return [ 1,2,3,4,5,6 ];
     }
 
 

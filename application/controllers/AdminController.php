@@ -21,6 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Services\Grapher\Graph as Graph;
 
 /**
  * Controller: Default controller for AUTH_SUPERUSER / admins
@@ -36,8 +37,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
 
     public function preDispatch()
     {
-        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
-	    {
+        if( !( Auth::check() && Auth::user()->isSuperUser() ) ) {
 	        $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to access the admin controller without sufficient permissions" );
 	        $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
 	    }
@@ -60,6 +60,8 @@ class AdminController extends IXP_Controller_AuthRequiredAction
      */
     private function _publicPeeringGraphs()
     {
+        $grapher = App::make('IXP\Services\Grapher');
+
         // only do this once every five minutes
         if( $admin_home_stats = $this->getD2Cache()->fetch( 'admin_home_stats' ) )
         {
@@ -74,33 +76,30 @@ class AdminController extends IXP_Controller_AuthRequiredAction
 
             if( $this->multiIXP() )
             {
-                $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
-
-                foreach( $ixps as $ixp )
-                {
-                    if( $ixp->getAggregateGraphName() )
-                    {
-                        $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
-                        $graphs[ $ixp->getId() ]['title'] = $ixp->getName();
-
-                        $mrtg = new IXP_Mrtg(
-                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $ixp->getAggregateGraphName()
-                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                        );
-
-                        $stats[ $ixp->getId() ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
-                    }
-                }
+                // TODO in multi IXP mode, we return the aggregate for each graph
             }
             else
             {
+                $ixpGraph = $grapher->ixp()
+                        ->setType( Graph::TYPE_PNG )
+                        ->setProtocol( Graph::PROTOCOL_ALL )
+                        ->setPeriod( Graph::PERIOD_MONTH )
+                        ->setCategory( Graph::CATEGORY_BITS );
+
+                dd( $ixpGraph->getStatistics()->data() );
+
+                // dd(';a');
+                // ixp( $grapher::PROTOCOL_ALL, $grapher::CATEGORY_BITS, $grapher::PERIOD_MONTH, $grapher::TYPE_PNG, true ) );
+
+                dd( $grapher->ixpHeadlineStats() );
+
                 $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
 
                 if( $ixp->getAggregateGraphName() )
                 {
                     $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
                     $graphs[ $ixp->getId() ]['title'] = 'IXP Aggregate Graph';
-                    
+
                     $mrtg = new IXP_Mrtg(
                         $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $ixp->getAggregateGraphName()
                             . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
@@ -230,4 +229,3 @@ class AdminController extends IXP_Controller_AuthRequiredAction
         }
     }
 }
-

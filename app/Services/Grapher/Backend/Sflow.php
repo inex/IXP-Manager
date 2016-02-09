@@ -1,4 +1,4 @@
-<?php namespace IXP\Services\Grapher;
+<?php namespace IXP\Services\Grapher\Backend;
 
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
@@ -22,6 +22,8 @@
  */
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+use IXP\Services\Grapher\Graph;
+
 use Entities\IXP;
 
 /**
@@ -33,7 +35,7 @@ use Entities\IXP;
  * @copyright  Copyright (c) 2009 - 2016, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Dummy implements GrapherBackendContract {
+class Sflow implements GrapherBackendContract {
 
     /**
      * {@inheritDoc}
@@ -41,11 +43,11 @@ class Dummy implements GrapherBackendContract {
      * @return string
      */
     public function name(): string {
-        return 'dummy';
+        return 'sflow';
     }
 
     /**
-     * The dummy backend required no configuration.
+     * The sflow backend requires no configuration.
      *
      * {@inheritDoc}
      *
@@ -89,6 +91,35 @@ class Dummy implements GrapherBackendContract {
         return [];
     }
 
+    /**
+     * Examines the provided graph object and determines if this backend is able to
+     * process the request or not.
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return bool
+     */
+    public function canProcess( Graph $graph ): bool {
+        // The sflow backend can process almost all graphs - except:
+
+        // ...
+
+
+        return true;
+    }
+
+    /**
+     * Get the data points for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return array
+     */
+    public function data( Graph $graph ): array {
+        return [];
+    }
 
 
 }

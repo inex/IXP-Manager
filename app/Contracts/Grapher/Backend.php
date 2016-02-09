@@ -25,6 +25,8 @@ namespace IXP\Contracts\Grapher;
 
 use Entities\IXP;
 
+use IXP\Services\Grapher\Graph;
+
  /**
   * Helpdesk Contract - any concrete implementation of a Helpdesk provider must
   * implement this interface
@@ -104,5 +106,23 @@ interface Backend {
      */
     public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array;
 
+    /**
+     * Examines the provided graph object and determines if this backend is able to
+     * process the request or not.
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return bool
+     */
+    public function canProcess( Graph $graph ): bool;
+
+    /**
+     * Get the data points for a given graph
+     *
+     * FIXME ADD RULES FOR DATA FORMAT!!!
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return array
+     */
+    public function data( Graph $graph ): array;
 
 }
