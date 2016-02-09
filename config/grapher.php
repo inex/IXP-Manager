@@ -39,6 +39,9 @@ return [
             'dbtype'  => env( 'GRAPHER_BACKEND_MRTG_DBTYPE', 'log' ),  // options: log, rrd
 
             'workdir' => env( 'GRAPHER_BACKEND_MRTG_WORKDIR', '/tmp' ),
+
+            // where to find the MRTG log files (and png files)
+            'logdir'  => env( 'GRAPHER_BACKEND_MRTG_LOGDIR', '/tmp' ),
         ],
 
         'sflow' => [

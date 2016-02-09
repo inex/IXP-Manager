@@ -38,9 +38,9 @@ class AdminController extends IXP_Controller_AuthRequiredAction
     public function preDispatch()
     {
         if( !( Auth::check() && Auth::user()->isSuperUser() ) ) {
-	        $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to access the admin controller without sufficient permissions" );
-	        $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
-	    }
+            $this->getLogger()->notice( "{$this->getUser()->getUsername()} tried to access the admin controller without sufficient permissions" );
+            $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
+        }
     }
 
 
@@ -86,7 +86,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                         ->setPeriod( Graph::PERIOD_MONTH )
                         ->setCategory( Graph::CATEGORY_BITS );
 
-                dd( $ixpGraph->getStatistics()->data() );
+                dd( $ixpGraph->statistics()->all() );
 
                 // dd(';a');
                 // ixp( $grapher::PROTOCOL_ALL, $grapher::CATEGORY_BITS, $grapher::PERIOD_MONTH, $grapher::TYPE_PNG, true ) );

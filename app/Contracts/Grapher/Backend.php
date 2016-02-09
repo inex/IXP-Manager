@@ -118,7 +118,23 @@ interface Backend {
     /**
      * Get the data points for a given graph
      *
-     * FIXME ADD RULES FOR DATA FORMAT!!!
+     * It **MUST** be returned as an indexed array of arrays where the five elements
+     * of these arrays are:
+     *
+     *     [
+     *       [
+     *         0 =>  unixtime stamp
+     *         1 =>  average incoming rate
+     *         2 =>  average outgoing rate
+     *         3 =>  maximum incoming rate
+     *         4 =>  maximum outgoing rate
+     *       ],
+     *       ....
+     *     ]
+     *
+     * NB: For errors, discards and packets, the rate is packets per second. For bits, it's bits per second.
+     *
+     * NB: The above **MUST** be ordered with the oldest first.
      *
      * @param IXP\Services\Grapher\Graph $graph
      * @return array

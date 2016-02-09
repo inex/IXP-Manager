@@ -216,6 +216,18 @@ abstract class Graph {
      */
     private $backend = null;
 
+    /**
+     * Data points (essentially a cache which is wiped as appropriate)
+     * @var array
+     */
+    private $data = null;
+
+    /**
+     * Statistics object (essentially a cache which is wiped as appropriate)
+     * @var IXP\Services\Grapher\Statistics
+     */
+    private $statistics = null;
+
 
     /**
      * Constructor
@@ -261,7 +273,32 @@ abstract class Graph {
      * @return IXP\Contracts\Grapher\Backend
      */
     public function data(): array {
-        return $this->backend()->data($this);
+        if( $this->data === null ) {
+            $this->data = $this->backend()->data($this);
+        }
+        return $this->data;
+    }
+
+    /**
+     * For a given graph object ($this), calculate various statistics
+     *
+     * @return IXP\Contracts\Grapher\Statistics
+     */
+    public function statistics(): Statistics {
+        if( $this->statistics === null ) {
+            $this->statistics = new Statistics( $this );
+        }
+        return $this->statistics;
+    }
+
+    /**
+     * We cache certain data (e.g. backend, data, statistics). This needs to be wiped
+     * if certain graph parameters are changed.
+     */
+    public function wipe() {
+        $this->backend    = null;
+        $this->data       = null;
+        $this->statistics = null;
     }
 
 
@@ -283,6 +320,10 @@ abstract class Graph {
     public function setPeriod( $v ): Graph {
         if( !isset( self::PERIOD_DESCS[ $v ] ) ) {
             throw new ParameterException('Invalid period ' . $v );
+        }
+
+        if( $this->period() != $v ) {
+            $this->wipe();
         }
 
         $this->period = $v;
@@ -308,6 +349,10 @@ abstract class Graph {
             throw new ParameterException('Invalid protocol ' . $v );
         }
 
+        if( $this->protocol() != $v ) {
+            $this->wipe();
+        }
+
         $this->protocol = $v;
         return $this;
     }
@@ -331,6 +376,10 @@ abstract class Graph {
             throw new ParameterException('Invalid category ' . $v );
         }
 
+        if( $this->category() != $v ) {
+            $this->wipe();
+        }
+
         $this->category = $v;
         return $this;
     }
@@ -352,6 +401,10 @@ abstract class Graph {
     public function setType( $v ): Graph {
         if( !isset( self::TYPES[ $v ] ) ) {
             throw new ParameterException('Invalid type ' . $v );
+        }
+
+        if( $this->type() != $v ) {
+            $this->wipe();
         }
 
         $this->type = $v;

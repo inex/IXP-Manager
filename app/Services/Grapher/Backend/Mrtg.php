@@ -24,6 +24,8 @@
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Services\Grapher\Graph;
 
+use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
+
 use Entities\{IXP,Switcher,SwitchPort};
 use IXP\Utils\Grapher\Mrtg as MrtgFile;
 
@@ -184,7 +186,7 @@ class Mrtg implements GrapherBackendContract {
         // The MRTG backend can process almost all graphs - except:
 
         // no per protocol graphs
-        if( $graph->protocol !== Graph::PROTOCOL_ALL ) {
+        if( $graph->protocol() !== Graph::PROTOCOL_ALL ) {
             return false;
         }
 
@@ -200,7 +202,31 @@ class Mrtg implements GrapherBackendContract {
      * @return array
      */
     public function data( Graph $graph ): array {
-        return [ 1,2,3,4,5,6 ];
+        $mrtg = new MrtgFile( $this->resolveMrtgFile( $graph ) );
+        return $mrtg->data( $graph );
+    }
+
+    /**
+     * For a given graph, return the path where the appropriate log file
+     * will be found.
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    private function resolveMrtgFile( Graph $graph ): string {
+        $config = config('grapher.backends.mrtg');
+        $DS     = DIRECTORY_SEPARATOR; // shorthand
+        $class  = explode( '\\', get_class( $graph ) );
+        $gtype  = array_pop( $class );
+
+        switch( $gtype ) {
+            case 'IXP':
+                return "{$config['logdir']}{$DS}ixp_peering-aggregate-{$graph->category()}.log";
+                break;
+
+            default:
+                throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$gtype}" );
+        }
     }
 
 

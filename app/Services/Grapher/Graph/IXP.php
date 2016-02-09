@@ -55,10 +55,6 @@ class IXP extends Graph {
     }
 
 
-    public function getStatistics() {
-        return new Statistics( $this );
-    }
-
 
 
     /**
@@ -76,11 +72,15 @@ class IXP extends Graph {
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function setIXP( $v ): Grapher {
-        if( $v == 0 || !d2r( 'IXP' )->find( $v ) ) {
+        if( $v == 0 || !( $ixp = d2r( 'IXP' )->find( $v ) ) ) {
             throw new ParameterException('Invalid IXP id ' . $v );
         }
 
-        $this->ixp = d2r( 'IXP' )->find( $v );
+        if( $this->ixp()->getId() != $v ) {
+            $this->wipe();
+        }
+
+        $this->ixp = $ixp;
         return $this;
     }
 
