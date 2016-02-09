@@ -337,7 +337,7 @@ abstract class Graph {
      * @return string
      */
     abstract function name(): string;
-     
+
 
 
     /**
@@ -445,6 +445,26 @@ abstract class Graph {
         }
 
         $this->type = $v;
+        return $this;
+    }
+
+    /**
+     * Set parameters in bulk from associative array
+     *
+     * Base function supports keys: type, protocol, category, period
+     *
+     * Will pass through thrown exceptions from setXXX() functions
+     *
+     * @param array $params
+     * @return \IXP\Services\Grapher Fluid interface
+     */
+    public function setParamsFromArray( array $params ): Graph {
+        foreach( [ 'type', 'category', 'period', 'protocol'] as $param ){
+            if( isset( $params[$param] ) ) {
+                $fn = 'set' . ucfirst( $param );
+                $this->$fn( $params[$param] );
+            }
+        }
         return $this;
     }
 

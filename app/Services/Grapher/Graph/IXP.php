@@ -83,6 +83,24 @@ class IXP extends Graph {
     }
 
     /**
+     * Set parameters in bulk from associative array
+     *
+     * {@inheritDoc}
+     *
+     * @param array $params
+     * @return \IXP\Services\Grapher Fluid interface
+     */
+    public function setParamsFromArray( array $params ): Graph {
+        parent::setParamsFromArray( $params );
+
+        if( isset( $params['ixp'] ) ) {
+            $this->setIXP( d2r('IXP')->find( $params['ixp'] ) );
+        }
+
+        return $this;
+    }
+
+    /**
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
@@ -101,7 +119,7 @@ class IXP extends Graph {
      */
     public static function processParameterIXP( int $v ): IXPEntity {
         if( !( $ixp = d2r( 'IXP' )->find( $v ) ) ) {
-            $ixp = d2r( 'IXP' )->getDefault()->getId();
+            $ixp = d2r( 'IXP' )->getDefault();
         }
         return $ixp;
     }
