@@ -126,16 +126,11 @@ class Statistics {
         $intLastTime = 0;
         $intTime = 0;
 
-        $gotrealstartdate = false;
         $curenddate = false;
+        $starttime  = $this->data()[0][0];
 
         foreach( $this->data() as $i => $v ) {
             $curenddate = $v[ 0 ];
-
-            if( !$gotrealstartdate && $v[ 0 ] ) {
-                $starttime = $v[ 0 ];
-                $gotrealstartdate = true;
-            }
 
             list( $intTime, $avgratein, $avgrateout, $peakratein, $peakrateout ) = $v;
 

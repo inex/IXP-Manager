@@ -24,7 +24,10 @@
 
 
 use Illuminate\Support\ServiceProvider;
+
 use IXP\Exceptions\Services\Grapher\ConfigurationException;
+use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherRendererExtension;
+
 use Config;
 use Route;
 
@@ -76,6 +79,11 @@ class GrapherServiceProvider extends ServiceProvider {
             Route::get( 'ixp/{id}/period/{period}/category/{category}/protocol/{protocol}/type/{type}/backend/{backend}', 'Grapher@ixp' );
 
         });
+
+
+        // we have a few rendering functions we want to include here:
+        $this->app->make('League\Plates\Engine')->loadExtension(new GrapherRendererExtension());
+
     }
 
     /**

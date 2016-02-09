@@ -202,9 +202,22 @@ class Mrtg implements GrapherBackendContract {
      * @return array
      */
     public function data( Graph $graph ): array {
-        $mrtg = new MrtgFile( $this->resolveMrtgFile( $graph ) );
+        $mrtg = new MrtgFile( $this->resolveFilePath( $graph, 'log' ) );
         return $mrtg->data( $graph );
     }
+
+    /**
+     * Get the PNG image for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    public function png( Graph $graph ): string {
+        return @file_get_contents( $this->resolveFilePath( $graph, 'png' ) );
+    }
+
 
     /**
      * For a given graph, return the path where the appropriate log file
@@ -213,15 +226,20 @@ class Mrtg implements GrapherBackendContract {
      * @param IXP\Services\Grapher\Graph $graph
      * @return string
      */
-    private function resolveMrtgFile( Graph $graph ): string {
+    private function resolveFilePath( Graph $graph, $type ): string {
         $config = config('grapher.backends.mrtg');
-        $DS     = DIRECTORY_SEPARATOR; // shorthand
         $class  = explode( '\\', get_class( $graph ) );
         $gtype  = array_pop( $class );
 
         switch( $gtype ) {
             case 'IXP':
-                return "{$config['logdir']}{$DS}ixp_peering-aggregate-{$graph->category()}.log";
+                return sprintf( "%s/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
+                    $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+                break;
+
+            case 'Infrastructure':
+                return sprintf( "%s/ixp%03d-infra%03d-%s%s.%s", $config['logdir'], $graph->infrastructure()->getIXP()->getId(),
+                    $graph->infrastructure()->getId(), $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
 
             default:

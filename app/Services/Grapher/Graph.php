@@ -276,7 +276,7 @@ abstract class Graph {
     /**
      * For a given graph object ($this), find its data via the backend
      *
-     * @return IXP\Contracts\Grapher\Backend
+     * @return array
      */
     public function data(): array {
         if( $this->data === null ) {
@@ -284,6 +284,16 @@ abstract class Graph {
         }
         return $this->data;
     }
+
+    /**
+     * For a given graph object ($this), get it's png
+     *
+     * @return string
+     */
+    public function png(): string {
+        return $this->backend()->png($this);
+    }
+
 
     /**
      * For a given graph object ($this), calculate various statistics
@@ -321,6 +331,13 @@ abstract class Graph {
         $this->renderer   = null;
     }
 
+
+    /**
+     * The name of a graph (e.g. member name, IXP name, etc)
+     * @return string
+     */
+    abstract function name(): string;
+     
 
 
     /**

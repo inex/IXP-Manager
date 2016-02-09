@@ -72,7 +72,6 @@ class AdminController extends IXP_Controller_AuthRequiredAction
         {
             $admin_home_stats = [];
             $graphs = [];
-            $stats  = [];
 
             if( $this->multiIXP() )
             {
@@ -80,32 +79,23 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             }
             else
             {
-                $graphs['ixp'] = $grapher->ixp()
+                $graphs['ixp'] = $grapher->ixp( d2r( 'IXP' )->getDefault() )
                                 ->setType(     Graph::TYPE_PNG )
                                 ->setProtocol( Graph::PROTOCOL_ALL )
                                 ->setPeriod(   Graph::PERIOD_MONTH )
                                 ->setCategory( Graph::CATEGORY_BITS );
 
-/*
                 foreach( d2r('IXP')->getDefault()->getInfrastructures() as $inf )
                 {
-                    if( $inf->getAggregateGraphName() )
-                    {
-                        $graphs[ $ixp->getId() . '-' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
-                        $graphs[ $ixp->getId() . '-' . $inf->getId() ]['title'] = $inf->getName();
-
-                        $mrtg = new IXP_Mrtg(
-                            $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $inf->getAggregateGraphName()
-                                . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                        );
-
-                        $stats[ $ixp->getId() . '-' . $inf->getId() ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
-                    }
-                }*/
+                    $graphs[$inf->getId()] = $grapher->infrastructure( $inf )
+                                ->setType(     Graph::TYPE_PNG )
+                                ->setProtocol( Graph::PROTOCOL_ALL )
+                                ->setPeriod(   Graph::PERIOD_MONTH )
+                                ->setCategory( Graph::CATEGORY_BITS );
+                }
             }
 
             $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
-            $admin_home_stats['stats']  = $this->view->stats      = $stats;
 
             $this->getD2Cache()->save( 'admin_home_stats', $admin_home_stats, 300 );
         }

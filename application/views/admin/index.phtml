@@ -211,7 +211,7 @@
             {foreach $graphs as $id => $graph}
                 <div class="row-fluid">
                     <div class="well">
-                        <h3>Title</h3>
+                        <h3>{$graph->name()} Aggregate Traffic</h3>
 
                         <p>
                             {$graph->renderer()->boxLegacy()}

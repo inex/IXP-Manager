@@ -24,7 +24,6 @@
 use IXP\Exceptions\Services\Grapher\RendererException;
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\Graph;
-use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherRendererExtension;
 
 use App;
 use View;
@@ -68,9 +67,6 @@ class Renderer {
      */
     public function __construct( Graph $g ) {
         $this->graph = $g;
-
-        // we have a few rendering functions we want to include here:
-        App::make('League\Plates\Engine')->loadExtension(new GrapherRendererExtension());
     }
 
     /**

@@ -26,10 +26,10 @@ use IXP\Services\Grapher\{Graph,Statistics};
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
 
-use Entities\IXP as IXPEntity;
+use Entities\Infrastructure as InfrastructureEntity;
 
 /**
- * Grapher -> Abstract Graph
+ * Grapher -> Infrastructure Graph
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
@@ -37,48 +37,43 @@ use Entities\IXP as IXPEntity;
  * @copyright  Copyright (c) 2009 - 2016, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IXP extends Graph {
+class Infrastructure extends Graph {
 
     /**
-     * IXP to graph
+     * Infrastructure to graph
      * @var \Entities\IXP
      */
-    private $ixp = null;
+    private $infrastructure = null;
 
 
     /**
      * Constructor
      */
-    public function __construct( Grapher $grapher, IXPEntity $ixp ) {
+    public function __construct( Grapher $grapher, InfrastructureEntity $i ) {
         parent::__construct( $grapher );
-
-        // set a default IXP
-        $this->ixp = $ixp;
+        $this->infrastructure = $i;
     }
 
-
-
-
     /**
-     * Get the IXP we're set to use
-     * @return \Entities\IXP
+     * Get the infrastructure we're set to use
+     * @return \Entities\Infrastructure
      */
-    public function ixp(): IXPEntity {
-        return $this->ixp;
+    public function infrastructure(): InfrastructureEntity {
+        return $this->infrastructure;
     }
 
     /**
-     * Set the IXP we should use
-     * @param \Entities\IXP $ixp
+     * Set the infrastructure we should use
+     * @param Entities\Infrastructure $infra
      * @return \IXP\Services\Grapher Fluid interface
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
-    public function setIXP( IXPEntity $ixp ): Grapher {
-        if( $this->ixp() && $this->ixp()->getId() != $ixp->getId() ) {
+    public function setInfrastructure( InfrastructureEntity $infra ): Grapher {
+        if( $this->infrastructure() && $this->infrastructure()->getId() != $infra->getId() ) {
             $this->wipe();
         }
 
-        $this->ixp = $ixp;
+        $this->infrastructure = $infra;
         return $this;
     }
 
@@ -87,7 +82,7 @@ class IXP extends Graph {
      * @return string
      */
     public function name(): string {
-        return $this->ixp()->getName();
+        return $this->infrastructure()->getName();
     }
 
     /**
@@ -99,11 +94,11 @@ class IXP extends Graph {
      * @param int $v The user input value
      * @return int The verified / sanitised / default value
      */
-    public static function processParameterIXP( int $v ): IXPEntity {
-        if( !( $ixp = d2r( 'IXP' )->find( $v ) ) ) {
-            $ixp = d2r( 'IXP' )->getDefault()->getId();
+    public static function processParameterInfrastructure( int $v ): InfrastructureEntity {
+        if( !( $infra = d2r( 'Infrastructure' )->find( $v ) ) ) {
+            $infra = d2r( 'IXP' )->getDefault()->getInfrastructures()[0];
         }
-        return $ixp;
+        return $infra;
     }
 
 

@@ -33,12 +33,14 @@ use IXP\Exceptions\Services\Grapher\{
 
 use IXP\Services\Grapher\Graph;
 use IXP\Services\Grapher\Graph\IXP as IXPGraph;
+use IXP\Services\Grapher\Graph\Infrastructure as InfrastructureGraph;
+
 use IXP\Contracts\Grapher\Backend as BackendContract;
 
 use Config;
 use D2EM;
 
-use Entities\{IXP};
+use Entities\{IXP,Infrastructure};
 
 /**
  * Grapher Backend -> Mrtg
@@ -115,10 +117,24 @@ class Grapher {
         throw new GraphCannotBeProcessedException('No backend available to process this graph');
     }
 
-
-    public function ixp(): IXPGraph {
-        return new IXPGraph( $this );
+    /**
+     * Get an instance of an IXP graph
+     * @param Entities\IXP $ixp
+     * @return IXP\Services\Grapher\Graph\IXP
+     */
+    public function ixp( IXP $ixp ): IXPGraph {
+        return new IXPGraph( $this, $ixp );
     }
+
+    /**
+     * Get an instance of an infrastructure graph
+     * @param Entities\Infrastructure $infra
+     * @return IXP\Services\Grapher\Graph\Infrastructure
+     */
+    public function infrastructure( Infrastructure $i ): InfrastructureGraph {
+        return new InfrastructureGraph( $this, $i );
+    }
+
 
 
 }
