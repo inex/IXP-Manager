@@ -80,35 +80,14 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             }
             else
             {
-                $ixpGraph = $grapher->ixp()
-                        ->setType( Graph::TYPE_PNG )
-                        ->setProtocol( Graph::PROTOCOL_ALL )
-                        ->setPeriod( Graph::PERIOD_MONTH )
-                        ->setCategory( Graph::CATEGORY_BITS );
+                $graphs['ixp'] = $grapher->ixp()
+                                ->setType(     Graph::TYPE_PNG )
+                                ->setProtocol( Graph::PROTOCOL_ALL )
+                                ->setPeriod(   Graph::PERIOD_MONTH )
+                                ->setCategory( Graph::CATEGORY_BITS );
 
-                dd( $ixpGraph->statistics()->all() );
-
-                // dd(';a');
-                // ixp( $grapher::PROTOCOL_ALL, $grapher::CATEGORY_BITS, $grapher::PERIOD_MONTH, $grapher::TYPE_PNG, true ) );
-
-                dd( $grapher->ixpHeadlineStats() );
-
-                $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
-
-                if( $ixp->getAggregateGraphName() )
-                {
-                    $graphs[ $ixp->getId() ]['name']  = $ixp->getAggregateGraphName();
-                    $graphs[ $ixp->getId() ]['title'] = 'IXP Aggregate Graph';
-
-                    $mrtg = new IXP_Mrtg(
-                        $ixp->getMrtgPath() . DIRECTORY_SEPARATOR . 'ixp_peering-' . $ixp->getAggregateGraphName()
-                            . '-' . IXP_Mrtg::CATEGORY_BITS . '.log'
-                    );
-
-                    $stats[ $ixp->getId() ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
-                }
-
-                foreach( $ixp->getInfrastructures() as $inf )
+/*
+                foreach( d2r('IXP')->getDefault()->getInfrastructures() as $inf )
                 {
                     if( $inf->getAggregateGraphName() )
                     {
@@ -122,7 +101,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
 
                         $stats[ $ixp->getId() . '-' . $inf->getId() ] = $mrtg->getValues( IXP_Mrtg::PERIOD_MONTH, IXP_Mrtg::CATEGORY_BITS );
                     }
-                }
+                }*/
             }
 
             $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;

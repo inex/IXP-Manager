@@ -228,6 +228,12 @@ abstract class Graph {
      */
     private $statistics = null;
 
+    /**
+     * Renderer object (essentially a cache which is wiped as appropriate)
+     * @var IXP\Services\Grapher\Renderer
+     */
+    private $renderer = null;
+
 
     /**
      * Constructor
@@ -292,6 +298,19 @@ abstract class Graph {
     }
 
     /**
+     * For a given graph object ($this), render it
+     *
+     * @return IXP\Contracts\Grapher\Renderer
+     */
+    public function renderer(): Renderer {
+        if( $this->renderer === null ) {
+            $this->renderer = new Renderer( $this );
+        }
+        return $this->renderer;
+    }
+
+
+    /**
      * We cache certain data (e.g. backend, data, statistics). This needs to be wiped
      * if certain graph parameters are changed.
      */
@@ -299,6 +318,7 @@ abstract class Graph {
         $this->backend    = null;
         $this->data       = null;
         $this->statistics = null;
+        $this->renderer   = null;
     }
 
 

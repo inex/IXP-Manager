@@ -208,20 +208,13 @@
 <div class="span6">
 
         {if isset( $graphs ) and count( $graphs )}
-            {foreach $graphs as $id => $data}
+            {foreach $graphs as $id => $graph}
                 <div class="row-fluid">
                     <div class="well">
-                        <h3>{$data.title}</h3>
+                        <h3>Title</h3>
 
                         <p>
-                            {genMrtgGraphBox
-                                ixp=$id
-                                shortname='X_Peering'
-                                period='month'
-                                category='bits'
-                                values=$stats.$id
-                                graph=$data.name
-                            }
+                            {$graph->renderer()->boxLegacy()}
                         </p>
                     </div>
                 </div>

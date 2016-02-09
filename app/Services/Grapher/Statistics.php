@@ -173,59 +173,6 @@ class Statistics {
             ->setAverageOut(  (float)( $totalOut / $totalTime ) );
     }
 
-    /**
-     * Scale function
-     *
-     * This function will scale a number to (for example for traffic
-     * measured in bits/second) to Kbps, Mbps, Gbps or Tbps.
-     *
-     * Valid string formats ($strFormats) and what they return are:
-     *    bytes               => Bytes, KBytes, MBytes, GBytes, TBytes
-     *    pkts / errs / discs => pps, Kpps, Mpps, Gpps, Tpps
-     *    bits / *            => bits, Kbits, Mbits, Gbits, Tbits
-     *
-     * Valid return types ($format) are:
-     *    0 => fully formatted and scaled value. E.g.  12,354.235 Tbits
-     *    1 => scaled value without string. E.g. 12,354.235
-     *    2 => just the string. E.g. Tbits
-     *
-     * @param float  $v          The value to scale
-     * @param string $format     The format to sue (as above: bytes / pkts / errs / etc )
-     * @param int    $decs       Number of decimals after the decimal point. Defaults to 3.
-     * @param int    $returnType Type of string to return. Valid values are listed above. Defaults to 0.
-     * @return string            Scaled / formatted number / type.
-     */
-    public static function scale( float $v, string $format, int $decs = 3, int $returnType = 0 ): string {
-        if( $format == "bytes" ) {
-            $formats = [
-                "Bytes", "KBytes", "MBytes", "GBytes", "TBytes"
-            ];
-        } else if( in_array( $format, [ 'pkts', 'errs', 'discs' ] ) ) {
-            $formats = [
-                "pps", "Kpps", "Mpps", "Gpps", "Tpps"
-            ];
-        } else {
-            $formats = [
-                "bits", "Kbits", "Mbits", "Gbits", "Tbits"
-            ];
-        }
-
-        for( $i = 0; $i < sizeof( $formats ); $i++ )
-        {
-            if( ( $v / 1000.0 < 1.0 ) || ( sizeof( $formats ) == $i + 1 ) ) {
-                if( $returnType == 0 )
-                    return number_format( $v, $decs ) . " " . $formats[$i];
-                elseif( $returnType == 1 )
-                    return number_format( $v, $decs );
-                else
-                    return $formats[$i];
-            } else {
-                $v /= 1000.0;
-            }
-        }
-    }
-
-
 
     /**
      * Set statistics value
@@ -377,14 +324,14 @@ class Statistics {
      */
     public function all(): array {
         return [
-            'totalIn'     => $this->totalIn(),
-            'totalOut'    => $this->totalOut(),
-            'curIn'       => $this->curIn(),
-            'curOut'      => $this->curOut(),
-            'averageIn'   => $this->averageIn(),
-            'averageOut'  => $this->averageOut(),
-            'maxIn'       => $this->maxIn(),
-            'maxOut'      => $this->maxOut(),
+            'totalin'     => $this->totalIn(),
+            'totalout'    => $this->totalOut(),
+            'curin'       => $this->curIn(),
+            'curout'      => $this->curOut(),
+            'averagein'   => $this->averageIn(),
+            'averageout'  => $this->averageOut(),
+            'maxin'       => $this->maxIn(),
+            'maxout'      => $this->maxOut(),
         ];
     }
 
