@@ -92,21 +92,6 @@ class Dummy implements GrapherBackendContract {
     }
 
     /**
-     * Examines the provided graph object and determines if this backend is able to
-     * process the request or not.
-     *
-     * {inheritDoc}
-     *
-     * @param IXP\Services\Grapher\Graph $graph
-     * @return bool
-     */
-    public function canProcess( Graph $graph ): bool {
-        // The dummy backend can process all graphs
-
-        return true;
-    }
-
-    /**
      * Get the data points for a given graph
      *
      * {inheritDoc}
@@ -117,4 +102,29 @@ class Dummy implements GrapherBackendContract {
     public function data( Graph $graph ): array {
         return [ 1,2,3,4,5,6 ];
     }
+
+    /**
+     * Get a complete list of functionality that this backend supports.
+     *
+     * {inheritDoc}
+     *
+     * @return array
+     */
+    public function supports(): array {
+        return [
+            'ixp' => [
+                'protocols'   => array_keys( Graph::PROTOCOLS     ),
+                'categories'  => array_keys( Graph::CATEGORY_DESC ),
+                'periods'     => array_keys( Graph::PERIOD_DESCS  ),
+                'types'       => array_keys( Graph::TYPES         )
+            ],
+            'infrastructure' => [
+                'protocols'   => array_keys( Graph::PROTOCOLS     ),
+                'categories'  => array_keys( Graph::CATEGORY_DESC ),
+                'periods'     => array_keys( Graph::PERIOD_DESCS  ),
+                'types'       => array_keys( Graph::TYPES         )
+            ]
+        ];
+    }
+
 }

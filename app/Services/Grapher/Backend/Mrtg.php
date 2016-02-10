@@ -22,6 +22,7 @@
  */
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+use IXP\Services\Grapher\Backend as GrapherBackend;
 use IXP\Services\Grapher\Graph;
 
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
@@ -40,7 +41,7 @@ use View;
  * @copyright  Copyright (c) 2009 - 2016, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Mrtg implements GrapherBackendContract {
+class Mrtg extends GrapherBackend implements GrapherBackendContract {
 
     /**
      * {@inheritDoc}
@@ -174,23 +175,27 @@ class Mrtg implements GrapherBackendContract {
     }
 
     /**
-     * Examines the provided graph object and determines if this backend is able to
-     * process the request or not.
+     * Get a complete list of functionality that this backend supports.
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
-     * @return bool
+     * @return array
      */
-    public function canProcess( Graph $graph ): bool {
-        // The MRTG backend can process almost all graphs - except:
-
-        // no per protocol graphs
-        if( $graph->protocol() !== Graph::PROTOCOL_ALL ) {
-            return false;
-        }
-
-        return true;
+    public function supports(): array {
+        return [
+            'ixp' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL ],
+                'categories'  => array_keys( Graph::CATEGORY_DESC ),
+                'periods'     => array_keys( Graph::PERIOD_DESCS  ),
+                'types'       => array_keys( Graph::TYPES         )
+            ],
+            'infrastructure' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL ],
+                'categories'  => array_keys( Graph::CATEGORY_DESC ),
+                'periods'     => array_keys( Graph::PERIOD_DESCS  ),
+                'types'       => array_keys( Graph::TYPES         )
+            ]
+        ];
     }
 
     /**

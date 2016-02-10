@@ -92,24 +92,6 @@ class Sflow implements GrapherBackendContract {
     }
 
     /**
-     * Examines the provided graph object and determines if this backend is able to
-     * process the request or not.
-     *
-     * {inheritDoc}
-     *
-     * @param IXP\Services\Grapher\Graph $graph
-     * @return bool
-     */
-    public function canProcess( Graph $graph ): bool {
-        // The sflow backend can process almost all graphs - except:
-
-        // ...
-
-
-        return true;
-    }
-
-    /**
      * Get the data points for a given graph
      *
      * {inheritDoc}

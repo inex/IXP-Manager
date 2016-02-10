@@ -347,6 +347,15 @@ abstract class Graph {
     }
 
     /**
+     * Return the class name less the IXP\Grapher\Graph\ namespace as lower case
+     * @return string
+     */
+    public function lcClassType(): string {
+        return strtolower( $this->classType() );
+    }
+
+
+    /**
      * A function to generate a cache key for a given graph object
      *
      * @param string $type The 'type' to append to the key (e.g. png, log, rrd, etc.)

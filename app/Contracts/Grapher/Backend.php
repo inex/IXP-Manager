@@ -141,4 +141,26 @@ interface Backend {
      */
     public function data( Graph $graph ): array;
 
+
+    /**
+     * Get the PNG image for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    public function png( Graph $graph ): string;
+
+    /**
+     * Get a complete list of functionality that this backend supports.
+     *
+     * See the IXP\Services\Grapher\Backend\Dummy for a complete list.
+     *
+     * {inheritDoc}
+     *
+     * @return array
+     */
+    public function supports(): array;
+    
 }
