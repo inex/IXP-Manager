@@ -129,21 +129,47 @@ class Grapher {
      * Return the required grapher for the specified graph
      *
      * @param IXP\Services\Grapher\Graph $graph
+     * @param string $backends Limit search to specified backends
      * @return IXP\Contracts\Grapher\Backend
      * @throws IXP\Exceptions\Services\Grapher\ConfigurationException, IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException
      */
-    public function backendForGraph( Graph $graph ): BackendContract {
-        if( !count( config('grapher.backend') ) ) {
+    public function backendForGraph( Graph $graph, array $backends = [] ): BackendContract {
+        if( !count( $backends ) ) {
+            $backends = config('grapher.backend');
+        }
+
+        if( !count( $backends ) ) {
             throw new ConfigurationException( 'No graphing backend supplied or configured (see configs/grapher.php)' );
         }
 
-        foreach( config('grapher.backend') as $backend ) {
+        foreach( $backends as $backend ) {
             if( ( $b = $this->backend( $backend ) )->canProcess( $graph ) ) {
                 return $b;
             }
         }
 
         throw new GraphCannotBeProcessedException('No backend available to process this graph');
+    }
+
+    /**
+     * Return the available grapher backends for the specified graph
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return IXP\Contracts\Grapher\Backend[]
+     * @throws IXP\Exceptions\Services\Grapher\ConfigurationException
+     */
+    public function backendsForGraph( Graph $graph ): array {
+        if( !count( config('grapher.backend') ) ) {
+            throw new ConfigurationException( 'No graphing backend supplied or configured (see configs/grapher.php)' );
+        }
+
+        $backends = [];
+        foreach( config('grapher.backend') as $backend ) {
+            if( ( $b = $this->backend( $backend ) )->canProcess( $graph ) ) {
+                $backends[] = $b;
+            }
+        }
+        return $backends;
     }
 
     /**

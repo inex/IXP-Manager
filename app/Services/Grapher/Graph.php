@@ -369,6 +369,13 @@ abstract class Graph {
         $arr['statistics'] = $this->statistics()->all();
         $arr['params']     = $this->getParamsAsArray();
         $arr['supports']   = $supports[ $this->lcClassType() ];
+        $arr['backends']   = [];
+
+        foreach( $this->grapher()->backendsForGraph($this) as $backend ) {
+            $arr['backends'][$backend->name()]   = $backend->name();
+        }
+
+        $arr['backend']    = $this->backend()->name();
 
         return $arr;
     }

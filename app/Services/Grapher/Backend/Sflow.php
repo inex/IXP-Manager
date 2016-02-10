@@ -94,6 +94,31 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
     }
 
     /**
+     * Get a complete list of functionality that this backend supports.
+     *
+     * {inheritDoc}
+     *
+     * @return array
+     */
+    public static function supports(): array {
+        return [
+            'ixp' => [
+                'categories' => [],
+                'protocols'  => [],
+                'periods'    => [],
+                'types'      => []
+            ],
+            'infrastructure' => [
+                'categories' => [],
+                'protocols'  => [],
+                'periods'    => [],
+                'types'      => []
+            ],
+        ];
+    }
+
+
+    /**
      * Get the data points for a given graph
      *
      * {inheritDoc}
@@ -105,5 +130,16 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
         return [];
     }
 
+    /**
+     * Get the PNG image for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    public function png( Graph $graph ): string {
+        return '';
+    }
 
 }
