@@ -161,6 +161,6 @@ interface Backend {
      *
      * @return array
      */
-    public function supports(): array;
-    
+    public static function supports(): array;
+
 }

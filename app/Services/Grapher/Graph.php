@@ -68,6 +68,15 @@ abstract class Graph {
      */
     private $period = self::PERIOD_DEFAULT;
 
+    /**
+     * Array of valid periods for drill down graphs
+     */
+    const PERIODS = [
+        self::PERIOD_DAY   => self::PERIOD_DAY,
+        self::PERIOD_WEEK  => self::PERIOD_WEEK,
+        self::PERIOD_MONTH => self::PERIOD_MONTH,
+        self::PERIOD_YEAR  => self::PERIOD_YEAR
+    ];
 
     /**
      * Array of valid periods for drill down graphs
@@ -110,11 +119,20 @@ abstract class Graph {
      */
     private $category = self::CATEGORY_DEFAULT;
 
+    /**
+     * Array of valid categories for graphs
+     */
+    const CATEGORIES = [
+        self::CATEGORY_BITS     => self::CATEGORY_BITS,
+        self::CATEGORY_PACKETS  => self::CATEGORY_PACKETS,
+        self::CATEGORY_ERRORS   => self::CATEGORY_ERRORS,
+        self::CATEGORY_DISCARDS => self::CATEGORY_DISCARDS
+    ];
 
     /**
      * Array of valid categories for graphs
      */
-    const CATEGORY_DESC = [
+    const CATEGORY_DESCS = [
         self::CATEGORY_BITS     => 'Bits',
         self::CATEGORY_PACKETS  => 'Packets',
         self::CATEGORY_ERRORS   => 'Errors',
@@ -124,17 +142,17 @@ abstract class Graph {
     /**
      * Protocols for graphs
      */
-    const PROTOCOL_IPV4 = 4;
+    const PROTOCOL_IPV4 = 'ipv4';
 
     /**
      * Protocols for graphs
      */
-    const PROTOCOL_IPV6 = 6;
+    const PROTOCOL_IPV6 = 'ipv6';
 
     /**
      * Protocols for graphs
      */
-    const PROTOCOL_ALL = 0;
+    const PROTOCOL_ALL = 'all';
 
     /**
      * Default protocol for graphs
@@ -151,11 +169,20 @@ abstract class Graph {
     /**
      * Array of valid protocols
      */
-    const PROTOCOLS = array(
+    const PROTOCOLS = [
+        self::PROTOCOL_ALL  => self::PROTOCOL_ALL,
+        self::PROTOCOL_IPV4 => self::PROTOCOL_IPV4,
+        self::PROTOCOL_IPV6 => self::PROTOCOL_IPV6
+    ];
+
+    /**
+     * Array of valid protocols
+     */
+    const PROTOCOL_DESCS = [
         self::PROTOCOL_ALL  => 'All',
         self::PROTOCOL_IPV4 => 'IPv4',
         self::PROTOCOL_IPV6 => 'IPv6'
-    );
+    ];
 
 
     /**
@@ -199,6 +226,17 @@ abstract class Graph {
      * @var array
      */
     const TYPES = [
+        self::TYPE_PNG  => self::TYPE_PNG,
+        self::TYPE_LOG  => self::TYPE_LOG,
+        self::TYPE_RRD  => self::TYPE_RRD,
+        self::TYPE_JSON => self::TYPE_JSON,
+    ];
+
+    /**
+     * Possible types and descriptions
+     * @var array
+     */
+    const TYPE_DESCS = [
         self::TYPE_PNG  => 'PNG',
         self::TYPE_LOG  => 'LOG',
         self::TYPE_RRD  => 'RRD',
@@ -435,7 +473,7 @@ abstract class Graph {
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function setPeriod( $v ): Graph {
-        if( !isset( self::PERIOD_DESCS[ $v ] ) ) {
+        if( !isset( self::PERIODS[ $v ] ) ) {
             throw new ParameterException('Invalid period ' . $v );
         }
 
@@ -451,17 +489,17 @@ abstract class Graph {
      * Get the protocol we're set to use
      * @return int
      */
-    public function protocol(): int {
+    public function protocol(): string {
         return $this->protocol;
     }
 
     /**
      * Set the protocol we should use
-     * @param int $v
+     * @param string $v
      * @return \IXP\Services\Grapher Fluid interface
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
-    public function setProtocol( $v ): Graph {
+    public function setProtocol( string $v ): Graph {
         if( !isset( self::PROTOCOLS[ $v ] ) ) {
             throw new ParameterException('Invalid protocol ' . $v );
         }
@@ -489,7 +527,7 @@ abstract class Graph {
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function setCategory( $v ): Graph {
-        if( !isset( self::CATEGORY_DESC[ $v ] ) ) {
+        if( !isset( self::CATEGORIES[ $v ] ) ) {
             throw new ParameterException('Invalid category ' . $v );
         }
 
@@ -558,7 +596,7 @@ abstract class Graph {
      * @return string The verified / sanitised / default value
      */
     public static function processParameterPeriod( string $v ): string {
-        if( !isset( self::PERIOD_DESCS[ $v ] ) ) {
+        if( !isset( self::PERIODS[ $v ] ) ) {
             $v = self::PERIOD_DEFAULT;
         }
         return $v;
@@ -573,7 +611,7 @@ abstract class Graph {
      * @param string $v The user input value
      * @return string The verified / sanitised / default value
      */
-    public static function processParameterProtocol( int $v ): int {
+    public static function processParameterProtocol( string $v ): string {
         if( !isset( self::PROTOCOLS[ $v ] ) ) {
             $v = self::PROTOCOL_DEFAULT;
         }
@@ -590,7 +628,7 @@ abstract class Graph {
      * @return string The verified / sanitised / default value
      */
     public static function processParameterCategory( string $v ): string {
-        if( !isset( self::CATEGORY_DESC[ $v ] ) ) {
+        if( !isset( self::CATEGORIES[ $v ] ) ) {
             $v = self::CATEGORY_DEFAULT;
         }
         return $v;

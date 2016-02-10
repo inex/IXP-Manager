@@ -147,6 +147,22 @@ class Grapher {
     }
 
     /**
+     * Iterate over all configured backends and provide a complete array of what
+     * graph types are supported
+     * @return array
+     */
+    public function supports(): array {
+        $s = [];
+
+        foreach( config('grapher.backend') as $backend ) {
+            $backendClass = Config::get( "grapher.providers.{$backend}" );
+            $s = array_replace_recursive( $s, $backendClass::supports() );
+        }
+
+        return $s;
+    }
+
+    /**
      * Get an instance of an IXP graph
      * @param Entities\IXP $ixp
      * @return IXP\Services\Grapher\Graph\IXP

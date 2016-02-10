@@ -181,19 +181,21 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @return array
      */
-    public function supports(): array {
+    public static function supports(): array {
         return [
             'ixp' => [
-                'protocols'   => [ Graph::PROTOCOL_ALL ],
-                'categories'  => array_keys( Graph::CATEGORY_DESC ),
-                'periods'     => array_keys( Graph::PERIOD_DESCS  ),
-                'types'       => array_keys( Graph::TYPES         )
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                    Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES
             ],
             'infrastructure' => [
-                'protocols'   => [ Graph::PROTOCOL_ALL ],
-                'categories'  => array_keys( Graph::CATEGORY_DESC ),
-                'periods'     => array_keys( Graph::PERIOD_DESCS  ),
-                'types'       => array_keys( Graph::TYPES         )
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                    Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES
             ]
         ];
     }

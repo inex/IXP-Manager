@@ -22,6 +22,7 @@
  */
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+use IXP\Services\Grapher\Backend as GrapherBackend;
 use IXP\Services\Grapher\Graph;
 
 use Entities\IXP;
@@ -35,7 +36,7 @@ use Entities\IXP;
  * @copyright  Copyright (c) 2009 - 2016, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Dummy implements GrapherBackendContract {
+class Dummy extends GrapherBackend implements GrapherBackendContract {
 
     /**
      * {@inheritDoc}
@@ -104,25 +105,38 @@ class Dummy implements GrapherBackendContract {
     }
 
     /**
+     * Get the PNG image for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    public function png( Graph $graph ): string {
+        return 'qqqq';
+    }
+
+
+    /**
      * Get a complete list of functionality that this backend supports.
      *
      * {inheritDoc}
      *
      * @return array
      */
-    public function supports(): array {
+    public static function supports(): array {
         return [
             'ixp' => [
-                'protocols'   => array_keys( Graph::PROTOCOLS     ),
-                'categories'  => array_keys( Graph::CATEGORY_DESC ),
-                'periods'     => array_keys( Graph::PERIOD_DESCS  ),
-                'types'       => array_keys( Graph::TYPES         )
+                'protocols'   => Graph::PROTOCOLS,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES
             ],
             'infrastructure' => [
-                'protocols'   => array_keys( Graph::PROTOCOLS     ),
-                'categories'  => array_keys( Graph::CATEGORY_DESC ),
-                'periods'     => array_keys( Graph::PERIOD_DESCS  ),
-                'types'       => array_keys( Graph::TYPES         )
+                'protocols'   => Graph::PROTOCOLS,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES
             ]
         ];
     }

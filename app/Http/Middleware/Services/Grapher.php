@@ -88,7 +88,7 @@ class Grapher
 
         $request->period   = Graph::processParameterPeriod(   $request->input( 'period',   '' ) );
         $request->category = Graph::processParameterCategory( $request->input( 'category', '' ) );
-        $request->protocol = Graph::processParameterProtocol( $request->input( 'protocol', 0  ) );
+        $request->protocol = Graph::processParameterProtocol( $request->input( 'protocol', '' ) );
         $request->type     = Graph::processParameterType(     $request->input( 'type',     '' ) );
 
         switch( $target ) {
