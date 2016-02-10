@@ -28,6 +28,8 @@ use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestExce
 
 use Entities\IXP as IXPEntity;
 
+use Auth;
+
 /**
  * Grapher -> Abstract Graph
  *
@@ -120,6 +122,28 @@ class IXP extends Graph {
 
 
     /**
+     * This function controls access to the graph.
+     *
+     * {@inheritDoc}
+     *
+     * For IXP aggregate graphs we pretty much allow complete access.
+     *
+     * @return bool
+     */
+    public function authorise(): bool {
+        if( Auth::check() && Auth::user()->isSuperUser() ) {
+            return $this->allow();
+        }
+
+        if( in_array( $this->category(), [ self::CATEGORY_ERRORS, self::CATEGORY_DISCARDS ] ) ) {
+            return $this->deny();
+        }
+
+        return $this->allow();
+    }
+
+
+    /**
      * Process user input for the parameter: ixp
      *
      * Note that this function just sets the default if the input is invalid.
@@ -129,7 +153,7 @@ class IXP extends Graph {
      * @return int The verified / sanitised / default value
      */
     public static function processParameterIXP( int $v ): IXPEntity {
-        if( !( $ixp = d2r( 'IXP' )->find( $v ) ) ) {
+        if( !$v || !( $ixp = d2r( 'IXP' )->find( $v ) ) ) {
             $ixp = d2r( 'IXP' )->getDefault();
         }
         return $ixp;

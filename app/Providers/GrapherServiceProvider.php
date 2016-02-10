@@ -57,34 +57,13 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        /*
-
-                        ixp/n       (optional)
-                        graph/{switch,trunk,ixp,infra,customer}
-                        lag/vid
-
-                        period/day    (possible extension: period-from/period-to)
-                        category/{bits,pkts,errs,discs}
-
-                        protocol/{4,6}
-
-                        type/{png,rrd,log,json,...}
-
-                        type/resources -> what of the above is available?
-        */
-
         Route::group(['namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::', 'prefix' => 'grapher', 'middleware' => 'grapher' ], function(){
-
-            Route::get( 'ixp',                   'Grapher@ixp' );
-            Route::get( 'ixp/{id}/period/{period}/category/{category}/protocol/{protocol}/type/{type}',                   'Grapher@ixp' );
-            Route::get( 'ixp/{id}/period/{period}/category/{category}/protocol/{protocol}/type/{type}/backend/{backend}', 'Grapher@ixp' );
-
+            Route::get( 'ixp',            'Grapher@ixp'            );
+            Route::get( 'infrastructure', 'Grapher@infrastructure' );
         });
-
 
         // we have a few rendering functions we want to include here:
         $this->app->make('League\Plates\Engine')->loadExtension(new GrapherRendererExtension());
-
     }
 
     /**

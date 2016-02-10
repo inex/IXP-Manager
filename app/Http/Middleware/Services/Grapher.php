@@ -64,6 +64,10 @@ class Grapher
         // let's take care of that here
         $graph = $this->processParameters( $request, $grapher );
 
+        // so we know what graph we need and who's looking for it
+        // let's authorise for access (this throws an exception)
+        $graph->authorise();
+
         $request->attributes->add(['graph' => $graph]);
 
         return $next($request);
@@ -89,13 +93,15 @@ class Grapher
 
         switch( $target ) {
             case 'ixp':
-                $request->ixp = IXPGraph::processParameterIXP( (int)$request->input( 'ixp', 0 ) )->getId();
-                $graph = $grapher->ixp( d2r( 'IXP' )->getDefault() )->setParamsFromArray( $request->all() );
+                $ixp = IXPGraph::processParameterIXP( (int)$request->input( 'id', 0 ) );
+                $request->id = $ixp->getId();
+                $graph = $grapher->ixp( $ixp )->setParamsFromArray( $request->all() );
                 break;
 
             case 'infrastructure':
-                $request->infrastructure = InfrastructureGraph::processParameterInfrastructure( (int)$request->input( 'infrastructure', 0 ) )->getId();
-                $graph = $grapher->infrastructure( d2r( 'Infrastructure' )->find($request->input( 'infrastructure') ) )->setParamsFromArray( $request->all() );
+                $infra = InfrastructureGraph::processParameterInfrastructure( (int)$request->input( 'id', 0 ) );
+                $request->infrastructure = $infra->getId();
+                $graph = $grapher->infrastructure( $infra )->setParamsFromArray( $request->all() );
                 break;
 
             default:

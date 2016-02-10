@@ -28,6 +28,8 @@ use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestExce
 
 use Entities\Infrastructure as InfrastructureEntity;
 
+use Auth;
+
 /**
  * Grapher -> Infrastructure Graph
  *
@@ -96,6 +98,28 @@ class Infrastructure extends Graph {
     }
 
     /**
+     * This function controls access to the graph.
+     *
+     * {@inheritDoc}
+     *
+     * For infrastructure aggregate graphs we pretty much allow complete access.
+     *
+     * @return bool
+     */
+    public function authorise(): bool {
+        if( Auth::check() && Auth::user()->isSuperUser() ) {
+            return $this->allow();
+        }
+
+        if( in_array( $this->category(), [ self::CATEGORY_ERRORS, self::CATEGORY_DISCARDS ] ) ) {
+            return $this->deny();
+        }
+
+        return $this->allow();
+    }
+
+
+    /**
      * Process user input for the parameter: ixp
      *
      * Note that this function just sets the default if the input is invalid.
@@ -105,8 +129,8 @@ class Infrastructure extends Graph {
      * @return int The verified / sanitised / default value
      */
     public static function processParameterInfrastructure( int $v ): InfrastructureEntity {
-        if( !( $infra = d2r( 'Infrastructure' )->find( $v ) ) ) {
-            $infra = d2r( 'IXP' )->getDefault()->getInfrastructures()[0];
+        if( !$v || !( $infra = d2r( 'Infrastructure' )->find( $v ) ) ) {
+            abort(404);
         }
         return $infra;
     }

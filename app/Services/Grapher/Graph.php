@@ -24,6 +24,8 @@
 use IXP\Services\Grapher;
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
 
+use Illuminate\Auth\Access\AuthorizationException;
+
 /**
  * Grapher -> Abstract Graph
  *
@@ -375,6 +377,39 @@ abstract class Graph {
     abstract function identifier(): string;
 
 
+    /**
+     * This function controls access to the graph.
+     *
+     * You can check user privileges / membership / etc. and then call allow()
+     * to permit access or deny() to deny it. These methods can also be
+     * overridden.
+     *
+     * In it's default incarnation, this will **always** fail. You need to explicitly
+     * allow graph access based on your own requirements.
+     *
+     * @return bool
+     */
+    public function authorise(): bool {
+        return $this->deny();
+    }
+
+    /**
+     * Action to take when authorisation fails.
+     * @throws Illuminate\Auth\Access\AuthorizationException
+     * @return bool
+     */
+    protected function deny($message = 'This action is unauthorized.'): bool {
+        throw new AuthorizationException($message);
+        return bool; // never executed in this example
+    }
+
+    /**
+    * Action to take when authorisation succeeds.
+    * @return bool
+     */
+    protected function allow(): bool {
+        return true;
+    }
 
     /**
      * Get the period we're set to use
