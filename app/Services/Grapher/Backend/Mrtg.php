@@ -228,10 +228,8 @@ class Mrtg implements GrapherBackendContract {
      */
     private function resolveFilePath( Graph $graph, $type ): string {
         $config = config('grapher.backends.mrtg');
-        $class  = explode( '\\', get_class( $graph ) );
-        $gtype  = array_pop( $class );
 
-        switch( $gtype ) {
+        switch( $graph->classType() ) {
             case 'IXP':
                 return sprintf( "%s/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
                     $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );

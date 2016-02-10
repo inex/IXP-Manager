@@ -28,6 +28,7 @@ use Illuminate\Support\ServiceProvider;
 use IXP\Exceptions\Services\Grapher\ConfigurationException;
 use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherRendererExtension;
 
+use Cache;
 use Config;
 use Route;
 

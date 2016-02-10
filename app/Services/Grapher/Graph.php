@@ -280,7 +280,9 @@ abstract class Graph {
      */
     public function data(): array {
         if( $this->data === null ) {
-            $this->data = $this->backend()->data($this);
+            $this->data = $this->grapher()->remember( $this->cacheKey('data'), function() {
+                return $this->backend()->data($this);
+            });
         }
         return $this->data;
     }
@@ -291,7 +293,9 @@ abstract class Graph {
      * @return string
      */
     public function png(): string {
-        return $this->backend()->png($this);
+        return $this->grapher()->remember( $this->cacheKey('png'), function() {
+            return $this->backend()->png($this);
+        });
     }
 
 
@@ -331,12 +335,44 @@ abstract class Graph {
         $this->renderer   = null;
     }
 
+    /**
+     * Return the class name less the IXP\Grapher\Graph\ namespace
+     * @return string
+     */
+    public function classType(): string {
+        $class  = explode( '\\', get_class( $this ) );
+        return array_pop( $class );
+    }
+
+    /**
+     * A function to generate a cache key for a given graph object
+     *
+     * @param string $type The 'type' to append to the key (e.g. png, log, rrd, etc.)
+     * @return string
+     */
+    public function cacheKey( string $type = '' ): string {
+        return 'grapher::' . $this->identifier()
+            . '-proto' . $this->protocol()
+            . '-' . $this->category()
+            . '-' . $this->period()
+            . '-' . $this->type()
+            . '.' . $type;
+    }
+
 
     /**
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
     abstract function name(): string;
+
+    /**
+     * A unique identifier for this 'graph type'
+     *
+     * E.g. for an IXP, it might be ixpxxx where xxx is the database id
+     * @return string
+     */
+    abstract function identifier(): string;
 
 
 

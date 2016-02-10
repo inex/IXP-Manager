@@ -50,4 +50,31 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cache Settings
+    |--------------------------------------------------------------------------
+    |
+    | Creating imahes / loading log files are expensive operations. Especially
+    | when not on the local machine.
+    |
+    | As such, we cache these items by default in the local file store.
+    |
+    */
+
+    'cache' => [
+        // cache enabled?
+        'enabled' => env( 'GRAPHER_CACHE_ENABLED', 'true' ),
+
+        // cache store to use
+        'store' => env( 'GRAPHER_CACHE_STORE', 'file' ),
+
+        // cache lifetime - this is not editable as 5mins in an industry standard
+        'lifetime' => 5,
+
+        // namespace -> not a cache namespace but a key namespace.
+        // All keys are prepended with 'grapher::'
+    ],
+
+
 ];

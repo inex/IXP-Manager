@@ -23,6 +23,8 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Cache\Repository as CacheRepository;
+
 use IXP\Exceptions\Services\Grapher\{
         BadBackendException,
         CannotHandleRequestException,
@@ -37,6 +39,7 @@ use IXP\Services\Grapher\Graph\Infrastructure as InfrastructureGraph;
 
 use IXP\Contracts\Grapher\Backend as BackendContract;
 
+use Cache;
 use Config;
 use D2EM;
 
@@ -52,6 +55,32 @@ use Entities\{IXP,Infrastructure};
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Grapher {
+
+    /**
+     * Is the cache enabled?
+     * @var bool
+     */
+    private $cacheEnabled = false;
+
+    /**
+     * Is the cache enabled?
+     * @var bool
+     */
+    private $cacheLifetime = 5;
+
+    /**
+     * The cache store
+     * @var Illuminate\Contracts\Cache\Store
+     */
+    private $cache = null;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->setupCache();
+    }
 
     /**
      * As we allow multiple graphing backends, we need to resolve
@@ -136,5 +165,61 @@ class Grapher {
     }
 
 
+
+    /**
+     * initialise the cache
+     * @return void
+     */
+    private function setupCache() {
+        if( config('grapher.cache.enabled', false ) ) {
+            $this->cacheEnabled = true;
+            $this->cacheLifetime = config('grapher.cache.lifetime', 5 );
+            $this->cache = Cache::store( config('grapher.cache.store' ) );
+        } else {
+            $this->cacheEnabled = false;
+        }
+    }
+
+    /**
+     * Is the cache enabled?
+     * @return bool
+     */
+    public function cacheEnabled(): bool {
+        return (bool)$this->cacheEnabled;
+    }
+
+    /**
+     * How long do we cache entries for?
+     * @return int (minutes)
+     */
+    public function cacheLifetime(): int {
+        return (int)$this->cacheLifetime;
+    }
+
+
+    /**
+     * Get the cache repository
+     * @return Illuminate\Cache\Repository
+     */
+    public function cacheRepository(): CacheRepository {
+        return $this->cache;
+    }
+
+    /**
+     * If the cache is enabled, return a previously cached item or else update / set it
+     *
+     * See Laravel's Cache::remember() function
+     *
+     * @param string $key
+     * @param Closure $fn Callback to populate the cache
+     * @return mixed
+     */
+    public function remember( $key, $fn ) {
+        if( $this->cacheEnabled() ) {
+            return $this->cacheRepository()->remember( $key, $this->cacheLifetime(), $fn );
+        } else {
+            return $fn();
+        }
+    }
 
 }

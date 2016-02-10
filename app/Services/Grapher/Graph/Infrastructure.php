@@ -86,6 +86,16 @@ class Infrastructure extends Graph {
     }
 
     /**
+     * A unique identifier for this 'graph type'
+     *
+     * E.g. for an IXP, it might be ixpxxx where xxx is the database id
+     * @return string
+     */
+    public function identifier(): string {
+        return sprintf( "infrastructure%03d", $this->infrastructure()->getId() );
+    }
+
+    /**
      * Process user input for the parameter: ixp
      *
      * Note that this function just sets the default if the input is invalid.
