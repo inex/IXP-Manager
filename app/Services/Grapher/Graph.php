@@ -1,4 +1,7 @@
-<?php namespace IXP\Services\Grapher;
+<?php
+declare(strict_types=1);
+
+namespace IXP\Services\Grapher;
 
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
@@ -243,6 +246,17 @@ abstract class Graph {
         self::TYPE_JSON => 'JSON',
     ];
 
+    /**
+     * Possible content types
+     * @var array
+     */
+    const CONTENT_TYPES = [
+        self::TYPE_PNG  => 'image/png',
+        self::TYPE_LOG  => 'application/json',
+        self::TYPE_RRD  => 'application/octet-stream',
+        self::TYPE_JSON => 'application/json',
+    ];
+
 
     /**
      * Grapher Service
@@ -326,6 +340,66 @@ abstract class Graph {
         }
         return $this->data;
     }
+
+    /**
+     * For a given graph object ($this), find its data via the backend and
+     * return as JSON
+     *
+     * @return string
+     */
+    public function log(): string {
+        return json_encode( $this->data(), JSON_PRETTY_PRINT );
+    }
+
+    /**
+     * A veritable table of contents for API access to this graph
+     *
+     * @return array
+     */
+    public function toc(): array {
+        $arr = [ 'class' => $this->lcClassType() ];
+
+        $supports = $this->backend()->supports();
+
+        foreach( $supports[ $this->lcClassType() ]['types'] as $t ) {
+            $arr['urls'][ $t ] = $this->url( ['type' => $t ] );
+        }
+
+        $arr['base_url']   = url('grapher/'.$this->lcClassType());
+        $arr['statistics'] = $this->statistics()->all();
+        $arr['params']     = $this->getParamsAsArray();
+        $arr['supports']   = $supports[ $this->lcClassType() ];
+
+        return $arr;
+    }
+
+    /**
+     * For a given graph object ($this), find its data via the backend and
+     * return as JSON
+     *
+     * @return string
+     */
+    public function json(): string {
+        return json_encode($this->toc(), JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Generate a URL to get this graphs 'file' of a given type
+     *
+     * **NB:** should be overridden in subclasses as appropriate!
+     *
+     * @param array $overrides Allow standard parameters to be overridden (e.g. category)
+     * @return string
+     */
+    public function url( array $overrides = [] ): string {
+        return url('grapher/'.$this->lcClassType()) . sprintf("?period=%s&type=%s&category=%s&protocol=%s",
+            isset( $overrides['period']   ) ? $overrides['period']   : $this->period(),
+            isset( $overrides['type']     ) ? $overrides['type']     : $this->type(),
+            isset( $overrides['category'] ) ? $overrides['category'] : $this->category(),
+            isset( $overrides['protocol'] ) ? $overrides['protocol'] : $this->protocol()
+        );
+    }
+
 
     /**
      * For a given graph object ($this), get it's png
@@ -584,6 +658,21 @@ abstract class Graph {
             }
         }
         return $this;
+    }
+
+    /**
+     * Get parameters in bulk as associative array
+     *
+     * Base function supports keys: type, protocol, category, period
+     *
+     * @return array $params
+     */
+    public function getParamsAsArray(): array {
+        $p = [];
+        foreach( [ 'type', 'category', 'period', 'protocol'] as $param ){
+            $p[ $param ] = $this->$param();
+        }
+        return $p;
     }
 
     /**

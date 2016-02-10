@@ -142,6 +142,31 @@ class IXP extends Graph {
         return $this->allow();
     }
 
+    /**
+     * Generate a URL to get this graphs 'file' of a given type
+     *
+     * @param array $overrides Allow standard parameters to be overridden (e.g. category)
+     * @return string
+     */
+    public function url( array $overrides = [] ): string {
+        return parent::url( $overrides ) . sprintf("&id=%d",
+            isset( $overrides['id']   ) ? $overrides['id']   : $this->ixp()->getId()
+        );
+    }
+
+    /**
+     * Get parameters in bulk as associative array
+     *
+     * Extends base function
+     *
+     * @return array $params
+     */
+    public function getParamsAsArray(): array {
+        $p = parent::getParamsAsArray();
+        $p['id'] = $this->ixp()->getId();
+        return $p;
+    }
+
 
     /**
      * Process user input for the parameter: ixp

@@ -96,14 +96,14 @@ class Grapher extends Controller
 
 
     public function ixp( Request $request ): Response {
-        return (new Response( $this->graph()->png() ) )
-              ->header('Content-Type', 'image/png' )
+        return (new Response( call_user_func( [ $this->graph(), $this->graph()->type() ] ) ) )
+              ->header('Content-Type', Graph::CONTENT_TYPES[ $this->graph()->type() ] )
               ->header( 'Expires', Carbon::now()->addMinutes(5)->toRfc1123String() );
     }
 
     public function infrastructure( Request $request ): Response {
-        return (new Response( $this->graph()->png() ) )
-              ->header('Content-Type', 'image/png' )
+        return (new Response( call_user_func( [ $this->graph(), $this->graph()->type() ] ) ) )
+              ->header('Content-Type', Graph::CONTENT_TYPES[ $this->graph()->type() ] )
               ->header( 'Expires', Carbon::now()->addMinutes(5)->toRfc1123String() );
     }
 }

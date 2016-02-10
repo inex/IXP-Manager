@@ -188,14 +188,14 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => Graph::TYPES
+                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
             'infrastructure' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => Graph::TYPES
+                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
             ]
         ];
     }
