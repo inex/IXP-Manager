@@ -32,7 +32,11 @@ return [
 
     'backends' => [
 
-        'dummy' => [],
+        'dummy' => [
+            // where to find the dummy MRTG log files (and png files)
+            'logdir'  => env( 'GRAPHER_BACKEND_DUMMY_LOGDIR', base_path() . '/data/grapher/dummy' ),
+
+        ],
 
         'mrtg'  => [
             // see: http://oss.oetiker.ch/mrtg/doc/mrtg-rrd.en.html

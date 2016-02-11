@@ -45,13 +45,13 @@ class Mrtg
      * the absolute path for the log file under investigation
      * @var string
      */
-    private $file = null;
+    protected $file = null;
 
     /**
      * Array of MRTG log data from the file
      * @var array
      */
-    private $array = null;
+    protected $array = null;
 
 
     /**
@@ -84,7 +84,7 @@ class Mrtg
      * @param string
      * @return float
      */
-    function getPeriodTime( $period ): float {
+    public function getPeriodTime( $period ): float {
         if( isset( self::PERIOD_TIME[ $period ] ) )
             return self::PERIOD_TIME[ $period ];
         else
@@ -110,7 +110,7 @@ class Mrtg
      *
      * The above will be ordered with the newest first as per the log file.
      */
-    private function loadMrtgFile(): array {
+    protected function loadMrtgFile(): array {
 
         // Log files can be made available over HTTP from a monitoring / collection server but
         // are sometimes unavailable during a log update / rebuild / etc. As such, try a

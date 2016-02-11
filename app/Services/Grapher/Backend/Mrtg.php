@@ -248,7 +248,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 break;
 
             default:
-                throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$gtype}" );
+                throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
     }
 

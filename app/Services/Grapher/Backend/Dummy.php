@@ -25,6 +25,10 @@ use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Services\Grapher\Backend as GrapherBackend;
 use IXP\Services\Grapher\Graph;
 
+use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
+
+use IXP\Utils\Grapher\Dummy as DummyFile;
+
 use Entities\IXP;
 
 /**
@@ -93,31 +97,6 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
     }
 
     /**
-     * Get the data points for a given graph
-     *
-     * {inheritDoc}
-     *
-     * @param IXP\Services\Grapher\Graph $graph
-     * @return array
-     */
-    public function data( Graph $graph ): array {
-        return [ 1,2,3,4,5,6 ];
-    }
-
-    /**
-     * Get the PNG image for a given graph
-     *
-     * {inheritDoc}
-     *
-     * @param IXP\Services\Grapher\Graph $graph
-     * @return string
-     */
-    public function png( Graph $graph ): string {
-        return 'qqqq';
-    }
-
-
-    /**
      * Get a complete list of functionality that this backend supports.
      *
      * {inheritDoc}
@@ -139,6 +118,53 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
                 'types'       => Graph::TYPES
             ]
         ];
+    }
+
+    /**
+     * Get the data points for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return array
+     */
+    public function data( Graph $graph ): array {
+        $dummy = new DummyFile( $this->resolveFilePath( $graph, 'log' ) );
+        return $dummy->data( $graph );
+    }
+
+    /**
+     * Get the PNG image for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    public function png( Graph $graph ): string {
+        return @file_get_contents( $this->resolveFilePath( $graph, 'png' ) );
+    }
+
+
+    /**
+     * For a given graph, return the path where the appropriate log file
+     * will be found.
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    private function resolveFilePath( Graph $graph, $type ): string {
+        $config = config('grapher.backends.dummy');
+
+        switch( $graph->classType() ) {
+            default:
+                $file = sprintf( "%s/dummy%s.%s", $config['logdir'], $type == 'log' ? '' : "-{$graph->period()}", $type );
+                if( !file_exists( $file ) ) {
+                    throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
+                }
+                return $file;
+            break;
+        }
     }
 
 }
