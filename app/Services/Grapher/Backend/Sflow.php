@@ -103,17 +103,19 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
     public static function supports(): array {
         return [
             'ixp' => [
-                'categories' => [],
-                'protocols'  => [],
-                'periods'    => [],
-                'types'      => []
+                'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                    Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES,
             ],
             'infrastructure' => [
-                'categories' => [],
-                'protocols'  => [],
-                'periods'    => [],
-                'types'      => []
-            ],
+                'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                    Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES,
+            ]
         ];
     }
 
@@ -141,5 +143,46 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
     public function png( Graph $graph ): string {
         return '';
     }
+
+    /**
+     * Get the RRD file for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    public function rrd( Graph $graph ): string {
+        return '';
+    }
+
+
+    /**
+     * For a given graph, return the path where the appropriate file
+     * will be found.
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    private function resolveFilePath( Graph $graph, $type ): string {
+        $config = config('grapher.backends.sflow');
+
+        switch( $graph->classType() ) {
+            case 'IXP':
+                return sprintf( "%s/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
+                    $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+                break;
+
+            case 'Infrastructure':
+                return sprintf( "%s/ixp%03d-infra%03d-%s%s.%s", $config['logdir'], $graph->infrastructure()->getIXP()->getId(),
+                    $graph->infrastructure()->getId(), $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+                break;
+
+            default:
+                throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
+        }
+    }
+
+
 
 }
