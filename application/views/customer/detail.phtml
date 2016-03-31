@@ -156,6 +156,7 @@
     {/if}
 </h3>
 
+{counter name=numphysports print=0 start=0}
 {foreach $vi->getPhysicalInterfaces() as $pi}
 
     {if $isLAG}<h5>Port {counter name=numphysports} of {$vi->getPhysicalInterfaces()|@count} in LAG</h5>{/if}
