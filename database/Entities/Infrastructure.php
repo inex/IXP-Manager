@@ -48,7 +48,7 @@ class Infrastructure
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -71,7 +71,7 @@ class Infrastructure
     public function setShortname($shortname)
     {
         $this->shortname = $shortname;
-    
+
         return $this;
     }
 
@@ -104,7 +104,7 @@ class Infrastructure
     public function setIXP(\Entities\IXP $iXP = null)
     {
         $this->IXP = $iXP;
-    
+
         return $this;
     }
 
@@ -125,7 +125,7 @@ class Infrastructure
     {
         $this->Switchers = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Add Switchers
      *
@@ -135,7 +135,7 @@ class Infrastructure
     public function addSwitcher(\Entities\Switcher $switchers)
     {
         $this->Switchers[] = $switchers;
-    
+
         return $this;
     }
 
@@ -154,9 +154,20 @@ class Infrastructure
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getSwitchers()
+    public function getSwitchers( $type = null )
     {
-        return $this->Switchers;
+        if( $type === null )
+            return $this->Switchers;
+
+        $sws = [];
+
+        foreach( $this->Switchers as $s ) {
+            if( $s->getSwitchtype() == $type ) {
+                $sws[] = $s;
+            }
+        }
+
+        return $sws;
     }
 
     /**
@@ -168,7 +179,7 @@ class Infrastructure
     public function addVlan(\Entities\Vlan $vlans)
     {
         $this->Vlans[] = $vlans;
-    
+
         return $this;
     }
 
@@ -234,14 +245,14 @@ class Infrastructure
     public function setAggregateGraphName($aggregateGraphName)
     {
         $this->aggregate_graph_name = $aggregateGraphName;
-    
+
         return $this;
     }
 
     /**
      * Get aggregate_graph_name
      *
-     * @return string 
+     * @return string
      */
     public function getAggregateGraphName()
     {

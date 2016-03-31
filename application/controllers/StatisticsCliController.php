@@ -462,17 +462,19 @@ class StatisticsCliController extends IXP_Controller_CliAction
             if( !$infra->getAggregateGraphName() )
                 continue;
 
+            // if there are no switches, then we don't need to include this infra
+            if( !count( $infra->getSwitchers( \Entities\Switcher::TYPE_SWITCH ) ) ) {
+                continue;
+            }
+
             $data[ $infra->getId() ]['mrtgIds']              = [];
             $data[ $infra->getId() ]['name']                 = $infra->getName();
             $data[ $infra->getId() ]['aggregate_graph_name'] = $infra->getAggregateGraphName();
             $data[ $infra->getId() ]['maxbytes']             = 0;
             $data[ $infra->getId() ]['switches']             = '';
 
-            foreach( $infra->getSwitchers() as $switch )
+            foreach( $infra->getSwitchers( \Entities\Switcher::TYPE_SWITCH ) as $switch )
             {
-                if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
-                    continue;
-
                 $data[ $infra->getId() ]['switches'][ $switch->getId() ]             = [];
                 $data[ $infra->getId() ]['switches'][ $switch->getId() ]['name']     = $switch->getName();
                 $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] = 0;
