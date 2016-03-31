@@ -279,12 +279,12 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getSwitchers()
+    public function getSwitchers($type = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchers', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchers', [$type]);
 
-        return parent::getSwitchers();
+        return parent::getSwitchers($type);
     }
 
     /**

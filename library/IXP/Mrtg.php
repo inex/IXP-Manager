@@ -448,18 +448,19 @@ class IXP_Mrtg
         # Create the array and define other expressions i want to use
         $arrValues = array();
 
-        // Log files are available over HTTP from the monitoring server but
-        // are sometimes unavailable during a log update / rebuild / etc.
-        // As such, try a reasonable number of times for this infrequent
-        // occurance to get a good chance of getting the file.
-        for( $i = 0; $i <10; $i++ )
-        {
-            if( $fd = @fopen( $this->file, "r" ) )
-                break;
+        // // Log files are available over HTTP from the monitoring server but
+        // // are sometimes unavailable during a log update / rebuild / etc.
+        // // As such, try a reasonable number of times for this infrequent
+        // // occurance to get a good chance of getting the file.
+        // for( $i = 0; $i <10; $i++ )
+        // {
+        //     if( $fd = @fopen( $this->file, "r" ) )
+        //         break;
+        //
+        //     sleep( 2 );
+        // }
 
-            sleep( 2 );
-        }
-
+        $fd = @fopen( $this->file, "r" );
         if( !$fd )
         {
             $this->array = array();
