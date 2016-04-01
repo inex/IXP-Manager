@@ -48,7 +48,7 @@ class Infrastructure
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -71,7 +71,7 @@ class Infrastructure
     public function setShortname($shortname)
     {
         $this->shortname = $shortname;
-    
+
         return $this;
     }
 
@@ -104,7 +104,7 @@ class Infrastructure
     public function setIXP(\Entities\IXP $iXP = null)
     {
         $this->IXP = $iXP;
-    
+
         return $this;
     }
 
@@ -125,7 +125,7 @@ class Infrastructure
     {
         $this->Switchers = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Add Switchers
      *
@@ -135,7 +135,7 @@ class Infrastructure
     public function addSwitcher(\Entities\Switcher $switchers)
     {
         $this->Switchers[] = $switchers;
-    
+
         return $this;
     }
 
@@ -150,13 +150,29 @@ class Infrastructure
     }
 
     /**
-     * Get Switchers
+     * Get Switches
      *
+     * 20160401 - added new parameters to limit the switches returned. These
+     * are null to ensure expected behavior for code written pre this change.
+     *
+     * @param string $type Switch type - see Entities\Switcher
+     * @param bool $active Limit to (in)active switches
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getSwitchers()
+    public function getSwitchers( $type = null, $active = null )
     {
-        return $this->Switchers;
+        if( $type === null && $active === null )
+            return $this->Switchers;
+
+        $sws = [];
+
+        foreach( $this->Switchers as $v => $s ) {
+            if( ( $type === null || $s->getSwitchtype() == $type ) && ( $active === null || $s->getActive() == $active ) ) {
+                $sws[$v] = $s;
+            }
+        }
+
+        return $sws;
     }
 
     /**
@@ -168,7 +184,7 @@ class Infrastructure
     public function addVlan(\Entities\Vlan $vlans)
     {
         $this->Vlans[] = $vlans;
-    
+
         return $this;
     }
 
@@ -234,14 +250,14 @@ class Infrastructure
     public function setAggregateGraphName($aggregateGraphName)
     {
         $this->aggregate_graph_name = $aggregateGraphName;
-    
+
         return $this;
     }
 
     /**
      * Get aggregate_graph_name
      *
-     * @return string 
+     * @return string
      */
     public function getAggregateGraphName()
     {
