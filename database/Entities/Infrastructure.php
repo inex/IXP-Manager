@@ -150,20 +150,25 @@ class Infrastructure
     }
 
     /**
-     * Get Switchers
+     * Get Switches
      *
+     * 20160401 - added new parameters to limit the switches returned. These
+     * are null to ensure expected behavior for code written pre this change.
+     *
+     * @param string $type Switch type - see Entities\Switcher
+     * @param bool $active Limit to (in)active switches
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getSwitchers( $type = null )
+    public function getSwitchers( $type = null, $active = null )
     {
-        if( $type === null )
+        if( $type === null && $active === null )
             return $this->Switchers;
 
         $sws = [];
 
-        foreach( $this->Switchers as $s ) {
-            if( $s->getSwitchtype() == $type ) {
-                $sws[] = $s;
+        foreach( $this->Switchers as $v => $s ) {
+            if( ( $type === null || $s->getSwitchtype() == $type ) && ( $active === null || $s->getActive() == $active ) ) {
+                $sws[$v] = $s;
             }
         }
 

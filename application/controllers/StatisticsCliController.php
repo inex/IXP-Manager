@@ -463,7 +463,8 @@ class StatisticsCliController extends IXP_Controller_CliAction
                 continue;
 
             // if there are no switches, then we don't need to include this infra
-            if( !count( $infra->getSwitchers( \Entities\Switcher::TYPE_SWITCH ) ) ) {
+            $switches = $infra->getSwitchers( \Entities\Switcher::TYPE_SWITCH, true );
+            if( !count( $switches ) ) {
                 continue;
             }
 
@@ -473,7 +474,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
             $data[ $infra->getId() ]['maxbytes']             = 0;
             $data[ $infra->getId() ]['switches']             = '';
 
-            foreach( $infra->getSwitchers( \Entities\Switcher::TYPE_SWITCH ) as $switch )
+            foreach( $switches as $switch )
             {
                 $data[ $infra->getId() ]['switches'][ $switch->getId() ]             = [];
                 $data[ $infra->getId() ]['switches'][ $switch->getId() ]['name']     = $switch->getName();
