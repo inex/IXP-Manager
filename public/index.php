@@ -45,6 +45,11 @@ if( !extension_loaded('mbstring') ) {
     die( "Error: PHP mbstring extension required");
 }
 
+// common issue is xml missing which results in an obscure error
+if( !extension_loaded('xml') ) {
+    die( "Error: PHP xml extension required");
+}
+
 
 /*
 |--------------------------------------------------------------------------
