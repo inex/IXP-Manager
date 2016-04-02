@@ -25,22 +25,6 @@
             "url": "https://github.com/opensolutions/Bootstrap-Zend-Framework"
         },
         {
-            "type": "package",
-            "package": {
-                "name": "smarty/smarty",
-                "version": "3.1.18",
-                "dist": {
-                    "url": "http://www.smarty.net/files/Smarty-3.1.18.zip",
-                    "type": "zip"
-                },
-                "source": {
-                    "url": "http://smarty-php.googlecode.com/svn/",
-                    "type": "svn",
-                    "reference": "tags/v3.1.18/distribution/"
-                }
-            }
-        },
-        {
             "url": "git@github.com:oss2/doctrine2.git",
             "type": "vcs"
         },
@@ -69,6 +53,7 @@
 
         "oss2/auth": "dev-master",
 
+        "smarty/smarty": "~3.1",
         "league/plates": "3.*",
         "franzl/laravel-plates": "dev-master",
 
@@ -102,7 +87,7 @@
              "IXP\\": "app/"
         },
         "files": [
-            "app/Support/helpers.php" 
+            "app/Support/helpers.php"
         ]
      },
      "autoload-dev": {
