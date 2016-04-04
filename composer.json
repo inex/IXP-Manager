@@ -74,10 +74,7 @@
     },
     "autoload": {
         "classmap": [
-            "vendor/smarty/smarty/libs/Smarty.class.php",
-            "vendor/smarty/smarty/libs/SmartyBC.class.php",
-            "vendor/smarty/smarty/libs/sysplugins/smarty_security.php",
-             "database"
+            "database"
         ],
         "psr-0": {
             "IXP_": "library/"
