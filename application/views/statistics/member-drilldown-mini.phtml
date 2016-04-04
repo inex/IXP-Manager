@@ -9,7 +9,7 @@
 <body>
 
 <center>
-<h3>IXP Interface Statistics :: {$cust->getName()} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
+<h3>IXP Interface Statistics :: {$cust->getFormattedName()} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
 
 {foreach from=$periods key=pname item=pvalue}
 

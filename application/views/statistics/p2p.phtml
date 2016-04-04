@@ -9,7 +9,7 @@
             <a href="{genUrl controller='statistics' action='members'}">Statistics</a> <span class="divider">/</span>
         </li>
         <li>
-             <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
+             <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getFormattedName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
             Peer to Peer Statistics
@@ -34,7 +34,7 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Peer to Peer Statistics :: {$cust->getName()}</h1>
+            <h1>IXP Peer to Peer Statistics :: {$cust->getFormattedName()}</h1>
         </div>
 {/if}
 
@@ -167,7 +167,7 @@
                                 category=$category
                                 period=$period
                                 proto=$proto}">
-                        {$dvli->getVirtualInterface()->getCustomer()->getName()}
+                        {$dvli->getVirtualInterface()->getCustomer()->getFormattedName()}
                     </a>
                 </li>
 
@@ -195,7 +195,7 @@
                                 category=$category
                                 period=$period
                                 proto=$proto}">
-                        {$dvli->getVirtualInterface()->getCustomer()->getName()}
+                        {$dvli->getVirtualInterface()->getCustomer()->getFormattedName()}
                     </a>
                 </li>
 
@@ -212,7 +212,7 @@
 
                 <div class="well">
                     <h4 style="vertical-align: middle">
-                        {$dvli->getVirtualInterface()->getCustomer()->getName()}
+                        {$dvli->getVirtualInterface()->getCustomer()->getFormattedName()}
                     </h4>
 
                     <p>
@@ -270,7 +270,7 @@
 
                 <div class="well">
                     <h4 style="vertical-align: middle">
-                        {$dvli->getVirtualInterface()->getCustomer()->getName()}
+                        {$dvli->getVirtualInterface()->getCustomer()->getFormattedName()}
                     </h4>
 
                     <p>

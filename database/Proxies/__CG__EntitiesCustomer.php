@@ -1849,4 +1849,15 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         return parent::removeTrafficDaily($trafficDailies);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getFormattedName($fmt = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFormattedName', [$fmt]);
+
+        return parent::getFormattedName($fmt);
+    }
+
 }

@@ -724,7 +724,7 @@ class Customer
      * Get state of customer as text via self::$CUST_STATES_TEXT
      *
      * @return string
-     * @throws \IXP\Exceptions\GeneralException 
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function getStatusText()
     {
@@ -2208,4 +2208,34 @@ class Customer
     {
         $this->TrafficDailies->removeElement($trafficDailies);
     }
+
+    /**
+     * Get formatted name
+     *
+     * @return string
+     */
+    public function getFormattedName( $fmt = null )
+    {
+        if( $fmt === null && ( !function_exists( 'config' ) || ( $fmt = config('ixp_fe.customer_name_format') ) === null ) ) {
+            $fmt = "%a %j";
+        }
+
+        $as = $this->getAutsys() ? $this->getAutsys() : false;
+
+        return str_replace(
+            [ '%n', '%a', '%s', '%i', '%j', '%k', '%l' ],
+            [
+                $this->getName(),
+                $this->getAbbreviatedName(),
+                $this->getShortname(),
+                $as ? $as          : '',
+                $as ? "[AS{$as}]"  : '',
+                $as ? "AS{$as}"    : '',
+                $as ? " - AS{$as}" : ''
+            ],
+            $fmt
+        );
+    }
+
+
 }
