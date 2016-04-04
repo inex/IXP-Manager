@@ -3,7 +3,7 @@
 <ul class="breadcrumb">
     <li>
     <h3>
-            {$cust->getName()}
+            {$cust->getFormattedName()}
             {tmplinclude file='customer/custtype.phtml'}
         </h3>
         {if $resellerMode && $cust->getReseller()}
@@ -12,7 +12,7 @@
     </li>
     <li class="pull-right" style="margin-top: 12px;">
         <div class="btn-toolbar" style="display: inline;">
-        
+
             <div class="btn-group">
                 <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="icon-cog"></i>
@@ -21,16 +21,16 @@
                 <ul class="dropdown-menu pull-right">
                     <li>
                         <a href="{genUrl controller='virtual-interface' action="add-wizard" custid=$cust->getId() rtn="ov"}">
-                        	Provision new port...
+                            Provision new port...
                         </a>
                     </li>
-                	<li class="divider"></li>
+                    <li class="divider"></li>
                     <li>
                         <a href="{genUrl controller="customer" action="welcome-email" id=$cust->getId()}">Send Welcome Email...</a>
                     </li>
                 </ul>
             </div>
-        
+
             <div class="btn-group">
                 <a class="btn btn-mini dropdown-toggle" href="#" data-toggle="dropdown">
                     <i class="icon-pencil"></i>
@@ -53,7 +53,7 @@
                     </li>
                 </ul>
             </div>
-    
+
             <div class="btn-group">
                 {assign var=haveprev value=0}
                 {assign var=havenext value=0}
@@ -61,24 +61,24 @@
                     {if $smarty.foreach.custs.first}
                         {assign var=cidprev  value=$k}
                     {/if}
-                    
+
                     {if $k eq $cust->getId()}
                         {assign var=haveprev value=1}
                     {elseif $haveprev and not $havenext}
                         {assign var=havenext value=1}
                         {assign var=cidnext value=$k}
                     {/if}
-                    
+
                     {if not $haveprev}
                         {assign var=cidprev value=$k}
                     {/if}
-                    
+
                     {if not $havenext and $smarty.foreach.custs.last}
                         {assign var=cidnext value=$k}
                     {/if}
-                    
+
                 {/foreach}
-                
+
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="overview" id=$cidprev}"><i class="icon-chevron-left"></i></a>
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="overview" id=$cust->getId()}"><i class="icon-refresh"></i></a>
                 <a class="btn btn-mini" href="{genUrl controller='customer' action="overview" id=$cidnext}"><i class="icon-chevron-right"></i></a>
@@ -93,9 +93,9 @@
 <div class="row-fluid">
 
     <div class="span12 tabbable">
-    
+
         <ul id="customer-overview-tabs" class="nav nav-tabs">
-        
+
         <li class="active">
             <a href="#overview" data-toggle="tab">Overview</a>
         </li>
@@ -115,7 +115,7 @@
                 <a href="#resold-customers" data-toggle="tab">Resold Customers</a>
             </li>
         {/if}
-            
+
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
             <li>
                 <a href="#ports" data-toggle="tab">Ports</a>
@@ -127,19 +127,19 @@
                 </li>
             {/if}
         {/if}
-                
+
         <li>
             <a href="#users" data-toggle="tab">Users</a>
         </li>
-        
+
         <li>
             <a href="#contacts" data-toggle="tab">Contacts</a>
         </li>
-        
+
         <li>
             <a href="#logins" data-toggle="tab">Logins</a>
         </li>
-                
+
         <li>
             <a href="#notes" id="tab-notes" data-toggle="tab">
                 Notes {if isset( $unreadNotes ) and $unreadNotes}
@@ -147,15 +147,15 @@
                 {/if}
             </a>
         </li>
-        
+
         {if count( $cust->getConsoleServerConnections() )}
             <li>
                 <a href="#console-server-connections" data-toggle="tab">OOB Access</a>
             </li>
         {/if}
-        
+
         {if $cust->getType() neq CUSTOMER::TYPE_ASSOCIATE and ( not $cust->hasLeft() )}
-        
+
             {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
                 {if $cust->isRouteServerClient()}
                     <li>
@@ -176,9 +176,9 @@
                 </li>
             {/if}
         {/if}
-        
+
         </ul>
-        
+
         <div class="tab-content">
         <div class="tab-pane active" id="overview">
             {tmplinclude file="customer/overview-tabs/overview.phtml"}
@@ -215,33 +215,33 @@
                     </div>
                 {/if}
         {/if}
-            
+
         <div class="tab-pane" id="users">
             {tmplinclude file="customer/overview-tabs/users.phtml"}
         </div>
-        
+
         <div class="tab-pane" id="contacts">
             {tmplinclude file="customer/overview-tabs/contacts.phtml"}
         </div>
-        
+
          <div class="tab-pane" id="logins">
             {tmplinclude file="customer/overview-tabs/logins.phtml"}
         </div>
-        
+
         <div class="tab-pane" id="notes">
             {tmplinclude file="customer/overview-tabs/notes.phtml"}
         </div>
-        
+
         {if count( $cust->getConsoleServerConnections() )}
             <div class="tab-pane" id="console-server-connections">
                 {tmplinclude file="customer/overview-tabs/console-server-connections.phtml"}
             </div>
         {/if}
-            
+
         </div>
-        
+
     </div>
-    
+
 </div>
 
 <script>{tmplinclude file="customer/js/overview.js"}</script>

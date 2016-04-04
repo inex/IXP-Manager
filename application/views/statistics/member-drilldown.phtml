@@ -9,7 +9,7 @@
             <a href="{genUrl controller='customer' action='list'}">Customers</a> <span class="divider">/</span>
         </li>
         <li>
-            <a href="{genUrl controller='customer' action='overview' id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
+            <a href="{genUrl controller='customer' action='overview' id=$cust->getId()}">{$cust->getFormattedName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
             Statistics
@@ -26,7 +26,7 @@
                 {if $multiIXP}
                     @ {$ixp->getShortname()}
                 {else}
-                    :: {$cust->getName()}
+                    :: {$cust->getFormattedName()}
                 {/if}
 
                 ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})

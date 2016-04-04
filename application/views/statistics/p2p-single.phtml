@@ -9,12 +9,12 @@
             <a href="{genUrl controller='statistics' action='members'}">Statistics</a> <span class="divider">/</span>
         </li>
         <li>
-             <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
+             <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getFormattedName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
             <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">Peer to Peer Statistics</a>
             with <a href="{genUrl controller="statistics" action="p2p" shortname=$dstVli->getVirtualInterface()->getCustomer()->getShortname()}">
-                {$dstVli->getVirtualInterface()->getCustomer()->getName()}
+                {$dstVli->getVirtualInterface()->getCustomer()->getFormattedName()}
             </a>
             (
              {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
@@ -28,7 +28,7 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Peer to Peer Statistics :: {$cust->getName()} {if isset( $dcust ) and $dcust}&lt;=&gt; {$dcust.cname}{/if}</h1>
+            <h1>IXP Peer to Peer Statistics :: {$cust->getFormattedName()} {if isset( $dcust ) and $dcust}&lt;=&gt; {$dcust.cname}{/if}</h1>
         </div>
 {/if}
 
@@ -36,7 +36,7 @@
 
 <h3>
     {if isset( $dstVli ) and $dstVli}
-        Traffic exchanged with: {$dstVli->getVirtualInterface()->getCustomer()->getName()}
+        Traffic exchanged with: {$dstVli->getVirtualInterface()->getCustomer()->getFormattedName()}
     {/if}
     <div class="pull-right">
         <a href="{genUrl controller="statistics" action="p2p"}" class="btn btn-default">Return</a>

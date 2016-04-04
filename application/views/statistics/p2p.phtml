@@ -9,7 +9,7 @@
             <a href="{genUrl controller='statistics' action='members'}">Statistics</a> <span class="divider">/</span>
         </li>
         <li>
-             <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
+             <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getFormattedName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
             Peer to Peer Statistics
@@ -34,7 +34,7 @@
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>IXP Peer to Peer Statistics :: {$cust->getName()}</h1>
+            <h1>IXP Peer to Peer Statistics :: {$cust->getFormattedName()}</h1>
         </div>
 {/if}
 
@@ -42,12 +42,19 @@
 
 {* for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not *}
 
-{if isset( $options.sflow.show_graphs_on_index_page ) and not $options.sflow.show_graphs_on_index_page}
-    {assign var="showGraphs" value=false}
+{if isset( $options.sflow.show_graphs_on_index_page ) }
+    {if $options.sflow.show_graphs_on_index_page}
+        {assign var="showGraphs" value=true}
+    {else}
+        {assign var="showGraphs" value=false}
+    {/if}
 {else}
-    {assign var="showGraphs" value=true}
+    {if not isset( $smarty.get.showGraphs ) }
+        {assign var="showGraphs" value=false}
+    {else}
+        {assign var="showGraphs" value=true}
+    {/if}
 {/if}
-
 
 <p>
 <form action="{genUrl controller="statistics" action="p2p"}{if $user->getPrivs() eq USER::AUTH_SUPERUSER}/shortname/{$cust->getShortname()}{/if}" method="post">
@@ -115,6 +122,16 @@
     <td valign="bottom">
         <input class="btn" type="submit" value="Submit &raquo;" />
     </td>
+
+    <td valign="bottom">
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="btn btn-primary" href="{genUrl controller="statistics" action="p2p"
+                    ixp=$ixp->getId()
+                    shortname=$cust->getShortname()
+                    category=$category
+                    period=$period
+                    proto=$proto}{if $showGraphs}">Hide{else}?showGraphs=1">Show{/if} Graphs</a>
+    </td>
     </tr>
 </table>
 </form>
@@ -124,74 +141,136 @@
 <div class="row-fluid">
 
 {assign var='count' value=0}
-{if $user->getPrivs() eq USER::AUTH_SUPERUSER}
 
+{if not $showGraphs}
 
-    {foreach $dstVlis as $dvli}
-        <div class="span3">
+    {assign var='ipprotoenabled' value=$proto|cat:'enabled'}
+    {assign var='ipprotoenabled' value='getIpv'|cat:$ipprotoenabled}
 
-            <div class="well">
-                <h4 style="vertical-align: middle">
-                    {$dvli->getVirtualInterface()->getCustomer()->getName()}
-                </h4>
+    <div class="span6">
 
-                <p>
-                    <br />
+        <ul>
+            {assign var="cnt" value=-1}
+            {foreach $dstVlis as $dvli}
+
+                {assign var="cnt" value=$cnt+1}
+                {if $cnt%2 neq 0 or not $dvli->$ipprotoenabled()}
+                    {continue}
+                {/if}
+
+                <li>
                     <a href="{genUrl controller="statistics" action="p2p"
-                            ixp=$ixp->getId()
-                            shortname=$cust->getShortname()
-                            svli=$srcVli->getId()
-                            dvli=$dvli->getId()
-                            category=$category
-                            period=$period
-                            proto=$proto}">
-                        <img
-                            src="{genMrtgP2pImgUrl
                                 ixp=$ixp->getId()
                                 shortname=$cust->getShortname()
                                 svli=$srcVli->getId()
                                 dvli=$dvli->getId()
                                 category=$category
                                 period=$period
-                                proto=$proto}"
-                            width="300"
-                        />
+                                proto=$proto}">
+                        {$dvli->getVirtualInterface()->getCustomer()->getFormattedName()}
                     </a>
-                </p>
+                </li>
+
+            {/foreach}
+        </ul>
+    </div>
+
+    <div class="span6">
+
+        <ul>
+            {assign var="cnt" value=-1}
+            {foreach $dstVlis as $dvli}
+
+                {assign var="cnt" value=$cnt+1}
+                {if $cnt%2 eq 0 or not $dvli->$ipprotoenabled()}
+                    {continue}
+                {/if}
+
+                <li>
+                    <a href="{genUrl controller="statistics" action="p2p"
+                                ixp=$ixp->getId()
+                                shortname=$cust->getShortname()
+                                svli=$srcVli->getId()
+                                dvli=$dvli->getId()
+                                category=$category
+                                period=$period
+                                proto=$proto}">
+                        {$dvli->getVirtualInterface()->getCustomer()->getFormattedName()}
+                    </a>
+                </li>
+
+            {/foreach}
+        </ul>
+    </div>
+
+{else} {* showGraphs *}
+
+    {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+
+        {foreach $dstVlis as $dvli}
+            <div class="span3">
+
+                <div class="well">
+                    <h4 style="vertical-align: middle">
+                        {$dvli->getVirtualInterface()->getCustomer()->getFormattedName()}
+                    </h4>
+
+                    <p>
+                        <br />
+                        <a href="{genUrl controller="statistics" action="p2p"
+                                ixp=$ixp->getId()
+                                shortname=$cust->getShortname()
+                                svli=$srcVli->getId()
+                                dvli=$dvli->getId()
+                                category=$category
+                                period=$period
+                                proto=$proto}">
+                            <img
+                                src="{genMrtgP2pImgUrl
+                                    ixp=$ixp->getId()
+                                    shortname=$cust->getShortname()
+                                    svli=$srcVli->getId()
+                                    dvli=$dvli->getId()
+                                    category=$category
+                                    period=$period
+                                    proto=$proto}"
+                                width="300"
+                            />
+                        </a>
+                    </p>
+                </div>
             </div>
-        </div>
 
-        {assign var='count' value=$count+1}
+            {assign var='count' value=$count+1}
 
-        {if $count%4 eq 0}
-            </div><br /><div class="row-fluid">
-        {/if}
-    {/foreach}
+            {if $count%4 eq 0}
+                </div><br /><div class="row-fluid">
+            {/if}
+        {/foreach}
 
-    {if $count%4 neq 0}
-        <div class="span3"></div>
-        {assign var='count' value=$count+1}
         {if $count%4 neq 0}
             <div class="span3"></div>
             {assign var='count' value=$count+1}
             {if $count%4 neq 0}
                 <div class="span3"></div>
                 {assign var='count' value=$count+1}
+                {if $count%4 neq 0}
+                    <div class="span3"></div>
+                    {assign var='count' value=$count+1}
+                {/if}
             {/if}
         {/if}
-    {/if}
 
 
-{else}
+    {else}
 
-    {if $showGraphs}
         {foreach $dstVlis as $dvli}
 
             <div class="span6">
 
                 <div class="well">
                     <h4 style="vertical-align: middle">
-                        {$dvli->getVirtualInterface()->getCustomer()->getName()}
+                        {$dvli->getVirtualInterface()->getCustomer()->getFormattedName()}
                     </h4>
 
                     <p>
@@ -234,71 +313,7 @@
             {assign var='count' value=$count+1}
         {/if}
 
-
-    {else} {* showGraphs *}
-
-        {assign var='ipprotoenabled' value=$proto|cat:'enabled'}
-        {assign var='ipprotoenabled' value='getIpv'|cat:$ipprotoenabled}
-
-        <div class="span6">
-
-            <ul>
-                {assign var="cnt" value=-1}
-                {foreach $dstVlis as $dvli}
-
-                    {assign var="cnt" value=$cnt+1}
-                    {if $cnt%2 neq 0 or not $dvli->$ipprotoenabled()}
-                        {continue}
-                    {/if}
-
-                    <li>
-                        <a href="{genUrl controller="statistics" action="p2p"
-                                    ixp=$ixp->getId()
-                                    shortname=$cust->getShortname()
-                                    svli=$srcVli->getId()
-                                    dvli=$dvli->getId()
-                                    category=$category
-                                    period=$period
-                                    proto=$proto}">
-                            {$dvli->getVirtualInterface()->getCustomer()->getName()}
-                        </a>
-                    </li>
-
-                {/foreach}
-            </ul>
-        </div>
-
-        <div class="span6">
-
-            <ul>
-                {assign var="cnt" value=-1}
-                {foreach $dstVlis as $dvli}
-
-                    {assign var="cnt" value=$cnt+1}
-                    {if $cnt%2 eq 0 or not $dvli->$ipprotoenabled()}
-                        {continue}
-                    {/if}
-
-                    <li>
-                        <a href="{genUrl controller="statistics" action="p2p"
-                                    ixp=$ixp->getId()
-                                    shortname=$cust->getShortname()
-                                    svli=$srcVli->getId()
-                                    dvli=$dvli->getId()
-                                    category=$category
-                                    period=$period
-                                    proto=$proto}">
-                            {$dvli->getVirtualInterface()->getCustomer()->getName()}
-                        </a>
-                    </li>
-
-                {/foreach}
-            </ul>
-        </div>
-
-
-
-    {/if} {* showGraphs *}
+    {/if} {* isAdmin *}
 
 {/if}
 

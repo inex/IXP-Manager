@@ -24,7 +24,7 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
 
     public static $PRIVILEGES_TEXT = array(
         User::AUTH_CUSTUSER  => 'Customer User',
-        User::AUTH_CUSTADMIN => 'Customer Superuser',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
         User::AUTH_SUPERUSER => 'Superuser'
     );
 
