@@ -1,8 +1,12 @@
 
 {if isset( $data.0 )}
-    {assign var="example_api_key" value=$data.0.apiKey}
+    {assign var="example_api_key" value="/key/`$data.0.apiKey`"}
 {else}
-    {assign var="example_api_key" value="\$your_api_key"}
+    {assign var="example_api_key" value="/key/\$your_api_key"}
+{/if}
+
+{if config( 'ixp_api.json_export_schema.public' )}
+    {assign var="example_api_key" value=""}
 {/if}
 
 <br>
@@ -15,8 +19,8 @@
     See <a href="https://github.com/euro-ix/json-schemas">here for details, versions and definition</a>.<br>
     Example:
         <code>
-            <a href="{genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}">
-                {genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}
+            <a href="{genUrl module="apiv1" controller="member-list" action="list"}{$example_api_key}">
+                {genUrl module="apiv1" controller="member-list" action="list"}{$example_api_key}
             </a>
         </code>
         <br><br>
@@ -26,8 +30,8 @@
         {foreach $JSON_SCHEMAS as $version}
         <li>
             <code>
-                <a href="{genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}/version/{$version}">
-                    {genUrl module="apiv1" controller="member-list" action="list"}/key/{$example_api_key}/version/{$version}
+                <a href="{genUrl module="apiv1" controller="member-list" action="list"}{$example_api_key}/version/{$version}">
+                    {genUrl module="apiv1" controller="member-list" action="list"}{$example_api_key}/version/{$version}
                 </a>
             </code>
         </li>
