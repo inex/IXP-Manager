@@ -126,37 +126,42 @@ class Statistics {
         $intLastTime = 0;
         $intTime = 0;
 
-        $curenddate = false;
-        $starttime  = $this->data()[0][0];
+        $data = $this->data();
 
-        foreach( $this->data() as $i => $v ) {
-            $curenddate = $v[ 0 ];
+        if( is_array( $data ) && isset( $data[0][0] ) ) {
+            $curenddate = false;
+            $starttime  = $this->data()[0][0];
 
-            list( $intTime, $avgratein, $avgrateout, $peakratein, $peakrateout ) = $v;
+            foreach( $data as $i => $v ) {
+                $curenddate = $v[ 0 ];
 
-            if( $peakratein > $maxIn ) {
-                $maxIn = $peakratein;
-            }
-            if( $peakrateout > $maxOut ) {
-                $maxOut = $peakrateout;
+                list( $intTime, $avgratein, $avgrateout, $peakratein, $peakrateout ) = $v;
+
+                if( $peakratein > $maxIn ) {
+                    $maxIn = $peakratein;
+                }
+                if( $peakrateout > $maxOut ) {
+                    $maxOut = $peakrateout;
+                }
+
+                if( $intLastTime == 0 ) {
+                    $intLastTime = $intTime;
+                }
+                else {
+                    $intRange    = $intTime - $intLastTime;
+                    $totalIn    += ( $intRange * $avgratein );
+                    $totalOut   += ( $intRange * $avgrateout );
+                    $intLastTime = $intTime;
+                }
             }
 
-            if( $intLastTime == 0 ) {
-                $intLastTime = $intTime;
-            }
-            else {
-                $intRange    = $intTime - $intLastTime;
-                $totalIn    += ( $intRange * $avgratein );
-                $totalOut   += ( $intRange * $avgrateout );
-                $intLastTime = $intTime;
-            }
+            $endtime   = $curenddate;
+            $totalTime = $endtime - $starttime;
         }
 
-        $endtime   = $curenddate;
-        $totalTime = $endtime - $starttime;
-
-        $curIn  = isset( $avgratein )  ? $avgratein  : 0.0;
-        $curOut = isset( $avgrateout ) ? $avgrateout : 0.0;
+        $curIn     = isset( $avgratein )               ? $avgratein  : 0.0;
+        $curOut    = isset( $avgrateout )              ? $avgrateout : 0.0;
+        $totalTime = isset( $totalTime ) && $totalTime ? $totalTime  : 1;
 
         $this->setTotalIn(    floor( $totalIn  )                )
             ->setTotalOut(    floor( $totalOut )                )

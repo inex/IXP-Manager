@@ -2,6 +2,8 @@
 
 namespace IXP\Utils\Grapher;
 
+use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
+
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
  * All Rights Reserved.
@@ -109,35 +111,27 @@ class Mrtg
      *     ]
      *
      * The above will be ordered with the newest first as per the log file.
+     * @throws IXP\Exceptions\Utils\Grapher\FileError
      */
     protected function loadMrtgFile(): array {
-
-        // Log files can be made available over HTTP from a monitoring / collection server but
-        // are sometimes unavailable during a log update / rebuild / etc. As such, try a
-        // reasonable number of times for this infrequent occurance to get a good chance of getting the file.
-        for( $i = 0; $i < 5; $i++ ) {
-            if( $fd = @fopen( $this->file, "r" ) ) {
-                break;
-            }
-            sleep( 2 );
-        }
-
         $values  = [];
 
-        if( $fd ) {
-            while( $record = fgets( $fd, 4096 ) ) {
-                $data = explode( " ", trim( $record ) );
-
-                if( count( $data ) >= 3 ) {
-                    $values[] = [ (int)$data[0], (int)$data[1], (int)$data[2], isset($data[3]) ? (int)$data[3] : 0, isset($data[4]) ? (int)$data[4] : 0 ];
-                }
-            }
-
-            // drop the first record as it's traffic counters from the most recent run of mrtg.
-            array_shift( $values );
-
-            fclose( $fd );
+        if( !( $fd = @fopen( $this->file, "r" ) ) ) {
+            throw new FileErrorException("Could not open: {$this->file}");
         }
+
+        while( $record = fgets( $fd, 4096 ) ) {
+            $data = explode( " ", trim( $record ) );
+
+            if( count( $data ) >= 3 ) {
+                $values[] = [ (int)$data[0], (int)$data[1], (int)$data[2], isset($data[3]) ? (int)$data[3] : 0, isset($data[4]) ? (int)$data[4] : 0 ];
+            }
+        }
+
+        // drop the first record as it's traffic counters from the most recent run of mrtg.
+        array_shift( $values );
+
+        fclose( $fd );
 
         return $values;
     }

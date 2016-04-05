@@ -26,11 +26,12 @@ use IXP\Services\Grapher\Backend as GrapherBackend;
 use IXP\Services\Grapher\Graph;
 
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
+use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
 use Entities\{IXP,Switcher,SwitchPort};
 use IXP\Utils\Grapher\Mrtg as MrtgFile;
 
-use View;
+use View,Log;
 
 /**
  * Grapher Backend -> Mrtg
@@ -209,7 +210,13 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * @return array
      */
     public function data( Graph $graph ): array {
-        $mrtg = new MrtgFile( $this->resolveFilePath( $graph, 'log' ) );
+        try {
+            $mrtg = new MrtgFile( $this->resolveFilePath( $graph, 'log' ) );
+        } catch( FileErrorException $e ) {
+            Log::notice("[Grapher] {$this->name()} data(): could not load file {$this->resolveFilePath( $graph, 'log' )}");
+            return [];
+        }
+
         return $mrtg->data( $graph );
     }
 
@@ -222,7 +229,13 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * @return string
      */
     public function png( Graph $graph ): string {
-        return @file_get_contents( $this->resolveFilePath( $graph, 'png' ) );
+        if( ( $img = @file_get_contents( $this->resolveFilePath( $graph, 'png' ) ) ) === false ){
+            // couldn't load the image so return a placeholder
+            Log::notice("[Grapher] {$this->name()} png(): could not load file {$this->resolveFilePath( $graph, 'png' )}");
+            return @file_get_contents( public_path() . "/images/image-missing.png" );
+        }
+
+        return $img;
     }
 
 
