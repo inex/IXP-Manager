@@ -146,9 +146,28 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * @return string
      */
     public function rrd( Graph $graph ): string {
-        return '';
+        if( ( $rrd = @file_get_contents( $this->resolveFilePath( $graph, 'rrd' ) ) ) === false ){
+            // couldn't load the rrd
+            Log::notice("[Grapher] {$this->name()} rrd(): could not load file {$this->resolveFilePath( $graph, 'rrd' )}");
+            return false; // FIXME check handling of this
+        }
+
+        return $rrd;
     }
 
+    /**
+     * Our sflow/p2p script stores as bytes and names directories / files accordingly. This
+     * function just s/bits/bytes for accessing these files.
+     *
+     * @param string $c
+     * @return string
+     */
+    private function translateCategory( $c ): string {
+        if( $c == Graph::CATEGORY_BITS ) {
+            return 'bytes';
+        }
+        return $c;
+    }
 
     /**
      * For a given graph, return the path where the appropriate file
@@ -161,14 +180,11 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
         $config = config('grapher.backends.sflow');
 
         switch( $graph->classType() ) {
-            case 'IXP':
-                return sprintf( "%s/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
-                    $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
-                break;
-
-            case 'Infrastructure':
-                return sprintf( "%s/ixp%03d-infra%03d-%s%s.%s", $config['logdir'], $graph->infrastructure()->getIXP()->getId(),
-                    $graph->infrastructure()->getId(), $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+            case 'Vlan':
+                return sprintf( "%s/ipv%d/%s/aggregate/aggregate.ipv%d.%s.%s.%s", $config['root'],
+                    $graph->getProtocol(), $this->translateCategory( $graph->getCategory() ),
+                    $graph->getProtocol(), $this->translateCategory( $graph->getCategory() ),
+                    $graph->vlan()->identifier() );
                 break;
 
             default:
