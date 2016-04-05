@@ -419,6 +419,17 @@ abstract class Graph {
         });
     }
 
+    /**
+     * For a given graph object ($this), get it's rrd
+     *
+     * @return string
+     */
+    public function rrd(): string {
+        return $this->grapher()->remember( $this->cacheKey('rrd'), function() {
+            return $this->backend()->rrd($this);
+        });
+    }
+
 
     /**
      * For a given graph object ($this), calculate various statistics

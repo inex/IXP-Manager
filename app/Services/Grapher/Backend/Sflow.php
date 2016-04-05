@@ -26,7 +26,16 @@ use IXP\Services\Grapher\Backend as GrapherBackend;
 
 use IXP\Services\Grapher\Graph;
 
+use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
+
+use IXP\Utils\Grapher\{
+    Mrtg as MrtgUtil,
+    Rrd  as RrdUtil
+};
+
 use Entities\IXP;
+
+use Log;
 
 /**
  * Grapher Backend -> Mrtg
@@ -102,7 +111,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      */
     public static function supports(): array {
         return [
-            'vlans' => [
+            'vlan' => [
                 'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
@@ -122,7 +131,14 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * @return array
      */
     public function data( Graph $graph ): array {
-        return [];
+        try {
+            $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ) );
+            return $rrd->data( $graph );
+        } catch( FileErrorException $e ) {
+            throw $e;
+            Log::notice("[Grapher] {$this->name()} data(): could not load file {$this->resolveFilePath( $graph, 'rrd' )}");
+            return [];
+        }
     }
 
     /**
@@ -170,6 +186,28 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
     }
 
     /**
+     * For a given graph, return the filename where the appropriate data
+     * will be found.
+     *
+     * @param IXP\Services\Grapher\Graph $graph
+     * @return string
+     */
+    private function resolveFileName( Graph $graph, $type ): string {
+        $config = config('grapher.backends.sflow');
+
+        switch( $graph->classType() ) {
+            case 'Vlan':
+                return sprintf( "aggregate.%s.%s.%s.%s",
+                    $graph->protocol(), $this->translateCategory( $graph->category() ),
+                    $graph->identifier(), $type );
+                break;
+
+            default:
+                throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
+        }
+    }
+
+    /**
      * For a given graph, return the path where the appropriate file
      * will be found.
      *
@@ -181,10 +219,9 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
 
         switch( $graph->classType() ) {
             case 'Vlan':
-                return sprintf( "%s/ipv%d/%s/aggregate/aggregate.ipv%d.%s.%s.%s", $config['root'],
-                    $graph->getProtocol(), $this->translateCategory( $graph->getCategory() ),
-                    $graph->getProtocol(), $this->translateCategory( $graph->getCategory() ),
-                    $graph->vlan()->identifier() );
+                return sprintf( "%s/%s/%s/aggregate/%s", $config['root'],
+                    $graph->protocol(), $this->translateCategory( $graph->category() ),
+                    $this->resolveFileName( $graph, $type ) );
                 break;
 
             default:

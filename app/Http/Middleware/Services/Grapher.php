@@ -30,9 +30,11 @@ use Illuminate\Http\Request;
 
 use IXP\Services\Grapher as GrapherService;
 use IXP\Services\Grapher\Graph;
+
 use IXP\Services\Grapher\Graph\{
-    IXP as IXPGraph,
-    Infrastructure as InfrastructureGraph
+    IXP            as IXPGraph,
+    Infrastructure as InfrastructureGraph,
+    Vlan           as VlanGraph
 };
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException};
@@ -102,6 +104,12 @@ class Grapher
                 $infra = InfrastructureGraph::processParameterInfrastructure( (int)$request->input( 'id', 0 ) );
                 $request->infrastructure = $infra->getId();
                 $graph = $grapher->infrastructure( $infra )->setParamsFromArray( $request->all() );
+                break;
+
+            case 'vlan':
+                $vlan = VlanGraph::processParameterVlan( (int)$request->input( 'id', 0 ) );
+                $request->vlan = $vlan->getId();
+                $graph = $grapher->vlan( $vlan )->setParamsFromArray( $request->all() );
                 break;
 
             default:

@@ -94,7 +94,7 @@ class Vlan extends Graph {
      * @return string
      */
     public function identifier(): string {
-        return sprintf( "vlan%05d", $this->vlan()->getId() );
+        return sprintf( "vlan%05d", $this->vlan()->getNumber() );
     }
 
     /**

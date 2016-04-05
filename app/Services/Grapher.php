@@ -34,8 +34,12 @@ use IXP\Exceptions\Services\Grapher\{
 };
 
 use IXP\Services\Grapher\Graph;
-use IXP\Services\Grapher\Graph\IXP as IXPGraph;
-use IXP\Services\Grapher\Graph\Infrastructure as InfrastructureGraph;
+
+use IXP\Services\Grapher\Graph\{
+    IXP            as IXPGraph,
+    Infrastructure as InfrastructureGraph,
+    Vlan           as VlanGraph
+};
 
 use IXP\Contracts\Grapher\Backend as BackendContract;
 
@@ -43,7 +47,7 @@ use Cache;
 use Config;
 use D2EM;
 
-use Entities\{IXP,Infrastructure};
+use Entities\{IXP,Infrastructure,Vlan};
 
 /**
  * Grapher Backend -> Mrtg
@@ -205,6 +209,16 @@ class Grapher {
     public function infrastructure( Infrastructure $i ): InfrastructureGraph {
         return new InfrastructureGraph( $this, $i );
     }
+
+    /**
+     * Get an instance of an vlan graph
+     * @param Entities\Vlan $vlan
+     * @return IXP\Services\Grapher\Graph\Vlan
+     */
+    public function vlan( Vlan $v ): VlanGraph {
+        return new VlanGraph( $this, $v );
+    }
+
 
 
 

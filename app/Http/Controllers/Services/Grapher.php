@@ -95,15 +95,25 @@ class Grapher extends Controller
     }
 
 
-    public function ixp( Request $request ): Response {
+    private function simpleResponse( $request ): Response {
         return (new Response( call_user_func( [ $this->graph(), $this->graph()->type() ] ) ) )
               ->header('Content-Type', Graph::CONTENT_TYPES[ $this->graph()->type() ] )
+              ->header('Content-Disposition', sprintf( 'inline; filename="grapher-%s-%s-%s-%s.%s"',
+                    $this->graph()->backend()->name(), $this->graph()->category(),
+                    $this->graph()->period(), $this->graph()->protocol(), $this->graph()->type() )
+                )
               ->header( 'Expires', Carbon::now()->addMinutes(5)->toRfc1123String() );
     }
 
+    public function ixp( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
+
     public function infrastructure( Request $request ): Response {
-        return (new Response( call_user_func( [ $this->graph(), $this->graph()->type() ] ) ) )
-              ->header('Content-Type', Graph::CONTENT_TYPES[ $this->graph()->type() ] )
-              ->header( 'Expires', Carbon::now()->addMinutes(5)->toRfc1123String() );
+        return $this->simpleResponse( $request );
+    }
+
+    public function vlan( Request $request ): Response {
+        return $this->simpleResponse( $request );
     }
 }
