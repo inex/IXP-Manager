@@ -50,7 +50,7 @@ return [
 
         'sflow' => [
             // where to find the MRTG rrd files
-            'api'  => env( 'GRAPHER_BACKEND_SFLOW_API', 'http://www.example.com/' ),
+            'root'  => env( 'GRAPHER_BACKEND_SFLOW_ROOT', 'http://www.example.com/' ),
         ]
 
     ],

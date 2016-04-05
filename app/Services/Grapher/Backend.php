@@ -46,10 +46,11 @@ abstract class Backend {
         // find what this backend can support
         $s = $this->supports();
 
-        if(    in_array( $graph->category(), $s[ $graph->lcClassType() ]['categories'] )
-            && in_array( $graph->period(),   $s[ $graph->lcClassType() ]['periods'   ] )
-            && in_array( $graph->protocol(), $s[ $graph->lcClassType() ]['protocols' ] )
-            && in_array( $graph->type(),     $s[ $graph->lcClassType() ]['types'     ] )
+        if(    isset( $s[ $graph->lcClassType() ] )
+            && ( isset($s[ $graph->lcClassType() ]['categories']) && in_array( $graph->category(), $s[ $graph->lcClassType() ]['categories'] ) )
+            && ( isset($s[ $graph->lcClassType() ]['periods']   ) && in_array( $graph->period(),   $s[ $graph->lcClassType() ]['periods'   ] ) )
+            && ( isset($s[ $graph->lcClassType() ]['protocols'] ) && in_array( $graph->protocol(), $s[ $graph->lcClassType() ]['protocols' ] ) )
+            && ( isset($s[ $graph->lcClassType() ]['types']     ) && in_array( $graph->type(),     $s[ $graph->lcClassType() ]['types'     ] ) )
         ) {
             return true;
         }

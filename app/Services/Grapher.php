@@ -117,9 +117,9 @@ class Grapher {
      * @see IXP\Console\Commands\Grapher\GrapherCommand::resolveBackend()
      *
      * @param string|null $backend A specific backend to return. If not specified, we use command line arguments
-     * @return \IXP\Contracts\Grapher
+     * @return \IXP\Contracts\Grapher\Backend
      */
-    public function backend( $backend = null ) {
+    public function backend( $backend = null ): BackendContract {
         $backend = $this->resolveBackend( $backend );
         $backendClass = Config::get( "grapher.providers.{$backend}" );
         return new $backendClass( $app['config']['grapher']['backends'][ $backend ] );
