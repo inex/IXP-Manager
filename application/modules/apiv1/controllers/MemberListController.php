@@ -35,13 +35,15 @@ class Apiv1_MemberListController extends IXP_Controller_API_V1Action
 {
     public function preDispatch()
     {
-        $this->assertMinUserPriv( \Entities\User::AUTH_CUSTUSER );
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
     }
 
 
     public function listAction()
     {
+        if( !config( 'ixp_api.json_export_schema.public', false ) ) {
+            $this->assertMinUserPriv( \Entities\User::AUTH_CUSTUSER );
+        }
         $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
         $exporter = new \IXP\Utils\Export\JsonSchema;
         print $exporter->get( $this->getParam( 'version', false ) );
