@@ -340,6 +340,26 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $period   = $this->setPeriod();
         $proto    = $this->setProtocol();
 
+        // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
+        if( isset( $this->_options['sflow']['show_graphs_on_index_page'] ) ) {
+            $showGraphsOption = true;
+            $showGraphs       = $this->_options['sflow']['show_graphs_on_index_page'];
+        } else {
+            $showGraphsOption = false;
+            $showGraphs       = true;
+        }
+
+        if( $showGraphsOption && isset( $_POST['submit' ] ) ) {
+            if( $_POST['submit'] == "Show Graphs" ) {
+                $showGraphs = true;
+            } else if( $_POST['submit'] == "Hide Graphs" ) {
+                $showGraphs = false;
+            }
+        }
+
+        $this->view->showGraphs       = $showGraphs;
+        $this->view->showGraphsOption = $showGraphsOption;
+
         // Find the possible VLAN interfaces that this customer has for the given IXP
         if( !count( $srcVlis = $this->view->srcVlis = $this->getD2R( '\\Entities\\VlanInterface' )->getForCustomer( $cust, $this->ixp ) ) )
         {
