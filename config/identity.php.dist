@@ -21,6 +21,8 @@ return [
     'email'       => "operations@example.org",
     'testemail'   => "barryo@example.org",
 
+    'watermark'   => "Source: SCIX - Come City's IP Peering Hub - www.example.com",
+
     'support_email'       => "operations@example.org",
     'support_phone'       => "+353 1 531 1234",
     'support_hours'       => "24/7",

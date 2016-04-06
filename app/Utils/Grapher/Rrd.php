@@ -186,8 +186,8 @@ class Rrd
      * @return string The full path to the local copy
      * @throws IXP\Exceptions\Utils\Grapher\FileError
      */
-    private function getLocalFilename() {
-        return "{$this->getLocalDirectory()}/" . self::LOCAL_CACHE_RRD_PREFIX . "{$this->graph()->key()}.rrd";
+    private function getLocalFilename( $ext = 'rrd' ) {
+        return "{$this->getLocalDirectory()}/" . self::LOCAL_CACHE_RRD_PREFIX . "{$this->graph()->key()}.{$ext}";
     }
 
     /**
@@ -271,7 +271,6 @@ class Rrd
      * - only returning the values for the requested period
      * - MRTG/RRD provides traffic as bytes, change to bits
      *
-     * @param IXP\Services\Grapher\Graph $graph
      * @return array
      * @throws IXP\Exceptions\Utils\Grapher\FileError
      */
@@ -320,6 +319,82 @@ class Rrd
         }
 
         return $values;
+    }
+
+    /**
+     * From the RRD file, process and return a png
+     *
+     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     */
+    public function png(): string {
+
+        // // does the local file exist and is it less than 5mins old?
+        if( file_exists($this->getLocalFilename('png')) && ( time() - filemtime($this->localfile) < 300 ) ) {
+            return $this->getLocalFilename('png');
+        }
+
+        $separated_maxima = ( self::PERIOD_TIME[ $this->graph()->period() ] > 60*60*24*2) ? true : false;
+
+        $options = [
+            '--width=600',
+            '--height=150',
+            '--slope-mode',
+            '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ],
+            '--lower-limit=0',
+            '--title=' . $this->graph()->title(),
+            '--vertical-label=' . $this->graph()->category() . ' / second',
+            '--watermark=' . $this->graph()->watermark(),
+
+            'DEF:a='.$this->file().':traffic_in:AVERAGE',
+            'DEF:b='.$this->file().':traffic_in:MAX',
+            'DEF:c='.$this->file().':traffic_out:AVERAGE',
+            'DEF:d='.$this->file().':traffic_out:MAX',
+
+            'CDEF:cdefa=a,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
+            'CDEF:cdefb=b,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
+            'CDEF:cdefc=c,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
+            'CDEF:cdefd=d,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
+
+            'VDEF:last_in=cdefa,LAST',
+            'VDEF:last_out=cdefc,LAST',
+            'VDEF:max_in=cdefb,MAXIMUM',
+            'VDEF:max_out=cdefd,MAXIMUM',
+            'VDEF:avg_in=cdefb,AVERAGE',
+            'VDEF:avg_out=cdefd,AVERAGE',
+        ];
+
+        if( $separated_maxima ) {
+            $options[] = 'LINE2:cdefb#ff00ff:Peak Traffic In ';
+            $options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s\l';
+            $options[] = 'AREA:cdefd#006600:Peak Traffic Out';
+            $options[] = 'GPRINT:max_out:\tMax\\:%8.2lf%s\l';
+            $options[] = 'COMMENT:\s';
+        }
+
+        $avg_label = $separated_maxima ? 'Avg. ' : '';
+
+        $options[] = 'LINE1:cdefa#002A97FF:Average In ';
+        if( !$separated_maxima ) {
+            $options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s';
+        }
+        $options[] = 'GPRINT:avg_in:\tAvg\\:%8.2lf%s';
+        $options[] = 'GPRINT:last_in:\tCur\\:%8.2lf%s\l';
+
+        $options[] = 'AREA:cdefc#00CF00:Average Out';
+        if( !$separated_maxima ) {
+            $options[] = 'GPRINT:max_out:\tMax\\:%8.2lf%s';
+        }
+        $options[] = 'GPRINT:avg_out:\tAvg\\:%8.2lf%s';
+        $options[] = 'GPRINT:last_out:\tCur\\:%8.2lf%s\l';
+
+        $options[] = 'COMMENT:\s';
+
+        $png = rrd_graph( $this->getLocalFilename('png'), $options );
+
+        if( $png === false ) {
+            throw new FileErrorException("Could not open/create RRD/PNG file");
+        }
+        return $this->getLocalFilename('png');
     }
 
 

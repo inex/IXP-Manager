@@ -508,6 +508,29 @@ abstract class Graph {
     abstract function name(): string;
 
     /**
+     * The title of a graph (e.g. member name, IXP name, etc)
+     *
+     * Example: ORGNAME :: Graph->name() :: PROTOCOL
+     *
+     * @return string
+     */
+    public function title(): string {
+        return config( 'identity.orgname') . " :: " . $this->name()
+            . ( $this->protocol() == self::PROTOCOL_ALL ? '' : ' :: ' . self::PROTOCOL_DESCS[ $this->protocol() ] );
+    }
+
+    /**
+     * Watermark for graphs (e.g. member name, IXP name, etc)
+     *
+     * Example: ORGNAME :: Graph->name() :: PROTOCOL
+     *
+     * @return string
+     */
+    public function watermark(): string {
+        return config( 'identity.watermark' );
+    }
+
+    /**
      * A unique identifier for this 'graph type'
      *
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
