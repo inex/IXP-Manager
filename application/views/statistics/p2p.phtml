@@ -40,21 +40,6 @@
 
 {OSS_Message}
 
-{* for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not *}
-
-{if isset( $options.sflow.show_graphs_on_index_page ) }
-    {if $options.sflow.show_graphs_on_index_page}
-        {assign var="showGraphs" value=true}
-    {else}
-        {assign var="showGraphs" value=false}
-    {/if}
-{else}
-    {if not isset( $smarty.get.showGraphs ) }
-        {assign var="showGraphs" value=false}
-    {else}
-        {assign var="showGraphs" value=true}
-    {/if}
-{/if}
 
 <p>
 <form action="{genUrl controller="statistics" action="p2p"}{if $user->getPrivs() eq USER::AUTH_SUPERUSER}/shortname/{$cust->getShortname()}{/if}" method="post">
@@ -62,7 +47,7 @@
 <tr>
     {if $multiIXP}
         <td valign="middle"><strong>IXP:</strong></td>
-        <td>
+        <td valign="bottom">
             &nbsp;
             <select name="ixp" style="width: 100px;" class="chzn-select" onchange="this.form.submit();">
                 {foreach $ixps as $i}
@@ -75,7 +60,7 @@
         <input type="hidden" name="ixp" value="{$ixp->getId()}" />
     {/if}
 
-    <td valign="bottom"><strong>Network:</strong></td>
+    <td valign="middle"><strong>Network:</strong></td>
     <td valign="bottom">
         &nbsp;
         <select name="svli" style="width: 200px;" class="chzn-select">
@@ -88,7 +73,7 @@
     </td>
     {if $showGraphs}
         <td width="20"></td>
-        <td valign="bottom"><strong>Graph Type:</strong></td>
+        <td valign="middle"><strong>Graph Type:</strong></td>
         <td valign="bottom">
             &nbsp;
             <select name="category" style="width: 100px;" class="chzn-select">
@@ -98,7 +83,7 @@
             </select>
         </td>
         <td width="20"></td>
-        <td valign="bottom"><strong>Period:</strong></td>
+        <td valign="middle"><strong>Period:</strong></td>
         <td valign="bottom">
             &nbsp;
             <select name="period" style="width: 100px;" class="chzn-select">
@@ -109,8 +94,8 @@
         </td>
     {/if}
     <td width="20"></td>
-    <td valign="bottom"><strong>Protocol:</strong></td>
-    <td valign="bottom">
+    <td valign="middle"><strong>Protocol:</strong></td>
+    <td valign="midle">
         &nbsp;
         <select name="proto" style="width: 100px;" class="chzn-select">
             {foreach from=$protocols key=pname item=pvalue}
@@ -119,19 +104,16 @@
         </select>
     </td>
     <td width="20"></td>
-    <td valign="bottom">
-        <input class="btn" type="submit" value="Submit &raquo;" />
+    <td valign="middle">
+        <input class="btn" type="submit" name="submit" value="Submit &raquo;" />
     </td>
 
-    <td valign="bottom">
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a class="btn btn-primary" href="{genUrl controller="statistics" action="p2p"
-                    ixp=$ixp->getId()
-                    shortname=$cust->getShortname()
-                    category=$category
-                    period=$period
-                    proto=$proto}{if $showGraphs}">Hide{else}?showGraphs=1">Show{/if} Graphs</a>
-    </td>
+    {if $showGraphsOption}
+        <td valign="middle">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input class="btn btn-primary" type="submit" name="submit" value="{if $showGraphs}Hide{else}Show{/if} Graphs" />
+        </td>
+    {/if}
     </tr>
 </table>
 </form>
