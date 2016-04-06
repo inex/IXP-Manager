@@ -116,4 +116,8 @@ class Grapher extends Controller
     public function vlan( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
+
+    public function switch( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
 }

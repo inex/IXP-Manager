@@ -197,7 +197,14 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
                 'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
-            ]
+            ],
+            'switcher' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                    Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+            ],
         ];
     }
 
@@ -258,6 +265,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             case 'Infrastructure':
                 return sprintf( "%s/ixp%03d-infra%03d-%s%s.%s", $config['logdir'], $graph->infrastructure()->getIXP()->getId(),
                     $graph->infrastructure()->getId(), $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+                break;
+
+            case 'Switcher':
+                return sprintf( "%s/switches/switch-aggregate-%05d-%s%s.%s", $config['logdir'], $graph->switch()->getId(),
+                    $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
 
             default:

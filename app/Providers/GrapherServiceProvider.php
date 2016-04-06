@@ -61,6 +61,7 @@ class GrapherServiceProvider extends ServiceProvider {
             Route::get( 'ixp',            'Grapher@ixp'            );
             Route::get( 'infrastructure', 'Grapher@infrastructure' );
             Route::get( 'vlan',           'Grapher@vlan'           );
+            Route::get( 'switch',         'Grapher@switch'         );
         });
 
         // we have a few rendering functions we want to include here:

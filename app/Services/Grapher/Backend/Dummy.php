@@ -116,7 +116,13 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES
-            ]
+            ],
+            'switcher' => [
+                'protocols'   => Graph::PROTOCOLS,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES
+            ],
         ];
     }
 

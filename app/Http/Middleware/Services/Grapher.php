@@ -34,7 +34,8 @@ use IXP\Services\Grapher\Graph;
 use IXP\Services\Grapher\Graph\{
     IXP            as IXPGraph,
     Infrastructure as InfrastructureGraph,
-    Vlan           as VlanGraph
+    Vlan           as VlanGraph,
+    Switcher       as SwitchGraph
 };
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException};
@@ -110,6 +111,12 @@ class Grapher
                 $vlan = VlanGraph::processParameterVlan( (int)$request->input( 'id', 0 ) );
                 $request->vlan = $vlan->getId();
                 $graph = $grapher->vlan( $vlan )->setParamsFromArray( $request->all() );
+                break;
+
+            case 'switch':
+                $switch = SwitchGraph::processParameterSwitch( (int)$request->input( 'id', 0 ) );
+                $request->switch = $switch->getId();
+                $graph = $grapher->switch( $switch )->setParamsFromArray( $request->all() );
                 break;
 
             default:

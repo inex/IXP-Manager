@@ -38,7 +38,8 @@ use IXP\Services\Grapher\Graph;
 use IXP\Services\Grapher\Graph\{
     IXP            as IXPGraph,
     Infrastructure as InfrastructureGraph,
-    Vlan           as VlanGraph
+    Vlan           as VlanGraph,
+    Switcher       as SwitchGraph
 };
 
 use IXP\Contracts\Grapher\Backend as BackendContract;
@@ -47,7 +48,7 @@ use Cache;
 use Config;
 use D2EM;
 
-use Entities\{IXP,Infrastructure,Vlan};
+use Entities\{IXP,Infrastructure,Vlan,Switcher};
 
 /**
  * Grapher Backend -> Mrtg
@@ -206,8 +207,8 @@ class Grapher {
      * @param Entities\Infrastructure $infra
      * @return IXP\Services\Grapher\Graph\Infrastructure
      */
-    public function infrastructure( Infrastructure $i ): InfrastructureGraph {
-        return new InfrastructureGraph( $this, $i );
+    public function infrastructure( Infrastructure $infra ): InfrastructureGraph {
+        return new InfrastructureGraph( $this, $infra );
     }
 
     /**
@@ -215,8 +216,17 @@ class Grapher {
      * @param Entities\Vlan $vlan
      * @return IXP\Services\Grapher\Graph\Vlan
      */
-    public function vlan( Vlan $v ): VlanGraph {
-        return new VlanGraph( $this, $v );
+    public function vlan( Vlan $vlan ): VlanGraph {
+        return new VlanGraph( $this, $vlan );
+    }
+
+    /**
+     * Get an instance of a switch graph
+     * @param Entities\Switcher $switch
+     * @return IXP\Services\Grapher\Graph\Switcher
+     */
+    public function switch( Switcher $switch ): SwitchGraph {
+        return new SwitchGraph( $this, $switch );
     }
 
 

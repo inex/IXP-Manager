@@ -34,10 +34,11 @@
         $this->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "switch-aggregate-%s", $switch->getName() ),
+                'mrtgPrefix'   => sprintf( "switch-aggregate-%05d", $switch->getId() ),
                 'portIds'      => $data['swports'][$switch->getId()],
                 'data'         => $data,
                 'graphTitle'   => sprintf( config('identity.orgname') . " - Peering %%s / second on %s", $switch->getName() ),
+                'directory'    => "switches",
             ]
         );
 
