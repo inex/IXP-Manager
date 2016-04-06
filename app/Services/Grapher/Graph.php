@@ -515,6 +515,21 @@ abstract class Graph {
      */
     abstract function identifier(): string;
 
+    /**
+     * A simple key for this graph
+     *
+     * e.g. grapher-ixp002-ipv4-bits-day-rrd
+     *
+     * @return string
+     */
+    public function key(): string {
+        return 'grapher-' . $this->identifier()
+            . '-' . $this->protocol()
+            . '-' . $this->category()
+            . '-' . $this->period()
+            . '-' . $this->type();
+    }
+
 
     /**
      * This function controls access to the graph.

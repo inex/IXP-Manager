@@ -132,10 +132,9 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      */
     public function data( Graph $graph ): array {
         try {
-            $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ) );
-            return $rrd->data( $graph );
+            $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+            return $rrd->data();
         } catch( FileErrorException $e ) {
-            throw $e;
             Log::notice("[Grapher] {$this->name()} data(): could not load file {$this->resolveFilePath( $graph, 'rrd' )}");
             return [];
         }
@@ -162,13 +161,13 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * @return string
      */
     public function rrd( Graph $graph ): string {
-        if( ( $rrd = @file_get_contents( $this->resolveFilePath( $graph, 'rrd' ) ) ) === false ){
-            // couldn't load the rrd
-            Log::notice("[Grapher] {$this->name()} rrd(): could not load file {$this->resolveFilePath( $graph, 'rrd' )}");
+        try {
+            $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+            return $rrd->rrd();
+        } catch( FileErrorException $e ) {
+            Log::notice("[Grapher] {$this->name()} rrd(): could not load rrd file {$rrd->file()}");
             return false; // FIXME check handling of this
         }
-
-        return $rrd;
     }
 
     /**

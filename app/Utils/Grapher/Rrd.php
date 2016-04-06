@@ -86,6 +86,12 @@ class Rrd
     protected $array = null;
 
     /**
+     * Graph object under consideration
+     * @var IXP\Services\Grapher\Graph
+     */
+    protected $graph = null;
+
+    /**
      * Period times.
      *
      * these values are taken from mrtg/src/rateup.c
@@ -93,15 +99,20 @@ class Rrd
     const PERIOD_TIME = Mrtg::PERIOD_TIME;
 
 
+    /**
+     * Prefix for local cached files
+     */
+    const LOCAL_CACHE_RRD_PREFIX = "ixp-utils-rrd-";
 
     /**
      * Class constructor.
      *
      * @param $file The MRTG log file to load for analysis
      */
-    function __construct( string $file )
+    function __construct( string $file, Graph $graph )
     {
         $this->realfile  = $file;
+        $this->graph     = $graph;
         $this->loadRrdFile();
     }
 
@@ -109,7 +120,18 @@ class Rrd
      * Class destructor
      */
     public function __destruct() {
-        $this->deleteLocalCopy();
+        $this->deleteLocalCopies();
+    }
+
+    /**
+     * Get the full path to the RRD file being used
+     *
+     * Could be the original "real file" or a local copy
+     *
+     * @return string
+     */
+    public function file(): string {
+        return $this->file;
     }
 
     /**
@@ -124,6 +146,49 @@ class Rrd
             return 0.0;
     }
 
+    /**
+     * Access for the graph object under consideration
+     * @return IXP\Services\Grapher\Graph
+     */
+    private function graph(): Graph {
+        return $this->graph;
+    }
+
+    /**
+     * Get the local directory name.
+     *
+     * @see getLocalCopy() for detals
+     * @see getLocalFilename() for detals
+     *
+     * @return string The full path to the local directory
+     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     */
+    private function getLocalDirectory() {
+        // use Laravel's storage if possible
+        if( !function_exists( 'storage_path' ) ) {
+            throw new FileErrorException("Could not identify storage directory - fn storage_path() not defined");
+        }
+
+        $dir = storage_path() . '/grapher';
+        if ( !file_exists( $dir ) ) {
+            if( !@mkdir( $dir, 0770, true ) ) {
+                throw new FileErrorException("Could not create local RRD storage directory");
+            }
+        }
+        return $dir;
+    }
+
+    /**
+     * Get the local file name.
+     *
+     * @see getLocalCopy() for detals
+     *
+     * @return string The full path to the local copy
+     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     */
+    private function getLocalFilename() {
+        return "{$this->getLocalDirectory()}/" . self::LOCAL_CACHE_RRD_PREFIX . "{$this->graph()->key()}.rrd";
+    }
 
     /**
      * If necessary, copy a remote rrd to a local file (temporarily)
@@ -132,8 +197,9 @@ class Rrd
      *
      * Naturally, rrd_* is an exception :-(
      *
-     * This function creates a local copy if necessary and its mate,
-     * removeLocalCopy() deletes it afterwords.
+     * This function creates a local copy.
+     *
+     * @see removeLocalCopies()
      *
      * @return string The full path to the local copy
      * @throws IXP\Exceptions\Utils\Grapher\FileError
@@ -145,34 +211,31 @@ class Rrd
             return $this->file;
         }
 
-        // use Laravel's storage if possible
-        if( function_exists( 'storage_path' ) ) {
-            $dir = storage_path() . '/grapher';
-            if ( !file_exists( $dir ) ) {
-                if( !@mkdir( $dir, 0770, true ) ) {
-                    throw new FileErrorException("Could not create local RRD storage directory");
-                }
+        $this->file = $this->localfile = $this->getLocalFilename();
+
+        // does the local file exist and is it less than 5mins old?
+        if( !file_exists($this->localfile) || !( time() - filemtime($this->localfile) < 300 ) ) {
+            if( !( ( $r = @file_get_contents( $this->realfile ) ) && @file_put_contents( $this->localfile, $r ) ) ) {
+                throw new FileErrorException("Could not create local RRD copy");
             }
-            $this->localfile = tempnam( $dir, 'utils-rrd-' );
-        } else {
-            $this->localfile = tempnam( $dir, 'ixp-manager-grapher-utils-rrd-' );
         }
 
-        if( !( ( $r = @file_get_contents( $this->realfile ) ) && @file_put_contents( $this->localfile, $r ) ) ) {
-            throw new FileErrorException("Could not create local RRD copy");
-        }
-        $this->file = $this->localfile;
         return $this->localfile;
     }
 
     /**
-     * If necessary, delete a local copy of a remote rrd
+     * If necessary, delete local copies of a remote rrds
      *
      * @see getLocalCopy() for an explanation
      */
-    private function deleteLocalCopy() {
-        if( $this->localfile !== null ) {
-            @unlink( $this->localfile );
+    private function deleteLocalCopies() {
+        $files = glob( $this->getLocalDirectory() . "/" . self::LOCAL_CACHE_RRD_PREFIX . "*" );
+        $now   = time();
+
+        foreach( $files as $file ) {
+            if( is_file($file) && ( $now - filemtime( $file ) >= 300 ) ) {
+                @unlink($file);
+            }
         }
     }
 
@@ -185,6 +248,18 @@ class Rrd
         // we need to allow for remote files but php's rrd_* functions don't support this
         $fname = $this->getLocalCopy();
     }
+
+    /**
+     * Get the RRD file
+     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     */
+    protected function rrd() {
+        if( !( $rrd = @file_get_contents($this->file) ) ) {
+            throw new FileErrorException("Could not read RRD file [{$this->file}]");
+        }
+        return $rrd;
+    }
+
 
     /**
      * From the RRD file, process the data and return it in the same format
@@ -200,11 +275,11 @@ class Rrd
      * @return array
      * @throws IXP\Exceptions\Utils\Grapher\FileError
      */
-    public function data( Graph $graph ): array {
+    public function data(): array {
 
         $rrd = rrd_fetch( $this->file, [
             'AVERAGE',
-            '--start', time() - self::PERIOD_TIME[ $graph->period() ]
+            '--start', time() - self::PERIOD_TIME[ $this->graph()->period() ]
         ]);
 
         if( $rrd === false || !is_array( $rrd ) ) {
@@ -220,7 +295,7 @@ class Rrd
 
         $values  = [];
 
-        $isBits = ( $graph->category() == Graph::CATEGORY_BITS );
+        $isBits = ( $this->graph()->category() == Graph::CATEGORY_BITS );
 
         $i = 0;
         foreach( $tin as $ts => $v ) {
