@@ -36,10 +36,14 @@ use IXP\Exceptions\Services\Grapher\{
 use IXP\Services\Grapher\Graph;
 
 use IXP\Services\Grapher\Graph\{
-    IXP            as IXPGraph,
-    Infrastructure as InfrastructureGraph,
-    Vlan           as VlanGraph,
-    Switcher       as SwitchGraph
+    IXP               as IXPGraph,
+    Infrastructure    as InfrastructureGraph,
+    Vlan              as VlanGraph,
+    Switcher          as SwitchGraph,
+    PhysicalInterface as PhysIntGraph,  // member physical port
+    VirtualInterface  as VirtIntGraph,  // member LAG
+    Customer          as CustomerGraph, // member agg over all physical ports
+    VlanInterface     as VlanIntGraph   // member VLAN interface
 };
 
 use IXP\Contracts\Grapher\Backend as BackendContract;
@@ -48,7 +52,7 @@ use Cache;
 use Config;
 use D2EM;
 
-use Entities\{IXP,Infrastructure,Vlan,Switcher};
+use Entities\{IXP,Infrastructure,Vlan,Switcher,PhysicalInterface,VlanInterface,VirtualInterface,Customer};
 
 /**
  * Grapher Backend -> Mrtg
@@ -228,6 +232,44 @@ class Grapher {
     public function switch( Switcher $switch ): SwitchGraph {
         return new SwitchGraph( $this, $switch );
     }
+
+    /**
+     * Get an instance of a physint graph
+     * @param Entities\PhysicalInterface $int
+     * @return IXP\Services\Grapher\Graph\PhysicalInterface
+     */
+    public function physint( PhysicalInterface $int ): PhysIntGraph {
+        return new PhysIntGraph( $this, $int );
+    }
+
+    /**
+     * Get an instance of a virtint graph
+     * @param Entities\VirtualInterface $int
+     * @return IXP\Services\Grapher\Graph\VirtualInterface
+     */
+    public function virtint( VirtualInterface $int ): VirtIntGraph {
+        return new VirtIntGraph( $this, $int );
+    }
+
+    /**
+     * Get an instance of a vlanint graph
+     * @param Entities\VlanInterface $int
+     * @return IXP\Services\Grapher\Graph\VlanInterface
+     */
+    public function vlanint( VlanInterface $int ): VlanIntGraph {
+        return new VlanIntGraph( $this, $int );
+    }
+
+    /**
+     * Get an instance of a customer aggregate graph
+     * @param Entities\Customer $c
+     * @return IXP\Services\Grapher\Graph\Customer
+     */
+    public function customer( Customer $c ): CustomerGraph {
+        return new CustomerGraph( $this, $c );
+    }
+
+
 
 
 

@@ -37,13 +37,13 @@
             $this->insert(
                 "services/grapher/mrtg/target", [
                     'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                    'mrtgPrefix'   => sprintf( "%s-%d", $c->getShortname(), $data['pis'][$piid]->getMonitorindex() ),
+                    'mrtgPrefix'   => sprintf( "pi%05d", $data['pis'][$piid] ),
                     'portIds'      => [ $piid ],
                     'data'         => $data,
                     'graphTitle'   => sprintf( "%s -- %s -- %s -- %%s / second", $c->getAbbreviatedName(), $data['pis'][$piid]->getSwitchPort()->getName(),
                             $data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
                         ),
-                    'directory'    => sprintf("members/%s", $c->getShortname() ),
+                    'directory'    => sprintf("members/%05d", $c->getId() ),
                 ]
             );
 
@@ -56,11 +56,11 @@
                 $this->insert(
                     "services/grapher/mrtg/target", [
                         'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                        'mrtgPrefix'   => sprintf( "%s-lag-viid-%d", $c->getShortname(), $vi->getId() ),
+                        'mrtgPrefix'   => sprintf( "vi%05d", $vi->getId() ),
                         'portIds'      => $data['custlags'][$vi->getId()],
                         'data'         => $data,
                         'graphTitle'   => sprintf( "%s -- LAG Aggregate %%s / second", $c->getAbbreviatedName() ),
-                        'directory'    => sprintf("members/%s", $c->getShortname() ),
+                        'directory'    => sprintf("members/%05d", $c->getId() ),
                     ]
                 );
 
@@ -71,11 +71,11 @@
         $this->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "%s-aggregate", $c->getShortname() ),
+                'mrtgPrefix'   => sprintf( "aggregate-%05d", $c->getId() ),
                 'portIds'      => $data['custports'][$c->getId()],
                 'data'         => $data,
                 'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->getAbbreviatedName() ),
-                'directory'    => sprintf("members/%s", $c->getShortname() ),
+                'directory'    => sprintf("members/%05d", $c->getId() ),
             ]
         );
 

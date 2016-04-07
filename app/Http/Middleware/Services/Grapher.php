@@ -32,10 +32,14 @@ use IXP\Services\Grapher as GrapherService;
 use IXP\Services\Grapher\Graph;
 
 use IXP\Services\Grapher\Graph\{
-    IXP            as IXPGraph,
-    Infrastructure as InfrastructureGraph,
-    Vlan           as VlanGraph,
-    Switcher       as SwitchGraph
+    IXP               as IXPGraph,
+    Infrastructure    as InfrastructureGraph,
+    Vlan              as VlanGraph,
+    Switcher          as SwitchGraph,
+    PhysicalInterface as PhysIntGraph,  // member physical port
+    VirtualInterface  as VirtIntGraph,  // member LAG
+    Customer          as CustomerGraph, // member agg over all physical ports
+    VlanInterface     as VlanIntGraph   // member VLAN interface
 };
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException};
@@ -118,6 +122,31 @@ class Grapher
                 $request->switch = $switch->getId();
                 $graph = $grapher->switch( $switch )->setParamsFromArray( $request->all() );
                 break;
+
+            case 'physint':
+                $physint = PhysIntGraph::processParameterPhysicalInterface( (int)$request->input( 'id', 0 ) );
+                $request->physint = $physint->getId();
+                $graph = $grapher->physint( $physint )->setParamsFromArray( $request->all() );
+                break;
+
+            case 'virtint':
+                $virtint = VirtIntGraph::processParameterVirtualInterface( (int)$request->input( 'id', 0 ) );
+                $request->virtint = $virtint->getId();
+                $graph = $grapher->virtint( $virtint )->setParamsFromArray( $request->all() );
+                break;
+
+            case 'customer':
+                $customer = CustomerGraph::processParameterCustomer( (int)$request->input( 'id', 0 ) );
+                $request->customer = $customer->getId();
+                $graph = $grapher->customer( $customer )->setParamsFromArray( $request->all() );
+                break;
+
+            case 'vlanint':
+                $vlanint = VlanIntGraph::processParameterCustomer( (int)$request->input( 'id', 0 ) );
+                $request->vlanint = $vlanint->getId();
+                $graph = $grapher->vlanint( $vlanint )->setParamsFromArray( $request->all() );
+                break;
+
 
             default:
                 abort(404, 'No such graph type');

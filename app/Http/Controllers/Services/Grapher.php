@@ -120,4 +120,20 @@ class Grapher extends Controller
     public function switch( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
+
+    public function physint( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
+
+    public function virtint( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
+
+    public function customer( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
+
+    public function vlanint( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
 }

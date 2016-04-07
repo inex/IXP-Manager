@@ -205,6 +205,24 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 'periods'     => Graph::PERIODS,
                 'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
+            'physicalinterface' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+            ],
+            'virtualinterface' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+            ],
+            'customer' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+            ],
         ];
     }
 
@@ -271,6 +289,28 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 return sprintf( "%s/switches/switch-aggregate-%05d-%s%s.%s", $config['logdir'], $graph->switch()->getId(),
                     $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
+
+            case 'PhysicalInterface':
+                return sprintf( "%s/members/%05d/%s-%s%s.%s", $config['logdir'],
+                    $graph->physicalInterface()->getVirtualInterface()->getCustomer()->getId(),
+                    $graph->identifier(), $graph->category(),
+                    $type == 'log' ? '' : "-{$graph->period()}", $type );
+                break;
+
+            case 'VirtualInterface':
+                return sprintf( "%s/members/%05d/%s-%s%s.%s", $config['logdir'],
+                    $graph->virtualInterface()->getCustomer()->getId(),
+                    $graph->identifier(), $graph->category(),
+                    $type == 'log' ? '' : "-{$graph->period()}", $type );
+                break;
+
+            case 'Customer':
+                return sprintf( "%s/members/%05d/%s-%s%s.%s", $config['logdir'],
+                    $graph->customer()->getId(),
+                    $graph->identifier(), $graph->category(),
+                    $type == 'log' ? '' : "-{$graph->period()}", $type );
+                break;
+
 
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
