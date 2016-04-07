@@ -123,13 +123,13 @@ class Grapher
                 $graph = $grapher->switch( $switch )->setParamsFromArray( $request->all() );
                 break;
 
-            case 'physint':
+            case 'phsyicalinterface':
                 $physint = PhysIntGraph::processParameterPhysicalInterface( (int)$request->input( 'id', 0 ) );
                 $request->physint = $physint->getId();
                 $graph = $grapher->physint( $physint )->setParamsFromArray( $request->all() );
                 break;
 
-            case 'virtint':
+            case 'virtualinterface':
                 $virtint = VirtIntGraph::processParameterVirtualInterface( (int)$request->input( 'id', 0 ) );
                 $request->virtint = $virtint->getId();
                 $graph = $grapher->virtint( $virtint )->setParamsFromArray( $request->all() );
@@ -141,8 +141,8 @@ class Grapher
                 $graph = $grapher->customer( $customer )->setParamsFromArray( $request->all() );
                 break;
 
-            case 'vlanint':
-                $vlanint = VlanIntGraph::processParameterCustomer( (int)$request->input( 'id', 0 ) );
+            case 'vlaninterface':
+                $vlanint = VlanIntGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
                 $request->vlanint = $vlanint->getId();
                 $graph = $grapher->vlanint( $vlanint )->setParamsFromArray( $request->all() );
                 break;

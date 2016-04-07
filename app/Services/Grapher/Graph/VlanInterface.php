@@ -26,12 +26,12 @@ use IXP\Services\Grapher\{Graph,Statistics};
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
 
-use Entities\VirtualInterface as VirtualInterfaceEntity;
+use Entities\VlanInterface as VlanInterfaceEntity;
 
 use Auth, Log;
 
 /**
- * Grapher -> VirtualInterface Graph (LAGs)
+ * Grapher -> VlanInterface Graph (l3)
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
@@ -39,43 +39,43 @@ use Auth, Log;
  * @copyright  Copyright (c) 2009 - 2016, Internet Neutral Exchange Association Ltd
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VirtualInterface extends Graph {
+class VlanInterface extends Graph {
 
     /**
-     * VirtualInterface to graph
-     * @var \Entities\VirtualInterface
+     * VlanInterface to graph
+     * @var \Entities\VlanInterface
      */
-    private $virtint = null;
+    private $vlanint = null;
 
 
     /**
      * Constructor
      */
-    public function __construct( Grapher $grapher, VirtualInterfaceEntity $i ) {
+    public function __construct( Grapher $grapher, VlanInterfaceEntity $i ) {
         parent::__construct( $grapher );
-        $this->virtint = $i;
+        $this->vlanint = $i;
     }
 
     /**
      * Get the vlan we're set to use
      * @return \Entities\Vlan
      */
-    public function virtualInterface(): VirtualInterfaceEntity {
-        return $this->virtint;
+    public function vlanInterface(): VlanInterfaceEntity {
+        return $this->vlanint;
     }
 
     /**
      * Set the interface we should use
-     * @param Entities\VirtualInterface $i
+     * @param Entities\VlanInterface $i
      * @return \IXP\Services\Grapher Fluid interface
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
-    public function setVirtualInterface( VirtualInterfaceEntity $i ): Grapher {
-        if( $this->virtualInterface() && $this->virtualInterface()->getId() != $i->getId() ) {
+    public function setVlanInterface( VlanInterfaceEntity $i ): Grapher {
+        if( $this->vlanInterface() && $this->vlanInterface()->getId() != $i->getId() ) {
             $this->wipe();
         }
 
-        $this->virtint = $i;
+        $this->vlanint = $i;
         return $this;
     }
 
@@ -84,7 +84,20 @@ class VirtualInterface extends Graph {
      * @return string
      */
     public function name(): string {
-        return "LAG over ports on " . $this->virtualInterface()->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName();
+        $n = "Vlan Interface Traffic";
+
+        if( $this->vlanInterface()->getIpv4Enabled() || $this->vlanInterface()->getIpv4Enabled() ) {
+            $n .= ' :: ';
+
+            if( $this->vlanInterface()->getIpv4Enabled() ) {
+                $n .= $this->vlanInterface()->getIpv4Address()->getAddress() . ' ';
+            }
+
+            if( $this->vlanInterface()->getIpv6Enabled() ) {
+                $n .= $this->vlanInterface()->getIpv6Address()->getAddress();
+            }
+        }
+        return $n;
     }
 
     /**
@@ -94,7 +107,7 @@ class VirtualInterface extends Graph {
      * @return string
      */
     public function identifier(): string {
-        return sprintf( "vi%05d", $this->virtualInterface()->getId() );
+        return sprintf( "vli%05d", $this->vlanInterface()->getId() );
     }
 
     /**
@@ -115,12 +128,12 @@ class VirtualInterface extends Graph {
             return $this->allow();
         }
 
-        if( Auth::user()->getCustomer()->getId() == $this->virtualInterface()->getCustomer()->getId() ) {
+        if( Auth::user()->getCustomer()->getId() == $this->vlanInterface()->getCustomer()->getId() ) {
             return $this->allow();
         }
 
-        Log::notice( sprintf( "[Grapher] [VirtualInterface]: user %d::%s tried to access a virtual interface graph "
-            . "{$this->virtualInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+        Log::notice( sprintf( "[Grapher] [VlanInterface]: user %d::%s tried to access a vlan interface graph "
+            . "{$this->vlanInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
         return $this->deny();
     }
@@ -133,7 +146,7 @@ class VirtualInterface extends Graph {
      */
     public function url( array $overrides = [] ): string {
         return parent::url( $overrides ) . sprintf("&id=%d",
-            isset( $overrides['id']   ) ? $overrides['id']   : $this->virtualInterface()->getId()
+            isset( $overrides['id']   ) ? $overrides['id']   : $this->vlanInterface()->getId()
         );
     }
 
@@ -146,24 +159,24 @@ class VirtualInterface extends Graph {
      */
     public function getParamsAsArray(): array {
         $p = parent::getParamsAsArray();
-        $p['id'] = $this->virtualInterface()->getId();
+        $p['id'] = $this->vlanInterface()->getId();
         return $p;
     }
 
 
     /**
-     * Process user input for the parameter: virtint
+     * Process user input for the parameter: vlanint
      *
      * Does a abort(404) if invalid
      *
      * @param int $pi The user input value
      * @return int The verified / sanitised / default value
      */
-    public static function processParameterVirtualInterface( int $i ): VirtualInterfaceEntity {
-        if( !$i || !( $virtint = d2r( 'VirtualInterface' )->find( $i ) ) ) {
+    public static function processParameterVlanInterface( int $i ): VlanInterfaceEntity {
+        if( !$i || !( $vlanint = d2r( 'VlanInterface' )->find( $i ) ) ) {
             abort(404);
         }
-        return $virtint;
+        return $vlanint;
     }
 
 }

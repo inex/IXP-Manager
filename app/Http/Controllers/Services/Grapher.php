@@ -121,11 +121,11 @@ class Grapher extends Controller
         return $this->simpleResponse( $request );
     }
 
-    public function physint( Request $request ): Response {
+    public function phsyicalInterface( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
 
-    public function virtint( Request $request ): Response {
+    public function virtualInterface( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
 
@@ -133,7 +133,7 @@ class Grapher extends Controller
         return $this->simpleResponse( $request );
     }
 
-    public function vlanint( Request $request ): Response {
+    public function vlanInterface( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
 }

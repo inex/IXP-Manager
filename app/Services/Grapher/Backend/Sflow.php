@@ -117,7 +117,14 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES,
-            ]
+            ],
+            'vlaninterface' => [
+                'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                    Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES,
+            ],
         ];
     }
 
@@ -153,7 +160,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
             $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
             return @file_get_contents( $rrd->png() );
         } catch( FileErrorException $e ) {
-            Log::notice("[Grapher] {$this->name()} png(): could not load rrd file {$rrd->file()}");
+            Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
             return false; // FIXME check handling of this
         }
     }
@@ -202,9 +209,15 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
 
         switch( $graph->classType() ) {
             case 'Vlan':
-                return sprintf( "aggregate.%s.%s.%s.%s",
+                return sprintf( "aggregate.%s.%s.vlan%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
-                    $graph->identifier(), $type );
+                    $graph->vlan()->getNumber(), $type );
+                break;
+
+            case 'VlanInterface':
+                return sprintf( "individual.%s.%s.src-%05d.%s",
+                    $graph->protocol(), $this->translateCategory( $graph->category() ),
+                    $graph->vlanInterface()->getId(), $type );
                 break;
 
             default:
@@ -225,6 +238,12 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
         switch( $graph->classType() ) {
             case 'Vlan':
                 return sprintf( "%s/%s/%s/aggregate/%s", $config['root'],
+                    $graph->protocol(), $this->translateCategory( $graph->category() ),
+                    $this->resolveFileName( $graph, $type ) );
+                break;
+
+            case 'VlanInterface':
+                return sprintf( "%s/%s/%s/individual/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $this->resolveFileName( $graph, $type ) );
                 break;
