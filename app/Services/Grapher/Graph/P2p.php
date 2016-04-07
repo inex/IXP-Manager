@@ -115,11 +115,10 @@ class P2p extends Graph {
      * @return string
      */
     public function name(): string {
-        return sprintf( "P2P :: %s - %s :: %s - %s",
+        return sprintf( "P2P :: %s - %s :: %s",
             $this->svli()->getVirtualInterface()->getCustomer()->getAbbreviatedName(),
             $this->dvli()->getVirtualInterface()->getCustomer()->getAbbreviatedName(),
-            $this->dvli()->getVlan()->getName(),
-            self::PROTOCOL_DESCS[ $this->protocol() ]
+            $this->dvli()->getVlan()->getName()
         );
     }
 
