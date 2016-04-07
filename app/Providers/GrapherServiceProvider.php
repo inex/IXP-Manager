@@ -66,6 +66,7 @@ class GrapherServiceProvider extends ServiceProvider {
             Route::get( 'virtualinterface',  'Grapher@virtualInterface'  ); // member LAG (of physint's)
             Route::get( 'customer',          'Grapher@customer'          ); // member agg over all physint's
             Route::get( 'vlaninterface',     'Grapher@vlanInterface'     ); // member vlan interface
+            Route::get( 'p2p',               'Grapher@p2p'               ); // member vlan interface
         });
 
         // we have a few rendering functions we want to include here:

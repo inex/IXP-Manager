@@ -136,4 +136,8 @@ class Grapher extends Controller
     public function vlanInterface( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
+
+    public function p2p( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
 }

@@ -39,7 +39,8 @@ use IXP\Services\Grapher\Graph\{
     PhysicalInterface as PhysIntGraph,  // member physical port
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
-    VlanInterface     as VlanIntGraph   // member VLAN interface
+    VlanInterface     as VlanIntGraph,  // member VLAN interface
+    P2p               as P2pGraph
 };
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException};
@@ -145,6 +146,14 @@ class Grapher
                 $vlanint = VlanIntGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
                 $request->vlanint = $vlanint->getId();
                 $graph = $grapher->vlanint( $vlanint )->setParamsFromArray( $request->all() );
+                break;
+
+            case 'p2p':
+                $srcvlanint = P2pGraph::processParameterSourceVlanInterface(      (int)$request->input( 'svli', 0 ) );
+                $dstvlanint = P2pGraph::processParameterDestinationVlanInterface( (int)$request->input( 'dvli', 0 ) );
+                $request->srcvlanint = $srcvlanint->getId();
+                $request->dstvlanint = $dstvlanint->getId();
+                $graph = $grapher->p2p( $srcvlanint, $dstvlanint )->setParamsFromArray( $request->all() );
                 break;
 
 

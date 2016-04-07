@@ -43,7 +43,8 @@ use IXP\Services\Grapher\Graph\{
     PhysicalInterface as PhysIntGraph,  // member physical port
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
-    VlanInterface     as VlanIntGraph   // member VLAN interface
+    VlanInterface     as VlanIntGraph,  // member VLAN interface
+    P2p               as P2pGraph
 };
 
 use IXP\Contracts\Grapher\Backend as BackendContract;
@@ -267,6 +268,16 @@ class Grapher {
      */
     public function customer( Customer $c ): CustomerGraph {
         return new CustomerGraph( $this, $c );
+    }
+
+    /**
+     * Get an instance of a p2p graph
+     * @param Entities\VlanInterface $svli
+     * @param Entities\VlanInterface $dvli
+     * @return IXP\Services\Grapher\Graph\P2p
+     */
+    public function p2p( VlanInterface $svli, VlanInterface $dvli ): P2pGraph {
+        return new P2pGraph( $this, $svli, $dvli );
     }
 
 

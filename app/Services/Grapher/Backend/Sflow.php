@@ -125,6 +125,13 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES,
             ],
+            'p2p' => [
+                'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
+                                    Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES,
+            ],
         ];
     }
 
@@ -220,6 +227,12 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
                     $graph->vlanInterface()->getId(), $type );
                 break;
 
+            case 'P2p':
+                return sprintf( "p2p.%s.%s.src-%05d.dst-%05d.%s",
+                    $graph->protocol(), $this->translateCategory( $graph->category() ),
+                    $graph->svli()->getId(), $graph->dvli()->getId(), $type );
+                break;
+
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
@@ -246,6 +259,12 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
                 return sprintf( "%s/%s/%s/individual/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $this->resolveFileName( $graph, $type ) );
+                break;
+
+            case 'P2p':
+                return sprintf( "%s/%s/%s/p2p/src-%05d/%s", $config['root'],
+                    $graph->protocol(), $this->translateCategory( $graph->category() ),
+                    $graph->svli()->getId(), $this->resolveFileName( $graph, $type ) );
                 break;
 
             default:
