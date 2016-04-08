@@ -68,10 +68,9 @@ class GenerateConfiguration extends GrapherCommand {
      *
      * @return mixed
      */
-    public function handle(): int
-    {
+    public function handle(): int {
 
-        $grapher = Grapher::getBackend( $this->option( 'backend' ) );
+        $grapher = Grapher::backend( $this->option( 'backend' ) );
         if( !$grapher->isConfigurationRequired() ) {
             $this->info("This grapher backend (" . $grapher->name() . ") does not require any configuration to be generated");
             return 100;

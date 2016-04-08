@@ -27,6 +27,18 @@
 <?php
     foreach( $data['custs'] as $c ):
 
+?>
+
+#####################################################################################################################
+#####################################################################################################################
+#####################################################################################################################
+###
+### MEMBER PORT: <?= $c->getFormattedName() ?> 
+###
+
+
+<?php
+
         if( !isset( $data['custports'][$c->getId()] ) ):
             continue;
         endif;
@@ -37,7 +49,7 @@
             $this->insert(
                 "services/grapher/mrtg/target", [
                     'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                    'mrtgPrefix'   => sprintf( "pi%05d", $data['pis'][$piid] ),
+                    'mrtgPrefix'   => sprintf( "pi%05d", $piid ),
                     'portIds'      => [ $piid ],
                     'data'         => $data,
                     'graphTitle'   => sprintf( "%s -- %s -- %s -- %%s / second", $c->getAbbreviatedName(), $data['pis'][$piid]->getSwitchPort()->getName(),

@@ -69,6 +69,36 @@ class Mrtg
     ];
 
 
+    /**
+     * Mrtg / SNMP options for the different traffic types
+     * @var array
+     */
+    const TRAFFIC_TYPES = [
+        Graph::CATEGORY_BITS   => [
+            'in'      => 'oidInOctets',
+            'out'     => 'oidOutOctets',
+            'options' => 'growright,bits',
+            'name'    => 'Bits'
+        ],
+        Graph::CATEGORY_PACKETS   => [
+            'in'      => 'oidInUnicastPackets',
+            'out'     => 'oidOutUnicastPackets',
+            'options' => 'growright',
+            'name'    => 'Packets'
+        ],
+        Graph::CATEGORY_ERRORS   => [
+            'in'      => 'oidInErrors',
+            'out'     => 'oidOutErrors',
+            'options' => 'growright',
+            'name'    => 'Errors'
+        ],
+        Graph::CATEGORY_DISCARDS   => [
+            'in'      => 'oidInDiscards',
+            'out'     => 'oidOutDiscards',
+            'options' => 'growright',
+            'name'    => 'Discards'
+        ],
+    ];
 
     /**
      * Class constructor.
