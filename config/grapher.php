@@ -35,16 +35,18 @@ return [
         'dummy' => [
             // where to find the dummy MRTG log files (and png files)
             'logdir'  => env( 'GRAPHER_BACKEND_DUMMY_LOGDIR', base_path() . '/data/grapher/dummy' ),
-
         ],
 
         'mrtg'  => [
             // see: http://oss.oetiker.ch/mrtg/doc/mrtg-rrd.en.html
             'dbtype'  => env( 'GRAPHER_BACKEND_MRTG_DBTYPE', 'log' ),  // options: log, rrd
 
+            // where to store log/rrd/png files as created above. This is from the perspective
+            // of the mrtg daemon so should also be local
             'workdir' => env( 'GRAPHER_BACKEND_MRTG_WORKDIR', '/tmp' ),
 
-            // where to find the MRTG log files (and png files)
+            // where to find the WORKDIR above from IXP Manager's perspective. This can be a
+            // local directory or a URL to remote web server
             'logdir'  => env( 'GRAPHER_BACKEND_MRTG_LOGDIR', '/tmp' ),
         ],
 
