@@ -352,8 +352,12 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         if( $showGraphsOption && isset( $_POST['submit' ] ) ) {
             if( $_POST['submit'] == "Show Graphs" ) {
                 $showGraphs = true;
+                $_SESSION['controller.statistics.p2p.show_graphs'] = true;
             } else if( $_POST['submit'] == "Hide Graphs" ) {
                 $showGraphs = false;
+                $_SESSION['controller.statistics.p2p.show_graphs'] = false;
+            } else if( isset( $_SESSION['controller.statistics.p2p.show_graphs'] ) ) {
+                $showGraphs = $_SESSION['controller.statistics.p2p.show_graphs'];
             }
         }
 
