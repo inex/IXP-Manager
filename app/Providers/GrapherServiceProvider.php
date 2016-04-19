@@ -47,7 +47,9 @@ class GrapherServiceProvider extends ServiceProvider {
 
 
     protected $commands = [
-        'IXP\Console\Commands\Grapher\GenerateConfiguration'
+        'IXP\Console\Commands\Grapher\GenerateConfiguration',
+
+        'IXP\Console\Commands\Grapher\Backend\Mrtg\Upgrade',
     ];
 
     /**

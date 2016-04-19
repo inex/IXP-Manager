@@ -128,7 +128,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @return array
      */
-    private function getPeeringPorts( IXP $ixp ): array {
+    public function getPeeringPorts( IXP $ixp ): array {
         $data = [];
 
         foreach( $ixp->getCustomers() as $c ) {
@@ -271,7 +271,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * @param IXP\Services\Grapher\Graph $graph
      * @return string
      */
-    private function resolveFilePath( Graph $graph, $type ): string {
+    public function resolveFilePath( Graph $graph, $type ): string {
         $config = config('grapher.backends.mrtg');
 
         switch( $graph->classType() ) {
