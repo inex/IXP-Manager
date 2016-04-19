@@ -38,6 +38,7 @@
                 'portIds'      => $data['infraports'][$infra->getId()],
                 'data'         => $data,
                 'graphTitle'   => sprintf( config('identity.orgname') . " %%s / second on %s", $infra->getName() ),
+                'directory'    => sprintf( "infras/%03d", $infraid ),
             ]
         );
 
@@ -51,6 +52,7 @@
                 'portIds'      => $data['ixpports'],
                 'data'         => $data,
                 'graphTitle'   => sprintf( config('identity.orgname') . " - %%s / second" ),
+                'directory'    => sprintf( "ixp" ),
             ]
         );
     endif;

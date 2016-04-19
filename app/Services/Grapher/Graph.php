@@ -133,6 +133,15 @@ abstract class Graph {
     ];
 
     /**
+     * Useful array of just bits and packets categories for graphs
+     */
+    const CATEGORIES_BITS_PKTS = [
+        self::CATEGORY_BITS     => self::CATEGORY_BITS,
+        self::CATEGORY_PACKETS  => self::CATEGORY_PACKETS,
+    ];
+
+
+    /**
      * Array of valid categories for graphs
      */
     const CATEGORY_DESCS = [

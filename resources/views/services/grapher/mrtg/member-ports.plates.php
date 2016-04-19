@@ -33,7 +33,7 @@
 #####################################################################################################################
 #####################################################################################################################
 ###
-### MEMBER PORT: <?= $c->getFormattedName() ?> 
+### MEMBER PORT: <?= $c->getFormattedName() ?>
 ###
 
 
@@ -55,29 +55,31 @@
                     'graphTitle'   => sprintf( "%s -- %s -- %s -- %%s / second", $c->getAbbreviatedName(), $data['pis'][$piid]->getSwitchPort()->getName(),
                             $data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
                         ),
-                    'directory'    => sprintf("members/%05d", $c->getId() ),
+                    'directory'    => sprintf("members/%x/%05d/ints", $c->getId() % 16, $c->getId()),
                 ]
             );
 
         endforeach;
 
         // individual LAG aggregates
-        foreach( $c->getVirtualInterfaces() as $vi ):
-            if( isset( $data['custlags'][$vi->getId()] ) ):
+        if( isset( $data['custlags'][$c->getId()] ) ):
+
+            foreach( $data['custlags'][$c->getId()] as $viid => $pis ):
 
                 $this->insert(
                     "services/grapher/mrtg/target", [
                         'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                        'mrtgPrefix'   => sprintf( "vi%05d", $vi->getId() ),
-                        'portIds'      => $data['custlags'][$vi->getId()],
+                        'mrtgPrefix'   => sprintf( "vi%05d", $viid ),
+                        'portIds'      => $pis,
                         'data'         => $data,
                         'graphTitle'   => sprintf( "%s -- LAG Aggregate %%s / second", $c->getAbbreviatedName() ),
-                        'directory'    => sprintf("members/%05d", $c->getId() ),
+                        'directory'    => sprintf( "members/%x/%05d/lags", $c->getId() % 16, $c->getId() ),
                     ]
                 );
 
-            endif;
-        endforeach;
+            endforeach;
+
+        endif;
 
         // overall aggregate
         $this->insert(
@@ -87,7 +89,7 @@
                 'portIds'      => $data['custports'][$c->getId()],
                 'data'         => $data,
                 'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->getAbbreviatedName() ),
-                'directory'    => sprintf("members/%05d", $c->getId() ),
+                'directory'    => sprintf("members/%x/%05d", $c->getId() % 16, $c->getId()),
             ]
         );
 
