@@ -159,7 +159,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                     $data['custports'][$c->getId()][] = $pi->getId();
 
                     if( count( $vi->getPhysicalInterfaces() ) > 1 ) {
-                        $data['custlags'][$vi->getId()][] = $pi->getId();
+                        $data['custlags'][$c->getId()][$vi->getId()][] = $pi->getId();
                     }
 
                     if( $pi->statusIsConnected() ) {
@@ -263,6 +263,14 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         return $img;
     }
 
+    /**
+     * For larger IXPs, allow sharding of directories over 16 possible base directories
+     * @param int $id The customer entity id
+     * @return string shared path -> e.g. 18 -> 18 % 16 = 2 / 00016 -> 2/00016
+     */
+    private function shardMemberDir( int $id ): string {
+        return sprintf( "%x/%05d", $id % 16, $id );
+    }
 
     /**
      * For a given graph, return the path where the appropriate log file
@@ -276,37 +284,39 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
 
         switch( $graph->classType() ) {
             case 'IXP':
-                return sprintf( "%s/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
+                return sprintf( "%s/ixp/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
                     $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Infrastructure':
-                return sprintf( "%s/ixp%03d-infra%03d-%s%s.%s", $config['logdir'], $graph->infrastructure()->getIXP()->getId(),
+                return sprintf( "%s/infras/%03d/ixp%03d-infra%03d-%s%s.%s", $config['logdir'],
+                    $graph->infrastructure()->getId(), $graph->infrastructure()->getIXP()->getId(),
                     $graph->infrastructure()->getId(), $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Switcher':
-                return sprintf( "%s/switches/switch-aggregate-%05d-%s%s.%s", $config['logdir'], $graph->switch()->getId(),
+                return sprintf( "%s/switches/%03d/switch-aggregate-%05d-%s%s.%s", $config['logdir'],
+                    $graph->switch()->getId(), $graph->switch()->getId(),
                     $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'PhysicalInterface':
-                return sprintf( "%s/members/%05d/%s-%s%s.%s", $config['logdir'],
-                    $graph->physicalInterface()->getVirtualInterface()->getCustomer()->getId(),
+                return sprintf( "%s/members/%s/ints/%s-%s%s.%s", $config['logdir'],
+                    $this->shardMemberDir( $graph->physicalInterface()->getVirtualInterface()->getCustomer()->getId() ),
                     $graph->identifier(), $graph->category(),
                     $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'VirtualInterface':
-                return sprintf( "%s/members/%05d/%s-%s%s.%s", $config['logdir'],
-                    $graph->virtualInterface()->getCustomer()->getId(),
+                return sprintf( "%s/members/%s/lags/%s-%s%s.%s", $config['logdir'],
+                    $this->shardMemberDir( $graph->virtualInterface()->getCustomer()->getId() ),
                     $graph->identifier(), $graph->category(),
                     $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Customer':
-                return sprintf( "%s/members/%05d/%s-%s%s.%s", $config['logdir'],
-                    $graph->customer()->getId(),
+                return sprintf( "%s/members/%s/%s-%s%s.%s", $config['logdir'],
+                    $this->shardMemberDir( $graph->customer()->getId() ),
                     $graph->identifier(), $graph->category(),
                     $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;

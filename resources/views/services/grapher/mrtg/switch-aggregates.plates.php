@@ -38,7 +38,7 @@
                 'portIds'      => $data['swports'][$switch->getId()],
                 'data'         => $data,
                 'graphTitle'   => sprintf( config('identity.orgname') . " - Peering %%s / second on %s", $switch->getName() ),
-                'directory'    => "switches",
+                'directory'    => sprintf( "switches/%03d", $switchid ),
             ]
         );
 
