@@ -21,6 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Services\Grapher\Graph;
 
 /**
  * A trait of common statistics functions
@@ -210,11 +211,11 @@ trait IXP_Controller_Trait_Statistics
      */
     protected function setCategory( $pname = 'category', $aggregate = false )
     {
-        $category = $this->getParam( $pname, IXP_Mrtg::$CATEGORIES['Bits'] );
-        if( !in_array( $category, $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES ) )
-            $category = IXP_Mrtg::$CATEGORIES['Bits'];
+        $category = $this->getParam( $pname, Graph::CATEGORY_BITS );
+        if( !in_array( $category, $aggregate ? Graph::CATEGORIES_BITS_PKTS : Graph::CATEGORIES ) )
+            $category = Graph::CATEGORY_BITS;
         $this->view->category   = $category;
-        $this->view->categories = $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES;
+        $this->view->categories = $aggregate ? Graph::CATEGORIES_BITS_PKTS_DESCS : Graph::CATEGORY_DESCS;
         return $category;
     }
 

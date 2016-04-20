@@ -152,6 +152,14 @@ abstract class Graph {
     ];
 
     /**
+     * Useful array of just bits and packets categories for graphs
+     */
+    const CATEGORIES_BITS_PKTS_DESCS = [
+        self::CATEGORY_BITS     => 'Bits',
+        self::CATEGORY_PACKETS  => 'Packets',
+    ];
+
+    /**
      * Protocols for graphs
      */
     const PROTOCOL_IPV4 = 'ipv4';
