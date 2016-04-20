@@ -58,12 +58,31 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->setIXP();
         $this->setInfrastructure();
         $this->setCategory();
-        $this->setPeriod();
+        $category = $this->setCategory();
+        $period   = $this->setPeriod();
 
-        $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+        $grapher = App::make('IXP\Services\Grapher');
 
-        if( !is_string( $this->infra ) && $this->infra )
-            $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
+        $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+
+        /**
+         * FIXME - add back in infra
+         *
+         * if( !is_string( $this->infra ) && $this->infra )
+         * $custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
+         */
+
+        $graphs = [];
+
+        foreach( $custs as $c ) {
+            $graphs[] = $grapher->customer( $c )
+                ->setType(     Graph::TYPE_PNG )
+                ->setProtocol( Graph::PROTOCOL_ALL )
+                ->setCategory( $category )
+                ->setPeriod( $period );
+        }
+
+        $this->view->graphs = $graphs;
     }
 
     public function memberAction()
