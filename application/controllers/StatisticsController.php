@@ -90,12 +90,14 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
         $this->setIXP( $cust );
         $this->setCategory();
+        $this->view->grapher = App::make('IXP\Services\Grapher');
     }
 
     public function memberDrilldownAction()
     {
         $category = $this->setCategory();
         $this->view->monitorindex = $monitorindex = $this->getParam( 'monitorindex', 1 );
+        $grapher = App::make('IXP\Services\Grapher');
 
         $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
 
@@ -128,6 +130,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $this->view->switchname = $pi->getSwitchPort()->getSwitcher()->getName();
             $this->view->portname   = $pi->getSwitchPort()->getName();
             $this->view->isPort     = true;
+
+            $graph = $grapher->physint( $pi );
         }
         else if( substr( $monitorindex, 0, 9 ) == 'lag-viid-' )
         {
@@ -152,26 +156,18 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $portnames[] = $pi->getSwitchPort()->getName();
             $this->view->portname = implode( ', ', $portnames );
             $this->view->isLAG = true;
+            $graph = $grapher->virtint( $vi );
         }
         else
         {
             $this->view->switchname  = '';
             $this->view->portname    = '';
             $this->view->isAggregate = true;
+            $this->view->graph = $graph = $grapher->customer( $cust );
         }
 
-        $this->view->periods      = IXP_Mrtg::$PERIODS;
-
-        $stats = array();
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg(
-                    IXP_Mrtg::getMrtgFilePath( $this->ixp->getMrtgPath() . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
-            );
-
-            $stats[$period] = $mrtg->getValues( $period, $this->view->category );
-        }
-        $this->view->stats     = $stats;
+        $this->view->periods      = Graph::PERIOD_DESCS;
+        $this->view->graph = $graph->setCategory( $category );
 
         if( $this->getParam( 'mini', false ) )
         {
