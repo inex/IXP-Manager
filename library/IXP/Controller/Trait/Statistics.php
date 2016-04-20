@@ -231,11 +231,11 @@ trait IXP_Controller_Trait_Statistics
      */
     protected function setPeriod( $pname = 'period' )
     {
-        $period = $this->getParam( $pname, IXP_Mrtg::$PERIODS['Day'] );
-        if( !in_array( $period, IXP_Mrtg::$PERIODS ) )
-            $period = IXP_Mrtg::$PERIODS['Day'];
+        $period = $this->getParam( $pname, Graph::PERIOD_DAY );
+        if( !in_array( $period, Graph::PERIODS ) )
+            $period = Graph::PERIOD_DAY;
         $this->view->period     = $period;
-        $this->view->periods    = IXP_Mrtg::$PERIODS;
+        $this->view->periods    = Graph::PERIOD_DESCS;
         return $period;
     }
 

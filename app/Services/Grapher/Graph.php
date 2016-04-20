@@ -27,6 +27,8 @@ namespace IXP\Services\Grapher;
 use IXP\Services\Grapher;
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
 
+use IXP\Exceptions\Services\Grapher\ParameterException;
+
 use Illuminate\Auth\Access\AuthorizationException;
 
 /**

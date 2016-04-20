@@ -194,9 +194,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     {
         // get the available graphs
         $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
-
         $grapher = App::make('IXP\Services\Grapher');
-
         $category = $this->setCategory( 'category', true );
 
         $graphs = [];
@@ -234,7 +232,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->view->graphid    = $graphid;
         $this->view->graph      = $graphs[$graphid];
 
-        $this->view->periods    = Graph::PERIOD_DESCS;
+        $this->setPeriod();
     }
 
     public function trunksAction()
@@ -280,44 +278,24 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     public function switchesAction()
     {
         $eSwitches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getAndCache( true, \Entities\Switcher::TYPE_SWITCH );
+        $grapher = App::make('IXP\Services\Grapher');
+        $category = $this->setCategory( 'category', true );
 
         $switches = [];
-        foreach( $eSwitches as $s )
-        {
-            // if we're not doing infrastructure aggregates, we're probably not doing swicth aggregates:
-            if( $s->getInfrastructure()->getAggregateGraphName() )
-            {
-                $switches[ $s->getId() ][ 'name' ] = $s->getName();
-                $switches[ $s->getId() ][ 'mrtg' ] = $s->getInfrastructure()->getIXP()->getMrtgPath();
-            }
+        foreach( $eSwitches as $s ) {
+            $switches[ $s->getId() ] = $grapher->switch( $s )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
         }
 
         $this->view->switches = $switches;
 
-        $switch = $this->getParam( 'switch', array_keys( $switches )[0] );
-        if( !in_array( $switch, array_keys( $switches ) ) )
-            $switch = array_keys( $switches )[0];
-        $this->view->switch     = $switch;
+        $switchid = $this->getParam( 'switch', array_keys( $switches )[0] );
+        if( !in_array( $switchid, array_keys( $switches ) ) )
+            $switchid = array_keys( $switches )[0];
 
-        $category = $this->setCategory();
-
-        // override allowed categories as some aren't available here
-        $this->view->categories = IXP_Mrtg::$CATEGORIES_AGGREGATE;
+        $this->view->switchid     = $switchid;
+        $this->view->graph        = $switches[$switchid];
 
         $this->setPeriod();
-
-        $stats = array();
-
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg(
-                $switches[ $switch ][ 'mrtg' ] . '/switches/' . 'switch-aggregate-'
-                    . $switches[ $switch ][ 'name' ] . '-' . $category . '.log'
-            );
-
-            $stats[$period] = $mrtg->getValues( $period, $category );
-        }
-        $this->view->stats      = $stats;
     }
 
     /**
