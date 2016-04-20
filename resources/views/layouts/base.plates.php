@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="<?= url("") ?>">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+
+    <title><?= config('identity.orgname', '' ) ?> IXP Manager</title>
+
+<?php $this->insert('resources/css') ?>
+
+<?php if( ( Auth::guest() || !Auth::user()->isSuperUser() ) /* && ( !isset( $mode ) || $mode != 'fluid' ) */ ): ?>
+    <style>
+        html, body {
+          background-color: #eee;
+        }
+
+        body {
+            padding-top: 40px;
+        }
+    </style>
+<?php endif ?>
+
+</head>
+<body>
+<?= $this->section('body') ?>
+
+<?php $this->insert('resources/js') ?>
+</body>
+</html>
