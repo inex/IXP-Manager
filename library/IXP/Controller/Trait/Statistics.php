@@ -187,12 +187,12 @@ trait IXP_Controller_Trait_Statistics
      */
     protected function setProtocol( $pname = 'proto' )
     {
-        $proto = $this->getParam( $pname, 4 );
-        if( !in_array( $proto, IXP_Mrtg::$PROTOCOLS ) )
-            $proto = IXP_Mrtg::PROTOCOL_IPV4;
+        $proto = $this->getParam( $pname, Graph::PROTOCOL_IPV4 );
+        if( !in_array( $proto, Graph::PROTOCOLS_REAL ) )
+            $proto = Graph::PROTOCOL_IPV4;
 
         $this->view->proto     = $proto;
-        $this->view->protocols = IXP_Mrtg::$PROTOCOLS;
+        $this->view->protocols = Graph::PROTOCOL_REAL_DESCS;
 
         return $proto;
     }

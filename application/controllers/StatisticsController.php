@@ -325,6 +325,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $period   = $this->setPeriod();
         $proto    = $this->setProtocol();
 
+        $this->view->grapher = App::make('IXP\Services\Grapher');
+
         // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
         if( isset( $this->_options['sflow']['show_graphs_on_index_page'] ) ) {
             $showGraphsOption = true;

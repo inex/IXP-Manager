@@ -14,10 +14,10 @@
         <li class="active">
             Statistics
             (
-             {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
+             {foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach}
              {if isset( $period )}
                 /
-                 {foreach from=$periods key=cname item=cvalue}{if $period eq $cvalue}{$cname}{/if}{/foreach}
+                 {foreach from=$periods key=pvalue item=pname}{if $period eq $pvalue}{$pname}{/if}{/foreach}
              {/if}
             )
         </li>

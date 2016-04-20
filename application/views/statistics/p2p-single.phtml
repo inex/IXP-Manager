@@ -17,10 +17,10 @@
                 {$dstVli->getVirtualInterface()->getCustomer()->getFormattedName()}
             </a>
             (
-             {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
+             {foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach}
              {if isset( $period )}
                 /
-                 {foreach from=$periods key=cname item=cvalue}{if $period eq $cvalue}{$cname}{/if}{/foreach}
+                 {foreach from=$periods key=pvalue item=pname}{if $period eq $cvalue}{$cname}{/if}{/foreach}
              {/if}
             )
         </li>
@@ -64,7 +64,7 @@
     <td>
         &nbsp;
         <select name="category" style="width: 100px;">
-            {foreach from=$categories key=cname item=cvalue}
+            {foreach from=$categories key=cvalue item=cname}
                 {if $cname neq 'Errors' and $cname neq 'Discards'}
                     <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
                 {/if}
@@ -76,7 +76,7 @@
     <td>
         &nbsp;
         <select name="proto" style="width: 100px;">
-            {foreach from=$protocols key=pname item=pvalue}
+            {foreach from=$protocols key=pvalue item=pname}
                 <option value="{$pvalue}" {if $proto eq $pvalue}selected="selected"{/if}>{$pname}</option>
             {/foreach}
         </select>
@@ -96,7 +96,7 @@
     <div class="row-fluid">
 
     {assign var='count' value=0}
-    {foreach from=$periods key=pname item=pid}
+    {foreach from=$periods key=pvalue item=pname}
 
         <div class="span6">
 
@@ -108,12 +108,7 @@
                 <p>
                     <br />
                     <img
-                        src="{genMrtgP2pImgUrl shortname=$cust->getShortname()
-                                svli=$srcVli->getId()
-                                dvli=$dstVli->getId()
-                                category=$category
-                                proto=$proto
-                                period=$pid}"
+                        src="{$grapher->p2p( $srcVli, $dstVli )->setCategory($category)->setProtocol($proto)->setPeriod($pvalue)->setType('png')->url()}"
                         width="600"
                     />
                 </p>

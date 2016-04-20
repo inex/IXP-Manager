@@ -167,8 +167,9 @@ class P2p extends Graph {
      * @return string
      */
     public function url( array $overrides = [] ): string {
-        return parent::url( $overrides ) . sprintf("&id=%d",
-            isset( $overrides['id']   ) ? $overrides['id']   : $this->vlanInterface()->getId()
+        return parent::url( $overrides ) . sprintf("&svli=%d&dvli=%d",
+            $overrides['svli']   ?? $this->svli()->getId(),
+            $overrides['dvli']   ?? $this->dvli()->getId()
         );
     }
 

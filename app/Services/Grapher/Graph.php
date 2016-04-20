@@ -198,10 +198,27 @@ abstract class Graph {
     ];
 
     /**
+     * Array of valid real protocols
+     */
+    const PROTOCOLS_REAL = [
+        self::PROTOCOL_IPV4 => self::PROTOCOL_IPV4,
+        self::PROTOCOL_IPV6 => self::PROTOCOL_IPV6
+    ];
+
+
+    /**
      * Array of valid protocols
      */
     const PROTOCOL_DESCS = [
         self::PROTOCOL_ALL  => 'All',
+        self::PROTOCOL_IPV4 => 'IPv4',
+        self::PROTOCOL_IPV6 => 'IPv6'
+    ];
+
+    /**
+     * Array of valid real protocols
+     */
+    const PROTOCOL_REAL_DESCS = [
         self::PROTOCOL_IPV4 => 'IPv4',
         self::PROTOCOL_IPV6 => 'IPv6'
     ];
@@ -419,10 +436,10 @@ abstract class Graph {
      */
     public function url( array $overrides = [] ): string {
         return url('grapher/'.$this->lcClassType()) . sprintf("?period=%s&type=%s&category=%s&protocol=%s",
-            isset( $overrides['period']   ) ? $overrides['period']   : $this->period(),
-            isset( $overrides['type']     ) ? $overrides['type']     : $this->type(),
-            isset( $overrides['category'] ) ? $overrides['category'] : $this->category(),
-            isset( $overrides['protocol'] ) ? $overrides['protocol'] : $this->protocol()
+            $overrides['period']   ?? $this->period(),
+            $overrides['type']     ?? $this->type(),
+            $overrides['category'] ?? $this->category(),
+            $overrides['protocol'] ?? $this->protocol()
         );
     }
 

@@ -14,10 +14,10 @@
         <li class="active">
             Peer to Peer Statistics
             (
-             {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
+             {foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach}
              {if isset( $period )}
                 /
-                 {foreach from=$periods key=cname item=cvalue}{if $period eq $cvalue}{$cname}{/if}{/foreach}
+                 {foreach from=$periods key=pvalue item=pname}{if $period eq $pvalue}{$pname}{/if}{/foreach}
              {/if}
             )
         </li>
@@ -77,7 +77,7 @@
         <td valign="bottom">
             &nbsp;
             <select name="category" style="width: 100px;" class="chzn-select">
-                {foreach from=$categories key=cname item=cvalue}
+                {foreach from=$categories key=cvalue item=cname}
                     <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
                 {/foreach}
             </select>
@@ -87,8 +87,8 @@
         <td valign="bottom">
             &nbsp;
             <select name="period" style="width: 100px;" class="chzn-select">
-                {foreach from=$periods key=cname item=cvalue}
-                    <option value="{$cvalue}" {if $period eq $cvalue}selected{/if}>{$cname}</option>
+                {foreach from=$periods key=pvalue item=pname}
+                    <option value="{$pvalue}" {if $period eq $pvalue}selected{/if}>{$pname}</option>
                 {/foreach}
             </select>
         </td>
@@ -98,7 +98,7 @@
     <td valign="midle">
         &nbsp;
         <select name="proto" style="width: 100px;" class="chzn-select">
-            {foreach from=$protocols key=pname item=pvalue}
+            {foreach from=$protocols key=pvalue item=pname}
                 <option value="{$pvalue}" {if $proto eq $pvalue}selected="selected"{/if}>{$pname}</option>
             {/foreach}
         </select>
@@ -208,14 +208,7 @@
                                 period=$period
                                 proto=$proto}">
                             <img
-                                src="{genMrtgP2pImgUrl
-                                    ixp=$ixp->getId()
-                                    shortname=$cust->getShortname()
-                                    svli=$srcVli->getId()
-                                    dvli=$dvli->getId()
-                                    category=$category
-                                    period=$period
-                                    proto=$proto}"
+                                src="{$grapher->p2p( $srcVli, $dvli )->setCategory($category)->setProtocol($proto)->setPeriod($period)->setType('png')->url()}"
                                 width="300"
                             />
                         </a>
