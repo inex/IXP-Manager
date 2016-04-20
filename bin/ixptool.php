@@ -57,6 +57,15 @@ set_include_path( implode( PATH_SEPARATOR,
     )
 );
 
+
+// Laravel bootstrap
+require APPLICATION_PATH.'/../bootstrap/autoload.php';
+$app = require_once APPLICATION_PATH.'/../bootstrap/app.php';
+$kernel = $app->make('Illuminate\Contracts\Console\Kernel');
+$kernel->bootstrap();
+
+
+
 /** Zend_Application */
 require_once 'Zend/Application.php';
 
@@ -103,11 +112,11 @@ if( !isset( $opts->f ) && file_exists( '../MAINT_MODE_ENABLED' ) )
 {
     die( "IXPtool - CLI tool exiting as maintenance mode is enabled. Use -f to force.\n" );
 }
-    
+
 if( isset( $opts->h ) )
 {
     echo SCRIPT_NAME . "\n" . SCRIPT_COPY . "\n\n";
-    
+
     echo $opts->getUsageMessage();
     exit;
 }
@@ -149,7 +158,7 @@ if( isset( $opts->a ) )
                 $param = explode( "=", $opts->p );
                 $front->getRequest()->setParam( trim( $param[0] ), trim( $param[1] ) );
             }
-            
+
         }
 
         $front->setParam( 'noViewRenderer', true )
@@ -185,4 +194,3 @@ if( isset( $opts->a ) )
         }
     }
 }
-
