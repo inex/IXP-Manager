@@ -15,15 +15,11 @@ return [
 
 	// closure is an IXP Manager addition to allow end users to add paths for skinned templates
 	'paths' => call_user_func( function() {
-		$paths = [];
-		
-		if( env('VIEW_SKINS', false) ) {
-			foreach( explode( '|', env( 'VIEW_SKINS' ) ) as $skin ) {
-				$paths[] = realpath(base_path('resources/skins/'.$skin));
-			}
-		}
-		
 		$paths[] = realpath(base_path('resources/views'));
+
+		if( env('VIEW_SKIN', false) ) {
+			$paths[] = realpath(base_path('resources/skins/'.env('VIEW_SKIN')));
+		}
 		
 		return $paths;
 	}),
