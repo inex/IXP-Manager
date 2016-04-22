@@ -159,11 +159,11 @@ return [
         IXP\Providers\HelpdeskServiceProvider::class,
         IXP\Providers\ZendFrameworkServiceProvider::class,
         IXP\Providers\GrapherServiceProvider::class,
+        IXP\Providers\LaravelPlatesServiceProvider::class,
 
         /*
          * Third party providers
          */
-        Franzl\LaravelPlates\LaravelPlatesServiceProvider::class,
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
 
     ],
