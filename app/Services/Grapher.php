@@ -40,6 +40,7 @@ use IXP\Services\Grapher\Graph\{
     Infrastructure    as InfrastructureGraph,
     Vlan              as VlanGraph,
     Switcher          as SwitchGraph,
+    Trunk             as TrunkGraph,
     PhysicalInterface as PhysIntGraph,  // member physical port
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
@@ -232,6 +233,15 @@ class Grapher {
      */
     public function switch( Switcher $switch ): SwitchGraph {
         return new SwitchGraph( $this, $switch );
+    }
+
+    /**
+     * Get an instance of a trunk graph
+     * @param string $trunkname
+     * @return IXP\Services\Grapher\Graph\Trunk
+     */
+    public function trunk( string $trunkname ): TrunkGraph {
+        return new TrunkGraph( $this, $trunkname );
     }
 
     /**

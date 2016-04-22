@@ -48,6 +48,16 @@ return [
             // where to find the WORKDIR above from IXP Manager's perspective. This can be a
             // local directory or a URL to remote web server
             'logdir'  => env( 'GRAPHER_BACKEND_MRTG_LOGDIR', '/tmp' ),
+            
+            'trunks'  => call_user_func( function() {
+                if( file_exists( config_path() . '/grapher_trunks.php' ) ) {
+                    return include( config_path() . '/grapher_trunks.php' );
+                }
+                return null;
+            }),
+            
+            // tmp until we sort out trunks:
+            'snmppasswd' => env( 'GRAPHER_BACKEND_MRTG_SNMPPASSWD', 'soopersecret' ),
         ],
 
         'sflow' => [

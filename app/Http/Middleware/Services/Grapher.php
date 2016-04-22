@@ -36,6 +36,7 @@ use IXP\Services\Grapher\Graph\{
     Infrastructure    as InfrastructureGraph,
     Vlan              as VlanGraph,
     Switcher          as SwitchGraph,
+    Trunk             as TrunkGraph,
     PhysicalInterface as PhysIntGraph,  // member physical port
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
@@ -116,6 +117,12 @@ class Grapher
                 $vlan = VlanGraph::processParameterVlan( (int)$request->input( 'id', 0 ) );
                 $request->vlan = $vlan->getId();
                 $graph = $grapher->vlan( $vlan )->setParamsFromArray( $request->all() );
+                break;
+
+            case 'trunk':
+                $trunkname = TrunkGraph::processParameterTrunkname( (string)$request->input( 'id', '' ) );
+                $request->trunkname = $trunkname;
+                $graph = $grapher->trunk( $trunkname )->setParamsFromArray( $request->all() );
                 break;
 
             case 'switch':

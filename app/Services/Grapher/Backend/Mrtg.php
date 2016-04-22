@@ -97,10 +97,10 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
     {
         return [
-            View::make( 'services.grapher.mrtg.monolithic',
-                [
-                    'ixp'       => $ixp,
-                    'data'      => $this->getPeeringPorts( $ixp )
+            View::make( 'services.grapher.mrtg.monolithic', [
+                    'ixp'        => $ixp,
+                    'data'       => $this->getPeeringPorts( $ixp ),
+                    'snmppasswd' => config('grapher.backends.mrtg.snmppasswd'),
                 ]
             )->render()
         ];
@@ -205,6 +205,12 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 'periods'     => Graph::PERIODS,
                 'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
+            'trunk' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+            ],
             'physicalinterface' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
@@ -298,6 +304,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 return sprintf( "%s/switches/%03d/switch-aggregate-%05d-%s%s.%s", $config['logdir'],
                     $graph->switch()->getId(), $graph->switch()->getId(),
                     $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+                break;
+
+            case 'Trunk':
+                return sprintf( "%s/trunks/%s%s.%s", $config['logdir'], $graph->trunkname(),
+                    $type == 'log' ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'PhysicalInterface':

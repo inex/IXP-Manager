@@ -62,6 +62,7 @@ class Upgrade extends GrapherCommand {
                                 {--X|ixp : Show upgrade commands for the IXP}
                                 {--I|infrastructures : Show upgrade commands for infrastructures}
                                 {--S|switches : Show upgrade commands for switches}
+                                {--T|trunks : Show upgrade commands for trunks}
                                 {--M|memberdirs : Show upgrade commands for member directories}
                                 {--P|physints : Show upgrade commands for member physical interfaces}
                                 {--Q|memberlags : Show upgrade commands for member LAG interfaces}
@@ -104,6 +105,8 @@ class Upgrade extends GrapherCommand {
             $this->infrastructures();
         } else if( $this->option( 'switches' ) ) {
             $this->switches();
+        } else if( $this->option( 'trunks' ) ) {
+            $this->trunks();
         } else if( $this->option( 'memberdirs' ) ) {
             $this->memberdirs();
         } else if( $this->option( 'physints' ) ) {
@@ -216,6 +219,15 @@ class Upgrade extends GrapherCommand {
         }
     }
 
+    /**
+     * Generate commands for trunk directories graphs
+     */
+    private function trunks() {
+        echo $this->cmd(
+            "{$this->logdir}/trunks",
+            config('grapher.backends.mrtg.workdir')
+        );
+    }
     /**
      * Generate commands for switch graphs
      */

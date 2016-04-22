@@ -117,6 +117,18 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES
             ],
+            'vlan' => [
+                'protocols'   => Graph::PROTOCOLS,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES
+            ],
+            'trunk' => [
+                'protocols'   => Graph::PROTOCOLS,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES
+            ],
             'switcher' => [
                 'protocols'   => Graph::PROTOCOLS,
                 'categories'  => Graph::CATEGORIES,
@@ -142,6 +154,12 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
                 'types'       => Graph::TYPES
             ],
             'vlaninterface' => [
+                'protocols'   => Graph::PROTOCOLS,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => Graph::TYPES
+            ],
+            'p2p' => [
                 'protocols'   => Graph::PROTOCOLS,
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,

@@ -14,13 +14,14 @@
 ### Source:    <?php echo $this->path() . "\n"; ?>
 ### Generated: <?php echo date('Y-m-d H:i:s' . "\n"); ?>
 
-<?php $this->insert('services/grapher/mrtg/header'); ?>
-<?php $this->insert('services/grapher/mrtg/custom-header'); ?>
+<?php $this->insert('skin::services/grapher/mrtg/header'); ?>
+<?php $this->insert('skin::services/grapher/mrtg/custom-header'); ?>
 
-# {tmplinclude file='statistics-cli/mrtg/trunks.cfg'}
+<?php $this->insert('skin::services/grapher/mrtg/aggregates',        ['data' => $data, 'ixp' => $ixp]); ?>
+<?php $this->insert('skin::services/grapher/mrtg/switch-aggregates', ['data' => $data]); ?>
 
-<?php $this->insert('services/grapher/mrtg/aggregates',        ['data' => $data, 'ixp' => $ixp]); ?>
-<?php $this->insert('services/grapher/mrtg/switch-aggregates', ['data' => $data]); ?>
-<?php $this->insert('services/grapher/mrtg/member-ports',      ['data' => $data]); ?>
+<?php $this->insert('skin::services/grapher/mrtg/trunks',            ['snmppasswd' => $snmppasswd]); ?>
 
-<?php $this->insert('services/grapher/mrtg/custom-footer'); ?>
+<?php $this->insert('skin::services/grapher/mrtg/member-ports',      ['data' => $data]); ?>
+
+<?php $this->insert('skin::services/grapher/mrtg/custom-footer'); ?>

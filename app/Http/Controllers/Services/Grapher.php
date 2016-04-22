@@ -121,6 +121,10 @@ class Grapher extends Controller
         return $this->simpleResponse( $request );
     }
 
+    public function trunk( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
+
     public function phsyicalInterface( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
