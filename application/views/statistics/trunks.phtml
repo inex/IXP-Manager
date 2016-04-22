@@ -9,13 +9,13 @@
             Trunk Graphs <span class="divider">/</span>
         </li>
         <li class="active">
-            {$graphs.$graph}
+            {$graph->title()}
         </li>
     </ul>
 {else}
     <div class="page-content">
         <div class="page-header">
-            Trunk Graphs :: {$graphs.$graph}
+            Trunk Graphs :: {$graph->title()}
         </div>
 {/if}
 
@@ -27,7 +27,7 @@
             <strong>Select Trunk:&nbsp;&nbsp;</strong>
             <select name="trunk" onchange="this.form.submit();" class="chzn-select span4">
                 {foreach from=$graphs key=image item=name}
-                    <option value="{$image}" {if $graph eq $image}selected{/if}>{$name}</option>
+                    <option value="{$image}" {if $namereq eq $image}selected{/if}>{$name}</option>
                 {/foreach}
             </select>
         </form>
@@ -39,7 +39,7 @@
 {assign var='count' value=0}
 
 
-    {foreach from=$periods key=pname item=pvalue}
+    {foreach from=$periods key=pvalue item=pname}
 
     <div class="span6">
 
@@ -48,12 +48,7 @@
             <h3>{$pname} Graph</h3>
 
             <p>
-                {genMrtgGraphBox
-                        shortname='X_Trunks'
-                        period=$pvalue
-                        values=$stats.$pvalue
-                        graph=$graph
-                }
+                {$graph->setPeriod( $pvalue )->renderer()->boxLegacy()}
             </p>
         </div>
     </div>
@@ -73,4 +68,3 @@
 </div>
 
 {tmplinclude file="footer.phtml"}
-

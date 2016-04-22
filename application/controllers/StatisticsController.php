@@ -252,42 +252,32 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
 
     public function trunksAction()
     {
-        if( !isset( $this->_options['mrtg']['trunk_graphs'] ) || !is_array( $this->_options['mrtg']['trunk_graphs'] ) || !count( $this->_options['mrtg']['trunk_graphs'] ) )
-        {
+        if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             $this->addMessage(
-                "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
+                "Trunk graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
                 OSS_Message::ERROR
             );
-            $this->redirect(null);
+            $this->redirect('');
         }
 
         // get the available graphs
-        foreach( $this->_options['mrtg']['trunk_graphs'] as $g )
-        {
-            $p = explode( '::', $g );
-            $ixpid         = $p[0];
-            $images[]      = $p[1];
-            $graphs[$p[1]] = $p[2];
+        foreach( config('grapher.backends.mrtg.trunks') as $g ) {
+            $ixpid         = $g['ixpid'];
+            $images[]      = $g['name'];
+            $graphs[$g['name']] = $g['title'];
         }
         $this->view->graphs  = $graphs;
 
-        $graph = $this->getParam( 'trunk', $images[0] );
-        if( !in_array( $graph, $images ) )
-            $graph = $images[0];
-        $this->view->graph   = $graph;
+        $grapher = App::make('IXP\Services\Grapher');
 
-        // load the IXP
-        $ixp = $this->loadIxpById( $ixpid );
+        $namereq = $this->getParam( 'trunk', $images[0] );
+        if( !in_array( $namereq, $images ) )
+            $namereq = $images[0];
+        $this->view->namereq   = $namereq;
+        $this->view->graph     =  $grapher->trunk( $namereq )->setType( Graph::TYPE_PNG )
+                        ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( Graph::CATEGORY_BITS );
 
-        $stats = array();
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg( $ixp->getMrtgPath() . '/trunks/' . $graph . '.log' );
-            $stats[$period] = $mrtg->getValues( $period, IXP_Mrtg::CATEGORY_BITS );
-        }
-        $this->view->stats   = $stats;
-
-        $this->view->periods = IXP_Mrtg::$PERIODS;
+        $this->view->periods = $this->setPeriod();
     }
 
     public function switchesAction()
