@@ -17,7 +17,7 @@ apt-get update
 
 apt-get install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql joe memcached snmp nodejs nodejs-legacy npm     \
-    build-essential
+    build-essential php7.0-mbstring php7.0-xml
 
 # FIXME Add phpmyadmin back when working with PHP7...
 
@@ -98,6 +98,21 @@ cd bgpq3-0.1.31/
 ./configure
 make
 make install
+
+# Useful screen settings for barryo:
+cat >/home/vagrant/.screenrc <<END_SCREEN
+termcapinfo xterm* ti@:te@
+vbell off
+startup_message off
+defutf8 on
+defscrollback 2048
+nonblock on
+hardstatus on
+hardstatus alwayslastline
+hardstatus string '%{= kG}%-Lw%{= kW}%50> %n%f* %t%{= kG}%+Lw%<'
+screen -t bash     0
+altscreen on
+END_SCREEN
 
 
 cd /vagrant
