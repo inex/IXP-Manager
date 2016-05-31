@@ -241,6 +241,10 @@ class JsonSchema
 
                 foreach( $vi->getVlanInterfaces() as $vli )
                 {
+                    if( $vli->getVlan()->getPrivate() ) {
+                        continue;
+                    }
+                    
                     $vlanentry['vlan_id'] = $vli->getVlan()->getId();
                     if ($vli->getIpv4enabled()) {
                         $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
