@@ -545,14 +545,14 @@ class SwitchPort
                     $n = $host->useIface()->$snmp( true )[ $this->getIfIndex() ];
 
                     // need to allow for small changes due to rounding errors
-                    if( $logger && $this->$fn() != $n && abs( $this->$fn() - $n ) > 60 )
+                    if( $logger !== false && $this->$fn() != $n && abs( $this->$fn() - $n ) > 60 )
                         $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
                     break;
 
                 default:
                     $n = $host->useIface()->$snmp()[ $this->getIfIndex() ];
 
-                    if( $logger && $this->$fn() != $n )
+                    if( $logger !== false && $this->$fn() != $n )
                         $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
                     break;
             }
@@ -577,14 +577,16 @@ class SwitchPort
                     }
                 } catch( \OSS_SNMP\Exception $e ) {
                     // looks like the switch supports MAU but not all of the MIBs
-                    $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                    if( $logger !== false ) {
+                        $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                    }
                     $n = null;
                 }
 
                 if( $n == '*** UNKNOWN ***' && $snmp == 'types' )
                     $n = '(empty)';
 
-                if( $logger && $this->$getfn() != $n )
+                if( $logger !== false && $this->$getfn() != $n )
                     $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity['fn']} from [{$this->$getfn()}] to [{$n}]" );
 
                 $this->$setfn( $n );
