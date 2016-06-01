@@ -109,7 +109,7 @@ class LocationController extends IXP_Controller_FrontEnd
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
         $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
-        echo file_get_contents( 'https://beta.peeringdb.com/api/fac' );
+        echo file_get_contents( 'https://api.peeringdb.com/api/fac' );
     }
     /**
      * Function which can be over-ridden to perform any pre-deletion tasks
