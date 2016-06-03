@@ -694,4 +694,26 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::getMauAutoNegAdminState();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypePeering()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypePeering', []);
+
+        return parent::isTypePeering();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeReseller()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeReseller', []);
+
+        return parent::isTypeReseller();
+    }
+
 }

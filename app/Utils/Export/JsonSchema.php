@@ -220,7 +220,8 @@ class JsonSchema
             foreach( $c->getVirtualInterfaces() as $vi )
             {
                 $iflist = [];
-                $atLeastOnePiIsPeering = false;
+                $atLeastOnePiIsPeering   = false;
+                $atLeastOnePiIsConnected = false;
                 foreach( $vi->getPhysicalInterfaces() as $pi )
                 {
                     // hack for LONAP as they do peering on reseller ports :-(
@@ -235,10 +236,11 @@ class JsonSchema
                             'switch_id'	=> $pi->getSwitchPort()->getSwitcher()->getId(),
                             'if_speed'	=> $pi->getSpeed(),
                         );
+                        $atLeastOnePiIsConnected = true;
                     }
                 }
                 
-                if( !$atLeastOnePiIsPeering ) {
+                if( !$atLeastOnePiIsPeering || !$atLeastOnePiIsConnected ) {
                     continue;
                 }
 
@@ -251,11 +253,14 @@ class JsonSchema
                         $vlanentry['mac_address'] = implode( ":", str_split( $macaddrs[0]->getMac(), 2 ) );
                 }
 
+                $atLeastOneVlanNotPrivate = false;
                 foreach( $vi->getVlanInterfaces() as $vli )
                 {
                     if( $vli->getVlan()->getPrivate() ) {
                         continue;
                     }
+                    
+                    $atLeastOneVlanNotPrivate = true;
                     
                     // what if there's more than one vli ?
                     $vlanentry['vlan_id'] = $vli->getVlan()->getId();
@@ -271,6 +276,10 @@ class JsonSchema
                         $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
                     }
+                }
+                
+                if( !$atLeastOneVlanNotPrivate ) {
+                    continue;
                 }
 
                 $conn = [];
