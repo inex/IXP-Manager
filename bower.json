@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "bootstrap": "~3.3.0",
-    "chosen": "~1.5"
+    "chosen": "~1.5",
+    "vue": "^1.0.24"
   }
 }

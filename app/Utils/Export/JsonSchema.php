@@ -220,14 +220,26 @@ class JsonSchema
             foreach( $c->getVirtualInterfaces() as $vi )
             {
                 $iflist = [];
+                $atLeastOnePiIsPeering = false;
                 foreach( $vi->getPhysicalInterfaces() as $pi )
                 {
+                    // hack for LONAP as they do peering on reseller ports :-(
+                    if( !$pi->getSwitchPort()->isTypePeering() && !$pi->getSwitchPort()->isTypeReseller() ) {
+                        continue;
+                    }
+                    
+                    $atLeastOnePiIsPeering = true;
+                    
                     if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED ) {
                         $iflist[] = array (
                             'switch_id'	=> $pi->getSwitchPort()->getSwitcher()->getId(),
                             'if_speed'	=> $pi->getSpeed(),
                         );
                     }
+                }
+                
+                if( !$atLeastOnePiIsPeering ) {
+                    continue;
                 }
 
                 $vlanentry = [];
@@ -279,12 +291,18 @@ class JsonSchema
                 'url'			     => $c->getCorpwww(),
                 'contact_email'		 => [ $c->getPeeringemail() ],
                 'contact_phone'		 => [ $c->getNocphone() ],
-                'contact_hours'		 => $c->getNochours(),
                 'peering_policy'	 => $c->getPeeringpolicy(),
-                'peering_policy_url' => $c->getNocwww(),
                 'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z'
             ];
 
+            if( filter_var( $c->getNocwww(), FILTER_VALIDATE_URL ) !== false ) {
+                $memberinfo[ $cnt ]['peering_policy_url'] = $c->getNocwww();
+            }
+
+            if( $c->getNochours() && strlen( $c->getNochours() ) ) {
+                $memberinfo[ $cnt ]['contact_hours'] = $c->getNochours();
+            }
+            
             if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
                 $memberinfo[$cnt][ 'type' ] = $this->xlateMemberType( $c->getType() );
             }
