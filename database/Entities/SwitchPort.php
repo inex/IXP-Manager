@@ -823,4 +823,21 @@ class SwitchPort
     {
         return $this->mauAutoNegAdminState;
     }
+    
+    /**
+     * Is this a peering port?
+     * @return boolean
+     */
+    public function isTypePeering() {
+        return $this->getType() == self::TYPE_PEERING;
+    }
+    
+    /**
+     * Is this a reseller port?
+     * @return boolean
+     */
+    public function isTypeReseller() {
+        return $this->getType() == self::TYPE_RESELLER;
+    }
+    
 }
