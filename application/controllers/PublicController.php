@@ -50,7 +50,7 @@ class PublicController extends IXP_Controller_Action
      */
     public function memberDetailsAction()
     {
-        $this->view->customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false );
+        $this->view->customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getConnected( false );
         
         if( strtolower( $this->getParam( 'format', '0' ) ) == 'json' )
             $this->getResponse()->setHeader( 'Content-Type', 'application/json' );

@@ -220,14 +220,28 @@ class JsonSchema
             foreach( $c->getVirtualInterfaces() as $vi )
             {
                 $iflist = [];
+                $atLeastOnePiIsPeering   = false;
+                $atLeastOnePiIsConnected = false;
                 foreach( $vi->getPhysicalInterfaces() as $pi )
                 {
+                    // hack for LONAP as they do peering on reseller ports :-(
+                    if( !$pi->getSwitchPort()->isTypePeering() && !$pi->getSwitchPort()->isTypeReseller() ) {
+                        continue;
+                    }
+                    
+                    $atLeastOnePiIsPeering = true;
+                    
                     if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED ) {
                         $iflist[] = array (
                             'switch_id'	=> $pi->getSwitchPort()->getSwitcher()->getId(),
                             'if_speed'	=> $pi->getSpeed(),
                         );
+                        $atLeastOnePiIsConnected = true;
                     }
+                }
+                
+                if( !$atLeastOnePiIsPeering || !$atLeastOnePiIsConnected ) {
+                    continue;
                 }
 
                 $vlanentry = [];
@@ -239,8 +253,16 @@ class JsonSchema
                         $vlanentry['mac_address'] = implode( ":", str_split( $macaddrs[0]->getMac(), 2 ) );
                 }
 
+                $atLeastOneVlanNotPrivate = false;
                 foreach( $vi->getVlanInterfaces() as $vli )
                 {
+                    if( $vli->getVlan()->getPrivate() ) {
+                        continue;
+                    }
+                    
+                    $atLeastOneVlanNotPrivate = true;
+                    
+                    // what if there's more than one vli ?
                     $vlanentry['vlan_id'] = $vli->getVlan()->getId();
                     if ($vli->getIpv4enabled()) {
                         $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
@@ -254,6 +276,10 @@ class JsonSchema
                         $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
                     }
+                }
+                
+                if( !$atLeastOneVlanNotPrivate ) {
+                    continue;
                 }
 
                 $conn = [];
@@ -274,12 +300,18 @@ class JsonSchema
                 'url'			     => $c->getCorpwww(),
                 'contact_email'		 => [ $c->getPeeringemail() ],
                 'contact_phone'		 => [ $c->getNocphone() ],
-                'contact_hours'		 => $c->getNochours(),
                 'peering_policy'	 => $c->getPeeringpolicy(),
-                'peering_policy_url' => $c->getNocwww(),
                 'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z'
             ];
 
+            if( filter_var( $c->getNocwww(), FILTER_VALIDATE_URL ) !== false ) {
+                $memberinfo[ $cnt ]['peering_policy_url'] = $c->getNocwww();
+            }
+
+            if( $c->getNochours() && strlen( $c->getNochours() ) ) {
+                $memberinfo[ $cnt ]['contact_hours'] = $c->getNochours();
+            }
+            
             if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
                 $memberinfo[$cnt][ 'type' ] = $this->xlateMemberType( $c->getType() );
             }

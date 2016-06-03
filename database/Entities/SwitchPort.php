@@ -545,14 +545,14 @@ class SwitchPort
                     $n = $host->useIface()->$snmp( true )[ $this->getIfIndex() ];
 
                     // need to allow for small changes due to rounding errors
-                    if( $logger && $this->$fn() != $n && abs( $this->$fn() - $n ) > 60 )
+                    if( $logger !== false && $this->$fn() != $n && abs( $this->$fn() - $n ) > 60 )
                         $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
                     break;
 
                 default:
                     $n = $host->useIface()->$snmp()[ $this->getIfIndex() ];
 
-                    if( $logger && $this->$fn() != $n )
+                    if( $logger !== false && $this->$fn() != $n )
                         $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
                     break;
             }
@@ -567,20 +567,26 @@ class SwitchPort
                 $setfn = "set{$entity['fn']}";
 
                 try {
-                    if( isset( $entity['xlate'] ) )
-                        $n = $host->useMAU()->$snmp( $entity['xlate'] )[ $this->getIfIndex() ];
-                    else
-                        $n = $host->useMAU()->$snmp()[ $this->getIfIndex() ];
+                    if( isset( $entity['xlate'] ) ) {
+                        $n = $host->useMAU()->$snmp( $entity['xlate'] );
+                        $n = isset( $n[ $this->getIfIndex() ] ) ? $n[ $this->getIfIndex() ] : null;
+                    }
+                    else {
+                        $n = $host->useMAU()->$snmp();
+                        $n = isset( $n[ $this->getIfIndex() ] ) ? $n[ $this->getIfIndex() ] : null;
+                    }
                 } catch( \OSS_SNMP\Exception $e ) {
                     // looks like the switch supports MAU but not all of the MIBs
-                    $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                    if( $logger !== false ) {
+                        $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                    }
                     $n = null;
                 }
 
                 if( $n == '*** UNKNOWN ***' && $snmp == 'types' )
                     $n = '(empty)';
 
-                if( $logger && $this->$getfn() != $n )
+                if( $logger !== false && $this->$getfn() != $n )
                     $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity['fn']} from [{$this->$getfn()}] to [{$n}]" );
 
                 $this->$setfn( $n );
@@ -818,7 +824,6 @@ class SwitchPort
         return $this->mauAutoNegAdminState;
     }
 
-
     /**
      * Get the appropriate OID for in octets
      * @return string
@@ -891,4 +896,21 @@ class SwitchPort
         }
 
     }
+
+    /**
+     * Is this a peering port?
+     * @return boolean
+     */
+    public function isTypePeering() {
+        return $this->getType() == self::TYPE_PEERING;
+    }
+
+    /**
+     * Is this a reseller port?
+     * @return boolean
+     */
+    public function isTypeReseller() {
+        return $this->getType() == self::TYPE_RESELLER;
+    }
+
 }
