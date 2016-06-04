@@ -126,7 +126,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             ->leftJoin( 'sp.Switcher', 's' )
             ->leftJoin( 's.Cabinet', 'cab' )
             ->leftJoin( 'cab.Location', 'l' )
-            ->groupBy( 'vi' );
+            ->groupBy( 'vi, ppid, fpid, speed, ports' );
 
         return $qb->getQuery()->getArrayResult();
     }
