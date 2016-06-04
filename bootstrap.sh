@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-apt-get update
+apt update
 
 # Defaults for MySQL and phpMyAdmin:
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password password'
@@ -11,15 +11,11 @@ echo 'phpmyadmin phpmyadmin/mysql/admin-pass password password' | debconf-set-se
 echo 'phpmyadmin phpmyadmin/mysql/app-pass password password' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
 
-# For PHP7.0 - https://launchpad.net/~ondrej/+archive/ubuntu/php
-add-apt-repository -y ppa:ondrej/php
-apt-get update
+apt full-upgrade
 
-apt-get install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
+apt install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql joe memcached snmp nodejs nodejs-legacy npm     \
-    build-essential php7.0-mbstring php7.0-xml
-
-# FIXME Add phpmyadmin back when working with PHP7...
+    build-essential php7.0-mbstring php7.0-xml phpmyadmin php-gettext bgpq3 screen joe
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
@@ -89,15 +85,6 @@ cp /vagrant/application/configs/application.ini.vagrant /vagrant/application/con
 a2enmod rewrite
 chmod -R a+rwX /vagrant/storage /vagrant/var
 service apache2 restart
-
-# Install BGPQ3
-cd /usr/local
-wget http://snar.spb.ru/prog/bgpq3/bgpq3-0.1.31.tgz
-tar zxf bgpq3-0.1.31.tgz
-cd bgpq3-0.1.31/
-./configure
-make
-make install
 
 # Useful screen settings for barryo:
 cat >/home/vagrant/.screenrc <<END_SCREEN

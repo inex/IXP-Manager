@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/wily64"
+  config.vm.box = "geerlingguy/ubuntu1604"
 
   # in case you want to use VMware Fusion instead of Virtualbox we need a
   # slightly different base box
@@ -69,8 +69,11 @@ Vagrant.configure(2) do |config|
   #   # Display the VirtualBox GUI when booting the machine
   #   vb.gui = true
   #
-     # Customize the amount of memory on the VM:
-     vb.memory = "1536"
+    # Customize the amount of memory on the VM:
+    vb.memory = "1536"
+
+    # video memory
+    #v.customize ["modifyvm", :id, "--vram", "32"]
   end
   #
   # View the documentation for the provider you are using for more
