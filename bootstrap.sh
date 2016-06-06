@@ -11,7 +11,7 @@ echo 'phpmyadmin phpmyadmin/mysql/admin-pass password password' | debconf-set-se
 echo 'phpmyadmin phpmyadmin/mysql/app-pass password password' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
 
-apt full-upgrade
+apt full-upgrade -y
 
 apt install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql joe memcached snmp nodejs nodejs-legacy npm     \
@@ -76,8 +76,8 @@ cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
         RewriteRule ^.*$ /index.php [NC,L]
     </Directory>
 
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 END_APACHE
 
