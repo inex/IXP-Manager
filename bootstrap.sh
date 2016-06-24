@@ -54,8 +54,8 @@ END_HTACCESS
 
 
 cd /vagrant
-su - vagrant -c "cd /vagrant && composer install"
-su - vagrant -c "cd /vagrant && bower --config.interactive=false -f update"
+su - ubuntu -c "cd /vagrant && composer install"
+su - ubuntu -c "cd /vagrant && bower --config.interactive=false -f update"
 
 cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
 <VirtualHost *:80>
@@ -87,7 +87,7 @@ chmod -R a+rwX /vagrant/storage /vagrant/var
 service apache2 restart
 
 # Useful screen settings for barryo:
-cat >/home/vagrant/.screenrc <<END_SCREEN
+cat >/home/ubuntu/.screenrc <<END_SCREEN
 termcapinfo xterm* ti@:te@
 vbell off
 startup_message off
