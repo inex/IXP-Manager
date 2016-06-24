@@ -262,11 +262,13 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
 
         // get the available graphs
         foreach( config('grapher.backends.mrtg.trunks') as $g ) {
-            $ixpid         = $g['ixpid'];
-            $images[]      = $g['name'];
+            $ixpid              = $g['ixpid'];
+            $images[]           = $g['name'];
             $graphs[$g['name']] = $g['title'];
         }
         $this->view->graphs  = $graphs;
+
+        $this->setPeriod();
 
         $grapher = App::make('IXP\Services\Grapher');
 
@@ -276,8 +278,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->view->namereq   = $namereq;
         $this->view->graph     =  $grapher->trunk( $namereq )->setType( Graph::TYPE_PNG )
                         ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( Graph::CATEGORY_BITS );
-
-        $this->view->periods = $this->setPeriod();
     }
 
     public function switchesAction()
