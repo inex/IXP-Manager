@@ -17,6 +17,9 @@ apt install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql joe memcached snmp nodejs nodejs-legacy npm     \
     build-essential php7.0-mbstring php7.0-xml phpmyadmin php-gettext bgpq3 screen joe
 
+# ubuntu/xenial64 oddity:
+ln -s /etc/php/mods-available/rrd.ini /etc/php/7.0/apache2/conf.d/20-rrd.ini
+
 if ! [ -L /var/www ]; then
   rm -rf /var/www
   ln -fs /vagrant/public /var/www
