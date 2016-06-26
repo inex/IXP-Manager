@@ -32,6 +32,7 @@ use IXP\Console\Commands\Grapher\GrapherCommand;
 use Zend_Application;
 use Config;
 use D2EM;
+use View;
 
 /**
  * This command line utility is used for upgrading IXP Manager.
@@ -53,7 +54,8 @@ class Upgrade extends IXPCommand {
      * @var string
      */
     protected $signature = 'ixp-manager:upgrade
-                                {--T|migrate-trunk-config : Migrate trunk config from application.ini to grapher_trunks.php}';
+                                {stage=help : The upgrade command to run (or help)}
+                                {--no-backup : Disable backups for commands that create backup file(s)}';
 
     /**
      * The console command description.
@@ -70,29 +72,64 @@ class Upgrade extends IXPCommand {
      */
     public function handle(): int {
         // what should we do?
-        if( $this->option( 'migrate-trunk-config' ) ) {
-            $this->migrateTrunkConfig();
-        } else {
-            $this->error( 'No operation requested' );
-            exit -1;
+        switch( $this->argument('stage') ) {
+            case 'migrate-trunk-config':
+                $this->migrateTrunkConfig();
+                break;
+            case 'help':
+                $this->help();
+                break;
+            defualt:
+                $this->error( 'No operation requested' );
+                exit -1;
+                break;
         }
 
         return 0;
     }
+    
+    /**
+     * Display a help message via Artisan
+     */
+    private function help() {
+        echo View::make( 'console.commands.upgrade.help' )->render();
+    }
 
+    /**
+     * Get the Zend_Application object
+     *
+     * @return Zend_Application
+     */
     private function zend(): Zend_Application {
         return \App::make('ZendFramwork');
     }
 
+
     /**
-     * Generate commands for trunk directories graphs
+     * Take MRTG trunk definitiions from the old Zend configuration
+     * file (application/configs/application.ini) and migrate them
+     * to a new one (config/grapher_trunks.php).
+     *
+     * It will backup any existing config/grapher_trunks.php file unless the
+     * option --no-backup is passed.
      */
     private function migrateTrunkConfig() {
+        $this->scriptutils_get_application_env();
+        $zend = $this->zend();
+        $zconf = $zend->getOptions();
+
+        if( !isset($zconf['mrtg']['trunk_graphs']) ) {
+            $this->info( "No trunk graphs defined. Nothing to do..." );
+            return;
+        }
+
+        $trunksConf = $zconf['mrtg']['trunk_graphs'];
+        
         // copy the current file (if it exists)
         $conffile = config_path() . "/grapher_trunks.php";
         $bkupfile = $conffile . "." . date('YmdHms');
 
-        if( file_exists( $conffile ) ) {
+        if( file_exists( $conffile ) && !$this->option('no-backup') ) {
             if( !@file_put_contents( $bkupfile, @file_get_contents( $conffile ) ) ) {
                 $this->error( "Could not back up existing configuration: " . $conffile );
                 exit -1;
@@ -100,10 +137,16 @@ class Upgrade extends IXPCommand {
                 $this->info( "Backed up existing configuration to " . $bkupfile );
             }
         }
+        
+        $trunks = [];
+        foreach( $trunksConf as $tc ) {
+            $trunks[] = explode( '::', $tc );
+        }
 
-        $this->scriptutils_get_application_env();
-        $zend = $this->zend();
-        dd( $zend->getOptions() );
+        file_put_contents( $conffile,
+            View::make( 'console.commands.upgrade.grapher_trunks' )->with( [ 'trunks' => $trunks ] )->render()
+        );
+        $this->info( "Migrated configuration to " . $conffile );
     }
 
 
