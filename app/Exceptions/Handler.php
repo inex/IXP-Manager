@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler {
          * We'll revert to ZF1 handling when Laravel throws a 404:
          */
         if( $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ) {
-            \App::make('ZendFramwork')->run();
+            \App::make('ZendFramework')->run();
             die();
         }
         else if ($this->isHttpException($e))

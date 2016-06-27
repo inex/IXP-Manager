@@ -101,7 +101,7 @@ class Upgrade extends IXPCommand {
      * @return Zend_Application
      */
     private function zend(): Zend_Application {
-        return \App::make('ZendFramwork');
+        return \App::make('ZendFramework');
     }
 
 

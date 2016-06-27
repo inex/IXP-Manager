@@ -28,7 +28,7 @@ use IXP\Services\Helpdesk\ConfigurationException;
 use Config;
 
 /**
- * ZendFramwork Service Provider
+ * ZendFramework Service Provider
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   IXP
@@ -57,22 +57,23 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app->singleton( 'ZendFramwork', function($app) {
+        $this->app->singleton( 'ZendFramework', function($app) {
 
             // Define path to application directory
             defined('APPLICATION_PATH')
                 || define('APPLICATION_PATH', realpath( __DIR__ . '/../../application' ) );
 
+            include( __DIR__ . '/../../bin/utils.inc' );
+
             // Define application environment
             if( php_sapi_name() == 'cli-server' ) {
                 // running under PHP's built in web server: php -S
                 // as such, .htaccess is not processed
-                include( __DIR__ . '/../../bin/utils.inc' );
                 define( 'APPLICATION_ENV', scriptutils_get_application_env() );
             } else {
                 // probably Apache or other web server
                 defined('APPLICATION_ENV')
-                    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+                    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : scriptutils_get_application_env() ));
             }
 
             /** Zend_Application */
@@ -98,7 +99,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      */
     public function provides()
     {
-        return ['ZendFramwork'];
+        return ['ZendFramework'];
     }
 
 
