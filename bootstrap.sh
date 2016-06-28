@@ -15,7 +15,7 @@ apt full-upgrade -y
 
 apt install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql joe memcached snmp nodejs nodejs-legacy npm     \
-    build-essential php7.0-mbstring php7.0-xml phpmyadmin php-gettext bgpq3 screen joe
+    build-essential php7.0-mbstring php7.0-xml phpmyadmin php-gettext bgpq3 screen joe curl git php-memcache 
 
 # ubuntu/xenial64 oddity:
 ln -s /etc/php/mods-available/rrd.ini /etc/php/7.0/apache2/conf.d/20-rrd.ini
