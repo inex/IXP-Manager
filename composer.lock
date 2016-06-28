@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c2e1aa2553b0b3b820324253b3ecfb71",
-    "content-hash": "fa9dcd611e9703c3ec1d17f84cafc6c9",
+    "hash": "842e5ff1b6874ce2bc9ae3d50b5fb727",
+    "content-hash": "ea4290a983ed3c7180e81af0fd792af0",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -1736,41 +1736,6 @@
             "time": "2014-02-05 09:45:35"
         },
         {
-            "name": "opensolutions/oss-framework",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/opensolutions/OSS-Framework.git",
-                "reference": "b3d669a81f8214032a70e594472ece9fe9322fe2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/opensolutions/OSS-Framework/zipball/b3d669a81f8214032a70e594472ece9fe9322fe2",
-                "reference": "b3d669a81f8214032a70e594472ece9fe9322fe2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0",
-                "zendframework/zendframework1": "~1.12"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "OSS_": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Open Solutions' extension to Zend Framework 1.",
-            "keywords": [
-                "opensolutions",
-                "oss"
-            ],
-            "time": "2016-04-11 17:09:14"
-        },
-        {
             "name": "opensolutions/oss-snmp",
             "version": "dev-master",
             "source": {
@@ -2265,12 +2230,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "7bd8c5e0f93debe2c79ed4d4d8337d85bd236b55"
+                "reference": "927136d8cc8b83836c7279689d0b38617f1d5125"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/7bd8c5e0f93debe2c79ed4d4d8337d85bd236b55",
-                "reference": "7bd8c5e0f93debe2c79ed4d4d8337d85bd236b55",
+                "url": "https://api.github.com/repos/symfony/console/zipball/927136d8cc8b83836c7279689d0b38617f1d5125",
+                "reference": "927136d8cc8b83836c7279689d0b38617f1d5125",
                 "shasum": ""
             },
             "require": {
@@ -2317,7 +2282,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-21 05:48:46"
+            "time": "2016-06-28 16:26:27"
         },
         {
             "name": "symfony/debug",
@@ -2849,12 +2814,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "fe343455a872dc4fb226e17ccda13a3255eb76c5"
+                "reference": "5dbe4e1f90202e5a3b641199aa69337742303e93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/fe343455a872dc4fb226e17ccda13a3255eb76c5",
-                "reference": "fe343455a872dc4fb226e17ccda13a3255eb76c5",
+                "url": "https://api.github.com/repos/symfony/process/zipball/5dbe4e1f90202e5a3b641199aa69337742303e93",
+                "reference": "5dbe4e1f90202e5a3b641199aa69337742303e93",
                 "shasum": ""
             },
             "require": {
@@ -2890,7 +2855,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-21 05:48:46"
+            "time": "2016-06-28 16:26:27"
         },
         {
             "name": "symfony/routing",
@@ -4200,28 +4165,28 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "dev-master",
+            "version": "1.3.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "a13903bf5fd0239748fe322dfbdd5f5720ab20e6"
+                "reference": "622c5dc0a8036cfc4ccd73c7b1b668a431e69d96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/a13903bf5fd0239748fe322dfbdd5f5720ab20e6",
-                "reference": "a13903bf5fd0239748fe322dfbdd5f5720ab20e6",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/622c5dc0a8036cfc4ccd73c7b1b668a431e69d96",
+                "reference": "622c5dc0a8036cfc4ccd73c7b1b668a431e69d96",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.6 || ^7.0"
+                "php": "^5.3.3 || ^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.0"
+                "phpunit/phpunit": "^4.8 || ^5.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0.x-dev"
+                    "dev-master": "1.3.x-dev"
                 }
             },
             "autoload": {
@@ -4246,7 +4211,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2016-06-11 08:54:23"
+            "time": "2016-06-11 08:21:19"
         },
         {
             "name": "sebastian/exporter",
@@ -4609,12 +4574,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "4b7d2f525946b3ac6ea417def3714271136e5c1e"
+                "reference": "90cb4b72259af7802e7fe81d8b18298ee67cebdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/4b7d2f525946b3ac6ea417def3714271136e5c1e",
-                "reference": "4b7d2f525946b3ac6ea417def3714271136e5c1e",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/90cb4b72259af7802e7fe81d8b18298ee67cebdc",
+                "reference": "90cb4b72259af7802e7fe81d8b18298ee67cebdc",
                 "shasum": ""
             },
             "require": {
@@ -4657,7 +4622,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-14 06:40:06"
+            "time": "2016-06-28 16:31:08"
         },
         {
             "name": "symfony/yaml",
@@ -4768,7 +4733,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "opensolutions/oss-framework": 20,
         "komola/bootstrap-zend-framework": 20,
         "opensolutions/oss-snmp": 20,
         "oss2/doctrine2": 20,

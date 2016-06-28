@@ -39,7 +39,6 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "opensolutions/oss-framework": "dev-master",
         "zendframework/zendframework1": "~1.12",
         "opensolutions/minify": "1.*",
         "komola/bootstrap-zend-framework": "dev-master",
@@ -76,7 +75,8 @@
             "database"
         ],
         "psr-0": {
-            "IXP_": "library/"
+            "IXP_": "library/",
+            "OSS_": "library/"
         },
         "psr-4": {
              "IXP\\": "app/"
