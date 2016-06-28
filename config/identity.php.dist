@@ -3,11 +3,32 @@
 return [
 
     /*
-    | IXP Identity Information
-    |
-    |
+    * IXP Identity Information
+    *
+    *
     */
 
+    'urls' => [
+        // for any scripts that are call by Artisan and need a base url:
+        'base' => 'https://www.example.com/portal',
+        
+        // if you want to FORCE a URL (e.g. running behind a proxy) - set the following.
+        // If in doubt, leave it commented out and IXP Manager will 'do the right thing'
+        // 'forceUrl' => 'https://www.example.com/portal',
+        'forceUrl' => false,
+
+        // if you want to FORCE a schema (http/https) (e.g. running behind a proxy) - set the following.
+        // If in doubt, leave it commented out and IXP Manager will 'do the right thing'
+        // 'forceSchema' => 'https'
+        'forceSchema' => false,
+    ],
+
+
+
+    // ****************************************************************************************
+    // IXP Manager v3 legacy below. Needs to be configured!
+    // ****************************************************************************************
+    
     'legalname'   =>      "Some City Internet Exchange Ltd",
 
     'location'    => [
