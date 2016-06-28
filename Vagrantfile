@@ -63,6 +63,12 @@ Vagrant.configure(2) do |config|
       group: "www-data",
       mount_options: ["dmode=775,fmode=664"]
 
+  config.vm.synced_folder "./bootstrap/cache", "/vagrant/bootstrap/cache", id: "vagrant-root4",
+      owner: "ubuntu",
+      group: "www-data",
+      mount_options: ["dmode=775,fmode=664"]
+
+
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
