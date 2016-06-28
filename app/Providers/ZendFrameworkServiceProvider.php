@@ -26,6 +26,7 @@
 use Illuminate\Support\ServiceProvider;
 use IXP\Services\Helpdesk\ConfigurationException;
 use Config;
+use Zend_Registry;
 
 /**
  * ZendFramework Service Provider
@@ -47,7 +48,20 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        //
+        // reset options from Laravel
+        $zf = $this->app->make('ZendFramework');
+        $options = $zf->getOptions();
+
+        // let's not muck about with core options
+        unset( $options['bootstrap'] );
+
+        $options = $this->setupUrls($options);
+
+        // now we need to shove these options back into ZendFramework.
+        // There's a but of duplication and complexity here:
+        $zf->setOptions( $options );
+        $zf->getBootstrap()->setOptions( $options );
+        Zend_Registry::set( 'options', $options );
     }
 
     /**
@@ -102,5 +116,16 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         return ['ZendFramework'];
     }
 
+
+    /**
+     * Force URL (and http/s schema) if necessary
+     */
+    private function setupUrls( array $options ): array {
+        if( config('identity.urls.forceUrl') ) {
+            $options['utils']['genurl']['host_mode']    = 'REPLACE';
+            $options['utils']['genurl']['host_replace'] = config('identity.urls.forceUrl');
+        }
+        return $options;
+    }
 
 }
