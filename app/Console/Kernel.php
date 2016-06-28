@@ -11,6 +11,7 @@ class Kernel extends ConsoleKernel {
      * @var array
      */
     protected $commands = [
+        'IXP\Console\Commands\Upgrade',
         'IXP\Console\Commands\Utils\Export\JsonSchema\Post',
     ];
 

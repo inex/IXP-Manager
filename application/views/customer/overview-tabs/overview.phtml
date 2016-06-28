@@ -3,14 +3,14 @@
     <div class="row-fluid">
 
         <div class="well">
-             <h3>Aggregate Traffic Statistics</h3>
+             <h3>
+                Aggregate Traffic Statistics
+                <a class="btn btn-default" href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex='aggregate'}">
+                    <i class="icon-eye-open"></i>
+                </a>
+             </h3>
 
-             <p>
-                 <br />
-                 <a href="{genUrl controller='statistics' action='member-drilldown' monitorindex='aggregate' category='bits' shortname=$cust->getShortname()}">
-                     {genMrtgImgUrlTag shortname=$cust->getShortname() category='bits' monitorindex='aggregate'}
-                 </a>
-             </p>
+             {$aggregateGraph->renderer()->boxLegacy()}
          </div>
 
      </div>

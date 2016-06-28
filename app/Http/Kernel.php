@@ -41,10 +41,11 @@ class Kernel extends HttpKernel {
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => '\IXP\Http\Middleware\Authenticate',
+        'auth'       => '\IXP\Http\Middleware\Authenticate',
         'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
-        'guest' => '\IXP\Http\Middleware\RedirectIfAuthenticated',
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'grapher'    => \IXP\Http\Middleware\Services\Grapher::class,
+        'guest'      => '\IXP\Http\Middleware\RedirectIfAuthenticated',
+        'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 
 }

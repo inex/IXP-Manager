@@ -59,4 +59,12 @@ class IndexController extends IXP_Controller_Action
         $this->view->dbver     = $this->getD2EM()->getConnection()->query( "SELECT VERSION() AS V" )->fetch()['V'];
     }
 
+
+    public function testAction() {
+        echo '<pre>';
+        echo OSS_Utils::genUrl();
+        echo "\n\n\n";
+        print_r($_SERVER);
+        die();
+    }
 }

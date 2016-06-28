@@ -36,46 +36,43 @@ trait IXP_Controller_Trait_Common
     /**
      * Checks if reseller mode is enabled.
      *
-     * To enable resller mode set reseller.enable to true in application.ini
+     * To enable resller mode set the env variable IXP_RESELLER_ENABLED
      *
      * @see https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
      *
      * @return bool
      */
-    protected function resellerMode()
+    protected function resellerMode(): bool
     {
-        return ( isset( $this->_options['reseller']['enabled'] ) && $this->_options['reseller']['enabled'] );
+        return boolval( config( 'ixp.reseller.enabled', false ) );
     }
 
     /**
      * Checks if multi IXP mode is enabled.
      *
-     * To enable multi IXP mode set multiixp.enable to true in application.ini
+     * To enable multi IXP mode set the env variable IXP_MULTIIXP_ENABLED
      *
      * @see https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
      *
      * @return bool
      */
-    protected function multiIXP()
+    protected function multiIXP(): bool
     {
-        return ( isset( $this->_options['multiixp']['enabled'] ) && $this->_options['multiixp']['enabled'] );
+        return boolval( config( 'ixp.multiixp.enabled', false ) );
     }
 
     /**
      * Checks if as112 is activated in the UI.
      *
-     * To disable as112 in the UI set as112_ui_active to false in application.ini
-     *
-     * NB: set to false is required to maintain backwards compatibility without user
-     * intervention. Defaulting to false will be implemented in v4.
+     * To disable as112 in the UI set the env variable IXP_AS112_UI_ACTIVE
      *
      * @see https://github.com/inex/IXP-Manager/wiki/AS112
      *
      * @return bool
      */
-    protected function as112UiActive()
+    protected function as112UiActive(): bool
     {
-        return ( !isset( $this->_options['as112_ui_active'] ) || $this->_options['as112_ui_active'] );
+        return boolval( config( 'ixp.as112.ui_active', false ) );
     }
 
 

@@ -664,6 +664,39 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function isCustUser(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isCustUser', []);
+
+        return parent::isCustUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isCustAdmin(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isCustAdmin', []);
+
+        return parent::isCustAdmin();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isSuperUser(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isSuperUser', []);
+
+        return parent::isSuperUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getAuthIdentifier()
     {
 

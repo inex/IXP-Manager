@@ -5,6 +5,9 @@ namespace IXP\Providers;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+use IXP\Services\Grapher\Graph;
+use IXP\Policies\Services\GrapherPolicy;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'IXP\Model' => 'IXP\Policies\ModelPolicy',
+        Graph::class => GrapherPolicy::class,
     ];
 
     /**

@@ -21,6 +21,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+ use IXP\Services\Grapher\Graph;
+
 /**
  * Controller: Customer user dashboard and actions
  *
@@ -68,7 +70,8 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
         {
             $this->view->resoldCustomer = $this->getCustomer()->isResoldCustomer();
             $this->view->netinfo = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-            $this->view->categories = IXP_Mrtg::$CATEGORIES;
+            $this->view->grapher = $grapher = App::make('IXP\Services\Grapher');
+            $this->view->categories = Graph::CATEGORY_DESCS;
 
             $this->getNocDetailsForm();
             $this->getBillingDetailsForm();
@@ -76,7 +79,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
             if( $this->getCustomer()->isRouteServerClient() )
             {
                 $this->view->rsRoutes = $this->getD2EM()->getRepository( '\\Entities\\RSPrefix' )
-                ->aggregateRouteSummariesForCustomer( $this->getCustomer()->getId() );
+                    ->aggregateRouteSummariesForCustomer( $this->getCustomer()->getId() );
             }
         }
 

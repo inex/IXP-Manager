@@ -2,6 +2,8 @@
 
 use Illuminate\Support\ServiceProvider;
 
+use URL;
+
 class AppServiceProvider extends ServiceProvider {
 
 	/**
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		//
+		$this->setupUrls();
 	}
 
 	/**
@@ -31,4 +33,22 @@ class AppServiceProvider extends ServiceProvider {
 		);
 	}
 
+
+	/**
+	 * We need to allow forcing URLs when IXP Manager runs behind a proxy.
+	 */
+	private function setupUrls() {
+		if( config('identity.urls.forceUrl') ) {
+			URL::forceRootUrl(config('identity.urls.forceUrl'));
+			$this->app->make('ZendFramework')->setOptions( [ 'config' => [
+				['utils']['genurl']['host_mode']    => 'REPLACE',
+				['utils']['genurl']['host_replace'] => config('identity.urls.forceUrl')
+			]]);
+			dd( $this->app->make('ZendFramework')->getOptions());
+		}
+		
+		if( config('identity.urls.forceSchema') ) {
+			URL::forceSchema(config('identity.urls.forceSchema'));
+		}
+	}
 }

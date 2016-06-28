@@ -54,7 +54,6 @@
 
         "smarty/smarty": "~3.1",
         "league/plates": "3.*",
-        "franzl/laravel-plates": "dev-master",
 
         "zendesk/zendesk_api_client_php": "dev-master",
         "guzzlehttp/guzzle": "~6.0"
@@ -74,10 +73,7 @@
     },
     "autoload": {
         "classmap": [
-            "vendor/smarty/smarty/libs/Smarty.class.php",
-            "vendor/smarty/smarty/libs/SmartyBC.class.php",
-            "vendor/smarty/smarty/libs/sysplugins/smarty_security.php",
-             "database"
+            "database"
         ],
         "psr-0": {
             "IXP_": "library/"
@@ -86,7 +82,7 @@
              "IXP\\": "app/"
         },
         "files": [
-            "app/Support/helpers.php" 
+            "app/Support/helpers.php"
         ]
      },
      "autoload-dev": {

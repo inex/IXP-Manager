@@ -823,7 +823,80 @@ class SwitchPort
     {
         return $this->mauAutoNegAdminState;
     }
-    
+
+    /**
+     * Get the appropriate OID for in octets
+     * @return string
+     */
+    public function oidInOctets(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_IN_OCTETS;
+    }
+
+    /**
+     * Get the appropriate OID for out octets
+     * @return string
+     */
+    public function oidOutOctets(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_OUT_OCTETS;
+    }
+
+    /**
+     * Get the appropriate OID for in unicast packets
+     * @return string
+     */
+    public function oidInUnicastPackets(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_IN_UNICAST_PACKETS;
+    }
+
+    /**
+     * Get the appropriate OID for out unicast packets
+     * @return string
+     */
+    public function oidOutUnicastPackets(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_OUT_UNICAST_PACKETS;
+    }
+
+    /**
+     * Get the appropriate OID for in errors
+     * @return string
+     */
+    public function oidInErrors(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_IN_ERRORS;
+    }
+
+    /**
+     * Get the appropriate OID for out errors
+     * @return string
+     */
+    public function oidOutErrors(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_OUT_ERRORS;
+    }
+
+    /**
+     * Get the appropriate OID for in discards
+     * @return string
+     */
+    public function oidInDiscards(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_IN_DISCARDS;
+    }
+
+    /**
+     * Get the appropriate OID for out discards
+     * @return string
+     */
+    public function oidOutDiscards(): string {
+        switch( $this->getSwitcher()->getOs() ) {
+            case 'ExtremeXOS':
+                return \OSS_SNMP\MIBS\Extreme\Port::OID_PORT_CONG_DROP_PKTS;
+                break;
+
+            default:
+                return \OSS_SNMP\MIBS\Iface::OID_IF_OUT_DISCARDS;
+                break;
+        }
+
+    }
+
     /**
      * Is this a peering port?
      * @return boolean
@@ -831,7 +904,7 @@ class SwitchPort
     public function isTypePeering() {
         return $this->getType() == self::TYPE_PEERING;
     }
-    
+
     /**
      * Is this a reseller port?
      * @return boolean
@@ -839,5 +912,5 @@ class SwitchPort
     public function isTypeReseller() {
         return $this->getType() == self::TYPE_RESELLER;
     }
-    
+
 }

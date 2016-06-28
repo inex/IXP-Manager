@@ -10,13 +10,13 @@
             Switch Aggregate Graphs <span class="divider">/</span>
         </li>
         <li class="active">
-            {$switches.$switch.name} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
+            {$graph->title()} ({foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach})
         </li>
     </ul>
 {else}
     <div class="page-content">
         <div class="page-header">
-            <h1>Switch Aggregate Graphs - {$switches.$switch.name} ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})</h1>
+            <h1>Switch Aggregate Graphs - {$graph->name()} ({foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach})</h1>
         </div>
 {/if}
 
@@ -28,13 +28,13 @@
         <form action="{genUrl controller="statistics" action="switches"}" method="post" class="form-horizontal">
             <strong>Select Switch:</strong>
             <select name="switch" onchange="this.form.submit();" class="chzn-select">
-                {foreach $switches as $id => $data}
-                    <option value="{$id}" {if $switch eq $id}selected="selected"{/if}>{$data.name}</option>
+                {foreach $switches as $id => $g}
+                    <option value="{$id}" {if $switchid eq $id}selected="selected"{/if}>{$g->name()}</option>
                 {/foreach}
             </select>
             <strong>Category:</strong>
             <select name="category" onchange="this.form.submit();" class="chzn-select">
-                {foreach from=$categories key=cname item=cval}
+                {foreach from=$categories key=cval item=cname}
                     <option value="{$cval}" {if $category eq $cval}selected{/if}>{$cname}</option>
                 {/foreach}
             </select>
@@ -47,7 +47,7 @@
 
 {assign var='count' value=0}
 
-{foreach from=$periods key=pname item=pvalue}
+{foreach from=$periods key=pvalue item=pname}
 
 
     <div class="span6">
@@ -57,13 +57,7 @@
         <h3>{$pname} Graph</h3>
 
         <p>
-            {genMrtgGraphBox
-                    shortname='X_SwitchAggregate'
-                    period=$pvalue
-                    category=$category
-                    values=$stats.$pvalue
-                    graph=$switches.$switch.name
-            }
+            {$graph->setPeriod( $pvalue )->renderer()->boxLegacy()}
         </p>
         </div>
     </div>

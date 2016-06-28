@@ -107,7 +107,7 @@ return [
     |
     */
 
-    'log' => 'daily',
+    'log' => env('APP_LOG', 'daily'),
 
     /*
     |--------------------------------------------------------------------------
@@ -158,11 +158,12 @@ return [
 
         IXP\Providers\HelpdeskServiceProvider::class,
         IXP\Providers\ZendFrameworkServiceProvider::class,
+        IXP\Providers\GrapherServiceProvider::class,
+        IXP\Providers\LaravelPlatesServiceProvider::class,
 
         /*
          * Third party providers
          */
-        Franzl\LaravelPlates\LaravelPlatesServiceProvider::class,
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
 
     ],
@@ -216,6 +217,8 @@ return [
         'D2EM'      => LaravelDoctrine\ORM\Facades\EntityManager::class,
         'Registry'  => LaravelDoctrine\ORM\Facades\Registry::class,
         'Doctrine'  => LaravelDoctrine\ORM\Facades\Doctrine::class,
+
+        'Grapher'   => IXP\Support\Facades\Grapher::class,
     ],
 
 ];

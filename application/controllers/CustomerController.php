@@ -274,6 +274,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         // does the customer have any graphs?
         $this->view->hasAggregateGraph = false;
+        $this->view->grapher = $grapher = App::make('IXP\Services\Grapher');
         if( $cust->getType() != \Entities\Customer::TYPE_ASSOCIATE && !$cust->hasLeft() )
         {
             foreach( $cust->getVirtualInterfaces() as $vi )
@@ -283,6 +284,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                     if( $pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED )
                     {
                         $this->view->hasAggregateGraph = true;
+                        $this->view->aggregateGraph = $grapher->customer( $cust );
                         break;
                     }
                 }

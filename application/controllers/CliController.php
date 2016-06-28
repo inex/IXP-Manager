@@ -286,41 +286,4 @@ class CliController extends IXP_Controller_Action
 
 
 
-    /**
-     * With the introduction of LAG graphs in 3.6.14, we wanted to merge past
-     * traffic data form individual ports into the new lag files
-     *
-     * This CLI action just lists the files to merge to and from.
-     *
-     * Use a merger such as: http://bangbangsoundslikemachinery.blogspot.ie/2012/02/mrtg-log-aggregator.html
-     * And set $MERGER and $MRTGPATH accordingly before running the resultant commands.
-     */
-    public function cliLagHistoryToFromAction()
-    {
-        // get all active trafficing customers
-        $custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $this->getD2R( '\\Entities\\IXP' )->getDefault() );
-
-        foreach( $custs as $c )
-        {
-            foreach( $c->getVirtualInterfaces() as $vi )
-            {
-                if( count( $vi->getPhysicalInterfaces() ) <= 1 )
-                    continue;
-
-                foreach( IXP_Mrtg::$CATEGORIES as $category )
-                {
-
-                    echo '$MERGER';
-                    foreach( $vi->getPhysicalInterfaces() as $pi )
-                    {
-                        echo ' $MRTGPATH/' . IXP_Mrtg::getMrtgFilePath( 'members', 'LOG', $pi->getMonitorIndex(), $category, $c->getShortname() );
-                    }
-
-                    echo ' >';
-                    echo ' $MRTGPATH/' . IXP_Mrtg::getMrtgFilePath( 'members', 'LOG', 'lag-viid-' . $vi->getId(), $category, $c->getShortname() );
-                    echo "\n";
-                }
-            }
-        }
-    }
 }

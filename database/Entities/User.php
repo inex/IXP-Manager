@@ -638,6 +638,32 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     }
 
 
+    /**
+     * Is the user of the named type?
+     * @return bool
+     */
+    public function isCustUser(): bool {
+        return $this->getPrivs() == self::AUTH_CUSTUSER;
+    }
+
+    /**
+     * Is the user of the named type?
+     * @return bool
+     */
+    public function isCustAdmin(): bool {
+        return $this->getPrivs() == self::AUTH_CUSTADMIN;
+    }
+
+    /**
+     * Is the user of the named type?
+     * @return bool
+     */
+    public function isSuperUser(): bool {
+        return $this->getPrivs() == self::AUTH_SUPERUSER;
+    }
+
+
+
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/
