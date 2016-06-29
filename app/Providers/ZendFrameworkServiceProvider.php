@@ -62,6 +62,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupIdentity($options);
         $options = $this->setupPeeringManager($options);
         $options = $this->setupDisabledFrontendControllers($options);
+        $options = $this->setupMailingLists($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -227,5 +228,31 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         return $options;
     }
 
+    /**
+     * Setup Mailing Lists
+     */
+    private function setupMailingLists( array $options ): array {
+        if( !config('mailinglists.enabled') ) {
+            $options['mailinglist']['enabled'] = false;
+            return $options;
+        }
 
+        $options['mailinglist']['enabled'] = true;
+
+        if( is_array( config('mailinglists.lists') ) ) {
+            foreach( config('mailinglists.lists') as $list => $details ) {
+                foreach( $details as $k => $v ) {
+                    $options['mailinglists'][$list][$k]  = $v;
+                }
+            }
+        }
+
+        if( is_array( config('mailinglists.mailman.cmds') ) ) {
+            foreach( config('mailinglists.mailman.cmds') as $k => $v ) {
+                $options['mailinglist']['cmd'][$k]  = $v;
+            }
+        }
+
+        return $options;
+    }
 }

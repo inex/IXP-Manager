@@ -151,29 +151,6 @@ primary_peering_lan.vlan_tag = 100
 peeringdb.url = "https://www.peeringdb.com/view.php?asn=%ASN%"
 
 
-;; Mailing List Subscription Management Facility
-;;
-;; See: https://github.com/inex/IXP-Manager/wiki/Mailing-List-Management
-;;
-;; Allows users to manage their own mailing list subscriptions
-
-mailinglist.enabled = 0
-
-mailinglists.xxx.name    = "xxx"
-mailinglists.xxx.desc    = "xxx xxx xxx"
-mailinglists.xxx.email   = ""
-mailinglists.xxx.archive = "https://www.example.com/mailman/private/xxx/"
-
-; mailinglists.yyy.name    = "yyy
-; ...
-
-;; location of the required mailman commands (these are correct for FreeBSD)
-mailinglist.cmd.list_members   = "/usr/local/mailman/bin/list_members"
-mailinglist.cmd.add_members    = "/usr/local/mailman/bin/add_members -r - -w n -a n"
-mailinglist.cmd.remove_members = "/usr/local/mailman/bin/remove_members -f - -n -N"
-mailinglist.cmd.changepw       = "/usr/local/mailman/bin/withlist -q -l -r changepw"
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; IXP Tool / Statistics CLI Settings

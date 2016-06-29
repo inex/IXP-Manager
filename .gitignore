@@ -41,6 +41,7 @@ application/configs/ci-*
 *.DS_Store
 
 config/grapher_trunks.php
+config/mailinglists.php
 
 application/configs/rs*.conf
 

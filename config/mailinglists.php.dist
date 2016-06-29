@@ -1,0 +1,29 @@
+<?php
+
+// Mailing List Subscription Management Facility
+//
+// See: https://github.com/inex/IXP-Manager/wiki/Mailing-List-Management
+//
+// Allows users to manage their own mailing list subscriptions
+
+return [
+    'enabled' => false,
+
+    'lists' => [
+        'xxx' => [
+            'name'    => "xxx",
+            'desc'    => "xxx xxx xxx",
+            'email'   => "list@example.com",
+            'archive' => "https://www.example.com/mailman/private/xxx/"
+        ],
+    ],
+
+    'mailman' => [
+        'cmds' => [
+            'list_members'   => "/usr/local/mailman/bin/list_members",
+            'add_members'    => "/usr/local/mailman/bin/add_members -r - -w n -a n",
+            'remove_members' => "/usr/local/mailman/bin/remove_members -f - -n -N",
+            'changepw'       => "/usr/local/mailman/bin/withlist -q -l -r changepw"
+        ]
+    ]
+];
