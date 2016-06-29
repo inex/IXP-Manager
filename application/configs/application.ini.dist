@@ -83,22 +83,6 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; We use Minify to bundle and compress CSS and JS in
-;; production environments.
-;;
-;; See FIXME for details.
-;;
-;; These minimised bundles and included with the source so
-;; you can leave the following set as is to avoid loading
-;; ~30 JS / CSS files rather than two.
-;;
-
-mini_js = 1
-mini_css = 1
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Resources
 ;;
@@ -577,9 +561,6 @@ phpSettings.display_errors = 1
 
 
 [development : production]
-
-mini_js = 1
-mini_css = 1
 
 phpSettings.display_startup_errors = 1
 phpSettings.display_errors = 1

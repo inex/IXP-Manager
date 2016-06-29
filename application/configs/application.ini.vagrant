@@ -77,52 +77,6 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Enables multi-IXP mode.
-;;
-;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
-;;
-multiixp.enabled = false
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Enables resller mode
-;;
-;; See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
-;;
-reseller.enabled = true
-
-;;
-;; If reseller mode enabled and this is set to true then super admin or customer itself
-;; can not add/change resold customers details.
-;;
-reseller.no_billing_for_resold_customers = true
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Specifies whether to display and enable control of AS112 functionality for customers
-;;
-;; See https://github.com/inex/IXP-Manager/wiki/AS112
-;;
-
-as112_ui_active = true
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; We use Minify to bundle and compress CSS and JS in
-;; production environments.
-;;
-;; See FIXME for details.
-;;
-;; These minimised bundles and included with the source so
-;; you can leave the following set as is to avoid loading
-;; ~30 JS / CSS files rather than two.
-;;
-
-mini_js = 0
-mini_css = 0
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Resources
 ;;
@@ -161,45 +115,6 @@ resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
 ;resources.auth.oss.disabled.lost-username = 1
 ;resources.auth.oss.disabled.lost-password = 1
 
-
-;;
-;; This is the Doctrine database configuration. You **NEED** to fill in some details here!
-
-;;
-;; First up, Doctrine and IXP Manager requires Memcache to operate efficiently. Without it,
-;; page loads will take longer and many unneccessary database queries will be repeated on
-;; each impression.
-;;
-
-
-resources.doctrine2cache.autoload_method                    = "composer"
-resources.doctrine2cache.namespace                          = 'IXPManager'
-resources.doctrine2cache.type                               = 'ArrayCache'
-;resources.doctrine2cache.type                               = 'MemcacheCache'
-resources.doctrine2cache.memcache.servers.0.host       = '127.0.0.1'
-resources.doctrine2cache.memcache.servers.0.port       = '11211'
-
-;;
-;; Now the database details and location of schema files
-;;
-
-resources.doctrine2.models_path        = APPLICATION_PATH "/../database"
-resources.doctrine2.proxies_path       = APPLICATION_PATH "/../database/Proxies"
-resources.doctrine2.repositories_path  = APPLICATION_PATH "/../database"
-resources.doctrine2.xml_schema_path    = APPLICATION_PATH "/../database/xml"
-
-resources.doctrine2.autogen_proxies        = 1
-resources.doctrine2.logger                 = 1
-resources.doctrine2.models_namespace       = "Entities"
-resources.doctrine2.proxies_namespace      = "Proxies"
-resources.doctrine2.repositories_namespace = "Repositories"
-
-resources.doctrine2.connection.options.driver   = 'pdo_mysql'
-resources.doctrine2.connection.options.dbname   = 'ixp'
-resources.doctrine2.connection.options.user     = 'ixp'
-resources.doctrine2.connection.options.password = 'password'
-resources.doctrine2.connection.options.host     = '127.0.0.1'
-resources.doctrine2.connection.options.charset  = 'utf8mb4'
 
 ;;
 ;; We use Zend_Logger for logging various events to file and / or email.

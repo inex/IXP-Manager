@@ -40,7 +40,6 @@
     "require": {
         "php": ">=5.5.0",
         "zendframework/zendframework1": "~1.12",
-        "opensolutions/minify": "1.*",
         "komola/bootstrap-zend-framework": "dev-master",
         "opensolutions/oss-snmp": "dev-master",
 
