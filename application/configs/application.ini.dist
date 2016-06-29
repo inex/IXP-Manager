@@ -101,41 +101,6 @@ ondemand_resources.mailer.smtphost = "127.0.0.1"
 ; ondemand_resources.mailer.auth = login | plain | cram-md5
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; IXP Tool / Statistics CLI Settings
-;;
-;; See: https://github.com/inex/IXP-Manager/wiki/Email-Notifications
-;;
-
-cli.traffic_differentials.stddev_calc_length = 60
-cli.traffic_differentials.from_email = "ops@example.com"
-cli.traffic_differentials.from_name  = "XXX Operations"
-cli.traffic_differentials.subject = "XXX Traffic Differentials"
-cli.traffic_differentials.recipients[] = "someone@example.com"
-cli.traffic_differentials.recipients[] = "someone-else@example.com"
-
-cli.port_utilisation.threshold = 0.8
-cli.port_utilisation.from_email = "ops@example.com"
-cli.port_utilisation.from_name  = "XXX Operations"
-cli.port_utilisation.subject = "XXX Port Utilisation Report"
-cli.port_utilisation.recipients[] = "someone@example.com"
-cli.port_utilisation.recipients[] = "someone-else@example.com"
-
-; note that the %s in the subject below is replaced with Errors / Discards as appropriate by the script
-cli.ports_with_counts.from_email = "ops@example.com"
-cli.ports_with_counts.from_name  = "IXP Operations"
-cli.ports_with_counts.subject = "IXP - Ports with %s"
-cli.ports_with_counts.recipients[] = "someone@example.com"
-cli.ports_with_counts.recipients[] = "someone-else@example.com"
-
-; the traffic_daily table can get pretty full and most of the long term information
-; are in the MRTG / other stats files anyway. If you want to keep this data in the
-; database, set the following to false. If it's true, when the daily task runs
-; to populate this table, it will also delete any entries older than
-; cli.traffic_differentials.stddev_calc_length days (this parameter is set above).
-
-cli.traffic_daily.delete_old = true
 
 
 [laravel]
