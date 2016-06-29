@@ -59,6 +59,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupAuth($options);
         $options = $this->setupIdentity($options);
         $options = $this->setupPeeringManager($options);
+        $options = $this->setupDisabledFrontendControllers($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -178,5 +179,19 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
 
         return $options;
     }
+
+    /**
+     * Setup frontend disabled controllers
+     */
+    private function setupDisabledFrontendControllers( array $options ): array {
+        if( is_array( config('ixp_fe.frontend.disabled' ) ) ) {
+            foreach( config('ixp_fe.frontend.disabled' ) as $controller => $state ) {
+                $options['frontend']['disabled'][$controller]  = $state;
+            }
+        }
+
+        return $options;
+    }
+
 
 }

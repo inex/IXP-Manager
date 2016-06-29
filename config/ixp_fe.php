@@ -28,5 +28,28 @@ return [
     */
     'customer_name_format' => "%a %j",
 
+    /*
+    |--------------------------------------------------------------------------
+    | Front end components (Zend Framework Controllers)
+    |--------------------------------------------------------------------------
+    |
+    | Any ZF1 controller extending IXP_Controller_FrontEnd can be disabled by setting it to true below
+    |
+    | frontend.disabled.XXX = true
+    |
+    | e.g.
+    |    frontend.disabled.cust-kit = true
+    |    frontend.disabled.console-server-connection = true
+    */
+
+    'frontend' => [
+        'disabled' => [
+            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES', true ),
+            'meeting'                   => env( 'IXP_FE_FRONTEND_DISABLEDMEETING',      true ),
+            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLEDMEETING',      false ),
+            'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLEDMEETING',      false ),
+        ],
+    ],
+
 
 ];
