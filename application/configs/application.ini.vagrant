@@ -131,21 +131,6 @@ resources.smarty.debugging = 0
 
 
 
-;;
-;; Any controller extending IXP_Controller_FrontEnd can be disabled by setting it to '1' below
-;;
-; frontend.disabled.XXX = 1
-;
-; e.g.
-;    frontend.disabled.cust-kit = 1
-;    frontend.disabled.console-server-connection = 1
-
-frontend.disabled.meeting = 1
-
-; Set this up before enabling:
-; See: https://github.com/inex/IXP-Manager/wiki/Route-Server-Prefix-Analysis-Tool
-; frontend.disabled.rs-prefixes = 1
-
 
 
 mrtg.trunk_graphs[] = "1::core-degkcp-tcydub1-lan1::Telecity KCP to Telecity Citywest (LAN1 / Primary)"
