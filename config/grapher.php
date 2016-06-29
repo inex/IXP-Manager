@@ -64,6 +64,9 @@ return [
             // show sflow / p2p links on the frontend
             'enabled' => env( 'GRAPHER_BACKEND_SFLOW_ENABLED', false ),
 
+            // for larger IXPs, it's quite intensive to display all the graphs
+            'show_graphs_on_index_page' => env( 'GRAPHER_BACKEND_SFLOW_SHOW_ON_INDEX', false ),
+
             // where to find the MRTG rrd files
             'root'  => env( 'GRAPHER_BACKEND_SFLOW_ROOT', 'http://www.example.com/' ),
         ]
