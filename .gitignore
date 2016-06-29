@@ -40,7 +40,6 @@ application/configs/rs*-inex-*.conf
 application/configs/ci-*
 *.DS_Store
 
-config/identity.php
 config/grapher_trunks.php
 
 application/configs/rs*.conf

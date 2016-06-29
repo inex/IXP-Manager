@@ -57,6 +57,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
 
         $options = $this->setupUrls($options);
         $options = $this->setupAuth($options);
+        $options = $this->setupIdentity($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -135,6 +136,33 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
     private function setupAuth( array $options ): array {
         $options['resources']['auth']['oss']['pwhash']    = config('auth.zf1.pwhash');
         $options['resources']['auth']['oss']['hash_cost'] = config('auth.zf1.hash_cost');
+        return $options;
+    }
+
+    /**
+     * Set identity
+     */
+    private function setupIdentity( array $options ): array {
+        $options['identity']['orgname']               = config( 'identity.orgname' );
+        $options['identity']['legalname']             = config( 'identity.legalname' );
+        $options['identity']['location']['city']      = config( 'identity.location.city' );
+        $options['identity']['location']['country']   = config( 'identity.location.country' );
+        $options['identity']['ixfid']                 = config( 'identity.ixfid' );
+        $options['identity']['name']                  = config( 'identity.name' );
+        $options['identity']['email']                 = config( 'identity.email' );
+        $options['identity']['email']                 = config( 'identity.email' );
+        $options['identity']['autobot']['name']       = config( 'identity.autobot.name' );
+        $options['identity']['autobot']['email']      = config( 'identity.autobot.email' );
+        $options['identity']['mailer']['name']        = config( 'identity.mailer.name' );
+        $options['identity']['mailer']['email']       = config( 'identity.mailer.email' );
+        $options['identity']['sitename']              = config( 'identity.sitename' );
+        $options['identity']['url']                   = config( 'app.url' );
+        $options['identity']['logo']                  = config( 'identity.logo' );
+        $options['identity']['biglogo']               = config( 'identity.biglogo' );
+        $options['identity']['biglogoconf']['offset'] = config( 'identity.biglogoconf.offset' );
+        $options['identity']['misc']['irc_password']  = config( 'identity.misc.irc_password' );
+        $options['identity']['vlans']['default']      = config( 'identity.vlans.default' );
+
         return $options;
     }
 
