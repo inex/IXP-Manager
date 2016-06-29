@@ -1,0 +1,101 @@
+<?php
+
+// Configuration 'oddbits' relating to IXP Manager tools that have
+// been migrated from the old ZF1 application/configs/application.ini
+// configuration file.
+
+return [
+
+    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    //
+    // Route Collector / Server Details
+    //
+    // See: https://github.com/inex/IXP-Manager/wiki/Route-Collector
+    //
+
+    'router' => [
+        'collector' => [
+            'conf'       => [
+                'target'  => "quagga",
+                'dstpath' => base_path() . "/var/spool",
+
+                // Used by nagios-cli.gen-members-conf action to monitor route collector BGP sessions
+                'snmppasswd' => 'xxxx',
+            ],
+        ],
+    ],
+
+    'irrdb' => [
+        'bgpq' => [
+            'path' => '/path/to/bgpq3',
+        ],
+    ],
+
+    // LANs available for public and member's own peering matrix.
+    'peering_matrix' => [
+        0 => [
+            'name'   => "Public Peering LAN #1",
+            // the vlan tag as entered in the 'number' column in the vlan table
+            'number' => 100,
+        ],
+        1 => [
+            'name'   => "Public Peering LAN #2",
+            'number' => 120
+        ]
+    ],
+
+    // the primary / only / main peering LAN (the 'number' column in the vlan table)
+    'primary_peering_lan_vlan_tag' => 1,
+
+    // The URL used to display PeeringDB entries.
+    // %ASN% is replaced with the customer's ASN
+    'peeringdb_url' => "https://www.peeringdb.com/view.php?asn=%ASN%",
+
+    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    //
+    // Meeting RSVP Handler
+    //
+    // Members can RSVP for meetings via IXP Manager but this is currently
+    // broken and unlikely to be rekindled.
+    'meeting' => [
+        'rsvp_to_email' => "rsvp@example.com",
+        'rsvp_to_name'  => "Person Who Looks After This Stuff"
+    ],
+
+    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    // Billing updates notifications
+    //
+    // Send email with updated billing details to the following address when billing details
+    // are updated by an admin or a user.
+    //
+    'billing_updates_notify' => "accounts1@example.com",
+
+    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    //
+    // Generated RIR objects
+    //
+    // See: https://github.com/inex/IXP-Manager/wiki/RIR-Objects
+    'rir_ripe_password' => 'supersecret',
+
+    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    //
+    // We use PHP-Weathermap which is publically available. Our true settings
+    // are commented out, please replace with your own
+    'weathermap' => [
+        1 => [
+            'name'   => "Weathermap for Peering LAN 1",
+            'menu'   => "Weathermap - LAN 1",
+            'url'    => "https://www.example.com/weathermap-lan1-plain.html",
+            'width'  => 900,
+            'height' => 1200
+        ],
+        // 2 => [ ... ]
+    ],
+
+    
+
+
+
+
+
+];
