@@ -58,6 +58,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupUrls($options);
         $options = $this->setupAuth($options);
         $options = $this->setupIdentity($options);
+        $options = $this->setupPeeringManager($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -162,6 +163,18 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['identity']['biglogoconf']['offset'] = config( 'identity.biglogoconf.offset' );
         $options['identity']['misc']['irc_password']  = config( 'identity.misc.irc_password' );
         $options['identity']['vlans']['default']      = config( 'identity.vlans.default' );
+
+        return $options;
+    }
+
+    /**
+     * Setup peering manager
+     */
+    private function setupPeeringManager( array $options ): array {
+        $options['peering_manager']['testmode']  = config( 'ixp.peering_manager.testmode' );
+        $options['peering_manager']['testemail'] = config( 'ixp.peering_manager.testemail' );
+        $options['peering_manager']['testnote']  = config( 'ixp.peering_manager.testnote' );
+        $options['peering_manager']['testdate']  = config( 'ixp.peering_manager.testdate' );
 
         return $options;
     }
