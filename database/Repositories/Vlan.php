@@ -194,7 +194,7 @@ class Vlan extends EntityRepository
     {
         $key = "vlan_customers_{$vid}_{$protocol}";
 
-        if( !$forceDb && ( $custs = \Zend_Registry::get( 'd2cache' )->fetch( $key ) ) )
+        if( !$forceDb && ( $custs = Cache::get( $key ) ) )
             return $custs;
 
         $acusts = $this->getInterfaces( $vid, $protocol, $forceDb );
@@ -211,7 +211,7 @@ class Vlan extends EntityRepository
             $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['custid']    = $c['VirtualInterface']['Customer']['id'];
         }
 
-        \Zend_Registry::get( 'd2cache' )->save( $key, $custs, 86400 );
+        Cache::put( $key, $custs, 86400 );
 
         return $custs;
     }

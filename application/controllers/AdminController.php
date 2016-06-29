@@ -63,13 +63,9 @@ class AdminController extends IXP_Controller_AuthRequiredAction
         $grapher = App::make('IXP\Services\Grapher');
 
         // only do this once every five minutes
-        if( $admin_home_stats = $this->getD2Cache()->fetch( 'admin_home_stats' ) )
-        {
+        if( $admin_home_stats = Cache::get( 'admin_home_stats' ) ) {
             $this->view->graphs = $admin_home_stats['graphs'];
-            $this->view->stats  = $admin_home_stats['stats'];
-        }
-        else
-        {
+        } else {
             $admin_home_stats = [];
             $graphs = [];
 
@@ -96,8 +92,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             }
 
             $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
-
-            $this->getD2Cache()->save( 'admin_home_stats', $admin_home_stats, 300 );
+            Cache::put( 'admin_home_stats', $admin_home_stats, 300 );
         }
     }
 
@@ -108,7 +103,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
     private function _dashboardStats()
     {
         // only do this once every 60 minutes
-        if( !( $admin_home_ctypes = $this->getD2Cache()->fetch( 'admin_home_ctypes' ) ) )
+        if( !( $admin_home_ctypes = Cache::get( 'admin_home_ctypes' ) ) )
         {
             $admin_home_ctypes['types'] = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getTypeCounts();
 
@@ -168,7 +163,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
             $this->view->bylan       = $admin_home_ctypes['bylan']       = $bylan;
             $this->view->byixp       = $admin_home_ctypes['byixp']       = $byixp;
 
-            $this->getD2Cache()->save( 'admin_home_ctypes', $admin_home_ctypes, 3600 );
+            Cache::put( 'admin_home_ctypes', $admin_home_ctypes, 3600 );
         }
 
         $this->view->ctypes      = $admin_home_ctypes['types'];

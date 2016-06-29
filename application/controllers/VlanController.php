@@ -90,7 +90,7 @@ class VlanController extends IXP_Controller_FrontEnd
                     'xlator'         => \Entities\Vlan::$PRIVATE_YES_NO
                 ],
 
-                'notes' => 'Notes' 
+                'notes' => 'Notes'
             ]
         );
     }
@@ -185,7 +185,7 @@ class VlanController extends IXP_Controller_FrontEnd
     protected function postFlush( $object )
     {
         // this is created in Repositories\Vlan::getNames()
-        $this->getD2Cache()->delete( \Repositories\Vlan::ALL_CACHE_KEY );
+        Cache::forget( \Repositories\Vlan::ALL_CACHE_KEY );
         return true;
     }
 

@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Cache;
 
 /**
  * BGPSessionData
@@ -57,7 +58,7 @@ class BGPSessionData extends EntityRepository
     {
         $key = "pm_sessions_{$vlan}_{$protocol}";
 
-        if( !$forceDb && ( $apeers = \Zend_Registry::get( 'd2cache' )->fetch( $key ) ) )
+        if( !$forceDb && ( $apeers = Cache::get( $key ) ) )
             return $apeers;
 
         if( !in_array( $protocol, [ 4, 6 ] ) )
@@ -128,7 +129,7 @@ class BGPSessionData extends EntityRepository
         foreach( $apeers as $asn => $p )
             ksort( $apeers[ $asn ][ 'peers' ], SORT_NUMERIC );
 
-        \Zend_Registry::get( 'd2cache' )->save( $key, $apeers, 3600 );
+        Cache::put( $key, $apeers, 3600 );
 
         return $apeers;
     }

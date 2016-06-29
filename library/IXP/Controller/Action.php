@@ -39,7 +39,6 @@ class IXP_Controller_Action extends OSS_Controller_Action
     use OSS_Controller_Action_Trait_Doctrine2User;
     use OSS_Controller_Action_Trait_Auth;
     // use OSS_Controller_Action_Trait_AuthRequired;
-    use OSS_Controller_Action_Trait_Doctrine2Cache;
     use OSS_Controller_Action_Trait_Doctrine2;
     use OSS_Controller_Action_Trait_Mailer;
     // use OSS_Controller_Action_Trait_License;
@@ -140,14 +139,13 @@ class IXP_Controller_Action extends OSS_Controller_Action
     private function superUserSetup()
     {
         // get an array of customer id => names
-        if( !( $this->_customers = $this->getD2Cache()->fetch( 'admin_home_customers' ) ) )
+        if( !( $this->_customers = Cache::get( 'admin_home_customers' ) ) )
         {
             $this->_customers = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getNames( true );
-            $this->getD2Cache()->save( 'admin_home_customers', $this->_customers, 3600 );
+            Cache::put( 'admin_home_customers', $this->_customers, 3600 );
         }
         
         $this->view->customers = $this->_customers;
     }
 
 }
-

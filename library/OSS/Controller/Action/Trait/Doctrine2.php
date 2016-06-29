@@ -82,7 +82,7 @@ trait OSS_Controller_Action_Trait_Doctrine2
     {
         if( self::$_d2em === null || !isset( self::$_d2em[ $db ] ) )
         {
-            $plugin = new OSS_Resource_Doctrine2( $this->_options['resources']['doctrine2'] );
+            $plugin = new OSS_Resource_Doctrine2( [] );
             $this->getBootstrap()->registerPluginResource( $plugin );
             self::$_d2em[ $db ] = $plugin->getDoctrine2( $db );
             Zend_Registry::set( 'd2em', self::$_d2em );
@@ -188,4 +188,3 @@ trait OSS_Controller_Action_Trait_Doctrine2
     }
 
 }
-
