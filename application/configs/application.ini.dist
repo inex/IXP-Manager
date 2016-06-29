@@ -83,36 +83,6 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Enables multi-IXP mode.
-;;
-;; See: https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
-;;
-multiixp.enabled = false
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Enables resller mode
-;;
-;; See: https://github.com/inex/IXP-Manager/wiki/Reseller-Functionality
-;;
-reseller.enabled = true
-
-;;
-;; If reseller mode enabled and this is set to true then super admin or customer itself
-;; can not add/change resold customers details.
-;;
-reseller.no_billing_for_resold_customers = true
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; Specifies whether to display and enable control of AS112 functionality for customers
-;;
-;; See https://github.com/inex/IXP-Manager/wiki/AS112
-;;
-
-as112_ui_active = true
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
