@@ -72,12 +72,12 @@
                                             <a href="{genUrl controller="statistics" action="member"}">My Statistics</a>
                                         </li>
 
-                                        {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
+                                        {if config('grapher.backends.sflow.enabled')}
                                             <li>
                                                 <a href="{genUrl controller="statistics" action="p2p"}">My Peer to Peer Traffic</a>
                                             </li>
                                         {/if}
-                                        
+
                                         <li class="divider"></li>
                                     {/if}
                                     <li>
@@ -107,21 +107,21 @@
                         {/if}
 
                         {if $user->getPrivs() neq 3}
-	                        <li class="dropdown">
-							    <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
-							    <ul class="dropdown-menu">
-							        <li>
-							            <a href="{genUrl controller="profile"}">Profile</a>
-							        </li>
-							        <li>
-							            <a href="{genUrl controller="api-key"}">API Keys</a>
-							        </li>
-							        <li class="divider"></li>
-							        <li>
-		                                <a href="{genUrl controller="auth" action="logout"}">Logout</a>
-        							</li>
-							    </ul>
-							</li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{genUrl controller="profile"}">Profile</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="api-key"}">API Keys</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="{genUrl controller="auth" action="logout"}">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
                         {/if}
 
                     </ul>
@@ -140,25 +140,25 @@
                         {if isset( $session->switched_user_from ) and $session->switched_user_from}
                             <li><a href="{genUrl controller="auth" action="switch-user-back"}">Switch Back</a></li>
                         {elseif $user->getPrivs() eq 3}
-	                        <li class="dropdown">
-							    <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
-							    <ul class="dropdown-menu">
-							        <li>
-							            <a href="{genUrl controller="profile"}">Profile</a>
-							        </li>
-							        <li>
-							            <a href="{genUrl controller="api-key"}">API Keys</a>
-							        </li>
-							        <li class="divider"></li>
-							        <li>
-							            <a href="{genUrl controller="customer" action="unread-notes"}">Unread Notes</a>
-							        </li>
-							        <li class="divider"></li>
-							        <li>
-		                                <a href="{genUrl controller="auth" action="logout"}">Logout</a>
-        							</li>
-							    </ul>
-							</li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="{genUrl controller="profile"}">Profile</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="api-key"}">API Keys</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="{genUrl controller="customer" action="unread-notes"}">Unread Notes</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="{genUrl controller="auth" action="logout"}">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
                         {else}
                             <li><a href="{genUrl controller="auth" action="logout"}">Logout</a></li>
                         {/if}

@@ -170,7 +170,7 @@
                 {/if}
             {/if}
 
-            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
+            {if config('grapher.backends.sflow.enabled')}
                 <li>
                     <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">P2P &raquo;</a>
                 </li>

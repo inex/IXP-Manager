@@ -74,7 +74,7 @@
                 Graph Options
             {/if}
 
-            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
+            {if config('grapher.backends.sflow.enabled')}
                 <a class="btn btn-primary pull-right" href="{genUrl controller="statistics" action="p2p" ixp=$ixp->getId() shortname=$cust->getShortname()}">
                     See Peer to Peer Graphs
                 </a>
