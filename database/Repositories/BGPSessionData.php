@@ -105,7 +105,7 @@ class BGPSessionData extends EntityRepository
         if( $asn !== null )
             $sql .= "\n            AND cs.autsys = " . intval( $asn );
 
-        $sql .= "\n        GROUP BY bs.srcipaddressid, bs.dstipaddressid";
+        $sql .= "\n        GROUP BY bs.srcipaddressid, bs.dstipaddressid, bs.id, vlis.virtualinterfaceid, vlid.virtualinterfaceid";
 
         $peers = $conn->fetchAll( $sql );
 
