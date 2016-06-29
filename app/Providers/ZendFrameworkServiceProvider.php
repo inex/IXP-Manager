@@ -58,6 +58,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupUrls($options);
         $options = $this->setupAuth($options);
         $options = $this->setupSmarty($options);
+        $options = $this->setupSmokeping($options);
         $options = $this->setupIdentity($options);
         $options = $this->setupPeeringManager($options);
         $options = $this->setupDisabledFrontendControllers($options);
@@ -193,6 +194,26 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
 
         return $options;
     }
+
+    /**
+     * Setup Smokeping
+     */
+    private function setupSmokeping( array $options ): array {
+        if( is_array( config('smokeping.conf' ) ) ) {
+            foreach( config('smokeping.conf' ) as $k => $v ) {
+                $options['smokeping']['conf'][$k]  = $v;
+            }
+        }
+
+        if( is_array( config('smokeping.oconf' ) ) ) {
+            foreach( config('smokeping.oconf' ) as $k => $v ) {
+                $options['smokeping']['oconf'][$k]  = $v;
+            }
+        }
+
+        return $options;
+    }
+
 
     /**
      * Setup Smarty
