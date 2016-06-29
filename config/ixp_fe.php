@@ -56,6 +56,7 @@ return [
         'disabled' => [
             'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES', true ),
             'meeting'                   => env( 'IXP_FE_FRONTEND_DISABLEDMEETING',      true ),
+            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLEDMEETING',      true ),
             'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLEDMEETING',      false ),
             'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLEDMEETING',      false ),
         ],
