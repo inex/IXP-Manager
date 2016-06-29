@@ -57,6 +57,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
 
         $options = $this->setupUrls($options);
         $options = $this->setupAuth($options);
+        $options = $this->setupSmarty($options);
         $options = $this->setupIdentity($options);
         $options = $this->setupPeeringManager($options);
         $options = $this->setupDisabledFrontendControllers($options);
@@ -188,6 +189,18 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
             foreach( config('ixp_fe.frontend.disabled' ) as $controller => $state ) {
                 $options['frontend']['disabled'][$controller]  = $state;
             }
+        }
+
+        return $options;
+    }
+
+    /**
+     * Setup Smarty
+     */
+    private function setupSmarty( array $options ): array {
+        if( strlen( config('ixp_fe.skinning.smarty' ) ) ) {
+            $options['resources']['smarty']['skin']  = config('ixp_fe.skinning.smarty' );
+            Zend_Registry::get( 'smarty' )->setSkin( config('ixp_fe.skinning.smarty' ) );
         }
 
         return $options;

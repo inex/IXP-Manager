@@ -47,14 +47,14 @@ class OSS_Resource_Smarty extends Zend_Application_Resource_ResourceAbstract
 
     /**
      * Holds the View instance
-     * 
+     *
      * @var null|OSS_View_Smarty
      */
     protected $_view;
 
     /**
      * Initialisation function
-     * 
+     *
      * @return OSS_View_Smarty
      */
     public function init()
@@ -65,7 +65,7 @@ class OSS_Resource_Smarty extends Zend_Application_Resource_ResourceAbstract
 
     /**
      * Get view
-     * 
+     *
      * @return OSS_View_Smarty
      */
     public function getView()
@@ -93,14 +93,14 @@ class OSS_Resource_Smarty extends Zend_Application_Resource_ResourceAbstract
                 }
 
                 // Initialize view
-                $view = new OSS_View_Smarty( 
-                    $options['templates'], 
-                    array( 
-                        'cache_dir'   => $options['cache'], 
-                        'config_dir'  => isset( $options['config'] ) ? $options['config'] : null, 
-                        'compile_dir' => $options['compiled'], 
-                        'plugins_dir' => $options['plugins'] 
-                    ) 
+                $view = new OSS_View_Smarty(
+                    $options['templates'],
+                    array(
+                        'cache_dir'   => $options['cache'],
+                        'config_dir'  => isset( $options['config'] ) ? $options['config'] : null,
+                        'compile_dir' => $options['compiled'],
+                        'plugins_dir' => $options['plugins']
+                    )
                 );
 
                 if( isset( $options['skin'] ) && strlen( $options['skin'] ) )
@@ -112,13 +112,14 @@ class OSS_Resource_Smarty extends Zend_Application_Resource_ResourceAbstract
                 $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper( 'ViewRenderer' );
                 $viewRenderer->setView( $view );
 
+                Zend_Registry::set( 'smarty', $view );
                 $this->_view = $view;
             }
 
             $this->_view->OSS_Messages = array();
-            
+
             return $this->_view;
         }
 
-    } 
+    }
 }

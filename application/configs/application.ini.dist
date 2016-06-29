@@ -1,4 +1,4 @@
-; Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+; Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
 ; All Rights Reserved.
 ;
 ; This file is part of IXP Manager.
@@ -20,7 +20,7 @@
 
 ;
 ; For more information on IXP Manager, please see:
-;    https://github.com/inex/IXP-Manager/wiki
+;    http://www.ixpmanager.org/
 ;
 ; For installation information, please see:
 ;    https://github.com/inex/IXP-Manager/wiki/Installation
@@ -61,45 +61,6 @@
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Resources
-;;
-;; Read through comments below which will guide you as to what can / should be changed.
-;; If there are no comments, then you can safely leave as is.
-;;
-
-
-resources.frontController.controllerDirectory = APPLICATION_PATH "/controllers"
-resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
-resources.modules[] =
-
-
-;;;;;;;;
-;;
-;; Authentication options
-;;
-;; The default password hash method is bcrypt (with a iteration count of 9).
-;;
-;; You can (and may) want to use 'plaintext'
-;;   - see https://github.com/inex/IXP-Manager/wiki/Password-Hashing
-;;
-resources.auth.oss.pwhash  = "bcrypt"
-resources.auth.oss.hash_cost  = 9
-
-resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
-resources.auth.enabled = 1
-resources.auth.oss.entity  = "\\Entities\\User"
-resources.auth.oss.login_history.enabled = 1
-resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
-
-
-
-;; You'll want to allow your users find their usernames and reset
-;; their passwords so leave these as is
-;resources.auth.oss.disabled.lost-username = 1
-;resources.auth.oss.disabled.lost-password = 1
-
-
 ;;
 ;; We use Zend_Logger for logging various events to file and / or email.
 ;;
@@ -129,10 +90,6 @@ ondemand_resources.logger.writers.stream.owner = www-data
 ondemand_resources.logger.writers.stream.group = www-data
 
 
-;; Set to 1 if you want the session manager to ensure same IP addresses for a user session.
-;; This will cause issues for users in IPv6 with Pricacy Extensions (http://tools.ietf.org/html/rfc4941)
-resources.namespace.checkip = 0
-
 ;; You should not change these as session management is handled via cookies using
 ;; the default PHP mechanism. Thus, other session cookies (relating to other login
 ;; sessions of the same user) are not expired on a logout.
@@ -149,29 +106,6 @@ ondemand_resources.mailer.smtphost = "127.0.0.1"
 ; ondemand_resources.mailer.username =
 ; ondemand_resources.mailer.password =
 ; ondemand_resources.mailer.auth = login | plain | cram-md5
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Smarty View
-;;
-
-resources.smarty.enabled   = 1
-resources.smarty.templates = APPLICATION_PATH "/views"
-
-;; See https://github.com/inex/IXP-Manager/wiki/Skinning
-;; resources.smarty.skin      = ""
-resources.smarty.compiled  = APPLICATION_PATH "/../var/templates_c"
-
-resources.smarty.cache     = APPLICATION_PATH "/../var/cache"
-resources.smarty.config    = APPLICATION_PATH "/configs/smarty"
-resources.smarty.plugins[] = APPLICATION_PATH "/../library/inex-smarty/functions"
-resources.smarty.plugins[] = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Smarty/functions"
-resources.smarty.plugins[] = APPLICATION_PATH "/../library/Smarty/plugins"
-resources.smarty.plugins[] = APPLICATION_PATH "/../library/Smarty/sysplugins"
-resources.smarty.debugging = 0
-
-
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -438,3 +372,65 @@ autoloaderNamespaces.Twitter = "Twitter_"
 
 pluginPaths.OSS_Resource = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Resource"
 pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Resources
+;;
+;; Read through comments below which will guide you as to what can / should be changed.
+;; If there are no comments, then you can safely leave as is.
+;;
+
+
+resources.frontController.controllerDirectory = APPLICATION_PATH "/controllers"
+resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
+resources.modules[] =
+
+
+;;;;;;;;
+;;
+;; Authentication options
+;;
+;; The default password hash method is bcrypt (with a iteration count of 9).
+;;
+;; You can (and may) want to use 'plaintext'
+;;   - see https://github.com/inex/IXP-Manager/wiki/Password-Hashing
+;;
+resources.auth.oss.pwhash  = "bcrypt"
+resources.auth.oss.hash_cost  = 9
+
+resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
+resources.auth.enabled = 1
+resources.auth.oss.entity  = "\\Entities\\User"
+resources.auth.oss.login_history.enabled = 1
+resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
+
+
+
+;; You'll want to allow your users find their usernames and reset
+;; their passwords so leave these as is
+;resources.auth.oss.disabled.lost-username = 1
+;resources.auth.oss.disabled.lost-password = 1
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Smarty View
+;;
+
+resources.smarty.enabled   = 1
+resources.smarty.templates = APPLICATION_PATH "/views"
+resources.smarty.compiled  = APPLICATION_PATH "/../var/templates_c"
+resources.smarty.cache     = APPLICATION_PATH "/../var/cache"
+resources.smarty.config    = APPLICATION_PATH "/configs/smarty"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/inex-smarty/functions"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Smarty/functions"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/Smarty/plugins"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/Smarty/sysplugins"
+resources.smarty.debugging = 0
+
+
+
+
+;; Set to 1 if you want the session manager to ensure same IP addresses for a user session.
+;; This will cause issues for users in IPv6 with Pricacy Extensions (http://tools.ietf.org/html/rfc4941)
+resources.namespace.checkip = 0
