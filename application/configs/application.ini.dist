@@ -42,29 +42,7 @@
 ; the Apache virtual host config (or public/.htaccess).
 ;
 
-[production]
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Bootstrap Options
-;;
-;; None of the following need to be changed
-;;
-
-phpSettings.display_startup_errors = 0
-phpSettings.display_errors = 0
-
-includePaths.library    = APPLICATION_PATH "/../library"
-includePaths.osssnmp    = APPLICATION_PATH "/../library/OSS_SNMP.git"
-includePaths.osslibrary = APPLICATION_PATH "/../library/OSS-Framework.git"
-
-bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
-bootstrap.class = "Bootstrap"
-
-includePaths.twitter = APPLICATION_PATH "/../library/Bootstrap-Zend-Framework/library"
-autoloaderNamespaces.Twitter = "Twitter_"
-
-pluginPaths.OSS_Resource = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Resource"
-pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
+[production : laravel]
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -547,20 +525,26 @@ netinfo.property.pingbeacon.properties.ratelimited = "Rate Limited"
 ; Help messages are displayed on the UI data entry dialog:
 netinfo.property.pingbeacon.help = "If this ping beacon is not rate limited, just enter 'No'. If it is, provide details of the rate limiting so the end user may know how many pings / sec they can push at this box."
 
+[laravel]
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bootstrap Options
+;;
+;; None of the following need to be changed
+;;
 
+phpSettings.display_startup_errors = 0
+phpSettings.display_errors = 0
 
-[staging : production]
+includePaths.library    = APPLICATION_PATH "/../library"
+includePaths.osssnmp    = APPLICATION_PATH "/../library/OSS_SNMP.git"
+includePaths.osslibrary = APPLICATION_PATH "/../library/OSS-Framework.git"
 
-;; if you want to set up a staging environment with a different database.
+bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
+bootstrap.class = "Bootstrap"
 
-[testing : production]
+includePaths.twitter = APPLICATION_PATH "/../library/Bootstrap-Zend-Framework/library"
+autoloaderNamespaces.Twitter = "Twitter_"
 
-phpSettings.display_startup_errors = 1
-phpSettings.display_errors = 1
-
-
-[development : production]
-
-phpSettings.display_startup_errors = 1
-phpSettings.display_errors = 1
+pluginPaths.OSS_Resource = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Resource"
+pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"

@@ -56,6 +56,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         unset( $options['bootstrap'] );
 
         $options = $this->setupUrls($options);
+        $options = $this->setupAuth($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -125,6 +126,15 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
             $options['utils']['genurl']['host_mode']    = 'REPLACE';
             $options['utils']['genurl']['host_replace'] = config('identity.urls.forceUrl');
         }
+        return $options;
+    }
+
+    /**
+     * Set authentication options
+     */
+    private function setupAuth( array $options ): array {
+        $options['resources']['auth']['oss']['pwhash']    = config('auth.zf1.pwhash');
+        $options['resources']['auth']['oss']['hash_cost'] = config('auth.zf1.hash_cost');
         return $options;
     }
 

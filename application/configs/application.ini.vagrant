@@ -40,25 +40,7 @@
 ; The following section ([vagrant]) matches the APPLICATION_ENV setting in
 ; the Apache virtual host config (or public/.htaccess).
 
-[vagrant]
-
-phpSettings.display_startup_errors = 1
-phpSettings.display_errors = 1
-
-
-bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
-bootstrap.class = "Bootstrap"
-
-includePaths.library    = APPLICATION_PATH "/../library"
-includePaths.osslibrary = APPLICATION_PATH "/../vendor/opensolutions/oss-framework/src/"
-
-
-includePaths.twitter = APPLICATION_PATH "/../library/Bootstrap-Zend-Framework/library"
-autoloaderNamespaces.Twitter = "Twitter_"
-
-pluginPaths.OSS_Resource = APPLICATION_PATH "/../vendor/opensolutions/oss-framework/src/OSS/Resource"
-pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
-
+[vagrant : laravel]
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -77,43 +59,6 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 contact.group.types.ROLE = "Role"
 ; example: contact.group.types.MEETING = "Meeting"
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Resources
-;;
-;; Read through comments below which will guide you as to what can / should be changed.
-;; If there are no comments, then you can safely leave as is.
-;;
-
-
-resources.frontController.controllerDirectory = APPLICATION_PATH "/controllers"
-resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
-resources.modules[] =
-
-
-;;;;;;;;
-;;
-;; Authentication options
-;;
-;; The default password hash method is bcrypt (with a iteration count of 9).
-;;
-;; You can (and may) want to use 'plaintext'
-;;   - see https://github.com/inex/IXP-Manager/wiki/Password-Hashing
-;;
-resources.auth.oss.pwhash  = "bcrypt"
-resources.auth.oss.hash_cost  = 9
-
-resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
-resources.auth.enabled = 1
-resources.auth.oss.entity  = "\\Entities\\User"
-resources.auth.oss.login_history.enabled = 1
-resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
-
-
-
-;; You'll want to allow your users find their usernames and reset
-;; their passwords so leave these as is
-;resources.auth.oss.disabled.lost-username = 1
-;resources.auth.oss.disabled.lost-password = 1
 
 
 ;;
@@ -144,9 +89,6 @@ ondemand_resources.logger.writers.stream.owner = www-data
 ondemand_resources.logger.writers.stream.group = www-data
 
 
-;; Set to 1 if you want the session manager to ensure same IP addresses for a user session.
-;; This will cause issues for users in IPv6 with Pricacy Extensions (http://tools.ietf.org/html/rfc4941)
-resources.namespace.checkip = 0
 
 ;; You should not change these as session management is handled via cookies using
 ;; the default PHP mechanism. Thus, other session cookies (relating to other login
@@ -181,7 +123,7 @@ resources.smarty.cache     = APPLICATION_PATH "/../var/cache"
 resources.smarty.config    = APPLICATION_PATH "/configs/smarty"
 
 resources.smarty.plugins[] = APPLICATION_PATH "/../library/inex-smarty/functions"
-resources.smarty.plugins[] = APPLICATION_PATH "/../vendor/opensolutions/oss-framework/src/OSS/Smarty/functions"
+resources.smarty.plugins[] = APPLICATION_PATH "/../library/OSS/Smarty/functions"
 resources.smarty.plugins[] = APPLICATION_PATH "/../vendor/smarty/smarty/libs/plugins"
 resources.smarty.plugins[] = APPLICATION_PATH "/../vendor/smarty/smarty/libs/sysplugins"
 
@@ -301,6 +243,30 @@ peeringmanager.testnote = false
 peeringmanager.testdate = false
 
 
+
+
+mrtg.trunk_graphs[] = "1::core-degkcp-tcydub1-lan1::Telecity KCP to Telecity Citywest (LAN1 / Primary)"
+mrtg.trunk_graphs[] = "1::core-degkcp-tcydub1-lan1-sec::Telecity KCP to Telecity Citywest (LAN1 / Backup)"
+mrtg.trunk_graphs[] = "1::core-tcydub1-tcydub1-lan1::Telecity Citywest - Internal Core Trunk (LAN1)"
+mrtg.trunk_graphs[] = "1::core-swi1-tcy1-1_swi1-tcy1-3-lan1::Telecity Citywest - Internal Access Trunk (LAN1)"
+mrtg.trunk_graphs[] = "1::core-swi1-deg1-1_swi1-deg1-3-lan1::Telecity KCP - Internal Access Trunk (LAN1)"
+mrtg.trunk_graphs[] = "1::core-swi1-deg1-1_swi1-tcy3-1-lan1::Telecity KCP to Telecity NWBP (LAN1)"
+mrtg.trunk_graphs[] = "1::core-swi1-tcy3-1_swi1-vfw-1-lan1::Telecity NWBP to Vodafone Willsborough  (LAN1)"
+mrtg.trunk_graphs[] = "1::core-swi1-tcy1-1_swi1-vfw-1-lan1::Telecity Citywest to Vodafone Willsborough (LAN1)"
+mrtg.trunk_graphs[] = "1::core-degkcp-ixdub1-lan1::Telecity KCP to Interxion DUB1 (LAN1)"
+mrtg.trunk_graphs[] = "1::core-tcydub1-ixdub1-lan1::Telecity Citywest to Interxion DUB1 (LAN1)"
+mrtg.trunk_graphs[] = "1::core-swi1-ix1-1_swi1-ix2-1-lan1::Interxion DUB1 to Interxion DUB2 (LAN1)"
+mrtg.trunk_graphs[] = "1::core-swi1-ix1-1_swi1-ix1-2-lan1::Interxion DUB1 - Internal Access Trunk (LAN1)"
+
+mrtg.trunk_graphs[] = "1::core-degkcp-tcydub1-lan2::Telecity KCP to Telecity Citywest (LAN2)"
+mrtg.trunk_graphs[] = "1::core-degkcp-tcy3-lan2::Telecity KCP to Telecity NWBP (LAN2)"
+mrtg.trunk_graphs[] = "1::core-ix1-ix2-lan2::Interxion DUB1 to DUB2 (LAN2)"
+mrtg.trunk_graphs[] = "1::core-tcydub3-vfw-lan2::Telecity NWBP to Vodafone Willsborough (LAN2)"
+mrtg.trunk_graphs[] = "1::core-tcydub1-vfw-lan2::Telecity Citywest to Vodafone Willsborough (LAN2)"
+mrtg.trunk_graphs[] = "1::core-degkcp-ixdub1-lan2::Telecity KCP to Interxion DUB1 (LAN2)"
+mrtg.trunk_graphs[] = "1::core-tcydub1-ixdub1-lan2::Telecity Citywest to Interxion DUB1 (LAN2)"
+mrtg.trunk_graphs[] = "1::core-swi2-deg1-2_swi2-deg1-4-lan2::Telecity KCP - Internal Access Trunk (LAN2)"
+mrtg.trunk_graphs[] = "1::core-swi2-tcy1-2_swi2-tcy1-4-lan2::Telecity Citywest - Internal Access Trunk (LAN2)"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -540,3 +506,67 @@ netinfo.property.pingbeacon.properties.ipaddress = "IP Address"
 netinfo.property.pingbeacon.properties.ratelimited = "Rate Limited"
 ; Help messages are displayed on the UI data entry dialog:
 netinfo.property.pingbeacon.help = "If this ping beacon is not rate limited, just enter 'No'. If it is, provide details of the rate limiting so the end user may know how many pings / sec they can push at this box."
+
+
+[laravel]
+
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
+
+
+bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
+bootstrap.class = "Bootstrap"
+
+includePaths.library    = APPLICATION_PATH "/../library"
+includePaths.osslibrary = APPLICATION_PATH "/../library"
+
+
+includePaths.twitter = APPLICATION_PATH "/../library/Bootstrap-Zend-Framework/library"
+autoloaderNamespaces.Twitter = "Twitter_"
+
+pluginPaths.OSS_Resource = APPLICATION_PATH "/../library/OSS/Resource"
+pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Resources
+;;
+;; Read through comments below which will guide you as to what can / should be changed.
+;; If there are no comments, then you can safely leave as is.
+;;
+
+
+resources.frontController.controllerDirectory = APPLICATION_PATH "/controllers"
+resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
+resources.modules[] =
+
+
+;;;;;;;;
+;;
+;; Authentication options
+;;
+;; The default password hash method is bcrypt (with a iteration count of 9).
+;;
+;; You can (and may) want to use 'plaintext'
+;;   - see https://github.com/inex/IXP-Manager/wiki/Password-Hashing
+;;
+resources.auth.oss.pwhash  = "plaintext"
+resources.auth.oss.hash_cost  = 9
+
+resources.auth.oss.adapter = "OSS_Auth_Doctrine2Adapter"
+resources.auth.enabled = 1
+resources.auth.oss.entity  = "\\Entities\\User"
+resources.auth.oss.login_history.enabled = 1
+resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
+
+
+
+;; You'll want to allow your users find their usernames and reset
+;; their passwords so leave these as is
+;resources.auth.oss.disabled.lost-username = 1
+;resources.auth.oss.disabled.lost-password = 1
+
+;; Set to 1 if you want the session manager to ensure same IP addresses for a user session.
+;; This will cause issues for users in IPv6 with Pricacy Extensions (http://tools.ietf.org/html/rfc4941)
+resources.namespace.checkip = 0

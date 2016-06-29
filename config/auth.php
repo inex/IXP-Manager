@@ -4,6 +4,40 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | IXP Manager Authentication Defaults
+    |--------------------------------------------------------------------------
+    |
+    | These are used by the older Zend Framework which currently controls
+    | authentication.
+    |
+    | The default password hash method is bcrypt (with a iteration count of 9).
+    |
+    | You can (and may) want to use 'plaintext'
+    |   - see https://github.com/inex/IXP-Manager/wiki/Password-Hashing
+    */
+
+    'zf1' => [
+        'pwhash'     => env( 'AUTH_ZF1_PWHASH',    'bcrypt' ),
+        'hash_cost'  => env( 'AUTH_ZF1_HASH_COST', 9 ),
+    ],
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | Authentication Defaults
+    |--------------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | BELOW IS LARAVEL DEFAULT SETTINGS WHICH SHOULD NOT BE CHANGED.
+    |
+    */
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Authentication Defaults
     |--------------------------------------------------------------------------
     |
