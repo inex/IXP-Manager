@@ -46,13 +46,6 @@ resources.session.save_path = APPLICATION_PATH "/../var/session"
 resources.session.use_only_cookies = true
 resources.session.name = IXP_Manager
 
-;; Put your email relay host here
-ondemand_resources.mailer.smtphost = "127.0.0.1"
-; ondemand_resources.mailer.username =
-; ondemand_resources.mailer.password =
-; ondemand_resources.mailer.auth = login | plain | cram-md5
-
-
 
 [laravel]
 

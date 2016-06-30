@@ -68,6 +68,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupGrapherCli($options);
         $options = $this->setupContactGroups($options);
         $options = $this->setupLogger($options);
+        $options = $this->setupMailer($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -376,6 +377,14 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
             }
         }
 
+        return $options;
+    }
+
+    /**
+     * Setup mailer
+     */
+    private function setupMailer( array $options ): array {
+        $options['ondemand_resources']['mailer']['smtphost'] = config('mail.host');
         return $options;
     }
 
