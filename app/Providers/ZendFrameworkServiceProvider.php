@@ -61,8 +61,10 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupSmokeping($options);
         $options = $this->setupIdentity($options);
         $options = $this->setupPeeringManager($options);
+        $options = $this->setupIxpTools($options);
         $options = $this->setupDisabledFrontendControllers($options);
         $options = $this->setupMailingLists($options);
+        $options = $this->setupGrapherCli($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -251,6 +253,95 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
             foreach( config('mailinglists.mailman.cmds') as $k => $v ) {
                 $options['mailinglist']['cmd'][$k]  = $v;
             }
+        }
+
+        return $options;
+    }
+
+    /**
+     * Setup IXP Tools. A mixed bag that needs to be refactored in time.
+     */
+    private function setupIxpTools( array $options ): array {
+
+        if( config( 'ixp_tools.router.collector.conf.target' ) ) {
+            $options['router']['collector']['conf']['target'] = config( 'ixp_tools.router.collector.conf.target' );
+        }
+        
+        if( config( 'ixp_tools.router.collector.conf.dstpath' ) ) {
+            $options['router']['collector']['conf']['dstpath'] = config( 'ixp_tools.router.collector.conf.dstpath' );
+        }
+        
+        if( config( 'ixp_tools.router.collector.conf.snmppasswd' ) ) {
+            $options['router']['collector']['conf']['snmppasswd'] = config( 'ixp_tools.router.collector.conf.snmppasswd' );
+        }
+        
+        if( config( 'ixp_tools.irrdb.bgpq.path' ) ) {
+            $options['irrdb']['bgpq']['path'] = config( 'ixp_tools.irrdb.bgpq.path' );
+        }
+        
+        if( is_array( config('ixp_tools.peering_matrix') ) ) {
+            foreach( config('ixp_tools.peering_matrix') as $id => $details ) {
+                foreach( $details as $k => $v ) {
+                    $options['peering_matrix']['public'][$id][$k]  = $v;
+                }
+            }
+        }
+
+        if( config( 'ixp_tools.primary_peering_lan_vlan_tag' ) ) {
+            $options['primary_peering_lan']['vlan_tag'] = config( 'ixp_tools.primary_peering_lan_vlan_tag' );
+        }
+        
+        if( config( 'ixp_tools.peeringdb_url' ) ) {
+            $options['peeringdb']['url'] = config( 'ixp_tools.peeringdb_url' );
+        }
+        
+        if( is_array( config('ixp_tools.meeting') ) ) {
+            foreach( config('ixp_tools.meeting') as $k => $v ) {
+                $options['meeting'][$k]  = $v;
+            }
+        }
+
+        if( config( 'ixp_tools.billing_updates_notify' ) ) {
+            $options['billing']['updates_notify'] = config( 'ixp_tools.billing_updates_notify' );
+        }
+
+        if( config( 'ixp_tools.rir_ripe_password' ) ) {
+            $options['rir']['ripe_password'] = config( 'ixp_tools.rir_ripe_password' );
+        }
+
+        if( is_array( config('ixp_tools.weathermap') ) ) {
+            foreach( config('ixp_tools.weathermap') as $id => $details ) {
+                foreach( $details as $k => $v ) {
+                    $options['weathermap'][$id][$k]  = $v;
+                }
+            }
+        }
+
+        return $options;
+    }
+
+
+    /**
+     * Setup legacy Grapher CLI tools.
+     */
+    private function setupGrapherCli( array $options ): array {
+
+        if( is_array( config('grapher_cli.cli') ) ) {
+            foreach( config('grapher_cli.cli') as $fn => $details ) {
+                foreach( $details as $k => $v ) {
+                    if( $k == 'recipients' ) {
+                        foreach( $details[$k] as $r ) {
+                            $options['cli'][$fn][$k][] = $r;
+                        }
+                    } else {
+                        $options['cli'][$fn][$k]  = $v;
+                    }
+                }
+            }
+        }
+        
+        if( config( 'grapher_cli.cli.traffic_daily.delete_old' ) ) {
+            $options['cli']['traffic_daily']['delete_old'] = config( 'grapher_cli.cli.traffic_daily.delete_old' );
         }
 
         return $options;

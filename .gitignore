@@ -40,8 +40,12 @@ application/configs/rs*-inex-*.conf
 application/configs/ci-*
 *.DS_Store
 
+config/grapher_cli.php
 config/grapher_trunks.php
+config/ixp_tools.php
 config/mailinglists.php
+config/smokeping.php
+
 
 application/configs/rs*.conf
 
