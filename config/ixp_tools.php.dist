@@ -92,10 +92,21 @@ return [
         // 2 => [ ... ]
     ],
 
-    
-    
-
-
-
+    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    //
+    // Email alerts of exceptions can be particular useful for giving you a heads
+    // up of any issues rather than waiting for a customer to contact you.
+    //
+    // However, if your email system is out of band (i.e. not internal to your
+    // own network), beware that full exception details and traces are included
+    // and in some cases can leak sensitive information.
+    'logger' => [
+        'email' => [
+            'from'   => 'ixp-logger@example.com',
+            'to'     => 'ixp-notify-list@example.com',
+            'prefix' => 'IXP_ERROR',
+            'level'  => 3
+        ],
+    ],
 
 ];

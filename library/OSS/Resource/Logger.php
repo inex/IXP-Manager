@@ -56,7 +56,7 @@ class OSS_Resource_Logger extends Zend_Application_Resource_ResourceAbstract
 
     /**
      * Initialisation function
-     * 
+     *
      * @return OSS_Log
      */
     public function init()
@@ -68,7 +68,7 @@ class OSS_Resource_Logger extends Zend_Application_Resource_ResourceAbstract
 
     /**
      * get Logger
-     * 
+     *
      * @return OSS_Log
      */
     public function getLogger()
@@ -87,30 +87,17 @@ class OSS_Resource_Logger extends Zend_Application_Resource_ResourceAbstract
                     switch( $writer )
                     {
                         case 'stream':
-                            if( isset( $writerOptions['mode'] ) && $writerOptions['mode'] = 'single' )
-                            {
-                                $log_path = $writerOptions['path'];
-                                $log_file = $log_path . DIRECTORY_SEPARATOR . ( isset( $writerOptions['logname'] ) ? $writerOptions['logname'] : 'log.log' );
-                            }
-                            else
-                            {
-                                $log_path = $writerOptions['path']
-                                            . DIRECTORY_SEPARATOR .  date( 'Y' )
-                                            . DIRECTORY_SEPARATOR . date( 'm' );
+                            $log_file = $writerOptions['path'];
+                            $log_path = dirname( $log_file );
 
-                                $log_file = $log_path . DIRECTORY_SEPARATOR . date( 'Ymd') . '.log';
-                            }
-
-                            if( file_exists( $log_path ) == false )
-                            {
+                            if( !file_exists( $log_path ) ) {
                                 mkdir(  $log_path, 0755, true              );
                                 @chmod( $log_path, 0755                    );
                                 @chown( $log_path, $writerOptions['owner'] );
                                 @chgrp( $log_path, $writerOptions['group'] );
                             }
 
-                            if( file_exists( $log_file ) == false )
-                            {
+                            if( !file_exists( $log_file ) ) {
                                 touch(  $log_file                          );
                                 @chmod( $log_file, 0777                    );
                                 @chown( $log_file, $writerOptions['owner'] );
@@ -181,6 +168,7 @@ class OSS_Resource_Logger extends Zend_Application_Resource_ResourceAbstract
                 die( "Unknown log writer [{$writer}] during application bootstrap" );
             }
 
+            Zend_Registry::set( 'logger', $logger );
             $this->_logger = $logger;
         }
 

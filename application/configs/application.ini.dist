@@ -44,36 +44,6 @@
 
 [production : laravel]
 
-
-;;
-;; We use Zend_Logger for logging various events to file and / or email.
-;;
-;; The email.level and stream.level are the minimum level required for a log
-;; message to be emailed / written. 7 is DEBUG, 3 is ERROR. These are standard
-;; UNIX log levels - see http://framework.zend.com/manual/1.12/en/zend.log.overview.html
-;; and https://github.com/opensolutions/OSS-Framework/wiki/OSS_Logger
-;;
-
-ondemand_resources.logger.enabled = 1
-
-;; Email alerts of exceptions can be particular useful for giving you a heads
-;; up of any issues rather than waiting for a customer to contact you.
-;;
-;; However, if your email system is out of band (i.e. not internal to your
-;; own network), beware that full exception details and traces are included
-;; and in some cases can leak sensitive information.
-;ondemand_resources.logger.writers.email.from   = ixp-logger@example.com
-;ondemand_resources.logger.writers.email.to     = ixp-notify-list@example.com
-;ondemand_resources.logger.writers.email.prefix = 'IXP_ERROR'
-;ondemand_resources.logger.writers.email.level  = 3
-
-ondemand_resources.logger.writers.stream.level = 7
-ondemand_resources.logger.writers.stream.path  = APPLICATION_PATH "/../var/log"
-;; For FreeBSD, use "www" below
-ondemand_resources.logger.writers.stream.owner = www-data
-ondemand_resources.logger.writers.stream.group = www-data
-
-
 resources.session.save_path = APPLICATION_PATH "/../var/session"
 resources.session.use_only_cookies = true
 resources.session.name = IXP_Manager
@@ -179,3 +149,18 @@ resources.namespace.checkip = 0
 ;; sessions of the same user) are not expired on a logout.
 resources.namespace.timeout = 3600
 resources.session.remember_me_seconds = 3600
+
+
+;;
+;; We use Zend_Logger for logging various events to file and / or email.
+;;
+;; The email.level and stream.level are the minimum level required for a log
+;; message to be emailed / written. 7 is DEBUG, 3 is ERROR. These are standard
+;; UNIX log levels - see http://framework.zend.com/manual/1.12/en/zend.log.overview.html
+;; and https://github.com/opensolutions/OSS-Framework/wiki/OSS_Logger
+;;
+
+ondemand_resources.logger.enabled = 1
+ondemand_resources.logger.writers.stream.level = 7
+ondemand_resources.logger.writers.stream.owner = www-data
+ondemand_resources.logger.writers.stream.group = www-data

@@ -27,6 +27,7 @@ use Illuminate\Support\ServiceProvider;
 use IXP\Services\Helpdesk\ConfigurationException;
 use Config;
 use Zend_Registry;
+use Log;
 
 /**
  * ZendFramework Service Provider
@@ -66,6 +67,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupMailingLists($options);
         $options = $this->setupGrapherCli($options);
         $options = $this->setupContactGroups($options);
+        $options = $this->setupLogger($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -359,4 +361,22 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         }
         return $options;
     }
+
+    /**
+     * Setup logger
+     */
+    private function setupLogger( array $options ): array {
+        if( isset( Log::getMonolog()->getHandlers()[0] ) ) {
+            $options['ondemand_resources']['logger']['writers']['stream']['path'] = Log::getMonolog()->getHandlers()[0]->getUrl();
+        }
+
+        if( is_array( config( 'ixp_tools.logger.email' ) ) ) {
+            foreach( config('ixp_tools.logger.email') as $k => $v ) {
+                $options['ondemand_resources']['logger']['writers']['email'][$k] = $v;
+            }
+        }
+
+        return $options;
+    }
+
 }

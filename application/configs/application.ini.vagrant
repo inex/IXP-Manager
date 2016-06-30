@@ -42,44 +42,6 @@
 
 [vagrant : laravel]
 
-
-
-;;
-;; We use Zend_Logger for logging various events to file and / or email.
-;;
-;; The email.level and stream.level are the minimum level required for a log
-;; message to be emailed / written. 7 is DEBUG, 3 is ERROR. These are standard
-;; UNIX log levels - see http://framework.zend.com/manual/1.12/en/zend.log.overview.html
-;; and https://github.com/opensolutions/OSS-Framework/wiki/OSS_Logger
-;;
-
-ondemand_resources.logger.enabled = 1
-
-;; Email alerts of exceptions can be particular useful for giving you a heads
-;; up of any issues rather than waiting for a customer to contact you.
-;;
-;; However, if your email system is out of band (i.e. not internal to your
-;; own network), beware that full exception details and traces are included
-;; and in some cases can leak sensitive information.
-;ondemand_resources.logger.writers.email.from   = ixp-logger@example.com
-;ondemand_resources.logger.writers.email.to     = ixp-notify-list@example.com
-;ondemand_resources.logger.writers.email.prefix = 'IXP_ERROR'
-;ondemand_resources.logger.writers.email.level  = 3
-
-ondemand_resources.logger.writers.stream.level = 7
-ondemand_resources.logger.writers.stream.path  = APPLICATION_PATH "/../var/log"
-ondemand_resources.logger.writers.stream.owner = www-data
-ondemand_resources.logger.writers.stream.group = www-data
-
-
-
-;; You should not change these as session management is handled via cookies using
-;; the default PHP mechanism. Thus, other session cookies (relating to other login
-;; sessions of the same user) are not expired on a logout.
-resources.namespace.timeout = 3600
-resources.session.remember_me_seconds = 3600
-
-
 resources.session.save_path = APPLICATION_PATH "/../var/session"
 resources.session.use_only_cookies = true
 resources.session.name = IXP_Manager
@@ -89,11 +51,6 @@ ondemand_resources.mailer.smtphost = "127.0.0.1"
 ; ondemand_resources.mailer.username =
 ; ondemand_resources.mailer.password =
 ; ondemand_resources.mailer.auth = login | plain | cram-md5
-
-
-; sflow parameters (peer to peer graphs)
-sflow.rrd.rrdtool = /usr/bin/rrdtool
-sflow.rrd.rrdcached.sock = unix:/var/run/rrdcached.sock
 
 
 
@@ -175,3 +132,25 @@ resources.smarty.debugging = 0
 ;; Set to 1 if you want the session manager to ensure same IP addresses for a user session.
 ;; This will cause issues for users in IPv6 with Pricacy Extensions (http://tools.ietf.org/html/rfc4941)
 resources.namespace.checkip = 0
+
+
+;; You should not change these as session management is handled via cookies using
+;; the default PHP mechanism. Thus, other session cookies (relating to other login
+;; sessions of the same user) are not expired on a logout.
+resources.namespace.timeout = 3600
+resources.session.remember_me_seconds = 3600
+
+
+;;
+;; We use Zend_Logger for logging various events to file and / or email.
+;;
+;; The email.level and stream.level are the minimum level required for a log
+;; message to be emailed / written. 7 is DEBUG, 3 is ERROR. These are standard
+;; UNIX log levels - see http://framework.zend.com/manual/1.12/en/zend.log.overview.html
+;; and https://github.com/opensolutions/OSS-Framework/wiki/OSS_Logger
+;;
+
+ondemand_resources.logger.enabled = 1
+ondemand_resources.logger.writers.stream.level = 7
+ondemand_resources.logger.writers.stream.owner = www-data
+ondemand_resources.logger.writers.stream.group = www-data
