@@ -43,23 +43,6 @@
 [vagrant : laravel]
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Contact Group Types
-;;
-;; Contacts can be added to various groups, and these groups are categorised by type.
-;;
-;; Define here any contact group types you like. Note that the ROLE type is special and
-;; removing it will disable the contact role form elements. It is intended to assign roles
-;; to contacts such as 'Admin', 'Billing', 'Technical', 'Marketing'. These are set up
-;; by the default fixtures.
-;;
-;; See: https://github.com/inex/IXP-Manager/wiki/Contact-Groups
-;;
-
-contact.group.types.ROLE = "Role"
-; example: contact.group.types.MEETING = "Meeting"
-
-
 
 ;;
 ;; We use Zend_Logger for logging various events to file and / or email.

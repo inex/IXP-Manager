@@ -135,24 +135,26 @@ class ContactController extends IXP_Controller_FrontEnd
             ->leftJoin( 'c.User', 'u' )
             ->leftJoin( 'c.Customer', 'cust' );
 
-        $roles = $this->getD2R( '\\Entities\\ContactGroup' )->getGroupNamesTypeArray( 'ROLE' );
+        if( config('contact_group.types.ROLE') ) {
+            $roles = $this->getD2R( '\\Entities\\ContactGroup' )->getGroupNamesTypeArray( 'ROLE' );
 
-        if( isset( $roles['ROLE'] ) )
-        {
-            $this->view->roles = $roles = $roles['ROLE'];
-            $this->view->role = $role = $this->getParam( 'role', false );
-            if( isset( $roles[ $role ] ) )
-                $qb->leftJoin( 'c.Groups', 'g' )
-                   ->andWhere( "g.id = :role" )->setParameter( 'role', $role );
-        }
+            if( isset( $roles['ROLE'] ) )
+            {
+                $this->view->roles = $roles = $roles['ROLE'];
+                $this->view->role = $role = $this->getParam( 'role', false );
+                if( isset( $roles[ $role ] ) )
+                    $qb->leftJoin( 'c.Groups', 'g' )
+                       ->andWhere( "g.id = :role" )->setParameter( 'role', $role );
+            }
 
-        if( $this->getParam( "cgid", false ) )
-        {
-            $qb->leftJoin( "c.Groups", "cg" )
-                ->andWhere( "cg.id = ?2" )
-                ->setParameter( 2, $this->getParam( "cgid" ) );
+            if( $this->getParam( "cgid", false ) )
+            {
+                $qb->leftJoin( "c.Groups", "cg" )
+                    ->andWhere( "cg.id = ?2" )
+                    ->setParameter( 2, $this->getParam( "cgid" ) );
 
-            $this->view->group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $this->getParam( "cgid" ) );
+                $this->view->group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $this->getParam( "cgid" ) );
+            }
         }
 
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
@@ -172,7 +174,9 @@ class ContactController extends IXP_Controller_FrontEnd
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             return $data;
 
-        $data = $this->setRolesAndGroups( $data, $id );
+        if( config('contact_group.types.ROLE') ) {
+            $data = $this->setRolesAndGroups( $data, $id );
+        }
 
         return $data;
     }

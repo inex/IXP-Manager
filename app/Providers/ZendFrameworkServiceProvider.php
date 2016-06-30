@@ -65,6 +65,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupDisabledFrontendControllers($options);
         $options = $this->setupMailingLists($options);
         $options = $this->setupGrapherCli($options);
+        $options = $this->setupContactGroups($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -266,19 +267,19 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         if( config( 'ixp_tools.router.collector.conf.target' ) ) {
             $options['router']['collector']['conf']['target'] = config( 'ixp_tools.router.collector.conf.target' );
         }
-        
+
         if( config( 'ixp_tools.router.collector.conf.dstpath' ) ) {
             $options['router']['collector']['conf']['dstpath'] = config( 'ixp_tools.router.collector.conf.dstpath' );
         }
-        
+
         if( config( 'ixp_tools.router.collector.conf.snmppasswd' ) ) {
             $options['router']['collector']['conf']['snmppasswd'] = config( 'ixp_tools.router.collector.conf.snmppasswd' );
         }
-        
+
         if( config( 'ixp_tools.irrdb.bgpq.path' ) ) {
             $options['irrdb']['bgpq']['path'] = config( 'ixp_tools.irrdb.bgpq.path' );
         }
-        
+
         if( is_array( config('ixp_tools.peering_matrix') ) ) {
             foreach( config('ixp_tools.peering_matrix') as $id => $details ) {
                 foreach( $details as $k => $v ) {
@@ -290,11 +291,11 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         if( config( 'ixp_tools.primary_peering_lan_vlan_tag' ) ) {
             $options['primary_peering_lan']['vlan_tag'] = config( 'ixp_tools.primary_peering_lan_vlan_tag' );
         }
-        
+
         if( config( 'ixp_tools.peeringdb_url' ) ) {
             $options['peeringdb']['url'] = config( 'ixp_tools.peeringdb_url' );
         }
-        
+
         if( is_array( config('ixp_tools.meeting') ) ) {
             foreach( config('ixp_tools.meeting') as $k => $v ) {
                 $options['meeting'][$k]  = $v;
@@ -339,11 +340,23 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
                 }
             }
         }
-        
+
         if( config( 'grapher_cli.cli.traffic_daily.delete_old' ) ) {
             $options['cli']['traffic_daily']['delete_old'] = config( 'grapher_cli.cli.traffic_daily.delete_old' );
         }
 
+        return $options;
+    }
+
+    /**
+     * Setup contact groups
+     */
+    private function setupContactGroups( array $options ): array {
+        if( is_array( config('contact_group.types') ) ) {
+            foreach( config('contact_group.types') as $k => $v ) {
+                $options['contact']['group']['types'][$k] = $v;
+            }
+        }
         return $options;
     }
 }

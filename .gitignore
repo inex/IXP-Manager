@@ -40,6 +40,7 @@ application/configs/rs*-inex-*.conf
 application/configs/ci-*
 *.DS_Store
 
+config/contact_group.php
 config/grapher_cli.php
 config/grapher_trunks.php
 config/ixp_tools.php

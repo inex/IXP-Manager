@@ -55,13 +55,13 @@ trait OSS_Controller_Action_Trait_Doctrine2User
      * @var \Entities\User An instance of the user record
      */
     protected $_user = false;
-    
-    
+
+
     /**
      * The entity that represents a 'user'
      */
     protected $_trait_doctrine2user_entity = '\\Entities\\User';
-    
+
     /**
      * The trait's initialisation method.
      *
@@ -77,10 +77,10 @@ trait OSS_Controller_Action_Trait_Doctrine2User
         // check if we have defined an alternative entity object than \Entities\User
         if( isset( $this->_options['resources']['auth']['oss']['entity'] ) )
             $this->_trait_doctrine2user_entity = $this->_options['resources']['auth']['oss']['entity'];
-        
+
         $this->traitSetInitialised( 'OSS_Controller_Action_Trait_Doctrine2User' );
     }
-    
+
     /**
      * Get the user ORM object.
      *
@@ -106,14 +106,14 @@ trait OSS_Controller_Action_Trait_Doctrine2User
                 {
                     session_unset();
                     session_destroy();
-                }    
+                }
                 die( 'User expected but none found...  Please reload the page...' );
             }
         }
-    
+
         return $this->_user;
     }
-    
+
     /**
      * Clear the user ORM object from the cache.
      *
@@ -124,8 +124,7 @@ trait OSS_Controller_Action_Trait_Doctrine2User
         if( $id === null )
             $id = $this->getUser()->getId();
 
-        $this->getD2Cache()->delete( 'oss_d2u_user_' . $id );
+        Cache::forget( 'oss_d2u_user_' . $id );
     }
-    
-}
 
+}
