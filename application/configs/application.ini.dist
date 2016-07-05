@@ -42,10 +42,7 @@
 ; the Apache virtual host config (or public/.htaccess).
 ;
 
-[production : laravel]
-
-
-[laravel]
+[production]
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Bootstrap Options

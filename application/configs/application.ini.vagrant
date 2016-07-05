@@ -1,4 +1,4 @@
-; Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+; Copyright (C) 2009-2016 Internet Neutral Exchange Association Limited.
 ; All Rights Reserved.
 ;
 ; This file is part of IXP Manager.
@@ -20,7 +20,7 @@
 
 ;
 ; For more information on IXP Manager, please see:
-;    https://github.com/inex/IXP-Manager/wiki
+;    http://www.ixpmanager.org/
 ;
 ; For installation information, please see:
 ;    https://github.com/inex/IXP-Manager/wiki/Installation
@@ -40,14 +40,7 @@
 ; The following section ([vagrant]) matches the APPLICATION_ENV setting in
 ; the Apache virtual host config (or public/.htaccess).
 
-[vagrant : laravel]
-
-
-[laravel]
-
-phpSettings.display_startup_errors = 1
-phpSettings.display_errors = 1
-
+[vagrant]
 
 bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
 bootstrap.class = "Bootstrap"
@@ -97,8 +90,6 @@ resources.auth.oss.entity  = "\\Entities\\User"
 resources.auth.oss.login_history.enabled = 1
 resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Smarty View
 ;;
@@ -113,6 +104,8 @@ resources.smarty.plugins[] = APPLICATION_PATH "/../library/OSS/Smarty/functions"
 resources.smarty.plugins[] = APPLICATION_PATH "/../vendor/smarty/smarty/libs/plugins"
 resources.smarty.plugins[] = APPLICATION_PATH "/../vendor/smarty/smarty/libs/sysplugins"
 resources.smarty.debugging = 0
+
+
 
 
 ;; You'll want to allow your users find their usernames and reset
@@ -130,6 +123,7 @@ resources.namespace.checkip = 0
 ;; sessions of the same user) are not expired on a logout.
 resources.namespace.timeout = 3600
 resources.session.remember_me_seconds = 3600
+
 
 
 ;;
