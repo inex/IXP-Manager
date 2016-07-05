@@ -7,6 +7,7 @@ Authd: <?= var_dump( Auth::check() ) ?>
 
 <?= '**[ ' . asset('someimage.png') . ' ]**' ?>
 
+<?= var_dump(session_save_path() ) ?>
 
 <?php if ( Auth::check() ): ?>
     <?= dd( Auth::user() ) ?>

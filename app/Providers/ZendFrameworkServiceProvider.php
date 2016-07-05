@@ -69,6 +69,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupContactGroups($options);
         $options = $this->setupLogger($options);
         $options = $this->setupMailer($options);
+        $options = $this->setupSession($options);
 
         // now we need to shove these options back into ZendFramework.
         // There's a but of duplication and complexity here:
@@ -388,4 +389,12 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         return $options;
     }
 
+    /**
+     * Setup session
+     */
+    private function setupSession( array $options ): array {
+        $options['resources']['session']['save_path'] = config('session.files');
+        $options['resources']['session']['name']      = config('session.cookie');
+        return $options;
+    }
 }

@@ -44,10 +44,6 @@
 
 [production : laravel]
 
-resources.session.save_path = APPLICATION_PATH "/../var/session"
-resources.session.use_only_cookies = true
-resources.session.name = IXP_Manager
-
 
 [laravel]
 
@@ -86,6 +82,8 @@ pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
 resources.frontController.controllerDirectory = APPLICATION_PATH "/controllers"
 resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
 resources.modules[] =
+
+resources.session.use_only_cookies = true
 
 
 ;;;;;;;;
