@@ -35,3 +35,4 @@ application/configs/rc-inex-*conf
 application/configs/rs*-inex-*.conf
 application/configs/ci-*
 *.DS_Store
+vendor/

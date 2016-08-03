@@ -4,6 +4,7 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
+    <field name="pdb_facility_id" type="bigint" nullable="true"/>
     <field name="name" type="string" length="255" nullable="true"/>
     <field name="shortname" type="string" unique="true" length="255" nullable="true"/>
     <field name="tag" type="string" length="255" nullable="true"/>

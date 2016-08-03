@@ -377,4 +377,32 @@ class Location
     {
         return $this->notes;
     }
+    /**
+     * @var integer
+     */
+    private $pdb_facility_id;
+
+
+    /**
+     * Set pdb_facility_id
+     *
+     * @param integer $pdbFacilityId
+     * @return Location
+     */
+    public function setPdbFacilityId($pdbFacilityId)
+    {
+        $this->pdb_facility_id = $pdbFacilityId;
+    
+        return $this;
+    }
+
+    /**
+     * Get pdb_facility_id
+     *
+     * @return integer 
+     */
+    public function getPdbFacilityId()
+    {
+        return $this->pdb_facility_id;
+    }
 }

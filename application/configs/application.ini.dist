@@ -53,18 +53,19 @@
 phpSettings.display_startup_errors = 0
 phpSettings.display_errors = 0
 
-includePaths.library    = APPLICATION_PATH "/../library"
-includePaths.osssnmp    = APPLICATION_PATH "/../library/OSS_SNMP.git"
-includePaths.osslibrary = APPLICATION_PATH "/../library/OSS-Framework.git"
-
 bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
 bootstrap.class = "Bootstrap"
+
+includePaths.library    = APPLICATION_PATH "/../library"
+includePaths.osslibrary = APPLICATION_PATH "/../vendor/opensolutions/oss-framework/src/"
+
 
 includePaths.twitter = APPLICATION_PATH "/../library/Bootstrap-Zend-Framework/library"
 autoloaderNamespaces.Twitter = "Twitter_"
 
-pluginPaths.OSS_Resource = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Resource"
+pluginPaths.OSS_Resource = APPLICATION_PATH "/../vendor/opensolutions/oss-framework/src/OSS/Resource"
 pluginPaths.IXP_Resource = APPLICATION_PATH "/../library/IXP/Resource"
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -180,8 +181,7 @@ resources.auth.oss.login_history.entity = "\\Entities\\UserLoginHistory"
 
 ;; Set this to wherever PEAR installed Doctrine. The given example is typical
 ;; for Ubuntu. For FreeBSD, try "/usr/local/share/pear/Doctrine/ORM"
-resources.doctrine2cache.path               = "/usr/share/php/Doctrine/ORM"
-resources.doctrine2cache.autoload_method    = "pear"
+resources.doctrine2cache.autoload_method    = "composer"
 resources.doctrine2cache.namespace                          = 'IXPManager'
 ; resources.doctrine2cache.type                               = 'ArrayCache'
 resources.doctrine2cache.type                               = 'MemcacheCache'
@@ -285,9 +285,9 @@ resources.smarty.compiled  = APPLICATION_PATH "/../var/templates_c"
 resources.smarty.cache     = APPLICATION_PATH "/../var/cache"
 resources.smarty.config    = APPLICATION_PATH "/configs/smarty"
 resources.smarty.plugins[] = APPLICATION_PATH "/../library/inex-smarty/functions"
-resources.smarty.plugins[] = APPLICATION_PATH "/../library/OSS-Framework.git/OSS/Smarty/functions"
-resources.smarty.plugins[] = APPLICATION_PATH "/../library/Smarty/plugins"
-resources.smarty.plugins[] = APPLICATION_PATH "/../library/Smarty/sysplugins"
+resources.smarty.plugins[] = APPLICATION_PATH "/../vendor/opensolutions/oss-framework/src/OSS/Smarty/functions"
+resources.smarty.plugins[] = APPLICATION_PATH "/../vendor/smarty/smarty/libs/plugins"
+resources.smarty.plugins[] = APPLICATION_PATH "/../vendor/smarty/smarty/libs/sysplugins"
 resources.smarty.debugging = 0
 
 

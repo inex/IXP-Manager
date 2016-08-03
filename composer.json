@@ -1,0 +1,51 @@
+{
+    "name": "inex/IXP-Manager",
+    "description": "An application to manage Internet Exchange Points (IXPs)",
+    "type": "project",
+    "keywords": ["ixp manager", "ixpm", "inex"],
+    "homepage": "https://github.com/inex/IXP-Manager/wiki",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Barry O'Donovan",
+            "email": "barry.odonovan@inex.ie",
+            "homepage": "https://www.inex.ie/",
+            "role": "Senior Coding Dude & INEX Network Consultant"
+        },
+        {
+            "name": "Nick Hilliard",
+            "email": "nick@inex.ie",
+            "homepage": "https://www.inex.ie/",
+            "role": "Junior Coding Dweeb & Chief Technical Officer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/opensolutions/Bootstrap-Zend-Framework"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "doctrine/orm": "2.3.*",
+        "opensolutions/oss-framework": "dev-master",
+        "zendframework/zendframework1": "~1.12",
+        "smarty/smarty": "3.1.18",
+        "opensolutions/minify": "1.*",
+        "komola/bootstrap-zend-framework": "dev-master",
+        "opensolutions/oss-snmp": "dev-master"
+    },
+    "support": {
+        "issues": "https://github.com/inex/IXP-Manager/issues",
+        "wiki": "http://www.ixpmanager.org/",
+        "source": "https://github.com/inex/IXP-Manager"
+    },
+    "autoload": {
+        "classmap": [
+            "application"
+        ],
+        "psr-0": {
+            "IXP_": "library/"
+        }
+    }
+}

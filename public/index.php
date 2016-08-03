@@ -21,10 +21,12 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+require_once( __DIR__ . '/../vendor/autoload.php' );
+
 if( file_exists( '../MAINT_MODE_ENABLED' ) )
 {
     define( 'MAINTENANCE_MODE', true );
-    
+
     // if it's an API request, we need to handle that differently
     if( strpos( $_SERVER['REQUEST_URI'], '/apiv1/' ) !== false )
     {
@@ -43,7 +45,7 @@ define( 'APPLICATION_STARTTIME', microtime( true ) );
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
 
-// Define application environment 
+// Define application environment
 if( php_sapi_name() == 'cli-server' )
 {
     // running under PHP's built in web server: php -S
@@ -69,11 +71,7 @@ set_include_path(
     )
 );
 
-/** Zend_Application */
-require_once 'Zend/Application.php';
-
 require_once( APPLICATION_PATH . '/../library/IXP/Version.php' );
-
 
 // Create application, bootstrap, and run
 $application = new Zend_Application(
@@ -83,4 +81,3 @@ $application = new Zend_Application(
 
 $application->bootstrap()
             ->run();
-
