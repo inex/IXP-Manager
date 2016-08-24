@@ -44,17 +44,7 @@ elif [[ -f /vagrant/database/vagrant-base.sql ]]; then
     cat /vagrant/database/vagrant-base.sql | mysql -u root ixp
 fi
 
-cat >/vagrant/.env <<END_ENV
-DB_HOST=127.0.0.1
-DB_DATABASE=ixp
-DB_USERNAME=ixp
-DB_PASSWORD=password
-END_ENV
-
-cat >/vagrant/public/.htaccess <<END_HTACCESS
-SetEnv APPLICATION_ENV vagrant
-END_HTACCESS
-
+cp /vagrant/.env.vagrant /vagrant/.env
 
 cd /vagrant
 su - ubuntu -c "cd /vagrant && composer install"
@@ -69,8 +59,6 @@ cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
         AllowOverride None
         Require all granted
 
-        SetEnv APPLICATION_ENV vagrant
-
         RewriteEngine On
         RewriteCond %{REQUEST_FILENAME} -s [OR]
         RewriteCond %{REQUEST_FILENAME} -l [OR]
@@ -84,7 +72,6 @@ cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
 </VirtualHost>
 END_APACHE
 
-cp /vagrant/application/configs/application.ini.vagrant /vagrant/application/configs/application.ini
 a2enmod rewrite
 chmod -R a+rwX /vagrant/storage /vagrant/var
 service apache2 restart
