@@ -1,5 +1,5 @@
 {
-  "name": "IXP-Manager",
+  "name": "ixp-manager",
   "version": "4.0.0",
   "homepage": "https://github.com/inex/IXP-Manager",
   "authors": [
@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
+    "jquery": "2.2.2",
     "bootstrap": "~3.3.0",
     "chosen": "~1.5",
     "vue": "^1.0.24"
