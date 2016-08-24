@@ -38,13 +38,13 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=7.0",
         "zendframework/zendframework1": "~1.12",
         "komola/bootstrap-zend-framework": "dev-master",
         "opensolutions/oss-snmp": "dev-master",
 
-        "laravel/framework": "5.2.*",
-        "laravel-doctrine/orm": "1.1.*",
+        "laravel/framework": "5.3.*",
+        "laravel-doctrine/orm": "1.2.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
 

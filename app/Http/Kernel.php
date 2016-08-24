@@ -29,9 +29,12 @@ class Kernel extends HttpKernel {
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \IXP\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
         'api' => [
             'throttle:60,1',
+            'bindings',
         ],
     ];
 
@@ -41,11 +44,14 @@ class Kernel extends HttpKernel {
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'       => '\IXP\Http\Middleware\Authenticate',
-        'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
-        'grapher'    => \IXP\Http\Middleware\Services\Grapher::class,
-        'guest'      => '\IXP\Http\Middleware\RedirectIfAuthenticated',
+        'auth'       => \IXP\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings'   => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can'        => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'      => \IXP\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+
+        'grapher'    => \IXP\Http\Middleware\Services\Grapher::class,
     ];
 
 }

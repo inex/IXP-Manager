@@ -1,7 +1,7 @@
 <?php namespace IXP\Services;
 
 use Illuminate\View\Engines\EngineInterface;
-use League\Plates\Engine as PlatesEngine;
+use League\Plates\Engine as LeaguePlatesEngine;
 use League\Plates\Template;
 
 class PlatesEngine implements EngineInterface
@@ -9,7 +9,7 @@ class PlatesEngine implements EngineInterface
     /** @var PlatesEngine */
     private $engine;
 
-    public function __construct(PlatesEngine $engine)
+    public function __construct(LeaguePlatesEngine $engine)
     {
         $this->engine = $engine;
     }
