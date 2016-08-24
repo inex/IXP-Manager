@@ -48,35 +48,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot()
-    {
-        // reset options from Laravel
-        $zf = $this->app->make('ZendFramework');
-        $options = $zf->getOptions();
-
-        // let's not muck about with core options
-        unset( $options['bootstrap'] );
-
-        $options = $this->setupUrls($options);
-        $options = $this->setupAuth($options);
-        $options = $this->setupSmarty($options);
-        $options = $this->setupSmokeping($options);
-        $options = $this->setupIdentity($options);
-        $options = $this->setupPeeringManager($options);
-        $options = $this->setupIxpTools($options);
-        $options = $this->setupDisabledFrontendControllers($options);
-        $options = $this->setupMailingLists($options);
-        $options = $this->setupGrapherCli($options);
-        $options = $this->setupContactGroups($options);
-        $options = $this->setupLogger($options);
-        $options = $this->setupMailer($options);
-        $options = $this->setupSession($options);
-
-        // now we need to shove these options back into ZendFramework.
-        // There's a but of duplication and complexity here:
-        $zf->setOptions( $options );
-        $zf->getBootstrap()->setOptions( $options );
-        Zend_Registry::set( 'options', $options );
-    }
+    {}
 
     /**
      * Register the application services.
@@ -112,13 +84,37 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
             // Create application, bootstrap, and run
             $application = new \Zend_Application(
                 APPLICATION_ENV,
-                APPLICATION_PATH . '/configs/application.ini'
+                $this->createOptions()
             );
 
             return $application->bootstrap();
         });
     }
 
+    /**
+     * Create the Zend Framework options array
+     * @return array
+     */
+    private function createOptions(): array {
+        $options = [];
+        $options = $this->setupBaseOptions($options);
+        $options = $this->setupPhpSettings($options);
+        $options = $this->setupUrls($options);
+        $options = $this->setupAuth($options);
+        $options = $this->setupSmarty($options);
+        $options = $this->setupSmokeping($options);
+        $options = $this->setupIdentity($options);
+        $options = $this->setupPeeringManager($options);
+        $options = $this->setupIxpTools($options);
+        $options = $this->setupDisabledFrontendControllers($options);
+        $options = $this->setupMailingLists($options);
+        $options = $this->setupGrapherCli($options);
+        $options = $this->setupContactGroups($options);
+        $options = $this->setupLogger($options);
+        $options = $this->setupMailer($options);
+        $options = $this->setupSession($options);
+        return $options;
+    }
 
     /**
      * Get the services provided by the provider.
@@ -130,6 +126,39 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         return ['ZendFramework'];
     }
 
+    /**
+     * Set up the base Zend Framework options
+     * @param array $options Existing options array
+     * @return array
+     */
+    private function setupBaseOptions(array $options): array {
+        $options['bootstrap']['path']  = base_path() . "/application/Bootstrap.php";
+        $options['bootstrap']['class'] = "Bootstrap";
+
+        $options['includePaths']['library']    = base_path() . "/library";
+        $options['includePaths']['osslibrary'] = base_path() . "/library";
+        $options['includePaths']['twitter']         = base_path() . "/library/Bootstrap-Zend-Framework/library";
+        $options['autoloaderNamespaces']['Twitter'] = "Twitter_";
+
+        $options['pluginPaths']['OSS_Resource'] = base_path() . "/library/OSS/Resource";
+        $options['pluginPaths']['IXP_Resource'] = base_path() . "/library/IXP/Resource";
+
+        $options['resources']['frontController']['controllerDirectory'] = base_path() . "/application/controllers";
+        $options['resources']['frontController']['moduleDirectory']     = base_path() . "/application/modules";
+        $options['resources']['modules'] = [];
+
+        return $options;
+    }
+
+    /**
+     * Force URL (and http/s schema) if necessary
+     */
+    private function setupPhpSettings( array $options ): array {
+        $options['phpSettings']['display_startup_errors'] = config('app.debug');
+        $options['phpSettings']['display_errors']         = config('app.debug');
+
+        return $options;
+    }
 
     /**
      * Force URL (and http/s schema) if necessary
@@ -146,8 +175,20 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Set authentication options
      */
     private function setupAuth( array $options ): array {
-        $options['resources']['auth']['oss']['pwhash']    = config('auth.zf1.pwhash');
-        $options['resources']['auth']['oss']['hash_cost'] = config('auth.zf1.hash_cost');
+        $options['resources']['auth']['oss']['adapter']                  = "OSS_Auth_Doctrine2Adapter";
+        $options['resources']['auth']['enabled']                         = true;
+        $options['resources']['auth']['oss']['entity']                   = "\\Entities\\User";
+        $options['resources']['auth']['oss']['login_history']['enabled'] = true;
+        $options['resources']['auth']['oss']['login_history']['entity']  = "\\Entities\\UserLoginHistory";
+        $options['resources']['auth']['oss']['pwhash']                   = config('auth.zf1.pwhash');
+        $options['resources']['auth']['oss']['hash_cost']                = config('auth.zf1.hash_cost');
+
+        $options['resources']['namespace']['checkip']           = 0;
+        $options['resources']['namespace']['timeout']           = config('session.lifetime')*60;
+
+        $options['resources']['session']['use_only_cookies']    = true;
+        $options['resources']['session']['remember_me_seconds'] = config('session.lifetime')*60;
+
         return $options;
     }
 
@@ -227,6 +268,19 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Setup Smarty
      */
     private function setupSmarty( array $options ): array {
+
+        $options['resources']['smarty']['enabled']   = true;
+        $options['resources']['smarty']['templates'] = base_path() . "/application/views";
+        $options['resources']['smarty']['compiled']  = base_path() . "/var/templates_c";
+        $options['resources']['smarty']['cache']     = base_path() . "/var/cache";
+        $options['resources']['smarty']['config']    = base_path() . "/application/configs/smarty";
+        $options['resources']['smarty']['plugins'][] = base_path() . "/library/inex-smarty/functions";
+        $options['resources']['smarty']['plugins'][] = base_path() . "/library/OSS/Smarty/functions";
+        $options['resources']['smarty']['plugins'][] = base_path() . "/vendor/smarty/smarty/libs/plugins";
+        $options['resources']['smarty']['plugins'][] = base_path() . "/vendor/smarty/smarty/libs/sysplugins";
+
+        $options['resources']['smarty']['debugging'] = false;
+
         if( strlen( config('ixp_fe.skinning.smarty' ) ) ) {
             $options['resources']['smarty']['skin']  = config('ixp_fe.skinning.smarty' );
             Zend_Registry::get( 'smarty' )->setSkin( config('ixp_fe.skinning.smarty' ) );
@@ -368,6 +422,8 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Setup logger
      */
     private function setupLogger( array $options ): array {
+        $options['ondemand_resources']['logger']['enabled'] = 1;
+
         if( isset( Log::getMonolog()->getHandlers()[0] ) ) {
             $options['ondemand_resources']['logger']['writers']['stream']['path'] = Log::getMonolog()->getHandlers()[0]->getUrl();
         }

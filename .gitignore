@@ -8,8 +8,6 @@ MAINT_MODE_ENABLED
 ixp-manager.sublime-workspace
 bin/mailing-list-sync.sh
 bin/fixtures.php
-public/.htaccess
-application/configs/application.ini
 application/configs/pp-application.ini*
 data/mrtg
 var/cache/*
