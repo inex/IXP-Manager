@@ -90,7 +90,7 @@ class AdminController extends IXP_Controller_AuthRequiredAction
                                 ->setCategory( Graph::CATEGORY_BITS );
                 }
             }
-
+            
             $admin_home_stats['graphs'] = $this->view->graphs     = $graphs;
             Cache::put( 'admin_home_stats', $admin_home_stats, 300 );
         }

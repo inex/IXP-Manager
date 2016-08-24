@@ -80,13 +80,6 @@ class Grapher {
     private $cacheLifetime = 5;
 
     /**
-     * The cache store
-     * @var Illuminate\Contracts\Cache\Store
-     */
-    private $cache = null;
-
-
-    /**
      * Constructor
      */
     public function __construct() {
@@ -303,7 +296,6 @@ class Grapher {
         if( config('grapher.cache.enabled', false ) ) {
             $this->cacheEnabled = true;
             $this->cacheLifetime = config('grapher.cache.lifetime', 5 );
-            $this->cache = Cache::store( config('grapher.cache.store' ) );
         } else {
             $this->cacheEnabled = false;
         }
@@ -331,7 +323,7 @@ class Grapher {
      * @return Illuminate\Cache\Repository
      */
     public function cacheRepository(): CacheRepository {
-        return $this->cache;
+        return Cache::store( config('grapher.cache.store' ) );
     }
 
     /**
