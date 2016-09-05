@@ -612,7 +612,9 @@ class SwitchPort
                         $n = $host->useMAU()->$snmp()[ $this->getIfIndex() ];
                 } catch( \OSS_SNMP\Exception $e ) {
                     // looks like the switch supports MAU but not all of the MIBs
-                    $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                    if( $logger ) {
+                        $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                    }
                     $n = null;
                 }
 
