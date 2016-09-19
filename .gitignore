@@ -51,3 +51,10 @@ ixpmanager-dump.sql.bz2
 # LONAP Skins
 application/modules/apiv1/views/_skins/lonap/
 application/views/_skins/lonap/
+
+
+# bits from v4.2
+config/contact_group.php
+config/grapher_trunks.php
+config/mailinglists.php
+    
