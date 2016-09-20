@@ -21,7 +21,10 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
+ 
+ // import the Intervention Image Manager Class
+ use Intervention\Image\ImageManager;
+ 
 /**
  * Controller: Customers
  *
@@ -761,4 +764,57 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $this->view->notes = $latestNotes;
     }
+    
+    
+
+    /**
+     * Add / edit / delete a member's logo
+     *
+     */
+    public function manageLogoAction()
+    {
+        $this->view->customer = $c = $this->_loadCustomer();
+        $this->view->form = $form = new IXP_Form_Customer_LogoUpload();
+        
+        // Process a submitted form if it passes initial validation
+        if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
+        {
+            if( !$form->logo->receive() ) {
+                $this->addMessage( "Sorry, there was an error receiving this file.", OSS_Message::ERROR );
+                return $this->redirect( 'customer/manage-logo/id/' . $c->getId() );
+            }
+
+            $img = Image::make($form->logo->getFileName());
+            
+            $img->resize(80, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+
+            $img->encode('png');
+            
+            $logo = new Entities\Logo;
+            $logo->setOriginalName(basename($form->logo->getFileName()));
+            $logo->setStoredName(sha1($img->getEncoded()) . '.png');
+            $logo->setWidth($img->width());
+            $logo->setHeight($img->height());
+            $logo->setUploadedBy($this->getUser()->getUsername());
+            $logo->setUploadedAt(new DateTime());
+            $logo->setCustomer($c);
+            
+            $saveTo = APPLICATION_PATH . '/../public/logos/' . $logo->getShardedPath();
+            
+            if( !is_dir(dirname($saveTo))) {
+                mkdir( dirname($saveTo), 0755, true );
+            }
+            $img->save( $saveTo );
+            
+            $this->getD2EM()->persist($logo);
+            $this->getD2EM()->flush();
+            
+            //     $this->getLogger()->info( "Welcome email sent for {$c->getName()}" );
+            $this->addMessage( "Logo successfully uploaded!", OSS_Message::SUCCESS );
+            return $this->redirect( 'customer/manage-logo/id/' . $c->getId() );
+        }
+    }
+
 }

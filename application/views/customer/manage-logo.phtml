@@ -1,0 +1,36 @@
+
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="customer" action="overview" id=$customer->getId()}">{$customer->getName()}</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Manage Logo
+    </li>
+</ul>
+
+{OSS_Message}
+
+<p>
+To add (or replace) your logo, please upload an image below. For those members that provide logos, we will use them on our webpage and within IXP Manager.
+</p>
+
+<p>
+<strong>For best results, your logo should be uploaded as a PNG image with a transparent background that is 80px high and without any margin.</strong>
+</p>
+
+<p>
+Any other size will be scaled to 80px high which may affect the quality. We'll add a margin when displaying so you should not include any.
+<br><br><br>
+</p>
+
+{$form}
+
+{tmplinclude file="footer.phtml"}

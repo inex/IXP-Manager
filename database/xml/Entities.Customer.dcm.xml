@@ -77,6 +77,7 @@
     <one-to-many field="Traffic95ths" target-entity="Entities\Traffic95th" mapped-by="Customer"/>
     <one-to-many field="Traffic95thMonthlys" target-entity="Entities\Traffic95thMonthly" mapped-by="Customer"/>
     <one-to-many field="TrafficDailies" target-entity="Entities\TrafficDaily" mapped-by="Customer"/>
+    <one-to-many field="logos" target-entity="Entities\Logo" mapped-by="customer"/>
     <many-to-many field="IXPs" target-entity="Entities\IXP" inversed-by="Customers">
       <join-table name="customer_to_ixp">
         <join-columns>

@@ -57,7 +57,8 @@
         "franzl/laravel-plates": "dev-master",
 
         "zendesk/zendesk_api_client_php": "dev-master",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "intervention/image": "^2.3"
 
     },
     "require-dev": {
