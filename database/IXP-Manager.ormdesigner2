@@ -1113,6 +1113,7 @@
     </entity>
     <entity name="\Entities\Logo" local-name="Logo" namespace="\Entities" uuid="b8c028d1-c43e-44ef-b86e-7849c119d00f">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="0e4da3db-2770-40b2-a5a6-3881d6127840"/>
+      <field name="type" type="string" required="true" uuid="f2c01fd4-7839-4824-89da-cda2018e8c77"/>
       <field name="original_name" type="string" required="true" uuid="7ab9b59a-38be-4aee-8dfc-7d0af85c03cd"/>
       <field name="stored_name" type="string" required="true" uuid="6b51bbca-66da-4322-91cd-139047d109ac"/>
       <field name="uploaded_by" type="string" required="true" uuid="96fb0666-764a-4302-97fd-d4b67325f554"/>
@@ -1122,8 +1123,8 @@
       <field name="customer_id" type="integer" uuid="c843ecaa-aa76-4105-bcf4-eaf06fe6dd45"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Logo</attribute>
-        <attribute name="schema">logos</attribute>
         <attribute name="table">logos</attribute>
+        <attribute name="tableName">logos</attribute>
       </orm-attributes>
     </entity>
     <association from="\Entities\Logo" to="\Entities\Customer" owner-alias="logos" inverse-alias="customer" many-owner="true" many-inverse="false" uuid="07356969-b967-4fdc-b03a-1db029a1d435">

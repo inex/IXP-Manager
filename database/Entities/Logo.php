@@ -48,6 +48,13 @@ private $id;
 private $customer;
 
 
+
+    /**
+     * Tyoe for display on public website
+     */
+    const TYPE_WWW80 = 'WWW80';
+
+
 /**
  * Set originalName
  *
@@ -233,8 +240,37 @@ return $this->customer;
      * @return string the/sharded/path/filename
      */
     public function getShardedPath() {
-        return substr($this->getStoredName(), 0, 1) . '/' . substr($this->getStoredName(), 1, 2) . '/' . $this->getStoredName();
+        return substr($this->getStoredName(), 0, 1) . '/' . substr($this->getStoredName(), 1, 1) . '/' . $this->getStoredName();
     }
 
 
+/**
+ * @var string
+ */
+private $type;
+
+
+/**
+ * Set type
+ *
+ * @param string $type
+ *
+ * @return Logo
+ */
+public function setType($type)
+{
+$this->type = $type;
+
+return $this;
+}
+
+/**
+ * Get type
+ *
+ * @return string
+ */
+public function getType()
+{
+return $this->type;
+}
 }

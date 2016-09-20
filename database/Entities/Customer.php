@@ -2238,43 +2238,59 @@ class Customer
     }
 
 
-/**
- * @var \Doctrine\Common\Collections\Collection
- */
-private $logos;
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $logos;
 
 
-/**
- * Add logo
- *
- * @param \Entities\Logo $logo
- *
- * @return Customer
- */
-public function addLogo(\Entities\Logo $logo)
-{
-$this->logos[] = $logo;
+    /**
+     * Add logo
+     *
+     * @param \Entities\Logo $logo
+     *
+     * @return Customer
+     */
+    public function addLogo(\Entities\Logo $logo)
+    {
+        $this->logos[] = $logo;
 
-return $this;
-}
+        return $this;
+    }
 
-/**
- * Remove logo
- *
- * @param \Entities\Logo $logo
- */
-public function removeLogo(\Entities\Logo $logo)
-{
-$this->logos->removeElement($logo);
-}
+    /**
+     * Remove logo
+     *
+     * @param \Entities\Logo $logo
+     */
+    public function removeLogo(\Entities\Logo $logo)
+    {
+        $this->logos->removeElement($logo);
+    }
 
-/**
- * Get logos
- *
- * @return \Doctrine\Common\Collections\Collection
- */
-public function getLogos()
-{
-return $this->logos;
-}
+    /**
+     * Get logos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLogos()
+    {
+        return $this->logos;
+    }
+
+    /**
+     * Get logo of a specific type
+     *
+     * @return \Entities\Logo
+     */
+    public function getLogo(string $type)
+    {
+        foreach( $this->logos as $l ) {
+            if( $l->getType() == $type ) {
+                return $l;
+            }
+        }
+
+        return null;
+    }
 }

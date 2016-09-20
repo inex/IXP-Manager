@@ -21,10 +21,10 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
- 
+
  // import the Intervention Image Manager Class
  use Intervention\Image\ImageManager;
- 
+
 /**
  * Controller: Customers
  *
@@ -764,8 +764,8 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $this->view->notes = $latestNotes;
     }
-    
-    
+
+
 
     /**
      * Add / edit / delete a member's logo
@@ -775,7 +775,10 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->view->customer = $c = $this->_loadCustomer();
         $this->view->form = $form = new IXP_Form_Customer_LogoUpload();
-        
+
+        // do we have a logo already?
+        $this->view->orig = $orig = $c->getLogo(Entities\Logo::TYPE_WWW80);
+
         // Process a submitted form if it passes initial validation
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
@@ -785,13 +788,13 @@ class CustomerController extends IXP_Controller_FrontEnd
             }
 
             $img = Image::make($form->logo->getFileName());
-            
-            $img->resize(80, null, function ($constraint) {
+
+            $img->resize(null, 80, function ($constraint) {
                 $constraint->aspectRatio();
             });
 
             $img->encode('png');
-            
+
             $logo = new Entities\Logo;
             $logo->setOriginalName(basename($form->logo->getFileName()));
             $logo->setStoredName(sha1($img->getEncoded()) . '.png');
@@ -799,22 +802,54 @@ class CustomerController extends IXP_Controller_FrontEnd
             $logo->setHeight($img->height());
             $logo->setUploadedBy($this->getUser()->getUsername());
             $logo->setUploadedAt(new DateTime());
-            $logo->setCustomer($c);
-            
+            $logo->setType(Entities\Logo::TYPE_WWW80);
+
             $saveTo = APPLICATION_PATH . '/../public/logos/' . $logo->getShardedPath();
-            
+
             if( !is_dir(dirname($saveTo))) {
                 mkdir( dirname($saveTo), 0755, true );
             }
             $img->save( $saveTo );
-            
+
+            // remove old logo
+            if( $orig ) {
+                unlink( APPLICATION_PATH . '/../public/logos/' . $orig->getShardedPath() );
+                $c->removeLogo($orig);
+                $this->getD2EM()->remove($orig);
+                $this->getD2EM()->flush();
+            }
+
+            $logo->setCustomer($c);
             $this->getD2EM()->persist($logo);
             $this->getD2EM()->flush();
-            
+
             //     $this->getLogger()->info( "Welcome email sent for {$c->getName()}" );
             $this->addMessage( "Logo successfully uploaded!", OSS_Message::SUCCESS );
             return $this->redirect( 'customer/manage-logo/id/' . $c->getId() );
         }
+    }
+
+    /**
+     * Delete a member's logo
+     *
+     */
+    public function removeLogoAction()
+    {
+        $c = $this->_loadCustomer();
+
+        // do we have a logo?
+        if( !( $orig = $c->getLogo(Entities\Logo::TYPE_WWW80) ) ) {
+            $this->addMessage( "Sorry, we could not find any logo for you.", OSS_Message::ERROR );
+            return $this->redirect( 'customer/overview/id/' . $c->getId() );
+        }
+
+        unlink( APPLICATION_PATH . '/../public/logos/' . $orig->getShardedPath() );
+        $c->removeLogo($orig);
+        $this->getD2EM()->remove($orig);
+        $this->getD2EM()->flush();
+
+        $this->addMessage( "Logo successfully removed!", OSS_Message::SUCCESS );
+        return $this->redirect( 'customer/overview/id/' . $c->getId() );
     }
 
 }
