@@ -164,6 +164,7 @@ return [
          */
         Franzl\LaravelPlates\LaravelPlatesServiceProvider::class,
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -216,6 +217,7 @@ return [
         'D2EM'      => LaravelDoctrine\ORM\Facades\EntityManager::class,
         'Registry'  => LaravelDoctrine\ORM\Facades\Registry::class,
         'Doctrine'  => LaravelDoctrine\ORM\Facades\Doctrine::class,
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

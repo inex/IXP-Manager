@@ -10,6 +10,7 @@ ixp-manager.sublime-workspace
 bin/mailing-list-sync.sh
 bin/fixtures.php
 public/.htaccess
+public/logos/*
 application/configs/application.ini
 application/configs/pp-application.ini*
 data/mrtg
@@ -20,6 +21,7 @@ var/session/*
 var/templates_c/*
 var/tmp/*
 var/spool/*
+var/uploads/*
 *~
 public/favicon.ico
 public/maintenance.php

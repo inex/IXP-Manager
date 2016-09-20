@@ -45,13 +45,13 @@
             {/if}
         </li>
 
-	{if not isset( $options['frontend']['disabled']['cust-kit'] ) or not $options['frontend']['disabled']['cust-kit'] }
+    {if not isset( $options['frontend']['disabled']['cust-kit'] ) or not $options['frontend']['disabled']['cust-kit'] }
             <li {if $controller eq 'cust-kit'}class="active"{/if}>
                 <a href="{genUrl controller='cust-kit' action='list'}">Colocated Equipment</a>
             </li>
         {/if}
 
-	{if not isset( $options['frontend']['disabled']['meeting'] ) or not $options['frontend']['disabled']['meeting'] }
+    {if not isset( $options['frontend']['disabled']['meeting'] ) or not $options['frontend']['disabled']['meeting'] }
             <li {if $controller eq 'meeting' and $controller neq 'meeting-item' and $action neq 'read'}class="active"{/if}>
                 <a href="{genUrl controller='meeting' action='list'}">Meetings</a>
 
@@ -171,6 +171,11 @@
         <li {if $controller eq 'statistics' and $action eq 'list'}class="active"{/if}>
             <a href="{genUrl controller='statistics' action='list'}">Member Statistics - List</a>
         </li>
+        {if $logoManagementActive}
+            <li {if $controller eq 'customer' and $action eq 'logos'}class="active"{/if}>
+                <a href="{genUrl controller='customer' action='logos'}">Member Logos</a>
+            </li>
+        {/if}
         <li {if $controller eq 'statistics' and $action eq 'league-table'}class="active"{/if}>
             <a href="{genUrl controller='statistics' action='league-table'}">League Table</a>
         </li>
