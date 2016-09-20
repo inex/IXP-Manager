@@ -53,7 +53,7 @@ class PublicController extends IXP_Controller_Action
         $this->view->customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getConnected( false );
         
         if( strtolower( $this->getParam( 'format', '0' ) ) == 'json' )
-            $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
+            $this->getResponse()->setHeader( 'Content-Type', 'application/json; charset=utf-8' );
         
         if( $this->getParam( 'template', false ) )
             $this->_helper->viewRenderer( 'member-details/' . preg_replace( '/[^0-9a-zA-Z-_]/', '', $this->getParam( 'template' ) ) );
