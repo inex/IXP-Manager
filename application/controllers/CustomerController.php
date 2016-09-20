@@ -117,7 +117,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
             case \Entities\User::AUTH_CUSTUSER:
                 $this->_feParams->listColumns = [];
-                $this->_feParams->allowedActions = [ 'details', 'detail' ];
+                $this->_feParams->allowedActions = [ 'details', 'detail', 'manage-logo', 'remove-logo' ];
                 $this->_feParams->defaultAction = 'details';
                 break;
 
@@ -773,7 +773,16 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
     public function manageLogoAction()
     {
-        $this->view->customer = $c = $this->_loadCustomer();
+        if( !$this->logoManagementActive() ) {
+            return $this->redirect('');
+        }
+
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER ) {
+            $this->view->customer = $c = $this->getUser()->getCustomer();
+        } else {
+            $this->view->customer = $c = $this->_loadCustomer();
+        }
+
         $this->view->form = $form = new IXP_Form_Customer_LogoUpload();
 
         // do we have a logo already?
@@ -813,7 +822,10 @@ class CustomerController extends IXP_Controller_FrontEnd
 
             // remove old logo
             if( $orig ) {
-                unlink( APPLICATION_PATH . '/../public/logos/' . $orig->getShardedPath() );
+                // only delete if they do not upload the exact same logo
+                if( $orig->getShardedPath() != $logo->getShardedPath() ) {
+                    unlink( APPLICATION_PATH . '/../public/logos/' . $orig->getShardedPath() );
+                }
                 $c->removeLogo($orig);
                 $this->getD2EM()->remove($orig);
                 $this->getD2EM()->flush();
@@ -825,6 +837,11 @@ class CustomerController extends IXP_Controller_FrontEnd
 
             //     $this->getLogger()->info( "Welcome email sent for {$c->getName()}" );
             $this->addMessage( "Logo successfully uploaded!", OSS_Message::SUCCESS );
+
+            if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER ) {
+                return $this->redirect( '' );
+            }
+
             return $this->redirect( 'customer/manage-logo/id/' . $c->getId() );
         }
     }
@@ -835,7 +852,15 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
     public function removeLogoAction()
     {
-        $c = $this->_loadCustomer();
+        if( !$this->logoManagementActive() ) {
+            return $this->redirect('');
+        }
+
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER ) {
+            $this->view->customer = $c = $this->getUser()->getCustomer();
+        } else {
+            $this->view->customer = $c = $this->_loadCustomer();
+        }
 
         // do we have a logo?
         if( !( $orig = $c->getLogo(Entities\Logo::TYPE_WWW80) ) ) {
@@ -849,7 +874,27 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->getD2EM()->flush();
 
         $this->addMessage( "Logo successfully removed!", OSS_Message::SUCCESS );
+
+        if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER ) {
+            return $this->redirect( '' );
+        }
         return $this->redirect( 'customer/overview/id/' . $c->getId() );
     }
 
+    /**
+     * Delete a member's logo
+     *
+     */
+    public function logosAction()
+    {
+        $logos = [];
+
+        foreach( $this->getD2R('Entities\\Customer')->findAll() as $c ) {
+            if( $c->getLogo(Entities\Logo::TYPE_WWW80) ) {
+                $logos[] = $c->getLogo(Entities\Logo::TYPE_WWW80);
+            }
+        }
+
+        $this->view->logos = $logos;
+    }
 }

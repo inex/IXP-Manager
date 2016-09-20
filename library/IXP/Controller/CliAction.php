@@ -62,6 +62,7 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
         $this->view->resellerMode  = $this->resellerMode();
         $this->view->multiIXP      = $this->multiIXP();
         $this->view->as112UiActive = $this->as112UiActive();
+        $this->view->logoManagementActive = $this->logoManagementActive();
     }
 
 
@@ -194,14 +195,14 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
     {
         if( $t = $this->getParam( 'target', false ) )
             return $t;
-    
+
         if( $default )
             return $default;
-    
+
         die( "ERROR: No target router type configured in application.ini or passed as a parameter\n");
     }
-    
-    
+
+
     /**
      * Utility function to (optionally) load a Smarty config file specified by a 'config' parameter.
      *
@@ -223,12 +224,11 @@ class IXP_Controller_CliAction extends OSS_Controller_CliAction
                 $this->getView()->configLoad( $cfile );
                 return true;
             }
-    
+
             throw new IXP_Exception( 'Cannot open / read specified configuration file' );
         }
-    
+
         return false;
     }
-    
-}
 
+}

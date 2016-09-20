@@ -2,7 +2,7 @@
 
 <ul class="breadcrumb">
     <li>
-    <h3>
+        <h3>
             {$cust->getFormattedName()}
             {tmplinclude file='customer/custtype.phtml'}
         </h3>
@@ -51,6 +51,13 @@
                             {/if}
                         </a>
                     </li>
+                    {if $logoManagementActive}
+                        <li>
+                            <a href="{genUrl controller=$controller action="manage-logo" id=$cust->getId()}">
+                                Manage Logo
+                            </a>
+                        </li>
+                    {/if}
                 </ul>
             </div>
 

@@ -49,10 +49,10 @@ class IXP_Form_Customer_LogoUpload extends IXP_Form
             // PNGs
             ->addValidator('Extension', false, 'png')
             ->setRequired(true);
-        
+
         $this->addElement( $logo );
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Upload' ) ) );
-        $this->addElement( $this->createCancelElement() );
+        $this->addElement( $this->createCancelElement( 'cancel', OSS_Utils::genUrl() ) );
     }
 }

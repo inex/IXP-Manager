@@ -2283,9 +2283,13 @@ class Customer
      *
      * @return \Entities\Logo
      */
-    public function getLogo(string $type)
+    public function getLogo($type)
     {
-        foreach( $this->logos as $l ) {
+        if( !count($this->getLogos() ) ) {
+            return null;
+        }
+
+        foreach( $this->getLogos() as $l ) {
             if( $l->getType() == $type ) {
                 return $l;
             }
