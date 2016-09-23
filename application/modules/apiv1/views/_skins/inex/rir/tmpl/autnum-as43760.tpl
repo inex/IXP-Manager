@@ -2,7 +2,7 @@ password: {$options.rir.ripe_password}
 
 aut-num:        AS43760
 as-name:        INEX-RS
-descr:          Internet Neutral Exchange Association Limited
+descr:          Internet Neutral Exchange Association Company Limited By Guarantee
 remarks:        -------------------------------------------------------
 remarks:
 remarks:        INEX Route Server Routing Policy:
