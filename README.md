@@ -52,7 +52,7 @@ Authors:
   Nick Hilliard, Junior Coding Dweeb
   Contact us via: operations (at) inex.ie
 
-Copyright (C) 2009-2014 Internet Neutral Exchange Association Limited.
+Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
 All Rights Reserved.
 
  

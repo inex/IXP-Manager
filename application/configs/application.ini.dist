@@ -1,4 +1,4 @@
-; Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+; Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
 ; All Rights Reserved.
 ;
 ; This file is part of IXP Manager.
@@ -318,7 +318,7 @@ frontend.disabled.rs-prefixes = 1
 ;; e.g. we use "INEX" here
 identity.orgname  = "XXX"
 
-;; e.g. we use "Internet Neutral Exchange Association Ltd" here
+;; e.g. we use "Internet Neutral Exchange Association Company Limited By Guarantee" here
 identity.legalname  = "XXX"
 
 ;; e.g. we use "Dublin"

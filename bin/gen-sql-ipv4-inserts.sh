@@ -2,7 +2,7 @@
 
 if [ $# -ne 4 ]; then
     echo "IXP Manager - A web application to assist in the management of IXPs"
-    echo "Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited."
+    echo "Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee."
     echo
     echo "gen-sql-ipv4-inserts.sh - a utility script to generate SQL INSERT statements"
     echo "    to populate the IPv4 table."
