@@ -4,7 +4,7 @@
 if( count( $argv ) != 5 )
 {
     echo "IXP Manager - A web application to assist in the management of IXPs\n";
-    echo "Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.\n";
+    echo "Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.\n";
     echo "\n";
     echo "gen-sql-ipv6-inserts.php - a utility script to generate SQL INSERT statements\n";
     echo "    to populate the IPv6 table.";

@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  * 
  * This file is part of IXP Manager.
@@ -29,9 +29,6 @@
  * Takes events from the Simple Event Correlator (see /usr/local/etc/sec/*.conf files)
  *
  * Barry O'Donovan <barryo@inex.ie>
- *
- * http://www.inex.ie/
- * (c) Copyright 2009 Internet Neutral Exchange Association Ltd (INEX)
  *
  */
 
