@@ -52,6 +52,11 @@ Authors:
   Nick Hilliard, Junior Coding Dweeb
   Contact us via: operations (at) inex.ie
 
+The copyright statement for IXP Manager was changed on 2016-09-23 to reflect
+the fact that INEX changed its formal legal name from "Internet Neutral
+Exchange Association Limited" to "Internet Neutral Exchange Association
+Company Limited By Guarantee", as required by the Companies Act 2014.
+
 Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
 All Rights Reserved.
 
