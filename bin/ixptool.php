@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2013 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -30,9 +30,6 @@
  *
  * Barry O'Donovan <barryo@inex.ie>
  *
- * http://www.inex.ie/
- * (c) Copyright 2009 - 2013 Internet Neutral Exchange Association Ltd (INEX)
- *
  */
 
 date_default_timezone_set( 'Europe/Dublin' );
@@ -40,7 +37,7 @@ require_once( dirname( __FILE__ ) . '/utils.inc' );
 define( 'APPLICATION_ENV', scriptutils_get_application_env() );
 
 define( 'SCRIPT_NAME', 'ixptool - IXP Manager CLI Management Tool' );
-define( 'SCRIPT_COPY', '(c) Copyright 2010 - ' . date( 'Y' ) . ' Internet Neutral Exchange Association Ltd' );
+define( 'SCRIPT_COPY', 'Copyright (C) 2010-' . date( 'Y' ) . ' Internet Neutral Exchange Association Company Limited By Guarantee' );
 
 error_reporting( E_ALL|E_STRICT );
 

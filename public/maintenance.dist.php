@@ -92,7 +92,7 @@ if( !in_array( $_SERVER['REMOTE_ADDR'], $safe_ips ) ) {
 
     <div id="footer">
       <div class="container">
-        <a href="https://github.com/inex/IXP-Manager">IXP Manager</a> - Copyright &copy; 2010 - <?php echo date( 'Y' ); ?> <a href="https://www.inex.ie/">Internet Neutral Exchange Association Ltd.</a>
+        <a href="https://github.com/inex/IXP-Manager">IXP Manager</a> - Copyright &copy; 2010 - <?php echo date( 'Y' ); ?> <a href="https://www.inex.ie/">Internet Neutral Exchange Association Company Limited By Guarantee.</a>
         <!-- p class="text-muted credit">Example courtesy <a href="http://martinbean.co.uk">Martin Bean</a> and <a href="http://ryanfait.com/sticky-footer/">Ryan Fait</a>.</p -->
       </div>
     </div>

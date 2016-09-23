@@ -1,6 +1,6 @@
 # $Id: Makefile.PL,v 1.2 2007/03/08 23:30:45 nick Exp $
 #
-# Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+# Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 # 
 # This file is part of IXP Manager.
