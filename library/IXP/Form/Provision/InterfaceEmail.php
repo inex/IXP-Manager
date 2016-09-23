@@ -23,11 +23,6 @@
 
 
 /**
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- *
  * @package IXP_Form
  * @subpackage Customer
  */

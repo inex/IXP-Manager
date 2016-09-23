@@ -21,14 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-/*
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- */
-
 /**
  *
  * @package IXP_Form
