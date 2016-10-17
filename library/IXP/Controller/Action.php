@@ -48,10 +48,10 @@ class IXP_Controller_Action extends OSS_Controller_Action
     // use OSS_Controller_Action_Trait_Freshbooks;
     use OSS_Controller_Action_Trait_Messages;
     // use OSS_Controller_Action_Trait_News;
-    
+
     use IXP_Controller_Trait_Common;
-    
-    
+
+
     /**
      * A variable to hold the customer record
      *
@@ -64,7 +64,7 @@ class IXP_Controller_Action extends OSS_Controller_Action
      * @var array
      */
     protected $_customers = null;
-    
+
     /**
      * Override the Zend_Controller_Action's constructor (which is called
      * at the very beginning of this function anyway).
@@ -86,15 +86,16 @@ class IXP_Controller_Action extends OSS_Controller_Action
         $this->view->registerClass( 'CUSTOMER',   '\\Entities\\Customer' );
         $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
         $this->view->registerClass( 'VLAN',       '\\Entities\\Vlan' );
-        
-        $this->view->resellerMode  = $this->resellerMode();
-        $this->view->multiIXP      = $this->multiIXP();
-        $this->view->as112UiActive = $this->as112UiActive();
-        
+
+        $this->view->resellerMode         = $this->resellerMode();
+        $this->view->multiIXP             = $this->multiIXP();
+        $this->view->as112UiActive        = $this->as112UiActive();
+        $this->view->logoManagementActive = $this->logoManagementActive();
+
         if( $this->getAuth()->hasIdentity() && $this->getUser()->getPrivs() == Entities\User::AUTH_SUPERUSER )
             $this->superUserSetup();
 
-        
+
     }
 
     /**
@@ -106,7 +107,7 @@ class IXP_Controller_Action extends OSS_Controller_Action
     {
         return $this->getUser()->getCustomer();
     }
-    
+
 
     /**
      * Assertion function for ensuring user permissions.
@@ -122,16 +123,16 @@ class IXP_Controller_Action extends OSS_Controller_Action
     {
         if( !$this->getAuth()->hasIdentity() )
             $this->redirectAndEnsureDie( 'auth/login' );
-        
+
         if( ( $exact && $this->getUser()->getPrivs() != $priv ) || ( !$exact && $this->getUser()->getPrivs() < $priv ) )
         {
             $this->getLogger()->notice( "{$this->getUser()->getUsername()} illegally tried to access {$this->getRequest()->getRequestUri()}" );
             $this->redirectAndEnsureDie( 'error/insufficient-permissions' );
         }
-        
+
         return true;
     }
-    
+
     /**
      * Perform some setup functions for super users
      *
@@ -144,7 +145,7 @@ class IXP_Controller_Action extends OSS_Controller_Action
             $this->_customers = $this->getD2EM()->getRepository( 'Entities\\Customer' )->getNames( true );
             Cache::put( 'admin_home_customers', $this->_customers, 3600 );
         }
-        
+
         $this->view->customers = $this->_customers;
     }
 

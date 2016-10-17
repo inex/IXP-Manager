@@ -75,6 +75,21 @@ trait IXP_Controller_Trait_Common
         return boolval( config( 'ixp.as112.ui_active', false ) );
     }
 
+    /**
+     * Checks if logo management is enabled
+     *
+     * To enable logos in the UI set frontend.disabled.logo = 0 in application.ini
+     *
+     * NB: set to true is required to maintain backwards compatibility without user
+     * intervention.
+     *
+     * @return bool
+     */
+    protected function logoManagementActive()
+    {
+        return ( isset( $this->_options['frontend']['disabled']['logo'] ) && !$this->_options['frontend']['disabled']['logo'] );
+    }
+
 
     /**
      * Loads a customer object via an optional posted / getted `shortname` parameter.

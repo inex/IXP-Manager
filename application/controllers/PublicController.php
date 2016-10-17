@@ -21,6 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
 
 /**
  * Controller: Public controller for publically accessable information
@@ -51,13 +52,82 @@ class PublicController extends IXP_Controller_Action
     public function memberDetailsAction()
     {
         $this->view->customers = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getConnected( false );
-        
+
         if( strtolower( $this->getParam( 'format', '0' ) ) == 'json' )
-            $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
-        
+            $this->getResponse()->setHeader( 'Content-Type', 'application/json; charset=utf-8' );
+
         if( $this->getParam( 'template', false ) )
             $this->_helper->viewRenderer( 'member-details/' . preg_replace( '/[^0-9a-zA-Z-_]/', '', $this->getParam( 'template' ) ) );
-        
+
+    }
+
+
+    /**
+     * Function to export max traffic stats by month (past six) as JSON
+     *
+     */
+    public function ajaxOverallStatsByMonthAction()
+    {
+        $this->getResponse()->setHeader( 'Content-Type', 'application/json; charset=utf-8' );
+
+        if( $json = $this->getD2Cache()->fetch( 'public_overall_stats_by_month' ) ) {
+            echo $json;
+            return;
+        }
+
+        $mrtg = new IXP_Mrtg( $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/ixp_peering-aggregate-bits.log' );
+        $mrtg = $mrtg->getArray();
+        $data = [];
+
+        $start   = Carbon::now()->subMonths(5)->startOfMonth();
+        $startTs = $start->timestamp;
+
+        $i = 0;
+        while( $start->lt(Carbon::now()) ) {
+            $data[$i]['start'  ] = $start->copy();
+            $data[$i]['startTs'] = $start->timestamp;
+            $data[$i]['end']     = $start->endOfMonth()->copy();
+            $data[$i]['endTs']   = $start->endOfMonth()->timestamp;
+            $data[$i]['max']     = 0;
+
+            $start->startOfMonth()->addMonth();
+            $i++;
+        }
+
+        $endTs = $data[$i-1]['endTs'];
+
+        foreach( $mrtg as $m ) {
+            if( count($m) != 5 ) {
+                continue;
+            }
+
+            if( $m[0] < $startTs || $m[0] > $endTs ) {
+                continue;
+            }
+
+            foreach( $data as $i => $d ) {
+                if( $m[0] >= $d['startTs'] && $m[0] <= $d['endTs'] ) {
+                    if( $m[3] > $data[$i]['max'] ) {
+                        $data[$i]['max'] = $m[3];
+                    }
+                    if( $m[4] > $data[$i]['max'] ) {
+                        $data[$i]['max'] = $m[4];
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        // scale to bps
+        foreach( $data as $i => $d ) {
+            $data[$i]['start'] = $data[$i]['start']->format('Y-m-d') . 'T' . $data[$i]['start']->format('H:i:s') . 'Z';
+            $data[$i]['end']   = $data[$i]['end']->format('Y-m-d')   . 'T' . $data[$i]['end']->format('H:i:s')   . 'Z';
+            $data[$i]['max'] *= 8;
+        }
+
+        $json = json_encode($data,JSON_PRETTY_PRINT);
+        $this->getD2Cache()->save( 'public_overall_stats_by_month', $json, 7200 );
+        echo $json;
     }
 }
-

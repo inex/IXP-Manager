@@ -1,0 +1,57 @@
+
+{tmplinclude file="header.phtml"}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="{genUrl}">Home</a> <span class="divider">/</span>
+    </li>
+    <li>
+        <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
+    </li>
+    <li class="active">
+        Logos
+    </li>
+</ul>
+
+{OSS_Message}
+
+
+
+<div class="row-fluid">
+
+    {assign var='count' value=0}
+    {foreach from=$logos item=logo}
+
+        <div class="span3">
+
+            <a href="{genUrl controller="customer" action="manage-logo" id=$logo->getCustomer()->getId()}">
+                <img class="www80-padding" src="{genUrl}/logos/{$logo->getShardedPath()}" />
+            </a>
+            
+        </div>
+
+        {assign var='count' value=$count+1}
+
+        {if $count%4 eq 0}
+            </div><br /><div class="row-fluid">
+        {/if}
+
+    {/foreach}
+
+    {if $count%4 neq 0}
+        <div class="span3"></div>
+        {assign var='count' value=$count+1}
+        {if $count%4 neq 0}
+            <div class="span3"></div>
+            {assign var='count' value=$count+1}
+            {if $count%4 neq 0}
+                <div class="span3"></div>
+                {assign var='count' value=$count+1}
+            {/if}
+        {/if}
+    {/if}
+
+</div>
+
+
+{tmplinclude file="footer.phtml"}

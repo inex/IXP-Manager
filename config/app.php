@@ -165,6 +165,7 @@ return [
          * Third party providers
          */
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -219,6 +220,7 @@ return [
         'Doctrine'  => LaravelDoctrine\ORM\Facades\Doctrine::class,
 
         'Grapher'   => IXP\Support\Facades\Grapher::class,
+        'Image'     => Intervention\Image\Facades\Image::class,
     ],
 
 ];

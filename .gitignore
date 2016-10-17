@@ -8,6 +8,8 @@ MAINT_MODE_ENABLED
 ixp-manager.sublime-workspace
 bin/mailing-list-sync.sh
 bin/fixtures.php
+public/.htaccess
+public/logos/*
 application/configs/pp-application.ini*
 data/mrtg
 var/cache/*
@@ -17,6 +19,7 @@ var/session/*
 var/templates_c/*
 var/tmp/*
 var/spool/*
+var/uploads/*
 *~
 public/favicon.ico
 public/maintenance.php
@@ -54,3 +57,10 @@ ixpmanager-dump.sql.bz2
 # LONAP Skins
 application/modules/apiv1/views/_skins/lonap/
 application/views/_skins/lonap/
+
+
+# bits from v4.2
+config/contact_group.php
+config/grapher_trunks.php
+config/mailinglists.php
+    
