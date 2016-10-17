@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2011 Internet Neutral Exchange Association Limited.
+ * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  * 
  * This file is part of IXP Manager.
@@ -23,11 +23,6 @@
 
 
 /**
- *
- *
- * http://www.inex.ie/
- * (c) Internet Neutral Exchange Association Ltd
- *
  * @package IXP_Form
  * @subpackage Customer
  */

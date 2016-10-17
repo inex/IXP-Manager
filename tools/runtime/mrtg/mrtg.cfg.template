@@ -1,7 +1,7 @@
 #
 # IXP Manager MRTG configuration file
 #
-# Copyright (C) 2009-2012 Internet Neutral Exchange Association Limited.
+# Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 # 
 # This file is part of IXP Manager.
@@ -35,7 +35,7 @@ PageTop[_]: <h1>INEX Traffic Analysis</h1>
 PageFoot[_]:  <table border=0 cellspacing=0 cellpadding=0 width=476>
   <tr valign=top>
    <td align=left style="font: Arial,Helvetica; size: 80%">
-     &copy; 2007 <a href="http://www.inex.ie/">Internet Neutral Exchange Association Limited</a>.
+     &copy; 2007 <a href="http://www.inex.ie/">Internet Neutral Exchange Association Company Limited By Guarantee</a>.
      All rights Reserved.
    </td>
    <td width=10>&nbsp;</td>

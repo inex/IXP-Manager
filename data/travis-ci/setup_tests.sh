@@ -2,7 +2,7 @@
 
 # Travis CI setup script for testing IXP Manager
 # 
-# Copyright (C) 2014 Internet Neutral Exchange Association Limited.
+# Copyright (C) 2014-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
 # Author: Barry O'Donovan <barry@opensolutions.ie>
 #
 # License: http://www.gnu.org/licenses/gpl-2.0.html
