@@ -1,21 +1,17 @@
 <?php
 
-require __DIR__ . '/../../library/Zend/Exception.php';
-require __DIR__ . '/../../library/IXP/Exception.php';
-require __DIR__ . '/../../library/IXP/OUI.php';
-
 /**
  * PHPUnit test class to test the IXP_OUI class
  */
-class OUITest extends PHPUnit_Framework_TestCase
+class OUITest extends TestCase
 {
     public $sampleRawData = <<<END_DATA
-  
+
   OUI/MA-L          Organization
   company_id            Organization
                 Address
-  
-  
+
+
   00-00-00   (hex)      XEROX CORPORATION
   000000     (base 16)      XEROX CORPORATION
                 M/S 105-50C
@@ -34,7 +30,7 @@ class OUITest extends PHPUnit_Framework_TestCase
   00004C     (base 16)      NEC CORPORATION
                 7-1 SHIBA  5-CHOME
                 MINATO-KU
-                TOKYO 108-01  
+                TOKYO 108-01
                 JAPAN
 
 END_DATA;
@@ -65,13 +61,12 @@ END_DATA;
         $oui->loadList();
     }
 
-    public function testDownloadDefault()
-    {
-        $oui = new IXP_OUI();
-        $this->assertInstanceOf( 'IXP_OUI', $oui->loadList() );
-    }
-
+    // disabled 20161017 by barryo as d/l takes >1hr
+    // public function testDownloadDefault()
+    // {
+    //     $oui = new IXP_OUI();
+    //     $this->assertInstanceOf( 'IXP_OUI', $oui->loadList() );
+    // }
 
 
 }
-

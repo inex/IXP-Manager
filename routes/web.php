@@ -14,11 +14,14 @@
 
 $auth = Zend_Auth::getInstance();
 
-if( $auth->hasIdentity() && \Auth::guest() ) {
-    // log the user is for Laravel5
-    \Auth::login( $auth->getIdentity()['user'] );
-} else if( !$auth->hasIdentity() ) {
-    \Auth::logout();
+// phpunit trips up here:
+if( php_sapi_name() !== 'cli' ) {
+    if( $auth->hasIdentity() && \Auth::guest() ) {
+        // log the user is for Laravel5
+        \Auth::login( $auth->getIdentity()['user'] );
+    } else if( !$auth->hasIdentity() ) {
+        \Auth::logout();
+    }
 }
 
 Route::group(['middleware' => ['web']], function () {

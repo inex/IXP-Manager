@@ -7,20 +7,24 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="false">
+         stopOnFailure="false">
     <testsuites>
-        <testsuite name="IXP_Manager">
-            <directory>./tests/</directory>
+        <testsuite name="Application Test Suite">
+            <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./app</directory>
+        </whitelist>
+    </filter>
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
-        <const name="IXP_PHPUNIT_PREFIX"  value="" />
+        <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="IXP_PHPUNIT_RUNNING" value="1"/>
         <const name="IXP_PHPUNIT_API_URL" value="http://127.0.0.1:8080/apiv1" />
         <const name="IXP_PHPUNIT_API_KEY" value="Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9" />
-        <const name="IXP_PHPUNIT_HOMEDIR" value="/Users/barryo/dev/IXP-Manager" />
     </php>
 </phpunit>
