@@ -1240,12 +1240,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f6262c91190ca9dd5dc4021e84be9308292ca806"
+                "reference": "20be48e3f6560567b72f8de0865ca8e93c3e5d16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f6262c91190ca9dd5dc4021e84be9308292ca806",
-                "reference": "f6262c91190ca9dd5dc4021e84be9308292ca806",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/20be48e3f6560567b72f8de0865ca8e93c3e5d16",
+                "reference": "20be48e3f6560567b72f8de0865ca8e93c3e5d16",
                 "shasum": ""
             },
             "require": {
@@ -1360,7 +1360,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-10-16 17:09:38"
+            "time": "2016-10-17 14:23:44"
         },
         {
             "name": "league/flysystem",
@@ -1368,12 +1368,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "cd99222ea789d74e9a1c85f51bf33bbff4e6fddd"
+                "reference": "3280a01a985da171bf664cbec473bf8b26320522"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/cd99222ea789d74e9a1c85f51bf33bbff4e6fddd",
-                "reference": "cd99222ea789d74e9a1c85f51bf33bbff4e6fddd",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/3280a01a985da171bf664cbec473bf8b26320522",
+                "reference": "3280a01a985da171bf664cbec473bf8b26320522",
                 "shasum": ""
             },
             "require": {
@@ -1443,7 +1443,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-10-10 07:45:55"
+            "time": "2016-10-17 18:27:29"
         },
         {
             "name": "league/plates",
@@ -1940,16 +1940,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf"
+                "reference": "c0125896dbb151380ab47e96c621741e79623beb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/088c04e2f261c33bed6ca5245491cfca69195ccf",
-                "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/c0125896dbb151380ab47e96c621741e79623beb",
+                "reference": "c0125896dbb151380ab47e96c621741e79623beb",
                 "shasum": ""
             },
             "require": {
@@ -1984,7 +1984,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2016-04-03 06:00:07"
+            "time": "2016-10-17 15:23:22"
         },
         {
             "name": "psr/http-message",
