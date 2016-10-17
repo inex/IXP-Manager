@@ -13,8 +13,8 @@ pwd
 # install requirements
 sudo apt-get update >/dev/null
 # sudo apt-get upgrade
-sudo apt-get install php-memcache php7.0-snmp php-pear
-phpenv config-add data/travis-ci/configs/ixp-php.ini
+#sudo apt-get install php-memcache php7.0-snmp php-pear
+#phpenv config-add data/travis-ci/configs/ixp-php.ini
 
 echo cd /home/travis/build/inex/IXP-Manager
 cd /home/travis/build/inex/IXP-Manager
@@ -27,6 +27,9 @@ cp .env.travisci .env
 # Set up IXP Manager
 sudo cp data/travis-ci/configs/* application/configs
 sudo touch public/.htaccess
+
+echo composer install
+composer install
 
 mysql -e "CREATE DATABASE myapp_test CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';"
 bzcat data/travis-ci/travis_ci_test_db.sql.bz2  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u travis myapp_test
