@@ -100,8 +100,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
             ->setValue( 'IE' )
             ->setLabel( 'Country' )
             ->setRequired( false )
-            ->setAttrib( 'class', 'chzn-select' )
-            ->setAttrib( 'chzn-fix-width', '1' );
+            ->setAttrib( 'class', 'chzn-select' );
 
 
         $this->addElement( $billingCountry );
@@ -167,7 +166,7 @@ class IXP_Form_Customer_BillingDetails extends IXP_Form
                 'billingPostcode', 'billingCountry', 'billingEmail', 'billingTelephone',
                 'invoiceEmail'
             ],
-        	'billingDisplayGroup'
+            'billingDisplayGroup'
         );
         $this->getDisplayGroup( 'billingDisplayGroup' )->setLegend( 'Billing Details' );
 

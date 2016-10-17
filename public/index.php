@@ -24,7 +24,7 @@
 if( file_exists( '../MAINT_MODE_ENABLED' ) )
 {
     define( 'MAINTENANCE_MODE', true );
-    
+
     // if it's an API request, we need to handle that differently
     if( strpos( $_SERVER['REQUEST_URI'], '/apiv1/' ) !== false )
     {
@@ -39,48 +39,64 @@ else
 // let's time how long it takes to execute
 define( 'APPLICATION_STARTTIME', microtime( true ) );
 
-// Define path to application directory
-defined('APPLICATION_PATH')
-    || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
 
-// Define application environment 
-if( php_sapi_name() == 'cli-server' )
-{
-    // running under PHP's built in web server: php -S
-    // as such, .htaccess is not processed
-    include( dirname( __FILE__ ) . '/../bin/utils.inc' );
-    define( 'APPLICATION_ENV', scriptutils_get_application_env() );
-}
-else
-{
-    // probably Apache or other web server
-    defined('APPLICATION_ENV')
-        || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+// common issue is mbstring missing which results in an obscure error
+if( !extension_loaded('mbstring') ) {
+    die( "Error: PHP mbstring extension required");
 }
 
-// Ensure library/ is on include_path
-set_include_path(
-    implode(
-        PATH_SEPARATOR,
-        array(
-            realpath( APPLICATION_PATH . '/../library' ),
-            get_include_path(),
-        )
-    )
+// common issue is xml missing which results in an obscure error
+if( !extension_loaded('xml') ) {
+    die( "Error: PHP xml extension required");
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| our application. We just need to utilize it! We'll simply require it
+| into the script here so that we don't have to worry about manual
+| loading any of our classes later on. It feels nice to relax.
+|
+*/
+
+require __DIR__.'/../bootstrap/autoload.php';
+
+/*
+|--------------------------------------------------------------------------
+| Turn On The Lights
+|--------------------------------------------------------------------------
+|
+| We need to illuminate PHP development, so let us turn on the lights.
+| This bootstraps the framework and gets it ready for use, then it
+| will load up this application so that we can run it and send
+| the responses back to the browser and delight our users.
+|
+*/
+
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+/*
+|--------------------------------------------------------------------------
+| Run The Application
+|--------------------------------------------------------------------------
+|
+| Once we have the application, we can simply call the run method,
+| which will execute the request and send the response back to
+| the client's browser allowing them to enjoy the creative
+| and wonderful application we have prepared for them.
+|
+*/
+
+$kernel = $app->make('Illuminate\Contracts\Http\Kernel');
+
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
 );
 
-/** Zend_Application */
-require_once 'Zend/Application.php';
+$response->send();
 
-require_once( APPLICATION_PATH . '/../library/IXP/Version.php' );
-
-
-// Create application, bootstrap, and run
-$application = new Zend_Application(
-    APPLICATION_ENV,
-    APPLICATION_PATH . '/configs/application.ini'
-);
-
-$application->bootstrap()
-            ->run();
-
+$kernel->terminate($request, $response);

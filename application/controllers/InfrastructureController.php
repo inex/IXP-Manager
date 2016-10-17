@@ -234,8 +234,8 @@ class InfrastructureController extends IXP_Controller_FrontEnd
     protected function postFlush( $object )
     {
         // wipe cached entries
-        $this->getD2Cache()->delete( \Repositories\Infrastructure::CACHE_KEY_PRIMARY . $object->getId() );
-        $this->getD2Cache()->delete( \Repositories\Infrastructure::CACHE_KEY_ALL     . $object->getId() );
+        Cache::forget( \Repositories\Infrastructure::CACHE_KEY_PRIMARY . $object->getId() );
+        Cache::forget( \Repositories\Infrastructure::CACHE_KEY_ALL     . $object->getId() );
         return true;
     }
     
@@ -264,4 +264,3 @@ class InfrastructureController extends IXP_Controller_FrontEnd
     }
     
 }
-

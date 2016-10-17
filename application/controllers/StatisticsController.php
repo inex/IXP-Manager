@@ -21,6 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+ use IXP\Services\Grapher\Graph;
 
 /**
  * Controller: Statistics / graphs
@@ -57,12 +58,31 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->setIXP();
         $this->setInfrastructure();
         $this->setCategory();
-        $this->setPeriod();
+        $category = $this->setCategory();
+        $period   = $this->setPeriod();
 
-        $this->view->custs = $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+        $grapher = App::make('IXP\Services\Grapher');
 
-        if( !is_string( $this->infra ) && $this->infra )
-            $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
+        $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
+
+        /**
+         * FIXME - add back in infra
+         *
+         * if( !is_string( $this->infra ) && $this->infra )
+         * $custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
+         */
+
+        $graphs = [];
+
+        foreach( $custs as $c ) {
+            $graphs[] = $grapher->customer( $c )
+                ->setType(     Graph::TYPE_PNG )
+                ->setProtocol( Graph::PROTOCOL_ALL )
+                ->setCategory( $category )
+                ->setPeriod( $period );
+        }
+
+        $this->view->graphs = $graphs;
     }
 
     public function memberAction()
@@ -70,12 +90,14 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
         $this->setIXP( $cust );
         $this->setCategory();
+        $this->view->grapher = App::make('IXP\Services\Grapher');
     }
 
     public function memberDrilldownAction()
     {
         $category = $this->setCategory();
         $this->view->monitorindex = $monitorindex = $this->getParam( 'monitorindex', 1 );
+        $grapher = App::make('IXP\Services\Grapher');
 
         $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
 
@@ -108,6 +130,8 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $this->view->switchname = $pi->getSwitchPort()->getSwitcher()->getName();
             $this->view->portname   = $pi->getSwitchPort()->getName();
             $this->view->isPort     = true;
+
+            $graph = $grapher->physint( $pi );
         }
         else if( substr( $monitorindex, 0, 9 ) == 'lag-viid-' )
         {
@@ -132,26 +156,18 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $portnames[] = $pi->getSwitchPort()->getName();
             $this->view->portname = implode( ', ', $portnames );
             $this->view->isLAG = true;
+            $graph = $grapher->virtint( $vi );
         }
         else
         {
             $this->view->switchname  = '';
             $this->view->portname    = '';
             $this->view->isAggregate = true;
+            $this->view->graph = $graph = $grapher->customer( $cust );
         }
 
-        $this->view->periods      = IXP_Mrtg::$PERIODS;
-
-        $stats = array();
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg(
-                    IXP_Mrtg::getMrtgFilePath( $this->ixp->getMrtgPath() . '/members', 'LOG', $monitorindex, $category, $cust->getShortname() )
-            );
-
-            $stats[$period] = $mrtg->getValues( $period, $this->view->category );
-        }
-        $this->view->stats     = $stats;
+        $this->view->periods      = Graph::PERIOD_DESCS;
+        $this->view->graph = $graph->setCategory( $category );
 
         if( $this->getParam( 'mini', false ) )
         {
@@ -193,139 +209,98 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
     {
         // get the available graphs
         $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
+        $grapher = App::make('IXP\Services\Grapher');
+        $category = $this->setCategory( 'category', true );
 
         $graphs = [];
         foreach( $ixps as $ixp )
         {
-            if( $ixp->getAggregateGraphName() )
-            {
-                $graphs[ $ixp->getShortname() ]['name']  = $ixp->getAggregateGraphName();
-                $graphs[ $ixp->getShortname() ]['title'] = ( $this->multiIXP() ? $ixp->getShortname() . ' - ' : ' ' ) . 'Aggregate';
-                $graphs[ $ixp->getShortname() ]['mrtg']  = $ixp->getMrtgPath();
-            }
+            $graphs[] = $grapher->ixp( $ixp )
+                            ->setType(     Graph::TYPE_PNG )
+                            ->setProtocol( Graph::PROTOCOL_ALL )
+                            ->setCategory( $category );
 
             foreach( $ixp->getInfrastructures() as $inf )
             {
-                if( $inf->getAggregateGraphName() )
-                {
-                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['name']  = $inf->getAggregateGraphName();
-                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['title'] = ( $this->multiIXP() ? $ixp->getShortname() . ' - ' : ' ' ) . $inf->getName();
-                    $graphs[ $ixp->getShortname() . '_' . $inf->getId() ]['mrtg']  = $ixp->getMrtgPath();
-                }
+                $graphs[] = $grapher->infrastructure( $inf )
+                                ->setType(     Graph::TYPE_PNG )
+                                ->setProtocol( Graph::PROTOCOL_ALL )
+                                ->setCategory( $category );
             }
         }
 
         if( !count( $graphs ) )
         {
             $this->addMessage(
-                "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
+                "Aggregate graphs have not been configured. Please see <a href=\"https://ixp-manager.readthedocs.org/en/latest/features/grapher.html\">this documentation</a> for instructions.",
                 OSS_Message::ERROR
             );
-            $this->redirect();
+            $this->redirect('');
         }
 
         $this->view->graphs     = $graphs;
 
-        $graph = $this->getParam( 'graph', array_keys( $graphs )[0] );
-        if( !isset( $graphs[ $graph ] ) )
-            $graph = array_keys( $graphs )[0];
-        $this->view->graph      = $graph;
+        $graphid = $this->getParam( 'graph', 0 );
+        if( !isset( $graphs[ $graphid ] ) )
+            $graphid = 0;
 
-        $category = $this->setCategory( 'category', true );
+        $this->view->graphid    = $graphid;
+        $this->view->graph      = $graphs[$graphid];
 
-        $stats = array();
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg(
-                $graphs[ $graph ][ 'mrtg' ] . '/ixp_peering-' . $graphs[ $graph ][ 'name' ] . '-' . $category . '.log' );
-            $stats[$period] = $mrtg->getValues( $period, $category );
-        }
-
-        $this->view->stats      = $stats;
-        $this->view->periods    = IXP_Mrtg::$PERIODS;
+        $this->setPeriod();
     }
 
     public function trunksAction()
     {
-        if( !isset( $this->_options['mrtg']['trunk_graphs'] ) || !is_array( $this->_options['mrtg']['trunk_graphs'] ) || !count( $this->_options['mrtg']['trunk_graphs'] ) )
-        {
+        if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             $this->addMessage(
-                "Aggregate graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
+                "Trunk graphs have not been configured. Please see <a href=\"https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs\">this documentation</a> for instructions.",
                 OSS_Message::ERROR
             );
-            $this->redirect();
+            $this->redirect('');
         }
 
         // get the available graphs
-        foreach( $this->_options['mrtg']['trunk_graphs'] as $g )
-        {
-            $p = explode( '::', $g );
-            $ixpid         = $p[0];
-            $images[]      = $p[1];
-            $graphs[$p[1]] = $p[2];
+        foreach( config('grapher.backends.mrtg.trunks') as $g ) {
+            $ixpid              = $g['ixpid'];
+            $images[]           = $g['name'];
+            $graphs[$g['name']] = $g['title'];
         }
         $this->view->graphs  = $graphs;
 
-        $graph = $this->getParam( 'trunk', $images[0] );
-        if( !in_array( $graph, $images ) )
-            $graph = $images[0];
-        $this->view->graph   = $graph;
+        $this->setPeriod();
 
-        // load the IXP
-        $ixp = $this->loadIxpById( $ixpid );
+        $grapher = App::make('IXP\Services\Grapher');
 
-        $stats = array();
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg( $ixp->getMrtgPath() . '/trunks/' . $graph . '.log' );
-            $stats[$period] = $mrtg->getValues( $period, IXP_Mrtg::CATEGORY_BITS );
-        }
-        $this->view->stats   = $stats;
-
-        $this->view->periods = IXP_Mrtg::$PERIODS;
+        $namereq = $this->getParam( 'trunk', $images[0] );
+        if( !in_array( $namereq, $images ) )
+            $namereq = $images[0];
+        $this->view->namereq   = $namereq;
+        $this->view->graph     =  $grapher->trunk( $namereq )->setType( Graph::TYPE_PNG )
+                        ->setProtocol( Graph::PROTOCOL_ALL )->setCategory( Graph::CATEGORY_BITS );
     }
 
     public function switchesAction()
     {
         $eSwitches = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->getAndCache( true, \Entities\Switcher::TYPE_SWITCH );
+        $grapher = App::make('IXP\Services\Grapher');
+        $category = $this->setCategory( 'category', true );
 
         $switches = [];
-        foreach( $eSwitches as $s )
-        {
-            // if we're not doing infrastructure aggregates, we're probably not doing swicth aggregates:
-            if( $s->getInfrastructure()->getAggregateGraphName() )
-            {
-                $switches[ $s->getId() ][ 'name' ] = $s->getName();
-                $switches[ $s->getId() ][ 'mrtg' ] = $s->getInfrastructure()->getIXP()->getMrtgPath();
-            }
+        foreach( $eSwitches as $s ) {
+            $switches[ $s->getId() ] = $grapher->switch( $s )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
         }
 
         $this->view->switches = $switches;
 
-        $switch = $this->getParam( 'switch', array_keys( $switches )[0] );
-        if( !in_array( $switch, array_keys( $switches ) ) )
-            $switch = array_keys( $switches )[0];
-        $this->view->switch     = $switch;
+        $switchid = $this->getParam( 'switch', array_keys( $switches )[0] );
+        if( !in_array( $switchid, array_keys( $switches ) ) )
+            $switchid = array_keys( $switches )[0];
 
-        $category = $this->setCategory();
-
-        // override allowed categories as some aren't available here
-        $this->view->categories = IXP_Mrtg::$CATEGORIES_AGGREGATE;
+        $this->view->switchid     = $switchid;
+        $this->view->graph        = $switches[$switchid];
 
         $this->setPeriod();
-
-        $stats = array();
-
-        foreach( IXP_Mrtg::$PERIODS as $period )
-        {
-            $mrtg = new IXP_Mrtg(
-                $switches[ $switch ][ 'mrtg' ] . '/switches/' . 'switch-aggregate-'
-                    . $switches[ $switch ][ 'name' ] . '-' . $category . '.log'
-            );
-
-            $stats[$period] = $mrtg->getValues( $period, $category );
-        }
-        $this->view->stats      = $stats;
     }
 
     /**
@@ -339,6 +314,32 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $category = $this->setCategory( 'category', true );
         $period   = $this->setPeriod();
         $proto    = $this->setProtocol();
+
+        $this->view->grapher = App::make('IXP\Services\Grapher');
+
+        // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
+        if( config('grapher.backends.sflow.show_graphs_on_index_page') !== null ) {
+            $showGraphsOption = true;
+            $showGraphs       = config('grapher.backends.sflow.show_graphs_on_index_page');
+        } else {
+            $showGraphsOption = false;
+            $showGraphs       = true;
+        }
+
+        if( $showGraphsOption && isset( $_POST['submit' ] ) ) {
+            if( $_POST['submit'] == "Show Graphs" ) {
+                $showGraphs = true;
+                $_SESSION['controller.statistics.p2p.show_graphs'] = true;
+            } else if( $_POST['submit'] == "Hide Graphs" ) {
+                $showGraphs = false;
+                $_SESSION['controller.statistics.p2p.show_graphs'] = false;
+            } else if( isset( $_SESSION['controller.statistics.p2p.show_graphs'] ) ) {
+                $showGraphs = $_SESSION['controller.statistics.p2p.show_graphs'];
+            }
+        }
+
+        $this->view->showGraphs       = $showGraphs;
+        $this->view->showGraphsOption = $showGraphsOption;
 
         // Find the possible VLAN interfaces that this customer has for the given IXP
         if( !count( $srcVlis = $this->view->srcVlis = $this->getD2R( '\\Entities\\VlanInterface' )->getForCustomer( $cust, $this->ixp ) ) )

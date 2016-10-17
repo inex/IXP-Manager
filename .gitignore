@@ -1,12 +1,15 @@
+.env
 .project
 .buildpath
+.vagrant/
+vendor/
 MAINT_MODE_ENABLED
 .settings/
 ixp-manager.sublime-workspace
 bin/mailing-list-sync.sh
 bin/fixtures.php
 public/.htaccess
-application/configs/application.ini
+public/logos/*
 application/configs/pp-application.ini*
 data/mrtg
 var/cache/*
@@ -16,12 +19,14 @@ var/session/*
 var/templates_c/*
 var/tmp/*
 var/spool/*
+var/uploads/*
 *~
 public/favicon.ico
 public/maintenance.php
 public/images/.directory
 public/images/joomla-admin/.directory
 public/images/joomla-admin/menu/.directory
+public/bower_components/
 tools/perl-lib/IXPManager/MYMETA.yml
 tools/perl-lib/IXPManager/Makefile
 tools/perl-lib/IXPManager/blib/
@@ -35,3 +40,36 @@ application/configs/rc-inex-*conf
 application/configs/rs*-inex-*.conf
 application/configs/ci-*
 *.DS_Store
+
+config/contact_group.php
+config/grapher_cli.php
+config/grapher_trunks.php
+config/ixp_tools.php
+config/mailinglists.php
+config/smokeping.php
+
+
+application/configs/rs*.conf
+
+# local INEX dev stuff:
+ixpmanager-dump.sql.bz2
+
+# LONAP Skins
+application/modules/apiv1/views/_skins/lonap/
+application/views/_skins/lonap/
+
+
+# bits from v4.2
+config/contact_group.php
+config/grapher_trunks.php
+config/mailinglists.php
+    
+
+
+# barryo local development crud
+
+application/configs/application.ini.bup
+bird/
+ixpmanager-preferred.sql.bz2
+mrtg-shite/
+ubuntu-xenial-16.04-cloudimg-console.log

@@ -1,0 +1,46 @@
+!
+! Template for building Route Collector IOS configuration
+!
+
+configure terminal
+
+router bgp 2128
+[% inex_rc_afilist = [ 'ipv4', 'ipv6'] -%]
+[% FOREACH protocol IN inex_rc_afilist -%]
+[% FOREACH vid IN sortedkeys -%]
+[% vlan = entries.$vid.vlan -%]
+[% vrfname = network.$protocol.$vlan.vrfname -%]
+[% addresstype = protocol _ 'address' -%]
+[% $addresstype -%]
+[% address = entries.$vid.$addresstype -%]
+[% md5type = protocol _ 'bgpmd5secret' -%]
+[% bgpmd5secret = entries.$vid.$md5type -%]
+
+[% IF address AND entries.$vid.autsys != 2128 -%]
+ address-family [% protocol -%] [% IF vrfname -%]vrf [% vrfname -%] [% END %]
+  neighbor [% address %] remote-as [% entries.$vid.autsys %]
+  neighbor [% address %] description [% entries.$vid.name -%] | vlan [% vlan -%] | [% protocol -%] | [% entries.$vid.switch -%]:[% entries.$vid.switchport %]
+ address-family [% protocol -%] [% IF vrfname -%]vrf [% vrfname -%] [% END %]
+  neighbor [% address %] inherit peer-session ps-rc-[% protocol -%][% IF vrfname -%]-[% vrfname -%][% END %]
+  neighbor [% address %] inherit peer-policy pp-rc-[% protocol -%][% IF vrfname -%]-[% vrfname -%][% END %]
+[% IF bgpmd5secret -%]
+  neighbor [% address %] password [% bgpmd5secret %]
+[% ELSE -%]
+  no neighbor [% address %] password
+[% END -%]
+  neighbor [% address %] maximum-prefix [% entries.$vid.maxprefixes -%] restart 5
+  neighbor [% address %] activate
+ exit
+[% END -%]
+[% END -%]
+[% END -%]
+
+
+! exit bgp mode
+exit
+! exit configuration mode
+exit
+! save configuration to disk
+write memory
+! logout
+quit

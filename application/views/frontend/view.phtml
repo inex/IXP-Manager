@@ -58,6 +58,7 @@
     {if $viewPreamble}{tmplinclude file=$viewPreamble}{/if}
 
     <dl>
+	{if isset( $feParams->viewColumns )}
         {foreach $feParams->viewColumns as $col => $cconf}
             {if not is_array( $cconf ) or not isset( $cconf.display ) or $cconf.display}
                 <dt>
@@ -89,6 +90,7 @@
                 </dd>
             {/if}
         {/foreach}
+	{/if}
     </dl>
     
     {* do we have any additional text to put after the view? *}

@@ -201,7 +201,7 @@ $contact->setUser( $u );
 $u->setUsername( 'username' );
 
 // Please choose a secure password below (in place of 'letmein1') or
-// immeidately change your password when logged in for the first time.
+// immediately change your password when logged in for the first time.
 $u->setPassword(
     OSS_Auth_Password::hash( 'letmein1', $config['auth']['oss'] )
 );

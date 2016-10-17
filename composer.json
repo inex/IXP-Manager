@@ -1,0 +1,111 @@
+{
+    "name": "inex/IXP-Manager",
+    "description": "An application by INEX to manage Internet Exchange Points (IXPs)",
+    "type": "project",
+    "keywords": ["ixp manager", "ixpm", "inex", "ixp"],
+    "homepage": "https://github.com/inex/IXP-Manager/wiki",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Barry O'Donovan",
+            "email": "barry.odonovan@inex.ie",
+            "homepage": "https://www.inex.ie/",
+            "role": "Senior Coding Dude & INEX Network Consultant"
+        },
+        {
+            "name": "Nick Hilliard",
+            "email": "nick@inex.ie",
+            "homepage": "https://www.inex.ie/",
+            "role": "Junior Coding Dweeb & Chief Technical Officer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/opensolutions/Bootstrap-Zend-Framework"
+        },
+        {
+            "url": "git@github.com:oss2/doctrine2.git",
+            "type": "vcs"
+        },
+        {
+            "url": "git@github.com:oss2/var-utils.git",
+            "type": "vcs"
+        },
+        {
+            "url": "git@github.com:oss2/auth.git",
+            "type": "vcs"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "zendframework/zendframework1": "~1.12",
+        "komola/bootstrap-zend-framework": "dev-master",
+        "opensolutions/oss-snmp": "dev-master",
+
+        "laravel/framework": "5.3.*",
+        "laravel-doctrine/orm": "1.2.*",
+        "oss2/doctrine2": "dev-master",
+        "oss2/var-utils": "dev-master",
+
+        "oss2/auth": "dev-master",
+
+        "smarty/smarty": "~3.1",
+        "league/plates": "3.*",
+
+        "zendesk/zendesk_api_client_php": "dev-master",
+        "guzzlehttp/guzzle": "~6.0",
+        "intervention/image": "^2.3"
+
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.1",
+        "phpspec/phpspec": "~2.1",
+        "phpunit/php-code-coverage": "~3.1",
+        "symfony/dom-crawler": "~3.0",
+        "symfony/css-selector": "~3.0"
+     },
+    "support": {
+        "issues": "https://github.com/inex/IXP-Manager/issues",
+        "wiki": "https://github.com/inex/IXP-Manager/wiki",
+        "source": "https://github.com/inex/IXP-Manager"
+    },
+    "autoload": {
+        "classmap": [
+            "database"
+        ],
+        "psr-0": {
+            "IXP_": "library/",
+            "OSS_": "library/"
+        },
+        "psr-4": {
+             "IXP\\": "app/"
+        },
+        "files": [
+            "app/Support/helpers.php"
+        ]
+     },
+     "autoload-dev": {
+         "classmap": [
+             "tests/TestCase.php"
+         ]
+    },
+    "scripts": {
+         "post-install-cmd": [
+             "php artisan clear-compiled",
+             "php artisan optimize"
+         ],
+         "post-update-cmd": [
+             "php artisan clear-compiled",
+             "php artisan optimize"
+         ],
+         "post-create-project-cmd": [
+             "php -r \"copy('.env.example', '.env');\"",
+             "php artisan key:generate"
+         ]
+     },
+     "config": {
+          "preferred-install": "dist"
+     },
+    "minimum-stability": "dev"
+}

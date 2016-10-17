@@ -1,0 +1,43 @@
+
+{if isset( $data.0 )}
+    {assign var="example_api_key" value="/key/`$data.0.apiKey`"}
+{else}
+    {assign var="example_api_key" value="/key/\$your_api_key"}
+{/if}
+
+{if config( 'ixp_api.json_export_schema.public' )}
+    {assign var="example_api_key" value=""}
+{/if}
+
+<br>
+<h3>Available API Endpoints</h3>
+
+<dl>
+
+<dt>IXP JSON Schema Export</dt>
+<dd>
+    See <a href="https://github.com/euro-ix/json-schemas">here for details, versions and definition</a>.<br>
+    Example:
+        <code>
+            <a href="{genUrl module="apiv1" controller="member-list" action="list"}{$example_api_key}">
+                {genUrl module="apiv1" controller="member-list" action="list"}{$example_api_key}
+            </a>
+        </code>
+        <br><br>
+    The above will always return the latest inplemented version (highest of the versions below). Other versions as available as
+    follows:
+    <ul>
+        {foreach $JSON_SCHEMAS as $version}
+        <li>
+            <code>
+                <a href="{genUrl module="apiv1" controller="member-list" action="list"}{$example_api_key}/version/{$version}">
+                    {genUrl module="apiv1" controller="member-list" action="list"}{$example_api_key}/version/{$version}
+                </a>
+            </code>
+        </li>
+        {/foreach}
+    </ul>
+    You are advised to specify the version you're developing against as the default will be updated as the specification is updated.
+</dd>
+
+</dl>

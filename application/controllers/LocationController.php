@@ -92,7 +92,7 @@ class LocationController extends IXP_Controller_FrontEnd
                 'l.id AS id, l.name AS name, l.shortname AS shortname, l.tag AS tag,
                 l.nocphone AS nocphone, l.nocemail AS nocemail, l.address AS address,
                 l.nocfax AS nocfax, l.officephone AS officephone, l.officefax AS officefax,
-                l.officeemail AS officeemail, l.notes AS notes'
+                l.officeemail AS officeemail, l.notes AS notes, l.pdb_facility_id AS pdb_facility_id'
             )
         ->from( '\\Entities\\Location', 'l' );
 
@@ -105,6 +105,12 @@ class LocationController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
+    public function getPeeringDbFacilitiesAction()
+    {
+        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
+        $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
+        echo file_get_contents( 'https://api.peeringdb.com/api/fac' );
+    }
     /**
      * Function which can be over-ridden to perform any pre-deletion tasks
      *

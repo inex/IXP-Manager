@@ -91,7 +91,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
                 }
                 
                 // update the user's notes last read so he won't be told his own is new
-                $this->getUser()->setPreference( "customer-notes.{$this->getParam( 'custid' )}.last_read", mktime() );
+                $this->getUser()->setPreference( "customer-notes.{$this->getParam( 'custid' )}.last_read", time() );
                 
                 $this->getD2EM()->flush();
 
@@ -163,7 +163,7 @@ class CustomerNotesController extends IXP_Controller_AuthRequiredAction
         // update the last read for this user / customer combination
         if( is_numeric( $custid ) )
         {
-            $this->getUser()->setPreference( "customer-notes.{$custid}.last_read", mktime() );
+            $this->getUser()->setPreference( "customer-notes.{$custid}.last_read", time() );
             $this->getD2EM()->flush();
         }
     }

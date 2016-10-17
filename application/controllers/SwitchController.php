@@ -510,12 +510,18 @@ class SwitchController extends IXP_Controller_FrontEnd
             }
         }
 
+        if( count( $object->getConsoleServerConnections() ) )
+        {
+            $this->addMessage(
+                "Could not delete the switch as at least one console port connection exists for this switch",
+                OSS_Message::ERROR
+            );
+            return false;
+        }
+
         // if we got here, all switch ports are free
         foreach( $object->getPorts() as $p )
             $this->getD2EM()->remove( $p );
-
-        foreach( $object->getSecEvents() as $se )
-            $this->getD2EM()->remove( $se );
 
         return true;
     }

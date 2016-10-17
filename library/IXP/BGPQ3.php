@@ -112,22 +112,19 @@ class IXP_BGPQ3 extends Zend_Exception
      */
     public function getAsnList( $asmacro, $proto = 4 )
     {
-        $acls = $this->execute( '-3 -l pl -f 999 ' . escapeshellarg( $asmacro ), $proto );
+        $json = $this->execute( '-3j -l pl -f 999 ' . escapeshellarg( $asmacro ), $proto );
+        $array = json_decode( $json, true );
 
-        // based on the cmd arguments, the acl lines should always start with:
-        $prelude = "ip as-path access-list pl permit ^999(_[0-9]+)*_(";
-        $preludeLen = strlen( $prelude );
+        if( $array === null )
+            throw new Exception( "Could not decode JSON response from BGPQ when fetching ASN list" );
+
+        if( !isset( $array[ 'pl' ] ) )
+            throw new IXP_Exception( "Named prefix list [pl] expected in decoded JSON but not found when fetching ASN list!" );
 
         $asns = [];
-        foreach( explode( "\n", $acls ) as $acl )
-        {
-            if( $acl == 'no ip as-path access-list pl' )
-                continue;
 
-            $acl = substr( $acl, $preludeLen, -2 ); // also cut off the end
-
-            $asns = array_merge( $asns, explode( '|', $acl ) );
-        }
+        foreach( $array[ 'pl' ] as $asn )
+            $asns[] = $asn;
 
         return $asns;
     }

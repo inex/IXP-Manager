@@ -1,7 +1,7 @@
 language: php
 
 php:
-    - "5.4"
+    - "7.0"
 
 services:
     - memcached
@@ -15,4 +15,3 @@ before_install:
 
 after_failure:
     - "./data/travis-ci/after_failure.sh"
-

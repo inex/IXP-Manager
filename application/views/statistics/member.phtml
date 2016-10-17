@@ -9,15 +9,15 @@
             <a href="{genUrl controller='customer' action='list'}">Customers</a> <span class="divider">/</span>
         </li>
         <li>
-             <a href="{genUrl controller='customer' action='overview' id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
+             <a href="{genUrl controller='customer' action='overview' id=$cust->getId()}">{$cust->getFormattedName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
             Statistics
             (
-             {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}
+             {foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach}
              {if isset( $period )}
                 /
-                 {foreach from=$periods key=cname item=cvalue}{if $period eq $cvalue}{$cname}{/if}{/foreach}
+                 {foreach from=$periods key=pvalue item=pname}{if $period eq $pvalue}{$pname}{/if}{/foreach}
              {/if}
             )
         </li>
@@ -32,7 +32,7 @@
                 {if $multiIXP}
                     @ {$ixp->getShortname()}
                 {else}
-                    :: {$cust->getName()}
+                    :: {$cust->getFormattedName()}
                 {/if}
             </h1>
         </div>
@@ -51,13 +51,15 @@
                     {* let's be explicit that this is peering traffic only *}
                     <small><em>(Peering ports only)</em></small>
                 {/if}
+                <a class="btn pull-right" href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex='aggregate' category=$category shortname=$cust->getShortname()}">
+                    <i class="icon-eye-open"></i>
+                </a>
+
             </h3>
 
             <p>
                 <br />
-                <a href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex='aggregate' category=$category shortname=$cust->getShortname()}">
-                    {genMrtgImgUrlTag ixp=$ixp->getId() shortname=$cust->getShortname() category=$category monitorindex='aggregate'}
-                </a>
+                {$grapher->customer($cust)->setCategory($category)->renderer()->boxLegacy()}
             </p>
         </div>
 
@@ -72,7 +74,7 @@
                 Graph Options
             {/if}
 
-            {if isset( $options.sflow.enabled ) and $options.sflow.enabled}
+            {if config('grapher.backends.sflow.enabled')}
                 <a class="btn btn-primary pull-right" href="{genUrl controller="statistics" action="p2p" ixp=$ixp->getId() shortname=$cust->getShortname()}">
                     See Peer to Peer Graphs
                 </a>
@@ -100,7 +102,7 @@
 
             <strong>Graph Type:</strong>&nbsp;&nbsp;&nbsp;&nbsp;
             <select name="category" onchange="this.form.submit();" class="chzn-select span3">
-                {foreach from=$categories key=cname item=cvalue}
+                {foreach from=$categories key=cvalue item=cname}
                     <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
                 {/foreach}
             </select>
@@ -119,7 +121,7 @@
     {* ensure we're looking at a graph on the correct IXP *}
     {$pi = $vi->getPhysicalInterfaces()}
     {$pi = $pi.0}
-    {if $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP() neq $ixp }
+    {if not $pi or $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP() neq $ixp }
         {continue}
     {/if}
 
@@ -132,6 +134,9 @@
                 <h4>
                     LAG on {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
                         / {$pi->getSwitchPort()->getSwitcher()->getName()}
+                        <a class="btn pull-right" href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex="lag-viid-`$vi->getId()`" category=$category shortname=$cust->getShortname()}">
+                            <i class="icon-eye-open"></i>
+                        </a>
                     <small>
                         <br />
                         Ports:
@@ -143,9 +148,7 @@
 
                 <p>
                     <br />
-                    <a href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex="lag-viid-`$vi->getId()`" category=$category shortname=$cust->getShortname()}">
-                        {genMrtgImgUrlTag ixp=$ixp->getId() shortname=$cust->getShortname() category=$category monitorindex="lag-viid-`$vi->getId()`"}
-                    </a>
+                    {$grapher->virtint($vi)->setCategory($category)->renderer()->boxLegacy()}
                 </p>
 
             </div>
@@ -169,10 +172,16 @@
                 <h4>
                     {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
                         / {$pi->getSwitchPort()->getSwitcher()->getName()}
-                        / {$pi->getSwitchPort()->getName()} ({$pi->getSpeed()}Mbps)
+
+                    <a class="btn pull-right" href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex=$pi->getMonitorindex() category=$category shortname=$cust->getShortname()}">
+                        <i class="icon-eye-open"></i>
+                    </a>
+                     <small>
+                         <br />
+                         {$pi->getSwitchPort()->getName()} ({$pi->getSpeed()}Mbps)
 
                     {if $resellerMode and $cust->isReseller()}
-                        <br /><small>
+                        <br />
                         {if $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_PEERING}
                             Peering Port
                         {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_FANOUT}
@@ -182,16 +191,14 @@
                         {elseif $pi->getSwitchPort()->getType() eq SWITCHPORT::TYPE_RESELLER}
                             Reseller Uplink Port
                         {/if}
-                        </small>
                     {/if}
+                    </small>
 
                 </h4>
 
                 <p>
                     <br />
-                    <a href="{genUrl controller='statistics' action='member-drilldown' ixp=$ixp->getId() monitorindex=$pi->getMonitorindex() category=$category shortname=$cust->getShortname()}">
-                        {genMrtgImgUrlTag ixp=$ixp->getId() shortname=$cust->getShortname() category=$category monitorindex=$pi->getMonitorindex()}
-                    </a>
+                    {$grapher->physint($pi)->setCategory($category)->renderer()->boxLegacy()}
                 </p>
 
             </div>

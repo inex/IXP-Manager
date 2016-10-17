@@ -41,6 +41,7 @@ class IXP_Form_Contact extends IXP_Form
             ->setRequired( true )
             ->setLabel( 'Name' )
             //->setAttrib( 'class', 'span3' )
+            ->setAttrib( 'autocomplete', 'off' )
             ->addFilter( 'StringTrim' )
             ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -50,6 +51,7 @@ class IXP_Form_Contact extends IXP_Form
         $position->addValidator( 'stringLength', false, array( 1, 50, 'UTF-8' ) )
             ->setRequired( false )
             ->setLabel( 'Position' )
+            ->setAttrib( 'autocomplete', 'off' )
             //->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
             ->addFilter( 'StripTags' )
@@ -62,6 +64,7 @@ class IXP_Form_Contact extends IXP_Form
 
         $this->addElement( OSS_Form_User::createEmailElement( 'email' ) );
         $this->getElement( 'email' )
+            ->setAttrib( 'autocomplete', 'off' )
             ->setRequired( false )
             ->setAttrib( 'class', "" );
 
@@ -69,6 +72,7 @@ class IXP_Form_Contact extends IXP_Form
         $phone->addValidator( 'stringLength', false, array( 1, 32, 'UTF-8' ) )
             ->setLabel( _( 'Phone' ) )
             //->setAttrib( 'class', 'span3' )
+            ->setAttrib( 'autocomplete', 'off' )
             ->addFilter( 'StringTrim' )
             ->addFilter( 'StripTags' )
             ->addFilter( new OSS_Filter_StripSlashes() );
@@ -79,6 +83,7 @@ class IXP_Form_Contact extends IXP_Form
             ->setLabel( _( 'Mobile' ) )
             ->addFilter( 'StringTrim' )
             ->addFilter( 'StripTags' )
+            ->setAttrib( 'autocomplete', 'off' )
             //->setAttrib( 'class', 'span3' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $mobile );
@@ -87,6 +92,7 @@ class IXP_Form_Contact extends IXP_Form
         $notes->setLabel( 'Notes' )
             ->setRequired( false )
             ->setAttrib( 'style', 'width: 80%;' )
+            ->setAttrib( 'autocomplete', 'off' )
             ->addFilter( new OSS_Filter_StripSlashes() )
             ->addFilter( 'StripTags' )
             ->setAttrib( 'cols', 60 )
@@ -128,6 +134,7 @@ class IXP_Form_Contact extends IXP_Form
         $username->addValidator( 'stringLength', false, array( 2, 30, 'UTF-8' ) )
             ->addValidator( 'regex', true, array( '/^[a-zA-Z0-9\-_\.]+$/' ) )
             ->setRequired( false )
+            ->setAttrib( 'autocomplete', 'off' )
             ->setAttrib( 'class', '' );
         $this->addElement( $username );
 
@@ -136,6 +143,7 @@ class IXP_Form_Contact extends IXP_Form
             ->setRequired( false )
             //->setAttrib( 'class', 'span3' )
             ->setLabel( 'Password' )
+            ->setAttrib( 'autocomplete', 'off' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $password );

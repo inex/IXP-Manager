@@ -21,6 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Services\Grapher\Graph;
 
 /**
  * A trait of common statistics functions
@@ -186,12 +187,12 @@ trait IXP_Controller_Trait_Statistics
      */
     protected function setProtocol( $pname = 'proto' )
     {
-        $proto = $this->getParam( $pname, 4 );
-        if( !in_array( $proto, IXP_Mrtg::$PROTOCOLS ) )
-            $proto = IXP_Mrtg::PROTOCOL_IPV4;
+        $proto = $this->getParam( $pname, Graph::PROTOCOL_IPV4 );
+        if( !in_array( $proto, Graph::PROTOCOLS_REAL ) )
+            $proto = Graph::PROTOCOL_IPV4;
 
         $this->view->proto     = $proto;
-        $this->view->protocols = IXP_Mrtg::$PROTOCOLS;
+        $this->view->protocols = Graph::PROTOCOL_REAL_DESCS;
 
         return $proto;
     }
@@ -210,11 +211,11 @@ trait IXP_Controller_Trait_Statistics
      */
     protected function setCategory( $pname = 'category', $aggregate = false )
     {
-        $category = $this->getParam( $pname, IXP_Mrtg::$CATEGORIES['Bits'] );
-        if( !in_array( $category, $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES ) )
-            $category = IXP_Mrtg::$CATEGORIES['Bits'];
+        $category = $this->getParam( $pname, Graph::CATEGORY_BITS );
+        if( !in_array( $category, $aggregate ? Graph::CATEGORIES_BITS_PKTS : Graph::CATEGORIES ) )
+            $category = Graph::CATEGORY_BITS;
         $this->view->category   = $category;
-        $this->view->categories = $aggregate ? IXP_Mrtg::$CATEGORIES_AGGREGATE : IXP_Mrtg::$CATEGORIES;
+        $this->view->categories = $aggregate ? Graph::CATEGORIES_BITS_PKTS_DESCS : Graph::CATEGORY_DESCS;
         return $category;
     }
 
@@ -230,11 +231,11 @@ trait IXP_Controller_Trait_Statistics
      */
     protected function setPeriod( $pname = 'period' )
     {
-        $period = $this->getParam( $pname, IXP_Mrtg::$PERIODS['Day'] );
-        if( !in_array( $period, IXP_Mrtg::$PERIODS ) )
-            $period = IXP_Mrtg::$PERIODS['Day'];
+        $period = $this->getParam( $pname, Graph::PERIOD_DAY );
+        if( !in_array( $period, Graph::PERIODS ) )
+            $period = Graph::PERIOD_DAY;
         $this->view->period     = $period;
-        $this->view->periods    = IXP_Mrtg::$PERIODS;
+        $this->view->periods    = Graph::PERIOD_DESCS;
         return $period;
     }
 

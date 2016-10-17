@@ -16,7 +16,7 @@
         </div>
 {/if}
 
-<h3>{$graphs.$graph.title} :: {foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
+<h3>{$graphs[$graphid]->title()} :: {foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach}</h3>
 
 {OSS_Message}
 
@@ -26,18 +26,18 @@
 <tr>
     <td width="20"></td>
     <td valign="middle"><strong>Select {if $multiIXP}IXP / {/if}Infrastructure:&nbsp;</strong></td>
-    <td>
+    <td width="300">
         <select name="graph" class="chzn-select" onchange="this.form.submit();">
-            {foreach $graphs as $id => $data}
-                <option value="{$id}" {if $graph eq $id}selected{/if}>{$data.title}</option>
+            {foreach $graphs as $id => $g}
+                <option value="{$id}" {if $graphid eq $id}selected{/if}>{$g->title()}</option>
             {/foreach}
         </select>
     </td>
     <td width="20"></td>
     <td valign="middle"><strong>Category:&nbsp;</strong></td>
-    <td>
+    <td width="100">
         <select name="category" class="chzn-select" onchange="this.form.submit();">
-            {foreach from=$categories key=cname item=cval}
+            {foreach from=$categories key=cval item=cname}
                 <option value="{$cval}" {if $category eq $cval}selected{/if}>{$cname}</option>
             {/foreach}
         </select>
@@ -51,22 +51,13 @@
 
 {assign var='count' value=0}
 
-{foreach from=$periods key=pname item=pvalue}
+{foreach from=$periods key=pvalue item=pname}
 
     <div class="span6">
 
         <div class="well">
             <h3>{$pname} Graph</h3>
-
-            <p>
-                {genMrtgGraphBox
-                        shortname='X_Peering'
-                        period=$pvalue
-                        category=$category
-                        values=$stats.$pvalue
-                        graph=$graphs.$graph.name
-                }
-            </p>
+            {$graph->setPeriod( $pvalue )->renderer()->boxLegacy()}
         </div>
     </div>
 
@@ -86,4 +77,3 @@
 
 
 {tmplinclude file="footer.phtml"}
-

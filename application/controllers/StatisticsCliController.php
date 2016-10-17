@@ -21,6 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+ use IXP\Services\Grapher\Graph;
 
 /**
  * Controller: Statistics CLI Actions
@@ -40,6 +41,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
     public function emailPortUtilisationAction()
     {
         $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, false );
+        $this->view->grapher = $grapher = App::make('IXP\Services\Grapher');
 
         $mail = $this->getMailer();
         $mail->setFrom( $this->_options['cli']['port_utilisation']['from_email'], $this->_options['cli']['traffic_differentials']['from_name'] )
@@ -65,18 +67,11 @@ class StatisticsCliController extends IXP_Controller_CliAction
 
                     $speed = $pi->getSpeed() * 1024 * 1024;
 
-                    $mrtg = new IXP_Mrtg(
-                            IXP_Mrtg::getMrtgFilePath(
-                                    $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP()->getMrtgPath() . '/members',
-                                    'LOG', $pi->getMonitorindex(), IXP_Mrtg::CATEGORY_BITS,
-                                    $c->getShortname()
-                            )
-                    );
+                    $graph = $grapher->physint( $pi )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_WEEK );
+                    $stats = $graph->statistics();
 
-                    $stats = $mrtg->getValues( IXP_Mrtg::PERIOD_WEEK, IXP_Mrtg::CATEGORY_BITS, false );
-
-                    $maxIn  = $stats['maxin'] * 8.0;
-                    $maxOut = $stats['maxout'] * 8.0;
+                    $maxIn  = $stats->maxIn();
+                    $maxOut = $stats->maxOut();
 
                     $switch_port = $pi->getSwitchport()->getSwitcher()->getName() . ' :: ' . $pi->getSwitchport()->getName();
 
@@ -97,16 +92,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
                         $this->view->switchport = $switch_port;
 
                         $mrtg = $mail->createAttachment(
-                            file_get_contents(
-                                IXP_Mrtg::getMrtgFilePath(
-                                    $pi->getSwitchport()->getSwitcher()->getInfrastructure()->getIXP()->getMrtgPath() . '/members',
-                                    'PNG',
-                                    $pi->getMonitorindex(),
-                                    IXP_Mrtg::CATEGORY_BITS,
-                                    $c->getShortname(),
-                                    IXP_Mrtg::PERIOD_WEEK
-                                )
-                            ),
+                            $graph->png(),
                             "image/png",
                             Zend_Mime::DISPOSITION_INLINE,
                             Zend_Mime::ENCODING_BASE64,
@@ -139,6 +125,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
     public function emailTrafficDeltasAction()
     {
         $custs = $this->getD2EM()->getRepository( '\\Entities\\Customer' )->getCurrentActive( false, true, true );
+        $this->view->grapher = $grapher = App::make('IXP\Services\Grapher');
 
         $mail = $this->getMailer();
         $mail->setFrom( $this->_options['cli']['traffic_differentials']['from_email'], $this->_options['cli']['traffic_differentials']['from_name'] )
@@ -155,7 +142,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
         foreach( $custs as $c )
         {
             $tds = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )
-                ->getAsArray( $c, $this->_options['cli']['traffic_differentials']['stddev_calc_length'] + 1, IXP_Mrtg::CATEGORY_BITS );
+                ->getAsArray( $c, $this->_options['cli']['traffic_differentials']['stddev_calc_length'] + 1, Graph::CATEGORY_BITS );
 
             $firstDone = false;
             $meanIn  = 0.0; $stddevIn  = 0.0;
@@ -231,18 +218,10 @@ class StatisticsCliController extends IXP_Controller_CliAction
                 $this->view->percentOut    = $meanOut ? intval( ( $dOut / $meanOut ) * 100 ) : 'NONE';
                 $this->view->days          = $this->_options['cli']['traffic_differentials']['stddev_calc_length'];
 
+                $graph = $grapher->customer( $c )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_MONTH );
+
                 $mrtg = $mail->createAttachment(
-                    @file_get_contents(
-                        IXP_Mrtg::getMrtgFilePath(
-                            // FIXME plastering over multiIXP here for now
-                            $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/members',
-                            'PNG',
-                            'aggregate',
-                            'bits',
-                            $c->getShortname(),
-                            'month'
-                        )
-                    ),
+                    $graph->png(),
                     "image/png",
                     Zend_Mime::DISPOSITION_INLINE,
                     Zend_Mime::ENCODING_BASE64,
@@ -270,6 +249,7 @@ class StatisticsCliController extends IXP_Controller_CliAction
     {
         // do this for all IXPs
         $ixps = $this->getD2R( '\\Entities\\IXP' )->findAll();
+        $this->view->grapher = $grapher = App::make('IXP\Services\Grapher');
 
         foreach( $ixps as $ixp )
         {
@@ -287,17 +267,11 @@ class StatisticsCliController extends IXP_Controller_CliAction
                 $this->verbose( "\n\t- processing customer " . $cust->getName() . "\t ", false );
                 $stats = array();
 
-                foreach( IXP_Mrtg::$CATEGORIES as $category )
+                foreach( Graph::CATEGORIES as $category )
                 {
                     $this->verbose( "({$category}) ", false );
 
-                    $mrtg = new IXP_Mrtg(
-                        IXP_Mrtg::getMrtgFilePath(
-                            $ixp->getMrtgPath() . '/members',
-                            'LOG', 'aggregate', $category,
-                            $cust->getShortname()
-                        )
-                    );
+                    $graph = $grapher->customer( $cust )->setCategory( $category );
 
                     $td = new \Entities\TrafficDaily();
                     $td->setDay( new DateTime( $day ) );
@@ -305,16 +279,16 @@ class StatisticsCliController extends IXP_Controller_CliAction
                     $td->setCustomer( $cust );
                     $td->setIXP( $ixp );
 
-                    foreach( IXP_Mrtg::$PERIODS as $name => $period )
+                    foreach( Graph::PERIOD_DESCS as $period => $name )
                     {
-                        $stats = $mrtg->getValues( $period, $category, false );
+                        $stats = $graph->setPeriod($period)->statistics();
 
-                        $fn = "set{$name}AvgIn";  $td->$fn( $stats['averagein']  );
-                        $fn = "set{$name}AvgOut"; $td->$fn( $stats['averageout'] );
-                        $fn = "set{$name}MaxIn";  $td->$fn( $stats['maxin']      );
-                        $fn = "set{$name}MaxOut"; $td->$fn( $stats['maxout']     );
-                        $fn = "set{$name}TotIn";  $td->$fn( $stats['totalin']    );
-                        $fn = "set{$name}TotOut"; $td->$fn( $stats['totalout']   );
+                        $fn = "set{$name}AvgIn";  $td->$fn( $stats->averageIn()  );
+                        $fn = "set{$name}AvgOut"; $td->$fn( $stats->averageOut() );
+                        $fn = "set{$name}MaxIn";  $td->$fn( $stats->maxIn()      );
+                        $fn = "set{$name}MaxOut"; $td->$fn( $stats->maxOut()     );
+                        $fn = "set{$name}TotIn";  $td->$fn( $stats->totalIn()    );
+                        $fn = "set{$name}TotOut"; $td->$fn( $stats->totalOut()   );
                     }
 
                     $this->getD2EM()->persist( $td );
@@ -342,16 +316,17 @@ class StatisticsCliController extends IXP_Controller_CliAction
 
     public function emailPortsWithErrorsAction()
     {
-        $this->emailPortsWithCounts( 'Errors', IXP_Mrtg::CATEGORY_ERRORS, 'day_tot_in', 'day_tot_out' );
+        $this->emailPortsWithCounts( 'Errors', Graph::CATEGORY_ERRORS, 'day_tot_in', 'day_tot_out' );
     }
 
     public function emailPortsWithDiscardsAction()
     {
-        $this->emailPortsWithCounts( 'Discards', IXP_Mrtg::CATEGORY_DISCARDS, 'day_tot_in', 'day_tot_out' );
+        $this->emailPortsWithCounts( 'Discards', Graph::CATEGORY_DISCARDS, 'day_tot_in', 'day_tot_out' );
     }
 
     private function emailPortsWithCounts( $type, $category, $inField, $outField )
     {
+        $this->view->grapher = $grapher = App::make('IXP\Services\Grapher');
         $this->view->day = $day = date( 'Y-m-d', strtotime( '-1 days' ) );
         $data = $this->getD2R( '\\Entities\\TrafficDaily' )->load( $day, $category );
 
@@ -378,18 +353,10 @@ class StatisticsCliController extends IXP_Controller_CliAction
             if( $this->isVerbose() || $this->isDebug() )
                 echo "{$d['Customer']['name']}\t\tIN / OUT: {$d[ $inField ]} / {$d[ $outField ]}\n";
 
+            $graph = $grapher->customer( d2r('Customer')->find($d['Customer']['id']) )->setCategory( $category )->setPeriod( Graph::PERIOD_DAY );
+
             $mrtg = $mail->createAttachment(
-                file_get_contents(
-                    IXP_Mrtg::getMrtgFilePath(
-                        // FIXME plastering over multiIXP here for now
-                        $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/members',
-                        'PNG',
-                        'aggregate',
-                        $category,
-                        $d['Customer']['shortname'],
-                        IXP_Mrtg::PERIOD_DAY
-                    )
-                ),
+                $graph->png(),
                 "image/png",
                 Zend_Mime::DISPOSITION_INLINE,
                 Zend_Mime::ENCODING_BASE64,
@@ -410,97 +377,6 @@ class StatisticsCliController extends IXP_Controller_CliAction
             $mail->setBodyHtml( $mailHtml  );
             $mail->send();
         }
-    }
-
-    public function genMrtgConfAction()
-    {
-        // what IXP are we running on here?
-        if( $this->multiIXP() )
-        {
-            $ixpid = $this->getParam( 'ixp', false );
-
-            if( !$ixpid || !( $ixp = $this->getD2R( '\\Entities\\IXP' )->find( $ixpid ) ) )
-                die( "ERROR: Invalid or no IXP specified.\n" );
-        }
-        else
-            $ixp = $this->getD2R( '\\Entities\\IXP' )->getDefault();
-
-        $this->view->ixp                   = $ixp;
-        $this->view->TRAFFIC_TYPES         = IXP_Mrtg::$TRAFFIC_TYPES;
-        $this->view->portsByInfrastructure = $this->genMrtgConf_getPeeringPortsByInfrastructure( $ixp );
-
-        // get all active trafficing customers
-        $this->view->custs = $this->getD2R( '\\Entities\\Customer' )->getCurrentActive( false, true, false, $ixp );
-
-        // Smarty has variable scope which OSS' skinning does not yet support so we need to use the native {include}
-        // As such, we need to resolve here for skinning for these templates:
-        $this->view->tmplMemberPort          = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-port.cfg' );
-        $this->view->tmplMemberAggregatePort = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-aggregate-port.cfg' );
-        $this->view->tmplMemberLagPort       = $this->view->resolveTemplate( 'statistics-cli/mrtg/member-lag-port.cfg' );
-
-        if( isset( $this->_options['mrtg']['conf']['dstfile'] ) )
-        {
-            if( !$this->writeConfig( $this->_options['mrtg']['conf']['dstfile'], $this->view->render( 'statistics-cli/mrtg/index.cfg' ) ) )
-                fwrite( STDERR, "Error: could not save configuration data\n" );
-        }
-        else
-            echo $this->view->render( 'statistics-cli/mrtg/index.cfg' );
-    }
-
-    /**
-     * Utility function to slurp all peering ports from the database and arrange them in
-     * arrays by infrastructure and switch.
-     *
-     * @param \Entities\IXP $ixp
-     */
-    private function genMrtgConf_getPeeringPortsByInfrastructure( $ixp )
-    {
-        $data = [];
-
-        foreach( $ixp->getInfrastructures() as $infra )
-        {
-            if( !$infra->getAggregateGraphName() )
-                continue;
-
-            $data[ $infra->getId() ]['mrtgIds']              = [];
-            $data[ $infra->getId() ]['name']                 = $infra->getName();
-            $data[ $infra->getId() ]['aggregate_graph_name'] = $infra->getAggregateGraphName();
-            $data[ $infra->getId() ]['maxbytes']             = 0;
-            $data[ $infra->getId() ]['switches']             = '';
-
-            foreach( $infra->getSwitchers() as $switch )
-            {
-                if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
-                    continue;
-
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]             = [];
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['name']     = $switch->getName();
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] = 0;
-                $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds']  = [];
-
-                foreach( $switch->getPorts() as $port )
-                {
-                    if( $port->getIfName() )
-                    {
-                        $snmpId = $port->ifnameToSNMPIdentifier();
-                        $data[ $infra->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
-                        $data[ $infra->getId() ]['switches'][ $switch->getId() ]['maxbytes'] += $port->getIfHighSpeed() * 1000000 / 8;
-
-                        foreach( IXP_Mrtg::$TRAFFIC_TYPES as $type => $vars )
-                        {
-                            $id = "{$vars['in']}#{$snmpId}&{$vars['out']}#{$snmpId}:{$switch->getSnmppasswd()}@{$switch->getHostname()}:::::2";
-
-                            if( $port->getType() == \Entities\SwitchPort::TYPE_PEERING )
-                                $data[ $infra->getId() ]['mrtgIds'][$type][] = $id;
-
-                            $data[ $infra->getId() ]['switches'][ $switch->getId() ]['mrtgIds'][$type][] = $id;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $data;
     }
 
 }

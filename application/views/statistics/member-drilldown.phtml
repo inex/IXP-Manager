@@ -9,11 +9,11 @@
             <a href="{genUrl controller='customer' action='list'}">Customers</a> <span class="divider">/</span>
         </li>
         <li>
-            <a href="{genUrl controller='customer' action='overview' id=$cust->getId()}">{$cust->getName()}</a> <span class="divider">/</span>
+            <a href="{genUrl controller='customer' action='overview' id=$cust->getId()}">{$cust->getFormattedName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
             Statistics
-            ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
+            ({foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach})
         </li>
     </ul>
     <div>
@@ -26,10 +26,10 @@
                 {if $multiIXP}
                     @ {$ixp->getShortname()}
                 {else}
-                    :: {$cust->getName()}
+                    :: {$cust->getFormattedName()}
                 {/if}
 
-                ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})
+                ({foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach})
             </h1>
         </div>
 {/if}
@@ -86,7 +86,7 @@
             <strong>Graph Type:&nbsp;&nbsp;&nbsp;</strong>
 
             <select name="category" onchange="this.form.submit();" class="chzn-select span2">
-                {foreach from=$categories key=cname item=cvalue}
+                {foreach from=$categories key=cvalue item=cname}
                     <option value="{$cvalue}" {if $category eq $cvalue}selected{/if}>{$cname}</option>
                 {/foreach}
             </select>
@@ -118,7 +118,7 @@
 
 {assign var='count' value=0}
 
-    {foreach from=$periods key=pname item=pvalue}
+    {foreach from=$periods key=pvalue item=pname}
 
     <div class="span6">
 
@@ -127,14 +127,7 @@
             <h3>{$pname} Graph</h3>
 
             <p>
-                {genMrtgGraphBox
-                        ixp=$ixp->getId()
-                        shortname=$cust->getShortname()
-                        category=$category
-                        monitorindex=$monitorindex
-                        period=$pvalue
-                        values=$stats.$pvalue
-                }
+                {$graph->setPeriod($pvalue)->renderer()->boxLegacy()}
             </p>
 
         </div>

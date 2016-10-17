@@ -33,11 +33,6 @@
  */
 class SwitchCliController extends IXP_Controller_CliAction
 {
-    public function init()
-    {
-        require_once APPLICATION_PATH . '/../library/OSS_SNMP.git/OSS_SNMP/SNMP.php';
-    }
-
     /**
      * Poll and update switch objects via SNMP
      */

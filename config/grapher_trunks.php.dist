@@ -1,0 +1,18 @@
+<?php
+
+// MRTG Configuration Templates
+//
+// INEX Switch Trunk Graphs - a production example.
+//
+// This is v4 maintaining legacy support for manual trunk graphs.
+// Please see: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
+//
+// This will be phased out / automated / managed on the frontend soon
+
+return [
+    'core-sw1-sw2-lan1' => [
+        'ixpid' => 1,
+        'name'  => 'core-sw1-sw2-lan1 is the name as defined in services.grapher.mrtg.trunks',
+        'title' => 'PoP 1 to PoP 2 (LAN1)'
+    ],
+];

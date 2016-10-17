@@ -249,24 +249,28 @@
         {if $isLAG}
             <br /><br />
             <div class="well">
-                <h4>Aggregate Day Graph for LAG</h4>
+                <h4>
+                    Aggregate Day Graph for LAG
+                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex="lag-viid-`$vi->getId()`"}">
+                        <i class="icon-eye-open"></i>
+                    </a>
+                </h4>
                 <br />
-                <a href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex="lag-viid-`$vi->getId()`"}">
-                    {$pi = $vi->getPhysicalInterfaces()}
-                    {$pi = $pi.0}
-                    {genMrtgImgUrlTag ixp=$pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getIXP()->getId() shortname=$cust->getShortname() monitorindex="lag-viid-`$vi->getId()`"}
-                </a>
+                {$grapher->virtint( $vi )->renderer()->boxLegacy()}
             </div>
         {/if}
 
         {foreach $vi->getPhysicalInterfaces() as $pi}
             <br /><br />
             <div class="well">
-                <h4>Day Graph for {$pi->getSwitchPort()->getSwitcher()->getName()} / {$pi->getSwitchPort()->getName()}</h4>
+                <h4>
+                    Day Graph for {$pi->getSwitchPort()->getSwitcher()->getName()} / {$pi->getSwitchPort()->getName()}
+                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
+                        <i class="icon-eye-open"></i>
+                    </a>
+                </h4>
                 <br />
-                <a href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
-                    {genMrtgImgUrlTag ixp=$pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getIXP()->getId() shortname=$cust->getShortname() monitorindex=$pi->getMonitorindex()}
-                </a>
+                {$grapher->physint( $pi )->renderer()->boxLegacy()}
             </div>
         {/foreach}
     </div>

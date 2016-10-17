@@ -135,24 +135,26 @@ class ContactController extends IXP_Controller_FrontEnd
             ->leftJoin( 'c.User', 'u' )
             ->leftJoin( 'c.Customer', 'cust' );
 
-        $roles = $this->getD2R( '\\Entities\\ContactGroup' )->getGroupNamesTypeArray( 'ROLE' );
+        if( config('contact_group.types.ROLE') ) {
+            $roles = $this->getD2R( '\\Entities\\ContactGroup' )->getGroupNamesTypeArray( 'ROLE' );
 
-        if( isset( $roles['ROLE'] ) )
-        {
-            $this->view->roles = $roles = $roles['ROLE'];
-            $this->view->role = $role = $this->getParam( 'role', false );
-            if( isset( $roles[ $role ] ) )
-                $qb->leftJoin( 'c.Groups', 'g' )
-                   ->andWhere( "g.id = :role" )->setParameter( 'role', $role );
-        }
+            if( isset( $roles['ROLE'] ) )
+            {
+                $this->view->roles = $roles = $roles['ROLE'];
+                $this->view->role = $role = $this->getParam( 'role', false );
+                if( isset( $roles[ $role ] ) )
+                    $qb->leftJoin( 'c.Groups', 'g' )
+                       ->andWhere( "g.id = :role" )->setParameter( 'role', $role );
+            }
 
-        if( $this->getParam( "cgid", false ) )
-        {
-            $qb->leftJoin( "c.Groups", "cg" )
-                ->andWhere( "cg.id = ?2" )
-                ->setParameter( 2, $this->getParam( "cgid" ) );
+            if( $this->getParam( "cgid", false ) )
+            {
+                $qb->leftJoin( "c.Groups", "cg" )
+                    ->andWhere( "cg.id = ?2" )
+                    ->setParameter( 2, $this->getParam( "cgid" ) );
 
-            $this->view->group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $this->getParam( "cgid" ) );
+                $this->view->group = $this->getD2EM()->getRepository( "\\Entities\\ContactGroup" )->find( $this->getParam( "cgid" ) );
+            }
         }
 
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
@@ -172,7 +174,9 @@ class ContactController extends IXP_Controller_FrontEnd
         if( $this->getUser()->getPrivs() != \Entities\User::AUTH_SUPERUSER )
             return $data;
 
-        $data = $this->setRolesAndGroups( $data, $id );
+        if( config('contact_group.types.ROLE') ) {
+            $data = $this->setRolesAndGroups( $data, $id );
+        }
 
         return $data;
     }
@@ -335,7 +339,8 @@ class ContactController extends IXP_Controller_FrontEnd
 
         if( $isEdit )
         {
-            $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
+            $cust = $object->getCustomer();
+            $form->getElement( 'custid' )->setValue( $cust->getId() );
             $this->view->contactGroups = $this->getD2R( "\\Entities\\ContactGroup" )->getGroupNamesTypeArray( false, $object->getId() );
         }
         else if( $this->getParam( 'custid', false ) && ( $cust = $this->getD2R( '\\Entities\\Customer' )->find( $this->getParam( 'custid' ) ) ) )
@@ -357,6 +362,12 @@ class ContactController extends IXP_Controller_FrontEnd
             $form->getElement( 'username' )->addValidator( 'OSSDoctrine2Uniqueness', true,
                 [ 'entity' => '\\Entities\\User', 'property' => 'username' ]
             );
+        }
+
+        if( ( isset( $cust ) && $cust instanceof \Entities\Customer && !$cust->isTypeInternal() )
+                || $this->getUser()->getPrivs() <= \Entities\User::AUTH_CUSTADMIN )
+        {
+            $form->getElement( 'privs' )->setMultiOptions( array_except( \Entities\User::$PRIVILEGES_TEXT, [ \Entities\User::AUTH_SUPERUSER ] ) );
         }
 
         switch( $this->getUser()->getPrivs() )
@@ -540,10 +551,9 @@ class ContactController extends IXP_Controller_FrontEnd
             {
                 $this->addMessage( 'Illegal attempt to edit a user not under your control. The security team have been notified.' );
                 $this->getLogger()->alert( "User {$this->getUser()->getUsername()} illegally tried to edit {$object->getName()}" );
-                $this->redirect();
+                $this->redirect('');
             }
         }
-
 
         if( !$isEdit )
         {
@@ -762,9 +772,12 @@ class ContactController extends IXP_Controller_FrontEnd
                 }
                 else
                 {
-                    // if this is an admin user, let them start with no unread notes
-                    if( $form->getValue( "privs" ) == \Entities\User::AUTH_SUPERUSER )
+                    // else we are currently a SUPERADMIN
+
+                    if( $form->getValue( "privs" ) == \Entities\User::AUTH_SUPERUSER ) {
+                        // if this is an admin user, let them start with no unread notes
                         $user->setPreference( 'customer-notes.read_upto', time() );
+                    }
                 }
 
                 $this->getD2EM()->persist( $user );
@@ -797,6 +810,13 @@ class ContactController extends IXP_Controller_FrontEnd
                 }
 
                 $user->setUsername( $form->getValue( "username" ) );
+
+                // we should only add admin users to customer type internal
+                if( $form->getValue( "privs" ) == \Entities\User::AUTH_SUPERUSER && !$contact->getCustomer()->isTypeInternal() ) {
+                    $this->addMessage( 'Users will full administrative access can only be added to internal customer types.', OSS_Message::ERROR );
+                    return false;
+                }
+
                 $user->setPrivs( $form->getValue( "privs" ) );
             }
 
