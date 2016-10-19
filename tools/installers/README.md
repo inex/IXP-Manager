@@ -17,7 +17,7 @@ To install on this platform, please proceed as follows:
    * If installing on a physical server, select *Install a minimum system*
    * If installing on a virtual server, select *Install a minimal virtual machine*
 4. Now select *Install Ubuntu Server* and step through the various options and configure as you like until:
-5. When you reach the *Software selection* screen, select **only** `standard system utilities` and `OpenSSH Server` and then complete the installation and reboot.
+5. When you reach the *Software selection* screen, select **only** `OpenSSH Server` and then complete the installation and reboot.
 6. When your new server has rebooted, log in and: 
 
 ```bash
