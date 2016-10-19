@@ -73,3 +73,10 @@ bird/
 ixpmanager-preferred.sql.bz2
 mrtg-shite/
 ubuntu-xenial-16.04-cloudimg-console.log
+
+.cache/
+.composer/
+.config/
+.ixp-manager-installer-settingsrc
+composer.phar
+tools/installers/Vagrantfile
