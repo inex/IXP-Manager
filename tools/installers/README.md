@@ -38,7 +38,7 @@ The install script can be tested using Vagrant. Assuming you have Vagrant instal
 
 Vagrant should run `ubuntu-lts-1604-ixp-manager-v4.sh --no-interaction` as part of its bootstrapping and you should be able to access the resultant IXP Manager install at: http://localhost:8080/ (after ~10 mins).
 
-If the bootstrapping fails, you can log in with `vagrant ssh` and kick off the installer using:
+However, for an as yet unknown reason, the bootstrapping fails. Instead, you can log in with `vagrant ssh` and kick off the installer using:
 
     sudo /tmp/vagrant-shell --no-interaction
 
