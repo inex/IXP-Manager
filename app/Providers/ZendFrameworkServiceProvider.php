@@ -283,7 +283,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
 
         if( strlen( config('ixp_fe.skinning.smarty' ) ) ) {
             $options['resources']['smarty']['skin']  = config('ixp_fe.skinning.smarty' );
-            Zend_Registry::get( 'smarty' )->setSkin( config('ixp_fe.skinning.smarty' ) );
+            // Zend_Registry::get( 'smarty' )->setSkin( config('ixp_fe.skinning.smarty' ) );
         }
 
         return $options;

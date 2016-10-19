@@ -52,14 +52,6 @@ class IndexController extends IXP_Controller_Action
         $this->view->display( 'index/controller-disabled.tpl' );
     }
 
-    public function aboutAction()
-    {
-        $this->view->apachever = str_replace("Apache/", "", $_SERVER['SERVER_SOFTWARE']);
-        $this->view->phpver    = phpversion();
-        $this->view->dbver     = $this->getD2EM()->getConnection()->query( "SELECT VERSION() AS V" )->fetch()['V'];
-    }
-
-
     public function testAction() {
         echo '<pre>';
         echo OSS_Utils::genUrl();
