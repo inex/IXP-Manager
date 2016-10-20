@@ -594,9 +594,9 @@ echo -n "Setting up Apache... "
 cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
-    DocumentRoot /${IXPROOT}/public
+    DocumentRoot ${IXPROOT}/public
 
-    <Directory /${IXPROOT}/public>
+    <Directory ${IXPROOT}/public>
         Options FollowSymLinks
         AllowOverride None
         Require all granted
