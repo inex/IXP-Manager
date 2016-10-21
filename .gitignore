@@ -80,3 +80,8 @@ ubuntu-xenial-16.04-cloudimg-console.log
 .ixp-manager-installer-settingsrc
 composer.phar
 tools/installers/Vagrantfile
+
+resources/skins/
+!resources/skins/.gitignore
+!resources/skins/inex/
+!resources/skins/placeholder/
