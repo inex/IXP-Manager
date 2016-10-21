@@ -14,3 +14,9 @@ use Illuminate\Http\Request;
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:api');
+
+Route::group(['middleware' => ['api']], function () {
+
+    Route::get( '/apitmp/grapher/mrtg-config', 'Services\Grapher\Api@generateConfiguration' );
+
+});
