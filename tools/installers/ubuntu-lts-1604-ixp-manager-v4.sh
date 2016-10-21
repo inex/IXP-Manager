@@ -152,7 +152,7 @@ else
     NAME="Joe Bloggs"
     USEREMAIL="root@localhost"
     USERNAME="jbloggs"
-    
+
     # generate some passwords (securely):
     MYSQL_ROOT_PW="$( openssl rand -base64 12 )"
     MYSQL_IXPM_PW="$( openssl rand -base64 12 )"
@@ -539,6 +539,7 @@ echo '[done]'
 ##################################################################
 
 echo -n "Setting up IXP Manager database... "
+cd $IXPROOT
 log_break && php artisan doctrine:schema:create &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
@@ -581,6 +582,11 @@ SET @userid = LAST_INSERT_ID();
 
 INSERT INTO contact ( custid, name, email, created, user_id ) VALUES ( @custid, '${NAME}', '${USEREMAIL}', NOW(), @userid );
 END_SQL
+
+# And seed the database:
+cd $IXPROOT
+php artisan db:seed --force
+
 
 echo '[done]'
 
