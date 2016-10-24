@@ -380,4 +380,43 @@ class VirtualInterface
     {
         $this->MACAddresses->removeElement($mACAddresses);
     }
+/**
+ * @var \Doctrine\Common\Collections\Collection
+ */
+private $sflowReceiver;
+
+
+/**
+ * Add sflowReceiver
+ *
+ * @param \Entities\SflowReceiver $sflowReceiver
+ *
+ * @return VirtualInterface
+ */
+public function addSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
+{
+$this->sflowReceiver[] = $sflowReceiver;
+
+return $this;
+}
+
+/**
+ * Remove sflowReceiver
+ *
+ * @param \Entities\SflowReceiver $sflowReceiver
+ */
+public function removeSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
+{
+$this->sflowReceiver->removeElement($sflowReceiver);
+}
+
+/**
+ * Get sflowReceiver
+ *
+ * @return \Doctrine\Common\Collections\Collection
+ */
+public function getSflowReceiver()
+{
+return $this->sflowReceiver;
+}
 }

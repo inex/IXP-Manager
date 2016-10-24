@@ -64,10 +64,10 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer'];
+            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'sflowReceiver'];
         }
 
-        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer'];
+        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'sflowReceiver'];
     }
 
     /**
@@ -472,6 +472,39 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeMACAddress', [$mACAddresses]);
 
         return parent::removeMACAddress($mACAddresses);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addSflowReceiver', [$sflowReceiver]);
+
+        return parent::addSflowReceiver($sflowReceiver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSflowReceiver', [$sflowReceiver]);
+
+        return parent::removeSflowReceiver($sflowReceiver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSflowReceiver()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSflowReceiver', []);
+
+        return parent::getSflowReceiver();
     }
 
 }
