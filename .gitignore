@@ -60,3 +60,13 @@ config/contact_group.php
 config/grapher_trunks.php
 config/mailinglists.php
     
+
+application/configs/application.ini.bup
+bird/
+config/ixp_tools.php
+ixpmanager-preferred.sql.bz2
+mrtg-shite/
+resources/skins/
+storage/grapher/
+ubuntu-xenial-16.04-cloudimg-console.log
+
