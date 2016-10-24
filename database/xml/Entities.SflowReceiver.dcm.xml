@@ -6,7 +6,7 @@
     </id>
     <field name="dst_ip" type="string" length="255" nullable="false"/>
     <field name="dst_port" type="integer" nullable="false"/>
-    <many-to-one field="virtualInterface" target-entity="Entities\VirtualInterface" inversed-by="sflowReceiver">
+    <many-to-one field="virtualInterface" target-entity="Entities\VirtualInterface" inversed-by="sflowReceivers">
       <join-columns>
         <join-column name="virtual_interface_id" referenced-column-name="id"/>
       </join-columns>
