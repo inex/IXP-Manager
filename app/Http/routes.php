@@ -25,3 +25,11 @@ Route::group(['middleware' => ['web']], function () {
         return view( 'test' );
     });
 });
+
+
+Route::group(['prefix' => 'apitmp', 'namespace' => 'Api' ], function () {
+
+    Route::get('sflow-receivers/pretag.map',    'SflowReceiverController@pretagMap');
+    Route::get('sflow-receivers/receivers.lst', 'SflowReceiverController@receiversLst');
+
+});
