@@ -51,7 +51,7 @@ class SflowReceiverController extends IXP_Controller_FrontEnd
 
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
 
-            'listOrderBy'    => 'name',
+            'listOrderBy'    => 'customer',
             'listOrderByDir' => 'ASC',
 
             'listColumns'    => [
@@ -92,7 +92,7 @@ class SflowReceiverController extends IXP_Controller_FrontEnd
     {
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select(
-                    'sr.dst_ip as dst_ip, sr.dst_port as dst_port,
+                    'sr.id as id, sr.dst_ip as dst_ip, sr.dst_port as dst_port,
                         c.name AS customer, c.id AS custid'
                 )
             ->from( '\\Entities\\SflowReceiver', 'sr' )
