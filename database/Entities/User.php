@@ -715,4 +715,35 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
      | END LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/
 
+
+    //  public static $PRIVILEGES = array(
+    //      User::AUTH_CUSTUSER  => 'CUSTUSER',
+    //      User::AUTH_CUSTADMIN => 'CUSTADMIN',
+    //      User::AUTH_SUPERUSER => 'SUPERUSER'
+    //  );
+
+    /**
+     * Return true if the user's privileges are of the given type
+     * @return bool
+     */
+    public function isSuperUser() {
+        return $this->getPrivs() === self::AUTH_SUPERUSER;
+    }
+
+    /**
+     * Return true if the user's privileges are of the given type
+     * @return bool
+     */
+    public function usCustAdmin() {
+        return $this->getPrivs() === self::AUTH_CUSTADMIN;
+    }
+
+    /**
+     * Return true if the user's privileges are of the given type
+     * @return bool
+     */
+    public function isCustUser() {
+        return $this->getPrivs() === self::AUTH_CUSTUSER;
+    }
+
 }
