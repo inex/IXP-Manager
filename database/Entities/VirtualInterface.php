@@ -68,7 +68,7 @@ class VirtualInterface
         $this->VlanInterfaces = new \Doctrine\Common\Collections\ArrayCollection();
         $this->MACAddresses = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Set name
      *
@@ -78,7 +78,7 @@ class VirtualInterface
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -101,7 +101,7 @@ class VirtualInterface
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
@@ -124,7 +124,7 @@ class VirtualInterface
     public function setMtu($mtu)
     {
         $this->mtu = $mtu;
-    
+
         return $this;
     }
 
@@ -147,7 +147,7 @@ class VirtualInterface
     public function setTrunk($trunk)
     {
         $this->trunk = $trunk;
-    
+
         return $this;
     }
 
@@ -170,7 +170,7 @@ class VirtualInterface
     public function setChannelgroup($channelgroup)
     {
         $this->channelgroup = $channelgroup;
-    
+
         return $this;
     }
 
@@ -203,7 +203,7 @@ class VirtualInterface
     public function addPhysicalInterface(\Entities\PhysicalInterface $physicalInterfaces)
     {
         $this->PhysicalInterfaces[] = $physicalInterfaces;
-    
+
         return $this;
     }
 
@@ -236,7 +236,7 @@ class VirtualInterface
     public function addVlanInterface(\Entities\VlanInterface $vlanInterfaces)
     {
         $this->VlanInterfaces[] = $vlanInterfaces;
-    
+
         return $this;
     }
 
@@ -269,7 +269,7 @@ class VirtualInterface
     public function addMACAddresses(\Entities\MACAddress $mACAddresses)
     {
         $this->MACAddresses[] = $mACAddresses;
-    
+
         return $this;
     }
 
@@ -302,7 +302,7 @@ class VirtualInterface
     public function setCustomer(\Entities\Customer $customer = null)
     {
         $this->Customer = $customer;
-    
+
         return $this;
     }
 
@@ -344,7 +344,7 @@ class VirtualInterface
     public function addMACAddresse(\Entities\MACAddress $mACAddresses)
     {
         $this->MACAddresses[] = $mACAddresses;
-    
+
         return $this;
     }
 
@@ -391,7 +391,7 @@ class VirtualInterface
  */
 public function addSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
 {
-$this->sflowReceivers[] = $sflowReceiver;
+$this->SflowReceivers[] = $sflowReceiver;
 
 return $this;
 }
@@ -403,10 +403,8 @@ return $this;
  */
 public function removeSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
 {
-$this->sflowReceivers->removeElement($sflowReceiver);
+$this->SflowReceivers->removeElement($sflowReceiver);
 }
-
-private $sflowReceivers;
 
 
 /**
@@ -416,6 +414,12 @@ private $sflowReceivers;
  */
 public function getSflowReceivers()
 {
-return $this->sflowReceivers;
+return $this->SflowReceivers;
 }
+/**
+ * @var \Doctrine\Common\Collections\Collection
+ */
+private $SflowReceivers;
+
+
 }
