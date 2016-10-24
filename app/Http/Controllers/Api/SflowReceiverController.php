@@ -23,19 +23,17 @@ class SflowReceiverController extends Controller {
     {
         $map = [];
 
-        foreach( d2r('VirtualInterface')->findAll() as $vi ) {
-            foreach( $vi->getVlanInterfaces() as $vli ) {
-                foreach( $vi->getMACAddresses() as $mac ) {
+        foreach( d2r('SflowReceiver')->findAll() as $sr ) {
+            foreach( $sr->getVirtualInterface()->getMACAddresses() as $mac ) {
 
-                    // looks like there's some crud in the MAC table so filter that:
-                    if( strlen( $mac->getMac() ) != 12 ) {
-                        continue;
-                    }
-
-                    $m['vlaninterfaceid'] = $vli->getId();
-                    $m['mac']             = $mac->getMacFormattedWithColons();
-                    $map[] = $m;
+                // looks like there's some crud in the MAC table so filter that:
+                if( strlen( $mac->getMac() ) != 12 ) {
+                    continue;
                 }
+
+                $m['virtualinterfaceid'] = $sr->getVirtualInterface()->getId();
+                $m['mac']             = $mac->getMacFormattedWithColons();
+                $map[] = $m;
             }
         }
 
@@ -53,12 +51,10 @@ class SflowReceiverController extends Controller {
         $map = [];
 
         foreach( d2r('SflowReceiver')->findAll() as $sr ) {
-            foreach( $sr->getVirtualInterface()->getVlanInterfaces() as $vli ) {
-                $m['vlaninterfaceid'] = $vli->getId();
-                $m['dst_ip']          = $sr->getDstIp();
-                $m['dst_port']        = $sr->getDstPort();
-                $map[] = $m;
-            }
+            $m['virtualinterfaceid'] = $sr->getVirtualInterface()->getId();
+            $m['dst_ip']          = $sr->getDstIp();
+            $m['dst_port']        = $sr->getDstPort();
+            $map[] = $m;
         }
 
         return response()
