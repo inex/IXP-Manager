@@ -276,4 +276,15 @@ class MACAddress extends \Entities\MACAddress implements \Doctrine\ORM\Proxy\Pro
         return parent::getVirtualInterface();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacFormattedWithColons()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMacFormattedWithColons', []);
+
+        return parent::getMacFormattedWithColons();
+    }
+
 }
