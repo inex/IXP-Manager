@@ -64,10 +64,10 @@ class SflowReceiver extends \Entities\SflowReceiver implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'dst_ip', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'dst_port', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'id', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'virtualInterface'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'dst_ip', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'dst_port', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'id', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'VirtualInterface'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'dst_ip', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'dst_port', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'id', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'virtualInterface'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'dst_ip', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'dst_port', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'id', '' . "\0" . 'Entities\\SflowReceiver' . "\0" . 'VirtualInterface'];
     }
 
     /**

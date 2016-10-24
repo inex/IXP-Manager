@@ -64,10 +64,10 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'sflowReceivers'];
+            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'sflowReceivers', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
         }
 
-        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'sflowReceivers'];
+        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'sflowReceivers', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
     }
 
     /**

@@ -1141,7 +1141,7 @@
         <attribute name="tableName">sflow_receiver</attribute>
       </orm-attributes>
     </entity>
-    <association from="\Entities\SflowReceiver" to="\Entities\VirtualInterface" owner-alias="sflowReceivers" inverse-alias="virtualInterface" many-owner="true" many-inverse="false" uuid="619331cb-7c10-46c6-ac28-f46096e91407">
+    <association from="\Entities\SflowReceiver" to="\Entities\VirtualInterface" owner-alias="SflowReceivers" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="619331cb-7c10-46c6-ac28-f46096e91407">
       <association-field from="virtual_interface_id" to="id"/>
     </association>
   </module>

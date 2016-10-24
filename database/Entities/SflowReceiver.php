@@ -25,7 +25,7 @@ private $id;
 /**
  * @var \Entities\VirtualInterface
  */
-private $virtualInterface;
+private $VirtualInterface;
 
 
 /**
@@ -95,7 +95,7 @@ return $this->id;
  */
 public function setVirtualInterface(\Entities\VirtualInterface $virtualInterface = null)
 {
-$this->virtualInterface = $virtualInterface;
+$this->VirtualInterface = $virtualInterface;
 
 return $this;
 }
@@ -107,6 +107,8 @@ return $this;
  */
 public function getVirtualInterface()
 {
-return $this->virtualInterface;
+return $this->VirtualInterface;
 }
+
+
 }
