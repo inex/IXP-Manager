@@ -159,6 +159,7 @@ class NagiosCliController extends IXP_Controller_CliAction
                             $custs[ $c->getId() ]['vints'][ $vli->getId() ][$proto]['vlan']     = $vli->getVlan()->getName();
                             $custs[ $c->getId() ]['vints'][ $vli->getId() ][$proto]['vlanid']   = $vli->getVlan()->getId();
                             $custs[ $c->getId() ]['vints'][ $vli->getId() ][$proto]['busyhost'] = $vli->getBusyhost();
+                            $custs[ $c->getId() ]['vints'][ $vli->getId() ][$proto]['proto']    = $proto;
 
                             $pi = $vi->getPhysicalInterfaces()[0];
                             $sw = $pi->getSwitchPort()->getSwitcher();
