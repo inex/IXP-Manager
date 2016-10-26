@@ -90,8 +90,7 @@ class NagiosController extends Controller {
                 continue;
             }
 
-            // FIXME um... pro bono?
-            if( !$vli->getVirtualInterface()->getCustomer()->isTypeFull() ) {
+            if( !( $vli->getVirtualInterface()->getCustomer()->isTypeFull() || $vli->getVirtualInterface()->getCustomer()->isTypeProBono() ) ) {
                 continue;
             }
 

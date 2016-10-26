@@ -109,7 +109,7 @@ class NagiosCliController extends IXP_Controller_CliAction
 
         foreach( $ixp->getCustomers() as $c )
         {
-            if( !$c->isTypeFull() || $c->hasLeft() || $c->getStatus() != \Entities\Customer::STATUS_NORMAL )
+            if( !( $c->isTypeFull() || $c->isTypeProBono() ) || $c->hasLeft() || $c->getStatus() != \Entities\Customer::STATUS_NORMAL )
                 continue;
 
             $custs[ $c->getId() ]['shortname'] = $c->getShortname();
