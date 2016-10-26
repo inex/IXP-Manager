@@ -89,7 +89,7 @@ class MeetingController extends IXP_Controller_FrontEnd
                 break;
 
             default:
-                $this->_feParams->allowedActions = [ 'simple' , 'ajax-json' ];
+                $this->_feParams->allowedActions = [ 'simple' ];
                 $this->_feParams->defaultAction = 'simple';
                 break;
         }
@@ -215,58 +215,6 @@ class MeetingController extends IXP_Controller_FrontEnd
         else
             $this->view->display( 'meeting/simple.phtml' );
     }
-
-
-    /**
-     * A simple HTML snippet for display on other websites
-     */
-    public function ajaxJsonAction()
-    {
-        $this->getResponse()->setHeader( 'Content-Type', 'application/json; charset=utf-8' );
-
-        $meetings = $this->getD2EM()->createQuery(
-                'SELECT m, mi FROM \\Entities\\Meeting m LEFT JOIN m.MeetingItems mi ORDER BY m.date DESC, mi.other_content ASC'
-            )
-            ->execute();
-
-        $j = [];
-        $i = 0;
-        foreach( $meetings as $m ) {
-            $j[$i]['title']       = $m->getTitle();
-            $j[$i]['before_text'] = $m->getBeforeText();
-            $j[$i]['after_text']  = $m->getAfterText();
-
-            $date = Carbon::instance( $m->getDate() )->setTime(
-                $m->getTime()->format('H'), $m->getTime()->format('i'), $m->getTime()->format('s') );
-            $j[$i]['date']        = $date->format('Y-m-d') . 'T' . $date->format('H:i:s') . 'Z';
-            $j[$i]['dateText']    = $date->format( 'l, F jS, Y' );
-            $j[$i]['venue']       = $m->getVenue();
-            $j[$i]['venue_url']   = $m->getVenueUrl() ? $m->getVenueUrl() : false;
-
-            foreach( $m->getMeetingItems() as $mi ) {
-                $item = [];
-
-                $item['title']         = $mi->getTitle();
-                $item['name']          = $mi->getName();
-                $item['role']          = $mi->getRole();
-                $item['email']         = $mi->getEmail();
-                $item['company']       = $mi->getCompany();
-                $item['company_url']   = $mi->getCompanyUrl();
-                $item['summary']       = $mi->getSummary();
-                $item['other_content'] = $mi->getOtherContent() ? true : false;
-
-                $j[$i]['talks'][] = $item;
-            }
-
-            $i++;
-        }
-
-        $json = json_encode($j,JSON_PRETTY_PRINT);
-        // $this->getD2Cache()->save( 'public_meeting_json', $json, 3600 );
-        echo $json;
-    }
-
-
 
 
     public function rsvpAction()

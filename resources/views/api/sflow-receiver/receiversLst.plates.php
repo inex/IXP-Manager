@@ -1,3 +1,3 @@
 <?php foreach( $map as $m ): ?>
-id=<?= $m['vlaninterfaceid'] ?>       ip=<?= $m['dst_ip'] ?>:<?= $m['dst_port'] ?>       set_tag=<?= $m['vlaninterfaceid'] ."\n"?>
+id=<?= $m['virtualinterfaceid'] ?>       ip=<?= $m['dst_ip'] ?>:<?= $m['dst_port'] ?>       tag=<?= $m['virtualinterfaceid'] ."\n"?>
 <?php endforeach; ?>
