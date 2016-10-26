@@ -39,4 +39,7 @@ Route::group(['prefix' => 'api2', 'namespace' => 'Api2' ], function () {
     Route::get('nagios/birdseye_daemons',             'NagiosController@birdseyeDaemons');
     Route::get('nagios/birdseye_daemons/{vlanid}',    'NagiosController@birdseyeDaemons');
 
+    Route::get('nagios/birdseye_bgp_sessions/rs',          'NagiosController@birdseyeRsBgpSessions');
+    Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}', 'NagiosController@birdseyeRsBgpSessions');
+
 });
