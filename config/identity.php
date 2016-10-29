@@ -11,7 +11,7 @@ return [
     'urls' => [
         // if you want to FORCE a URL (e.g. running behind a proxy) - set the following.
         // If in doubt, leave it commented out and IXP Manager will 'do the right thing'
-        // 'forceUrl' => env( 'APP_URL', https://www.example.com/portal' ),
+        // 'forceUrl' => 'https://www.example.com'
         'forceUrl' => env( 'IDENTITY_FORCE_URL', false ),
 
         // if you want to FORCE a schema (http/https) (e.g. running behind a proxy) - set the following.
