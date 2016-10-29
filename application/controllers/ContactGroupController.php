@@ -40,20 +40,29 @@ class ContactGroupController extends IXP_Controller_FrontEnd
     protected function _feInit()
     {
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-    
+
+        if( !config('contact_group.types',false) || !count(config('contact_group.types')) ) {
+            $this->addMessage( _( 'Contact groups are not configured. Please see '
+                . '<a href="https://ixp-manager.readthedocs.io/en/latest/features/contact-groups.html">this documentation</a>.' ), OSS_Message::ERROR );
+            $this->redirectAndEnsureDie( '' );
+        }
+
+
+        https://ixp-manager.readthedocs.io/en/latest/features/contact-groups.html
+
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\ContactGroup',
             'form'          => 'IXP_Form_ContactGroup',
             'pagetitle'     => 'Contact Groups',
-        
+
             'titleSingular' => 'Contact Group',
             'nameSingular'  => 'a contact group',
-        
+
             'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
-        
+
             'listOrderBy'    => 'name',
             'listOrderByDir' => 'ASC',
-        
+
             'listColumns'    => [
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'      => 'Name',
@@ -68,7 +77,7 @@ class ContactGroupController extends IXP_Controller_FrontEnd
                 ]
             ]
         ];
-    
+
         // display the same information in the view as the list
         $this->_feParams->viewColumns = array_merge(
             $this->_feParams->listColumns,
@@ -78,10 +87,10 @@ class ContactGroupController extends IXP_Controller_FrontEnd
                 'description' => 'Description'
             ]
         );
-        
+
     }
-    
-    
+
+
     /**
      * Provide array of objects for the listAction and viewAction
      *
@@ -90,7 +99,7 @@ class ContactGroupController extends IXP_Controller_FrontEnd
     protected function listGetData( $id = null )
     {
         $types = isset( $this->_options['contact']['group']['types'] ) ? $this->_options['contact']['group']['types'] : [];
-    
+
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'o.id AS id, o.name AS name, o.type AS type,
                     o.created AS created, o.description AS description,
@@ -99,7 +108,7 @@ class ContactGroupController extends IXP_Controller_FrontEnd
             ->from( '\\Entities\\ContactGroup', 'o' )
             ->where( 'o.type IN( ?1 )' )
             ->setParameter( 1, array_keys( $types ) );
-    
+
         if( isset( $this->_feParams->listOrderBy ) )
             $qb->orderBy( $this->_feParams->listOrderBy, isset( $this->_feParams->listOrderByDir ) ? $this->_feParams->listOrderByDir : 'ASC' );
 
@@ -108,7 +117,7 @@ class ContactGroupController extends IXP_Controller_FrontEnd
 
         return $qb->getQuery()->getResult();
     }
-    
+
      /**
      * Post process hook that can be overridden by subclasses for add and edit actions.
      *
@@ -129,8 +138,8 @@ class ContactGroupController extends IXP_Controller_FrontEnd
     {
         $form->getElement( 'type' )->setMultiOptions( $this->_options['contact']['group']['types'] );
     }
-    
-    
+
+
     /**
      * Postvalidation hook for add / edit
      *
@@ -146,6 +155,5 @@ class ContactGroupController extends IXP_Controller_FrontEnd
 
         return true;
     }
-    
-}
 
+}

@@ -4,6 +4,8 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Cache;
+
 /**
  * Vlan
  *

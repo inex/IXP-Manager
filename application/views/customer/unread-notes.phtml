@@ -27,13 +27,13 @@
 
 <div class="row-fluid">
     <div class="span12">
-    
+
     {if count( $notes )}
         The following customers have new or updated notes that you have not seen.
     {else}
         There are no notes for any customers that you have not seen.
     {/if}
-    
+
     </div>
 </div>
 
@@ -55,11 +55,10 @@
             {/foreach}
         </tbody>
     </table>
-    
-    
+
+
     </div>
 </div>
 {/if}
 
-<!--  script>{tmplinclude file="rs-prefixes/js/index.js"}</script -->
 {tmplinclude file="footer.phtml"}

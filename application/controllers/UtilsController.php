@@ -40,31 +40,12 @@ class UtilsController extends IXP_Controller_AuthRequiredAction
             return $this->forward( 'insufficient-permissions', 'error' );
     }
 
-
-    /**
-     * Display apcinfo()
-     */
-    public function apcinfoAction()
-    {}
-
-    /**
-     * Display apcinfo()
-     */
-    public function realApcinfoAction()
-    {
-        Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
-        @ob_end_clean();
-        $BU = Zend_Controller_Front::getInstance()->getBaseUrl() . '/utils/apcinfo';
-        require( APPLICATION_PATH . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'apcinfo.php' );
-    }
-    
-    
     /**
      * Display phpinfo
      */
     public function phpinfoAction()
     {}
-    
+
     /**
      * Display real phpinfo()
      */
@@ -75,4 +56,3 @@ class UtilsController extends IXP_Controller_AuthRequiredAction
         phpinfo();
     }
 }
-

@@ -21,21 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if( file_exists( '../MAINT_MODE_ENABLED' ) )
-{
-    define( 'MAINTENANCE_MODE', true );
-
-    // if it's an API request, we need to handle that differently
-    if( strpos( $_SERVER['REQUEST_URI'], '/apiv1/' ) !== false )
-    {
-        header( "HTTP/1.0 503 Service Unavailable - Maintenance Mode Enabled" );
-        die();
-    }
-    require_once( 'maintenance.php' );
-}
-else
-    define( 'MAINTENANCE_MODE', false );
-
 // let's time how long it takes to execute
 define( 'APPLICATION_STARTTIME', microtime( true ) );
 

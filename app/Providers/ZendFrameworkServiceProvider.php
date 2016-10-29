@@ -213,7 +213,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['identity']['logo']                  = config( 'identity.logo' );
         $options['identity']['biglogo']               = config( 'identity.biglogo' );
         $options['identity']['biglogoconf']['offset'] = config( 'identity.biglogoconf.offset' );
-        $options['identity']['misc']['irc_password']  = config( 'identity.misc.irc_password' );
         $options['identity']['vlans']['default']      = config( 'identity.vlans.default' );
 
         return $options;
