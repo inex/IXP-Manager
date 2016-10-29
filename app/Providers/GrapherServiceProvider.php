@@ -59,7 +59,7 @@ class GrapherServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        Route::group(['namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::', 'prefix' => 'grapher', 'middleware' => 'grapher' ], function(){
+        Route::group(['middleware' => 'grapher', 'namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::', 'prefix' => 'grapher'  ], function(){
             Route::get( 'ixp',               'Grapher@ixp'               );
             Route::get( 'infrastructure',    'Grapher@infrastructure'    );
             Route::get( 'vlan',              'Grapher@vlan'              );

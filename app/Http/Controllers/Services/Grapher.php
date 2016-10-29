@@ -32,6 +32,8 @@ use IXP\Http\Controllers\Controller;
 use \IXP\Services\Grapher as GrapherService;
 use \IXP\Services\Grapher\Graph;
 
+use IXP\Exceptions\Services\Grapher\GeneralException as GrapherGeneralException;
+
 use Carbon\Carbon;
 
 /**
@@ -67,7 +69,13 @@ class Grapher extends Controller
      * The graph object
      * @var \IXP\Services\Grapher\Graph
      */
-    private $graph;
+    private $graph = null;
+
+    /**
+     * The request object
+     * @var Illuminate\Http\Request $request
+     */
+    private $request = null;
 
 
     /**
@@ -75,7 +83,8 @@ class Grapher extends Controller
      */
     public function __construct( Request $request, GrapherService $grapher ) {
         $this->grapher = $grapher;
-        $this->graph  = $request->attributes->get('graph');
+        $this->request = $request;
+        // NB: Construtcor happens before middleware...
     }
 
     /**
@@ -91,7 +100,23 @@ class Grapher extends Controller
      * @return \IXP\Services\Grapher\Graph
      */
     private function graph(): Graph {
+        if( $this->graph === null ){
+            $this->graph = $this->request()->attributes->get('graph');
+
+            // if there's no graph then the middleware went wrong... safety net:
+            if( $this->graph === null ){
+                throw new GrapherGeneralException('Middleware could not load graph but did not throw a 404');
+            }
+        }
         return $this->graph;
+    }
+
+    /**
+     * Request accessor
+     * @return Illuminate\Http\Request
+     */
+    private function request(): Request {
+        return $this->request;
     }
 
 
