@@ -9,7 +9,6 @@ return [
     |
     */
     'skinning' => [
-        'view'   => env( 'VIEW_SKIN', "" ),
         // https://github.com/inex/IXP-Manager/wiki/Skinning :
         'smarty' => env( 'VIEW_SMARTY_SKIN', "" ),
     ],

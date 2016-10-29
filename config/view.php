@@ -17,7 +17,7 @@ return [
     'paths' => call_user_func( function() {
         $paths[] = realpath(base_path('resources/views'));
 
-        if( env('VIEW_SKIN', false) ) {
+        if( env( 'VIEW_SKIN', 'placeholder' ) ) {
             $paths[] = realpath(base_path('resources/skins/'.env('VIEW_SKIN')));
         }
 

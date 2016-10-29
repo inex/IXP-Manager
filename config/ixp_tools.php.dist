@@ -13,6 +13,11 @@ return [
     // See: https://github.com/inex/IXP-Manager/wiki/Route-Collector
     //
 
+    'safe_ips' => [
+        '127.0.0.1',
+        '::1',
+    ],
+
     'router' => [
         'collector' => [
             'conf'       => [
