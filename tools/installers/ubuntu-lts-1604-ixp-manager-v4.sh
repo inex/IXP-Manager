@@ -441,7 +441,6 @@ IDENTITY_CORPORATE_URL="${IXPWWW}"
 IDENTITY_LOGO="/srv/ixpmanager/public/images/ixp-manager.png"
 IDENTITY_BIGLOGO="http://www.ixpmanager.org/images/logos/ixp-manager.png"
 IDENTITY_BIGLOGO_OFFSET="offset4"
-IDENTITY_MISC_IRC_PASSWORD="xxxxxxx"
 IDENTITY_DEFAULT_VLAN=1
 IDENTITY_SWITCH_DOMAIN="example.com"
 

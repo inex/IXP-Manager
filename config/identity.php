@@ -70,10 +70,6 @@ return [
             'offset'             => env( 'IDENTITY_BIGLOGO_OFFSET', '*** CONFIG IDENTITY IN .env ***' ),
         ],
 
-    'misc'        => [
-            'irc_password'       => env( 'IDENTITY_MISC_IRC_PASSWORD', '*** CONFIG IDENTITY IN .env ***' ),
-        ],
-
     'vlans'       => [
             'default' => env( 'IDENTITY_DEFAULT_VLAN', 1 ),
         ],
