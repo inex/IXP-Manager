@@ -11,6 +11,10 @@
 |
 */
 
+if( env('IDENTITY_FORCE_URL') ) { 
+    app('url')->forceRootUrl(env('APP_URL'));
+    app('url')->forceSchema(substr(env('APP_URL'), 0, strpos(env('APP_URL'),':')));
+}            
 
 $auth = Zend_Auth::getInstance();
 
@@ -26,6 +30,7 @@ if( php_sapi_name() !== 'cli' ) {
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/test', function() {
+        dd(url('dd'));
         return view( 'test' );
     });
 
