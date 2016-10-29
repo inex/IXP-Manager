@@ -151,7 +151,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Force URL (and http/s schema) if necessary
+     * PHP Settings
      */
     private function setupPhpSettings( array $options ): array {
         $options['phpSettings']['display_startup_errors'] = config('app.debug');
