@@ -126,7 +126,7 @@
 
 {if not $showGraphs}
 
-    {assign var='ipprotoenabled' value=$proto|cat:'enabled'}
+    {assign var='ipprotoenabled' value=$proto|cat:'enabled'|capitalize}
     {assign var='ipprotoenabled' value='get'|cat:$ipprotoenabled}
 
     <div class="span6">
