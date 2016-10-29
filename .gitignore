@@ -39,12 +39,14 @@ application/views/_skins/*/router-cli/tacacs/*/key.cfg
 application/configs/rc-inex-*conf
 application/configs/rs*-inex-*.conf
 application/configs/ci-*
+application/configs/application.ini
 *.DS_Store
 
 config/contact_group.php
 config/grapher_cli.php
 config/grapher_trunks.php
 config/ixp_tools.php
+config/lookingglass.php
 config/mailinglists.php
 config/smokeping.php
 
@@ -63,8 +65,9 @@ application/views/_skins/lonap/
 config/contact_group.php
 config/grapher_trunks.php
 config/mailinglists.php
-    
 
+
+<<<<<<< HEAD
 
 # barryo local development crud
 
@@ -85,3 +88,5 @@ resources/skins/
 !resources/skins/.gitignore
 !resources/skins/inex/
 !resources/skins/placeholder/
+
+storage/grapher/

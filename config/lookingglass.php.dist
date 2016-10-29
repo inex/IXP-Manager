@@ -1,0 +1,26 @@
+<?php
+
+// Looking Glass Definitions.
+//
+// aka route server / collector definitions.
+//
+// Temporary solution as we need to put this in the database but need to work out the
+// schema first.
+
+return [
+
+    // route collectors/servers available on VLANs (by VLAN database ID)
+
+    // $vlanid => [
+    //     'rs|rc|rc-quarantine' => [
+    //         'name'       => 'INEX Cork - Route Collector #1 - IPv4',
+    //         'peering_ip' => '192.0.2.126',
+    //         'protocol'   => 4,
+    //         'type'       => 'bird',
+    //         'mgmt_ip'    => '10.0.0.126',
+    //         'api'        => 'http://rc1-cork-ipv4.inex.ie/api',
+    //         'api_type'   => 'birdseye',
+    //         'access'     => Entities\User::AUTH_CUSTUSER,
+    //     ],
+
+];

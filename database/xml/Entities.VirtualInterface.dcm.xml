@@ -17,5 +17,6 @@
     <one-to-many field="PhysicalInterfaces" target-entity="Entities\PhysicalInterface" mapped-by="VirtualInterface"/>
     <one-to-many field="VlanInterfaces" target-entity="Entities\VlanInterface" mapped-by="VirtualInterface"/>
     <one-to-many field="MACAddresses" target-entity="Entities\MACAddress" mapped-by="VirtualInterface"/>
+    <one-to-many field="SflowReceivers" target-entity="Entities\SflowReceiver" mapped-by="VirtualInterface"/>
   </entity>
 </doctrine-mapping>

@@ -44,14 +44,14 @@ class MACAddress
     public function setFirstseen($firstseen)
     {
         $this->firstseen = $firstseen;
-    
+
         return $this;
     }
 
     /**
      * Get firstseen
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFirstseen()
     {
@@ -67,14 +67,14 @@ class MACAddress
     public function setLastseen($lastseen)
     {
         $this->lastseen = $lastseen;
-    
+
         return $this;
     }
 
     /**
      * Get lastseen
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastseen()
     {
@@ -90,14 +90,14 @@ class MACAddress
     public function setMac($mac)
     {
         $this->mac = $mac;
-    
+
         return $this;
     }
 
     /**
      * Get mac
      *
-     * @return string 
+     * @return string
      */
     public function getMac()
     {
@@ -107,7 +107,7 @@ class MACAddress
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -123,17 +123,22 @@ class MACAddress
     public function setVirtualInterface(\Entities\VirtualInterface $virtualInterface = null)
     {
         $this->VirtualInterface = $virtualInterface;
-    
+
         return $this;
     }
 
     /**
      * Get VirtualInterface
      *
-     * @return Entities\VirtualInterface 
+     * @return Entities\VirtualInterface
      */
     public function getVirtualInterface()
     {
         return $this->VirtualInterface;
+    }
+
+
+    public function getMacFormattedWithColons() {
+        return strtolower( implode( ':', str_split( $this->getMac(), 2 ) ) );
     }
 }

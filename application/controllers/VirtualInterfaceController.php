@@ -195,11 +195,12 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
 
-            $this->view->ptypes   = \Entities\SwitchPort::$TYPES;
-            $this->view->cust     = $object->getCustomer();
-            $this->view->physInts = $object->getPhysicalInterfaces();
-            $this->view->vlanInts = $object->getVlanInterfaces();
-            $this->view->type     = $object->getType();
+            $this->view->ptypes         = \Entities\SwitchPort::$TYPES;
+            $this->view->cust           = $object->getCustomer();
+            $this->view->physInts       = $object->getPhysicalInterfaces();
+            $this->view->vlanInts       = $object->getVlanInterfaces();
+            $this->view->sflowReceivers = $object->getSflowReceivers();
+            $this->view->type           = $object->getType();
         }
     }
 
