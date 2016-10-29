@@ -9,11 +9,7 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="{genUrl}">
-                {if $smarty.const.MAINTENANCE_MODE}
-                    MAINTENANCE MODE
-                {else}
-                    {$options.identity.sitename}
-                {/if}
+                {$options.identity.sitename}
             </a>
             {if isset( $hasIdentity ) and $hasIdentity}
                 <div class="nav-collapse">

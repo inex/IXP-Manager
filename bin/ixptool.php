@@ -77,8 +77,7 @@ catch( Zend_Console_Getopt_Exception $e )
     exit( $e->getMessage() ."\n\n". $e->getUsageMessage() );
 }
 
-if( !isset( $opts->f ) && file_exists( '../MAINT_MODE_ENABLED' ) )
-{
+if( !isset( $opts->f ) && $app->isDownForMaintenance() ) {
     die( "IXPtool - CLI tool exiting as maintenance mode is enabled. Use -f to force.\n" );
 }
 
