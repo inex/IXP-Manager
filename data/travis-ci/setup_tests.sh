@@ -34,4 +34,4 @@ composer install
 mysql -e "CREATE DATABASE myapp_test CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';"
 bzcat data/travis-ci/travis_ci_test_db.sql.bz2  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u travis myapp_test
 
-php -S 127.0.0.1:8080 -t public/  &>php-built-in.log &
+./artisan serve  &>php-built-in.log &
