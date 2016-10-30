@@ -11,11 +11,6 @@
 |
 */
 
-if( env('IDENTITY_FORCE_URL') ) { 
-    app('url')->forceRootUrl(env('APP_URL'));
-    app('url')->forceSchema(substr(env('APP_URL'), 0, strpos(env('APP_URL'),':')));
-}            
-
 $auth = Zend_Auth::getInstance();
 
 // phpunit trips up here:
@@ -57,3 +52,5 @@ Route::group(['prefix' => 'api2', 'namespace' => 'Api2' ], function () {
     Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}', 'NagiosController@birdseyeRsBgpSessions');
 
 });
+
+Route::get( 'apitmp-grapher/mrtg-config', 'Services\Grapher\Api@generateConfiguration' );
