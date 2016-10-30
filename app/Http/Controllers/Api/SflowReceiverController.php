@@ -1,25 +1,16 @@
-<?php namespace IXP\Http\Controllers\Api;
+<?php
+
+namespace IXP\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 
 class SflowReceiverController extends Controller {
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct( Request $request )
-    {
-        parent::__construct();
-        $this->assertSuperUser($request);
-    }
-
-    /**
      *
      * @return Response
      */
-    public function pretagMap()
+    public function pretagMap( Request $request )
     {
         $map = [];
 
@@ -46,7 +37,7 @@ class SflowReceiverController extends Controller {
      *
      * @return Response
      */
-    public function receiversLst()
+    public function receiversLst( Request $request )
     {
         $map = [];
 

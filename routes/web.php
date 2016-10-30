@@ -36,13 +36,6 @@ Route::group(['middleware' => ['web']], function () {
 });
 
 
-Route::group(['prefix' => 'apitmp', 'namespace' => 'Api' ], function () {
-
-    Route::get('sflow-receivers/pretag.map',    'SflowReceiverController@pretagMap');
-    Route::get('sflow-receivers/receivers.lst', 'SflowReceiverController@receiversLst');
-
-});
-
 Route::group(['prefix' => 'api2', 'namespace' => 'Api2' ], function () {
 
     Route::get('nagios/birdseye_daemons',             'NagiosController@birdseyeDaemons');

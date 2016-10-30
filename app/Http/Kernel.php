@@ -33,9 +33,10 @@ class Kernel extends HttpKernel {
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
-        'api' => [
+        'api/v4' => [
             'throttle:60,1',
             'bindings',
+            'apiauth'
         ],
 
         'grapher' => [
@@ -56,7 +57,9 @@ class Kernel extends HttpKernel {
         'guest'      => \IXP\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
-        'grapher'    => \IXP\Http\Middleware\Services\Grapher::class,
+        'apiauth'          => \IXP\Http\Middleware\ApiAuthenticate::class,
+        'grapher'          => \IXP\Http\Middleware\Services\Grapher::class,
+        'assert.privilege' => \IXP\Http\Middleware\AssertUserPrivilege::class,
     ];
 
 }

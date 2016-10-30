@@ -12,7 +12,7 @@ class NagiosController extends Controller {
     public function __construct( Request $request )
     {
         parent::__construct();
-        $this->assertSuperUser($request);
+        //$this->assertSuperUser($request);
     }
 
 
