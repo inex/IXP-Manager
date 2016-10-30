@@ -24,17 +24,13 @@ if( php_sapi_name() !== 'cli' ) {
 }
 
 Route::group(['middleware' => ['web']], function () {
-    Route::get('/test', function() {
-        dd(url('dd'));
-        return view( 'test' );
-    });
-
-    Route::get('/layout', function() {
-        return view( 'layout' );
-    });
+    // Route::get('/test', function() {
+    //     dd(url('dd'));
+    //     return view( 'test' );
+    // });
+    //
+    // Route::get('/layout', function() {
+    //     return view( 'layout' );
+    // });
 
 });
-
-
-
-Route::get( 'apitmp-grapher/mrtg-config', 'Services\Grapher\Api@generateConfiguration' );

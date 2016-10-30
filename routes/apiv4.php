@@ -28,5 +28,4 @@ Route::group( ['middleware' => 'assert.privilege:' . Entities\User::AUTH_SUPERUS
     Route::get('nagios/birdseye_bgp_sessions/rs',          'NagiosController@birdseyeRsBgpSessions');
     Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}', 'NagiosController@birdseyeRsBgpSessions');
 
-
 });

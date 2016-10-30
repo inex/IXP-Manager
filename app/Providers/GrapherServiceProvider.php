@@ -28,6 +28,8 @@ use Illuminate\Support\ServiceProvider;
 use IXP\Exceptions\Services\Grapher\ConfigurationException;
 use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherRendererExtension;
 
+use Entities\User as UserEntity;
+
 use Cache;
 use Config;
 use Route;
@@ -72,6 +74,12 @@ class GrapherServiceProvider extends ServiceProvider {
             Route::get( 'p2p',               'Grapher@p2p'               ); // member vlan interface
         });
 
+        Route::group(['middleware' => [ 'api/v4', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
+                'namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::' ], function(){
+                    
+            Route::get( 'api/v4/grapher/mrtg-config', 'Grapher\Api@generateConfiguration' );
+        });
+        
         // we have a few rendering functions we want to include here:
         $this->app->make('League\Plates\Engine')->loadExtension(new GrapherRendererExtension());
     }

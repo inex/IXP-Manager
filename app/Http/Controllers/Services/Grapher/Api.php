@@ -54,12 +54,6 @@ class Api extends Controller
      * Constructor
      */
     public function __construct( Request $request, GrapherService $grapher ) {
-
-        // FIXME tmp barryo
-        if( isset($_SERVER['REMOTE_ADDR'] ) && !in_array( $_SERVER['REMOTE_ADDR'], config('ixp_tools.safe_ips',[] ) ) ) {
-            abort(403, 'Unauthorised access.');
-        }
-
         $this->grapher = $grapher;
     }
 
