@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers\Api;
+namespace IXP\Http\Controllers\Api\V4;
 
 use Illuminate\Http\Request;
 

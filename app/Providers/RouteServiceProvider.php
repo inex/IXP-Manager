@@ -35,7 +35,7 @@ class RouteServiceProvider extends ServiceProvider {
     public function map()
     {
         $this->mapWebRoutes();
-        $this->mapApiRoutes();
+        $this->mapApiV4Routes();
         //
     }
     /**
@@ -61,11 +61,11 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapApiRoutes()
+    protected function mapApiV4Routes()
     {
         Route::group([
             'middleware' => 'api/v4',
-            'namespace' => $this->namespace,
+            'namespace' => $this->namespace . '\\Api\\V4',
             'prefix' => 'api/v4',
         ], function ($router) {
             require base_path('routes/apiv4.php');

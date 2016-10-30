@@ -16,11 +16,17 @@ use Illuminate\Http\Request;
 //     curl -X GET -H "X-IXP-Manager-API-Key: mySuperSecretApiKey" http://ixpv.dev/api/v4/test
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
+
+// all routes in this group require auth (handled by IXP\Http\Kernel.php) and AUTH_SUPERUSER privs:
 Route::group( ['middleware' => 'assert.privilege:' . Entities\User::AUTH_SUPERUSER ], function() {
 
-    Route::get('sflow-receivers/pretag.map',    'Api\SflowReceiverController@pretagMap');
-    Route::get('sflow-receivers/receivers.lst', 'Api\SflowReceiverController@receiversLst');
+    Route::get('sflow-receivers/pretag.map',    'SflowReceiverController@pretagMap');
+    Route::get('sflow-receivers/receivers.lst', 'SflowReceiverController@receiversLst');
 
+    Route::get('nagios/birdseye_daemons',                  'NagiosController@birdseyeDaemons');
+    Route::get('nagios/birdseye_daemons/{vlanid}',         'NagiosController@birdseyeDaemons');
+    Route::get('nagios/birdseye_bgp_sessions/rs',          'NagiosController@birdseyeRsBgpSessions');
+    Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}', 'NagiosController@birdseyeRsBgpSessions');
 
 
 });

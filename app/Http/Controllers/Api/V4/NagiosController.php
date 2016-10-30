@@ -1,20 +1,10 @@
-<?php namespace IXP\Http\Controllers\Api2;
+<?php
+
+namespace IXP\Http\Controllers\Api\V4;
 
 use Illuminate\Http\Request;
 
 class NagiosController extends Controller {
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct( Request $request )
-    {
-        parent::__construct();
-        //$this->assertSuperUser($request);
-    }
-
 
     private function generateBirdseyeDaemonMap( $class, &$map ) {
         foreach( $class as $key => $details ) {
