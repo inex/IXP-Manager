@@ -81,7 +81,8 @@ class GrapherServiceProvider extends ServiceProvider {
         });
         
         // we have a few rendering functions we want to include here:
-        $this->app->make('League\Plates\Engine')->loadExtension(new GrapherRendererExtension());
+        $this->app->make('Foil\Engine')->loadExtension( new GrapherRendererExtension(), [] );
+
     }
 
     /**

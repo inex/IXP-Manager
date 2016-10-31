@@ -4,9 +4,69 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c8f4696e82aa694a64e4c3bd6a1877ea",
-    "content-hash": "9ffd64f67fe22bdc3ad39541f40a6c11",
+    "hash": "28232d811b16215f51c32ec46db4986c",
+    "content-hash": "bb6ba92a0d2396a850987de1d850af4a",
     "packages": [
+        {
+            "name": "aura/html",
+            "version": "2.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/auraphp/Aura.Html.git",
+                "reference": "ee01e1d51a3e9a713e85e2144eb220c5fc459283"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/auraphp/Aura.Html/zipball/ee01e1d51a3e9a713e85e2144eb220c5fc459283",
+                "reference": "ee01e1d51a3e9a713e85e2144eb220c5fc459283",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "aura/di": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "aura": {
+                    "type": "library",
+                    "config": {
+                        "common": "Aura\\Html\\_Config\\Common"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Aura\\Html\\": "src/",
+                    "Aura\\Html\\_Config\\": "config/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Aura.Html Contributors",
+                    "homepage": "https://github.com/auraphp/Aura.Html/contributors"
+                }
+            ],
+            "description": "Provides HTML escapers and helpers, including form input helpers.",
+            "homepage": "https://github.com/auraphp/Aura.Html",
+            "keywords": [
+                "Escape",
+                "escaper",
+                "escapers",
+                "escaping",
+                "form",
+                "helper",
+                "helpers",
+                "html",
+                "input"
+            ],
+            "time": "2016-09-29 17:27:16"
+        },
         {
             "name": "classpreloader/classpreloader",
             "version": "dev-master",
@@ -168,12 +228,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "6c1b03f643fc4c388318dc3d754555c41a1cf732"
+                "reference": "0e7ac7811c67d1c4fe93e0fe44d11c90e09d6b20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/6c1b03f643fc4c388318dc3d754555c41a1cf732",
-                "reference": "6c1b03f643fc4c388318dc3d754555c41a1cf732",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/0e7ac7811c67d1c4fe93e0fe44d11c90e09d6b20",
+                "reference": "0e7ac7811c67d1c4fe93e0fe44d11c90e09d6b20",
                 "shasum": ""
             },
             "require": {
@@ -183,7 +243,7 @@
                 "doctrine/common": ">2.2,<2.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "~5.0",
+                "phpunit/phpunit": "^5.6.2",
                 "predis/predis": "~1.0"
             },
             "type": "library",
@@ -229,7 +289,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2016-10-26 23:08:41"
+            "time": "2016-10-29 11:43:38"
         },
         {
             "name": "doctrine/collections",
@@ -693,6 +753,112 @@
             "time": "2016-09-10 18:51:13"
         },
         {
+            "name": "evenement/evenement",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/igorw/evenement.git",
+                "reference": "35e87541d4b53c22201519fce3caaa5b38ac8164"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/igorw/evenement/zipball/35e87541d4b53c22201519fce3caaa5b38ac8164",
+                "reference": "35e87541d4b53c22201519fce3caaa5b38ac8164",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Evenement": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch",
+                    "homepage": "http://wiedler.ch/igor/"
+                }
+            ],
+            "description": "Événement is a very simple event dispatching library for PHP",
+            "keywords": [
+                "event-dispatcher",
+                "event-emitter"
+            ],
+            "time": "2014-07-09 21:08:03"
+        },
+        {
+            "name": "foil/foil",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FoilPHP/Foil.git",
+                "reference": "cab766473a28a1d266d7fc96f34c2b39f4fd93ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FoilPHP/Foil/zipball/cab766473a28a1d266d7fc96f34c2b39f4fd93ee",
+                "reference": "cab766473a28a1d266d7fc96f34c2b39f4fd93ee",
+                "shasum": ""
+            },
+            "require": {
+                "aura/html": "~2.4",
+                "evenement/evenement": "~2.0",
+                "igorw/get-in": "~1.0",
+                "php": ">=5.4",
+                "pimple/pimple": "~3.0"
+            },
+            "require-dev": {
+                "brain/monkey": "~1.1",
+                "mockery/mockery": "0.9.3",
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Foil\\": "src/"
+                },
+                "files": [
+                    "inc/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Giuseppe Mazzapica",
+                    "email": "giuseppe.mazzapica@gmail.com",
+                    "homepage": "http://gm.zoomlab.it",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP template engine for native PHP templates",
+            "homepage": "https://github.com/Giuseppe-Mazzapica/Foil",
+            "keywords": [
+                "template engine",
+                "templates"
+            ],
+            "time": "2016-09-06 12:50:22"
+        },
+        {
             "name": "guzzlehttp/guzzle",
             "version": "dev-master",
             "source": {
@@ -869,6 +1035,51 @@
                 "url"
             ],
             "time": "2016-08-03 09:33:34"
+        },
+        {
+            "name": "igorw/get-in",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/igorw/get-in.git",
+                "reference": "e2bfd524906ba62fe03a80cd3efd3ec635850a1b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/igorw/get-in/zipball/e2bfd524906ba62fe03a80cd3efd3ec635850a1b",
+                "reference": "e2bfd524906ba62fe03a80cd3efd3ec635850a1b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/get_in.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                }
+            ],
+            "description": "Functions for hash map (assoc array) traversal.",
+            "keywords": [
+                "assoc-array",
+                "hash-map"
+            ],
+            "time": "2015-01-07 21:56:59"
         },
         {
             "name": "intervention/image",
@@ -1240,12 +1451,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "172f9d63fa9787ad785f2e8358c952b001e5c893"
+                "reference": "174490baa3707b26f0bc118e44e2256587b1ff2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/172f9d63fa9787ad785f2e8358c952b001e5c893",
-                "reference": "172f9d63fa9787ad785f2e8358c952b001e5c893",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/174490baa3707b26f0bc118e44e2256587b1ff2a",
+                "reference": "174490baa3707b26f0bc118e44e2256587b1ff2a",
                 "shasum": ""
             },
             "require": {
@@ -1360,7 +1571,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-10-28 19:13:09"
+            "time": "2016-10-31 14:21:10"
         },
         {
             "name": "league/flysystem",
@@ -1444,58 +1655,6 @@
                 "storage"
             ],
             "time": "2016-10-19 21:24:27"
-        },
-        {
-            "name": "league/plates",
-            "version": "3.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/plates.git",
-                "reference": "2d8569e9f140a70d6a05db38006926f7547cb802"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/plates/zipball/2d8569e9f140a70d6a05db38006926f7547cb802",
-                "reference": "2d8569e9f140a70d6a05db38006926f7547cb802",
-                "shasum": ""
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "~1.4.0",
-                "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "~1.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "League\\Plates\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jonathan Reinink",
-                    "email": "jonathan@reinink.ca",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Plates, the native PHP template system that's fast, easy to use and easy to extend.",
-            "homepage": "http://platesphp.com",
-            "keywords": [
-                "league",
-                "package",
-                "templates",
-                "templating",
-                "views"
-            ],
-            "time": "2015-07-09 02:14:40"
         },
         {
             "name": "mmucklo/inflect",
@@ -1987,6 +2146,52 @@
             "time": "2016-10-17 15:23:22"
         },
         {
+            "name": "pimple/pimple",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/silexphp/Pimple.git",
+                "reference": "44515c40a4c4effc53c1e6c0e7158f711473dc98"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/44515c40a4c4effc53c1e6c0e7158f711473dc98",
+                "reference": "44515c40a4c4effc53c1e6c0e7158f711473dc98",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pimple": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Pimple, a simple Dependency Injection Container",
+            "homepage": "http://pimple.sensiolabs.org",
+            "keywords": [
+                "container",
+                "dependency injection"
+            ],
+            "time": "2016-09-10 19:36:25"
+        },
+        {
             "name": "psr/http-message",
             "version": "dev-master",
             "source": {
@@ -2161,12 +2366,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "fe152ef1eee94c42a1ad24478fc7200299c328c7"
+                "reference": "34447f3f0f1f4ed4997f18b610f5589015eb004f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/fe152ef1eee94c42a1ad24478fc7200299c328c7",
-                "reference": "fe152ef1eee94c42a1ad24478fc7200299c328c7",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/34447f3f0f1f4ed4997f18b610f5589015eb004f",
+                "reference": "34447f3f0f1f4ed4997f18b610f5589015eb004f",
                 "shasum": ""
             },
             "require": {
@@ -2179,6 +2384,7 @@
             "require-dev": {
                 "apigen/apigen": "^4.1",
                 "codeception/aspect-mock": "1.0.0",
+                "doctrine/annotations": "~1.2.0",
                 "goaop/framework": "1.0.0-alpha.2",
                 "ircmaxell/random-lib": "^1.1",
                 "jakub-onderka/php-parallel-lint": "^0.9.0",
@@ -2234,7 +2440,7 @@
                 "identifier",
                 "uuid"
             ],
-            "time": "2016-10-26 14:58:11"
+            "time": "2016-10-31 14:25:20"
         },
         {
             "name": "smarty/smarty",
@@ -3300,12 +3506,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
-                "reference": "19c01ae6aa626e687c2c0a598aaa2e4c77dff516"
+                "reference": "c9eb6ef03347ada4aea24becb55a217be3c8a784"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/19c01ae6aa626e687c2c0a598aaa2e4c77dff516",
-                "reference": "19c01ae6aa626e687c2c0a598aaa2e4c77dff516",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/c9eb6ef03347ada4aea24becb55a217be3c8a784",
+                "reference": "c9eb6ef03347ada4aea24becb55a217be3c8a784",
                 "shasum": ""
             },
             "require": {
@@ -3331,7 +3537,7 @@
             ],
             "description": "PHP Client for Zendesk REST API. See http://developer.zendesk.com/api-docs",
             "homepage": "https://github.com/zendesk/zendesk_api_client_php",
-            "time": "2016-10-21 02:34:07"
+            "time": "2016-10-30 12:35:11"
         },
         {
             "name": "zendframework/zendframework1",

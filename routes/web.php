@@ -24,13 +24,20 @@ if( php_sapi_name() !== 'cli' ) {
 }
 
 Route::group(['middleware' => ['web']], function () {
-    // Route::get('/test', function() {
-    //     dd(url('dd'));
-    //     return view( 'test' );
-    // });
+    Route::get('/test', function() {
+        return view( 'test' );
+    });
+    Route::get('/test2', function() {
+        return view( 'test2' );
+    });
+    Route::get('/test3', function() {
+        return view( 'test3' );
+    });
     //
     // Route::get('/layout', function() {
     //     return view( 'layout' );
     // });
 
 });
+
+set_time_limit(0);

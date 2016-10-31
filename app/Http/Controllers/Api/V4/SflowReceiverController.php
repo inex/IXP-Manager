@@ -29,7 +29,7 @@ class SflowReceiverController extends Controller {
         }
 
         return response()
-                ->view('api/sflow-receiver/pretagMap', ['map' => $map], 200)
+                ->view('api/v4/sflow-receiver/pretagMap', ['map' => $map], 200)
                 ->header('Content-Type', 'text/html; charset=utf-8');
     }
 
@@ -49,7 +49,7 @@ class SflowReceiverController extends Controller {
         }
 
         return response()
-                ->view('api/sflow-receiver/receiversLst', ['map' => $map], 200)
+                ->view('api/v4/sflow-receiver/receiversLst', ['map' => $map], 200)
                 ->header('Content-Type', 'text/html; charset=utf-8');
     }
 

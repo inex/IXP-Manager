@@ -10,7 +10,7 @@
 
     <title><?= config('identity.orgname', '' ) ?> IXP Manager</title>
 
-<?php $this->insert('resources/css') ?>
+<?= $this->insert('resources/css') ?>
 
 <?php if( ( Auth::guest() || !Auth::user()->isSuperUser() ) /* && ( !isset( $mode ) || $mode != 'fluid' ) */ ): ?>
     <style>
@@ -26,8 +26,8 @@
 
 </head>
 <body>
-<?= $this->section('body') ?>
+<?= $this->renderSection('body') ?>
 
-<?php $this->insert('resources/js') ?>
+<?= $this->insert('resources/js') ?>
 </body>
 </html>

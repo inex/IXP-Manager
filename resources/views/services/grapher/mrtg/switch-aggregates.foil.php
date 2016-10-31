@@ -16,7 +16,7 @@
 ###
 ###
 ###
-### AGGREGATE GRAPHS
+### SWITCH AGGREGATE GRAPHS
 ###
 ### Source:    <?php echo $this->path() . "\n"; ?>
 ###
@@ -25,40 +25,25 @@
 #####################################################################################################################
 
 <?php
-    foreach( $data['infras'] as $infraid => $infra ):
+    foreach( $t->data['sws'] as $switchid => $switch ):
 
-        if( !isset( $data['infraports'][$infra->getId()] ) ):
+        if( !isset( $t->data['swports'][$switch->getId()] ) ):
             continue;
         endif;
 
-        $this->insert(
+        echo $t->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "ixp%03d_infra%03d", $ixp->getId(), $infra->getId() ),
-                'portIds'      => $data['infraports'][$infra->getId()],
-                'data'         => $data,
-                'graphTitle'   => sprintf( config('identity.orgname') . " %%s / second on %s", $infra->getName() ),
-                'directory'    => sprintf( "infras/%03d", $infraid ),
+                'mrtgPrefix'   => sprintf( "switch-aggregate-%05d", $switch->getId() ),
+                'portIds'      => $t->data['swports'][$switch->getId()],
+                'data'         => $t->data,
+                'graphTitle'   => sprintf( config('identity.orgname') . " - Peering %%s / second on %s", $switch->getName() ),
+                'directory'    => sprintf( "switches/%03d", $switchid ),
             ]
-        );
+        ) . "\n\n\n\n";
 
-    endforeach; // foreach( $data['infras'] as $infraid => $infra ):
-
-    if( isset( $data['ixpports'] ) ):
-        $this->insert(
-            "services/grapher/mrtg/target", [
-                'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "ixp%03d", $ixp->getId() ),
-                'portIds'      => $data['ixpports'],
-                'data'         => $data,
-                'graphTitle'   => sprintf( config('identity.orgname') . " - %%s / second" ),
-                'directory'    => sprintf( "ixp" ),
-            ]
-        );
-    endif;
+    endforeach;
 ?>
-
-
 
 #####################################################################################################################
 #####################################################################################################################

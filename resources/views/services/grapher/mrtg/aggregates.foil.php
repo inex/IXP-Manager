@@ -16,34 +16,54 @@
 ###
 ###
 ###
-### SWITCH AGGREGATE GRAPHS
+### AGGREGATE GRAPHS
 ###
-### Source:    <?php echo $this->path() . "\n"; ?>
+### Source:    <?php echo $t->path() . "\n"; ?>
 ###
 #####################################################################################################################
 #####################################################################################################################
 #####################################################################################################################
 
 <?php
-    foreach( $data['sws'] as $switchid => $switch ):
+    foreach( $t->data['infras'] as $infraid => $infra ):
 
-        if( !isset( $data['swports'][$switch->getId()] ) ):
+        if( !isset( $t->data['infraports'][$infra->getId()] ) ):
             continue;
         endif;
 
-        $this->insert(
+        echo $t->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                'mrtgPrefix'   => sprintf( "switch-aggregate-%05d", $switch->getId() ),
-                'portIds'      => $data['swports'][$switch->getId()],
-                'data'         => $data,
-                'graphTitle'   => sprintf( config('identity.orgname') . " - Peering %%s / second on %s", $switch->getName() ),
-                'directory'    => sprintf( "switches/%03d", $switchid ),
+                'mrtgPrefix'   => sprintf( "ixp%03d_infra%03d", $t->ixp->getId(), $infra->getId() ),
+                'portIds'      => $t->data['infraports'][$infra->getId()],
+                'data'         => $t->data,
+                'graphTitle'   => sprintf( config('identity.orgname') . " %%s / second on %s", $infra->getName() ),
+                'directory'    => sprintf( "infras/%03d", $infraid ),
             ]
         );
+        
+        echo "\n\n\n";
 
-    endforeach;
+    endforeach; // foreach( $t->data['infras'] as $infraid => $infra ):
 ?>
+
+
+<?php
+    if( isset( $t->data['ixpports'] ) ):
+        echo $t->insert(
+            "services/grapher/mrtg/target", [
+                'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                'mrtgPrefix'   => sprintf( "ixp%03d", $t->ixp->getId() ),
+                'portIds'      => $t->data['ixpports'],
+                'data'         => $t->data,
+                'graphTitle'   => sprintf( config('identity.orgname') . " - %%s / second" ),
+                'directory'    => sprintf( "ixp" ),
+            ]
+        );
+    endif;
+?>
+
+
 
 #####################################################################################################################
 #####################################################################################################################

@@ -13,7 +13,7 @@
 //   on <?= date('Y-m-d H:i:s' ) ?>.
 
 return [
-<?php foreach( $trunks as $t ): ?>
+<?php foreach( $t->trunks as $t ): ?>
     '<?= $t[1] ?>' => [
         'ixpid' => <?= $t[0] ?>,
         'name'  => '<?= $t[1] ?>',

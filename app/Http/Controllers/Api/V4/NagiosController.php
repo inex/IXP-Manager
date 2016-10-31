@@ -41,7 +41,7 @@ class NagiosController extends Controller {
         }
 
         return response()
-                ->view('api2/nagios/birdseye-daemons', ['map' => $map, 'vlanid' => $vlanid], 200)
+                ->view('api/v4/nagios/birdseye-daemons', ['map' => $map, 'vlanid' => $vlanid], 200)
                 ->header('Content-Type', 'text/html; charset=utf-8');
     }
 
@@ -115,7 +115,7 @@ class NagiosController extends Controller {
         }
 
         return response()
-                ->view('api2/nagios/birdseye-rs-bgp-daemons', ['map' => $map, 'vlanid' => $vlanid], 200)
+                ->view('api/v4/nagios/birdseye-rs-bgp-daemons', ['map' => $map, 'vlanid' => $vlanid], 200)
                 ->header('Content-Type', 'text/html; charset=utf-8');
     }
 

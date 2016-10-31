@@ -1,15 +1,15 @@
 <?php namespace IXP\Services;
 
 use Illuminate\View\Engines\EngineInterface;
-use League\Plates\Engine as LeaguePlatesEngine;
-use League\Plates\Template;
 
-class PlatesEngine implements EngineInterface
+use Foil\Engine as EngineFoil;
+
+class FoilEngine implements EngineInterface
 {
     /** @var PlatesEngine */
     private $engine;
 
-    public function __construct(LeaguePlatesEngine $engine)
+    public function __construct(EngineFoil $engine)
     {
         $this->engine = $engine;
     }
@@ -23,9 +23,7 @@ class PlatesEngine implements EngineInterface
      */
     public function get($path, array $data = array())
     {
-        $path = substr($path, strlen($this->engine->getDirectory()));
-        $path = substr($path, 0, -strlen('.'.$this->engine->getFileExtension()));
-
         return $this->engine->render($path, $data);
     }
+
 }

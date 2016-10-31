@@ -10,7 +10,7 @@ define command{
         command_line    /usr/local/nagios-plugins-other/nagios-check-birdseye-bgp-sessions.php -a $ARG1$ -p $ARG2$ -n
 }
 
-<?php foreach( $map as $m ): ?>
+<?php foreach( $t->map as $m ): ?>
 
 define service     {
         use                     generic-service

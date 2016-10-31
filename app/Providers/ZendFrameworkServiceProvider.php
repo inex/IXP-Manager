@@ -227,6 +227,8 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['peering_manager']['testnote']  = config( 'ixp.peering_manager.testnote' );
         $options['peering_manager']['testdate']  = config( 'ixp.peering_manager.testdate' );
 
+        $options['peeringdb']['url'] = "https://www.peeringdb.com/view.php?asn=%ASN%";
+
         return $options;
     }
 

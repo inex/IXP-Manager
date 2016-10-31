@@ -25,8 +25,7 @@
 #####################################################################################################################
 
 <?php
-    foreach( $data['custs'] as $c ):
-
+    foreach( $t->data['custs'] as $c ):
 ?>
 
 #####################################################################################################################
@@ -39,59 +38,59 @@
 
 <?php
 
-        if( !isset( $data['custports'][$c->getId()] ) ):
+        if( !isset( $t->data['custports'][$c->getId()] ) ):
             continue;
         endif;
 
         // individual member ports:
-        foreach( $data['custports'][$c->getId()] as $piid ):
+        foreach( $t->data['custports'][$c->getId()] as $piid ):
 
-            $this->insert(
+            echo $this->insert(
                 "services/grapher/mrtg/target", [
                     'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
                     'mrtgPrefix'   => sprintf( "pi%05d", $piid ),
                     'portIds'      => [ $piid ],
-                    'data'         => $data,
-                    'graphTitle'   => sprintf( "%s -- %s -- %s -- %%s / second", $c->getAbbreviatedName(), $data['pis'][$piid]->getSwitchPort()->getName(),
-                            $data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
+                    'data'         => $t->data,
+                    'graphTitle'   => sprintf( "%s -- %s -- %s -- %%s / second", $c->getAbbreviatedName(), $t->data['pis'][$piid]->getSwitchPort()->getName(),
+                            $t->data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
                         ),
                     'directory'    => sprintf("members/%x/%05d/ints", $c->getId() % 16, $c->getId()),
                 ]
-            );
+            ) . "\n\n\n";
 
         endforeach;
 
         // individual LAG aggregates
-        if( isset( $data['custlags'][$c->getId()] ) ):
+        if( isset( $t->data['custlags'][$c->getId()] ) ):
 
-            foreach( $data['custlags'][$c->getId()] as $viid => $pis ):
+            foreach( $t->data['custlags'][$c->getId()] as $viid => $pis ):
 
-                $this->insert(
+                echo $this->insert(
                     "services/grapher/mrtg/target", [
                         'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
                         'mrtgPrefix'   => sprintf( "vi%05d", $viid ),
                         'portIds'      => $pis,
-                        'data'         => $data,
+                        'data'         => $t->data,
                         'graphTitle'   => sprintf( "%s -- LAG Aggregate %%s / second", $c->getAbbreviatedName() ),
                         'directory'    => sprintf( "members/%x/%05d/lags", $c->getId() % 16, $c->getId() ),
                     ]
-                );
+                ) . "\n\n\n";
 
             endforeach;
 
         endif;
 
         // overall aggregate
-        $this->insert(
+        echo $this->insert(
             "services/grapher/mrtg/target", [
                 'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
                 'mrtgPrefix'   => sprintf( "aggregate-%05d", $c->getId() ),
-                'portIds'      => $data['custports'][$c->getId()],
-                'data'         => $data,
+                'portIds'      => $t->data['custports'][$c->getId()],
+                'data'         => $t->data,
                 'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->getAbbreviatedName() ),
                 'directory'    => sprintf("members/%x/%05d", $c->getId() % 16, $c->getId()),
             ]
-        );
+        ) . "\n\n\n";
 
     endforeach;
 ?>

@@ -21,11 +21,13 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use League\Plates\Engine;
-use League\Plates\Extension\ExtensionInterface;
+use Foil\Engine;
+use Foil\Contracts\ExtensionInterface;
 
 /**
  * Grapher -> Renderer view extensions
+ *
+ * See: http://www.foilphp.it/docs/EXTENDING/CUSTOM-EXTENSIONS.html
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
@@ -34,10 +36,23 @@ use League\Plates\Extension\ExtensionInterface;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Grapher implements ExtensionInterface {
+    
+    private $args;
 
-    public function register( Engine $engine ) {
-        $engine->registerFunction('grapher', [$this, 'getObject']);
+    public function setup(array $args = []) {
+        $this->args = $args;
     }
+
+    public function provideFilters() {
+       return [];
+    }
+    
+    public function provideFunctions() {
+        return [
+          'grapher' => [$this, 'getObject']
+        ];
+    }
+
 
     public function getObject(): Grapher {
        return $this;

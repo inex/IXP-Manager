@@ -159,7 +159,7 @@ return [
         IXP\Providers\HelpdeskServiceProvider::class,
         IXP\Providers\ZendFrameworkServiceProvider::class,
         IXP\Providers\GrapherServiceProvider::class,
-        IXP\Providers\LaravelPlatesServiceProvider::class,
+        IXP\Providers\FoilServiceProvider::class,
 
         /*
          * Third party providers

@@ -11,7 +11,7 @@ define command{
         command_line    /usr/local/nagios-plugins-other/nagios-check-birdseye.php -a $ARG1$
 }
 
-<?php foreach( $map as $n => $d ): ?>
+<?php foreach( $t->map as $n => $d ): ?>
 
 define host     {
         use                     generic-host
@@ -30,7 +30,7 @@ define hostgroup {
     members                 <?= implode( ',', $hosts ) . "\n" ?>
 }
 
-<?php foreach( $map as $n => $d ): ?>
+<?php foreach( $t->map as $n => $d ): ?>
 
 define service     {
         use                     inex-core-service
@@ -40,3 +40,7 @@ define service     {
 }
 
 <?php endforeach; ?>
+
+
+
+### END ###
