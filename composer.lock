@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "28232d811b16215f51c32ec46db4986c",
-    "content-hash": "bb6ba92a0d2396a850987de1d850af4a",
+    "hash": "8804f95aea41ab42be29f4c5574b9a15",
+    "content-hash": "b481982acc93335a8dafd3d79296dd11",
     "packages": [
         {
             "name": "aura/html",
@@ -800,16 +800,16 @@
         },
         {
             "name": "foil/foil",
-            "version": "dev-master",
+            "version": "dev-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FoilPHP/Foil.git",
-                "reference": "cab766473a28a1d266d7fc96f34c2b39f4fd93ee"
+                "reference": "fb99640f92a6eb59c0bd4c50446622702bb353ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FoilPHP/Foil/zipball/cab766473a28a1d266d7fc96f34c2b39f4fd93ee",
-                "reference": "cab766473a28a1d266d7fc96f34c2b39f4fd93ee",
+                "url": "https://api.github.com/repos/FoilPHP/Foil/zipball/fb99640f92a6eb59c0bd4c50446622702bb353ce",
+                "reference": "fb99640f92a6eb59c0bd4c50446622702bb353ce",
                 "shasum": ""
             },
             "require": {
@@ -856,7 +856,7 @@
                 "template engine",
                 "templates"
             ],
-            "time": "2016-09-06 12:50:22"
+            "time": "2016-11-01 09:33:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1451,12 +1451,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "174490baa3707b26f0bc118e44e2256587b1ff2a"
+                "reference": "f2c1253fc2aae9df160f6cc8686196066083c0d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/174490baa3707b26f0bc118e44e2256587b1ff2a",
-                "reference": "174490baa3707b26f0bc118e44e2256587b1ff2a",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/f2c1253fc2aae9df160f6cc8686196066083c0d4",
+                "reference": "f2c1253fc2aae9df160f6cc8686196066083c0d4",
                 "shasum": ""
             },
             "require": {
@@ -1571,7 +1571,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-10-31 14:21:10"
+            "time": "2016-10-31 22:02:47"
         },
         {
             "name": "league/flysystem",
@@ -3506,12 +3506,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
-                "reference": "c9eb6ef03347ada4aea24becb55a217be3c8a784"
+                "reference": "dcc64a0bc47abefcaba50f6773c6fbead0b8c02c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/c9eb6ef03347ada4aea24becb55a217be3c8a784",
-                "reference": "c9eb6ef03347ada4aea24becb55a217be3c8a784",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/dcc64a0bc47abefcaba50f6773c6fbead0b8c02c",
+                "reference": "dcc64a0bc47abefcaba50f6773c6fbead0b8c02c",
                 "shasum": ""
             },
             "require": {
@@ -3537,7 +3537,7 @@
             ],
             "description": "PHP Client for Zendesk REST API. See http://developer.zendesk.com/api-docs",
             "homepage": "https://github.com/zendesk/zendesk_api_client_php",
-            "time": "2016-10-30 12:35:11"
+            "time": "2016-11-01 09:32:14"
         },
         {
             "name": "zendframework/zendframework1",
@@ -3590,16 +3590,16 @@
     "packages-dev": [
         {
             "name": "myclabs/deep-copy",
-            "version": "1.5.4",
+            "version": "1.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "ea74994a3dc7f8d2f65a06009348f2d63c81e61f"
+                "reference": "399c1f9781e222f6eb6cc238796f5200d1b7f108"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/ea74994a3dc7f8d2f65a06009348f2d63c81e61f",
-                "reference": "ea74994a3dc7f8d2f65a06009348f2d63c81e61f",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/399c1f9781e222f6eb6cc238796f5200d1b7f108",
+                "reference": "399c1f9781e222f6eb6cc238796f5200d1b7f108",
                 "shasum": ""
             },
             "require": {
@@ -3628,7 +3628,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2016-09-16 13:37:59"
+            "time": "2016-10-31 17:19:45"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -5066,6 +5066,7 @@
         "oss2/doctrine2": 20,
         "oss2/var-utils": 20,
         "oss2/auth": 20,
+        "foil/foil": 20,
         "zendesk/zendesk_api_client_php": 20
     },
     "prefer-stable": false,

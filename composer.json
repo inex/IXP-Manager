@@ -51,7 +51,7 @@
         "oss2/auth": "dev-master",
 
         "smarty/smarty": "~3.1",
-        "foil/foil": "~0.6",
+        "foil/foil": "dev-dev",
 
         "zendesk/zendesk_api_client_php": "dev-master",
         "guzzlehttp/guzzle": "~6.0",
