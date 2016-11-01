@@ -143,6 +143,10 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                         break 2;
                     }
 
+                    if( !$pi->statusIsConnectedOrQuarantine() || !$pi->getSwitchPort()->getSwitcher()->getActive() ) {
+                        continue;
+                    }
+
                     $data['pis'][$pi->getId()] = $pi;
 
                     if( !isset( $data['custs'][ $c->getId() ] ) ) {
@@ -165,17 +169,14 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                         $data['custlags'][$c->getId()][$vi->getId()][] = $pi->getId();
                     }
 
-                    if( $pi->statusIsConnected() ) {
-                        $data['swports'][ $pi->getSwitchPort()->getSwitcher()->getId() ][] = $pi->getId();
-                        $data['infraports'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ][] = $pi->getId();
-                        $data['ixpports'][] = $pi->getId();
+                    $data['swports'][ $pi->getSwitchPort()->getSwitcher()->getId() ][] = $pi->getId();
+                    $data['infraports'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ][] = $pi->getId();
+                    $data['ixpports'][] = $pi->getId();
 
-                        $maxbytes = $pi->getSwitchPort()->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
-                        $data['swports_maxbytes'   ][ $pi->getSwitchPort()->getSwitcher()->getId() ] += $maxbytes;
-                        $data['infraports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] += $maxbytes;
-                        $data['ixpports_maxbytes'] += $maxbytes;
-                    }
-
+                    $maxbytes = $pi->getSwitchPort()->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
+                    $data['swports_maxbytes'   ][ $pi->getSwitchPort()->getSwitcher()->getId() ] += $maxbytes;
+                    $data['infraports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] += $maxbytes;
+                    $data['ixpports_maxbytes'] += $maxbytes;
                 }
             }
         }

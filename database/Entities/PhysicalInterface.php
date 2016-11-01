@@ -370,4 +370,13 @@ class PhysicalInterface
     {
         return $this->getStatus() == self::STATUS_QUARANTINE;
     }
+
+    /**
+     * Determine if the port's status is set to QUARANTINE / CONNECTED
+     * @return bool True if the port's status is QUARANTINE / CONNECTED
+     */
+    public function statusIsConnectedOrQuarantine()
+    {
+        return $this->getStatus() == self::STATUS_CONNECTED || $this->getStatus() == self::STATUS_QUARANTINE;
+    }
 }

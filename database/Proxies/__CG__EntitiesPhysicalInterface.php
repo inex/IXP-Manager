@@ -452,4 +452,15 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         return parent::statusIsQuarantine();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function statusIsConnectedOrQuarantine()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'statusIsConnectedOrQuarantine', []);
+
+        return parent::statusIsConnectedOrQuarantine();
+    }
+
 }
