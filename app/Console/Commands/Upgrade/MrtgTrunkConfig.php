@@ -1,4 +1,4 @@
-<?php namespace IXP\Console\Commands;
+<?php namespace IXP\Console\Commands\Upgrade;
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -46,23 +46,24 @@ use View;
  * @copyright  Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Upgrade extends IXPCommand {
+class MrtgTrunkConfig extends IXPCommand {
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'ixp-manager:upgrade
-                                {stage=help : The upgrade command to run (or help)}
-                                {--no-backup : Disable backups for commands that create backup file(s)}';
+    protected $signature = 'ixp-manager:upgrade:mrtg-trunk-config
+                                {ini-file} : INI file to read existing trunk configuration from (or "help")
+                                {--no-backup : Disable backups for commands that create backup file(s)}
+                                {--ixp-help : Additional IXP Manager help}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Tools to upgrade IXP Manager';
+    protected $description = 'Upgrade Tools - MRTG Trunk Configuration Migration from <=4.1 to v4.2';
 
 
     /**
@@ -71,20 +72,24 @@ class Upgrade extends IXPCommand {
      * @return mixed
      */
     public function handle(): int {
-        // what should we do?
-        switch( $this->argument('stage') ) {
-            case 'migrate-trunk-config':
-                $this->migrateTrunkConfig();
-                break;
-            case 'help':
-                $this->help();
-                break;
-            defualt:
-                $this->error( 'No operation requested' );
-                exit -1;
-                break;
+
+        if( $this->argument('ini-file') == 'help' ) {
+            $this->help();
+            return 0;
         }
 
+        // load ini file
+        if( !@file_exists($this->argument('ini-file')) || !( $ini = @parse_ini_file($this->argument('ini-file'))) ) {
+            $this->error("Could not load / parse INI file");
+            return -1;
+        }
+
+        if( !isset($ini['mrtg.trunk_graphs']) ) {
+            $this->error("Could not fine 'mrtg.trunk_graphs' section in INI file");
+            return -2;
+        }
+
+        $this->migrateTrunkConfig($ini['mrtg.trunk_graphs']);
         return 0;
     }
     
@@ -92,39 +97,21 @@ class Upgrade extends IXPCommand {
      * Display a help message via Artisan
      */
     private function help() {
-        echo View::make( 'console.commands.upgrade.help' )->render();
-    }
-
-    /**
-     * Get the Zend_Application object
-     *
-     * @return Zend_Application
-     */
-    private function zend(): Zend_Application {
-        return \App::make('ZendFramework');
+        echo View::make( 'console.commands.upgrade.mrtg-trunk-config.help' )->render();
     }
 
 
     /**
      * Take MRTG trunk definitiions from the old Zend configuration
-     * file (application/configs/application.ini) and migrate them
-     * to a new one (config/grapher_trunks.php).
+     * format and migrate them to a new one (config/grapher_trunks.php).
      *
      * It will backup any existing config/grapher_trunks.php file unless the
      * option --no-backup is passed.
+     *
+     * @param array $trunksConf The raw trunk definitions
      */
-    private function migrateTrunkConfig() {
-        $this->scriptutils_get_application_env();
-        $zend = $this->zend();
-        $zconf = $zend->getOptions();
+    private function migrateTrunkConfig( array $trunksConf ) {
 
-        if( !isset($zconf['mrtg']['trunk_graphs']) ) {
-            $this->info( "No trunk graphs defined. Nothing to do..." );
-            return;
-        }
-
-        $trunksConf = $zconf['mrtg']['trunk_graphs'];
-        
         // copy the current file (if it exists)
         $conffile = config_path() . "/grapher_trunks.php";
         $bkupfile = $conffile . "." . date('YmdHms');
@@ -144,38 +131,10 @@ class Upgrade extends IXPCommand {
         }
 
         file_put_contents( $conffile,
-            View::make( 'console.commands.upgrade.grapher_trunks' )->with( [ 'trunks' => $trunks ] )->render()
+            View::make( 'console.commands.upgrade.mrtg-trunk-config.grapher_trunks' )->with( [ 'trunks' => $trunks ] )->render()
         );
         $this->info( "Migrated configuration to " . $conffile );
     }
 
-
-    /**
-     * Parses public/.htaccess for application environment
-     *
-     * Only required when upgrading from v3 to v4. Should be removed in v5.
-     * die()'s if not found
-     */
-    private function scriptutils_get_application_env()
-    {
-        $htaccess_path = base_path() . "/public/.htaccess";
-
-        if( !is_readable( $htaccess_path ) ) {
-            die( "ERROR: public/.htaccess does not exist / is not readable - set this up first!\n" );
-        }
-
-        $htaccess = file_get_contents( $htaccess_path );
-
-        $matches = array();
-        preg_match_all( '/SetEnv\s+APPLICATION_ENV\s+([a-zA-Z0-9_\-\.]+)/i', $htaccess, $matches );
-
-        if( isset( $matches[1][0] ) && strlen( $matches[1][0] ) ) {
-            $appenv = trim( $matches[1][0] );
-            define( "APPLICATION_ENV", $appenv );
-            return $appenv;
-        }
-
-        die( "ERROR: Could not parse or find APPLICATION_ENV in $htaccess_path\n" );
-    }
 
 }
