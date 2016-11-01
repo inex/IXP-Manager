@@ -173,7 +173,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                     $data['infraports'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ][] = $pi->getId();
                     $data['ixpports'][] = $pi->getId();
 
-                    $maxbytes = $pi->getSwitchPort()->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
+                    $maxbytes = $pi->resolveSpeed() * 1000000 / 8; // Mbps * bps / to bytes
                     $data['swports_maxbytes'   ][ $pi->getSwitchPort()->getSwitcher()->getId() ] += $maxbytes;
                     $data['infraports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] += $maxbytes;
                     $data['ixpports_maxbytes'] += $maxbytes;

@@ -379,4 +379,16 @@ class PhysicalInterface
     {
         return $this->getStatus() == self::STATUS_CONNECTED || $this->getStatus() == self::STATUS_QUARANTINE;
     }
+
+    /**
+     * Try to find the most accurate version of the port's speed.
+     *
+     * I.e. try the actual SNMP-discovered port speed first, otherwise use the configured speed
+     *
+     * @return int
+     */
+    public function resolveSpeed() {
+        // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
+        return $this->getSwitchPort()->getIfHighSpeed() > 0 ? $this->getSwitchPort()->getIfHighSpeed() : $this->getSpeed();
+    }
 }
