@@ -804,12 +804,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FoilPHP/Foil.git",
-                "reference": "fb99640f92a6eb59c0bd4c50446622702bb353ce"
+                "reference": "b9bd8dd75da7bb1e8ef9703f505bd5d85b4a2a5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FoilPHP/Foil/zipball/fb99640f92a6eb59c0bd4c50446622702bb353ce",
-                "reference": "fb99640f92a6eb59c0bd4c50446622702bb353ce",
+                "url": "https://api.github.com/repos/FoilPHP/Foil/zipball/b9bd8dd75da7bb1e8ef9703f505bd5d85b4a2a5a",
+                "reference": "b9bd8dd75da7bb1e8ef9703f505bd5d85b4a2a5a",
                 "shasum": ""
             },
             "require": {
@@ -856,7 +856,7 @@
                 "template engine",
                 "templates"
             ],
-            "time": "2016-11-01 09:33:00"
+            "time": "2016-11-01 18:00:57"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1451,12 +1451,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f2c1253fc2aae9df160f6cc8686196066083c0d4"
+                "reference": "715328dd4fb1a7bcf3cb41b3472f9e3499d068fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f2c1253fc2aae9df160f6cc8686196066083c0d4",
-                "reference": "f2c1253fc2aae9df160f6cc8686196066083c0d4",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/715328dd4fb1a7bcf3cb41b3472f9e3499d068fc",
+                "reference": "715328dd4fb1a7bcf3cb41b3472f9e3499d068fc",
                 "shasum": ""
             },
             "require": {
@@ -1571,7 +1571,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-10-31 22:02:47"
+            "time": "2016-11-01 18:52:00"
         },
         {
             "name": "league/flysystem",
