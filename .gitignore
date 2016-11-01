@@ -65,12 +65,9 @@ application/views/_skins/lonap/
 config/contact_group.php
 config/grapher_trunks.php
 config/mailinglists.php
-
-
-<<<<<<< HEAD
+config/custom.php
 
 # barryo local development crud
-
 application/configs/application.ini.bup
 bird/
 ixpmanager-preferred.sql.bz2
@@ -83,10 +80,5 @@ ubuntu-xenial-16.04-cloudimg-console.log
 .ixp-manager-installer-settingsrc
 composer.phar
 tools/installers/Vagrantfile
-
-resources/skins/
-!resources/skins/.gitignore
-!resources/skins/inex/
-!resources/skins/placeholder/
 
 storage/grapher/
