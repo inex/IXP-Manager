@@ -1,0 +1,21 @@
+<?php
+
+/*
+ * IXP Manager - custom configuration options.
+ *
+ * Create your own custom configuration options here and use them in your skinned templates
+ * and elsewhere.
+ *
+ * Just: cp config/custom.php.dist config/custom.php and add options below.
+ *
+ * In code, these are accessible as: config( "custom.example.key", "default value if not set|null" )
+ * In templates, echo with: <?= config( "custom.example.key", "default value if not set|null" ) ?>
+ */
+
+return [
+
+    // 'example' => [
+    //     'key' => 'my own config value',
+    // ],
+
+];
