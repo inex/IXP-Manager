@@ -31,6 +31,7 @@ use IXP\Contracts\Grapher\Backend as GrapherBackend;
 
 use IXP\Console\Commands\Grapher\GrapherCommand;
 
+use Artisan;
 use Config;
 use D2EM;
 use Grapher;
@@ -57,7 +58,7 @@ class Upgrade extends GrapherCommand {
      * @var string
      */
     protected $signature = 'grapher:backend:mrtg:upgrade
-                                {operation : One of ln/rm-new/rm-old/mv/mkdir}
+                                {operation : One of ln/rm-new/rm-old/mv/mkdir (or: all)}
                                 {--L|logdir= : MRTG log/rrd directory}
                                 {--X|ixp : Show upgrade commands for the IXP}
                                 {--I|infrastructures : Show upgrade commands for infrastructures}
@@ -99,7 +100,9 @@ class Upgrade extends GrapherCommand {
         Config::set('grapher.backends.mrtg.logdir', Config::get('grapher.backends.mrtg.workdir' ) );
 
         // what should we do?
-        if( $this->option( 'ixp' ) ) {
+        if( $this->argument('operation') == 'all' ) {
+            $this->all();
+        } else if( $this->option( 'ixp' ) ) {
             $this->ix();
         } else if( $this->option( 'infrastructures' ) ) {
             $this->infrastructures();
@@ -382,6 +385,21 @@ class Upgrade extends GrapherCommand {
 
             }
         }
+    }
+
+
+    /**
+     * Do all the migrations at once as you would if upgrading from <=4.1 to 4.2
+     */
+    private function all() {
+        Artisan::call( 'grapher:backend:mrtg:upgrade', [ 'operation' => 'mv',    '--logdir' => $this->logdir, '--ixp' => true ] );
+        Artisan::call( 'grapher:backend:mrtg:upgrade', [ 'operation' => 'mv',    '--logdir' => $this->logdir, '--infrastructures' => true ] );
+        Artisan::call( 'grapher:backend:mrtg:upgrade', [ 'operation' => 'mv',    '--logdir' => $this->logdir, '--switches' => true ] );
+        Artisan::call( 'grapher:backend:mrtg:upgrade', [ 'operation' => 'mv',    '--logdir' => $this->logdir, '--trunks' => true ] );
+        Artisan::call( 'grapher:backend:mrtg:upgrade', [ 'operation' => 'mkdir', '--logdir' => $this->logdir, '--memberdirs' => true ] );
+        Artisan::call( 'grapher:backend:mrtg:upgrade', [ 'operation' => 'mv',    '--logdir' => $this->logdir, '--physints' => true ] );
+        Artisan::call( 'grapher:backend:mrtg:upgrade', [ 'operation' => 'mv',    '--logdir' => $this->logdir, '--memberlags' => true ] );
+        Artisan::call( 'grapher:backend:mrtg:upgrade', [ 'operation' => 'mv',    '--logdir' => $this->logdir, '--customeragg' => true ] );
     }
 
 }
