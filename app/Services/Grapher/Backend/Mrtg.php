@@ -130,6 +130,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      */
     public function getPeeringPorts( IXP $ixp ): array {
         $data = [];
+        $data['ixpports_maxbytes'] = 0;
 
         foreach( $ixp->getCustomers() as $c ) {
 
@@ -150,10 +151,12 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
 
                     if( !isset( $data['sws'][ $pi->getSwitchPort()->getSwitcher()->getId() ] ) ) {
                         $data['sws'][$pi->getSwitchPort()->getSwitcher()->getId() ] = $pi->getSwitchPort()->getSwitcher();
+                        $data['swports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getId() ] = 0;
                     }
 
                     if( !isset( $data['infras'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] ) ) {
                         $data['infras'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] = $pi->getSwitchPort()->getSwitcher()->getInfrastructure();
+                        $data['infraports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] = 0;
                     }
 
                     $data['custports'][$c->getId()][] = $pi->getId();
@@ -166,6 +169,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                         $data['swports'][ $pi->getSwitchPort()->getSwitcher()->getId() ][] = $pi->getId();
                         $data['infraports'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ][] = $pi->getId();
                         $data['ixpports'][] = $pi->getId();
+
+                        $maxbytes = $pi->getSwitchPort()->getIfHighSpeed() * 1000000 / 8; // Mbps * bps / to bytes
+                        $data['swports_maxbytes'   ][ $pi->getSwitchPort()->getSwitcher()->getId() ] += $maxbytes;
+                        $data['infraports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] += $maxbytes;
+                        $data['ixpports_maxbytes'] += $maxbytes;
                     }
 
                 }

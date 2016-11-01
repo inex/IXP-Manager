@@ -39,9 +39,10 @@
                 'data'         => $t->data,
                 'graphTitle'   => sprintf( config('identity.orgname') . " %%s / second on %s", $infra->getName() ),
                 'directory'    => sprintf( "infras/%03d", $infraid ),
+                'maxbytes'     => $t->data['infraports_maxbytes'][$infraid],
             ]
         );
-        
+
         echo "\n\n\n";
 
     endforeach; // foreach( $t->data['infras'] as $infraid => $infra ):
@@ -58,6 +59,7 @@
                 'data'         => $t->data,
                 'graphTitle'   => sprintf( config('identity.orgname') . " - %%s / second" ),
                 'directory'    => sprintf( "ixp" ),
+                'maxbytes'     => $t->data['ixpports_maxbytes'],
             ]
         );
     endif;

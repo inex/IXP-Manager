@@ -26,6 +26,8 @@
 
 <?php
     foreach( $t->data['custs'] as $c ):
+
+        $custmaxbytes = 0;
 ?>
 
 #####################################################################################################################
@@ -45,6 +47,8 @@
         // individual member ports:
         foreach( $t->data['custports'][$c->getId()] as $piid ):
 
+            $custmaxbytes += $t->data['pis'][$piid]->getSwitchPort()->getIfHighSpeed() * 1000000 / 8;
+
             echo $this->insert(
                 "services/grapher/mrtg/target", [
                     'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
@@ -55,6 +59,7 @@
                             $t->data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
                         ),
                     'directory'    => sprintf("members/%x/%05d/ints", $c->getId() % 16, $c->getId()),
+                    'maxbytes'     => $t->data['pis'][$piid]->getSwitchPort()->getIfHighSpeed() * 1000000 / 8, // Mbps * bps / to bytes
                 ]
             ) . "\n\n\n";
 
@@ -65,6 +70,11 @@
 
             foreach( $t->data['custlags'][$c->getId()] as $viid => $pis ):
 
+                $lagmaxbytes = 0;
+                foreach( $pis as $piid ):
+                    $lagmaxbytes += $t->data['pis'][$piid]->getSwitchPort()->getIfHighSpeed() * 1000000 / 8;
+                endforeach;
+
                 echo $this->insert(
                     "services/grapher/mrtg/target", [
                         'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
@@ -73,6 +83,7 @@
                         'data'         => $t->data,
                         'graphTitle'   => sprintf( "%s -- LAG Aggregate %%s / second", $c->getAbbreviatedName() ),
                         'directory'    => sprintf( "members/%x/%05d/lags", $c->getId() % 16, $c->getId() ),
+                        'maxbytes'     => $lagmaxbytes,
                     ]
                 ) . "\n\n\n";
 
@@ -89,6 +100,7 @@
                 'data'         => $t->data,
                 'graphTitle'   => sprintf( "%s -- IXP Total Aggregate -- %%s / second", $c->getAbbreviatedName() ),
                 'directory'    => sprintf("members/%x/%05d", $c->getId() % 16, $c->getId()),
+                'maxbytes'     => $custmaxbytes,
             ]
         ) . "\n\n\n";
 

@@ -33,6 +33,7 @@ Target[<?=$mrtglabel?>]:    <?php
 Title[<?=$mrtglabel?>]:     <?=sprintf( "{$this->graphTitle}\n", $trafficType['name'] )?>
 Options[<?=$mrtglabel?>]:   <?=$trafficType['options']."\n"?>
 YLegend[<?=$mrtglabel?>]:   <?=$trafficType['name']?> / Second
+MaxBytes[<?=$mrtglabel?>]:  <?= $ttype == IXP\Services\Grapher\Graph::CATEGORY_BITS ? $t->maxbytes : round( $t->maxbytes / 64 ) ?>
 <?=isset( $directory ) ? "Directory[{$mrtglabel}]: {$directory}\n" : ""?>
 
 

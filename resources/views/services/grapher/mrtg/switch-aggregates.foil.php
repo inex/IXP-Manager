@@ -39,6 +39,7 @@
                 'data'         => $t->data,
                 'graphTitle'   => sprintf( config('identity.orgname') . " - Peering %%s / second on %s", $switch->getName() ),
                 'directory'    => sprintf( "switches/%03d", $switchid ),
+                'maxbytes'     => $t->data['swports_maxbytes'][$switchid],
             ]
         ) . "\n\n\n\n";
 
