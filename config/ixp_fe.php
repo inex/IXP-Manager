@@ -58,6 +58,7 @@ return [
             'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',     true ),
             'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',     false ),
             'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',     false ),
+            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',        true  ),
         ],
     ],
 
