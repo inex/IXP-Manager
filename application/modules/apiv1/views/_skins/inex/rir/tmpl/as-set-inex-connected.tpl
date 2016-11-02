@@ -1,4 +1,4 @@
-password: {$options.rir.ripe_password}
+password: {config('ixp_api.rir.password')}
 
 as-set:         AS-SET-INEX-CONNECTED
 descr:          ASNs connected to INEX

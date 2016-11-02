@@ -1,4 +1,4 @@
-password: {$options.rir.ripe_password}
+password: {config('ixp_api.rir.password')}
 
 aut-num:        AS43760
 as-name:        INEX-RS
@@ -37,13 +37,13 @@ mnt-routes:     INEX-NOC
 {foreach $rsclients.clients as $asn => $cdetails}
     {$cust = $customers[$cdetails.id]}
     {foreach $cdetails.vlans as $vlanid => $vli}
-    	{foreach $vli as $vliid => $interface}
-		    {foreach $protocols as $proto}
-	            {if not isset( $interface.$proto ) }
-	                {continue}
-	            {/if}
-	            {foreach $rsclients.vlans.$vlanid.servers.$proto as $serverip}
-	                {if $proto eq 4}
+        {foreach $vli as $vliid => $interface}
+            {foreach $protocols as $proto}
+                {if not isset( $interface.$proto ) }
+                    {continue}
+                {/if}
+                {foreach $rsclients.vlans.$vlanid.servers.$proto as $serverip}
+                    {if $proto eq 4}
 
 import:         from AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
                 accept {$cust->resolveAsMacro( $proto, 'AS' )}  # {$cust->getName()}
@@ -57,9 +57,9 @@ mp-import:      afi ipv6.unicast
 mp-export:      afi ipv6.unicast
                 to AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
                 announce AS-SET-INEX-RS
-	                {/if}
-	            {/foreach}
-	        {/foreach}
+                    {/if}
+                {/foreach}
+            {/foreach}
         {/foreach}
     {/foreach}
 {/foreach}

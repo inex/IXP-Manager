@@ -1,4 +1,4 @@
-password: {$options.rir.ripe_password}
+password: {config('ixp_api.rir.password')}
 
 aut-num:        AS2128
 as-name:        INEX

@@ -1,4 +1,4 @@
-password: {$options.rir.ripe_password}
+password: {config('ixp_api.rir.password')}
 
 as-set:         AS-SET-IXP-RS
 descr:          ASNs connected to the Route Server system at IXP
