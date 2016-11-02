@@ -259,14 +259,7 @@
                                     period=$period
                                     proto=$proto}">
                             <img
-                                src="{genMrtgP2pImgUrl
-                                        ixp=$ixp->getId()
-                                        shortname=$cust->getShortname()
-                                        svli=$srcVli->getId()
-                                        dvli=$dvli->getId()
-                                        category=$category
-                                        proto=$proto
-                                        period=$period}"
+                                src="{$grapher->p2p( $srcVli, $dvli )->setCategory($category)->setProtocol($proto)->setPeriod($period)->setType('png')->url()}"
                                 width="600"
                             />
                         </a>
