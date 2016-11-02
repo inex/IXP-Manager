@@ -804,4 +804,15 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::isTypeReseller();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeCore()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeCore', []);
+
+        return parent::isTypeCore();
+    }
+
 }

@@ -913,4 +913,11 @@ class SwitchPort
         return $this->getType() == self::TYPE_RESELLER;
     }
 
+    /**
+     * Is this a core port?
+     * @return boolean
+     */
+    public function isTypeCore() {
+        return $this->getType() == self::TYPE_CORE;
+    }
 }

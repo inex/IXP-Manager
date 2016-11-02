@@ -28,7 +28,7 @@ use IXP\Services\Grapher\Graph;
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
-use Entities\{IXP,Switcher,SwitchPort};
+use Entities\{IXP,PhysicalInterface,Switcher,SwitchPort};
 use IXP\Utils\Grapher\Mrtg as MrtgFile;
 
 use View,Log;
@@ -132,11 +132,18 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         $data = [];
         $data['ixpports_maxbytes'] = 0;
 
+        // we need to wrap switch ports in physical interfaces for switch aggregates and, as such, we need to use unused physical interface IDs
+        $maxPiID = 0;
+
         foreach( $ixp->getCustomers() as $c ) {
 
             foreach( $c->getVirtualInterfaces() as $vi ) {
 
                 foreach( $vi->getPhysicalInterfaces() as $pi ) {
+
+                    if( $pi->getId() > $maxPiID ) {
+                        $maxPiID = $pi->getId();
+                    }
 
                     // we're not multi-ixp in v4 but we'll catch non-relavent ports here
                     if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getIXP()->getId() != $ixp->getId() ) {
@@ -181,7 +188,44 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             }
         }
 
+        // include core switch ports.
+        // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
+        foreach( $ixp->getInfrastructures() as $infra ) {
+            foreach( $infra->getSwitchers() as $switch ) {
+                foreach( $switch->getPorts() as $sp ) {
+                    if( $sp->isTypeCore() ) {
+                        // this needs to be wrapped in a physical interface for the template
+                        $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
+                        $data['pis'][$pi->getId()] = $pi;
+                        $data['swports'][$switch->getId()][] = $pi->getId();
+
+                        if( !isset( $data['swports_maxbytes'][$switch->getId()] ) ) {
+                            $data['swports_maxbytes'][$switch->getId()] = 0;
+                        }
+
+                        $data['swports_maxbytes'][$switch->getId()] += ( ( $pi->resolveSpeed() > 0 ) ? $pi->resolveSpeed() : 1 ) * 1000000 / 8;
+                    }
+                }
+            }
+        }
+
         return $data;
+    }
+
+    /**
+     * Wrap a switchport in a temporary PhysicalInterface.
+     *
+     * @see getPeeringPorts() for usage
+     * @param Entities\SwitchPort $switchport
+     * @param int $id The ID to set in the physical interface
+     * @return Entities\PhysicalInterface 
+     */
+    public function wrapSwitchPortInPhysicalInterface( SwitchPort $sp, int $id ): PhysicalInterface {
+        $pi = new PhysicalInterface;
+        $pi->setId( $id );
+        $pi->setSwitchPort($sp);
+        $pi->setSpeed( $sp->getIfHighSpeed() );
+        return $pi;
     }
 
     /**
