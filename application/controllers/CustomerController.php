@@ -257,14 +257,18 @@ class CustomerController extends IXP_Controller_FrontEnd
         $this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
 
         // is this user watching all notes for this customer?
-        if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) )
+        if( $this->getUser()->getPreference( "customer-notes.{$cust->getId()}.notify" ) ) {
             $this->view->co_notify_all = true;
+        } else {
+            $this->view->co_notify_all = false;
+        }
 
         // what specific notes is this cusomer watching?
-        if( $this->getUser()->getAssocPreference( "customer-notes.watching" ) )
+        if( $this->getUser()->getAssocPreference( "customer-notes.watching" ) ) {
             $this->view->co_notify = $this->getUser()->getAssocPreference( "customer-notes.watching" )[0];
-        else
+        } else {
             $this->view->co_notify = [];
+        }
 
         // load customer notes and the amount of unread notes for this user and customer
         $this->_fetchCustomerNotes( $cust->getId() );

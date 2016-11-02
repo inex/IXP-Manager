@@ -32,7 +32,7 @@
                         {/if}
                         {$n->getTitle()}
                     </td>
-    
+
                     {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                         <td id="co-notes-table-row-public-{$n->getId()}">
                             <span class="label label-{if not $n->getPrivate()}success">PUBLIC{else}important">PRIVATE{/if}</span>
@@ -44,7 +44,7 @@
                     <td>
                         <div class="btn-group">
                             {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
-                                <button id="co-notes-notify-{$n->getId()}"  class="btn btn-small {if isset( $co_notify[$n->getId()] ) && $co_notify[$n->getId()]}active{/if}"><i class="icon-eye-open"></i></button>
+                                <button id="co-notes-notify-{$n->getId()}"  class="btn btn-small {if is_array( $co_notify ) && array_key_exists( $n->getId(), $co_notify ) && $co_notify[$n->getId()]}active{/if}"><i class="icon-eye-open"></i></button>
                             {/if}
                             <button id="co-notes-view-{$n->getId()}"  class="btn btn-small"><i class="icon-zoom-in"></i></button>
                             {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
@@ -64,7 +64,7 @@
         There are no notes for this customer. <a href="#" id="co-notes-add-link">Add one...</a>
     </p>
 {/if}
-    
+
 <script>{tmplinclude file="customer/js/overview/notes.js"}</script>
 
 {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
