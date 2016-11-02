@@ -163,6 +163,29 @@
             {else}
                 <div class="nav-collapse">
                     <ul class="nav pull-right">
+                        <li class="dropdown {if $controller eq 'public-statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{genUrl controller="public-statistics" action="public"}">Overall Peering Graphs</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="public-statistics" action="trunks"}">Inter-Switch / PoP Graphs</a>
+                                </li>
+                                <li>
+                                    <a href="{genUrl controller="public-statistics" action="switches"}">Switch Aggregate Graphs</a>
+                                </li>
+                                <li class="divider"></li>
+                                {if isset( $options.weathermap )}
+                                    {foreach from=$options.weathermap key=k item=w}
+                                        <li>
+                                            <a href="{genUrl controller="weather-map" action="index" id=$k}">{$w.menu}</a>
+                                        </li>
+                                    {/foreach}
+                                {/if}
+                            </ul>
+                        </li>
+
                         <li class="{if $controller eq 'static' and $action eq 'support'}active{/if}">
                             <a href="{genUrl controller="static" action="support"}">Support</a>
                         </li>

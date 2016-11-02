@@ -1,0 +1,65 @@
+{tmplinclude file="header.phtml"}
+
+<div class="page-content">
+    <div class="page-header">
+        <h1>Switch Aggregate Graphs - {$graph->name()} ({foreach from=$categories key=cvalue item=cname}{if $category eq $cvalue}{$cname}{/if}{/foreach})</h1>
+    </div>
+
+{OSS_Message}
+
+<div class="row-fluid">
+    <div class="span12">
+        <form action="{genUrl controller="statistics" action="switches"}" method="post" class="form-horizontal">
+            <strong>Select Switch:</strong>
+            <select name="switch" onchange="this.form.submit();" class="chzn-select">
+                {foreach $switches as $id => $g}
+                    <option value="{$id}" {if $switchid eq $id}selected="selected"{/if}>{$g->name()}</option>
+                {/foreach}
+            </select>
+            <strong>Category:</strong>
+            <select name="category" onchange="this.form.submit();" class="chzn-select">
+                {foreach from=$categories key=cval item=cname}
+                    <option value="{$cval}" {if $category eq $cval}selected{/if}>{$cname}</option>
+                {/foreach}
+            </select>
+        </form>
+    </div>
+</div>
+
+
+<div class="row-fluid">
+
+{assign var='count' value=0}
+
+{foreach from=$periods key=pvalue item=pname}
+
+
+    <div class="span6">
+
+        <div class="well">
+
+        <h3>{$pname} Graph</h3>
+
+        <p>
+            {$graph->setPeriod( $pvalue )->renderer()->boxLegacy()}
+        </p>
+        </div>
+    </div>
+
+    {assign var='count' value=$count+1}
+
+    {if $count%2 eq 0}
+        </div><br /><div class="row-fluid">
+    {/if}
+
+
+{/foreach}
+
+{if $count%2 neq 0}
+    <div class="span3"></div>
+{/if}
+
+</div>
+</div>
+
+{tmplinclude file="footer.phtml"}
