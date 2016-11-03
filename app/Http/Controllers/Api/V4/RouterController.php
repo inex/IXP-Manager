@@ -49,7 +49,7 @@ class RouterController extends Controller {
      */
     public function genConfig( string $handle ): Response {
         if( !config( 'routers.' . $handle, false ) ) {
-            abort( 404, "Unknown route handle" );
+            abort( 404, "Unknown router handle" );
         }
 
         $configView = ( new RouterConfigurationGenerator( $handle ) )->render();
