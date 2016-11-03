@@ -77,8 +77,8 @@ prefix set martiansv4;
                 224.0.0.0/4+,           # RFC3171 - Multicast
                 240.0.0.0/4+,           # RFC1112 - Reserved
                 0.0.0.0/32-,
-                0.0.0.0/0{ldelim}25,32{rdelim},
-                0.0.0.0/0{ldelim}0,7{rdelim}
+                0.0.0.0/0{25,32},
+                0.0.0.0/0{0,7}
         ];
 
         # Avoid RFC1918 and similar networks
