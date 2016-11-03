@@ -17,7 +17,7 @@ sudo apt-get update >/dev/null
 #phpenv config-add data/travis-ci/configs/ixp-php.ini
 
 echo cd /home/travis/build/inex/IXP-Manager
-cd /home/travis/build/inex/IXP-Manager
+cd /home/travis/build/inex/IXP-Manager || exit
 echo phpenv rehash
 phpenv rehash
 
@@ -26,6 +26,7 @@ cp .env.travisci .env
 
 # Set up IXP Manager
 sudo cp data/travis-ci/configs/* application/configs
+sudo cp data/travis-ci/laravel-configs/*php configs/
 sudo touch public/.htaccess
 
 echo composer install
