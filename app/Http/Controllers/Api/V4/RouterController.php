@@ -51,7 +51,7 @@ class RouterController extends Controller {
         if( !config( 'routers.' . $handle, false ) ) {
             abort( 404, "Unknown router handle" );
         }
-dd($handle);
+
         $configView = ( new RouterConfigurationGenerator( $handle ) )->render();
 
         return response( $configView->render(), 200 )
