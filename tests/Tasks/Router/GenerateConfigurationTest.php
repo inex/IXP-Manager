@@ -54,4 +54,44 @@ class GenerateConfigurationTest extends TestCase
             $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RS configuration for {$handle} do not match" );
         }
     }
+    
+    public function testUnknownHandle() {
+        $this->expectException( IXP\Exceptions\GeneralException::class );
+        $this->expectExceptionMessage( 'Router handle does not exist: does-not-exist' );
+        $conf = ( new RouterConfigurationGenerator( 'does-not-exist' ) )->render();
+    }
+        
+    public function testUnknownVlan() {
+        $this->expectException( IXP\Exceptions\GeneralException::class );
+        $this->expectExceptionMessage( 'Invalid/missing vlan_id in router object' );
+        $conf = ( new RouterConfigurationGenerator( 'unknown-vlan' ) )->render();
+    }
+
+    public function testUnknownTemplate() {
+        $this->expectException( IXP\Exceptions\GeneralException::class );
+        $this->expectExceptionMessage( 'Template does not exist' );
+        $conf = ( new RouterConfigurationGenerator( 'unknown-template' ) )->render();
+    }
+    
+    public function testAccessorHandle() {
+        $rcg = new RouterConfigurationGenerator( 'rc1-lan1-ipv4' );
+        $this->assertNotEquals( 'test', $rcg->handle() );
+        $this->assertInstanceOf( RouterConfigurationGenerator::class, $rcg->setHandle('test') );
+        $this->assertEquals( 'test', $rcg->handle() );
+    }
+        
+    public function testAccessorRouter() {
+        $rcg = new RouterConfigurationGenerator( 'rc1-lan1-ipv4' );
+        $this->assertNotEquals( [], $rcg->router() );
+        $this->assertInstanceOf( RouterConfigurationGenerator::class, $rcg->setRouter( [ 'test' => true ] ) );
+        $this->assertEquals( [ 'test' => true ], $rcg->router() );
+    }
+
+    public function testSetRouterByHandleException() {
+        $rcg = new RouterConfigurationGenerator( 'rc1-lan1-ipv4' );
+        $this->expectException( IXP\Exceptions\GeneralException::class );
+        $this->expectExceptionMessage( 'Router handle does not exist: does-not-exist' );
+        $rcg->setRouterByHandle('does-not-exist');
+    }
+    
 }
