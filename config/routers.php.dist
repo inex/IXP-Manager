@@ -1,0 +1,36 @@
+<?php
+
+// barry 20161103
+//
+// We want/need to move router details into the database but we need to design an
+// appropriate schema first. Possibly aligning it with refactoring VlanInterface
+// to have a sub-table for protocol details (on a per protocol basis).
+//
+// In the meantime, here is a rough design on what the database would hold. This
+// is currently being used by APIv4 to generate configurations.
+//
+
+return [
+    // route servers/collectors
+
+    'rc1-lan1-ipv4' => [
+        'vlan_id'    => 1,
+        'protocol'   => 4,
+        'type'       => 'RC',   // RC|RS|AS112?
+        'name'       => 'INEX LAN1 - Route Collector - IPv4',
+        'shortname'  => 'RC1 - LAN1 - IPv4',
+        'router_id'  => '192.0.2.8',
+        'peering_ip' => '192.0.2.8',
+        'asn'        => 65500,
+        'type'       => 'bird',
+        'mgmt_ip'    => '203.0.113.8',
+        'api'        => 'http://rc1-lan1-ipv4.mgmt.example.com/api',
+        'api_type'   => 'birdseye',
+        'lg_access'  => Entities\User::AUTH_PUBLIC,
+        'quarantine' => false,
+        'template'   => 'api/v4/router/collector/bird/standard',
+    ],
+    
+    // ...
+    
+];
