@@ -29,9 +29,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 ?>
-<?= $this->insert('api/v4/router/collector/bird/header') ?>
+<?= $this->insert('api/v4/router/collector/bird/header')   ?>
 
-<?php // $this->insert('api/v4/router/collector/bird/neighbor')
-?>
+<?= $this->insert('api/v4/router/collector/bird/neighbors') ?>
 
-<?= $this->insert('api/v4/router/collector/bird/footer') ?>
+<?= $this->insert('api/v4/router/collector/bird/footer')   ?>

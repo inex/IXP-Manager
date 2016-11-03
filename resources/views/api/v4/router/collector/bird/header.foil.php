@@ -39,7 +39,7 @@
 
 # For VLAN: <?= $t->vlan->getName() ?> (Tag: <?= $t->vlan->getNumber() ?>, Database ID: <?= $t->vlan->getId() ?>)
 
-log "{#rsconfLogfile#}" all;
+log "/var/log/bird/<?= $t->handle ?>.log" all;
 log syslog all;
 
 define routerasn     = <?= $t->router['asn']        ?? 64512 ?>;

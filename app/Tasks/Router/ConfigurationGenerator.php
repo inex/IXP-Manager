@@ -40,10 +40,24 @@ use View;
  */
 class ConfigurationGenerator
 {
+    /**
+     * Handle - key for router in config/routers.php
+     * @var string
+     */
+    private $handle = null;
+    
+    /**
+     * Router details array.
+     *
+     * See config/routers.php
+     *
+     * @var array
+     */
     private $router = null;
 
     public function __construct( string $handle ) {
         $this->setRouterByHandle( $handle );
+        $this->setHandle( $handle );
 
         // make sure the template exists or there's no point continuing:
         if( !isset( $this->router()['template'] ) ) {
@@ -59,6 +73,26 @@ class ConfigurationGenerator
             throw new GeneralException( "Template does not exist" );
         }
 
+    }
+
+    /**
+     * Set the router handle string
+     *
+     * @param string $handle Router handle
+     * @return IXP\Tasks\Router\ConfigurationGenerator
+     */
+    public function setHandle( string $handle ): ConfigurationGenerator {
+        $this->handle = $handle;
+        return $this;
+    }
+
+    /**
+     * Get the router handle
+     *
+     * @return string
+     */
+    public function handle(): string {
+        return $this->handle;
     }
 
     /**
@@ -113,7 +147,9 @@ class ConfigurationGenerator
 
         $ints = $this->sanitiseVlanInterfaces($vlan);
 
-        return view( $this->router()['template'] )->with( ['ints' => $ints, 'router' => $this->router(), 'vlan' => $vlan] );
+        return view( $this->router()['template'] )->with(
+            ['handle' => $this->handle(), 'ints' => $ints, 'router' => $this->router(), 'vlan' => $vlan]
+        );
     }
 
 

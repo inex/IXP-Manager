@@ -48,6 +48,7 @@ config/grapher_trunks.php
 config/ixp_tools.php
 config/lookingglass.php
 config/mailinglists.php
+config/routers.php
 config/smokeping.php
 
 
