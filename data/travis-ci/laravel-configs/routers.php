@@ -75,5 +75,41 @@ return [
         'template'   => 'api/v4/router/collector/bird/standard',
     ],
 
+    'unknown-vlan' => [
+        'vlan_id'    => 99999,
+        'protocol'   => 6,
+        'type'       => 'RC',   // RC|RS|AS112?
+        'name'       => 'INEX LAN2 - Route Collector - IPv6',
+        'shortname'  => 'RC1 - LAN2 - IPv6',
+        'router_id'  => '192.0.2.9',
+        'peering_ip' => '2001:db8::9',
+        'asn'        => 65500,
+        'type'       => 'bird',
+        'mgmt_ip'    => '2001:db8:0:0:2::9',
+        'api'        => 'http://rc1-lan2-ipv6.mgmt.example.com/api',
+        'api_type'   => 'birdseye',
+        'lg_access'  => Entities\User::AUTH_PUBLIC,
+        'quarantine' => false,
+        'template'   => 'api/v4/router/collector/bird/standard',
+    ],
+
+    'unknown-template' => [
+        'vlan_id'    => 1,
+        'protocol'   => 6,
+        'type'       => 'RC',   // RC|RS|AS112?
+        'name'       => 'INEX LAN2 - Route Collector - IPv6',
+        'shortname'  => 'RC1 - LAN2 - IPv6',
+        'router_id'  => '192.0.2.9',
+        'peering_ip' => '2001:db8::9',
+        'asn'        => 65500,
+        'type'       => 'bird',
+        'mgmt_ip'    => '2001:db8:0:0:2::9',
+        'api'        => 'http://rc1-lan2-ipv6.mgmt.example.com/api',
+        'api_type'   => 'birdseye',
+        'lg_access'  => Entities\User::AUTH_PUBLIC,
+        'quarantine' => false,
+        'template'   => 'api/v4/router/does-not-exist',
+    ],
+
 
 ];
