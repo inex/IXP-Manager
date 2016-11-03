@@ -26,7 +26,7 @@ cp .env.travisci .env
 
 # Set up IXP Manager
 sudo cp data/travis-ci/configs/* application/configs
-sudo cp data/travis-ci/laravel-configs/*php configs/
+sudo cp data/travis-ci/laravel-configs/*php config/
 sudo touch public/.htaccess
 
 echo composer install
