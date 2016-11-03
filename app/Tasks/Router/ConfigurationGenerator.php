@@ -24,8 +24,9 @@ namespace IXP\Tasks\Router;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Exceptions\GeneralException;
+use Entities\Vlan;
 use Illuminate\Contracts\View\View as ViewContract;
+use IXP\Exceptions\GeneralException;
 use View;
 
 /**
@@ -104,9 +105,15 @@ class ConfigurationGenerator
      * @return Illuminate\Contracts\View The configuration
      */
     public function render(): ViewContract {
-        $ints = $this->sanitiseVlanInterfaces();
 
-        return view( $this->router()['template'] )->with( ['ints' => $ints] );
+        // does the VLAN exist?
+        if( !isset($this->router['vlan_id']) || !( $vlan = d2r('Vlan')->find( $this->router()['vlan_id'] ) ) ) {
+            throw new GeneralException( "Invalid/missing vlan_id in router object" );
+        }
+
+        $ints = $this->sanitiseVlanInterfaces($vlan);
+
+        return view( $this->router()['template'] )->with( ['ints' => $ints, 'router' => $this->router(), 'vlan' => $vlan] );
     }
 
 
@@ -135,14 +142,10 @@ class ConfigurationGenerator
      *         [location_tag] => ix1
      *     ]
      *
+     * @param Vlan $vlan
      * @return array As defined above
      */
-    private function sanitiseVlanInterfaces(): array {
-
-        // does the VLAN exist?
-        if( !isset($this->router['vlan_id']) || !( $vlan = d2r('Vlan')->find( $this->router()['vlan_id'] ) ) ) {
-            throw new GeneralException( "Invalid/missing vlan_id in router object" );
-        }
+    private function sanitiseVlanInterfaces( Vlan $vlan ): array {
 
         $ints = d2r( 'VlanInterface' )->getForProto( $vlan, $this->router()['protocol'] ?? 4, false,
             ( ( $this->router()['quarantine'] ?? false ) ? \Entities\PhysicalInterface::STATUS_QUARANTINE : \Entities\PhysicalInterface::STATUS_CONNECTED )
