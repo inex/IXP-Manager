@@ -11,6 +11,7 @@ class Kernel extends ConsoleKernel {
      * @var array
      */
     protected $commands = [
+        'IXP\Console\Commands\Router\GenerateConfiguration',
         'IXP\Console\Commands\Upgrade\MrtgTrunkConfig',
         'IXP\Console\Commands\Utils\Export\JsonSchema\Post',
     ];
