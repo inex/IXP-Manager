@@ -69,7 +69,7 @@ config/custom.php
 
 # barryo local development crud
 application/configs/application.ini.bup
-bird/
+/bird/
 ixpmanager-preferred.sql.bz2
 mrtg-shite/
 ubuntu-xenial-16.04-cloudimg-console.log
