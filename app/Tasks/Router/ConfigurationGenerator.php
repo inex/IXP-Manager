@@ -45,7 +45,7 @@ class ConfigurationGenerator
      * @var string
      */
     private $handle = null;
-    
+
     /**
      * Router details array.
      *
@@ -191,44 +191,57 @@ class ConfigurationGenerator
 
         foreach( $ints as $int )
         {
-            if( !$int['enabled'] )
+            if( !$int['enabled'] ) {
                 continue;
+            }
 
-            if( ( $router['type'] ?? 'RS' ) == 'RS' && !$int['rsclient'] )
+            if( ( $router['type'] ?? 'RS' ) == 'RS' && !$int['rsclient'] ) {
                 continue;
+            }
 
             // Due the the way we format the SQL query to join with physical
             // interfaces (of which there may be multiple per VLAN interface),
             // we need to weed out duplicates
-            if( isset( $newints[ $int['address'] ] ) )
+            if( isset( $newints[ $int['address'] ] ) ) {
                 continue;
+            }
 
             // don't need this:
             unset( $int['enabled'] );
 
             $int['fvliid'] = sprintf( '%04d', $int['vliid'] );
 
-            if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] )
+            if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] ) {
                 $int['maxprefixes'] = $int['maxbgpprefix'];
-            else
+            } else {
                 $int['maxprefixes'] = $int['gmaxprefixes'];
+            }
 
-            if( !$int['maxprefixes'] )
+            if( !$int['maxprefixes'] ) {
                 $int['maxprefixes'] = 250;
+            }
 
             unset( $int['gmaxprefixes'] );
             unset( $int['maxbgpprefix'] );
 
-            if( $this->router()['protocol'] == 6 && $int['peeringmacrov6'] )
+            if( ( $this->router()['protocol'] ?? 4 ) == 6 && $int['peeringmacrov6'] ) {
                 $int['peeringmacro'] = $int['peeringmacrov6'];
+            }
 
-            if( !$int['peeringmacro'] )
+            if( !$int['peeringmacro'] ) {
                 $int['peeringmacro'] = 'AS' . $int['autsys'];
+            }
 
             unset( $int['peeringmacrov6'] );
 
-            if( !$int['bgpmd5secret'] )
+            if( !$int['bgpmd5secret'] ) {
                 $int['bgpmd5secret'] = false;
+            }
+
+            if( $int['irrdbfilter'] ) {
+                $int['irrdbfilter_prefixes'] = d2r( 'IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $this->router()['protocol'] ?? 4, true );
+                $int['irrdbfilter_asns'    ] = d2r( 'IrrdbAsn'    )->getForCustomerAndProtocol( $int[ 'cid' ], $this->router()['protocol'] ?? 4, true );
+            }
 
             $newints[ $int['address'] ] = $int;
         }
