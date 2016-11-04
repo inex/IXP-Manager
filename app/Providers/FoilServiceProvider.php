@@ -5,6 +5,7 @@
 use Illuminate\Support\ServiceProvider;
 use IXP\Services\FoilEngine as Engine;
 
+use IXP\Utils\Foil\Extensions\IXP as IXPFoilExtensions;
 
 class FoilServiceProvider extends ServiceProvider
 {
@@ -35,7 +36,12 @@ class FoilServiceProvider extends ServiceProvider
 
         $app->resolving('view', function($view) use ($app) {
             $view->addExtension('foil.php', 'foil', function() use ($app) {
-                return new Engine($app->make('Foil\Engine'));
+                $engine = new Engine($app->make('Foil\Engine'));
+
+                // we have a few rendering functions we want to include here:
+                $engine->engine()->loadExtension( new IXPFoilExtensions(), [] );
+
+                return $engine;
             });
         });
     }

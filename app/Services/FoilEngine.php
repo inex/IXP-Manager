@@ -14,6 +14,10 @@ class FoilEngine implements EngineInterface
         $this->engine = $engine;
     }
 
+    public function engine(): EngineFoil {
+        return $this->engine;
+    }
+
     /**
      * Get the evaluated contents of the view.
      *
