@@ -17,11 +17,12 @@ class IrrdbAsn extends EntityRepository
      *
      * @param \Entities\Customer $cust The customer entity
      * @param int $protocol The IP protocol (4/6)
+     * @param boolean $flatten Return a flat array
      * @return int The number of ASNs found
      */
-    public function getForCustomerAndProtocol( $cust, $protocol )
+    public function getForCustomerAndProtocol( $cust, $protocol, $flatten = false )
     {
-        return $this->getEntityManager()->createQuery(
+        $asns = $this->getEntityManager()->createQuery(
                     "SELECT p.asn FROM \\Entities\\IrrdbAsn p
                         WHERE p.Customer = :cust AND p.protocol = :protocol
                         ORDER BY p.asn ASC, p.id ASC"
@@ -29,6 +30,17 @@ class IrrdbAsn extends EntityRepository
                 ->setParameter( 'cust', $cust )
                 ->setParameter( 'protocol', $protocol )
                 ->getScalarResult();
+
+        if( !$flatten ) {
+            return $asns;
+        }
+
+        $flat = [];
+        foreach( $asns as $p ) {
+            $flat[] = $p['asn'];
+        }
+
+        return $flat;
     }
 
     /**

@@ -17,11 +17,12 @@ class IrrdbPrefix extends EntityRepository
      *
      * @param \Entities\Customer $cust The customer entity
      * @param int $protocol The IP protocol (4/6)
+     * @param boolean $flatten Return a flat array
      * @return int The number of prefixes found
      */
-    public function getForCustomerAndProtocol( $cust, $protocol )
+    public function getForCustomerAndProtocol( $cust, $protocol, $flatten = false )
     {
-        return $this->getEntityManager()->createQuery(
+        $prefixes = $this->getEntityManager()->createQuery(
                     "SELECT p.prefix FROM \\Entities\\IrrdbPrefix p
                         WHERE p.Customer = :cust AND p.protocol = :protocol
                         ORDER BY p.prefix ASC, p.id ASC"
@@ -29,6 +30,17 @@ class IrrdbPrefix extends EntityRepository
                 ->setParameter( 'cust', $cust )
                 ->setParameter( 'protocol', $protocol )
                 ->getScalarResult();
+
+        if( !$flatten ) {
+            return $prefixes;
+        }
+
+        $flat = [];
+        foreach( $prefixes as $p ) {
+            $flat[] = $p['prefix'];
+        }
+
+        return $flat;
     }
 
     /**
