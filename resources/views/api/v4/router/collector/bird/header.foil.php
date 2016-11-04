@@ -54,7 +54,7 @@ protocol device { }
 # These function excludes weird networks
 #  rfc1918, class D, class E, too long and too short prefixes
 
-<?php if( ( $router['protocol'] ?? 4 ) == 4 ): ?>
+<?php if( ( $t->router['protocol'] ?? 4 ) == 4 ): ?>
 
 function avoid_martians_v4()
 prefix set martiansv4;
