@@ -28,6 +28,7 @@ return [
         'api_type'   => 'birdseye',
         'lg_access'  => Entities\User::AUTH_PUBLIC,
         'quarantine' => false,
+        'bgp_lc'     => false,
         'template'   => 'api/v4/router/collector/bird/standard',
     ],
     

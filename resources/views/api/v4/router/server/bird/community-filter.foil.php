@@ -39,14 +39,19 @@ function ixp_community_filter(int peerasn)
         if !(source = RTS_BGP) then
                 return false;
 
-        # default community filtering schema doesn't support ASN32, as there
-        # are only 6 octets available for numbering.  We need
-        # draft-raszuk-wide-bgp-communities to become reality.
-
-        # barryo - draft-ietf-large-community is a new (better?) option here
-
+<?php if( $t->router['bgp_lc'] ?? true ): ?>
+        # support for BGP Large Communities
+        if (routeserverasn, 0, peerasn) ~ bgp_large_community then
+                return false;
+        if (routeserverasn, 1, peerasn) ~ bgp_large_community then
+                return true;
+        if (routeserverasn, 0, 0) ~ bgp_large_community then
+                return false;
+<?php else: ?>
+        # BGP Large Communities support not present
         if peerasn > 65535 then
                 return true;
+<?php endif; ?>
 
         # Implement widely used community filtering schema.
         if (0, peerasn) ~ bgp_community then
