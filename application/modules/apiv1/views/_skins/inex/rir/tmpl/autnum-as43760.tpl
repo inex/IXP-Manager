@@ -7,12 +7,21 @@ remarks:        ----------------------------------------------------------------
 remarks:
 remarks:        INEX Route Server Routing Policy:
 remarks:
+remarks:        Large Communities Support - inex:action:rsclient
+remarks:        prevent announcement of a prefix to a peer    43760:0:peer-as
+remarks:        announce a route to a certain peer            43760:1:peer-as
+remarks:        prevent announcement of a prefix to all peers 43760:0:0
+remarks:        announce a route to all peers                 43760:1:0
+remarks:
+remarks:        Standard Communities Support:
 remarks:        prevent announcement of a prefix to a peer    0:peer-as
 remarks:        announce a route to a certain peer            43760:peer-as
 remarks:        prevent announcement of a prefix to all peers 0:43760
 remarks:        announce a route to all peers                 43760:43760
 remarks:
 remarks:        Notes:
+remarks:        - large communities are evaluated before standard bgp
+remarks:          communities.
 remarks:        - we use a per-client RIB
 remarks:        - local-preference is not modified in our RIBs
 remarks:        - AS43760 is stripped from the AS path sent to clients
@@ -24,7 +33,8 @@ remarks:          information pulled from whois.ripe.net.  Please check
 remarks:          your public routing policy before complaining that
 remarks:          we're ignoring your prefixes.  This particularly
 remarks:          applies to IPv6 prefixes.
-remarks:        - community 43760:43760 is really just a NOP
+remarks:        - standard community 43760:43760 is really just a NOP
+remarks:        - large community 43760:1:0 is not a NOP
 remarks:
 remarks:        -------------------------------------------------------
 org:            ORG-INEA1-RIPE
