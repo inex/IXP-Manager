@@ -125,6 +125,7 @@ return [
         'api'        => 'http://rs1-lan2-ipv4.mgmt.example.com/api',
         'api_type'   => 'birdseye',
         'lg_access'  => Entities\User::AUTH_PUBLIC,
+        'bgp_lc'     => true,
         'quarantine' => false,
         'template'   => 'api/v4/router/server/bird/standard',
     ],
