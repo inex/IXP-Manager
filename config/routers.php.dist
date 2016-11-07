@@ -22,7 +22,7 @@ return [
         'router_id'  => '192.0.2.8',
         'peering_ip' => '192.0.2.8',
         'asn'        => 65500,
-        'type'       => 'bird',
+        'software'   => 'bird',
         'mgmt_ip'    => '203.0.113.8',
         'api'        => 'http://rc1-lan1-ipv4.mgmt.example.com/api',
         'api_type'   => 'birdseye',

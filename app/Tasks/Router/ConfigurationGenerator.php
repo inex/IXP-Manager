@@ -195,7 +195,7 @@ class ConfigurationGenerator
                 continue;
             }
 
-            if( ( $router['type'] ?? 'RS' ) == 'RS' && !$int['rsclient'] ) {
+            if( ( $this->router()['type'] ?? 'RS' ) == 'RS' && !$int['rsclient'] ) {
                 continue;
             }
 
