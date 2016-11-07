@@ -47,6 +47,8 @@ function ixp_community_filter(int peerasn)
                 return true;
         if (routeserverasn, 0, 0) ~ bgp_large_community then
                 return false;
+        if (routeserverasn, 1, 0) ~ bgp_large_community then
+                return true;
 <?php else: ?>
         # BGP Large Communities support not present
         if peerasn > 65535 then
