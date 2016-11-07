@@ -42,10 +42,10 @@
 log "/var/log/bird/<?= $t->handle ?>.log" all;
 log syslog all;
 
-define routerasn     = <?= $t->router['asn']        ?? 64512 ?>;
-define routeraddress = <?= $t->router['peering_ip'] ?? '192.0.2.1' ?>;
+define routerasn     = <?= $t->router->asn()        ?>;
+define routeraddress = <?= $t->router->peeringIp() ?>;
 
-router id <?= $t->router['router_id'] ?? '192.0.2.1' ?>;
+router id <?= $t->router->routerId() ?>;
 listen bgp address routeraddress;
 
 # ignore interface up/down events
@@ -54,7 +54,7 @@ protocol device { }
 # These function excludes weird networks
 #  rfc1918, class D, class E, too long and too short prefixes
 
-<?php if( ( $t->router['protocol'] ?? 4 ) == 4 ): ?>
+<?php if( $t->router->protocol() == 4 ): ?>
 
 function avoid_martians_v4()
 prefix set martiansv4;

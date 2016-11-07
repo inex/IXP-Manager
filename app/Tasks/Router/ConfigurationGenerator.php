@@ -26,7 +26,8 @@ namespace IXP\Tasks\Router;
 
 use Entities\Vlan;
 use Illuminate\Contracts\View\View as ViewContract;
-use IXP\Exceptions\GeneralException;
+use IXP\Exceptions\ConfigurationException;
+use IXP\Utils\Router;
 use View;
 
 /**
@@ -41,58 +42,17 @@ use View;
 class ConfigurationGenerator
 {
     /**
-     * Handle - key for router in config/routers.php
-     * @var string
-     */
-    private $handle = null;
-
-    /**
-     * Router details array.
+     * Router details object.
      *
      * See config/routers.php
      *
-     * @var array
+     * @var IXP\Utils\Router
      */
     private $router = null;
 
     public function __construct( string $handle ) {
-        $this->setRouterByHandle( $handle );
-        $this->setHandle( $handle );
-
-        // make sure the template exists or there's no point continuing:
-        if( !isset( $this->router()['template'] ) ) {
-            throw new GeneralException( "Template not set in router settings" );
-        }
-
-        $template = preg_replace( '/[^\da-z_\-\/]/i', '', $this->router()['template'] );
-        if( $template[0] == '/' ) {
-            $template = substr( $template, 1 );
-        }
-
-        if( !View::exists( $template ) ) {
-            throw new GeneralException( "Template does not exist" );
-        }
-
-    }
-
-    /**
-     * Set the router handle string
-     *
-     * @param string $handle Router handle
-     * @return IXP\Tasks\Router\ConfigurationGenerator
-     */
-    public function setHandle( string $handle ): ConfigurationGenerator {
-        $this->handle = $handle;
-        return $this;
-    }
-
-    /**
-     * Get the router handle
-     *
-     * @return string
-     */
-    public function handle(): string {
-        return $this->handle;
+        $this->setRouter( new Router( $handle ) );
+        $this->router()->checkTemplate();
     }
 
     /**
@@ -102,7 +62,7 @@ class ConfigurationGenerator
      * @param array $router Router details (see config/routers.php)
      * @return IXP\Tasks\Router\ConfigurationGenerator
      */
-    public function setRouter( array $router ): ConfigurationGenerator {
+    public function setRouter( Router $router ): ConfigurationGenerator {
         $this->router = $router;
         return $this;
     }
@@ -112,24 +72,8 @@ class ConfigurationGenerator
      *
      * @return array
      */
-    public function router(): array {
+    public function router(): Router {
         return $this->router;
-    }
-
-    /**
-     * Set (and validate) the router by handle
-     *
-     * @throws IXP\Exceptions\GeneralException
-     * @param string $handle Router handle to generate configuration for
-     * @return IXP\Tasks\Router\ConfigurationGenerator
-     */
-    public function setRouterByHandle( string $handle ): ConfigurationGenerator {
-        // handle existance should be validated up the chain and errored appropriately (api, cli) - but belt'n'braces:
-        if( ! ( $router = config( 'routers.'.$handle, false ) ) ) {
-            throw new GeneralException( "Router handle does not exist: " . $handle );
-        }
-
-        return $this->setRouter( config( 'routers.'.$handle ) );
     }
 
     /**
@@ -141,14 +85,14 @@ class ConfigurationGenerator
     public function render(): ViewContract {
 
         // does the VLAN exist?
-        if( !isset($this->router['vlan_id']) || !( $vlan = d2r('Vlan')->find( $this->router()['vlan_id'] ) ) ) {
-            throw new GeneralException( "Invalid/missing vlan_id in router object" );
+        if( !$this->router()->vlanId() || !( $vlan = d2r('Vlan')->find( $this->router()->vlanId() ) ) ) {
+            throw new ConfigurationException( "Invalid/missing vlan_id in router object" );
         }
 
-        $ints = d2r( 'VlanInterface' )->sanitiseVlanInterfaces($vlan, $this->router()['protocol'], $this->router()['type'], $this->router()['quarantine']);
+        $ints = d2r( 'VlanInterface' )->sanitiseVlanInterfaces($vlan, $this->router()->protocol(), $this->router()->type(), $this->router()->quarantine() );
 
-        return view( $this->router()['template'] )->with(
-            ['handle' => $this->handle(), 'ints' => $ints, 'router' => $this->router(), 'vlan' => $vlan]
+        return view( $this->router()->template() )->with(
+            ['handle' => $this->router()->handle(), 'ints' => $ints, 'router' => $this->router(), 'vlan' => $vlan]
         );
     }
 

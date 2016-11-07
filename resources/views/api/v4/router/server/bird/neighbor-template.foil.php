@@ -37,7 +37,7 @@
 template bgp tb_rsclient {
         local as routeserverasn;
         source address routeserveraddress;
-<?php if( ( $t->router['protocol'] ?? 4 ) == 4 ): ?>
+<?php if( $t->router->protocol() == 4 ): ?>
         import filter {
                 ## Prevent BGP NEXT_HOP Hijacking
                 if !( from = bgp_next_hop ) then
@@ -51,7 +51,7 @@ template bgp tb_rsclient {
 
         export all;
         rs client;
-<?php if( ( $t->router['protocol'] ?? 4 ) == 6 ): ?>
+<?php if( $t->router->protocol() == 6 ): ?>
         missing lladdr ignore;
 <?php endif; ?>
 

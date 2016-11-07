@@ -44,10 +44,10 @@
 log "/var/log/bird/<?= $t->handle ?>.log" all;
 log syslog all;
 
-define routeserverasn     = <?= $t->router['asn']        ?? 64512 ?>;
-define routeserveraddress = <?= $t->router['peering_ip'] ?? '192.0.2.1' ?>;
+define routeserverasn     = <?= $t->router->asn() ?>;
+define routeserveraddress = <?= $t->router->peeringIp() ?>;
 
-router id <?= $t->router['router_id'] ?? '192.0.2.1' ?>;
+router id <?= $t->router->routerId() ?>;
 
 listen bgp address routeserveraddress;
 
@@ -59,7 +59,7 @@ protocol device { }
 function avoid_martians()
 prefix set martians;
 {
-    <?php if( ( $t->router['protocol'] ?? 4 ) == 6 ): ?>
+    <?php if( $t->router->protocol() == 6 ): ?>
 
         martians = [
                 ::/0,                   # Default (can be advertised as a route in BGP to peers if desired)

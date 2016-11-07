@@ -2,7 +2,7 @@
 <?php foreach( $t->ints as $int ):
     
         // do not set up a session to ourselves!
-        if( $int['autsys'] == $t->router['asn'] ):
+        if( $int['autsys'] == $t->router->asn() ):
             continue;
         endif;
 ?>
