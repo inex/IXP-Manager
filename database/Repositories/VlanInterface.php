@@ -4,6 +4,8 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\Vlan as VlanEntity;
+
 /**
  * VlanInterface
  *
@@ -327,6 +329,104 @@ class VlanInterface extends EntityRepository
             $vlis[ $vli->getId() ] = $vli;
 
         return $vlis;
+    }
+
+
+    /**
+     * Utility function to get and return active VLAN interfaces on the requested protocol
+     * suitable for route collector / server configuration.
+     *
+     * Sample return:
+     *
+     *     [
+     *         [cid] => 999
+     *         [cname] => Customer Name
+     *         [cshortname] => shortname
+     *         [autsys] => 65000
+     *         [peeringmacro] => QWE              // or AS65500 if not defined
+     *         [vliid] => 159
+     *         [fvliid] => 00159                  // formatted %05d
+     *         [address] => 192.0.2.123
+     *         [bgpmd5secret] => qwertyui         // or false
+     *         [as112client] => 1                 // if the member is an as112 client or not
+     *         [rsclient] => 1                    // if the member is a route server client or not
+     *         [maxprefixes] => 20
+     *         [irrdbfilter] => 0/1               // if IRRDB filtering should be applied
+     *         [location_name] => Interxion DUB1
+     *         [location_shortname] => IX-DUB1
+     *         [location_tag] => ix1
+     *     ]
+     *
+     * @param Vlan $vlan
+     * @return array As defined above
+     */
+    public function sanitiseVlanInterfaces( VlanEntity $vlan, int $protocol = 4, string $target = 'RS', bool $quarantine = false ): array {
+
+        $ints = $this->getForProto( $vlan, $protocol, false,
+            $quarantine  ? \Entities\PhysicalInterface::STATUS_QUARANTINE : \Entities\PhysicalInterface::STATUS_CONNECTED
+        );
+
+        $newints = [];
+
+        foreach( $ints as $int )
+        {
+            if( !$int['enabled'] ) {
+                continue;
+            }
+
+            // don't need this anymore:
+            unset( $int['enabled'] );
+
+
+            if( $target == 'RS' && !$int['rsclient'] ) {
+                continue;
+            }
+
+            // Due the the way we format the SQL query to join with physical
+            // interfaces (of which there may be multiple per VLAN interface),
+            // we need to weed out duplicates
+            if( isset( $newints[ $int['address'] ] ) ) {
+                continue;
+            }
+
+            $int['fvliid'] = sprintf( '%04d', $int['vliid'] );
+
+            if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] ) {
+                $int['maxprefixes'] = $int['maxbgpprefix'];
+            } else {
+                $int['maxprefixes'] = $int['gmaxprefixes'];
+            }
+
+            if( !$int['maxprefixes'] ) {
+                $int['maxprefixes'] = 250;
+            }
+
+            unset( $int['gmaxprefixes'] );
+            unset( $int['maxbgpprefix'] );
+
+            if( $protocol == 6 && $int['peeringmacrov6'] ) {
+                $int['peeringmacro'] = $int['peeringmacrov6'];
+            }
+
+            if( !$int['peeringmacro'] ) {
+                $int['peeringmacro'] = 'AS' . $int['autsys'];
+            }
+
+            unset( $int['peeringmacrov6'] );
+
+            if( !$int['bgpmd5secret'] ) {
+                $int['bgpmd5secret'] = false;
+            }
+
+            if( $int['irrdbfilter'] ) {
+                $int['irrdbfilter_prefixes'] = d2r( 'IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $protocol, true );
+                $int['irrdbfilter_asns'    ] = d2r( 'IrrdbAsn'    )->getForCustomerAndProtocol( $int[ 'cid' ], $protocol, true );
+            }
+
+            $newints[ $int['address'] ] = $int;
+        }
+
+        return $newints;
     }
 
 
