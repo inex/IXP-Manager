@@ -277,5 +277,14 @@ class Router
         return boolval( $this->router()['bgp_lc'] ?? false );
     }
 
+    /**
+     * Is MD5 supported?
+     *
+     * @return bool
+     */
+    public function skipMD5(): bool {
+        return boolval( $this->router()['skip_md5'] ?? false );
+    }
+
 
 }
