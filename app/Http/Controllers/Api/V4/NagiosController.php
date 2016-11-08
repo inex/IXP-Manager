@@ -3,120 +3,113 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 use Illuminate\Http\Request;
+use IXP\Utils\Routers;
 
 class NagiosController extends Controller {
 
-    private function generateBirdseyeDaemonMap( $class, &$map ) {
-        foreach( $class as $key => $details ) {
-            if( $details['api_type'] !== 'birdseye' ) {
-                continue;
-            }
-
-            $map[$key] = $details;
-        }
-    }
-
     /**
+     * API call to create Nagios configuration to monitor Bird's Eye looking glasses and - thus -
+     * Bird BGP daemons.
      *
+     * Takes router / Bird instances from config/routers.php.
+     *
+     * @param int $vlanid Optional database id of a vlan to generate config for (vlan.id)
      * @return Response
      */
     public function birdseyeDaemons( $vlanid = null )
     {
-        $map = [];
+        $map     = [];
+        $routers = ( new Routers )->filterForApiType('birdseye');
 
         if( $vlanid ) {
-            if( !config('lookingglass.'.$vlanid, false ) ) {
-                abort( 404, "No definition in config/lookingglass.php for the provided VLAN id." );
-            }
+            $routers->filterForVlanId($vlanid);
+        }
 
-            foreach( config('lookingglass.'.$vlanid) as $class ) {
-                $this->generateBirdseyeDaemonMap($class,$map);
-            }
-        } else {
-            foreach( config('lookingglass') as $vlanid => $vlanDetails ) {
-                foreach( $vlanDetails as $class ) {
-                    $this->generateBirdseyeDaemonMap($class,$map);
-                }
-            }
+        if( $routers->isEmpty() ) {
+            abort( 404, "No definition(s) in config/routers.php for the provided VLAN ID / Bird's Eye API type." );
         }
 
         return response()
-                ->view('api/v4/nagios/birdseye-daemons', ['map' => $map, 'vlanid' => $vlanid], 200)
+                ->view('api/v4/nagios/birdseye-daemons', ['routers' => $routers->getObjects(), 'vlanid' => $vlanid ?? false], 200)
                 ->header('Content-Type', 'text/html; charset=utf-8');
     }
 
 
     public function birdseyeRsBgpSessions( $vlanid = null )
     {
-        if( $vlanid && !config('lookingglass.'.$vlanid, false ) ) {
-            abort( 404, "No definition in config/lookingglass.php for the provided VLAN id." );
+        $routers = ( new Routers )->filterForApiType('birdseye');
+
+        $routers->filterForType('RS');
+        
+        if( $vlanid ) {
+            $routers->filterForVlanId($vlanid);
         }
-
-        $map = [];
-
-        // this is lazy but I'll swing back at it post v4
-        foreach( d2r( 'VlanInterface' )->findAll() as $vli ) {
-            if( $vlanid !== null && $vli->getVLAN()->getId() != $vlanid ) {
-                continue;
-            }
-
-            if( $vli->getVlan()->getPrivate() ) {
-                continue;
-            }
-
-            if( !$vli->getRsclient() ) {
-                continue;
-            }
-
-            $connected = false;
-            foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi ) {
-                if( $pi->statusIsConnected() ) {
-                    $connected = true;
-                    break;
+        
+        if( $routers->isEmpty() ) {
+            abort( 404, "No suitable definition(s) in config/routers.php found." );
+        }
+        
+        $map   = [];
+        $vlans = [];
+        
+        foreach( $routers->getObjects() as $h => $router ) {
+            
+            if( !isset( $vlans[ $router->vlanId() ] ) ) {
+                if( !( $vlans[$router->vlanId()] = d2r('Vlan')->find( $router->vlanId() ) ) ) {
+                    // non-existent VLAN
+                    continue;
                 }
             }
 
-            if( !$connected ) {
-                continue;
-            }
-
-            if( !( $vli->getVirtualInterface()->getCustomer()->isTypeFull() || $vli->getVirtualInterface()->getCustomer()->isTypeProBono() ) ) {
-                continue;
-            }
-
-            foreach( [4,6] as $proto ) {
-                if( !$vli->{'getIpv'.$proto.'Enabled'}() || !$vli->{'getIpv'.$proto.'monitorrcbgp'}() || !$vli->{"getIpv{$proto}canping"}() || !$vli->{"getIpv{$proto}Address"}() ) {
+            foreach( $vlans[$router->vlanId()]->getVlanInterfaces() as $vli ) {
+                if( !$vli->getRsclient() ) {
                     continue;
                 }
 
-                // FIXME we generate these (protocol name and Nagios cust hostname) is >=2 locations now -> centralise
-                $m = [];
-                $m['pname'] = sprintf( "pb_%04d_as%d", $vli->getId(), $vli->getVirtualInterface()->getCustomer()->getAutsys() );
-                $m['hname'] = sprintf( "%s-ipv%d-vlan%d-%d",
-                    $vli->getVirtualInterface()->getCustomer()->getShortname(),
-                    $proto, $vli->getVLAN()->getNumber(), $vli->getId()
-                );
+                $connected = false;
+                foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi ) {
+                    if( $pi->statusIsConnected() ) {
+                        $connected = true;
+                        break;
+                    }
+                }
 
-                if( !config('lookingglass.'.($vli->getVLAN()->getId()).'.rs', false ) ) {
+                if( !$connected ) {
                     continue;
                 }
 
-                foreach( config('lookingglass.'.($vli->getVLAN()->getId()).'.rs') as $rs ) {
-                    if( $rs['api_type'] !== 'birdseye' || $rs['protocol'] !== $proto ) {
+                if( !( $vli->getVirtualInterface()->getCustomer()->isTypeFull() || $vli->getVirtualInterface()->getCustomer()->isTypeProBono() ) ) {
+                    continue;
+                }
+
+                foreach( [4,6] as $proto ) {
+                    if( !$vli->{'getIpv'.$proto.'Enabled'}() || !$vli->{'getIpv'.$proto.'monitorrcbgp'}() || !$vli->{"getIpv{$proto}canping"}() || !$vli->{"getIpv{$proto}Address"}() ) {
                         continue;
                     }
 
-                    $m['api']  = $rs['api'];
-                    $m['name'] = 'BGP sesstion to ' . $rs['name'];
+                    // FIXME we generate these (protocol name and Nagios cust hostname) is >=2 locations now -> centralise
+                    $m = [];
+                    $m['pname'] = sprintf( "pb_%04d_as%d", $vli->getId(), $vli->getVirtualInterface()->getCustomer()->getAutsys() );
+                    $m['hname'] = sprintf( "%s-ipv%d-vlan%d-%d",
+                        $vli->getVirtualInterface()->getCustomer()->getShortname(),
+                        $proto, $vli->getVLAN()->getNumber(), $vli->getId()
+                    );
+
+                    if( $router->protocol() != $proto ) {
+                        continue;
+                    }
+
+                    $m['api']  = $router->api();
+                    $m['name'] = 'BGP sesstion to ' . $router->name();
 
                     $map[] = $m;
                 }
             }
         }
-
+        
         return response()
-                ->view('api/v4/nagios/birdseye-rs-bgp-daemons', ['map' => $map, 'vlanid' => $vlanid], 200)
-                ->header('Content-Type', 'text/html; charset=utf-8');
+            ->view('api/v4/nagios/birdseye-rs-bgp-daemons', ['map' => $map, 'vlanid' => $vlanid ?? false], 200)
+            ->header('Content-Type', 'text/html; charset=utf-8');
     }
 
 }

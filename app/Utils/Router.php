@@ -232,6 +232,43 @@ class Router
     }
 
     /**
+     * Get the mgmt_ip
+     *
+     * @return string
+     */
+    public function mgmtIp(): string {
+        if( !isset( $this->router()['mgmt_ip'] ) ) {
+            throw new ConfigurationException();
+        }
+        return $this->router()['mgmt_ip'];
+    }
+
+    /**
+     * Get the name
+     *
+     * @return string
+     */
+    public function name(): string {
+        if( !isset( $this->router()['name'] ) ) {
+            throw new ConfigurationException();
+        }
+        return $this->router()['name'];
+    }
+
+    /**
+     * Get the API endpoint
+     *
+     * @return string
+     */
+    public function api(): string {
+        if( !isset( $this->router()['api'] ) ) {
+            throw new ConfigurationException();
+        }
+        return $this->router()['api'];
+    }
+
+
+    /**
      * Are BGP large communities enabled?
      *
      * @return bool
