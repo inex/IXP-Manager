@@ -382,6 +382,10 @@ class VlanInterface extends EntityRepository
                 continue;
             }
 
+            if( $target == 'AS112' && !$int['as112client'] ) {
+                continue;
+            }
+
             // Due the the way we format the SQL query to join with physical
             // interfaces (of which there may be multiple per VLAN interface),
             // we need to weed out duplicates
