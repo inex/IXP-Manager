@@ -42,5 +42,16 @@ define service     {
 }
 
 
+<?php foreach( $t->routers as $n => $d ): ?>
+
+define service     {
+    use                     <?= config( 'ixp_api.nagios.infra_service' ) . "\n" ?>
+    host_name               bird-<?= $n . "\n" ?>
+    service_description     Bird BGP Service
+    check_command           <?= $cmd_name ?>!<?= $d->api() . "\n" ?>
+}
+
+<?php endforeach; ?>
+
 
 ### END ###
