@@ -36,8 +36,9 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
  */
 class GenerateConfigurationTest extends TestCase
 {
-    public $rchandles = [ 'rc1-lan1-ipv4', 'rc1-lan1-ipv6', 'rc1-lan2-ipv4', 'rc1-lan2-ipv6',  ];
-    public $rshandles = [ 'rs1-lan1-ipv4', 'rs1-lan1-ipv6', 'rs1-lan2-ipv4', 'rs1-lan2-ipv6',  ];
+    public $rchandles    = [ 'rc1-lan1-ipv4',   'rc1-lan1-ipv6',   'rc1-lan2-ipv4',   'rc1-lan2-ipv6',    ];
+    public $rshandles    = [ 'rs1-lan1-ipv4',   'rs1-lan1-ipv6',   'rs1-lan2-ipv4',   'rs1-lan2-ipv6',    ];
+    public $as112handles = [ 'as112-lan1-ipv4', 'as112-lan1-ipv6', 'as112-lan2-ipv4', 'as112-lan2-ipv6',  ];
 
     public function testRouteCollectorBirdConfigurationGeneration()
     {
@@ -59,6 +60,23 @@ class GenerateConfigurationTest extends TestCase
     public function testRouteServerBirdConfigurationGeneration()
     {
         foreach( $this->rshandles as $handle )
+        {
+            $conf = ( new RouterConfigurationGenerator( $handle ) )->render();
+
+            $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-{$handle}.conf" );
+            $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
+
+            // clean the configs to remove the comment lines which are irrelevent
+            $conf          = preg_replace( "/^#.*$/m", "", $conf          );
+            $knownGoodConf = preg_replace( "/^#.*$/m", "", $knownGoodConf );
+
+            $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RS configuration for {$handle} do not match" );
+        }
+    }
+
+    public function testAs112BirdConfigurationGeneration()
+    {
+        foreach( $this->as112handles as $handle )
         {
             $conf = ( new RouterConfigurationGenerator( $handle ) )->render();
 
