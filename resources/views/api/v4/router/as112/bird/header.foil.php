@@ -48,8 +48,14 @@ define routeraddress = <?= $t->router->peeringIp() ?>;
 router id <?= $t->router->routerId() ?>;
 listen bgp address routeraddress;
 
-# ignore interface up/down events
-protocol device { }
+protocol kernel {
+    export all;
+    scan time 60;
+}
+
+protocol device {
+    scan time 10;
+}
 
 # These function excludes weird networks
 #  rfc1918, class D, class E, too long and too short prefixes
