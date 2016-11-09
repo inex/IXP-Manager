@@ -23,19 +23,20 @@ if( php_sapi_name() !== 'cli' ) {
     }
 }
 
+if( Auth::check() && Auth::user()->isSuperUser() ) {
+    // get an array of customer id => names
+    if( !( $customers = Cache::get( 'admin_home_customers' ) ) ) {
+        $customers = d2r( 'Customer' )->getNames( true );
+        Cache::put( 'admin_home_customers', $customers, 3600 );
+    }
+
+    app()->make('Foil\Engine')->useData(['customers' => $customers]);
+}
+
+
 Route::group(['middleware' => ['web']], function () {
-    Route::get('/test', function() {
-        return view( 'test' );
-    });
-    Route::get('/test2', function() {
-        return view( 'test2' );
-    });
-    Route::get('/test3', function() {
-        return view( 'test3' );
-    });
-    //
-    // Route::get('/layout', function() {
-    //     return view( 'layout' );
+    // Route::get('/ltest', function() {
+    //     return view('ltest');
     // });
 
 });
