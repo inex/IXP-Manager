@@ -135,9 +135,9 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['bootstrap']['path']  = base_path() . "/application/Bootstrap.php";
         $options['bootstrap']['class'] = "Bootstrap";
 
-        $options['includePaths']['library']    = base_path() . "/library";
-        $options['includePaths']['osslibrary'] = base_path() . "/library";
+        $options['includePaths']['library']         = base_path() . "/library";
         $options['includePaths']['twitter']         = base_path() . "/library/Bootstrap-Zend-Framework/library";
+        $options['includePaths']['smarty']          = base_path() . "/vendor/smarty/smarty";
         $options['autoloaderNamespaces']['Twitter'] = "Twitter_";
 
         $options['pluginPaths']['OSS_Resource'] = base_path() . "/library/OSS/Resource";
