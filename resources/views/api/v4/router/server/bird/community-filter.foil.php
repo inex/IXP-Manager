@@ -49,12 +49,12 @@ function ixp_community_filter(int peerasn)
                 return false;
         if (routeserverasn, 1, 0) ~ bgp_large_community then
                 return true;
-<?php else: ?>
-        # BGP Large Communities support not present
+
+        # it's unwise to conduct a 32-bit check on a 16-bit value
         if peerasn > 65535 then
                 return true;
-<?php endif; ?>
 
+<?php endif; ?>
         # Implement widely used community filtering schema.
         if (0, peerasn) ~ bgp_community then
                 return false;

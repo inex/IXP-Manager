@@ -117,7 +117,7 @@ protocol pipe pp_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> {
 protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
         description "AS<?= $int['autsys'] ?> - <?= $int['cname'] ?>";
         neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?>;
-        import limit <?= $int['maxprefixes'] ?>;
+        import limit <?= $int['maxprefixes'] ?> action restart;
         table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
         <?php if( $int['bgpmd5secret'] ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
