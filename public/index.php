@@ -76,6 +76,8 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 |
 */
 
+include base_path() . '/library/IXP/Version.php';
+
 $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
 
 $response = $kernel->handle(

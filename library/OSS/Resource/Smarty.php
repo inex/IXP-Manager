@@ -77,8 +77,9 @@ class OSS_Resource_Smarty extends Zend_Application_Resource_ResourceAbstract
         {
             if( null === $this->_view ) // this cannot be &&'d with the above!
             {
-                @include_once( 'Smarty' . DIRECTORY_SEPARATOR . 'Smarty.class.php' );
-
+//                @include_once( 'Smarty' . DIRECTORY_SEPARATOR . 'Smarty.class.php' );
+                @include_once( 'libs/Smarty.class.php' );
+                
                 // Create directories of necessary
                 if( !file_exists( $options['cache'] ) )
                 {
