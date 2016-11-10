@@ -9,7 +9,7 @@
 
 <div class="row-fluid">
     <div class="span12">
-        <form action="{genUrl controller="statistics" action="switches"}" method="post" class="form-horizontal">
+        <form action="{genUrl controller="public-statistics" action="switches"}" method="post" class="form-horizontal">
             <strong>Select Switch:</strong>
             <select name="switch" onchange="this.form.submit();" class="chzn-select">
                 {foreach $switches as $id => $g}

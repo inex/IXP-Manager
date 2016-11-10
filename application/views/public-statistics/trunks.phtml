@@ -9,7 +9,7 @@
 
 <div class="row-fluid">
     <div class="span12">
-        <form action="{genUrl controller="statistics" action="trunks"}" method="post" class="form-horizontal">
+        <form action="{genUrl controller="public-statistics" action="trunks"}" method="post" class="form-horizontal">
             <strong>Select Trunk:&nbsp;&nbsp;</strong>
             <select name="trunk" onchange="this.form.submit();" class="chzn-select span4">
                 {foreach from=$graphs key=image item=name}
