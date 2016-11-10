@@ -212,7 +212,7 @@ Peering VLAN #1
     IPv6 address:       2001:7F8:18::F:0:1
     IPv6 session MD5:   {$vli->getIpv6bgpmd5secret()}
 
-    IPv4 address:       193.242.111.126
+    IPv4 address:       185.6.36.126
     IPv4 session MD5:   {$vli->getIpv4bgpmd5secret()}
 {elseif $vli->getVlan()->getNumber() eq 12}
 
@@ -318,7 +318,7 @@ Although this IRC server is secured with SSL, INEX does not recommend swapping p
 AS112 Service
 =============
 
-For the benefit of its members, INEX hosts an AS112 nameserver which answers bogus requests to private IP address space.  This service is available as a regular peering host on both INEX peering LANs.  Its IP addreses are: 193.242.111.6 and 194.88.240.6.  Should you wish to peer directly with the AS112 server, please contact INEX operations, and we can set up a peering session on the unit.  Otherwise, AS112 is also visible on the INEX route server system.
+For the benefit of its members, INEX hosts an AS112 nameserver which answers bogus requests to private IP address space.  This service is available as a regular peering host on both INEX peering LANs.  Its IP addresses are: 185.6.36.6 and 194.88.240.6.  Should you wish to peer directly with the AS112 server, please contact INEX operations, and we can set up a peering session on the unit.  Otherwise, AS112 is also visible on the INEX route server system.
 
 Please see {genUrl controller="dashboard" action="as112"} for more details and further explanation.
 

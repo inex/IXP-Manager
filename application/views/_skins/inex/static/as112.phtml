@@ -131,22 +131,22 @@ For Cisco routers, you will need something like the following example BGP config
 </p>
 
 <pre>
-    router bgp 99999
+    router bgp 64496
 
      ! {$options.identity.orgname} Peering LAN #1
 
-     neighbor 193.242.111.6 remote-as 112
-     neighbor 193.242.111.6 description {$options.identity.orgname} AS112 Service
+     neighbor 185.6.36.6 remote-as 112
+     neighbor 185.6.36.6 description {$options.identity.orgname} AS112 Service
      address-family ipv4
-     neighbor 193.242.111.6 password s00persekr1t
-     neighbor 193.242.111.6 activate
-     neighbor 193.242.111.6 filter-list 100 out
+     neighbor 185.6.36.6 password s00persekr1t
+     neighbor 185.6.36.6 activate
+     neighbor 185.6.36.6 prefix-list pl-announce-to-inex out
 
 </pre>
 
 <p>
-You should also use <code>route-maps</code> (or <code>distribute-lists</code>) to control
-outgoing prefix announcements to allow only the prefixes which you indend to announce.
+You should also use <code>route-maps</code> to control outgoing prefix
+announcements to allow only the prefixes which you indend to announce.
 </p>
 
 <h3>More Information on the AS112 Project</h3>

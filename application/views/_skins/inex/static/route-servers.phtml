@@ -151,9 +151,9 @@ IP addresses of the route servers are listed as follows:
 <tbody>
 	<tr>
 		<td>Public Peering LAN #1</td>
-		<td>193.242.111.8</td>
+		<td>185.6.36.8</td>
 		<td>2001:7f8:18::8</td>
-		<td>193.242.111.9</td>
+		<td>185.6.36.9</td>
 		<td>2001:7f8:18::9</td>
 	</tr>
 	<tr>
@@ -188,31 +188,31 @@ For Cisco routers, you will need something like the following bgp configuration:
 </p>
 
 <pre>
-    router bgp 99999
+    router bgp 64496
      no bgp enforce-first-as
 
      ! Route server #1
 
-     neighbor 193.242.111.8 remote-as 43760
-     neighbor 193.242.111.8 description INEX Route Server
+     neighbor 185.6.36.8 remote-as 43760
+     neighbor 185.6.36.8 description INEX Route Server
      address-family ipv4
-     neighbor 193.242.111.8 password s00persekr1t
-     neighbor 193.242.111.8 activate
-     neighbor 193.242.111.8 filter-list 100 out
+     neighbor 185.6.36.8 password s00persekr1t
+     neighbor 185.6.36.8 activate
+     neighbor 185.6.36.8 prefix-list pl-announce-to-inex out
 
      ! Route server #2
 
-     neighbor 193.242.111.9 remote-as 43760
-     neighbor 193.242.111.9 description INEX Route Server
+     neighbor 185.6.36.9 remote-as 43760
+     neighbor 185.6.36.9 description INEX Route Server
      address-family ipv4
-     neighbor 193.242.111.9 password s00persekr1t
-     neighbor 193.242.111.9 activate
-     neighbor 193.242.111.9 filter-list 100 out
+     neighbor 185.6.36.9 password s00persekr1t
+     neighbor 185.6.36.9 activate
+     neighbor 185.6.36.9 prefix-list pl-announce-to-inex out
 </pre>
 
 <p>
-You should also use <code>route-maps</code> (or <code>distribute-lists</code>) to control
-outgoing prefix announcements to allow only the prefixes which you indend to announce.
+You should also use <code>route-maps</code> to control outgoing prefix
+announcements to allow only the prefixes which you indend to announce.
 </p>
 
 <p>
