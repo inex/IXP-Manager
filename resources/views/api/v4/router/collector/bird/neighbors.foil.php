@@ -15,7 +15,7 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         # As a route collector, we want to import everything and export nothing:
         import all;
         export none;
-        import limit <?= $int['maxprefixes'] ?>;
+        import limit <?= $int['maxprefixes'] ?> action restart;
         <?php if( $int['bgpmd5secret'] ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
