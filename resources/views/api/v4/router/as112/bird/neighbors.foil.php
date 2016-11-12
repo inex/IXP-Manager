@@ -12,10 +12,10 @@ protocol bgp pb_as<?= $int['autsys'] ?>_vli<?= $int['vliid'] ?>_ipv<?= $int['pro
         description "AS<?= $int['autsys'] ?> - <?= $int['cname'] ?>";
         local as routerasn;
         source address routeraddress;
-        neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?> action restart;
+        neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?>;
         import filter f_import_policy;
         export where proto = "static_as112";
-        import limit <?= $int['maxprefixes'] ?>;
+        import limit <?= $int['maxprefixes'] ?> action restart;
         <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
