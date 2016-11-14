@@ -11,7 +11,8 @@
 
             {foreach $vlans as $vlan}
 
-                {if isset( $me[ 'vlaninterfaces' ][ $vlan->getNumber() ] )}
+                {assign var="vlanid" value=$vlan->getNumber()}
+                {if isset( $me[ 'vlaninterfaces' ][ $vlanid ] )}
                     <th>{$vlan->getName()}</th>
                 {/if}
 
