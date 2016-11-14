@@ -55,34 +55,38 @@ class ApiAuthenticate {
 	 */
 	public function handle($request, Closure $next)
 	{
-		// find API key. Prefer header to URL:
-		$apikey = false;
-		if( $request->header('X-IXP-Manager-API-Key') ) {
-			$apikey = $request->header('X-IXP-Manager-API-Key');
-		} else if( $request->input('apikey') ) {
-			$apikey = $request->input('apikey');
+		// are we already logged in?
+		if( !Auth::check() ) {
+			
+			// find API key. Prefer header to URL:
+			$apikey = false;
+			if( $request->header('X-IXP-Manager-API-Key') ) {
+				$apikey = $request->header('X-IXP-Manager-API-Key');
+			} else if( $request->input('apikey') ) {
+				$apikey = $request->input('apikey');
+			}
+
+			if( !$apikey ) {
+				return response('Unauthorized.', 401);
+	        }
+
+	        try {
+	            $key = D2EM::createQuery(
+	                    "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
+	                ->setParameter( 1, $apikey )
+	                ->useResultCache( true, 3600, 'oss_d2u_user_apikey_' . $apikey )
+	                ->getSingleResult();
+	        } catch( \Doctrine\ORM\NoResultException $e ) {
+	            return response( 'Valid API key required', 403 );
+	        }
+
+	        Auth::login( $key->getUser() );
+
+	        $key->setLastseenAt( new \DateTime() );
+	        $key->setLastseenFrom( $_SERVER['REMOTE_ADDR'] );
+	        D2EM::flush();
 		}
-
-		if( !$apikey ) {
-			return response('Unauthorized.', 401);
-        }
-
-        try {
-            $key = D2EM::createQuery(
-                    "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
-                ->setParameter( 1, $apikey )
-                ->useResultCache( true, 3600, 'oss_d2u_user_apikey_' . $apikey )
-                ->getSingleResult();
-        } catch( \Doctrine\ORM\NoResultException $e ) {
-            return response( 'Valid API key required', 403 );
-        }
-
-        Auth::login( $key->getUser() );
-
-        $key->setLastseenAt( new \DateTime() );
-        $key->setLastseenFrom( $_SERVER['REMOTE_ADDR'] );
-        D2EM::flush();
-
+		
 		return $next($request);
 	}
 

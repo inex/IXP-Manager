@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 // all routes in this group require auth (handled by IXP\Http\Kernel.php) and AUTH_SUPERUSER privs:
 Route::group( ['middleware' => 'assert.privilege:' . Entities\User::AUTH_SUPERUSER ], function() {
 
+    Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');   // ?format=json also works
 
     Route::get('nagios/birdseye_daemons',                  'NagiosController@birdseyeDaemons');
     Route::get('nagios/birdseye_daemons/{vlanid}',         'NagiosController@birdseyeDaemons');
