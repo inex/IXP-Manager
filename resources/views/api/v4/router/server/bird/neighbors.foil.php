@@ -83,9 +83,10 @@ int set allas;
     if !(bgp_path.last ~ allas) then
            reject;
 
-<?php   if( count( $int['irrdbfilter_prefixes'] ) ): ?>
+<?php   if( count( $int['irrdbfilter_prefixes'] ) ):
+    /* allnet = [ <?php echo $t->softwrap( $int['irrdbfilter_prefixes'], 4, ", ", ",", 16 ); ?> ]; */ ?>
 
-    allnet = [ <?php echo $t->softwrap( $int['irrdbfilter_prefixes'], 4, ", ", ",", 16 ); ?> ];
+    allnet = [ <?= implode( ', ', $int['irrdbfilter_prefixes'] ) ?> ];
 
     if ! (net ~ allnet) then
             reject;
