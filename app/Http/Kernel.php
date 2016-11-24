@@ -42,6 +42,10 @@ class Kernel extends HttpKernel {
         'grapher' => [
             \IXP\Http\Middleware\Services\Grapher::class,
         ],
+
+        'lookingglass' => [
+            \IXP\Http\Middleware\Services\LookingGlass::class,
+        ],
     ];
 
     /**

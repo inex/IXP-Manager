@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace IXP\Utils;
 
@@ -24,8 +25,8 @@ namespace IXP\Utils;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
- use IXP\Exceptions\ConfigurationException;
- use IXP\Exceptions\Utils\RouterException;
+use IXP\Exceptions\ConfigurationException;
+use IXP\Exceptions\Utils\RouterException;
 use View;
 
 /**
@@ -266,6 +267,19 @@ class Router
         }
         return $this->router()['api'];
     }
+
+    /**
+     * Get the API endpoint
+     *
+     * @return string
+     */
+    public function apiType(): string {
+        if( !isset( $this->router()['api_type'] ) ) {
+            throw new ConfigurationException();
+        }
+        return $this->router()['api_type'];
+    }
+
 
 
     /**

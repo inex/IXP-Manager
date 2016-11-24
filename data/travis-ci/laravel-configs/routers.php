@@ -87,7 +87,7 @@ return [
         'software'   => 'bird',
         'mgmt_ip'    => '203.0.113.18',
         'api'        => 'http://rs1-lan1-ipv4.mgmt.example.com/api',
-        'api_type'   => 'birdseye',
+        'api_type'   => 'birdye',
         'lg_access'  => Entities\User::AUTH_PUBLIC,
         'quarantine' => false,
         'template'   => 'api/v4/router/server/bird/standard',
