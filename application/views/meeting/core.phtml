@@ -100,7 +100,7 @@
         <p class="alert alert-info">
             <strong>
 		Please RSVP for this meeting: 
-                <a href="mailto:{$options.meeting.rsvp_to_email}">{$options.meeting.rsvp_to_email}</a>
+                <a href="mailto:{config( 'identity.rsvpemail' )}">{config( 'identity.rsvpemail' )}</a>
             </strong>
         </p>
         {/if}    

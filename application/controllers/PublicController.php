@@ -70,13 +70,13 @@ class PublicController extends IXP_Controller_Action
     {
         $this->getResponse()->setHeader( 'Content-Type', 'application/json; charset=utf-8' );
 
-        if( $json = $this->getD2Cache()->fetch( 'public_overall_stats_by_month' ) ) {
+        if( 0 && $json = Cache::get( 'public_overall_stats_by_month' ) ) {
             echo $json;
             return;
         }
 
-        $mrtg = new IXP_Mrtg( $this->getD2R( '\\Entities\\IXP' )->getDefault()->getMrtgPath() . '/ixp_peering-aggregate-bits.log' );
-        $mrtg = $mrtg->getArray();
+        $mrtg = Grapher::ixp( d2r('IXP')->find(1) )->setPeriod('year')->data();
+
         $data = [];
 
         $start   = Carbon::now()->subMonths(5)->startOfMonth();
@@ -123,11 +123,10 @@ class PublicController extends IXP_Controller_Action
         foreach( $data as $i => $d ) {
             $data[$i]['start'] = $data[$i]['start']->format('Y-m-d') . 'T' . $data[$i]['start']->format('H:i:s') . 'Z';
             $data[$i]['end']   = $data[$i]['end']->format('Y-m-d')   . 'T' . $data[$i]['end']->format('H:i:s')   . 'Z';
-            $data[$i]['max'] *= 8;
         }
 
-        $json = json_encode($data,JSON_PRETTY_PRINT);
-        $this->getD2Cache()->save( 'public_overall_stats_by_month', $json, 7200 );
+        $json = json_encode($data);
+        Cache::put( 'public_overall_stats_by_month', $json, 7200 );
         echo $json;
     }
 }
