@@ -20,5 +20,5 @@
             <?= sprintf( "%0.3f", microtime(true) - APPLICATION_STARTTIME ) ?>
         seconds
     </p>
-    
+
 </footer>

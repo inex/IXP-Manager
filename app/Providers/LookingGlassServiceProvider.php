@@ -44,7 +44,7 @@ use Route;
  */
 class LookingGlassServiceProvider extends ServiceProvider {
 
-    protected $defer = true;
+    protected $defer = false;
 
     /**
      * Bootstrap the application services.
@@ -54,8 +54,8 @@ class LookingGlassServiceProvider extends ServiceProvider {
     public function boot()
     {
         Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',
-                        'as' => 'lg', 'prefix' => 'lg' ], function() {
-                            
+                        'as' => 'lg::', 'prefix' => 'lg' ], function() {
+
             Route::get( '{handle}',         'LookingGlass@bgpSummary' );
         });
     }

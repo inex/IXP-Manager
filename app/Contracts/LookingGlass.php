@@ -3,6 +3,9 @@
 declare(strict_types=1);
 namespace IXP\Contracts;
 
+use IXP\Utils\Router;
+
+
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -36,6 +39,29 @@ namespace IXP\Contracts;
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
 interface LookingGlass {
+
+    /**
+     * Set the router object
+     * @param Router $r
+     * @return IXP\Services\LookingGlass\BirdsEye For fluent interfaces
+     */
+    public function setRouter( Router $r ): LookingGlass;
+
+    /**
+     * Get the router object
+     * @return IXP\Utils\Router
+     */
+    public function router(): Router;
+
+    /**
+     * Get BGP Summary information as JSON
+     *
+     * Response must use equivalent structure as Bird's Eye:
+     *     https://github.com/inex/birdseye/
+     *
+     * @return string
+     */
+    public function bgpSummary(): string;
 
 
 }

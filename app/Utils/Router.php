@@ -80,7 +80,7 @@ class Router
             throw new RouterException( "Template does not exist" );
         }
     }
-    
+
     /**
      * Set the router options array
      *
@@ -115,7 +115,7 @@ class Router
             throw new RouterException( "Router handle does not exist: " . $handle );
         }
 
-        return $this->setRouter( config( 'routers.'.$handle ) );
+        return $this->setRouter( $router );
     }
 
     /**
@@ -192,7 +192,7 @@ class Router
         if( !isset( $this->router()['template'] ) ) {
             throw new ConfigurationException();
         }
-        
+
         return $this->router()['template'];
     }
 
@@ -300,5 +300,12 @@ class Router
         return boolval( $this->router()['skip_md5'] ?? false );
     }
 
-
+    /**
+     * Looking Glass Access Restrictions
+     *
+     * @return int User privilege required
+     */
+    public function lgAccess(): int {
+        return intval( $this->router()['lg_access'] ?? \Entities\User::AUTH_SUPERUSER );
+    }
 }

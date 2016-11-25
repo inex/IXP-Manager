@@ -24,11 +24,13 @@ namespace IXP\Http\Middleware\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Closure;
 use App;
+use Auth;
+use Closure;
 
 use Illuminate\Http\Request;
 
+use Entities\User;
 use IXP\Services\Grapher as LookingGlassService;
 use IXP\Utils\Router;
 use IXP\Exceptions\Utils\RouterException;
@@ -61,116 +63,38 @@ class LookingGlass
         } catch( RouterException $e ) {
             abort( 404, $e->getMessage() );
         }
-        
-        // get the appropriate looking glass service
-        $lg = App::make('IXP\Services\LookingGlass')->forRouter($router);
-dd($lg);
-        if( !$lg->setHandle( $request->handle ) ) {
-            abort(404,'Invalid looking glass handle');
-        }
 
-        dd( 'barry - ' . $request->handle );
-
-        // all graph requests require a certain basic set of parameters / defaults.
-        // let's take care of that here
-        // $graph = $this->processParameters( $request, $grapher );
-
-        // so we know what graph we need and who's looking for it
         // let's authorise for access (this throws an exception)
-        // $graph->authorise();
+        $this->authorise($router);
+
+        // get the appropriate looking glass service
+        // (throws an exception if no appropriate Looking Glass handler)
+        $lg = App::make('IXP\Services\LookingGlass')->forRouter($router);
 
         $request->attributes->add(['lg' => $lg]);
 
         return $next($request);
     }
 
+
     /**
-     * All graphs have common parameters. We process these here for every request - and set sensible defaults.
+     * This function controls access to a router for a looking glass
      *
-     * @param \Illuminate\Http\Request  $request
+     * @param IXP\Utils\Router $router
+     * @return bool
      */
-    private function processParameters( Request $request, GrapherService $grapher ): Graph {
-
-        // while the Grapher service stores the processed parameters in its own object, we update the $request
-        // parameters here also just in case we need to final versions later in the request.
-
-        $target = explode( '/', $request->path() );
-        $target = array_pop( $target );
-
-        $request->period   = Graph::processParameterPeriod(   $request->input( 'period',   '' ) );
-        $request->category = Graph::processParameterCategory( $request->input( 'category', '' ) );
-        $request->protocol = Graph::processParameterProtocol( $request->input( 'protocol', '' ) );
-        $request->type     = Graph::processParameterType(     $request->input( 'type',     '' ) );
-
-        switch( $target ) {
-            case 'ixp':
-                $ixp = IXPGraph::processParameterIXP( (int)$request->input( 'id', 0 ) );
-                $request->id = $ixp->getId();
-                $graph = $grapher->ixp( $ixp )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'infrastructure':
-                $infra = InfrastructureGraph::processParameterInfrastructure( (int)$request->input( 'id', 0 ) );
-                $request->infrastructure = $infra->getId();
-                $graph = $grapher->infrastructure( $infra )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'vlan':
-                $vlan = VlanGraph::processParameterVlan( (int)$request->input( 'id', 0 ) );
-                $request->vlan = $vlan->getId();
-                $graph = $grapher->vlan( $vlan )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'trunk':
-                $trunkname = TrunkGraph::processParameterTrunkname( (string)$request->input( 'id', '' ) );
-                $request->trunkname = $trunkname;
-                $graph = $grapher->trunk( $trunkname )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'switch':
-                $switch = SwitchGraph::processParameterSwitch( (int)$request->input( 'id', 0 ) );
-                $request->switch = $switch->getId();
-                $graph = $grapher->switch( $switch )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'phsyicalinterface':
-                $physint = PhysIntGraph::processParameterPhysicalInterface( (int)$request->input( 'id', 0 ) );
-                $request->physint = $physint->getId();
-                $graph = $grapher->physint( $physint )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'virtualinterface':
-                $virtint = VirtIntGraph::processParameterVirtualInterface( (int)$request->input( 'id', 0 ) );
-                $request->virtint = $virtint->getId();
-                $graph = $grapher->virtint( $virtint )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'customer':
-                $customer = CustomerGraph::processParameterCustomer( (int)$request->input( 'id', 0 ) );
-                $request->customer = $customer->getId();
-                $graph = $grapher->customer( $customer )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'vlaninterface':
-                $vlanint = VlanIntGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
-                $request->vlanint = $vlanint->getId();
-                $graph = $grapher->vlanint( $vlanint )->setParamsFromArray( $request->all() );
-                break;
-
-            case 'p2p':
-                $srcvlanint = P2pGraph::processParameterSourceVlanInterface(      (int)$request->input( 'svli', 0 ) );
-                $dstvlanint = P2pGraph::processParameterDestinationVlanInterface( (int)$request->input( 'dvli', 0 ) );
-                $request->srcvlanint = $srcvlanint->getId();
-                $request->dstvlanint = $dstvlanint->getId();
-                $graph = $grapher->p2p( $srcvlanint, $dstvlanint )->setParamsFromArray( $request->all() );
-                break;
-
-
-            default:
-                abort(404, 'No such graph type');
+    private function authorise( Router $router ): bool {
+        if( !Auth::check() ) {
+            // use not logged in - is this required by the router?
+            if( $router->lgAccess() === User::AUTH_PUBLIC ) {
+                return true;
+            }
+        } else if( Auth::user()->getPrivs() >= $router->lgAccess() ) {
+            return true;
         }
 
-        return $graph;
+        abort( 401, "Insufficent permissions to access this looking glass" );
     }
+
 
 }

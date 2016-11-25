@@ -26,11 +26,15 @@ namespace IXP\Http\Controllers\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\View\View;
+
+use IXP\Contracts\LookingGlass as LookingGlassContract;
+
+use IXP\Exceptions\Services\LookingGlass\GeneralException as LookingGlassGeneralException;
 
 use IXP\Http\Requests;
 use IXP\Http\Controllers\Controller;
 
-use \IXP\Services\LookingGlass as LookingGlassService;
 
 
 /**
@@ -57,10 +61,10 @@ use \IXP\Services\LookingGlass as LookingGlassService;
 class LookingGlass extends Controller
 {
     /**
-     * the LookingGlass service
-     * @var \IXP\Services\LookingGlass
+     * the LookingGlass
+     * @var \IXP\Contracts\LookingGlass
      */
-    private $lg;
+    private $lg = null;
 
     /**
      * The request object
@@ -72,20 +76,26 @@ class LookingGlass extends Controller
     /**
      * Constructor
      */
-    public function __construct( Request $request, LookingGlassService $lg ) {
+    public function __construct( Request $request ) {
         // NB: Construtcor happens before middleware...
-        $this->lg      = $lg;
         $this->request = $request;
     }
 
     /**
-     * Grapher accessor
-     * @return \IXP\Services\Grapher
+     * Looking glass accessor
+     * @return \IXP\Contracts\LookingGlass
      */
-    private function lg(): LookingGlassService {
+    private function lg(): LookingGlassContract {
+        if( $this->lg === null ){
+            $this->lg = $this->request()->attributes->get('lg');
+
+            // if there's no graph then the middleware went wrong... safety net:
+            if( $this->lg === null ){
+                throw new LookingGlassGeneralException('Middleware could not load looking glass but did not throw a 404');
+            }
+        }
         return $this->lg;
     }
-
 
     /**
      * Request accessor
@@ -95,21 +105,12 @@ class LookingGlass extends Controller
         return $this->request;
     }
 
-
-    private function simpleResponse( $request ): Response {
-        return (new Response( call_user_func( [ $this->graph(), $this->graph()->type() ] ) ) )
-              ->header('Content-Type', Graph::CONTENT_TYPES[ $this->graph()->type() ] )
-              ->header('Content-Disposition', sprintf( 'inline; filename="grapher-%s-%s-%s-%s.%s"',
-                    $this->graph()->backend()->name(), $this->graph()->category(),
-                    $this->graph()->period(), $this->graph()->protocol(), $this->graph()->type() )
-                )
-              ->header( 'Expires', Carbon::now()->addMinutes(5)->toRfc1123String() );
-    }
-
-    public function bgpSummary( Request $request, string $handle ): Response {
-        dd($request);
-        //return $this->simpleResponse( $request );
-        die('ss');
+    public function bgpSummary( string $handle ): View {
+        // get bgp protocol summary
+        return app()->make('view')->make('services/lg/bgp-summary')->with([
+            'content' => json_decode( $this->lg()->bgpSummary() ),
+            'lg'      => $this->lg(),
+        ]);
     }
 
 }

@@ -24,7 +24,7 @@ namespace IXP\Services;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
- 
+
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 use IXP\Exceptions\Services\LookingGlass\ConfigurationException;
 use IXP\Services\LookingGlass\BirdsEye as BirdseyeLookingGlass;
@@ -57,10 +57,9 @@ class LookingGlass {
     public function forRouter( Router $r ) {
         switch( $r->apiType() ) {
             case self::API_TYPE_BIRDSEYE:
-                dd($r->apiType());
                 return new BirdseyeLookingGlass( $r );
                 break;
-                
+
             default:
                 throw new ConfigurationException( 'Invalid, no or unimplemented looking glass backend requested: ' . $r->apiType() );
         }

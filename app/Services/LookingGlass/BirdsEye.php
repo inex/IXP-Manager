@@ -25,6 +25,7 @@ namespace IXP\Services\LookingGlass;
 
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 
+use IXP\Utils\Router;
 
 /**
  * LookingGlass Backend -> Bird's Eye
@@ -37,6 +38,44 @@ use IXP\Contracts\LookingGlass as LookingGlassContract;
  */
 class BirdsEye implements LookingGlassContract {
 
+    /**
+     * Instance of a router object representing the looking glass target
+     * @var IXP\Utils\Router
+     */
+    private $router;
 
 
+    /**
+     * Constructor
+     * @param Router $r
+     */
+    public function __construct( Router $r ) {
+        $this->setRouter($r);
+    }
+
+    /**
+     * Set the router object
+     * @param Router $r
+     * @return IXP\Services\LookingGlass\BirdsEye For fluent interfaces
+     */
+    public function setRouter( Router $r ): LookingGlassContract {
+        $this->router = $r;
+        return $this;
+    }
+
+    /**
+     * Get the router object
+     * @return IXP\Utils\Router
+     */
+    public function router(): Router {
+        return $this->router;
+    }
+
+    /**
+     * Get BGP Summary information as JSON
+     * @return string
+     */
+    public function bgpSummary(): string {
+        return file_get_contents( $this->router()->api() . '/protocols/bgp' );
+    }
 }

@@ -40,5 +40,3 @@ Route::group(['middleware' => ['web']], function () {
     // });
 
 });
-
-set_time_limit(0);
