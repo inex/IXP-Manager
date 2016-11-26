@@ -86,4 +86,32 @@ class BirdsEye implements LookingGlassContract {
     public function status(): string {
         return file_get_contents( $this->router()->api() . '/status' );
     }
+
+    /**
+     * Get routes for a named routing table (aka. vrf)
+     * @param string $table Table name
+     * @return string
+     */
+    public function routesForTable(string $table): string {
+        return file_get_contents( $this->router()->api() . '/routes/table/' . urlencode($table) );
+    }
+
+    /**
+     * Get routes learnt from named protocol (e.g. BGP session)
+     * @param string $protocol Protocol name
+     * @return string
+     */
+    public function routesForProtocol(string $protocol): string {
+        return file_get_contents( $this->router()->api() . '/routes/protocol/' . urlencode($protocol) );
+    }
+
+    /**
+     * Get routes exported to named protocol (e.g. BGP session)
+     * @param string $protocol Protocol name
+     * @return string
+     */
+    public function routesForExport(string $protocol): string {
+        return file_get_contents( $this->router()->api() . '/routes/export/' . urlencode($protocol) );
+    }
+
 }

@@ -1,13 +1,13 @@
 
-<div class="row-fluid">
-<div class="span2">
+<div class="row-fluid clearfix">
+<div class="col-md-2">
 <div class="well sidebar-nav">
 
-<ul class="nav nav-list">
+<ul class="nav nav-pills nav-stacked">
 
-    <form class="form-search" method="get" action="<?= url( 'search/do' ) ?>">
-        <input type="text" class="search-query" style="width: 50%" placeholder="Search..." name="search">
-        <a class="btn btn-small" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal"><i class="icon-question-sign"></i></a>
+    <form class="form-inline" method="get" action="<?= url( 'search/do' ) ?>">
+        <input type="text" class="form-control" style="width: 50%" placeholder="Search..." name="search">
+        <a class="btn btn-default" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal"><span class="glyphicon glyphicon-question-sign"></span></a>
     </form>
 
     <li class="nav-header">IXP Customer Actions</li>
@@ -248,4 +248,4 @@
 
 
 </div><!--/span-->
-<div class="span10">
+<div class="col-md-10">

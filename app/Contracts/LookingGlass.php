@@ -74,4 +74,26 @@ interface LookingGlass {
     public function status(): string;
 
 
+    /**
+     * Get routes for a named routing table (aka. vrf)
+     * @param string $table Table name
+     * @return string
+     */
+    public function routesForTable(string $table): string;
+
+    /**
+     * Get routes learnt from named protocol (e.g. BGP session)
+     * @param string $protocol Protocol name
+     * @return string
+     */
+    public function routesForProtocol(string $protocol): string;
+    
+    /**
+     * Get routes exported to named protocol (e.g. BGP session)
+     * @param string $protocol Protocol name
+     * @return string
+     */
+    public function routesForExport(string $protocol): string;
+
+
 }

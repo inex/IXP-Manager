@@ -58,8 +58,9 @@ class LookingGlassServiceProvider extends ServiceProvider {
 
             Route::get( '',                                      'LookingGlass@index'             )->name('index');
             Route::get( '{handle}',                              'LookingGlass@bgpSummary'        );
-            Route::get( '{handle}/routes/protocol/{protocol}',   'LookingGlass@routesForProtocol' );
             Route::get( '{handle}/routes/table/{table}',         'LookingGlass@routesForTable'    );
+            Route::get( '{handle}/routes/protocol/{protocol}',   'LookingGlass@routesForProtocol' );
+            Route::get( '{handle}/routes/export/{protocol}',     'LookingGlass@routesForExport'   );
 
             // $app->get('route',                           'Routes@getLookup'      );
             // $app->get('route/{net}/protocol/{protocol}', 'Routes@lookupProtocol' );

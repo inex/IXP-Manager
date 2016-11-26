@@ -74,18 +74,7 @@
 
                 <?= $this->insert('staff-links'); ?>
             </ul>
-            <ul class="nav pull-right">
-                <?php if( Auth::user()->isSuperUser() ): ?>
-                    <form class="navbar-search pull-left">
-                        <select data-placeholder="View a Customer..." id="menu-select-customer" type="select" name="id" class="chzn-select">
-                            <option></option>
-                            <?php foreach( $t->customers as $k => $i ): ?>
-                                <option value="<?= $k ?>"><?= $i ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </form>
-                <?php endif; ?>
-
+            <ul class="nav navbar-nav pull-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -106,6 +95,16 @@
                     </ul>
                 </li>
             </ul>
+            <form class="navbar-form navbar-search navbar-right">
+                <div class="form-group">
+                    <select data-placeholder="View a Customer..." id="menu-select-customer" type="select" name="id" class="chzn-select">
+                        <option></option>
+                        <?php foreach( $t->customers as $k => $i ): ?>
+                            <option value="<?= $k ?>"><?= $i ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </form>
         </div>
     </div>
 </nav>

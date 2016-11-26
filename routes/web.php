@@ -17,7 +17,9 @@ $auth = Zend_Auth::getInstance();
 if( php_sapi_name() !== 'cli' ) {
     if( $auth->hasIdentity() && \Auth::guest() ) {
         // log the user is for Laravel5
-        \Auth::login( $auth->getIdentity()['user'] );
+        // Note that we reload the user from the database as Zend uses a session cache
+        // which breaks associations, etc.
+        \Auth::login( d2r('User')->find( ($auth->getIdentity()['user'])->getId() ) );
     } else if( !$auth->hasIdentity() ) {
         \Auth::logout();
     }

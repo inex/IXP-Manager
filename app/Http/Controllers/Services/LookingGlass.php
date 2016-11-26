@@ -28,6 +28,7 @@ use Auth;
 use Cache;
 
 use Entities\User;
+use ErrorException;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -42,6 +43,7 @@ use IXP\Http\Controllers\Controller;
 
 use IXP\Utils\Router;
 
+use Redirect;
 
 /**
  * LookingGlass Controller
@@ -137,6 +139,40 @@ class LookingGlass extends Controller
         ]);
         return $this->addCommonParams($view);
     }
+
+    public function routesForTable( string $handle, string $table ) {
+
+        try{
+            $routes = $this->lg()->routesForTable($table);
+        } catch( ErrorException $e ) {
+            return redirect( 'lg/'.$handle )->with('msg', 'The Message');
+        }
+
+        $view = app()->make('view')->make('services/lg/routes')->with([
+            'content' => json_decode( $routes ),
+            'source' => 'table', 'name' => $table
+        ]);
+        return $this->addCommonParams($view);
+    }
+
+    public function routesForProtocol( string $handle, string $protocol ): View {
+        // get bgp protocol summary
+        $view = app()->make('view')->make('services/lg/routes')->with([
+            'content' => json_decode( $this->lg()->routesForProtocol($protocol) ),
+            'source' => 'protocol', 'name' => $protocol
+        ]);
+        return $this->addCommonParams($view);
+    }
+
+    public function routesForExport( string $handle, string $protocol ): View {
+        // get bgp protocol summary
+        $view = app()->make('view')->make('services/lg/routes')->with([
+            'content' => json_decode( $this->lg()->routesForExport($protocol) ),
+            'source' => 'export to protocol', 'name' => $protocol
+        ]);
+        return $this->addCommonParams($view);
+    }
+
 
 
     /**

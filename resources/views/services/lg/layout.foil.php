@@ -5,7 +5,11 @@
 <?php $this->append() ?>
 
 <?php $this->section('page-header-preamble') ?>
-    <div class="pull-right">
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+        <li class="pull-right">
+    <?php else: ?>
+        <div class="pull-right">
+    <?php endif; ?>
         <div class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <?= $t->lg ? $t->lg->router()->name() : 'Select a router...' ?>
@@ -42,7 +46,11 @@
                 <?php endforeach; ?>
             </ul>
         </div>
-    </div>
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+        </li>
+    <?php else: ?>
+        </div>
+    <?php endif; ?>
 <?php $this->append() ?>
 
 <?php if( !Auth::check() ): ?>

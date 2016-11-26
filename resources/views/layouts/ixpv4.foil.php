@@ -55,7 +55,7 @@
         echo $t->insert("menus/custuser");
     } elseif( Auth::user()->isCustUser() ) {
         echo $t->insert("menus/custadmin");
-    } elseif( Auth::user()->isCustUser() ) {
+    } elseif( Auth::user()->isSuperUser() ) {
         echo $t->insert("menus/superuser");
     }
 ?>
@@ -75,13 +75,17 @@
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <ul class="breadcrumb">
+            <?php $this->section('page-header-preamble') ?>
+            <?php $this->stop() ?>
             <li>
-                <a href="<?= url('') ?>">Home</a> <span class="divider">/</span>
+                <a href="<?= url('') ?>">Home</a>
             </li>
             <li class="active">
                 <?php $this->section('title') ?>
                 <?php $this->stop() ?>
             </li>
+            <?php $this->section('page-header-postamble') ?>
+            <?php $this->stop() ?>
         </ul>
     <?php else: ?>
         <div class="page-content">
@@ -106,6 +110,7 @@
 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         </div><!--/span-->
     </div><!--/row-->
+
 <?php else: ?>
 
     </div>
