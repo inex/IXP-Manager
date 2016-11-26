@@ -308,4 +308,25 @@ class Router
     public function lgAccess(): int {
         return intval( $this->router()['lg_access'] ?? \Entities\User::AUTH_SUPERUSER );
     }
+
+    /**
+     * Router software
+     *
+     * @return string Router software
+     */
+    public function software(): string {
+        return $this->router()['software'] ?? 'Unknown';
+    }
+
+
+
+    /**
+     * This function controls access to a router for a looking glass
+     *
+     * @param int $privs User's privileges (see \Entities\User)
+     * @return bool
+     */
+    function authorise( int $privs ): bool {
+        return $privs >= $this->lgAccess();
+    }
 }

@@ -63,5 +63,15 @@ interface LookingGlass {
      */
     public function bgpSummary(): string;
 
+    /**
+     * Get the router status information as JSON
+     *
+     * Response must use equivalent structure as Bird's Eye:
+     *     https://github.com/inex/birdseye/
+     *
+     * @return string
+     */
+    public function status(): string;
+
 
 }

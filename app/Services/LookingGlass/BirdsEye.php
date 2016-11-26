@@ -78,4 +78,12 @@ class BirdsEye implements LookingGlassContract {
     public function bgpSummary(): string {
         return file_get_contents( $this->router()->api() . '/protocols/bgp' );
     }
+
+    /**
+     * Get the router's status as JSON
+     * @return string
+     */
+    public function status(): string {
+        return file_get_contents( $this->router()->api() . '/status' );
+    }
 }

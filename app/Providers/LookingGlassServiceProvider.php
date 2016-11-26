@@ -56,7 +56,15 @@ class LookingGlassServiceProvider extends ServiceProvider {
         Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',
                         'as' => 'lg::', 'prefix' => 'lg' ], function() {
 
-            Route::get( '{handle}',         'LookingGlass@bgpSummary' );
+            Route::get( '',                                      'LookingGlass@index'             )->name('index');
+            Route::get( '{handle}',                              'LookingGlass@bgpSummary'        );
+            Route::get( '{handle}/routes/protocol/{protocol}',   'LookingGlass@routesForProtocol' );
+            Route::get( '{handle}/routes/table/{table}',         'LookingGlass@routesForTable'    );
+
+            // $app->get('route',                           'Routes@getLookup'      );
+            // $app->get('route/{net}/protocol/{protocol}', 'Routes@lookupProtocol' );
+            // $app->get('route/{net}/table/{table}',       'Routes@lookupTable'    );
+
         });
     }
 

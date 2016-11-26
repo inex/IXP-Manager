@@ -80,24 +80,25 @@
             </li>
             <li class="active">
                 <?php $this->section('title') ?>
-                    Title
                 <?php $this->stop() ?>
             </li>
         </ul>
     <?php else: ?>
         <div class="page-content">
             <div class="page-header">
+                <?php $this->section('page-header-preamble') ?>
+                <?php $this->stop() ?>
                 <h1>
                     <?php $this->section('title') ?>
-                        Title
                     <?php $this->stop() ?>
                 </h1>
+                <?php $this->section('page-header-postamble') ?>
+                <?php $this->stop() ?>
             </div>
     <?php endif; ?>
 
 
 <?php $this->section('content') ?>
-No page content...
 <?php $this->stop() ?>
 
 

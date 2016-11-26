@@ -24,6 +24,11 @@ namespace IXP\Http\Controllers\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth;
+use Cache;
+
+use Entities\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
@@ -35,6 +40,7 @@ use IXP\Exceptions\Services\LookingGlass\GeneralException as LookingGlassGeneral
 use IXP\Http\Requests;
 use IXP\Http\Controllers\Controller;
 
+use IXP\Utils\Router;
 
 
 /**
@@ -105,12 +111,64 @@ class LookingGlass extends Controller
         return $this->request;
     }
 
+    /**
+     * Add view parameters common for all requests.
+     * @param Illuminate\View\View $view
+     */
+    private function addCommonParams( View $view ): View {
+        $view->with( 'status',  json_decode( $this->lg()->status() ) );
+        $view->with( 'lg',      $this->lg() );
+        $view->with( 'routers', $this->makeRouterDropdown() );
+        return $view;
+    }
+
+
+    public function index(): View {
+        return app()->make('view')->make('services/lg/index')->with([
+            'lg'      => false,
+            'routers' => $this->makeRouterDropdown(),
+        ]);
+    }
+
     public function bgpSummary( string $handle ): View {
         // get bgp protocol summary
-        return app()->make('view')->make('services/lg/bgp-summary')->with([
+        $view = app()->make('view')->make('services/lg/bgp-summary')->with([
             'content' => json_decode( $this->lg()->bgpSummary() ),
-            'lg'      => $this->lg(),
         ]);
+        return $this->addCommonParams($view);
+    }
+
+
+    /**
+     * Gather the data for looking glass dropdowns
+     * @return array
+     */
+    private function makeRouterDropdown(): array {
+        $cacheKey = 'lg_dd_' . ( Auth::check() ? Auth::user()->getCustomer()->getId() : 'public' );
+        if( Cache::has( $cacheKey ) ) {
+            return Cache::get($cacheKey);
+        }
+
+        $dd = [];
+        $routers = config('routers');
+        ksort( $routers );
+
+        foreach( $routers as $key => $r ) {
+            $router = new Router( $key );
+
+            if( !$router->authorise( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC )  ) {
+                continue;
+            }
+
+            if( $router->quarantine() && !( Auth::check() && Auth::user()->getCustomer()->hasInterfacesInQuarantine() ) ) {
+                continue;
+            }
+
+            $dd[$router->type()][$key] = $router->name();
+        }
+
+        Cache::put( $cacheKey, $dd, 15 );
+        return $dd;
     }
 
 }

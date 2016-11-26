@@ -27,6 +27,7 @@ namespace IXP\Http\Middleware\Services;
 use App;
 use Auth;
 use Closure;
+use Route;
 
 use Illuminate\Http\Request;
 
@@ -57,6 +58,10 @@ class LookingGlass
      */
     public function handle($request, Closure $next )
     {
+        if( Route::currentRouteName() == 'lg::index' ) {
+            return $next($request);
+        }
+
         // get the router object
         try {
             $router = new Router( $request->handle );
@@ -84,12 +89,7 @@ class LookingGlass
      * @return bool
      */
     private function authorise( Router $router ): bool {
-        if( !Auth::check() ) {
-            // use not logged in - is this required by the router?
-            if( $router->lgAccess() === User::AUTH_PUBLIC ) {
-                return true;
-            }
-        } else if( Auth::user()->getPrivs() >= $router->lgAccess() ) {
+        if( $router->authorise( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC ) ) {
             return true;
         }
 

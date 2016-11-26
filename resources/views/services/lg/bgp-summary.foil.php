@@ -1,12 +1,8 @@
-<?php $this->layout('layouts/ixpv4') ?>
+<?php $this->layout('services/lg/layout') ?>
 
 <?php $this->section('title') ?>
-    Looking Glass
-
     <small>BGP Protocol Summary</small>
-
-<?php $this->replace() ?>
-
+<?php $this->append() ?>
 
 <?php $this->section('content') ?>
 
@@ -136,11 +132,9 @@
   </div>
 </div>
 
-<?php $this->replace() ?>
+<?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
-
-<?= $t->insert('services/lg/js/datatables-ip-sort') ?>
 
 <script type="text/javascript">
 
@@ -240,4 +234,4 @@
     });
 </script>
 
-<?php $this->replace() ?>
+<?php $this->append() ?>
