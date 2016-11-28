@@ -73,6 +73,14 @@ interface LookingGlass {
      */
     public function status(): string;
 
+    /**
+     * Get internal symbols.
+     *
+     * Particularly we're interested in route tables / vrfs and protocols.
+     *
+     * @return string
+     */
+    public function symbols(): string;
 
     /**
      * Get routes for a named routing table (aka. vrf)
@@ -94,6 +102,24 @@ interface LookingGlass {
      * @return string
      */
     public function routesForExport(string $protocol): string;
+
+    /**
+     * Get details for a specific route as received by a protocol
+     * @param string $protocol Protocol name
+     * @param string $network The route to lookup
+     * @param int $mask The mask of the route to look up
+     * @return string
+     */
+    public function protocolRoute(string $protocol,string $network,int $mask): string;
+
+    /**
+     * Get details for a specific route in a named table (vrf)
+     * @param string $table Table name
+     * @param string $network The route to lookup
+     * @param int $mask The mask of the route to look up
+     * @return string
+     */
+    public function protocolTable(string $table,string $network,int $mask): string;
 
 
 }

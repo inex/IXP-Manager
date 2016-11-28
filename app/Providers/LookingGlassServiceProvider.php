@@ -56,15 +56,17 @@ class LookingGlassServiceProvider extends ServiceProvider {
         Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',
                         'as' => 'lg::', 'prefix' => 'lg' ], function() {
 
-            Route::get( '',                                      'LookingGlass@index'             )->name('index');
-            Route::get( '{handle}',                              'LookingGlass@bgpSummary'        );
-            Route::get( '{handle}/routes/table/{table}',         'LookingGlass@routesForTable'    );
-            Route::get( '{handle}/routes/protocol/{protocol}',   'LookingGlass@routesForProtocol' );
-            Route::get( '{handle}/routes/export/{protocol}',     'LookingGlass@routesForExport'   );
+            Route::get( '',                                         'LookingGlass@index'             )->name('index');
+            
+            Route::get( '{handle}',                                 'LookingGlass@bgpSummary'        );
+            
+            Route::get( '{handle}/routes/table/{table}',            'LookingGlass@routesForTable'    );
+            Route::get( '{handle}/routes/protocol/{protocol}',      'LookingGlass@routesForProtocol' );
+            Route::get( '{handle}/routes/export/{protocol}',        'LookingGlass@routesForExport'   );
 
-            // $app->get('route',                           'Routes@getLookup'      );
-            // $app->get('route/{net}/protocol/{protocol}', 'Routes@lookupProtocol' );
-            // $app->get('route/{net}/table/{table}',       'Routes@lookupTable'    );
+            Route::get( '{handle}/route-search',                           'LookingGlass@routeSearch'       );
+            Route::get( '{handle}/route/{net}/{mask}/protocol/{protocol}', 'LookingGlass@protocolRoute'     );
+            Route::get( '{handle}/route/{net}/{mask}/table/{table}',       'LookingGlass@tableRoute'        );
 
         });
     }

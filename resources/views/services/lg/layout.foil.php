@@ -10,42 +10,55 @@
     <?php else: ?>
         <div class="pull-right">
     <?php endif; ?>
-        <div class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <?= $t->lg ? $t->lg->router()->name() : 'Select a router...' ?>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <?php foreach( $t->routers as $type => $subRouters ): ?>
-                    <li role="separator" class="divider"></li>
-                    <li class="dropdown-header">
-                        <?php
-                            switch( $type ):
-                                case 'AS112':
-                                    echo 'AS112 Services';
-                                    break;
-                                case 'RC':
-                                    echo 'Route Collectors';
-                                    break;
-                                case 'RS':
-                                    echo 'Route Servers';
-                                    break;
-                                default:
-                                    echo $type;
-                                    break;
-                            endswitch;
-                        ?>
-                    </li>
-                    <?php foreach( $subRouters as $key => $name ): ?>
-                        <li class="<?= $t->lg && $key == $t->lg->router()->handle() ? 'active' : '' ?>">
-                            <a href="<?= url('/lg/'.$key) ?>">
-                                <?= $name ?>
-                            </a>
+    
+        <div class="btn-group" role="group">
+            
+            <div class="btn-group" role="group">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <?= $t->lg ? $t->lg->router()->name() : 'Select a router...' ?>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <?php foreach( $t->routers as $type => $subRouters ): ?>
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">
+                            <?php
+                                switch( $type ):
+                                    case 'AS112':
+                                        echo 'AS112 Services';
+                                        break;
+                                    case 'RC':
+                                        echo 'Route Collectors';
+                                        break;
+                                    case 'RS':
+                                        echo 'Route Servers';
+                                        break;
+                                    default:
+                                        echo $type;
+                                        break;
+                                endswitch;
+                            ?>
                         </li>
+                        <?php foreach( $subRouters as $key => $name ): ?>
+                            <li class="<?= $t->lg && $key == $t->lg->router()->handle() ? 'active' : '' ?>">
+                                <a href="<?= url('/lg/'.$key) ?>">
+                                    <?= $name ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
-                <?php endforeach; ?>
-            </ul>
+                </ul>
+            </div>
+            <?php if( $t->lg ): ?>
+                <a type="button" class="btn btn-default" href="<?= url('lg/' . $t->lg->router()->handle() . '/route-search') ?>">
+                    <span class="glyphicon glyphicon-search"></span>
+                </a>
+            <?php endif; ?>
+            <a type="button" class="btn btn-default" href="<?= url('lg') .'/' . ( $t->lg ? $t->lg->router()->handle() : '' ) ?>">
+                <span class="glyphicon glyphicon-home"></span>
+            </a>
         </div>
+            
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         </li>
     <?php else: ?>
@@ -86,4 +99,11 @@
 
 <?= $t->insert('services/lg/js/datatables-ip-sort') ?>
 
-<?php $this->replace() ?>
+<script type="text/javascript">
+    // http://stackoverflow.com/questions/12449890/reload-content-in-modal-twitter-bootstrap
+    $(document).on('hidden.bs.modal', function (e) {
+        $(e.target).removeData('bs.modal');
+    });
+</script>
+
+<?php $this->append() ?>

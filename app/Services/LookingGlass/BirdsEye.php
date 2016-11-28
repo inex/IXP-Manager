@@ -88,6 +88,17 @@ class BirdsEye implements LookingGlassContract {
     }
 
     /**
+     * Get internal symbols.
+     *
+     * Particularly we're interested in route tables / vrfs and protocols.
+     *
+     * @return string
+     */
+    public function symbols(): string {
+        return file_get_contents( $this->router()->api() . '/symbols' );
+    }
+
+    /**
      * Get routes for a named routing table (aka. vrf)
      * @param string $table Table name
      * @return string
@@ -113,5 +124,28 @@ class BirdsEye implements LookingGlassContract {
     public function routesForExport(string $protocol): string {
         return file_get_contents( $this->router()->api() . '/routes/export/' . urlencode($protocol) );
     }
+
+    /**
+     * Get details for a specific route as received by a protocol
+     * @param string $protocol Protocol name
+     * @param string $network The route to lookup
+     * @param int $mask The mask of the route to look up
+     * @return string
+     */
+    public function protocolRoute(string $protocol,string $network,int $mask): string {
+        return file_get_contents( $this->router()->api() . '/route/' . urlencode($network.'/'.$mask) . '/protocol/' . urlencode($protocol) );
+    }
+
+    /**
+     * Get details for a specific route in a named table (vrf)
+     * @param string $table Table name
+     * @param string $network The route to lookup
+     * @param int $mask The mask of the route to look up
+     * @return string
+     */
+    public function protocolTable(string $table,string $network,int $mask): string {
+        return file_get_contents( $this->router()->api() . '/route/' . urlencode($network.'/'.$mask) . '/table/' . urlencode($table) );
+    }
+
 
 }

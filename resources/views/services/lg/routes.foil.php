@@ -53,7 +53,7 @@
         </td>
         <td>
             <a class="btn btn-default btn-xs" data-toggle="modal"
-                href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode($r->network) ?>/<?= $t->source ?>/<?= $t->name ?>"
+                href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode( explode('/',$r->network)[0] ) ?>/<?= explode('/',$r->network)[1] ?>/<?= $t->source ?>/<?= $t->name ?>"
                 data-target="#route-modal">Details</a>
         </td>
     </tr>
