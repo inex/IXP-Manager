@@ -97,8 +97,9 @@ class IXP_Controller_API_V1Action extends OSS_Controller_Action
         {
             try
             {
-                if( !( $apiKey = $this->getParam( 'key', false ) ) )
+                if( !( $apiKey = $this->getParam( 'key', false ) ) ) {
                     return false;
+                }
 
                 $key = $this->getD2EM()->createQuery(
                         "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
