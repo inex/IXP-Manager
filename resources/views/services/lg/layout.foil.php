@@ -10,15 +10,15 @@
     <?php else: ?>
         <div class="pull-right">
     <?php endif; ?>
-    
+
         <div class="btn-group" role="group">
-            
+
             <div class="btn-group" role="group">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <?= $t->lg ? $t->lg->router()->name() : 'Select a router...' ?>
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu dropdown-menu-right">
                     <?php foreach( $t->routers as $type => $subRouters ): ?>
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">
@@ -58,7 +58,7 @@
                 <span class="glyphicon glyphicon-home"></span>
             </a>
         </div>
-            
+
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         </li>
     <?php else: ?>
