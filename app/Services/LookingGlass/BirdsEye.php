@@ -44,6 +44,12 @@ class BirdsEye implements LookingGlassContract {
      */
     private $router;
 
+    /**
+     * Is caching enabled?
+     * @var bool
+     */
+    private $cacheEnabled = true;
+
 
     /**
      * Constructor
@@ -51,6 +57,24 @@ class BirdsEye implements LookingGlassContract {
      */
     public function __construct( Router $r ) {
         $this->setRouter($r);
+    }
+
+    /**
+     * Enable / disable caching
+     * @param bool
+     * @return BirdsEye
+     */
+    public function setCacheEnabled( bool $b ): Birdseye {
+        $this->cacheEnabled = $b;
+        return $this;
+    }
+
+    /**
+     * Is caching enabled?
+     * @return bool
+     */
+    public function cacheEnabled( bool $b ): Birdseye {
+        return $this->cacheEnabled;
     }
 
     /**
@@ -72,11 +96,21 @@ class BirdsEye implements LookingGlassContract {
     }
 
     /**
+     * Make the API call
+     * @param string $cmd
+     * @return string
+     */
+    private function apiCall( string $cmd ): string {
+        return file_get_contents( $this->router()->api() . '/' . $cmd . ( $this->cacheEnabled ? '' : '?use_cache=0' ) );
+    }
+
+
+    /**
      * Get BGP Summary information as JSON
      * @return string
      */
     public function bgpSummary(): string {
-        return file_get_contents( $this->router()->api() . '/protocols/bgp' );
+        return $this->apiCall( 'protocols/bgp' );
     }
 
     /**
@@ -84,7 +118,7 @@ class BirdsEye implements LookingGlassContract {
      * @return string
      */
     public function status(): string {
-        return file_get_contents( $this->router()->api() . '/status' );
+        return $this->apiCall( 'status' );
     }
 
     /**
@@ -95,7 +129,7 @@ class BirdsEye implements LookingGlassContract {
      * @return string
      */
     public function symbols(): string {
-        return file_get_contents( $this->router()->api() . '/symbols' );
+        return $this->apiCall( 'symbols' );
     }
 
     /**
@@ -104,7 +138,7 @@ class BirdsEye implements LookingGlassContract {
      * @return string
      */
     public function routesForTable(string $table): string {
-        return file_get_contents( $this->router()->api() . '/routes/table/' . urlencode($table) );
+        return $this->apiCall( 'routes/table/' . urlencode($table) );
     }
 
     /**
@@ -113,7 +147,7 @@ class BirdsEye implements LookingGlassContract {
      * @return string
      */
     public function routesForProtocol(string $protocol): string {
-        return file_get_contents( $this->router()->api() . '/routes/protocol/' . urlencode($protocol) );
+        return $this->apiCall( 'routes/protocol/' . urlencode($protocol) );
     }
 
     /**
@@ -122,7 +156,7 @@ class BirdsEye implements LookingGlassContract {
      * @return string
      */
     public function routesForExport(string $protocol): string {
-        return file_get_contents( $this->router()->api() . '/routes/export/' . urlencode($protocol) );
+        return $this->apiCall( 'routes/export/' . urlencode($protocol) );
     }
 
     /**
@@ -133,7 +167,7 @@ class BirdsEye implements LookingGlassContract {
      * @return string
      */
     public function protocolRoute(string $protocol,string $network,int $mask): string {
-        return file_get_contents( $this->router()->api() . '/route/' . urlencode($network.'/'.$mask) . '/protocol/' . urlencode($protocol) );
+        return $this->apiCall( 'route/' . urlencode($network.'/'.$mask) . '/protocol/' . urlencode($protocol) );
     }
 
     /**
@@ -144,7 +178,7 @@ class BirdsEye implements LookingGlassContract {
      * @return string
      */
     public function protocolTable(string $table,string $network,int $mask): string {
-        return file_get_contents( $this->router()->api() . '/route/' . urlencode($network.'/'.$mask) . '/table/' . urlencode($table) );
+        return $this->apiCall( 'route/' . urlencode($network.'/'.$mask) . '/table/' . urlencode($table) );
     }
 
 

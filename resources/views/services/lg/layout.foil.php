@@ -68,7 +68,7 @@
 
 <?php if( !Auth::check() ): ?>
     <?php $this->section('page-header-postamble') ?>
-        <em>This is the public looking glass. Additional options and routers available when logged in.</em>
+        <em>This is the public looking glass. Uncached results and additional routers available when logged in.</em>
     <?php $this->replace() ?>
 <?php endif; ?>
 
@@ -87,8 +87,9 @@
         &nbsp;&nbsp;|&nbsp;&nbsp;
         Last Reconfigure: <?= DateTime::createFromFormat( 'Y-m-d\TH:i:sO', $t->status->status->last_reconfig )->format( 'Y-m-d H:i:s' ) ?>
         <?php if( isset( $t->content->api->from_cache ) and $t->content->api->from_cache ): ?>
-            &nbsp;&nbsp;|&nbsp;&nbsp;
-            <em>Cached data. Maximum age: {{ $t->content->api->ttl_mins }}mins.</em>
+            <span class="label label-info pull-right">
+                Cached data. Maximum age: <?= $t->content->api->ttl_mins ?> mins.
+            </span>
         <?php endif; ?>
     </div>
 <?php endif; ?>

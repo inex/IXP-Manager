@@ -25,6 +25,8 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth;
+
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 use IXP\Exceptions\Services\LookingGlass\ConfigurationException;
 use IXP\Services\LookingGlass\BirdsEye as BirdseyeLookingGlass;
@@ -57,7 +59,12 @@ class LookingGlass {
     public function forRouter( Router $r ) {
         switch( $r->apiType() ) {
             case self::API_TYPE_BIRDSEYE:
-                return new BirdseyeLookingGlass( $r );
+                $be = new BirdseyeLookingGlass( $r );
+                //Birdseye supports caching but if the user is logged in we want to disable that:
+                if( Auth::check() ) {
+                    $be->setCacheEnabled(false);
+                }
+                return $be;
                 break;
 
             default:
