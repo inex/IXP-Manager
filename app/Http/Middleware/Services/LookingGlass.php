@@ -65,6 +65,9 @@ class LookingGlass
         // get the router object
         try {
             $router = new Router( $request->handle );
+            if( !$router->hasApi() ) {
+                throw new RouterException('No API available');
+            }
         } catch( RouterException $e ) {
             abort( 404, $e->getMessage() );
         }

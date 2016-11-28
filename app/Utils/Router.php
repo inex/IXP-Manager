@@ -280,6 +280,17 @@ class Router
         return $this->router()['api_type'];
     }
 
+    /**
+     * Does the router have an API?
+     *
+     * In other words, is 'api' and 'api_type' set?
+     * @return bool
+     */
+    public function hasApi(): bool {
+        return isset( $this->router()['api_type'] ) && isset( $this->router()['api'] )
+            && count( $this->router()['api_type'] ) && count( $this->router()['api'] );
+    }
+
 
 
     /**

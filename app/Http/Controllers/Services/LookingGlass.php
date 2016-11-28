@@ -219,6 +219,10 @@ class LookingGlass extends Controller
         foreach( $routers as $key => $r ) {
             $router = new Router( $key );
 
+            if( !$router->hasApi() ) {
+                continue;
+            }
+
             if( !$router->authorise( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC )  ) {
                 continue;
             }
