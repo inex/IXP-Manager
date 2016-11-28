@@ -79,6 +79,8 @@
         <?= ucfirst( $t->lg->router()->software() ) ?>
         <?= $t->status->status->version ?>
         &nbsp;&nbsp;|&nbsp;&nbsp;
+        API: <?= $t->status->api->version ?>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
         <?php if( isset( $t->status->status->router_id ) ): ?>
             Router ID: <?= $t->status->status->router_id ?>
             &nbsp;&nbsp;|&nbsp;&nbsp;
