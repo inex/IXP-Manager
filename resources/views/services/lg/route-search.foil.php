@@ -58,17 +58,27 @@
 <script type="text/javascript">
 
 
-var tables    = {!! json_encode($content->symbols->{'routing table'}) !!}.sort();
-var protocols = {!! json_encode($content->symbols->protocol) !!}.sort();
+var tables    = <?= json_encode($t->content->symbols->{'routing table'}) ?>.sort();
+var protocols = <?= json_encode($t->content->symbols->protocol) ?>.sort();
 var source    = 'table';
 
 $("#submit").on( 'click', function(){
-    if( $("#net").val().trim() == "" ) {
+    var net     = $("#net").val().trim();
+    var masklen = 32;
+    if( net == "" ) {
         return;
     }
     $("#submit").prop('disabled', true);
 
-    $.get('{{$url}}/lg/route/' + encodeURIComponent($("#net").val().trim()) + '/' +
+    if( net.indexOf('/') != -1 ) {
+        masklen = net.substring( net.indexOf('/') + 1);
+        net     = net.substring( 0, net.indexOf('/') );
+    } else if( net.indexOf(':') != -1 ) {
+        masklen = 128;
+    }
+
+    $.get('<?= url('lg/' . $t->lg->router()->handle()  . '/route') ?>/' + encodeURIComponent(net) + '/' +
+            encodeURIComponent(masklen) + '/' +
             source + '/' + encodeURIComponent( $("#source").val() ), function(html) {
         $('#route-modal .modal-content').html(html);
         $('#route-modal').modal('show', {backdrop: 'static'});

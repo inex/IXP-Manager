@@ -173,7 +173,7 @@ class LookingGlass extends Controller
         return $this->addCommonParams($view);
     }
 
-    public function protocolRoute( string $handle, string $network, string $mask, string $protocol ): View {
+    public function routeProtocol( string $handle, string $network, string $mask, string $protocol ): View {
         return app()->make('view')->make('services/lg/route')->with([
             'content' => json_decode( $this->lg()->protocolRoute($protocol,$network,intval($mask)) ),
             'source'  => 'protocol',
@@ -182,9 +182,9 @@ class LookingGlass extends Controller
         ]);
     }
 
-    public function protocolTable( string $handle, string $network, string $mask, string $table ): View {
+    public function routeTable( string $handle, string $network, string $mask, string $table ): View {
         return app()->make('view')->make('services/lg/route')->with([
-            'content' => json_decode( $this->lg()->protocolTable($protocol,$network,intval($mask)) ),
+            'content' => json_decode( $this->lg()->protocolTable($table,$network,intval($mask)) ),
             'source'  => 'table',
             'name'    => $table,
             'net' => urldecode($network.'/'.$mask),
@@ -192,7 +192,7 @@ class LookingGlass extends Controller
     }
 
     public function routeSearch( string $handle ): View {
-        $view = app()->make('view')->make('lg/route-search')->with( [
+        $view = app()->make('view')->make('services/lg/route-search')->with( [
             'content' => json_decode( $this->lg()->symbols() ),
         ]);
         return $this->addCommonParams($view);
