@@ -227,8 +227,14 @@ class LookingGlass extends Controller
                 continue;
             }
 
-            if( $router->quarantine() && !( Auth::check() && Auth::user()->getCustomer()->hasInterfacesInQuarantine() ) ) {
-                continue;
+            if( $router->quarantine() ) {
+                if( !Auth::check() ) {
+                    continue;
+                }
+
+                if( !Auth::user()->isSuperAdmin() || !Auth::user()->getCustomer()->hasInterfacesInQuarantine() ) {
+                    continue;
+                }
             }
 
             $dd[$router->type()][$key] = $router->name();
