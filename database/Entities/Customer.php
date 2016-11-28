@@ -1438,6 +1438,26 @@ class Customer
         return $pvlans;
     }
 
+
+    /**
+     * Does the customer have any interfaces in quarantine?
+     *
+     * @return bool
+     */
+    public function hasInterfacesInQuarantine()
+    {
+        foreach( $this->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                if( $pi->statusIsQuarantine() ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */

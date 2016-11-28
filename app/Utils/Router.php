@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace IXP\Utils;
 
@@ -24,8 +25,8 @@ namespace IXP\Utils;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
- use IXP\Exceptions\ConfigurationException;
- use IXP\Exceptions\Utils\RouterException;
+use IXP\Exceptions\ConfigurationException;
+use IXP\Exceptions\Utils\RouterException;
 use View;
 
 /**
@@ -79,7 +80,7 @@ class Router
             throw new RouterException( "Template does not exist" );
         }
     }
-    
+
     /**
      * Set the router options array
      *
@@ -114,7 +115,7 @@ class Router
             throw new RouterException( "Router handle does not exist: " . $handle );
         }
 
-        return $this->setRouter( config( 'routers.'.$handle ) );
+        return $this->setRouter( $router );
     }
 
     /**
@@ -191,7 +192,7 @@ class Router
         if( !isset( $this->router()['template'] ) ) {
             throw new ConfigurationException();
         }
-        
+
         return $this->router()['template'];
     }
 
@@ -267,6 +268,19 @@ class Router
         return $this->router()['api'];
     }
 
+    /**
+     * Get the API endpoint
+     *
+     * @return string
+     */
+    public function apiType(): string {
+        if( !isset( $this->router()['api_type'] ) ) {
+            throw new ConfigurationException();
+        }
+        return $this->router()['api_type'];
+    }
+
+
 
     /**
      * Are BGP large communities enabled?
@@ -286,5 +300,33 @@ class Router
         return boolval( $this->router()['skip_md5'] ?? false );
     }
 
+    /**
+     * Looking Glass Access Restrictions
+     *
+     * @return int User privilege required
+     */
+    public function lgAccess(): int {
+        return intval( $this->router()['lg_access'] ?? \Entities\User::AUTH_SUPERUSER );
+    }
 
+    /**
+     * Router software
+     *
+     * @return string Router software
+     */
+    public function software(): string {
+        return $this->router()['software'] ?? 'Unknown';
+    }
+
+
+
+    /**
+     * This function controls access to a router for a looking glass
+     *
+     * @param int $privs User's privileges (see \Entities\User)
+     * @return bool
+     */
+    function authorise( int $privs ): bool {
+        return $privs >= $this->lgAccess();
+    }
 }
