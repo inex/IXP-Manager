@@ -232,7 +232,7 @@ class LookingGlass extends Controller
                     continue;
                 }
 
-                if( !Auth::user()->isSuperUser() || !Auth::user()->getCustomer()->hasInterfacesInQuarantine() ) {
+                if( !Auth::user()->isSuperUser() && !Auth::user()->getCustomer()->hasInterfacesInQuarantine() ) {
                     continue;
                 }
             }
