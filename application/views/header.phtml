@@ -53,6 +53,11 @@
                                     {if !isset( $options['frontend']['disabled']['peering-matrix'] ) or !$options['frontend']['disabled']['peering-matrix'] }
                                         <li><a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a></li>
                                     {/if}
+                                    {if not config('ixp_fe.frontend.disabled.lg' )}
+                                        <li>
+                                            <a href="{genUrl}/lg">Looking Glass</a>
+                                        </li>
+                                    {/if}
                                 </ul>
                             </li>
 
@@ -163,6 +168,11 @@
             {else}
                 <div class="nav-collapse">
                     <ul class="nav pull-right">
+                        {if not config('ixp_fe.frontend.disabled.lg' )}
+                            <li>
+                                <a href="{genUrl}/lg">Looking Glass</a>
+                            </li>
+                        {/if}
                         <li class="dropdown {if $controller eq 'public-statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                             <ul class="dropdown-menu">

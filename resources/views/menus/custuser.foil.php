@@ -48,6 +48,9 @@
                         <?php if( !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
                             <li><a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a></li>
                         <?php endif; ?>
+                        <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
+                            <li><a href="<?= url('lg') ?>">Looking Glass</a></li>
+                        <?php endif; ?>
                     </ul>
                 </li>
 

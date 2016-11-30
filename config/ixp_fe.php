@@ -53,12 +53,13 @@ return [
 
     'frontend' => [
         'disabled' => [
-            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES', false ),
-            'meeting'                   => env( 'IXP_FE_FRONTEND_DISABLED_MEETING',     true ),
-            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',     true ),
-            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',     false ),
-            'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',     false ),
-            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',        true  ),
+            'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',        false ),
+            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',        false ),
+            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',           true  ),
+            'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',  true  ),
+            'meeting'                   => env( 'IXP_FE_FRONTEND_DISABLED_MEETING',        true ),
+            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',        true ),
+            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',    false ),
         ],
     ],
 

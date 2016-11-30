@@ -53,6 +53,10 @@ class LookingGlassServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
+        if( config('ixp_fe.frontend.disabled.lg' ) ) {
+            return;
+        }
+        
         Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',
                         'as' => 'lg::', 'prefix' => 'lg' ], function() {
 

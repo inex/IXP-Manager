@@ -34,14 +34,17 @@
                         <?php endif; ?>
                     </ul>
                 </li>
-                <?php if( !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <?php if( !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
                             <li><a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a></li>
-                        </ul>
-                    </li>
-                <?php endif; ?>
+                        <?php endif; ?>
+                        <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
+                            <li><a href="<?= url('lg') ?>">Looking Glass</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </li>
 
                 <?php
                     // STATIC DOCUMENTATION LINKS - SPECIFIC TO INDIVIDUAL IXPS
