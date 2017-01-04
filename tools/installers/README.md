@@ -1,6 +1,6 @@
 # IXP Manager Install Scripts
 
-This directory contains officially supports install scripts for IXP Manager. The file names will denote the target platform on the IXP Manager branch.
+This directory contains officially supported install scripts for IXP Manager. The file names will denote the target platform on the IXP Manager branch.
 
 These install scripts are **opinionated**! They are intended to run exactly as specified and only on the operating system they are targeted at.
 
@@ -10,7 +10,7 @@ The recommended platform for the v4 branch of IXP Manager is Ubuntu LTS 16.04.
 
 To install on this platform, please proceed as follows:
 
-1. Prepare a physical / virtual machine with 8GB of disk space and 2GB of RAM.
+1. Prepare a physical / virtual machine with (minimum) 8GB of disk space and 2GB of RAM. We recommend LVM so so partitions can be grown on the fly.
 2. Attach / insert the latest [Ubuntu 16.04 LTS](http://releases.ubuntu.com/16.04/) 64-bit PC (AMD64) server install image and boot.
 3. At the initial menu where you choose *Install Ubuntu Server*, first:
    * Press F4
