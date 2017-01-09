@@ -126,7 +126,7 @@ class Grapher {
     public function backend( $backend = null ): BackendContract {
         $backend = $this->resolveBackend( $backend );
         $backendClass = Config::get( "grapher.providers.{$backend}" );
-        return new $backendClass( $app['config']['grapher']['backends'][ $backend ] );
+        return new $backendClass( config('grapher.backends')[ $backend ] );
     }
 
     /**
