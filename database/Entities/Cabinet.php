@@ -327,4 +327,43 @@ class Cabinet
     {
         $this->Switches->removeElement($switches);
     }
+/**
+ * @var \Doctrine\Common\Collections\Collection
+ */
+private $patchPanels;
+
+
+/**
+ * Add patchPanel
+ *
+ * @param \Entities\PatchPanel $patchPanel
+ *
+ * @return Cabinet
+ */
+public function addPatchPanel(\Entities\PatchPanel $patchPanel)
+{
+$this->patchPanels[] = $patchPanel;
+
+return $this;
+}
+
+/**
+ * Remove patchPanel
+ *
+ * @param \Entities\PatchPanel $patchPanel
+ */
+public function removePatchPanel(\Entities\PatchPanel $patchPanel)
+{
+$this->patchPanels->removeElement($patchPanel);
+}
+
+/**
+ * Get patchPanels
+ *
+ * @return \Doctrine\Common\Collections\Collection
+ */
+public function getPatchPanels()
+{
+return $this->patchPanels;
+}
 }

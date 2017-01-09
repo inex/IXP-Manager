@@ -64,10 +64,10 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
+            return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts'];
         }
 
-        return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
+        return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts'];
     }
 
     /**
@@ -1913,6 +1913,39 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLogo', [$type]);
 
         return parent::getLogo($type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPatchPanelPort', [$patchPanelPort]);
+
+        return parent::addPatchPanelPort($patchPanelPort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removePatchPanelPort(\Entities\PatchPanelPort $patchPanelPort)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removePatchPanelPort', [$patchPanelPort]);
+
+        return parent::removePatchPanelPort($patchPanelPort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPatchPanelPorts()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPorts', []);
+
+        return parent::getPatchPanelPorts();
     }
 
 }
