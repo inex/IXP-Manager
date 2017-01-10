@@ -83,6 +83,4 @@ tools/installers/Vagrantfile
 
 storage/grapher/
 
-.idea/workspace.xml
-.idea/tasks.xml
-
+.idea/
