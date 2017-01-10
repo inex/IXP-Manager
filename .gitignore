@@ -82,3 +82,4 @@ composer.phar
 tools/installers/Vagrantfile
 
 storage/grapher/
+.idea/
