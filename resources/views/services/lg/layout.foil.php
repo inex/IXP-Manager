@@ -11,7 +11,7 @@
         <div class="pull-right">
     <?php endif; ?>
 
-        <div class="btn-group" role="group">
+        <div class="btn-group breadcrumb-btn-group" role="group">
 
             <div class="btn-group" role="group">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
