@@ -136,4 +136,33 @@ class IrrdbAsn
     {
         return $this->Customer;
     }
+/**
+ * @var \DateTime
+ */
+private $last_seen;
+
+
+/**
+ * Set lastSeen
+ *
+ * @param \DateTime $lastSeen
+ *
+ * @return IrrdbAsn
+ */
+public function setLastSeen($lastSeen)
+{
+$this->last_seen = $lastSeen;
+
+return $this;
+}
+
+/**
+ * Get lastSeen
+ *
+ * @return \DateTime
+ */
+public function getLastSeen()
+{
+return $this->last_seen;
+}
 }

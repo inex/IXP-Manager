@@ -64,10 +64,10 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'asn', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'Customer'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'asn', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'Customer', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'last_seen'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'asn', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'Customer'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'asn', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'protocol', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'first_seen', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'id', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'Customer', '' . "\0" . 'Entities\\IrrdbAsn' . "\0" . 'last_seen'];
     }
 
     /**
@@ -274,6 +274,28 @@ class IrrdbAsn extends \Entities\IrrdbAsn implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
 
         return parent::getCustomer();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLastSeen($lastSeen)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastSeen', [$lastSeen]);
+
+        return parent::setLastSeen($lastSeen);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLastSeen()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastSeen', []);
+
+        return parent::getLastSeen();
     }
 
 }

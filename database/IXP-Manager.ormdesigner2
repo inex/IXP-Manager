@@ -7,6 +7,7 @@
       <field name="asn" type="integer" required="true" uuid="ad41fc97-061a-4e76-bcef-01146a05f2e6"/>
       <field name="protocol" type="integer" required="true" uuid="d7b4ff15-0fbd-4e2b-85a0-7397c3d932ab"/>
       <field name="first_seen" type="datetime" required="true" uuid="30730a88-58d8-4bee-aaf5-981fa1a49dff"/>
+      <field name="last_seen" type="datetime" required="true" uuid="a5b4e4ca-a4e3-4301-96ca-495dad968df6"/>
       <index name="custasn" unique="true">
         <index-field name="asn"/>
         <index-field name="protocol"/>
