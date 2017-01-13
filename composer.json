@@ -64,7 +64,8 @@
         "phpspec/phpspec": "~2.1",
         "phpunit/php-code-coverage": "~3.1",
         "symfony/dom-crawler": "~3.0",
-        "symfony/css-selector": "~3.0"
+        "symfony/css-selector": "~3.0",
+        "barryvdh/laravel-ide-helper": "^2.2"
      },
     "support": {
         "issues": "https://github.com/inex/IXP-Manager/issues",
@@ -97,7 +98,10 @@
              "php artisan optimize"
          ],
          "post-update-cmd": [
+             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
              "php artisan clear-compiled",
+             "php artisan ide-helper:generate",
+             "php artisan ide-helper:meta",
              "php artisan optimize"
          ],
          "post-create-project-cmd": [

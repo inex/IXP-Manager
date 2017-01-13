@@ -1,8 +1,9 @@
 <?php
 
+namespace IXP\Utils;
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,15 +23,16 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Exceptions\GeneralException as Exception;
+
 /**
  * Interface for the BQPQ3 command line utility
  *
  * @see http://snar.spb.ru/prog/bgpq3/
  *
  * @author Barry O'Donovan <barry@opensolutions.ie>
- * @package IXP_BGPQ3
  */
-class IXP_BGPQ3 extends Zend_Exception
+class Bgpq3
 {
     /**
      * Full executable path of the BGPQ3 utility
@@ -58,7 +60,7 @@ class IXP_BGPQ3 extends Zend_Exception
      * @param string $whois Whois server - defaults to BGPQ's own default
      * @param string $sources Whois server sources - defaults to BGPQ's own default
      */
-    public function __construct( $path, $whois = false, $sources = false )
+    public function __construct( $path, $whois = null, $sources = null )
     {
         $this->path = $path;
 
@@ -77,7 +79,7 @@ class IXP_BGPQ3 extends Zend_Exception
      *
      * @param string $asmacro As number (of the form as1234) or AS macro
      * @param int $proto The IP protocol - 4 or 6.
-     * @throws IXP_Exception On a JSON decoding error
+     * @throws Exception On a JSON decoding error
      * @return array The array of prefixes (or empty array).
      */
     public function getPrefixList( $asmacro, $proto = 4 )
@@ -89,7 +91,7 @@ class IXP_BGPQ3 extends Zend_Exception
             throw new Exception( "Could not decode JSON response from BGPQ" );
 
         if( !isset( $array[ 'pl' ] ) )
-            throw new IXP_Exception( "Named prefix list [pl] expected in decoded JSON but not found!" );
+            throw new Exception( "Named prefix list [pl] expected in decoded JSON but not found!" );
 
         $prefixes = [];
         // we're going to ignore the 'exact' for now.
@@ -119,7 +121,7 @@ class IXP_BGPQ3 extends Zend_Exception
             throw new Exception( "Could not decode JSON response from BGPQ when fetching ASN list" );
 
         if( !isset( $array[ 'pl' ] ) )
-            throw new IXP_Exception( "Named prefix list [pl] expected in decoded JSON but not found when fetching ASN list!" );
+            throw new Exception( "Named prefix list [pl] expected in decoded JSON but not found when fetching ASN list!" );
 
         $asns = [];
 
@@ -135,7 +137,7 @@ class IXP_BGPQ3 extends Zend_Exception
      *
      * @param string $cmd The query part ot the BGPQ command. I.e. other switches besides -6, -h, -S.
      * @param int $proto The protocol. If 6, adds the -6 switch
-     * @throws IXP_Exception If return code from BGPQ3 is != 0
+     * @throws Exception If return code from BGPQ3 is != 0
      * @return string The output from the shell command.
      */
     private function execute( $cmd, $proto = 4 )
@@ -157,7 +159,7 @@ class IXP_BGPQ3 extends Zend_Exception
         exec( $cmd, $output, $return_var );
 
         if( $return_var != 0 )
-            throw new IXP_Exception( 'Error executing BGPQ3 with: ' . $cmd );
+            throw new Exception( 'Error executing BGPQ3 with: ' . $cmd );
 
         return implode( "\n", $output );
     }
@@ -167,7 +169,7 @@ class IXP_BGPQ3 extends Zend_Exception
      * The whois server to query
      *
      * @param string $whois The whois server to query
-     * @return IXP_BGPQ3 For fluent interfaces
+     * @return Bgpq3 For fluent interfaces
      */
     public function setWhois( $whois )
     {
@@ -179,7 +181,7 @@ class IXP_BGPQ3 extends Zend_Exception
      * The whois server sources
      *
      * @param string $sources The whois server sources
-     * @return IXP_BGPQ3 For fluent interfaces
+     * @return Bgpq3 For fluent interfaces
      */
     public function setSources( $sources )
     {
@@ -191,7 +193,7 @@ class IXP_BGPQ3 extends Zend_Exception
      * The executable path to the BGPQ executable
      *
      * @param string $path The executable path to the BGPQ executable
-     * @return IXP_BGPQ3 For fluent interfaces
+     * @return Bgpq3 For fluent interfaces
      */
     public function setPath( $path )
     {

@@ -1,0 +1,103 @@
+<?php
+
+declare(strict_types=1);
+namespace IXP\Tasks\Irrdb;
+
+/*
+ * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use D2EM;
+use Log;
+
+/**
+ * UpdatePrefixDb
+ *
+ * @author     Barry O'Donovan <barry@opensolutions.ie>
+ * @category   Tasks
+ * @package    IXP\Tasks\Irrdb
+ * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class UpdatePrefixDb extends UpdateDb
+{
+    /**
+     * Update the prefix database
+     *
+     * @throws \IXP\Exceptions\Services\Grapher\GeneralException
+     * @return array
+     */
+    public function update(): array {
+        if( $this->customer()->isRouteServerClient() && $this->customer()->isIrrdbFiltered() ) {
+            $this->bgpq3()->setSources($this->customer()->getIRRDB()->getSource());
+
+            foreach( [4, 6] as $protocol ) {
+                $this->startTimer();
+                $prefixes = $this->bgpq3()->getPrefixList($this->customer()->resolveAsMacro($protocol, 'as'), $protocol);
+                $this->result['netTime'] += $this->timeElapsed();
+
+                $this->result['v' . $protocol]['count'] = count($prefixes);
+
+                if( $this->updateDb( $prefixes, $protocol, 'prefix' ) ) {
+                    $this->result['v' . $protocol]['dbUpdated'] = true;
+                }
+            }
+        } else {
+            // This customer is not appropriate for IRRDB filtering.
+            // Delete any pre-existing entries just in case this has changed recently:
+            $this->startTimer();
+            D2EM::getConnection()->executeUpdate(
+                "DELETE FROM `irrdb_prefix` WHERE customer_id = ?", [ $this->customer()->getId() ]
+            );
+            $this->result['dbTime'] += $this->timeElapsed();
+            $this->result['v4']['dbUpdated'] = true;
+            $this->result['v6']['dbUpdated'] = true;
+            $this->result['msg'] = "Customer not a RS client or IRRDB filtered. Prefixes, if any, wiped from database.";
+        }
+
+        return $this->result;
+    }
+
+
+    /**
+     * Validate a given array of CIDR formatted prefixes for the given protocol and
+     * remove (and alert on) any elements failing validation.
+     *
+     * @param array $prefixes Prefixes in CIDR notation
+     * @param int $protocol Either 4/6
+     * @return array Valid prefixes
+     */
+    protected function validate( array $prefixes, int $protocol ): array {
+        if( $protocol == 4 ) {
+            $validator = new \OSS_Validate_OSSIPv4Cidr;
+        } else {
+            $validator = new \OSS_Validate_OSSIPv6Cidr;
+        }
+
+        foreach( $prefixes as $i => $p ) {
+            if( !$validator->isValid( $p ) ) {
+                unset( $prefixes[$i] );
+                Log::alert( 'IRRDB CLI action - removing invalid prefix ' . $p . ' from IRRDB result set!' );
+            }
+        }
+
+        return $prefixes;
+    }
+}

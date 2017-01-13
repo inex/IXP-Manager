@@ -7,6 +7,7 @@
     <field name="asn" type="integer" nullable="false"/>
     <field name="protocol" type="integer" nullable="false"/>
     <field name="first_seen" type="datetime" nullable="false"/>
+    <field name="last_seen" type="datetime" nullable="false"/>
     <unique-constraints>
       <unique-constraint name="custasn" columns="asn,protocol,customer_id"/>
     </unique-constraints>
