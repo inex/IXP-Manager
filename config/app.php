@@ -148,6 +148,11 @@ return [
          Illuminate\View\ViewServiceProvider::class,
 
         /*
+         * Debug
+         */
+         Barryvdh\Debugbar\ServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
         IXP\Providers\AppServiceProvider::class,
@@ -222,6 +227,8 @@ return [
 
         'Grapher'   => IXP\Support\Facades\Grapher::class,
         'Image'     => Intervention\Image\Facades\Image::class,
+
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];
