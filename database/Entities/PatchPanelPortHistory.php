@@ -371,4 +371,3 @@ public function getPatchPanelPort()
 return $this->patchPanelPort;
 }
 }
-

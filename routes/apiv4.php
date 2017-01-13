@@ -31,4 +31,7 @@ Route::group( ['middleware' => 'assert.privilege:' . Entities\User::AUTH_SUPERUS
 
     Route::get('sflow-receivers/pretag.map',    'SflowReceiverController@pretagMap');
     Route::get('sflow-receivers/receivers.lst', 'SflowReceiverController@receiversLst');
+
+
+
 });

@@ -42,3 +42,8 @@ Route::group(['middleware' => ['web']], function () {
     // });
 
 });
+
+
+Route::get('patch-panel', 'PatchPanel\PatchPanelController@index');
+Route::get('patch-panel/edit', 'PatchPanel\PatchPanelController@edit');
+Route::post('patch-panel/add', 'PatchPanel\PatchPanelController@add');
