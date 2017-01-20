@@ -12,4 +12,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class Cabinet extends EntityRepository
 {
+    /**
+     * Return an array of all cabinets names where the array key is the cabinet id.
+     * @author Yann Robin
+     * @return array An array of all cabinets names with the cabinet id as the key.
+     */
+    public function getForArray(): array {
+        foreach(self::findAll() as $cabinet){
+            $listCabinet[$cabinet->getId()] = $cabinet->getName();
+        }
+         return $listCabinet;
+    }
 }

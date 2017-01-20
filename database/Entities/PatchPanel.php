@@ -2,6 +2,8 @@
 
 namespace Entities;
 
+Use D2EM;
+use DateTime;
 /**
  * PatchPanel
  */
@@ -40,11 +42,11 @@ class PatchPanel
      * Array Connector types
      */
     public static $CONNECTOR_TYPES = [
-        self::CONNECTOR_TYPE_RJ45        => 'RJ45',
+        self::CONNECTOR_TYPE_RJ45      => 'RJ45',
         self::CONNECTOR_TYPE_SC        => 'SC',
         self::CONNECTOR_TYPE_LC        => 'LC',
         self::CONNECTOR_TYPE_MU        => 'MU',
-        self::CONNECTOR_TYPE_OTHER        => 'Other',
+        self::CONNECTOR_TYPE_OTHER     => 'Other',
     ];
 
     /**
@@ -214,6 +216,10 @@ class PatchPanel
         return $this->installation_date;
     }
 
+    public function getInstallationDateFormated()
+    {
+        return ($this->installation_date == null) ? $this->installation_date : $this->installation_date->format('Y-m-d');
+    }
     /**
      * Get id
      *
@@ -259,6 +265,16 @@ class PatchPanel
     }
 
     /**
+     * Get patchPanelPorts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNumbersPatchPanelPorts()
+    {
+        return count($this->patchPanelPorts);
+    }
+
+    /**
      * Set cabinet
      *
      * @param \Entities\Cabinet $cabinet
@@ -280,5 +296,45 @@ class PatchPanel
     public function getCabinet()
     {
         return $this->cabinet;
+    }
+
+    /**
+     * Create patch panel ports for a patch panel
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  int $numberPort the number of port needed
+     * @params  string $prefix the prefix
+     * @return
+     */
+    public function createPatchPanelPort(int $numberPort, $prefix = null){
+        $i = 1;
+        if($this->getNumbersPatchPanelPorts() > 0){
+            $i = $i + $this->getNumbersPatchPanelPorts();
+            $numberPort = $numberPort + $this->getNumbersPatchPanelPorts();
+        }
+
+        for($i;$i <= $numberPort; $i++){
+            $patchPanelPort = new PatchPanelPort();
+            $patchPanelPort->setName($prefix.$i);
+            $patchPanelPort->setState(PatchPanelPort::STATE_AVAILABLE);
+            $patchPanelPort->setPatchPanel($this);
+            $patchPanelPort->setLastStateChange(new \DateTime(date('Y-m-d')));
+            D2EM::persist($patchPanelPort);
+            D2EM::flush($patchPanelPort);
+
+            $this->addPatchPanelPort($patchPanelPort);
+        }
+
+    }
+
+    public function getPrefixPort(){
+        if($this->getNumbersPatchPanelPorts() > 0){
+            $name = $this->getPatchPanelPorts()->first()->getName();
+            $prefix = explode('1',$name);
+            return $prefix[0];
+        }
+        else{
+            return null;
+        }
+
     }
 }

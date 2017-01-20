@@ -5,79 +5,36 @@
 <?php $this->append() ?>
 
 <?php $this->section('page-header-postamble') ?>
-<li>Add</li>
+    <li><?= $t->params['breadCrumb']?></li>
 <?php $this->append() ?>
 
 
 <?php $this->section('content') ?>
 
-    <form class="form-horizontal" method="post" action="<?= url('patch-panel/add') ?>">
-        <div class="form-group">
-            <label for="pp-name" class="col-sm-2 control-label">Patch Panel Name</label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" id="pp-name" name="pp-name" placeholder="Patch Panel Name" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="colocation" class="col-sm-2 control-label">Colocation reference</label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" id="colocation" name="colocation" placeholder="Colocation reference" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="cabinets" class="col-sm-2 control-label">Cabinet</label>
-            <div class="col-sm-3">
-                <select data-placeholder="Choose a cabinet" id="cabinets" name="cabinets"  class="chzn-select">
-                    <option value="0"></option>
-                    <?php foreach( $t->params['listCabinets'] as $cabinet ): ?>
-                        <option value="<?= $cabinet->getId() ?>"> <?= $cabinet->getName() ?></option>
-                    <?php endforeach;?>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="cable-types" class="col-sm-2 control-label">Cable Type</label>
-            <div class="col-sm-3">
-                <select data-placeholder="Choose a cable type" id="cable-types" name="cable-types" class="chzn-select">
-                    <option value="0"></option>
-                    <?php foreach( $t->params['listCableTypes'] as $id => $nameCable ): ?>
-                        <option value="<?= $id ?>"> <?= $nameCable ?></option>
-                    <?php endforeach;?>
-                </select>
 
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="connector-types" class="col-sm-2 control-label">Connector Type</label>
-            <div class="col-sm-3">
-                <select data-placeholder="Choose a connector type" id="connector-types" name="connector-types" class="chzn-select">
-                    <option value="0"></option>
-                    <?php foreach( $t->params['listConnectorTypes'] as $id => $nameConn ): ?>
-                        <option value="<?= $id ?>"> <?= $nameConn ?></option>
-                    <?php endforeach;?>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="number-ports" class="col-sm-2 control-label">Number of Ports</label>
-            <div class="col-sm-3">
-                <input type="number" class="form-control" id="number-ports" name="number-ports" placeholder="" required>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="port-prefix" class="col-sm-2 control-label">Port Name Prefix</label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" id="port-prefix" name="port-prefix"  placeholder="Optional port prefix">
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary">Save changes</button>
-                <button type="submit" class="btn btn-default">Cancel</button>
-            </div>
-        </div>
-        <?= csrf_field() ?>
-    </form>
+
+<?= Former::open()->method('POST')->action(url('patch-panel/add'))->customWidthClass('col-sm-3');?>
+
+    <?= Former::text('pp-name')->label('Patch Panel Name');?>
+    <?= Former::text('colocation')->label('Colocation reference')?>
+    <?= Former::select('cabinets')->label('Cabinet')->fromQuery($t->params['listCabinets'], 'name')->placeholder('Choose a cabinet')->addClass('chzn-select')?>
+    <?= Former::select('cable-types')->label('Cable type')->options($t->params['listCableTypes'])->placeholder('Choose a cable type')->addClass('chzn-select')?>
+    <?= Former::select('connector-types')->label('Connector Type')->options($t->params['listConnectorTypes'])->placeholder('Choose a connector type')->addClass('chzn-select')?>
+    <?= Former::number('number-ports')->label('Number of Ports')->appendIcon('nb-port glyphicon glyphicon-info-sign')->help(($t->params['patchPanel'] != null) ? 'Existing : '.$t->params['patchPanel']->getNumbersPatchPanelPorts() : '');?>
+
+    <?= Former::text('port-prefix')->label('Port Name Prefix')->placeholder('Optional port prefix')?>
+
+    <?= Former::date('installation-date')->label('Installation Date')->value(date('Y-m-d'))?>
+    <?= Former::hidden('patch-panel-id')->value($t->params['patchPanelId'])?>
+    <?=Former::actions( Former::primary_submit('Save Changes'),
+                        Former::default_button('Cancel')
+    );?>
+
+<?= Former::close() ?>
+
+
+
+
 
 <?php $this->append() ?>
 
@@ -85,7 +42,12 @@
 <?php $this->section('scripts') ?>
     <script>
         $(document).ready(function() {
+            if($("#port-prefix").val() != ''){
+                $("#port-prefix").prop('readonly', true);
+            }
 
+            $(".input-group-addon").attr('data-toggle','popover').attr('title' , 'Help').attr('data-content' , 'Please select the number of ports that you want to create for that ptach panel');
+            $("[data-toggle=popover] ").popover({ placement: 'right',container: 'body', trigger: "hover"});
             $( "#pp-name" ).blur(function() {
                 if($("#colocation").val() == ''){
                     $("#colocation").val($("#pp-name").val());

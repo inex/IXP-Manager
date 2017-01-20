@@ -62,7 +62,7 @@
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
-        <div class="container-fluid">
+        <div class="padding20LR container-fluid">
 
             <?= $t->insert( 'menu' ); ?>
 

@@ -7,6 +7,8 @@ use IXP\Services\FoilEngine as Engine;
 
 use IXP\Utils\Foil\Extensions\IXP as IXPFoilExtensions;
 
+use View;
+
 class FoilServiceProvider extends ServiceProvider
 {
 
@@ -35,9 +37,26 @@ class FoilServiceProvider extends ServiceProvider
         });
 
         $app->resolving('view', function($view) use ($app) {
+
+
             $view->addExtension('foil.php', 'foil', function() use ($app) {
                 $engine = new Engine($app->make('Foil\Engine'));
 
+                View::composer('*', function($view)
+                {
+                    if(app('request')->route() != null){
+                        $action = app('request')->route()->getAction();
+                        $controller = class_basename($action['controller']);
+                        list($controller, $action) = explode('@', $controller);
+                    }
+                    else{
+                        $action = null;
+                        $controller = null;
+                    }
+
+                    $view->with('controller' , $controller)->with('action',$action);
+
+                });
                 // we have a few rendering functions we want to include here:
                 $engine->engine()->loadExtension( new IXPFoilExtensions(), [] );
 

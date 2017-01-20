@@ -14,6 +14,12 @@ class AppServiceProvider extends ServiceProvider {
     public function boot()
     {
         $this->setupUrls();
+
+        view()->composer('layouts.master', function($view)
+        {
+            $view->with('controllerAction' , app('request')->route()->getAction()['as']);
+        });
+
     }
 
     /**

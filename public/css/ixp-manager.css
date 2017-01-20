@@ -25,12 +25,25 @@ body {
     /* fix sidebar nav issue boostrap 2 => 3 */
 
     padding: 9px 0;
+    width: 238px;
 
 }
 
 .sidebar-nav .nav {
     padding : 0px 15px 0px 15px;
 
+}
+
+.left-sidebar li a{
+    border-radius: 0px;
+}
+
+.left-sidebar li.active a, .left-sidebar li a{
+    padding-left: 15px !important;
+    border-right-width: 15px;
+    padding-right: 15px !important;
+    margin-left: -15px;
+    margin-right: -15px;
 }
 
 .menu-search-input{
@@ -68,7 +81,15 @@ body {
     margin-top: 9px;
 }
 
+.padding20LR{
+    padding-right: 20px;
+    padding-left: 20px;
+}
 
+.nav-stacked li.sub-menu{
+    padding-right: 15px;
+    padding-left: 15px;
+}
 
 .left-sidebar .nav-stacked li{
     line-height: 20px;

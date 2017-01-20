@@ -32,7 +32,7 @@
 
         </li>
         <li {if $controller eq 'patch-panel'}class="active"{/if}>
-            <a href="{genUrl controller='patch-panel'}">Patch Panel</a>
+            <a href="{genUrl controller='patch-panel' action='list'}">Patch Panels</a>
         </li>
         <li {if $controller eq 'user' and $action neq 'last'}class="active"{/if}>
             <a href="{genUrl controller='user' action='list'}">Users</a>

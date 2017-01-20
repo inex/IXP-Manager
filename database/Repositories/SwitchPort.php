@@ -12,4 +12,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class SwitchPort extends EntityRepository
 {
+    /**
+     * Return an array of all switch port names where the array key is the switch port id.
+     * @author Yann Robin
+     * @return array An array of all switch port names with the switch port id as the key.
+     */
+    public function getForArray(): array {
+        foreach(self::findAll() as $switchPort){
+            $listSwitchPort[$switchPort->getId()] = $switchPort->getName();
+        }
+        return $listSwitchPort;
+    }
 }

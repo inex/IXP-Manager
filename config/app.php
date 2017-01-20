@@ -173,6 +173,10 @@ return [
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
+        Former\FormerServiceProvider::class,
+
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
     ],
 
     /*
@@ -229,6 +233,8 @@ return [
         'Image'     => Intervention\Image\Facades\Image::class,
 
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+
+        'Former' => 'Former\Facades\Former',
     ],
 
 ];

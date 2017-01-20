@@ -286,6 +286,17 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function getInstallationDateFormated()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInstallationDateFormated', []);
+
+        return parent::getInstallationDateFormated();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
@@ -334,6 +345,17 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function getNumbersPatchPanelPorts()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNumbersPatchPanelPorts', []);
+
+        return parent::getNumbersPatchPanelPorts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setCabinet(\Entities\Cabinet $cabinet = NULL)
     {
 
@@ -351,6 +373,28 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', []);
 
         return parent::getCabinet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createPatchPanelPort(int $numberPort, $prefix = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'createPatchPanelPort', [$numberPort, $prefix]);
+
+        return parent::createPatchPanelPort($numberPort, $prefix);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPrefixPort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrefixPort', []);
+
+        return parent::getPrefixPort();
     }
 
 }
