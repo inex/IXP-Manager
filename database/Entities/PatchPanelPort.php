@@ -608,4 +608,72 @@ class PatchPanelPort
     {
         return ($this->getCustomer() != null) ? $this->getCustomer()->getName() : null ;
     }
+/**
+ * @var \Doctrine\Common\Collections\Collection
+ */
+private $duplexSlavePorts;
+
+/**
+ * @var \Entities\PatchPanelPort
+ */
+private $duplexMasterPort;
+
+
+/**
+ * Add duplexSlavePort
+ *
+ * @param \Entities\PatchPanelPort $duplexSlavePort
+ *
+ * @return PatchPanelPort
+ */
+public function addDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+{
+$this->duplexSlavePorts[] = $duplexSlavePort;
+
+return $this;
+}
+
+/**
+ * Remove duplexSlavePort
+ *
+ * @param \Entities\PatchPanelPort $duplexSlavePort
+ */
+public function removeDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+{
+$this->duplexSlavePorts->removeElement($duplexSlavePort);
+}
+
+/**
+ * Get duplexSlavePorts
+ *
+ * @return \Doctrine\Common\Collections\Collection
+ */
+public function getDuplexSlavePorts()
+{
+return $this->duplexSlavePorts;
+}
+
+/**
+ * Set duplexMasterPort
+ *
+ * @param \Entities\PatchPanelPort $duplexMasterPort
+ *
+ * @return PatchPanelPort
+ */
+public function setDuplexMasterPort(\Entities\PatchPanelPort $duplexMasterPort = null)
+{
+$this->duplexMasterPort = $duplexMasterPort;
+
+return $this;
+}
+
+/**
+ * Get duplexMasterPort
+ *
+ * @return \Entities\PatchPanelPort
+ */
+public function getDuplexMasterPort()
+{
+return $this->duplexMasterPort;
+}
 }
