@@ -3,7 +3,7 @@
 namespace Entities;
 
 /**
- * PatchPanelPort
+ * Entities\PatchPanelPort
  */
 class PatchPanelPort
 {
@@ -580,13 +580,23 @@ class PatchPanelPort
     }
 
     /**
-     * Get customer ID
+     * Get switcher ID
      *
      * @return \Entities\Customer
      */
     public function getSwitchId()
     {
         return ($this->getSwitchPort() != null) ? $this->getSwitchPort()->getSwitcher()->getId() : null ;
+    }
+
+    /**
+     * Get switcher Name
+     *
+     * @return \Entities\Customer
+     */
+    public function getSwitchName()
+    {
+        return ($this->getSwitchPort() != null) ? $this->getSwitchPort()->getSwitcher()->getName() : null ;
     }
 
     /**

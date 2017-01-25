@@ -22,10 +22,11 @@
     <?= Former::select('connector-types')->label('Connector Type')->options($t->params['listConnectorTypes'])->placeholder('Choose a connector type')->addClass('chzn-select')?>
     <?= Former::number('number-ports')->label('Number of Ports')->appendIcon('nb-port glyphicon glyphicon-info-sign')->help(($t->params['patchPanel'] != null) ? 'Existing : '.$t->params['patchPanel']->getNumbersPatchPanelPorts() : '');?>
 
-    <?= Former::text('port-prefix')->label('Port Name Prefix')->placeholder('Optional port prefix')?>
+    <?= Former::text('port-prefix')->label('Port Name Prefix')->placeholder('Optional port prefix')->appendIcon('prefix glyphicon glyphicon-info-sign')?>
 
-    <?= Former::date('installation-date')->label('Installation Date')->value(date('Y-m-d'))?>
+    <?= Former::date('installation-date')->label('Installation Date')->append('<button class="btn-default btn" id="date-today" type="button">Today</button>')?>
     <?= Former::hidden('patch-panel-id')->value($t->params['patchPanelId'])?>
+    <?= Former::hidden('date')->id('date')->value(date('Y-m-d'))?>
     <?=Former::actions( Former::primary_submit('Save Changes'),
                         Former::default_button('Cancel')
     );?>
@@ -46,7 +47,13 @@
                 $("#port-prefix").prop('readonly', true);
             }
 
-            $(".input-group-addon").attr('data-toggle','popover').attr('title' , 'Help').attr('data-content' , 'Please select the number of ports that you want to create for that ptach panel');
+            $(".glyphicon-nb-port").parent().attr('data-toggle','popover').attr('title' , 'Help').attr('data-content' , 'Please select the number of ports that you want to create for that ptach panel');
+            $(".glyphicon-prefix").parent().attr('data-toggle','popover').attr('title' , 'Help').attr('data-content' , 'need text');
+
+            $("#date-today").click(function() {
+                $("#installation-date").val($("#date").val());
+            });
+
             $("[data-toggle=popover] ").popover({ placement: 'right',container: 'body', trigger: "hover"});
             $( "#pp-name" ).blur(function() {
                 if($("#colocation").val() == ''){

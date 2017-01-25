@@ -46,11 +46,13 @@ Route::group(['middleware' => ['web']], function () {
 
 
 Route::get('patch-panel/list', ['as' => 'patchPanelIndex', 'uses' => 'PatchPanel\PatchPanelController@index']);
+Route::get('patch-panel/list/activeOnly/{active}', 'PatchPanel\PatchPanelController@index');
 Route::get('patch-panel/edit', 'PatchPanel\PatchPanelController@edit');
 Route::get('patch-panel/edit/{id}', 'PatchPanel\PatchPanelController@edit');
 Route::post('patch-panel/add', 'PatchPanel\PatchPanelController@add');
 Route::get('patch-panel/view/', 'PatchPanel\PatchPanelController@view');
 Route::get('patch-panel/view/{id}', 'PatchPanel\PatchPanelController@view');
+Route::get('patch-panel/delete/{id}', 'PatchPanel\PatchPanelController@delete');
 
 Route::get('patch-panel-port/list', ['as' => 'patchPanelPortIndex', 'uses' => 'PatchPanel\PatchPanelPortController@index']);
 Route::get('patch-panel-port/list/patch-panel/{id}', ['as' => 'patchPanelPortIndex', 'uses' => 'PatchPanel\PatchPanelPortController@index']);
@@ -62,3 +64,4 @@ Route::get('patch-panel-port/edit/{id}', 'PatchPanel\PatchPanelPortController@ed
 Route::post('patch-panel-port/add/{id}', 'PatchPanel\PatchPanelPortController@add');
 Route::post('patch-panel-port/add/{id}', 'PatchPanel\PatchPanelPortController@add');
 Route::get('patch-panel-port/getSwitchPort/', 'PatchPanel\PatchPanelPortController@getSwitchPort');
+Route::get('patch-panel-port/getCustomerForASwitchPort/', 'PatchPanel\PatchPanelPortController@getCustomerForASwitchPort');

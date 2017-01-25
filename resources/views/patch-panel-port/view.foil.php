@@ -30,7 +30,12 @@
         </div>
         <div class="form-group">
             <div>
-                Switch : <b> <?= $t->params['patchPanelPort']->getSwitchPortName()?></b>
+                Switch : <b> <?= $t->params['patchPanelPort']->getSwitchName()?></b>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                Port: <b> <?= $t->params['patchPanelPort']->getSwitchPortName()?></b>
             </div>
         </div>
         <div class="form-group">

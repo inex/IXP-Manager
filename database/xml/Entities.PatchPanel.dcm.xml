@@ -9,6 +9,11 @@
     <field name="cable_type" type="integer" nullable="false"/>
     <field name="connector_type" type="integer" nullable="false"/>
     <field name="installation_date" type="datetime" nullable="true"/>
+    <field name="active" type="boolean" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
     <many-to-one field="cabinet" target-entity="Entities\Cabinet" inversed-by="patchPanels">
       <join-columns>
         <join-column name="cabinet_id" referenced-column-name="id"/>

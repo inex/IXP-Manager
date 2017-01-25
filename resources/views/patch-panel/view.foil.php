@@ -53,6 +53,11 @@
                     Installation Date : <b> <?= $t->params['patchPanel']->getInstallationDateFormated() ?> </b>
                 </div>
             </div>
+            <div class="form-group">
+                <div>
+                    Active : <b> <?= $t->params['patchPanel']->getActiveText() ?> </b>
+                </div>
+            </div>
         </div>
     </div>
 <?php $this->append() ?>

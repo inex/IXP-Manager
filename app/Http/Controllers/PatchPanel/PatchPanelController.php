@@ -7,9 +7,9 @@ use D2EM;
 use Entities\Cabinet;
 use Entities\PatchPanel;
 
-use IXP\Http\Controllers\Controller;
-
 use Former\Facades\Former;
+
+use IXP\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -38,24 +38,25 @@ class PatchPanelController extends Controller
     {
         $this->middleware('auth');
         Former::framework('TwitterBootstrap3');
-
     }
 
     /**
      * Display the patch panel list
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  boolean $active display active or inactive patch panels
      * @return  view
      */
-    public function index(): View{
+    public function index($active = true): View{
         // Get all cable types
         $listCableTypes = \Entities\PatchPanel::$CABLE_TYPES;
         // Get all connector types
         $listConnectorTypes = \Entities\PatchPanel::$CONNECTOR_TYPES;
 
         // array of params for the view
-        $params = array('listPatchPanels'       => D2EM::getRepository(PatchPanel::class)->findAll(),
+        $params = array('listPatchPanels'       => D2EM::getRepository(PatchPanel::class)->findBy(array('active' => $active)),
                         'listCableTypes'        => $listCableTypes,
-                        'listConnectorTypes'    => $listConnectorTypes
+                        'listConnectorTypes'    => $listConnectorTypes,
+                        'active'                => $active
         );
 
         return view('patch-panel/index')->with('params', $params);
@@ -82,9 +83,8 @@ class PatchPanelController extends Controller
                                     'cabinets'              => $patchPanel->getCabinet()->getId(),
                                     'cable-types'           => $patchPanel->getCableType(),
                                     'connector-types'       => $patchPanel->getConnectorType(),
-                                    'setInstallationDate'   => $patchPanel->getInstallationDateFormated(),
-                                    'port-prefix'                => $patchPanel->getPrefixPort()
-
+                                    'installation-date'     => $patchPanel->getInstallationDateFormated(),
+                                    'port-prefix'           => $patchPanel->getPrefixPort()
             ));
 
             $patchPanelId = $patchPanel->getId();
@@ -113,7 +113,7 @@ class PatchPanelController extends Controller
                         'breadCrumb'            => $breadCrumb
                 );
 
-        return view('patch-panel/edit-patch-panel')->with('params', $params);
+        return view('patch-panel/edit')->with('params', $params);
     }
 
     /**
@@ -161,6 +161,7 @@ class PatchPanelController extends Controller
             $patchPanel->setConnectorType($request->input('connector-types'));
             $patchPanel->setCableType($request->input('cable-types'));
             $patchPanel->setColoReference($request->input('colocation'));
+            $patchPanel->setActive(true);
             $patchPanel->setInstallationDate(($request->input('installation-date') == '' ? null : new \DateTime($request->input('installation-date'))));
             D2EM::persist($patchPanel);
             D2EM::flush($patchPanel);
@@ -169,9 +170,38 @@ class PatchPanelController extends Controller
             $patchPanel->createPatchPanelPort($request->input('number-ports'),$request->input('port-prefix'));
 
             return Redirect::to('patch-panel-port/list/patch-panel/'.$patchPanel->getId());
-
         }
+    }
 
+    /**
+     * Allow to delete a patch panel
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @return  redirect
+     */
+    public function delete($id = null){
+        $error = array('type' => '', 'message' => '');
+        if($id != null){
+            // create a new patch panel object
+            $patchPanel = D2EM::getRepository(PatchPanel::class)->find($id);
+
+            if($patchPanel->checkBeforeDelete()){
+                $patchPanel->setActive(false);
+                D2EM::persist($patchPanel);
+                D2EM::flush($patchPanel);
+                $error['type'] = 'success';
+                $error['message'] = 'The patch panel has been removed.';
+            }
+            else{
+                $error['type'] = 'fail';
+                $error['message'] = 'Impossible to delete this patch panel some of the ports are still active.';
+            }
+        }
+        else{
+            $error['type'] = 'fail';
+            $error['message'] = 'Impossible to delete';
+        }
+        return Redirect::to('patch-panel/list/')->with($error['type'], $error['message']);
     }
 
     /**
@@ -200,6 +230,6 @@ class PatchPanelController extends Controller
                         'patchPanel'            => $patchPanel
         );
 
-        return view('patch-panel/view-patch-panel')->with('params', $params);
+        return view('patch-panel/view')->with('params', $params);
     }
 }

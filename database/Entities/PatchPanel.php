@@ -5,7 +5,7 @@ namespace Entities;
 Use D2EM;
 use DateTime;
 /**
- * PatchPanel
+ * Entities\PatchPanel
  */
 class PatchPanel
 {
@@ -73,6 +73,11 @@ class PatchPanel
      * @var \DateTime
      */
     private $installation_date;
+
+    /**
+     * @var boolean $active
+     */
+    private $active;
 
     /**
      * @var integer
@@ -231,6 +236,40 @@ class PatchPanel
     }
 
     /**
+     * Set active
+     *
+     * @param boolean $active
+     * @return Switcher
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active
+     *
+     * @return boolean
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Get active text
+     *
+     * @return boolean
+     */
+    public function getActiveText()
+    {
+        return ($this->active) ? 'Yes': 'No';
+    }
+
+
+    /**
      * Add patchPanelPort
      *
      * @param \Entities\PatchPanelPort $patchPanelPort
@@ -303,7 +342,6 @@ class PatchPanel
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
      * @params  int $numberPort the number of port needed
      * @params  string $prefix the prefix
-     * @return
      */
     public function createPatchPanelPort(int $numberPort, $prefix = null){
         $i = 1;
@@ -326,6 +364,11 @@ class PatchPanel
 
     }
 
+    /**
+     * Get the prefix of a port
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @return  string $prefix the prefix
+     */
     public function getPrefixPort(){
         if($this->getNumbersPatchPanelPorts() > 0){
             $name = $this->getPatchPanelPorts()->first()->getName();
@@ -335,6 +378,17 @@ class PatchPanel
         else{
             return null;
         }
+    }
 
+    /**
+     * Check if a patch panel can be delete => all port link to the patch panel must have the status 'available' or 'ceased'
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @return boolean
+     */
+    public function checkBeforeDelete(){
+        $nbPort = $this->getNumbersPatchPanelPorts();
+        $nbPortAvailableToDelete = D2EM::getRepository(PatchPanel::class)->getAllPortByStatusForAPatchPanel($this->getId(),array(\Entities\PatchPanelPort::STATE_AVAILABLE,\Entities\PatchPanelPort::STATE_CEASED));
+
+        return ($nbPort == $nbPortAvailableToDelete)? true : false;
     }
 }

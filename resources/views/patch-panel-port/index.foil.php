@@ -13,10 +13,10 @@
     <table id='patch-panel-port-list' class="table ">
         <thead>
             <tr>
-                <td>ID</td>
                 <td>Name</td>
                 <td>Patch Panel</td>
-                <td>Switch Port</td>
+                <td>Switch</td>
+                <td>Port</td>
                 <td>Customer</td>
                 <td>State</td>
                 <td>Action</td>
@@ -26,19 +26,25 @@
             <?php foreach( $t->params['listPatchPanelPort'] as $patchPanelPort ): ?>
                 <tr>
                     <td>
-                        <?= $patchPanelPort->getId() ?>
-                    </td>
-                    <td>
                         <?= $patchPanelPort->getName() ?>
                     </td>
                     <td>
-                        <a href="<?= url('/patch-panel/view' ).'/'.$patchPanelPort->getPatchPanel()->getId()?>"><?= $patchPanelPort->getPatchPanel()->getId().' '.$patchPanelPort->getPatchPanel()->getName() ?> </a>
+                        <a href="<?= url('patch-panel/view' ).'/'.$patchPanelPort->getPatchPanel()->getId()?>">
+                            <?= $patchPanelPort->getPatchPanel()->getId().' '.$patchPanelPort->getPatchPanel()->getName() ?>
+                        </a>
                     </td>
                     <td>
-                        <a href="<?= url('switch-port/view/id/' ).'/'.$patchPanelPort->getSwitchPortId()?>"><?= $patchPanelPort->getSwitchPortName() ?></a>
+                        <a href="<?= url('switch-port/view/id/' ).'/'.$patchPanelPort->getSwitchId()?>">
+                            <?= $patchPanelPort->getSwitchName() ?>
+                        </a>
                     </td>
                     <td>
-                        <a href="<?= url('customer/overview/id/' ).'/'.$patchPanelPort->getCustomerId()?>"><?= $patchPanelPort->getCustomerName() ?></a>
+                        <?= $patchPanelPort->getSwitchPortName() ?>
+                    </td>
+                    <td>
+                        <a href="<?= url('customer/overview/id/' ).'/'.$patchPanelPort->getCustomerId()?>">
+                            <?= $patchPanelPort->getCustomerName() ?>
+                        </a>
                     </td>
                     <td>
                         <?= $t->params['listStates'][$patchPanelPort->getState()] ?>

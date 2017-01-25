@@ -2,6 +2,8 @@
 
 namespace Entities;
 
+use D2EM;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -795,4 +797,7 @@ class Switcher
     {
         return $this->mauSupported;
     }
+
+
+
 }

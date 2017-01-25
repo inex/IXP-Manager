@@ -4,14 +4,15 @@ namespace IXP\Http\Controllers\PatchPanel;
 
 use D2EM;
 Use DateTime;
+
 use Entities\Customer;
 use Entities\PatchPanelPort;
-
 use Entities\Switcher;
 use Entities\SwitchPort;
-use IXP\Http\Controllers\Controller;
 
 use Former\Facades\Former;
+
+use IXP\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -41,7 +42,13 @@ class PatchPanelPortController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request, int $id = null): View{
+    /**
+     * Display all the patch panel ports
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @parama  int $id allow to display all the port for a patch panel => if null display all ports for all patch panel
+     * @return  view
+     */
+    public function index(int $id = null): View{
         // Get all states
         $listStates = \Entities\PatchPanelPort::$STATES;
 
@@ -59,6 +66,13 @@ class PatchPanelPortController extends Controller
         return view('patch-panel-port/index')->with('params', $params);
     }
 
+    /**
+     * Display the form to edit a patch panel port
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @parama  int $id patch panel port that need to be edited
+     * @return  view
+     */
     public function edit(Request $request, int $id = null) {
         if($id == null){
             return Redirect::to('patch-panel-port/list');
@@ -76,6 +90,7 @@ class PatchPanelPortController extends Controller
             Former::populate( array('ppp-name'              => $patchPanelPort->getName(),
                                     'patch-panel'           => $patchPanelPort->getPatchPanel()->getName(),
                                     'switch'                => $patchPanelPort->getSwitchId(),
+                                    'switch-port'           => $patchPanelPort->getSwitchPortId(),
                                     'customer'              => $patchPanelPort->getCustomerId(),
                                     'state'                 => $patchPanelPort->getState(),
                                     'note'                  => $patchPanelPort->getNotes(),
@@ -97,6 +112,7 @@ class PatchPanelPortController extends Controller
             'listStates'        => $listStates,
             'listCustomers'     => $listCustomers,
             'listSwitch'        => $listSwitch,
+            'listSwitchPort'    => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId()),
             'patchPanelPort'    => $patchPanelPort,
 
         );
@@ -104,6 +120,13 @@ class PatchPanelPortController extends Controller
         return view('patch-panel-port/edit')->with('params', $params);
     }
 
+    /**
+     * Allow to edit the information of the patch panel port
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @parama  int $id patch panel port that need to be edited
+     * @return  redirect
+     */
     public function add(Request $request, int $id){
         if($id == null){
             return Redirect::to('patch-panel-port/list');
@@ -165,14 +188,52 @@ class PatchPanelPortController extends Controller
 
     }
 
+    /**
+     * Get the switch port for a Switch
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @return  JSON array of listPort
+     */
     public function getSwitchPort(Request $request){
         $idSwitch = $request->input('switchId');
-        $switch = D2EM::getRepository(Switcher::class)->find($idSwitch);
-        dd($switch);
+        $listPorts = D2EM::getRepository(Switcher::class)->getAllPortForASwitch($idSwitch);
+
+        return response()->json(array('success' => true, 'response' => $listPorts));
     }
 
+    /**
+     * Get the customer for a switch port
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @return  JSON customer object
+     */
+    public function getCustomerForASwitchPort(Request $request){
+        $switchPort = D2EM::getRepository(SwitchPort::class)->find($request->input('switchPortId'));
+        $success = false;
+        $customer = null;
+        if($switchPort != null){
+            $physicalInterface = $switchPort->getPhysicalInterface();
+            if($physicalInterface != null){
+                $virtualInterface = $physicalInterface->getVirtualInterface();
+                if($virtualInterface != null){
+                    $cust = $virtualInterface->getCustomer();
+                    if($cust != null){
+                        $customer = array('id' => $cust->getId(), 'name' => $cust->getName());
+                        $success = true;
+                    }
+                }
+            }
+        }
+        return response()->json(array('success' => $success, 'response' => $customer));
+    }
 
-    public function view(Request $request, int $id = null): View
+    /**
+     * Display the patch panel port informations
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  int $id ID of the patch panel
+     * @return  view
+     */
+    public function view(int $id = null): View
     {
         $listStates = \Entities\PatchPanelPort::$STATES;
         if($id != null){

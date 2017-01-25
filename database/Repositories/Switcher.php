@@ -171,4 +171,26 @@ class Switcher extends EntityRepository
         return $this->getEntityManager()->createQuery( $q )->getResult();
     }
 
+
+    public function getAllPortForASwitch($id)
+    {
+        $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
+                    FROM \\Entities\\SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN sp.PhysicalInterface pi
+                    WHERE
+                        s.id = ?1 
+                    ORDER BY sp.id ASC";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+
+        $ports = $query->getArrayResult();
+
+        foreach( $ports as $id => $port )
+            $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+
+        return $ports;
+    }
 }
