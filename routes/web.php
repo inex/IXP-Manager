@@ -65,3 +65,4 @@ Route::post('patch-panel-port/add/{id}', 'PatchPanel\PatchPanelPortController@ad
 Route::post('patch-panel-port/add/{id}', 'PatchPanel\PatchPanelPortController@add');
 Route::get('patch-panel-port/getSwitchPort/', 'PatchPanel\PatchPanelPortController@getSwitchPort');
 Route::get('patch-panel-port/getCustomerForASwitchPort/', 'PatchPanel\PatchPanelPortController@getCustomerForASwitchPort');
+Route::get('patch-panel-port/resetCustomer/', 'PatchPanel\PatchPanelPortController@resetCustomer');

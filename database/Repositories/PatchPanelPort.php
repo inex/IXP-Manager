@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Entities\PatchPanel;
 
 /**
  * Cabinet
@@ -12,5 +13,24 @@ use Doctrine\ORM\EntityRepository;
  */
 class PatchPanelPort extends EntityRepository
 {
+    public function getPatchPanelPortAvailableForDuplex(int $patchPanelId, int $portId):array {
+        $dql = "SELECT ppp
+                    FROM Entities\\PatchPanelPort ppp
+                    JOIN ppp.patchPanel pp
+                    WHERE
+                        pp.id = $patchPanelId
+                        AND ppp.id != $portId
+                    AND ppp.duplexMasterPort IS NULL
+                    
+                   AND ppp.state = ".\Entities\PatchPanelPort::STATE_AVAILABLE;
 
+        $availablePorts = $this->getEntityManager()->createQuery( $dql )->getResult();
+
+        $listAvailablePort = array();
+
+        foreach($availablePorts as $port){
+            $listAvailablePort[$port->getId()] = $port->getName();
+        }
+        return $listAvailablePort;
+    }
 }

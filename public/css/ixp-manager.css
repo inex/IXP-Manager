@@ -138,7 +138,11 @@ nav.navbar.navbar-inverse.navbar-fixed-top .collapse.navbar-collapse li a{
 }
 
 
-
+.reset-button-well{
+    float: right;
+    position: absolute;
+    margin-left: 55%;
+}
 
 .container > footer p {
   text-align: center; /* center align it with the container */

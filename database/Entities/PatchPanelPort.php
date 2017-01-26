@@ -2,6 +2,9 @@
 
 namespace Entities;
 
+use D2EM;
+use Repositories\PatchPanel;
+
 /**
  * Entities\PatchPanelPort
  */
@@ -107,6 +110,16 @@ class PatchPanelPort
      * @var \Entities\Customer
      */
     private $customer;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $duplexSlavePorts;
+
+    /**
+     * @var \Entities\PatchPanelPort
+     */
+    private $duplexMasterPort;
 
     /**
      * Constructor
@@ -524,6 +537,64 @@ class PatchPanelPort
     }
 
     /**
+     * Add duplexSlavePort
+     *
+     * @param \Entities\PatchPanelPort $duplexSlavePort
+     *
+     * @return PatchPanelPort
+     */
+    public function addDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+    {
+        $this->duplexSlavePorts[] = $duplexSlavePort;
+
+        return $this;
+    }
+
+    /**
+     * Remove duplexSlavePort
+     *
+     * @param \Entities\PatchPanelPort $duplexSlavePort
+     */
+    public function removeDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+    {
+        $this->duplexSlavePorts->removeElement($duplexSlavePort);
+    }
+
+    /**
+     * Get duplexSlavePorts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDuplexSlavePorts()
+    {
+        return $this->duplexSlavePorts;
+    }
+
+    /**
+     * Set duplexMasterPort
+     *
+     * @param \Entities\PatchPanelPort $duplexMasterPort
+     *
+     * @return PatchPanelPort
+     */
+    public function setDuplexMasterPort(\Entities\PatchPanelPort $duplexMasterPort = null)
+    {
+        $this->duplexMasterPort = $duplexMasterPort;
+
+        return $this;
+    }
+
+    /**
+     * Get duplexMasterPort
+     *
+     * @return \Entities\PatchPanelPort
+     */
+    public function getDuplexMasterPort()
+    {
+        return $this->duplexMasterPort;
+    }
+
+    /**
      * Set patchPanel
      *
      * @param \Entities\PatchPanel $patchPanel
@@ -608,72 +679,32 @@ class PatchPanelPort
     {
         return ($this->getCustomer() != null) ? $this->getCustomer()->getName() : null ;
     }
-/**
- * @var \Doctrine\Common\Collections\Collection
- */
-private $duplexSlavePorts;
-
-/**
- * @var \Entities\PatchPanelPort
- */
-private $duplexMasterPort;
 
 
-/**
- * Add duplexSlavePort
- *
- * @param \Entities\PatchPanelPort $duplexSlavePort
- *
- * @return PatchPanelPort
- */
-public function addDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
-{
-$this->duplexSlavePorts[] = $duplexSlavePort;
 
-return $this;
-}
+    public function setDuplexPort($duplexPort, $newSlavePort){
+        if($newSlavePort){
+            $duplexPort->setDuplexMasterPort($this);
+        }
 
-/**
- * Remove duplexSlavePort
- *
- * @param \Entities\PatchPanelPort $duplexSlavePort
- */
-public function removeDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
-{
-$this->duplexSlavePorts->removeElement($duplexSlavePort);
-}
+        
+        $duplexPort->setSwitchPort($this->getSwitchPortId());
+        $duplexPort->setCustomer($this->getCustomerId());
+        $duplexPort->setState($this->getState());
+        $duplexPort->setNotes($this->getNotes());
+        $duplexPort->setLastStateChange($this->getLastStateChange());
+        $duplexPort->setInternalUse($this->getInternalUse());
+        $duplexPort->setChargeable($this->getChargeable());
 
-/**
- * Get duplexSlavePorts
- *
- * @return \Doctrine\Common\Collections\Collection
- */
-public function getDuplexSlavePorts()
-{
-return $this->duplexSlavePorts;
-}
+        $duplexPort->setAssignedAt($this->getAssignedAt());
+        $duplexPort->setConnectedAt($this->getConnectedAt());
 
-/**
- * Set duplexMasterPort
- *
- * @param \Entities\PatchPanelPort $duplexMasterPort
- *
- * @return PatchPanelPort
- */
-public function setDuplexMasterPort(\Entities\PatchPanelPort $duplexMasterPort = null)
-{
-$this->duplexMasterPort = $duplexMasterPort;
+        $duplexPort->setCeaseRequestedAt($this->getCeaseRequestedAt());
+        $duplexPort->setCeasedAt($this->getCeasedAt());
 
-return $this;
-}
+        D2EM::persist($duplexPort);
+        D2EM::flush($duplexPort);
 
-/**
- * Get duplexMasterPort
- *
- * @return \Entities\PatchPanelPort
- */
-public function getDuplexMasterPort()
-{
-return $this->duplexMasterPort;
-}
+        return $duplexPort;
+    }
 }
