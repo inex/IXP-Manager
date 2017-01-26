@@ -40,7 +40,7 @@ Target[core-degkcp-tcydub1-lan1]: #1\:33:<?=config('custom.grapher.snmp_password
  	 			+ #1\:38:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
 				+ #1\:39:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
 				+ #1\:40:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-MaxBytes[core-degkcp-tcydub1-lan1]: 9000000000
+MaxBytes[core-degkcp-tcydub1-lan1]: 10000000000
 Directory[core-degkcp-tcydub1-lan1]: trunks
 Title[core-degkcp-tcydub1-lan1]: Trunk Core - DEGKCP-TCYDUB1 - LAN1 - Primary
 
@@ -53,14 +53,14 @@ Target[core-degkcp-tcydub1-lan1-sec]: #1\:41:<?=config('custom.grapher.snmp_pass
 				+ #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
 				+ #1\:47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
 				+ #1\:48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-MaxBytes[core-degkcp-tcydub1-lan1-sec]: 9000000000
+MaxBytes[core-degkcp-tcydub1-lan1-sec]: 10000000000
 Directory[core-degkcp-tcydub1-lan1-sec]: trunks
 Title[core-degkcp-tcydub1-lan1-sec]: Trunk Core - DEGKCP-TCYDUB1 - LAN1 - Secondary
 
 # tcydub1-tcydub1 - LAN1 - Primary
 Target[core-tcydub1-tcydub1-lan1]: #1\:49:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
 				+ #1\:53:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-MaxBytes[core-tcydub1-tcydub1-lan1]: 9000000000
+MaxBytes[core-tcydub1-tcydub1-lan1]: 10000000000
 Directory[core-tcydub1-tcydub1-lan1]: trunks
 Title[core-tcydub1-tcydub1-lan1]: Trunk Core - TCYDUB1 Internal - LAN1 - Primary
 
@@ -113,25 +113,41 @@ Title[core-swi1-tcy1-1_swi1-tcy1-3-lan1]: Intra-POP Trunk Core - TCYDUB1 - swi1-
 
 
 # swi1-tcy1-1 - swi1-vfw-1
-Target[core-swi1-tcy1-1_swi1-vfw-1-lan1]: #1\:29:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-					+ #1\:30:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-MaxBytes[core-swi1-tcy1-1_swi1-vfw-1-lan1]: 2500000000
+Target[core-swi1-tcy1-1_swi1-vfw-1-lan1]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
+                      					+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
+                                        + #1\:43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
+                                        + #1\:44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
+                                        + #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
+                                        + #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
+                                        + #1\:47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
+                                        + #1\:48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
+MaxBytes[core-swi1-tcy1-1_swi1-vfw-1-lan1]: 10000000000
 Directory[core-swi1-tcy1-1_swi1-vfw-1-lan1]: trunks
 Title[core-swi1-tcy1-1_swi1-vfw-1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy1-1 swi1-vfw-1 - LAN1
 
 # swi1-deg1-1 - swi1-tcy3-1
-Target[core-swi1-deg1-1_swi1-tcy3-1-lan1]: #1\:29:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-					+ #1\:30:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-					+ #1\:21:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-					+ #1\:22:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-MaxBytes[core-swi1-deg1-1_swi1-tcy3-1-lan1]: 5000000000
+Target[core-swi1-deg1-1_swi1-tcy3-1-lan1]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
+                     					+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
+                     					+ #1\:43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
+                     					+ #1\:44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
+                     					+ #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
+                    					+ #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
+                     					+ #1\:47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
+                     					+ #1\:48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
+MaxBytes[core-swi1-deg1-1_swi1-tcy3-1-lan1]: 10000000000
 Directory[core-swi1-deg1-1_swi1-tcy3-1-lan1]: trunks
 Title[core-swi1-deg1-1_swi1-tcy3-1-lan1]: Inter-POP Trunk Core - Telecity NWBP - swi1-deg1-1 swi1-tcy3-1 - LAN1
 
 # swi1-tcy3-1 - swi1-vfw-1
 Target[core-swi1-tcy3-1_swi1-vfw-1-lan1]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-					+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-MaxBytes[core-swi1-tcy3-1_swi1-vfw-1-lan1]: 2500000000
+                                        + #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
+                                        + #1\:43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
+                                        + #1\:44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
+                                        + #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
+                                        + #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
+                                        + #1\:47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
+                                        + #1\:48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
+MaxBytes[core-swi1-tcy3-1_swi1-vfw-1-lan1]: 10000000000
 Directory[core-swi1-tcy3-1_swi1-vfw-1-lan1]: trunks
 Title[core-swi1-tcy3-1_swi1-vfw-1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy3-1 swi1-vfw-1 - LAN1
 
