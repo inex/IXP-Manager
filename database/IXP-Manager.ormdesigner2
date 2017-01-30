@@ -1213,9 +1213,9 @@
       <field name="switchport" type="string" uuid="f436f73e-f357-4a72-bf23-e95620c34876"/>
       <field name="duplex_master_id" type="integer" uuid="4a2cd2da-deb3-4c4a-8777-3231406847a7"/>
       <orm-attributes>
-        <attribute name="table">patch_panel_port</attribute>
-        <attribute name="tableName">patch_panel_port</attribute>
-        <attribute name="repository-class">Repositories\PatchPanelPort</attribute>
+        <attribute name="table">patch_panel_port_history</attribute>
+        <attribute name="tableName">patch_panel_port_history</attribute>
+        <attribute name="repository-class">Repositories\PatchPanelPortHistory</attribute>
       </orm-attributes>
     </entity>
     <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPort" owner-alias="patchPanelPortHistory" inverse-alias="patchPanelPort" many-owner="true" many-inverse="false" uuid="ac59c5ec-22c1-4f07-88e9-3eeaa60d547c">
