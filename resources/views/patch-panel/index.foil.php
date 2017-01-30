@@ -1,22 +1,16 @@
 <?php $this->layout('layouts/ixpv4') ?>
 
 <?php $this->section('title') ?>
-    Patch Panel
+    Patch Panels (<?= $t->active ? 'Active' : 'Inactive' ?> Only)
 <?php $this->append() ?>
 
 <?php $this->section('page-header-preamble') ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
 
-            <?php if( $t->active ): ?>
-                <a class="btn btn-default" href="<?= url('patch-panel/list/activeOnly/0') ?>">
-                    Show Inactive
-                </a>
-            <?php else: ?>
-                <a class="btn btn-default" href="<?= url('patch-panel/list/') ?>">
-                    Show Active
-                </a>
-            <?php endif; ?>
+            <a class="btn btn-default" href="<?= url('patch-panel/list' . ( $t->active ? '/activeOnly/0' : '' ) ) ?>">
+                Show <?= $t->active ? 'Inactive' : 'Active' ?>
+            </a>
 
             <a type="button" class="btn btn-default" href="<?= url('patch-panel/edit') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
