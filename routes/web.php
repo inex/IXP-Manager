@@ -56,7 +56,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
     Route::get( 'list',                       'PatchPanelPortController@index' )->name('patchPanelPortIndex');
-    Route::get( 'list/patch-panel/{id}',      'PatchPanelPortController@index' )->name('patchPanelPortIndex');
+    Route::get( 'list/patch-panel/{id}',      'PatchPanelPortController@index' );
     Route::get( 'view/{id?}',                 'PatchPanelPortController@view' );
     Route::get( 'edit/{id?}',                 'PatchPanelPortController@edit' );
     Route::get( 'getSwitchPort',              'PatchPanelPortController@getSwitchPort' );
