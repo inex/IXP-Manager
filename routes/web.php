@@ -47,10 +47,8 @@ Route::group(['middleware' => ['web']], function () {
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
     Route::get( 'list',                     'PatchPanelController@index' )->name('patchPanelIndex');
     Route::get( 'list/activeOnly/{active}', 'PatchPanelController@index'  );
-    Route::get( 'edit',                     'PatchPanelController@edit'   );
-    Route::get( 'edit/{id}',                'PatchPanelController@edit'   );
-    Route::get( 'view/',                    'PatchPanelController@view'   );
-    Route::get( 'view/{id}',                'PatchPanelController@view'   );
+    Route::get( 'edit/{id?}',               'PatchPanelController@edit'   );
+    Route::get( 'view/{id?}',               'PatchPanelController@view'   );
     Route::get( 'delete/{id}',              'PatchPanelController@delete' );
 
     Route::post( 'add',                     'PatchPanelController@add'    );
@@ -59,10 +57,8 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
     Route::get( 'list',                       'PatchPanelPortController@index' )->name('patchPanelPortIndex');
     Route::get( 'list/patch-panel/{id}',      'PatchPanelPortController@index' )->name('patchPanelPortIndex');
-    Route::get( 'view/',                      'PatchPanelPortController@view' );
-    Route::get( 'view/{id}',                  'PatchPanelPortController@view' );
-    Route::get( 'edit/',                      'PatchPanelPortController@edit' );
-    Route::get( 'edit/{id}',                  'PatchPanelPortController@edit' );
+    Route::get( 'view/{id?}',                 'PatchPanelPortController@view' );
+    Route::get( 'edit/{id?}',                 'PatchPanelPortController@edit' );
     Route::get( 'getSwitchPort/',             'PatchPanelPortController@getSwitchPort' );
     Route::get( 'getCustomerForASwitchPort/', 'PatchPanelPortController@getCustomerForASwitchPort' );
     Route::get( 'getSwitchForACustomer/',     'PatchPanelPortController@getSwitchForACustomer' );
