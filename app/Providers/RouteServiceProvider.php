@@ -35,9 +35,11 @@ class RouteServiceProvider extends ServiceProvider {
     public function map()
     {
         $this->mapWebRoutes();
+        $this->mapWebAuthRoutes();
         $this->mapApiV4Routes();
         //
     }
+
     /**
      * Define the "web" routes for the application.
      *
@@ -54,6 +56,24 @@ class RouteServiceProvider extends ServiceProvider {
             require base_path('routes/web.php');
         });
     }
+
+    /**
+     * Define the "web" routes for the application **WHICH REQUIRE AUTHENTICATION**.
+     *
+     * These routes all receive session state, CSRF protection, etc and require an authenticated user.
+     *
+     * @return void
+     */
+    protected function mapWebAuthRoutes()
+    {
+        Route::group([
+                         'middleware' => [ 'auth', 'web' ],
+                         'namespace' => $this->namespace,
+                     ], function ($router) {
+            require base_path('routes/web-auth.php');
+        });
+    }
+
     /**
      * Define the "api" routes for the application.
      *

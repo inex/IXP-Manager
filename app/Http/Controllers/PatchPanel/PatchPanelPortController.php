@@ -36,12 +36,6 @@ use Illuminate\View\View;
 
 class PatchPanelPortController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Display all the patch panel ports
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
