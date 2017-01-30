@@ -8,7 +8,7 @@
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
 
-            <?php if($t->params['active']): ?>
+            <?php if( $t->active ): ?>
                 <a class="btn btn-default" href="<?= url('patch-panel/list/activeOnly/0') ?>">
                     Show Inactive
                 </a>
@@ -52,7 +52,7 @@
             </tr>
         <thead>
         <tbody>
-            <?php foreach( $t->params['listPatchPanels'] as $patchPanel ): ?>
+            <?php foreach( $t->patchPanels as $patchPanel ): ?>
                 <tr>
                     <td>
                         <?= $patchPanel->getName() ?>
