@@ -391,4 +391,22 @@ class PatchPanel
 
         return ($nbPort == $nbPortAvailableToDelete)? true : false;
     }
+
+    /**
+     * Turn the database integer representation of the cable type into text as
+     * defined in the self::$CABLE_TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveCableType(): string {
+        return self::$CABLE_TYPES[ $this->getCableType() ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the connector type into text as
+     * defined in the self::$CONNECTOR_TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveConnectorType(): string {
+        return self::$CONNECTOR_TYPES[ $this->getConnectorType() ] ?? 'Unknown';
+    }
 }

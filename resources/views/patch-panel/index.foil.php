@@ -66,10 +66,10 @@
                         <?= $patchPanel->getColoReference() ?>
                     </td>
                     <td>
-                        <?= $t->params['listCableTypes'][$patchPanel->getCableType()] ?>
+                        <?= $patchPanel->resolveCableType() ?>
                     </td>
                     <td>
-                        <?= $t->params['listConnectorTypes'][$patchPanel->getConnectorType()] ?>
+                        <?= $patchPanel->resolveConnectorType() ?>
                     </td>
                     <td>
                         <?= $patchPanel->getNumbersPatchPanelPorts(); ?>

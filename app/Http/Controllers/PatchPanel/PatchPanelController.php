@@ -59,15 +59,8 @@ class PatchPanelController extends Controller
      * @return  view
      */
     public function index( $active = true ): View {
-        // Get all cable types
-        $listCableTypes = \Entities\PatchPanel::$CABLE_TYPES;
-        // Get all connector types
-        $listConnectorTypes = \Entities\PatchPanel::$CONNECTOR_TYPES;
-
         // array of params for the view
         $params = array('listPatchPanels'       => D2EM::getRepository(PatchPanel::class)->findBy(array('active' => $active)),
-                        'listCableTypes'        => $listCableTypes,
-                        'listConnectorTypes'    => $listConnectorTypes,
                         'active'                => $active
         );
 
