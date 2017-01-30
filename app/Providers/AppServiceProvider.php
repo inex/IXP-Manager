@@ -20,6 +20,8 @@ class AppServiceProvider extends ServiceProvider {
             $view->with('controllerAction' , app('request')->route()->getAction()['as']);
         });
 
+        // all former stuff will be Bootstrap3:
+        Former::framework('TwitterBootstrap3');
     }
 
     /**
@@ -41,10 +43,6 @@ class AppServiceProvider extends ServiceProvider {
             'Illuminate\Contracts\Auth\Registrar',
             'IXP\Services\Registrar'
         );
-
-        // all former stuff will be Bootstrap3:
-        Former::framework('TwitterBootstrap3');
-
     }
 
 

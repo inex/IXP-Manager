@@ -28,9 +28,7 @@ use D2EM;
 
 use Entities\Cabinet;
 use Entities\PatchPanel;
-
-use Former\Facades\Former;
-
+use Former;
 use IXP\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -60,7 +58,7 @@ class PatchPanelController extends Controller
      * @params  boolean $active display active or inactive patch panels
      * @return  view
      */
-    public function index($active = true): View{
+    public function index( $active = true ): View {
         // Get all cable types
         $listCableTypes = \Entities\PatchPanel::$CABLE_TYPES;
         // Get all connector types
