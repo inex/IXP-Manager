@@ -174,9 +174,6 @@ return [
         Intervention\Image\ImageServiceProvider::class,
 
         Former\FormerServiceProvider::class,
-
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-
     ],
 
     /*
