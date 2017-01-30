@@ -571,6 +571,63 @@ class PatchPanelPort
     }
 
     /**
+     * has duplex port
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function hasSlavePort()
+    {
+        return (count($this->getDuplexSlavePorts()) == 0) ? false : true;
+    }
+
+    /**
+     * Get duplexSlavePorts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDuplexSlavePort()
+    {
+        if($this->hasSlavePort()){
+            foreach($this->getDuplexSlavePorts() as $slave){
+                return $slave;
+            }
+        }
+        else{
+            return null;
+        }
+    }
+
+    /**
+     * Get duplexSlavePort name
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDuplexSlavePortName()
+    {
+        if($this->getDuplexSlavePort() != null){
+            return $this->getDuplexSlavePort()->getName();
+        }
+        else{
+            return null;
+        }
+    }
+
+    /**
+     * Get duplexSlavePort id
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDuplexSlavePortId()
+    {
+        if($this->getDuplexSlavePort() != null){
+            return $this->getDuplexSlavePort()->getId();
+        }
+        else{
+            return null;
+        }
+    }
+
+    /**
      * Set duplexMasterPort
      *
      * @param \Entities\PatchPanelPort $duplexMasterPort
@@ -687,9 +744,7 @@ class PatchPanelPort
             $duplexPort->setDuplexMasterPort($this);
         }
 
-        
-        $duplexPort->setSwitchPort($this->getSwitchPortId());
-        $duplexPort->setCustomer($this->getCustomerId());
+        $duplexPort->setCustomer($this->getCustomer());
         $duplexPort->setState($this->getState());
         $duplexPort->setNotes($this->getNotes());
         $duplexPort->setLastStateChange($this->getLastStateChange());

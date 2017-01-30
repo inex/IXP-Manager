@@ -53,10 +53,10 @@ class PatchPanelPortController extends Controller
         $listStates = \Entities\PatchPanelPort::$STATES;
 
         if($id != null){
-            $listPatchPanelPort = D2EM::getRepository(PatchPanelPort::class)->findByPatchPanel($id);
+            $listPatchPanelPort = D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort($id);
         }
         else{
-            $listPatchPanelPort = D2EM::getRepository(PatchPanelPort::class)->findAll();
+            $listPatchPanelPort = D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort();
         }
 
         $params = array('listPatchPanelPort'    => $listPatchPanelPort,
@@ -87,22 +87,36 @@ class PatchPanelPortController extends Controller
 
         if($id != null){
             $patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id);
+
+            // display master port informations
+            if($patchPanelPort->getDuplexMasterPort() != null){
+                $patchPanelPort = $patchPanelPort->getDuplexMasterPort();
+            }
+
+            $hasDuplex = $patchPanelPort->hasSlavePort();
+
             if($patchPanelPort != null){
                 Former::populate( array('ppp-name'              => $patchPanelPort->getName(),
-                    'patch-panel'           => $patchPanelPort->getPatchPanel()->getName(),
-                    'switch'                => $patchPanelPort->getSwitchId(),
-                    'switch-port'           => $patchPanelPort->getSwitchPortId(),
-                    'customer'              => $patchPanelPort->getCustomerId(),
-                    'state'                 => $patchPanelPort->getState(),
-                    'note'                  => $patchPanelPort->getNotes(),
-                    'assigned-at'           => $patchPanelPort->getAssignedAtFormated(),
-                    'connected-at'          => $patchPanelPort->getConnectedAtFormated(),
-                    'ceased-requested-at'   => $patchPanelPort->getCeaseRequestedAtFormated(),
-                    'ceased-at'             => $patchPanelPort->getCeasedAtFormated(),
-                    'last-state-change-at'  => $patchPanelPort->getLastStateChangeFormated(),
+                                        'patch-panel'           => $patchPanelPort->getPatchPanel()->getName(),
+                                        'switch'                => $patchPanelPort->getSwitchId(),
+                                        'switch-port'           => $patchPanelPort->getSwitchPortId(),
+                                        'customer'              => $patchPanelPort->getCustomerId(),
+                                        'partner-port'          => $patchPanelPort->getDuplexSlavePortId(),
+                                        'state'                 => $patchPanelPort->getState(),
+                                        'note'                  => $patchPanelPort->getNotes(),
+                                        'assigned-at'           => $patchPanelPort->getAssignedAtFormated(),
+                                        'connected-at'          => $patchPanelPort->getConnectedAtFormated(),
+                                        'ceased-requested-at'   => $patchPanelPort->getCeaseRequestedAtFormated(),
+                                        'ceased-at'             => $patchPanelPort->getCeasedAtFormated(),
+                                        'last-state-change-at'  => $patchPanelPort->getLastStateChangeFormated(),
                 ));
 
-                $partnerPorts = D2EM::getRepository(PatchPanelPort::class)->getPatchPanelPortAvailableForDuplex($patchPanelPort->getPatchPanel()->getId(), $patchPanelPort->getId());
+                if($hasDuplex){
+                    $partnerPorts =  array($patchPanelPort->getDuplexSlavePortId() => $patchPanelPort->getDuplexSlavePortName());
+                }
+                else{
+                    $partnerPorts = D2EM::getRepository(PatchPanelPort::class)->getPatchPanelPortAvailableForDuplex($patchPanelPort->getPatchPanel()->getId(), $patchPanelPort->getId());
+                }
             }
             else{
                 return Redirect::to('patch-panel-port/list');
@@ -116,9 +130,10 @@ class PatchPanelPortController extends Controller
             'listStates'        => $listStates,
             'listCustomers'     => $listCustomers,
             'listSwitch'        => $listSwitch,
-            'listSwitchPort'    => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId()),
+            'listSwitchPort'    => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId(),null, $patchPanelPort->getSwitchPortId()),
             'patchPanelPort'    => $patchPanelPort,
-            'partnerPorts'      => $partnerPorts
+            'partnerPorts'      => $partnerPorts,
+            'hasDuplex'         => $hasDuplex
         );
 
         return view('patch-panel-port/edit')->with('params', $params);
@@ -159,9 +174,17 @@ class PatchPanelPortController extends Controller
             $patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id);
 
             if($request->input('switch-port')){
+
                 $switchPort = D2EM::getRepository(SwitchPort::class)->find($request->input('switch-port'));
 
-                $patchPanelPort->setSwitchPort($switchPort);
+                if(D2EM::getRepository(PatchPanelPort::class)->isSwitchPortAvailable($switchPort->getId())){
+                    $patchPanelPort->setSwitchPort($switchPort);
+                }
+                else{
+                    return Redirect::to('patch-panel-port/edit/'.$id)
+                        ->with('error', 'The switch port selected is already used by an other patch panel Port !')
+                        ->withInput(Input::all());
+                }
             }
 
             if($request->input('customer')){
@@ -187,20 +210,19 @@ class PatchPanelPortController extends Controller
             D2EM::persist($patchPanelPort);
             D2EM::flush($patchPanelPort);
 
-            if($request->input('duplex') and $patchPanelPort->getDuplexSlavePorts() == null){
-                $newSlavePort = true;
-                $partnerPort = D2EM::getRepository(PatchPanelPort::class)->find($request->input('partner-duplex'));
-            }
-            else{
-                $newSlavePort = false;
-                $partnerPort = $patchPanelPort->getDuplexSlavePorts();
-            }
-
-
             if($request->input('duplex')){
-                $duplexPort = $patchPanelPort->setDuplexPort($partnerPort,$newSlavePort);
+                if($patchPanelPort->hasSlavePort()){
+                    $isNewSlavePort = false;
+                    $partnerPort = $patchPanelPort->getDuplexSlavePort();
+                }
+                else{
+                    $isNewSlavePort = true;
+                    $partnerPort = D2EM::getRepository(PatchPanelPort::class)->find($request->input('partner-port'));
+                }
 
-                if($newSlavePort){
+                $duplexPort = $patchPanelPort->setDuplexPort($partnerPort,$isNewSlavePort);
+
+                if($isNewSlavePort){
                     $patchPanelPort->addDuplexSlavePort($duplexPort);
                 }
             }
@@ -219,7 +241,10 @@ class PatchPanelPortController extends Controller
      */
     public function getSwitchPort(Request $request){
         $idSwitch = $request->input('switchId');
-        $listPorts = D2EM::getRepository(Switcher::class)->getAllPortForASwitch($idSwitch);
+        $idCustomer = $request->input('customerId');
+        $switchPortId = $request->input('switchPortId');
+
+        $listPorts = D2EM::getRepository(Switcher::class)->getAllPortForASwitch($idSwitch,$idCustomer,$switchPortId);
 
         return response()->json(array('success' => true, 'response' => $listPorts));
     }
@@ -249,6 +274,35 @@ class PatchPanelPortController extends Controller
         }
         return response()->json(array('success' => $success, 'response' => $customer));
     }
+
+    /**
+     * Get the customer for a switch port
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @return  JSON customer object
+     */
+    public function getSwitchForACustomer(Request $request){
+        $customer = D2EM::getRepository(Customer::class)->find($request->input('customerId'));
+        $success = false;
+        $listSwitches = array();
+        if($customer != null){
+            $virtualInterfaces = $customer->getVirtualInterfaces();
+            foreach($virtualInterfaces as $vi){
+                $physicalInterfaces = $vi->getPhysicalInterfaces();
+                foreach($physicalInterfaces as $pi){
+                    $switchPort = $pi->getSwitchPort();
+                    $success = true;
+                    $switches = $switchPort->getSwitcher();
+                    $listSwitches[$switches->getId()] = $switches->getName();
+
+                }
+            }
+        }
+
+        return response()->json(array('success' => $success, 'response' => $listSwitches));
+    }
+
+
 
     /**
      * Display the patch panel port informations

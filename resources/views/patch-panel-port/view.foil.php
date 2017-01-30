@@ -23,6 +23,13 @@
                 Name : <b> <?= $t->params['patchPanelPort']->getName() ?> </b>
             </div>
         </div>
+        <?php if($t->params['patchPanelPort']->hasSlavePort()): ?>
+            <div class="form-group">
+                <div>
+                    Duplex Port : <b> <?= $t->params['patchPanelPort']->getDuplexSlavePortName() ?> </b>
+                </div>
+            </div>
+        <?php endif; ?>
         <div class="form-group">
             <div>
                 Patch Panel : <b> <?= $t->params['patchPanelPort']->getPatchPanel()->getId().' - '.$t->params['patchPanelPort']->getPatchPanel()->getName() ?> </b>

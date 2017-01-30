@@ -27,6 +27,9 @@
                 <tr>
                     <td>
                         <?= $patchPanelPort->getName() ?>
+                            <?php if($patchPanelPort->hasSlavePort()):?>
+                                / <?= $patchPanelPort->getDuplexSlavePortName() ?>
+                            <?php endif; ?>
                     </td>
                     <td>
                         <a href="<?= url('patch-panel/view' ).'/'.$patchPanelPort->getPatchPanel()->getId()?>">

@@ -587,6 +587,105 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function addDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addDuplexSlavePort', [$duplexSlavePort]);
+
+        return parent::addDuplexSlavePort($duplexSlavePort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeDuplexSlavePort', [$duplexSlavePort]);
+
+        return parent::removeDuplexSlavePort($duplexSlavePort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDuplexSlavePorts()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplexSlavePorts', []);
+
+        return parent::getDuplexSlavePorts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasSlavePort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasSlavePort', []);
+
+        return parent::hasSlavePort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDuplexSlavePort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplexSlavePort', []);
+
+        return parent::getDuplexSlavePort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDuplexSlavePortName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplexSlavePortName', []);
+
+        return parent::getDuplexSlavePortName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDuplexSlavePortId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplexSlavePortId', []);
+
+        return parent::getDuplexSlavePortId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDuplexMasterPort(\Entities\PatchPanelPort $duplexMasterPort = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexMasterPort', [$duplexMasterPort]);
+
+        return parent::setDuplexMasterPort($duplexMasterPort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDuplexMasterPort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplexMasterPort', []);
+
+        return parent::getDuplexMasterPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setPatchPanel(\Entities\PatchPanel $patchPanel = NULL)
     {
 
@@ -675,56 +774,12 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function addDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+    public function setDuplexPort($duplexPort, $newSlavePort)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addDuplexSlavePort', [$duplexSlavePort]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexPort', [$duplexPort, $newSlavePort]);
 
-        return parent::addDuplexSlavePort($duplexSlavePort);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeDuplexSlavePort', [$duplexSlavePort]);
-
-        return parent::removeDuplexSlavePort($duplexSlavePort);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getDuplexSlavePorts()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplexSlavePorts', []);
-
-        return parent::getDuplexSlavePorts();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setDuplexMasterPort(\Entities\PatchPanelPort $duplexMasterPort = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexMasterPort', [$duplexMasterPort]);
-
-        return parent::setDuplexMasterPort($duplexMasterPort);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getDuplexMasterPort()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplexMasterPort', []);
-
-        return parent::getDuplexMasterPort();
+        return parent::setDuplexPort($duplexPort, $newSlavePort);
     }
 
 }

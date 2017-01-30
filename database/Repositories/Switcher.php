@@ -172,15 +172,37 @@ class Switcher extends EntityRepository
     }
 
 
-    public function getAllPortForASwitch($id)
+    public function getAllPortForASwitch($id,$customerId = null, $switchPortId = null)
     {
+
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
                     FROM \\Entities\\SwitchPort sp
                         LEFT JOIN sp.Switcher s
-                        LEFT JOIN sp.PhysicalInterface pi
-                    WHERE
-                        s.id = ?1 
-                    ORDER BY sp.id ASC";
+                        LEFT JOIN sp.PhysicalInterface pi";
+
+        if($customerId != null){
+            $dql .= " LEFT JOIN pi.VirtualInterface vi ";
+        }
+
+        // Remove the switch port already use by a patch panel port
+        $dql .= " WHERE sp.id NOT IN (SELECT IDENTITY(ppp.switchPort)
+                                      FROM Entities\\PatchPanelPort ppp
+                                      WHERE ppp.switchPort IS NOT NULL";
+
+        if($switchPortId != null){
+            $switchPortId = intval($switchPortId);
+            $dql .= " AND ppp.switchPort != $switchPortId";
+
+        }
+
+        $dql .= ") AND s.id = ?1";
+
+        if($customerId != null){
+
+            $dql .= " AND vi.Customer = $customerId";
+        }
+
+        $dql .= " ORDER BY sp.id ASC";
 
         $query = $this->getEntityManager()->createQuery( $dql );
         $query->setParameter( 1, $id);

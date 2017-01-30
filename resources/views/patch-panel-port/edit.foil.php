@@ -52,6 +52,7 @@
         ))->inline()->check($t->params['patchPanelPort']->getInternalUseInt())?>
 
     <?= Former::hidden('patch-panel-port-id')->value($t->params['patchPanelPort']->getId())?>
+    <?= Former::hidden('switch-port-id')->id('switch-port-id')->value($t->params['patchPanelPort']->getSwitchPortId())?>
     <?=Former::actions( Former::primary_submit('Save Changes'),
         Former::default_button('Cancel')
     );?>
@@ -72,6 +73,7 @@
 
     $(document).ready(function() {
 
+
         if($('#switch-port').val() != null){
             setCustomer();
         }
@@ -84,9 +86,12 @@
                 $("#duplex-port-area").hide();
             }
         });
-        $("#duplex").show();
 
 
+
+        if(<?= (int)$t->params['hasDuplex'] ?> ){
+            $('#duplex').click();
+        }
 
         $("#ppp-name").prop('readonly', true);
         $("#patch-panel").prop('readonly', true);
@@ -96,9 +101,12 @@
             $("#switch-port").html("<option value=\"\">Loading please wait</option>\n");
             $("#switch-port").trigger("chosen:updated");
             switchId = $("#switch").val();
+            customerId = $("#customer").val();
+            switchPortId = $("#switch-port-id").val();
+            console.log(switchPortId);
             $.ajax({
                 url: "<?= url('patch-panel-port/getSwitchPort/')?>",
-                data: {switchId: switchId},
+                data: {switchId: switchId, customerId: customerId, switchPortId : switchPortId},
                 type: 'GET',
                 dataType: 'JSON',
                 success: function (data) {
@@ -142,26 +150,34 @@
         }
 
         $("#customer").change(function(){
-            if($("#switch").val() == ''){
+                $("#switch").html("<option value=\"\">Loading please wait</option>\n");
+                $("#switch").trigger("chosen:updated");
+                $("#switch-port").html("");
+                $("#switch-port").trigger("chosen:updated");
                 customerId = $("#customer").val();
                 $.ajax({
-                    url: "<?= url('patch-panel-port/getCustomerForASwitchPort/')?>",
-                    data: {switchPortId: switchPortId},
+                    url: "<?= url('patch-panel-port/getSwitchForACustomer/')?>",
+                    data: {customerId: customerId},
                     type: 'GET',
                     dataType: 'JSON',
                     success: function (data) {
                         if(data.success){
-                            $("#switch").html("<option value=\"" + data.response.id + "\">" + data.response.name + "</option>\n");
+                            var options = "<option value=\"\">Choose a switch</option>\n";
+                            $.each(data.response,function(key, value){
+                                options += "<option value=\"" + key + "\">" + value + "</option>\n";
+                            });
+                            console.log();
+                            $("#switch").html(options);
                             $("#switch").trigger("chosen:updated");
                         }
                         else{
-                            $("#customer").html("");
-                            $("#customer").trigger("chosen:updated");
+                            $("#switch").html("");
+                            $("#switch").trigger("chosen:updated");
                         }
                     }
 
                 });
-            }
+
 
         });
 

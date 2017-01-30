@@ -13,6 +13,21 @@ use Entities\PatchPanel;
  */
 class PatchPanelPort extends EntityRepository
 {
+    public function getAllPatchPanelPort(int $patchPanelId = null):array {
+        $dql = "SELECT ppp
+                    FROM Entities\\PatchPanelPort ppp
+                    JOIN ppp.patchPanel pp
+                    WHERE ppp.duplexMasterPort IS NULL";
+
+        if($patchPanelId != null){
+            $dql .= " AND pp.id = $patchPanelId";
+        }
+
+        $listPatchPanelPort = $this->getEntityManager()->createQuery( $dql )->getResult();
+
+        return $listPatchPanelPort;
+    }
+
     public function getPatchPanelPortAvailableForDuplex(int $patchPanelId, int $portId):array {
         $dql = "SELECT ppp
                     FROM Entities\\PatchPanelPort ppp
@@ -32,5 +47,16 @@ class PatchPanelPort extends EntityRepository
             $listAvailablePort[$port->getId()] = $port->getName();
         }
         return $listAvailablePort;
+    }
+
+    public function isSwitchPortAvailable($switchPortId){
+        $dql = "SELECT count(ppp.id)
+                    FROM Entities\\PatchPanelPort ppp
+                    WHERE
+                        ppp.switchPort = $switchPortId";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $nb = $query->getSingleScalarResult();
+        return ($nb > 0) ? false : true;
     }
 }
