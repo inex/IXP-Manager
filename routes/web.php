@@ -59,10 +59,10 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'list/patch-panel/{id}',      'PatchPanelPortController@index' )->name('patchPanelPortIndex');
     Route::get( 'view/{id?}',                 'PatchPanelPortController@view' );
     Route::get( 'edit/{id?}',                 'PatchPanelPortController@edit' );
-    Route::get( 'getSwitchPort/',             'PatchPanelPortController@getSwitchPort' );
-    Route::get( 'getCustomerForASwitchPort/', 'PatchPanelPortController@getCustomerForASwitchPort' );
-    Route::get( 'getSwitchForACustomer/',     'PatchPanelPortController@getSwitchForACustomer' );
-    Route::get( 'resetCustomer/',             'PatchPanelPortController@resetCustomer' );
+    Route::get( 'getSwitchPort',              'PatchPanelPortController@getSwitchPort' );
+    Route::get( 'getCustomerForASwitchPort',  'PatchPanelPortController@getCustomerForASwitchPort' );
+    Route::get( 'getSwitchForACustomer',      'PatchPanelPortController@getSwitchForACustomer' );
+    Route::get( 'resetCustomer',              'PatchPanelPortController@resetCustomer' );
 
     Route::post( 'add/{id}', 'PatchPanelPortController@add' );
     Route::post( 'add/{id}', 'PatchPanelPortController@add' );
