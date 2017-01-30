@@ -65,5 +65,4 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'resetCustomer',              'PatchPanelPortController@resetCustomer' );
 
     Route::post( 'add/{id}', 'PatchPanelPortController@add' );
-    Route::post( 'add/{id}', 'PatchPanelPortController@add' );
 });
