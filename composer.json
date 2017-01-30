@@ -56,8 +56,6 @@
         "zendesk/zendesk_api_client_php": "dev-master",
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.3",
-        "barryvdh/laravel-debugbar": "^2.3",
-        "barryvdh/laravel-ide-helper": "^2.2",
         "anahkiasen/former": "^4.0"
 
     },
@@ -66,8 +64,9 @@
         "phpspec/phpspec": "~2.1",
         "phpunit/php-code-coverage": "~3.1",
         "symfony/dom-crawler": "~3.0",
-        "symfony/css-selector": "~3.0"
-
+        "symfony/css-selector": "~3.0",
+        "barryvdh/laravel-debugbar": "^2.3",
+        "barryvdh/laravel-ide-helper": "^2.2"
      },
     "support": {
         "issues": "https://github.com/inex/IXP-Manager/issues",

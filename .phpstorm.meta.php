@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-01-13.
+    * Generated on 2017-01-30.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -39,6 +39,9 @@ namespace PHPSTORM_META {
             'view' instanceof \Illuminate\View\Factory,
             'debugbar' instanceof \Barryvdh\Debugbar\LaravelDebugbar,
             'command.debugbar.clear' instanceof \Barryvdh\Debugbar\Console\ClearCommand,
+            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
+            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
+            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'IXP\Services\Grapher' instanceof \IXP\Services\Grapher,
             'IXP\Services\LookingGlass' instanceof \IXP\Services\LookingGlass,
             'Foil\Engine' instanceof \Foil\Engine,
@@ -134,9 +137,6 @@ namespace PHPSTORM_META {
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
-            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
-            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
-            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
         ],
         \Illuminate\Contracts\Container\Container::make('') => [
             '' == '@',
@@ -168,6 +168,9 @@ namespace PHPSTORM_META {
             'view' instanceof \Illuminate\View\Factory,
             'debugbar' instanceof \Barryvdh\Debugbar\LaravelDebugbar,
             'command.debugbar.clear' instanceof \Barryvdh\Debugbar\Console\ClearCommand,
+            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
+            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
+            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'IXP\Services\Grapher' instanceof \IXP\Services\Grapher,
             'IXP\Services\LookingGlass' instanceof \IXP\Services\LookingGlass,
             'Foil\Engine' instanceof \Foil\Engine,
@@ -263,9 +266,6 @@ namespace PHPSTORM_META {
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
-            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
-            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
-            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
         ],
         \App::make('') => [
             '' == '@',
@@ -297,6 +297,9 @@ namespace PHPSTORM_META {
             'view' instanceof \Illuminate\View\Factory,
             'debugbar' instanceof \Barryvdh\Debugbar\LaravelDebugbar,
             'command.debugbar.clear' instanceof \Barryvdh\Debugbar\Console\ClearCommand,
+            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
+            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
+            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'IXP\Services\Grapher' instanceof \IXP\Services\Grapher,
             'IXP\Services\LookingGlass' instanceof \IXP\Services\LookingGlass,
             'Foil\Engine' instanceof \Foil\Engine,
@@ -392,9 +395,6 @@ namespace PHPSTORM_META {
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
-            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
-            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
-            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
         ],
         \app('') => [
             '' == '@',
@@ -426,6 +426,9 @@ namespace PHPSTORM_META {
             'view' instanceof \Illuminate\View\Factory,
             'debugbar' instanceof \Barryvdh\Debugbar\LaravelDebugbar,
             'command.debugbar.clear' instanceof \Barryvdh\Debugbar\Console\ClearCommand,
+            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
+            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
+            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'IXP\Services\Grapher' instanceof \IXP\Services\Grapher,
             'IXP\Services\LookingGlass' instanceof \IXP\Services\LookingGlass,
             'Foil\Engine' instanceof \Foil\Engine,
@@ -521,9 +524,6 @@ namespace PHPSTORM_META {
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
-            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
-            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
-            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
         ],
     ];
 }
