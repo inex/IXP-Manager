@@ -1,7 +1,7 @@
 <?php namespace IXP\Providers;
 
+use Former;
 use Illuminate\Support\ServiceProvider;
-
 use URL;
 
 class AppServiceProvider extends ServiceProvider {
@@ -41,6 +41,10 @@ class AppServiceProvider extends ServiceProvider {
             'Illuminate\Contracts\Auth\Registrar',
             'IXP\Services\Registrar'
         );
+
+        // all former stuff will be Bootstrap3:
+        Former::framework('TwitterBootstrap3');
+
     }
 
 

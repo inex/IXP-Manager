@@ -54,10 +54,6 @@ use Illuminate\View\View;
 class PatchPanelController extends Controller
 {
 
-    public function __construct() {
-        Former::framework('TwitterBootstrap3');
-    }
-
     /**
      * Display the patch panel list
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
