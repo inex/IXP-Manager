@@ -332,14 +332,29 @@ class PatchPanel
     }
 
     /**
-     * Get patchPanelPorts
+     * Get number of patch panel ports
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return int
      */
-    public function getNumbersPatchPanelPorts()
-    {
-        return count($this->patchPanelPorts);
+    public function getPortCount(): int {
+        return count( $this->patchPanelPorts );
     }
+
+    /**
+     * Get number of patch panel ports
+     *
+     * @return int
+     */
+    public function getAvailableForUsePortCount(): int {
+        $cnt = 0;
+        foreach( $this->patchPanelPorts as $ppp ) {
+            if( $ppp->isAvailableForUse() ) {
+                $cnt++;
+            }
+        }
+        return $cnt;
+    }
+
 
     /**
      * Set cabinet

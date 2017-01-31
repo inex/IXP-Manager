@@ -37,11 +37,9 @@
                 <td>Name</td>
                 <td>Cabinet</td>
                 <td>Colocation</td>
-                <td>Cable Type</td>
-                <td>Connector Type</td>
-                <td>Number of Ports</td>
+                <td>Type</td>
+                <td>Ports Available</td>
                 <td>Installation Date</td>
-                <td>Active</td>
                 <td>Action</td>
             </tr>
         <thead>
@@ -60,19 +58,26 @@
                         <?= $patchPanel->getColoReference() ?>
                     </td>
                     <td>
-                        <?= $patchPanel->resolveCableType() ?>
+                        <?= $patchPanel->resolveCableType() ?> / <?= $patchPanel->resolveConnectorType() ?>
                     </td>
                     <td>
-                        <?= $patchPanel->resolveConnectorType() ?>
-                    </td>
-                    <td>
-                        <?= $patchPanel->getNumbersPatchPanelPorts(); ?>
+                        <?php
+                            $available = $patchPanel->getAvailableForUsePortCount();
+                            $total     = $patchPanel->getPortCount();
+                            if( ($total - $available) / $total < 0.7 ):
+                                $class = "success";
+                            elseif( ($total - $available ) / $total < 0.85 ):
+                                $class = "warning";
+                            else:
+                                $class = "danger";
+                            endif;
+                        ?>
+                        <span class="label label-<?= $class ?>">
+                            <?= $available ?> / <?= $total ?>
+                        </span>
                     </td>
                     <td>
                         <?= $patchPanel->getInstallationDateFormated() ?>
-                    </td>
-                    <td>
-                        <?= $patchPanel->getActiveText() ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">

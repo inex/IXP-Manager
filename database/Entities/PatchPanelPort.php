@@ -738,6 +738,18 @@ class PatchPanelPort
     }
 
 
+    /**
+     * Is this port available for use?
+     *
+     * It is if its state is one of: available, ceased, awaiting cease.
+     *
+     * @return bool
+     */
+    public function isAvailableForUse(): bool {
+        return $this->getState() == self::STATE_AVAILABLE || $this->getState() == self::STATE_CEASED
+            || $this->getState() == self::STATE_AWAITING_CEASE;
+    }
+
 
     public function setDuplexPort($duplexPort, $newSlavePort){
         if($newSlavePort){
