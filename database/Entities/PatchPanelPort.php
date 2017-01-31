@@ -762,4 +762,13 @@ class PatchPanelPort
 
         return $duplexPort;
     }
+
+    /**
+     * Turn the database integer representation of the cable type into text as
+     * defined in the self::$CABLE_TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveStates(): string {
+        return self::$STATES[ $this->getState() ] ?? 'Unknown';
+    }
 }

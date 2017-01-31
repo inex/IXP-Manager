@@ -49,7 +49,7 @@ class PatchPanelPort extends EntityRepository
         return $listAvailablePort;
     }
 
-    public function isSwitchPortAvailable($switchPortId){
+    public function isSwitchPortAvailable($switchPortId, $patchPanelPortId = null){
         $dql = "SELECT count(ppp.id)
                     FROM Entities\\PatchPanelPort ppp
                     WHERE

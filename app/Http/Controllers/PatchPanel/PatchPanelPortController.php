@@ -1,5 +1,27 @@
 <?php
 
+/*
+ * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+
 namespace IXP\Http\Controllers\PatchPanel;
 
 use D2EM;
@@ -43,21 +65,9 @@ class PatchPanelPortController extends Controller
      * @return  view
      */
     public function index(int $id = null): View{
-        // Get all states
-        $listStates = \Entities\PatchPanelPort::$STATES;
-
-        if($id != null){
-            $listPatchPanelPort = D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort($id);
-        }
-        else{
-            $listPatchPanelPort = D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort();
-        }
-
-        $params = array('listPatchPanelPort'    => $listPatchPanelPort,
-                        'listStates'            => $listStates
-        );
-
-        return view('patch-panel-port/index')->with('params', $params);
+        return view('patch-panel-port/index')->with([
+            'patchPanelPorts'    => D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort($id)
+        ]);
     }
 
     /**
@@ -68,16 +78,7 @@ class PatchPanelPortController extends Controller
      * @return  view
      */
     public function edit(Request $request, int $id = null) {
-        if($id == null){
-            return Redirect::to('patch-panel-port/list');
-        }
-
-        // Get all states
-        $listStates = \Entities\PatchPanelPort::$STATES;
-        // Get all customers
-        $listCustomers = D2EM::getRepository(Customer::class)->getNames(true);
-        // Get all switches
-        $listSwitch = D2EM::getRepository(Switcher::class)->getNames(true);
+        if($id == null) return Redirect::to('patch-panel-port/list');
 
         if($id != null){
             $patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id);
@@ -120,17 +121,15 @@ class PatchPanelPortController extends Controller
             return Redirect::to('patch-panel-port/list');
         }
 
-        $params = array(
-            'listStates'        => $listStates,
-            'listCustomers'     => $listCustomers,
-            'listSwitch'        => $listSwitch,
+        return view('patch-panel-port/edit')->with([
+            'listStates'        => \Entities\PatchPanelPort::$STATES,
+            'listCustomers'     => D2EM::getRepository(Customer::class)->getNames(true),
+            'listSwitch'        => D2EM::getRepository(Switcher::class)->getNames(true),
             'listSwitchPort'    => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId(),null, $patchPanelPort->getSwitchPortId()),
             'patchPanelPort'    => $patchPanelPort,
             'partnerPorts'      => $partnerPorts,
             'hasDuplex'         => $hasDuplex
-        );
-
-        return view('patch-panel-port/edit')->with('params', $params);
+        ]);
     }
 
     /**
@@ -141,10 +140,7 @@ class PatchPanelPortController extends Controller
      * @return  redirect
      */
     public function add(Request $request, int $id){
-
-        if($id == null){
-            return Redirect::to('patch-panel-port/list');
-        }
+        if($id == null) return Redirect::to('patch-panel-port/list');
 
         $rules = array( 'ppp-name'              => 'required|string|max:255',
                         'patch-panel'           => 'required',
@@ -156,33 +152,47 @@ class PatchPanelPortController extends Controller
                         'lastStateChangeAt'     => 'date',
         );
 
-
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return Redirect::to('patch-panel-port/edit/'.$id)
-                ->withErrors($validator)
-                ->withInput(Input::all());
+                            ->withErrors($validator)
+                            ->withInput(Input::all());
         }
         else{
             $patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id);
+
 
             if($request->input('switch-port')){
 
                 $switchPort = D2EM::getRepository(SwitchPort::class)->find($request->input('switch-port'));
 
-                if(D2EM::getRepository(PatchPanelPort::class)->isSwitchPortAvailable($switchPort->getId())){
-                    $patchPanelPort->setSwitchPort($switchPort);
-                }
-                else{
-                    return Redirect::to('patch-panel-port/edit/'.$id)
-                        ->with('error', 'The switch port selected is already used by an other patch panel Port !')
-                        ->withInput(Input::all());
+                if($switchPort->getId() != $patchPanelPort->getSwitchPortId()){
+                    if(D2EM::getRepository(PatchPanelPort::class)->isSwitchPortAvailable($switchPort->getId())){
+                        $patchPanelPort->setSwitchPort($switchPort);
+                    }
+                    else{
+                        return Redirect::to('patch-panel-port/edit/'.$id)
+                                            ->with('fail', 'The switch port selected is already used by an other patch panel Port !')
+                                            ->withInput(Input::all());
+                    }
                 }
             }
+            else{
+                if($request->input('customer') and $request->input('switch')){
+                    return Redirect::to('patch-panel-port/edit/'.$id)
+                        ->with('fail', 'You need to select a switch port !')
+                        ->withInput(Input::all());
+                }
+                $patchPanelPort->setSwitchPort(null);
+            }
+
 
             if($request->input('customer')){
                 $patchPanelPort->setCustomer(D2EM::getRepository(Customer::class)->find($request->input('customer')));
+            }
+            else{
+                $patchPanelPort->setCustomer(null);
             }
 
             if($patchPanelPort->getState() != $request->input('state')){
@@ -222,9 +232,7 @@ class PatchPanelPortController extends Controller
             }
 
             return Redirect::to('patch-panel-port/list');
-
         }
-
     }
 
     /**
@@ -234,12 +242,7 @@ class PatchPanelPortController extends Controller
      * @return  JSON array of listPort
      */
     public function getSwitchPort(Request $request){
-        $idSwitch = $request->input('switchId');
-        $idCustomer = $request->input('customerId');
-        $switchPortId = $request->input('switchPortId');
-
-        $listPorts = D2EM::getRepository(Switcher::class)->getAllPortForASwitch($idSwitch,$idCustomer,$switchPortId);
-
+        $listPorts = D2EM::getRepository(Switcher::class)->getAllPortForASwitch($request->input('switchId'),$request->input('customerId'),$request->input('switchPortId'));
         return response()->json(array('success' => true, 'response' => $listPorts));
     }
 
@@ -288,15 +291,11 @@ class PatchPanelPortController extends Controller
                     $success = true;
                     $switches = $switchPort->getSwitcher();
                     $listSwitches[$switches->getId()] = $switches->getName();
-
                 }
             }
         }
-
         return response()->json(array('success' => $success, 'response' => $listSwitches));
     }
-
-
 
     /**
      * Display the patch panel port informations
@@ -304,20 +303,14 @@ class PatchPanelPortController extends Controller
      * @params  int $id ID of the patch panel
      * @return  view
      */
-    public function view(int $id = null): View
+    public function view(int $id = null)
     {
-        $listStates = \Entities\PatchPanelPort::$STATES;
-        if($id != null){
-            $patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id);
-        }
-        else{
-            return Redirect::to('patch-panel-port/list');
-        }
+        if($id == null) return Redirect::to('patch-panel-port/list');
 
-        $params = array('listStates'        => $listStates,
-                        'patchPanelPort'    => $patchPanelPort
-        );
+        $patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id);
 
-        return view('patch-panel-port/view')->with('params', $params);
+        if($patchPanelPort == null) return Redirect::to('patch-panel-port/list');
+
+        return view('patch-panel-port/view')->with(['patchPanelPort'    => $patchPanelPort]);
     }
 }

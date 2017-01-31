@@ -23,7 +23,7 @@
             </tr>
         <thead>
         <tbody>
-            <?php foreach( $t->params['listPatchPanelPort'] as $patchPanelPort ): ?>
+            <?php foreach( $t->patchPanelPorts as $patchPanelPort ): ?>
                 <tr>
                     <td>
                         <?= $patchPanelPort->getName() ?>
@@ -50,7 +50,7 @@
                         </a>
                     </td>
                     <td>
-                        <?= $t->params['listStates'][$patchPanelPort->getState()] ?>
+                        <?= $patchPanelPort->resolveStates() ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">

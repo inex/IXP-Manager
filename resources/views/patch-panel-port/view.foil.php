@@ -5,7 +5,7 @@
 <?php $this->append() ?>
 
 <?php $this->section('page-header-postamble') ?>
-<li>View : <?= $t->params['patchPanelPort']->getId().' '.$t->params['patchPanelPort']->getName()?></li>
+<li>View : <?= $t->patchPanelPort->getId().' '.$t->patchPanelPort->getName()?></li>
 <?php $this->append() ?>
 
 
@@ -15,84 +15,84 @@
     <div class="panel-body">
         <div class="form-group">
             <div >
-                ID : <b> <?= $t->params['patchPanelPort']->getId() ?> </b>
+                ID : <b> <?= $t->patchPanelPort->getId() ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Name : <b> <?= $t->params['patchPanelPort']->getName() ?> </b>
+                Name : <b> <?= $t->patchPanelPort->getName() ?> </b>
             </div>
         </div>
-        <?php if($t->params['patchPanelPort']->hasSlavePort()): ?>
+        <?php if($t->patchPanelPort->hasSlavePort()): ?>
             <div class="form-group">
                 <div>
-                    Duplex Port : <b> <?= $t->params['patchPanelPort']->getDuplexSlavePortName() ?> </b>
+                    Duplex Port : <b> <?= $t->patchPanelPort->getDuplexSlavePortName() ?> </b>
                 </div>
             </div>
         <?php endif; ?>
         <div class="form-group">
             <div>
-                Patch Panel : <b> <?= $t->params['patchPanelPort']->getPatchPanel()->getId().' - '.$t->params['patchPanelPort']->getPatchPanel()->getName() ?> </b>
+                Patch Panel : <b> <?= $t->patchPanelPort->getPatchPanel()->getId().' - '.$t->patchPanelPort->getPatchPanel()->getName() ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Switch : <b> <?= $t->params['patchPanelPort']->getSwitchName()?></b>
+                Switch : <b> <?= $t->patchPanelPort->getSwitchName()?></b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Port: <b> <?= $t->params['patchPanelPort']->getSwitchPortName()?></b>
+                Port: <b> <?= $t->patchPanelPort->getSwitchPortName()?></b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Customer : <b> <?= $t->params['patchPanelPort']->getCustomerName()?></b>
+                Customer : <b> <?= $t->patchPanelPort->getCustomerName()?></b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                State : <b><?= $t->params['listStates'][$t->params['patchPanelPort']->getState()] ?> </b>
+                State : <b><?= $t->patchPanelPort->resolveStates()?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Note : <b><?= $t->params['patchPanelPort']->getNotes() ?> </b>
+                Note : <b><?= $t->patchPanelPort->getNotes() ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Assigned At : <b><?= $t->params['patchPanelPort']->getAssignedAtFormated(); ?> </b>
+                Assigned At : <b><?= $t->patchPanelPort->getAssignedAtFormated(); ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Connected At : <b><?= $t->params['patchPanelPort']->getConnectedAtFormated(); ?> </b>
+                Connected At : <b><?= $t->patchPanelPort->getConnectedAtFormated(); ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Ceased Requested At : <b><?= $t->params['patchPanelPort']->getCeaseRequestedAtFormated(); ?> </b>
+                Ceased Requested At : <b><?= $t->patchPanelPort->getCeaseRequestedAtFormated(); ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Ceased At : <b><?= $t->params['patchPanelPort']->getCeasedAtFormated(); ?> </b>
+                Ceased At : <b><?= $t->patchPanelPort->getCeasedAtFormated(); ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Last State Change At : <b><?= $t->params['patchPanelPort']->getLastStateChangeFormated(); ?> </b>
+                Last State Change At : <b><?= $t->patchPanelPort->getLastStateChangeFormated(); ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Internal Use : <b><?= $t->params['patchPanelPort']->getInternalUseText() ?> </b>
+                Internal Use : <b><?= $t->patchPanelPort->getInternalUseText() ?> </b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Chargeable : <b><?= $t->params['patchPanelPort']->getChargeableText() ?> </b>
+                Chargeable : <b><?= $t->patchPanelPort->getChargeableText() ?> </b>
             </div>
         </div>
     </div>

@@ -441,4 +441,26 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         return parent::checkBeforeDelete();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveCableType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveCableType', []);
+
+        return parent::resolveCableType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveConnectorType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveConnectorType', []);
+
+        return parent::resolveConnectorType();
+    }
+
 }
