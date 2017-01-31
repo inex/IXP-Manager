@@ -764,11 +764,27 @@ class PatchPanelPort
     }
 
     /**
-     * Turn the database integer representation of the cable type into text as
-     * defined in the self::$CABLE_TYPES array (or 'Unknown')
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
      * @return string
      */
     public function resolveStates(): string {
         return self::$STATES[ $this->getState() ] ?? 'Unknown';
     }
+
+    public function getCustomerForASwitchPort(){
+        $customer = null;
+        $physicalInterface = $this->getPhysicalInterface();
+        if($physicalInterface != null){
+            $virtualInterface = $physicalInterface->getVirtualInterface();
+            if($virtualInterface != null){
+                $cust = $virtualInterface->getCustomer();
+                if($cust != null){
+                    $customer = $cust;
+                }
+            }
+        }
+        return $customer;
+    }
+
 }

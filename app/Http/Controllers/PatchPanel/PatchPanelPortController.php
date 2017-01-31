@@ -164,19 +164,39 @@ class PatchPanelPortController extends Controller
 
 
             if($request->input('switch-port')){
-
                 $switchPort = D2EM::getRepository(SwitchPort::class)->find($request->input('switch-port'));
 
-                if($switchPort->getId() != $patchPanelPort->getSwitchPortId()){
-                    if(D2EM::getRepository(PatchPanelPort::class)->isSwitchPortAvailable($switchPort->getId())){
-                        $patchPanelPort->setSwitchPort($switchPort);
+                if($switchPort != null){
+                    if($switchPort->getId() != $patchPanelPort->getSwitchPortId()){
+                        if(D2EM::getRepository(PatchPanelPort::class)->isSwitchPortAvailable($switchPort->getId())){
+                            $patchPanelPort->setSwitchPort($switchPort);
+                        }
+                        else{
+                            return Redirect::to('patch-panel-port/edit/'.$id)
+                                ->with('fail', 'The switch port selected is already used by an other patch panel Port !')
+                                ->withInput(Input::all());
+                        }
                     }
-                    else{
-                        return Redirect::to('patch-panel-port/edit/'.$id)
-                                            ->with('fail', 'The switch port selected is already used by an other patch panel Port !')
-                                            ->withInput(Input::all());
+
+                    if($request->input('customer')){
+
+                        $custId = D2EM::getRepository(SwitchPort::class)->getCustomerForASwitchPort($switchPort->getId());
+
+                        if($custId != null){
+                            if($custId != $request->input('customer')){
+                                return Redirect::to('patch-panel-port/edit/'.$id)
+                                    ->with('fail', 'Customer not allowed for this switch port !')
+                                    ->withInput(Input::all());
+                            }
+                        }
                     }
                 }
+                else{
+                    return Redirect::to('patch-panel-port/edit/'.$id)
+                        ->with('fail', 'Patch Panel port undefined !')
+                        ->withInput(Input::all());
+                }
+
             }
             else{
                 if($request->input('customer') and $request->input('switch')){

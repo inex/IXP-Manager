@@ -23,4 +23,18 @@ class SwitchPort extends EntityRepository
         }
         return $listSwitchPort;
     }
+
+    public function getCustomerForASwitchPort($switchPortId)
+    {
+        $dql = "SELECT cu.id
+                    FROM \\Entities\\SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN sp.PhysicalInterface pi
+                        LEFT JOIN pi.VirtualInterface vi 
+                        LEFT JOIN vi.Customer cu
+                        WHERE sp.id = $switchPortId ";
+
+
+      return $this->getEntityManager()->createQuery( $dql )->getOneOrNullResult()['id'];
+    }
 }
