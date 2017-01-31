@@ -85,7 +85,9 @@
                             <a class="btn btn btn-default" href="<?= url('/patch-panel/edit' ).'/'.$patchPanel->getId()?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
 
                             <?php if( $patchPanel->getActive() ): ?>
-                                <a class="btn btn btn-default" id='list-delete-' href="" title="Delete" data-toggle="modal" data-target="#delete<?=$patchPanel->getId()?>"><i class="glyphicon glyphicon-trash"></i></a>
+                                <a class="btn btn btn-default" id='list-delete-' href="<?= url( 'patch-panel/delete/' . $patchPanel->getId() ) ?>" title="Delete">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
                             <?php endif; ?>
 
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -97,23 +99,6 @@
                         </div>
                     </td>
                 </tr>
-                <div class="modal fade" id="delete<?=$patchPanel->getId()?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Delete action</h4>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure that you want to make the patch panel <b><?= $patchPanel->getName() ?></b> inactive?
-                            </div>
-                            <div class="modal-footer">
-                                <a type="button" class="btn btn-default" data-dismiss="modal">Close</a>
-                                <a type="button" class="btn btn-danger" href="<?= url('patch-panel/delete').'/'.$patchPanel->getId()?>" >Delete</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             <?php endforeach;?>
         <tbody>
     </table>
