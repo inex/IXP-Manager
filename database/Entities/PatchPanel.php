@@ -413,15 +413,13 @@ class PatchPanel
     }
 
     /**
-     * Check if a patch panel can be delete => all port link to the patch panel must have the status 'available' or 'ceased'
+     * Check if all ports on a patch panel are available.
+     *
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
      * @return boolean
      */
-    public function checkBeforeDelete(){
-        $nbPort = $this->getNumbersPatchPanelPorts();
-        $nbPortAvailableToDelete = D2EM::getRepository(PatchPanel::class)->getAllPortByStatusForAPatchPanel($this->getId(),array(\Entities\PatchPanelPort::STATE_AVAILABLE,\Entities\PatchPanelPort::STATE_CEASED));
-
-        return ($nbPort == $nbPortAvailableToDelete)? true : false;
+    public function areAllPortsAvailable() {
+        return $this->getPortCount() == $this->getAvailableForUsePortCount();
     }
 
     /**

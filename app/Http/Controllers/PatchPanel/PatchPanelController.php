@@ -31,9 +31,7 @@ use Entities\PatchPanel;
 
 use Former;
 
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
@@ -113,7 +111,6 @@ class PatchPanelController extends Controller
      * @return  redirect
      */
     public function store( StorePatchPanel $request ) {
-
         if( $request->input( 'id', false ) ) {
             // get the existing patch panel object for that ID
             if( !( $patchPanel = D2EM::getRepository( PatchPanel::class )->find( $request->input( 'id' ) ) ) ) {
@@ -151,34 +148,33 @@ class PatchPanelController extends Controller
     }
 
     /**
-     * Allow to delete a patch panel
+     * Delete a patch panel
+     *
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     * @params  $request instance of the current HTTP request
-     * @return  redirect
+     *
+     * @param int $id
+     * @return RedirectResponse
      */
-    public function delete($id = null){
+    public function delete( int $id ): RedirectResponse {
         $error = array('type' => '', 'message' => '');
-        if($id != null){
-            // create a new patch panel object
-            $patchPanel = D2EM::getRepository(PatchPanel::class)->find($id);
 
-            if($patchPanel->checkBeforeDelete()){
-                $patchPanel->setActive(false);
-                D2EM::persist($patchPanel);
-                D2EM::flush($patchPanel);
-                $error['type'] = 'success';
-                $error['message'] = 'The patch panel has been removed.';
-            }
-            else{
-                $error['type'] = 'fail';
-                $error['message'] = 'Impossible to delete this patch panel some of the ports are still active.';
-            }
+        if( !( $patchPanel = D2EM::getRepository( PatchPanel::class )->find($id) ) ) {
+            abort(404);
         }
-        else{
+
+        if( $patchPanel->areAllPortsAvailable() ) {
+            $patchPanel->setActive( false );
+            D2EM::persist( $patchPanel );
+            D2EM::flush();
+
+            $error['type'] = 'success';
+            $error['message'] = 'The patch panel has been marked as inactive.';
+        } else {
             $error['type'] = 'fail';
-            $error['message'] = 'Impossible to delete';
+            $error['message'] = 'To make a patch panel inactive, all ports must be available for use.';
         }
-        return Redirect::to('patch-panel/list/')->with($error['type'], $error['message']);
+
+        return redirect( 'patch-panel/list' )->with( $error['type'], $error['message'] );
     }
 
     /**

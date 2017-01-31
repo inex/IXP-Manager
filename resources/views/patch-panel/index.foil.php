@@ -84,7 +84,7 @@
                             <a class="btn btn btn-default" href="<?= url('/patch-panel/view' ).'/'.$patchPanel->getId()?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
                             <a class="btn btn btn-default" href="<?= url('/patch-panel/edit' ).'/'.$patchPanel->getId()?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
 
-                            <?php if($patchPanel->getActive()): ?>
+                            <?php if( $patchPanel->getActive() ): ?>
                                 <a class="btn btn btn-default" id='list-delete-' href="" title="Delete" data-toggle="modal" data-target="#delete<?=$patchPanel->getId()?>"><i class="glyphicon glyphicon-trash"></i></a>
                             <?php endif; ?>
 
@@ -105,7 +105,7 @@
                                 <h4 class="modal-title" id="myModalLabel">Delete action</h4>
                             </div>
                             <div class="modal-body">
-                                Are you sure that you want to delete the patch panel : <b><?= $patchPanel->getId() ?> <?= $patchPanel->getName() ?></b>
+                                Are you sure that you want to make the patch panel <b><?= $patchPanel->getName() ?></b> inactive?
                             </div>
                             <div class="modal-footer">
                                 <a type="button" class="btn btn-default" data-dismiss="modal">Close</a>
