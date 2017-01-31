@@ -28,18 +28,18 @@ use D2EM;
 
 use Entities\Cabinet;
 use Entities\PatchPanel;
-use Former;
-use IXP\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Former;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-
 use Illuminate\View\View;
 
+use IXP\Http\Controllers\Controller;
+use IXP\Http\Requests\StorePatchPanel;
+
+use Log;
 
 
 /**
@@ -69,54 +69,41 @@ class PatchPanelController extends Controller
      * Allow to display the form to create/edit a patch panel
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
      * @params  int $id EDIT => the ID of the patch panel that we need to modify, CREATE => we don't need it = null
-     * @return  view
+     * @return  View|Redirect
      */
-    public function edit(int $id = null): View {
-        // Get all cable types
-        $listCableTypes = \Entities\PatchPanel::$CABLE_TYPES;
-        // Get all connector types
-        $listConnectorTypes = \Entities\PatchPanel::$CONNECTOR_TYPES;
-        // array of params for the view
+    public function edit( int $id = null ): View {
 
+        $patchPanel = false;
 
-        if($id != null){
-            $patchPanel = D2EM::getRepository(PatchPanel::class)->find($id);
-            Former::populate( array('pp-name'               => $patchPanel->getName(),
-                                    'colocation'            => $patchPanel->getColoReference(),
-                                    'cabinets'              => $patchPanel->getCabinet()->getId(),
-                                    'cable-types'           => $patchPanel->getCableType(),
-                                    'connector-types'       => $patchPanel->getConnectorType(),
-                                    'installation-date'     => $patchPanel->getInstallationDateFormated(),
-                                    'port-prefix'           => $patchPanel->getPrefixPort()
-            ));
+        if( $id != null ) {
+            if( !( $patchPanel = D2EM::getRepository( PatchPanel::class )->find($id) ) ) {
+                abort(404);
+            }
 
-            $patchPanelId = $patchPanel->getId();
-            $breadCrumb = 'Edit : '.$patchPanelId. ' - '.$patchPanel->getName();
-        }
-        else{
-            $patchPanelId = null;
-            $patchPanel = null;
-            $breadCrumb = 'Add';
+            Former::populate([
+                'name'               => $patchPanel->getName(),
+                'colo_reference'     => $patchPanel->getColoReference(),
+                'cabinet'            => $patchPanel->getCabinet()->getId(),
+                'cable_type'         => $patchPanel->getCableType(),
+                'connector_type'     => $patchPanel->getConnectorType(),
+                'installation_date'  => $patchPanel->getInstallationDateFormated(),
+                'port_prefix'        => $patchPanel->getPortPrefix(),
+                'numberOfPorts'      => 0,
+            ]);
         }
 
-        Former::open()->rules(array(
-            'pp-name'           => 'required|max:255',
-            'colocation'        => 'required|max:255',
-            'number-ports'      => 'required|between:0,*|integer',
-            'port-prefix'       => 'max:255',
-            'installation-date' => 'date'
+        Former::open()->rules([
+            'name'              => 'required|max:255',
+            'colo_reference'    => 'required|max:255',
+            'numberOfPorts'     => 'required|between:0,*|integer',
+            'port_prefix'       => 'max:255',
+            'installation_date' => 'date'
+        ]);
 
-        ));
-
-        $params = array('listCabinets'          => D2EM::getRepository(Cabinet::class)->getForArray(),
-                        'listCableTypes'        => $listCableTypes,
-                        'listConnectorTypes'    => $listConnectorTypes,
-                        'patchPanelId'          => $patchPanelId,
-                        'patchPanel'            => $patchPanel,
-                        'breadCrumb'            => $breadCrumb
-                );
-
-        return view('patch-panel/edit')->with('params', $params);
+        return view( 'patch-panel/edit' )->with([
+            'patchPanel'        => $patchPanel,
+            'cabinets'          => D2EM::getRepository( Cabinet::class )->getAsArray(),
+        ]);
     }
 
     /**
@@ -125,55 +112,42 @@ class PatchPanelController extends Controller
      * @params  $request instance of the current HTTP request
      * @return  redirect
      */
-    public function add(Request $request){
-        // create rules in order to check the params
-        $rules = array( 'pp-name'           => 'required|string|max:255',
-                        'colocation'        => 'required|string|max:255',
-                        'cabinets'          => 'required|integer',
-                        'cable-types'       => 'required|integer',
-                        'connector-types'   => 'required|integer',
-                        'number-ports'      => 'required|integer',
-                        'port-prefix'       => 'string',
-                        'installation-date' => 'date',
+    public function store( StorePatchPanel $request ) {
+
+        if( $request->input( 'id', false ) ) {
+            // get the existing patch panel object for that ID
+            if( !( $patchPanel = D2EM::getRepository( PatchPanel::class )->find( $request->input( 'id' ) ) ) ) {
+                Log::notice( 'Unknown patch panel when editing patch panel' );
+                abort(404);
+            }
+        } else {
+            $patchPanel = new PatchPanel();
+        }
+
+        if( !( $cabinet = D2EM::getRepository( Cabinet::class )->find( $request->input( 'cabinet' ) ) ) ) {
+            Log::notice( 'Unknown cabinet when adding patch panel' );
+            abort(404);
+        }
+
+        // set the data to the object
+        $patchPanel->setName( $request->input( 'name' ) );
+        $patchPanel->setCabinet( $cabinet );
+        $patchPanel->setConnectorType( $request->input( 'connector_type' ) );
+        $patchPanel->setCableType( $request->input( 'cable_type' ) );
+        $patchPanel->setColoReference( $request->input( 'colo_reference' ) );
+        $patchPanel->setActive( true );
+        $patchPanel->setInstallationDate(
+            ( $request->input( 'installation_date', false ) ? new \DateTime : new \DateTime( $request->input( 'installation_date' ) ) )
         );
 
-        // check the rules
-        $validator = Validator::make($request->all(), $rules);
+        D2EM::persist( $patchPanel );
 
-        if ($validator->fails()) {
-            // one or many rules fails we redirect to the form will the error messages
-            return Redirect::to('patch-panel/edit')
-                ->withErrors($validator)
-                ->withInput(Input::all());
-        }
-        else{
-            $cabinet = D2EM::getRepository(Cabinet::class)->find($request->input('cabinets'));
+        // create the patch panel ports
+        $patchPanel->createPorts( $request->input( 'numberOfPorts' ) );
 
-            if($request->input('patch-panel-id') == null){
-                // create a new patch panel object
-                $patchPanel = new PatchPanel();
-            }
-            else{
-                // get the existing patch panel object for that ID
-                $patchPanel = D2EM::getRepository(PatchPanel::class)->find($request->input('patch-panel-id'));
-            }
+        D2EM::flush();
 
-            // set the datas to the object
-            $patchPanel->setName($request->input('pp-name'));
-            $patchPanel->setCabinet($cabinet);
-            $patchPanel->setConnectorType($request->input('connector-types'));
-            $patchPanel->setCableType($request->input('cable-types'));
-            $patchPanel->setColoReference($request->input('colocation'));
-            $patchPanel->setActive(true);
-            $patchPanel->setInstallationDate(($request->input('installation-date') == '' ? null : new \DateTime($request->input('installation-date'))));
-            D2EM::persist($patchPanel);
-            D2EM::flush($patchPanel);
-
-            // create the patch panel port related to the patch panel object
-            $patchPanel->createPatchPanelPort($request->input('number-ports'),$request->input('port-prefix'));
-
-            return Redirect::to('patch-panel-port/list/patch-panel/'.$patchPanel->getId());
-        }
+        return Redirect::to('patch-panel-port/list/patch-panel/'.$patchPanel->getId());
     }
 
     /**

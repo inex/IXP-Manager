@@ -1,6 +1,5 @@
 <?php namespace IXP\Providers;
 
-use Former;
 use Illuminate\Support\ServiceProvider;
 use URL;
 
@@ -19,9 +18,6 @@ class AppServiceProvider extends ServiceProvider {
         {
             $view->with('controllerAction' , app('request')->route()->getAction()['as']);
         });
-
-        // all former stuff will be Bootstrap3:
-        Former::framework('TwitterBootstrap3');
     }
 
     /**

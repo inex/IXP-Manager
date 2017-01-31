@@ -17,11 +17,12 @@ class Cabinet extends EntityRepository
      * @author Yann Robin
      * @return array An array of all cabinets names with the cabinet id as the key.
      */
-    public function getForArray(): array {
-        $listCabinet = array();
-        foreach(self::findAll() as $cabinet){
-            $listCabinet[$cabinet->getId()] = $cabinet->getName();
+    public function getAsArray(): array {
+        $cabinets = [];
+        foreach( self::findAll() as $cabinet ) {
+            $cabinets[ $cabinet->getId() ] = $cabinet->getName() . ' [' . $cabinet->getCololocation() . ']';
         }
-         return $listCabinet;
+
+        return $cabinets;
     }
 }

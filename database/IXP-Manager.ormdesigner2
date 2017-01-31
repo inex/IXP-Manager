@@ -1153,6 +1153,7 @@
       <field name="cable_type" type="integer" required="true" uuid="d4c62c53-c2fe-47d9-9e2d-282999b3157b"/>
       <field name="connector_type" type="integer" required="true" uuid="19f98e9b-6763-495a-aa18-a4911985e9c3"/>
       <field name="installation_date" type="datetime" uuid="e4d0c03d-5047-4456-b600-e51dd6498fe6"/>
+      <field name="port_prefix" type="string" size="10" required="true" uuid="6654ced4-232e-4f37-a6d5-d55eb0ce8b8c"/>
       <field name="active" type="boolean" default="1" required="true" uuid="bed79a85-f181-413d-9892-f8fdd33ab673"/>
       <orm-attributes>
         <attribute name="table">patch_panel</attribute>
@@ -1166,7 +1167,7 @@
     <entity name="\Entities\PatchPanelPort" local-name="PatchPanelPort" namespace="\Entities" uuid="6297699e-ca02-426a-b191-3270e7e93aa8">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="995e6f54-d292-44f1-a4af-1df343a5498f"/>
       <field name="patch_panel_id" type="integer" uuid="2842c5bf-c0be-40f7-ac9e-f089a09d6526"/>
-      <field name="name" type="string" size="255" required="true" uuid="2d964dfa-53dd-4a04-92d1-938347172eca"/>
+      <field name="number" type="smallint" required="true" uuid="2d964dfa-53dd-4a04-92d1-938347172eca"/>
       <field name="state" type="integer" required="true" uuid="fb079291-7b0c-4ca4-b25a-9007b5d83153"/>
       <field name="notes" type="text" uuid="a137835d-7515-4d55-99ea-5367401ae2ba"/>
       <field name="assigned_at" type="date" uuid="600d8397-b25b-47ed-85d0-8608f677448c"/>
@@ -1200,7 +1201,7 @@
     <entity name="\Entities\PatchPanelPortHistory" local-name="PatchPanelPortHistory" namespace="\Entities" uuid="4322485e-ef2f-4893-a334-d1f7554c2fdb">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="2fce259d-ef0a-48c0-9487-f01df62db158"/>
       <field name="patch_panel_port_id" type="integer" uuid="0d49fde5-0be6-437e-8217-6c6e45b38e9b"/>
-      <field name="name" type="string" size="255" required="true" uuid="1e130de3-d747-46ac-ba5a-1cadc245e4df"/>
+      <field name="number" type="smallint" required="true" uuid="1e130de3-d747-46ac-ba5a-1cadc245e4df"/>
       <field name="state" type="integer" required="true" uuid="07e6ab7b-b3a4-4df9-9753-87f2ef20ae57"/>
       <field name="notes" type="text" uuid="355eaa2c-a248-4900-bc91-6f228eb04c66"/>
       <field name="assigned_at" type="date" uuid="cd4a7110-85bc-46e1-b6c8-a0131d548b6a"/>

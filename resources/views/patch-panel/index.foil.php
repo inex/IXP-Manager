@@ -12,7 +12,7 @@
                 Show <?= $t->active ? 'Inactive' : 'Active' ?>
             </a>
 
-            <a type="button" class="btn btn-default" href="<?= url('patch-panel/edit') ?>">
+            <a type="button" class="btn btn-default" href="<?= url('patch-panel/add') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
