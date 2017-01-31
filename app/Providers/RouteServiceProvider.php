@@ -1,5 +1,6 @@
 <?php namespace IXP\Providers;
 
+use Entities\User as UserEntity;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -35,7 +36,7 @@ class RouteServiceProvider extends ServiceProvider {
     public function map()
     {
         $this->mapWebRoutes();
-        $this->mapWebAuthRoutes();
+        $this->mapWebAuthSuperuserRoutes();
         $this->mapApiV4Routes();
         //
     }
@@ -64,13 +65,13 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    protected function mapWebAuthRoutes()
+    protected function mapWebAuthSuperuserRoutes()
     {
         Route::group([
-                         'middleware' => [ 'auth', 'web' ],
+                         'middleware' => [ 'auth', 'web', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
                          'namespace' => $this->namespace,
                      ], function ($router) {
-            require base_path('routes/web-auth.php');
+            require base_path('routes/web-auth-superuser.php');
         });
     }
 
