@@ -4,7 +4,7 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
-    <field name="name" type="string" length="255" nullable="false"/>
+    <field name="number" type="smallint" nullable="false"/>
     <field name="state" type="integer" nullable="false"/>
     <field name="notes" type="text" nullable="true"/>
     <field name="assigned_at" type="date" nullable="true"/>

@@ -26,7 +26,7 @@
             <?php foreach( $t->patchPanelPorts as $patchPanelPort ): ?>
                 <tr>
                     <td>
-                        <?= $patchPanelPort->getName() ?>
+                        <?= $patchPanelPort->getNumber() ?>
                             <?php if($patchPanelPort->hasSlavePort()):?>
                                 / <?= $patchPanelPort->getDuplexSlavePortName() ?>
                             <?php endif; ?>

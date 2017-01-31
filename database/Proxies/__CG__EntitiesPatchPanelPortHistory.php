@@ -64,10 +64,10 @@ class PatchPanelPortHistory extends \Entities\PatchPanelPortHistory implements \
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'state', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'notes', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'assigned_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'connected_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'cease_requested_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'ceased_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'internal_use', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'customer', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'switchport', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'patchPanelPort', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'duplexSlavePorts', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'duplexMasterPort'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'number', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'state', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'notes', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'assigned_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'connected_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'cease_requested_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'ceased_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'internal_use', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'customer', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'switchport', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'patchPanelPort', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'duplexSlavePorts', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'duplexMasterPort'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'state', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'notes', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'assigned_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'connected_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'cease_requested_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'ceased_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'internal_use', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'customer', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'switchport', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'patchPanelPort', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'duplexSlavePorts', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'duplexMasterPort'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'number', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'state', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'notes', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'assigned_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'connected_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'cease_requested_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'ceased_at', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'internal_use', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'customer', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'switchport', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'patchPanelPort', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'duplexSlavePorts', '' . "\0" . 'Entities\\PatchPanelPortHistory' . "\0" . 'duplexMasterPort'];
     }
 
     /**
@@ -176,23 +176,23 @@ class PatchPanelPortHistory extends \Entities\PatchPanelPortHistory implements \
     /**
      * {@inheritDoc}
      */
-    public function setName($name)
+    public function setNumber($number)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNumber', [$number]);
 
-        return parent::setName($name);
+        return parent::setNumber($number);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getName()
+    public function getNumber()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNumber', []);
 
-        return parent::getName();
+        return parent::getNumber();
     }
 
     /**

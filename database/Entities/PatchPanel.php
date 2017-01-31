@@ -77,7 +77,12 @@ class PatchPanel
     /**
      * @var boolean $active
      */
-    private $active;
+    private $active = true;
+
+    /**
+     * @var string
+     */
+    private $port_prefix = '';
 
     /**
      * @var integer
@@ -147,6 +152,29 @@ class PatchPanel
     public function getColoReference()
     {
         return $this->colo_reference;
+    }
+
+    /**
+     * Set port prefix
+     *
+     * @param string $port_prefix
+     *
+     * @return PatchPanel
+     */
+    public function setPortPrefix($port_prefix)
+    {
+        $this->port_prefix = $port_prefix;
+        return $this;
+    }
+
+    /**
+     * Get port prefix
+     *
+     * @return string
+     */
+    public function getPortPrefix()
+    {
+        return $this->port_prefix;
     }
 
     /**
@@ -340,44 +368,33 @@ class PatchPanel
     /**
      * Create patch panel ports for a patch panel
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     * @params  int $numberPort the number of port needed
-     * @params  string $prefix the prefix
+     * @params  int $n the number of port needed
+     * @return PatchPanel
      */
-    public function createPatchPanelPort(int $numberPort, $prefix = null){
-        $i = 1;
-        if($this->getNumbersPatchPanelPorts() > 0){
-            $i = $i + $this->getNumbersPatchPanelPorts();
-            $numberPort = $numberPort + $this->getNumbersPatchPanelPorts();
+    public function createPorts( int $n ): PatchPanel {
+        // what's the current maximum port number?
+        // (we need this to add new ones to the end)
+        $max = 0;
+
+        foreach( $this->getPatchPanelPorts() as $port ) {
+            if( $port->getNumber() > $max ) {
+                $max = $port->getNumber();
+            }
         }
 
-        for($i;$i <= $numberPort; $i++){
-            $patchPanelPort = new PatchPanelPort();
-            $patchPanelPort->setName($prefix.$i);
-            $patchPanelPort->setState(PatchPanelPort::STATE_AVAILABLE);
-            $patchPanelPort->setPatchPanel($this);
-            $patchPanelPort->setLastStateChange(new \DateTime(date('Y-m-d')));
-            D2EM::persist($patchPanelPort);
-            D2EM::flush($patchPanelPort);
+        $max++;
 
-            $this->addPatchPanelPort($patchPanelPort);
+        for( $i = 0; $i <= $n; $i++ ) {
+            $ppp = new PatchPanelPort;
+            $ppp->setNumber( $this->getPortPrefix() . ( $max + $i ) );
+            $ppp->setState( PatchPanelPort::STATE_AVAILABLE );
+            $ppp->setPatchPanel( $this );
+            $ppp->setLastStateChange( new \DateTime );
+            $this->addPatchPanelPort($ppp);
+            D2EM::persist($ppp);
         }
 
-    }
-
-    /**
-     * Get the prefix of a port
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     * @return  string $prefix the prefix
-     */
-    public function getPrefixPort(){
-        if($this->getNumbersPatchPanelPorts() > 0){
-            $name = $this->getPatchPanelPorts()->first()->getName();
-            $prefix = explode('1',$name);
-            return $prefix[0];
-        }
-        else{
-            return null;
-        }
+        return $this;
     }
 
     /**

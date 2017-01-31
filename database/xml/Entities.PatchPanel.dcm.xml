@@ -9,6 +9,7 @@
     <field name="cable_type" type="integer" nullable="false"/>
     <field name="connector_type" type="integer" nullable="false"/>
     <field name="installation_date" type="datetime" nullable="true"/>
+    <field name="port_prefix" type="string" length="10" nullable="false"/>
     <field name="active" type="boolean" nullable="false">
       <options>
         <option name="default">1</option>

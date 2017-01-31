@@ -64,10 +64,10 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
     }
 
     /**
@@ -215,6 +215,28 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getColoReference', []);
 
         return parent::getColoReference();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPortPrefix($port_prefix)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPortPrefix', [$port_prefix]);
+
+        return parent::setPortPrefix($port_prefix);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPortPrefix()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPortPrefix', []);
+
+        return parent::getPortPrefix();
     }
 
     /**
@@ -411,23 +433,12 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function createPatchPanelPort(int $numberPort, $prefix = NULL)
+    public function createPorts(int $n): \Entities\PatchPanel
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'createPatchPanelPort', [$numberPort, $prefix]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'createPorts', [$n]);
 
-        return parent::createPatchPanelPort($numberPort, $prefix);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getPrefixPort()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrefixPort', []);
-
-        return parent::getPrefixPort();
+        return parent::createPorts($n);
     }
 
     /**
@@ -439,6 +450,28 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkBeforeDelete', []);
 
         return parent::checkBeforeDelete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveCableType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveCableType', []);
+
+        return parent::resolveCableType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveConnectorType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveConnectorType', []);
+
+        return parent::resolveConnectorType();
     }
 
     /**

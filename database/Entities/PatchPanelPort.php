@@ -37,9 +37,9 @@ class PatchPanelPort
     ];
 
     /**
-     * @var string
+     * @var integer
      */
-    private $name;
+    private $number;
 
     /**
      * @var integer
@@ -130,26 +130,26 @@ class PatchPanelPort
     }
 
     /**
-     * Set name
+     * Set number
      *
-     * @param string $name
+     * @param integer $number
      *
      * @return PatchPanelPort
      */
-    public function setName($name)
+    public function setNumber($number)
     {
-        $this->name = $name;
+        $this->number = $number;
         return $this;
     }
 
     /**
-     * Get name
+     * Get number
      *
-     * @return string
+     * @return integer
      */
-    public function getName()
+    public function getNumber()
     {
-        return $this->name;
+        return $this->number;
     }
 
     /**
