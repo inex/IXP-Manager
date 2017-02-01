@@ -1,11 +1,11 @@
 <?php $this->layout('layouts/ixpv4') ?>
 
 <?php $this->section('title') ?>
-<a href="<?= url('patch-panel-port/list')?>">Patch Panel Port</a>
+    <a href="<?= url('patch-panel-port/list')?>">Patch Panel Port</a>
 <?php $this->append() ?>
 
 <?php $this->section('page-header-postamble') ?>
-<li>View : <?= $t->patchPanelPort->getId().' '.$t->patchPanelPort->getNumber()?></li>
+    <li>View : <?= $t->patchPanelPort->getName()?></li>
 <?php $this->append() ?>
 
 
@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
             <div>
-                Name : <b> <?= $t->patchPanelPort->getNumber() ?> </b>
+                Name : <b> <?= $t->patchPanelPort->getName() ?> </b>
             </div>
         </div>
         <?php if($t->patchPanelPort->hasSlavePort()): ?>

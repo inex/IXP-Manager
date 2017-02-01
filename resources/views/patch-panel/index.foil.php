@@ -87,16 +87,21 @@
                             endif;
                         ?>
 
-                        <span class="label label-<?= $class ?>">
+                        <span title="" class="label label-<?= $class ?>">
                             <?php if( $patchPanel->hasDuplexPort() ): ?>
                                 <?= $dAvailable ?> / <?= $dTotal ?>
                             <?php else: ?>
                                 <?= $available ?> / <?= $total ?>
                             <?php endif; ?>
                         </span>
+
                         <?php if( $patchPanel->hasDuplexPort() ): ?>
-                            <?= $available ?> / <?= $total ?>
+                            &nbsp;
+                            <span class="label label-info">
+                                <?= $available ?> / <?= $total ?>
+                            </span>
                         <?php endif; ?>
+
                     </td>
                     <td>
                         <?= $patchPanel->getInstallationDateFormated() ?>

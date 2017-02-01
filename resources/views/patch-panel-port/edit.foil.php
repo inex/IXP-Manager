@@ -17,51 +17,139 @@
 <?php endif; ?>
 
 
-<?= Former::open()->method('POST')->action(url('patch-panel-port/add/'.$t->patchPanelPort->getId()))->customWidthClass('col-sm-3')->addClass('col-md-10');?>
-    <?= Former::text('ppp-name')->label('Patch Panel Port Name');?>
-    <?= Former::text('patch-panel')->label('Patch Panel')?>
+<?= Former::open()->method('POST')
+    ->action(url('patch-panel-port/store'))
+    ->customWidthClass('col-sm-3')
+    ->addClass('col-md-10');
+?>
+
+    <?= Former::text('number')
+        ->label('Patch Panel Port Name');
+    ?>
+
+    <?= Former::text('patch_panel')
+        ->label('Patch Panel')
+    ?>
 
     <?= Former::checkbox('duplex')?>
+
     <span id='duplex-port-area' style="display: none">
-        <?= Former::select('partner-port')->label('Partner Port')->fromQuery($t->partnerPorts, 'name')->placeholder('Choose a partner port')->addClass('chzn-select')?>
+        <?= Former::select('partner_port')
+            ->label('Partner Port')
+            ->fromQuery($t->partnerPorts, 'name')
+            ->placeholder('Choose a partner port')
+            ->addClass('chzn-select')
+        ?>
     </span>
 
+    <div class="well">
+        <?= Former::default_button()
+            ->addClass('reset-button-well')
+            ->icon('glyphicon glyphicon-refresh')
+            ->title('Reset')
+            ->style('margin-top : 1%')
+            ->id('resetSwitchSelect');
+        ?>
+
+        <?= Former::select('switch')
+            ->label('Switch')
+            ->fromQuery($t->switches, 'name')
+            ->placeholder('Choose a switch')
+            ->addClass('chzn-select')
+        ?>
+
+        <?= Former::select('switch_port')
+            ->label('Switch Port')
+            ->fromQuery($t->switchPorts, 'name')
+            ->placeholder('Choose a switch port')
+            ->addClass('chzn-select')
+        ?>
+    </div>
 
     <div class="well">
-        <?= Former::default_button()->addClass('reset-button-well')->icon('glyphicon glyphicon-refresh')->title('Reset')->style('margin-top : 1%')->id('resetSwitchSelect');?>
-        <?= Former::select('switch')->label('Switch')->fromQuery($t->listSwitch, 'name')->placeholder('Choose a switch')->addClass('chzn-select')?>
-        <?= Former::select('switch-port')->label('Switch Port')->fromQuery($t->listSwitchPort, 'name')->placeholder('Choose a switch port')->addClass('chzn-select')?>
+        <?= Former::default_button()
+            ->addClass('reset-button-well')
+            ->icon('glyphicon glyphicon-refresh')
+            ->title('Reset')
+            ->id('resetCustomer');
+        ?>
+
+        <?= Former::select('customer')
+            ->label('Customer')
+            ->fromQuery($t->customers, 'name')
+            ->placeholder('Choose a customer')
+            ->addClass('chzn-select')
+        ?>
     </div>
-    <div class="well">
-        <?= Former::default_button()->addClass('reset-button-well')->icon('glyphicon glyphicon-refresh')->title('Reset')->id('resetCustomer');?>
-        <?= Former::select('customer')->label('Customer')->fromQuery($t->listCustomers, 'name')->placeholder('Choose a customer')->addClass('chzn-select')?>
-    </div>
-    <?= Former::select('state')->label('States')->options($t->listStates)->placeholder('Choose a states')->addClass('chzn-select')?>
-    <?= Former::textarea('note')->label('Note')?>
-    <?= Former::date('assigned-at')->label('Assigned At')->append('<button class="btn-default btn" onclick="setToday(\'assigned-at\')" type="button">Today</button>')?>
-    <?= Former::date('connected-at')->label('Connected At')->append('<button class="btn-default btn" onclick="setToday(\'connected-at\')" type="button">Today</button>')?>
-    <?= Former::date('ceased-requested-at')->label('Ceased Requested At')->append('<button class="btn-default btn" onclick="setToday(\'ceased-requested-at\')" type="button">Today</button>')?>
-    <?= Former::date('ceased-at')->label('Ceased Requested At')->append('<button class="btn-default btn" onclick="setToday(\'ceased-at\')" type="button"">Today</button>')?>
-    <?= Former::text('last-state-change-at')->label('Last State change At')?>
+
+    <?= Former::select('state')
+        ->label('States')
+        ->options($t->states)
+        ->placeholder('Choose a states')
+        ->addClass('chzn-select')
+    ?>
+
+    <?= Former::textarea('notes')
+        ->label('Note')
+    ?>
+
+    <?= Former::date('assigned_at')
+        ->label('Assigned At')
+        ->append('<button class="btn-default btn" onclick="setToday(\'assigned_at\')" type="button">Today</button>')
+    ?>
+
+    <?= Former::date('connected_at')
+        ->label('Connected At')
+        ->append('<button class="btn-default btn" onclick="setToday(\'connected_at\')" type="button">Today</button>')
+    ?>
+
+    <?= Former::date('ceased_requested_at')
+        ->label('Ceased Requested At')
+        ->append('<button class="btn-default btn" onclick="setToday(\'ceased_requested_at\')" type="button">Today</button>')
+    ?>
+
+    <?= Former::date('ceased_at')
+        ->label('Ceased Requested At')
+        ->append('<button class="btn-default btn" onclick="setToday(\'ceased_at\')" type="button"">Today</button>')
+    ?>
+
+    <?= Former::text('last_state_change_at')
+        ->label('Last State change At')
+    ?>
+
     <?= Former::radios('chargeable')
         ->radios(array(
             'Yes' => array('chargeable' => 'yes', 'value' => '1'),
             'No' => array('chargeable' => 'no', 'value' => '0'),
         ))->inline()->check($t->patchPanelPort->getChargeableInt())?>
 
-    <?= Former::radios('internal-use')
+    <?= Former::radios('internal_use')
         ->radios(array(
-            'Yes' => array('name' => 'internal-use', 'value' => '1'),
-            'No' => array('name' => 'internal-use', 'value' => '0'),
+            'Yes' => array('name' => 'internal_use', 'value' => '1'),
+            'No' => array('name' => 'internal_use', 'value' => '0'),
         ))->inline()->check($t->patchPanelPort->getInternalUseInt())?>
 
-    <?= Former::hidden('patch-panel-port-id')->value($t->patchPanelPort->getId())?>
-    <?= Former::hidden('switch-port-id')->id('switch-port-id')->value($t->patchPanelPort->getSwitchPortId())?>
+    <?= Former::hidden('patch_panel_port_id')
+        ->value($t->patchPanelPort->getId())
+    ?>
+
+    <?= Former::hidden('switch_port_id')
+        ->id('switch_port_id')
+        ->value($t->patchPanelPort->getSwitchPortId())
+    ?>
+
     <?=Former::actions( Former::primary_submit('Save Changes'),
         Former::default_button('Cancel')
     );?>
 
-    <?= Former::hidden('date')->id('date')->value(date('Y-m-d'))?>
+    <?= Former::hidden('date')
+        ->id('date')
+        ->value(date('Y-m-d'))
+    ?>
+
+    <?= Former::hidden( 'id' )
+        ->value( $t->patchPanelPort ? $t->patchPanelPort->getId() : '' )
+    ?>
 
 <?= Former::close() ?>
 
@@ -70,155 +158,152 @@
 
 
 <?php $this->section('scripts') ?>
-<script>
-    function setToday(inputName){
-        $("#"+inputName).val($("#date").val());
-    }
-
-    $(document).ready(function() {
-
-
-        if($('#switch-port').val() != null){
-            setCustomer();
+    <script>
+        function setToday(inputName){
+            $("#"+inputName).val($("#date").val());
         }
 
-        if($("#switch").val() != null && $("#customer").val() != null){
-            setSwitchPort();
-        }
+        $(document).ready(function() {
 
-        $('#duplex').change(function(){
-            if(this.checked){
-                $("#duplex-port-area").show();
+
+            if($('#switch_port').val() != null){
+                setCustomer();
             }
-            else{
-                $("#duplex-port-area").hide();
-            }
-        });
 
 
 
-        if(<?= (int)$t->hasDuplex ?> ){
-            $('#duplex').click();
-        }
-
-        $("#ppp-name").prop('readonly', true);
-        $("#patch-panel").prop('readonly', true);
-        $("#last-state-change-at").prop('readonly', true);
-
-        $("#switch").change(function(){
-            setSwitchPort();
-        });
-
-        $("#switch-port").change(function(){
-            setCustomer();
-        });
-
-        function setSwitchPort(){
-            $("#switch-port").html("<option value=\"\">Loading please wait</option>\n");
-            $("#switch-port").trigger("chosen:updated");
-            switchId = $("#switch").val();
-            customerId = $("#customer").val();
-            switchPortId = $("#switch-port-id").val();
-            $.ajax({
-                url: "<?= url('patch-panel-port/getSwitchPort/')?>",
-                data: {switchId: switchId, customerId: customerId, switchPortId : switchPortId},
-                type: 'GET',
-                dataType: 'JSON',
-                success: function (data) {
-                    if(data.success){
-                        var options = "<option value=\"\">Choose a switch port</option>\n";
-                        $.each(data.response,function(key, value){
-                            options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
-                        });
-                        $("#switch-port").html(options);
-                        $("#switch-port").trigger("chosen:updated");
-                    }
+            $('#duplex').change(function(){
+                if(this.checked){
+                    $("#duplex-port-area").show();
+                }
+                else{
+                    $("#duplex-port-area").hide();
                 }
             });
-        }
 
-        function setCustomer(){
-            if($("#switch").val() != ''){
-                switchPortId = $("#switch-port").val();
-                $.ajax({
-                    url: "<?= url('patch-panel-port/getCustomerForASwitchPort/')?>",
-                    data: {switchPortId: switchPortId},
-                    type: 'GET',
-                    dataType: 'JSON',
-                    success: function (data) {
-                        if(data.success){
-                            $("#customer").html("<option value=\"" + data.response.id + "\">" + data.response.name + "</option>\n");
-                            $("#customer").trigger("chosen:updated");
-                        }
-                        else{
-                            $("#customer").html("");
-                            $("#customer").trigger("chosen:updated");
-                        }
-                    }
 
-                });
+
+            if(<?= (int)$t->hasDuplex ?> ){
+                $('#duplex').click();
             }
-        }
 
-        $("#customer").change(function(){
-                $("#switch").html("<option value=\"\">Loading please wait</option>\n");
-                $("#switch").trigger("chosen:updated");
-                $("#switch-port").html("");
-                $("#switch-port").trigger("chosen:updated");
+            $("#number").prop('readonly', true);
+            $("#patch_panel").prop('readonly', true);
+            $("#last_state_change_at").prop('readonly', true);
+
+            $("#switch").change(function(){
+                setSwitchPort();
+            });
+
+            $("#switch_port").change(function(){
+                setCustomer();
+            });
+
+            function setSwitchPort(){
+                $("#switch_port").html("<option value=\"\">Loading please wait</option>\n");
+                $("#switch_port").trigger("chosen:updated");
+                switchId = $("#switch").val();
                 customerId = $("#customer").val();
+                switchPortId = $("#switch_port_id").val();
                 $.ajax({
-                    url: "<?= url('patch-panel-port/getSwitchForACustomer/')?>",
-                    data: {customerId: customerId},
+                    url: "<?= url('patch-panel-port/getSwitchPort/')?>",
+                    data: {switchId: switchId, customerId: customerId, switchPortId : switchPortId},
                     type: 'GET',
                     dataType: 'JSON',
                     success: function (data) {
                         if(data.success){
-                            var options = "<option value=\"\">Choose a switch</option>\n";
+                            var options = "<option value=\"\">Choose a switch port</option>\n";
                             $.each(data.response,function(key, value){
-                                options += "<option value=\"" + key + "\">" + value + "</option>\n";
+                                options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
                             });
-                            console.log();
-                            $("#switch").html(options);
-                            $("#switch").trigger("chosen:updated");
-                        }
-                        else{
-                            $("#switch").html("");
-                            $("#switch").trigger("chosen:updated");
+                            $("#switch_port").html(options);
+                            $("#switch_port").trigger("chosen:updated");
                         }
                     }
-
                 });
-
-
-        });
-
-        $("#resetCustomer").click(function(){
-
-                options = "<option value=''> Choose a customer</option>\n";
-                <?php foreach ($t->listCustomers as $id => $customer): ?>
-                    customer = '<?= $customer ?>';
-                    options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
-                <?php endforeach; ?>
-                $("#customer").html(options);
-                $("#customer").trigger("chosen:updated");
-
-
-        });
-
-        $("#resetSwitchSelect").click(function(){
-            if($("#switch").val() != null && $("#switch-port").val() != null){
-                options = "<option value=''> Select a customer</option>\n";
-                <?php foreach ($t->listSwitch as $id => $switch): ?>
-                $switch = '<?= $switch ?>';
-                options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
-                <?php endforeach; ?>
-                $("#switch").html(options);
-                $("#switch").trigger("chosen:updated");
-                $("#switch-port").html('');
-                $("#switch-port").trigger("chosen:updated");
             }
 
+            function setCustomer(){
+                if($("#switch").val() != ''){
+                    switchPortId = $("#switch_port").val();
+                    $("#customer").html("<option value=\"\">Loading please wait</option>\n");
+                    $("#customer").trigger("chosen:updated");
+                    $.ajax({
+                        url: "<?= url('patch-panel-port/getCustomerForASwitchPort/')?>",
+                        data: {switchPortId: switchPortId},
+                        type: 'GET',
+                        dataType: 'JSON',
+                        success: function (data) {
+                            if(data.success){
+                                $("#customer").html("<option value=\"" + data.response.id + "\">" + data.response.name + "</option>\n");
+                                $("#customer").trigger("chosen:updated");
+                            }
+                            else{
+                                $("#customer").html("");
+                                $("#customer").trigger("chosen:updated");
+                            }
+                        }
+
+                    });
+                }
+            }
+
+            $("#customer").change(function(){
+                    $("#switch").html("<option value=\"\">Loading please wait</option>\n");
+                    $("#switch").trigger("chosen:updated");
+                    $("#switch_port").html("");
+                    $("#switch_port").trigger("chosen:updated");
+                    customerId = $("#customer").val();
+                    $.ajax({
+                        url: "<?= url('patch-panel-port/getSwitchForACustomer/')?>",
+                        data: {customerId: customerId},
+                        type: 'GET',
+                        dataType: 'JSON',
+                        success: function (data) {
+                            if(data.success){
+                                var options = "<option value=\"\">Choose a switch</option>\n";
+                                $.each(data.response,function(key, value){
+                                    options += "<option value=\"" + key + "\">" + value + "</option>\n";
+                                });
+                                $("#switch").html(options);
+                                $("#switch").trigger("chosen:updated");
+                            }
+                            else{
+                                $("#switch").html("");
+                                $("#switch").trigger("chosen:updated");
+                            }
+                        }
+
+                    });
+            });
+
+            $("#resetCustomer").click(function(){
+
+                    options = "<option value=''> Choose a customer</option>\n";
+                    <?php foreach ($t->customers as $id => $customer): ?>
+                        customer = '<?= $customer ?>';
+                        options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
+                    <?php endforeach; ?>
+                    $("#customer").html(options);
+                    $("#customer").trigger("chosen:updated");
+
+
+            });
+
+            $("#resetSwitchSelect").click(function(){
+                if($("#switch").val() != null && $("#switch_port").val() != null){
+                    options = "<option value=''> Select a customer</option>\n";
+                    <?php foreach ($t->switches as $id => $switch): ?>
+                        $switch = '<?= $switch ?>';
+                        options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
+                    <?php endforeach; ?>
+                    $("#switch").html(options);
+                    $("#switch").trigger("chosen:updated");
+                    $("#switch_port").html('');
+                    $("#switch_port").trigger("chosen:updated");
+                }
+
+            });
         });
-    });
-</script>
+    </script>
 <?php $this->append() ?>

@@ -153,6 +153,16 @@ class PatchPanelPort
     }
 
     /**
+     * Get number
+     *
+     * @return integer
+     */
+    public function getName()
+    {
+        return $this->getPatchPanel()->getPortPrefix().$this->getNumber();
+    }
+
+    /**
      * Set state
      *
      * @param integer $state
@@ -604,7 +614,7 @@ class PatchPanelPort
     public function getDuplexSlavePortName()
     {
         if($this->getDuplexSlavePort() != null){
-            return $this->getDuplexSlavePort()->getNumber();
+            return $this->getDuplexSlavePort()->getName();
         }
         else{
             return null;

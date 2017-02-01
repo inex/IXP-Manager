@@ -198,6 +198,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
+
+        return parent::getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setState($state)
     {
 
@@ -620,7 +631,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function hasSlavePort()
+    public function hasSlavePort(): bool
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasSlavePort', []);
@@ -774,12 +785,56 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function isAvailableForUse(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAvailableForUse', []);
+
+        return parent::isAvailableForUse();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setDuplexPort($duplexPort, $newSlavePort)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexPort', [$duplexPort, $newSlavePort]);
 
         return parent::setDuplexPort($duplexPort, $newSlavePort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveStates(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveStates', []);
+
+        return parent::resolveStates();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomerForASwitchPort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomerForASwitchPort', []);
+
+        return parent::getCustomerForASwitchPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isDuplexPort(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isDuplexPort', []);
+
+        return parent::isDuplexPort();
     }
 
 }
