@@ -3,7 +3,7 @@
 namespace Entities;
 
 use D2EM;
-use Repositories\PatchPanel;
+
 
 /**
  * Entities\PatchPanelPort
@@ -605,7 +605,7 @@ class PatchPanelPort
     public function getDuplexSlavePortName()
     {
         if($this->getDuplexSlavePort() != null){
-            return $this->getDuplexSlavePort()->getName();
+            return $this->getDuplexSlavePort()->getNumber();
         }
         else{
             return null;

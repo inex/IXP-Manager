@@ -5,7 +5,7 @@
 <?php $this->append() ?>
 
 <?php $this->section('page-header-postamble') ?>
-<li>View : <?= $t->patchPanelPort->getId().' '.$t->patchPanelPort->getName()?></li>
+<li>View : <?= $t->patchPanelPort->getId().' '.$t->patchPanelPort->getNumber()?></li>
 <?php $this->append() ?>
 
 
@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
             <div>
-                Name : <b> <?= $t->patchPanelPort->getName() ?> </b>
+                Name : <b> <?= $t->patchPanelPort->getNumber() ?> </b>
             </div>
         </div>
         <?php if($t->patchPanelPort->hasSlavePort()): ?>
