@@ -1,4 +1,9 @@
-<?php $this->layout('layouts/ixpv4') ?>
+<?php
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
+
+    $this->layout( 'layouts/ixpv4');
+?>
 
 <?php $this->section('title') ?>
     Patch Panels (<?= $t->active ? 'Active' : 'Inactive' ?> Only)
@@ -44,7 +49,8 @@
             </tr>
         <thead>
         <tbody>
-            <?php foreach( $t->patchPanels as $patchPanel ): ?>
+            <?php foreach( $t->patchPanels as $patchPanel ):
+                /** @var Entities\PatchPanel $patchPanel */ ?>
                 <tr>
                     <td>
                         <?= $patchPanel->getName() ?>
@@ -64,6 +70,9 @@
                         <?php
                             $available = $patchPanel->getAvailableForUsePortCount();
                             $total     = $patchPanel->getPortCount();
+                            $dAvailable = floor( $available / 2 );
+                            $dTotal     = floor( $total     / 2 );
+
                             if( ($total - $available) / $total < 0.7 ):
                                 $class = "success";
                             elseif( ($total - $available ) / $total < 0.85 ):
@@ -72,9 +81,17 @@
                                 $class = "danger";
                             endif;
                         ?>
+
                         <span class="label label-<?= $class ?>">
-                            <?= $available ?> / <?= $total ?>
+                            <?php if( $patchPanel->hasDuplexPort() ): ?>
+                                <?= $dAvailable ?> / <?= $dTotal ?>
+                            <?php else: ?>
+                                <?= $available ?> / <?= $total ?>
+                            <?php endif; ?>
                         </span>
+                        <?php if( $patchPanel->hasDuplexPort() ): ?>
+                            <?= $available ?> / <?= $total ?>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <?= $patchPanel->getInstallationDateFormated() ?>

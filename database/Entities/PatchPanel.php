@@ -331,30 +331,6 @@ class PatchPanel
         return $this->patchPanelPorts;
     }
 
-    /**
-     * Get number of patch panel ports
-     *
-     * @return int
-     */
-    public function getPortCount(): int {
-        return count( $this->patchPanelPorts );
-    }
-
-    /**
-     * Get number of patch panel ports
-     *
-     * @return int
-     */
-    public function getAvailableForUsePortCount(): int {
-        $cnt = 0;
-        foreach( $this->patchPanelPorts as $ppp ) {
-            if( $ppp->isAvailableForUse() ) {
-                $cnt++;
-            }
-        }
-        return $cnt;
-    }
-
 
     /**
      * Set cabinet
@@ -439,4 +415,43 @@ class PatchPanel
     public function resolveConnectorType(): string {
         return self::$CONNECTOR_TYPES[ $this->getConnectorType() ] ?? 'Unknown';
     }
+
+    /**
+     * Get number of patch panel ports
+     *
+     * @return int
+     */
+    public function getPortCount(): int {
+        return count( $this->patchPanelPorts );
+    }
+
+    /**
+     * Get number of patch panel ports
+     *
+     * @return int
+     */
+    public function getAvailableForUsePortCount(): int {
+        $cnt = 0;
+        foreach( $this->patchPanelPorts as $ppp ) {
+            if( $ppp->isAvailableForUse() ) {
+                $cnt++;
+            }
+        }
+        return $cnt;
+    }
+
+    /**
+     * Does this patch panel have any duplex ports?
+     *
+     * @return bool
+     */
+    public function hasDuplexPort(): bool {
+        foreach( $this->patchPanelPorts as $ppp ) {
+            if( $ppp->isDuplexPort() ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
