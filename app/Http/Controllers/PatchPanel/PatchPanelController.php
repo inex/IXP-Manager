@@ -32,6 +32,7 @@ use Entities\PatchPanel;
 use Former;
 
 use Illuminate\Http\RedirectResponse;
+use Redirect;
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
@@ -136,6 +137,7 @@ class PatchPanelController extends Controller
         $patchPanel->setInstallationDate(
             ( $request->input( 'installation_date', false ) ? new \DateTime : new \DateTime( $request->input( 'installation_date' ) ) )
         );
+        $patchPanel->setPortPrefix( $request->input( 'port_prefix' ) );
 
         D2EM::persist( $patchPanel );
 
@@ -148,31 +150,33 @@ class PatchPanelController extends Controller
     }
 
     /**
-     * Delete a patch panel
+     * change the status to active or inactive for a patch panel
      *
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
      *
      * @param int $id
+     * @param bool $active
      * @return RedirectResponse
      */
-    public function delete( int $id ): RedirectResponse {
+    public function changeStatus( int $id, int $active ): RedirectResponse {
         $error = array('type' => '', 'message' => '');
 
         if( !( $patchPanel = D2EM::getRepository( PatchPanel::class )->find($id) ) ) {
             abort(404);
         }
-
+        $status = ($active)? 'active.' : 'inactive.';
         if( $patchPanel->areAllPortsAvailable() ) {
-            $patchPanel->setActive( false );
+            $patchPanel->setActive( $active );
             D2EM::persist( $patchPanel );
             D2EM::flush();
 
             $error['type'] = 'success';
-            $error['message'] = 'The patch panel has been marked as inactive.';
+            $error['message'] = 'The patch panel has been marked as '.$status;
         } else {
             $error['type'] = 'fail';
-            $error['message'] = 'To make a patch panel inactive, all ports must be available for use.';
+            $error['message'] = 'To make a patch panel '.$status.', all ports must be available for use.';
         }
+
 
         return redirect( 'patch-panel/list' )->with( $error['type'], $error['message'] );
     }
@@ -183,26 +187,16 @@ class PatchPanelController extends Controller
      * @params  int $id ID of the patch panel
      * @return  view
      */
-    public function view(int $id = null) {
-        // Get all cable types
-        $listCableTypes = \Entities\PatchPanel::$CABLE_TYPES;
-        // Get all connector types
-        $listConnectorTypes = \Entities\PatchPanel::$CONNECTOR_TYPES;
-        // array of params for the view
+    public function view(int $id = null): View {
+        $patchPanel = false;
 
-        if($id != null){
-            $patchPanel = D2EM::getRepository(PatchPanel::class)->find($id);
-        }
-        else{
-            return Redirect::to('patch-panel/list');
+        if( !($patchPanel = D2EM::getRepository(PatchPanel::class)->find($id))){
+            abort(404);
         }
 
-        $params = array('listCabinets'          => D2EM::getRepository(Cabinet::class)->getForArray(),
-                        'listCableTypes'        => $listCableTypes,
-                        'listConnectorTypes'    => $listConnectorTypes,
-                        'patchPanel'            => $patchPanel
-        );
-
-        return view('patch-panel/view')->with('params', $params);
+        return view('patch-panel/view')->with(['listCabinets'          => D2EM::getRepository(Cabinet::class)->getAsArray(),
+                                                'listCableTypes'        => \Entities\PatchPanel::$CABLE_TYPES,
+                                                'listConnectorTypes'    => \Entities\PatchPanel::$CONNECTOR_TYPES,
+                                                'patchPanel'            => $patchPanel]);
     }
 }

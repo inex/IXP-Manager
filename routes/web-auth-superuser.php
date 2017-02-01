@@ -15,7 +15,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
     Route::get( 'edit/{id}',                'PatchPanelController@edit'   );
 
     Route::get( 'view/{id?}',               'PatchPanelController@view'   );
-    Route::get( 'delete/{id}',              'PatchPanelController@delete' );
+    Route::get( 'changeStatus/{id}/{active}',        'PatchPanelController@changeStatus' );
 
     Route::post( 'store',                   'PatchPanelController@store'  );
 });
@@ -30,5 +30,5 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'getSwitchForACustomer',      'PatchPanelPortController@getSwitchForACustomer' );
     Route::get( 'resetCustomer',              'PatchPanelPortController@resetCustomer' );
 
-    Route::post( 'add/{id}',                  'PatchPanelPortController@add' );
+    Route::post( 'store',                  'PatchPanelPortController@store' );
 });

@@ -400,17 +400,6 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getNumbersPatchPanelPorts()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNumbersPatchPanelPorts', []);
-
-        return parent::getNumbersPatchPanelPorts();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setCabinet(\Entities\Cabinet $cabinet = NULL)
     {
 
@@ -444,12 +433,12 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function checkBeforeDelete()
+    public function areAllPortsAvailable()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'checkBeforeDelete', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'areAllPortsAvailable', []);
 
-        return parent::checkBeforeDelete();
+        return parent::areAllPortsAvailable();
     }
 
     /**
@@ -472,6 +461,39 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveConnectorType', []);
 
         return parent::resolveConnectorType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPortCount(): int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPortCount', []);
+
+        return parent::getPortCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAvailableForUsePortCount(): int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAvailableForUsePortCount', []);
+
+        return parent::getAvailableForUsePortCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasDuplexPort(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasDuplexPort', []);
+
+        return parent::hasDuplexPort();
     }
 
 }

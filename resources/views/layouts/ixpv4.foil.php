@@ -130,6 +130,7 @@
     <script type="text/javascript" src="<?= asset('/bower_components/vue/dist/vue.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/900-oss-framework.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/ixp-manager.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/js/bootbox.min.js') ?>"></script>
 
 
     <?php if( Auth::check() ): ?>

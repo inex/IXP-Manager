@@ -70,13 +70,18 @@
                         <?php
                             $available = $patchPanel->getAvailableForUsePortCount();
                             $total     = $patchPanel->getPortCount();
-                            $dAvailable = floor( $available / 2 );
-                            $dTotal     = floor( $total     / 2 );
 
-                            if( ($total - $available) / $total < 0.7 ):
-                                $class = "success";
-                            elseif( ($total - $available ) / $total < 0.85 ):
-                                $class = "warning";
+                            if($total != 0):
+                                $dAvailable = floor( $available / 2 );
+                                $dTotal     = floor( $total     / 2 );
+
+                                if( ($total - $available) / $total < 0.7 ):
+                                    $class = "success";
+                                elseif( ($total - $available ) / $total < 0.85 ):
+                                    $class = "warning";
+                                else:
+                                    $class = "danger";
+                                endif;
                             else:
                                 $class = "danger";
                             endif;
@@ -102,8 +107,12 @@
                             <a class="btn btn btn-default" href="<?= url('/patch-panel/edit' ).'/'.$patchPanel->getId()?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
 
                             <?php if( $patchPanel->getActive() ): ?>
-                                <a class="btn btn btn-default" id='list-delete-' href="<?= url( 'patch-panel/delete/' . $patchPanel->getId() ) ?>" title="Delete">
+                                <a class="btn btn btn-default" id='list-delete-<?= $patchPanel->getId() ?>' href="<?= url( 'patch-panel/changeStatus/' . $patchPanel->getId().'/0') ?>" title="Delete">
                                     <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            <?php else:?>
+                                <a class="btn btn btn-default" id='list-reactivate-<?= $patchPanel->getId() ?>' href="<?= url( 'patch-panel/changeStatus/' . $patchPanel->getId().'/1' ) ?>" title="Re-activate">
+                                    <i class="glyphicon glyphicon-repeat"></i>
                                 </a>
                             <?php endif; ?>
 
@@ -125,6 +134,30 @@
     <script>
         $(document).ready(function(){
             $('#patch-panel-list').DataTable();
+
+            $( 'a[id|="list-delete"]' ).off('click').on( 'click', function( event ){
+
+                event.preventDefault();
+                var url = $(this).attr("href");
+
+                bootbox.confirm({
+                    title: "Delete",
+                    message: "Are you sure you want to delete this object ?",
+                    buttons: {
+                        cancel: {
+                            label: '<i class="fa fa-times"></i> Cancel'
+                        },
+                        confirm: {
+                            label: '<i class="fa fa-check"></i> Confirm'
+                        }
+                    },
+                    callback: function (result) {
+                        document.location.href = url;
+                    }
+                });
+
+
+            });
         });
     </script>
 <?php $this->append() ?>
