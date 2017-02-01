@@ -5,7 +5,7 @@
 <?php $this->append() ?>
 
 <?php $this->section('page-header-postamble') ?>
-<li>View : <?= $t->params['patchPanel']->getId().' '.$t->params['patchPanel']->getName()?></li>
+<li>View : <?= $t->patchPanel->getId().' '.$t->patchPanel->getName()?></li>
 <?php $this->append() ?>
 
 
@@ -15,47 +15,47 @@
         <div class="panel-body">
             <div class="form-group">
                 <div >
-                    ID : <b> <?= $t->params['patchPanel']->getId() ?> </b>
+                    ID : <b> <?= $t->patchPanel->getId() ?> </b>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    Name : <b> <?= $t->params['patchPanel']->getName() ?> </b>
+                    Name : <b> <?= $t->patchPanel->getName() ?> </b>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    Colocation : <b> <?= $t->params['patchPanel']->getColoReference() ?> </b>
+                    Colocation : <b> <?= $t->patchPanel->getColoReference() ?> </b>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    Cabinet : <a href="<?= url('/cabinet/view' ).'/'.$t->params['patchPanel']->getCabinet()->getId()?>"><b> <?= $t->params['patchPanel']->getCabinet()->getName() ?>  </b></a>
+                    Cabinet : <a href="<?= url('/cabinet/view' ).'/'.$t->patchPanel->getCabinet()->getId()?>"><b> <?= $t->patchPanel->getCabinet()->getName() ?>  </b></a>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    Cable Type : <b> <?= $t->params['listCableTypes'][$t->params['patchPanel']->getCableType()] ?> </b>
+                    Cable Type : <b> <?= $t->patchPanel->resolveCableType() ?> </b>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    Connector Type : <b> <?= $t->params['listConnectorTypes'][$t->params['patchPanel']->getConnectorType()] ?> </b>
+                    Connector Type : <b> <?= $t->patchPanel->resolveConnectorType()?> </b>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    Number of Ports : <b> <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->params['patchPanel']->getId()?>"> <?= $t->params['patchPanel']->getNumbersPatchPanelPorts() ?></a></b>
+                    Number of Ports : <b> <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>"> <?= $t->patchPanel->getAvailableForUsePortCount()." / ".$t->patchPanel->getPortCount() ?></a></b>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    Installation Date : <b> <?= $t->params['patchPanel']->getInstallationDateFormated() ?> </b>
+                    Installation Date : <b> <?= $t->patchPanel->getInstallationDateFormated() ?> </b>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    Active : <b> <?= $t->params['patchPanel']->getActiveText() ?> </b>
+                    Active : <b> <?= $t->patchPanel->getActiveText() ?> </b>
                 </div>
             </div>
         </div>

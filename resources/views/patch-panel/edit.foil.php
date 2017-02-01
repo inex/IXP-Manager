@@ -51,7 +51,7 @@
     <?= Former::number( 'numberOfPorts' )
         ->label( 'Number of Ports' )
         ->appendIcon( 'nb-port glyphicon glyphicon-info-sign' )
-        ->help( $t->patchPanel ? 'Existing: ' . $t->patchPanel->getNumbersPatchPanelPorts() : '' )
+        ->help( $t->patchPanel ? 'Existing: ' . $t->patchPanel->getPortCount() : '' )
     ?>
 
     <?= Former::text( 'port_prefix' )

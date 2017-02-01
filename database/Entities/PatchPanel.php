@@ -377,7 +377,7 @@ class PatchPanel
 
         for( $i = 0; $i <= $n; $i++ ) {
             $ppp = new PatchPanelPort;
-            $ppp->setNumber( $this->getPortPrefix() . ( $max + $i ) );
+            $ppp->setNumber( ( $max + $i ) );
             $ppp->setState( PatchPanelPort::STATE_AVAILABLE );
             $ppp->setPatchPanel( $this );
             $ppp->setLastStateChange( new \DateTime );
