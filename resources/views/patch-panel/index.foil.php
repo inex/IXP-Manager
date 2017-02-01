@@ -1,4 +1,9 @@
-<?php $this->layout('layouts/ixpv4') ?>
+<?php
+    /** @var Foil\Template\Template $t */
+    /** @var $t->active */
+
+    $this->layout( 'layouts/ixpv4');
+?>
 
 <?php $this->section('title') ?>
     Patch Panels (<?= $t->active ? 'Active' : 'Inactive' ?> Only)
@@ -37,16 +42,15 @@
                 <td>Name</td>
                 <td>Cabinet</td>
                 <td>Colocation</td>
-                <td>Cable Type</td>
-                <td>Connector Type</td>
-                <td>Number of Ports</td>
+                <td>Type</td>
+                <td>Ports Available</td>
                 <td>Installation Date</td>
-                <td>Active</td>
                 <td>Action</td>
             </tr>
         <thead>
         <tbody>
-            <?php foreach( $t->patchPanels as $patchPanel ): ?>
+            <?php foreach( $t->patchPanels as $patchPanel ):
+                /** @var Entities\PatchPanel $patchPanel */ ?>
                 <tr>
                     <td>
                         <?= $patchPanel->getName() ?>
@@ -60,27 +64,47 @@
                         <?= $patchPanel->getColoReference() ?>
                     </td>
                     <td>
-                        <?= $patchPanel->resolveCableType() ?>
+                        <?= $patchPanel->resolveCableType() ?> / <?= $patchPanel->resolveConnectorType() ?>
                     </td>
                     <td>
-                        <?= $patchPanel->resolveConnectorType() ?>
-                    </td>
-                    <td>
-                        <?= $patchPanel->getNumbersPatchPanelPorts(); ?>
+                        <?php
+                            $available = $patchPanel->getAvailableForUsePortCount();
+                            $total     = $patchPanel->getPortCount();
+                            $dAvailable = floor( $available / 2 );
+                            $dTotal     = floor( $total     / 2 );
+
+                            if( ($total - $available) / $total < 0.7 ):
+                                $class = "success";
+                            elseif( ($total - $available ) / $total < 0.85 ):
+                                $class = "warning";
+                            else:
+                                $class = "danger";
+                            endif;
+                        ?>
+
+                        <span class="label label-<?= $class ?>">
+                            <?php if( $patchPanel->hasDuplexPort() ): ?>
+                                <?= $dAvailable ?> / <?= $dTotal ?>
+                            <?php else: ?>
+                                <?= $available ?> / <?= $total ?>
+                            <?php endif; ?>
+                        </span>
+                        <?php if( $patchPanel->hasDuplexPort() ): ?>
+                            <?= $available ?> / <?= $total ?>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <?= $patchPanel->getInstallationDateFormated() ?>
-                    </td>
-                    <td>
-                        <?= $patchPanel->getActiveText() ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
                             <a class="btn btn btn-default" href="<?= url('/patch-panel/view' ).'/'.$patchPanel->getId()?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
                             <a class="btn btn btn-default" href="<?= url('/patch-panel/edit' ).'/'.$patchPanel->getId()?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
 
-                            <?php if($patchPanel->getActive()): ?>
-                                <a class="btn btn btn-default" id='list-delete-' href="" title="Delete" data-toggle="modal" data-target="#delete<?=$patchPanel->getId()?>"><i class="glyphicon glyphicon-trash"></i></a>
+                            <?php if( $patchPanel->getActive() ): ?>
+                                <a class="btn btn btn-default" id='list-delete-' href="<?= url( 'patch-panel/delete/' . $patchPanel->getId() ) ?>" title="Delete">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
                             <?php endif; ?>
 
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -92,23 +116,6 @@
                         </div>
                     </td>
                 </tr>
-                <div class="modal fade" id="delete<?=$patchPanel->getId()?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Delete action</h4>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure that you want to delete the patch panel : <b><?= $patchPanel->getId() ?> <?= $patchPanel->getName() ?></b>
-                            </div>
-                            <div class="modal-footer">
-                                <a type="button" class="btn btn-default" data-dismiss="modal">Close</a>
-                                <a type="button" class="btn btn-danger" href="<?= url('patch-panel/delete').'/'.$patchPanel->getId()?>" >Delete</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             <?php endforeach;?>
         <tbody>
     </table>

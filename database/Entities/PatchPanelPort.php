@@ -571,13 +571,12 @@ class PatchPanelPort
     }
 
     /**
-     * has duplex port
+     * Is this port the master in a duplex port group?
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return bool
      */
-    public function hasSlavePort()
-    {
-        return (count($this->getDuplexSlavePorts()) == 0) ? false : true;
+    public function hasSlavePort(): bool {
+        return count( $this->getDuplexSlavePorts() ) > 0;
     }
 
     /**
@@ -738,6 +737,18 @@ class PatchPanelPort
     }
 
 
+    /**
+     * Is this port available for use?
+     *
+     * It is if its state is one of: available, ceased, awaiting cease.
+     *
+     * @return bool
+     */
+    public function isAvailableForUse(): bool {
+        return $this->getState() == self::STATE_AVAILABLE || $this->getState() == self::STATE_CEASED
+            || $this->getState() == self::STATE_AWAITING_CEASE;
+    }
+
 
     public function setDuplexPort($duplexPort, $newSlavePort){
         if($newSlavePort){
@@ -785,6 +796,15 @@ class PatchPanelPort
             }
         }
         return $customer;
+    }
+
+    /**
+     * Is this port part of a duplex port group?
+     *
+     * @return bool
+     */
+    public function isDuplexPort(): bool {
+        return $this->getDuplexMasterPort() !== null || count( $this->getDuplexSlavePorts() ) > 0;
     }
 
 }

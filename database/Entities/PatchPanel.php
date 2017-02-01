@@ -331,15 +331,6 @@ class PatchPanel
         return $this->patchPanelPorts;
     }
 
-    /**
-     * Get patchPanelPorts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getNumbersPatchPanelPorts()
-    {
-        return count($this->patchPanelPorts);
-    }
 
     /**
      * Set cabinet
@@ -398,15 +389,13 @@ class PatchPanel
     }
 
     /**
-     * Check if a patch panel can be delete => all port link to the patch panel must have the status 'available' or 'ceased'
+     * Check if all ports on a patch panel are available.
+     *
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
      * @return boolean
      */
-    public function checkBeforeDelete(){
-        $nbPort = $this->getNumbersPatchPanelPorts();
-        $nbPortAvailableToDelete = D2EM::getRepository(PatchPanel::class)->getAllPortByStatusForAPatchPanel($this->getId(),array(\Entities\PatchPanelPort::STATE_AVAILABLE,\Entities\PatchPanelPort::STATE_CEASED));
-
-        return ($nbPort == $nbPortAvailableToDelete)? true : false;
+    public function areAllPortsAvailable() {
+        return $this->getPortCount() == $this->getAvailableForUsePortCount();
     }
 
     /**
@@ -426,4 +415,43 @@ class PatchPanel
     public function resolveConnectorType(): string {
         return self::$CONNECTOR_TYPES[ $this->getConnectorType() ] ?? 'Unknown';
     }
+
+    /**
+     * Get number of patch panel ports
+     *
+     * @return int
+     */
+    public function getPortCount(): int {
+        return count( $this->patchPanelPorts );
+    }
+
+    /**
+     * Get number of patch panel ports
+     *
+     * @return int
+     */
+    public function getAvailableForUsePortCount(): int {
+        $cnt = 0;
+        foreach( $this->patchPanelPorts as $ppp ) {
+            if( $ppp->isAvailableForUse() ) {
+                $cnt++;
+            }
+        }
+        return $cnt;
+    }
+
+    /**
+     * Does this patch panel have any duplex ports?
+     *
+     * @return bool
+     */
+    public function hasDuplexPort(): bool {
+        foreach( $this->patchPanelPorts as $ppp ) {
+            if( $ppp->isDuplexPort() ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
