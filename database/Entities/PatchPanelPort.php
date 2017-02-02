@@ -159,7 +159,11 @@ class PatchPanelPort
      */
     public function getName()
     {
-        return $this->getPatchPanel()->getPortPrefix().$this->getNumber();
+        $name = $this->getPatchPanel()->getPortPrefix().$this->getNumber();
+        if($this->hasSlavePort()){
+            $name .= '/'.$this->getDuplexSlavePortName();
+        }
+        return $name;
     }
 
     /**

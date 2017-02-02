@@ -110,6 +110,20 @@
                 <td id="value">{$pi->getSwitchPort()->getSwitcher()->getCabinet()->getName()}</td>
             </tr>
             {/if}
+            {if $pi->getSwitchPort()->getPatchPanelPort()}
+            <tr>
+                <td><strong>Demarcation:</strong></td>
+                <td id="value">{$pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference()} - {$pi->getSwitchPort()->getPatchPanelPort()->getName()}</td>
+                <td></td>
+                <td><strong>Status:</strong></td>
+                <td id="value">
+                    {$pi->getSwitchPort()->getPatchPanelPort()->resolveStates()}
+                    {if $pi->getSwitchPort()->getPatchPanelPort()->getState() == \Entities\PatchPanelPort::STATE_CONNECTED}
+                        {$pi->getSwitchPort()->getPatchPanelPort()->getConnectedAtFormated()}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
             <tr>
                 <td></td><td></td><td></td><td></td><td></td>
             </tr>

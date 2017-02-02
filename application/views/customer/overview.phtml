@@ -155,6 +155,11 @@
             </a>
         </li>
 
+        {if count(crossConnects) > 0}
+            <li>
+                <a href="#cross-connects" data-toggle="tab">Cross Connects</a>
+            </li>
+        {/if}
         {if count( $cust->getConsoleServerConnections() )}
             <li>
                 <a href="#console-server-connections" data-toggle="tab">OOB Access</a>
@@ -238,6 +243,12 @@
         <div class="tab-pane" id="notes">
             {tmplinclude file="customer/overview-tabs/notes.phtml"}
         </div>
+
+        {if count(crossConnects) > 0}
+            <div class="tab-pane" id="cross-connects">
+                {tmplinclude file="customer/overview-tabs/cross-connects.phtml"}
+            </div>
+        {/if}
 
         {if count( $cust->getConsoleServerConnections() )}
             <div class="tab-pane" id="console-server-connections">

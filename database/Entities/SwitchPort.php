@@ -158,6 +158,11 @@ class SwitchPort
     protected $active;
 
     /**
+     * @var \Entities\PatchPanelPort
+     */
+    private $patchPanelPort;
+
+    /**
      * Set type
      *
      * @param integer $type
@@ -920,33 +925,27 @@ class SwitchPort
     public function isTypeCore() {
         return $this->getType() == self::TYPE_CORE;
     }
-/**
- * @var \Entities\PatchPanelPort
- */
-private $patchPanelPort;
 
+    /**
+     * Set patchPanelPort
+     *
+     * @param \Entities\PatchPanelPort $patchPanelPort
+     *
+     * @return SwitchPort
+     */
+    public function setPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort = null)
+    {
+        $this->patchPanelPort = $patchPanelPort;
+        return $this;
+    }
 
-/**
- * Set patchPanelPort
- *
- * @param \Entities\PatchPanelPort $patchPanelPort
- *
- * @return SwitchPort
- */
-public function setPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort = null)
-{
-$this->patchPanelPort = $patchPanelPort;
-
-return $this;
-}
-
-/**
- * Get patchPanelPort
- *
- * @return \Entities\PatchPanelPort
- */
-public function getPatchPanelPort()
-{
-return $this->patchPanelPort;
-}
+    /**
+     * Get patchPanelPort
+     *
+     * @return \Entities\PatchPanelPort
+     */
+    public function getPatchPanelPort()
+    {
+        return $this->patchPanelPort;
+    }
 }

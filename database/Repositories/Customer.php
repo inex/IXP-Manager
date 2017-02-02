@@ -431,5 +431,25 @@ class Customer extends EntityRepository
             ->setParameter( 'wildcard', "%{$wildcard}%" )
             ->getResult();
     }
-    
+
+
+    /**
+     * Return an array of the patch panel port cross connected
+     *
+     * @param $cid int The customer ID
+     * @return array An array of all the  patch panel port entries
+     */
+    public function getCrossConnects( $cid )
+    {
+        $crossConnected = $this->getEntityManager()->createQuery(
+            "SELECT ppp
+             FROM \\Entities\\PatchPanelPort ppp
+             WHERE ppp.customer = ?1
+             AND ppp.switchPort IS NULL"
+        )
+            ->setParameter( 1, $cid )
+            ->getResult();
+
+        return $crossConnected;
+    }
 }

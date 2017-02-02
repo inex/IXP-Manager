@@ -279,6 +279,8 @@ class CustomerController extends IXP_Controller_FrontEnd
         if( $this->multiIXP() )
             $this->view->validIXPs = $this->getD2R( "\\Entities\\IXP" )->getNamesNotAssignedToCustomer( $cust->getId() );
 
+        $this->view->crossConnects = $this->getD2R( "\\Entities\\Customer" )->getCrossConnects( $cust->getId() );
+
         // does the customer have any graphs?
         $this->view->hasAggregateGraph = false;
         $this->view->grapher = $grapher = App::make('IXP\Services\Grapher');
