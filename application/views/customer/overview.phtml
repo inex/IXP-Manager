@@ -155,7 +155,7 @@
             </a>
         </li>
 
-        {if count(crossConnects) > 0}
+        {if $crossConnects}
             <li>
                 <a href="#cross-connects" data-toggle="tab">Cross Connects</a>
             </li>
@@ -244,7 +244,7 @@
             {tmplinclude file="customer/overview-tabs/notes.phtml"}
         </div>
 
-        {if count(crossConnects) > 0}
+        {if $crossConnects}
             <div class="tab-pane" id="cross-connects">
                 {tmplinclude file="customer/overview-tabs/cross-connects.phtml"}
             </div>
