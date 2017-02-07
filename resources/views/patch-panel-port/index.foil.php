@@ -30,7 +30,7 @@
                     </td>
                     <td>
                         <a href="<?= url('patch-panel/view' ).'/'.$patchPanelPort->getPatchPanel()->getId()?>">
-                            <?= $patchPanelPort->getPatchPanel()->getId().' '.$patchPanelPort->getPatchPanel()->getName() ?>
+                            <?= $patchPanelPort->getPatchPanel()->getName() ?>
                         </a>
                     </td>
                     <td>

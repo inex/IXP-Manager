@@ -14,9 +14,9 @@
 
 
 <?= Former::open()
-    ->method('post')
-    ->action( url( 'patch-panel/store' ) )
-    ->customWidthClass('col-sm-3');
+        ->method('post')
+        ->action( url( 'patch-panel/store' ) )
+        ->customWidthClass('col-sm-3');
 ?>
 
     <?= Former::text( 'name' )
@@ -42,10 +42,10 @@
     ?>
 
     <?= Former::select( 'connector_type' )
-        ->label( 'Connector Type' )
-        ->options( Entities\PatchPanel::$CONNECTOR_TYPES )
-        ->placeholder( 'Choose a Connector Type')
-        ->addClass( 'chzn-select' )
+            ->label( 'Connector Type' )
+            ->options( Entities\PatchPanel::$CONNECTOR_TYPES )
+            ->placeholder( 'Choose a Connector Type')
+            ->addClass( 'chzn-select' )
     ?>
 
     <?= Former::number( 'numberOfPorts' )

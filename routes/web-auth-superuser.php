@@ -8,22 +8,22 @@
 
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
-    Route::get( 'list',                     'PatchPanelController@index' )->name('patchPanelIndex');
-    Route::get( 'list/activeOnly/{active}', 'PatchPanelController@index'  );
+    Route::get( 'list',                       'PatchPanelController@index' )->name('patchPanelIndex');
+    Route::get( 'list/activeOnly/{active}',   'PatchPanelController@index'  );
 
-    Route::get( 'add',                      'PatchPanelController@edit'   );
-    Route::get( 'edit/{id}',                'PatchPanelController@edit'   );
+    Route::get( 'add',                        'PatchPanelController@edit'   );
+    Route::get( 'edit/{id}',                  'PatchPanelController@edit'   );
 
-    Route::get( 'view/{id?}',               'PatchPanelController@view'   );
-    Route::get( 'changeStatus/{id}/{active}',        'PatchPanelController@changeStatus' );
+    Route::get( 'view/{id}',                  'PatchPanelController@view'   );
+    Route::get( 'changeStatus/{id}/{active}', 'PatchPanelController@changeStatus' );
 
-    Route::post( 'store',                   'PatchPanelController@store'  );
+    Route::post( 'store',                     'PatchPanelController@store'  );
 });
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
     Route::get( 'list',                       'PatchPanelPortController@index' )->name('patchPanelPortIndex');
     Route::get( 'list/patch-panel/{id}',      'PatchPanelPortController@index' );
-    Route::get( 'view/{id?}',                 'PatchPanelPortController@view' );
+    Route::get( 'view/{id}',                  'PatchPanelPortController@view' );
     Route::get( 'edit/{id}',                  'PatchPanelPortController@edit' );
     Route::get( 'getSwitchPort',              'PatchPanelPortController@getSwitchPort' );
     Route::get( 'getCustomerForASwitchPort',  'PatchPanelPortController@getCustomerForASwitchPort' );
