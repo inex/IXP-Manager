@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-01-31.
+    * Generated on 2017-02-07.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -55,10 +55,6 @@ namespace PHPSTORM_META {
             'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
-            'former.framework' instanceof \Former\Framework\TwitterBootstrap3,
-            'former.populator' instanceof \Former\Populator,
-            'former.dispatcher' instanceof \Former\MethodDispatcher,
-            'former' instanceof \Former\Former,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'Illuminate\Broadcasting\BroadcastManager' instanceof \Illuminate\Broadcasting\BroadcastManager,
             'Illuminate\Bus\Dispatcher' instanceof \Illuminate\Bus\Dispatcher,
@@ -138,6 +134,9 @@ namespace PHPSTORM_META {
             'translation.loader' instanceof \Illuminate\Translation\FileLoader,
             'translator' instanceof \Illuminate\Translation\Translator,
             'ZendFramework' instanceof \Zend_Application,
+            'former.populator' instanceof \Former\Populator,
+            'former.dispatcher' instanceof \Former\MethodDispatcher,
+            'former' instanceof \Former\Former,
         ],
         \Illuminate\Contracts\Container\Container::make('') => [
             '' == '@',
@@ -185,10 +184,6 @@ namespace PHPSTORM_META {
             'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
-            'former.framework' instanceof \Former\Framework\TwitterBootstrap3,
-            'former.populator' instanceof \Former\Populator,
-            'former.dispatcher' instanceof \Former\MethodDispatcher,
-            'former' instanceof \Former\Former,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'Illuminate\Broadcasting\BroadcastManager' instanceof \Illuminate\Broadcasting\BroadcastManager,
             'Illuminate\Bus\Dispatcher' instanceof \Illuminate\Bus\Dispatcher,
@@ -268,6 +263,9 @@ namespace PHPSTORM_META {
             'translation.loader' instanceof \Illuminate\Translation\FileLoader,
             'translator' instanceof \Illuminate\Translation\Translator,
             'ZendFramework' instanceof \Zend_Application,
+            'former.populator' instanceof \Former\Populator,
+            'former.dispatcher' instanceof \Former\MethodDispatcher,
+            'former' instanceof \Former\Former,
         ],
         \App::make('') => [
             '' == '@',
@@ -315,10 +313,6 @@ namespace PHPSTORM_META {
             'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
-            'former.framework' instanceof \Former\Framework\TwitterBootstrap3,
-            'former.populator' instanceof \Former\Populator,
-            'former.dispatcher' instanceof \Former\MethodDispatcher,
-            'former' instanceof \Former\Former,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'Illuminate\Broadcasting\BroadcastManager' instanceof \Illuminate\Broadcasting\BroadcastManager,
             'Illuminate\Bus\Dispatcher' instanceof \Illuminate\Bus\Dispatcher,
@@ -398,6 +392,9 @@ namespace PHPSTORM_META {
             'translation.loader' instanceof \Illuminate\Translation\FileLoader,
             'translator' instanceof \Illuminate\Translation\Translator,
             'ZendFramework' instanceof \Zend_Application,
+            'former.populator' instanceof \Former\Populator,
+            'former.dispatcher' instanceof \Former\MethodDispatcher,
+            'former' instanceof \Former\Former,
         ],
         \app('') => [
             '' == '@',
@@ -445,10 +442,6 @@ namespace PHPSTORM_META {
             'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
-            'former.framework' instanceof \Former\Framework\TwitterBootstrap3,
-            'former.populator' instanceof \Former\Populator,
-            'former.dispatcher' instanceof \Former\MethodDispatcher,
-            'former' instanceof \Former\Former,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'Illuminate\Broadcasting\BroadcastManager' instanceof \Illuminate\Broadcasting\BroadcastManager,
             'Illuminate\Bus\Dispatcher' instanceof \Illuminate\Bus\Dispatcher,
@@ -528,6 +521,9 @@ namespace PHPSTORM_META {
             'translation.loader' instanceof \Illuminate\Translation\FileLoader,
             'translator' instanceof \Illuminate\Translation\Translator,
             'ZendFramework' instanceof \Zend_Application,
+            'former.populator' instanceof \Former\Populator,
+            'former.dispatcher' instanceof \Former\MethodDispatcher,
+            'former' instanceof \Former\Former,
         ],
     ];
 }

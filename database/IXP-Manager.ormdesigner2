@@ -1169,6 +1169,8 @@
       <field name="patch_panel_id" type="integer" uuid="2842c5bf-c0be-40f7-ac9e-f089a09d6526"/>
       <field name="number" type="smallint" required="true" uuid="2d964dfa-53dd-4a04-92d1-938347172eca"/>
       <field name="state" type="integer" required="true" uuid="fb079291-7b0c-4ca4-b25a-9007b5d83153"/>
+      <field name="colo_circuit_ref" type="string" size="30" uuid="6b28819d-917d-4dfd-91f6-bcd1c07da533"/>
+      <field name="ticket_ref" type="string" size="30" uuid="39eb482e-46c1-4739-94c1-ec29a4300a3c"/>
       <field name="notes" type="text" uuid="a137835d-7515-4d55-99ea-5367401ae2ba"/>
       <field name="assigned_at" type="date" uuid="600d8397-b25b-47ed-85d0-8608f677448c"/>
       <field name="connected_at" type="date" uuid="3817ffa7-9c09-4485-a0f9-ae0311c7d7d7"/>
@@ -1203,6 +1205,8 @@
       <field name="patch_panel_port_id" type="integer" uuid="0d49fde5-0be6-437e-8217-6c6e45b38e9b"/>
       <field name="number" type="smallint" required="true" uuid="1e130de3-d747-46ac-ba5a-1cadc245e4df"/>
       <field name="state" type="integer" required="true" uuid="07e6ab7b-b3a4-4df9-9753-87f2ef20ae57"/>
+      <field name="colo_circuit_ref" type="string" size="30" uuid="e59bfd83-0291-4644-a6c1-d4d3584760ca"/>
+      <field name="ticket_ref" type="string" size="30" uuid="95ee474a-1bf1-4efe-a166-37da7bf12b75"/>
       <field name="notes" type="text" uuid="355eaa2c-a248-4900-bc91-6f228eb04c66"/>
       <field name="assigned_at" type="date" uuid="cd4a7110-85bc-46e1-b6c8-a0131d548b6a"/>
       <field name="connected_at" type="date" uuid="231ded08-0168-4c13-bf56-be08d1c7245d"/>

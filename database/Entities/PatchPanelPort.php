@@ -49,6 +49,17 @@ class PatchPanelPort
     /**
      * @var string
      */
+    private $colo_circuit_ref;
+
+    /**
+     * @var string
+     */
+    private $ticket_ref;
+
+
+    /**
+     * @var string
+     */
     private $notes;
 
     /**
@@ -187,6 +198,52 @@ class PatchPanelPort
     public function getState()
     {
         return $this->state;
+    }
+
+    /**
+     * Set colo_circuit_ref
+     *
+     * @param string $colo_circuit_ref
+     *
+     * @return PatchPanelPort
+     */
+    public function setColoCircuitRef(string $colo_circuit_ref): PatchPanelPort
+    {
+        $this->colo_circuit_ref = $colo_circuit_ref;
+        return $this;
+    }
+
+    /**
+     * Get colo_circuit_ref
+     *
+     * @return string
+     */
+    public function getColoCircuitRef(): string
+    {
+        return $this->colo_circuit_ref;
+    }
+
+    /**
+     * Set ticket_ref
+     *
+     * @param string $ticket_ref
+     *
+     * @return PatchPanelPort
+     */
+    public function setTicketRef(string $ticket_ref): PatchPanelPort
+    {
+        $this->ticket_ref = $ticket_ref;
+        return $this;
+    }
+
+    /**
+     * Get ticket_ref
+     *
+     * @return string
+     */
+    public function getTicketRef(): string
+    {
+        return $this->ticket_ref;
     }
 
     /**

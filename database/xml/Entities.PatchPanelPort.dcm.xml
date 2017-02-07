@@ -6,6 +6,8 @@
     </id>
     <field name="number" type="smallint" nullable="false"/>
     <field name="state" type="integer" nullable="false"/>
+    <field name="colo_circuit_ref" type="string" length="30" nullable="true"/>
+    <field name="ticket_ref" type="string" length="30" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <field name="assigned_at" type="date" nullable="true"/>
     <field name="connected_at" type="date" nullable="true"/>
