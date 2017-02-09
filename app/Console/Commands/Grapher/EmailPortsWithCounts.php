@@ -28,7 +28,7 @@ use D2EM;
 use Grapher;
 use IXP\Services\Grapher\Graph;
 use Mail;
-use IXP\Mail\Grapher\PortUtilisation as PortUtilisationMail;
+use IXP\Mail\Grapher\PortsWithCounts as PortsWithCountsMail;
 
 
  /**
@@ -65,8 +65,8 @@ class EmailPortsWithCounts extends GrapherCommand {
      *
      * @return mixed
      */
-    public function handle(): int {
-
+    public function handle(): int
+    {
         Grapher::backend( $this->option( 'backend' ) );
         $this->setGrapher( Grapher::getFacadeRoot() );
 
@@ -74,84 +74,51 @@ class EmailPortsWithCounts extends GrapherCommand {
             return $retval;
         }
 
-        
-
-        $day = date( 'Y-m-d', strtotime( '-1 days' ) );
-        $data = D2EM->getRepository( 'Entities\TrafficDaily' )->load( $day, $this->option('discards') ? Graph::CATEGORY_DISCARDS : Graph::CATEGORY_ERRORS );
-
-        foreach( $data as $d ) {
-            if( $d[ $inField ] == 0 && $d[ $outField ] == 0 )
-                continue;
-
-            $numWithCounts++;
-
-            if( $this->isVerbose() || $this->isDebug() )
-                echo "{$d['Customer']['name']}\t\tIN / OUT: {$d[ $inField ]} / {$d[ $outField ]}\n";
-
-            $graph = $grapher->customer( d2r('Customer')->find($d['Customer']['id']) )->setCategory( $category )->setPeriod( Graph::PERIOD_DAY );
-
-            $mrtg = $mail->createAttachment(
-                $graph->png(),
-                "image/png",
-                Zend_Mime::DISPOSITION_INLINE,
-                Zend_Mime::ENCODING_BASE64,
-                "{$d['Customer']['shortname']}-aggregate.png"
-            );
-
-            $this->view->mrtg_id = $mrtg->id = "{$d['Customer']['shortname']}-aggregate";
-            $this->view->ecust = $d['Customer'];
-            $this->view->in  = $d[ $inField  ];
-            $this->view->out = $d[ $outField ];
-            $mailHtml .= $this->view->render( 'statistics-cli/email/counts-member.phtml' );
+        if( $this->option( 'discards' ) ) {
+            $category = Graph::CATEGORY_DISCARDS;
+        } else {
+            $category = Graph::CATEGORY_ERRORS;
         }
 
-        /** @var \Entities\Customer[] $custs */
-        $custs = D2EM::getRepository( 'Entities\Customer' )->getCurrentActive( false, true, false );
+        $ports = $this->emailPortsWithCounts( $category );
 
-        $excess = [];
-        foreach( $custs as $c ) {
-            /** @var \Entities\VirtualInterface $vi */
-            foreach( $c->getVirtualInterfaces() as $vi )
-            {
-                if( ( $speed = $vi->speed() * 1000 * 1000 ) == 0 ) {
-                    continue;
-                }
-
-                if( count( $vi->getPhysicalInterfaces() ) == 1 ) {
-                    $graph = $this->grapher()->physint( $vi->getPhysicalInterfaces()[0] )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_WEEK );
-                } else {
-                    $graph = $this->grapher()->virtint( $vi )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_WEEK );
-                }
-                $stats   = $graph->statistics();
-                $utilIn  = ( $stats->maxIn()  * 100.0 ) / $speed;
-                $utilOut = ( $stats->maxOut() * 100.0 ) / $speed;
-
-                if( $utilIn > $this->option('threshold') || $utilOut > $this->option('threshold') ) {
-                    $excess[ $c->getId() ]['cust'] = $c;
-
-                    $port['speed']   = $speed/1000/1000/1000;
-                    $port['utilIn']  = $utilIn;
-                    $port['utilOut'] = $utilOut;
-                    $port['switch']  = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher();
-                    $port['png']     = $graph->png();
-
-                    if( $this->isVerbosityVerbose() ) {
-                        $this->warn( sprintf( "%c\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
-                    }
-
-                    $excess[ $c->getId() ]['ports'][] = $port;
-
-                } elseif( $this->isVerbosityVeryVerbose() ) {
-                    $this->info( sprintf( "%s\n\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
-                }
-            }
-        }
-
-        if( count( $excess ) ) {
-            Mail::to( $this->argument( 'email' ) )->send( new PortUtilisationMail( $excess, $this->option('threshold') ) );
+        if( count( $ports ) ) {
+            Mail::to( $this->argument( 'email' ) )->send( new PortsWithCountsMail( $ports, $category ) );
+        } else if( $this->isVerbosityVerbose() ) {
+            $this->info("No ports with packet counts > 0");
         }
 
         return 0;
+    }
+
+    private function emailPortsWithCounts( $category ): array {
+
+        $day = date( 'Y-m-d', strtotime( '-1 days' ) );
+        $data = D2EM::getRepository( 'Entities\TrafficDaily' )->load( $day, $category );
+        $ports = [];
+
+        foreach( $data as $d ) {
+            if( $d[ 'day_tot_in' ] == 0 && $d[ 'day_tot_out' ] == 0 ) {
+                continue;
+            }
+
+            $port = [];
+
+            if( $this->isVerbosityVerbose() ) {
+                $this->info( "{$d['Customer']['name']}\n\t\tIN / OUT: {$d[ 'day_tot_in' ]} / {$d[ 'day_tot_out' ]}" );
+            }
+
+            $graph = $this->grapher()->customer( d2r('Customer')->find($d['Customer']['id']) )->setCategory( $category )->setPeriod( Graph::PERIOD_DAY );
+
+            $port['cust']    = $d['Customer'];
+            $port['in']      = $d[ 'day_tot_in' ];
+            $port['out']     = $d[ 'day_tot_out' ];
+            $port['png']     = $graph->png();
+
+            $ports[] = $port;
+        }
+
+        return $ports;
     }
 
 
@@ -167,12 +134,6 @@ class EmailPortsWithCounts extends GrapherCommand {
                 $this->error( "Invalid email address: $e" );
                 return 254;
             }
-        }
-
-        $t = $this->option('threshold');
-        if( !is_numeric($t) || (float)$t < 0.0 || (float)$t > 100.0 ) {
-            $this->error( "Invalid value for threshold. Must be between 0 and 100." );
-            return 253;
         }
 
         // all good :-D

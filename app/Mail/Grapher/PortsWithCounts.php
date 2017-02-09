@@ -30,7 +30,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 /**
- * Mailable for port utilisation
+ * Mailable for ports with counts of (e.g.) errors / discards
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
@@ -38,28 +38,28 @@ use Illuminate\Contracts\Queue\ShouldQueue;
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PortUtilisation extends Mailable
+class PortsWithCounts extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * @var array
      */
-    public $excess = [];
+    public $ports;
 
     /**
      * @var float
      */
-    public $threshold;
+    public $category;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct( $excess, $threshold ) {
-        $this->excess    = $excess;
-        $this->threshold = $threshold;
+    public function __construct( array $ports, string $category ) {
+        $this->ports    = $ports;
+        $this->category = $category;
     }
 
     /**
@@ -69,7 +69,9 @@ class PortUtilisation extends Mailable
      */
     public function build()
     {
-        return $this->view('services.grapher.email.port-utilisation')
-            ->subject( env('IDENTITY_NAME') . " :: Ports Utilisation Report" );
+        $c = \IXP\Services\Grapher\Graph::resolveCategory( $this->category );
+        return $this->view('services.grapher.email.ports-with-counts')
+            ->subject( env('IDENTITY_NAME') . " :: Ports with " . $c )
+            ->with( 'categoryDesc', $c );
     }
 }

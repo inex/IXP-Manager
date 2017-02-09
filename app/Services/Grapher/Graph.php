@@ -687,6 +687,14 @@ abstract class Graph {
     }
 
     /**
+     * Get the category description we're set to use
+     * @return string
+     */
+    public static function resolveCategory( string $category ): string {
+        return self::CATEGORY_DESCS[ $category ] ?? 'Unknown';
+    }
+
+    /**
      * Set the category we should use
      * @param int $v
      * @return \IXP\Services\Grapher Fluid interface
