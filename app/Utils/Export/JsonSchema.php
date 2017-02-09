@@ -253,7 +253,6 @@ class JsonSchema
                         $vlanentry['mac_address'] = implode( ":", str_split( $macaddrs[0]->getMac(), 2 ) );
                 }
 
-                $atLeastOneVlanNotPrivate = false;
                 foreach( $vi->getVlanInterfaces() as $vli )
                 {
                     if( $vli->getVlan()->getPrivate() ) {
@@ -262,7 +261,6 @@ class JsonSchema
 
                     $vlanentry = [];
 
-                    // what if there's more than one vli ?
                     $vlanentry['vlan_id'] = $vli->getVlan()->getId();
                     if ($vli->getIpv4enabled()) {
                         $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
