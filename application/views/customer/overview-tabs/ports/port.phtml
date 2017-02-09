@@ -112,10 +112,10 @@
             {/if}
             {if $pi->getSwitchPort()->getPatchPanelPort()}
             <tr>
-                <td><strong>Demarcation:</strong></td>
-                <td id="value">{$pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference()} - {$pi->getSwitchPort()->getPatchPanelPort()->getName()}</td>
+                <td><strong>XConnect Port:</strong></td>
+                <td id="value">{$pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference()} - <a href="{genUrl controller="patch-panel-port" action="list" patch-panel=$pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId()}">{$pi->getSwitchPort()->getPatchPanelPort()->getName()}</a></td>
                 <td></td>
-                <td><strong>Status:</strong></td>
+                <td><strong>XConnect Status:</strong></td>
                 <td id="value">
                     {$pi->getSwitchPort()->getPatchPanelPort()->resolveStates()}
                     {if $pi->getSwitchPort()->getPatchPanelPort()->getState() == \Entities\PatchPanelPort::STATE_CONNECTED}
