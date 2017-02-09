@@ -1,0 +1,182 @@
+<?php namespace IXP\Console\Commands\Grapher;
+
+/*
+ * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+
+use IXP\Contracts\Grapher\Backend as GrapherBackend;
+
+use D2EM;
+use Grapher;
+use IXP\Services\Grapher\Graph;
+use Mail;
+use IXP\Mail\Grapher\PortUtilisation as PortUtilisationMail;
+
+
+ /**
+  * Artisan command to email ports where a given error / discards count > 0
+  *
+  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+  * @category   Grapher
+  * @package    IXP\Console\Commands
+  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+  */
+class EmailPortsWithCounts extends GrapherCommand {
+
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'grapher:email-ports-with-counts {email}
+                        {--errors : Ports with an error count (default)}
+                        {--discards : Ports with a discard count}
+                        {--B|backend= : Which graphing backend to use}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Email ports with an error / discards count > 0';
+
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle(): int {
+
+        Grapher::backend( $this->option( 'backend' ) );
+        $this->setGrapher( Grapher::getFacadeRoot() );
+
+        if( ( $retval = $this->verifyArgsAndOptions() ) !== 0 ) {
+            return $retval;
+        }
+
+        
+
+        $day = date( 'Y-m-d', strtotime( '-1 days' ) );
+        $data = D2EM->getRepository( 'Entities\TrafficDaily' )->load( $day, $this->option('discards') ? Graph::CATEGORY_DISCARDS : Graph::CATEGORY_ERRORS );
+
+        foreach( $data as $d ) {
+            if( $d[ $inField ] == 0 && $d[ $outField ] == 0 )
+                continue;
+
+            $numWithCounts++;
+
+            if( $this->isVerbose() || $this->isDebug() )
+                echo "{$d['Customer']['name']}\t\tIN / OUT: {$d[ $inField ]} / {$d[ $outField ]}\n";
+
+            $graph = $grapher->customer( d2r('Customer')->find($d['Customer']['id']) )->setCategory( $category )->setPeriod( Graph::PERIOD_DAY );
+
+            $mrtg = $mail->createAttachment(
+                $graph->png(),
+                "image/png",
+                Zend_Mime::DISPOSITION_INLINE,
+                Zend_Mime::ENCODING_BASE64,
+                "{$d['Customer']['shortname']}-aggregate.png"
+            );
+
+            $this->view->mrtg_id = $mrtg->id = "{$d['Customer']['shortname']}-aggregate";
+            $this->view->ecust = $d['Customer'];
+            $this->view->in  = $d[ $inField  ];
+            $this->view->out = $d[ $outField ];
+            $mailHtml .= $this->view->render( 'statistics-cli/email/counts-member.phtml' );
+        }
+
+        /** @var \Entities\Customer[] $custs */
+        $custs = D2EM::getRepository( 'Entities\Customer' )->getCurrentActive( false, true, false );
+
+        $excess = [];
+        foreach( $custs as $c ) {
+            /** @var \Entities\VirtualInterface $vi */
+            foreach( $c->getVirtualInterfaces() as $vi )
+            {
+                if( ( $speed = $vi->speed() * 1000 * 1000 ) == 0 ) {
+                    continue;
+                }
+
+                if( count( $vi->getPhysicalInterfaces() ) == 1 ) {
+                    $graph = $this->grapher()->physint( $vi->getPhysicalInterfaces()[0] )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_WEEK );
+                } else {
+                    $graph = $this->grapher()->virtint( $vi )->setCategory( Graph::CATEGORY_BITS )->setPeriod( Graph::PERIOD_WEEK );
+                }
+                $stats   = $graph->statistics();
+                $utilIn  = ( $stats->maxIn()  * 100.0 ) / $speed;
+                $utilOut = ( $stats->maxOut() * 100.0 ) / $speed;
+
+                if( $utilIn > $this->option('threshold') || $utilOut > $this->option('threshold') ) {
+                    $excess[ $c->getId() ]['cust'] = $c;
+
+                    $port['speed']   = $speed/1000/1000/1000;
+                    $port['utilIn']  = $utilIn;
+                    $port['utilOut'] = $utilOut;
+                    $port['switch']  = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher();
+                    $port['png']     = $graph->png();
+
+                    if( $this->isVerbosityVerbose() ) {
+                        $this->warn( sprintf( "%c\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
+                    }
+
+                    $excess[ $c->getId() ]['ports'][] = $port;
+
+                } elseif( $this->isVerbosityVeryVerbose() ) {
+                    $this->info( sprintf( "%s\n\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
+                }
+            }
+        }
+
+        if( count( $excess ) ) {
+            Mail::to( $this->argument( 'email' ) )->send( new PortUtilisationMail( $excess, $this->option('threshold') ) );
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Check the various arguments and options that have been password to the console command
+     * @return int 0 for success or else an error code
+     */
+    protected function verifyArgsAndOptions(): int {
+        $emails = explode( ',', $this->argument('email') );
+
+        foreach( $emails as $e ) {
+            if( filter_var( $e, FILTER_VALIDATE_EMAIL ) === false ) {
+                $this->error( "Invalid email address: $e" );
+                return 254;
+            }
+        }
+
+        $t = $this->option('threshold');
+        if( !is_numeric($t) || (float)$t < 0.0 || (float)$t > 100.0 ) {
+            $this->error( "Invalid value for threshold. Must be between 0 and 100." );
+            return 253;
+        }
+
+        // all good :-D
+        return 0;
+    }
+
+}
