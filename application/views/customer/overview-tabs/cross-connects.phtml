@@ -1,22 +1,49 @@
 <table class="table">
     <thead>
         <th>Name</th>
-        <th>Patch Panel</th>
+        <th>Colocation Circuit Ref</th>
+        <th>Ticket Ref</th>
         <th>State</th>
+        <th>Assigned At</th>
+        <th>Chargeable</th>
     </thead>
     <tbody>
         {foreach $crossConnects as $patchPanelPort}
         <tr>
             <td>
-                {$patchPanelPort->getName()}
-            </td>
-            <td>
-                <a href="{genUrl controller='patchPanel' action="view" id=$patchPanelPort->getPatchPanel()->getId()}">
-                    {$patchPanelPort->getPatchPanel()->getId()} {$patchPanelPort->getPatchPanel()->getName()}
+                {$patchPanelPort->getPatchPanel()->getName()}
+                <a href="{genUrl controller="patch-panel-port" action="list" patch-panel=$patchPanelPort->getPatchPanel()->getId()}">
+                     {$patchPanelPort->getName()}
                 </a>
             </td>
             <td>
-                {$patchPanelPort->resolveStates()}
+                {$patchPanelPort->getColoCircuitRef()}
+            </td>
+            <td>
+                {$patchPanelPort->getTicketRef()}
+            </td>
+            <td>
+                {if $patchPanelPort->isAvailableForUse()}
+                    {assign "class" "success"}
+                {elseif $patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT}
+                    {assign "class" "warning"}
+                {elseif $patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED}
+                    {assign "class" "danger"}
+                {else}
+                    {assign "class" "info"}
+                {/if}
+
+
+                <span title="" class="label label-{$class}">
+                    {$patchPanelPort->resolveStates()}
+                </span>
+
+            </td>
+            <td>
+                {$patchPanelPort->getAssignedAtFormated()}
+            </td>
+            <td>
+                {$patchPanelPort->getChargeableText()}
             </td>
         </tr>
         {/foreach}
