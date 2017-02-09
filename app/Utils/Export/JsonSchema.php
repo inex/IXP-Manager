@@ -244,7 +244,7 @@ class JsonSchema
                     continue;
                 }
 
-                $vlanentry = [];
+                $vlanentries = [];
 
                 // MAC addresses added in 0.4
                 if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
@@ -259,9 +259,9 @@ class JsonSchema
                     if( $vli->getVlan()->getPrivate() ) {
                         continue;
                     }
-                    
-                    $atLeastOneVlanNotPrivate = true;
-                    
+
+                    $vlanentry = [];
+
                     // what if there's more than one vli ?
                     $vlanentry['vlan_id'] = $vli->getVlan()->getId();
                     if ($vli->getIpv4enabled()) {
@@ -276,9 +276,10 @@ class JsonSchema
                         $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
                     }
+                    $vlanentries[] = $vlanentry;
                 }
                 
-                if( !$atLeastOneVlanNotPrivate ) {
+                if( !count( $vlanentries ) ) {
                     continue;
                 }
 
@@ -289,7 +290,7 @@ class JsonSchema
 
                 $conn['state']       = 'active';
                 $conn['if_list']     = $iflist;
-                $conn['vlan_list'][] = $vlanentry;
+                $conn['vlan_list'][] = $vlanentries;
 
                 $connlist[] = $conn;
             }
