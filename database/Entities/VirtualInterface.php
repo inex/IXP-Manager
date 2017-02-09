@@ -382,44 +382,69 @@ class VirtualInterface
     }
 
 
-/**
- * Add sflowReceiver
- *
- * @param \Entities\SflowReceiver $sflowReceiver
- *
- * @return VirtualInterface
- */
-public function addSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
-{
-$this->SflowReceivers[] = $sflowReceiver;
+    /**
+     * Add sflowReceiver
+     *
+     * @param \Entities\SflowReceiver $sflowReceiver
+     *
+     * @return VirtualInterface
+     */
+    public function addSflowReceiver( \Entities\SflowReceiver $sflowReceiver )
+    {
+        $this->SflowReceivers[] = $sflowReceiver;
 
-return $this;
-}
+        return $this;
+    }
 
-/**
- * Remove sflowReceiver
- *
- * @param \Entities\SflowReceiver $sflowReceiver
- */
-public function removeSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
-{
-$this->SflowReceivers->removeElement($sflowReceiver);
-}
+    /**
+     * Remove sflowReceiver
+     *
+     * @param \Entities\SflowReceiver $sflowReceiver
+     */
+    public function removeSflowReceiver( \Entities\SflowReceiver $sflowReceiver )
+    {
+        $this->SflowReceivers->removeElement( $sflowReceiver );
+    }
 
 
-/**
- * Get sflowReceivers
- *
- * @return \Doctrine\Common\Collections\Collection
- */
-public function getSflowReceivers()
-{
-return $this->SflowReceivers;
-}
-/**
- * @var \Doctrine\Common\Collections\Collection
- */
-private $SflowReceivers;
+    /**
+     * Get sflowReceivers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSflowReceivers()
+    {
+        return $this->SflowReceivers;
+    }
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $SflowReceivers;
+
+
+    /**
+     * Get the speed of the LAG
+     *
+     * @param bool $connectedOnly Only consider physical interfaces with 'CONNECTED' state
+     * @return int
+     */
+    public function speed( $connectedOnly = true ): int {
+        $speed = 0;
+
+        /** @var PhysicalInterface $pi */
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $connectedOnly && !$pi->statusIsConnected() ) {
+                continue;
+            }
+            $speed += $pi->getSpeed();
+        }
+
+        return $speed;
+    }
+
+    /**
+     * Does this virtual in
+     */
 
 }
