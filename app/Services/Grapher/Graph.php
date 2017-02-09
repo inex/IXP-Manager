@@ -25,6 +25,7 @@ namespace IXP\Services\Grapher;
  */
 
 use IXP\Services\Grapher;
+
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
 
 use IXP\Exceptions\Services\Grapher\ParameterException;
@@ -296,13 +297,13 @@ abstract class Graph {
 
     /**
      * Grapher Service
-     * @var IXP\Services\Grapher
+     * @var Grapher
      */
     private $grapher;
 
     /**
      * Backend to use
-     * @var IXP\Contracts\Grapher\Backend
+     * @var GrapherBackend
      */
     private $backend = null;
 
@@ -314,19 +315,20 @@ abstract class Graph {
 
     /**
      * Statistics object (essentially a cache which is wiped as appropriate)
-     * @var IXP\Services\Grapher\Statistics
+     * @var Statistics
      */
     private $statistics = null;
 
     /**
      * Renderer object (essentially a cache which is wiped as appropriate)
-     * @var IXP\Services\Grapher\Renderer
+     * @var Renderer
      */
     private $renderer = null;
 
 
     /**
      * Constructor
+     * @param Grapher $grapher
      */
     public function __construct( Grapher $grapher ) {
         $this->setGrapher( $grapher );
@@ -334,7 +336,7 @@ abstract class Graph {
 
     /**
      * Get the grapher service
-     * @return IXP\Services\Grapher
+     * @return Grapher
      */
     protected function grapher(): Grapher {
         return $this->grapher;
@@ -342,8 +344,8 @@ abstract class Graph {
 
     /**
      * Set the grapher service
-     * @param IXP\Services\Grapher $grapher
-     * @return IXP\Services\Grapher\Graph
+     * @param Grapher $grapher
+     * @return Graph
      */
     protected function setGrapher( $grapher ): Graph {
         $this->grapher = $grapher;
@@ -354,7 +356,7 @@ abstract class Graph {
     /**
      * For a given graph object ($this), find a backend that can process it
      *
-     * @return IXP\Contracts\Grapher\Backend
+     * @return GrapherBackend
      */
     public function backend(): GrapherBackend {
         if( $this->backend === null ) {
@@ -470,7 +472,7 @@ abstract class Graph {
     /**
      * For a given graph object ($this), calculate various statistics
      *
-     * @return IXP\Contracts\Grapher\Statistics
+     * @return Statistics
      */
     public function statistics(): Statistics {
         if( $this->statistics === null ) {
@@ -482,7 +484,7 @@ abstract class Graph {
     /**
      * For a given graph object ($this), render it
      *
-     * @return IXP\Contracts\Grapher\Renderer
+     * @return Renderer
      */
     public function renderer(): Renderer {
         if( $this->renderer === null ) {
@@ -603,17 +605,17 @@ abstract class Graph {
      * @return bool
      */
     public function authorise(): bool {
-        return $this->deny();
+        $this->deny();
+        return false;
     }
 
     /**
      * Action to take when authorisation fails.
-     * @throws Illuminate\Auth\Access\AuthorizationException
-     * @return bool
+     * @throws AuthorizationException
+     * @param string $message Deny message
      */
-    protected function deny($message = 'This action is unauthorized.'): bool {
+    protected function deny($message = 'This action is unauthorized.') {
         throw new AuthorizationException($message);
-        return bool; // never executed in this example
     }
 
     /**
@@ -635,11 +637,11 @@ abstract class Graph {
     /**
      * Set the period we should use
      * @param int $v
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @return Graph Fluid interface
+     * @throws ParameterException
      */
     public function setPeriod( $v ): Graph {
-        if( !isset( self::PERIODS[ $v ] ) ) {
+        if( !isset( $this::PERIODS[ $v ] ) ) {
             throw new ParameterException('Invalid period ' . $v );
         }
 
@@ -653,7 +655,7 @@ abstract class Graph {
 
     /**
      * Get the protocol we're set to use
-     * @return int
+     * @return string
      */
     public function protocol(): string {
         return $this->protocol;
@@ -662,11 +664,11 @@ abstract class Graph {
     /**
      * Set the protocol we should use
      * @param string $v
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @return Graph Fluid interface
+     * @throws ParameterException
      */
     public function setProtocol( string $v ): Graph {
-        if( !isset( self::PROTOCOLS[ $v ] ) ) {
+        if( !isset( $this::PROTOCOLS[ $v ] ) ) {
             throw new ParameterException('Invalid protocol ' . $v );
         }
 
@@ -687,7 +689,8 @@ abstract class Graph {
     }
 
     /**
-     * Get the category description we're set to use
+     * Get the category description for a given category identifier
+     * @param string $category
      * @return string
      */
     public static function resolveCategory( string $category ): string {
@@ -696,12 +699,12 @@ abstract class Graph {
 
     /**
      * Set the category we should use
-     * @param int $v
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param string $v
+     * @return Graph Fluid interface
+     * @throws ParameterException
      */
-    public function setCategory( $v ): Graph {
-        if( !isset( self::CATEGORIES[ $v ] ) ) {
+    public function setCategory( string $v ): Graph {
+        if( !isset( $this::CATEGORIES[ $v ] ) ) {
             throw new ParameterException('Invalid category ' . $v );
         }
 
@@ -723,12 +726,12 @@ abstract class Graph {
 
     /**
      * Set the type we should use
-     * @param int $v
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param string $v
+     * @return Graph Fluid interface
+     * @throws ParameterException
      */
-    public function setType( $v ): Graph {
-        if( !isset( self::TYPES[ $v ] ) ) {
+    public function setType( string $v ): Graph {
+        if( !isset( $this::TYPES[ $v ] ) ) {
             throw new ParameterException('Invalid type ' . $v );
         }
 
@@ -748,7 +751,7 @@ abstract class Graph {
      * Will pass through thrown exceptions from setXXX() functions
      *
      * @param array $params
-     * @return \IXP\Services\Grapher Fluid interface
+     * @return Graph Fluid interface
      */
     public function setParamsFromArray( array $params ): Graph {
         foreach( [ 'type', 'category', 'period', 'protocol'] as $param ){

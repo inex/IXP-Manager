@@ -72,7 +72,7 @@ interface Backend {
     public function isMonolithicConfigurationSupported(): bool;
 
     /**
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see Backend::isMonolithicConfigurationSupported() for an explanation
      *
      * This function indicates whether this graphing engine supports multiple files to a directory
      *
@@ -100,8 +100,8 @@ interface Backend {
      * For monolithic files, returns a single element array. Otherwise
      * an array keyed by the filename (with optional local directory path).
      *
-     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
-     * @param int $config_type The type of configuration to generate
+     * @param IXP $ixp The IXP to generate the config for (multi-IXP mode)
+     * @param int $type The type of configuration to generate
      * @return array
      */
     public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array;
@@ -110,7 +110,7 @@ interface Backend {
      * Examines the provided graph object and determines if this backend is able to
      * process the request or not.
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return bool
      */
     public function canProcess( Graph $graph ): bool;
@@ -136,7 +136,7 @@ interface Backend {
      *
      * NB: The above **MUST** be ordered with the oldest first.
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return array
      */
     public function data( Graph $graph ): array;
@@ -147,10 +147,21 @@ interface Backend {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return string
      */
     public function png( Graph $graph ): string;
+
+    /**
+     * Get the RRD file for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param Graph $graph
+     * @return string
+     */
+    public function rrd( Graph $graph ): string;
+
 
     /**
      * Get a complete list of functionality that this backend supports.
