@@ -2,7 +2,12 @@
 
 namespace Repositories;
 
+use DateTime;
+
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+
+use Entities\Customer as CustomerEntity;
 
 /**
  * TrafficDaily
@@ -136,6 +141,36 @@ class TrafficDaily extends EntityRepository
             ->setMaxResults( $rows )
             ->getArrayResult();
     }
-    
-    
+
+    /**
+     * Get at most the given number of recent traffic stats for a given customer
+     * weekly (i.e. only every Tuesday)
+     *
+     * @param CustomerEntity $customer The customer to get entries for
+     * @param int $rows The number of entries for fetch
+     * @param string $category The traffic category (bits, packets, etc)
+     * @param DateTime $latest The date to start backwards from (weekly)
+     * @return array The entries found
+     */
+    public function getWeeklyAsArray( CustomerEntity $customer, int $rows, string $category, DateTime $latest ) {
+
+        $rsm = new ResultSetMappingBuilder( $this->getEntityManager() );
+        $rsm->addRootEntityFromClassMetadata('Entities\TrafficDaily', 'td');
+
+        return $this->getEntityManager()->createNativeQuery(
+            "SELECT " . $rsm->generateSelectClause() . "
+                 FROM traffic_daily td
+                 WHERE td.cust_id = ? AND td.category = ? AND td.day <= ? AND DATE_FORMAT(day,'%w') = DATE_FORMAT(?,'%w')
+                 ORDER BY td.day DESC LIMIT ?",
+            $rsm
+        )
+            ->setParameter( 1, $customer->getId() )
+            ->setParameter( 2, $category )
+            ->setParameter( 3, $latest->format('Y-m-d') )
+            ->setParameter( 4, $latest->format('Y-m-d') )
+            ->setParameter( 5, $rows )
+            ->getArrayResult();
+    }
+
+
 }

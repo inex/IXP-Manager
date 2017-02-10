@@ -51,6 +51,7 @@ class GrapherServiceProvider extends ServiceProvider {
     protected $commands = [
         'IXP\Console\Commands\Grapher\EmailPortsWithCounts',
         'IXP\Console\Commands\Grapher\EmailPortUtilisation',
+        'IXP\Console\Commands\Grapher\EmailTrafficDeltas',
         'IXP\Console\Commands\Grapher\GenerateConfiguration',
         'IXP\Console\Commands\Grapher\UploadStatsToDb',
 
