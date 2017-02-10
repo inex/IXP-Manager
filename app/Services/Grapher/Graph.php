@@ -115,6 +115,11 @@ abstract class Graph {
     const CATEGORY_DISCARDS = 'discs';
 
     /**
+     * 'Broadcasts' category for graphs
+     */
+    const CATEGORY_BROADCASTS = 'bcasts';
+
+    /**
      * Default category
      */
     const CATEGORY_DEFAULT  = self::CATEGORY_BITS;
@@ -129,10 +134,11 @@ abstract class Graph {
      * Array of valid categories for graphs
      */
     const CATEGORIES = [
-        self::CATEGORY_BITS     => self::CATEGORY_BITS,
-        self::CATEGORY_PACKETS  => self::CATEGORY_PACKETS,
-        self::CATEGORY_ERRORS   => self::CATEGORY_ERRORS,
-        self::CATEGORY_DISCARDS => self::CATEGORY_DISCARDS
+        self::CATEGORY_BITS       => self::CATEGORY_BITS,
+        self::CATEGORY_PACKETS    => self::CATEGORY_PACKETS,
+        self::CATEGORY_ERRORS     => self::CATEGORY_ERRORS,
+        self::CATEGORY_DISCARDS   => self::CATEGORY_DISCARDS,
+        self::CATEGORY_BROADCASTS => self::CATEGORY_BROADCASTS,
     ];
 
     /**
@@ -148,10 +154,11 @@ abstract class Graph {
      * Array of valid categories for graphs
      */
     const CATEGORY_DESCS = [
-        self::CATEGORY_BITS     => 'Bits',
-        self::CATEGORY_PACKETS  => 'Packets',
-        self::CATEGORY_ERRORS   => 'Errors',
-        self::CATEGORY_DISCARDS => 'Discards',
+        self::CATEGORY_BITS       => 'Bits',
+        self::CATEGORY_PACKETS    => 'Packets',
+        self::CATEGORY_ERRORS     => 'Errors',
+        self::CATEGORY_DISCARDS   => 'Discards',
+        self::CATEGORY_BROADCASTS => 'Broadcasts',
     ];
 
     /**
