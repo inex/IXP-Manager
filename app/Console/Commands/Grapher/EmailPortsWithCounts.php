@@ -83,7 +83,7 @@ class EmailPortsWithCounts extends GrapherCommand {
         $ports = $this->emailPortsWithCounts( $category );
 
         if( count( $ports ) ) {
-            Mail::to( $this->argument( 'email' ) )->send( new PortsWithCountsMail( $ports, $category ) );
+            Mail::to( explode( ',', $this->argument( 'email' ) ) )->send( new PortsWithCountsMail( $ports, $category ) );
         } else if( $this->isVerbosityVerbose() ) {
             $this->info("No ports with packet counts > 0");
         }
