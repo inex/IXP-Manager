@@ -111,7 +111,7 @@ class UploadStatsToDb extends GrapherCommand {
             }
 
             D2EM::getRepository( 'Entities\TrafficDaily' )->deleteBefore(
-                new DateTime( "-" . config( 'grapher.cli.traffic_differentials.stddev_calc_length', 60 ) . " days" )
+                new DateTime( "-" . config( 'grapher.cli.traffic_daily.delete_old_days', 140 ) . " days" )
             );
         }
 
