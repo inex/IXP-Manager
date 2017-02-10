@@ -55,6 +55,12 @@
 #				support.
 
 use strict;
+
+use FindBin qw($Bin);
+use File::Spec;
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'perl-lib', 'IXPManager', 'lib' );
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), 'lib', 'perl5' );
+
 use Net_SNMP_util;
 use Getopt::Long;
 use Data::Dumper;
@@ -62,7 +68,15 @@ use Data::Dumper;
 use IXPManager::Config;
 use IXPManager::Const;
 
-my $ixpconfig = new IXPManager::Config;
+my @candidates = (
+  File::Spec->catdir( $Bin, File::Spec->updir(), 'etc', 'ixpmanager.conf' ),
+  '/usr/local/etc/ixpmanager.conf',
+  '/etc/ixpmanager.conf',
+);
+my $configfile = ( map { ( -f $_ )? $_ : () } @candidates )[0] ||
+  die "Cannot find a suitable config file. I tried to find one of these files:".join(' ',@candidates);
+
+my $ixpconfig = IXPManager::Config->new( configfile => $configfile );
 my $dbh = $ixpconfig->{db};
 my $debug = 0;
 my $do_nothing = 0;
