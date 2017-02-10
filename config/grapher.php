@@ -100,4 +100,32 @@ return [
     ],
 
 
+
+    /*
+     |--------------------------------------------------------------------------
+     |
+     | CLI Tool Settings
+     |
+     | Relate to artisan grapher:xxx
+     |
+     | See: FIXME link to docs
+     |
+     */
+    'cli' => [
+        'traffic_differentials' => [
+            'stddev_calc_length' => env( 'GRAPHER_CLI_TRAFFICDIFFERENTIALS_CALC_LEN', 60 ),
+        ],
+
+        'traffic_daily' => [
+
+            // the traffic_daily table can get pretty full and most of the long term information
+            // are in the MRTG / other stats files anyway. If you want to keep this data in the
+            // database, set the following to false. If it's true, when the daily task runs
+            // to populate this table, it will also delete any entries older than
+            // cli.traffic_differentials.stddev_calc_length days (this parameter is set above).
+            'delete_old' => env( 'GRAPHER_CLI_TRAFFICDAILY_DELETE_OLD', true ),
+        ],
+    ],
+
+
 ];

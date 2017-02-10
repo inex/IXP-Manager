@@ -323,6 +323,18 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     }
 
     /**
+     * Get the RRD file for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param Graph $graph
+     * @return string
+     */
+    public function rrd( Graph $graph ): string {
+        return '';
+    }
+
+    /**
      * For larger IXPs, allow sharding of directories over 16 possible base directories
      * @param int $id The customer entity id
      * @return string shared path -> e.g. 18 -> 18 % 16 = 2 / 00016 -> 2/00016
