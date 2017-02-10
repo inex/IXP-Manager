@@ -108,7 +108,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options = $this->setupIxpTools($options);
         $options = $this->setupDisabledFrontendControllers($options);
         $options = $this->setupMailingLists($options);
-        $options = $this->setupGrapherCli($options);
         $options = $this->setupContactGroups($options);
         $options = $this->setupLogger($options);
         $options = $this->setupMailer($options);
@@ -375,33 +374,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
                     $options['weathermap'][$id][$k]  = $v;
                 }
             }
-        }
-
-        return $options;
-    }
-
-
-    /**
-     * Setup legacy Grapher CLI tools.
-     */
-    private function setupGrapherCli( array $options ): array {
-
-        if( is_array( config('grapher_cli.cli') ) ) {
-            foreach( config('grapher_cli.cli') as $fn => $details ) {
-                foreach( $details as $k => $v ) {
-                    if( $k == 'recipients' ) {
-                        foreach( $details[$k] as $r ) {
-                            $options['cli'][$fn][$k][] = $r;
-                        }
-                    } else {
-                        $options['cli'][$fn][$k]  = $v;
-                    }
-                }
-            }
-        }
-
-        if( config( 'grapher_cli.cli.traffic_daily.delete_old' ) ) {
-            $options['cli']['traffic_daily']['delete_old'] = config( 'grapher_cli.cli.traffic_daily.delete_old' );
         }
 
         return $options;
