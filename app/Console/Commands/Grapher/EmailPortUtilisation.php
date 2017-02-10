@@ -74,7 +74,7 @@ class EmailPortUtilisation extends GrapherCommand {
         }
 
         /** @var \Entities\Customer[] $custs */
-        $custs = D2EM::getRepository( 'Entities\Customer' )->getCurrentActive( false, true, false );
+        $custs = D2EM::getRepository( 'Entities\Customer' )->getCurrentActive( false, true, true );
 
         $excess = [];
         foreach( $custs as $c ) {
@@ -104,7 +104,7 @@ class EmailPortUtilisation extends GrapherCommand {
                     $port['png']     = $graph->png();
 
                     if( $this->isVerbosityVerbose() ) {
-                        $this->warn( sprintf( "%c\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
+                        $this->warn( sprintf( "%s\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
                     }
 
                     $excess[ $c->getId() ]['ports'][] = $port;
