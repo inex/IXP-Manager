@@ -82,7 +82,7 @@ class EmailTrafficDeltas extends GrapherCommand {
         $ports = $this->portsWithDelta( $day, floatval($this->option('stddev')) );
 
         if( count( $ports ) ) {
-            Mail::to( $this->argument( 'email' ) )->send( new TrafficDeltasMailable( $ports, floatval($this->option('stddev')), $day ) );
+            Mail::to( explode( ',', $this->argument( 'email' ) ) )->send( new TrafficDeltasMailable( $ports, floatval($this->option('stddev')), $day ) );
         } else if( $this->isVerbosityVerbose() ) {
             $this->info("No ports have a traffic delta within the requested deviation");
         }
