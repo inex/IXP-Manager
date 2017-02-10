@@ -104,7 +104,7 @@ class EmailPortUtilisation extends GrapherCommand {
                     $port['png']     = $graph->png();
 
                     if( $this->isVerbosityVerbose() ) {
-                        $this->warn( sprintf( "%s\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
+                        $this->warn( sprintf( "%s\n\tIN %0.2f%%\tOUT: %0.2f%%", $c->getName(), $utilIn, $utilOut ) );
                     }
 
                     $excess[ $c->getId() ]['ports'][] = $port;
