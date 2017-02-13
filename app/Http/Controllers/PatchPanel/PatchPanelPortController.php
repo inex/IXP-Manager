@@ -28,7 +28,9 @@ use D2EM;
 Use DateTime;
 
 use Entities\Customer;
+use Entities\PatchPanel;
 use Entities\PatchPanelPort;
+use Entities\PatchPanelPortHistory;
 use Entities\Switcher;
 use Entities\SwitchPort;
 
@@ -39,6 +41,8 @@ use IXP\Http\Requests\StorePatchPanelPort;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+
+use Illuminate\Http\RedirectResponse;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
@@ -66,8 +70,16 @@ class PatchPanelPortController extends Controller
      * @return  view
      */
     public function index(int $id = null): View{
+        $patchPanel = false;
+        if($id != null) {
+            if (!($patchPanel = D2EM::getRepository(PatchPanel::class)->find($id))) {
+                abort(404);
+            }
+        }
+
         return view('patch-panel-port/index')->with([
-            'patchPanelPorts'    => D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort($id)
+            'patchPanelPorts'               => D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort($id),
+            'patchPanel'                    => $patchPanel
         ]);
     }
 
@@ -95,6 +107,8 @@ class PatchPanelPortController extends Controller
 
             Former::populate( array('number'                => $patchPanelPort->getNumber(),
                                     'patch_panel'           => $patchPanelPort->getPatchPanel()->getName(),
+                                    'colo_circuit_ref'      => $patchPanelPort->getColoCircuitRef(),
+                                    'ticket_ref'            => $patchPanelPort->getTicketRef(),
                                     'switch'                => $patchPanelPort->getSwitchId(),
                                     'switch_port'           => $patchPanelPort->getSwitchPortId(),
                                     'customer'              => $patchPanelPort->getCustomerId(),
@@ -123,7 +137,7 @@ class PatchPanelPortController extends Controller
         return view('patch-panel-port/edit')->with([
                 'states'            => \Entities\PatchPanelPort::$STATES,
                 'customers'         => D2EM::getRepository(Customer::class)->getNames(true),
-                'switches'          => D2EM::getRepository(Switcher::class)->getNames(true),
+                'switches'          => D2EM::getRepository(Switcher::class)->getNames(true, Switcher::TYPE_SWITCH),
                 'switchPorts'       => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId(),null, $patchPanelPort->getSwitchPortId()),
                 'patchPanelPort'    => $patchPanelPort,
                 'partnerPorts'      => $partnerPorts,
@@ -194,15 +208,40 @@ class PatchPanelPortController extends Controller
             $patchPanelPort->setLastStateChange(new \DateTime(date('Y-m-d')));
         }
 
-        $patchPanelPort->setCustomer(($request->input('customer')) ? D2EM::getRepository(Customer::class)->find($request->input('customer')) : null);
-
         $patchPanelPort->setNotes(($request->input('notes') == '' ? null : $request->input('notes')));
 
-        $patchPanelPort->setAssignedAt(($request->input('assigned_at') == '' ? null : new \DateTime($request->input('assigned_at'))));
-        $patchPanelPort->setConnectedAt(($request->input('connected_at') == '' ? null : new \DateTime($request->input('connected_at'))));
+        $patchPanelPort->setColoCircuitRef($request->input('colo_circuit_ref'));
+        $patchPanelPort->setTicketRef($request->input('ticket_ref'));
 
-        $patchPanelPort->setCeaseRequestedAt(($request->input('ceased_requested_at') == '' ? null : new \DateTime($request->input('ceased_requested_at'))));
-        $patchPanelPort->setCeasedAt(($request->input('ceased_at') == '' ? null : new \DateTime($request->input('ceased_at'))));
+        $patchPanelPort->setCustomer(($request->input('customer')) ? D2EM::getRepository(Customer::class)->find($request->input('customer')) : null);
+
+        if($request->input('customer') and $request->input('assigned_at') == ''){
+            $patchPanelPort->setAssignedAt(new \DateTime(date('Y-m-d')));
+        }
+        else{
+            $patchPanelPort->setAssignedAt(($request->input('assigned_at') == '' ? null : new \DateTime($request->input('assigned_at'))));
+        }
+
+        if($request->input('state') == PatchPanelPort::STATE_CONNECTED and $request->input('connected_at') == ''){
+            $patchPanelPort->setConnectedAt(new \DateTime(date('Y-m-d')));
+        }
+        else{
+            $patchPanelPort->setConnectedAt(($request->input('connected_at') == '' ? null : new \DateTime($request->input('connected_at'))));
+        }
+
+        if($request->input('state') == PatchPanelPort::STATE_AWAITING_CEASE and $request->input('ceased_requested_at') == ''){
+            $patchPanelPort->setCeaseRequestedAt(new \DateTime(date('Y-m-d')));
+        }
+        else{
+            $patchPanelPort->setCeaseRequestedAt(($request->input('ceased_requested_at') == '' ? null : new \DateTime($request->input('ceased_requested_at'))));
+        }
+
+        if($request->input('state') == PatchPanelPort::STATE_CEASED and $request->input('ceased_at') == ''){
+            $patchPanelPort->setCeasedAt(new \DateTime(date('Y-m-d')));
+        }
+        else{
+            $patchPanelPort->setCeasedAt(($request->input('ceased_at') == '' ? null : new \DateTime($request->input('ceased_at'))));
+        }
 
         $patchPanelPort->setInternalUse($request->input('internal_use'));
         $patchPanelPort->setChargeable($request->input('chargeable'));
@@ -225,9 +264,13 @@ class PatchPanelPortController extends Controller
                 $patchPanelPort->addDuplexSlavePort($duplexPort);
             }
         }
-        D2EM::flush($patchPanelPort);
+        D2EM::flush();
 
-        return Redirect::to('patch-panel-port/list');
+        if($patchPanelPort->getState() == PatchPanelPort::STATE_CEASED){
+            $patchPanelPort->createHistory();
+        }
+
+        return Redirect::to('patch-panel-port/list/patch-panel/'.$patchPanelPort->getPatchPanel()->getId());
 
     }
 
@@ -307,5 +350,97 @@ class PatchPanelPortController extends Controller
             abort(404);
         }
         return view('patch-panel-port/view')->with(['patchPanelPort'    => $patchPanelPort]);
+    }
+
+    /**
+     * Display all the patch panel port histories
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @parama  int $id patch panel port id
+     * @return  view
+     */
+    public function history(int $id = null): View{
+        $patchPanelPort = false;
+        if($id != null) {
+            if (!($patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id))) {
+                abort(404);
+            }
+        }
+
+        return view('patch-panel-port/history')->with([
+            'histories'                 => D2EM::getRepository(PatchPanelPortHistory::class)->getAllPatchPanelPortHistories($id),
+            'patchPanelPort'            => $patchPanelPort
+        ]);
+    }
+
+    /**
+     * change the status of a patch panel port and set the date value related to the status
+     *
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     *
+     * @param int $id
+     * @param int $status
+     * @return RedirectResponse
+     */
+    public function changeStatus( int $id, int $status ): RedirectResponse {
+        $error = array('type' => '', 'message' => '');
+        $message = '';
+        if( !( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
+            abort(404);
+        }
+
+        if(array_key_exists($status,PatchPanelPort::$STATES)){
+            switch ($status) {
+                case PatchPanelPort::STATE_CONNECTED :
+                    $patchPanelPort->setState(PatchPanelPort::STATE_CONNECTED);
+                    $patchPanelPort->setConnectedAt(new \DateTime(date('Y-m-d')));
+                    break;
+                case PatchPanelPort::STATE_AWAITING_CEASE :
+                    $patchPanelPort->setState(PatchPanelPort::STATE_AWAITING_CEASE);
+                    $patchPanelPort->setCeaseRequestedAt(new \DateTime(date('Y-m-d')));
+                    break;
+                case PatchPanelPort::STATE_CEASED :
+                    $patchPanelPort->setState(PatchPanelPort::STATE_CEASED);
+                    $patchPanelPort->setCeasedAt(new \DateTime(date('Y-m-d')));
+                    break;
+            }
+
+            $patchPanelPort->setLastStateChange(new \DateTime(date('Y-m-d')));
+            D2EM::persist($patchPanelPort);
+            D2EM::flush();
+
+            if($status == PatchPanelPort::STATE_CEASED){
+                $patchPanelPort->createHistory();
+                $message = ' - An history has been generated after ceased.';
+            }
+
+            $error['type'] = 'success';
+            $error['message'] = 'The patch panel port has been set to '.$patchPanelPort->resolveStates().$message;
+        }
+        else{
+            $error['type'] = 'error';
+            $error['message'] = 'An error occurred !';
+        }
+
+        return redirect( '/patch-panel-port/list/patch-panel/'.$patchPanelPort->getPatchPanel()->getId() )->with( $error['type'], $error['message'] );
+    }
+
+    /**
+     * set notes via the patch panel port list
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @return  JSON customer object
+     */
+    public function setNotes(Request $request){
+        if( ( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($request->input('pppId')) ) ) {
+            $success = true;
+            $patchPanelPort->setNotes($request->input('notes'));
+            D2EM::persist($patchPanelPort);
+            D2EM::flush($patchPanelPort);
+        }
+        else{
+            $success = false;
+        }
+
+        return response()->json(array('success' => $success));
     }
 }

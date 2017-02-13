@@ -209,6 +209,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getPrefix()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrefix', []);
+
+        return parent::getPrefix();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setState($state)
     {
 
@@ -242,7 +253,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getColoCircuitRef(): string
+    public function getColoCircuitRef()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getColoCircuitRef', []);
@@ -264,7 +275,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getTicketRef(): string
+    public function getTicketRef()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTicketRef', []);
@@ -642,6 +653,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getHistoryCount()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHistoryCount', []);
+
+        return parent::getHistoryCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
     {
 
@@ -879,6 +901,28 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isDuplexPort', []);
 
         return parent::isDuplexPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resetPatchPanelPort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resetPatchPanelPort', []);
+
+        return parent::resetPatchPanelPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createHistory()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'createHistory', []);
+
+        return parent::createHistory();
     }
 
 }

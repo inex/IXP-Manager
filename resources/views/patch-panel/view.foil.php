@@ -20,7 +20,12 @@
             </div>
             <div class="form-group">
                 <div>
-                    Name : <b> <?= $t->patchPanel->getName() ?> </b>
+                    Name :
+                    <b>
+                        <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>">
+                            <?= $t->patchPanel->getName() ?>
+                        </a>
+                    </b>
                 </div>
             </div>
             <div class="form-group">

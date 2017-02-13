@@ -21,10 +21,12 @@
 
     <?= Former::text( 'name' )
             ->label( 'Patch Panel Name' )
+            ->help('help text');
     ?>
 
     <?= Former::text( 'colo_reference' )
             ->label( 'Colocation reference' )
+            ->help('help text');
     ?>
 
     <?= Former::select( 'cabinet' )
@@ -32,6 +34,7 @@
             ->fromQuery( $t->cabinets, 'name' )
             ->placeholder( 'Choose a Cabinet' )
             ->addClass( 'chzn-select' )
+            ->help('help text');
     ?>
 
     <?= Former::select( 'cable_type' )
@@ -39,6 +42,7 @@
             ->options(   Entities\PatchPanel::$CABLE_TYPES )
             ->placeholder( 'Choose a Cable Type' )
             ->addClass( 'chzn-select' )
+            ->help('help text');
     ?>
 
     <?= Former::select( 'connector_type' )
@@ -46,6 +50,7 @@
             ->options( Entities\PatchPanel::$CONNECTOR_TYPES )
             ->placeholder( 'Choose a Connector Type')
             ->addClass( 'chzn-select' )
+            ->help('help text');
     ?>
 
     <?= Former::number( 'numberOfPorts' )
@@ -59,11 +64,14 @@
         ->placeholder( 'Optional port prefix' )
         ->readonly( $t->patchPanel && $t->patchPanel->getPortPrefix() )
         ->appendIcon( 'prefix glyphicon glyphicon-info-sign' )
+        ->help('help text');
     ?>
 
     <?= Former::date( 'installation_date' )
         ->label( 'Installation Date' )
         ->append( '<button class="btn-default btn" id="date-today" type="button">Today</button>' )
+        ->value(date('Y-m-d'))
+        ->help('help text');
     ?>
 
     <?= Former::hidden( 'id' )
@@ -72,7 +80,8 @@
 
     <?= Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_button('Cancel')
+            Former::default_button('Cancel'),
+            Former::success_button('Help')->id('help-btn')
         );
     ?>
 
@@ -84,10 +93,17 @@
 <?php $this->section('scripts') ?>
 <script>
 $(document).ready( function() {
+    $('.help-block').hide();
 
-//    if( $( "#id" ).val() ) {
-//        $( "#port_prefix" ).prop( 'readonly', true );
-//    }
+    $( "#help-btn" ).click( function() {
+        if($( ".help-block" ).css('display') == 'none'){
+            $( ".help-block" ).show();
+        }
+        else{
+            $( ".help-block" ).hide();
+        }
+
+    });
 
     $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help' ).attr( 'data-content' ,
         'Please set the number of ports that you want to create for this patch panel. Note that duplex ports should be entered as two ports.' );

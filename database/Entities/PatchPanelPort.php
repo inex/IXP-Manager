@@ -164,7 +164,7 @@ class PatchPanelPort
     }
 
     /**
-     * Get number
+     * Get name
      *
      * @return integer
      */
@@ -175,6 +175,16 @@ class PatchPanelPort
             $name .= '/'.$this->getDuplexSlavePortName();
         }
         return $name;
+    }
+
+    /**
+     * Get name
+     *
+     * @return integer
+     */
+    public function getPrefix()
+    {
+        return $this->getPatchPanel()->getPortPrefix();
     }
 
     /**
@@ -218,7 +228,7 @@ class PatchPanelPort
      *
      * @return string
      */
-    public function getColoCircuitRef(): string
+    public function getColoCircuitRef()
     {
         return $this->colo_circuit_ref;
     }
@@ -241,7 +251,7 @@ class PatchPanelPort
      *
      * @return string
      */
-    public function getTicketRef(): string
+    public function getTicketRef()
     {
         return $this->ticket_ref;
     }
@@ -608,6 +618,16 @@ class PatchPanelPort
     }
 
     /**
+     * Get number of patchPanelPortHistory
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getHistoryCount()
+    {
+        return count($this->patchPanelPortHistory);
+    }
+
+    /**
      * Add duplexSlavePort
      *
      * @param \Entities\PatchPanelPort $duplexSlavePort
@@ -804,7 +824,7 @@ class PatchPanelPort
      */
     public function getCustomerName()
     {
-        return ($this->getCustomer() != null) ? $this->getCustomer()->getName() : null ;
+        return ($this->getCustomer() != null) ? $this->getCustomer()->getAbbreviatedName() : null ;
     }
 
 
@@ -840,7 +860,7 @@ class PatchPanelPort
         $duplexPort->setCeasedAt($this->getCeasedAt());
 
         D2EM::persist($duplexPort);
-        D2EM::flush($duplexPort);
+        D2EM::flush();
 
         return $duplexPort;
     }
@@ -878,4 +898,80 @@ class PatchPanelPort
         return $this->getDuplexMasterPort() !== null || count( $this->getDuplexSlavePorts() ) > 0;
     }
 
+
+    /**
+     * Reset the data of a patch panel port after ceased
+     * @author     Yann Robin <yann@islandbridgenetworks.ie>
+     * @return string
+     */
+    public function resetPatchPanelPort(){
+        $this->setState(PatchPanelPort::STATE_AVAILABLE);
+        $this->setLastStateChange(new \DateTime(date('Y-m-d')));
+        $this->setColoCircuitRef('');
+        $this->setTicketRef('');
+        $this->setNotes(null);
+        $this->setAssignedAt(null);
+        $this->setConnectedAt(null);
+        $this->setCeaseRequestedAt(null);
+        $this->setCeasedAt(null);
+        $this->setInternalUse(false);
+        $this->setChargeable(false);
+        $this->setCustomer(null);
+        $this->setSwitchPort(null);
+        $this->setDuplexMasterPort(null);
+
+        if($this->hasSlavePort()){
+            $this->removeDuplexSlavePort($this->getDuplexSlavePort());
+        }
+
+        D2EM::persist($this);
+
+    }
+
+    /**
+     * Create a patch panel port history after ceased
+     * Duplicate all the datas of the current patch panel post in the history table
+     * and reset the patch panel port when it has been duplicated
+     *
+     * @author     Yann Robin <yann@islandbridgenetworks.ie>
+     * @return string
+     */
+    public function createHistory(){
+        $pppHistory = new PatchPanelPortHistory();
+
+        $pppHistory->setPatchPanelPort($this);
+        $pppHistory->setNumber($this->getNumber());
+        $pppHistory->setState($this->getState());
+        $pppHistory->setColoCircuitRef($this->getColoCircuitRef());
+        $pppHistory->setTicketRef($this->getTicketRef());
+        $pppHistory->setNotes($this->getNotes());
+        $pppHistory->setAssignedAt($this->getAssignedAt());
+        $pppHistory->setConnectedAt($this->getConnectedAt());
+        $pppHistory->setCeaseRequestedAt($this->getCeaseRequestedAt());
+        $pppHistory->setCeasedAt($this->getCeasedAt());
+        $pppHistory->setInternalUse($this->getInternalUse());
+        $pppHistory->setChargeable($this->getChargeable());
+        $pppHistory->setCustomer($this->getCustomerName());
+        $pppHistory->setSwitchport($this->getSwitchName().' / '.$this->getSwitchPortName());
+
+        $this->addPatchPanelPortHistory($pppHistory);
+
+        D2EM::persist($pppHistory);
+        D2EM::flush();
+
+        if($this->hasSlavePort()){
+            $slavePortHistory = clone $pppHistory;
+            $slavePortHistory->setDuplexMasterPort($pppHistory);
+            D2EM::persist($slavePortHistory);
+        }
+
+
+        if($this->hasSlavePort()){
+            $slavePort = $this->getDuplexSlavePort();
+            $slavePort->resetPatchPanelPort();
+        }
+        $this->resetPatchPanelPort();
+
+        D2EM::flush();
+    }
 }

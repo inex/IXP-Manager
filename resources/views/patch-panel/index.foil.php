@@ -31,9 +31,9 @@
             <?= session()->get('success') ?>
         </div>
     <?php endif; ?>
-    <?php if(session()->has('fail')): ?>
+    <?php if(session()->has('error')): ?>
         <div class="alert alert-danger" role="alert">
-            <b>Error : </b><?= session()->get('fail') ?>
+            <b>Error : </b><?= session()->get('error') ?>
         </div>
     <?php endif; ?>
     <table id='patch-panel-list' class="table ">
@@ -53,7 +53,10 @@
                 /** @var Entities\PatchPanel $patchPanel */ ?>
                 <tr>
                     <td>
-                        <?= $patchPanel->getName() ?>
+                        <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$patchPanel->getId()?>">
+                            <?= $patchPanel->getName() ?>
+                        </a>
+
                     </td>
                     <td>
                         <a href="<?= url('/cabinet/view' ).'/'.$patchPanel->getCabinet()->getId()?>">
@@ -157,7 +160,9 @@
                         }
                     },
                     callback: function (result) {
-                        document.location.href = url;
+                        if(result){
+                            document.location.href = url;
+                        }
                     }
                 });
 

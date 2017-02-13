@@ -24,11 +24,23 @@
 ?>
 
     <?= Former::text('number')
-        ->label('Patch Panel Port Name');
+        ->label('Patch Panel Port Name')
+        ->help('help text');
     ?>
 
     <?= Former::text('patch_panel')
         ->label('Patch Panel')
+        ->help('help text');
+    ?>
+
+    <?= Former::text('colo_circuit_ref')
+        ->label('Colocation Circuit Reference')
+        ->help('help text');
+    ?>
+
+    <?= Former::text('ticket_ref')
+        ->label('Ticket Reference')
+        ->help('help text');
     ?>
 
     <?= Former::checkbox('duplex')?>
@@ -39,6 +51,7 @@
             ->fromQuery($t->partnerPorts, 'name')
             ->placeholder('Choose a partner port')
             ->addClass('chzn-select')
+            ->help('help text');
         ?>
     </span>
 
@@ -56,6 +69,7 @@
             ->fromQuery($t->switches, 'name')
             ->placeholder('Choose a switch')
             ->addClass('chzn-select')
+            ->help('help text');
         ?>
 
         <?= Former::select('switch_port')
@@ -63,6 +77,7 @@
             ->fromQuery($t->switchPorts, 'name')
             ->placeholder('Choose a switch port')
             ->addClass('chzn-select')
+            ->help('help text');
         ?>
     </div>
 
@@ -79,6 +94,7 @@
             ->fromQuery($t->customers, 'name')
             ->placeholder('Choose a customer')
             ->addClass('chzn-select')
+            ->help('help text');
         ?>
     </div>
 
@@ -87,47 +103,59 @@
         ->options($t->states)
         ->placeholder('Choose a states')
         ->addClass('chzn-select')
+        ->help('help text');
     ?>
 
     <?= Former::textarea('notes')
         ->label('Note')
+        ->rows(6)
+        ->help('help text');
     ?>
 
     <?= Former::date('assigned_at')
         ->label('Assigned At')
         ->append('<button class="btn-default btn" onclick="setToday(\'assigned_at\')" type="button">Today</button>')
+        ->help('help text');
     ?>
 
     <?= Former::date('connected_at')
         ->label('Connected At')
         ->append('<button class="btn-default btn" onclick="setToday(\'connected_at\')" type="button">Today</button>')
+        ->help('help text');
     ?>
 
     <?= Former::date('ceased_requested_at')
         ->label('Ceased Requested At')
         ->append('<button class="btn-default btn" onclick="setToday(\'ceased_requested_at\')" type="button">Today</button>')
+        ->help('help text');
     ?>
 
     <?= Former::date('ceased_at')
-        ->label('Ceased Requested At')
+        ->label('Ceased At')
         ->append('<button class="btn-default btn" onclick="setToday(\'ceased_at\')" type="button"">Today</button>')
+        ->help('help text');
     ?>
 
     <?= Former::text('last_state_change_at')
         ->label('Last State change At')
+        ->help('help text');
     ?>
 
     <?= Former::radios('chargeable')
         ->radios(array(
             'Yes' => array('chargeable' => 'yes', 'value' => '1'),
             'No' => array('chargeable' => 'no', 'value' => '0'),
-        ))->inline()->check($t->patchPanelPort->getChargeableInt())?>
+        ))->inline()->check($t->patchPanelPort->getChargeableInt())
+        ->help('help text');
+    ?>
 
     <?= Former::radios('internal_use')
         ->radios(array(
             'Yes' => array('name' => 'internal_use', 'value' => '1'),
             'No' => array('name' => 'internal_use', 'value' => '0'),
-        ))->inline()->check($t->patchPanelPort->getInternalUseInt())?>
+        ))->inline()->check($t->patchPanelPort->getInternalUseInt())
+        ->help('help text');
+    ?>
 
     <?= Former::hidden('patch_panel_port_id')
         ->value($t->patchPanelPort->getId())
@@ -139,7 +167,8 @@
     ?>
 
     <?=Former::actions( Former::primary_submit('Save Changes'),
-        Former::default_button('Cancel')
+        Former::default_button('Cancel'),
+        Former::success_button('Help')->id('help-btn')
     );?>
 
     <?= Former::hidden('date')
@@ -164,7 +193,7 @@
         }
 
         $(document).ready(function() {
-
+            $('.help-block').hide();
 
             if($('#switch_port').val() != null){
                 setCustomer();
@@ -304,6 +333,17 @@
                 }
 
             });
+
+            $( "#help-btn" ).click( function() {
+                if($( ".help-block" ).css('display') == 'none'){
+                    $( ".help-block" ).show();
+                }
+                else{
+                    $( ".help-block" ).hide();
+                }
+
+            });
+
         });
     </script>
 <?php $this->append() ?>

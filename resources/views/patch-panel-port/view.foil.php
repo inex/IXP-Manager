@@ -52,12 +52,36 @@
         </div>
         <div class="form-group">
             <div>
-                State : <b><?= $t->patchPanelPort->resolveStates()?> </b>
+                Colocation circuit ref: <b> <?= $t->patchPanelPort->getColoCircuitRef()?></b>
             </div>
         </div>
         <div class="form-group">
             <div>
-                Note : <b><?= $t->patchPanelPort->getNotes() ?> </b>
+                Ticket ref : <b> <?= $t->patchPanelPort->getTicketRef()?></b>
+            </div>
+        </div>
+        <div class="form-group">
+            <?php
+            if($t->patchPanelPort->isAvailableForUse()):
+                $class = 'success';
+            elseif($t->patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT):
+                $class = 'warning';
+            elseif($t->patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED):
+                $class = 'danger';
+            else:
+                $class = 'info';
+            endif;
+            ?>
+            <div>
+                State :
+                <span title="" class="label label-<?= $class ?>">
+                    <?= $t->patchPanelPort->resolveStates() ?>
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                Note : <b><?= nl2br($t->patchPanelPort->getNotes()) ?> </b>
             </div>
         </div>
         <div class="form-group">
