@@ -217,6 +217,7 @@
           <root url="file://$MODULE_DIR$/vendor/webmozart/assert" />
           <root url="file://$MODULE_DIR$/vendor/zendesk/zendesk_api_client_php" />
           <root url="file://$MODULE_DIR$/vendor/zendframework/zendframework1" />
+          <root url="jar://$APPLICATION_HOME_DIR$/plugins/phpspec/lib/phpspec.jar!/phpspec_stub" />
         </CLASSES>
         <SOURCES>
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/former" />
@@ -317,6 +318,7 @@
           <root url="file://$MODULE_DIR$/vendor/webmozart/assert" />
           <root url="file://$MODULE_DIR$/vendor/zendesk/zendesk_api_client_php" />
           <root url="file://$MODULE_DIR$/vendor/zendframework/zendframework1" />
+          <root url="jar://$APPLICATION_HOME_DIR$/plugins/phpspec/lib/phpspec.jar!/phpspec_stub" />
         </SOURCES>
       </library>
     </orderEntry>

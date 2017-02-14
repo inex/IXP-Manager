@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.3.30 on 2017-02-07.
+ * Generated for Laravel 5.3.30 on 2017-02-14.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -12553,7 +12553,7 @@ namespace Illuminate\Support\Facades {
     
 namespace Illuminate\Database\Eloquent {
 
-    class Eloquent {
+    class Model {
         
         /**
          * Register a new global scope.
@@ -14402,7 +14402,7 @@ namespace Illuminate\Foundation {
     
 namespace LaravelDoctrine\ORM\Facades {
 
-    class D2EM {
+    class EntityManager {
         
         /**
          * {@inheritDoc}
@@ -15534,7 +15534,7 @@ namespace Intervention\Image\Facades {
     
 namespace Barryvdh\Debugbar {
 
-    class Debugbar {
+    class Facade {
         
         /**
          * Enable the Debugbar and boot, if not already booted.
