@@ -237,7 +237,7 @@ sub trawl_switch_snmp ($$) {
 			my $jnxL2aldvlanid = snmpwalk2hash($host, $snmpcommunity, $oids->{jnxL2aldVlanFdbId}, sub { return $jnxL2aldvlantag->{$_[0]} }, undef );
 			$vlanmapping = {reverse %{$jnxL2aldvlanid}};
 			if (!$vlanmapping) {
-				print STDERR "WARNING: $host: Juniper ELS image detected but VLAN mapping retrieval failed. Not processing $host further.\n"
+				print STDERR "WARNING: $host: Juniper ELS image detected but VLAN mapping retrieval failed. Not processing $host further.\n";
 				return;
 			}
 		} else {
