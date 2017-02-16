@@ -85,7 +85,7 @@ class Grapher implements ExtensionInterface {
             $formats = [
                 "Bytes", "KBytes", "MBytes", "GBytes", "TBytes"
             ];
-        } else if( in_array( $format, [ 'pkts', 'errs', 'discs' ] ) ) {
+        } else if( in_array( $format, [ 'pkts', 'errs', 'discs', 'bcasts' ] ) ) {
             $formats = [
                 "pps", "Kpps", "Mpps", "Gpps", "Tpps"
             ];
