@@ -147,10 +147,16 @@ $query = "INSERT INTO macaddress (id, firstseen, virtualinterfaceid, mac) VALUES
 ($insertsth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 
 $do_nothing or $dbh->do('START TRANSACTION') or die $dbh->errstr;
-$do_nothing or $dbh->do('DELETE FROM macaddress') or die $dbh->errstr;
+if (defined ($vlanid)) {
+	# delete all MAC addresses which reference this vlanid
+	$query = "DELETE macaddress FROM macaddress INNER JOIN (view_vlaninterface_details_by_custid vi) ON (macaddress.virtualinterfaceid = vi.virtualinterfaceid AND vi.vlanid = ?)";
+	$do_nothing or $dbh->do($query, undef, $vlanid) or die "$dbh->errstr\n";
+} else {
+	$do_nothing or $dbh->do('DELETE FROM macaddress') or die $dbh->errstr;
+}
 
+$debug && print STDERR "\n";
 foreach my $switch (keys %{$ports}) {
-	$debug && print STDERR "\n";
 	foreach my $port (keys %{$ports->{$switch}}) {
 		foreach my $mac (@{$l2mapping->{$switch}->{$port}}) {
 			$debug && print STDERR "INSERT: $mac -> $switch:$port\n";
@@ -166,6 +172,7 @@ foreach my $switch (keys %{$ports}) {
                 }
 	}
 }
+$debug && print STDERR "\n";
 
 $do_nothing or $dbh->do('COMMIT') or die $dbh->errstr;
 
