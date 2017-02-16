@@ -70,6 +70,7 @@ my $debug = 0;
 my $do_nothing = 0;
 my $qbridge_support = 1;
 my $vlan;
+my $vlanid;
 my $debug_output;
 
 my ($query, $sth, $l2mapping);
@@ -79,12 +80,47 @@ GetOptions(
 	'do-nothing!'		=> \$do_nothing,
 	'qbridge-support!'	=> \$qbridge_support,
 	'vlan=i'		=> \$vlan,
+	'vlanid=i'		=> \$vlanid,
 );
 
-$query = "SELECT name, snmppasswd FROM switch WHERE active AND switchtype = ?";
+if (defined $vlanid) {
+	# precedence given to vlanid, if provided
 
-($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
-$sth->execute(SWITCHTYPE_SWITCH) or die "$dbh->errstr\n";
+	# First retrieve VLAN tag number, which is used for querying the
+	# switches using snmp
+	$query = "SELECT number FROM vlan WHERE id=?";
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute($vlanid) or die "$dbh->errstr\n";
+	my $vlans = $sth->fetchrow_hashref();
+	if (defined ($vlans->{number}) && $vlans->{number} =~ /^\d+$/) {
+		$vlan = $vlans->{number};
+	} else {
+		print STDERR "ERROR: invalid vlanid specified.\n";
+		exit 1;
+	}
+
+	# then retrieve a list of relevant switches
+	$query = "SELECT sw.name, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.id = ?";
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute($vlanid) or die "$dbh->errstr\n";
+
+} elsif (defined $vlan) {
+	# if vlanid isn't available, we check for the VLAN tag.  The same
+	# vlan tag may be used on multiple different infrastructure at an
+	# IXP, so this is not recommended.
+
+	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
+	$query = "SELECT sw.name, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.number = ?";
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute($vlan) or die "$dbh->errstr\n";
+} else {
+	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
+	# otherwise query all switches for legacy behaviour
+	$query = "SELECT name, snmppasswd FROM switch WHERE active AND switchtype = ?";
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute(SWITCHTYPE_SWITCH) or die "$dbh->errstr\n";
+}
+
 my $switches = $sth->fetchall_hashref('name');
 
 foreach my $switch (keys %{$switches}) {
