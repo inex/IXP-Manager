@@ -27,86 +27,72 @@
                 <?php foreach ($t->histories as $pppHistory): ?>
 
                     <div class="tab-pane fade <?php if(array_values($t->histories)[0] == $pppHistory): ?> active in <?php endif; ?> " id="<?= $pppHistory->getId() ?>">
-                        <div class="form-group">
-                            <div >
-                                History ID : <b> <?= $pppHistory->getId() ?> </b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Name : <b> <?= $t->patchPanelPort->getPrefix()?><?= $pppHistory->getNumber() ?> </b>
-                            </div>
-                        </div>
-                        <?php if($pppHistory->hasSlavePort()): ?>
-                            <div class="form-group">
-                                <div>
-                                    Duplex Port : <b> <?= $pppHistory->getDuplexSlavePort()->getId() ?> </b>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                        <div class="form-group">
-                            <div>
-                                Patch Panel / Port : <b> <?= $pppHistory->getPatchPanelPort()->getPatchPanel()->getName()?> / <?= $pppHistory->getPatchPanelPort()->getNumber()?> </b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Switch / Port : <b> <?= $pppHistory->getSwitchport()?></b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Customer : <b> <?= $pppHistory->getCustomer()?></b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Colocation circuit ref: <b> <?= $pppHistory->getColoCircuitRef()?></b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Ticket ref : <b> <?= $pppHistory->getTicketRef()?></b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Note : <b><?= nl2br($pppHistory->getNotes()) ?> </b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Assigned At : <b><?= $pppHistory->getAssignedAtFormated(); ?> </b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Connected At : <b><?= $pppHistory->getConnectedAtFormated(); ?> </b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Ceased Requested At : <b><?= $pppHistory->getCeaseRequestedAtFormated(); ?> </b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Ceased At : <b><?= $pppHistory->getCeasedAtFormated(); ?> </b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Internal Use : <b><?= $t->patchPanelPort->getInternalUseText() ?> </b>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                Chargeable : <b><?= $pppHistory->getChargeableText() ?> </b>
-                            </div>
-                        </div>
+                        <table class="table_ppp_info">
+                            <tr>
+                                <td><b>History ID :</b></td>
+                                <td><?= $pppHistory->getId() ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Name : </b></td>
+                                <td><?= $t->patchPanelPort->getPrefix()?><?= $pppHistory->getNumber() ?></td>
+                            </tr>
+                            <?php if($pppHistory->hasSlavePort()): ?>
+                                <tr>
+                                    <td><b>Duplex Port :</b></td>
+                                    <td><?= $pppHistory->getDuplexSlavePort()->getId() ?></td>
+                                </tr>
+                            <?php endif; ?>
+                            <tr>
+                                <td><b>Patch Panel / Port :</b></td>
+                                <td><?= $pppHistory->getPatchPanelPort()->getPatchPanel()->getName()?> / <?= $pppHistory->getPatchPanelPort()->getNumber() ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Switch / Port :</b></td>
+                                <td><?= $pppHistory->getSwitchport()?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Customer:</b></td>
+                                <td><?= $pppHistory->getCustomer()?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Colocation circuit ref: </b></td>
+                                <td><?= $pppHistory->getColoCircuitRef()?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Ticket ref :</b></td>
+                                <td><?= $pppHistory->getTicketRef()?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Assigned At :</b></td>
+                                <td><?= $pppHistory->getAssignedAtFormated(); ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Connected At :</b></td>
+                                <td><?= $pppHistory->getConnectedAtFormated(); ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Ceased Requested At :</b></td>
+                                <td><?= $pppHistory->getCeaseRequestedAtFormated(); ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Ceased At :</b></td>
+                                <td><?= $pppHistory->getCeasedAtFormated(); ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Internal Use :</b></td>
+                                <td><?= $pppHistory->getInternalUseText() ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Chargeable :</b></td>
+                                <td><?= $pppHistory->getChargeableText() ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Note :</b></td>
+                                <td><?= nl2br($pppHistory->getNotes()) ?></td>
+                            </tr>
+                        </table>
                     </div>
                 <?php endforeach; ?>
-
             </div>
         </div>
     </div>

@@ -392,6 +392,16 @@ class PatchPanelPortHistory
     }
 
     /**
+     * Get internalUse
+     *
+     * @return boolean
+     */
+    public function getInternalUseText()
+    {
+        return $this->getInternalUse() ?  'Yes' :  'No';
+    }
+
+    /**
      * Set chargeable
      *
      * @param boolean $chargeable

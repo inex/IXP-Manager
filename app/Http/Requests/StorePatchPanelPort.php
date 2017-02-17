@@ -45,9 +45,13 @@ class StorePatchPanelPort extends FormRequest
      */
     public function rules()
     {
+        $allocated = $this->input('allocated');
+
+        $required = ($allocated) ? '' : 'required';
+
         return [
-            'number'                => 'required|string|max:255',
-            'patch_panel'           => 'required',
+            'number'                => $required.'|string|max:255',
+            'patch_panel'           => $required,
             'state'                 => 'required|integer',
             'assigned_at'           => 'date',
             'connected_at'          => 'date',

@@ -35,7 +35,7 @@ class PatchPanelPort
         self::STATE_BROKEN            => "Broken",
         self::STATE_OTHER             => "Other"
     ];
-
+    
     /**
      * @var integer
      */
@@ -583,6 +583,54 @@ class PatchPanelPort
     {
         return ($this->switchPort != null) ?  $this->getSwitchPort()->getName() : null;
     }
+
+    /**
+     * Allow to know if a patch panel port has a switch port set
+     *
+     * @return string
+     */
+    public function getHasSwitchPort()
+    {
+        return ($this->switchPort != null) ?  'true' : 'false';
+    }
+
+    /**
+     * Allow to know if a patch panel port has a switch port set
+     *
+     * @return string
+     */
+    public function getPhysicalInterfaceState()
+    {
+        $switchPort = $this->getSwitchPort();
+        if($switchPort != null){
+            $physicalInterface = $switchPort->getPhysicalInterface();
+            if($physicalInterface != null){
+                return $physicalInterface->getStatus();
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * Allow to know if a patch panel port has a switch port set
+     *
+     * @return string
+     */
+    public function getPhysicalInterfaceStateLabel()
+    {
+        $switchPort = $this->getSwitchPort();
+        if($switchPort != null){
+            $physicalInterface = $switchPort->getPhysicalInterface();
+            if($physicalInterface != null){
+                return $physicalInterface->resolveStatus();
+            }
+        }
+
+        return 0;
+    }
+
+
 
     /**
      * Add patchPanelPortHistory

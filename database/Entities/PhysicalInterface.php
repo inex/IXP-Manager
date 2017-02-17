@@ -403,4 +403,13 @@ class PhysicalInterface
         // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
         return $this->getSwitchPort()->getIfHighSpeed() > 0 ? $this->getSwitchPort()->getIfHighSpeed() : $this->getSpeed();
     }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveStatus(): string {
+        return self::$STATES[ $this->getStatus() ] ?? 'Unknown';
+    }
 }

@@ -31,6 +31,7 @@ use Entities\Customer;
 use Entities\PatchPanel;
 use Entities\PatchPanelPort;
 use Entities\PatchPanelPortHistory;
+use Entities\PhysicalInterface;
 use Entities\Switcher;
 use Entities\SwitchPort;
 
@@ -50,7 +51,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Illuminate\View\View;
 
-
+use Auth;
 
 /**
  * PatchPanelPort Controller
@@ -79,7 +80,10 @@ class PatchPanelPortController extends Controller
 
         return view('patch-panel-port/index')->with([
             'patchPanelPorts'               => D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort($id),
-            'patchPanel'                    => $patchPanel
+            'patchPanel'                    => $patchPanel,
+            'user'                          => Auth::user(),
+            'physicalInterfaceLimited'      => [PhysicalInterface::STATUS_QUARANTINE => PhysicalInterface::$STATES[PhysicalInterface::STATUS_QUARANTINE],PhysicalInterface::STATUS_CONNECTED => PhysicalInterface::$STATES[PhysicalInterface::STATUS_CONNECTED]],
+            'physicalInterface'             => PhysicalInterface::$STATES
         ]);
     }
 
@@ -90,7 +94,7 @@ class PatchPanelPortController extends Controller
      * @parama  int $id patch panel port that need to be edited
      * @return  view
      */
-    public function edit(Request $request, int $id = null) {
+    public function edit(Request $request, int $id = null, $allocated = null) {
         $patchPanelPort = false;
 
         if($id != null){
@@ -135,13 +139,16 @@ class PatchPanelPortController extends Controller
         }
 
         return view('patch-panel-port/edit')->with([
-                'states'            => \Entities\PatchPanelPort::$STATES,
+                'states'            => ($allocated) ? [PatchPanelPort::STATE_AWAITING_XCONNECT => PatchPanelPort::$STATES[PatchPanelPort::STATE_AWAITING_XCONNECT] , PatchPanelPort::STATE_CONNECTED => PatchPanelPort::$STATES[PatchPanelPort::STATE_CONNECTED]] : \Entities\PatchPanelPort::$STATES,
+                'piStatus'          => [PhysicalInterface::STATUS_XCONNECT => PhysicalInterface::$STATES[PhysicalInterface::STATUS_XCONNECT],PhysicalInterface::STATUS_CONNECTED => PhysicalInterface::$STATES[PhysicalInterface::STATUS_CONNECTED]],
                 'customers'         => D2EM::getRepository(Customer::class)->getNames(true),
-                'switches'          => D2EM::getRepository(Switcher::class)->getNames(true, Switcher::TYPE_SWITCH),
+                'switches'          => D2EM::getRepository(Switcher::class)->getNamesByLocation(true, Switcher::TYPE_SWITCH,$patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getId()),
                 'switchPorts'       => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId(),null, $patchPanelPort->getSwitchPortId()),
                 'patchPanelPort'    => $patchPanelPort,
                 'partnerPorts'      => $partnerPorts,
-                'hasDuplex'         => $hasDuplex
+                'hasDuplex'         => $hasDuplex,
+                'user'              => Auth::user(),
+                'allocated'         => ($allocated) ? true : false
         ]);
     }
 
@@ -219,8 +226,15 @@ class PatchPanelPortController extends Controller
             $patchPanelPort->setAssignedAt(new \DateTime(date('Y-m-d')));
         }
         else{
-            $patchPanelPort->setAssignedAt(($request->input('assigned_at') == '' ? null : new \DateTime($request->input('assigned_at'))));
+            if($request->input('allocated')){
+                $patchPanelPort->setAssignedAt(new \DateTime(date('Y-m-d')));
+            }
+            else{
+                $patchPanelPort->setAssignedAt(($request->input('assigned_at') == '' ? null : new \DateTime($request->input('assigned_at'))));
+            }
+
         }
+
 
         if($request->input('state') == PatchPanelPort::STATE_CONNECTED and $request->input('connected_at') == ''){
             $patchPanelPort->setConnectedAt(new \DateTime(date('Y-m-d')));
@@ -268,6 +282,24 @@ class PatchPanelPortController extends Controller
 
         if($patchPanelPort->getState() == PatchPanelPort::STATE_CEASED){
             $patchPanelPort->createHistory();
+        }
+
+        if($request->input('allocated')){
+            if($request->input('pi_status')){
+                $physicalInterface = $patchPanelPort->getSwitchPort()->getPhysicalInterface();
+                switch ($request->input('pi_status')) {
+                    case PhysicalInterface::STATUS_CONNECTED :
+                        $piStatus = PhysicalInterface::STATUS_QUARANTINE;
+                        break;
+                    case PhysicalInterface::STATUS_XCONNECT :
+                        $piStatus = PhysicalInterface::STATUS_XCONNECT;
+                        break;
+
+                }
+                $physicalInterface->setStatus($piStatus);
+                D2EM::persist($patchPanelPort);
+                D2EM::flush();
+            }
         }
 
         return Redirect::to('patch-panel-port/list/patch-panel/'.$patchPanelPort->getPatchPanel()->getId());
@@ -334,6 +366,25 @@ class PatchPanelPortController extends Controller
             }
         }
         return response()->json(array('success' => $success, 'response' => $listSwitches));
+    }
+
+    /**
+     * Get the customer for a switch port
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @return  JSON customer object
+     */
+    public function checkPhysicalInterfaceMatch(Request $request){
+        $success = false;
+        if( !($switchPort = D2EM::getRepository(SwitchPort::class)->find($request->input('switchPortId')))){
+            $success = false;
+        }
+        $physicalInterfaces = $switchPort->getPhysicalInterface();
+        if($physicalInterfaces != null){
+            $success = true;
+        }
+
+        return response()->json(array('success' => $success));
     }
 
     /**
@@ -435,7 +486,16 @@ class PatchPanelPortController extends Controller
             $success = true;
             $patchPanelPort->setNotes($request->input('notes'));
             D2EM::persist($patchPanelPort);
-            D2EM::flush($patchPanelPort);
+            if($request->input('pi_status')){
+                $physicalInterface = $patchPanelPort->getSwitchPort()->getPhysicalInterface();
+                if($physicalInterface != null){
+                    $physicalInterface->setStatus($request->input('pi_status'));
+                }
+                D2EM::persist($physicalInterface);
+            }
+
+            D2EM::flush();
+
         }
         else{
             $success = false;

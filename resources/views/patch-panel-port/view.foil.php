@@ -1,7 +1,7 @@
 <?php $this->layout('layouts/ixpv4') ?>
 
 <?php $this->section('title') ?>
-    <a href="<?= url('patch-panel-port/list')?>">Patch Panel Port</a>
+    <a href="<?= url('patch-panel-port/list/patch-panel/'.$t->patchPanelPort->getPatchPanel()->getId())?>">Patch Panel Port</a>
 <?php $this->append() ?>
 
 <?php $this->section('page-header-postamble') ?>
@@ -13,112 +13,97 @@
 <div class="panel panel-default">
     <div class="panel-heading">Informations</div>
     <div class="panel-body">
-        <div class="form-group">
-            <div >
-                ID : <b> <?= $t->patchPanelPort->getId() ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Name : <b> <?= $t->patchPanelPort->getName() ?> </b>
-            </div>
-        </div>
-        <?php if($t->patchPanelPort->hasSlavePort()): ?>
-            <div class="form-group">
-                <div>
-                    Duplex Port : <b> <?= $t->patchPanelPort->getDuplexSlavePortName() ?> </b>
-                </div>
-            </div>
-        <?php endif; ?>
-        <div class="form-group">
-            <div>
-                Patch Panel : <b> <?= $t->patchPanelPort->getPatchPanel()->getId().' - '.$t->patchPanelPort->getPatchPanel()->getName() ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Switch : <b> <?= $t->patchPanelPort->getSwitchName()?></b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Port: <b> <?= $t->patchPanelPort->getSwitchPortName()?></b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Customer : <b> <?= $t->patchPanelPort->getCustomerName()?></b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Colocation circuit ref: <b> <?= $t->patchPanelPort->getColoCircuitRef()?></b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Ticket ref : <b> <?= $t->patchPanelPort->getTicketRef()?></b>
-            </div>
-        </div>
-        <div class="form-group">
-            <?php
-            if($t->patchPanelPort->isAvailableForUse()):
-                $class = 'success';
-            elseif($t->patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT):
-                $class = 'warning';
-            elseif($t->patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED):
-                $class = 'danger';
-            else:
-                $class = 'info';
-            endif;
-            ?>
-            <div>
-                State :
-                <span title="" class="label label-<?= $class ?>">
-                    <?= $t->patchPanelPort->resolveStates() ?>
-                </span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Note : <b><?= nl2br($t->patchPanelPort->getNotes()) ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Assigned At : <b><?= $t->patchPanelPort->getAssignedAtFormated(); ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Connected At : <b><?= $t->patchPanelPort->getConnectedAtFormated(); ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Ceased Requested At : <b><?= $t->patchPanelPort->getCeaseRequestedAtFormated(); ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Ceased At : <b><?= $t->patchPanelPort->getCeasedAtFormated(); ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Last State Change At : <b><?= $t->patchPanelPort->getLastStateChangeFormated(); ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Internal Use : <b><?= $t->patchPanelPort->getInternalUseText() ?> </b>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                Chargeable : <b><?= $t->patchPanelPort->getChargeableText() ?> </b>
-            </div>
-        </div>
+        <table class="table_ppp_info">
+            <tr>
+                <td><b>ID :</b></td>
+                <td><?= $t->patchPanelPort->getId() ?></td>
+            </tr>
+            <tr>
+                <td><b>Name : </b></td>
+                <td><?= $t->patchPanelPort->getName() ?></td>
+            </tr>
+            <?php if($t->patchPanelPort->hasSlavePort()): ?>
+                <tr>
+                    <td><b>Duplex Port :</b></td>
+                    <td><?= $t->patchPanelPort->getDuplexSlavePortName() ?></td>
+                </tr>
+            <?php endif; ?>
+            <tr>
+                <td><b>Patch Panel :</b></td>
+                <td><?= $t->patchPanelPort->getPatchPanel()->getId().' - '.$t->patchPanelPort->getPatchPanel()->getName() ?></td>
+            </tr>
+            <tr>
+                <td><b>Switch :</b></td>
+                <td><?= $t->patchPanelPort->getSwitchName()?></td>
+            </tr>
+            <tr>
+                <td><b>Port:</b></td>
+                <td><?= $t->patchPanelPort->getSwitchPortName()?></td>
+            </tr>
+            <tr>
+                <td><b>Customer:</b></td>
+                <td><?= $t->patchPanelPort->getCustomerName()?></td>
+            </tr>
+            <tr>
+                <td><b>Colocation circuit ref: </b></td>
+                <td><?= $t->patchPanelPort->getColoCircuitRef()?></td>
+            </tr>
+            <tr>
+                <td><b>Ticket ref :</b></td>
+                <td><?= $t->patchPanelPort->getTicketRef()?></td>
+            </tr>
+            <tr>
+                <td><b>State :</b></td>
+                <td>
+                    <?php
+                    if($t->patchPanelPort->isAvailableForUse()):
+                        $class = 'success';
+                    elseif($t->patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT):
+                        $class = 'warning';
+                    elseif($t->patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED):
+                        $class = 'danger';
+                    else:
+                        $class = 'info';
+                    endif;
+                    ?>
+                    <span title="" class="label label-<?= $class ?>">
+                        <?= $t->patchPanelPort->resolveStates() ?>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Assigned At :</b></td>
+                <td><?= $t->patchPanelPort->getAssignedAtFormated(); ?></td>
+            </tr>
+            <tr>
+                <td><b>Connected At :</b></td>
+                <td><?= $t->patchPanelPort->getConnectedAtFormated(); ?></td>
+            </tr>
+            <tr>
+                <td><b>Ceased Requested At :</b></td>
+                <td><?= $t->patchPanelPort->getCeaseRequestedAtFormated(); ?></td>
+            </tr>
+            <tr>
+                <td><b>Ceased At :</b></td>
+                <td><?= $t->patchPanelPort->getCeasedAtFormated(); ?></td>
+            </tr>
+            <tr>
+                <td><b>Last State Change At :</b></td>
+                <td><?= $t->patchPanelPort->getLastStateChangeFormated(); ?></td>
+            </tr>
+            <tr>
+                <td><b>Internal Use :</b></td>
+                <td><?= $t->patchPanelPort->getInternalUseText() ?></td>
+            </tr>
+            <tr>
+                <td><b>Chargeable :</b></td>
+                <td><?= $t->patchPanelPort->getChargeableText() ?></td>
+            </tr>
+            <tr>
+                <td><b>Note :</b></td>
+                <td><?= nl2br($t->patchPanelPort->getNotes()) ?></td>
+            </tr>
+        </table>
     </div>
 </div>
 <?php $this->append() ?>

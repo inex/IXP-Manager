@@ -23,15 +23,17 @@
     ->addClass('col-md-10');
 ?>
 
-    <?= Former::text('number')
-        ->label('Patch Panel Port Name')
-        ->help('help text');
-    ?>
+    <?php if(!$t->allocated): ?>
+        <?= Former::text('number')
+            ->label('Patch Panel Port Name')
+            ->help('help text');
+        ?>
 
-    <?= Former::text('patch_panel')
-        ->label('Patch Panel')
-        ->help('help text');
-    ?>
+        <?= Former::text('patch_panel')
+            ->label('Patch Panel')
+            ->help('help text');
+        ?>
+    <?php endif; ?>
 
     <?= Former::text('colo_circuit_ref')
         ->label('Colocation Circuit Reference')
@@ -106,40 +108,56 @@
         ->help('help text');
     ?>
 
-    <?= Former::textarea('notes')
-        ->label('Note')
-        ->rows(6)
-        ->help('help text');
-    ?>
+    <?php if($t->allocated): ?>
+        <span id='pi_status_area' style="display: none">
+            <?= Former::select('pi_status')
+                ->label('Physical Interface status')
+                ->options($t->piStatus)
+                ->placeholder('Choose a status')
+                ->addClass('chzn-select')
+                ->help('help text');
+            ?>
+        </span>
+    <?php endif; ?>
 
-    <?= Former::date('assigned_at')
-        ->label('Assigned At')
-        ->append('<button class="btn-default btn" onclick="setToday(\'assigned_at\')" type="button">Today</button>')
-        ->help('help text');
-    ?>
+    <?php if(!$t->allocated): ?>
+        <?= Former::textarea('notes')
+            ->label('Note')
+            ->rows(10)
+            ->style('width:500px')
+            ->help('help text');
+        ?>
 
-    <?= Former::date('connected_at')
-        ->label('Connected At')
-        ->append('<button class="btn-default btn" onclick="setToday(\'connected_at\')" type="button">Today</button>')
-        ->help('help text');
-    ?>
+        <?= Former::date('assigned_at')
+            ->label('Assigned At')
+            ->append('<button class="btn-default btn" onclick="setToday(\'assigned_at\')" type="button">Today</button>')
+            ->help('help text')
+            ->value(date('Y-m-d'));
+        ?>
 
-    <?= Former::date('ceased_requested_at')
-        ->label('Ceased Requested At')
-        ->append('<button class="btn-default btn" onclick="setToday(\'ceased_requested_at\')" type="button">Today</button>')
-        ->help('help text');
-    ?>
+        <?= Former::date('connected_at')
+            ->label('Connected At')
+            ->append('<button class="btn-default btn" onclick="setToday(\'connected_at\')" type="button">Today</button>')
+            ->help('help text');
+        ?>
 
-    <?= Former::date('ceased_at')
-        ->label('Ceased At')
-        ->append('<button class="btn-default btn" onclick="setToday(\'ceased_at\')" type="button"">Today</button>')
-        ->help('help text');
-    ?>
+        <?= Former::date('ceased_requested_at')
+            ->label('Ceased Requested At')
+            ->append('<button class="btn-default btn" onclick="setToday(\'ceased_requested_at\')" type="button">Today</button>')
+            ->help('help text');
+        ?>
 
-    <?= Former::text('last_state_change_at')
-        ->label('Last State change At')
-        ->help('help text');
-    ?>
+        <?= Former::date('ceased_at')
+            ->label('Ceased At')
+            ->append('<button class="btn-default btn" onclick="setToday(\'ceased_at\')" type="button"">Today</button>')
+            ->help('help text');
+        ?>
+
+        <?= Former::text('last_state_change_at')
+            ->label('Last State change At')
+            ->help('help text');
+        ?>
+    <?php endif; ?>
 
     <?= Former::radios('chargeable')
         ->radios(array(
@@ -161,13 +179,17 @@
         ->value($t->patchPanelPort->getId())
     ?>
 
+    <?= Former::hidden('allocated')
+        ->value($t->allocated)
+    ?>
+
     <?= Former::hidden('switch_port_id')
         ->id('switch_port_id')
         ->value($t->patchPanelPort->getSwitchPortId())
     ?>
 
     <?=Former::actions( Former::primary_submit('Save Changes'),
-        Former::default_button('Cancel'),
+        Former::default_link('Cancel')->href(url('patch-panel-port/list/patch-panel/'.$t->patchPanelPort->getPatchPanel()->getId())),
         Former::success_button('Help')->id('help-btn')
     );?>
 
@@ -193,13 +215,15 @@
         }
 
         $(document).ready(function() {
+            var new_note_set = false;
+            var val_textarea_loading = $('#notes').text();
+
+
             $('.help-block').hide();
 
             if($('#switch_port').val() != null){
                 setCustomer();
             }
-
-
 
             $('#duplex').change(function(){
                 if(this.checked){
@@ -226,6 +250,26 @@
 
             $("#switch_port").change(function(){
                 setCustomer();
+                <?php if($t->allocated): ?>
+                    if($("#switch_port").val() != ''){
+                        switchPortId = $("#switch_port").val();
+                        $.ajax({
+                            url: "<?= url('patch-panel-port/checkPhysicalInterfaceMatch/')?>",
+                            data: {switchPortId: switchPortId},
+                            type: 'GET',
+                            dataType: 'JSON',
+                            success: function (data) {
+                                if(data.success){
+                                    $("#pi_status_area").show();
+                                }
+                                else{
+                                    $("#pi_status_area").hide();
+                                }
+                            }
+
+                        });
+                    }
+                <?php endif; ?>
             });
 
             function setSwitchPort(){
@@ -233,6 +277,11 @@
                 $("#switch_port").trigger("chosen:updated");
                 switchId = $("#switch").val();
                 customerId = $("#customer").val();
+                if(customerId != null){
+                    resetCustomer();
+                }
+
+
                 switchPortId = $("#switch_port_id").val();
                 $.ajax({
                     url: "<?= url('patch-panel-port/getSwitchPort/')?>",
@@ -306,22 +355,23 @@
                     });
             });
 
+            function resetCustomer(){
+                options = "<option value=''> Choose a customer</option>\n";
+                <?php foreach ($t->customers as $id => $customer): ?>
+                customer = '<?= $customer ?>';
+                options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
+                <?php endforeach; ?>
+                $("#customer").html(options);
+                $("#customer").trigger("chosen:updated");
+            }
+
             $("#resetCustomer").click(function(){
-
-                    options = "<option value=''> Choose a customer</option>\n";
-                    <?php foreach ($t->customers as $id => $customer): ?>
-                        customer = '<?= $customer ?>';
-                        options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
-                    <?php endforeach; ?>
-                    $("#customer").html(options);
-                    $("#customer").trigger("chosen:updated");
-
-
+                resetCustomer();
             });
 
             $("#resetSwitchSelect").click(function(){
                 if($("#switch").val() != null && $("#switch_port").val() != null){
-                    options = "<option value=''> Select a customer</option>\n";
+                    options = "<option value=''> Choose a Switch</option>\n";
                     <?php foreach ($t->switches as $id => $switch): ?>
                         $switch = '<?= $switch ?>';
                         options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
@@ -343,6 +393,32 @@
                 }
 
             });
+
+            $('#notes').click(function(){
+                val_textarea = $('#notes').text();
+                ppp_note = '<?= preg_replace( "/\r|\n/", "",$t->patchPanelPort->getNotes())?>';
+                default_val = '<?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
+                if(val_textarea == ''){
+                    $('#notes').text(default_val);
+                }
+                else{
+                    if(!new_note_set){
+                        $('#notes').text(default_val+'\n\n'+val_textarea);
+                        $('#notes').setCursorPosition(default_val.length);
+                        new_note_set = true;
+                    }
+                }
+
+
+            });
+
+            $('#notes').blur(function(){
+                if($('#notes').text() == $('#notes').val()){
+                    $('#notes').text(val_textarea_loading);
+                    new_note_set = false;
+                }
+            });
+
 
         });
     </script>

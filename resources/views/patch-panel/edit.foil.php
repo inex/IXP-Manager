@@ -80,7 +80,7 @@
 
     <?= Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_button('Cancel'),
+            Former::default_link('Cancel')->href(url('patch-panel/list')),
             Former::success_button('Help')->id('help-btn')
         );
     ?>

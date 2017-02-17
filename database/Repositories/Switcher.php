@@ -101,6 +101,28 @@ class Switcher extends EntityRepository
         return $switches;
     }
 
+    /**
+     * Return an array of all switch names where the array key is the switch id
+     *
+     * @param bool          $active If `true`, return only active switches
+     * @param int           $type   If `0`, all types otherwise limit to specific type
+     * @param \Entities\IXP $ixp    IXP to filter vlan names
+     * @return array An array of all switch names with the switch id as the key.
+     */
+    public function getNamesByLocation( $active = false, $type = 0, $idLocation = null )
+    {
+        $switches = [];
+        foreach( $this->getAndCache( $active, $type ) as $a ) {
+
+            if($idLocation != null)
+                if($a->getCabinet()->getLocation()->getId() == $idLocation)
+                    $switches[ $a->getId() ] = $a->getName();
+        }
+
+        asort( $switches );
+        return $switches;
+    }
+
 
     /**
      * Return an array of configurations

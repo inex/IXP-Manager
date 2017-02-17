@@ -562,4 +562,14 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
     color: #777;
 }
 
+.table_ppp_info{
+    border-collapse: separate;
+    border-spacing: 15px 15px;
+}
+
+.table_ppp_info tr td{
+    vertical-align: top;
+}
+
+
 

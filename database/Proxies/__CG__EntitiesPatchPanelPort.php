@@ -620,6 +620,39 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getHasSwitchPort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHasSwitchPort', []);
+
+        return parent::getHasSwitchPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPhysicalInterfaceState()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPhysicalInterfaceState', []);
+
+        return parent::getPhysicalInterfaceState();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPhysicalInterfaceStateLabel()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPhysicalInterfaceStateLabel', []);
+
+        return parent::getPhysicalInterfaceStateLabel();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addPatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory)
     {
 
