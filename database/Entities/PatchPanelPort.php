@@ -35,7 +35,8 @@ class PatchPanelPort
         self::STATE_BROKEN            => "Broken",
         self::STATE_OTHER             => "Other"
     ];
-    
+
+
     /**
      * @var integer
      */

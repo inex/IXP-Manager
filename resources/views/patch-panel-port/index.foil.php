@@ -15,7 +15,12 @@
 <?php $this->section('content') ?>
     <?php if($t->patchPanel): ?>
         <div class="">
-            <h2>Ports for <?= $t->patchPanel->getName() ?></h2>
+            <h2>
+                Ports for <?= $t->patchPanel->getName() ?>
+                <?php if( $t->patchPanel->getColoReference() != $t->patchPanel->getName() ): ?>
+                    (Colo Reference: <?= $t->patchPanel->getColoReference() ?>)
+                <?php endif; ?>
+            </h2>
         </div>
     <?php endif;?>
     <?php if(session()->has('success')): ?>
@@ -62,10 +67,10 @@
                         </td>
                     <?php endif;?>
                     <td>
-                        <a href="<?= url('switch-port/view/id/' ).'/'.$patchPanelPort->getSwitchId()?>">
-                            <?= $patchPanelPort->getSwitchName() ?>
-                        </a>
-                         <?= $patchPanelPort->getSwitchPortName() ?>
+                        <?= $patchPanelPort->getSwitchName() ?>
+                    <?php if( $patchPanelPort->getSwitchPortName() ): ?>
+                            &nbsp;::&nbsp;<?= $patchPanelPort->getSwitchPortName() ?>
+                    <?php endif; ?>
                     </td>
                     <td>
                         <a href="<?= url('customer/overview/id/' ).'/'.$patchPanelPort->getCustomerId()?>">
@@ -93,7 +98,7 @@
                                 $class = 'info';
                             endif;
                         ?>
-                        <span onclick="popup()" title="" class="label label-<?= $class ?>">
+                        <span title="" class="label label-<?= $class ?>">
                             <?= $patchPanelPort->resolveStates() ?>
                         </span>
                     </td>

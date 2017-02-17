@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\PatchPanelPortHistoryFile" schema="patch_panel_port_history_file" table="patch_panel_port_history_file">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="name" type="string" length="255" nullable="false"/>
+    <field name="type" type="string" length="255" nullable="false"/>
+    <field name="uploaded_at" type="datetime" nullable="false"/>
+    <field name="uploaded_by" type="string" nullable="false"/>
+    <field name="size" type="integer" nullable="false"/>
+    <field name="storage_location" type="string" length="255" nullable="false"/>
+    <one-to-many field="patchPanelPortHistory" target-entity="Entities\PatchPanelPortHistory" mapped-by="patchPanelPortHistoryFiles"/>
+  </entity>
+</doctrine-mapping>
