@@ -46,5 +46,6 @@
     </many-to-one>
     <one-to-many field="duplexSlavePorts" target-entity="Entities\PatchPanelPort" mapped-by="duplexMasterPort"/>
     <one-to-many field="patchPanelPortHistory" target-entity="Entities\PatchPanelPortHistory" mapped-by="patchPanelPort"/>
+    <one-to-many field="patchPanelPortFiles" target-entity="Entities\PatchPanelPortFile" mapped-by="patchPanelPort"/>
   </entity>
 </doctrine-mapping>
