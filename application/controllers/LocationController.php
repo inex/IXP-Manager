@@ -105,6 +105,32 @@ class LocationController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Postvalidation hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called if the user POSTs a form just after the form passes standard
+     * Zend_Form validation.
+     *
+     * This hook can hijack the ensure form processing by returning false.
+     *
+     * It can also cause validation to fail with a message by adding an
+     * `OSS_Message` and returning false.
+     *
+     * @param OSS_Form $form The Send form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not processed
+     */
+    protected function addPostValidate( $form, $object, $isEdit )
+    {
+        if( !$form->getElement('pdb_facility_id')->getValue() ) {
+            $form->getElement('pdb_facility_id')->setValue(null);
+        }
+
+        return true;
+    }
+
+
     public function getPeeringDbFacilitiesAction()
     {
         Zend_Controller_Action_HelperBroker::removeHelper( 'viewRenderer' );
