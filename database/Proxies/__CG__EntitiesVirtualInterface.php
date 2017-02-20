@@ -64,10 +64,10 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
+            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
         }
 
-        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
+        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
     }
 
     /**
@@ -248,6 +248,28 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTrunk', [$trunk]);
 
         return parent::setTrunk($trunk);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLagFraming(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLagFraming', []);
+
+        return parent::getLagFraming();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLagFraming(bool $lag_framing): \Entities\VirtualInterface
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLagFraming', [$lag_framing]);
+
+        return parent::setLagFraming($lag_framing);
     }
 
     /**

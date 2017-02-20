@@ -35,6 +35,11 @@ class VirtualInterface
     protected $channelgroup;
 
     /**
+     * @var bool $lag_framing
+     */
+    protected $lag_framing = false;
+
+    /**
      * @var integer $id
      */
     protected $id;
@@ -55,7 +60,7 @@ class VirtualInterface
     protected $MACAddresses;
 
     /**
-     * @var Entities\Customer
+     * @var Customer
      */
     protected $Customer;
 
@@ -152,6 +157,29 @@ class VirtualInterface
     }
 
     /**
+     * Get lag framing
+     *
+     * @return boolean
+     */
+    public function getLagFraming(): bool
+    {
+        return $this->lag_framing;
+    }
+
+    /**
+     * Set lag framing
+     *
+     * @param boolean $lag_framing
+     * @return VirtualInterface
+     */
+    public function setLagFraming(bool $lag_framing): VirtualInterface
+    {
+        $this->lag_framing = $lag_framing;
+
+        return $this;
+    }
+
+    /**
      * Get trunk
      *
      * @return boolean
@@ -160,6 +188,7 @@ class VirtualInterface
     {
         return $this->trunk;
     }
+
 
     /**
      * Set channelgroup
@@ -197,7 +226,7 @@ class VirtualInterface
     /**
      * Add PhysicalInterfaces
      *
-     * @param Entities\PhysicalInterface $physicalInterfaces
+     * @param PhysicalInterface $physicalInterfaces
      * @return VirtualInterface
      */
     public function addPhysicalInterface(\Entities\PhysicalInterface $physicalInterfaces)
@@ -210,7 +239,7 @@ class VirtualInterface
     /**
      * Remove PhysicalInterfaces
      *
-     * @param Entities\PhysicalInterface $physicalInterfaces
+     * @param PhysicalInterface $physicalInterfaces
      */
     public function removePhysicalInterface(\Entities\PhysicalInterface $physicalInterfaces)
     {
@@ -220,7 +249,7 @@ class VirtualInterface
     /**
      * Get PhysicalInterfaces
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPhysicalInterfaces()
     {
@@ -230,7 +259,7 @@ class VirtualInterface
     /**
      * Add VlanInterfaces
      *
-     * @param Entities\VlanInterface $vlanInterfaces
+     * @param VlanInterface $vlanInterfaces
      * @return VirtualInterface
      */
     public function addVlanInterface(\Entities\VlanInterface $vlanInterfaces)
@@ -243,7 +272,7 @@ class VirtualInterface
     /**
      * Remove VlanInterfaces
      *
-     * @param Entities\VlanInterface $vlanInterfaces
+     * @param VlanInterface $vlanInterfaces
      */
     public function removeVlanInterface(\Entities\VlanInterface $vlanInterfaces)
     {
@@ -253,7 +282,7 @@ class VirtualInterface
     /**
      * Get VlanInterfaces
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getVlanInterfaces()
     {
@@ -263,7 +292,7 @@ class VirtualInterface
     /**
      * Add MACAddresses
      *
-     * @param Entities\MACAddress $mACAddresses
+     * @param MACAddress $mACAddresses
      * @return VirtualInterface
      */
     public function addMACAddresses(\Entities\MACAddress $mACAddresses)
@@ -276,7 +305,7 @@ class VirtualInterface
     /**
      * Remove MACAddresses
      *
-     * @param Entities\MACAddress $mACAddresses
+     * @param MACAddress $mACAddresses
      */
     public function removeMACAddresses(\Entities\MACAddress $mACAddresses)
     {
@@ -286,7 +315,7 @@ class VirtualInterface
     /**
      * Get MACAddresses
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getMACAddresses()
     {
@@ -296,7 +325,7 @@ class VirtualInterface
     /**
      * Set Customer
      *
-     * @param Entities\Customer $customer
+     * @param Customer $customer
      * @return VirtualInterface
      */
     public function setCustomer(\Entities\Customer $customer = null)
@@ -309,7 +338,7 @@ class VirtualInterface
     /**
      * Get Customer
      *
-     * @return Entities\Customer
+     * @return Customer
      */
     public function getCustomer()
     {

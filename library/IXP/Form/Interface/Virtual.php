@@ -79,9 +79,13 @@ class IXP_Form_Interface_Virtual extends IXP_Form
             ->setCheckedValue( '1' );
         $this->addElement( $trunk );
 
+        $lagFraming = $this->createElement( 'checkbox', 'lag_framing' );
+        $lagFraming->setLabel( 'Link aggregation / LAG framing' )
+              ->setCheckedValue( '1' );
+        $this->addElement( $lagFraming );
 
         $this->addDisplayGroup(
-            [ 'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk' ],
+            [ 'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk', 'lag_framing' ],
             'virtualInterfaceDisplayGroup'
         );
 
