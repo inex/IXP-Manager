@@ -91,6 +91,11 @@ class PatchPanelPortHistory
     private $duplexMasterPort;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $patchPanelPortHistoryFiles;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -600,4 +605,40 @@ class PatchPanelPortHistory
             return null;
         }
     }
+
+
+
+    /**
+     * Add patchPanelPortHistoryFile
+     *
+     * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
+     *
+     * @return PatchPanelPort
+     */
+    public function addPatchPanelPortHistoryFile(\Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile)
+    {
+        $this->patchPanelPortHistoryFiles[] = $patchPanelPortHistoryFile;
+        return $this;
+    }
+
+    /**
+     * Remove patchPanelPortHistoryFile
+     *
+     * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
+     */
+    public function removePatchPanelPortHistoryFile(\Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile)
+    {
+        $this->patchPanelPortHistoryFiles->removeElement($patchPanelPortHistoryFile);
+    }
+
+    /**
+     * Get patchPanelPortHistoryFile
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatchPanelPortHistoryFile()
+    {
+        return $this->patchPanelPortHistoryFiles;
+    }
+
 }

@@ -10,6 +10,10 @@
     <field name="uploaded_by" type="string" nullable="false"/>
     <field name="size" type="integer" nullable="false"/>
     <field name="storage_location" type="string" length="255" nullable="false"/>
-    <one-to-many field="patchPanelPortHistory" target-entity="Entities\PatchPanelPortHistory" mapped-by="patchPanelPortHistoryFiles"/>
+    <many-to-one field="patchPanelPortHistory" target-entity="Entities\PatchPanelPortHistory" inversed-by="patchPanelPortHistoryFiles">
+      <join-columns>
+        <join-column name="patch_panel_port_history_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
   </entity>
 </doctrine-mapping>
