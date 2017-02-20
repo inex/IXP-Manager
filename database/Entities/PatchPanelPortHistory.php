@@ -91,6 +91,11 @@ class PatchPanelPortHistory
     private $duplexMasterPort;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $patchPanelPortHistoryFiles;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -600,30 +605,106 @@ class PatchPanelPortHistory
             return null;
         }
     }
+
+    /**
+     * Add patchPanelPortHistoryFile
+     *
+     * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
+     *
+     * @return PatchPanelPort
+     */
+    public function addPatchPanelPortHistoryFile(\Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile)
+    {
+        $this->patchPanelPortHistoryFiles[] = $patchPanelPortHistoryFile;
+        return $this;
+    }
+
+    /**
+     * Remove patchPanelPortHistoryFile
+     *
+     * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
+     */
+    public function removePatchPanelPortHistoryFile(\Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile)
+    {
+        $this->patchPanelPortHistoryFiles->removeElement($patchPanelPortHistoryFile);
+    }
+
+
+    /**
+     * Get patchPanelPortHistoryFiles
+     *
+     * @return \Entities\PatchPanelPortHistoryFile
+     */
+    public function getPatchPanelPortHistoryFile()
+    {
+        return $this->patchPanelPortHistoryFiles;
+    }
+
+
+
 /**
- * @var \Entities\PatchPanelPortHistoryFile
+ * @var string
  */
-private $patchPanelPortHistoryFiles;
+private $private_notes;
+
+/**
+ * @var integer
+ */
+private $owned_by = '0';
 
 
 /**
- * Set patchPanelPortHistoryFiles
+ * Set privateNotes
  *
- * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFiles
+ * @param string $privateNotes
  *
  * @return PatchPanelPortHistory
  */
-public function setPatchPanelPortHistoryFiles(\Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFiles = null)
+public function setPrivateNotes($privateNotes)
 {
-$this->patchPanelPortHistoryFiles = $patchPanelPortHistoryFiles;
+$this->private_notes = $privateNotes;
 
 return $this;
 }
 
 /**
+ * Get privateNotes
+ *
+ * @return string
+ */
+public function getPrivateNotes()
+{
+return $this->private_notes;
+}
+
+/**
+ * Set ownedBy
+ *
+ * @param integer $ownedBy
+ *
+ * @return PatchPanelPortHistory
+ */
+public function setOwnedBy($ownedBy)
+{
+$this->owned_by = $ownedBy;
+
+return $this;
+}
+
+/**
+ * Get ownedBy
+ *
+ * @return integer
+ */
+public function getOwnedBy()
+{
+return $this->owned_by;
+}
+
+/**
  * Get patchPanelPortHistoryFiles
  *
- * @return \Entities\PatchPanelPortHistoryFile
+ * @return \Doctrine\Common\Collections\Collection
  */
 public function getPatchPanelPortHistoryFiles()
 {

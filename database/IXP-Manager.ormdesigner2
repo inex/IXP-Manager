@@ -1172,13 +1172,15 @@
       <field name="colo_circuit_ref" type="string" size="30" uuid="6b28819d-917d-4dfd-91f6-bcd1c07da533"/>
       <field name="ticket_ref" type="string" size="30" uuid="39eb482e-46c1-4739-94c1-ec29a4300a3c"/>
       <field name="notes" type="text" uuid="a137835d-7515-4d55-99ea-5367401ae2ba"/>
+      <field name="private_notes" type="text" uuid="259e178b-7c07-44b5-9aaa-6012eceedfcc"/>
       <field name="assigned_at" type="date" uuid="600d8397-b25b-47ed-85d0-8608f677448c"/>
       <field name="connected_at" type="date" uuid="3817ffa7-9c09-4485-a0f9-ae0311c7d7d7"/>
       <field name="cease_requested_at" type="date" uuid="887a38bd-ad9e-4beb-85e7-a28e248e365d"/>
       <field name="ceased_at" type="date" uuid="c3777bb8-31a4-4334-a06a-35a0c1de7e33"/>
       <field name="last_state_change" type="date" uuid="c77ae8d9-9adc-4bc1-b850-db1d97bd8b45"/>
       <field name="internal_use" type="boolean" default="0" required="true" uuid="906ffe7a-bd3d-4951-8d1e-e7ef9cfde332"/>
-      <field name="chargeable" type="boolean" default="0" required="true" uuid="8cebf2d4-d233-4a52-8703-5b40493f8cd1"/>
+      <field name="chargeable" type="integer" default="0" required="true" uuid="8cebf2d4-d233-4a52-8703-5b40493f8cd1"/>
+      <field name="owned_by" type="integer" default="0" required="true" uuid="26949f36-557b-4781-96e7-a5f02f3f8a6b"/>
       <field name="customer_id" type="integer" uuid="07bc00ca-c2a8-4d60-8e2b-ea64c26579eb"/>
       <field name="switch_port_id" type="integer" unique="true" uuid="42ed61d4-357e-435f-befb-f3701b20bec7"/>
       <field name="duplex_master_id" type="integer" uuid="0ece104a-5ac0-4881-a346-ecf5dd66504c"/>
@@ -1208,16 +1210,17 @@
       <field name="colo_circuit_ref" type="string" size="30" uuid="e59bfd83-0291-4644-a6c1-d4d3584760ca"/>
       <field name="ticket_ref" type="string" size="30" uuid="95ee474a-1bf1-4efe-a166-37da7bf12b75"/>
       <field name="notes" type="text" uuid="355eaa2c-a248-4900-bc91-6f228eb04c66"/>
+      <field name="private_notes" type="text" uuid="80a23128-fca7-4232-ace5-edd19b8cddb0"/>
       <field name="assigned_at" type="date" uuid="cd4a7110-85bc-46e1-b6c8-a0131d548b6a"/>
       <field name="connected_at" type="date" uuid="231ded08-0168-4c13-bf56-be08d1c7245d"/>
       <field name="cease_requested_at" type="date" uuid="e1ed774a-8f0b-44ea-a6d9-c54aa9a330fd"/>
       <field name="ceased_at" type="date" uuid="610498d0-b7f7-474b-afe7-5f3f0a19d94e"/>
       <field name="internal_use" type="boolean" default="0" required="true" uuid="6fc997d6-0ef1-4d5a-89ae-faea8fe95f3a"/>
-      <field name="chargeable" type="boolean" default="0" required="true" uuid="6f26bdd7-c88b-4860-8e89-9b1d39504337"/>
+      <field name="chargeable" type="integer" default="0" required="true" uuid="6f26bdd7-c88b-4860-8e89-9b1d39504337"/>
+      <field name="owned_by" type="integer" default="0" required="true" uuid="65420960-57db-4b89-86ad-52d40ae86ef0"/>
       <field name="customer" type="string" uuid="b24a35fb-172d-4438-ba46-fc7c2f580baf"/>
       <field name="switchport" type="string" uuid="f436f73e-f357-4a72-bf23-e95620c34876"/>
       <field name="duplex_master_id" type="integer" uuid="4a2cd2da-deb3-4c4a-8777-3231406847a7"/>
-      <field name="patch_panel_port_history_file_id" type="integer" uuid="d33cc9e1-d81a-422e-8ac8-c02393246a9f"/>
       <orm-attributes>
         <attribute name="table">patch_panel_port_history</attribute>
         <attribute name="tableName">patch_panel_port_history</attribute>
@@ -1230,9 +1233,6 @@
     <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPortHistory" owner-alias="duplexSlavePorts" inverse-alias="duplexMasterPort" many-owner="true" many-inverse="false" uuid="263cdc09-054e-49c3-9b3e-c310b4edc711">
       <association-field from="duplex_master_id" to="id"/>
     </association>
-    <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPortHistoryFile" owner-alias="patchPanelPortHistory" inverse-alias="patchPanelPortHistoryFiles" many-owner="true" many-inverse="false" uuid="cec2017a-59e6-4ec1-9249-598429a22dab">
-      <association-field from="patch_panel_port_history_file_id" to="id"/>
-    </association>
     <entity name="\Entities\PatchPanelPortFile" local-name="PatchPanelPortFile" namespace="\Entities" uuid="fe102ac1-eef6-41b0-ae2b-87fc4fc10ba1">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="f5940254-97b6-40fa-8268-3b0b4d290aed"/>
       <field name="patch_panel_port_id" type="integer" uuid="7d9e3682-3844-4359-9aa4-42b3c4aeeb74"/>
@@ -1241,10 +1241,11 @@
       <field name="uploaded_at" type="datetime" required="true" uuid="6050294d-e2c2-4bd1-97f2-7ea74d865cdd"/>
       <field name="uploaded_by" type="string" required="true" uuid="7a49418b-1ce9-46d0-8788-1fe9f27d02cb"/>
       <field name="size" type="integer" required="true" uuid="fac8a9c7-0c7d-4913-b938-9b1bc3fe8110"/>
+      <field name="is_private" type="boolean" default="0" required="true" uuid="d47074ab-24ef-4e37-ba43-543508f0d91e"/>
       <field name="storage_location" type="string" size="255" required="true" uuid="35696d4c-8b06-46ba-99ce-be4d2c5eef21"/>
       <orm-attributes>
-        <attribute name="schema">patch_panel_port_file</attribute>
         <attribute name="table">patch_panel_port_file</attribute>
+        <attribute name="tableName">patch_panel_port_file</attribute>
       </orm-attributes>
     </entity>
     <association from="\Entities\PatchPanelPortFile" to="\Entities\PatchPanelPort" owner-alias="patchPanelPortFiles" inverse-alias="patchPanelPort" many-owner="true" many-inverse="false" uuid="4bc1d72f-a2b3-43b8-89f6-e5aaeb3b6d59">
@@ -1252,17 +1253,22 @@
     </association>
     <entity name="\Entities\PatchPanelPortHistoryFile" local-name="PatchPanelPortHistoryFile" namespace="\Entities" uuid="1b16625d-8c68-489f-b0ca-a1969276df51">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="22a2c4e3-afc1-4b13-b9dd-727ad817aaf5"/>
+      <field name="patch_panel_port_history_id" type="integer" uuid="4ae58c70-8ac7-4cba-84a7-0a1b972a6504"/>
       <field name="name" type="string" size="255" required="true" uuid="7231e440-9b50-4ea3-9f6e-98fe802cad09"/>
       <field name="type" type="string" size="255" required="true" uuid="6cc7d771-14ba-4f99-9ad3-35689da404c3"/>
       <field name="uploaded_at" type="datetime" required="true" uuid="a8820ebd-a1ba-4cc8-8ae9-6b45d12bd80b"/>
       <field name="uploaded_by" type="string" required="true" uuid="f0a24541-369f-4ee6-a82c-cdd87bfe6e58"/>
       <field name="size" type="integer" required="true" uuid="f968ddea-03c9-4ce5-ac89-27cec8cfde7e"/>
+      <field name="is_private" type="boolean" default="0" required="true" uuid="6962d7d1-e0f3-4346-a73d-848440224131"/>
       <field name="storage_location" type="string" size="255" required="true" uuid="b22d2066-41f3-43a5-a548-62e827ff90a3"/>
       <orm-attributes>
-        <attribute name="schema">patch_panel_port_history_file</attribute>
         <attribute name="table">patch_panel_port_history_file</attribute>
+        <attribute name="tableName">patch_panel_port_history_file</attribute>
       </orm-attributes>
     </entity>
+    <association from="\Entities\PatchPanelPortHistoryFile" to="\Entities\PatchPanelPortHistory" owner-alias="patchPanelPortHistoryFiles" inverse-alias="patchPanelPortHistory" many-owner="true" many-inverse="false" uuid="9fbc7658-7e64-4754-a2da-e49ad6400671">
+      <association-field from="patch_panel_port_history_id" to="id"/>
+    </association>
   </module>
   <visual-data>
     <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1294,6 +1300,7 @@
     <association uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765" color="4288059030"/>
     <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="9fbc7658-7e64-4754-a2da-e49ad6400671" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="a6cd1017-f136-4839-a577-7477c6a5a287" color="4288059030"/>
     <association uuid="a93d8c93-6456-462f-a524-9fcda1180727" color="4288059030"/>
     <association uuid="ab08b405-788c-4579-bc8d-3445b6ba3821" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-56" color="4288059030"/>
@@ -1307,7 +1314,6 @@
     <association uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="c9431b23-72cb-4afa-a057-ced40869cfd0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-26" center-position-y="0" color="4288059030"/>
-    <association uuid="cec2017a-59e6-4ec1-9249-598429a22dab" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819" color="4288059030"/>
     <association uuid="d9075ce3-753a-432f-a009-c9e386509484" color="4288059030"/>
     <association uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>

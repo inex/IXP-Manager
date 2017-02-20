@@ -224,4 +224,33 @@ class PatchPanelPortFile
     {
         return $this->patchPanelPort;
     }
+/**
+ * @var boolean
+ */
+private $is_private = '0';
+
+
+/**
+ * Set isPrivate
+ *
+ * @param boolean $isPrivate
+ *
+ * @return PatchPanelPortFile
+ */
+public function setIsPrivate($isPrivate)
+{
+$this->is_private = $isPrivate;
+
+return $this;
+}
+
+/**
+ * Get isPrivate
+ *
+ * @return boolean
+ */
+public function getIsPrivate()
+{
+return $this->is_private;
+}
 }

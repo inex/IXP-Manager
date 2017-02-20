@@ -1041,7 +1041,6 @@ class PatchPanelPort
     public function addPatchPanelPortFile(\Entities\PatchPanelPortFile $patchPanelPortFile)
     {
         $this->patchPanelPortFiles[] = $patchPanelPortFile;
-
         return $this;
     }
 
@@ -1056,12 +1055,80 @@ class PatchPanelPort
     }
 
     /**
-     * Get patchPanelPortFiles
+     * Get patchPanelPortFile
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getPatchPanelPortFiles()
+    public function getPatchPanelPortFile()
     {
         return $this->patchPanelPortFiles;
     }
+/**
+ * @var string
+ */
+private $private_notes;
+
+/**
+ * @var integer
+ */
+private $owned_by = '0';
+
+
+/**
+ * Set privateNotes
+ *
+ * @param string $privateNotes
+ *
+ * @return PatchPanelPort
+ */
+public function setPrivateNotes($privateNotes)
+{
+$this->private_notes = $privateNotes;
+
+return $this;
+}
+
+/**
+ * Get privateNotes
+ *
+ * @return string
+ */
+public function getPrivateNotes()
+{
+return $this->private_notes;
+}
+
+/**
+ * Set ownedBy
+ *
+ * @param integer $ownedBy
+ *
+ * @return PatchPanelPort
+ */
+public function setOwnedBy($ownedBy)
+{
+$this->owned_by = $ownedBy;
+
+return $this;
+}
+
+/**
+ * Get ownedBy
+ *
+ * @return integer
+ */
+public function getOwnedBy()
+{
+return $this->owned_by;
+}
+
+/**
+ * Get patchPanelPortFiles
+ *
+ * @return \Doctrine\Common\Collections\Collection
+ */
+public function getPatchPanelPortFiles()
+{
+return $this->patchPanelPortFiles;
+}
 }
