@@ -191,6 +191,10 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
      */
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
+        if( count( $object->getPhysicalInterfaces() ) > 1 ) {
+            $form->getElement('lag_framing')->setAttrib( 'disabled', true )->setAttrib( 'readonly', true );
+        }
+
         if( $isEdit )
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
@@ -229,10 +233,18 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
      * @param IXP_Form_Interface_Virtual $form The form object
      * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
+     * @return bool
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
+        // when a checkbox is disabled, we get 0 even if the disabled element is checked.
+        // we only disable the element is #physints > 1.
+        // this is easy for fix for lag_framing as the rules are simple:
+        if( count( $object->getPhysicalInterfaces() ) > 1 ) {
+            $form->getElement('lag_framing')->setValue(true);
+            $object->setLagFraming(true);
+        }
+
         $object->setCustomer(
             $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
         );
