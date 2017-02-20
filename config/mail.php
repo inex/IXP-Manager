@@ -11,8 +11,8 @@ return [
     | sending of e-mail. You may specify which one you're using throughout
     | your application here. By default, Laravel is setup for SMTP mail.
     |
-    | Supported: "smtp", "mail", "sendmail", "mailgun", "mandrill", "log"
-    |
+    | Supported: "smtp", "sendmail", "mailgun", "mandrill", "ses",
+    |            "sparkpost", "log", "array"    |
     */
 
     'driver' => env( 'MAIL_DRIVER', 'smtp' ),
@@ -110,15 +110,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Mail "Pretend"
+    | Markdown Mail Settings
     |--------------------------------------------------------------------------
     |
-    | When this option is enabled, e-mail will not actually be sent over the
-    | web and will instead be written to your application's logs files so
-    | you may inspect the message. This is great for local development.
+    | If you are using Markdown based email rendering, you may configure your
+    | theme and component paths here, allowing you to customize the design
+    | of the emails. Or, you may simply stick with the Laravel defaults!
     |
     */
 
-    'pretend' => env( 'MAIL_PRETEND', false ),
+    'markdown' => [
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
+
 
 ];

@@ -43,8 +43,9 @@
         "komola/bootstrap-zend-framework": "dev-master",
         "opensolutions/oss-snmp": "dev-master",
 
-        "laravel/framework": "5.3.*",
-        "laravel-doctrine/orm": "1.2.*",
+        "laravel/framework": "5.4.*",
+        "laravel/tinker": "~1.0",
+        "laravel-doctrine/orm": "1.3.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
 
@@ -60,12 +61,10 @@
 
     },
     "require-dev": {
-        "phpunit/phpunit": "~5.1",
-        "phpspec/phpspec": "~2.1",
-        "phpunit/php-code-coverage": "~3.1",
-        "symfony/dom-crawler": "~3.0",
-        "symfony/css-selector": "~3.0",
-        "barryvdh/laravel-ide-helper": "^2.2"
+        "phpunit/phpunit": "~5.7",
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "0.9.*",
+        "barryvdh/laravel-ide-helper": "^2.3"
      },
     "support": {
         "issues": "https://github.com/inex/IXP-Manager/issues",
@@ -90,7 +89,10 @@
      "autoload-dev": {
          "classmap": [
              "tests/TestCase.php"
-         ]
+         ],
+         "psr-4": {
+             "Tests\\": "tests/"
+         }
     },
     "scripts": {
          "post-install-cmd": [

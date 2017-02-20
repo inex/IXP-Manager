@@ -147,6 +147,8 @@ return [
          Illuminate\Validation\ValidationServiceProvider::class,
          Illuminate\View\ViewServiceProvider::class,
 
+         Laravel\Tinker\TinkerServiceProvider::class,
+
         /*
          * Debug
          */
