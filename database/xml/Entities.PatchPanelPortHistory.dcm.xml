@@ -9,6 +9,7 @@
     <field name="colo_circuit_ref" type="string" length="30" nullable="true"/>
     <field name="ticket_ref" type="string" length="30" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
+    <field name="private_notes" type="text" nullable="true"/>
     <field name="assigned_at" type="date" nullable="true"/>
     <field name="connected_at" type="date" nullable="true"/>
     <field name="cease_requested_at" type="date" nullable="true"/>
@@ -18,7 +19,12 @@
         <option name="default">0</option>
       </options>
     </field>
-    <field name="chargeable" type="boolean" nullable="false">
+    <field name="chargeable" type="integer" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="owned_by" type="integer" nullable="false">
       <options>
         <option name="default">0</option>
       </options>
