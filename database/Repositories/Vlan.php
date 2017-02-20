@@ -334,6 +334,9 @@ class Vlan extends EntityRepository
                     $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['vintid'] = $vli['VirtualInterface']['id'];
                 }
 
+                $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['locations'] = [];
+                $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['switches']  = [];
+
                 foreach( $vli['VirtualInterface']['PhysicalInterfaces'] as $pi )
                 {
                     $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['locations'][]

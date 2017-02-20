@@ -181,6 +181,7 @@ sub trawl_switch_snmp ($$) {
 	my ($host, $snmpcommunity, $vlan) = @_;
 	my ($dbridgehash, $qbridgehash, $macaddr, $junipermapping, $vlanmapping);
 	my $oids = {
+		'sysDescr'		=> '.1.3.6.1.2.1.1.1',
 		'ifDescr'		=> '.1.3.6.1.2.1.2.2.1.2',
 		'dot1dBasePortIfIndex'	=> '.1.3.6.1.2.1.17.1.4.1.2',
 		'dot1qVlanFdbId'	=> '.1.3.6.1.2.1.17.7.1.4.2.1.3',
@@ -191,6 +192,17 @@ sub trawl_switch_snmp ($$) {
 	};
 
 	$debug && print STDERR "DEBUG: $host: started query process\n";
+
+	my $sysdescr = snmpwalk2hash($host, $snmpcommunity, $oids->{sysDescr});
+
+	if ($sysdescr->{'0'} =~ /Cisco\s+(NX-OS|IOS)/) {
+		if (!defined ($vlan) || $vlan == 0) {
+			print STDERR "ERROR: $host: must specify VLAN for Cisco IOS/NX-OS switches\n";
+			return;
+		}
+		$debug && print STDERR "WARNING: $host: using community\@vlan hack to handle broken SNMP implementation\n";
+		$snmpcommunity .= '@'.$vlan;
+	}
 
 	my $ifindex = snmpwalk2hash($host, $snmpcommunity, $oids->{ifDescr});
 	if (!$ifindex) {
