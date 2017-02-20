@@ -75,7 +75,7 @@ class IXP_Form_Interface_Virtual extends IXP_Form
 
 
         $trunk = $this->createElement( 'checkbox', 'trunk' );
-        $trunk->setLabel( 'Is 802.1q Trunk?' )
+        $trunk->setLabel( 'Use 802.1q framing' )
             ->setCheckedValue( '1' );
         $this->addElement( $trunk );
 
