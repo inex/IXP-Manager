@@ -600,4 +600,33 @@ class PatchPanelPortHistory
             return null;
         }
     }
+/**
+ * @var \Entities\PatchPanelPortHistoryFile
+ */
+private $patchPanelPortHistoryFiles;
+
+
+/**
+ * Set patchPanelPortHistoryFiles
+ *
+ * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFiles
+ *
+ * @return PatchPanelPortHistory
+ */
+public function setPatchPanelPortHistoryFiles(\Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFiles = null)
+{
+$this->patchPanelPortHistoryFiles = $patchPanelPortHistoryFiles;
+
+return $this;
+}
+
+/**
+ * Get patchPanelPortHistoryFiles
+ *
+ * @return \Entities\PatchPanelPortHistoryFile
+ */
+public function getPatchPanelPortHistoryFiles()
+{
+return $this->patchPanelPortHistoryFiles;
+}
 }

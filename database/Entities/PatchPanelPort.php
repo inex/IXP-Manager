@@ -134,6 +134,11 @@ class PatchPanelPort
     private $duplexMasterPort;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $patchPanelPortFiles;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -1022,5 +1027,41 @@ class PatchPanelPort
         $this->resetPatchPanelPort();
 
         D2EM::flush();
+    }
+
+
+
+    /**
+     * Add patchPanelPortFile
+     *
+     * @param \Entities\PatchPanelPortFile $patchPanelPortFile
+     *
+     * @return PatchPanelPort
+     */
+    public function addPatchPanelPortFile(\Entities\PatchPanelPortFile $patchPanelPortFile)
+    {
+        $this->patchPanelPortFiles[] = $patchPanelPortFile;
+
+        return $this;
+    }
+
+    /**
+     * Remove patchPanelPortFile
+     *
+     * @param \Entities\PatchPanelPortFile $patchPanelPortFile
+     */
+    public function removePatchPanelPortFile(\Entities\PatchPanelPortFile $patchPanelPortFile)
+    {
+        $this->patchPanelPortFiles->removeElement($patchPanelPortFile);
+    }
+
+    /**
+     * Get patchPanelPortFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatchPanelPortFiles()
+    {
+        return $this->patchPanelPortFiles;
     }
 }
