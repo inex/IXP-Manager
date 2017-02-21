@@ -4,6 +4,9 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\VirtualInterface as VIEntity;
+use IXP\Exceptions\GeneralException;
+
 /**
  * VirtualInterface
  *
@@ -96,4 +99,51 @@ class VirtualInterface extends EntityRepository
         $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }
+
+
+    /**
+     * For the given $vi, we want to ensure its channel group is unique
+     * within a switch
+     *
+     * @param VIEntity $vi
+     * @return bool
+     * @throws GeneralException
+     */
+    public function validateChannelGroup( VIEntity $vi ): bool {
+
+        if( !$vi->getChannelgroup() ) {
+            throw new GeneralException("Should not be testing a null / zero channel group number");
+        }
+
+        if( count( $vi->getPhysicalInterfaces() ) == 0 ) {
+            throw new GeneralException("Channel group number is only relevant when there is at least one physical interface");
+        }
+
+        /** @var VIEntity[] $vis */
+        $vis = $this->getEntityManager()->createQuery("
+                    SELECT vi FROM Entities\VirtualInterface vi
+                        JOIN vi.PhysicalInterfaces pi
+                        JOIN pi.SwitchPort sp
+                        JOIN sp.Switcher s 
+                    WHERE 
+                        vi.channelgroup = :cg
+                        AND s = :switch
+                ")
+            ->setParameter('cg',     $vi->getChannelgroup())
+            ->setParameter('switch', $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher() )
+            ->getResult();
+
+        if( count( $vis ) == 0 ) {
+            return true;
+        }
+
+        foreach( $vis as $v ) {
+            if( $v->getId() != $vi->getId() ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }
