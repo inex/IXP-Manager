@@ -119,6 +119,16 @@ class VirtualInterface extends EntityRepository
             throw new GeneralException("Channel group number is only relevant when there is at least one physical interface");
         }
 
+        // not sure if we're supporting multi-chassis LAGs. May work, may not. Let's be positive and assume it works and account for that:
+        $switches = [];
+
+        /** @var \Entities\PhysicalInterface $pi */
+        foreach( $vi->getPhysicalInterfaces() as $pi ) {
+            if( !in_array( $pi->getSwitchPort()->getSwitcher()->getId(), $switches ) ) {
+                $switches[] = $pi->getSwitchPort()->getSwitcher()->getId();
+            }
+        }
+
         /** @var VIEntity[] $vis */
         $vis = $this->getEntityManager()->createQuery("
                     SELECT vi FROM Entities\VirtualInterface vi
@@ -127,10 +137,10 @@ class VirtualInterface extends EntityRepository
                         JOIN sp.Switcher s 
                     WHERE 
                         vi.channelgroup = :cg
-                        AND s = :switch
+                        AND s.id IN ( :switches )
                 ")
-            ->setParameter('cg',     $vi->getChannelgroup())
-            ->setParameter('switch', $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher() )
+            ->setParameter('cg',       $vi->getChannelgroup())
+            ->setParameter('switches', $switches )
             ->getResult();
 
         if( count( $vis ) == 0 ) {
@@ -144,6 +154,34 @@ class VirtualInterface extends EntityRepository
         }
 
         return true;
+    }
+
+    /**
+     * For the given $vi, assign a unique channel group
+     *
+     * @param VIEntity $vi
+     * @return int
+     * @throws GeneralException
+     */
+    public function assignChannelGroup( VIEntity $vi ): int {
+
+        if( count( $vi->getPhysicalInterfaces() ) == 0 ) {
+            throw new GeneralException("Channel group number is only relevant when there is at least one physical interface");
+        }
+
+        // FIXME: need a more reasonbale way of doing this but I also want to ensure old group IDs get reused
+        //        as many switches have an upper limit that is quite small
+        $orig = $vi->getChannelgroup();
+        for( $i = 1; $i < 1000; $i++ ) {
+            $vi->setChannelgroup($i);
+            if( $this->validateChannelGroup($vi) ) {
+                $vi->setChannelgroup($orig);
+                return $i;
+            }
+        }
+
+        $vi->setChannelgroup($orig);
+        throw new GeneralException("Could not assign a free channel group number");
     }
 
 }

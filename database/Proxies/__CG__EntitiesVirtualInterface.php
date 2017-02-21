@@ -323,6 +323,17 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
+    public function getBundleName(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBundleName', []);
+
+        return parent::getBundleName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addPhysicalInterface(\Entities\PhysicalInterface $physicalInterfaces)
     {
 

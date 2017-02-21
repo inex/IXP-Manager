@@ -453,6 +453,7 @@
       <field name="name" type="string" size="255" uuid="3f0a1fff-6d39-4baf-99c2-15f90685c9bd"/>
       <field name="shortname" type="string" size="255" uuid="d9673ae5-0cf2-4d6e-9d9b-e357e053940c"/>
       <field name="nagios_name" type="string" size="255" uuid="eb2ee353-93bd-4997-bdb6-3bc5c21d2051"/>
+      <field name="bundle_name" type="string" size="255" uuid="00c1cb79-8a0f-4c02-b29b-2117c1338195"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Vendor</attribute>
         <attribute name="table">vendor</attribute>
@@ -1310,7 +1311,7 @@
     <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="531" position-y="-333" size-x="0" size-x2="132" size-y="0" size-y2="255"/>
     <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" bg-color="4294967295" hdr-color="4292006610" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
     <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" bg-color="4294967295" hdr-color="4292006610" position-x="1391" position-y="479" size-x="0" size-x2="114" size-y="0" size-y2="87"/>
-    <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="4294967295" hdr-color="4292006610" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
+    <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
     <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
     <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" bg-color="4294967295" hdr-color="4292006610" position-x="1153" position-y="545" size-x="0" size-x2="115" size-y="0" size-y2="185"/>
     <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>

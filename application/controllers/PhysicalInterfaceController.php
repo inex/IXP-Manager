@@ -210,6 +210,9 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
                 $this->redirect( 'virtual-interface/add' );
             }
 
+            $object->setVirtualInterface($vint);
+            $vint->addPhysicalInterface($object);
+
             $form->enableFanoutPort( $this->resellerMode() && $vint->getCustomer()->isResoldCustomer() );
 
             $form->getElement( 'virtualinterfaceid' )->setValue( $vint->getId() );
@@ -257,6 +260,9 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
             $form->getElement( 'monitorindex' )->setValue( $this->getD2R( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $vi->getCustomer() ) );
             return false;
         }
+
+        // set name and channel group as appropriate
+        $this->setBundleDetails( $object->getVirtualInterface() );
 
         if( $form->getElement( 'fanout' ) )
         {
@@ -360,6 +366,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
             $this->getD2EM()->flush();
         }
 
+        $this->setBundleDetails( $object->getVirtualInterface() );
         return $this->postFlush( $object );
     }
 

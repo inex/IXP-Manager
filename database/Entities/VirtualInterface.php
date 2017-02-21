@@ -60,7 +60,7 @@ class VirtualInterface
     protected $MACAddresses;
 
     /**
-     * @var Customer
+     * @var Entities\Customer
      */
     protected $Customer;
 
@@ -221,6 +221,19 @@ class VirtualInterface
     public function getId()
     {
         return $this->id;
+    }
+
+
+    /**
+     * Get the bundle name if name and channel group are set. Otherwise an empty string.
+     * @return string
+     */
+    public function getBundleName(): string {
+        if( $this->getName() && $this->getChannelgroup() ) {
+            return $this->getName() . $this->getChannelgroup();
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -411,44 +424,44 @@ class VirtualInterface
     }
 
 
-/**
- * Add sflowReceiver
- *
- * @param \Entities\SflowReceiver $sflowReceiver
- *
- * @return VirtualInterface
- */
-public function addSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
-{
-$this->SflowReceivers[] = $sflowReceiver;
+    /**
+     * Add sflowReceiver
+     *
+     * @param \Entities\SflowReceiver $sflowReceiver
+     *
+     * @return VirtualInterface
+     */
+    public function addSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
+    {
+        $this->SflowReceivers[] = $sflowReceiver;
 
-return $this;
-}
+        return $this;
+    }
 
-/**
- * Remove sflowReceiver
- *
- * @param \Entities\SflowReceiver $sflowReceiver
- */
-public function removeSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
-{
-$this->SflowReceivers->removeElement($sflowReceiver);
-}
+    /**
+     * Remove sflowReceiver
+     *
+     * @param \Entities\SflowReceiver $sflowReceiver
+     */
+    public function removeSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
+    {
+        $this->SflowReceivers->removeElement($sflowReceiver);
+    }
 
 
-/**
- * Get sflowReceivers
- *
- * @return \Doctrine\Common\Collections\Collection
- */
-public function getSflowReceivers()
-{
-return $this->SflowReceivers;
-}
-/**
- * @var \Doctrine\Common\Collections\Collection
- */
-private $SflowReceivers;
+    /**
+     * Get sflowReceivers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSflowReceivers()
+    {
+        return $this->SflowReceivers;
+    }
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $SflowReceivers;
 
 }

@@ -13,10 +13,23 @@
             {$element->custid}
             {$element->trunk}
             {$element->lag_framing}
+
+            {if $object->getBundleName()}
+                <div class="control-group">
+                    <label for="custid" class="control-label">Bundle Name</label>
+                    <div class="controls">
+                        <label class="control-label">
+                            <b><code>{$object->getBundleName()}</code></b>
+                        </label>
+                    </div>
+                </div>
+            {/if}
+
             {if isset( $type ) && $type }
                 <div class="control-group">
                     <label class="control-label">Type</label>
                     <div class="controls">
+                        <label class="control-label">
                         <span class="label {if $type == 1}label-success{else if $type == 6}label-inverse{/if}">{$ptypes[$type]|strtoupper}</span>
                         {if count( $physInts )}
                             {foreach $physInts as $int}
@@ -37,6 +50,7 @@
                             {/foreach}
                      
                         {/if}
+                        </label>
                     </div>
                 </div>
             {/if}
