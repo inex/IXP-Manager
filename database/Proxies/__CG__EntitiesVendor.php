@@ -64,10 +64,10 @@ class Vendor extends \Entities\Vendor implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'id', 'Switches', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
+            return ['__isInitialized__', 'name', 'id', 'Switches', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
         }
 
-        return ['__isInitialized__', 'name', 'id', 'Switches', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
+        return ['__isInitialized__', 'name', 'id', 'Switches', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
     }
 
     /**
@@ -307,6 +307,28 @@ class Vendor extends \Entities\Vendor implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSwitch', [$switches]);
 
         return parent::removeSwitch($switches);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getBundleName(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBundleName', []);
+
+        return parent::getBundleName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setBundleName(string $bundle_name)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBundleName', [$bundle_name]);
+
+        return parent::setBundleName($bundle_name);
     }
 
 }
