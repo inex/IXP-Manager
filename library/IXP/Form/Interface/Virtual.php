@@ -75,13 +75,15 @@ class IXP_Form_Interface_Virtual extends IXP_Form
 
 
         $trunk = $this->createElement( 'checkbox', 'trunk' );
-        $trunk->setLabel( 'Use 802.1q framing' )
+        $trunk->setLabel( 'Use 802.1q framing '
+                . '<button class="btn btn-mini" type="button" id="tooltip-trunk"><i class="icon-question-sign"></i></button>')
             ->setCheckedValue( '1' );
         $this->addElement( $trunk );
 
         $lagFraming = $this->createElement( 'checkbox', 'lag_framing' );
-        $lagFraming->setLabel( 'Link aggregation / LAG framing' )
-              ->setCheckedValue( '1' );
+        $lagFraming->setLabel( 'Link aggregation / LAG framing '
+                . '<button class="btn btn-mini" type="button" id="tooltip-lag-framing"><i class="icon-question-sign"></i></button>')
+            ->setCheckedValue( '1' );
         $this->addElement( $lagFraming );
 
         $this->addDisplayGroup(
