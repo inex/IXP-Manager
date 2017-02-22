@@ -60,7 +60,7 @@ class VirtualInterface
     protected $MACAddresses;
 
     /**
-     * @var Entities\Customer
+     * @var \Entities\Customer
      */
     protected $Customer;
 
