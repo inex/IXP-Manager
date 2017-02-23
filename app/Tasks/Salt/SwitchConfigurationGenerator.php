@@ -25,7 +25,11 @@ namespace IXP\Tasks\Salt;
  */
 
 use Entities\Switcher as SwitchEntity;
+use Entities\VirtualInterface as VirtualInterfaceEntity;
+use Entities\PhysicalInterface as PhysicalInterfaceEntity;
+
 use Illuminate\Contracts\View\View as ViewContract;
+
 use IXP\Exceptions\GeneralException;
 
 /**
@@ -85,11 +89,84 @@ class SwitchConfigurationGenerator
      * @throws GeneralException
      * @return ViewContract The configuration
      */
-    public function render(): ViewContract {
+    public function render(): ViewContract
+    {
 
-        return view( $this->template() )->with(
-            [ 'switch' => $this->getSwitch() ]
+        $ports = [];
+        $visProcessed = [];
+        foreach( $this->getSwitch()->getPorts() as $sp ) {
+
+            /** @var \Entities\SwitchPort $sp */
+            if( !$sp->isTypePeering() ) {
+                continue;
+            }
+
+            // is the port in use?
+            if( !($pi = $sp->getPhysicalInterface()) ) {
+                continue;
+            }
+
+            if( !in_array($pi->getVirtualInterface()->getId(), $visProcessed) ) {
+                $ports = array_merge($ports, $this->processVirtualInterface($pi->getVirtualInterface()));
+                $visProcessed[] = $pi->getVirtualInterface()->getId();
+            }
+        }
+
+        return view($this->template())->with(
+            [ 'ports' => $ports ]
         );
+    }
+
+    private function processVirtualInterface( VirtualInterfaceEntity $vi ): array {
+
+        $p                       = [];
+        $p['description']        = "Cust: {$vi->getCustomer()->getAbbreviatedName()}";
+        $p['dot1q']              = $vi->getTrunk() ? 'yes' : 'no';
+        $p['virtualinterfaceid'] = $vi->getId();
+        if( $vi->getChannelgroup() ) {
+            $p['lagindex'] = $vi->getChannelgroup();
+        }
+
+        $p['vlans'] = [];
+        foreach( $vi->getVlanInterfaces() as $vli ) {
+            /** @var \Entities\VlanInterface $vli */
+            $v = [];
+            $v['number'] = $vli->getVlan()->getNumber();
+            $v['macaddresses'] = [];
+            foreach( $vi->getMACAddresses() as $mac ) {
+                $v['macaddresses'][] = $mac->getMacFormattedWithColons();
+            }
+            $p['vlans'][] = $v;
+        }
+
+        // we now have the base port config. If this is not a LAG, just return it:
+        if( !$vi->getChannelgroup() ) {
+            $pi = $vi->getPhysicalInterfaces()[0];
+            $p['name']               = $pi->getSwitchport()->getIfName();
+            $p['speed']              = $pi->getSpeed();
+            return [ $p ];
+        }
+
+        $ports = [];
+
+        // bundle definition:
+        $p['name']      = $vi->getName();
+        $p['lagmaster'] = 'yes';
+        $ports[]        = $p;
+
+        // interface definitions:
+        foreach( $vi->getPhysicalInterfaces() as $pi ) {
+            /** @var PhysicalInterfaceEntity $pi */
+            if( !$pi->getSwitchPort() ) {
+                continue;
+            }
+            $p['name']      = $pi->getSwitchPort()->getIfName();
+            $p['lagmaster'] = 'no';
+            $p['speed']     = $pi->getSpeed();
+            $ports[] = $p;
+        }
+
+        return $ports;
     }
 
 
