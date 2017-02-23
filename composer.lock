@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc3e343ec81abe74383e1cf008120185",
+    "content-hash": "979820e65db50648075d7b148deb8419",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -4764,25 +4764,25 @@
         },
         {
             "name": "sebastian/comparator",
-            "version": "1.2.x-dev",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "2b7424b55f5047b47ac6e5ccb20b2aea4011d9be"
+                "reference": "2f09d5a251c4a92d1a80518c2166b5d0d742bc63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/2b7424b55f5047b47ac6e5ccb20b2aea4011d9be",
-                "reference": "2b7424b55f5047b47ac6e5ccb20b2aea4011d9be",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/2f09d5a251c4a92d1a80518c2166b5d0d742bc63",
+                "reference": "2f09d5a251c4a92d1a80518c2166b5d0d742bc63",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
-                "sebastian/diff": "~1.2",
-                "sebastian/exporter": "~1.2 || ~2.0"
+                "php": "^5.3.3 || ^7.0",
+                "sebastian/diff": "^1.2",
+                "sebastian/exporter": "^1.2 || ^2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.4"
+                "phpunit/phpunit": "^4.8"
             },
             "type": "library",
             "extra": {
@@ -4824,7 +4824,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2017-01-29T09:50:25+00:00"
+            "time": "2016-12-10T08:07:52+00:00"
         },
         {
             "name": "sebastian/diff",

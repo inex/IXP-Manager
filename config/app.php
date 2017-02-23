@@ -175,6 +175,8 @@ return [
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
         Former\FormerServiceProvider::class,
     ],
 

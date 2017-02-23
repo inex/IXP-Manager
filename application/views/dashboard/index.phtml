@@ -36,7 +36,9 @@
                     </a>
                 </li>
             {/if}
-
+            <li>
+                <a href="#tab-cross-connects" data-toggle="tab">Cross Connects</a>
+            </li>
             {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
                 {if $user->getCustomer()->isRouteServerClient()}
                     <li>
@@ -101,6 +103,9 @@
             </div>
         {/if}
 
+        <div class="tab-pane" id="tab-cross-connects">
+            {tmplinclude file="customer/overview-tabs/cross-connects.phtml"}
+        </div>
     </div>
 
 {else}

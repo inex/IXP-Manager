@@ -97,12 +97,22 @@
             </tr>
             <tr>
                 <td><b>Chargeable :</b></td>
-                <td><?= $t->patchPanelPort->getChargeableText() ?></td>
+                <td><?= $t->patchPanelPort->resolveChargeable() ?></td>
             </tr>
             <tr>
-                <td><b>Note :</b></td>
-                <td><?= nl2br($t->patchPanelPort->getNotes()) ?></td>
+                <td><b>Owned By :</b></td>
+                <td><?= $t->patchPanelPort->resolveOwnedBy() ?></td>
             </tr>
+            <?php if ($t->isSuperUser): ?>
+                <tr>
+                    <td><b>Public Notes :</b></td>
+                    <td><?= $t->patchPanelPort->getNotesParseDown() ?></td>
+                </tr>
+                <tr>
+                    <td><b>Private Notes :</b></td>
+                    <td><?= $t->patchPanelPort->getPrivateNotesParseDown() ?></td>
+                </tr>
+            <?php endif; ?>
         </table>
     </div>
 </div>

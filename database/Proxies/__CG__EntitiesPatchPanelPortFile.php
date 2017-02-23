@@ -64,10 +64,10 @@ class PatchPanelPortFile extends \Entities\PatchPanelPortFile implements \Doctri
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'type', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'size', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'storage_location', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'patchPanelPort'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'type', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'size', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'storage_location', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'patchPanelPort', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'is_private'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'type', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'size', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'storage_location', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'patchPanelPort'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'type', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'size', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'storage_location', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'patchPanelPort', '' . "\0" . 'Entities\\PatchPanelPortFile' . "\0" . 'is_private'];
     }
 
     /**
@@ -173,4 +173,195 @@ class PatchPanelPortFile extends \Entities\PatchPanelPortFile implements \Doctri
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function setName($name)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
+
+        return parent::setName($name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
+
+        return parent::getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setType($type)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', [$type]);
+
+        return parent::setType($type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', []);
+
+        return parent::getType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUploadedAt($uploadedAt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUploadedAt', [$uploadedAt]);
+
+        return parent::setUploadedAt($uploadedAt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUploadedAt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUploadedAt', []);
+
+        return parent::getUploadedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUploadedBy($uploadedBy)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUploadedBy', [$uploadedBy]);
+
+        return parent::setUploadedBy($uploadedBy);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUploadedBy()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUploadedBy', []);
+
+        return parent::getUploadedBy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSize($size)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSize', [$size]);
+
+        return parent::setSize($size);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSize()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSize', []);
+
+        return parent::getSize();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setStorageLocation($storageLocation)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setStorageLocation', [$storageLocation]);
+
+        return parent::setStorageLocation($storageLocation);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getStorageLocation()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStorageLocation', []);
+
+        return parent::getStorageLocation();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPatchPanelPort', [$patchPanelPort]);
+
+        return parent::setPatchPanelPort($patchPanelPort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPatchPanelPort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPort', []);
+
+        return parent::getPatchPanelPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIsPrivate($isPrivate)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIsPrivate', [$isPrivate]);
+
+        return parent::setIsPrivate($isPrivate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIsPrivate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIsPrivate', []);
+
+        return parent::getIsPrivate();
+    }
+
 }

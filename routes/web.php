@@ -42,3 +42,7 @@ Route::group(['middleware' => ['web']], function () {
     // });
 
 });
+
+Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
+    Route::get( 'view/{id}',                    'PatchPanelPortController@view' );
+});

@@ -104,32 +104,36 @@
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <input type="hidden"  id="note_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getNotes() ?>">
-                                <input type="hidden"  id="pi_state_<?=$patchPanelPort->getId() ?>" label="<?=$patchPanelPort->getPhysicalInterfaceStateLabel()?>" value="<?=$patchPanelPort->getPhysicalInterfaceState() ?>">
-                                <?php if($patchPanelPort->isAvailableForUse()): ?>
-                                    <li><a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId().'/allocated'?>">Allocate</a></li>
-                                <?php endif; ?>
-                                <?php if($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT): ?>
-                                    <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,true,<?= $patchPanelPort->getHasSwitchPort() ?>)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CONNECTED?>">Set Connected</a></li>
-                                <?php endif; ?>
-                                <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED)): ?>
-                                    <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" id="ceasedRequested<?=$patchPanelPort->getId()?>" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_AWAITING_CEASE?>">Cease requested</a></li>
-                                <?php endif; ?>
-                                <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_CEASE)): ?>
-                                    <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CEASED?>">Set ceased</a></li>
-                                <?php endif; ?>
-                                <li role="separator" class="divider"></li>
-                                <li>
-                                    <a href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?>" title="Preview">View</i></a>
-                                </li>
-                                <li>
-                                    <a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId()?>" title="Edit">Edit</a>
-                                </li>
-                            </ul>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Action <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu">
+                                    <input type="hidden"  id="notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getNotes() ?>">
+                                    <input type="hidden"  id="private_notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getPrivateNotes() ?>">
+                                    <input type="hidden"  id="pi_state_<?=$patchPanelPort->getId() ?>" label="<?=$patchPanelPort->getPhysicalInterfaceStateLabel()?>" value="<?=$patchPanelPort->getPhysicalInterfaceState() ?>">
+                                    <?php if($patchPanelPort->getState() == \Entities\PatchPanelPort::STATE_AVAILABLE): ?>
+                                        <li><a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId().'/allocated'?>">Allocate</a></li>
+                                    <?php endif; ?>
+                                    <?php if($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT): ?>
+                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,true,<?= $patchPanelPort->getHasSwitchPort() ?>)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CONNECTED?>">Set Connected</a></li>
+                                    <?php endif; ?>
+                                    <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED)): ?>
+                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" id="ceasedRequested<?=$patchPanelPort->getId()?>" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_AWAITING_CEASE?>">Cease requested</a></li>
+                                    <?php endif; ?>
+                                    <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_CEASE)): ?>
+                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CEASED?>">Set ceased</a></li>
+                                    <?php endif; ?>
+                                    <li role="separator" class="divider"></li>
+                                    <li>
+                                        <a href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?>" title="Preview">View</i></a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId()?>" title="Edit">Edit</a>
+                                    </li>
+                                </ul>
+                            </div>
                             <a class="btn btn btn-default <?php if($patchPanelPort->getHistoryCount() == 0): ?> disabled <?php endif; ?>" title="History" <?php if($patchPanelPort->getHistoryCount() != 0): ?> href="<?= url('/patch-panel-port/history' ).'/'.$patchPanelPort->getId()?> <?php endif; ?> ">
                                 <i class="glyphicon glyphicon-folder-open"></i>
                             </a>
@@ -146,7 +150,6 @@
     <script>
         $(document).ready(function(){
             pagination = true;
-            var new_note_set = false;
             <?php if($t->patchPanel): ?>
                 pagination = false;
             <?php endif; ?>
@@ -165,36 +168,56 @@
 
         });
 
-        function setNotesTextArea(pppId){
-            val_textarea = $('#notes').text();
-            ppp_note = $('#note_'+pppId).val();
+        function setNotesTextArea(pppId,input){
+            val_textarea = $('#'+input).text();
             default_val = '<?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
+
             if(val_textarea == ''){
-                $('#notes').text(default_val);
+                $('#'+input).text(default_val);
             }
             else{
-                if(!window.new_note_set){
-                    $('#notes').text(default_val+'\n\n'+val_textarea);
-                    $('#notes').setCursorPosition(default_val.length);
-                    window.new_note_set = true;
+                if($('#'+input).text() != default_val){
+                    if(input == 'notes'){
+                        if(!window.new_notes_set){
+                            $('#'+input).text(default_val+'\n\n'+val_textarea);
+                            window.new_notes_set = true;
+                        }
+                    }
+                    else{
+                        if(!window.new_private_notes_set){
+                            $('#'+input).text(default_val+'\n\n'+val_textarea);
+                            window.new_private_notes_set = true;
+                        }
+                    }
+
                 }
             }
+            pos = default_val.length + ($('#'+input).val().length - $('#'+input).text().length);
+            $('#'+input).setCursorPosition(pos);
 
         }
 
-        function checkTextArea(pppId){
-            if($('#notes').text() == $('#notes').val()){
-                $('#notes').text($('#note_'+pppId).val());
-                window.new_note_set = false;
+        function checkTextArea(pppId,input){
+            if($('#'+input).text() == $('#'+input).val()){
+                $('#'+input).text($('#'+input+'_'+pppId).val());
+                if(input == 'notes'){
+                    window.new_notes_set = false;
+                }
+                else{
+                    window.new_private_notes_set = false;
+                }
+
             }
         }
 
         function popup(href,pppId,connected,hasSwitchPort,piState){
             var url = $(href).attr("href");
-            var new_note_set = false;
+            var new_notes_set = false;
             html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p> " +
                 "<br/>" +
-                "<textarea id='notes' onblur='checkTextArea("+pppId+")' onclick='setNotesTextArea("+pppId+")' rows='10' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#note_'+pppId).val()+"</textarea>";
+                "Public Notes : <textarea id='notes' onblur='checkTextArea("+pppId+",\"notes\")' onclick='setNotesTextArea("+pppId+",\"notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#notes_'+pppId).val()+"</textarea>" +
+                "<br/>" +
+                "Private Notes : <textarea id='private_notes' onblur='checkTextArea("+pppId+",\"private_notes\")' onclick='setNotesTextArea("+pppId+",\"private_notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#private_notes_'+pppId).val()+"</textarea>";
             if(connected){
                 if(hasSwitchPort){
                     html += "<br/><br/><span>Update Physical Port State To:  </span><select id='PIStatus'>";
@@ -231,6 +254,7 @@
                         label: '<i class="fa fa-check"></i> Confirm',
                         callback: function () {
                             notes = $('#notes').val();
+                            private_notes = $('#private_notes').val();
                             if(hasSwitchPort){
                                 pi_status = $('#PIStatus').val();
                             }
@@ -240,7 +264,7 @@
 
                             $.ajax({
                                 url: "<?= url('patch-panel-port/setNotes/')?>",
-                                data: {pppId:pppId,notes: notes,pi_status:pi_status},
+                                data: {pppId:pppId,notes: notes,private_notes:private_notes,pi_status:pi_status},
                                 type: 'GET',
                                 dataType: 'JSON',
                                 success: function (data) {
@@ -263,7 +287,8 @@
             });
 
             dialog.init(function(){
-                window.new_note_set = false;
+                window.new_notes_set = false;
+                window.new_private_notes_set = false;
             });
             return false;
         }

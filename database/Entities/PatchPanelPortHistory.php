@@ -1,6 +1,8 @@
 <?php
 
 namespace Entities;
+
+Use Parsedown;
 /**
  * PatchPanelPortHistory
  */
@@ -64,6 +66,15 @@ class PatchPanelPortHistory
      * @var boolean
      */
     private $chargeable = '0';
+    /**
+     * @var string
+     */
+    private $private_notes;
+
+    /**
+     * @var integer
+     */
+    private $owned_by = '0';
 
     /**
      * @var string
@@ -234,6 +245,17 @@ class PatchPanelPortHistory
     public function getNotes()
     {
         return $this->notes;
+    }
+
+    /**
+     * Get notes using parse down
+     *
+     * @return string
+     */
+    public function getNotesParseDown()
+    {
+        $parseDown = new Parsedown;
+        return $parseDown->text($this->notes);
     }
 
     /**
@@ -431,13 +453,62 @@ class PatchPanelPortHistory
     }
 
     /**
-     * Get chargeable
+     * Set privateNotes
      *
-     * @return boolean
+     * @param string $privateNotes
+     *
+     * @return PatchPanelPortHistory
      */
-    public function getChargeableText()
+    public function setPrivateNotes($privateNotes)
     {
-        return $this->getChargeable() ? 'Yes' : 'No';
+        $this->private_notes = $privateNotes;
+
+        return $this;
+    }
+
+    /**
+     * Get privateNotes
+     *
+     * @return string
+     */
+    public function getPrivateNotes()
+    {
+        return $this->private_notes;
+    }
+
+    /**
+     * Get private notes using parseDown
+     *
+     * @return string
+     */
+    public function getPrivateNotesParseDown()
+    {
+        $parseDown = new Parsedown;
+        return $parseDown->text($this->private_notes);
+    }
+
+    /**
+     * Set ownedBy
+     *
+     * @param integer $ownedBy
+     *
+     * @return PatchPanelPortHistory
+     */
+    public function setOwnedBy($ownedBy)
+    {
+        $this->owned_by = $ownedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get ownedBy
+     *
+     * @return integer
+     */
+    public function getOwnedBy()
+    {
+        return $this->owned_by;
     }
 
     /**
@@ -607,6 +678,24 @@ class PatchPanelPortHistory
     }
 
     /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$CHARGEABLES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveChargeable(): string {
+        return PatchPanelPort::$CHARGEABLES[ $this->getChargeable() ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveOwnedBy(): string {
+        return PatchPanelPort::$OWNED_BY[ $this->getOwnedBy() ] ?? 'Unknown';
+    }
+
+    /**
      * Add patchPanelPortHistoryFile
      *
      * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
@@ -640,74 +729,13 @@ class PatchPanelPortHistory
         return $this->patchPanelPortHistoryFiles;
     }
 
-
-
-/**
- * @var string
- */
-private $private_notes;
-
-/**
- * @var integer
- */
-private $owned_by = '0';
-
-
-/**
- * Set privateNotes
- *
- * @param string $privateNotes
- *
- * @return PatchPanelPortHistory
- */
-public function setPrivateNotes($privateNotes)
-{
-$this->private_notes = $privateNotes;
-
-return $this;
-}
-
-/**
- * Get privateNotes
- *
- * @return string
- */
-public function getPrivateNotes()
-{
-return $this->private_notes;
-}
-
-/**
- * Set ownedBy
- *
- * @param integer $ownedBy
- *
- * @return PatchPanelPortHistory
- */
-public function setOwnedBy($ownedBy)
-{
-$this->owned_by = $ownedBy;
-
-return $this;
-}
-
-/**
- * Get ownedBy
- *
- * @return integer
- */
-public function getOwnedBy()
-{
-return $this->owned_by;
-}
-
-/**
- * Get patchPanelPortHistoryFiles
- *
- * @return \Doctrine\Common\Collections\Collection
- */
-public function getPatchPanelPortHistoryFiles()
-{
-return $this->patchPanelPortHistoryFiles;
-}
+    /**
+     * Get patchPanelPortHistoryFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatchPanelPortHistoryFiles()
+    {
+    return $this->patchPanelPortHistoryFiles;
+    }
 }

@@ -41,7 +41,7 @@
     ?>
 
     <?= Former::text('ticket_ref')
-        ->label('Ticket Reference')
+        ->label('Ticket Reference(s)')
         ->help('help text');
     ?>
 
@@ -58,8 +58,8 @@
     </span>
 
     <div class="well">
-        <?= Former::default_button()
-            ->addClass('reset-button-well')
+        <?= Former::default_button('Reset')
+            ->addClass('reset-button-well reset-btn')
             ->icon('glyphicon glyphicon-refresh')
             ->title('Reset')
             ->style('margin-top : 1%')
@@ -84,8 +84,8 @@
     </div>
 
     <div class="well">
-        <?= Former::default_button()
-            ->addClass('reset-button-well')
+        <?= Former::default_button('Reset')
+            ->addClass('reset-button-well reset-btn')
             ->icon('glyphicon glyphicon-refresh')
             ->title('Reset')
             ->id('resetCustomer');
@@ -120,14 +120,21 @@
         </span>
     <?php endif; ?>
 
-    <?php if(!$t->allocated): ?>
-        <?= Former::textarea('notes')
-            ->label('Note')
-            ->rows(10)
-            ->style('width:500px')
-            ->help('help text');
-        ?>
+    <?= Former::textarea('notes')
+        ->label('Public Notes')
+        ->rows(10)
+        ->style('width:500px')
+        ->help('help text');
+    ?>
 
+    <?= Former::textarea('private_notes')
+        ->label('Privates Notes')
+        ->rows(10)
+        ->style('width:500px')
+        ->help('help text');
+    ?>
+
+    <?php if(!$t->allocated): ?>
         <?= Former::date('assigned_at')
             ->label('Assigned At')
             ->append('<button class="btn-default btn" onclick="setToday(\'assigned_at\')" type="button">Today</button>')
@@ -159,11 +166,11 @@
         ?>
     <?php endif; ?>
 
-    <?= Former::radios('chargeable')
-        ->radios(array(
-            'Yes' => array('chargeable' => 'yes', 'value' => '1'),
-            'No' => array('chargeable' => 'no', 'value' => '0'),
-        ))->inline()->check($t->patchPanelPort->getChargeableInt())
+    <?= Former::select('chargeable')
+        ->label('Chargeable')
+        ->options($t->chargeables)
+        ->select($t->patchPanelPort->getChargeableDefaultNo())
+        ->addClass('chzn-select')
         ->help('help text');
     ?>
 
@@ -172,6 +179,13 @@
             'Yes' => array('name' => 'internal_use', 'value' => '1'),
             'No' => array('name' => 'internal_use', 'value' => '0'),
         ))->inline()->check($t->patchPanelPort->getInternalUseInt())
+        ->help('help text');
+    ?>
+
+    <?= Former::select('owned_by')
+        ->label('Owned By')
+        ->options($t->ownedBy)
+        ->addClass('chzn-select')
         ->help('help text');
     ?>
 
@@ -215,8 +229,10 @@
         }
 
         $(document).ready(function() {
-            var new_note_set = false;
-            var val_textarea_loading = $('#notes').text();
+            var new_notes_set = false;
+            var new_private_notes_set = false;
+            var val_notes_loading = $('#notes').text();
+            var val_private_notes_loading = $('#private_notes').text();
 
 
             $('.help-block').hide();
@@ -278,7 +294,7 @@
                 switchId = $("#switch").val();
                 customerId = $("#customer").val();
                 if(customerId != null){
-                    resetCustomer();
+                    //resetCustomer();
                 }
 
 
@@ -365,11 +381,8 @@
                 $("#customer").trigger("chosen:updated");
             }
 
-            $("#resetCustomer").click(function(){
-                resetCustomer();
-            });
 
-            $("#resetSwitchSelect").click(function(){
+            $(".reset-btn").click(function(){
                 if($("#switch").val() != null && $("#switch_port").val() != null){
                     options = "<option value=''> Choose a Switch</option>\n";
                     <?php foreach ($t->switches as $id => $switch): ?>
@@ -380,6 +393,8 @@
                     $("#switch").trigger("chosen:updated");
                     $("#switch_port").html('');
                     $("#switch_port").trigger("chosen:updated");
+                    resetCustomer();
+                    $("#pi_status_area").hide();
                 }
 
             });
@@ -395,28 +410,61 @@
             });
 
             $('#notes').click(function(){
-                val_textarea = $('#notes').text();
-                ppp_note = '<?= preg_replace( "/\r|\n/", "",$t->patchPanelPort->getNotes())?>';
-                default_val = '<?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
-                if(val_textarea == ''){
-                    $('#notes').text(default_val);
-                }
-                else{
-                    if(!new_note_set){
-                        $('#notes').text(default_val+'\n\n'+val_textarea);
-                        $('#notes').setCursorPosition(default_val.length);
-                        new_note_set = true;
-                    }
-                }
-
-
+                notesSetDateUser('notes');
             });
 
-            $('#notes').blur(function(){
-                if($('#notes').text() == $('#notes').val()){
-                    $('#notes').text(val_textarea_loading);
-                    new_note_set = false;
+            $('#private_notes').click(function(){
+                notesSetDateUser('private_notes');
+            });
+
+            function notesSetDateUser(input){
+                val_textarea = $('#'+input).text();
+                default_val = '<?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
+
+                if(val_textarea == ''){
+                    $('#'+input).text(default_val);
                 }
+                else{
+                    if($('#'+input).text() != default_val){
+                        if(input == 'notes'){
+                            if(!new_notes_set){
+                                $('#'+input).text(default_val+'\n\n'+val_textarea);
+                                new_notes_set = true;
+                            }
+                        }
+                        else{
+                            if(!new_private_notes_set){
+                                $('#'+input).text(default_val+'\n\n'+val_textarea);
+                                new_private_notes_set = true;
+                            }
+                        }
+
+                    }
+
+                }
+                pos = default_val.length + ($('#'+input).val().length - $('#'+input).text().length);
+                $('#'+input).setCursorPosition(pos);
+            }
+
+            function noteBlur(input){
+                if($('#'+input).text() == $('#'+input).val()){
+                    if(input == 'notes') {
+                        $('#' + input).text(val_notes_loading);
+                        new_notes_set = false;
+                    }
+                    else{
+                        $('#' + input).text(val_private_notes_loading);
+                        new_private_notes_set = false;
+                    }
+                }
+            }
+
+            $('#notes').blur(function(){
+                noteBlur('notes');
+            });
+
+            $('#private_notes').blur(function(){
+                noteBlur('private_notes');
             });
 
 

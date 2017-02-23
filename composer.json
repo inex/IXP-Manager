@@ -58,7 +58,8 @@
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.3",
         "anahkiasen/former": "^4.0",
-        "barryvdh/laravel-debugbar": "^2.3"
+        "barryvdh/laravel-debugbar": "^2.3",
+        "erusev/parsedown": "^1.6"
 
     },
     "require-dev": {

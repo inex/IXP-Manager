@@ -119,11 +119,14 @@ class PatchPanelPortController extends Controller
                                     'partner_port'          => $patchPanelPort->getDuplexSlavePortId(),
                                     'state'                 => $patchPanelPort->getState(),
                                     'notes'                 => $patchPanelPort->getNotes(),
+                                    'private_notes'         => $patchPanelPort->getPrivateNotes(),
                                     'assigned_at'           => $patchPanelPort->getAssignedAtFormated(),
                                     'connected_at'          => $patchPanelPort->getConnectedAtFormated(),
                                     'ceased_requested_at'   => $patchPanelPort->getCeaseRequestedAtFormated(),
                                     'ceased_at'             => $patchPanelPort->getCeasedAtFormated(),
                                     'last_state_change_at'  => $patchPanelPort->getLastStateChangeFormated(),
+                                    'chargeable'            => $patchPanelPort->getChargeableDefaultNo(),
+                                    'owned_by'              => $patchPanelPort->getOwnedBy()
             ));
 
             if($hasDuplex){
@@ -144,6 +147,8 @@ class PatchPanelPortController extends Controller
                 'customers'         => D2EM::getRepository(Customer::class)->getNames(true),
                 'switches'          => D2EM::getRepository(Switcher::class)->getNamesByLocation(true, Switcher::TYPE_SWITCH,$patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getId()),
                 'switchPorts'       => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId(),null, $patchPanelPort->getSwitchPortId()),
+                'chargeables'       => PatchPanelPort::$CHARGEABLES,
+                'ownedBy'           => PatchPanelPort::$OWNED_BY,
                 'patchPanelPort'    => $patchPanelPort,
                 'partnerPorts'      => $partnerPorts,
                 'hasDuplex'         => $hasDuplex,
@@ -217,6 +222,8 @@ class PatchPanelPortController extends Controller
 
         $patchPanelPort->setNotes(($request->input('notes') == '' ? null : $request->input('notes')));
 
+        $patchPanelPort->setPrivateNotes(($request->input('private_notes') == '' ? null : $request->input('private_notes')));
+
         $patchPanelPort->setColoCircuitRef($request->input('colo_circuit_ref'));
         $patchPanelPort->setTicketRef($request->input('ticket_ref'));
 
@@ -259,6 +266,7 @@ class PatchPanelPortController extends Controller
 
         $patchPanelPort->setInternalUse($request->input('internal_use'));
         $patchPanelPort->setChargeable($request->input('chargeable'));
+        $patchPanelPort->setOwnedBy($request->input('owned_by'));
 
         D2EM::persist($patchPanelPort);
 
@@ -400,7 +408,15 @@ class PatchPanelPortController extends Controller
         if( !($patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id))){
             abort(404);
         }
-        return view('patch-panel-port/view')->with(['patchPanelPort'    => $patchPanelPort]);
+
+        if(!Auth::user()->isSuperUser()){
+            if($patchPanelPort->getCustomerId() != Auth::user()->getCustomer()->getId()){
+                abort(404);
+            }
+        }
+
+        return view('patch-panel-port/view')->with(['patchPanelPort'    => $patchPanelPort,
+                                                    'isSuperUser'       => Auth::user()->isSuperUser()]);
     }
 
     /**
@@ -485,6 +501,7 @@ class PatchPanelPortController extends Controller
         if( ( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($request->input('pppId')) ) ) {
             $success = true;
             $patchPanelPort->setNotes($request->input('notes'));
+            $patchPanelPort->setPrivateNotes($request->input('private_notes'));
             D2EM::persist($patchPanelPort);
             if($request->input('pi_status')){
                 $physicalInterface = $patchPanelPort->getSwitchPort()->getPhysicalInterface();

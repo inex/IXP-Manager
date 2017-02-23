@@ -84,11 +84,19 @@
                             </tr>
                             <tr>
                                 <td><b>Chargeable :</b></td>
-                                <td><?= $pppHistory->getChargeableText() ?></td>
+                                <td><?= $pppHistory->resolveChargeable() ?></td>
                             </tr>
                             <tr>
-                                <td><b>Note :</b></td>
-                                <td><?= nl2br($pppHistory->getNotes()) ?></td>
+                                <td><b>Owned By :</b></td>
+                                <td><?= $pppHistory->resolveOwnedBy() ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Public Notes :</b></td>
+                                <td><?= $pppHistory->getNotesParseDown() ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Private Notes :</b></td>
+                                <td><?= $t->patchPanelPort->getPrivateNotesParseDown() ?></td>
                             </tr>
                         </table>
                     </div>
