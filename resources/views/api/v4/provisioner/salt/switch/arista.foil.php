@@ -11,6 +11,7 @@ interfacescust:
 <?php if( isset( $p['lagindex'] ) ){  ?>    lagindex: <?= $p['lagindex'] . "\n" ?><?php } ?>
 <?php if( isset( $p['lagmaster'] ) ){ ?>    lagmaster: <?= $p['lagmaster'] . "\n" ?><?php } ?>
     virtualinterfaceid: <?= $p['virtualinterfaceid'] ?>
+
     vlans:
 <?php foreach( $p['vlans'] as $vlan ): ?>
       -

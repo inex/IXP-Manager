@@ -150,7 +150,7 @@ class SwitchConfigurationGenerator
         $ports = [];
 
         // bundle definition:
-        $p['name']      = $vi->getName();
+        $p['name']      = $vi->getBundleName();
         $p['lagmaster'] = 'yes';
         $ports[]        = $p;
 
