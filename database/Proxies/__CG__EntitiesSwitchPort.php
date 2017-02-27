@@ -785,6 +785,28 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function oidInBroadcasts(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidInBroadcasts', []);
+
+        return parent::oidInBroadcasts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidOutBroadcasts(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidOutBroadcasts', []);
+
+        return parent::oidOutBroadcasts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function isTypePeering()
     {
 
