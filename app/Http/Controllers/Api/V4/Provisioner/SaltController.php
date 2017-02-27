@@ -66,4 +66,21 @@ class SaltController extends Controller {
                 ->header('Content-Type', 'text/html; charset=utf-8');
     }
 
+    /**
+     * Generate a Salt configuration file for a given switchid
+     *
+     * This just takes one argument: the router handle to generate the configuration for. All
+     * other parameters are defined by the handle's array in config/router.php.
+     *
+     * @return Response
+     */
+    public function forSwitchByname( Request $request, string $switchname ): Response {
+
+        if( !( $switch = D2EM::getRepository('Entities\Switcher')->findOneBy(['name' => $switchname]) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->forSwitch( $request, $switch->getId() );
+    }
+
 }
