@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-02-22.
+    * Generated on 2017-02-24.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -40,6 +40,9 @@ namespace PHPSTORM_META {
             'view.engine.resolver' instanceof \Illuminate\View\Engines\EngineResolver,
             'debugbar' instanceof \Barryvdh\Debugbar\LaravelDebugbar,
             'command.debugbar.clear' instanceof \Barryvdh\Debugbar\Console\ClearCommand,
+            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
+            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
+            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'IXP\Services\Grapher' instanceof \IXP\Services\Grapher,
             'IXP\Services\LookingGlass' instanceof \IXP\Services\LookingGlass,
             'Foil\Engine' instanceof \Foil\Engine,
@@ -137,9 +140,6 @@ namespace PHPSTORM_META {
             'translator' instanceof \Illuminate\Translation\Translator,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
-            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
-            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
-            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
@@ -175,6 +175,9 @@ namespace PHPSTORM_META {
             'view.engine.resolver' instanceof \Illuminate\View\Engines\EngineResolver,
             'debugbar' instanceof \Barryvdh\Debugbar\LaravelDebugbar,
             'command.debugbar.clear' instanceof \Barryvdh\Debugbar\Console\ClearCommand,
+            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
+            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
+            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'IXP\Services\Grapher' instanceof \IXP\Services\Grapher,
             'IXP\Services\LookingGlass' instanceof \IXP\Services\LookingGlass,
             'Foil\Engine' instanceof \Foil\Engine,
@@ -272,9 +275,6 @@ namespace PHPSTORM_META {
             'translator' instanceof \Illuminate\Translation\Translator,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
-            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
-            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
-            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
@@ -310,6 +310,9 @@ namespace PHPSTORM_META {
             'view.engine.resolver' instanceof \Illuminate\View\Engines\EngineResolver,
             'debugbar' instanceof \Barryvdh\Debugbar\LaravelDebugbar,
             'command.debugbar.clear' instanceof \Barryvdh\Debugbar\Console\ClearCommand,
+            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
+            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
+            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'IXP\Services\Grapher' instanceof \IXP\Services\Grapher,
             'IXP\Services\LookingGlass' instanceof \IXP\Services\LookingGlass,
             'Foil\Engine' instanceof \Foil\Engine,
@@ -407,9 +410,6 @@ namespace PHPSTORM_META {
             'translator' instanceof \Illuminate\Translation\Translator,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
-            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
-            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
-            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
@@ -445,6 +445,9 @@ namespace PHPSTORM_META {
             'view.engine.resolver' instanceof \Illuminate\View\Engines\EngineResolver,
             'debugbar' instanceof \Barryvdh\Debugbar\LaravelDebugbar,
             'command.debugbar.clear' instanceof \Barryvdh\Debugbar\Console\ClearCommand,
+            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
+            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
+            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'IXP\Services\Grapher' instanceof \IXP\Services\Grapher,
             'IXP\Services\LookingGlass' instanceof \IXP\Services\LookingGlass,
             'Foil\Engine' instanceof \Foil\Engine,
@@ -542,9 +545,6 @@ namespace PHPSTORM_META {
             'translator' instanceof \Illuminate\Translation\Translator,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
-            'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
-            'command.ide-helper.models' instanceof \Barryvdh\LaravelIdeHelper\Console\ModelsCommand,
-            'command.ide-helper.meta' instanceof \Barryvdh\LaravelIdeHelper\Console\MetaCommand,
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,

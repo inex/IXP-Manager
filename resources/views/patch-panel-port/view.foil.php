@@ -116,5 +116,105 @@
         </table>
     </div>
 </div>
+<div id="area_file">
+    <?php if(count($t->patchPanelPort->getPatchPanelPortFiles()) > 0): ?>
+        <div class="panel panel-default" id="list_file">
+            <div class="panel-heading">List files</div>
+            <div class="panel-body">
+                <table class="table_ppp_info" >
+                    <tr>
+                        <th>Name</th>
+                        <th>Size</th>
+                        <th>Type</th>
+                        <th>Uploaded at</th>
+                        <th>Uploaded By</th>
+                        <th>Action</th>
+                    </tr>
+                    <?php foreach ($t->patchPanelPort->getPatchPanelPortFiles() as $file):?>
+                        <?php if(($t->isSuperUser) or (!$t->isSuperUser and !$file->getIsPrivate())): ?>
+                            <tr id="file_row_<?=$file->getId()?>">
+                                <td>
+                                    <?= $file->getName() ?>
+                                    <?php if($file->getIsPrivate()):?>  <i title='Private file' class="fa fa-lock fa-lg" aria-hidden="true"></i> <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= $file->getSizeFormated() ?>
+                                </td>
+                                <td>
+                                    <i title='<?= $file->getType()?>' class="fa <?= $file->getTypeAsIcon()?> fa-lg' aria-hidden="true"></i>
+                                </td>
+                                <td>
+                                    <?= $file->getUploadedAtFormated() ?>
+                                </td>
+                                <td>
+                                    <?= $file->getUploadedBy() ?>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a class="btn btn btn-default" href="<?= url('/patch-panel-port/downloadFile' ).'/'.$file->getId()?>" href="" title="Download"><i class="fa fa-download"></i></a>
+                                        <?php if ($t->isSuperUser): ?>
+                                            <button class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>)" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endif; ?>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+<?php $this->append() ?>
+
+
+<?php $this->section('scripts') ?>
+<script>
+
+    function deletePopup( idFile ){
+        bootbox.confirm({
+            title: "Delete",
+            message: "Are you sure you want to delete this object ?",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
+                }
+            },
+            callback: function (result) {
+                if(result){
+                    idPPP = <?= $t->patchPanelPort->getId()?>;
+                    $.ajax({
+                        url: "<?= url('patch-panel-port/deleteFile/')?>",
+                        data: {idFile: idFile, idPPP: idPPP},
+                        type: 'GET',
+                        dataType: 'JSON',
+                        success: function (data) {
+                            if(data.success){
+                                //$('#file_row_'+idFile).remove();
+                                $( "#area_file" ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->patchPanelPort->getId()?> #list_file" );
+                                $('.bootbox.modal').modal('hide');
+                            }
+                            else{
+                                $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
+                                $('#delete_'+idFile).remove();
+                            }
+                        }
+
+                    });
+                }
+            }
+        });
+
+
+    }
+    $(document).ready(function(){
+
+    });
+</script>
 <?php $this->append() ?>
 

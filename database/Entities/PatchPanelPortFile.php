@@ -7,6 +7,9 @@ namespace Entities;
  */
 class PatchPanelPortFile
 {
+    CONST UPLOAD_PATH = 'ppp';
+
+    CONST UPLOAD_MAX_SIZE = 50000000; // value in bytes
     /**
      * @var integer
      */
@@ -45,7 +48,10 @@ class PatchPanelPortFile
      * @var \Entities\PatchPanelPort
      */
     private $patchPanelPort;
-
+    /**
+     * @var boolean
+     */
+    private $is_private = '0';
 
     /**
      * Set name
@@ -96,6 +102,39 @@ class PatchPanelPortFile
     }
 
     /**
+     * Get type as an icon from awesome font
+     *
+     * @return string
+     */
+    public function getTypeAsIcon()
+    {
+        switch ($this->type) {
+            case 'image/jpeg':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'image/png':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'image/bmp':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'application/pdf':
+                $icon = 'fa-file-pdf-o';
+                break;
+            case 'application/zip':
+                $icon = 'fa-file-archive-o';
+                break;
+            case 'text/plain':
+                $icon = 'fa-file-text';
+                break;
+            default:
+                $icon = 'fa-file';
+                break;
+        }
+        return $icon;
+    }
+
+    /**
      * Set uploadedAt
      *
      * @param \DateTime $uploadedAt
@@ -118,6 +157,18 @@ class PatchPanelPortFile
     {
         return $this->uploaded_at;
     }
+
+    /**
+     * Get uploadedAt
+     *
+     * @return \DateTime
+     */
+    public function getUploadedAtFormated()
+    {
+        return ($this->getUploadedAt() == null) ? $this->getUploadedAt() : $this->getUploadedAt()->format('Y-m-d');
+    }
+
+
 
     /**
      * Set uploadedBy
@@ -165,6 +216,39 @@ class PatchPanelPortFile
     public function getSize()
     {
         return $this->size;
+    }
+
+
+
+    function getSizeFormated()
+    {
+        $bytes = $this->getSize();
+        if ($bytes >= 1073741824)
+        {
+            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+        }
+        elseif ($bytes >= 1048576)
+        {
+            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+        }
+        elseif ($bytes >= 1024)
+        {
+            $bytes = number_format($bytes / 1024, 2) . ' kB';
+        }
+        elseif ($bytes > 1)
+        {
+            $bytes = $bytes . ' bytes';
+        }
+        elseif ($bytes == 1)
+        {
+            $bytes = $bytes . ' byte';
+        }
+        else
+        {
+            $bytes = '0 bytes';
+        }
+
+        return $bytes;
     }
 
     /**
@@ -224,33 +308,44 @@ class PatchPanelPortFile
     {
         return $this->patchPanelPort;
     }
-/**
- * @var boolean
- */
-private $is_private = '0';
 
 
-/**
- * Set isPrivate
- *
- * @param boolean $isPrivate
- *
- * @return PatchPanelPortFile
- */
-public function setIsPrivate($isPrivate)
-{
-$this->is_private = $isPrivate;
 
-return $this;
-}
+    /**
+    * Set isPrivate
+    *
+    * @param boolean $isPrivate
+    *
+    * @return PatchPanelPortFile
+    */
+    public function setIsPrivate($isPrivate)
+    {
+    $this->is_private = $isPrivate;
 
-/**
- * Get isPrivate
- *
- * @return boolean
- */
-public function getIsPrivate()
-{
-return $this->is_private;
-}
+    return $this;
+    }
+
+    /**
+    * Get isPrivate
+    *
+    * @return boolean
+    */
+    public function getIsPrivate()
+    {
+    return $this->is_private;
+    }
+
+    /**
+     * get the patch for the panel port file
+     *
+     * @param string $hash hash sha256 for the file uploaded
+     *
+     * @return string
+     */
+    public static function getPathPPPFile($hash){
+        $a = substr( $hash, 0, 1 );
+        $b = substr( $hash, 1, 1 );
+
+        return self::UPLOAD_PATH.'/'.$a.'/'.$b.'/'.$hash;
+    }
 }

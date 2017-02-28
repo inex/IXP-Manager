@@ -33,6 +33,7 @@
             <b>Error : </b><?= session()->get('error') ?>
         </div>
     <?php endif; ?>
+
     <table id='patch-panel-port-list' class="table ">
         <thead>
             <tr>
@@ -127,6 +128,9 @@
                                     <?php endif; ?>
                                     <li role="separator" class="divider"></li>
                                     <li>
+                                        <a onclick="return uploadPopup(<?= $patchPanelPort->getId() ?>)" href="#" title="Attach file">Attach file...</i></a>
+                                    </li>
+                                    <li>
                                         <a href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?>" title="Preview">View</i></a>
                                     </li>
                                     <li>
@@ -149,6 +153,9 @@
 <?php $this->section('scripts') ?>
     <script>
         $(document).ready(function(){
+
+            window.loadscript = false;
+
             pagination = true;
             <?php if($t->patchPanel): ?>
                 pagination = false;
@@ -293,6 +300,87 @@
             return false;
         }
 
+
+
+        function uploadPopup(pppId){
+            html = "<form id='upload' method='post' action='<?= url('/patch-panel-port/uploadFile' )?>/"+pppId+"' enctype='multipart/form-data'> <div id='drop'>Drop Files Here &nbsp;<a class='btn btn-success'><i class='glyphicon glyphicon-upload'></i> Browse</a> <br/><span class='info'> (max size 50MB) </span><input type='file' name='upl' multiple /> </div> <ul><!-- The file uploads will be shown here --> </ul><input type='hidden' name='_token' value='<?php echo csrf_token(); ?>'> </form>";
+
+            var dialog = bootbox.dialog({
+                message: html,
+                title: "Files Upload",
+                onEscape: function() {
+                    location.reload();
+                },
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Close',
+                        callback: function () {
+                            $('.bootbox.modal').modal('hide');
+                            location.reload();
+                            return false;
+                        }
+                    },
+                }
+
+            });
+            dialog.bind('shown.bs.modal', function(){
+
+            });
+
+            dialog.init(function(){
+
+                    $.getScript( "js/draganddrop/jquery.fileupload.js", function( data, textStatus, jqxhr ) {});
+                    $.getScript( "js/draganddrop/jquery.iframe-transport.js", function( data, textStatus, jqxhr ) {});
+                    $.getScript( "js/draganddrop/jquery.knob.js", function( data, textStatus, jqxhr ) {});
+                    $.getScript( "js/draganddrop/jquery.ui.widget.js", function( data, textStatus, jqxhr ) {});
+                    $.getScript( "js/draganddrop/script.js", function( data, textStatus, jqxhr ) {});
+                    window.loadscript = true;
+
+
+            });
+
+            return false;
+        }
+
+        function deleteFile(idFile,idPPP){
+            $.ajax({
+                url: "<?= url('patch-panel-port/deleteFile/')?>",
+                data: {idFile: idFile, idPPP: idPPP},
+                type: 'GET',
+                dataType: 'JSON',
+                success: function (data) {
+                    if(data.success){
+                        $('#file_'+idFile).fadeOut( "medium", function() {
+                            $('#file_'+idFile).remove();
+                        });
+                    }
+                    else{
+                        $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
+                        $('#delete_'+idFile).remove();
+                    }
+                }
+
+            });
+        }
+
+        function privateFile(idFile,idPPP){
+            $.ajax({
+                url: "<?= url('patch-panel-port/privateFile/')?>",
+                data: {idFile: idFile, idPPP: idPPP},
+                type: 'GET',
+                dataType: 'JSON',
+                success: function (data) {
+                    if(data.success){
+                        $('#message_'+idFile).append(' / <i class="success">'+data.message+'</i>');
+                    }
+                    else{
+                        $('#message_'+idFile).append(' / <i class="error"> '+data.message+'</i>');
+                    }
+                    $('#private_'+idFile).remove();
+                }
+
+            });
+        }
 
     </script>
 <?php $this->append() ?>

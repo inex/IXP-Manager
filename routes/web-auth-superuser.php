@@ -31,6 +31,11 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'changeStatus/{id}/{status}',   'PatchPanelPortController@changeStatus' );
     Route::get( 'setNotes',                     'PatchPanelPortController@setNotes' );
     Route::get( 'history/{id}',                 'PatchPanelPortController@history' );
+    Route::get( 'downloadFile/{id}',            'PatchPanelPortController@downloadFile' );
+
+    Route::post( 'uploadFile/{id}',              'PatchPanelPortController@uploadFile' );
+    Route::get( 'deleteFile',                    'PatchPanelPortController@deleteFile' );
+    Route::get( 'privateFile',                   'PatchPanelPortController@privateFile' );
 
     Route::post( 'store',                       'PatchPanelPortController@store' );
 

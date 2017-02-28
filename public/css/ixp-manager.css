@@ -573,3 +573,67 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 
 
 
+
+.droppable {
+    border: #ccc 1px solid;
+    border-radius: 8px;
+    background: #eee;
+    color: #666;
+    padding: 20px;
+    margin: 10px;
+    clear: both;
+    text-align: center;
+}
+
+.droppable.hover {
+    background: #ddd;
+}
+
+.uploadList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.uploadItem {
+    overflow: hidden;
+    border-bottom: #BCBCBC 1px solid;
+    margin: 0 20px;
+    padding: 3px;
+}
+
+.uploadItem span {
+    overflow: hidden;
+    width: 150px;
+    float: left;
+    display: block;
+}
+
+a.addInputRow,
+a.delInputRow,
+.uploadItem a {
+    display: inline-block;
+    background: url(add.png) no-repeat;
+    height: 16px;
+    width: 16px;
+    text-indent: -999px;
+}
+
+.uploadItem a {
+    float: left;
+    display: block;
+    padding-left: 20px;
+    background-image: url(delete.png);
+}
+
+a.delInputRow {
+    background-image: url(delete.png);
+}
+
+.progress {
+    margin: 5px 0;
+    height: 15px;
+    border-radius: 3px;
+    background: #545A74;
+}
+

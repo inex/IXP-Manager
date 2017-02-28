@@ -178,6 +178,8 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         Former\FormerServiceProvider::class,
+
+        GrahamCampbell\Flysystem\FlysystemServiceProvider::class,
     ],
 
     /*
@@ -236,6 +238,8 @@ return [
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
         'Former' => 'Former\Facades\Former',
+        'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem',
+
     ],
 
 ];
