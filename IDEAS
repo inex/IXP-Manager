@@ -93,3 +93,6 @@ Potential Todo / Feature Ideas
 * An annual (or more frequent?) email to members reminding them of their
   subscriptions. Also email to custadmins reminding them of their users.
   Probably staggered over the year to prevent a flux of inbound emails.
+
+* I'd like to see the ability to do bulk modification (likely just deletion) 
+  to IP addresses, ie: selecting a group of ten and deleting them # 296
