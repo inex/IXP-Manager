@@ -148,7 +148,7 @@ $query = "INSERT INTO macaddress (id, firstseen, virtualinterfaceid, mac) VALUES
 
 $do_nothing or $dbh->do('START TRANSACTION') or die $dbh->errstr;
 if (defined ($vlanid)) {
-	# delete all MAC addresses which references this vlanid
+	# delete all MAC addresses which reference this vlanid
 	$query = "DELETE macaddress FROM macaddress INNER JOIN (view_vlaninterface_details_by_custid vi) ON (macaddress.virtualinterfaceid = vi.virtualinterfaceid AND vi.vlanid = ?)";
 	$do_nothing or $dbh->do($query, undef, $vlanid) or die "$dbh->errstr\n";
 } else {

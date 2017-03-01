@@ -53,6 +53,10 @@ class NagiosController extends Controller {
         $vlans = [];
         
         foreach( $routers->getObjects() as $h => $router ) {
+        
+            if( !$router->hasApi() ) {
+                continue;
+            }
             
             if( !isset( $vlans[ $router->vlanId() ] ) ) {
                 if( !( $vlans[$router->vlanId()] = d2r('Vlan')->find( $router->vlanId() ) ) ) {
