@@ -898,6 +898,22 @@ class SwitchPort
     }
 
     /**
+     * Get the appropriate OID for in broadcasts
+     * @return string
+     */
+    public function oidInBroadcasts(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_IN_BROADCAST;
+    }
+
+    /**
+     * Get the appropriate OID for out broadcasts
+     * @return string
+     */
+    public function oidOutBroadcasts(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_OUT_BROADCAST;
+    }
+
+    /**
      * Is this a peering port?
      * @return boolean
      */

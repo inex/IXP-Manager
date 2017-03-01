@@ -15,7 +15,7 @@ class Command extends \Illuminate\Console\Command {
      * place as it's well constructed to allow for it.
      *
      * @param int id A specfic IXP id to load (otherwise command line option or default)
-     * @return Entities\IXP
+     * @return IXP
      */
     protected function ixp( $id = null ): IXP {
         // what IXP are we running on here?

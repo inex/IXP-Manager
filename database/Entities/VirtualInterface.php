@@ -434,7 +434,7 @@ class VirtualInterface
      *
      * @return VirtualInterface
      */
-    public function addSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
+    public function addSflowReceiver( \Entities\SflowReceiver $sflowReceiver )
     {
         $this->SflowReceivers[] = $sflowReceiver;
 
@@ -446,9 +446,9 @@ class VirtualInterface
      *
      * @param \Entities\SflowReceiver $sflowReceiver
      */
-    public function removeSflowReceiver(\Entities\SflowReceiver $sflowReceiver)
+    public function removeSflowReceiver( \Entities\SflowReceiver $sflowReceiver )
     {
-        $this->SflowReceivers->removeElement($sflowReceiver);
+        $this->SflowReceivers->removeElement( $sflowReceiver );
     }
 
 
@@ -466,5 +466,26 @@ class VirtualInterface
      * @var \Doctrine\Common\Collections\Collection
      */
     private $SflowReceivers;
+
+
+    /**
+     * Get the speed of the LAG
+     *
+     * @param bool $connectedOnly Only consider physical interfaces with 'CONNECTED' state
+     * @return int
+     */
+    public function speed( $connectedOnly = true ): int {
+        $speed = 0;
+
+        /** @var PhysicalInterface $pi */
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $connectedOnly && !$pi->statusIsConnected() ) {
+                continue;
+            }
+            $speed += $pi->getSpeed();
+        }
+
+        return $speed;
+    }
 
 }

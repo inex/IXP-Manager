@@ -125,12 +125,23 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * * array `['ixpports']` conataining the PhysicalInterface IDs of peering ports
      *
      *
-     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
+     * @param \Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @return array
      */
     public function getPeeringPorts( IXP $ixp ): array {
         $data = [];
-        $data['ixpports_maxbytes'] = 0;
+        $data['ixpports']            = [];
+        $data['ixpports_maxbytes']   = 0;
+        $data['infras']              = [];
+        $data['infraports']          = [];
+        $data['infraports_maxbytes'] = [];
+        $data['custs']               = [];
+        $data['custports']           = [];
+        $data['custlags']            = [];
+        $data['sws']                 = [];
+        $data['swports']             = [];
+        $data['swports_maxbytes']    = [];
+
 
         // we need to wrap switch ports in physical interfaces for switch aggregates and, as such, we need to use unused physical interface IDs
         $maxPiID = 0;
@@ -320,6 +331,18 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         }
 
         return $img;
+    }
+
+    /**
+     * Get the RRD file for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param Graph $graph
+     * @return string
+     */
+    public function rrd( Graph $graph ): string {
+        return '';
     }
 
     /**
