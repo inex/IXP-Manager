@@ -11,9 +11,8 @@
         <div class="pull-right">
     <?php endif; ?>
 
-        <div class="btn-group breadcrumb-btn-group" role="group">
-
-            <div class="btn-group" role="group">
+        <div class="btn-group btn-group-xs" role="group">
+            <div class="btn-group btn-group-xs" role="group">
                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <?= $t->lg ? $t->lg->router()->name() : 'Select a router...' ?>
                     <span class="caret"></span>

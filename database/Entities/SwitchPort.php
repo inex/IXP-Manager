@@ -92,12 +92,12 @@ class SwitchPort
     protected $id;
 
     /**
-     * @var Entities\PhysicalInterface
+     * @var \Entities\PhysicalInterface
      */
     protected $PhysicalInterface;
 
     /**
-     * @var Entities\Switcher
+     * @var \Entities\Switcher
      */
     protected $Switcher;
 
@@ -216,7 +216,7 @@ class SwitchPort
     /**
      * Set PhysicalInterface
      *
-     * @param Entities\PhysicalInterface $physicalInterface
+     * @param \Entities\PhysicalInterface $physicalInterface
      * @return SwitchPort
      */
     public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = null)
@@ -229,7 +229,7 @@ class SwitchPort
     /**
      * Get PhysicalInterface
      *
-     * @return Entities\PhysicalInterface
+     * @return \Entities\PhysicalInterface
      */
     public function getPhysicalInterface()
     {
@@ -239,7 +239,7 @@ class SwitchPort
     /**
      * Set Switcher
      *
-     * @param Entities\Switcher $switcher
+     * @param \Entities\Switcher $switcher
      * @return SwitchPort
      */
     public function setSwitcher(\Entities\Switcher $switcher = null)
@@ -252,7 +252,7 @@ class SwitchPort
     /**
      * Get Switcher
      *
-     * @return Entities\Switcher
+     * @return \Entities\Switcher
      */
     public function getSwitcher()
     {
@@ -936,4 +936,33 @@ class SwitchPort
     public function isTypeCore() {
         return $this->getType() == self::TYPE_CORE;
     }
+/**
+ * @var \Entities\PatchPanelPort
+ */
+private $patchPanelPort;
+
+
+/**
+ * Set patchPanelPort
+ *
+ * @param \Entities\PatchPanelPort $patchPanelPort
+ *
+ * @return SwitchPort
+ */
+public function setPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort = null)
+{
+$this->patchPanelPort = $patchPanelPort;
+
+return $this;
+}
+
+/**
+ * Get patchPanelPort
+ *
+ * @return \Entities\PatchPanelPort
+ */
+public function getPatchPanelPort()
+{
+return $this->patchPanelPort;
+}
 }

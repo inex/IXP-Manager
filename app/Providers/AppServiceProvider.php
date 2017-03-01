@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider {
         }
 
         if( config('identity.urls.forceSchema') ) {
-            URL::forceSchema(config('identity.urls.forceSchema'));
+            URL::forceScheme(config('identity.urls.forceSchema'));
         }
     }
 }

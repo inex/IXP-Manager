@@ -34,5 +34,6 @@
       </join-columns>
     </many-to-one>
     <one-to-one field="PhysicalInterface" target-entity="Entities\PhysicalInterface" mapped-by="SwitchPort"/>
+    <one-to-one field="patchPanelPort" target-entity="Entities\PatchPanelPort" mapped-by="switchPort"/>
   </entity>
 </doctrine-mapping>

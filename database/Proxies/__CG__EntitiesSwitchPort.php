@@ -64,10 +64,10 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState'];
+            return ['__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'patchPanelPort'];
         }
 
-        return ['__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState'];
+        return ['__isInitialized__', 'type', 'name', 'id', 'PhysicalInterface', 'Switcher', 'ifName', 'ifAlias', 'ifHighSpeed', 'ifMtu', 'ifPhysAddress', 'ifAdminStatus', 'ifOperStatus', 'ifLastChange', 'lastSnmpPoll', 'ifIndex', 'active', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'lagIfIndex', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauType', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAvailability', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauJacktype', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegSupported', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'mauAutoNegAdminState', '' . "\0" . 'Entities\\SwitchPort' . "\0" . 'patchPanelPort'];
     }
 
     /**
@@ -785,6 +785,28 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function oidInBroadcasts(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidInBroadcasts', []);
+
+        return parent::oidInBroadcasts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function oidOutBroadcasts(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'oidOutBroadcasts', []);
+
+        return parent::oidOutBroadcasts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function isTypePeering()
     {
 
@@ -813,6 +835,28 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeCore', []);
 
         return parent::isTypeCore();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPatchPanelPort', [$patchPanelPort]);
+
+        return parent::setPatchPanelPort($patchPanelPort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPatchPanelPort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPort', []);
+
+        return parent::getPatchPanelPort();
     }
 
 }

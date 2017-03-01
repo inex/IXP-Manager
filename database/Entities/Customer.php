@@ -2317,4 +2317,43 @@ class Customer
 
         return null;
     }
+/**
+ * @var \Doctrine\Common\Collections\Collection
+ */
+private $patchPanelPorts;
+
+
+/**
+ * Add patchPanelPort
+ *
+ * @param \Entities\PatchPanelPort $patchPanelPort
+ *
+ * @return Customer
+ */
+public function addPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort)
+{
+$this->patchPanelPorts[] = $patchPanelPort;
+
+return $this;
+}
+
+/**
+ * Remove patchPanelPort
+ *
+ * @param \Entities\PatchPanelPort $patchPanelPort
+ */
+public function removePatchPanelPort(\Entities\PatchPanelPort $patchPanelPort)
+{
+$this->patchPanelPorts->removeElement($patchPanelPort);
+}
+
+/**
+ * Get patchPanelPorts
+ *
+ * @return \Doctrine\Common\Collections\Collection
+ */
+public function getPatchPanelPorts()
+{
+return $this->patchPanelPorts;
+}
 }

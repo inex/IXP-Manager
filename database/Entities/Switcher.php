@@ -91,12 +91,12 @@ class Switcher
     protected $ConsoleServerConnections;
 
     /**
-     * @var Entities\Cabinet
+     * @var \Entities\Cabinet
      */
     protected $Cabinet;
 
     /**
-     * @var Entities\Vendor
+     * @var \Entities\Vendor
      */
     protected $Vendor;
 
@@ -306,7 +306,7 @@ class Switcher
     /**
      * Add Ports
      *
-     * @param Entities\SwitchPort $ports
+     * @param \Entities\SwitchPort $ports
      * @return Switcher
      */
     public function addPort(\Entities\SwitchPort $ports)
@@ -319,7 +319,7 @@ class Switcher
     /**
      * Remove Ports
      *
-     * @param Entities\SwitchPort $ports
+     * @param \Entities\SwitchPort $ports
      */
     public function removePort(\Entities\SwitchPort $ports)
     {
@@ -329,7 +329,7 @@ class Switcher
     /**
      * Get Ports
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPorts()
     {
@@ -339,7 +339,7 @@ class Switcher
     /**
      * Add ConsoleServerConnections
      *
-     * @param Entities\ConsoleServerConnection $consoleServerConnections
+     * @param \Entities\ConsoleServerConnection $consoleServerConnections
      * @return Switcher
      */
     public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
@@ -352,7 +352,7 @@ class Switcher
     /**
      * Remove ConsoleServerConnections
      *
-     * @param Entities\ConsoleServerConnection $consoleServerConnections
+     * @param \Entities\ConsoleServerConnection $consoleServerConnections
      */
     public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
     {
@@ -362,7 +362,7 @@ class Switcher
     /**
      * Get ConsoleServerConnections
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getConsoleServerConnections()
     {
@@ -372,7 +372,7 @@ class Switcher
     /**
      * Set Cabinet
      *
-     * @param Entities\Cabinet $cabinet
+     * @param \Entities\Cabinet $cabinet
      * @return Switcher
      */
     public function setCabinet(\Entities\Cabinet $cabinet = null)
@@ -385,7 +385,7 @@ class Switcher
     /**
      * Get Cabinet
      *
-     * @return Entities\Cabinet
+     * @return \Entities\Cabinet
      */
     public function getCabinet()
     {
@@ -395,7 +395,7 @@ class Switcher
     /**
      * Set Vendor
      *
-     * @param Entities\Vendor $vendor
+     * @param \Entities\Vendor $vendor
      * @return Switcher
      */
     public function setVendor(\Entities\Vendor $vendor = null)
@@ -408,7 +408,7 @@ class Switcher
     /**
      * Get Vendor
      *
-     * @return Entities\Vendor
+     * @return \Entities\Vendor
      */
     public function getVendor()
     {

@@ -35,7 +35,9 @@
 
                     <?php /* {/if} */ ?>
                 </li>
-
+                <li>
+                    <a href="<?= url('patch-panel/') ?>">Patch Panel</a>
+                </li>
                 <li>
                     <a href="<?= url( 'user/list' ) ?>">Users</a>
                 </li>

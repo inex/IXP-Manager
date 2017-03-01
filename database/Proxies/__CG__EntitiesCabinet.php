@@ -64,10 +64,10 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation'];
+            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
         }
 
-        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation'];
+        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
     }
 
     /**
@@ -428,6 +428,39 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSwitch', [$switches]);
 
         return parent::removeSwitch($switches);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addPatchPanel(\Entities\PatchPanel $patchPanel)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPatchPanel', [$patchPanel]);
+
+        return parent::addPatchPanel($patchPanel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removePatchPanel(\Entities\PatchPanel $patchPanel)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removePatchPanel', [$patchPanel]);
+
+        return parent::removePatchPanel($patchPanel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPatchPanels()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanels', []);
+
+        return parent::getPatchPanels();
     }
 
 }

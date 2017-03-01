@@ -191,6 +191,10 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
      */
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
+        if( count( $object->getPhysicalInterfaces() ) > 1 ) {
+            $form->getElement('lag_framing')->setAttrib( 'disabled', true )->setAttrib( 'readonly', true );
+        }
+
         if( $isEdit )
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
@@ -229,13 +233,66 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
      * @param IXP_Form_Interface_Virtual $form The form object
      * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
+     * @return bool
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
         $object->setCustomer(
             $this->getD2EM()->getRepository( '\\Entities\\Customer' )->find( $form->getElement( 'custid' )->getValue() )
         );
+
+        // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
+        if( count( $object->getPhysicalInterfaces() ) == 0 ) {
+            $form->getElement('name')->setValue('');
+            $form->getElement('channelgroup')->setValue(null);
+        }
+        
+        if( $form->getElement('mtu')->getValue() == '' ) {
+            $form->getElement('mtu')->setValue( null );
+        }
+
+        return true;
+    }
+
+    /**
+     * Pre db flush hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called if the user POSTs a valid form after the posted
+     * data has been assigned to the object and just before it is (persisted
+     * if adding) and the database is flushed.
+     *
+     * This hook can prevent flushing by returning false.
+     *
+     * **NB: You should not `flush()` here unless you know what you are doing**
+     *
+     * A call to `flush()` is made after this method returns true ensuring a
+     * transactional `flush()` for all.
+     *
+     * @param OSS_Form $form The Send form object
+     * @param \Entities\VirtualInterface $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not persisted
+     */
+    protected function addPreFlush( $form, $object, $isEdit )
+    {
+        if( count( $object->getPhysicalInterfaces() ) > 0 ) {
+            // We need to try and make naming of the virtual interface name automatic as well as choice
+            // of the channel group number.
+
+            // let's take group number first -> needs to be unique within a switch and > 0
+            // (some devices may allow zero but programmatically it may be easier to avoid this due to legacy data)
+            // if it's a number gt zero and it's changed (if we're editing)
+            if( $object->getChannelgroup() > 0  ) {
+                // ensure it's unique:
+                if( !$this->getD2EM()->getRepository('Entities\VirtualInterface')->validateChannelGroup( $object ) ) {
+                    $this->addMessage( "Channel group number is not unique within the switch", OSS_Message::ERROR );
+                    return false;
+                }
+            }
+        }
+
+        // set bane and channel group as appropriate
+        $this->setBundleDetails( $object );
 
         return true;
     }
@@ -273,6 +330,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                     $pi = new \Entities\PhysicalInterface();
                     $form->assignFormToEntity( $pi, $this, false );
                     $pi->setVirtualInterface( $vi );
+                    $vi->addPhysicalInterface($pi);
 
                     $sp = $this->getD2R( '\\Entities\\SwitchPort' )->find( $form->getValue( 'switchportid' ) );
                     $sp->setType( \Entities\SwitchPort::TYPE_PEERING );
@@ -282,6 +340,8 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                         $this->getD2EM()->getRepository( '\\Entities\\PhysicalInterface' )->getNextMonitorIndex( $cust )
                     );
                     $this->getD2EM()->persist( $pi );
+
+                    $this->setBundleDetails($vi);
 
                     if( $form->getElement( 'fanout' ) )
                     {

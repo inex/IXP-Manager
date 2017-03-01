@@ -49,7 +49,7 @@ class IXP_Form_VLAN extends IXP_Form
         $number->addValidator( 'int' )
             ->addValidator( 'between', false, array( 1, 4096 ) )
             ->setRequired( true )
-            ->setLabel( 'Tag' )
+            ->setLabel( '802.1q Tag' )
             ->setAttrib( 'class', 'span3' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $number );

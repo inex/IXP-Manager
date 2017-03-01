@@ -53,7 +53,7 @@ class UrlResolver
         // set, that should be that?
         
         app('url')->forceRootUrl(env('APP_URL'));
-        app('url')->forceSchema(substr(env('APP_URL'), 0, strpos(env('APP_URL'),':')));
+        app('url')->forceScheme(substr(env('APP_URL'), 0, strpos(env('APP_URL'),':')));
 
         return $next($request);
     }

@@ -147,6 +147,13 @@ return [
          Illuminate\Validation\ValidationServiceProvider::class,
          Illuminate\View\ViewServiceProvider::class,
 
+         Laravel\Tinker\TinkerServiceProvider::class,
+
+        /*
+         * Debug
+         */
+         Barryvdh\Debugbar\ServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -166,6 +173,7 @@ return [
          * Third party providers
          */
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
+        LaravelDoctrine\Migrations\MigrationsServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
     ],
@@ -222,6 +230,8 @@ return [
 
         'Grapher'   => IXP\Support\Facades\Grapher::class,
         'Image'     => Intervention\Image\Facades\Image::class,
+
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];
