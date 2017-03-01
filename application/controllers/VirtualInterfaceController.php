@@ -246,6 +246,10 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
             $form->getElement('name')->setValue('');
             $form->getElement('channelgroup')->setValue(null);
         }
+        
+        if( $form->getElement('mtu')->getValue() == '' ) {
+            $form->getElement('mtu')->setValue( null );
+        }
 
         return true;
     }

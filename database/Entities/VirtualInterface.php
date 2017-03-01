@@ -128,6 +128,9 @@ class VirtualInterface
      */
     public function setMtu($mtu)
     {
+        if( $mtu === '' ) {
+            $mtu = null;
+        }
         $this->mtu = $mtu;
 
         return $this;
