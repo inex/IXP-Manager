@@ -420,7 +420,14 @@ class PatchPanelPortController extends Controller
             }
         }
 
+        $listHistory[] = $patchPanelPort;
+
+        foreach ($patchPanelPort->getPatchPanelPortHistory() as $history){
+            $listHistory[] = $history;
+        }
+
         return view('patch-panel-port/view')->with(['patchPanelPort'    => $patchPanelPort,
+                                                    'listHistory'      => $listHistory,
                                                     'isSuperUser'       => Auth::user()->isSuperUser()]);
     }
 
@@ -662,6 +669,6 @@ class PatchPanelPortController extends Controller
 
         $path = PatchPanelPortFile::getPathPPPFile($pppFile->getStorageLocation());
 
-        return response()->download(storage_path().'/files/'.$path, $pppFile->getName(), ['Content-Type' => $pppFile->getType()]);
+        return response()->file(storage_path().'/files/'.$path, ['Content-Type' => $pppFile->getType()]);
     }
 }

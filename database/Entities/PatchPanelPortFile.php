@@ -53,6 +53,7 @@ class PatchPanelPortFile
      */
     private $is_private = '0';
 
+
     /**
      * Set name
      *

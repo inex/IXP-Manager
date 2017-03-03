@@ -10,161 +10,237 @@
 
 
 <?php $this->section('content') ?>
-<div class="panel panel-default">
-    <div class="panel-heading">Informations</div>
-    <div class="panel-body">
-        <table class="table_ppp_info">
-            <tr>
-                <td><b>ID :</b></td>
-                <td><?= $t->patchPanelPort->getId() ?></td>
-            </tr>
-            <tr>
-                <td><b>Name : </b></td>
-                <td><?= $t->patchPanelPort->getName() ?></td>
-            </tr>
-            <?php if($t->patchPanelPort->hasSlavePort()): ?>
-                <tr>
-                    <td><b>Duplex Port :</b></td>
-                    <td><?= $t->patchPanelPort->getDuplexSlavePortName() ?></td>
-                </tr>
-            <?php endif; ?>
-            <tr>
-                <td><b>Patch Panel :</b></td>
-                <td><?= $t->patchPanelPort->getPatchPanel()->getId().' - '.$t->patchPanelPort->getPatchPanel()->getName() ?></td>
-            </tr>
-            <tr>
-                <td><b>Switch :</b></td>
-                <td><?= $t->patchPanelPort->getSwitchName()?></td>
-            </tr>
-            <tr>
-                <td><b>Port:</b></td>
-                <td><?= $t->patchPanelPort->getSwitchPortName()?></td>
-            </tr>
-            <tr>
-                <td><b>Customer:</b></td>
-                <td><?= $t->patchPanelPort->getCustomerName()?></td>
-            </tr>
-            <tr>
-                <td><b>Colocation circuit ref: </b></td>
-                <td><?= $t->patchPanelPort->getColoCircuitRef()?></td>
-            </tr>
-            <tr>
-                <td><b>Ticket ref :</b></td>
-                <td><?= $t->patchPanelPort->getTicketRef()?></td>
-            </tr>
-            <tr>
-                <td><b>State :</b></td>
-                <td>
-                    <?php
-                    if($t->patchPanelPort->isAvailableForUse()):
-                        $class = 'success';
-                    elseif($t->patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT):
-                        $class = 'warning';
-                    elseif($t->patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED):
-                        $class = 'danger';
-                    else:
-                        $class = 'info';
-                    endif;
-                    ?>
-                    <span title="" class="label label-<?= $class ?>">
-                        <?= $t->patchPanelPort->resolveStates() ?>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td><b>Assigned At :</b></td>
-                <td><?= $t->patchPanelPort->getAssignedAtFormated(); ?></td>
-            </tr>
-            <tr>
-                <td><b>Connected At :</b></td>
-                <td><?= $t->patchPanelPort->getConnectedAtFormated(); ?></td>
-            </tr>
-            <tr>
-                <td><b>Ceased Requested At :</b></td>
-                <td><?= $t->patchPanelPort->getCeaseRequestedAtFormated(); ?></td>
-            </tr>
-            <tr>
-                <td><b>Ceased At :</b></td>
-                <td><?= $t->patchPanelPort->getCeasedAtFormated(); ?></td>
-            </tr>
-            <tr>
-                <td><b>Last State Change At :</b></td>
-                <td><?= $t->patchPanelPort->getLastStateChangeFormated(); ?></td>
-            </tr>
-            <tr>
-                <td><b>Internal Use :</b></td>
-                <td><?= $t->patchPanelPort->getInternalUseText() ?></td>
-            </tr>
-            <tr>
-                <td><b>Chargeable :</b></td>
-                <td><?= $t->patchPanelPort->resolveChargeable() ?></td>
-            </tr>
-            <tr>
-                <td><b>Owned By :</b></td>
-                <td><?= $t->patchPanelPort->resolveOwnedBy() ?></td>
-            </tr>
-            <?php if ($t->isSuperUser): ?>
-                <tr>
-                    <td><b>Public Notes :</b></td>
-                    <td><?= $t->patchPanelPort->getNotesParseDown() ?></td>
-                </tr>
-                <tr>
-                    <td><b>Private Notes :</b></td>
-                    <td><?= $t->patchPanelPort->getPrivateNotesParseDown() ?></td>
-                </tr>
-            <?php endif; ?>
-        </table>
+<div class="panel with-nav-tabs panel-default">
+    <div class="panel-heading">
+        <ul class="nav nav-tabs">
+            <?php foreach ($t->listHistory as $pppHistory): ?>
+                <?php if($t->patchPanelPort->getId() == $pppHistory->getId()):
+                    $current = true;
+                else:
+                    $current = false;
+                endif; ?>
+
+                <?php if(($t->isSuperUser) or (!$t->isSuperUser and $current)): ?>
+                    <li <?php if($t->patchPanelPort->getId() == $pppHistory->getId()): ?> class="active" <?php endif; ?>>
+                        <a href="#<?= $pppHistory->getId() ?>" data-toggle="tab"><?php if($t->patchPanelPort->getId() == $pppHistory->getId()): ?> Current <?php else: ?> <?= $pppHistory->getCeasedAtFormated(); ?> <?php endif; ?></a>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
     </div>
-</div>
-<div id="area_file">
-    <?php if(count($t->patchPanelPort->getPatchPanelPortFiles()) > 0): ?>
-        <div class="panel panel-default" id="list_file">
-            <div class="panel-heading">List files</div>
-            <div class="panel-body">
-                <table class="table_ppp_info" >
-                    <tr>
-                        <th>Name</th>
-                        <th>Size</th>
-                        <th>Type</th>
-                        <th>Uploaded at</th>
-                        <th>Uploaded By</th>
-                        <th>Action</th>
-                    </tr>
-                    <?php foreach ($t->patchPanelPort->getPatchPanelPortFiles() as $file):?>
-                        <?php if(($t->isSuperUser) or (!$t->isSuperUser and !$file->getIsPrivate())): ?>
-                            <tr id="file_row_<?=$file->getId()?>">
-                                <td>
-                                    <?= $file->getName() ?>
-                                    <?php if($file->getIsPrivate()):?>  <i title='Private file' class="fa fa-lock fa-lg" aria-hidden="true"></i> <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?= $file->getSizeFormated() ?>
-                                </td>
-                                <td>
-                                    <i title='<?= $file->getType()?>' class="fa <?= $file->getTypeAsIcon()?> fa-lg' aria-hidden="true"></i>
-                                </td>
-                                <td>
-                                    <?= $file->getUploadedAtFormated() ?>
-                                </td>
-                                <td>
-                                    <?= $file->getUploadedBy() ?>
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn btn-default" href="<?= url('/patch-panel-port/downloadFile' ).'/'.$file->getId()?>" href="" title="Download"><i class="fa fa-download"></i></a>
-                                        <?php if ($t->isSuperUser): ?>
-                                            <button class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>)" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
-                                        <?php endif; ?>
-                                    </div>
+    <div class="panel-body">
+        <div class="tab-content">
+            <?php foreach ($t->listHistory as $pppHistory): ?>
+                <?php if($t->patchPanelPort->getId() == $pppHistory->getId()):
+                    $current = true;
+                else:
+                    $current = false;
+                endif; ?>
+                <div class="tab-pane fade <?php if($t->patchPanelPort->getId() == $pppHistory->getId()): ?> active in <?php endif; ?>" id="<?= $pppHistory->getId() ?>">
+                    <div class="col-xs-6">
+                        <table class="table_ppp_info">
+
+                            <tr>
+                                <td><b>Name : </b></td>
+                                <td><?= $pppHistory->getName() ?>
+                                    <?php if($pppHistory->hasSlavePort()): ?>
+                                        (duplex)
+                                    <?php endif; ?>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><b>Patch Panel :</b></td>
+                                <td><a href="<?= url('patch-panel/view' ).'/'.$pppHistory->getPatchPanel()->getId()?>" ><?= $pppHistory->getPatchPanel()->getName() ?></a></td>
+                            </tr>
+                            <?php if($current): ?>
+                                <?php if($pppHistory->getSwitchName()): ?>
+                                    <tr>
+                                        <td><b>Switch :</b></td>
+                                        <td><?= $pppHistory->getSwitchName()?></td>
+                                    </tr>
+                                <?php endif; ?>
+                                <?php if($pppHistory->getSwitchPortName()): ?>
+                                    <tr>
+                                        <td><b>Port:</b></td>
+                                        <td><?= $pppHistory->getSwitchPortName()?></td>
+                                    </tr>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td><b>Switch / Port :</b></td>
+                                    <td><?= $pppHistory->getSwitchport()?></td>
+                                </tr>
                             <?php endif; ?>
-                    <?php endforeach; ?>
-                </table>
-            </div>
+                            <?php if($pppHistory->getCustomerName()): ?>
+                                <tr>
+                                    <td><b>Customer:</b></td>
+                                    <td><?= $pppHistory->getCustomerName()?></td>
+                                </tr>
+                            <?php endif; ?>
+                            <?php if($current): ?>
+                                <tr>
+                                    <td><b>State :</b></td>
+                                    <td>
+                                        <?php
+                                        if($pppHistory->isAvailableForUse()):
+                                            $class = 'success';
+                                        elseif($pppHistory->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT):
+                                            $class = 'warning';
+                                        elseif($pppHistory->getState() == Entities\PatchPanelPort::STATE_CONNECTED):
+                                            $class = 'danger';
+                                        else:
+                                            $class = 'info';
+                                        endif;
+                                        ?>
+                                        <span title="" class="label label-<?= $class ?>">
+                                            <?= $pppHistory->resolveStates() ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </table>
+                    </div>
+
+                    <div class="col-xs-6">
+
+                        <table class="table_ppp_info">
+                            <tr>
+                                <td><b>Colocation circuit ref: </b></td>
+                                <td><?= $pppHistory->getColoCircuitRef()?></td>
+                            </tr>
+                            <?php if ($t->isSuperUser): ?>
+                                <tr>
+                                    <td><b>Ticket ref :</b></td>
+                                    <td><?= $pppHistory->getTicketRef()?></td>
+                                </tr>
+                            <?php endif; ?>
+                            <tr>
+                                <td><b>Assigned At :</b></td>
+                                <td><?= $pppHistory->getAssignedAtFormated(); ?></td>
+                            </tr>
+                            <?php if($pppHistory->getConnectedAt()): ?>
+                                <tr>
+                                    <td><b>Connected At :</b></td>
+                                    <td><?= $pppHistory->getConnectedAtFormated(); ?></td>
+                                </tr>
+                            <?php endif; ?>
+                            <?php if($pppHistory->getCeaseRequestedAt()): ?>
+                                <tr>
+                                    <td><b>Ceased Requested At :</b></td>
+                                    <td><?= $pppHistory->getCeaseRequestedAtFormated(); ?></td>
+                                </tr>
+                            <?php endif; ?>
+                            <?php if($pppHistory->getCeasedAt()): ?>
+                                <tr>
+                                    <td><b>Ceased At :</b></td>
+                                    <td><?= $pppHistory->getCeasedAtFormated(); ?></td>
+                                </tr>
+                            <?php endif; ?>
+                            <?php if ($t->isSuperUser): ?>
+                                <tr>
+                                    <td><b>Internal Use :</b></td>
+                                    <td><?= $pppHistory->getInternalUseText() ?></td>
+                                </tr>
+                            <?php endif; ?>
+                            <tr>
+                                <td><b>Chargeable :</b></td>
+                                <td><?= $pppHistory->resolveChargeable() ?></td>
+                            </tr>
+                            <?php if ($t->isSuperUser): ?>
+                                <tr>
+                                    <td><b>Owned By :</b></td>
+                                    <td><?= $pppHistory->resolveOwnedBy() ?></td>
+                                </tr>
+                            <?php endif; ?>
+                        </table>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <?php if ($pppHistory->getNotes()): ?>
+                            <div class="panel panel-default">
+                                <div class="panel-heading padding-10">Public Notes :</div>
+                                <div class="panel-body">
+                                    <?= $pppHistory->getNotesParseDown() ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if ($t->isSuperUser): ?>
+                        <div class="col-xs-6">
+                            <?php if ($pppHistory->getPrivateNotes()): ?>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading padding-10">Private Notes :</div>
+                                    <div class="panel-body">
+                                        <?= $pppHistory->getPrivateNotesParseDown() ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if($current):
+                        $listFile = $pppHistory->getPatchPanelPortFiles();
+                    else:
+                        $listFile = $pppHistory->getPatchPanelPortHistoryFile();
+                    endif;
+                    ?>
+
+                    <div class="col-xs-12" id="area_file">
+                        <?php if(count($listFile) > 0): ?>
+                            <div class="panel panel-default" id="list_file">
+                                <div class="panel-heading padding-10">List files</div>
+                                <div class="panel-body">
+                                    <table class="table table-bordered table-striped" >
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Size</th>
+                                            <th>Type</th>
+                                            <th>Uploaded at</th>
+                                            <th>Uploaded By</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        <?php foreach ($listFile as $file):?>
+                                            <?php if(($t->isSuperUser) or (!$t->isSuperUser and !$file->getIsPrivate())): ?>
+                                                <tr id="file_row_<?=$file->getId()?>">
+                                                    <td>
+                                                        <?= $file->getName() ?>
+                                                        <?php if($file->getIsPrivate()):?>  <i title='Private file' class="fa fa-lock fa-lg" aria-hidden="true"></i> <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= $file->getSizeFormated() ?>
+                                                    </td>
+                                                    <td>
+                                                        <i title='<?= $file->getType()?>' class="fa <?= $file->getTypeAsIcon()?> fa-lg' aria-hidden="true"></i>
+                                                    </td>
+                                                    <td>
+                                                        <?= $file->getUploadedAtFormated() ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= $file->getUploadedBy() ?>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group">
+                                                            <a class="btn btn btn-default" target="_blank" href="<?= url('/patch-panel-port/downloadFile' ).'/'.$file->getId()?>" href="" title="Download"><i class="fa fa-download"></i></a>
+                                                            <?php if ($t->isSuperUser): ?>
+                                                                <button class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>)" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </table>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
-    <?php endif; ?>
+    </div>
 </div>
+
 
 
 <?php $this->append() ?>

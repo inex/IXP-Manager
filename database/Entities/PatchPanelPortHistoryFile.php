@@ -2,6 +2,8 @@
 
 namespace Entities;
 
+
+Use D2EM;
 /**
  * PatchPanelPortHistoryFile
  */
@@ -43,17 +45,15 @@ class PatchPanelPortHistoryFile
     private $id;
 
     /**
+     * @var boolean
+     */
+    private $is_private = '0';
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $patchPanelPortHistory;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->patchPanelPortHistory = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Set name
@@ -104,6 +104,39 @@ class PatchPanelPortHistoryFile
     }
 
     /**
+     * Get type as an icon from awesome font
+     *
+     * @return string
+     */
+    public function getTypeAsIcon()
+    {
+        switch ($this->getType()) {
+            case 'image/jpeg':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'image/png':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'image/bmp':
+                $icon = 'fa-file-image-o';
+                break;
+            case 'application/pdf':
+                $icon = 'fa-file-pdf-o';
+                break;
+            case 'application/zip':
+                $icon = 'fa-file-archive-o';
+                break;
+            case 'text/plain':
+                $icon = 'fa-file-text';
+                break;
+            default:
+                $icon = 'fa-file';
+                break;
+        }
+        return $icon;
+    }
+
+    /**
      * Set uploadedAt
      *
      * @param \DateTime $uploadedAt
@@ -125,6 +158,16 @@ class PatchPanelPortHistoryFile
     public function getUploadedAt()
     {
         return $this->uploaded_at;
+    }
+
+    /**
+     * Get uploadedAt
+     *
+     * @return \DateTime
+     */
+    public function getUploadedAtFormated()
+    {
+        return ($this->getUploadedAt() == null) ? $this->getUploadedAt() : $this->getUploadedAt()->format('Y-m-d');
     }
 
     /**
@@ -164,6 +207,38 @@ class PatchPanelPortHistoryFile
 
         return $this;
     }
+
+    function getSizeFormated()
+    {
+        $bytes = $this->getSize();
+        if ($bytes >= 1073741824)
+        {
+            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+        }
+        elseif ($bytes >= 1048576)
+        {
+            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+        }
+        elseif ($bytes >= 1024)
+        {
+            $bytes = number_format($bytes / 1024, 2) . ' kB';
+        }
+        elseif ($bytes > 1)
+        {
+            $bytes = $bytes . ' bytes';
+        }
+        elseif ($bytes == 1)
+        {
+            $bytes = $bytes . ' byte';
+        }
+        else
+        {
+            $bytes = '0 bytes';
+        }
+
+        return $bytes;
+    }
+
 
     /**
      * Get size
@@ -210,6 +285,30 @@ class PatchPanelPortHistoryFile
     }
 
     /**
+     * Set isPrivate
+     *
+     * @param boolean $isPrivate
+     *
+     * @return PatchPanelPortHistoryFile
+     */
+    public function setIsPrivate($isPrivate)
+    {
+        $this->is_private = $isPrivate;
+
+        return $this;
+    }
+
+    /**
+     * Get isPrivate
+     *
+     * @return boolean
+     */
+    public function getIsPrivate()
+    {
+        return $this->is_private;
+    }
+
+    /**
      * Add patchPanelPortHistory
      *
      * @param \Entities\PatchPanelPortHistory $patchPanelPortHistory
@@ -218,7 +317,7 @@ class PatchPanelPortHistoryFile
      */
     public function addPatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory)
     {
-        $this->patchPanelPortHistory[] = $patchPanelPortHistory;
+        $this->patchPanelPortHistory = $patchPanelPortHistory;
 
         return $this;
     }
@@ -242,47 +341,37 @@ class PatchPanelPortHistoryFile
     {
         return $this->patchPanelPortHistory;
     }
-/**
- * @var boolean
- */
-private $is_private = '0';
 
 
-/**
- * Set isPrivate
- *
- * @param boolean $isPrivate
- *
- * @return PatchPanelPortHistoryFile
- */
-public function setIsPrivate($isPrivate)
-{
-$this->is_private = $isPrivate;
+    /**
+     * Create a patch panel port file history
+     * Duplicate all the datas of the current patch panel port file in the history table
+     * And delete the patch panel port file record at the end
+     *
+     * @param \Entities\PatchPanelPort $patchPanelPort
+     * @param \Entities\PatchPanelPortHistory $PPPHistory patch panel port history object
+     * @author     Yann Robin <yann@islandbridgenetworks.ie>
+     * @return string
+     */
+    public static function createHistory($patchPanelPort,$PPPHistory){
 
-return $this;
-}
+        foreach ($patchPanelPort->getPatchPanelPortFiles() as $file){
 
-/**
- * Get isPrivate
- *
- * @return boolean
- */
-public function getIsPrivate()
-{
-return $this->is_private;
-}
+            $pppHistoryFile = new PatchPanelPortHistoryFile();
 
-/**
- * Set patchPanelPortHistory
- *
- * @param \Entities\PatchPanelPortHistory $patchPanelPortHistory
- *
- * @return PatchPanelPortHistoryFile
- */
-public function setPatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory = null)
-{
-$this->patchPanelPortHistory = $patchPanelPortHistory;
+            $pppHistoryFile->setName($file->getName());
+            $pppHistoryFile->setSize($file->getSize());
+            $pppHistoryFile->setType($file->getType());
+            $pppHistoryFile->setStorageLocation($file->getStorageLocation());
+            $pppHistoryFile->setUploadedBy($file->getUploadedBy());
+            $pppHistoryFile->setUploadedAt($file->getUploadedAt());
+            $pppHistoryFile->setIsPrivate($file->getIsPrivate());
+            $pppHistoryFile->addPatchPanelPortHistory($PPPHistory);
 
-return $this;
-}
+            D2EM::persist($pppHistoryFile);
+            D2EM::remove($file);
+        }
+
+        D2EM::flush();
+    }
 }

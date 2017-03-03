@@ -106,7 +106,7 @@ class Switcher extends EntityRepository
      *
      * @param bool          $active If `true`, return only active switches
      * @param int           $type   If `0`, all types otherwise limit to specific type
-     * @param \Entities\IXP $ixp    IXP to filter vlan names
+     * @param int           $idLocation  location requiered
      * @return array An array of all switch names with the switch id as the key.
      */
     public function getNamesByLocation( $active = false, $type = 0, $idLocation = null )

@@ -3,6 +3,7 @@
 namespace Entities;
 
 Use Parsedown;
+Use D2EM;
 /**
  * PatchPanelPortHistory
  */
@@ -145,7 +146,7 @@ class PatchPanelPortHistory
      */
     public function getName()
     {
-        $name = $this->getPatchPanel()->getPortPrefix().$this->getNumber();
+        $name = $this->getNumber();
         if($this->hasSlavePort()){
             $name .= '/'.$this->getDuplexSlavePortName();
         }
@@ -536,6 +537,16 @@ class PatchPanelPortHistory
     }
 
     /**
+     * Get customer
+     *
+     * @return string
+     */
+    public function getCustomerName()
+    {
+        return $this->customer;
+    }
+
+    /**
      * Set switchport
      *
      * @param string $switchport
@@ -558,6 +569,8 @@ class PatchPanelPortHistory
     {
         return $this->switchport;
     }
+
+
 
     /**
      * Get id
@@ -593,6 +606,15 @@ class PatchPanelPortHistory
         return $this->patchPanelPort;
     }
 
+    /**
+     * Get patchPanelPort
+     *
+     * @return \Entities\PatchPanelPort
+     */
+    public function getPatchPanel()
+    {
+        return $this->patchPanelPort;
+    }
     /**
      * Add duplexSlavePort
      *
@@ -729,13 +751,54 @@ class PatchPanelPortHistory
         return $this->patchPanelPortHistoryFiles;
     }
 
+
     /**
-     * Get patchPanelPortHistoryFiles
+     * Create a patch panel port history
+     * Duplicate all the datas of the current patch panel port in the history table
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @author     Yann Robin <yann@islandbridgenetworks.ie>
+     * @return \Entities\PatchPanelPortHistory
      */
-    public function getPatchPanelPortHistoryFiles()
-    {
-    return $this->patchPanelPortHistoryFiles;
+    public static function createHistory($patchPanelPort){
+        $pppHistory = new PatchPanelPortHistory();
+
+        $pppHistory->setPatchPanelPort($patchPanelPort);
+        $pppHistory->setNumber($patchPanelPort->getNumber());
+        $pppHistory->setState($patchPanelPort->getState());
+        $pppHistory->setColoCircuitRef($patchPanelPort->getColoCircuitRef());
+        $pppHistory->setTicketRef($patchPanelPort->getTicketRef());
+        $pppHistory->setNotes($patchPanelPort->getNotes());
+        $pppHistory->setPrivateNotes($patchPanelPort->getPrivateNotes());
+        $pppHistory->setAssignedAt($patchPanelPort->getAssignedAt());
+        $pppHistory->setConnectedAt($patchPanelPort->getConnectedAt());
+        $pppHistory->setCeaseRequestedAt($patchPanelPort->getCeaseRequestedAt());
+        $pppHistory->setCeasedAt($patchPanelPort->getCeasedAt());
+        $pppHistory->setInternalUse($patchPanelPort->getInternalUse());
+        $pppHistory->setChargeable($patchPanelPort->getChargeable());
+        $pppHistory->setOwnedBy($patchPanelPort->getOwnedBy());
+        $pppHistory->setCustomer($patchPanelPort->getCustomerName());
+        $pppHistory->setSwitchport($patchPanelPort->getSwitchName().' / '.$patchPanelPort->getSwitchPortName());
+
+        $patchPanelPort->addPatchPanelPortHistory($pppHistory);
+
+        D2EM::persist($pppHistory);
+        D2EM::flush();
+
+        if($patchPanelPort->hasSlavePort()){
+            $slavePortHistory = clone $pppHistory;
+            $slavePortHistory->setDuplexMasterPort($pppHistory);
+            D2EM::persist($slavePortHistory);
+        }
+
+
+        if($patchPanelPort->hasSlavePort()){
+            $slavePort = $patchPanelPort->getDuplexSlavePort();
+            $slavePort->resetPatchPanelPort();
+        }
+        $patchPanelPort->resetPatchPanelPort();
+
+        D2EM::flush();
+
+        return $pppHistory;
     }
 }

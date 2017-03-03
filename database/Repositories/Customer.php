@@ -445,7 +445,7 @@ class Customer extends EntityRepository
             "SELECT ppp
              FROM \\Entities\\PatchPanelPort ppp
              WHERE ppp.customer = ?1
-             AND ppp.switchPort IS NULL"
+             AND ppp.duplexMasterPort IS NULL"
         )
             ->setParameter( 1, $cid )
             ->getResult();

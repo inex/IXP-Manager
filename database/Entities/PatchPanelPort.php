@@ -1079,6 +1079,15 @@ class PatchPanelPort
         return $this->getDuplexMasterPort() !== null || count( $this->getDuplexSlavePorts() ) > 0;
     }
 
+    /**
+     * Is this port has files
+     *
+     * @return bool
+     */
+    public function hasFiles(): bool {
+        return count( $this->getPatchPanelPortFiles() ) > 0;
+    }
+
 
     /**
      * Reset the data of a patch panel port after ceased
@@ -1091,6 +1100,7 @@ class PatchPanelPort
         $this->setColoCircuitRef('');
         $this->setTicketRef('');
         $this->setNotes(null);
+        $this->setPrivateNotes(null);
         $this->setAssignedAt(null);
         $this->setConnectedAt(null);
         $this->setCeaseRequestedAt(null);
@@ -1110,55 +1120,20 @@ class PatchPanelPort
     }
 
     /**
-     * Create a patch panel port history after ceased
-     * Duplicate all the datas of the current patch panel post in the history table
+     * Create a patch panel port history and patch panel port file history after ceased
+     * Duplicate all the datas of the current patch panel port in the history table
      * and reset the patch panel port when it has been duplicated
      *
      * @author     Yann Robin <yann@islandbridgenetworks.ie>
      * @return string
      */
     public function createHistory(){
-        $pppHistory = new PatchPanelPortHistory();
-
-        $pppHistory->setPatchPanelPort($this);
-        $pppHistory->setNumber($this->getNumber());
-        $pppHistory->setState($this->getState());
-        $pppHistory->setColoCircuitRef($this->getColoCircuitRef());
-        $pppHistory->setTicketRef($this->getTicketRef());
-        $pppHistory->setNotes($this->getNotes());
-        $pppHistory->setPrivateNotes($this->getPrivateNotes());
-        $pppHistory->setAssignedAt($this->getAssignedAt());
-        $pppHistory->setConnectedAt($this->getConnectedAt());
-        $pppHistory->setCeaseRequestedAt($this->getCeaseRequestedAt());
-        $pppHistory->setCeasedAt($this->getCeasedAt());
-        $pppHistory->setInternalUse($this->getInternalUse());
-        $pppHistory->setChargeable($this->getChargeable());
-        $pppHistory->setOwnedBy($this->getOwnedBy());
-        $pppHistory->setCustomer($this->getCustomerName());
-        $pppHistory->setSwitchport($this->getSwitchName().' / '.$this->getSwitchPortName());
-
-        $this->addPatchPanelPortHistory($pppHistory);
-
-        D2EM::persist($pppHistory);
-        D2EM::flush();
-
-        if($this->hasSlavePort()){
-            $slavePortHistory = clone $pppHistory;
-            $slavePortHistory->setDuplexMasterPort($pppHistory);
-            D2EM::persist($slavePortHistory);
-        }
-
-
-        if($this->hasSlavePort()){
-            $slavePort = $this->getDuplexSlavePort();
-            $slavePort->resetPatchPanelPort();
+        $PPPHistory = PatchPanelPortHistory::createHistory($this);
+        if($this->hasFiles()){
+            PatchPanelPortHistoryFile::createHistory($this,$PPPHistory);
         }
         $this->resetPatchPanelPort();
-
-        D2EM::flush();
     }
-
-
 
     /**
      * Add patchPanelPortFile
