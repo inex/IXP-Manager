@@ -57,8 +57,7 @@
         "zendesk/zendesk_api_client_php": "dev-master",
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.3",
-        "barryvdh/laravel-debugbar": "^2.3",
-        "laravel-doctrine/migrations": "1.0.*"
+        "barryvdh/laravel-debugbar": "^2.3"
 
     },
     "require-dev": {
