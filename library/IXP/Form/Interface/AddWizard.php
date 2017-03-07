@@ -82,14 +82,8 @@ class IXP_Form_Interface_AddWizard extends IXP_Form
               ->setCheckedValue( '1' );
         $this->addElement( $trunk );
 
-        $lagFraming = $this->createElement( 'checkbox', 'lag_framing' );
-        $lagFraming->setLabel( 'Link aggregation / LAG framing '
-                               . '<button class="btn btn-mini" type="button" id="tooltip-lag-framing"><i class="icon-question-sign"></i></button>')
-                   ->setCheckedValue( '1' );
-        $this->addElement( $lagFraming );
-
         $this->addDisplayGroup(
-            array( 'name', 'description', 'channelgroup', 'mtu', 'trunk', 'lag_framing' ),
+            array( 'name', 'description', 'channelgroup', 'mtu', 'trunk' ),
             'virtualInterfaceDisplayGroup'
         );
 

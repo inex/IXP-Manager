@@ -325,6 +325,11 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                     $vi = new \Entities\VirtualInterface();
                     $form->assignFormToEntity( $vi, $this, false );
                     $vi->setCustomer( $cust );
+
+                    // these options is not available in the wizard
+                    $vi->setChannelgroup(null);
+                    $vi->setLagFraming(false);
+                    
                     $this->getD2EM()->persist( $vi );
 
                     $pi = new \Entities\PhysicalInterface();
@@ -358,7 +363,7 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
 
                     $vli = new \Entities\VlanInterface();
                     $form->assignFormToEntity( $vli, $this, false );
-
+                    
                     $vli->setVlan(
                         $this->getD2EM()->getRepository( '\\Entities\\Vlan' )->find( $form->getElement( 'vlanid' )->getValue() )
                     );
