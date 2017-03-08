@@ -173,7 +173,6 @@ return [
          * Third party providers
          */
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
-        LaravelDoctrine\Migrations\MigrationsServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
         Former\FormerServiceProvider::class,
