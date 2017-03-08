@@ -12,6 +12,18 @@
             
             {$element->custid}
             {$element->trunk}
+
+
+            {* if there's >1 phys int and lag framing is not set, we should warn: *}
+            {if count( $object->getPhysicalInterfaces() ) > 1 and !$object->getLagFraming()}
+            <div class="control-group">
+                <div class="controls">
+                    <span class="label label-warning">WARNING</span>
+                    LAG framing is not set and there is >1 physical interfaces. This may be intended but should be verified:
+                </div>
+            </div>
+            {/if}
+
             {$element->lag_framing}
 
             {if $object->getBundleName()}

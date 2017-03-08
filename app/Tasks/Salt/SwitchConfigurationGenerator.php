@@ -140,7 +140,7 @@ class SwitchConfigurationGenerator
         }
 
         // we now have the base port config. If this is not a LAG, just return it:
-        if( !$vi->getChannelgroup() ) {
+        if( !$vi->getLagFraming() ) {
             $pi = $vi->getPhysicalInterfaces()[0];
             $p['name']               = $pi->getSwitchport()->getIfName();
             $p['speed']              = $pi->getSpeed();

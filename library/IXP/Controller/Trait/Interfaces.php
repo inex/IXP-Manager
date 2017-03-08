@@ -252,22 +252,16 @@ trait IXP_Controller_Trait_Interfaces
     protected function setBundleDetails( Entities\VirtualInterface $vi ) {
 
         if( count( $vi->getPhysicalInterfaces() ) ) {
-            if( count( $vi->getPhysicalInterfaces() ) > 1 ) {
-                // when a checkbox is disabled, we get 0 even if the disabled element is checked.
-                // we only disable the element is #physints > 1.
-                // this is easy for fix for lag_framing as the rules are simple:
-                $vi->setLagFraming(true);
-            }
-
             // LAGs must have a channel group and bundle name. But only if they have a phys int:
 
-            if( ( $vi->getLagFraming() || count( $vi->getPhysicalInterfaces() ) > 1 ) && !$vi->getChannelgroup() ) {
+            if( $vi->getLagFraming() && !$vi->getChannelgroup() ) {
                 $vi->setChannelgroup( $this->getD2EM()->getRepository( 'Entities\VirtualInterface' )->assignChannelGroup( $vi ) );
                 $this->addMessage( "Missing channel group assigned as this is a LAG port", OSS_Message::INFO );
             }
 
             // LAGs must have a bundle name
-            if( ( $vi->getLagFraming() || count( $vi->getPhysicalInterfaces() ) > 1 ) && !$vi->getName() ) {
+            if( $vi->getLagFraming() && !$vi->getName() ) {
+                // assumption on no mlags (multi chassis lags) here:
                 $vi->setName( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor()->getBundleName() );
 
                 if( $vi->getName() ) {
@@ -278,10 +272,10 @@ trait IXP_Controller_Trait_Interfaces
             }
         } else {
             // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
-            if( count( $vi->getPhysicalInterfaces() ) == 0 ) {
-                $vi->setName('');
-                $vi->setChannelgroup(null);
-            }
+            $vi->setName('');
+            $vi->setChannelgroup(null);
+            $vi->setLagFraming(false);
         }
+
     }
 }

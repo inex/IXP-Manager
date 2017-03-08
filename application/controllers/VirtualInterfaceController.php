@@ -191,10 +191,6 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
      */
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
-        if( count( $object->getPhysicalInterfaces() ) > 1 ) {
-            $form->getElement('lag_framing')->setAttrib( 'disabled', true )->setAttrib( 'readonly', true );
-        }
-
         if( $isEdit )
         {
             $form->getElement( 'custid' )->setValue( $object->getCustomer()->getId() );
