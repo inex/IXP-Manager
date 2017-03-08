@@ -39,7 +39,7 @@
                             <?php if($pppHistory->hasSlavePort()): ?>
                                 <tr>
                                     <td><b>Duplex Port :</b></td>
-                                    <td><?= $pppHistory->getDuplexSlavePort()->getId() ?></td>
+                                    <td><?= $pppHistory->getDuplexSlavePort()->getNumber() ?></td>
                                 </tr>
                             <?php endif; ?>
                             <tr>

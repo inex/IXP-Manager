@@ -29,14 +29,16 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'checkPhysicalInterfaceMatch',  'PatchPanelPortController@checkPhysicalInterfaceMatch' );
     Route::get( 'resetCustomer',                'PatchPanelPortController@resetCustomer' );
     Route::get( 'changeStatus/{id}/{status}',   'PatchPanelPortController@changeStatus' );
+    Route::get( 'email/{id}/{type}',            'PatchPanelPortController@email' );
     Route::get( 'setNotes',                     'PatchPanelPortController@setNotes' );
     Route::get( 'history/{id}',                 'PatchPanelPortController@history' );
     Route::get( 'downloadFile/{id}',            'PatchPanelPortController@downloadFile' );
 
     Route::post( 'uploadFile/{id}',              'PatchPanelPortController@uploadFile' );
     Route::get( 'deleteFile',                    'PatchPanelPortController@deleteFile' );
-    Route::get( 'privateFile',                   'PatchPanelPortController@privateFile' );
+    Route::get( 'changePrivateFile',             'PatchPanelPortController@changePrivateFile' );
 
     Route::post( 'store',                       'PatchPanelPortController@store' );
+    Route::post( 'sendEmail',                   'PatchPanelPortController@sendEmail' );
 
 });

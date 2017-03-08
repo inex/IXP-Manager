@@ -40,17 +40,25 @@ class PatchPanelPort
     const OWNED_DATA_CENTER             = 4;
     const OWNED_OTHER                   = 5;
 
+
+    /**
+     * CONST EMAIL
+     */
+    const EMAIL_CONNECT                 = 1;
+    const EMAIL_CEASE                   = 2;
+    const EMAIL_INFO                    = 3;
+
     /**
      * Array STATES
      */
     public static $STATES = [
-        self::STATE_AVAILABLE         => "Available",
-        self::STATE_AWAITING_XCONNECT => "Awaiting Xconnect",
-        self::STATE_CONNECTED         => "Connected",
-        self::STATE_AWAITING_CEASE    => "Awaiting cease",
-        self::STATE_CEASED            => "Ceased",
-        self::STATE_BROKEN            => "Broken",
-        self::STATE_OTHER             => "Other"
+        self::STATE_AVAILABLE           => "Available",
+        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
+        self::STATE_CONNECTED           => "Connected",
+        self::STATE_AWAITING_CEASE      => "Awaiting cease",
+        self::STATE_CEASED              => "Ceased",
+        self::STATE_BROKEN              => "Broken",
+        self::STATE_OTHER               => "Other"
     ];
 
     /**
@@ -781,6 +789,22 @@ class PatchPanelPort
     }
 
     /**
+     * Get patchPanelPortHistory
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatchPanelPortHistoryMaster()
+    {
+        $array = [];
+        foreach ($this->patchPanelPortHistory as $history){
+            if($history->getDuplexMasterPort() == null){
+                $array[] = $history;
+            }
+        }
+        return $array;
+    }
+
+    /**
      * Get number of patchPanelPortHistory
      *
      * @return \Doctrine\Common\Collections\Collection
@@ -1088,6 +1112,15 @@ class PatchPanelPort
         return count( $this->getPatchPanelPortFiles() ) > 0;
     }
 
+    /**
+     * Is this port has public files
+     *
+     * @return bool
+     */
+    public function hasPublicFiles(): bool {
+        return count( $this->getPatchPanelPortPublicFiles() ) > 0;
+    }
+
 
     /**
      * Reset the data of a patch panel port after ceased
@@ -1165,6 +1198,24 @@ class PatchPanelPort
      */
     public function getPatchPanelPortFiles()
     {
-    return $this->patchPanelPortFiles;
+        return $this->patchPanelPortFiles;
+    }
+
+    /**
+     * Get patchPanelPortFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatchPanelPortPublicFiles()
+    {
+        $array = [];
+        foreach($this->patchPanelPortFiles as $file){
+            if(!$file->getIsPrivate()){
+                $array[] = $file;
+            }
+
+        }
+
+        return $array;
     }
 }

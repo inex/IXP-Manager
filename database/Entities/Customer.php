@@ -1173,6 +1173,20 @@ class Customer
     }
 
     /**
+     * Get Users
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getUsersEmail()
+    {
+        $array = [];
+        foreach ($this->getUsers() as $user){
+            $array[] = $user->getEmail();
+        }
+        return $array;
+    }
+
+    /**
      * Add Traffic95ths
      *
      * @param Entities\Traffic95th $traffic95ths

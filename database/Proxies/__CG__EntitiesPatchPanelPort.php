@@ -741,6 +741,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getPatchPanelPortHistoryMaster()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPortHistoryMaster', []);
+
+        return parent::getPatchPanelPortHistoryMaster();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getHistoryCount()
     {
 

@@ -79,6 +79,16 @@ class PatchPanelPortFile
     }
 
     /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getNameTruncate()
+    {
+        return strlen($this->name) > 80 ? substr($this->name,0,80)."...".explode('.',$this->name)[1] : $this->name;
+    }
+
+    /**
      * Set type
      *
      * @param string $type

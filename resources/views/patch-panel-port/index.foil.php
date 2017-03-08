@@ -117,14 +117,20 @@
                                     <?php if($patchPanelPort->getState() == \Entities\PatchPanelPort::STATE_AVAILABLE): ?>
                                         <li><a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId().'/allocated'?>">Allocate</a></li>
                                     <?php endif; ?>
+                                    <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false,true)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId()?>">Add note</a></li>
                                     <?php if($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT): ?>
-                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,true,<?= $patchPanelPort->getHasSwitchPort() ?>)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CONNECTED?>">Set Connected</a></li>
+                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,true,<?= $patchPanelPort->getHasSwitchPort() ?>,false)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CONNECTED?>">Set Connected</a></li>
                                     <?php endif; ?>
                                     <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED)): ?>
-                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" id="ceasedRequested<?=$patchPanelPort->getId()?>" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_AWAITING_CEASE?>">Cease requested</a></li>
+                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" id="ceasedRequested<?=$patchPanelPort->getId()?>,false" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_AWAITING_CEASE?>">Cease requested</a></li>
                                     <?php endif; ?>
                                     <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_CEASE)): ?>
-                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CEASED?>">Set ceased</a></li>
+                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false,false)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CEASED?>">Set ceased</a></li>
+                                    <?php endif; ?>
+                                    <?php if($patchPanelPort->getCustomer()): ?>
+                                        <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_CONNECT?>">Email - Connect</a></li>
+                                        <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_CEASE?>">Email - Cease</a></li>
+                                        <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_INFO?>">Email - Information</a></li>
                                     <?php endif; ?>
                                     <li role="separator" class="divider"></li>
                                     <li>
@@ -163,6 +169,7 @@
 
             $('#patch-panel-port-list').DataTable( {
                 "paging":   pagination,
+                "autoWidth": false,
                 "columnDefs": [
                     {
                         "targets": [ 0 ],
@@ -177,7 +184,7 @@
 
         function setNotesTextArea(pppId,input){
             val_textarea = $('#'+input).text();
-            default_val = '<?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
+            default_val = '* <?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
 
             if(val_textarea == ''){
                 $('#'+input).text(default_val);
@@ -217,14 +224,20 @@
             }
         }
 
-        function popup(href,pppId,connected,hasSwitchPort,piState){
+        function popup(href,pppId,connected,hasSwitchPort,only_note){
             var url = $(href).attr("href");
             var new_notes_set = false;
-            html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p> " +
+
+            if(only_note){
+                html = "<p>Add notes</p><br/>";
+            }
+            else{
+                html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p><br/>";
+            }
+
+            html +=    "Public Notes : <textarea id='notes' onblur='checkTextArea("+pppId+",\"notes\")' onfocus='setNotesTextArea("+pppId+",\"notes\")' onclick='setNotesTextArea("+pppId+",\"notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#notes_'+pppId).val()+"</textarea>" +
                 "<br/>" +
-                "Public Notes : <textarea id='notes' onblur='checkTextArea("+pppId+",\"notes\")' onclick='setNotesTextArea("+pppId+",\"notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#notes_'+pppId).val()+"</textarea>" +
-                "<br/>" +
-                "Private Notes : <textarea id='private_notes' onblur='checkTextArea("+pppId+",\"private_notes\")' onclick='setNotesTextArea("+pppId+",\"private_notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#private_notes_'+pppId).val()+"</textarea>";
+                "Private Notes : <textarea id='private_notes' onblur='checkTextArea("+pppId+",\"private_notes\")' onfocus='setNotesTextArea("+pppId+",\"private_notes\")' onclick='setNotesTextArea("+pppId+",\"private_notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#private_notes_'+pppId).val()+"</textarea>";
             if(connected){
                 if(hasSwitchPort){
                     html += "<br/><br/><span>Update Physical Port State To:  </span><select id='PIStatus'>";
@@ -271,12 +284,19 @@
 
                             $.ajax({
                                 url: "<?= url('patch-panel-port/setNotes/')?>",
-                                data: {pppId:pppId,notes: notes,private_notes:private_notes,pi_status:pi_status},
+                                data: {pppId:pppId,notes: notes,private_notes:private_notes,pi_status:pi_status,only_note:only_note},
                                 type: 'GET',
                                 dataType: 'JSON',
                                 success: function (data) {
                                     if(data.success){
-                                        document.location.href = url;
+                                        if(only_note){
+                                            $('.bootbox.modal').modal('hide');
+                                            location.reload();
+                                        }
+                                        else{
+                                            document.location.href = url;
+                                        }
+
                                         return true;
                                     }
                                     else{
@@ -307,7 +327,7 @@
 
             var dialog = bootbox.dialog({
                 message: html,
-                title: "Files Upload",
+                title: "Files Upload (Files will be public by default)",
                 onEscape: function() {
                     location.reload();
                 },
@@ -363,20 +383,30 @@
             });
         }
 
-        function privateFile(idFile,idPPP){
+        function changePrivateFile(idFile,idPPP){
             $.ajax({
-                url: "<?= url('patch-panel-port/privateFile/')?>",
+                url: "<?= url('patch-panel-port/changePrivateFile/')?>",
                 data: {idFile: idFile, idPPP: idPPP},
                 type: 'GET',
                 dataType: 'JSON',
                 success: function (data) {
                     if(data.success){
-                        $('#message_'+idFile).append(' / <i class="success">'+data.message+'</i>');
+                        $('#privateMessage_'+idFile).html(' / <i class="success">'+data.message+'</i>');
+                        if($('#private_'+idFile).hasClass('fa-lock')){
+                            $('#private_'+idFile).removeClass('fa-lock');
+                            $('#private_'+idFile).addClass('fa-unlock');
+                        }
+                        else{
+                            $('#private_'+idFile).removeClass('fa-unlock');
+                            $('#private_'+idFile).addClass('fa-lock');
+                        }
+
                     }
                     else{
-                        $('#message_'+idFile).append(' / <i class="error"> '+data.message+'</i>');
+                        $('#privateMessage_'+idFile).html(' / <i class="error"> '+data.message+'</i>');
+                        $('#private_'+idFile).remove();
                     }
-                    $('#private_'+idFile).remove();
+
                 }
 
             });

@@ -148,7 +148,7 @@ class PatchPanelPortHistory
     {
         $name = $this->getNumber();
         if($this->hasSlavePort()){
-            $name .= '/'.$this->getDuplexSlavePortName();
+            $name .= '/'.$this->getDuplexSlavePort()->getNumber();
         }
         return $name;
     }
@@ -572,6 +572,7 @@ class PatchPanelPortHistory
 
 
 
+
     /**
      * Get id
      *
@@ -786,6 +787,7 @@ class PatchPanelPortHistory
 
         if($patchPanelPort->hasSlavePort()){
             $slavePortHistory = clone $pppHistory;
+            $slavePortHistory->setNumber($patchPanelPort->getDuplexSlavePort()->getNumber());
             $slavePortHistory->setDuplexMasterPort($pppHistory);
             D2EM::persist($slavePortHistory);
         }

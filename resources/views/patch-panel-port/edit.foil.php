@@ -413,16 +413,25 @@
                 notesSetDateUser('notes');
             });
 
+            $('#notes').focus(function(){
+                notesSetDateUser('notes');
+            });
+
             $('#private_notes').click(function(){
                 notesSetDateUser('private_notes');
             });
 
+            $('#private_notes').focus(function(){
+                notesSetDateUser('private_notes');
+            });
             function notesSetDateUser(input){
                 val_textarea = $('#'+input).text();
-                default_val = '<?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
+                default_val = '* <?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
+                pos = default_val.length + ($('#'+input).val().length - $('#'+input).text().length);
 
                 if(val_textarea == ''){
                     $('#'+input).text(default_val);
+                    $('#'+input).setCursorPosition(pos);
                 }
                 else{
                     if($('#'+input).text() != default_val){
@@ -430,6 +439,7 @@
                             if(!new_notes_set){
                                 $('#'+input).text(default_val+'\n\n'+val_textarea);
                                 new_notes_set = true;
+                                $('#'+input).setCursorPosition(pos);
                             }
                         }
                         else{
@@ -442,8 +452,6 @@
                     }
 
                 }
-                pos = default_val.length + ($('#'+input).val().length - $('#'+input).text().length);
-                $('#'+input).setCursorPosition(pos);
             }
 
             function noteBlur(input){

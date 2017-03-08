@@ -14,15 +14,15 @@
     <div class="panel-heading">
         <ul class="nav nav-tabs">
             <?php foreach ($t->listHistory as $pppHistory): ?>
-                <?php if($t->patchPanelPort->getId() == $pppHistory->getId()):
+                <?php if(get_class($pppHistory) == \Entities\PatchPanelPort::class):
                     $current = true;
                 else:
                     $current = false;
                 endif; ?>
 
                 <?php if(($t->isSuperUser) or (!$t->isSuperUser and $current)): ?>
-                    <li <?php if($t->patchPanelPort->getId() == $pppHistory->getId()): ?> class="active" <?php endif; ?>>
-                        <a href="#<?= $pppHistory->getId() ?>" data-toggle="tab"><?php if($t->patchPanelPort->getId() == $pppHistory->getId()): ?> Current <?php else: ?> <?= $pppHistory->getCeasedAtFormated(); ?> <?php endif; ?></a>
+                    <li <?php if($current): ?> class="active" <?php endif; ?>>
+                        <a href="#<?= $pppHistory->getId() ?>" data-toggle="tab"><?php if($current): ?> Current <?php else: ?> <?= $pppHistory->getCeasedAtFormated(); ?> <?php endif; ?></a>
                     </li>
                 <?php endif; ?>
             <?php endforeach; ?>
@@ -31,17 +31,16 @@
     <div class="panel-body">
         <div class="tab-content">
             <?php foreach ($t->listHistory as $pppHistory): ?>
-                <?php if($t->patchPanelPort->getId() == $pppHistory->getId()):
+                <?php if(get_class($pppHistory) == \Entities\PatchPanelPort::class):
                     $current = true;
                 else:
                     $current = false;
                 endif; ?>
-                <div class="tab-pane fade <?php if($t->patchPanelPort->getId() == $pppHistory->getId()): ?> active in <?php endif; ?>" id="<?= $pppHistory->getId() ?>">
+                <div class="tab-pane fade <?php if($current): ?> active in <?php endif; ?>" id="<?= $pppHistory->getId() ?>">
                     <div class="col-xs-6">
                         <table class="table_ppp_info">
-
                             <tr>
-                                <td><b>Name : </b></td>
+                                <td><b>Name : <?= $pppHistory->getId() ?></b></td>
                                 <td><?= $pppHistory->getName() ?>
                                     <?php if($pppHistory->hasSlavePort()): ?>
                                         (duplex)
@@ -59,12 +58,7 @@
                                         <td><?= $pppHistory->getSwitchName()?></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if($pppHistory->getSwitchPortName()): ?>
-                                    <tr>
-                                        <td><b>Port:</b></td>
-                                        <td><?= $pppHistory->getSwitchPortName()?></td>
-                                    </tr>
-                                <?php endif; ?>
+
                             <?php else: ?>
                                 <tr>
                                     <td><b>Switch / Port :</b></td>
@@ -77,27 +71,7 @@
                                     <td><?= $pppHistory->getCustomerName()?></td>
                                 </tr>
                             <?php endif; ?>
-                            <?php if($current): ?>
-                                <tr>
-                                    <td><b>State :</b></td>
-                                    <td>
-                                        <?php
-                                        if($pppHistory->isAvailableForUse()):
-                                            $class = 'success';
-                                        elseif($pppHistory->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT):
-                                            $class = 'warning';
-                                        elseif($pppHistory->getState() == Entities\PatchPanelPort::STATE_CONNECTED):
-                                            $class = 'danger';
-                                        else:
-                                            $class = 'info';
-                                        endif;
-                                        ?>
-                                        <span title="" class="label label-<?= $class ?>">
-                                            <?= $pppHistory->resolveStates() ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
+
                         </table>
                     </div>
 
@@ -154,7 +128,7 @@
                             <?php endif; ?>
                         </table>
                     </div>
-
+                    <div style="clear: both;"></div>
                     <div class="col-xs-6">
                         <?php if ($pppHistory->getNotes()): ?>
                             <div class="panel panel-default">
@@ -181,14 +155,16 @@
 
                     <?php if($current):
                         $listFile = $pppHistory->getPatchPanelPortFiles();
+                        $objectType = 'ppp';
                     else:
                         $listFile = $pppHistory->getPatchPanelPortHistoryFile();
+                        $objectType = 'ppph';
                     endif;
                     ?>
 
-                    <div class="col-xs-12" id="area_file">
+                    <div class="col-xs-12" id="area_file_<?= $pppHistory->getId()."_".$objectType ?>">
                         <?php if(count($listFile) > 0): ?>
-                            <div class="panel panel-default" id="list_file">
+                            <div class="panel panel-default" id="list_file_<?= $pppHistory->getId()."_".$objectType ?>">
                                 <div class="panel-heading padding-10">List files</div>
                                 <div class="panel-body">
                                     <table class="table table-bordered table-striped" >
@@ -204,7 +180,7 @@
                                             <?php if(($t->isSuperUser) or (!$t->isSuperUser and !$file->getIsPrivate())): ?>
                                                 <tr id="file_row_<?=$file->getId()?>">
                                                     <td>
-                                                        <?= $file->getName() ?>
+                                                        <?= $file->getNameTruncate() ?>
                                                         <?php if($file->getIsPrivate()):?>  <i title='Private file' class="fa fa-lock fa-lg" aria-hidden="true"></i> <?php endif; ?>
                                                     </td>
                                                     <td>
@@ -223,7 +199,7 @@
                                                         <div class="btn-group btn-group-sm" role="group">
                                                             <a class="btn btn btn-default" target="_blank" href="<?= url('/patch-panel-port/downloadFile' ).'/'.$file->getId()?>" href="" title="Download"><i class="fa fa-download"></i></a>
                                                             <?php if ($t->isSuperUser): ?>
-                                                                <button class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>)" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                                                <button class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>,<?= $pppHistory->getId()?>,'<?=$objectType?>')" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
                                                             <?php endif; ?>
                                                         </div>
                                                     </td>
@@ -249,7 +225,7 @@
 <?php $this->section('scripts') ?>
 <script>
 
-    function deletePopup( idFile ){
+    function deletePopup( idFile, idHistory, objectType ){
         bootbox.confirm({
             title: "Delete",
             message: "Are you sure you want to delete this object ?",
@@ -272,7 +248,7 @@
                         success: function (data) {
                             if(data.success){
                                 //$('#file_row_'+idFile).remove();
-                                $( "#area_file" ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->patchPanelPort->getId()?> #list_file" );
+                                $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->patchPanelPort->getId()?> #list_file_"+idHistory+'_'+objectType );
                                 $('.bootbox.modal').modal('hide');
                             }
                             else{
@@ -288,9 +264,7 @@
 
 
     }
-    $(document).ready(function(){
 
-    });
 </script>
 <?php $this->append() ?>
 

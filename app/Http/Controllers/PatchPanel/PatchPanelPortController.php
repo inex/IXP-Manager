@@ -422,9 +422,10 @@ class PatchPanelPortController extends Controller
 
         $listHistory[] = $patchPanelPort;
 
-        foreach ($patchPanelPort->getPatchPanelPortHistory() as $history){
+        foreach ($patchPanelPort->getPatchPanelPortHistoryMaster() as $history){
             $listHistory[] = $history;
         }
+
 
         return view('patch-panel-port/view')->with(['patchPanelPort'    => $patchPanelPort,
                                                     'listHistory'      => $listHistory,
@@ -636,15 +637,23 @@ class PatchPanelPortController extends Controller
      * @params  $request instance of the current HTTP request
      * @return  JSON customer object
      */
-    public function privateFile(Request $request, FlysystemManager $filesystem){
+    public function changePrivateFile(Request $request, FlysystemManager $filesystem){
         $success = false;
         $message = 'An error has occured !';
 
         if( ( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($request->input('idPPP')) ) ) {
             if( ( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find($request->input('idFile')) ) ) {
                 $success = true;
-                $message = 'The file is now private !';
-                $pppFile->setIsPrivate(true);
+
+                if($pppFile->getIsPrivate()){
+                    $message = 'The file is now public !';
+                    $pppFile->setIsPrivate(false);
+                }
+                else{
+                    $message = 'The file is now private !';
+                    $pppFile->setIsPrivate(true);
+                }
+
                 D2EM::persist($pppFile);
                 D2EM::flush();
             }
@@ -671,4 +680,137 @@ class PatchPanelPortController extends Controller
 
         return response()->file(storage_path().'/files/'.$path, ['Content-Type' => $pppFile->getType()]);
     }
+
+    /**
+     * Display the form to send an email to the customer
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @parama  int $id patch panel port id
+     * @return  view
+     */
+    public function email(int $id = null, $type = null): View{
+        $patchPanelPort = false;
+        if($id != null and $type != null) {
+            if (!($patchPanelPort = D2EM::getRepository(PatchPanelPort::class)->find($id))) {
+                abort(404);
+            }
+
+            $customer = $patchPanelPort->getCustomer();
+            $usersEmail = $customer->getUsersEmail();
+            $email_to = implode(',',$usersEmail);
+            $peeringEmail = $customer->getPeeringemail();
+
+            switch ($type){
+                case PatchPanelPort::EMAIL_CONNECT:
+                    $subject = "Cross connect to ".env('IDENTITY_ORGNAME')." [".$patchPanelPort->getColoCircuitRef()." / ".$patchPanelPort->getName()."]";
+                    $emailText = "Hi,\n\n";
+                    $emailText .= "** ACTION REQUIRED - PLEASE SEE BELOW **\n\n";
+
+                    $emailText .= "We have allocated the following cross connect demarcation point for your connection to ".env( 'IDENTITY_ORGNAME' ).". Please order a ".$patchPanelPort->getPatchPanel()->getCableType()." cross connect where our demarcation point is:\n\n";
+
+                    $emailText .= "Patch panel: ".$patchPanelPort->getPatchPanel()->getName()."\n";
+                    $emailText .= "Port: ".$patchPanelPort->getName()."\n\n";
+
+                    if($patchPanelPort->getSwitchPort()){
+                        $emailText .= "This request is in relation the following connection: \n";
+                        $emailText .= "Switch Port: ".$patchPanelPort->getSwitchName().'::'.$patchPanelPort->getSwitchPortName()."\n\n";
+                    }
+
+
+                    $emailText .= "If you have any queries about this, please reply to this email.\n\n";
+                    break;
+                case PatchPanelPort::EMAIL_CEASE:
+                    $subject = "Cease Cross connect to ".env('IDENTITY_ORGNAME')." [".$patchPanelPort->getColoCircuitRef()." / ".$patchPanelPort->getName()."]";
+                    $emailText = "Hi,\n\n";
+                    $emailText .= "** ACTION REQUIRED - PLEASE SEE BELOW **\n\n";
+
+                    $emailText .= "You have a cross connect to ".env( 'IDENTITY_ORGNAME' )." which our records indicate is no longer required.\n\n";
+
+                    $emailText .= "Please contact the co-location facility and request that they cease the following cross connect:\n\n";
+
+                    $emailText .= "Colo Reference: ".$patchPanelPort->getColoCircuitRef()."\n";
+                    $emailText .= "Patch panel: ".$patchPanelPort->getPatchPanel()->getName()."\n";
+                    $emailText .= "Port: ".$patchPanelPort->getName()."\n";
+                    $emailText .= "Connected on: ".$patchPanelPort->getConnectedAtFormated()."\n\n";
+
+                    if($patchPanelPort->hasPublicFiles()){
+                        $emailText .= "We have attached documentation which we have on file regarding this connection which may help process this request.\n\n";
+                    }
+
+                    if($patchPanelPort->getNotes()){
+                        $emailText .= "We have also recorded the following notes which may also be of use:\n";
+                        $emailText .= $patchPanelPort->getNotes()."\n\n";
+                    }
+
+
+                    $emailText .= "> add with leading '>' so it appears quoted\n\n";
+
+                    $emailText .= "If you have any queries about this, please reply to this email.\n\n";
+                    break;
+                case PatchPanelPort::EMAIL_INFO:
+                    $subject = "Cross connect details for ".env('IDENTITY_ORGNAME')." [".$patchPanelPort->getColoCircuitRef()." / ".$patchPanelPort->getName()."]";
+
+                    $emailText = "Hi,\n\n";
+
+                    $emailText .= "You or someone in your organisation requested details on the following cross connect to ".env( 'IDENTITY_ORGNAME' ).".\n\n";
+
+                    $emailText .= "Colo Reference: ".$patchPanelPort->getColoCircuitRef()."\n";
+                    $emailText .= "Patch panel: ".$patchPanelPort->getPatchPanel()->getName()."\n";
+                    $emailText .= "Port: ".$patchPanelPort->getName()."\n";
+                    $emailText .= "State: ".$patchPanelPort->resolveState()."\n";
+
+                    if($patchPanelPort->getCeaseRequestedAt()){
+                        $emailText .= "Cease requested: ".$patchPanelPort->getCeaseRequestedAtFormated()."\n";
+                    }
+
+                    $emailText .= "Connected on: ".$patchPanelPort->getConnectedAtFormated()."\n\n";
+
+                    if($patchPanelPort->hasPublicFiles()){
+                        $emailText .= "We have attached documentation which we have on file regarding this connection.\n\n";
+                    }
+
+                    if($patchPanelPort->getNotes()){
+                        $emailText .= "We have also recorded the following notes:\n\n";
+                        $emailText .= $patchPanelPort->getNotes()."\n\n";
+                    }
+
+                    $emailText .= "> add with leading '>' so it appears quoted\n\n";
+
+                    $emailText .= "If you have any queries about this, please reply to this email.\n\n";
+                    break;
+            }
+
+            $emailText .= env('IDENTITY_NAME')."\n";
+            $emailText .= env('IDENTITY_EMAIL');
+
+            Former::populate( array('email_to'                  => $email_to.','.$peeringEmail,
+                                    'email_from'                => env('IDENTITY_SUPPORT_EMAIL'),
+                                    'email_subject'             => $subject,
+                                    'email_text'                => $emailText
+            ));
+        }
+
+        return view('patch-panel-port/email')->with([
+            'patchPanelPort'            => $patchPanelPort,
+            'email_type'                => $type
+        ]);
+    }
+
+    /**
+     * Send en email to the customer
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $request instance of the current HTTP request
+     * @return  view
+     */
+    public function sendEmail(Request $request) {
+        if( !( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find( $request->input( 'patch_panel_port_id' ) ) ) ) {
+            Log::notice( 'Unknown patch panel port when editing patch panel' );
+            abort(404);
+        }
+
+
+
+        return Redirect::to('patch-panel-port/list/patch-panel/'.$patchPanelPort->getPatchPanel()->getId());
+
+    }
+
 }

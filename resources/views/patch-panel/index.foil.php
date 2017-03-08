@@ -36,7 +36,7 @@
             <b>Error : </b><?= session()->get('error') ?>
         </div>
     <?php endif; ?>
-    <table id='patch-panel-list' class="table ">
+    <table id='patch-panel-list' class="table">
         <thead>
             <tr>
                 <td>Name</td>
@@ -140,8 +140,12 @@
 
 <?php $this->section('scripts') ?>
     <script>
+
         $(document).ready(function(){
-            $('#patch-panel-list').DataTable();
+
+            $('#patch-panel-list').dataTable( {
+                "autoWidth": false
+            } );
 
             $( 'a[id|="list-delete"]' ).off('click').on( 'click', function( event ){
 
