@@ -28,7 +28,7 @@ CREATE VIEW view_vlaninterface_details_by_custid AS
 		vi.custid,
 		pi.virtualinterfaceid,
 		pi.monitorindex,
-		vi.name AS virtualinterfacename,
+		CONCAT(vi.name,vi.channelgroup) AS virtualinterfacename,
 		vlan.number AS vlan,
 		vlan.name AS vlanname,
 		vlan.id AS vlanid,
@@ -72,7 +72,7 @@ CREATE VIEW view_switch_details_by_custid AS
 	SELECT
 		vi.id AS id,
 		vi.custid,
-		vi.name AS virtualinterfacename,
+		CONCAT(vi.name,vi.channelgroup) AS virtualinterfacename,
 		pi.virtualinterfaceid,
 		pi.status,
 		pi.speed,
