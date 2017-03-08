@@ -3,7 +3,7 @@
 namespace Entities;
 
 use D2EM;
-
+Use Parsedown;
 
 /**
  * Entities\PatchPanelPort
@@ -24,16 +24,62 @@ class PatchPanelPort
 
 
     /**
+     * CONST CHARGEABLE
+     */
+    const CHARGEABLE_YES                = 1;
+    const CHARGEABLE_NO                 = 2;
+    const CHARGEABLE_HALF               = 3;
+    const CHARGEABLE_OTHER              = 4;
+
+    /**
+     * CONST OWNED
+     */
+    const OWNED_CUST                    = 1;
+    const OWNED_IXP                     = 2;
+    const OWNED_SERV_PRO                = 3;
+    const OWNED_DATA_CENTER             = 4;
+    const OWNED_OTHER                   = 5;
+
+
+    /**
+     * CONST EMAIL
+     */
+    const EMAIL_CONNECT                 = 1;
+    const EMAIL_CEASE                   = 2;
+    const EMAIL_INFO                    = 3;
+
+    /**
      * Array STATES
      */
     public static $STATES = [
-        self::STATE_AVAILABLE         => "Available",
-        self::STATE_AWAITING_XCONNECT => "Awaiting Xconnect",
-        self::STATE_CONNECTED         => "Connected",
-        self::STATE_AWAITING_CEASE    => "Awaiting cease",
-        self::STATE_CEASED            => "Ceased",
-        self::STATE_BROKEN            => "Broken",
-        self::STATE_OTHER             => "Other"
+        self::STATE_AVAILABLE           => "Available",
+        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
+        self::STATE_CONNECTED           => "Connected",
+        self::STATE_AWAITING_CEASE      => "Awaiting cease",
+        self::STATE_CEASED              => "Ceased",
+        self::STATE_BROKEN              => "Broken",
+        self::STATE_OTHER               => "Other"
+    ];
+
+    /**
+ * Array $CHARGEABLES
+ */
+    public static $CHARGEABLES = [
+        self::CHARGEABLE_YES            => "Yes",
+        self::CHARGEABLE_NO             => "No",
+        self::CHARGEABLE_HALF           => "Half",
+        self::CHARGEABLE_OTHER          => "Other"
+    ];
+
+    /**
+     * Array $CHARGEABLES
+     */
+    public static $OWNED_BY = [
+        self::OWNED_CUST                => "Customer",
+        self::OWNED_IXP                 => "IXP",
+        self::OWNED_SERV_PRO            => "Service Provider",
+        self::OWNED_DATA_CENTER         => "Data Center",
+        self::OWNED_OTHER               => "Other",
     ];
 
 
@@ -137,6 +183,16 @@ class PatchPanelPort
      * @var \Doctrine\Common\Collections\Collection
      */
     private $patchPanelPortFiles;
+
+    /**
+     * @var string
+     */
+    private $private_notes;
+
+    /**
+     * @var integer
+     */
+    private $owned_by = '0';
 
     /**
      * Constructor
@@ -283,6 +339,17 @@ class PatchPanelPort
     public function getNotes()
     {
         return $this->notes;
+    }
+
+    /**
+     * Get notes using parse down
+     *
+     * @return string
+     */
+    public function getNotesParseDown()
+    {
+        $parseDown = new Parsedown;
+        return $parseDown->text($this->notes);
     }
 
     /**
@@ -522,19 +589,69 @@ class PatchPanelPort
      *
      * @return boolean
      */
-    public function getChargeableInt()
+    public function getChargeableDefaultNo()
     {
-        return $this->getChargeable() ? 1 : 0;
+        return ($this->chargeable == 0)? self::CHARGEABLE_NO :$this->getChargeable();
+
     }
 
     /**
-     * Get chargeable
+     * Set privateNotes
      *
-     * @return boolean
+     * @param string $privateNotes
+     *
+     * @return PatchPanelPort
      */
-    public function getChargeableText()
+    public function setPrivateNotes($privateNotes)
     {
-        return $this->getChargeable() ? 'Yes' : 'No';
+        $this->private_notes = $privateNotes;
+
+        return $this;
+    }
+
+    /**
+     * Get privateNotes
+     *
+     * @return string
+     */
+    public function getPrivateNotes()
+    {
+        return $this->private_notes;
+    }
+
+    /**
+     * Get private notes using parseDown
+     *
+     * @return string
+     */
+    public function getPrivateNotesParseDown()
+    {
+        $parseDown = new Parsedown;
+        return $parseDown->text($this->private_notes);
+    }
+
+    /**
+     * Set ownedBy
+     *
+     * @param integer $ownedBy
+     *
+     * @return PatchPanelPort
+     */
+    public function setOwnedBy($ownedBy)
+    {
+        $this->owned_by = $ownedBy;
+
+        return $this;
+    }
+
+    /**
+     * Get ownedBy
+     *
+     * @return integer
+     */
+    public function getOwnedBy()
+    {
+        return $this->owned_by;
     }
 
     /**
@@ -669,6 +786,22 @@ class PatchPanelPort
     public function getPatchPanelPortHistory()
     {
         return $this->patchPanelPortHistory;
+    }
+
+    /**
+     * Get patchPanelPortHistory
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatchPanelPortHistoryMaster()
+    {
+        $array = [];
+        foreach ($this->patchPanelPortHistory as $history){
+            if($history->getDuplexMasterPort() == null){
+                $array[] = $history;
+            }
+        }
+        return $array;
     }
 
     /**
@@ -928,6 +1061,24 @@ class PatchPanelPort
         return self::$STATES[ $this->getState() ] ?? 'Unknown';
     }
 
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$CHARGEABLES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveChargeable(): string {
+        return self::$CHARGEABLES[ $this->getChargeable() ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveOwnedBy(): string {
+        return self::$OWNED_BY[ $this->getOwnedBy() ] ?? 'Unknown';
+    }
+
     public function getCustomerForASwitchPort(){
         $customer = null;
         $physicalInterface = $this->getPhysicalInterface();
@@ -952,6 +1103,24 @@ class PatchPanelPort
         return $this->getDuplexMasterPort() !== null || count( $this->getDuplexSlavePorts() ) > 0;
     }
 
+    /**
+     * Is this port has files
+     *
+     * @return bool
+     */
+    public function hasFiles(): bool {
+        return count( $this->getPatchPanelPortFiles() ) > 0;
+    }
+
+    /**
+     * Is this port has public files
+     *
+     * @return bool
+     */
+    public function hasPublicFiles(): bool {
+        return count( $this->getPatchPanelPortPublicFiles() ) > 0;
+    }
+
 
     /**
      * Reset the data of a patch panel port after ceased
@@ -964,6 +1133,7 @@ class PatchPanelPort
         $this->setColoCircuitRef('');
         $this->setTicketRef('');
         $this->setNotes(null);
+        $this->setPrivateNotes(null);
         $this->setAssignedAt(null);
         $this->setConnectedAt(null);
         $this->setCeaseRequestedAt(null);
@@ -983,53 +1153,20 @@ class PatchPanelPort
     }
 
     /**
-     * Create a patch panel port history after ceased
-     * Duplicate all the datas of the current patch panel post in the history table
+     * Create a patch panel port history and patch panel port file history after ceased
+     * Duplicate all the datas of the current patch panel port in the history table
      * and reset the patch panel port when it has been duplicated
      *
      * @author     Yann Robin <yann@islandbridgenetworks.ie>
      * @return string
      */
     public function createHistory(){
-        $pppHistory = new PatchPanelPortHistory();
-
-        $pppHistory->setPatchPanelPort($this);
-        $pppHistory->setNumber($this->getNumber());
-        $pppHistory->setState($this->getState());
-        $pppHistory->setColoCircuitRef($this->getColoCircuitRef());
-        $pppHistory->setTicketRef($this->getTicketRef());
-        $pppHistory->setNotes($this->getNotes());
-        $pppHistory->setAssignedAt($this->getAssignedAt());
-        $pppHistory->setConnectedAt($this->getConnectedAt());
-        $pppHistory->setCeaseRequestedAt($this->getCeaseRequestedAt());
-        $pppHistory->setCeasedAt($this->getCeasedAt());
-        $pppHistory->setInternalUse($this->getInternalUse());
-        $pppHistory->setChargeable($this->getChargeable());
-        $pppHistory->setCustomer($this->getCustomerName());
-        $pppHistory->setSwitchport($this->getSwitchName().' / '.$this->getSwitchPortName());
-
-        $this->addPatchPanelPortHistory($pppHistory);
-
-        D2EM::persist($pppHistory);
-        D2EM::flush();
-
-        if($this->hasSlavePort()){
-            $slavePortHistory = clone $pppHistory;
-            $slavePortHistory->setDuplexMasterPort($pppHistory);
-            D2EM::persist($slavePortHistory);
-        }
-
-
-        if($this->hasSlavePort()){
-            $slavePort = $this->getDuplexSlavePort();
-            $slavePort->resetPatchPanelPort();
+        $PPPHistory = PatchPanelPortHistory::createHistory($this);
+        if($this->hasFiles()){
+            PatchPanelPortHistoryFile::createHistory($this,$PPPHistory);
         }
         $this->resetPatchPanelPort();
-
-        D2EM::flush();
     }
-
-
 
     /**
      * Add patchPanelPortFile
@@ -1055,80 +1192,30 @@ class PatchPanelPort
     }
 
     /**
-     * Get patchPanelPortFile
+     * Get patchPanelPortFiles
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getPatchPanelPortFile()
+    public function getPatchPanelPortFiles()
     {
         return $this->patchPanelPortFiles;
     }
-/**
- * @var string
- */
-private $private_notes;
 
-/**
- * @var integer
- */
-private $owned_by = '0';
+    /**
+     * Get patchPanelPortFiles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatchPanelPortPublicFiles()
+    {
+        $array = [];
+        foreach($this->patchPanelPortFiles as $file){
+            if(!$file->getIsPrivate()){
+                $array[] = $file;
+            }
 
+        }
 
-/**
- * Set privateNotes
- *
- * @param string $privateNotes
- *
- * @return PatchPanelPort
- */
-public function setPrivateNotes($privateNotes)
-{
-$this->private_notes = $privateNotes;
-
-return $this;
-}
-
-/**
- * Get privateNotes
- *
- * @return string
- */
-public function getPrivateNotes()
-{
-return $this->private_notes;
-}
-
-/**
- * Set ownedBy
- *
- * @param integer $ownedBy
- *
- * @return PatchPanelPort
- */
-public function setOwnedBy($ownedBy)
-{
-$this->owned_by = $ownedBy;
-
-return $this;
-}
-
-/**
- * Get ownedBy
- *
- * @return integer
- */
-public function getOwnedBy()
-{
-return $this->owned_by;
-}
-
-/**
- * Get patchPanelPortFiles
- *
- * @return \Doctrine\Common\Collections\Collection
- */
-public function getPatchPanelPortFiles()
-{
-return $this->patchPanelPortFiles;
-}
+        return $array;
+    }
 }

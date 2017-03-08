@@ -39,7 +39,7 @@
                             <?php if($pppHistory->hasSlavePort()): ?>
                                 <tr>
                                     <td><b>Duplex Port :</b></td>
-                                    <td><?= $pppHistory->getDuplexSlavePort()->getId() ?></td>
+                                    <td><?= $pppHistory->getDuplexSlavePort()->getNumber() ?></td>
                                 </tr>
                             <?php endif; ?>
                             <tr>
@@ -84,15 +84,29 @@
                             </tr>
                             <tr>
                                 <td><b>Chargeable :</b></td>
-                                <td><?= $pppHistory->getChargeableText() ?></td>
+                                <td><?= $pppHistory->resolveChargeable() ?></td>
                             </tr>
                             <tr>
-                                <td><b>Note :</b></td>
-                                <td><?= nl2br($pppHistory->getNotes()) ?></td>
+                                <td><b>Owned By :</b></td>
+                                <td><?= $pppHistory->resolveOwnedBy() ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Public Notes :</b></td>
+                                <td><?= $pppHistory->getNotesParseDown() ?></td>
+                            </tr>
+                            <tr>
+                                <td><b>Private Notes :</b></td>
+                                <td><?= $pppHistory->getPrivateNotesParseDown() ?></td>
                             </tr>
                         </table>
+                        <?php foreach ($pppHistory->getPatchPanelPortHistoryFile() as $file): ?>
+                            <?= $file->getName() ?>
+                        <?php endforeach; ?>
                     </div>
+
                 <?php endforeach; ?>
+
+
             </div>
         </div>
     </div>

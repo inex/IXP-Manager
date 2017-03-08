@@ -54,7 +54,9 @@ class FoilServiceProvider extends ServiceProvider
                         $controller = null;
                     }
 
-                    $view->with('controller' , $controller)->with('action',$action);
+                    $switched_user_from = (isset($_SESSION['Application']['switched_user_from']))? true : false;
+
+                    $view->with('controller' , $controller)->with('action',$action)->with('switched_user_from', $switched_user_from);
 
                 });
                 // we have a few rendering functions we want to include here:

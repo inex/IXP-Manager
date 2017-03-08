@@ -53,11 +53,11 @@ class StorePatchPanelPort extends FormRequest
             'number'                => $required.'|string|max:255',
             'patch_panel'           => $required,
             'state'                 => 'required|integer',
-            'assigned_at'           => 'date',
-            'connected_at'          => 'date',
-            'ceased_requested_at'   => 'date',
-            'ceased_at'             => 'date',
-            'last_state_change_at'  => 'date',
+            'assigned_at'           => 'nullable|date',
+            'connected_at'          => 'nullable|date',
+            'ceased_requested_at'   => 'nullable|date',
+            'ceased_at'             => 'nullable|date',
+            'last_state_change_at'  => 'nullable|date',
         ];
     }
 }

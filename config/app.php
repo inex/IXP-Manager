@@ -92,7 +92,7 @@ return [
 
     'key' => env('APP_KEY', 'SomeRandomString'),
 
-    'cipher' => 'AES-256-CBC',
+    'cipher' => 'AES-128-CBC',
 
     /*
     |--------------------------------------------------------------------------
@@ -175,7 +175,11 @@ return [
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
         Former\FormerServiceProvider::class,
+
+        GrahamCampbell\Flysystem\FlysystemServiceProvider::class,
     ],
 
     /*
@@ -234,6 +238,8 @@ return [
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
         'Former' => 'Former\Facades\Former',
+        'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem',
+
     ],
 
 ];

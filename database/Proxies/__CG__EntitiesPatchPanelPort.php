@@ -64,10 +64,10 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'number', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'state', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'colo_circuit_ref', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'ticket_ref', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'notes', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'assigned_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'connected_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'cease_requested_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'ceased_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'last_state_change', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'internal_use', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'switchPort', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanelPortHistory', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanel', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'customer', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'duplexSlavePorts', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'duplexMasterPort', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanelPortFiles'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'number', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'state', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'colo_circuit_ref', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'ticket_ref', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'notes', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'assigned_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'connected_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'cease_requested_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'ceased_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'last_state_change', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'internal_use', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'switchPort', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanelPortHistory', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanel', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'customer', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'duplexSlavePorts', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'duplexMasterPort', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanelPortFiles', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'private_notes', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'owned_by'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'number', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'state', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'colo_circuit_ref', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'ticket_ref', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'notes', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'assigned_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'connected_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'cease_requested_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'ceased_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'last_state_change', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'internal_use', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'switchPort', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanelPortHistory', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanel', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'customer', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'duplexSlavePorts', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'duplexMasterPort', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanelPortFiles'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'number', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'state', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'colo_circuit_ref', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'ticket_ref', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'notes', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'assigned_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'connected_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'cease_requested_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'ceased_at', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'last_state_change', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'internal_use', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'switchPort', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanelPortHistory', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanel', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'customer', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'duplexSlavePorts', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'duplexMasterPort', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'patchPanelPortFiles', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'private_notes', '' . "\0" . 'Entities\\PatchPanelPort' . "\0" . 'owned_by'];
     }
 
     /**
@@ -308,6 +308,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getNotesParseDown()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotesParseDown', []);
+
+        return parent::getNotesParseDown();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setAssignedAt($assignedAt)
     {
 
@@ -539,23 +550,67 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getChargeableInt()
+    public function getChargeableDefaultNo()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeableInt', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeableDefaultNo', []);
 
-        return parent::getChargeableInt();
+        return parent::getChargeableDefaultNo();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getChargeableText()
+    public function setPrivateNotes($privateNotes)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeableText', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPrivateNotes', [$privateNotes]);
 
-        return parent::getChargeableText();
+        return parent::setPrivateNotes($privateNotes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPrivateNotes()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrivateNotes', []);
+
+        return parent::getPrivateNotes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPrivateNotesParseDown()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrivateNotesParseDown', []);
+
+        return parent::getPrivateNotesParseDown();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setOwnedBy($ownedBy)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOwnedBy', [$ownedBy]);
+
+        return parent::setOwnedBy($ownedBy);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOwnedBy()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOwnedBy', []);
+
+        return parent::getOwnedBy();
     }
 
     /**
@@ -681,6 +736,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPortHistory', []);
 
         return parent::getPatchPanelPortHistory();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPatchPanelPortHistoryMaster()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPortHistoryMaster', []);
+
+        return parent::getPatchPanelPortHistoryMaster();
     }
 
     /**
@@ -917,6 +983,28 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function resolveChargeable(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveChargeable', []);
+
+        return parent::resolveChargeable();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveOwnedBy(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveOwnedBy', []);
+
+        return parent::resolveOwnedBy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCustomerForASwitchPort()
     {
 
@@ -934,6 +1022,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isDuplexPort', []);
 
         return parent::isDuplexPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasFiles(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasFiles', []);
+
+        return parent::hasFiles();
     }
 
     /**
@@ -983,12 +1082,12 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getPatchPanelPortFile()
+    public function getPatchPanelPortFiles()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPortFile', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPortFiles', []);
 
-        return parent::getPatchPanelPortFile();
+        return parent::getPatchPanelPortFiles();
     }
 
 }

@@ -1,51 +1,64 @@
-<table class="table">
-    <thead>
-        <th>Name</th>
-        <th>Colocation Circuit Ref</th>
-        <th>Ticket Ref</th>
-        <th>State</th>
-        <th>Assigned At</th>
-        <th>Chargeable</th>
-    </thead>
-    <tbody>
-        {foreach $crossConnects as $patchPanelPort}
-        <tr>
-            <td>
-                {$patchPanelPort->getPatchPanel()->getName()}
-                <a href="{genUrl controller="patch-panel-port" action="list" patch-panel=$patchPanelPort->getPatchPanel()->getId()}">
-                     {$patchPanelPort->getName()}
-                </a>
-            </td>
-            <td>
-                {$patchPanelPort->getColoCircuitRef()}
-            </td>
-            <td>
-                {$patchPanelPort->getTicketRef()}
-            </td>
-            <td>
-                {if $patchPanelPort->isAvailableForUse()}
-                    {assign "class" "success"}
-                {elseif $patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT}
-                    {assign "class" "warning"}
-                {elseif $patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED}
-                    {assign "class" "danger"}
-                {else}
-                    {assign "class" "info"}
-                {/if}
+{if count($crossConnects) > 0}
+    <table class="table">
+        <thead>
+            <th>Name</th>
+            <th>Colocation Circuit Ref</th>
+            {if $isSuperUser}
+                <th>Ticket Ref</th>
+            {/if}
+            <th>State</th>
+            <th>Assigned At</th>
+            <th>Chargeable</th>
+            <th>Owned By</th>
+        </thead>
+        <tbody>
+            {foreach $crossConnects as $patchPanelPort}
+                <tr>
+                    <td>
+
+                        <a href="{genUrl controller="patch-panel-port" view=$patchPanelPort->getId()}">
+                            {$patchPanelPort->getPatchPanel()->getName()}
+                            {$patchPanelPort->getName()}
+                        </a>
+                    </td>
+                    <td>
+                        {$patchPanelPort->getColoCircuitRef()}
+                    </td>
+                    {if $isSuperUser}
+                        <td>
+                            {$patchPanelPort->getTicketRef()}
+                        </td>
+                    {/if}
+                    <td>
+                        {if $patchPanelPort->isAvailableForUse()}
+                            {assign "class" "success"}
+                        {elseif $patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT}
+                            {assign "class" "warning"}
+                        {elseif $patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED}
+                            {assign "class" "danger"}
+                        {else}
+                            {assign "class" "info"}
+                        {/if}
 
 
-                <span title="" class="label label-{$class}">
-                    {$patchPanelPort->resolveStates()}
-                </span>
+                        <span title="" class="label label-{$class}">
+                            {$patchPanelPort->resolveStates()}
+                        </span>
 
-            </td>
-            <td>
-                {$patchPanelPort->getAssignedAtFormated()}
-            </td>
-            <td>
-                {$patchPanelPort->getChargeableText()}
-            </td>
-        </tr>
-        {/foreach}
-    </tbody>
-</table>
+                    </td>
+                    <td>
+                        {$patchPanelPort->getAssignedAtFormated()}
+                    </td>
+                    <td>
+                        {$patchPanelPort->resolveChargeable()}
+                    </td>
+                    <td>
+                        {$patchPanelPort->resolveOwnedBy()}
+                    </td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+{else}
+    No Patch Panel available
+{/if}
