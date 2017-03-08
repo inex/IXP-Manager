@@ -17,10 +17,10 @@
             <a href="<?= url('/static/port-security' ) ?>">Port Security Policies</a>
         </li>
         <li>
-            <a href="<?= url('/static/as112' ) ?>">AS112 Service</a>
+            <a href="https://www.inex.ie/technical/as112-service/" target="_blank">AS112 Service</a>
         </li>
         <li>
-            <a href="<?= url('/static/route-servers' ) ?>">Route Servers</a>
+            <a href="https://www.inex.ie/technical/route-servers/" target="_blank">Route Servers</a>
         </li>
         
         <li class="divider"></li>

@@ -43,7 +43,7 @@
 # Dell FTOS S4810:		Q-BRIDGE-MIB. Uses separate Port-Channel interface.
 # Extreme BD-8806, X series:	BRIDGE-MIB.  Requires dot1dTpFdbAddress support.
 #
-# Broken stuff which causes headwreck:
+# Stuff which is supported but causes headwreck:
 # Cisco Anything:		BRIDGE-MIB.  Per vlan support implemented with community@vlan,
 #				argh.  Documented in Cisco Document ID 44800: "Using SNMP to Find a
 #				Port Number from a MAC Address on a Catalyst Switch"
@@ -53,6 +53,8 @@
 #				Juniper KB20833 "How to find which MAC address (default VLAN) is
 #				learnt from which interface via SNMP".  Requires jnxExVlanTag
 #				support.
+# Juniper ELS Images:		these images run on QFX and some EX platforms, and use the largely
+# 				undocumented Juniper-specific L2ALD MIB. Headwreck level 11.
 
 use strict;
 use Net_SNMP_util;
@@ -68,6 +70,7 @@ my $debug = 0;
 my $do_nothing = 0;
 my $qbridge_support = 1;
 my $vlan;
+my $vlanid;
 my $debug_output;
 
 my ($query, $sth, $l2mapping);
@@ -77,12 +80,47 @@ GetOptions(
 	'do-nothing!'		=> \$do_nothing,
 	'qbridge-support!'	=> \$qbridge_support,
 	'vlan=i'		=> \$vlan,
+	'vlanid=i'		=> \$vlanid,
 );
 
-$query = "SELECT name, snmppasswd FROM switch WHERE active AND switchtype = ?";
+if (defined $vlanid) {
+	# precedence given to vlanid, if provided
 
-($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
-$sth->execute(SWITCHTYPE_SWITCH) or die "$dbh->errstr\n";
+	# First retrieve VLAN tag number, which is used for querying the
+	# switches using snmp
+	$query = "SELECT number FROM vlan WHERE id=?";
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute($vlanid) or die "$dbh->errstr\n";
+	my $vlans = $sth->fetchrow_hashref();
+	if (defined ($vlans->{number}) && $vlans->{number} =~ /^\d+$/) {
+		$vlan = $vlans->{number};
+	} else {
+		print STDERR "ERROR: invalid vlanid specified.\n";
+		exit 1;
+	}
+
+	# then retrieve a list of relevant switches
+	$query = "SELECT sw.name, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.id = ?";
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute($vlanid) or die "$dbh->errstr\n";
+
+} elsif (defined $vlan) {
+	# if vlanid isn't available, we check for the VLAN tag.  The same
+	# vlan tag may be used on multiple different infrastructure at an
+	# IXP, so this is not recommended.
+
+	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
+	$query = "SELECT sw.name, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.number = ?";
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute($vlan) or die "$dbh->errstr\n";
+} else {
+	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
+	# otherwise query all switches for legacy behaviour
+	$query = "SELECT name, snmppasswd FROM switch WHERE active AND switchtype = ?";
+	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
+	$sth->execute(SWITCHTYPE_SWITCH) or die "$dbh->errstr\n";
+}
+
 my $switches = $sth->fetchall_hashref('name');
 
 foreach my $switch (keys %{$switches}) {
@@ -109,10 +147,16 @@ $query = "INSERT INTO macaddress (id, firstseen, virtualinterfaceid, mac) VALUES
 ($insertsth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 
 $do_nothing or $dbh->do('START TRANSACTION') or die $dbh->errstr;
-$do_nothing or $dbh->do('DELETE FROM macaddress') or die $dbh->errstr;
+if (defined ($vlanid)) {
+	# delete all MAC addresses which reference this vlanid
+	$query = "DELETE macaddress FROM macaddress INNER JOIN (view_vlaninterface_details_by_custid vi) ON (macaddress.virtualinterfaceid = vi.virtualinterfaceid AND vi.vlanid = ?)";
+	$do_nothing or $dbh->do($query, undef, $vlanid) or die "$dbh->errstr\n";
+} else {
+	$do_nothing or $dbh->do('DELETE FROM macaddress') or die $dbh->errstr;
+}
 
+$debug && print STDERR "\n";
 foreach my $switch (keys %{$ports}) {
-	$debug && print STDERR "\n";
 	foreach my $port (keys %{$ports->{$switch}}) {
 		foreach my $mac (@{$l2mapping->{$switch}->{$port}}) {
 			$debug && print STDERR "INSERT: $mac -> $switch:$port\n";
@@ -128,6 +172,7 @@ foreach my $switch (keys %{$ports}) {
                 }
 	}
 }
+$debug && print STDERR "\n";
 
 $do_nothing or $dbh->do('COMMIT') or die $dbh->errstr;
 
@@ -179,7 +224,7 @@ sub oid2mac {
 
 sub trawl_switch_snmp ($$) {
 	my ($host, $snmpcommunity, $vlan) = @_;
-	my ($dbridgehash, $qbridgehash, $macaddr, $junipermapping, $vlanmapping);
+	my ($dbridgehash, $qbridgehash, $macaddr, $juniperexmapping, $vlanmapping);
 	my $oids = {
 		'sysDescr'		=> '.1.3.6.1.2.1.1.1',
 		'ifDescr'		=> '.1.3.6.1.2.1.2.2.1.2',
@@ -189,6 +234,8 @@ sub trawl_switch_snmp ($$) {
 		'dot1dTpFdbPort'	=> '.1.3.6.1.2.1.17.4.3.1.2',
 		'dot1dTpFdbAddress'	=> '.1.3.6.1.2.1.17.4.3.1.1',
 		'jnxExVlanTag'		=> '.1.3.6.1.4.1.2636.3.40.1.5.1.5.1.5',
+		'jnxL2aldVlanTag'	=> '.1.3.6.1.4.1.2636.3.48.1.3.1.1.3',
+		'jnxL2aldVlanFdbId'	=> '.1.3.6.1.4.1.2636.3.48.1.3.1.1.5',
 	};
 
 	$debug && print STDERR "DEBUG: $host: started query process\n";
@@ -220,10 +267,25 @@ sub trawl_switch_snmp ($$) {
 	# if jnxExVlanTag returns something, then this is a juniper and we need to
 	# handle the interface mapping separately on these boxes
 	if ($vlanmapping) {
-		$junipermapping = 1;
+		$juniperexmapping = 1;
 		$debug && print STDERR "DEBUG: $host: looks like this is a Juniper EX\n";
 	} else {
 		$debug && print STDERR "DEBUG: $host: this isn't a Juniper EX\n";
+	}
+
+	if (!$vlanmapping) {
+		my $jnxL2aldvlantag = snmpwalk2hash($host, $snmpcommunity, $oids->{jnxL2aldVlanTag});
+		if ($jnxL2aldvlantag) {
+			$debug && print STDERR "DEBUG: $host: looks like this is a Juniper running an ELS image\n";
+			my $jnxL2aldvlanid = snmpwalk2hash($host, $snmpcommunity, $oids->{jnxL2aldVlanFdbId}, sub { return $jnxL2aldvlantag->{$_[0]} }, undef );
+			$vlanmapping = {reverse %{$jnxL2aldvlanid}};
+			if (!$vlanmapping) {
+				print STDERR "WARNING: $host: Juniper ELS image detected but VLAN mapping retrieval failed. Not processing $host further.\n";
+				return;
+			}
+		} else {
+			$debug && print STDERR "DEBUG: $host: this isn't a Juniper running an ELS image\n";
+		}
 	}
 
 	# attempt to use Q-BRIDGE-MIB.
@@ -264,7 +326,7 @@ sub trawl_switch_snmp ($$) {
 
 	# special case: when the vlan is not specified, juniper EX boxes
 	# return data on Q-BRIDGE-MIB rather than BRIDGE-MIB
-	if (!$vlan && $junipermapping) {
+	if (!$vlan && $juniperexmapping) {
 		$debug && print STDERR "DEBUG: $host: attempting special Juniper EX Q-BRIDGE-MIB query for unspecified vlan\n";
 		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1qTpFdbPort}, \&oid2mac, undef);
 		if ($debug) {
@@ -278,7 +340,7 @@ sub trawl_switch_snmp ($$) {
 
 	# if vlan wasn't specified or there's nothing coming in from the
 	# Q-BRIDGE mib, then use rfc1493 BRIDGE-MIB.
-	if (($vlan && !$qbridgehash) || (!$vlan && !$junipermapping)) {
+	if (($vlan && !$qbridgehash) || (!$vlan && !$juniperexmapping)) {
 		$debug && print STDERR "DEBUG: $host: attempting BRIDGE-MIB ($oids->{dot1dTpFdbPort})\n";
 		$dbridgehash = snmpwalk2hash($host, $snmpcommunity, $oids->{dot1dTpFdbPort});
 		$dbridgehash && $debug && print STDERR "DEBUG: $host: BRIDGE-MIB query successful\n";
@@ -304,7 +366,7 @@ sub trawl_switch_snmp ($$) {
 	foreach my $entry (keys %{$maptable}) {
 		if (defined($ifindex->{$interfaces->{$bridgehash->{$entry}}})) {
 			my $int = $ifindex->{$interfaces->{$bridgehash->{$entry}}};
-			if ($junipermapping && $int =~ /\.\d+$/) {
+			if ($juniperexmapping && $int =~ /\.\d+$/) {
 				$int =~ s/(\.\d+)$//;
 			}
 			if ($dbridgehash) {

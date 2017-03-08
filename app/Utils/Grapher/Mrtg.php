@@ -98,6 +98,12 @@ class Mrtg
             'options' => 'growright',
             'name'    => 'Discards'
         ],
+        Graph::CATEGORY_BROADCASTS  => [
+            'in'      => 'oidInBroadcasts',
+            'out'     => 'oidOutBroadcasts',
+            'options' => 'growright',
+            'name'    => 'Broadcasts'
+        ],
     ];
 
     /**

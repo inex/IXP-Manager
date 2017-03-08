@@ -15,7 +15,11 @@ define command{
         command_line    <?= config( 'ixp_api.nagios.birdseye_check' ) ?> -a $ARG1$
 }
 
-<?php foreach( $t->routers as $n => $d ): ?>
+<?php foreach( $t->routers as $n => $d ):
+    if( !$d->hasApi() ):
+        continue;
+    endif;
+?>
 
 define host     {
         use                     <?= config( 'ixp_api.nagios.infra_host' ) . "\n" ?>
@@ -34,15 +38,14 @@ define hostgroup {
     members                 <?php echo $t->softwrap( $hosts, 3, ', ', ', \\', 28 ) . "\n" ?>
 }
 
-define service     {
-    use                     <?= config( 'ixp_api.nagios.infra_service' ) . "\n" ?>
-    hostgroup_name          <?= $hg_name . "\n" ?>
-    service_description     Bird BGP Service
-    check_command           <?= $cmd_name ?>!<?= $d->api() . "\n" ?>
-}
+<?php foreach( $t->routers as $n => $d ): 
+
+    if( !$d->hasApi() ):
+        continue;
+    endif;
+?>
 
 
-<?php foreach( $t->routers as $n => $d ): ?>
 
 define service     {
     use                     <?= config( 'ixp_api.nagios.infra_service' ) . "\n" ?>

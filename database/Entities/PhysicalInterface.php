@@ -69,12 +69,12 @@ class PhysicalInterface
     protected $id;
 
     /**
-     * @var Entities\SwitchPort
+     * @var \Entities\SwitchPort
      */
     protected $SwitchPort;
 
     /**
-     * @var Entities\VirtualInterface
+     * @var \Entities\VirtualInterface
      */
     protected $VirtualInterface;
 
@@ -228,7 +228,7 @@ class PhysicalInterface
     /**
      * Set SwitchPort
      *
-     * @param Entities\SwitchPort $switchPort
+     * @param \Entities\SwitchPort $switchPort
      * @return PhysicalInterface
      */
     public function setSwitchPort(\Entities\SwitchPort $switchPort = null)
@@ -241,7 +241,7 @@ class PhysicalInterface
     /**
      * Get SwitchPort
      *
-     * @return Entities\SwitchPort
+     * @return \Entities\SwitchPort
      */
     public function getSwitchPort()
     {
@@ -251,7 +251,7 @@ class PhysicalInterface
     /**
      * Set VirtualInterface
      *
-     * @param Entities\VirtualInterface $virtualInterface
+     * @param \Entities\VirtualInterface $virtualInterface
      * @return PhysicalInterface
      */
     public function setVirtualInterface(\Entities\VirtualInterface $virtualInterface = null)
@@ -264,7 +264,7 @@ class PhysicalInterface
     /**
      * Get VirtualInterface
      *
-     * @return Entities\VirtualInterface
+     * @return \Entities\VirtualInterface
      */
     public function getVirtualInterface()
     {

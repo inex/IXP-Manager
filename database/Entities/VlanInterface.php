@@ -105,22 +105,22 @@ class VlanInterface
     protected $id;
 
     /**
-     * @var Entities\IPv4Address
+     * @var \Entities\IPv4Address
      */
     protected $IPv4Address;
 
     /**
-     * @var Entities\IPv6Address
+     * @var \Entities\IPv6Address
      */
     protected $IPv6Address;
 
     /**
-     * @var Entities\VirtualInterface
+     * @var \Entities\VirtualInterface
      */
     protected $VirtualInterface;
 
     /**
-     * @var Entities\Vlan
+     * @var \Entities\Vlan
      */
     protected $Vlan;
 
@@ -552,7 +552,7 @@ class VlanInterface
     /**
      * Set IPv4Address
      *
-     * @param Entities\IPv4Address $iPv4Address
+     * @param \Entities\IPv4Address $iPv4Address
      * @return VlanInterface
      */
     public function setIPv4Address(\Entities\IPv4Address $iPv4Address = null)
@@ -565,7 +565,7 @@ class VlanInterface
     /**
      * Get IPv4Address
      *
-     * @return Entities\IPv4Address 
+     * @return \Entities\IPv4Address
      */
     public function getIPv4Address()
     {
@@ -575,7 +575,7 @@ class VlanInterface
     /**
      * Set IPv6Address
      *
-     * @param Entities\IPv6Address $iPv6Address
+     * @param \Entities\IPv6Address $iPv6Address
      * @return VlanInterface
      */
     public function setIPv6Address(\Entities\IPv6Address $iPv6Address = null)
@@ -588,7 +588,7 @@ class VlanInterface
     /**
      * Get IPv6Address
      *
-     * @return Entities\IPv6Address 
+     * @return \Entities\IPv6Address
      */
     public function getIPv6Address()
     {
@@ -598,7 +598,7 @@ class VlanInterface
     /**
      * Set VirtualInterface
      *
-     * @param Entities\VirtualInterface $virtualInterface
+     * @param \Entities\VirtualInterface $virtualInterface
      * @return VlanInterface
      */
     public function setVirtualInterface(\Entities\VirtualInterface $virtualInterface = null)
@@ -611,7 +611,7 @@ class VlanInterface
     /**
      * Get VirtualInterface
      *
-     * @return Entities\VirtualInterface 
+     * @return \Entities\VirtualInterface
      */
     public function getVirtualInterface()
     {
@@ -621,7 +621,7 @@ class VlanInterface
     /**
      * Set Vlan
      *
-     * @param Entities\Vlan $vlan
+     * @param \Entities\Vlan $vlan
      * @return VlanInterface
      */
     public function setVlan(\Entities\Vlan $vlan = null)
@@ -634,7 +634,7 @@ class VlanInterface
     /**
      * Get Vlan
      *
-     * @return Entities\Vlan 
+     * @return \Entities\Vlan
      */
     public function getVlan()
     {

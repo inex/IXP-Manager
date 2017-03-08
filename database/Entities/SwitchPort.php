@@ -92,12 +92,12 @@ class SwitchPort
     protected $id;
 
     /**
-     * @var Entities\PhysicalInterface
+     * @var \Entities\PhysicalInterface
      */
     protected $PhysicalInterface;
 
     /**
-     * @var Entities\Switcher
+     * @var \Entities\Switcher
      */
     protected $Switcher;
 
@@ -221,7 +221,7 @@ class SwitchPort
     /**
      * Set PhysicalInterface
      *
-     * @param Entities\PhysicalInterface $physicalInterface
+     * @param \Entities\PhysicalInterface $physicalInterface
      * @return SwitchPort
      */
     public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = null)
@@ -234,7 +234,7 @@ class SwitchPort
     /**
      * Get PhysicalInterface
      *
-     * @return Entities\PhysicalInterface
+     * @return \Entities\PhysicalInterface
      */
     public function getPhysicalInterface()
     {
@@ -244,7 +244,7 @@ class SwitchPort
     /**
      * Set Switcher
      *
-     * @param Entities\Switcher $switcher
+     * @param \Entities\Switcher $switcher
      * @return SwitchPort
      */
     public function setSwitcher(\Entities\Switcher $switcher = null)
@@ -257,7 +257,7 @@ class SwitchPort
     /**
      * Get Switcher
      *
-     * @return Entities\Switcher
+     * @return \Entities\Switcher
      */
     public function getSwitcher()
     {
@@ -900,6 +900,22 @@ class SwitchPort
                 break;
         }
 
+    }
+
+    /**
+     * Get the appropriate OID for in broadcasts
+     * @return string
+     */
+    public function oidInBroadcasts(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_IN_BROADCAST;
+    }
+
+    /**
+     * Get the appropriate OID for out broadcasts
+     * @return string
+     */
+    public function oidOutBroadcasts(): string {
+        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_OUT_BROADCAST;
     }
 
     /**
