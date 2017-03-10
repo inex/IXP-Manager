@@ -39,6 +39,7 @@ use Entities\SwitchPort;
 use Former\Facades\Former;
 
 use IXP\Http\Controllers\Controller;
+use IXP\Http\Requests\EmailPatchPanelPort;
 use IXP\Http\Requests\StorePatchPanelPort;
 
 use Illuminate\Http\Request;
@@ -57,6 +58,9 @@ use Auth;
 use GrahamCampbell\Flysystem\Facades\Flysystem;
 use GrahamCampbell\Flysystem\FlysystemManager;
 use IXP\User;
+
+use Mail;
+use IXP\Mail\PatchPanelPort as PatchPanelPortMail;
 
 /**
  * PatchPanelPort Controller
@@ -364,17 +368,24 @@ class PatchPanelPortController extends Controller
      */
     public function getSwitchForACustomer(Request $request){
         $customer = D2EM::getRepository(Customer::class)->find($request->input('customerId'));
+        $patchPanel = D2EM::getRepository(PatchPanel::class)->find($request->input('patch_panel_id'));
         $success = false;
         $listSwitches = array();
         if($customer != null){
             $virtualInterfaces = $customer->getVirtualInterfaces();
+
             foreach($virtualInterfaces as $vi){
                 $physicalInterfaces = $vi->getPhysicalInterfaces();
                 foreach($physicalInterfaces as $pi){
                     $switchPort = $pi->getSwitchPort();
                     $success = true;
-                    $switches = $switchPort->getSwitcher();
-                    $listSwitches[$switches->getId()] = $switches->getName();
+                    $switch = $switchPort->getSwitcher();
+
+                    if($switch->getCabinet()->getLocation()->getId() == $patchPanel->getCabinet()->getLocation()->getId()){
+                        $listSwitches[$switch->getId()] = $switch->getName();
+                    }
+
+
                 }
             }
         }
@@ -664,8 +675,8 @@ class PatchPanelPortController extends Controller
     /**
      * Allow to make a file private
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     * @params  $request instance of the current HTTP request
-     * @return  JSON customer object
+     * @params  $id id of the Patch panel port file
+     * @return  file
      */
     public function downloadFile(int $id)
     {
@@ -756,7 +767,7 @@ class PatchPanelPortController extends Controller
                     $emailText .= "Colo Reference: ".$patchPanelPort->getColoCircuitRef()."\n";
                     $emailText .= "Patch panel: ".$patchPanelPort->getPatchPanel()->getName()."\n";
                     $emailText .= "Port: ".$patchPanelPort->getName()."\n";
-                    $emailText .= "State: ".$patchPanelPort->resolveState()."\n";
+                    $emailText .= "State: ".$patchPanelPort->resolveStates()."\n";
 
                     if($patchPanelPort->getCeaseRequestedAt()){
                         $emailText .= "Cease requested: ".$patchPanelPort->getCeaseRequestedAtFormated()."\n";
@@ -783,13 +794,12 @@ class PatchPanelPortController extends Controller
             $emailText .= env('IDENTITY_EMAIL');
 
             Former::populate( array('email_to'                  => $email_to.','.$peeringEmail,
-                                    'email_from'                => env('IDENTITY_SUPPORT_EMAIL'),
                                     'email_subject'             => $subject,
                                     'email_text'                => $emailText
             ));
         }
 
-        return view('patch-panel-port/email')->with([
+        return view('patch-panel-port/emailForm')->with([
             'patchPanelPort'            => $patchPanelPort,
             'email_type'                => $type
         ]);
@@ -801,16 +811,114 @@ class PatchPanelPortController extends Controller
      * @params  $request instance of the current HTTP request
      * @return  view
      */
-    public function sendEmail(Request $request) {
+    public function sendEmail(EmailPatchPanelPort $request) {
         if( !( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find( $request->input( 'patch_panel_port_id' ) ) ) ) {
             Log::notice( 'Unknown patch panel port when editing patch panel' );
             abort(404);
         }
 
+        $email_to = $request->input( 'email_to' );
+        $email_from = env('IDENTITY_SUPPORT_EMAIL');
+        $email_cc = $request->input( 'email_cc');
+        $email_bcc = $request->input( 'email_bcc');
+        $email_subject = $request->input( 'email_subject' );
+        $email_text = $request->input( 'email_text' );
 
+        $loaPDF = ($request->input( 'loa' )?true:false);
+
+        dd($patchPanelPort->createLoaPDF());
+
+        $attachFiles = ($request->input( 'email_type' ) == PatchPanelPort::EMAIL_CEASE or $request->input( 'email_type' ) == PatchPanelPort::EMAIL_INFO) ? true : false;
+
+
+        /*$email = Mail::to(explode( ',', $email_to ));
+        $email->send(new PatchPanelPortMail($email_subject,$email_from,$email_text));*/
+
+        Mail::send('patch-panel-port/email', ['email_text' => $email_text], function ($message) use ($loaPDF,$patchPanelPort,$attachFiles,$email_to,$email_cc,$email_bcc)
+        {
+            $message->from(env('IDENTITY_SUPPORT_EMAIL'));
+            $message->to(explode( ',', $email_to ));
+            if($email_cc){
+                $message->cc(explode( ',', $email_cc ));
+            }
+
+            if($email_bcc){
+                $message->bcc(explode( ',', $email_bcc ));
+            }
+
+            if($attachFiles){
+                foreach($patchPanelPort->getPatchPanelPortPublicFiles() as $file){
+                    $path = PatchPanelPortFile::getPathPPPFile($file->getStorageLocation());
+                    $message->attach(storage_path().'/files/'.$path,array(
+                                'as'    => $file->getName(),
+                                'mime'  => $file->getType())
+                    );
+                }
+            }
+
+            if($loaPDF){
+                /////////////////// do stuff
+            }
+        });
 
         return Redirect::to('patch-panel-port/list/patch-panel/'.$patchPanelPort->getPatchPanel()->getId());
 
+    }
+
+
+    /**
+     * Allow to download the Letter of Agency - LoA
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $id int the patch panel port
+     * @return  JSON customer object
+     */
+    public function sendLoadPDF(int $id)
+    {
+        $ppp = false;
+        if($id != null) {
+            if (!($ppp = D2EM::getRepository(PatchPanelPort::class)->find($id))) {
+                abort(404);
+            }
+        }
+
+        if(!Auth::user()->isSuperUser()){
+            if($ppp->getCustomerId() != Auth::user()->getCustomer()->getId()){
+                abort(404);
+            }
+        }
+
+        if($ppp->getState() == PatchPanelPort::STATE_AWAITING_XCONNECT or $ppp->getState() == PatchPanelPort::STATE_CONNECTED){
+            return $ppp->createLoaPDF();
+        }
+        else{
+            abort(404);
+        }
+    }
+
+
+    /**
+     * Allow to access to the Loa with the patch panel port ID and the LoA code
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @params  $id int the patch panel port
+     * @return  JSON customer object
+     */
+    public function verifyLoa(int $id, string $loaCode)
+    {
+        $ppp = false;
+        if($id != null) {
+            if (!($ppp = D2EM::getRepository(PatchPanelPort::class)->find($id))) {
+                abort(404);
+            }
+        }
+
+        if($ppp->getLoaCode() == $loaCode){
+            if($ppp->getState() == PatchPanelPort::STATE_AWAITING_XCONNECT or $ppp->getState() == PatchPanelPort::STATE_CONNECTED){
+                return $ppp->createLoaPDF();
+            }
+        }
+        else{
+            abort(404);
+        }
     }
 
 }

@@ -4,6 +4,7 @@ namespace Entities;
 
 use D2EM;
 Use Parsedown;
+Use Barryvdh\DomPDF\PDF;
 
 /**
  * Entities\PatchPanelPort
@@ -195,6 +196,11 @@ class PatchPanelPort
     private $owned_by = '0';
 
     /**
+     * @var string
+     */
+    private $loa_code;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -273,13 +279,33 @@ class PatchPanelPort
     }
 
     /**
+     * Get css class state
+     *
+     * @return integer
+     */
+    public function getStateCssClass()
+    {
+        if($this->isAvailableForUse()):
+            $class = 'success';
+        elseif($this->getState() == self::STATE_AWAITING_XCONNECT):
+            $class = 'warning';
+        elseif($this->getState() == self::STATE_CONNECTED):
+            $class = 'danger';
+        else:
+            $class = 'info';
+        endif;
+
+        return $class;
+    }
+
+    /**
      * Set colo_circuit_ref
      *
      * @param string $colo_circuit_ref
      *
      * @return PatchPanelPort
      */
-    public function setColoCircuitRef(string $colo_circuit_ref): PatchPanelPort
+    public function setColoCircuitRef($colo_circuit_ref): PatchPanelPort
     {
         $this->colo_circuit_ref = $colo_circuit_ref;
         return $this;
@@ -302,7 +328,7 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function setTicketRef(string $ticket_ref): PatchPanelPort
+    public function setTicketRef($ticket_ref): PatchPanelPort
     {
         $this->ticket_ref = $ticket_ref;
         return $this;
@@ -655,6 +681,30 @@ class PatchPanelPort
     }
 
     /**
+     * Get ownedBy
+     *
+     * @return integer
+     */
+    public function getLoaCode()
+    {
+        return $this->loa_code;
+    }
+
+    /**
+     * Set ownedBy
+     *
+     * @param integer $ownedBy
+     *
+     * @return PatchPanelPort
+     */
+    public function setLoaCode($loa_code)
+    {
+        $this->loa_code = $loa_code;
+
+        return $this;
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -961,6 +1011,7 @@ class PatchPanelPort
     public function setCustomer(\Entities\Customer $customer = null)
     {
         $this->customer = $customer;
+        ($customer != null) ? $this->setLoaCode( str_random(25) ): null;
         return $this;
     }
 
@@ -1217,5 +1268,18 @@ class PatchPanelPort
         }
 
         return $array;
+    }
+
+    public function createLoaPDF(){
+       // $pdf = PDF::loadView('patch-panel-port/loadPDF',['ppp' => $this]);
+        //return $pdf->stream('result.pdf', array('Attachment'=>0));
+
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('patch-panel-port/loaPDF', ['ppp' => $this]);
+        //$pdf->save('/path-to/my_stored_file.pdf');
+
+
+        return  $pdf->stream('download.pdf');
+        //return PDF::loadView('patch-panel-port/loadPDF',['ppp' => $this])->save('/path-to/my_stored_file.pdf')->stream('download.pdf');
     }
 }

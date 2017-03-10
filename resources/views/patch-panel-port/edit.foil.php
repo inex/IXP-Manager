@@ -202,6 +202,11 @@
         ->value($t->patchPanelPort->getSwitchPortId())
     ?>
 
+    <?= Former::hidden('patch_panel_id')
+        ->id('patch_panel_id')
+        ->value($t->patchPanelPort->getPatchPanel()->getId())
+    ?>
+
     <?=Former::actions( Former::primary_submit('Save Changes'),
         Former::default_link('Cancel')->href(url('patch-panel-port/list/patch-panel/'.$t->patchPanelPort->getPatchPanel()->getId())),
         Former::success_button('Help')->id('help-btn')
@@ -348,9 +353,10 @@
                     $("#switch_port").html("");
                     $("#switch_port").trigger("chosen:updated");
                     customerId = $("#customer").val();
+                    patch_panel_id = $("#patch_panel_id").val();
                     $.ajax({
                         url: "<?= url('patch-panel-port/getSwitchForACustomer/')?>",
-                        data: {customerId: customerId},
+                        data: {customerId: customerId,patch_panel_id:patch_panel_id},
                         type: 'GET',
                         dataType: 'JSON',
                         success: function (data) {

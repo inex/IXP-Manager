@@ -15,6 +15,7 @@
     <field name="cease_requested_at" type="date" nullable="true"/>
     <field name="ceased_at" type="date" nullable="true"/>
     <field name="last_state_change" type="date" nullable="true"/>
+    <field name="loa_code" type="string" length="25" nullable="true"/>
     <field name="internal_use" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>

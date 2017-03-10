@@ -180,6 +180,8 @@ return [
         Former\FormerServiceProvider::class,
 
         GrahamCampbell\Flysystem\FlysystemServiceProvider::class,
+
+        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -239,6 +241,8 @@ return [
 
         'Former' => 'Former\Facades\Former',
         'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem',
+
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

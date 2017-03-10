@@ -35,8 +35,9 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'downloadFile/{id}',            'PatchPanelPortController@downloadFile' );
 
     Route::post( 'uploadFile/{id}',              'PatchPanelPortController@uploadFile' );
-    Route::get( 'deleteFile',                    'PatchPanelPortController@deleteFile' );
-    Route::get( 'changePrivateFile',             'PatchPanelPortController@changePrivateFile' );
+
+    Route::get(  'deleteFile',                   'PatchPanelPortController@deleteFile' );
+    Route::get(  'changePrivateFile',            'PatchPanelPortController@changePrivateFile' );
 
     Route::post( 'store',                       'PatchPanelPortController@store' );
     Route::post( 'sendEmail',                   'PatchPanelPortController@sendEmail' );
