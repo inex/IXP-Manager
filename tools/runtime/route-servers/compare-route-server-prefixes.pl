@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 # Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
