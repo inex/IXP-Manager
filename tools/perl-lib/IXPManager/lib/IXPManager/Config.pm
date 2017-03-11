@@ -39,7 +39,7 @@ use vars qw(@ISA @EXPORT_OK @EXPORT $VERSION $AUTOLOAD);
 
 @ISA = ("Config");
 
-$VERSION = '0.24';
+$VERSION = '0.25';
 
 1;
 
@@ -48,6 +48,9 @@ $VERSION = '0.24';
 ## new
 ##  
 sub new {
+	use FindBin qw($Bin);
+	use File::Spec;
+
 	use Config::General;
 
 	my ($type) = shift if @_;
@@ -55,9 +58,18 @@ sub new {
 	my %args = @_;
 	my @tags = qw (configfile debug);
 
+	my @candidates = (
+		File::Spec->catdir( $Bin, File::Spec->updir(), 'etc' ),
+		'/usr/local/etc',
+		'/etc',
+	);
+
+	my $fname = "ixpmanager.conf";
+	my $configfile = ( map { ( -f "$_/$fname" )? "$_/$fname" : () } @candidates )[0];
+
 	my $self = {
 		version		=> $VERSION,
-		configfile	=> '/usr/local/etc/ixpmanager.conf',
+		configfile	=> $configfile,
 		class		=> $class,
 		debug		=> 0,
 	};
@@ -65,6 +77,8 @@ sub new {
 	foreach my $tag (@tags) {
 		$self->{$tag} = $args{$tag} if (defined $args{$tag});
 	}
+
+	die "Cannot find $fname.\n" if (! -f $self->{configfile});
 
 	my $confhdl = new Config::General (
 		-ConfigFile     => $self->{configfile},
