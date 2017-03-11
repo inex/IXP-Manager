@@ -40,6 +40,10 @@ use strict;
 use Data::Dumper;
 use NetAddr::IP qw(:lower Compact);
 
+use FindBin qw($Bin);
+use File::Spec;
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'perl-lib', 'IXPManager', 'lib' );
+
 use IXPManager::Config;
 use IXPManager::Const;
 

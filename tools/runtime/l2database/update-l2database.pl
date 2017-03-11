@@ -61,6 +61,10 @@ use Net_SNMP_util;
 use Getopt::Long;
 use Data::Dumper;
 
+use FindBin qw($Bin);
+use File::Spec;
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'perl-lib', 'IXPManager', 'lib' );
+
 use IXPManager::Config;
 use IXPManager::Const;
 
