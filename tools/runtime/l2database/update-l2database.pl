@@ -242,6 +242,11 @@ sub trawl_switch_snmp ($$) {
 		'jnxL2aldVlanFdbId'	=> '.1.3.6.1.4.1.2636.3.48.1.3.1.1.5',
 	};
 
+	if (!$snmpcommunity) {
+		print STDERR "WARNING: $host: no snmp community string provided. Not processing $host further.\n";
+		return;
+	}
+
 	$debug && print STDERR "DEBUG: $host: started query process\n";
 
 	my $sysdescr = snmpwalk2hash($host, $snmpcommunity, $oids->{sysDescr});
