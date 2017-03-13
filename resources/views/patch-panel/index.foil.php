@@ -26,6 +26,7 @@
 
 
 <?php $this->section('content') ?>
+
     <?php if(session()->has('success')): ?>
         <div class="alert alert-success" role="alert">
             <?= session()->get('success') ?>
@@ -33,9 +34,10 @@
     <?php endif; ?>
     <?php if(session()->has('error')): ?>
         <div class="alert alert-danger" role="alert">
-            <b>Error : </b><?= session()->get('error') ?>
+            <b>Error : </b><?= session()->get('error')['message'] ?>
         </div>
     <?php endif; ?>
+
     <table id='patch-panel-list' class="table">
         <thead>
             <tr>
@@ -115,21 +117,18 @@
                             <a class="btn btn btn-default" href="<?= url('/patch-panel/edit' ).'/'.$patchPanel->getId()?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
 
                             <?php if( $patchPanel->getActive() ): ?>
-                                <a class="btn btn btn-default" id='list-delete-<?= $patchPanel->getId() ?>' href="<?= url( 'patch-panel/changeStatus/' . $patchPanel->getId().'/0') ?>" title="Delete">
+                                <a class="btn btn btn-default" id='list-delete-<?= $patchPanel->getId() ?>' href="<?= url( 'patch-panel/change-status/' . $patchPanel->getId()
+                                        . '/' . ( $patchPanel->getActive() ? '0' : '1' ) ) ?>" title="Make Inactive">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
-                            <?php else:?>
-                                <a class="btn btn btn-default" id='list-reactivate-<?= $patchPanel->getId() ?>' href="<?= url( 'patch-panel/changeStatus/' . $patchPanel->getId().'/1' ) ?>" title="Re-activate">
+                            <?php else: ?>
+                                <a class="btn btn btn-default" id='list-reactivate-<?= $patchPanel->getId() ?>' href="<?= url( 'patch-panel/change-status/' . $patchPanel->getId()
+                                    . '/' . ( $patchPanel->getActive() ? '0' : '1' ) ) ?>" title="Reactive">
                                     <i class="glyphicon glyphicon-repeat"></i>
                                 </a>
                             <?php endif; ?>
 
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                More <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$patchPanel->getId()?>">View / Edit Patch Panel Port</a></li>
-                            </ul>
+                            <a class="btn btn btn-default" href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$patchPanel->getId()?>" title="See Ports"><i class="glyphicon glyphicon-th"></i></a>
                         </div>
                     </td>
                 </tr>
@@ -146,32 +145,6 @@
             $('#patch-panel-list').dataTable( {
                 "autoWidth": false
             } );
-
-            $( 'a[id|="list-delete"]' ).off('click').on( 'click', function( event ){
-
-                event.preventDefault();
-                var url = $(this).attr("href");
-
-                bootbox.confirm({
-                    title: "Delete",
-                    message: "Are you sure you want to delete this object ?",
-                    buttons: {
-                        cancel: {
-                            label: '<i class="fa fa-times"></i> Cancel'
-                        },
-                        confirm: {
-                            label: '<i class="fa fa-check"></i> Confirm'
-                        }
-                    },
-                    callback: function (result) {
-                        if(result){
-                            document.location.href = url;
-                        }
-                    }
-                });
-
-
-            });
         });
     </script>
 <?php $this->append() ?>

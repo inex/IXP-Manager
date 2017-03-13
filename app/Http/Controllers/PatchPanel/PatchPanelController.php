@@ -95,7 +95,7 @@ class PatchPanelController extends Controller
             'name'              => 'required|max:255',
             'colo_reference'    => 'required|max:255',
             'numberOfPorts'     => 'required|between:0,*|integer',
-            'port_prefix'       => 'max:255',
+            'port_prefix'       => 'nullable|string|max:255',
             'installation_date' => 'date'
         ]);
 
@@ -137,7 +137,7 @@ class PatchPanelController extends Controller
         $patchPanel->setInstallationDate(
             ( $request->input( 'installation_date', false ) ? new \DateTime : new \DateTime( $request->input( 'installation_date' ) ) )
         );
-        $patchPanel->setPortPrefix( $request->input( 'port_prefix' ) );
+        $patchPanel->setPortPrefix( $request->input( 'port_prefix' ) ?? '' );
 
         D2EM::persist( $patchPanel );
 
@@ -159,14 +159,16 @@ class PatchPanelController extends Controller
      * @return RedirectResponse
      */
     public function changeStatus( int $id, int $active ): RedirectResponse {
-        $error = array('type' => '', 'message' => '');
 
         if( !( $patchPanel = D2EM::getRepository( PatchPanel::class )->find($id) ) ) {
             abort(404);
         }
-        $status = ($active)? 'active.' : 'inactive.';
+
+        $error  = array('type' => '', 'message' => '');
+        $status = $active ? 'active.' : 'inactive.';
+
         if( $patchPanel->areAllPortsAvailable() ) {
-            $patchPanel->setActive( $active );
+            $patchPanel->setActive( (bool)$active );
             D2EM::persist( $patchPanel );
             D2EM::flush();
 
@@ -177,8 +179,7 @@ class PatchPanelController extends Controller
             $error['message'] = 'To make a patch panel '.$status.', all ports must be available for use.';
         }
 
-
-        return redirect( 'patch-panel/list' )->with( $error['type'], $error['message'] );
+        return redirect( 'patch-panel/list' )->with( [ 'error' => $error ] );
     }
 
     /**

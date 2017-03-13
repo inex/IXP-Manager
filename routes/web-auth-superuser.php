@@ -8,12 +8,12 @@
 
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
-    Route::get( 'list',                       'PatchPanelController@index' )->name('patchPanelIndex');
-    Route::get( 'list/activeOnly/{active}',   'PatchPanelController@index'  );
-    Route::get( 'add',                        'PatchPanelController@edit'   );
-    Route::get( 'edit/{id}',                  'PatchPanelController@edit'   );
-    Route::get( 'view/{id}',                  'PatchPanelController@view'   );
-    Route::get( 'changeStatus/{id}/{active}', 'PatchPanelController@changeStatus' );
+    Route::get( 'list',                        'PatchPanelController@index' )->name('patchPanelIndex');
+    Route::get( 'list/activeOnly/{active}',    'PatchPanelController@index'  );
+    Route::get( 'add',                         'PatchPanelController@edit'   );
+    Route::get( 'edit/{id}',                   'PatchPanelController@edit'   );
+    Route::get( 'view/{id}',                   'PatchPanelController@view'   );
+    Route::get( 'change-status/{id}/{active}', 'PatchPanelController@changeStatus' );
 
     Route::post( 'store',                     'PatchPanelController@store'  );
 });
@@ -34,10 +34,10 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'history/{id}',                 'PatchPanelPortController@history' );
     Route::get( 'downloadFile/{id}',            'PatchPanelPortController@downloadFile' );
 
-    Route::post( 'uploadFile/{id}',              'PatchPanelPortController@uploadFile' );
+    Route::post( 'uploadFile/{id}',             'PatchPanelPortController@uploadFile' );
 
-    Route::get(  'deleteFile',                   'PatchPanelPortController@deleteFile' );
-    Route::get(  'changePrivateFile',            'PatchPanelPortController@changePrivateFile' );
+    Route::get(  'deleteFile',                  'PatchPanelPortController@deleteFile' );
+    Route::get(  'changePrivateFile',           'PatchPanelPortController@changePrivateFile' );
 
     Route::post( 'store',                       'PatchPanelPortController@store' );
     Route::post( 'sendEmail',                   'PatchPanelPortController@sendEmail' );
