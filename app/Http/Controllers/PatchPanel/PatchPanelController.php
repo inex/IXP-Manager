@@ -32,13 +32,16 @@ use Entities\PatchPanel;
 use Former;
 
 use Illuminate\Http\RedirectResponse;
-use Redirect;
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StorePatchPanel;
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 
 use Log;
+
+use Redirect;
 
 
 /**
@@ -172,11 +175,9 @@ class PatchPanelController extends Controller
             D2EM::persist( $patchPanel );
             D2EM::flush();
 
-            $error['type'] = 'success';
-            $error['message'] = 'The patch panel has been marked as '.$status;
+            AlertContainer::push( 'The patch panel has been marked as '.$status, Alert::SUCCESS );
         } else {
-            $error['type'] = 'fail';
-            $error['message'] = 'To make a patch panel '.$status.', all ports must be available for use.';
+            AlertContainer::push( 'To make a patch panel '.$status.', all ports must be available for use.', Alert::WARNING );
         }
 
         return redirect( 'patch-panel/list' )->with( [ 'error' => $error ] );
