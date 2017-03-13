@@ -4,8 +4,9 @@ interfacescust:
   - name: <?= $p['name'] ?>
 
     description: "<?= $p['description'] ?>"
-
     dot1q: <?= $p['dot1q'] ?>
+
+    autoneg: <?= $p['autoneg'] ?>
 
 <?php if( isset( $p['speed'] ) ){     ?>    speed: <?= $p['speed'] . "\n" ?><?php } ?>
 <?php if( isset( $p['lagindex'] ) ){  ?>    lagindex: <?= $p['lagindex'] . "\n" ?><?php } ?>
@@ -22,8 +23,6 @@ interfacescust:
           - "<?= $mac ?>"
 <?php endforeach; ?>
 <?php endforeach; ?>
-
-
-
+    
 <?php endforeach; ?>
 

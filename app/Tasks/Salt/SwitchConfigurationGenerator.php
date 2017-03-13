@@ -144,6 +144,7 @@ class SwitchConfigurationGenerator
             $pi = $vi->getPhysicalInterfaces()[0];
             $p['name']               = $pi->getSwitchport()->getIfName();
             $p['speed']              = $pi->getSpeed();
+            $p['autoneg']            = $pi->getAutoneg() ? 'yes' : 'no';
             return [ $p ];
         }
 
@@ -162,6 +163,7 @@ class SwitchConfigurationGenerator
             }
             $p['name']      = $pi->getSwitchPort()->getIfName();
             $p['lagmaster'] = 'no';
+            $p['autoneg']   = $pi->getAutoneg() ? 'yes' : 'no';
             $p['speed']     = $pi->getSpeed();
             $ports[] = $p;
         }
