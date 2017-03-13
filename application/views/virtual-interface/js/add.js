@@ -29,6 +29,8 @@ $(document).ready(function() {
     $( '#tooltip-trunk' ).tooltip({
         title:	"Indicates if operators / provisioning systems should configure this port with 802.1q framing / tagged packets."
     });
+
+    $( '.phys-int-autoneg-state' ).tooltip();
 });
 
 

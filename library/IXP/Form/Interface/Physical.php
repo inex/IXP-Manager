@@ -80,6 +80,11 @@ class IXP_Form_Interface_Physical extends IXP_Form
             ->setErrorMessages( array( 'Please set the duplex' ) );
         $this->addElement( $duplex );
 
+        $autoneg = $this->createElement( 'checkbox', 'autoneg' );
+        $autoneg->setLabel( 'Auto-Negotiation Enabled' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $autoneg );
+
 
         $monitorindex = $this->createElement( 'text', 'monitorindex' );
         $monitorindex->addValidator( 'int' )

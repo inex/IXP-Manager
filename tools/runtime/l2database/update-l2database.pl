@@ -1,4 +1,4 @@
-#! /usr/bin/env perl
+#!/usr/bin/env perl
 #
 # update-l2database.pl
 #
@@ -60,6 +60,10 @@ use strict;
 use Net_SNMP_util;
 use Getopt::Long;
 use Data::Dumper;
+
+use FindBin qw($Bin);
+use File::Spec;
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'perl-lib', 'IXPManager', 'lib' );
 
 use IXPManager::Config;
 use IXPManager::Const;
@@ -237,6 +241,11 @@ sub trawl_switch_snmp ($$) {
 		'jnxL2aldVlanTag'	=> '.1.3.6.1.4.1.2636.3.48.1.3.1.1.3',
 		'jnxL2aldVlanFdbId'	=> '.1.3.6.1.4.1.2636.3.48.1.3.1.1.5',
 	};
+
+	if (!$snmpcommunity) {
+		print STDERR "WARNING: $host: no snmp community string provided. Not processing $host further.\n";
+		return;
+	}
 
 	$debug && print STDERR "DEBUG: $host: started query process\n";
 

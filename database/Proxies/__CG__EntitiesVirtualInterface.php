@@ -540,4 +540,15 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         return parent::getSflowReceivers();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function speed($connectedOnly = true): int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'speed', [$connectedOnly]);
+
+        return parent::speed($connectedOnly);
+    }
+
 }

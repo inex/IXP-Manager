@@ -64,10 +64,10 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'status', 'speed', 'duplex', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface'];
+            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface'];
         }
 
-        return ['__isInitialized__', 'status', 'speed', 'duplex', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface'];
+        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface'];
     }
 
     /**
@@ -237,6 +237,28 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplex', []);
 
         return parent::getDuplex();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAutoneg(bool $autoneg): \Entities\PhysicalInterface
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAutoneg', [$autoneg]);
+
+        return parent::setAutoneg($autoneg);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAutoneg(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAutoneg', []);
+
+        return parent::getAutoneg();
     }
 
     /**
