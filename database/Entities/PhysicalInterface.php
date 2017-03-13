@@ -264,10 +264,9 @@ class PhysicalInterface
     /**
      * Get VirtualInterface
      *
-     * @return \Entities\VirtualInterface
+     * @return VirtualInterface
      */
-    public function getVirtualInterface()
-    {
+    public function getVirtualInterface() {
         return $this->VirtualInterface;
     }
 

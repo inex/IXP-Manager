@@ -234,10 +234,9 @@ class SwitchPort
     /**
      * Get PhysicalInterface
      *
-     * @return \Entities\PhysicalInterface
+     * @return PhysicalInterface
      */
-    public function getPhysicalInterface()
-    {
+    public function getPhysicalInterface() {
         return $this->PhysicalInterface;
     }
 
