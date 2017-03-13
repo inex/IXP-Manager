@@ -66,6 +66,7 @@ config/contact_group.php
 config/grapher_trunks.php
 config/mailinglists.php
 config/custom.php
+config/lookingglass.php
 
 # barryo local development crud
 application/configs/application.ini.bup
