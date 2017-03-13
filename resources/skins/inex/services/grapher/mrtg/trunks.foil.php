@@ -66,13 +66,13 @@ Title[core-tcydub1-tcydub1-lan1]: Trunk Core - TCYDUB1 Internal - LAN1 - Primary
 
 
 # cwt1 internal link swi1-cwt1-1 -> -2
-Target[core-cwt1-int1-lan1]: #Ethernet53:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+Target[core-cwt1-int1-lan1]: #Ethernet53/1:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
 MaxBytes[core-cwt1-int1-lan1]: 12000000000
 Directory[core-cwt1-int1-lan1]: trunks
 Title[core-cwt1-int1-lan1]: Trunk Core - TCYDUB1 Internal - LAN1 - Primary
 
 # kcp1 internal link swi1-kcp1-1 -> -2
-Target[core-kcp1-int1-lan1]: #Ethernet53:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+Target[core-kcp1-int1-lan1]: #Ethernet53/1:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
 MaxBytes[core-kcp1-int1-lan1]: 12000000000
 Directory[core-kcp1-int1-lan1]: trunks
 Title[core-kcp1-int1-lan1]: Trunk Core - KCP1 Internal - LAN1 - Primary
