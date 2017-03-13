@@ -10,6 +10,17 @@
 
 
 <?php $this->section('content') ?>
+
+<?php if(!$t->allocating): ?>
+    <div class="alert alert-warning" role="alert">
+        <b>Warning!</b>
+        IXP Manager provides context-aware actions for allocating / setting connected / requested ceases / ceasing a patch
+        panel port and these <i>do the right thing</i>. As such, editing a patch panel port manually throught this
+        interface is stringly discouraged unless you know what you are doing.
+    </div>
+<?php endif; ?>
+
+
 <?php if(session()->has('fail')): ?>
     <div class="alert alert-danger" role="alert">
         <b>Error : </b><?= session()->get('fail') ?>
@@ -23,7 +34,7 @@
     ->addClass('col-md-10');
 ?>
 
-    <?php if(!$t->allocated): ?>
+    <?php if(!$t->allocating): ?>
         <?= Former::text('number')
             ->label('Patch Panel Port Name')
             ->help('help text');
@@ -108,7 +119,7 @@
         ->help('help text');
     ?>
 
-    <?php if($t->allocated): ?>
+    <?php if($t->allocating): ?>
         <span id='pi_status_area' style="display: none">
             <?= Former::select('pi_status')
                 ->label('Physical Interface status')
@@ -134,7 +145,7 @@
         ->help('help text');
     ?>
 
-    <?php if(!$t->allocated): ?>
+    <?php if(!$t->allocating): ?>
         <?= Former::date('assigned_at')
             ->label('Assigned At')
             ->append('<button class="btn-default btn" onclick="setToday(\'assigned_at\')" type="button">Today</button>')
@@ -194,7 +205,7 @@
     ?>
 
     <?= Former::hidden('allocated')
-        ->value($t->allocated)
+        ->value($t->allocating)
     ?>
 
     <?= Former::hidden('switch_port_id')
@@ -271,7 +282,7 @@
 
             $("#switch_port").change(function(){
                 setCustomer();
-                <?php if($t->allocated): ?>
+                <?php if($t->allocating): ?>
                     if($("#switch_port").val() != ''){
                         switchPortId = $("#switch_port").val();
                         $.ajax({

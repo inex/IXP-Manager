@@ -21,57 +21,56 @@
 
     <?= Former::text( 'name' )
             ->label( 'Patch Panel Name' )
-            ->help('help text');
+            ->help("The name / reference for the patch panel. Using the co-location provider's reference is probably the sanest / least confusing option.");
     ?>
 
     <?= Former::text( 'colo_reference' )
             ->label( 'Colocation reference' )
-            ->help('help text');
+            ->help('The reference the co-location provider has assigned to this patch panel.');
     ?>
 
     <?= Former::select( 'cabinet' )
             ->label( 'Cabinet' )
             ->fromQuery( $t->cabinets, 'name' )
             ->placeholder( 'Choose a Cabinet' )
-            ->addClass( 'chzn-select' )
-            ->help('help text');
+            ->addClass( 'chzn-select' );
     ?>
 
     <?= Former::select( 'cable_type' )
             ->label( 'Cable Type' )
             ->options(   Entities\PatchPanel::$CABLE_TYPES )
             ->placeholder( 'Choose a Cable Type' )
-            ->addClass( 'chzn-select' )
-            ->help('help text');
+            ->addClass( 'chzn-select' );
     ?>
 
     <?= Former::select( 'connector_type' )
             ->label( 'Connector Type' )
             ->options( Entities\PatchPanel::$CONNECTOR_TYPES )
             ->placeholder( 'Choose a Connector Type')
-            ->addClass( 'chzn-select' )
-            ->help('help text');
+            ->addClass( 'chzn-select' );
     ?>
 
     <?= Former::number( 'numberOfPorts' )
         ->label( 'Number of Ports' )
         ->appendIcon( 'nb-port glyphicon glyphicon-info-sign' )
-        ->help( $t->patchPanel ? 'Existing: ' . $t->patchPanel->getPortCount() : '' )
+        ->help(
+            $t->patchPanel ? 'There are ' . $t->patchPanel->getPortCount() . " ports in this panel already. Enter the number of ports <b> you want to add</b> above."
+                    . "<b>Note that duplex ports should be entered as two ports.</b>"
+                : 'Please set the number of ports that you want to create for this patch panel.'
+        );
     ?>
 
     <?= Former::text( 'port_prefix' )
         ->label( 'Port Name Prefix' )
         ->placeholder( 'Optional port prefix' )
         ->readonly( $t->patchPanel && $t->patchPanel->getPortPrefix() )
-        ->appendIcon( 'prefix glyphicon glyphicon-info-sign' )
-        ->help('help text');
+        ->help("This is optional. As an example, you may was to prefix individual fibre strands in a duplex port with <code>F</code> which would mean the name of a duplex port would be displayed as <code>F1/F2</code>.");
     ?>
 
     <?= Former::date( 'installation_date' )
         ->label( 'Installation Date' )
         ->append( '<button class="btn-default btn" id="date-today" type="button">Today</button>' )
-        ->value(date('Y-m-d'))
-        ->help('help text');
+        ->value(date('Y-m-d'));
     ?>
 
     <?= Former::hidden( 'id' )
@@ -105,18 +104,14 @@ $(document).ready( function() {
 
     });
 
-    $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help' ).attr( 'data-content' ,
-        'Please set the number of ports that you want to create for this patch panel. Note that duplex ports should be entered as two ports.' );
-
-    $( ".glyphicon-prefix" ).parent().attr( 'data-toggle', 'popover' ).attr( 'title' , 'Help' ).attr( 'data-content' ,
-        'need text'
-    );
+    $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' ,
+        '<b>Note that duplex ports should be entered as two ports.</b>' );
 
     $( "#date-today" ).click( function() {
         $( "#installation_date" ).val( '<?= date("Y-m-d" ) ?>' );
     });
 
-    $("[data-toggle=popover] ").popover({ placement: 'left',container: 'body', trigger: "hover"});
+    $("[data-toggle=popover] ").popover({ placement: 'left',container: 'body', html: true, trigger: "hover"});
 
     $( "#name" ).blur( function() {
         if( $("#colo_reference").val() == '' ){

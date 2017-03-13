@@ -1292,4 +1292,68 @@ class PatchPanelPort
             return $temp.'.pdf';
         }
     }
+
+
+    /**
+     * Is the state STATE_AVAILABLE?
+     *
+     * @return bool
+     */
+    public function isStateAvailable(): bool {
+        return $this->getState() === self::STATE_AVAILABLE;
+    }
+
+    /**
+     * Is the state STATE_AWAITING_XCONNECT?
+     *
+     * @return bool
+     */
+    public function isStateAwaitingXConnect(): bool {
+        return $this->getState() === self::STATE_AWAITING_XCONNECT;
+    }
+
+    /**
+     * Is the state STATE_CONNECTED?
+     *
+     * @return bool
+     */
+    public function isStateConnected(): bool {
+        return $this->getState() === self::STATE_CONNECTED;
+    }
+
+    /**
+     * Is the state STATE_AWAITING_CEASE?
+     *
+     * @return bool
+     */
+    public function isStateAwaitingCease(): bool {
+        return $this->getState() === self::STATE_AWAITING_CEASE;
+    }
+
+    /**
+     * Is the state STATE_CEASED?
+     *
+     * @return bool
+     */
+    public function isStateCeased(): bool {
+        return $this->getState() === self::STATE_CEASED;
+    }
+
+    /**
+     * Is the state STATE_BROKEN?
+     *
+     * @return bool
+     */
+    public function isStateBroken(): bool {
+        return $this->getState() === self::STATE_BROKEN;
+    }
+
+    /**
+     * Is the state STATE_OTHER?
+     *
+     * @return bool
+     */
+    public function isStateOther(): bool {
+        return $this->getState() === self::STATE_OTHER;
+    }
 }

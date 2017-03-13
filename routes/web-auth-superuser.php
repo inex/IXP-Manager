@@ -22,7 +22,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'list',                         'PatchPanelPortController@index' )->name('patchPanelPortIndex');
     Route::get( 'list/patch-panel/{id}',        'PatchPanelPortController@index' );
 
-    Route::get( 'edit/{id}/{allocated?}',       'PatchPanelPortController@edit' );
+    Route::get( 'edit/{id}/{allocating?}',      'PatchPanelPortController@edit' );
     Route::get( 'getSwitchPort',                'PatchPanelPortController@getSwitchPort' );
     Route::get( 'getCustomerForASwitchPort',    'PatchPanelPortController@getCustomerForASwitchPort' );
     Route::get( 'getSwitchForACustomer',        'PatchPanelPortController@getSwitchForACustomer' );

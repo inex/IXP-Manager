@@ -103,66 +103,61 @@ class PatchPanelPortController extends Controller
      * @parama  int $id patch panel port that need to be edited
      * @return  view
      */
-    public function edit(Request $request, int $id = null, $allocated = null) {
+    public function edit(Request $request, int $id, $allocating = false) {
+
         $patchPanelPort = false;
 
-        if($id != null){
-            if( !( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
-                abort(404);
-            }
-
-            // display master port informations
-            if($patchPanelPort->getDuplexMasterPort() != null){
-                $patchPanelPort = $patchPanelPort->getDuplexMasterPort();
-            }
-
-            $hasDuplex = $patchPanelPort->hasSlavePort();
-
-            Former::populate( array('number'                => $patchPanelPort->getNumber(),
-                                    'patch_panel'           => $patchPanelPort->getPatchPanel()->getName(),
-                                    'colo_circuit_ref'      => $patchPanelPort->getColoCircuitRef(),
-                                    'ticket_ref'            => $patchPanelPort->getTicketRef(),
-                                    'switch'                => $patchPanelPort->getSwitchId(),
-                                    'switch_port'           => $patchPanelPort->getSwitchPortId(),
-                                    'customer'              => $patchPanelPort->getCustomerId(),
-                                    'partner_port'          => $patchPanelPort->getDuplexSlavePortId(),
-                                    'state'                 => $patchPanelPort->getState(),
-                                    'notes'                 => $patchPanelPort->getNotes(),
-                                    'private_notes'         => $patchPanelPort->getPrivateNotes(),
-                                    'assigned_at'           => $patchPanelPort->getAssignedAtFormated(),
-                                    'connected_at'          => $patchPanelPort->getConnectedAtFormated(),
-                                    'ceased_requested_at'   => $patchPanelPort->getCeaseRequestedAtFormated(),
-                                    'ceased_at'             => $patchPanelPort->getCeasedAtFormated(),
-                                    'last_state_change_at'  => $patchPanelPort->getLastStateChangeFormated(),
-                                    'chargeable'            => $patchPanelPort->getChargeableDefaultNo(),
-                                    'owned_by'              => $patchPanelPort->getOwnedBy()
-            ));
-
-            if($hasDuplex){
-                $partnerPorts =  array($patchPanelPort->getDuplexSlavePortId() => $patchPanelPort->getDuplexSlavePortName());
-            }
-            else{
-                $partnerPorts = D2EM::getRepository(PatchPanelPort::class)->getPatchPanelPortAvailableForDuplex($patchPanelPort->getPatchPanel()->getId(), $patchPanelPort->getId());
-            }
-
+        if( !( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
+            abort(404);
         }
-        else{
-            return Redirect::to('patch-panel-port/list');
+
+        // display master port informations
+        if($patchPanelPort->getDuplexMasterPort() != null){
+            $patchPanelPort = $patchPanelPort->getDuplexMasterPort();
+        }
+
+        $hasDuplex = $patchPanelPort->hasSlavePort();
+
+        Former::populate([
+            'number'                => $patchPanelPort->getNumber(),
+            'patch_panel'           => $patchPanelPort->getPatchPanel()->getName(),
+            'colo_circuit_ref'      => $patchPanelPort->getColoCircuitRef(),
+            'ticket_ref'            => $patchPanelPort->getTicketRef(),
+            'switch'                => $patchPanelPort->getSwitchId(),
+            'switch_port'           => $patchPanelPort->getSwitchPortId(),
+            'customer'              => $patchPanelPort->getCustomerId(),
+            'partner_port'          => $patchPanelPort->getDuplexSlavePortId(),
+            'state'                 => $patchPanelPort->getState(),
+            'notes'                 => $patchPanelPort->getNotes(),
+            'private_notes'         => $patchPanelPort->getPrivateNotes(),
+            'assigned_at'           => $patchPanelPort->getAssignedAtFormated(),
+            'connected_at'          => $patchPanelPort->getConnectedAtFormated(),
+            'ceased_requested_at'   => $patchPanelPort->getCeaseRequestedAtFormated(),
+            'ceased_at'             => $patchPanelPort->getCeasedAtFormated(),
+            'last_state_change_at'  => $patchPanelPort->getLastStateChangeFormated(),
+            'chargeable'            => $patchPanelPort->getChargeableDefaultNo(),
+            'owned_by'              => $patchPanelPort->getOwnedBy()
+        ]);
+
+        if($hasDuplex) {
+            $partnerPorts = [ $patchPanelPort->getDuplexSlavePortId() => $patchPanelPort->getDuplexSlavePortName() ];
+        } else {
+            $partnerPorts = D2EM::getRepository(PatchPanelPort::class)->getPatchPanelPortAvailableForDuplex($patchPanelPort->getPatchPanel()->getId(), $patchPanelPort->getId());
         }
 
         return view('patch-panel-port/edit')->with([
-                'states'            => ($allocated) ? [PatchPanelPort::STATE_AWAITING_XCONNECT => PatchPanelPort::$STATES[PatchPanelPort::STATE_AWAITING_XCONNECT] , PatchPanelPort::STATE_CONNECTED => PatchPanelPort::$STATES[PatchPanelPort::STATE_CONNECTED]] : \Entities\PatchPanelPort::$STATES,
-                'piStatus'          => [PhysicalInterface::STATUS_XCONNECT => PhysicalInterface::$STATES[PhysicalInterface::STATUS_XCONNECT],PhysicalInterface::STATUS_CONNECTED => PhysicalInterface::$STATES[PhysicalInterface::STATUS_CONNECTED]],
-                'customers'         => D2EM::getRepository(Customer::class)->getNames(true),
-                'switches'          => D2EM::getRepository(Switcher::class)->getNamesByLocation(true, Switcher::TYPE_SWITCH,$patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getId()),
-                'switchPorts'       => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId(),null, $patchPanelPort->getSwitchPortId()),
-                'chargeables'       => PatchPanelPort::$CHARGEABLES,
-                'ownedBy'           => PatchPanelPort::$OWNED_BY,
-                'patchPanelPort'    => $patchPanelPort,
-                'partnerPorts'      => $partnerPorts,
-                'hasDuplex'         => $hasDuplex,
-                'user'              => Auth::user(),
-                'allocated'         => ($allocated) ? true : false
+            'states'            => ($allocating) ? [PatchPanelPort::STATE_AWAITING_XCONNECT => PatchPanelPort::$STATES[PatchPanelPort::STATE_AWAITING_XCONNECT] , PatchPanelPort::STATE_CONNECTED => PatchPanelPort::$STATES[PatchPanelPort::STATE_CONNECTED]] : \Entities\PatchPanelPort::$STATES,
+            'piStatus'          => [PhysicalInterface::STATUS_XCONNECT => PhysicalInterface::$STATES[PhysicalInterface::STATUS_XCONNECT],PhysicalInterface::STATUS_CONNECTED => PhysicalInterface::$STATES[PhysicalInterface::STATUS_CONNECTED]],
+            'customers'         => D2EM::getRepository(Customer::class)->getNames(true),
+            'switches'          => D2EM::getRepository(Switcher::class)->getNamesByLocation(true, Switcher::TYPE_SWITCH,$patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getId()),
+            'switchPorts'       => D2EM::getRepository(Switcher::class)->getAllPortForASwitch($patchPanelPort->getSwitchId(),null, $patchPanelPort->getSwitchPortId()),
+            'chargeables'       => PatchPanelPort::$CHARGEABLES,
+            'ownedBy'           => PatchPanelPort::$OWNED_BY,
+            'patchPanelPort'    => $patchPanelPort,
+            'partnerPorts'      => $partnerPorts,
+            'hasDuplex'         => $hasDuplex,
+            'user'              => Auth::user(),
+            'allocating'        => ($allocating) ? true : false
         ]);
     }
 
@@ -935,7 +930,7 @@ class PatchPanelPortController extends Controller
 
         if($ppp->getLoaCode() == $loaCode){
             if($ppp->getState() == PatchPanelPort::STATE_AWAITING_XCONNECT or $ppp->getState() == PatchPanelPort::STATE_CONNECTED){
-                return $ppp->createLoaPDF();
+                return $ppp->createLoaPDF(true);
             }
         }
         else{
