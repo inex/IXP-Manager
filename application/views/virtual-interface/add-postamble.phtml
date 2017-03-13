@@ -55,6 +55,11 @@
                     </td>
                     <td>
                         {$int->getSpeed()}/{$int->getDuplex()}
+                        {if $int->getAutoneg()}
+                            <span class="badge phys-int-autoneg-state" data-toggle="tooltip" title="Auto-Negotiation Enabled">AN</span>
+                        {else}
+                            <span class="badge phys-int-autoneg-state" data-toggle="tooltip" title="Hard-Coded - Auto-Negotiation DISABLED">HC</span>
+                        {/if}
                     </td>
                     <td>
                         <div class="btn-group">

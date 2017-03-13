@@ -54,6 +54,12 @@ class PhysicalInterface
     protected $duplex;
 
     /**
+     * @var bool $autoneg
+     */
+    protected $autoneg = true;
+
+
+    /**
      * @var integer $monitorindex
      */
     protected $monitorindex;
@@ -156,6 +162,28 @@ class PhysicalInterface
     {
         return $this->duplex;
     }
+
+    /**
+     * Set autoneg
+     *
+     * @param bool $autoneg
+     * @return PhysicalInterface
+     */
+    public function setAutoneg(bool $autoneg): PhysicalInterface {
+        $this->autoneg = $autoneg;
+
+        return $this;
+    }
+
+    /**
+     * Get duplex
+     *
+     * @return bool
+     */
+    public function getAutoneg(): bool {
+        return $this->autoneg;
+    }
+
 
     /**
      * Set monitorindex

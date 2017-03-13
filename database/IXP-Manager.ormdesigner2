@@ -567,6 +567,7 @@
       <field name="status" type="integer" uuid="2070c5b2-6fe8-4778-bf2a-d80c9eb5f64c"/>
       <field name="speed" type="integer" uuid="0503f30c-b27d-4026-bf41-ef05388078d8"/>
       <field name="duplex" type="string" size="16" uuid="ed6840cf-769f-40b8-bfb4-a68a30d480c4"/>
+      <field name="autoneg" type="boolean" default="1" required="true" uuid="1a8aec97-e073-476c-93c0-3705adad336c"/>
       <field name="monitorindex" type="integer" uuid="c515c52e-8f2d-4cc0-8862-584c0bb8d636"/>
       <field name="notes" type="text" uuid="eed9d024-c35e-4c89-802a-7fcbf392067f"/>
       <field name="fanout_physical_interface_id" type="integer" unique="true" uuid="d8b65def-02ef-4aef-a766-dfa92e3b9284"/>
@@ -1277,7 +1278,7 @@
     <entity uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326" bg-color="4294967295" hdr-color="4292006610" position-x="1249" position-y="755" size-x="0" size-x2="112" size-y="0" size-y2="115"/>
     <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" bg-color="4294967295" hdr-color="4292006610" position-x="250" position-y="1009" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
     <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="595" position-y="350" size-x="0" size-x2="186" size-y="0" size-y2="465"/>
-    <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" bg-color="4294967295" hdr-color="4292006610" position-x="802" position-y="145" size-x="0" size-x2="183" size-y="0" size-y2="143"/>
+    <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="775" position-y="87" size-x="0" size-x2="174" size-y="0" size-y2="157"/>
     <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
     <entity uuid="0be9b477-a199-4d85-a892-4287cf858f4d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="47" position-y="-145" size-x="0" size-x2="124" size-y="0" size-y2="59"/>
     <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" bg-color="4294967295" hdr-color="4292006610" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>

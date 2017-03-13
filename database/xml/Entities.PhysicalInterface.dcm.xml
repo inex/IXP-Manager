@@ -7,6 +7,11 @@
     <field name="status" type="integer" nullable="true"/>
     <field name="speed" type="integer" nullable="true"/>
     <field name="duplex" type="string" length="16" nullable="true"/>
+    <field name="autoneg" type="boolean" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
     <field name="monitorindex" type="integer" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <one-to-one field="SwitchPort" target-entity="Entities\SwitchPort" inversed-by="PhysicalInterface">

@@ -96,7 +96,14 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
                     //'location'      => 'Location',
                     //'switch'        => 'Switch',
                     'speed'         => 'Speed',
-                    'duplex'        => 'Duplex'
+                    'duplex'        => 'Duplex',
+
+                    'autoneg'        => [
+                        'title'          => 'Auto-Neg',
+                        'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
+                        'xlator'         => [ true => 'Yes', false => 'No' ]
+                    ],
+
                 ];
 
                 $this->_feParams->viewColumns = array_merge(
@@ -124,7 +131,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select(
                     'pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
-                    pi.monitorindex AS monitorindex, pi.notes AS notes,
+                    pi.monitorindex AS monitorindex, pi.notes AS notes, pi.autoneg AS autoneg,
                     c.name AS customer, c.id AS custid,
                     s.name AS switch, s.id AS switchid,
                     vi.id AS vintid,
