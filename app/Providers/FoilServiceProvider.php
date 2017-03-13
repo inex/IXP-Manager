@@ -55,7 +55,7 @@ class FoilServiceProvider extends ServiceProvider
             });
 
             // we have a few rendering functions we want to include here:
-            $engine->engine()->loadExtension( new IXPFoilExtensions(), [] );
+            $engine->engine()->loadExtension( new IXPFoilExtensions(), [ 'alerts' ] );
 
             $view->addExtension('foil.php', 'foil', function() use ($app, $engine) {
                 return $engine;

@@ -24,6 +24,8 @@
 use Foil\Engine;
 use Foil\Contracts\ExtensionInterface;
 
+use IXP\Utils\View\Alert\Container as AlertContainer;
+
 /**
  * Grapher -> Renderer view extensions
  *
@@ -49,7 +51,8 @@ class IXP implements ExtensionInterface {
 
     public function provideFunctions() {
         return [
-          'softwrap' => [$this, 'softwrap']
+            'alerts'   => [ AlertContainer::class, 'html' ],
+            'softwrap' => [$this, 'softwrap'],
         ];
     }
 
