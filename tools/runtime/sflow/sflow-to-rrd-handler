@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 # sflow-to-rrd-handler
 #
@@ -33,6 +33,11 @@ use Getopt::Long;
 use Data::Dumper;
 use RRDs;
 use Time::HiRes qw(ualarm gettimeofday tv_interval);
+
+use FindBin qw($Bin);
+use File::Spec;
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'perl-lib', 'IXPManager', 'lib' );
+
 use IXPManager::Config;
 
 my $ixp = new IXPManager::Config;	# (configfile => $configfile);

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 # Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
@@ -39,6 +39,10 @@ use strict;
 
 use Data::Dumper;
 use NetAddr::IP qw(:lower Compact);
+
+use FindBin qw($Bin);
+use File::Spec;
+use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'perl-lib', 'IXPManager', 'lib' );
 
 use IXPManager::Config;
 use IXPManager::Const;
