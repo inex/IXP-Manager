@@ -13,7 +13,7 @@
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
 
-            <a class="btn btn-default" href="<?= url('patch-panel/list' . ( $t->active ? '/activeOnly/0' : '' ) ) ?>">
+            <a class="btn btn-default" href="<?= url('patch-panel/list' . ( $t->active ? '/inactive' : '' ) ) ?>">
                 Show <?= $t->active ? 'Inactive' : 'Active' ?>
             </a>
 

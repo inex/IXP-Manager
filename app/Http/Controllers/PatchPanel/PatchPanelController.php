@@ -57,14 +57,21 @@ class PatchPanelController extends Controller
     /**
      * Display the patch panel list
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     * @params  boolean $active display active or inactive patch panels
+     * @param  bool $active display active or inactive patch panels
      * @return  view
      */
-    public function index( $active = true ): View {
+    public function index( bool $active = true ): View {
         return view('patch-panel/index')->with([
             'patchPanels'       => D2EM::getRepository( PatchPanel::class )->findBy( [ 'active' => $active ] ),
             'active'            => $active
         ]);
+    }
+
+    /**
+     * @inheritdoc index()
+     */
+    public function indexInactive(): View {
+        return $this->index(false);
     }
 
     /**

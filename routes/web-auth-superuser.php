@@ -8,8 +8,9 @@
 
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
-    Route::get( 'list',                        'PatchPanelController@index' )->name('patchPanelIndex');
-    Route::get( 'list/activeOnly/{active}',    'PatchPanelController@index'  );
+    Route::get( 'list',                        'PatchPanelController@index' );
+    Route::get( 'list/inactive',               'PatchPanelController@indexInactive' );
+
     Route::get( 'add',                         'PatchPanelController@edit'   );
     Route::get( 'edit/{id}',                   'PatchPanelController@edit'   );
     Route::get( 'view/{id}',                   'PatchPanelController@view'   );
