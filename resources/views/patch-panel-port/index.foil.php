@@ -120,6 +120,7 @@
                                         <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_CONNECT?>">Email - Connect</a></li>
                                         <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_CEASE?>">Email - Cease</a></li>
                                         <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_INFO?>">Email - Information</a></li>
+                                        <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_LOA?>">Email - Send Loa as PDF</a></li>
                                     <?php endif; ?>
                                     <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED)): ?>
                                         <li><a target="_blank" href="<?= url('/patch-panel-port/sendLoaPDF' ).'/'.$patchPanelPort->getId()?>">Download Loa PDF</a></li>

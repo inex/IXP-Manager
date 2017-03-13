@@ -48,6 +48,7 @@ class PatchPanelPort
     const EMAIL_CONNECT                 = 1;
     const EMAIL_CEASE                   = 2;
     const EMAIL_INFO                    = 3;
+    const EMAIL_LOA                     = 4;
 
     /**
      * Array STATES
@@ -1192,6 +1193,7 @@ class PatchPanelPort
         $this->setInternalUse(false);
         $this->setChargeable(false);
         $this->setCustomer(null);
+        $this->setLoaCode(null);
         $this->setSwitchPort(null);
         $this->setDuplexMasterPort(null);
 
@@ -1270,16 +1272,24 @@ class PatchPanelPort
         return $array;
     }
 
-    public function createLoaPDF(){
-       // $pdf = PDF::loadView('patch-panel-port/loadPDF',['ppp' => $this]);
-        //return $pdf->stream('result.pdf', array('Attachment'=>0));
-
+    /**
+     * Create the LoA PDF file
+     * @author      Yann Robin <yann@islandbridgenetworks.ie>
+     * @param       bool $download allow to download the PDF
+     * @return      stream or string pdf name
+     */
+    public function createLoaPDF(bool $download = false){
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('patch-panel-port/loaPDF', ['ppp' => $this]);
-        //$pdf->save('/path-to/my_stored_file.pdf');
 
-
-        return  $pdf->stream('download.pdf');
-        //return PDF::loadView('patch-panel-port/loadPDF',['ppp' => $this])->save('/path-to/my_stored_file.pdf')->stream('download.pdf');
+        $pdfName = 'Loa_'.$this->getCustomer()->getName().'_'.$this->getPatchPanel()->getCabinet()->getLocation()->getName().'_'.$this->getPatchPanel()->getColoReference().'_'.$this->getName();
+        if($download){
+            return  $pdf->stream($pdfName);
+        }
+        else{
+            $temp = tempnam(sys_get_temp_dir(), 'loaPDF_');
+            $pdf->save($temp.'.pdf');
+            return $temp.'.pdf';
+        }
     }
 }

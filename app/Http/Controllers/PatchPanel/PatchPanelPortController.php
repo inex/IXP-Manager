@@ -788,6 +788,26 @@ class PatchPanelPortController extends Controller
 
                     $emailText .= "If you have any queries about this, please reply to this email.\n\n";
                     break;
+                case PatchPanelPort::EMAIL_LOA:
+                    $subject = "Cross connect Letter of Agency details for ".env('IDENTITY_ORGNAME')." [".$patchPanelPort->getColoCircuitRef()." / ".$patchPanelPort->getName()."]";
+
+                    $emailText = "Hi,\n\n";
+
+                    $emailText .= "You or someone in your organisation requested details on the following cross connect to ".env( 'IDENTITY_ORGNAME' ).".\n\n";
+
+                    $emailText .= "Colo Reference: ".$patchPanelPort->getColoCircuitRef()."\n";
+                    $emailText .= "Patch panel: ".$patchPanelPort->getPatchPanel()->getName()."\n";
+                    $emailText .= "Port: ".$patchPanelPort->getName()."\n";
+                    $emailText .= "State: ".$patchPanelPort->resolveStates()."\n\n";
+
+
+                    $emailText .= "We have attached the Letter of Agency in PDF format.\n\n";
+
+
+                    $emailText .= "> add with leading '>' so it appears quoted\n\n";
+
+                    $emailText .= "If you have any queries about this, please reply to this email.\n\n";
+                    break;
             }
 
             $emailText .= env('IDENTITY_NAME')."\n";
@@ -806,7 +826,7 @@ class PatchPanelPortController extends Controller
     }
 
     /**
-     * Send en email to the customer
+     * Send an email to the customer (connected, ceased, info, loa PDF)
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
      * @params  $request instance of the current HTTP request
      * @return  view
@@ -824,17 +844,15 @@ class PatchPanelPortController extends Controller
         $email_subject = $request->input( 'email_subject' );
         $email_text = $request->input( 'email_text' );
 
-        $loaPDF = ($request->input( 'loa' )?true:false);
+        $hasLoaPDF = ($request->input( 'loa' )?true:false);
 
-        dd($patchPanelPort->createLoaPDF());
+        if($request->input( 'email_type') == PatchPanelPort::EMAIL_LOA){
+            $hasLoaPDF = true;
+        }
 
         $attachFiles = ($request->input( 'email_type' ) == PatchPanelPort::EMAIL_CEASE or $request->input( 'email_type' ) == PatchPanelPort::EMAIL_INFO) ? true : false;
 
-
-        /*$email = Mail::to(explode( ',', $email_to ));
-        $email->send(new PatchPanelPortMail($email_subject,$email_from,$email_text));*/
-
-        Mail::send('patch-panel-port/email', ['email_text' => $email_text], function ($message) use ($loaPDF,$patchPanelPort,$attachFiles,$email_to,$email_cc,$email_bcc)
+        Mail::send('patch-panel-port/email', ['email_text' => $email_text], function ($message) use ($hasLoaPDF,$patchPanelPort,$attachFiles,$email_to,$email_cc,$email_bcc)
         {
             $message->from(env('IDENTITY_SUPPORT_EMAIL'));
             $message->to(explode( ',', $email_to ));
@@ -856,8 +874,12 @@ class PatchPanelPortController extends Controller
                 }
             }
 
-            if($loaPDF){
-                /////////////////// do stuff
+            if($hasLoaPDF){
+                $loaPDFPath = $patchPanelPort->createLoaPDF(false);
+                $message->attach($loaPDFPath,array(
+                        'as'    => $loaPDFPath,
+                        'mime'  => 'application/pdf')
+                );
             }
         });
 
@@ -888,7 +910,7 @@ class PatchPanelPortController extends Controller
         }
 
         if($ppp->getState() == PatchPanelPort::STATE_AWAITING_XCONNECT or $ppp->getState() == PatchPanelPort::STATE_CONNECTED){
-            return $ppp->createLoaPDF();
+            return $ppp->createLoaPDF(true);
         }
         else{
             abort(404);

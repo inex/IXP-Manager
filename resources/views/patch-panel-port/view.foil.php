@@ -82,20 +82,13 @@
                                 </tr>
                             <?php endif; ?>
                             <?php if($current): ?>
-                                <?php if($pppHistory->getState() == \Entities\PatchPanelPort::STATE_AWAITING_XCONNECT): ?>
+                                <?php if(($pppHistory->getState() == \Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($pppHistory->getState() == \Entities\PatchPanelPort::STATE_CONNECTED)): ?>
                                     <tr>
                                         <td><b>Letter of Agency:</b></td>
                                         <td><a class="btn btn-success" target="_blank" href="<?= url('/patch-panel-port/sendLoaPDF' ).'/'.$pppHistory->getId()?>"> Download LoA</a></td>
                                     </tr>
                                 <?php endif; ?>
                             <?php endif; ?>
-                            <?php if(($t->isSuperUser) or (!$t->isSuperUser and !$file->getIsPrivate())): ?>
-                                <tr>
-                                    <td><b>Letter of Agency Code:</b></td>
-                                    <td><?= $pppHistory->getLoaCode()?></td>
-                                </tr>
-                            <?php endif; ?>
-
                         </table>
                     </div>
 

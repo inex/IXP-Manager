@@ -35,10 +35,13 @@
             ->help('help text');
         ?>
 
-        <?= Former::checkbox('loa')
-            ->label('Attach LoA as a PDF')
-            ->check(true)
-        ?>
+        <?php if($t->email_type != \Entities\PatchPanelPort::EMAIL_LOA): ?>
+            <?= Former::checkbox('loa')
+                ->label('Attach LoA as a PDF')
+                ->check(true)
+            ?>
+        <?php endif; ?>
+
 
         <?= Former::textarea('email_text')
             ->label('Email')
