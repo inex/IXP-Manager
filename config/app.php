@@ -182,6 +182,8 @@ return [
         GrahamCampbell\Flysystem\FlysystemServiceProvider::class,
 
         Barryvdh\DomPDF\ServiceProvider::class,
+
+        LukeTowers\Purifier\PurifierServiceProvider::class,
     ],
 
     /*
@@ -241,6 +243,8 @@ return [
 
         'Former' => 'Former\Facades\Former',
         'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem',
+
+        'Purifier' => LukeTowers\Purifier\Facades\Purifier::class,
 
         'PDF' => Barryvdh\DomPDF\Facade::class,
 
