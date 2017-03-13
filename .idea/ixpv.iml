@@ -9,6 +9,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/anahkiasen/html-object" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/aura/html" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-debugbar" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-dompdf" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/classpreloader/classpreloader" />
@@ -24,10 +25,13 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/lexer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/migrations" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/orm" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dompdf/dompdf" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/erusev/parsedown" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/evenement/evenement" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/foil/foil" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/fzaninotto/faker" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/graham-campbell/flysystem" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/graham-campbell/manager" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/guzzle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/promises" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/psr7" />
@@ -58,6 +62,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
@@ -74,6 +80,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psy/psysh" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/comparator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/diff" />
@@ -129,6 +136,7 @@
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/html-object" />
           <root url="file://$MODULE_DIR$/vendor/aura/html" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-debugbar" />
+          <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-dompdf" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
@@ -142,10 +150,13 @@
           <root url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/lexer" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/orm" />
+          <root url="file://$MODULE_DIR$/vendor/dompdf/dompdf" />
           <root url="file://$MODULE_DIR$/vendor/erusev/parsedown" />
           <root url="file://$MODULE_DIR$/vendor/evenement/evenement" />
           <root url="file://$MODULE_DIR$/vendor/foil/foil" />
           <root url="file://$MODULE_DIR$/vendor/fzaninotto/faker" />
+          <root url="file://$MODULE_DIR$/vendor/graham-campbell/flysystem" />
+          <root url="file://$MODULE_DIR$/vendor/graham-campbell/manager" />
           <root url="file://$MODULE_DIR$/vendor/guzzlehttp/guzzle" />
           <root url="file://$MODULE_DIR$/vendor/guzzlehttp/promises" />
           <root url="file://$MODULE_DIR$/vendor/guzzlehttp/psr7" />
@@ -173,6 +184,8 @@
           <root url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
           <root url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
           <root url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+          <root url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
+          <root url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
@@ -189,6 +202,7 @@
           <root url="file://$MODULE_DIR$/vendor/psr/log" />
           <root url="file://$MODULE_DIR$/vendor/psy/psysh" />
           <root url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
+          <root url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/comparator" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/diff" />
@@ -229,6 +243,7 @@
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/html-object" />
           <root url="file://$MODULE_DIR$/vendor/aura/html" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-debugbar" />
+          <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-dompdf" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
@@ -242,10 +257,13 @@
           <root url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/lexer" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/orm" />
+          <root url="file://$MODULE_DIR$/vendor/dompdf/dompdf" />
           <root url="file://$MODULE_DIR$/vendor/erusev/parsedown" />
           <root url="file://$MODULE_DIR$/vendor/evenement/evenement" />
           <root url="file://$MODULE_DIR$/vendor/foil/foil" />
           <root url="file://$MODULE_DIR$/vendor/fzaninotto/faker" />
+          <root url="file://$MODULE_DIR$/vendor/graham-campbell/flysystem" />
+          <root url="file://$MODULE_DIR$/vendor/graham-campbell/manager" />
           <root url="file://$MODULE_DIR$/vendor/guzzlehttp/guzzle" />
           <root url="file://$MODULE_DIR$/vendor/guzzlehttp/promises" />
           <root url="file://$MODULE_DIR$/vendor/guzzlehttp/psr7" />
@@ -273,6 +291,8 @@
           <root url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
           <root url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
           <root url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+          <root url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
+          <root url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
@@ -289,6 +309,7 @@
           <root url="file://$MODULE_DIR$/vendor/psr/log" />
           <root url="file://$MODULE_DIR$/vendor/psy/psysh" />
           <root url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
+          <root url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/comparator" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/diff" />
