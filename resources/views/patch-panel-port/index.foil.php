@@ -92,12 +92,10 @@
                                 </button>
 
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <input type="hidden"  id="notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getNotes() ?>">
-                                    <input type="hidden"  id="private_notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getPrivateNotes() ?>">
                                     <input type="hidden"  id="pi_state_<?=$patchPanelPort->getId() ?>" label="<?=$patchPanelPort->getPhysicalInterfaceStateLabel()?>" value="<?=$patchPanelPort->getPhysicalInterfaceState() ?>">
 
                                     <li>
-                                        <a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false,true)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId()?>">
+                                        <a id="edit-notes-<?= $patchPanelPort->getId() ?>" href="<?= url()->current() ?>" >
                                             <?= $patchPanelPort->isStateAvailable() ? 'Add' : 'Edit' ?> note...
                                         </a>
                                     </li>
