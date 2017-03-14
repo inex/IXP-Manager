@@ -23,6 +23,11 @@ class PhysicalInterface
         self::STATUS_QUARANTINE   => 'Quarantine'
     );
 
+    public static $PPP_STATES = array(
+        self::STATUS_CONNECTED    => 'Connected',
+        self::STATUS_XCONNECT     => 'Awaiting X-Connect',
+    );
+
     public static $SPEED = array(
         10    => '10 Mbps',
         100   => '100 Mbps',

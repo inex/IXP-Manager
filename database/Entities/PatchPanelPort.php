@@ -66,6 +66,14 @@ class PatchPanelPort
     ];
 
     /**
+     * Array STATES
+     */
+    public static $ALLOCATE_STATES = [
+        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
+        self::STATE_CONNECTED           => "Connected"
+    ];
+
+    /**
  * Array $CHARGEABLES
  */
     public static $CHARGEABLES = [
