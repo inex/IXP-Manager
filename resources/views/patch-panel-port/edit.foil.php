@@ -335,26 +335,25 @@
 
             function setCustomer(){
                 if($("#switch").val() != ''){
-                    switchPortId = $("#switch_port").val();
+                    var switchPortId = $("#switch_port").val();
                     $("#customer").html("<option value=\"\">Loading please wait</option>\n");
                     $("#customer").trigger("chosen:updated");
-                    $.ajax({
-                        url: "<?= url('patch-panel-port/getCustomerForASwitchPort/')?>",
-                        data: {switchPortId: switchPortId},
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function (data) {
-                            if(data.success){
-                                $("#customer").html("<option value=\"" + data.response.id + "\">" + data.response.name + "</option>\n");
-                                $("#customer").trigger("chosen:updated");
-                            }
-                            else{
+                    $.ajax( "<?= url('') ?>/api/v4/switch-port/" + switchPortId + "/customer" )
+                        .done( function( data ) {
+                            console.log(data);
+                            if( data.customerFound ) {
+                                $("#customer").html( '<option value="' + data.id + '">' + data.name + "</option>\n" );
+                            } else {
                                 $("#customer").html("");
-                                $("#customer").trigger("chosen:updated");
                             }
-                        }
-
-                    });
+                        })
+                        .fail( function() {
+                            alert("Error running ajax query for switch-port/$id/customer");
+                            $("#customer").html("");
+                        })
+                        .always( function() {
+                            $("#customer").trigger("chosen:updated");
+                        });
                 }
             }
 

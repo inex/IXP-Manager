@@ -335,32 +335,6 @@ class PatchPanelPortController extends Controller
      * @params  $request instance of the current HTTP request
      * @return  JSON customer object
      */
-    public function getCustomerForASwitchPort(Request $request){
-        $switchPort = D2EM::getRepository(SwitchPort::class)->find($request->input('switchPortId'));
-        $success = false;
-        $customer = null;
-        if($switchPort != null){
-            $physicalInterface = $switchPort->getPhysicalInterface();
-            if($physicalInterface != null){
-                $virtualInterface = $physicalInterface->getVirtualInterface();
-                if($virtualInterface != null){
-                    $cust = $virtualInterface->getCustomer();
-                    if($cust != null){
-                        $customer = array('id' => $cust->getId(), 'name' => $cust->getName());
-                        $success = true;
-                    }
-                }
-            }
-        }
-        return response()->json(array('success' => $success, 'response' => $customer));
-    }
-
-    /**
-     * Get the customer for a switch port
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     * @params  $request instance of the current HTTP request
-     * @return  JSON customer object
-     */
     public function getSwitchForACustomer(Request $request){
         $customer = D2EM::getRepository(Customer::class)->find($request->input('customerId'));
         $patchPanel = D2EM::getRepository(PatchPanel::class)->find($request->input('patch_panel_id'));

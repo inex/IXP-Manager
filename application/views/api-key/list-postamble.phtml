@@ -41,3 +41,48 @@
 </dd>
 
 </dl>
+
+<br>
+<h3>Available API Endpoints - V4</h3>
+
+{if isset( $data.0 )}
+    {assign var="example_api_key" value="`$data.0.apiKey`"}
+{else}
+    {assign var="example_api_key" value="\$your_api_key"}
+{/if}
+
+
+<p>
+    API key can be passed in the header (preferred) or on the URL. For example:
+    <ul>
+        <li> <code>curl -X GET -H "X-IXP-Manager-API-Key: {$example_api_key}" {genUrl}/api/v4/test</code></li>
+        <li> <code>wget {genUrl}/api/v4/test?apikey={$example_api_key}</code></li>
+    </ul>
+</p>
+
+<dl>
+
+    {if $user->isSuperUser()}
+
+        <dt>Switch Ports</dt>
+        <dd>
+            <ul>
+                <li>
+                    Get the customer who has been allocated a switch port:<br>
+                    <code>{genUrl}/api/v4/switch-port/{ldelim}id{rdelim}/customer</code> where <code>id</code> is the switch port ID.
+                    <br><br>
+                    If a switch port has an allocated customer, the JSON response is:<br>
+                    <code>{ldelim}"customerFound":true,"id":102,"name":"Packet Shifters Ltd"{rdelim}</code><br>
+                    where the enclosed id is the customer object id.
+                    <br><br>
+                    If a switch port does not have an allocated customer, the JSON response is:<br>
+                    <code>{ldelim}"customerFound":false{rdelim}</code>
+                    <br><br>
+                    Lastly, if the switch port does not exist, a 404 HTTP response is thrown.
+                </li>
+            </ul>
+        </dd>
+
+    {/if}
+
+</dl>
