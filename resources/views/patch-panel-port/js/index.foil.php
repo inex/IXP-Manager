@@ -21,6 +21,14 @@ $(document).ready(function(){
         }],
         "order": [[ 0, "asc" ]]
     });
+
+    $( "a[id|='edit-notes']" ).on( 'click', function(e){
+        e.preventDefault();
+        var pppid = (this.id).substring(11);
+        popup( pppid, false, false, true );
+    });
+
+
 });
 
 function setNotesTextArea( pppId, input ) {
@@ -62,11 +70,11 @@ function checkTextArea(pppId,input){
     }
 }
 
-function popup( href, pppId, connected, hasSwitchPort, only_note ) {
-    var url = $(href).attr("href");
+function popup( pppId, connected, hasSwitchPort, onlyNote ) {
     var new_notes_set = false;
+    var html;
 
-    if( only_note ) {
+    if( onlyNote ) {
         html = "<p>Add notes</p><br/>";
     } else {
         html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p><br/>";
