@@ -94,8 +94,11 @@ class PatchPanelPortController extends Controller
             'patchPanelPorts'               => D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort($id),
             'patchPanel'                    => $patchPanel,
             'user'                          => Auth::user(),
-            'physicalInterfaceLimited'      => [PhysicalInterface::STATUS_QUARANTINE => PhysicalInterface::$STATES[PhysicalInterface::STATUS_QUARANTINE],PhysicalInterface::STATUS_CONNECTED => PhysicalInterface::$STATES[PhysicalInterface::STATUS_CONNECTED]],
-            'physicalInterface'             => PhysicalInterface::$STATES
+
+            'physicalInterfaceStatesSubSet' => [
+                PhysicalInterface::STATUS_QUARANTINE => PhysicalInterface::$STATES[PhysicalInterface::STATUS_QUARANTINE],
+                PhysicalInterface::STATUS_CONNECTED => PhysicalInterface::$STATES[PhysicalInterface::STATUS_CONNECTED]
+            ]
         ]);
     }
 

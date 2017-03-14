@@ -25,7 +25,7 @@ $(document).ready(function(){
     $( "a[id|='edit-notes']" ).on( 'click', function(e){
         e.preventDefault();
         var pppid = (this.id).substring(11);
-        popup( pppid, false, false, true );
+        popup( pppid, 'edit-notes' );
     });
 
 
@@ -75,44 +75,51 @@ function checkTextArea(pppId,input){
     }
 }
 
-function popup( pppId, connected, hasSwitchPort, onlyNote ) {
+function popup( pppId, action ) {
     var new_notes_set = false;
-    var html;
+    var html = "";
 
-    ajaxActionPatchPanelPort( pppId, { "connected": connected, "hasSwitchPort": hasSwitchPort, "onlyNote": onlyNote }, function( ppp, options ) {
+    ajaxActionPatchPanelPort( pppId, action, function( ppp, action ) {
 
-        if( options.onlyNote ) {
-            html = "<p>Add notes</p><br/>";
-        } else {
+        if( action != 'edit-notes' ) {
             html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p><br/>";
         }
 
-        html += "Public Notes : <textarea id='notes' onblur='checkTextArea(" + pppId + ",\"notes\")' onfocus='setNotesTextArea(" + pppId + ",\"notes\")' onclick='setNotesTextArea(" + pppId + ",\"notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >" + ppp.notes + "</textarea>" +
-            "<br/>" +
-            "Private Notes : <textarea id='private_notes' onblur='checkTextArea(" + pppId + ",\"private_notes\")' onfocus='setNotesTextArea(" + pppId + ",\"private_notes\")' onclick='setNotesTextArea(" + pppId + ",\"private_notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >" + ppp.privateNotes + "</textarea>";
+        // onblur='checkTextArea(" + pppId + ",\"notes\")' onfocus='setNotesTextArea(" + pppId + ",\"notes\")' onclick='setNotesTextArea(" + pppId + ",\"notes\")'
+        // onblur='checkTextArea(" + pppId + ",\"private_notes\")' onfocus='setNotesTextArea(" + pppId + ",\"private_notes\")' onclick='setNotesTextArea(" + pppId + ",\"private_notes\")'
 
-        if (options.connected) {
-            if (options.hasSwitchPort) {
-                html += "<br/><br/><span>Update Physical Port State To:  </span><select id='PIStatus'>";
+        html += 'Public Notes:  <textarea id="notes"         rows="8" class="bootbox-input bootbox-input-textarea form-control">' + ppp.notes        + "</textarea><br>" +
+                'Private Notes: <textarea id="private-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control">' + ppp.privateNotes + "</textarea>";
 
-                <?php foreach ($t->physicalInterfaceLimited as $index => $state): ?>
-                piIndex = <?= $index?>;
-                currentState = "";
-                if (piIndex == $('#pi_state_' + pppId).val()) {
-                    currentState = "(current state)";
-                }
-                html += "<option <?php if($index == \Entities\PhysicalInterface::STATUS_QUARANTINE):?> selected <?php endif;?> value='<?= $index ?>'><?= $state?> " + currentState + "</option>";
+        if( action == 'set-connected' ) {
+            if( ppp.switchPortId ) {
+                html += '<br><br><span>Update Physical Port State To: </span><select id="pi-status">';
+
+                var haveCurrentState = false;
+                <?php foreach( $t->physicalInterfaceStatesSubSet as $i => $s ): ?>
+
+                    html += '<option <?= $i == \Entities\PhysicalInterface::STATUS_QUARANTINE ? 'selected="selected"' : '' ?> value="<?= $i ?>"><?= $s ?>';
+
+                    if( <?= $i ?> == ppp.switchPort.physicalInterface.statusId ) {
+                        haveCurrentState = true;
+                        html += " (current state)";
+                    }
+
+                    html += '</option>';
+
                 <?php endforeach ;?>
-                if (currentState == '') {
-                    html += "<option value='" + $('#pi_state_' + pppId).val() + "'>" + $('#pi_state_' + pppId).attr('label') + " (current state)</option>";
+
+                if( !haveCurrentState ) {
+                    html += '<option value="' + ppp.switchPort.physicalInterface.statusId + '">' + ppp.switchPort.physicalInterface.status + ' (current state)</option>';
                 }
+
                 html += "</select>";
             }
         }
 
         var dialog = bootbox.dialog({
             message: html,
-            title: "Note",
+            title: "Notes",
             buttons: {
                 cancel: {
                     label: '<i class="fa fa-times"></i> Cancel',
@@ -124,10 +131,10 @@ function popup( pppId, connected, hasSwitchPort, onlyNote ) {
                 confirm: {
                     label: '<i class="fa fa-check"></i> Confirm',
                     callback: function () {
-                        notes = $('#notes').val();
+                        notes         = $('#notes').val();
                         private_notes = $('#private_notes').val();
-                        if (options.hasSwitchPort) {
-                            pi_status = $('#PIStatus').val();
+                        if( ppp.switchPortId ) {
+                            pi_status = $('#pi-status').val();
                         } else {
                             pi_status = null;
                         }
@@ -172,10 +179,10 @@ function popup( pppId, connected, hasSwitchPort, onlyNote ) {
     }); // ajaxGetPatchPanelPortDetail()
 }
 
-function ajaxActionPatchPanelPort( pppid, options, handleData ) {
-    return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid )
+function ajaxActionPatchPanelPort( pppid, action, handleData ) {
+    return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid + "/1" )   // + "/1" => deep array to include subobjects
         .done( function( data ) {
-            handleData( data, options );
+            handleData( data, action );
         })
         .fail( function() {
             throw new Error("Error running ajax query for patch-panel-port/$id");

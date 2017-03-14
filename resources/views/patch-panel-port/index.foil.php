@@ -92,8 +92,6 @@
                                 </button>
 
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <input type="hidden"  id="pi_state_<?=$patchPanelPort->getId() ?>" label="<?=$patchPanelPort->getPhysicalInterfaceStateLabel()?>" value="<?=$patchPanelPort->getPhysicalInterfaceState() ?>">
-
                                     <li>
                                         <a id="edit-notes-<?= $patchPanelPort->getId() ?>" href="<?= url()->current() ?>" >
                                             <?= $patchPanelPort->isStateAvailable() ? 'Add' : 'Edit' ?> note...
@@ -151,6 +149,44 @@
             <?php endforeach;?>
         <tbody>
     </table>
+
+
+<!-- Modal dialog for notes / state changes -->
+<div class="modal fade" id="notes-modal" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notes-modal-label">Notes</h4>
+            </div>
+            <div class="modal-body" id="notes-modal-body">
+                <p id="notes-modal-body-intro">
+                    Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..
+                    <br><br>
+                </p>
+
+                <h4>Public Notes</h4>
+
+                <textarea id="notes-modal-body-public-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control"></textarea>
+
+                <h4>Private Notes</h4>
+
+                <textarea id="notes-modal-body-private-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control"></textarea>
+
+                <div id="notes-modal-body-div-pi-status" class="hidden">
+                    <br><br>
+                    <span>Update Physical Port State To: </span>
+                    <select id="notes-modal-body-pi-status"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
