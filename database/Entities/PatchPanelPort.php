@@ -2,9 +2,11 @@
 
 namespace Entities;
 
+use Barryvdh\DomPDF\PDF;
+use Carbon\Carbon;
 use D2EM;
-Use Parsedown;
-Use Barryvdh\DomPDF\PDF;
+use Parsedown;
+
 
 /**
  * Entities\PatchPanelPort
@@ -1356,4 +1358,82 @@ class PatchPanelPort
     public function isStateOther(): bool {
         return $this->getState() === self::STATE_OTHER;
     }
+
+
+    /**
+     * Convert this object to an array
+     **
+     * @return array
+     */
+    public function toArray(): array {
+        $a = [
+            'id'               => $this->getId(),
+            'patchPanelId'     => $this->getPatchPanel() ? $this->getPatchPanel()->getId() : null,
+            'switchPortId'     => $this->getSwitchPort() ? $this->getSwitchPort()->getId() : null,
+            'customerId'       => $this->getCustomer()   ? $this->getCustomer()->getId()   : null,
+            'number'           => $this->getNumber(),
+            'name'             => $this->getName(),
+            'coloRef'          => $this->getColoCircuitRef(),
+            'ticketRef'        => $this->getTicketRef(),
+            'stateId'          => $this->getState(),
+            'state'            => $this->resolveStates(),
+            'notes'            => clean( $this->getNotes() ),
+            'privateNotes'     => clean( $this->getPrivateNotes() ),
+            'assignedAt'       => $this->getAssignedAt(),
+            'connectedAt'      => $this->getConnectedAt(),
+            'ceaseRequestedAt' => $this->getCeaseRequestedAt(),
+            'ceasedAt'         => $this->getCeasedAt(),
+            'internalUse'      => $this->getInternalUse(),
+            'chargeableId'     => $this->getChargeable(),
+            'chargeable'       => $this->resolveChargeable(),
+            'isDuplex'         => $this->isDuplexPort(),
+            'isDuplexMaster'   => $this->getDuplexMasterPort() ? false : true,
+            'duplexMasterId'   => $this->getDuplexMasterPort() ? $this->getDuplexMasterPort()->getId() : null,
+            'duplexSlaveId'    => $this->getDuplexSlavePort()  ? $this->getDuplexSlavePort()->getId()  : null,
+            'loaCode'          => $this->getLoaCode(),
+            'ownedById'        => $this->getOwnedBy(),
+            'ownedBy'          => $this->resolveOwnedBy(),
+            'isHistorical'     => false,
+            'files'            => [],
+        ];
+
+        foreach( $this->getPatchPanelPortFiles() as $f ) {
+            $f = [
+                'id'         => $f->getId(),
+                'name'       => $f->getName(),
+                'type'       => $f->getType(),
+                'uploadedAt' => $f->getUploadedAt(),
+                'uploadedBy' => $f->getUploadedBy(),
+                'size'       => $f->getSize(),
+                'private'    => $f->isPrivate(),
+            ];
+            $a['files'][] = $f;
+        }
+
+        return $a;
+    }
+
+    /**
+     * Get patch panel details as JSON-compatibale array
+     * @return string
+     */
+    public function jsonArray(): array {
+        $a = $this->toArray();
+
+        $a['assignedAt']       = $a['assignedAt']       ? Carbon::instance( $a['assignedAt']       )->toIso8601String() : null;
+        $a['connectedAt']      = $a['connectedAt']      ? Carbon::instance( $a['connectedAt']      )->toIso8601String() : null;
+        $a['ceaseRequestedAt'] = $a['ceaseRequestedAt'] ? Carbon::instance( $a['ceaseRequestedAt'] )->toIso8601String() : null;
+        $a['ceasedAt']         = $a['ceasedAt']         ? Carbon::instance( $a['ceasedAt']         )->toIso8601String() : null;
+
+        return $a;
+    }
+
+    /**
+     * Get patch panel details as JSON
+     * @return string
+     */
+    public function json(): string {
+        return json_encode( $this->jsonArray(), JSON_PRETTY_PRINT );
+    }
+
 }

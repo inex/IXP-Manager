@@ -64,6 +64,48 @@
 
     {if $user->isSuperUser()}
 
+        <dt>Patch Panel Ports</dt>
+        <dd>
+            <ul>
+                <li>
+                    Get details for an <b>active</b> patch panel port:<br>
+                    <code>{genUrl}/api/v4/patch-panel-port/{ldelim}id{rdelim}</code> where <code>id</code> is the patch panel port ID.
+                    <br><br>
+                    If a switch port has an allocated customer, the JSON response is:<br>
+                    <pre>
+{
+   "id": 38,
+   "number": 1,
+   "name": "1\/2",
+   "coloRef": "TCIE-1234",
+   "ticketRef": "234",
+   "stateId": 2,
+   "state": "Awaiting Xconnect",
+   "notes": "* 2017-03-14 [barryo]: Public",
+   "privateNotes": "* 2017-03-14 [barryo]: Private",
+   "assignedAt": "2017-03-14T00:00:00+00:00",
+   "connectedAt": null,
+   "ceaseRequestedAt": null,
+   "ceasedAt": null,
+   "internalUse": false,
+   "chargeableId": 2,
+   "chargeable": "No",
+   "isDuplex": true,
+   "isDuplexMaster": true,
+   "duplexMasterId": null,
+   "duplexSlaveId": 39,
+   "loaCode": "RJGtwp2x0Ii7feG7HybaY6nkc",
+   "ownedById": 1,
+   "ownedBy": "Customer",
+   "isHistorical": false,
+   "files": []
+}</pre>
+                    <br><br>
+                    Lastly, if the switch port does not exist, a 404 HTTP response is thrown.
+                </li>
+            </ul>
+        </dd>
+
         <dt>Switch Ports</dt>
         <dd>
             <ul>

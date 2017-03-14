@@ -29,8 +29,10 @@ Route::get('router/gen_config/{handle}',               'RouterController@genConf
 Route::get('sflow-receivers/pretag.map',    'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst', 'SflowReceiverController@receiversLst');
 
+Route::get('patch-panel-port/{id}',         'PatchPanelPortController@detail');
 
 Route::get('provisioner/salt/switch/{switchid}',   'Provisioner\SaltController@forSwitch');
 Route::get('provisioner/salt/switch-name/{switchname}', 'Provisioner\SaltController@forSwitchByName');
 
 Route::get('switch-port/{id}/customer',       'SwitchPortController@customer' );
+
