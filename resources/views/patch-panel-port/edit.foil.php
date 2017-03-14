@@ -20,13 +20,7 @@
     </div>
 <?php endif; ?>
 
-
-<?php if(session()->has('fail')): ?>
-    <div class="alert alert-danger" role="alert">
-        <b>Error : </b><?= session()->get('fail') ?>
-    </div>
-<?php endif; ?>
-
+<?= $t->alerts() ?>
 
 <?= Former::open()->method('POST')
     ->action(url('patch-panel-port/store'))
@@ -309,10 +303,6 @@
                 $("#switch_port").trigger("chosen:updated");
                 switchId = $("#switch").val();
                 customerId = $("#customer").val();
-                if(customerId != null){
-                    //resetCustomer();
-                }
-
 
                 switchPortId = $("#switch_port_id").val();
                 $.ajax({
@@ -364,7 +354,7 @@
                     customerId = $("#customer").val();
                     patch_panel_id = $("#patch_panel_id").val();
                     $.ajax({
-                        url: "<?= url('patch-panel-port/get-customer-for-switch-port/')?>",
+                        url: "<?= url('patch-panel-port/get-switch-for-customer/')?>",
                         data: {customerId: customerId,patch_panel_id:patch_panel_id},
                         type: 'GET',
                         dataType: 'JSON',
@@ -398,20 +388,17 @@
 
 
             $(".reset-btn").click(function(){
-                if($("#switch").val() != null && $("#switch_port").val() != null){
-                    options = "<option value=''> Choose a Switch</option>\n";
-                    <?php foreach ($t->switches as $id => $switch): ?>
-                        $switch = '<?= $switch ?>';
-                        options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
-                    <?php endforeach; ?>
-                    $("#switch").html(options);
-                    $("#switch").trigger("chosen:updated");
-                    $("#switch_port").html('');
-                    $("#switch_port").trigger("chosen:updated");
-                    resetCustomer();
-                    $("#pi_status_area").hide();
-                }
-
+                options = "<option value=''> Choose a Switch</option>\n";
+                <?php foreach ($t->switches as $id => $switch): ?>
+                    $switch = '<?= $switch ?>';
+                    options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
+                <?php endforeach; ?>
+                $("#switch").html(options);
+                $("#switch").trigger("chosen:updated");
+                $("#switch_port").html('');
+                $("#switch_port").trigger("chosen:updated");
+                resetCustomer();
+                $("#pi_status_area").hide();
             });
 
             $( "#help-btn" ).click( function() {
@@ -428,23 +415,18 @@
                 notesSetDateUser('notes');
             });
 
-            $('#notes').focus(function(){
-                notesSetDateUser('notes');
-            });
 
             $('#private_notes').click(function(){
                 notesSetDateUser('private_notes');
             });
 
-            $('#private_notes').focus(function(){
-                notesSetDateUser('private_notes');
-            });
+
             function notesSetDateUser(input){
                 val_textarea = $('#'+input).text();
-                default_val = '* <?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
+                default_val = '## <?= date("Y-m-d" ).' - '.$t->user->getUsername()?> \n\n';
                 pos = default_val.length + ($('#'+input).val().length - $('#'+input).text().length);
 
-                if(val_textarea == ''){
+                if(val_textarea == '' ){
                     $('#'+input).text(default_val);
                     $('#'+input).setCursorPosition(pos);
                 }
@@ -461,6 +443,7 @@
                             if(!new_private_notes_set){
                                 $('#'+input).text(default_val+'\n\n'+val_textarea);
                                 new_private_notes_set = true;
+                                $('#'+input).setCursorPosition(pos);
                             }
                         }
 

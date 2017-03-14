@@ -23,16 +23,8 @@
             </h2>
         </div>
     <?php endif;?>
-    <?php if(session()->has('success')): ?>
-        <div class="alert alert-success" role="alert">
-            <?= session()->get('success') ?>
-        </div>
-    <?php endif; ?>
-    <?php if(session()->has('error')): ?>
-        <div class="alert alert-danger" role="alert">
-            <b>Error : </b><?= session()->get('error') ?>
-        </div>
-    <?php endif; ?>
+
+    <?= $t->alerts() ?>
 
     <table id='patch-panel-port-list' class="table ">
         <thead>
@@ -100,10 +92,12 @@
                                 </button>
 
                                 <ul class="dropdown-menu dropdown-menu-right">
+                                    <input type="hidden"  id="notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getNotes() ?>">
+                                    <input type="hidden"  id="private_notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getPrivateNotes() ?>">
                                     <input type="hidden"  id="pi_state_<?=$patchPanelPort->getId() ?>" label="<?=$patchPanelPort->getPhysicalInterfaceStateLabel()?>" value="<?=$patchPanelPort->getPhysicalInterfaceState() ?>">
 
                                     <li>
-                                        <a id="edit-notes-<?= $patchPanelPort->getId() ?>" href="<?= url()->current() ?>" >
+                                        <a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false,true)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId()?>">
                                             <?= $patchPanelPort->isStateAvailable() ? 'Add' : 'Edit' ?> note...
                                         </a>
                                     </li>
@@ -149,7 +143,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <a class="btn btn btn-default <?php if($patchPanelPort->getHistoryCount() == 0): ?> disabled <?php endif; ?>" title="History" <?php if($patchPanelPort->getHistoryCount() != 0): ?> href="<?= url('/patch-panel-port/history' ).'/'.$patchPanelPort->getId()?> <?php endif; ?> ">
+                            <a class="btn btn btn-default <?php if($patchPanelPort->getHistoryCount() == 0): ?> disabled <?php endif; ?>" title="History" <?php if($patchPanelPort->getHistoryCount() != 0): ?> href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?> <?php endif; ?> ">
                                 <i class="glyphicon glyphicon-folder-open"></i>
                             </a>
                         </div>

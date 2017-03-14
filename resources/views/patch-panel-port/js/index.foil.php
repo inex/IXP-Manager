@@ -33,9 +33,12 @@ $(document).ready(function(){
 
 function setNotesTextArea( pppId, input ) {
     val_textarea = $('#'+input).text();
-    default_val = '* <?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
+    default_val = '## <?= date("Y-m-d" ).' - '.$t->user->getUsername()?> \n\n';
+    pos = default_val.length + ($('#'+input).val().length - $('#'+input).text().length);
+
 
     if(val_textarea == ''){
+        $('#'+input).setCursorPosition(pos);
         $('#'+input).text(default_val);
     } else {
         if($('#'+input).text() != default_val){
@@ -43,11 +46,13 @@ function setNotesTextArea( pppId, input ) {
                 if(!window.new_notes_set){
                     $('#'+input).text(default_val+'\n\n'+val_textarea);
                     window.new_notes_set = true;
+                    $('#'+input).setCursorPosition(pos);
                 }
             } else {
                 if(!window.new_private_notes_set){
                     $('#'+input).text(default_val+'\n\n'+val_textarea);
                     window.new_private_notes_set = true;
+                    $('#'+input).setCursorPosition(pos);
                 }
             }
         }
