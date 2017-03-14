@@ -214,7 +214,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="btn-group btn-group-sm" role="group">
-                                                            <a class="btn btn btn-default" target="_blank" href="<?= url('/patch-panel-port/downloadFile' ).'/'.$file->getId()?>" href="" title="Download"><i class="fa fa-download"></i></a>
+                                                            <a class="btn btn btn-default" target="_blank" href="<?= url('/patch-panel-port/download-file' ).'/'.$file->getId()?>" href="" title="Download"><i class="fa fa-download"></i></a>
                                                             <?php if ($t->isSuperUser): ?>
                                                                 <button class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>,<?= $pppHistory->getId()?>,'<?=$objectType?>')" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
                                                             <?php endif; ?>

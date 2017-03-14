@@ -11,7 +11,7 @@
 <?php $this->section('content') ?>
 
     <?= Former::open()->method('POST')
-        ->action(url('patch-panel-port/sendEmail'))
+        ->action(url('patch-panel-port/send-email'))
         ->customWidthClass('col-sm-10')
         ->addClass('col-md-10');
     ?>
