@@ -118,7 +118,7 @@ function popup( href, pppId, connected, hasSwitchPort, only_note ) {
                     }
 
                     $.ajax({
-                        url: "<?= url('patch-panel-port/setNotes/')?>",
+                        url: "<?= url('patch-panel-port/set-notes/')?>",
                         data: {pppId:pppId,notes: notes,private_notes:private_notes,pi_status:pi_status,only_note:only_note},
                         type: 'GET',
                         dataType: 'JSON',
@@ -153,94 +153,82 @@ function popup( href, pppId, connected, hasSwitchPort, only_note ) {
 
 
 
-function uploadPopup(pppId){
-    html = "<form id='upload' method='post' action='<?= url('/patch-panel-port/uploadFile' )?>/"+pppId+"' enctype='multipart/form-data'> <div id='drop'>Drop Files Here &nbsp;<a class='btn btn-success'><i class='glyphicon glyphicon-upload'></i> Browse</a> <br/><span class='info'> (max size 50MB) </span><input type='file' name='upl' multiple /> </div> <ul><!-- The file uploads will be shown here --> </ul><input type='hidden' name='_token' value='<?php echo csrf_token(); ?>'> </form>";
+    function uploadPopup(pppId){
+        html = "<form id='upload' method='post' action='<?= url('/patch-panel-port/upload-file' )?>/"+pppId+"' enctype='multipart/form-data'> <div id='drop'>Drop Files Here &nbsp;<a class='btn btn-success'><i class='glyphicon glyphicon-upload'></i> Browse</a> <br/><span class='info'> (max size 50MB) </span><input type='file' name='upl' multiple /> </div> <ul><!-- The file uploads will be shown here --> </ul><input type='hidden' name='_token' value='<?php echo csrf_token(); ?>'> </form>";
 
-    var dialog = bootbox.dialog({
-    message: html,
-    title: "Files Upload (Files will be public by default)",
-    onEscape: function() {
-    location.reload();
-    },
-    buttons: {
-    cancel: {
-    label: '<i class="fa fa-times"></i> Close',
-    callback: function () {
-    $('.bootbox.modal').modal('hide');
-    location.reload();
-    return false;
-    }
-    },
-    }
+        var dialog = bootbox.dialog({
+            message: html,
+            title: "Files Upload (Files will be public by default)",
+            onEscape: function() {
+                location.reload();
+            },
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Close',
+                    callback: function () {
+                        $('.bootbox.modal').modal('hide');
+                        location.reload();
+                        return false;
+                    }
+                },
+            }
+        });
 
-    });
-    dialog.bind('shown.bs.modal', function(){
+        dialog.init(function(){
+            $.getScript( "js/draganddrop/jquery.fileupload.js", function( data, textStatus, jqxhr ) {});
+            $.getScript( "js/draganddrop/jquery.iframe-transport.js", function( data, textStatus, jqxhr ) {});
+            $.getScript( "js/draganddrop/jquery.knob.js", function( data, textStatus, jqxhr ) {});
+            $.getScript( "js/draganddrop/jquery.ui.widget.js", function( data, textStatus, jqxhr ) {});
+            $.getScript( "js/draganddrop/script.js", function( data, textStatus, jqxhr ) {});
+            window.loadscript = true;
+        });
 
-    });
-
-    dialog.init(function(){
-
-    $.getScript( "js/draganddrop/jquery.fileupload.js", function( data, textStatus, jqxhr ) {});
-    $.getScript( "js/draganddrop/jquery.iframe-transport.js", function( data, textStatus, jqxhr ) {});
-    $.getScript( "js/draganddrop/jquery.knob.js", function( data, textStatus, jqxhr ) {});
-    $.getScript( "js/draganddrop/jquery.ui.widget.js", function( data, textStatus, jqxhr ) {});
-    $.getScript( "js/draganddrop/script.js", function( data, textStatus, jqxhr ) {});
-    window.loadscript = true;
-
-
-    });
-
-    return false;
-}
-
-function deleteFile(idFile,idPPP){
-    $.ajax({
-    url: "<?= url('patch-panel-port/deleteFile/')?>",
-    data: {idFile: idFile, idPPP: idPPP},
-    type: 'GET',
-    dataType: 'JSON',
-    success: function (data) {
-    if(data.success){
-    $('#file_'+idFile).fadeOut( "medium", function() {
-    $('#file_'+idFile).remove();
-    });
-    }
-    else{
-    $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
-    $('#delete_'+idFile).remove();
-    }
+        return false;
     }
 
-    });
-}
-
-function changePrivateFile(idFile,idPPP){
-    $.ajax({
-    url: "<?= url('patch-panel-port/changePrivateFile/')?>",
-    data: {idFile: idFile, idPPP: idPPP},
-    type: 'GET',
-    dataType: 'JSON',
-    success: function (data) {
-    if(data.success){
-    $('#privateMessage_'+idFile).html(' / <i class="success">'+data.message+'</i>');
-    if($('#private_'+idFile).hasClass('fa-lock')){
-    $('#private_'+idFile).removeClass('fa-lock');
-    $('#private_'+idFile).addClass('fa-unlock');
-    }
-    else{
-    $('#private_'+idFile).removeClass('fa-unlock');
-    $('#private_'+idFile).addClass('fa-lock');
+    function deleteFile(idFile,idPPP){
+        $.ajax({
+            url: "<?= url('patch-panel-port/delete-file/')?>",
+            data: {idFile: idFile, idPPP: idPPP},
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                if(data.success){
+                    $('#file_'+idFile).fadeOut( "medium", function() {
+                        $('#file_'+idFile).remove();
+                    });
+                } else {
+                    $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
+                    $('#delete_'+idFile).remove();
+                }
+            }
+        });
     }
 
-    }
-    else{
-    $('#privateMessage_'+idFile).html(' / <i class="error"> '+data.message+'</i>');
-    $('#private_'+idFile).remove();
-    }
+    function changePrivateFile(idFile,idPPP){
+        $.ajax({
+            url: "<?= url('patch-panel-port/change-private-file/')?>",
+            data: {idFile: idFile, idPPP: idPPP},
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data) {
+                if(data.success){
+                    $('#privateMessage_'+idFile).html(' / <i class="success">'+data.message+'</i>');
+                    if($('#private_'+idFile).hasClass('fa-lock')){
+                        $('#private_'+idFile).removeClass('fa-lock');
+                        $('#private_'+idFile).addClass('fa-unlock');
+                    } else {
+                        $('#private_'+idFile).removeClass('fa-unlock');
+                        $('#private_'+idFile).addClass('fa-lock');
+                    }
 
-    }
+                } else {
+                    $('#privateMessage_'+idFile).html(' / <i class="error"> '+data.message+'</i>');
+                    $('#private_'+idFile).remove();
+                }
 
-    });
-}
+            }
+        });
+    }
 
 </script>

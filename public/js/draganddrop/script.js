@@ -48,7 +48,7 @@ $(function(){
                     tpl.addClass('success');
                     tpl.attr('id','file_'+result.idFile);
                     tpl.find('span').addClass('success');
-                    tpl.append('<span id="private_'+result.idFile+'" title="Private file" onclick="changePrivateFile('+result.idFile+','+result.idPPP+')" class="private fa fa-lock fa-lg"></span>');
+                    tpl.append('<span id="private_'+result.idFile+'" title="Private file" onclick="changePrivateFile('+result.idFile+','+result.idPPP+')" class="private fa fa-unlock fa-lg"></span>');
                     tpl.append('<span id="delete_'+result.idFile+'" title="Delete File" onclick="deleteFile('+result.idFile+','+result.idPPP+')" class="delete glyphicon glyphicon-trash"></span>');
                     tpl.find('p').append('<i id="message_'+result.idFile+'" class="success">' + result.message + '</i><span id="privateMessage_'+result.idFile+'" ></span>');
                 }

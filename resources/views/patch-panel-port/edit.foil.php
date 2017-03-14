@@ -286,7 +286,7 @@
                     if($("#switch_port").val() != ''){
                         switchPortId = $("#switch_port").val();
                         $.ajax({
-                            url: "<?= url('patch-panel-port/checkPhysicalInterfaceMatch/')?>",
+                            url: "<?= url('patch-panel-port/check-physical-interface-match/')?>",
                             data: {switchPortId: switchPortId},
                             type: 'GET',
                             dataType: 'JSON',
@@ -316,7 +316,7 @@
 
                 switchPortId = $("#switch_port_id").val();
                 $.ajax({
-                    url: "<?= url('patch-panel-port/getSwitchPort/')?>",
+                    url: "<?= url('patch-panel-port/get-switch-port/')?>",
                     data: {switchId: switchId, customerId: customerId, switchPortId : switchPortId},
                     type: 'GET',
                     dataType: 'JSON',
@@ -364,7 +364,7 @@
                     customerId = $("#customer").val();
                     patch_panel_id = $("#patch_panel_id").val();
                     $.ajax({
-                        url: "<?= url('patch-panel-port/getSwitchForACustomer/')?>",
+                        url: "<?= url('patch-panel-port/get-customer-for-switch-port/')?>",
                         data: {customerId: customerId,patch_panel_id:patch_panel_id},
                         type: 'GET',
                         dataType: 'JSON',

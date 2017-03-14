@@ -8,38 +8,38 @@
 
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
-    Route::get( 'list',                        'PatchPanelController@index' );
-    Route::get( 'list/inactive',               'PatchPanelController@indexInactive' );
+    Route::get( 'list',                             'PatchPanelController@index' );
+    Route::get( 'list/inactive',                    'PatchPanelController@indexInactive' );
 
-    Route::get( 'add',                         'PatchPanelController@edit'   );
-    Route::get( 'edit/{id}',                   'PatchPanelController@edit'   );
-    Route::get( 'view/{id}',                   'PatchPanelController@view'   );
-    Route::get( 'change-status/{id}/{active}', 'PatchPanelController@changeStatus' );
+    Route::get( 'add',                              'PatchPanelController@edit'   );
+    Route::get( 'edit/{id}',                        'PatchPanelController@edit'   );
+    Route::get( 'view/{id}',                        'PatchPanelController@view'   );
+    Route::get( 'change-status/{id}/{active}',      'PatchPanelController@changeStatus' );
 
-    Route::post( 'store',                     'PatchPanelController@store'  );
+    Route::post( 'store',                           'PatchPanelController@store'  );
 });
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
-    Route::get( 'list',                         'PatchPanelPortController@index' )->name('patchPanelPortIndex');
-    Route::get( 'list/patch-panel/{id}',        'PatchPanelPortController@index' );
+    Route::get( 'list',                             'PatchPanelPortController@index' )->name('patchPanelPortIndex');
+    Route::get( 'list/patch-panel/{id}',            'PatchPanelPortController@index' );
 
-    Route::get( 'edit/{id}/{allocating?}',      'PatchPanelPortController@edit' );
-    Route::get( 'getSwitchPort',                'PatchPanelPortController@getSwitchPort' );
-    Route::get( 'getCustomerForASwitchPort',    'PatchPanelPortController@getCustomerForASwitchPort' );
-    Route::get( 'getSwitchForACustomer',        'PatchPanelPortController@getSwitchForACustomer' );
-    Route::get( 'checkPhysicalInterfaceMatch',  'PatchPanelPortController@checkPhysicalInterfaceMatch' );
-    Route::get( 'changeStatus/{id}/{status}',   'PatchPanelPortController@changeStatus' );
-    Route::get( 'email/{id}/{type}',            'PatchPanelPortController@email' );
-    Route::get( 'setNotes',                     'PatchPanelPortController@setNotes' );
-    Route::get( 'history/{id}',                 'PatchPanelPortController@history' );
-    Route::get( 'downloadFile/{id}',            'PatchPanelPortController@downloadFile' );
+    Route::get( 'edit/{id}/{allocating?}',          'PatchPanelPortController@edit' );
+    Route::get( 'get-switch-port',                  'PatchPanelPortController@getSwitchPort' );
+    Route::get( 'get-customer-for-switch-port',     'PatchPanelPortController@getCustomerForASwitchPort' );
+    //Route::get( 'getSwitchForACustomer',            'PatchPanelPortController@getSwitchForACustomer' );
+    Route::get( 'check-physical-interface-match',   'PatchPanelPortController@checkPhysicalInterfaceMatch' );
+    Route::get( 'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus' );
+    Route::get( 'email/{id}/{type}',                'PatchPanelPortController@email' );
+    Route::get( 'set-notes',                        'PatchPanelPortController@setNotes' );
+    Route::get( 'history/{id}',                     'PatchPanelPortController@history' );
+    Route::get( 'download-file/{id}',               'PatchPanelPortController@downloadFile' );
 
-    Route::post( 'uploadFile/{id}',             'PatchPanelPortController@uploadFile' );
+    Route::post( 'upload-file/{id}',                'PatchPanelPortController@uploadFile' );
 
-    Route::get(  'deleteFile',                  'PatchPanelPortController@deleteFile' );
-    Route::get(  'changePrivateFile',           'PatchPanelPortController@changePrivateFile' );
+    Route::get(  'delete-file',                     'PatchPanelPortController@deleteFile' );
+    Route::get(  'change-private-file',             'PatchPanelPortController@changePrivateFile' );
 
-    Route::post( 'store',                       'PatchPanelPortController@store' );
-    Route::post( 'sendEmail',                   'PatchPanelPortController@sendEmail' );
+    Route::post( 'store',                           'PatchPanelPortController@store' );
+    Route::post( 'send-email',                      'PatchPanelPortController@sendEmail' );
 
 });
