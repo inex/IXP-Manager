@@ -74,91 +74,108 @@ function popup( pppId, connected, hasSwitchPort, onlyNote ) {
     var new_notes_set = false;
     var html;
 
-    if( onlyNote ) {
-        html = "<p>Add notes</p><br/>";
-    } else {
-        html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p><br/>";
-    }
+    ajaxActionPatchPanelPort( pppId, { "connected": connected, "hasSwitchPort": hasSwitchPort, "onlyNote": onlyNote }, function( ppp, options ) {
 
-    html += "Public Notes : <textarea id='notes' onblur='checkTextArea("+pppId+",\"notes\")' onfocus='setNotesTextArea("+pppId+",\"notes\")' onclick='setNotesTextArea("+pppId+",\"notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#notes_'+pppId).val()+"</textarea>" +
-        "<br/>" +
-        "Private Notes : <textarea id='private_notes' onblur='checkTextArea("+pppId+",\"private_notes\")' onfocus='setNotesTextArea("+pppId+",\"private_notes\")' onclick='setNotesTextArea("+pppId+",\"private_notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#private_notes_'+pppId).val()+"</textarea>";
+        if( options.onlyNote ) {
+            html = "<p>Add notes</p><br/>";
+        } else {
+            html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p><br/>";
+        }
 
-    if( connected ) {
-        if( hasSwitchPort ) {
-            html += "<br/><br/><span>Update Physical Port State To:  </span><select id='PIStatus'>";
+        html += "Public Notes : <textarea id='notes' onblur='checkTextArea(" + pppId + ",\"notes\")' onfocus='setNotesTextArea(" + pppId + ",\"notes\")' onclick='setNotesTextArea(" + pppId + ",\"notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >" + ppp.notes + "</textarea>" +
+            "<br/>" +
+            "Private Notes : <textarea id='private_notes' onblur='checkTextArea(" + pppId + ",\"private_notes\")' onfocus='setNotesTextArea(" + pppId + ",\"private_notes\")' onclick='setNotesTextArea(" + pppId + ",\"private_notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >" + ppp.privateNotes + "</textarea>";
 
-            <?php foreach ($t->physicalInterfaceLimited as $index => $state): ?>
+        if (options.connected) {
+            if (options.hasSwitchPort) {
+                html += "<br/><br/><span>Update Physical Port State To:  </span><select id='PIStatus'>";
+
+                <?php foreach ($t->physicalInterfaceLimited as $index => $state): ?>
                 piIndex = <?= $index?>;
                 currentState = "";
-                if(piIndex == $('#pi_state_'+pppId).val()){
+                if (piIndex == $('#pi_state_' + pppId).val()) {
                     currentState = "(current state)";
                 }
-                html += "<option <?php if($index == \Entities\PhysicalInterface::STATUS_QUARANTINE):?> selected <?php endif;?> value='<?= $index ?>'><?= $state?> "+currentState+"</option>";
-            <?php endforeach ;?>
-            if(currentState == ''){
-                html += "<option value='"+$('#pi_state_'+pppId).val()+"'>"+$('#pi_state_'+pppId).attr('label')+" (current state)</option>";
-            }
-            html += "</select>";
-        }
-    }
-
-    var dialog = bootbox.dialog({
-        message: html,
-        title: "Note",
-        buttons: {
-            cancel: {
-                label: '<i class="fa fa-times"></i> Cancel',
-                callback: function () {
-                    $('.bootbox.modal').modal('hide');
-                    return false;
+                html += "<option <?php if($index == \Entities\PhysicalInterface::STATUS_QUARANTINE):?> selected <?php endif;?> value='<?= $index ?>'><?= $state?> " + currentState + "</option>";
+                <?php endforeach ;?>
+                if (currentState == '') {
+                    html += "<option value='" + $('#pi_state_' + pppId).val() + "'>" + $('#pi_state_' + pppId).attr('label') + " (current state)</option>";
                 }
-            },
-            confirm: {
-                label: '<i class="fa fa-check"></i> Confirm',
-                callback: function () {
-                    notes = $('#notes').val();
-                    private_notes = $('#private_notes').val();
-                    if(hasSwitchPort){
-                        pi_status = $('#PIStatus').val();
-                    } else {
-                        pi_status = null;
+                html += "</select>";
+            }
+        }
+
+        var dialog = bootbox.dialog({
+            message: html,
+            title: "Note",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel',
+                    callback: function () {
+                        $('.bootbox.modal').modal('hide');
+                        return false;
                     }
-
-                    $.ajax({
-                        url: "<?= url('patch-panel-port/set-notes/')?>",
-                        data: {pppId:pppId,notes: notes,private_notes:private_notes,pi_status:pi_status,only_note:only_note},
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function (data) {
-                            if(data.success){
-                                if(only_note){
-                                    $('.bootbox.modal').modal('hide');
-                                    location.reload();
-                                } else {
-                                    document.location.href = url;
-                                }
-
-                                return true;
-                            } else{
-                                $('.bootbox.modal').modal('hide');
-                                return false;
-                            }
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm',
+                    callback: function () {
+                        notes = $('#notes').val();
+                        private_notes = $('#private_notes').val();
+                        if (options.hasSwitchPort) {
+                            pi_status = $('#PIStatus').val();
+                        } else {
+                            pi_status = null;
                         }
-                    });
+
+                        $.ajax({
+                            url: "<?= url('patch-panel-port/set-notes/')?>",
+                            data: {
+                                pppId: pppId,
+                                notes: notes,
+                                private_notes: private_notes,
+                                pi_status: pi_status,
+                                only_note: only_note
+                            },
+                            type: 'GET',
+                            dataType: 'JSON',
+                            success: function (data) {
+                                if (data.success) {
+                                    if (only_note) {
+                                        $('.bootbox.modal').modal('hide');
+                                        location.reload();
+                                    } else {
+                                        document.location.href = url;
+                                    }
+
+                                    return true;
+                                } else {
+                                    $('.bootbox.modal').modal('hide');
+                                    return false;
+                                }
+                            }
+                        });
+                    }
                 }
             }
-        }
-    });
+        });
 
-    dialog.init(function(){
-        window.new_notes_set = false;
-        window.new_private_notes_set = false;
-    });
+        dialog.init(function () {
+            window.new_notes_set = false;
+            window.new_private_notes_set = false;
+        });
 
-    return false;
+    }); // ajaxGetPatchPanelPortDetail()
 }
 
+function ajaxActionPatchPanelPort( pppid, options, handleData ) {
+    return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid )
+        .done( function( data ) {
+            handleData( data, options );
+        })
+        .fail( function() {
+            throw new Error("Error running ajax query for patch-panel-port/$id");
+        });
+}
 
 
     function uploadPopup(pppId){

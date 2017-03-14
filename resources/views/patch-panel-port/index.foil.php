@@ -100,8 +100,6 @@
                                 </button>
 
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <input type="hidden"  id="notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getNotes() ?>">
-                                    <input type="hidden"  id="private_notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getPrivateNotes() ?>">
                                     <input type="hidden"  id="pi_state_<?=$patchPanelPort->getId() ?>" label="<?=$patchPanelPort->getPhysicalInterfaceStateLabel()?>" value="<?=$patchPanelPort->getPhysicalInterfaceState() ?>">
 
                                     <li>
