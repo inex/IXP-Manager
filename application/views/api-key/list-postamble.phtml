@@ -108,6 +108,31 @@
         "private":false
     }]
 }</pre>
+
+                    You can get <em>deeper</em> information by adding a <code>/1</code> which adds the following to the above:
+                    <pre>
+    patchPanel: {
+        id: 3,
+        cabinetId: 1,
+        name: "NAME-01",
+        coloRef: "COLO-REF-01",
+        cableTypeId: 1,
+        cableType: "UTP",
+        connectorTypeId: 1,
+        connectorType: "RJ45",
+        active: true
+    },
+    switchPort: {
+        switchId: 30,
+        switch: "swi1-deg1-1",
+        name: "X670G2-48x-4q Port 1",
+        ifName: "1:1",
+        physicalInterfaceId: 2,
+        physicalInterface: {
+            statusId: 4,
+            status: "Awaiting X-Connect"
+        }
+    }</pre>
                     <br><br>
                     Lastly, if the switch port does not exist, a 404 HTTP response is thrown.
                 </li>

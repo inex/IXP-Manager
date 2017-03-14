@@ -496,4 +496,15 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         return parent::hasDuplexPort();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function toArray(): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toArray', []);
+
+        return parent::toArray();
+    }
+
 }
