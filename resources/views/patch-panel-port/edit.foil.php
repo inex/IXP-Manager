@@ -340,7 +340,6 @@
                     $("#customer").trigger("chosen:updated");
                     $.ajax( "<?= url('') ?>/api/v4/switch-port/" + switchPortId + "/customer" )
                         .done( function( data ) {
-                            console.log(data);
                             if( data.customerFound ) {
                                 $("#customer").html( '<option value="' + data.id + '">' + data.name + "</option>\n" );
                             } else {
