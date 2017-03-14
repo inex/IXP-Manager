@@ -1405,7 +1405,7 @@ class PatchPanelPort
                 'uploadedAt' => $f->getUploadedAt(),
                 'uploadedBy' => $f->getUploadedBy(),
                 'size'       => $f->getSize(),
-                'private'    => $f->isPrivate(),
+                'private'    => $f->getIsPrivate(),
             ];
             $a['files'][] = $f;
         }
@@ -1424,6 +1424,10 @@ class PatchPanelPort
         $a['connectedAt']      = $a['connectedAt']      ? Carbon::instance( $a['connectedAt']      )->toIso8601String() : null;
         $a['ceaseRequestedAt'] = $a['ceaseRequestedAt'] ? Carbon::instance( $a['ceaseRequestedAt'] )->toIso8601String() : null;
         $a['ceasedAt']         = $a['ceasedAt']         ? Carbon::instance( $a['ceasedAt']         )->toIso8601String() : null;
+
+        foreach( $a['files'] as $i => $f ) {
+            $a['files'][$i]['uploadedAt'] = Carbon::instance( $a['files'][$i]['uploadedAt'] )->toIso8601String();
+        }
 
         return $a;
     }
