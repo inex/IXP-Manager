@@ -22,9 +22,7 @@ class PatchPanelPortController extends Controller {
     public function detail( int $id ): JsonResponse {
 
         if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $id ) ) ) {
-            if( !( $ppp = D2EM::getRepository( PatchPanelPortHistory::class )->findOneBy( [ 'patch_panel_port_id' => $id ] ) ) ) {
-                abort( 404, 'No such patch panel port' );
-            }
+            abort( 404, 'No such patch panel port' );
         }
 
         return response()->json( $ppp->jsonArray() );
