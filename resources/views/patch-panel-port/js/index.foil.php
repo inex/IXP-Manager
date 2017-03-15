@@ -102,11 +102,11 @@ function popupSetUp( ppp, action ) {
         }
     }
 
-    publicNotes.on( 'blur', unsetNotesTextArea )
+    publicNotes.on( 'blur focusout', unsetNotesTextArea )
         .on( 'focus', setNotesTextArea )
         .on( 'keyup change', function() { $(this).off('blur focus keyup change') } );
 
-    privateNotes.on( 'blur', unsetNotesTextArea )
+    privateNotes.on( 'blur focusout', unsetNotesTextArea )
         .on( 'focus', setNotesTextArea )
         .on( 'keyup change', function() { $(this).off('blur focus keyup change') } );
 }
@@ -121,8 +121,8 @@ function popupTearDown() {
     privateNotes.val('');
     $('#notes-modal-body-pi-status').html('');
 
-    publicNotes.off( 'blur click focus' );
-    privateNotes.off( 'blur click focus' );
+    publicNotes.off( 'blur change click keyup focus focusout' );
+    privateNotes.off( 'blur change click keyup focus focusout' );
 }
 
 function popup( pppId, action, url ) {
