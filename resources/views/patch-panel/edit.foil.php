@@ -14,40 +14,40 @@
 
 
 <?= Former::open()
-        ->method('post')
-        ->action( url( 'patch-panel/store' ) )
-        ->customWidthClass('col-sm-3');
+    ->method('post')
+    ->action( url( 'patch-panel/store' ) )
+    ->customWidthClass('col-sm-3');
 ?>
 
     <?= Former::text( 'name' )
-            ->label( 'Patch Panel Name' )
-            ->help("The name / reference for the patch panel. Using the co-location provider's reference is probably the sanest / least confusing option.");
+        ->label( 'Patch Panel Name' )
+        ->help("The name / reference for the patch panel. Using the co-location provider's reference is probably the sanest / least confusing option.");
     ?>
 
     <?= Former::text( 'colo_reference' )
-            ->label( 'Colocation reference' )
-            ->help('The reference the co-location provider has assigned to this patch panel.');
+        ->label( 'Colocation reference' )
+        ->help('The reference the co-location provider has assigned to this patch panel.');
     ?>
 
     <?= Former::select( 'cabinet' )
-            ->label( 'Cabinet' )
-            ->fromQuery( $t->cabinets, 'name' )
-            ->placeholder( 'Choose a Cabinet' )
-            ->addClass( 'chzn-select' );
+        ->label( 'Cabinet' )
+        ->fromQuery( $t->cabinets, 'name' )
+        ->placeholder( 'Choose a Cabinet' )
+        ->addClass( 'chzn-select' );
     ?>
 
     <?= Former::select( 'cable_type' )
-            ->label( 'Cable Type' )
-            ->options(   Entities\PatchPanel::$CABLE_TYPES )
-            ->placeholder( 'Choose a Cable Type' )
-            ->addClass( 'chzn-select' );
+        ->label( 'Cable Type' )
+        ->options(   Entities\PatchPanel::$CABLE_TYPES )
+        ->placeholder( 'Choose a Cable Type' )
+        ->addClass( 'chzn-select' );
     ?>
 
     <?= Former::select( 'connector_type' )
-            ->label( 'Connector Type' )
-            ->options( Entities\PatchPanel::$CONNECTOR_TYPES )
-            ->placeholder( 'Choose a Connector Type')
-            ->addClass( 'chzn-select' );
+        ->label( 'Connector Type' )
+        ->options( Entities\PatchPanel::$CONNECTOR_TYPES )
+        ->placeholder( 'Choose a Connector Type')
+        ->addClass( 'chzn-select' );
     ?>
 
     <?= Former::number( 'numberOfPorts' )
@@ -74,7 +74,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-            ->value( $t->patchPanel ? $t->patchPanel->getId() : '' )
+        ->value( $t->patchPanel ? $t->patchPanel->getId() : '' )
     ?>
 
     <?= Former::actions(
@@ -91,34 +91,33 @@
 
 <?php $this->section('scripts') ?>
 <script>
-$(document).ready( function() {
-    $('.help-block').hide();
+    $(document).ready( function() {
+        $('.help-block').hide();
 
-    $( "#help-btn" ).click( function() {
-        if($( ".help-block" ).css('display') == 'none'){
-            $( ".help-block" ).show();
-        }
-        else{
-            $( ".help-block" ).hide();
-        }
+        $( "#help-btn" ).click( function() {
+            if($( ".help-block" ).css('display') == 'none'){
+                $( ".help-block" ).show();
+            }
+            else{
+                $( ".help-block" ).hide();
+            }åå
+        });
+
+        $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' ,
+            '<b>Note that duplex ports should be entered as two ports.</b>' );
+
+        $( "#date-today" ).click( function() {
+            $( "#installation_date" ).val( '<?= date("Y-m-d" ) ?>' );
+        });
+
+        $("[data-toggle=popover] ").popover({ placement: 'left',container: 'body', html: true, trigger: "hover"});
+
+        $( "#name" ).blur( function() {
+            if( $("#colo_reference").val() == '' ){
+                $("#colo_reference").val( $("#name" ).val());
+            }
+        });
 
     });
-
-    $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' ,
-        '<b>Note that duplex ports should be entered as two ports.</b>' );
-
-    $( "#date-today" ).click( function() {
-        $( "#installation_date" ).val( '<?= date("Y-m-d" ) ?>' );
-    });
-
-    $("[data-toggle=popover] ").popover({ placement: 'left',container: 'body', html: true, trigger: "hover"});
-
-    $( "#name" ).blur( function() {
-        if( $("#colo_reference").val() == '' ){
-            $("#colo_reference").val( $("#name" ).val());
-        }
-    });
-
-});
 </script>
 <?php $this->append() ?>

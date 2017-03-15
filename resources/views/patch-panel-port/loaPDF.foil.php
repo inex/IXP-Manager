@@ -1,5 +1,7 @@
 <head>
-    <title>Loa - <?= $t->ppp->getCustomer()->getName() ?> - <?= $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ?> - <?= $t->ppp->getPatchPanel()->getColoReference() ?> - <?= $t->ppp->getName()  ?></title>
+    <title>
+        Loa - <?= $t->ppp->getCustomer()->getName() ?> - <?= $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ?> - <?= $t->ppp->getPatchPanel()->getColoReference() ?> - <?= $t->ppp->getName()  ?>
+    </title>
 </head>
 <table width="100%">
     <tr>
@@ -22,12 +24,17 @@
     Letter of Agency (LoA)
 </h1>
 <hr>
-<h3>Prior to connecting to our demarcation as described below, the co-location provider must ensure that this link does not terminate on any active ports.
+<h3>
+    Prior to connecting to our demarcation as described below, the co-location provider must ensure that this link does not terminate on any active ports.
     If it does, please contact our NOC immediately.
     The co-location provider must also advise us by email to when this new connection has been completed and at that time provide the co-location reference for the cross connect as well as any test results of the new circuit.
 </h3>
-<p>To whom it may concern,</p>
-<p>With this letter, ( hereby authorises <?= $t->ppp->getCustomer()->getName() ?> and /or its agents to order a connection to the following demarcation point:</p>
+<p>
+    To whom it may concern,
+</p>
+<p>
+    With this letter, ( hereby authorises <?= $t->ppp->getCustomer()->getName() ?> and /or its agents to order a connection to the following demarcation point:
+</p>
 
 <p>
     Location: <?= $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ?><br/>
@@ -54,7 +61,9 @@
 
 <p>
     This LoA can be authenticated via the following URL:<br/>
-    <a target="_blank" href="<?= url('/verify-loa' ).'/'.$t->ppp->getId().'/'.$t->ppp->getLoaCode()?>">http://ixp.dev/verify-loa/<?= $t->ppp->getId()?>/<?= $t->ppp->getLoaCode()?></a>
+    <a target="_blank" href="<?= url('/verify-loa' ).'/'.$t->ppp->getId().'/'.$t->ppp->getLoaCode()?>">
+        http://ixp.dev/verify-loa/<?= $t->ppp->getId()?>/<?= $t->ppp->getLoaCode()?>
+    </a>
 </p>
 
 <p>

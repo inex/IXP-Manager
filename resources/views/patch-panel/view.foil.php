@@ -13,56 +13,107 @@
     <div class="panel panel-default">
         <div class="panel-heading">Informations</div>
         <div class="panel-body">
-            <div class="form-group">
-                <div >
-                    ID : <b> <?= $t->patchPanel->getId() ?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Name :
-                    <b>
+            <table class="table_ppp_info">
+                <tr>
+                    <td>
+                        <b>
+                            Name :
+                        </b>
+                    </td>
+                    <td>
                         <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>">
                             <?= $t->patchPanel->getName() ?>
                         </a>
-                    </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Colocation : <b> <?= $t->patchPanel->getColoReference() ?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Cabinet : <a href="<?= url('/cabinet/view' ).'/'.$t->patchPanel->getCabinet()->getId()?>"><b> <?= $t->patchPanel->getCabinet()->getName() ?>  </b></a>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Cable Type : <b> <?= $t->patchPanel->resolveCableType() ?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Connector Type : <b> <?= $t->patchPanel->resolveConnectorType()?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Number of Ports : <b> <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>"> <?= $t->patchPanel->getAvailableForUsePortCount()." / ".$t->patchPanel->getPortCount() ?></a></b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Installation Date : <b> <?= $t->patchPanel->getInstallationDateFormated() ?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Active : <b> <?= $t->patchPanel->getActiveText() ?> </b>
-                </div>
-            </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Colocation :
+                        </b>
+                    </td>
+                    <td>
+                         <?= $t->patchPanel->getColoReference() ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Cabinet :
+                        </b>
+                    </td>
+                    <td>
+                        <a href="<?= url('/cabinet/view' ).'/'.$t->patchPanel->getCabinet()->getId()?>">
+                            <?= $t->patchPanel->getCabinet()->getName() ?>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Cable Type :
+                        </b>
+                    </td>
+                    <td>
+                         <?= $t->patchPanel->resolveCableType() ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Connector Type :
+                        </b>
+                    </td>
+                    <td>
+                        <?= $t->patchPanel->resolveConnectorType()?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Number of Ports :
+                        </b>
+                    </td>
+                    <td>
+                        <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>">
+                            <span title="" class="label label-<?= $t->patchPanel->getCssClassPortCount() ?>">
+                                    <?php if( $t->patchPanel->hasDuplexPort() ): ?>
+                                        <?= $t->patchPanel->getAvailableOnTotalPort(true) ?>
+                                    <?php else: ?>
+                                        <?= $t->patchPanel->getAvailableOnTotalPort(false) ?>
+                                    <?php endif; ?>
+                                </span>
+
+                            <?php if( $t->patchPanel->hasDuplexPort() ): ?>
+                                &nbsp;
+                                <span class="label label-info">
+                                        <?= $t->patchPanel->getAvailableOnTotalPort(false) ?>
+                                    </span>
+                            <?php endif; ?>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Installation Date :
+                        </b>
+                    </td>
+                    <td>
+                        <?= $t->patchPanel->getInstallationDateFormated() ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Active :
+                        </b>
+                    </td>
+                    <td>
+                        <?= $t->patchPanel->getActiveText() ?>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 <?php $this->append() ?>

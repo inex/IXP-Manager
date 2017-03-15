@@ -50,7 +50,9 @@
                         <?= $patchPanelPort->getId() ?>
                     </td>
                     <td>
-                        <?= $patchPanelPort->getName() ?>
+                        <a href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?> ">
+                            <?= $patchPanelPort->getName() ?>
+                        </a>
                     </td>
                     <?php if(!$t->patchPanel): ?>
                         <td>
