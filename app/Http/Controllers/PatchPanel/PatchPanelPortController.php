@@ -472,19 +472,17 @@ class PatchPanelPortController extends Controller
      * @params  $filesystem FlysystemManager instance of the file manager
      * @return  JSON customer object
      */
-    public function deleteFile(Request $request, FlysystemManager $filesystem){
+    public function deleteFile(int $id, int $idFile, FlysystemManager $filesystem){
         $success = false;
         $message = 'An error has occured !';
 
-        if( ( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($request->input('idPPP')) ) ) {
-            if( ( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find($request->input('idFile')) ) ) {
+        if( ( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
+            if( ( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find($idFile) ) ) {
                 $path = PatchPanelPortFile::getPathPPPFile($pppFile->getStorageLocation());
-
                 if($filesystem->has($path)){
-                    $rep = $filesystem->delete($path);
-
-                    if($rep){
+                    if($filesystem->delete($path)){
                         $success = true;
+                        $message = 'File deleted with success';
                         $patchPanelPort->removePatchPanelPortFile($pppFile);
                         D2EM::persist($patchPanelPort);
                         D2EM::remove($pppFile);
@@ -494,8 +492,7 @@ class PatchPanelPortController extends Controller
             }
         }
 
-
-        return response()->json(array('success' => $success, 'message' => $message));
+        return response()->json(['success' => $success, 'message' => $message]);
     }
 
     /**
@@ -776,7 +773,6 @@ class PatchPanelPortController extends Controller
      */
     public function verifyLoa(int $id, string $loaCode)
     {
-        $ppp = false;
         if($id != null) {
             if (!($ppp = D2EM::getRepository(PatchPanelPort::class)->find($id))) {
                 abort(404);

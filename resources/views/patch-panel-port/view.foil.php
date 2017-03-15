@@ -234,14 +234,11 @@
     </div>
 </div>
 
-
-
 <?php $this->append() ?>
 
 
 <?php $this->section('scripts') ?>
 <script>
-
     function deletePopup( idFile, idHistory, objectType ){
         bootbox.confirm({
             title: "Delete",
@@ -257,31 +254,26 @@
             callback: function (result) {
                 if(result){
                     idPPP = <?= $t->patchPanelPort->getId()?>;
-                    $.ajax({
-                        url: "<?= url('patch-panel-port/deleteFile/')?>",
-                        data: {idFile: idFile, idPPP: idPPP},
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function (data) {
-                            if(data.success){
-                                //$('#file_row_'+idFile).remove();
-                                $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->patchPanelPort->getId()?> #list_file_"+idHistory+'_'+objectType );
-                                $('.bootbox.modal').modal('hide');
-                            }
-                            else{
-                                $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
-                                $('#delete_'+idFile).remove();
-                            }
+                    $.ajax( "<?= url('patch-panel-port')?>/"+idPPP+"/delete-file/"+idFile)
+                    .done( function( data ) {
+                        if(data.success){
+                            $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->patchPanelPort->getId()?> #list_file_"+idHistory+'_'+objectType );
+                            $('.bootbox.modal').modal('hide');
                         }
-
-                    });
+                        else{
+                            $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
+                            $('#delete_'+idFile).remove();
+                        }
+                    })
+                    .fail( function() {
+                        throw new Error("Error running ajax query for patch-panel-port/deleteFile/");
+                        alert("Error running ajax query for patch-panel-port/deleteFile/");
+                        $("#customer").html("");
+                    })
                 }
             }
         });
-
-
     }
-
 </script>
 <?php $this->append() ?>
 
