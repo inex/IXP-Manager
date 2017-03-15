@@ -136,6 +136,16 @@
                     <br><br>
                     Lastly, if the switch port does not exist, a 404 HTTP response is thrown.
                 </li>
+                <li>
+                    Set notes and private notes: [POST]<br>
+                    <code>{genUrl}/api/v4/patch-panel-port/notes/{ldelim}id{rdelim}</code> where <code>id</code> is the patch panel port ID. For example:
+                    <br>
+                    <pre>curl -X POST  -H "X-IXP-Manager-API-Key: key" --data "notes=a&private_notes=b" {genUrl}/api/v4/patch-panel-port/$id/notes</pre>
+                    Additionally, you can send a <code>&pi_status=X</code> where <code>X</code> is a physical interface state. By doing this, you can
+                    update the state through this API call. The code is forgiving - if no physical interface exists, it will fail silently and continue on.
+                    <br>
+                    If the switch port does not exist, a 404 HTTP response is thrown.
+                </li>
             </ul>
         </dd>
 

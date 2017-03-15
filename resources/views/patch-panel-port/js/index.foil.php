@@ -119,7 +119,7 @@ function popup( pppId, action, url ) {
 
         $('#notes-modal-btn-confirm').on( 'click', function() {
             // disable send button
-            $.ajax( "<?= url('api/v4/patch-panel-port/notes/')?>/" + ppp.id, {
+            $.ajax( "<?= url('api/v4/patch-panel-port')?>/" + ppp.id + "/notes", {
                     data: {
                         pppId: ppp.id,
                         notes: $('#notes-modal-body-public-notes').val(),

@@ -42,8 +42,13 @@ class PatchPanelPortController extends Controller {
             abort( 404, 'No such patch panel port' );
         }
 
-        $ppp->setNotes(        clean( $request->input('notes') ) );
-        $ppp->setPrivateNotes( clean( $request->input('private_notes') ) );
+        if( $request->input('notes', null) !== null ) {
+            $ppp->setNotes( clean( $request->input( 'notes' ) ) );
+        }
+
+        if( $request->input('private_notes', null) !== null ) {
+            $ppp->setPrivateNotes( clean( $request->input( 'private_notes' ) ) );
+        }
         D2EM::flush();
 
         // we may also pass a new state for a physical interface with this request
