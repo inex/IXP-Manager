@@ -102,16 +102,18 @@
 
                                     <?php if($patchPanelPort->getState() == \Entities\PatchPanelPort::STATE_AVAILABLE): ?>
                                         <li>
-                                            <a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId().'/allocating'?>">
+                                            <a id="allocate-<?= $patchPanelPort->getId() ?>" href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId().'/allocating'?>">
                                                 Allocate
                                             </a>
                                         </li>
                                     <?php endif; ?>
 
-                                    <?php if($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT): ?>
+                                    <?php if( $patchPanelPort->isStateAwaitingXConnect() ): ?>
                                         <li>
-                                            <a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,true,<?= $patchPanelPort->getHasSwitchPort() ?>,false)" href="<?= url('/patch-panel-port/change-status' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CONNECTED?>">Set Connected</a></li>
+                                            <a id="set-connected-<?= $patchPanelPort->getId() ?>" href="<?= url('/patch-panel-port/change-status' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CONNECTED?>">Set Connected</a>
+                                        </li>
                                     <?php endif; ?>
+
                                     <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED)): ?>
                                         <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" id="ceasedRequested<?=$patchPanelPort->getId()?>,false" href="<?= url('/patch-panel-port/change-status' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_AWAITING_CEASE?>">Cease requested</a></li>
                                     <?php endif; ?>
@@ -180,6 +182,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <input  id="notes-modal-ppp-id"      type="hidden" name="notes-modal-ppp-id" value="">
                 <button id="notes-modal-btn-cancel"  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
                 <button id="notes-modal-btn-confirm" type="button" class="btn btn-primary"                     ><i class="fa fa-check"></i> Confirm</button>
             </div>
