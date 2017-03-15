@@ -260,8 +260,6 @@
                 }
             });
 
-
-
             if(<?= (int)$t->hasDuplex ?> ){
                 $('#duplex').click();
             }
@@ -279,48 +277,52 @@
                 <?php if($t->allocating): ?>
                     if($("#switch_port").val() != ''){
                         switchPortId = $("#switch_port").val();
-                        $.ajax({
-                            url: "<?= url('patch-panel-port/check-physical-interface-match/')?>",
-                            data: {switchPortId: switchPortId},
-                            type: 'GET',
-                            dataType: 'JSON',
-                            success: function (data) {
-                                if(data.success){
+                        $.ajax( "<?= url('/api/v4/switch-port') ?>/" + switchPortId + "/physical-interface" )
+                            .done( function( data ) {
+                                if( data.physicalInterfaceFound ) {
                                     $("#pi_status_area").show();
-                                }
-                                else{
+                                } else {
                                     $("#pi_status_area").hide();
                                 }
-                            }
-
-                        });
+                            })
+                            .fail( function() {
+                                alert("Error running ajax query for switch-port/$id/physical-interface");
+                                $("#customer").html("");
+                            })
                     }
                 <?php endif; ?>
             });
 
             function setSwitchPort(){
-                $("#switch_port").html("<option value=\"\">Loading please wait</option>\n");
-                $("#switch_port").trigger("chosen:updated");
+                $("#switch_port").html("<option value=\"\">Loading please wait</option>\n").trigger("chosen:updated");
                 switchId = $("#switch").val();
                 customerId = $("#customer").val();
-
                 switchPortId = $("#switch_port_id").val();
-                $.ajax({
-                    url: "<?= url('patch-panel-port/get-switch-port/')?>",
-                    data: {switchId: switchId, customerId: customerId, switchPortId : switchPortId},
-                    type: 'GET',
-                    dataType: 'JSON',
-                    success: function (data) {
-                        if(data.success){
-                            var options = "<option value=\"\">Choose a switch port</option>\n";
-                            $.each(data.response,function(key, value){
-                                options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
-                            });
-                            $("#switch_port").html(options);
-                            $("#switch_port").trigger("chosen:updated");
-                        }
-                    }
+
+                $.ajax( "<?= url('/api/v4/switcher')?>/" + switchId + "/switch-port", {
+                    data: {
+                        switchId: switchId,
+                        custId: $("#customer").val(),
+                        spId: $("#switch_port_id").val()
+                    },
+                    type: 'POST'
+                })
+                .done( function( data ) {
+                    var options = "<option value=\"\">Choose a switch port</option>\n";
+                    $.each(data.listPorts,function(key, value){
+                        options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
+                    });
+                    $("#switch_port").html(options);
+                })
+                .fail( function() {
+                    throw new Error("Error running ajax query for api/v4/switcher/$id/switch-port");
+                    alert("Error running ajax query for switcher/$id/customer/$custId/switch-port/$spId");
+                    $("#customer").html("");
+                })
+                .always( function() {
+                    $("#switch_port").trigger("chosen:updated");
                 });
+
             }
 
             function setCustomer(){
@@ -328,7 +330,7 @@
                     var switchPortId = $("#switch_port").val();
                     $("#customer").html("<option value=\"\">Loading please wait</option>\n");
                     $("#customer").trigger("chosen:updated");
-                    $.ajax( "<?= url('') ?>/api/v4/switch-port/" + switchPortId + "/customer" )
+                    $.ajax( "<?= url('/api/v4/switch-port') ?>/" + switchPortId + "/customer" )
                         .done( function( data ) {
                             if( data.customerFound ) {
                                 $("#customer").html( '<option value="' + data.id + '">' + data.name + "</option>\n" );
@@ -347,43 +349,47 @@
             }
 
             $("#customer").change(function(){
-                    $("#switch").html("<option value=\"\">Loading please wait</option>\n");
-                    $("#switch").trigger("chosen:updated");
-                    $("#switch_port").html("");
-                    $("#switch_port").trigger("chosen:updated");
-                    customerId = $("#customer").val();
-                    patch_panel_id = $("#patch_panel_id").val();
-                    $.ajax({
-                        url: "<?= url('patch-panel-port/get-switch-for-customer/')?>",
-                        data: {customerId: customerId,patch_panel_id:patch_panel_id},
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function (data) {
-                            if(data.success){
-                                var options = "<option value=\"\">Choose a switch</option>\n";
-                                $.each(data.response,function(key, value){
-                                    options += "<option value=\"" + key + "\">" + value + "</option>\n";
-                                });
-                                $("#switch").html(options);
-                                $("#switch").trigger("chosen:updated");
-                            }
-                            else{
-                                $("#switch").html("");
-                                $("#switch").trigger("chosen:updated");
-                            }
-                        }
+                $("#switch").html("<option value=\"\">Loading please wait</option>\n").trigger("chosen:updated");
+                $("#switch_port").html("").trigger("chosen:updated");
+                customerId = $("#customer").val();
 
+                $.ajax( "<?= url('/api/v4/customer')?>/" + customerId + "/switches", {
+                    data: {
+                        customerId: customerId,
+                        patch_panel_id: $("#patch_panel_id").val()
+                    },
+                    type: 'POST'
+                })
+                    .done( function( data ) {
+                        if(data.switchesFound){
+                            var options = "<option value=\"\">Choose a switch</option>\n";
+                            $.each(data.switches,function(key, value){
+                                options += "<option value=\"" + key + "\">" + value + "</option>\n";
+                            });
+                            $("#switch").html(options);
+                        }
+                        else{
+                            $("#switch").html("");
+                        }
+                    })
+                    .fail( function() {
+                        throw new Error("Error running ajax query for api/v4/customer/$id/switches");
+                        alert("Error running ajax query for api/v4/customer/$id/switches");
+                    })
+                    .always( function() {
+                        $("#switch").trigger("chosen:updated");
                     });
+
             });
+
 
             function resetCustomer(){
                 options = "<option value=''> Choose a customer</option>\n";
                 <?php foreach ($t->customers as $id => $customer): ?>
-                customer = '<?= $customer ?>';
-                options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
+                    customer = '<?= $customer ?>';
+                    options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
                 <?php endforeach; ?>
-                $("#customer").html(options);
-                $("#customer").trigger("chosen:updated");
+                $("#customer").html(options).trigger("chosen:updated");
             }
 
 
@@ -393,10 +399,8 @@
                     $switch = '<?= $switch ?>';
                     options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
                 <?php endforeach; ?>
-                $("#switch").html(options);
-                $("#switch").trigger("chosen:updated");
-                $("#switch_port").html('');
-                $("#switch_port").trigger("chosen:updated");
+                $("#switch").html(options).trigger("chosen:updated");
+                $("#switch_port").html('').trigger("chosen:updated");
                 resetCustomer();
                 $("#pi_status_area").hide();
             });

@@ -39,5 +39,28 @@ class SwitchPortController extends Controller {
         return response()->json(['customerFound' => false]);
     }
 
+    /**
+     * Check if the switch port has a physical interface set
+     *
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     *
+     * @params  $request instance of the current HTTP request
+     * @return  JsonResponse JSON physicalInterface object
+     */
+    public function physicalInterface(int $id): JsonResponse {
+        if( !($switchPort = D2EM::getRepository(SwitchPort::class)->find($id))){
+            abort( 404, 'No such switchport' );
+        }
+
+        if($phyInterface = $switchPort->getPhysicalInterface()){
+            return response()->json([
+                'physicalInterfaceFound'    => true,
+                'physicalInterface'         => $phyInterface->getId(),
+            ]);
+        }
+
+        return response()->json(array('physicalInterfaceFound' => false));
+    }
+
 
 }

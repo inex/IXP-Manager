@@ -24,10 +24,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'list/patch-panel/{id}',            'PatchPanelPortController@index' );
 
     Route::get( 'edit/{id}/{allocating?}',          'PatchPanelPortController@edit' );
-    Route::get( 'get-switch-port',                  'PatchPanelPortController@getSwitchPort' );
-    //Route::get( 'get-customer-for-switch-port',    'PatchPanelPortController@getCustomerForASwitchPort' );
-    Route::get( 'get-switch-for-customer',           'PatchPanelPortController@getSwitchForACustomer' );
-    Route::get( 'check-physical-interface-match',   'PatchPanelPortController@checkPhysicalInterfaceMatch' );
     Route::get( 'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus' );
     Route::get( 'email/{id}/{type}',                'PatchPanelPortController@email' );
     Route::get( 'set-notes',                        'PatchPanelPortController@setNotes' );
