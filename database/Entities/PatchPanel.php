@@ -440,6 +440,31 @@ class PatchPanel
         return $cnt;
     }
 
+    public function getCssClassPortCount(){
+        $total = $this->getPortCount();
+        $available = $this->getAvailableForUsePortCount();
+        if($total != 0):
+            if( ($total - $available) / $total < 0.7 ):
+                $class = "success";
+            elseif( ($total - $available ) / $total < 0.85 ):
+                $class = "warning";
+            else:
+                $class = "danger";
+            endif;
+        else:
+            $class = "danger";
+        endif;
+
+        return $class;
+    }
+
+    public function getAvailableOnTotalPort($divide = false){
+        $available = ($divide)? floor( $this->getAvailableForUsePortCount() / 2 ) :$this->getAvailableForUsePortCount();
+        $total     = ($divide)? floor( $this->getPortCount() / 2 ) :$this->getPortCount();
+
+        return $available.' / '.$total;
+    }
+
     /**
      * Does this patch panel have any duplex ports?
      *

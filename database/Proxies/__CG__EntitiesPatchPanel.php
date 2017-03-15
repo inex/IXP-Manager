@@ -488,6 +488,28 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function getCssClassPortCount()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCssClassPortCount', []);
+
+        return parent::getCssClassPortCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAvailableOnTotalPort($divide = false)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAvailableOnTotalPort', [$divide]);
+
+        return parent::getAvailableOnTotalPort($divide);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function hasDuplexPort(): bool
     {
 
