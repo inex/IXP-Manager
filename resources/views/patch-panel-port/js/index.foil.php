@@ -25,7 +25,7 @@ $(document).ready(function(){
     $( "a[id|='edit-notes']" ).on( 'click', function(e){
         e.preventDefault();
         var pppid = (this.id).substring(11);
-        popup( pppid, false, false, true );
+        popup( pppid, 'edit-notes', $(this).attr('href') );
     });
 
 
@@ -75,107 +75,86 @@ function checkTextArea(pppId,input){
     }
 }
 
-function popup( pppId, connected, hasSwitchPort, onlyNote ) {
+function popup( pppId, action, url ) {
     var new_notes_set = false;
-    var html;
+    var html = "";
 
-    ajaxActionPatchPanelPort( pppId, { "connected": connected, "hasSwitchPort": hasSwitchPort, "onlyNote": onlyNote }, function( ppp, options ) {
+    ajaxActionPatchPanelPort( pppId, action, url, function( ppp, action, url ) {
 
-        if( options.onlyNote ) {
-            html = "<p>Add notes</p><br/>";
+        if( action != 'edit-notes' ) {
+            $('#notes-modal-body-intro').show();
         } else {
-            html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p><br/>";
+            $('#notes-modal-body-intro').hide();
         }
 
-        html += "Public Notes : <textarea id='notes' onblur='checkTextArea(" + pppId + ",\"notes\")' onfocus='setNotesTextArea(" + pppId + ",\"notes\")' onclick='setNotesTextArea(" + pppId + ",\"notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >" + ppp.notes + "</textarea>" +
-            "<br/>" +
-            "Private Notes : <textarea id='private_notes' onblur='checkTextArea(" + pppId + ",\"private_notes\")' onfocus='setNotesTextArea(" + pppId + ",\"private_notes\")' onclick='setNotesTextArea(" + pppId + ",\"private_notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >" + ppp.privateNotes + "</textarea>";
+        $('#notes-modal-body-public-notes' ).val( ppp.notes );
+        $('#notes-modal-body-private-notes').val( ppp.privateNotes );
 
-        if (options.connected) {
-            if (options.hasSwitchPort) {
-                html += "<br/><br/><span>Update Physical Port State To:  </span><select id='PIStatus'>";
+        // onblur='checkTextArea(" + pppId + ",\"notes\")' onfocus='setNotesTextArea(" + pppId + ",\"notes\")' onclick='setNotesTextArea(" + pppId + ",\"notes\")'
+        // onblur='checkTextArea(" + pppId + ",\"private_notes\")' onfocus='setNotesTextArea(" + pppId + ",\"private_notes\")' onclick='setNotesTextArea(" + pppId + ",\"private_notes\")'
 
-                <?php foreach ($t->physicalInterfaceLimited as $index => $state): ?>
-                piIndex = <?= $index?>;
-                currentState = "";
-                if (piIndex == $('#pi_state_' + pppId).val()) {
-                    currentState = "(current state)";
+        if( action == 'set-connected' && ppp.switchPortId ) {
+
+            var haveCurrentState = false;
+            var piSelect = $('#notes-modal-body-pi-status');
+            piSelect.html('');
+
+            <?php foreach( $t->physicalInterfaceStatesSubSet as $i => $s ): ?>
+
+                var opt = '<option <?= $i == \Entities\PhysicalInterface::STATUS_QUARANTINE ? 'selected="selected"' : '' ?> value="<?= $i ?>"><?= $s ?>';
+
+                if( <?= $i ?> == ppp.switchPort.physicalInterface.statusId ) {
+                    haveCurrentState = true;
+                    opt += " (current state)";
                 }
-                html += "<option <?php if($index == \Entities\PhysicalInterface::STATUS_QUARANTINE):?> selected <?php endif;?> value='<?= $index ?>'><?= $state?> " + currentState + "</option>";
-                <?php endforeach ;?>
-                if (currentState == '') {
-                    html += "<option value='" + $('#pi_state_' + pppId).val() + "'>" + $('#pi_state_' + pppId).attr('label') + " (current state)</option>";
-                }
-                html += "</select>";
+
+                piSelect.append( opt + '</option>' );
+
+            <?php endforeach ;?>
+
+            if( !haveCurrentState ) {
+                piSelect.append( '<option value="' + ppp.switchPort.physicalInterface.statusId + '">' + ppp.switchPort.physicalInterface.status + ' (current state)</option>' );
             }
         }
 
-        var dialog = bootbox.dialog({
-            message: html,
-            title: "Note",
-            buttons: {
-                cancel: {
-                    label: '<i class="fa fa-times"></i> Cancel',
-                    callback: function () {
-                        $('.bootbox.modal').modal('hide');
-                        return false;
+        $('#notes-modal-btn-confirm').on( 'click', function() {
+            // disable send button
+            $.ajax( "<?= url('api/v4/patch-panel-port')?>/" + ppp.id + "/notes", {
+                    data: {
+                        pppId: ppp.id,
+                        notes: $('#notes-modal-body-public-notes').val(),
+                        private_notes: $('#notes-modal-body-private-notes').val(),
+                        pi_status: action == 'set-connected' && ppp.switchPortId ? $('#notes-modal-body-pi-status').val() : false
+                    },
+                    type: 'POST'
+                })
+                .done( function( data ) {
+                    if( action == 'edit-notes' ) {
+                        $('#notes-modal').modal('hide');
+                    } else {
+                        document.location.href = url;
                     }
-                },
-                confirm: {
-                    label: '<i class="fa fa-check"></i> Confirm',
-                    callback: function () {
-                        notes = $('#notes').val();
-                        private_notes = $('#private_notes').val();
-                        if (options.hasSwitchPort) {
-                            pi_status = $('#PIStatus').val();
-                        } else {
-                            pi_status = null;
-                        }
+                })
+                .fail( function(){
+                    throw new Error("Error running ajax query for api/v4/patch-panel-port/notes");
+                    alert( 'Could not update notes. API / AJAX / network error' );
+                });
 
-                        $.ajax({
-                            url: "<?= url('patch-panel-port/set-notes/')?>",
-                            data: {
-                                pppId: pppId,
-                                notes: notes,
-                                private_notes: private_notes,
-                                pi_status: pi_status,
-                                only_note: only_note
-                            },
-                            type: 'GET',
-                            dataType: 'JSON',
-                            success: function (data) {
-                                if (data.success) {
-                                    if (only_note) {
-                                        $('.bootbox.modal').modal('hide');
-                                        location.reload();
-                                    } else {
-                                        document.location.href = url;
-                                    }
-
-                                    return true;
-                                } else {
-                                    $('.bootbox.modal').modal('hide');
-                                    return false;
-                                }
-                            }
-                        });
-                    }
-                }
-            }
+            $('#notes-modal').modal('hide');
         });
 
-        dialog.init(function () {
-            window.new_notes_set = false;
-            window.new_private_notes_set = false;
-        });
+        window.new_notes_set         = false;
+        window.new_private_notes_set = false;
+
+        $('#notes-modal').modal('show');
 
     }); // ajaxGetPatchPanelPortDetail()
 }
 
-function ajaxActionPatchPanelPort( pppid, options, handleData ) {
-    return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid )
+function ajaxActionPatchPanelPort( pppid, action, url, handleData ) {
+    return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid + "/1" )   // + "/1" => deep array to include subobjects
         .done( function( data ) {
-            handleData( data, options );
+            handleData( data, action, url );
         })
         .fail( function() {
             throw new Error("Error running ajax query for patch-panel-port/$id");

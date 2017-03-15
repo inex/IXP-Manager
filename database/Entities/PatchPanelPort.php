@@ -1370,10 +1370,11 @@ class PatchPanelPort
 
     /**
      * Convert this object to an array
-     **
+     *
+     * @param bool $deep Include subobjects
      * @return array
      */
-    public function toArray(): array {
+    public function toArray( bool $deep = false ): array {
         $a = [
             'id'               => $this->getId(),
             'patchPanelId'     => $this->getPatchPanel() ? $this->getPatchPanel()->getId() : null,
@@ -1418,15 +1419,39 @@ class PatchPanelPort
             $a['files'][] = $f;
         }
 
+        if( $deep ) {
+            if( $a['patchPanelId'] ) {
+                $a['patchPanel'] = $this->getPatchPanel()->toArray();
+            }
+
+            // we're not going to give all the objects - just what makes sense for utilities of this
+            if( $a['switchPortId'] ) {
+                $a['switchPort']['switchId'] = $this->getSwitchPort()->getSwitcher()->getId();
+                $a['switchPort']['switch']   = $this->getSwitchPort()->getSwitcher()->getName();
+                $a['switchPort']['name']     = $this->getSwitchPort()->getName();
+                $a['switchPort']['ifName']   = $this->getSwitchPort()->getIfName();
+
+                if( $this->getSwitchPort()->getPhysicalInterface() ) {
+                    $a['switchPort']['physicalInterfaceId'] = $this->getSwitchPort()->getPhysicalInterface()->getId();
+                    $a['switchPort']['physicalInterface']['statusId'] = $this->getSwitchPort()->getPhysicalInterface()->getStatus();
+                    $a['switchPort']['physicalInterface']['status']   = $this->getSwitchPort()->getPhysicalInterface()->resolveStatus();
+
+                } else {
+                    $a['switchPort']['physicalInterfaceId'] = null;
+                }
+            }
+        }
+
         return $a;
     }
 
     /**
      * Get patch panel details as JSON-compatibale array
+     * @param bool $deep Include subobjects
      * @return string
      */
-    public function jsonArray(): array {
-        $a = $this->toArray();
+    public function jsonArray( bool $deep = false ): array {
+        $a = $this->toArray($deep);
 
         $a['assignedAt']       = $a['assignedAt']       ? Carbon::instance( $a['assignedAt']       )->toIso8601String() : null;
         $a['connectedAt']      = $a['connectedAt']      ? Carbon::instance( $a['connectedAt']      )->toIso8601String() : null;
@@ -1442,10 +1467,11 @@ class PatchPanelPort
 
     /**
      * Get patch panel details as JSON
+     * @param bool $deep Include subobjects
      * @return string
      */
-    public function json(): string {
-        return json_encode( $this->jsonArray(), JSON_PRETTY_PRINT );
+    public function json( bool $deep = false ): string {
+        return json_encode( $this->jsonArray($deep), JSON_PRETTY_PRINT );
     }
 
 }

@@ -454,7 +454,24 @@ class PatchPanel
         return false;
     }
 
-
+    /**
+     * Convert this object to an array
+     *
+     * @return array
+     */
+    public function toArray(): array {
+        return [
+            'id'               => $this->getId(),
+            'cabinetId'        => $this->getCabinet() ? $this->getCabinet()->getId() : null,
+            'name'             => $this->getName(),
+            'coloRef'          => $this->getColoReference(),
+            'cableTypeId'      => $this->getCableType(),
+            'cableType'        => $this->resolveCableType(),
+            'connectorTypeId'  => $this->getConnectorType(),
+            'connectorType'    => $this->resolveConnectorType(),
+            'active'           => $this->getActive(),
+        ];
+    }
 
 }
 

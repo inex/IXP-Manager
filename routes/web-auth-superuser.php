@@ -26,7 +26,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'edit/{id}/{allocating?}',          'PatchPanelPortController@edit' );
     Route::get( 'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus' );
     Route::get( 'email/{id}/{type}',                'PatchPanelPortController@email' );
-    Route::get( 'set-notes',                        'PatchPanelPortController@setNotes' );
     Route::get( 'download-file/{id}',               'PatchPanelPortController@downloadFile' );
 
     Route::post( 'upload-file/{id}',                'PatchPanelPortController@uploadFile' );

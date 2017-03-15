@@ -94,8 +94,11 @@ class PatchPanelPortController extends Controller
             'patchPanelPorts'               => D2EM::getRepository(PatchPanelPort::class)->getAllPatchPanelPort($id),
             'patchPanel'                    => $patchPanel,
             'user'                          => Auth::user(),
-            'physicalInterfaceLimited'      => [PhysicalInterface::STATUS_QUARANTINE => PhysicalInterface::$STATES[PhysicalInterface::STATUS_QUARANTINE],PhysicalInterface::STATUS_CONNECTED => PhysicalInterface::$STATES[PhysicalInterface::STATUS_CONNECTED]],
-            'physicalInterface'             => PhysicalInterface::$STATES
+
+            'physicalInterfaceStatesSubSet' => [
+                PhysicalInterface::STATUS_QUARANTINE => PhysicalInterface::$STATES[PhysicalInterface::STATUS_QUARANTINE],
+                PhysicalInterface::STATUS_CONNECTED => PhysicalInterface::$STATES[PhysicalInterface::STATUS_CONNECTED]
+            ]
         ]);
     }
 
@@ -400,38 +403,6 @@ class PatchPanelPortController extends Controller
 
         return redirect( '/patch-panel-port/list/patch-panel/'.$patchPanelPort->getPatchPanel()->getId() );
     }
-
-    /**
-     * set notes via the patch panel port list
-     *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @params  $request instance of the current HTTP request
-     * @return  JSON boolean
-     */
-    public function setNotes(Request $request){
-        if( ( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($request->input('pppId')) ) ) {
-            $success = true;
-            $patchPanelPort->setNotes($request->input('notes'));
-            $patchPanelPort->setPrivateNotes($request->input('private_notes'));
-            D2EM::persist($patchPanelPort);
-            // set the new physical interface status if set
-            if($request->input('pi_status')){
-                $physicalInterface = $patchPanelPort->getSwitchPort()->getPhysicalInterface();
-                if($physicalInterface != null){
-                    $physicalInterface->setStatus($request->input('pi_status'));
-                }
-                D2EM::persist($physicalInterface);
-            }
-            D2EM::flush();
-
-        } else {
-            $success = false;
-        }
-
-        return response()->json(array('success' => $success));
-    }
-
 
     /**
      * Allow to upload a file to a patch panel port
