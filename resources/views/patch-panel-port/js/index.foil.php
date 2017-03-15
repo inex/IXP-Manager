@@ -25,7 +25,7 @@ $(document).ready(function(){
     $( "a[id|='edit-notes']" ).on( 'click', function(e){
         e.preventDefault();
         var pppid = (this.id).substring(11);
-        popup( pppid, 'edit-notes' );
+        popup( pppid, 'edit-notes', $(this).attr('href') );
     });
 
 
@@ -75,114 +75,86 @@ function checkTextArea(pppId,input){
     }
 }
 
-function popup( pppId, action ) {
+function popup( pppId, action, url ) {
     var new_notes_set = false;
     var html = "";
 
-    ajaxActionPatchPanelPort( pppId, action, function( ppp, action ) {
+    ajaxActionPatchPanelPort( pppId, action, url, function( ppp, action, url ) {
 
         if( action != 'edit-notes' ) {
-            html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p><br/>";
+            $('#notes-modal-body-intro').show();
+        } else {
+            $('#notes-modal-body-intro').hide();
         }
+
+        $('#notes-modal-body-public-notes' ).val( ppp.notes );
+        $('#notes-modal-body-private-notes').val( ppp.privateNotes );
 
         // onblur='checkTextArea(" + pppId + ",\"notes\")' onfocus='setNotesTextArea(" + pppId + ",\"notes\")' onclick='setNotesTextArea(" + pppId + ",\"notes\")'
         // onblur='checkTextArea(" + pppId + ",\"private_notes\")' onfocus='setNotesTextArea(" + pppId + ",\"private_notes\")' onclick='setNotesTextArea(" + pppId + ",\"private_notes\")'
 
-        html += 'Public Notes:  <textarea id="notes"         rows="8" class="bootbox-input bootbox-input-textarea form-control">' + ppp.notes        + "</textarea><br>" +
-                'Private Notes: <textarea id="private-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control">' + ppp.privateNotes + "</textarea>";
+        if( action == 'set-connected' && ppp.switchPortId ) {
 
-        if( action == 'set-connected' ) {
-            if( ppp.switchPortId ) {
-                html += '<br><br><span>Update Physical Port State To: </span><select id="pi-status">';
+            var haveCurrentState = false;
+            var piSelect = $('#notes-modal-body-pi-status');
+            piSelect.html('');
 
-                var haveCurrentState = false;
-                <?php foreach( $t->physicalInterfaceStatesSubSet as $i => $s ): ?>
+            <?php foreach( $t->physicalInterfaceStatesSubSet as $i => $s ): ?>
 
-                    html += '<option <?= $i == \Entities\PhysicalInterface::STATUS_QUARANTINE ? 'selected="selected"' : '' ?> value="<?= $i ?>"><?= $s ?>';
+                var opt = '<option <?= $i == \Entities\PhysicalInterface::STATUS_QUARANTINE ? 'selected="selected"' : '' ?> value="<?= $i ?>"><?= $s ?>';
 
-                    if( <?= $i ?> == ppp.switchPort.physicalInterface.statusId ) {
-                        haveCurrentState = true;
-                        html += " (current state)";
-                    }
-
-                    html += '</option>';
-
-                <?php endforeach ;?>
-
-                if( !haveCurrentState ) {
-                    html += '<option value="' + ppp.switchPort.physicalInterface.statusId + '">' + ppp.switchPort.physicalInterface.status + ' (current state)</option>';
+                if( <?= $i ?> == ppp.switchPort.physicalInterface.statusId ) {
+                    haveCurrentState = true;
+                    opt += " (current state)";
                 }
 
-                html += "</select>";
+                piSelect.append( opt + '</option>' );
+
+            <?php endforeach ;?>
+
+            if( !haveCurrentState ) {
+                piSelect.append( '<option value="' + ppp.switchPort.physicalInterface.statusId + '">' + ppp.switchPort.physicalInterface.status + ' (current state)</option>' );
             }
         }
 
-        var dialog = bootbox.dialog({
-            message: html,
-            title: "Notes",
-            buttons: {
-                cancel: {
-                    label: '<i class="fa fa-times"></i> Cancel',
-                    callback: function () {
-                        $('.bootbox.modal').modal('hide');
-                        return false;
+        $('#notes-modal-btn-confirm').on( 'click', function() {
+            // disable send button
+            $.ajax( "<?= url('api/v4/patch-panel-port/notes/')?>/" + ppp.id, {
+                    data: {
+                        pppId: ppp.id,
+                        notes: $('#notes-modal-body-public-notes').val(),
+                        private_notes: $('#notes-modal-body-private-notes').val(),
+                        pi_status: action == 'set-connected' && ppp.switchPortId ? $('#notes-modal-body-pi-status').val() : false
+                    },
+                    type: 'POST'
+                })
+                .done( function( data ) {
+                    if( action == 'edit-notes' ) {
+                        $('#notes-modal').modal('hide');
+                    } else {
+                        document.location.href = url;
                     }
-                },
-                confirm: {
-                    label: '<i class="fa fa-check"></i> Confirm',
-                    callback: function () {
-                        notes         = $('#notes').val();
-                        private_notes = $('#private_notes').val();
-                        if( ppp.switchPortId ) {
-                            pi_status = $('#pi-status').val();
-                        } else {
-                            pi_status = null;
-                        }
+                })
+                .fail( function(){
+                    throw new Error("Error running ajax query for api/v4/patch-panel-port/notes");
+                    alert( 'Could not update notes. API / AJAX / network error' );
+                });
 
-                        $.ajax({
-                            url: "<?= url('patch-panel-port/set-notes/')?>",
-                            data: {
-                                pppId: pppId,
-                                notes: notes,
-                                private_notes: private_notes,
-                                pi_status: pi_status,
-                                only_note: only_note
-                            },
-                            type: 'GET',
-                            dataType: 'JSON',
-                            success: function (data) {
-                                if (data.success) {
-                                    if (only_note) {
-                                        $('.bootbox.modal').modal('hide');
-                                        location.reload();
-                                    } else {
-                                        document.location.href = url;
-                                    }
-
-                                    return true;
-                                } else {
-                                    $('.bootbox.modal').modal('hide');
-                                    return false;
-                                }
-                            }
-                        });
-                    }
-                }
-            }
+            $('#notes-modal').modal('hide');
         });
 
-        dialog.init(function () {
-            window.new_notes_set = false;
-            window.new_private_notes_set = false;
-        });
+        window.new_notes_set         = false;
+        window.new_private_notes_set = false;
+
+        $('#notes-modal').modal('show');
 
     }); // ajaxGetPatchPanelPortDetail()
 }
 
-function ajaxActionPatchPanelPort( pppid, action, handleData ) {
+function ajaxActionPatchPanelPort( pppid, action, url, handleData ) {
     return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid + "/1" )   // + "/1" => deep array to include subobjects
         .done( function( data ) {
-            handleData( data, action );
+            handleData( data, action, url );
         })
         .fail( function() {
             throw new Error("Error running ajax query for patch-panel-port/$id");

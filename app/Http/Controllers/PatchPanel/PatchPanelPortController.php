@@ -478,7 +478,7 @@ class PatchPanelPortController extends Controller
      * @params  $request instance of the current HTTP request
      * @return  JSON boolean
      */
-    public function setNotes(Request $request){
+    public function setNotes(Request $request) {
         if( ( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($request->input('pppId')) ) ) {
             $success = true;
             $patchPanelPort->setNotes($request->input('notes'));
