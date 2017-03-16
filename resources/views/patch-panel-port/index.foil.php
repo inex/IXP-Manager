@@ -1,4 +1,6 @@
-<?php $this->layout('layouts/ixpv4') ?>
+<?php $this->layout('layouts/ixpv4');
+    /** @var object $t */
+?>
 
 <?php $this->section('title') ?>
     Patch Panel Port
@@ -44,46 +46,48 @@
             </tr>
         <thead>
         <tbody>
-            <?php foreach( $t->patchPanelPorts as $patchPanelPort ): ?>
+            <?php foreach( $t->patchPanelPorts as $ppp ):
+                /** @var \Entities\PatchPanelPort $ppp */
+            ?>
                 <tr>
                     <td>
-                        <?= $patchPanelPort->getId() ?>
+                        <?= $ppp->getId() ?>
                     </td>
                     <td>
-                        <a href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?> ">
-                            <?= $patchPanelPort->getName() ?>
+                        <a href="<?= url('/patch-panel-port/view' ).'/'.$ppp->getId()?> ">
+                            <?= $ppp->getName() ?>
                         </a>
                     </td>
                     <?php if(!$t->patchPanel): ?>
                         <td>
-                            <a href="<?= url('patch-panel/view' ).'/'.$patchPanelPort->getPatchPanel()->getId()?>">
-                                <?= $patchPanelPort->getPatchPanel()->getName() ?>
+                            <a href="<?= url('patch-panel/view' ).'/'.$ppp->getPatchPanel()->getId()?>">
+                                <?= $ppp->getPatchPanel()->getName() ?>
                             </a>
                         </td>
-                    <?php endif;?>
+                    <?php endif; ?>
                     <td>
-                        <?= $patchPanelPort->getSwitchName() ?>
-                    <?php if( $patchPanelPort->getSwitchPortName() ): ?>
-                            &nbsp;::&nbsp;<?= $patchPanelPort->getSwitchPortName() ?>
+                        <?= $ppp->getSwitchName() ?>
+                    <?php if( $ppp->getSwitchPortName() ): ?>
+                            &nbsp;::&nbsp;<?= $ppp->getSwitchPortName() ?>
                     <?php endif; ?>
                     </td>
                     <td>
-                        <a href="<?= url('customer/overview/id/' ).'/'.$patchPanelPort->getCustomerId()?>">
-                            <?= $patchPanelPort->getCustomerName() ?>
+                        <a href="<?= url('customer/overview/id/' ).'/'.$ppp->getCustomerId()?>">
+                            <?= $ppp->getCustomerName() ?>
                         </a>
                     </td>
                     <td>
-                        <?= $patchPanelPort->getColoCircuitRef() ?>
+                        <?= $ppp->getColoCircuitRef() ?>
                     </td>
                     <td>
-                        <?= $patchPanelPort->getTicketRef() ?>
+                        <?= $ppp->getTicketRef() ?>
                     </td>
                     <td>
-                        <?= $patchPanelPort->getAssignedAtFormated() ?>
+                        <?= $ppp->getAssignedAtFormated() ?>
                     </td>
                     <td>
-                        <span title="" class="label label-<?= $patchPanelPort->getStateCssClass() ?>">
-                            <?= $patchPanelPort->resolveStates() ?>
+                        <span title="" class="label label-<?= $ppp->getStateCssClass() ?>">
+                            <?= $ppp->resolveStates() ?>
                         </span>
                     </td>
                     <td>
@@ -95,62 +99,99 @@
 
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li>
-                                        <a id="edit-notes-<?= $patchPanelPort->getId() ?>" href="<?= url()->current() ?>" >
-                                            <?= $patchPanelPort->isStateAvailable() ? 'Add' : 'Edit' ?> note...
+                                        <a id="edit-notes-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" >
+                                            <?= $ppp->isStateAvailable() ? 'Add' : 'Edit' ?> note...
                                         </a>
                                     </li>
 
                                     <li role="separator" class="divider"></li>
 
-                                    <?php if($patchPanelPort->getState() == \Entities\PatchPanelPort::STATE_AVAILABLE): ?>
+                                    <?php if( $ppp->isStateAvailable() ): ?>
                                         <li>
-                                            <a id="allocate-<?= $patchPanelPort->getId() ?>" href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId().'/allocating'?>">
+                                            <a id="allocate-<?= $ppp->getId() ?>" href="<?= url('/patch-panel-port/edit' ) . '/' . $ppp->getId() . '/allocating' ?>">
                                                 Allocate
                                             </a>
                                         </li>
                                     <?php endif; ?>
 
-                                    <?php if( $patchPanelPort->isStateAwaitingXConnect() ): ?>
+                                    <?php if( $ppp->isStateAwaitingXConnect() ): ?>
                                         <li>
-                                            <a id="set-connected-<?= $patchPanelPort->getId() ?>" href="<?= url('/patch-panel-port/change-status' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CONNECTED?>">Set Connected</a>
+                                            <a id="set-connected-<?= $ppp->getId() ?>" href="<?= url('/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_CONNECTED ?>">
+                                                Set Connected
+                                            </a>
                                         </li>
                                     <?php endif; ?>
 
-                                    <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED)): ?>
-                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" id="ceasedRequested<?=$patchPanelPort->getId()?>,false" href="<?= url('/patch-panel-port/change-status' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_AWAITING_CEASE?>">Cease requested</a></li>
+                                    <?php if( $ppp->isStateAwaitingXConnect() || $ppp->isStateConnected() ): ?>
+                                        <li>
+                                            <a id="request-cease-<?= $ppp->getId() ?>" href="<?= url('/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_AWAITING_CEASE ?>">
+                                                Request Cease
+                                            </a>
+                                        </li>
                                     <?php endif; ?>
-                                    <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_CEASE)): ?>
-                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false,false)" href="<?= url('/patch-panel-port/change-status' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CEASED?>">Set ceased</a></li>
+
+                                    <?php if( $ppp->isStateAwaitingXConnect() || $ppp->isStateConnected() || $ppp->isStateAwaitingCease() ): ?>
+                                        <li>
+                                            <a id="set-ceased-<?= $ppp->getId() ?>"   href="<?= url('/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_CEASED ?>">
+                                                Set Ceased
+                                            </a>
+                                        </li>
                                     <?php endif; ?>
-                                    <?php if($patchPanelPort->getCustomer()): ?>
-                                        <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_CONNECT?>">Email - Connect</a></li>
-                                        <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_CEASE?>">Email - Cease</a></li>
-                                        <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_INFO?>">Email - Information</a></li>
-                                        <li><a href="<?= url('/patch-panel-port/email' ).'/'.$patchPanelPort->getId().'/'.\Entities\PatchPanelPort::EMAIL_LOA?>">Email - Send Loa as PDF</a></li>
-                                    <?php endif; ?>
-                                    <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED)): ?>
-                                        <li><a target="_blank" href="<?= url('/patch-panel-port/sendLoaPDF' ).'/'.$patchPanelPort->getId()?>">Download Loa PDF</a></li>
-                                    <?php endif; ?>
+
                                     <li role="separator" class="divider"></li>
+
+                                    <?php if( $ppp->getCustomer() ): ?>
+                                        <li> <a href="<?= url('/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_CONNECT ?>">Email - Connect</a>         </li>
+                                        <li> <a href="<?= url('/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_CEASE   ?>">Email - Cease</a>           </li>
+                                        <li> <a href="<?= url('/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_INFO    ?>">Email - Information</a>     </li>
+                                        <li> <a href="<?= url('/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_LOA     ?>">Email - LoA</a> </li>
+                                    <?php endif; ?>
+
+                                    <li role="separator" class="divider"></li>
+
+                                    <?php if( $ppp->isStateAwaitingXConnect() || $ppp->isStateConnected() ): ?>
+                                        <li>
+                                            <a target="_blank" href="<?= url('/patch-panel-port/download-loa' ) . '/' . $ppp->getId() ?>">
+                                                Download LoA
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+                                    <li role="separator" class="divider"></li>
+
                                     <li>
-                                        <a onclick="return uploadPopup(<?= $patchPanelPort->getId() ?>)" href="#" title="Attach file">Attach file...</i></a>
+                                        <a onclick="return uploadPopup(<?= $ppp->getId() ?>)" href="#" title="Attach file">
+                                            Attach file...
+                                        </a>
                                     </li>
+
+                                    <li role="separator" class="divider"></li>
+
                                     <li>
-                                        <a href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?>" title="Preview">View</i></a>
+                                        <a href="<?= url('/patch-panel-port/view' ) . '/' . $ppp->getId()?>">
+                                            View
+                                        </a>
                                     </li>
+
                                     <li>
-                                        <a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId()?>" title="Edit">Edit</a>
+                                        <a href="<?= url('/patch-panel-port/edit' ) . '/' . $ppp->getId()?>">
+                                            Edit
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
-                            <a class="btn btn btn-default <?php if($patchPanelPort->getHistoryCount() == 0): ?> disabled <?php endif; ?>" title="History" <?php if($patchPanelPort->getHistoryCount() != 0): ?> href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?> <?php endif; ?> ">
+
+                            <a class="btn btn btn-default <?php if( !$ppp->getHistoryCount() ){ ?> disabled <?php } ?>" title="History"
+                                    <?php if( $ppp->getHistoryCount() ) { ?> href="<?= url('/patch-panel-port/view' ).'/'.$ppp->getId()?> <?php } ?> ">
                                 <i class="glyphicon glyphicon-folder-open"></i>
                             </a>
+
                         </div>
                     </td>
                 </tr>
 
             <?php endforeach;?>
+
         <tbody>
     </table>
 
@@ -171,16 +212,16 @@
 
                 <h4>Public Notes</h4>
 
-                <textarea id="notes-modal-body-public-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control"></textarea>
+                <textarea id="notes-modal-body-public-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control" title="Public Notes"></textarea>
 
                 <h4>Private Notes</h4>
 
-                <textarea id="notes-modal-body-private-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control"></textarea>
+                <textarea id="notes-modal-body-private-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control" title="Private Notes"></textarea>
 
                 <div id="notes-modal-body-div-pi-status" class="hidden">
                     <br><br>
                     <span>Update Physical Port State To: </span>
-                    <select id="notes-modal-body-pi-status"></select>
+                    <select title="Physical Interface States" id="notes-modal-body-pi-status"></select>
                 </div>
             </div>
             <div class="modal-footer">

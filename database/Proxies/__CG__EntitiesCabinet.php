@@ -312,12 +312,12 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function removeSwitche(\Entities\Switcher $switches)
+    public function removeSwitche(\Entities\Switcher $switch)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSwitche', [$switches]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeSwitche', [$switch]);
 
-        return parent::removeSwitche($switches);
+        return parent::removeSwitche($switch);
     }
 
     /**
@@ -378,7 +378,7 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getLocation()
+    public function getLocation(): \Entities\Location
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLocation', []);

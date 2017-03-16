@@ -36,9 +36,17 @@ $(document).ready(function(){
         popup( pppid, 'set-connected', $(this).attr('href') );
     });
 
+    $( "a[id|='request-cease']" ).on( 'click', function(e){
+        e.preventDefault();
+        var pppid = (this.id).substring(14);
+        popup( pppid, 'request-cease', $(this).attr('href') );
+    });
 
 });
 
+/**
+ * Adds a prefix when a user goes to add/edit notes (typically name and date).
+ */
 function setNotesTextArea() {
     if( $(this).val() == '' ) {
         $(this).val(notesIntro);
@@ -49,11 +57,17 @@ function setNotesTextArea() {
     $(this).setCursorPosition( notesIntro.length );
 }
 
+/**
+ * Removes the prefix added by setNotesTextArea() if the notes where not edited
+ */
 function unsetNotesTextArea() {
     $(this).val( $(this).val().substring( notesIntro.length ) );
 }
 
-function ajaxActionPatchPanelPort( pppid, action, url, handleData ) {
+/**
+ * Calls an API endpoint on IXP Manager to get patch panel port details
+ */
+function ajaxGetPatchPanelPort( pppid, action, url, handleData ) {
     return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid + "/1" )   // + "/1" => deep array to include subobjects
         .done( function( data ) {
             handleData( data, action, url );
@@ -63,6 +77,9 @@ function ajaxActionPatchPanelPort( pppid, action, url, handleData ) {
         });
 }
 
+/**
+ * Setup the popup for adding / editing notes.
+ */
 function popupSetUp( ppp, action ) {
 
     if( action != 'edit-notes' ) {
@@ -102,15 +119,22 @@ function popupSetUp( ppp, action ) {
         }
     }
 
+    // The logic of these two blocks is:
+    // 1. if the user clicks on a notes field, add a prefix (name and date typically)
+    // 2. if they make a change, remove all the handlers including that which removes the prefix
+    // 3. if they haven't made a change, we still have blur / focusout handlers and so remove the prefix
     publicNotes.on( 'blur focusout', unsetNotesTextArea )
         .on( 'focus', setNotesTextArea )
-        .on( 'keyup change', function() { $(this).off('blur focus keyup change') } );
+        .on( 'keyup change', function() { $(this).off('blur focus focusout keyup change') } );
 
     privateNotes.on( 'blur focusout', unsetNotesTextArea )
         .on( 'focus', setNotesTextArea )
-        .on( 'keyup change', function() { $(this).off('blur focus keyup change') } );
+        .on( 'keyup change', function() { $(this).off('blur focus focusout keyup change') } );
 }
 
+/**
+ * Reset the popup for adding / editing notes.
+ */
 function popupTearDown() {
 
     var publicNotes  = $('#notes-modal-body-public-notes' );
@@ -125,9 +149,20 @@ function popupTearDown() {
     privateNotes.off( 'blur change click keyup focus focusout' );
 }
 
+/**
+ * This function uses the ajaxGetPatchPanelPort() action to get the details of a ppp
+ * and then show a popup dialog to edit notes and handle the saving of same.
+ *
+ * While this function only calls ajaxGetPatchPanelPort() with a handler, the
+ * function exists to encapsulate that handler for code readability.
+ *
+ * @param pppId The ID of the patch panel port
+ * @param action An indication of which option the user chose (e.g. 'edit-notes', 'set-connected', etc
+ * @param url The URL of the anchor element used to trigger the popup.
+ */
 function popup( pppId, action, url ) {
 
-    ajaxActionPatchPanelPort( pppId, action, url, function( ppp, action, url ) {
+    ajaxGetPatchPanelPort( pppId, action, url, function( ppp, action, url ) {
 
         popupSetUp( ppp, action );
 
@@ -163,7 +198,7 @@ function popup( pppId, action, url ) {
         });
 
         $('#notes-modal').modal('show');
-
+        $('#notes-modal').on( 'hidden.bs.modal', popupTearDown );
     });
 }
 
