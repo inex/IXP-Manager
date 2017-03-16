@@ -59,7 +59,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= url('patch-panel/view' ).'/'.$pppHistory->getPatchPanel()->getId()?>" >
+                                    <a href="<?= url( 'patch-panel-port/list/patch-panel' ) . '/' . $pppHistory->getPatchPanel()->getId() ?>">
                                         <?= $pppHistory->getPatchPanel()->getName() ?>
                                     </a>
                                 </td>

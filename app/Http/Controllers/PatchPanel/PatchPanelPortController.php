@@ -56,9 +56,6 @@ use Illuminate\View\View;
 
 use Auth;
 
-use GrahamCampbell\Flysystem\Facades\Flysystem;
-use GrahamCampbell\Flysystem\FlysystemManager;
-use IXP\User;
 
 use Mail;
 use IXP\Mail\PatchPanelPort as PatchPanelPortMail;
@@ -106,13 +103,10 @@ class PatchPanelPortController extends Controller
     /**
      * Display the form to edit a patch panel port
      *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @params  $request instance of the current HTTP request
-     * @parama  int $id patch panel port that need to be edited
+     * @param  int $id patch panel port that need to be edited
      * @return  view
      */
-    public function edit(Request $request, int $id, $allocating = false) {
+    public function edit( int $id, $allocating = false ) {
         $patchPanelPort = false;
 
         if( !( $patchPanelPort = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
@@ -169,6 +163,16 @@ class PatchPanelPortController extends Controller
             'user'              => Auth::user(),
             'allocating'        => ($allocating) ? true : false
         ]);
+    }
+
+    /**
+     * Display the form to edit a patch panel port
+     *
+     * @param  int $id patch panel port that need to be edited
+     * @return  view
+     */
+    public function editToAllocate( int $id ) {
+        return $this->edit( $id, true );
     }
 
     /**
@@ -405,103 +409,6 @@ class PatchPanelPortController extends Controller
         return redirect( '/patch-panel-port/list/patch-panel/'.$patchPanelPort->getPatchPanel()->getId() );
     }
 
-    /**
-     * Allow to upload a file to a patch panel port
-     *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @param  int $id patch panel port ID
-     * @param  Request $request instance of the current HTTP request
-     * @param  FlysystemManager $filesystem instance of the file manager
-     * @return  JsonResponse
-     */
-    public function uploadFile( Request $request, FlysystemManager $filesystem, int $id ): JsonResponse {
-
-        if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
-            abort(404);
-        }
-
-        if( !$request->hasFile('upl') ) {
-            abort(400);
-        }
-
-        $file = $request->file('upl');
-
-        $pppFile = new PatchPanelPortFile;
-        $pppFile->setPatchPanelPort( $ppp );
-        $pppFile->setStorageLocation( hash('sha256', $ppp->getId() . '-' . $file->getClientOriginalName() ) );
-        $pppFile->setName( $file->getClientOriginalName() );
-        $pppFile->setUploadedAt( new \DateTime );
-        $pppFile->setUploadedBy( Auth::user()->getUsername() );
-
-        $path = $pppFile->getPath();
-
-        if( $filesystem->has( $path ) ) {
-            return response()->json( [ 'success' => false, 'message' => 'File of the same name already exists for this port' ] );
-        }
-
-        $stream = fopen( $file->getRealPath(), 'r+' );
-        if( $filesystem->writeStream( $path, $stream ) ) {
-
-            $pppFile->setSize( $filesystem->getSize($path) );
-            $pppFile->setType( $filesystem->getMimetype($path) );
-            D2EM::persist( $pppFile );
-
-            $ppp->addPatchPanelPortFile( $pppFile );
-            D2EM::flush();
-            $resp = [ 'success' => true, 'message' => 'File uploaded and saved.', 'id' => $pppFile->getId() ];
-        } else {
-            $resp = [ 'success' => false, 'message' => 'Could not save file ti storage location' ];
-        }
-
-        fclose($stream);
-        return response()->json($resp);
-    }
-
-
-    /**
-     * Allow to delete a file from a patch panel port
-     *
-     * @param  FlysystemManager $filesystem instance of the file manager
-     * @param  int $id patch panel port file ID
-     * @return  JsonResponse
-     */
-    public function deleteFile( FlysystemManager $filesystem, int $id ){
-
-        /** @var PatchPanelPortFile $pppFile */
-        if( !( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find( $id ) ) ) {
-            abort( 404 );
-        }
-
-        $path = $pppFile->getPath();
-
-        if( !$filesystem->has( $path ) || $filesystem->delete( $path ) ) {
-            $pppFile->getPatchPanelPort()->removePatchPanelPortFile( $pppFile );
-            D2EM::remove($pppFile);
-            D2EM::flush();
-            return response()->json( ['success' => true, 'message' => 'File deleted' ] );
-        }
-
-        return response()->json( [ 'success' => false, 'message' => 'Error: file could not be deleted' ] );
-    }
-
-    /**
-     * Allow to make a file private
-     *
-     * @param  int $id patch panel port file ID
-     * @return  JsonResponse
-     */
-    public function toggleFilePrivacy( int $id ){
-        /** @var PatchPanelPortFile $pppFile */
-        if( !( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find( $id ) ) ) {
-            abort( 404 );
-        }
-
-        $pppFile->setIsPrivate( !$pppFile->getIsPrivate() );
-        D2EM::flush();
-
-        return response()->json( [ 'success' => true, 'isPrivate' => $pppFile->getIsPrivate() ] );
-    }
 
     /**
      * Allow to download a file

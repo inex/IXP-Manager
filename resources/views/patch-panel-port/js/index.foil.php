@@ -39,6 +39,13 @@ $(document).ready(function(){
         popup( pppid, 'request-cease', $(this).attr('href') );
     });
 
+    $( "a[id|='set-ceased']" ).on( 'click', function(e){
+        e.preventDefault();
+        var pppid = (this.id).substring(11);
+        popup( pppid, 'set-ceased', $(this).attr('href') );
+    });
+
+
     $( "a[id|='attach-file']" ).on( 'click', function(e){
         e.preventDefault();
         var pppid = (this.id).substring(12);
@@ -71,7 +78,7 @@ function unsetNotesTextArea() {
  * Calls an API endpoint on IXP Manager to get patch panel port details
  */
 function ajaxGetPatchPanelPort( pppid, action, url, handleData ) {
-    return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid + "/1" )   // + "/1" => deep array to include subobjects
+    return $.ajax( "<?= url('api/v4/patch-panel-port/deep') ?>/" + pppid )
         .done( function( data ) {
             handleData( data, action, url );
         })
@@ -98,6 +105,7 @@ function popupSetUp( ppp, action ) {
     publicNotes.val( ppp.notes );
     privateNotes.val( ppp.privateNotes );
 
+    $('#notes-modal-body-div-pi-status').hide();
     if( action == 'set-connected' && ppp.switchPortId ) {
 
         var haveCurrentState = false;
@@ -120,6 +128,8 @@ function popupSetUp( ppp, action ) {
         if( !haveCurrentState ) {
             piSelect.append( '<option value="' + ppp.switchPort.physicalInterface.statusId + '">' + ppp.switchPort.physicalInterface.status + ' (current state)</option>' );
         }
+
+        $('#notes-modal-body-div-pi-status').show();
     }
 
     // The logic of these two blocks is:
@@ -147,9 +157,12 @@ function popupTearDown() {
     publicNotes.val('');
     privateNotes.val('');
     $('#notes-modal-body-pi-status').html('');
+    $('#notes-modal-body-div-pi-status').hide();
 
     publicNotes.off( 'blur change click keyup focus focusout' );
     privateNotes.off( 'blur change click keyup focus focusout' );
+
+    $('#notes-modal-btn-confirm').off( 'click' );
 }
 
 /**
@@ -173,7 +186,7 @@ function popup( pppId, action, url ) {
 
             $('#notes-modal-btn-confirm').attr("disabled", true);
 
-            $.ajax( "<?= url('api/v4/patch-panel-port')?>/" + ppp.id + "/notes", {
+            $.ajax( "<?= url('api/v4/patch-panel-port/notes')?>/" + ppp.id, {
                     data: {
                         pppId: ppp.id,
                         notes: $('#notes-modal-body-public-notes').val(),
@@ -214,7 +227,7 @@ function popup( pppId, action, url ) {
 
 function uploadPopup( pppid ){
 
-    var html = '<form id="upload" method="post" action="<?= url("/patch-panel-port/upload-file" )?>/' + pppid + '" enctype="multipart/form-data">' +
+    var html = '<form id="upload" method="post" action="<?= url("api/v4/patch-panel-port/upload-file" )?>/' + pppid + '" enctype="multipart/form-data">' +
         '<div id="drop">Drop Files Here &nbsp;' +
         '    <a id="upload-drop-a" class="btn btn-success">' +
         '        <i class="glyphicon glyphicon-upload"></i> Browse</a> <br/>' +
@@ -331,7 +344,7 @@ function uploadPopup( pppid ){
 function deleteFile(e) {
     var pppFileId = (this.id).substring(21);
 
-    $.ajax( "<?= url('patch-panel-port/delete-file') ?>/" + pppFileId )
+    $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + pppFileId )
         .done( function( data ) {
             if( data.success ) {
                 $('#uploaded-file-' + pppFileId).fadeOut( "medium", function() {
@@ -348,8 +361,8 @@ function deleteFile(e) {
  */
 function toggleFilePrivacy(e) {
     var pppFileId = (this.id).substring(29);
-
-    $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppFileId )
+alert(pppFileId);
+    $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId )
         .done( function( data ) {
             if( data.isPrivate ) {
                 $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-unlock').addClass('fa-lock');

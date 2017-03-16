@@ -23,14 +23,12 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'list',                             'PatchPanelPortController@index' )->name('patchPanelPortIndex');
     Route::get( 'list/patch-panel/{id}',            'PatchPanelPortController@index' );
 
-    Route::get( 'edit/{id}/{allocating?}',          'PatchPanelPortController@edit' );
+    Route::get( 'edit/{id}',                        'PatchPanelPortController@edit' );
+    Route::get( 'edit-to-allocate/{id}',           'PatchPanelPortController@editToAllocate' );
     Route::get( 'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus' );
     Route::get( 'email/{id}/{type}',                'PatchPanelPortController@email' );
 
-    Route::get(  'download-file/{id}',               'PatchPanelPortController@downloadFile' );
-    Route::get(  'delete-file/{id}',                 'PatchPanelPortController@deleteFile' );
-    Route::post( 'upload-file/{id}',                 'PatchPanelPortController@uploadFile' );
-    Route::get(  'toggle-file-privacy/{id}',         'PatchPanelPortController@toggleFilePrivacy' );
+    Route::get( 'download-file/{id}',               'PatchPanelPortController@downloadFile' );
 
     Route::post( 'store',                           'PatchPanelPortController@store' );
     Route::post( 'send-email',                      'PatchPanelPortController@sendEmail' );
