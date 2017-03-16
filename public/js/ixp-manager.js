@@ -24,3 +24,23 @@ $( 'document' ).ready( function(){
         return this;
     };
 });
+
+/**
+ * Helper function that formats the file sizes
+ */
+function ixpFormatFileSize( bytes ) {
+    if (typeof bytes !== 'number') {
+        return '';
+    }
+
+    if( bytes >= 1073741824 ) {
+        return ( bytes / 1073741824 ).toFixed(2) + ' GB';
+    }
+
+    if( bytes >= 1048576 ) {
+        return ( bytes / 1048576 ).toFixed(2) + ' MB';
+    }
+
+    return ( bytes / 1024 ).toFixed(2) + ' KB';
+}
+

@@ -216,7 +216,7 @@ class PatchPanelPortHistoryFile
         return $this;
     }
 
-    function getSizeFormated()
+    public function getSizeFormated()
     {
         $bytes = $this->getSize();
         if ($bytes >= 1073741824)

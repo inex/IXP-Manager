@@ -160,7 +160,7 @@
                                     <li role="separator" class="divider"></li>
 
                                     <li>
-                                        <a onclick="return uploadPopup(<?= $ppp->getId() ?>)" href="#" title="Attach file">
+                                        <a id="attach-file-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" title="Attach file">
                                             Attach file...
                                         </a>
                                     </li>
@@ -236,6 +236,11 @@
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
+    <script type="text/javascript" src="<?= asset('/bower_components/jquery-ui/ui/widget.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/blueimp-file-upload/js/jquery.iframe-transport.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/jquery-knob/js/jquery.knob.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/blueimp-file-upload/js/jquery.fileupload.js') ?>"></script>
+
     <?= $t->insert( 'patch-panel-port/js/index' ); ?>
 <?php $this->append() ?>
 
