@@ -1,17 +1,26 @@
-<?php $this->layout('layouts/ixpv4') ?>
+<?php
+    /** @var Foil\Template\Template $t */
 
-<?php $this->section('title') ?>
-<a href="<?= url('patch-panel/list')?>">Patch Panel</a>
+    $this->layout( 'layouts/ixpv4' )
+?>
+
+<?php $this->section( 'title' ) ?>
+    <a href="<?= url( 'patch-panel/list' )?>">
+        Patch Panel
+    </a>
 <?php $this->append() ?>
 
-<?php $this->section('page-header-postamble') ?>
-<li>View : <?= $t->patchPanel->getId().' '.$t->patchPanel->getName()?></li>
+<?php $this->section( 'page-header-postamble' ) ?>
+    <li>
+        View : <?= $t->pp->getId().' '.$t->pp->getName()?>
+    </li>
 <?php $this->append() ?>
 
-
-<?php $this->section('content') ?>
+<?php $this->section( 'content' ) ?>
     <div class="panel panel-default">
-        <div class="panel-heading">Informations</div>
+        <div class="panel-heading">
+            Informations
+        </div>
         <div class="panel-body">
             <table class="table_ppp_info">
                 <tr>
@@ -21,8 +30,8 @@
                         </b>
                     </td>
                     <td>
-                        <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>">
-                            <?= $t->patchPanel->getName() ?>
+                        <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$t->pp->getId()?>">
+                            <?= $t->pp->getName() ?>
                         </a>
                     </td>
                 </tr>
@@ -33,7 +42,7 @@
                         </b>
                     </td>
                     <td>
-                         <?= $t->patchPanel->getColoReference() ?>
+                         <?= $t->pp->getColoReference() ?>
                     </td>
                 </tr>
                 <tr>
@@ -43,8 +52,8 @@
                         </b>
                     </td>
                     <td>
-                        <a href="<?= url('/cabinet/view' ).'/'.$t->patchPanel->getCabinet()->getId()?>">
-                            <?= $t->patchPanel->getCabinet()->getName() ?>
+                        <a href="<?= url( '/cabinet/view'  ).'/'.$t->pp->getCabinet()->getId()?>">
+                            <?= $t->pp->getCabinet()->getName() ?>
                         </a>
                     </td>
                 </tr>
@@ -55,7 +64,7 @@
                         </b>
                     </td>
                     <td>
-                         <?= $t->patchPanel->resolveCableType() ?>
+                         <?= $t->pp->resolveCableType() ?>
                     </td>
                 </tr>
                 <tr>
@@ -65,7 +74,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->patchPanel->resolveConnectorType()?>
+                        <?= $t->pp->resolveConnectorType()?>
                     </td>
                 </tr>
                 <tr>
@@ -75,20 +84,20 @@
                         </b>
                     </td>
                     <td>
-                        <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>">
-                            <span title="" class="label label-<?= $t->patchPanel->getCssClassPortCount() ?>">
-                                    <?php if( $t->patchPanel->hasDuplexPort() ): ?>
-                                        <?= $t->patchPanel->getAvailableOnTotalPort(true) ?>
+                        <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$t->pp->getId()?>">
+                            <span title="" class="label label-<?= $t->pp->getCssClassPortCount() ?>">
+                                    <?php if( $t->pp->hasDuplexPort() ): ?>
+                                        <?= $t->pp->getAvailableOnTotalPort(true) ?>
                                     <?php else: ?>
-                                        <?= $t->patchPanel->getAvailableOnTotalPort(false) ?>
+                                        <?= $t->pp->getAvailableOnTotalPort(false) ?>
                                     <?php endif; ?>
                                 </span>
 
-                            <?php if( $t->patchPanel->hasDuplexPort() ): ?>
+                            <?php if( $t->pp->hasDuplexPort() ): ?>
                                 &nbsp;
                                 <span class="label label-info">
-                                        <?= $t->patchPanel->getAvailableOnTotalPort(false) ?>
-                                    </span>
+                                    <?= $t->pp->getAvailableOnTotalPort(false) ?>
+                                </span>
                             <?php endif; ?>
                         </a>
                     </td>
@@ -100,7 +109,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->patchPanel->getInstallationDateFormated() ?>
+                        <?= $t->pp->getInstallationDateFormated() ?>
                     </td>
                 </tr>
                 <tr>
@@ -110,11 +119,10 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->patchPanel->getActiveText() ?>
+                        <?= $t->pp->getActiveText() ?>
                     </td>
                 </tr>
             </table>
         </div>
     </div>
 <?php $this->append() ?>
-
