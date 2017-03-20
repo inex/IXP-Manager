@@ -507,17 +507,7 @@ class PatchPanelPortHistory
     public function getCustomerName() {
         return $this->customer;
     }
-
-    /**
-     * Get customer
-     *
-     * @return string
-     */
-    public function getCustomerName()
-    {
-        return $this->customer;
-    }
-
+    
     /**
      * Set switchport
      *
@@ -723,41 +713,6 @@ class PatchPanelPortHistory
      * @author     Yann Robin <yann@islandbridgenetworks.ie>
      * @return \Entities\PatchPanelPortHistory
      */
-<<<<<<< HEAD
-    public static function createHistory($patchPanelPort){
-        $pppHistory = new PatchPanelPortHistory();
-
-        $pppHistory->setPatchPanelPort($patchPanelPort);
-        $pppHistory->setNumber($patchPanelPort->getNumber());
-        $pppHistory->setState($patchPanelPort->getState());
-        $pppHistory->setColoCircuitRef($patchPanelPort->getColoCircuitRef());
-        $pppHistory->setTicketRef($patchPanelPort->getTicketRef());
-        $pppHistory->setNotes($patchPanelPort->getNotes());
-        $pppHistory->setPrivateNotes($patchPanelPort->getPrivateNotes());
-        $pppHistory->setAssignedAt($patchPanelPort->getAssignedAt());
-        $pppHistory->setConnectedAt($patchPanelPort->getConnectedAt());
-        $pppHistory->setCeaseRequestedAt($patchPanelPort->getCeaseRequestedAt());
-        $pppHistory->setCeasedAt($patchPanelPort->getCeasedAt());
-        $pppHistory->setInternalUse($patchPanelPort->getInternalUse());
-        $pppHistory->setChargeable($patchPanelPort->getChargeable());
-        $pppHistory->setOwnedBy($patchPanelPort->getOwnedBy());
-        $pppHistory->setCustomer($patchPanelPort->getCustomerName());
-        $pppHistory->setSwitchport($patchPanelPort->getSwitchName().' / '.$patchPanelPort->getSwitchPortName());
-
-        $patchPanelPort->addPatchPanelPortHistory($pppHistory);
-
-        D2EM::persist($pppHistory);
-        D2EM::flush();
-
-        if($patchPanelPort->hasSlavePort()){
-            $slavePortHistory = clone $pppHistory;
-            $slavePortHistory->setDuplexMasterPort($pppHistory);
-            D2EM::persist($slavePortHistory);
-        }
-
-
-        if($patchPanelPort->hasSlavePort()){
-=======
     public static function createHistory( $patchPanelPort ) {
         $pppHistory = new PatchPanelPortHistory();
 
@@ -790,9 +745,7 @@ class PatchPanelPortHistory
             D2EM::persist( $slavePortHistory );
         }
 
-
         if( $patchPanelPort->hasSlavePort() ) {
->>>>>>> a87e821b2d0df0344874f1c71b12c4cad915a0b0
             $slavePort = $patchPanelPort->getDuplexSlavePort();
             $slavePort->resetPatchPanelPort();
         }
