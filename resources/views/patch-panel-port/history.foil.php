@@ -96,11 +96,17 @@
                             </tr>
                             <tr>
                                 <td><b>Private Notes :</b></td>
-                                <td><?= $t->patchPanelPort->getPrivateNotesParseDown() ?></td>
+                                <td><?= $pppHistory->getPrivateNotesParseDown() ?></td>
                             </tr>
                         </table>
+                        <?php foreach ($pppHistory->getPatchPanelPortHistoryFile() as $file): ?>
+                            <?= $file->getName() ?>
+                        <?php endforeach; ?>
                     </div>
+
                 <?php endforeach; ?>
+
+
             </div>
         </div>
     </div>

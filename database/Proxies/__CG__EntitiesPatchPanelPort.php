@@ -1016,6 +1016,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function hasFiles(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasFiles', []);
+
+        return parent::hasFiles();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function resetPatchPanelPort()
     {
 

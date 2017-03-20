@@ -102,7 +102,11 @@ body {
 }
 
 .no-padding{
-    padding: 0;
+    padding: 0!important;
+}
+
+.padding-10{
+    padding: 10px 15px!important;
 }
 
 nav.navbar.navbar-inverse.navbar-fixed-top, nav.navbar.navbar-inverse.navbar-fixed-top > div.container-fluid, nav.navbar.navbar-inverse.navbar-fixed-top > div.container-fluid > div.navbar-header{
