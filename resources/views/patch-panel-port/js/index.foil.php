@@ -8,7 +8,7 @@ $(document).ready(function(){
     window.loadscript = false;
 
     pagination = true;
-    <?php if($t->patchPanel): ?>
+    <?php if($t->pp): ?>
         // unless we have a single patch panel in which case we disable:
         pagination = false;
     <?php endif; ?>

@@ -174,7 +174,7 @@
     <?= Former::select('chargeable')
         ->label('Chargeable')
         ->options($t->chargeables)
-        ->select($t->patchPanelPort->getChargeableDefaultNo())
+        ->select($t->ppp->getChargeableDefaultNo())
         ->addClass('chzn-select')
         ->help('help text');
     ?>
@@ -183,7 +183,7 @@
         ->radios(array(
             'Yes' => array('name' => 'internal_use', 'value' => '1'),
             'No' => array('name' => 'internal_use', 'value' => '0'),
-        ))->inline()->check($t->patchPanelPort->getInternalUseInt())
+        ))->inline()->check($t->ppp->getInternalUseInt())
         ->help('help text');
     ?>
 
@@ -195,7 +195,7 @@
     ?>
 
     <?= Former::hidden('patch_panel_port_id')
-        ->value($t->patchPanelPort->getId())
+        ->value($t->ppp->getId())
     ?>
 
     <?= Former::hidden('allocated')
@@ -204,16 +204,16 @@
 
     <?= Former::hidden('switch_port_id')
         ->id('switch_port_id')
-        ->value($t->patchPanelPort->getSwitchPortId())
+        ->value($t->ppp->getSwitchPortId())
     ?>
 
     <?= Former::hidden('patch_panel_id')
         ->id('patch_panel_id')
-        ->value($t->patchPanelPort->getPatchPanel()->getId())
+        ->value($t->ppp->getPatchPanel()->getId())
     ?>
 
     <?=Former::actions( Former::primary_submit('Save Changes'),
-        Former::default_link('Cancel')->href(url('patch-panel-port/list/patch-panel/'.$t->patchPanelPort->getPatchPanel()->getId())),
+        Former::default_link('Cancel')->href(url('patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId())),
         Former::success_button('Help')->id('help-btn')
     );?>
 
@@ -223,7 +223,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->patchPanelPort ? $t->patchPanelPort->getId() : '' )
+        ->value( $t->ppp ? $t->ppp->getId() : '' )
     ?>
 
 <?= Former::close() ?>

@@ -4,8 +4,8 @@
 
 <?php $this->section('title') ?>
     Patch Panel Port
-    <?php if($t->patchPanel): ?>
-        - <?= $t->patchPanel->getName() ?>
+    <?php if($t->pp): ?>
+        - <?= $t->pp->getName() ?>
     <?php endif;?>
 <?php $this->append() ?>
 
@@ -15,12 +15,12 @@
 
 
 <?php $this->section('content') ?>
-    <?php if($t->patchPanel): ?>
+    <?php if($t->pp): ?>
         <div class="">
             <h2>
-                Ports for <?= $t->patchPanel->getName() ?>
-                <?php if( $t->patchPanel->getColoReference() != $t->patchPanel->getName() ): ?>
-                    (Colo Ref: <?= $t->patchPanel->getColoReference() ?>)
+                Ports for <?= $t->pp->getName() ?>
+                <?php if( $t->pp->getColoReference() != $t->pp->getName() ): ?>
+                    (Colo Ref: <?= $t->pp->getColoReference() ?>)
                 <?php endif; ?>
             </h2>
         </div>
@@ -33,7 +33,7 @@
             <tr>
                 <td>Id</td>
                 <td>Name</td>
-                <?php if(!$t->patchPanel): ?>
+                <?php if(!$t->pp): ?>
                     <td>Patch Panel</td>
                 <?php endif;?>
                 <td>Switch / Port</td>
@@ -58,7 +58,7 @@
                             <?= $ppp->getName() ?>
                         </a>
                     </td>
-                    <?php if(!$t->patchPanel): ?>
+                    <?php if(!$t->pp): ?>
                         <td>
                             <a href="<?= url('patch-panel/view' ).'/'.$ppp->getPatchPanel()->getId()?>">
                                 <?= $ppp->getPatchPanel()->getName() ?>
