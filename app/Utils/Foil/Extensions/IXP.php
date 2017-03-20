@@ -21,7 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Foil\Engine;
 use Foil\Contracts\ExtensionInterface;
 
 use IXP\Utils\View\Alert\Container as AlertContainer;
@@ -51,13 +50,128 @@ class IXP implements ExtensionInterface {
 
     public function provideFunctions() {
         return [
-            'alerts'   => [ AlertContainer::class, 'html' ],
-            'softwrap' => [$this, 'softwrap'],
+            'alerts'            => [ AlertContainer::class, 'html' ],
+            'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
+            'scaleBits'         => [ $this, 'scaleBites' ],
+            'scaleBytes'        => [ $this, 'scaleBytes' ],
+            'softwrap'          => [ $this, 'softwrap' ],
         ];
     }
 
 
-   /**
+
+
+
+    /**
+     * Max file upload size
+     *
+     * Inspired by: http://stackoverflow.com/questions/13076480/php-get-actual-maximum-upload-size
+     */
+    public function maxFileUploadSize() {
+        static $max_size = null;
+
+        $parseSize = function( $size ) {
+            $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+            $size = preg_replace('/[^0-9\.]/', '', $size);      // Remove the non-numeric characters from the size.
+            if ($unit) {
+                // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+                return round( $size * pow( 1024, stripos( 'bkmgtpezy', $unit[0] ) ) );
+            }
+            else {
+                return round($size);
+            }
+        };
+
+        if( $max_size === null ) {
+            $max_size = $parseSize( ini_get('post_max_size') );
+
+            // If upload_max_size is less, then reduce. Except if upload_max_size is
+            // zero, which indicates no limit.
+            $upload_max = $parseSize( ini_get('upload_max_filesize') );
+            if ($upload_max > 0 && $upload_max < $max_size) {
+                $max_size = $upload_max;
+            }
+        }
+        return $this->scale( $max_size, 'bytes' );
+    }
+
+
+    /**
+     * Scale function
+     *
+     * This function will scale a number to (for example for traffic
+     * measured in bits/second) to Kbps, Mbps, Gbps or Tbps; or data.
+     * measured in bytes to KB, MB, GB or TB.
+     *
+     * Valid string formats ($strFormats) and what they return are:
+     *    bytes               => Bytes, KBytes, MBytes, GBytes, TBytes
+     *    pkts / errs / discs => pps, Kpps, Mpps, Gpps, Tpps
+     *    bits / *            => bits, Kbits, Mbits, Gbits, Tbits
+     *
+     * Valid return types ($format) are:
+     *    0 => fully formatted and scaled value. E.g.  12,354.235 Tbits
+     *    1 => scaled value without string. E.g. 12,354.235
+     *    2 => just the string. E.g. Tbits
+     *
+     * @param float  $v          The value to scale
+     * @param string $format     The format to sue (as above: bytes / pkts / errs / etc )
+     * @param int    $decs       Number of decimals after the decimal point. Defaults to 3.
+     * @param int    $returnType Type of string to return. Valid values are listed above. Defaults to 0.
+     * @return string            Scaled / formatted number / type.
+     */
+    private function scale( float $v, string $format, int $decs = 3, int $returnType = 0 ): string {
+        if( $format == "bytes" ) {
+            $formats = [
+                "Bytes", "KBytes", "MBytes", "GBytes", "TBytes"
+            ];
+        } else if( in_array( $format, [ 'pkts', 'errs', 'discs', 'bcasts' ] ) ) {
+            $formats = [
+                "pps", "Kpps", "Mpps", "Gpps", "Tpps"
+            ];
+        } else {
+            $formats = [
+                "bits", "Kbits", "Mbits", "Gbits", "Tbits"
+            ];
+        }
+
+        for( $i = 0; $i < sizeof( $formats ); $i++ )
+        {
+            if( ( $v / 1000.0 < 1.0 ) || ( sizeof( $formats ) == $i + 1 ) ) {
+                if( $returnType == 0 )
+                    return number_format( $v, $decs ) . " " . $formats[$i];
+                elseif( $returnType == 1 )
+                    return number_format( $v, $decs );
+                else
+                    return $formats[$i];
+            } else {
+                $v /= 1000.0;
+            }
+        }
+
+        return (string)$v;
+    }
+
+    /**
+     * See scale above
+     * @param float $v
+     * @param int $decs
+     * @return string
+     */
+    public function scaleBits( float $v, int $decs = 3 ) {
+        return $this->scale( $v, 'bits', $decs );
+    }
+
+    /**
+     * See scale above
+     * @param float $v
+     * @param int $decs
+     * @return string
+     */
+    public function scaleBytes( float $v, int $decs = 3 ) {
+        return $this->scale( $v, 'bytes', $decs );
+    }
+
+    /**
     * Soft wrap
     *
     * Print an array of data separated by $elementSeparator within the same line and only

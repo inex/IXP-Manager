@@ -59,7 +59,7 @@ class PatchPanelPort
         self::STATE_AVAILABLE           => "Available",
         self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
         self::STATE_CONNECTED           => "Connected",
-        self::STATE_AWAITING_CEASE      => "Awaiting cease",
+        self::STATE_AWAITING_CEASE      => "Awaiting Cease",
         self::STATE_CEASED              => "Ceased",
         self::STATE_BROKEN              => "Broken",
         self::STATE_OTHER               => "Other"
@@ -1186,7 +1186,7 @@ class PatchPanelPort
         $this->setInternalUse(false);
         $this->setChargeable(false);
         $this->setCustomer(null);
-        $this->setLoaCode(null);
+        $this->setLoaCode('');
         $this->setSwitchPort(null);
         $this->setDuplexMasterPort(null);
 

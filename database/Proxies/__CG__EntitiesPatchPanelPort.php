@@ -638,7 +638,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function setLoaCode($loa_code)
+    public function setLoaCode(string $loa_code): \Entities\PatchPanelPort
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLoaCode', [$loa_code]);
@@ -708,7 +708,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getHasSwitchPort()
+    public function getHasSwitchPort(): bool
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHasSwitchPort', []);
@@ -994,7 +994,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function setDuplexPort($duplexPort, $newSlavePort)
+    public function setDuplexPort(\Entities\PatchPanelPort $duplexPort, $newSlavePort)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexPort', [$duplexPort, $newSlavePort]);
@@ -1038,7 +1038,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getCustomerForASwitchPort()
+    public function getCustomerForASwitchPort(): \Entities\Customer
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomerForASwitchPort', []);

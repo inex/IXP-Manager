@@ -108,7 +108,7 @@
 
                                     <?php if( $ppp->isStateAvailable() ): ?>
                                         <li>
-                                            <a id="allocate-<?= $ppp->getId() ?>" href="<?= url('/patch-panel-port/edit' ) . '/' . $ppp->getId() . '/allocating' ?>">
+                                            <a id="allocate-<?= $ppp->getId() ?>" href="<?= url('/patch-panel-port/edit-to-allocate' ) . '/' . $ppp->getId() ?>">
                                                 Allocate
                                             </a>
                                         </li>
@@ -145,9 +145,8 @@
                                         <li> <a href="<?= url('/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_CEASE   ?>">Email - Cease</a>           </li>
                                         <li> <a href="<?= url('/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_INFO    ?>">Email - Information</a>     </li>
                                         <li> <a href="<?= url('/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_LOA     ?>">Email - LoA</a> </li>
+                                        <li role="separator" class="divider"></li>
                                     <?php endif; ?>
-
-                                    <li role="separator" class="divider"></li>
 
                                     <?php if( $ppp->isStateAwaitingXConnect() || $ppp->isStateConnected() ): ?>
                                         <li>
@@ -155,17 +154,17 @@
                                                 Download LoA
                                             </a>
                                         </li>
+                                        <li role="separator" class="divider"></li>
                                     <?php endif; ?>
 
-                                    <li role="separator" class="divider"></li>
 
                                     <li>
-                                        <a onclick="return uploadPopup(<?= $ppp->getId() ?>)" href="#" title="Attach file">
+                                        <a id="attach-file-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" title="Attach file">
                                             Attach file...
                                         </a>
+                                        <li role="separator" class="divider"></li>
                                     </li>
 
-                                    <li role="separator" class="divider"></li>
 
                                     <li>
                                         <a href="<?= url('/patch-panel-port/view' ) . '/' . $ppp->getId()?>">
@@ -218,7 +217,7 @@
 
                 <textarea id="notes-modal-body-private-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control" title="Private Notes"></textarea>
 
-                <div id="notes-modal-body-div-pi-status" class="hidden">
+                <div id="notes-modal-body-div-pi-status">
                     <br><br>
                     <span>Update Physical Port State To: </span>
                     <select title="Physical Interface States" id="notes-modal-body-pi-status"></select>
@@ -236,6 +235,11 @@
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
+    <script type="text/javascript" src="<?= asset('/bower_components/jquery-ui/ui/widget.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/blueimp-file-upload/js/jquery.iframe-transport.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/jquery-knob/js/jquery.knob.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/blueimp-file-upload/js/jquery.fileupload.js') ?>"></script>
+
     <?= $t->insert( 'patch-panel-port/js/index' ); ?>
 <?php $this->append() ?>
 

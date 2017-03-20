@@ -24,26 +24,76 @@
                     else:
                         $current = false;
                     endif; ?>
-
-                    <?php if( ( $t->isSuperUser ) or ( ! $t->isSuperUser and $current ) ): ?>
-                        <li <?php if( $current ): ?> class="active" <?php endif; ?>>
-                            <a href="#<?= $pppHistory->getId() ?>" data-toggle="tab"><?php if( $current): ?> Current <?php else: ?> <?= $pppHistory->getCeasedAtFormated(); ?> <?php endif; ?></a>
-                        </li>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-        <div class="panel-body">
-            <div class="tab-content">
-                <?php foreach ( $t->listHistory as $pppHistory ): ?>
-                    <?php if( get_class( $pppHistory ) == \Entities\PatchPanelPort::class ):
-                        $current = true;
-                    else:
-                        $current = false;
-                    endif; ?>
-                    <div class="tab-pane fade <?php if( $current ): ?> active in <?php endif; ?>" id="<?= $pppHistory->getId() ?>">
-                        <div class="col-xs-6">
-                            <table class="table_ppp_info">
+                <?php if(($t->isSuperUser) or (!$t->isSuperUser and $current)): ?>
+                    <li <?php if($current): ?> class="active" <?php endif; ?>>
+                        <a href="#<?= $pppHistory->getId() ?>" data-toggle="tab"><?php if($current): ?> Current <?php else: ?> <?= $pppHistory->getCeasedAtFormated(); ?> <?php endif; ?></a>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <div class="tab-content">
+            <?php foreach ($t->listHistory as $pppHistory): ?>
+                <?php if(get_class($pppHistory) == \Entities\PatchPanelPort::class):
+                    $current = true;
+                else:
+                    $current = false;
+                endif; ?>
+                <div class="tab-pane fade <?php if($current): ?> active in <?php endif; ?>" id="<?= $pppHistory->getId() ?>">
+                    <div class="col-xs-6">
+                        <table class="table_ppp_info">
+                            <tr>
+                                <td>
+                                    <b>
+                                        Name : <?= $pppHistory->getId() ?>
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $pppHistory->getName() ?>
+                                    <?php if($pppHistory->hasSlavePort()): ?>
+                                        (duplex)
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        Patch Panel :
+                                    </b>
+                                </td>
+                                <td>
+                                    <a href="<?= url( 'patch-panel-port/list/patch-panel' ) . '/' . $pppHistory->getPatchPanel()->getId() ?>">
+                                        <?= $pppHistory->getPatchPanel()->getName() ?>
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php if($current): ?>
+                                <?php if($pppHistory->getSwitchName()): ?>
+                                    <tr>
+                                        <td>
+                                            <b>
+                                                Switch :
+                                            </b>
+                                        </td>
+                                        <td>
+                                            <?= $pppHistory->getSwitchName()?>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Switch / Port :
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $pppHistory->getSwitchport()?>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                            <?php if($pppHistory->getCustomerName()): ?>
                                 <tr>
                                     <td>
                                         <b>
@@ -347,8 +397,7 @@
                             <?php endif; ?>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 <?php $this->append() ?>

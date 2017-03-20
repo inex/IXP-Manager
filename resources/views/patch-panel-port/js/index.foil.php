@@ -2,17 +2,14 @@
 
 var notesIntro = "### <?= date("Y-m-d" ) . ' - ' .$t->user->getUsername() ?> \n\n";
 
+var pagination = true;
+<?php if($t->patchPanel): ?>
+// unless we have a single patch panel in which case we disable:
+pagination = false;
+<?php endif; ?>
+
+
 $(document).ready(function(){
-
-    // set global variable for file uploads:
-    window.loadscript = false;
-
-    pagination = true;
-    <?php if($t->pp): ?>
-        // unless we have a single patch panel in which case we disable:
-        pagination = false;
-    <?php endif; ?>
-
     $('#patch-panel-port-list').DataTable({
         "paging":   pagination,
         "autoWidth": false,
@@ -42,6 +39,19 @@ $(document).ready(function(){
         popup( pppid, 'request-cease', $(this).attr('href') );
     });
 
+    $( "a[id|='set-ceased']" ).on( 'click', function(e){
+        e.preventDefault();
+        var pppid = (this.id).substring(11);
+        popup( pppid, 'set-ceased', $(this).attr('href') );
+    });
+
+
+    $( "a[id|='attach-file']" ).on( 'click', function(e){
+        e.preventDefault();
+        var pppid = (this.id).substring(12);
+        uploadPopup( pppid );
+    });
+
 });
 
 /**
@@ -68,7 +78,7 @@ function unsetNotesTextArea() {
  * Calls an API endpoint on IXP Manager to get patch panel port details
  */
 function ajaxGetPatchPanelPort( pppid, action, url, handleData ) {
-    return $.ajax( "<?= url('api/v4/patch-panel-port') ?>/" + pppid + "/1" )   // + "/1" => deep array to include subobjects
+    return $.ajax( "<?= url('api/v4/patch-panel-port/deep') ?>/" + pppid )
         .done( function( data ) {
             handleData( data, action, url );
         })
@@ -95,6 +105,7 @@ function popupSetUp( ppp, action ) {
     publicNotes.val( ppp.notes );
     privateNotes.val( ppp.privateNotes );
 
+    $('#notes-modal-body-div-pi-status').hide();
     if( action == 'set-connected' && ppp.switchPortId ) {
 
         var haveCurrentState = false;
@@ -117,6 +128,8 @@ function popupSetUp( ppp, action ) {
         if( !haveCurrentState ) {
             piSelect.append( '<option value="' + ppp.switchPort.physicalInterface.statusId + '">' + ppp.switchPort.physicalInterface.status + ' (current state)</option>' );
         }
+
+        $('#notes-modal-body-div-pi-status').show();
     }
 
     // The logic of these two blocks is:
@@ -144,9 +157,12 @@ function popupTearDown() {
     publicNotes.val('');
     privateNotes.val('');
     $('#notes-modal-body-pi-status').html('');
+    $('#notes-modal-body-div-pi-status').hide();
 
     publicNotes.off( 'blur change click keyup focus focusout' );
     privateNotes.off( 'blur change click keyup focus focusout' );
+
+    $('#notes-modal-btn-confirm').off( 'click' );
 }
 
 /**
@@ -170,7 +186,7 @@ function popup( pppId, action, url ) {
 
             $('#notes-modal-btn-confirm').attr("disabled", true);
 
-            $.ajax( "<?= url('api/v4/patch-panel-port')?>/" + ppp.id + "/notes", {
+            $.ajax( "<?= url('api/v4/patch-panel-port/notes')?>/" + ppp.id, {
                     data: {
                         pppId: ppp.id,
                         notes: $('#notes-modal-body-public-notes').val(),
@@ -203,87 +219,157 @@ function popup( pppId, action, url ) {
 }
 
 
+/**
+ * Display a dray'n'drop popup to attached files to patch panel ports.
+ *
+ * @param pppid The ID of the patch panel port
+ */
 
-    function uploadPopup(pppId){
-        html = "<form id='upload' method='post' action='<?= url('/patch-panel-port/upload-file' )?>/" +
-            pppId+"' enctype='multipart/form-data'> <div id='drop'>Drop Files Here &nbsp;<a class='btn btn-success'>" +
-            "<i class='glyphicon glyphicon-upload'></i> Browse</a> <br/><span class='info'> (max size 50MB) </span>" +
-            "<input type='file' name='upl' multiple /> </div> <ul><!-- The file uploads will be shown here --> </ul>" +
-            "<input type='hidden' name='_token' value='<?php echo csrf_token(); ?>'> </form>";
+function uploadPopup( pppid ){
 
-        var dialog = bootbox.dialog({
-            message: html,
-            title: "Files Upload (Files will be public by default)",
-            onEscape: function() {
-                location.reload();
+    var html = '<form id="upload" method="post" action="<?= url("api/v4/patch-panel-port/upload-file" )?>/' + pppid + '" enctype="multipart/form-data">' +
+        '<div id="drop">Drop Files Here &nbsp;' +
+        '    <a id="upload-drop-a" class="btn btn-success">' +
+        '        <i class="glyphicon glyphicon-upload"></i> Browse</a> <br/>' +
+        '        <span class="info"> (max size <?= $t->maxFileUploadSize() ?> </span>' +
+        '        <input type="file" name="upl" multiple />' +
+        '</div>' +
+        '<ul id="upload-ul"><!-- The file uploads will be shown here --> </ul>' +
+        '<input type="hidden" name="_token" value="<?= csrf_token() ?>"> </form>';
+
+    var dialog = bootbox.dialog({
+        message: html,
+        title: "Files Upload (Files will be public by default)",
+        onEscape: function() {
+            location.reload();
+        },
+        buttons: {
+            cancel: {
+                label: '<i class="fa fa-times"></i> Close',
+                callback: function () {
+                    $('.bootbox.modal').modal('hide');
+                    location.reload();
+                    return false;
+                }
             },
-            buttons: {
-                cancel: {
-                    label: '<i class="fa fa-times"></i> Close',
-                    callback: function () {
-                        $('.bootbox.modal').modal('hide');
-                        location.reload();
-                        return false;
-                    }
-                },
-            }
+        }
+    });
+
+    dialog.init( function(){
+
+        var ul = $('#upload-ul');
+
+        $('#upload-drop-a').click( function(){
+            // Simulate a click on the file input button
+            // to show the file browser dialog
+            $(this).parent().find('input').click();
         });
 
-        dialog.init(function(){
-            $.getScript( "js/draganddrop/jquery.fileupload.js", function( data, textStatus, jqxhr ) {});
-            $.getScript( "js/draganddrop/jquery.iframe-transport.js", function( data, textStatus, jqxhr ) {});
-            $.getScript( "js/draganddrop/jquery.knob.js", function( data, textStatus, jqxhr ) {});
-            $.getScript( "js/draganddrop/jquery.ui.widget.js", function( data, textStatus, jqxhr ) {});
-            $.getScript( "js/draganddrop/script.js", function( data, textStatus, jqxhr ) {});
-            window.loadscript = true;
-        });
+        // Initialize the jQuery File Upload plugin
+        $('#upload').fileupload({
 
-        return false;
-    }
+            // This element will accept file drag/drop uploading
+            dropZone: $('#drop'),
 
-    function deleteFile(idFile,idPPP){
-        $.ajax({
-            url: "<?= url('patch-panel-port/delete-file/')?>",
-            data: {idFile: idFile, idPPP: idPPP},
-            type: 'GET',
-            dataType: 'JSON',
-            success: function (data) {
-                if(data.success){
-                    $('#file_'+idFile).fadeOut( "medium", function() {
-                        $('#file_'+idFile).remove();
+            // This function is called when a file is added to the queue;
+            // either via the browse button, or via drag/drop:
+            add: function (e, data) {
+
+                var tpl = $('<li><input type="text" value="0" data-width="48" data-height="48"'+
+                    ' data-fgColor="#0788a5" data-readOnly="1" data-bgColor="#3e4043" /><p></p><span></span></li>');
+
+                // Append the file name and file size
+                tpl.find('p').text(data.files[0].name)
+                    .append('<i>' + ixpFormatFileSize(data.files[0].size) + '</i>');
+
+                // Add the HTML to the UL element
+                data.context = tpl.appendTo(ul);
+
+                // Initialize the knob plugin
+                tpl.find('input').knob();
+
+                // Automatically upload the file once it is added to the queue
+                data.submit()
+                    .done(function (result, textStatus, jqXHR){
+                        if(result.success){
+                            tpl.addClass( 'success' );
+                            tpl.attr( 'id','uploaded-file-' + result.id );
+                            tpl.find( 'span' ).addClass( 'success' );
+                            tpl.append( '<span id="uploaded-file-toggle-private-' + result.id + '" class="private fa fa-unlock fa-lg"></span>' );
+                            tpl.append( '<span id="uploaded-file-delete-'         + result.id + '" class="delete glyphicon glyphicon-trash"></span>' );
+                            tpl.find('p').append( '<i id="message-'+ result.id + '" class="success">' + result.message + '</i>' );
+
+                            $('#uploaded-file-toggle-private-' + result.id).on( 'click', toggleFilePrivacy );
+                            $('#uploaded-file-delete-'         + result.id).on( 'click', deleteFile        );
+                        } else {
+                            tpl.addClass('error');
+                            tpl.find('span').addClass('error');
+                            tpl.find('p').append('<i id="message-' + result.id + '" class="error"> Upload Error: ' + result.message + '</i>' );
+                        }
                     });
-                } else {
-                    $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
-                    $('#delete_'+idFile).remove();
+                },
+
+            progress: function(e, data){
+
+                // Calculate the completion percentage of the upload
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+
+                // Update the hidden input field and trigger a change
+                // so that the jQuery knob plugin knows to update the dial
+                data.context.find('input').val(progress).change();
+                if(progress == 100){
+                    data.context.removeClass('working');
                 }
+            },
+
+            fail:function(e, data){
+                // Something has gone wrong!
+                data.context.addClass('error');
+            }
+
+        });
+
+
+        // Prevent the default action when a file is dropped on the window
+        $(document).on('drop dragover', function (e) {
+            e.preventDefault();
+        });
+
+    });
+}
+
+/**
+ * Delete a file that has been just uploaded via uploadPopup
+ */
+function deleteFile(e) {
+    var pppFileId = (this.id).substring(21);
+
+    $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + pppFileId )
+        .done( function( data ) {
+            if( data.success ) {
+                $('#uploaded-file-' + pppFileId).fadeOut( "medium", function() {
+                    $('#uploaded-file-' + pppFileId).remove();
+                });
+            } else {
+                $( '#message-' + pppFileId ).removeClass('success').addClass( 'error' ).html( data.message );
             }
         });
-    }
+}
 
-    function changePrivateFile(idFile,idPPP){
-        $.ajax({
-            url: "<?= url('patch-panel-port/change-private-file/')?>",
-            data: {idFile: idFile, idPPP: idPPP},
-            type: 'GET',
-            dataType: 'JSON',
-            success: function (data) {
-                if(data.success){
-                    $('#privateMessage_'+idFile).html(' / <i class="success">'+data.message+'</i>');
-                    if($('#private_'+idFile).hasClass('fa-lock')){
-                        $('#private_'+idFile).removeClass('fa-lock');
-                        $('#private_'+idFile).addClass('fa-unlock');
-                    } else {
-                        $('#private_'+idFile).removeClass('fa-unlock');
-                        $('#private_'+idFile).addClass('fa-lock');
-                    }
-
-                } else {
-                    $('#privateMessage_'+idFile).html(' / <i class="error"> '+data.message+'</i>');
-                    $('#private_'+idFile).remove();
-                }
-
+/**
+ * Toggle privacy of a file that has been just uploaded via uploadPopup
+ */
+function toggleFilePrivacy(e) {
+    var pppFileId = (this.id).substring(29);
+alert(pppFileId);
+    $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId )
+        .done( function( data ) {
+            if( data.isPrivate ) {
+                $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-unlock').addClass('fa-lock');
+            } else {
+                $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-lock').addClass('fa-unlock');
             }
         });
-    }
+}
 
 </script>

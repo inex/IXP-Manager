@@ -38,6 +38,7 @@ use Entities\SwitchPort;
 
 use Former\Facades\Former;
 
+use Illuminate\Http\JsonResponse;
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\EmailPatchPanelPort;
 use IXP\Http\Requests\StorePatchPanelPort;
@@ -55,9 +56,6 @@ use Illuminate\View\View;
 
 use Auth;
 
-use GrahamCampbell\Flysystem\Facades\Flysystem;
-use GrahamCampbell\Flysystem\FlysystemManager;
-use IXP\User;
 
 use Mail;
 use IXP\Mail\PatchPanelPort as PatchPanelPortMail;
@@ -107,14 +105,11 @@ class PatchPanelPortController extends Controller
     /**
      * Display the form to edit a patch panel port
      *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @params  $request instance of the current HTTP request
-     * @parama  int $id patch panel port that need to be edited
+     * @param  int $id patch panel port that need to be edited
      * @return  view
      */
-    public function edit( Request $request, int $id, $allocating = false ) {
-        $ppp = false;
+    public function edit( int $id, $allocating = false ) {
+        $patchPanelPort = false;
 
         if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
             abort(404);
@@ -170,6 +165,16 @@ class PatchPanelPortController extends Controller
             'user'              => Auth::user(),
             'allocating'        => ($allocating) ? true : false
         ]);
+    }
+
+    /**
+     * Display the form to edit a patch panel port
+     *
+     * @param  int $id patch panel port that need to be edited
+     * @return  view
+     */
+    public function editToAllocate( int $id ) {
+        return $this->edit( $id, true );
     }
 
     /**
@@ -405,127 +410,6 @@ class PatchPanelPortController extends Controller
         }
 
         return redirect( '/patch-panel-port/list/patch-panel/'.$ppp->getPatchPanel()->getId() );
-    }
-
-    /**
-     * Allow to upload a file to a patch panel port
-     *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @params  $id patch panel port ID
-     * @params  $request instance of the current HTTP request
-     * @params  $filesystem FlysystemManager instance of the file manager
-     * @return  JSON
-     */
-    public function uploadFile( int $id, Request $request, FlysystemManager $filesystem ){
-        $success = false;
-        $message = 'An error has occured!';
-        $idFile = 0;
-        $pppId = 0;
-
-        if( ( $ppp = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
-            $pppId = $ppp->getId();
-            $message = 'File size is too big ! (max = 50mb)';
-            if ($request->hasFile('upl')) {
-                $file = $request->file('upl');
-                $hashedName = hash('sha256', $file->getClientOriginalName());
-                $path = PatchPanelPortFile::getPathPPPFile($hashedName);
-                $stream = fopen($file->getRealPath(), 'r+');
-
-                if( ! $filesystem->has( $path ) ) {
-                    if( $request->file( 'upl' )->getSize() <= PatchPanelPortFile::UPLOAD_MAX_SIZE ) {
-                        if( $filesystem->writeStream( $path, $stream ) ){
-                            $success = true;
-                            $message = 'File uploaded successfully';
-
-                            $pppFile = new PatchPanelPortFile();
-                            $pppFile->setPatchPanelPort( $ppp );
-                            $pppFile->setName( $file->getClientOriginalName() );
-                            $pppFile->setSize( $filesystem->getSize( $path ) );
-                            $pppFile->setStorageLocation( $hashedName );
-                            $pppFile->setType( $filesystem->getMimetype( $path ) );
-                            $pppFile->setUploadedAt( new \DateTime( date( 'Y-m-d' ) ) );
-                            $pppFile->setUploadedBy( Auth::user()->getUsername() );
-                            D2EM::persist( $pppFile );
-                            $ppp->addPatchPanelPortFile( $pppFile );
-                            D2EM::persist( $ppp );
-                            D2EM::flush();
-                            $idFile = $pppFile->getId();
-                        }
-                    } else {
-                        $message = 'File size is too big ! (max = 50mb)';
-                    }
-                } else {
-                    $message = 'File already existing!';
-                }
-                fclose( $stream );
-            }
-        }
-        return response()->json( array( 'success' => $success, 'message' => $message, 'idFile' => $idFile, 'idPPP' => $pppId ) );
-    }
-
-
-    /**
-     * Allow to delete a file from a patch panel port
-     *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @params  $request instance of the current HTTP request
-     * @params  $filesystem FlysystemManager instance of the file manager
-     * @return  JSON customer object
-     */
-    public function deleteFile( int $id, int $idFile, FlysystemManager $filesystem ) {
-        $success = false;
-        $message = 'An error has occured !';
-
-        if( ( $ppp = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
-            if( ( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find($idFile) ) ) {
-                $path = PatchPanelPortFile::getPathPPPFile( $pppFile->getStorageLocation() );
-                if( $filesystem->has( $path ) ) {
-                    if( $filesystem->delete( $path ) ) {
-                        $success = true;
-                        $message = 'File deleted with success';
-                        $ppp->removePatchPanelPortFile( $pppFile );
-                        D2EM::persist( $ppp );
-                        D2EM::remove( $pppFile );
-                        D2EM::flush();
-                    }
-                }
-            }
-        }
-        return response()->json( ['success' => $success, 'message' => $message] );
-    }
-
-    /**
-     * Allow to make a file private
-     *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @params  $request instance of the current HTTP request
-     * @return  JSON customer object
-     */
-    public function changePrivateFile( Request $request, FlysystemManager $filesystem ) {
-        $success = false;
-        $message = 'An error has occured !';
-
-        if( ( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $request->input('idPPP') ) ) ) {
-            if( ( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find( $request->input('idFile') ) ) ) {
-                $success = true;
-
-                if( $pppFile->getIsPrivate() ){
-                    $message = 'The file is now public !';
-                    $pppFile->setIsPrivate(false);
-                }
-                else{
-                    $message = 'The file is now private !';
-                    $pppFile->setIsPrivate(true);
-                }
-
-                D2EM::persist( $pppFile );
-                D2EM::flush();
-            }
-        }
-        return response()->json([ 'success' => $success, 'message' => $message ]);
     }
 
     /**
