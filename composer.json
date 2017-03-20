@@ -60,7 +60,9 @@
         "anahkiasen/former": "^4.0",
         "barryvdh/laravel-debugbar": "^2.3",
         "erusev/parsedown": "^1.6",
-        "graham-campbell/flysystem": "^3.6"
+        "graham-campbell/flysystem": "^3.6",
+        "barryvdh/laravel-dompdf": "^0.8.0",
+        "luketowers/purifier": "dev-master"
 
     },
     "require-dev": {

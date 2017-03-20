@@ -288,7 +288,7 @@ class JsonSchema
 
                 $conn['state']       = 'active';
                 $conn['if_list']     = $iflist;
-                $conn['vlan_list'][] = $vlanentries;
+                $conn['vlan_list']   = $vlanentries;
 
                 $connlist[] = $conn;
             }

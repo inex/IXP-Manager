@@ -52,7 +52,7 @@ class StorePatchPanel extends FormRequest
             'cable_type'        => 'required|integer',
             'connector_type'    => 'required|integer',
             'installation_date' => 'date',
-            'port_prefix'       => 'string',
+            'port_prefix'       => 'string|nullable',
             'numberOfPorts'     => 'required|integer',
         ];
     }

@@ -44,18 +44,18 @@ MaxBytes[core-degkcp-tcydub1-lan1]: 10000000000
 Directory[core-degkcp-tcydub1-lan1]: trunks
 Title[core-degkcp-tcydub1-lan1]: Trunk Core - DEGKCP-TCYDUB1 - LAN1 - Primary
 
-# degkcp-tcydub1 - LAN1 - Secondary
-Target[core-degkcp-tcydub1-lan1-sec]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-MaxBytes[core-degkcp-tcydub1-lan1-sec]: 10000000000
-Directory[core-degkcp-tcydub1-lan1-sec]: trunks
-Title[core-degkcp-tcydub1-lan1-sec]: Trunk Core - DEGKCP-TCYDUB1 - LAN1 - Secondary
+# kcp1-cwt1 - LAN1 - Secondary
+Target[core-kcp1-cwt1-lan1-sec]: #Ethernet25:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+                + #Ethernet26:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+                + #Ethernet27:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+                + #Ethernet28:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+                + #Ethernet29:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+                + #Ethernet30:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+                + #Ethernet31:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+                + #Ethernet32:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+MaxBytes[core-kcp1-cwt1-lan1-sec]: 10000000000
+Directory[core-kcp1-cwt1-lan1-sec]: trunks
+Title[core-kcp1-cwt1-lan1-sec]: Trunk Core - KCP1 - CWT1 - LAN1 - Secondary
 
 # tcydub1-tcydub1 - LAN1 - Primary
 Target[core-tcydub1-tcydub1-lan1]: #1\:49:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
@@ -65,35 +65,41 @@ Directory[core-tcydub1-tcydub1-lan1]: trunks
 Title[core-tcydub1-tcydub1-lan1]: Trunk Core - TCYDUB1 Internal - LAN1 - Primary
 
 
-# degkcp-ixdub1 - LAN1
-Target[core-degkcp-ixdub1-lan1]: #1\:25:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:26:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-				+ #1\:27:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-MaxBytes[core-degkcp-ixdub1-lan1]: 3750000000
-Directory[core-degkcp-ixdub1-lan1]: trunks
-Title[core-degkcp-ixdub1-lan1]: Trunk Core - TCYKCP-IXDUB1 - LAN1
+# cwt1 internal link swi1-cwt1-1 -> -2
+Target[core-cwt1-int1-lan1]: #Ethernet53:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+MaxBytes[core-cwt1-int1-lan1]: 12000000000
+Directory[core-cwt1-int1-lan1]: trunks
+Title[core-cwt1-int1-lan1]: Trunk Core - TCYDUB1 Internal - LAN1 - Primary
 
-# tcydub1-ixdub1 - LAN1
-Target[core-tcydub1-ixdub1-lan1]: #1\:25:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-				+ #1\:26:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-				+ #1\:27:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-MaxBytes[core-tcydub1-ixdub1-lan1]: 3750000000
-Directory[core-tcydub1-ixdub1-lan1]: trunks
-Title[core-tcydub1-ixdub1-lan1]: Trunk Core - TCYDUB1-IXDUB1 - LAN1
+# kcp1 internal link swi1-kcp1-1 -> -2
+Target[core-kcp1-int1-lan1]: #Ethernet53:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+MaxBytes[core-kcp1-int1-lan1]: 12000000000
+Directory[core-kcp1-int1-lan1]: trunks
+Title[core-kcp1-int1-lan1]: Trunk Core - KCP1 Internal - LAN1 - Primary
 
-# swi1-ix1-1 - swi1-ix1-2
-Target[core-swi1-ix1-1_swi1-ix1-2-lan1]: #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-ix1-1.inex.ie:::::2
-					 + #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-ix1-1.inex.ie:::::2
-MaxBytes[core-swi1-ix1-1_swi1-ix1-2-lan1]: 2500000000
-Directory[core-swi1-ix1-1_swi1-ix1-2-lan1]: trunks
-Title[core-swi1-ix1-1_swi1-ix1-2-lan1]: Inter-POP Trunk Core - IXDUB1 - swi1-ix1-1 swi1-ix1-2 - LAN1
 
-# swi1-ix1-1 - swi1-ix2-1
-Target[core-swi1-ix1-1_swi1-ix2-1-lan1]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-ix1-1.inex.ie:::::2
-					+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-ix1-1.inex.ie:::::2
-MaxBytes[core-swi1-ix1-1_swi1-ix2-1-lan1]: 2500000000
-Directory[core-swi1-ix1-1_swi1-ix2-1-lan1]: trunks
-Title[core-swi1-ix1-1_swi1-ix2-1-lan1]: Inter-POP Trunk Core - IXDUB1 - swi1-ix1-1 swi1-ix2-1 - LAN1
+# kcp1-pwt1 - LAN1
+Target[core-kcp1-pwt1-lan1]: #Ethernet37:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+				+ #Ethernet38:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+				+ #Ethernet39:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-2.mgmt.inex.ie:::::2
+MaxBytes[core-kcp1-pwt1-lan1]: 3750000000
+Directory[core-kcp1-pwt1-lan1]: trunks
+Title[core-kcp1-pwt1-lan1]: Trunk Core - KCP1 - PWT1 - LAN1
+
+# cwt1-pwt1 - LAN1
+Target[core-cwt1-pwt1-lan1]: #Ethernet37:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-2.mgmt.inex.ie:::::2
+				+ #Ethernet38:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-2.mgmt.inex.ie:::::2
+				+ #Ethernet39:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-2.mgmt.inex.ie:::::2
+MaxBytes[core-cwt1-pwt1-lan1]: 3750000000
+Directory[core-cwt1-pwt1-lan1]: trunks
+Title[core-cwt1-pwt1-lan1]: Trunk Core - TCYDUB1-IXDUB1 - LAN1
+
+# swi1-pwt1-1 - swi1-pwt2-1
+Target[core-pwt1-pwt2-lan1]: #Ethernet47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-pwt1-1.mgmt.inex.ie:::::2
+					+ #Ethernet48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-pwt1-1.mgmt.inex.ie:::::2
+MaxBytes[core-pwt1-pwt2-lan1]: 2500000000
+Directory[core-pwt1-pwt2-lan1]: trunks
+Title[core-pwt1-pwt2-lan1]: Inter-POP Trunk Core - IXDUB1 - swi1-ix1-1 swi1-ix2-1 - LAN1
 
 
 # swi1-deg1-1 - swi1-deg1-3
@@ -112,44 +118,44 @@ Directory[core-swi1-tcy1-1_swi1-tcy1-3-lan1]: trunks
 Title[core-swi1-tcy1-1_swi1-tcy1-3-lan1]: Intra-POP Trunk Core - TCYDUB1 - swi1-tcy1-1 swi1-tcy1-3 - LAN1
 
 
-# swi1-tcy1-1 - swi1-vfw-1
-Target[core-swi1-tcy1-1_swi1-vfw-1-lan1]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-                      					+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-                                        + #1\:43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-                                        + #1\:44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-                                        + #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-                                        + #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-                                        + #1\:47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-                                        + #1\:48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-MaxBytes[core-swi1-tcy1-1_swi1-vfw-1-lan1]: 10000000000
-Directory[core-swi1-tcy1-1_swi1-vfw-1-lan1]: trunks
-Title[core-swi1-tcy1-1_swi1-vfw-1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy1-1 swi1-vfw-1 - LAN1
+# swi1-cwt1-1 - swi1-cls1-1
+Target[core-cwt1-cls1-lan1]: #Ethernet41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+                      					+ #Ethernet42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+                                        + #Ethernet43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+                                        + #Ethernet44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+                                        + #Ethernet45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+                                        + #Ethernet46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+                                        + #Ethernet47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+                                        + #Ethernet48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
+MaxBytes[core-cwt1-cls1-lan1]: 10000000000
+Directory[core-cwt1-cls1-lan1]: trunks
+Title[core-cwt1-cls1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy1-1 swi1-vfw-1 - LAN1
 
 # swi1-deg1-1 - swi1-tcy3-1
-Target[core-swi1-deg1-1_swi1-tcy3-1-lan1]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-                     					+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-                     					+ #1\:43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-                     					+ #1\:44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-                     					+ #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-                    					+ #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-                     					+ #1\:47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-                     					+ #1\:48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-deg1-1.inex.ie:::::2
-MaxBytes[core-swi1-deg1-1_swi1-tcy3-1-lan1]: 10000000000
-Directory[core-swi1-deg1-1_swi1-tcy3-1-lan1]: trunks
-Title[core-swi1-deg1-1_swi1-tcy3-1-lan1]: Inter-POP Trunk Core - Telecity NWBP - swi1-deg1-1 swi1-tcy3-1 - LAN1
+Target[core-kcp1-nwb1-lan1]: #Ethernet41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+                            + #Ethernet42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+                            + #Ethernet43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+                            + #Ethernet44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+                            + #Ethernet45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+                            + #Ethernet46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+                            + #Ethernet47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+                            + #Ethernet48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-kcp1-1.mgmt.inex.ie:::::2
+MaxBytes[core-kcp1-nwb1-lan1]: 10000000000
+Directory[core-kcp1-nwb1-lan1]: trunks
+Title[core-kcp1-nwb1-lan1]: Inter-POP Trunk Core - Telecity NWBP - swi1-deg1-1 swi1-tcy3-1 - LAN1
 
-# swi1-tcy3-1 - swi1-vfw-1
-Target[core-swi1-tcy3-1_swi1-vfw-1-lan1]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-                                        + #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-                                        + #1\:43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-                                        + #1\:44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-                                        + #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-                                        + #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-                                        + #1\:47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-                                        + #1\:48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy3-1.inex.ie:::::2
-MaxBytes[core-swi1-tcy3-1_swi1-vfw-1-lan1]: 10000000000
-Directory[core-swi1-tcy3-1_swi1-vfw-1-lan1]: trunks
-Title[core-swi1-tcy3-1_swi1-vfw-1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy3-1 swi1-vfw-1 - LAN1
+# nwb1 -> cls1
+Target[core-nwb1-cls1-lan1]: #Ethernet33:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
+                            + #Ethernet34:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
+                            + #Ethernet35:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
+                            + #Ethernet36:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
+                            + #Ethernet37:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
+                            + #Ethernet38:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
+                            + #Ethernet39:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
+                            + #Ethernet40:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
+MaxBytes[core-nwb1-cls1-lan1]: 10000000000
+Directory[core-nwb1-cls1-lan1]: trunks
+Title[core-nwb1-cls1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy3-1 swi1-vfw-1 - LAN1
 
 
 ################

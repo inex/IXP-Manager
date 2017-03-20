@@ -57,7 +57,7 @@ class VlanController extends IXP_Controller_FrontEnd
 
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'      => 'Name',
-                'number'    => 'Tag',
+                'number'    => '802.1q Tag',
                 'ixp'    => 'IXP',
                 'infrastructure'    => 'Infrastructure',
 

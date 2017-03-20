@@ -9,7 +9,6 @@ class PatchPanelPortFile
 {
     CONST UPLOAD_PATH = 'ppp';
 
-    CONST UPLOAD_MAX_SIZE = 50000000; // value in bytes
     /**
      * @var integer
      */
@@ -76,6 +75,16 @@ class PatchPanelPortFile
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getNameTruncate()
+    {
+        return strlen($this->name) > 80 ? substr($this->name,0,80)."...".explode('.',$this->name)[1] : $this->name;
     }
 
     /**
@@ -343,10 +352,8 @@ class PatchPanelPortFile
      *
      * @return string
      */
-    public static function getPathPPPFile($hash){
-        $a = substr( $hash, 0, 1 );
-        $b = substr( $hash, 1, 1 );
-
-        return self::UPLOAD_PATH.'/'.$a.'/'.$b.'/'.$hash;
+    public function getPath() {
+        return self::UPLOAD_PATH . '/' . substr( $this->getStorageLocation(), 0, 1 ) . '/'
+            . substr( $this->getStorageLocation(), 1, 1 ) . '/' . $this->getStorageLocation();
     }
 }

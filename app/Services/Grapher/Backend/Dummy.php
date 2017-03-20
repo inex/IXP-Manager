@@ -193,6 +193,18 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
         return @file_get_contents( $this->resolveFilePath( $graph, 'png' ) );
     }
 
+    /**
+     * Get the RRD file for a given graph
+     *
+     * {inheritDoc}
+     *
+     * @param Graph $graph
+     * @return string
+     */
+    public function rrd( Graph $graph ): string {
+        return '';
+    }
+
 
     /**
      * For a given graph, return the path where the appropriate log file

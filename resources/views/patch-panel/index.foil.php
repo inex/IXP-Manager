@@ -2,21 +2,19 @@
     /** @var Foil\Template\Template $t */
     /** @var $t->active */
 
-    $this->layout( 'layouts/ixpv4');
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section('title') ?>
+<?php $this->section( 'title' ) ?>
     Patch Panels (<?= $t->active ? 'Active' : 'Inactive' ?> Only)
 <?php $this->append() ?>
 
-<?php $this->section('page-header-preamble') ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-
-            <a class="btn btn-default" href="<?= url('patch-panel/list' . ( $t->active ? '/activeOnly/0' : '' ) ) ?>">
+            <a class="btn btn-default" href="<?= url('patch-panel/list' . ( $t->active ? '/inactive' : '' ) ) ?>">
                 Show <?= $t->active ? 'Inactive' : 'Active' ?>
             </a>
-
             <a type="button" class="btn btn-default" href="<?= url('patch-panel/add') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
@@ -24,150 +22,118 @@
     </li>
 <?php $this->append() ?>
 
-
 <?php $this->section('content') ?>
-    <?php if(session()->has('success')): ?>
-        <div class="alert alert-success" role="alert">
-            <?= session()->get('success') ?>
+    <?= $t->alerts() ?>
+    <?php if( !count( $t->patchPanels ) && $t->active ): ?>
+        <div class="alert alert-info" role="alert">
+            <b>No active patch panels exist.</b> <a href="<?= url( 'patch-panel/add' ) ?>">Add one...</a>
         </div>
-    <?php endif; ?>
-    <?php if(session()->has('error')): ?>
-        <div class="alert alert-danger" role="alert">
-            <b>Error : </b><?= session()->get('error') ?>
-        </div>
-    <?php endif; ?>
-    <table id='patch-panel-list' class="table ">
-        <thead>
-            <tr>
-                <td>Name</td>
-                <td>Cabinet</td>
-                <td>Colocation</td>
-                <td>Type</td>
-                <td>Ports Available</td>
-                <td>Installation Date</td>
-                <td>Action</td>
-            </tr>
-        <thead>
-        <tbody>
-            <?php foreach( $t->patchPanels as $patchPanel ):
-                /** @var Entities\PatchPanel $patchPanel */ ?>
+    <?php else:  /* !count( $t->patchPanels ) */ ?>
+        <table id='patch-panel-list' class="table">
+            <thead>
                 <tr>
                     <td>
-                        <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$patchPanel->getId()?>">
-                            <?= $patchPanel->getName() ?>
-                        </a>
-
+                        Name
                     </td>
                     <td>
-                        <a href="<?= url('/cabinet/view' ).'/'.$patchPanel->getCabinet()->getId()?>">
-                            <?= $patchPanel->getCabinet()->getName() ?>
-                        </a>
+                        Cabinet
                     </td>
                     <td>
-                        <?= $patchPanel->getColoReference() ?>
+                        Colocation
                     </td>
                     <td>
-                        <?= $patchPanel->resolveCableType() ?> / <?= $patchPanel->resolveConnectorType() ?>
+                        Type
                     </td>
                     <td>
-                        <?php
-                            $available = $patchPanel->getAvailableForUsePortCount();
-                            $total     = $patchPanel->getPortCount();
-
-                            if($total != 0):
-                                $dAvailable = floor( $available / 2 );
-                                $dTotal     = floor( $total     / 2 );
-
-                                if( ($total - $available) / $total < 0.7 ):
-                                    $class = "success";
-                                elseif( ($total - $available ) / $total < 0.85 ):
-                                    $class = "warning";
-                                else:
-                                    $class = "danger";
-                                endif;
-                            else:
-                                $class = "danger";
-                            endif;
-                        ?>
-
-                        <span title="" class="label label-<?= $class ?>">
-                            <?php if( $patchPanel->hasDuplexPort() ): ?>
-                                <?= $dAvailable ?> / <?= $dTotal ?>
-                            <?php else: ?>
-                                <?= $available ?> / <?= $total ?>
-                            <?php endif; ?>
-                        </span>
-
-                        <?php if( $patchPanel->hasDuplexPort() ): ?>
-                            &nbsp;
-                            <span class="label label-info">
-                                <?= $available ?> / <?= $total ?>
-                            </span>
-                        <?php endif; ?>
-
+                        Ports Available
                     </td>
                     <td>
-                        <?= $patchPanel->getInstallationDateFormated() ?>
+                        Installation Date
                     </td>
                     <td>
-                        <div class="btn-group btn-group-sm" role="group">
-                            <a class="btn btn btn-default" href="<?= url('/patch-panel/view' ).'/'.$patchPanel->getId()?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
-                            <a class="btn btn btn-default" href="<?= url('/patch-panel/edit' ).'/'.$patchPanel->getId()?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-
-                            <?php if( $patchPanel->getActive() ): ?>
-                                <a class="btn btn btn-default" id='list-delete-<?= $patchPanel->getId() ?>' href="<?= url( 'patch-panel/changeStatus/' . $patchPanel->getId().'/0') ?>" title="Delete">
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                </a>
-                            <?php else:?>
-                                <a class="btn btn btn-default" id='list-reactivate-<?= $patchPanel->getId() ?>' href="<?= url( 'patch-panel/changeStatus/' . $patchPanel->getId().'/1' ) ?>" title="Re-activate">
-                                    <i class="glyphicon glyphicon-repeat"></i>
-                                </a>
-                            <?php endif; ?>
-
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                More <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$patchPanel->getId()?>">View / Edit Patch Panel Port</a></li>
-                            </ul>
-                        </div>
+                        Action
                     </td>
                 </tr>
-            <?php endforeach;?>
-        <tbody>
-    </table>
+            <thead>
+            <tbody>
+                <?php foreach( $t->patchPanels as $pp ):
+                    /** @var Entities\PatchPanel $pp */ ?>
+                    <tr>
+                        <td>
+                            <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$pp->getId()?>">
+                                <?= $pp->getName() ?>
+                            </a>
+
+                        </td>
+                        <td>
+                            <a href="<?= url( '/cabinet/view' ).'/'.$pp->getCabinet()->getId()?>">
+                                <?= $pp->getCabinet()->getName() ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?= $pp->getColoReference() ?>
+                        </td>
+                        <td>
+                            <?= $pp->resolveCableType() ?> / <?= $pp->resolveConnectorType() ?>
+                        </td>
+                        <td>
+                            <span title="" class="label label-<?= $pp->getCssClassPortCount() ?>">
+                                <?php if( $pp->hasDuplexPort() ): ?>
+                                    <?= $pp->getAvailableOnTotalPort( true ) ?>
+                                <?php else: ?>
+                                    <?= $pp->getAvailableOnTotalPort( false ) ?>
+                                <?php endif; ?>
+                            </span>
+
+                            <?php if( $pp->hasDuplexPort() ): ?>
+                                &nbsp;
+                                <span class="label label-info">
+                                    <?= $pp->getAvailableOnTotalPort( false ) ?>
+                                </span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?= $pp->getInstallationDateFormated() ?>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn btn-default" href="<?= url( '/patch-panel/view' ).'/'.$pp->getId()?>" title="Preview">
+                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                </a>
+                                <a class="btn btn btn-default" href="<?= url( '/patch-panel/edit' ).'/'.$pp->getId()?>" title="Edit">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                </a>
+
+                                <?php if( $pp->getActive() ): ?>
+                                    <a class="btn btn btn-default" id='list-delete-<?= $pp->getId() ?>' href="<?= url( 'patch-panel/change-status/' . $pp->getId()
+                                            . '/' . ( $pp->getActive() ? '0' : '1' ) ) ?>" title="Make Inactive">
+                                        <i class="glyphicon glyphicon-trash"></i>
+                                    </a>
+                                <?php else: ?>
+                                    <a class="btn btn btn-default" id='list-reactivate-<?= $pp->getId() ?>' href="<?= url( 'patch-panel/change-status/' . $pp->getId()
+                                        . '/' . ( $pp->getActive() ? '0' : '1' ) ) ?>" title="Reactive">
+                                        <i class="glyphicon glyphicon-repeat"></i>
+                                    </a>
+                                <?php endif; ?>
+                                <a class="btn btn btn-default" href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$pp->getId()?>" title="See Ports">
+                                    <i class="glyphicon glyphicon-th"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach;?>
+            <tbody>
+        </table>
+    <?php endif;  /* !count( $t->patchPanels ) */ ?>
+
 <?php $this->append() ?>
 
-<?php $this->section('scripts') ?>
+<?php $this->section( 'scripts' ) ?>
     <script>
-        $(document).ready(function(){
-            $('#patch-panel-list').DataTable();
-
-            $( 'a[id|="list-delete"]' ).off('click').on( 'click', function( event ){
-
-                event.preventDefault();
-                var url = $(this).attr("href");
-
-                bootbox.confirm({
-                    title: "Delete",
-                    message: "Are you sure you want to delete this object ?",
-                    buttons: {
-                        cancel: {
-                            label: '<i class="fa fa-times"></i> Cancel'
-                        },
-                        confirm: {
-                            label: '<i class="fa fa-check"></i> Confirm'
-                        }
-                    },
-                    callback: function (result) {
-                        if(result){
-                            document.location.href = url;
-                        }
-                    }
-                });
-
-
-            });
-        });
+        $(document).ready( function() {
+            $( '#patch-panel-list' ).dataTable( {
+                "autoWidth": false
+            } );
+        } );
     </script>
 <?php $this->append() ?>

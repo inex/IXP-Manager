@@ -10,12 +10,17 @@
 
 
 <?php $this->section('content') ?>
-<?php if(session()->has('fail')): ?>
-    <div class="alert alert-danger" role="alert">
-        <b>Error : </b><?= session()->get('fail') ?>
+
+<?php if(!$t->allocating): ?>
+    <div class="alert alert-warning" role="alert">
+        <b>Warning!</b>
+        IXP Manager provides context-aware actions for allocating / setting connected / requested ceases / ceasing a patch
+        panel port and these <i>do the right thing</i>. As such, editing a patch panel port manually throught this
+        interface is stringly discouraged unless you know what you are doing.
     </div>
 <?php endif; ?>
 
+<?= $t->alerts() ?>
 
 <?= Former::open()->method('POST')
     ->action(url('patch-panel-port/store'))
@@ -23,7 +28,7 @@
     ->addClass('col-md-10');
 ?>
 
-    <?php if(!$t->allocated): ?>
+    <?php if(!$t->allocating): ?>
         <?= Former::text('number')
             ->label('Patch Panel Port Name')
             ->help('help text');
@@ -108,7 +113,7 @@
         ->help('help text');
     ?>
 
-    <?php if($t->allocated): ?>
+    <?php if($t->allocating): ?>
         <span id='pi_status_area' style="display: none">
             <?= Former::select('pi_status')
                 ->label('Physical Interface status')
@@ -134,7 +139,7 @@
         ->help('help text');
     ?>
 
-    <?php if(!$t->allocated): ?>
+    <?php if(!$t->allocating): ?>
         <?= Former::date('assigned_at')
             ->label('Assigned At')
             ->append('<button class="btn-default btn" onclick="setToday(\'assigned_at\')" type="button">Today</button>')
@@ -169,7 +174,7 @@
     <?= Former::select('chargeable')
         ->label('Chargeable')
         ->options($t->chargeables)
-        ->select($t->patchPanelPort->getChargeableDefaultNo())
+        ->select($t->ppp->getChargeableDefaultNo())
         ->addClass('chzn-select')
         ->help('help text');
     ?>
@@ -178,7 +183,7 @@
         ->radios(array(
             'Yes' => array('name' => 'internal_use', 'value' => '1'),
             'No' => array('name' => 'internal_use', 'value' => '0'),
-        ))->inline()->check($t->patchPanelPort->getInternalUseInt())
+        ))->inline()->check($t->ppp->getInternalUseInt())
         ->help('help text');
     ?>
 
@@ -190,20 +195,25 @@
     ?>
 
     <?= Former::hidden('patch_panel_port_id')
-        ->value($t->patchPanelPort->getId())
+        ->value($t->ppp->getId())
     ?>
 
     <?= Former::hidden('allocated')
-        ->value($t->allocated)
+        ->value($t->allocating)
     ?>
 
     <?= Former::hidden('switch_port_id')
         ->id('switch_port_id')
-        ->value($t->patchPanelPort->getSwitchPortId())
+        ->value($t->ppp->getSwitchPortId())
+    ?>
+
+    <?= Former::hidden('patch_panel_id')
+        ->id('patch_panel_id')
+        ->value($t->ppp->getPatchPanel()->getId())
     ?>
 
     <?=Former::actions( Former::primary_submit('Save Changes'),
-        Former::default_link('Cancel')->href(url('patch-panel-port/list/patch-panel/'.$t->patchPanelPort->getPatchPanel()->getId())),
+        Former::default_link('Cancel')->href(url('patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId())),
         Former::success_button('Help')->id('help-btn')
     );?>
 
@@ -213,7 +223,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->patchPanelPort ? $t->patchPanelPort->getId() : '' )
+        ->value( $t->ppp ? $t->ppp->getId() : '' )
     ?>
 
 <?= Former::close() ?>
@@ -223,251 +233,5 @@
 
 
 <?php $this->section('scripts') ?>
-    <script>
-        function setToday(inputName){
-            $("#"+inputName).val($("#date").val());
-        }
-
-        $(document).ready(function() {
-            var new_notes_set = false;
-            var new_private_notes_set = false;
-            var val_notes_loading = $('#notes').text();
-            var val_private_notes_loading = $('#private_notes').text();
-
-
-            $('.help-block').hide();
-
-            if($('#switch_port').val() != null){
-                setCustomer();
-            }
-
-            $('#duplex').change(function(){
-                if(this.checked){
-                    $("#duplex-port-area").show();
-                }
-                else{
-                    $("#duplex-port-area").hide();
-                }
-            });
-
-
-
-            if(<?= (int)$t->hasDuplex ?> ){
-                $('#duplex').click();
-            }
-
-            $("#number").prop('readonly', true);
-            $("#patch_panel").prop('readonly', true);
-            $("#last_state_change_at").prop('readonly', true);
-
-            $("#switch").change(function(){
-                setSwitchPort();
-            });
-
-            $("#switch_port").change(function(){
-                setCustomer();
-                <?php if($t->allocated): ?>
-                    if($("#switch_port").val() != ''){
-                        switchPortId = $("#switch_port").val();
-                        $.ajax({
-                            url: "<?= url('patch-panel-port/checkPhysicalInterfaceMatch/')?>",
-                            data: {switchPortId: switchPortId},
-                            type: 'GET',
-                            dataType: 'JSON',
-                            success: function (data) {
-                                if(data.success){
-                                    $("#pi_status_area").show();
-                                }
-                                else{
-                                    $("#pi_status_area").hide();
-                                }
-                            }
-
-                        });
-                    }
-                <?php endif; ?>
-            });
-
-            function setSwitchPort(){
-                $("#switch_port").html("<option value=\"\">Loading please wait</option>\n");
-                $("#switch_port").trigger("chosen:updated");
-                switchId = $("#switch").val();
-                customerId = $("#customer").val();
-                if(customerId != null){
-                    //resetCustomer();
-                }
-
-
-                switchPortId = $("#switch_port_id").val();
-                $.ajax({
-                    url: "<?= url('patch-panel-port/getSwitchPort/')?>",
-                    data: {switchId: switchId, customerId: customerId, switchPortId : switchPortId},
-                    type: 'GET',
-                    dataType: 'JSON',
-                    success: function (data) {
-                        if(data.success){
-                            var options = "<option value=\"\">Choose a switch port</option>\n";
-                            $.each(data.response,function(key, value){
-                                options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
-                            });
-                            $("#switch_port").html(options);
-                            $("#switch_port").trigger("chosen:updated");
-                        }
-                    }
-                });
-            }
-
-            function setCustomer(){
-                if($("#switch").val() != ''){
-                    switchPortId = $("#switch_port").val();
-                    $("#customer").html("<option value=\"\">Loading please wait</option>\n");
-                    $("#customer").trigger("chosen:updated");
-                    $.ajax({
-                        url: "<?= url('patch-panel-port/getCustomerForASwitchPort/')?>",
-                        data: {switchPortId: switchPortId},
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function (data) {
-                            if(data.success){
-                                $("#customer").html("<option value=\"" + data.response.id + "\">" + data.response.name + "</option>\n");
-                                $("#customer").trigger("chosen:updated");
-                            }
-                            else{
-                                $("#customer").html("");
-                                $("#customer").trigger("chosen:updated");
-                            }
-                        }
-
-                    });
-                }
-            }
-
-            $("#customer").change(function(){
-                    $("#switch").html("<option value=\"\">Loading please wait</option>\n");
-                    $("#switch").trigger("chosen:updated");
-                    $("#switch_port").html("");
-                    $("#switch_port").trigger("chosen:updated");
-                    customerId = $("#customer").val();
-                    $.ajax({
-                        url: "<?= url('patch-panel-port/getSwitchForACustomer/')?>",
-                        data: {customerId: customerId},
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function (data) {
-                            if(data.success){
-                                var options = "<option value=\"\">Choose a switch</option>\n";
-                                $.each(data.response,function(key, value){
-                                    options += "<option value=\"" + key + "\">" + value + "</option>\n";
-                                });
-                                $("#switch").html(options);
-                                $("#switch").trigger("chosen:updated");
-                            }
-                            else{
-                                $("#switch").html("");
-                                $("#switch").trigger("chosen:updated");
-                            }
-                        }
-
-                    });
-            });
-
-            function resetCustomer(){
-                options = "<option value=''> Choose a customer</option>\n";
-                <?php foreach ($t->customers as $id => $customer): ?>
-                customer = '<?= $customer ?>';
-                options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
-                <?php endforeach; ?>
-                $("#customer").html(options);
-                $("#customer").trigger("chosen:updated");
-            }
-
-
-            $(".reset-btn").click(function(){
-                if($("#switch").val() != null && $("#switch_port").val() != null){
-                    options = "<option value=''> Choose a Switch</option>\n";
-                    <?php foreach ($t->switches as $id => $switch): ?>
-                        $switch = '<?= $switch ?>';
-                        options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
-                    <?php endforeach; ?>
-                    $("#switch").html(options);
-                    $("#switch").trigger("chosen:updated");
-                    $("#switch_port").html('');
-                    $("#switch_port").trigger("chosen:updated");
-                    resetCustomer();
-                    $("#pi_status_area").hide();
-                }
-
-            });
-
-            $( "#help-btn" ).click( function() {
-                if($( ".help-block" ).css('display') == 'none'){
-                    $( ".help-block" ).show();
-                }
-                else{
-                    $( ".help-block" ).hide();
-                }
-
-            });
-
-            $('#notes').click(function(){
-                notesSetDateUser('notes');
-            });
-
-            $('#private_notes').click(function(){
-                notesSetDateUser('private_notes');
-            });
-
-            function notesSetDateUser(input){
-                val_textarea = $('#'+input).text();
-                default_val = '<?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
-
-                if(val_textarea == ''){
-                    $('#'+input).text(default_val);
-                }
-                else{
-                    if($('#'+input).text() != default_val){
-                        if(input == 'notes'){
-                            if(!new_notes_set){
-                                $('#'+input).text(default_val+'\n\n'+val_textarea);
-                                new_notes_set = true;
-                            }
-                        }
-                        else{
-                            if(!new_private_notes_set){
-                                $('#'+input).text(default_val+'\n\n'+val_textarea);
-                                new_private_notes_set = true;
-                            }
-                        }
-
-                    }
-
-                }
-                pos = default_val.length + ($('#'+input).val().length - $('#'+input).text().length);
-                $('#'+input).setCursorPosition(pos);
-            }
-
-            function noteBlur(input){
-                if($('#'+input).text() == $('#'+input).val()){
-                    if(input == 'notes') {
-                        $('#' + input).text(val_notes_loading);
-                        new_notes_set = false;
-                    }
-                    else{
-                        $('#' + input).text(val_private_notes_loading);
-                        new_private_notes_set = false;
-                    }
-                }
-            }
-
-            $('#notes').blur(function(){
-                noteBlur('notes');
-            });
-
-            $('#private_notes').blur(function(){
-                noteBlur('private_notes');
-            });
-
-
-        });
-    </script>
+    <?= $t->insert( 'patch-panel-port/js/edit' ); ?>
 <?php $this->append() ?>

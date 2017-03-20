@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-02-24.
+    * Generated on 2017-03-13.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -55,6 +55,13 @@ namespace PHPSTORM_META {
             'LaravelDoctrine\ORM\Extensions\ExtensionManager' instanceof \LaravelDoctrine\ORM\Extensions\ExtensionManager,
             'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
+            'flysystem.adapterfactory' instanceof \GrahamCampbell\Flysystem\Adapters\ConnectionFactory,
+            'flysystem.cachefactory' instanceof \GrahamCampbell\Flysystem\Cache\ConnectionFactory,
+            'flysystem.factory' instanceof \GrahamCampbell\Flysystem\FlysystemFactory,
+            'flysystem' instanceof \GrahamCampbell\Flysystem\FlysystemManager,
+            'flysystem.connection' instanceof \League\Flysystem\Filesystem,
+            'dompdf' instanceof \Dompdf\Dompdf,
+            'dompdf.wrapper' instanceof \Barryvdh\DomPDF\PDF,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'cache' instanceof \Illuminate\Cache\CacheManager,
@@ -143,6 +150,7 @@ namespace PHPSTORM_META {
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
+            'purifier' instanceof \LukeTowers\Purifier\Purifier,
         ],
         \Illuminate\Contracts\Container\Container::make('') => [
             '' == '@',
@@ -190,6 +198,13 @@ namespace PHPSTORM_META {
             'LaravelDoctrine\ORM\Extensions\ExtensionManager' instanceof \LaravelDoctrine\ORM\Extensions\ExtensionManager,
             'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
+            'flysystem.adapterfactory' instanceof \GrahamCampbell\Flysystem\Adapters\ConnectionFactory,
+            'flysystem.cachefactory' instanceof \GrahamCampbell\Flysystem\Cache\ConnectionFactory,
+            'flysystem.factory' instanceof \GrahamCampbell\Flysystem\FlysystemFactory,
+            'flysystem' instanceof \GrahamCampbell\Flysystem\FlysystemManager,
+            'flysystem.connection' instanceof \League\Flysystem\Filesystem,
+            'dompdf' instanceof \Dompdf\Dompdf,
+            'dompdf.wrapper' instanceof \Barryvdh\DomPDF\PDF,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'cache' instanceof \Illuminate\Cache\CacheManager,
@@ -278,6 +293,7 @@ namespace PHPSTORM_META {
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
+            'purifier' instanceof \LukeTowers\Purifier\Purifier,
         ],
         \App::make('') => [
             '' == '@',
@@ -325,6 +341,13 @@ namespace PHPSTORM_META {
             'LaravelDoctrine\ORM\Extensions\ExtensionManager' instanceof \LaravelDoctrine\ORM\Extensions\ExtensionManager,
             'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
+            'flysystem.adapterfactory' instanceof \GrahamCampbell\Flysystem\Adapters\ConnectionFactory,
+            'flysystem.cachefactory' instanceof \GrahamCampbell\Flysystem\Cache\ConnectionFactory,
+            'flysystem.factory' instanceof \GrahamCampbell\Flysystem\FlysystemFactory,
+            'flysystem' instanceof \GrahamCampbell\Flysystem\FlysystemManager,
+            'flysystem.connection' instanceof \League\Flysystem\Filesystem,
+            'dompdf' instanceof \Dompdf\Dompdf,
+            'dompdf.wrapper' instanceof \Barryvdh\DomPDF\PDF,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'cache' instanceof \Illuminate\Cache\CacheManager,
@@ -413,6 +436,7 @@ namespace PHPSTORM_META {
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
+            'purifier' instanceof \LukeTowers\Purifier\Purifier,
         ],
         \app('') => [
             '' == '@',
@@ -460,6 +484,13 @@ namespace PHPSTORM_META {
             'LaravelDoctrine\ORM\Extensions\ExtensionManager' instanceof \LaravelDoctrine\ORM\Extensions\ExtensionManager,
             'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
+            'flysystem.adapterfactory' instanceof \GrahamCampbell\Flysystem\Adapters\ConnectionFactory,
+            'flysystem.cachefactory' instanceof \GrahamCampbell\Flysystem\Cache\ConnectionFactory,
+            'flysystem.factory' instanceof \GrahamCampbell\Flysystem\FlysystemFactory,
+            'flysystem' instanceof \GrahamCampbell\Flysystem\FlysystemManager,
+            'flysystem.connection' instanceof \League\Flysystem\Filesystem,
+            'dompdf' instanceof \Dompdf\Dompdf,
+            'dompdf.wrapper' instanceof \Barryvdh\DomPDF\PDF,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'cache' instanceof \Illuminate\Cache\CacheManager,
@@ -548,6 +579,7 @@ namespace PHPSTORM_META {
             'former.populator' instanceof \Former\Populator,
             'former.dispatcher' instanceof \Former\MethodDispatcher,
             'former' instanceof \Former\Former,
+            'purifier' instanceof \LukeTowers\Purifier\Purifier,
         ],
     ];
 }

@@ -2,8 +2,11 @@
 
 namespace Entities;
 
+use Carbon\Carbon;
 use D2EM;
-Use Parsedown;
+use Doctrine\Common\Collections\ArrayCollection;
+use Parsedown;
+
 
 /**
  * Entities\PatchPanelPort
@@ -40,17 +43,34 @@ class PatchPanelPort
     const OWNED_DATA_CENTER             = 4;
     const OWNED_OTHER                   = 5;
 
+
+    /**
+     * CONST EMAIL
+     */
+    const EMAIL_CONNECT                 = 1;
+    const EMAIL_CEASE                   = 2;
+    const EMAIL_INFO                    = 3;
+    const EMAIL_LOA                     = 4;
+
     /**
      * Array STATES
      */
     public static $STATES = [
-        self::STATE_AVAILABLE         => "Available",
-        self::STATE_AWAITING_XCONNECT => "Awaiting Xconnect",
-        self::STATE_CONNECTED         => "Connected",
-        self::STATE_AWAITING_CEASE    => "Awaiting cease",
-        self::STATE_CEASED            => "Ceased",
-        self::STATE_BROKEN            => "Broken",
-        self::STATE_OTHER             => "Other"
+        self::STATE_AVAILABLE           => "Available",
+        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
+        self::STATE_CONNECTED           => "Connected",
+        self::STATE_AWAITING_CEASE      => "Awaiting Cease",
+        self::STATE_CEASED              => "Ceased",
+        self::STATE_BROKEN              => "Broken",
+        self::STATE_OTHER               => "Other"
+    ];
+
+    /**
+     * Array STATES
+     */
+    public static $ALLOCATE_STATES = [
+        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
+        self::STATE_CONNECTED           => "Connected"
     ];
 
     /**
@@ -187,11 +207,16 @@ class PatchPanelPort
     private $owned_by = '0';
 
     /**
+     * @var string
+     */
+    private $loa_code;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->patchPanelPortHistory = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->patchPanelPortHistory = new ArrayCollection();
     }
 
     /**
@@ -265,13 +290,33 @@ class PatchPanelPort
     }
 
     /**
+     * Get css class state
+     *
+     * @return integer
+     */
+    public function getStateCssClass()
+    {
+        if($this->isAvailableForUse()):
+            $class = 'success';
+        elseif($this->getState() == self::STATE_AWAITING_XCONNECT):
+            $class = 'warning';
+        elseif($this->getState() == self::STATE_CONNECTED):
+            $class = 'danger';
+        else:
+            $class = 'info';
+        endif;
+
+        return $class;
+    }
+
+    /**
      * Set colo_circuit_ref
      *
      * @param string $colo_circuit_ref
      *
      * @return PatchPanelPort
      */
-    public function setColoCircuitRef(string $colo_circuit_ref): PatchPanelPort
+    public function setColoCircuitRef($colo_circuit_ref): PatchPanelPort
     {
         $this->colo_circuit_ref = $colo_circuit_ref;
         return $this;
@@ -294,7 +339,7 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function setTicketRef(string $ticket_ref): PatchPanelPort
+    public function setTicketRef($ticket_ref): PatchPanelPort
     {
         $this->ticket_ref = $ticket_ref;
         return $this;
@@ -370,11 +415,10 @@ class PatchPanelPort
     /**
      * Get assignedAt formated
      *
-     * @return \DateTime
+     * @return string
      */
-    public function getAssignedAtFormated()
-    {
-        return ($this->getAssignedAt() == null) ? $this->getAssignedAt() : $this->getAssignedAt()->format('Y-m-d');
+    public function getAssignedAtFormated() {
+        return $this->getAssignedAt() ? $this->getAssignedAt()->format('Y-m-d') : null;
     }
 
     /**
@@ -403,11 +447,10 @@ class PatchPanelPort
     /**
      * Get connectedAt formated
      *
-     * @return \DateTime
+     * @return string
      */
-    public function getConnectedAtFormated()
-    {
-        return ($this->getConnectedAt() == null) ? $this->getConnectedAt() : $this->getConnectedAt()->format('Y-m-d');
+    public function getConnectedAtFormated() {
+        return $this->getConnectedAt() ? $this->getConnectedAt()->format('Y-m-d') : null;
     }
 
     /**
@@ -436,11 +479,10 @@ class PatchPanelPort
     /**
      * Get ceaseRequestedAt formated
      *
-     * @return \DateTime
+     * @return string
      */
-    public function getCeaseRequestedAtFormated()
-    {
-        return ($this->getCeaseRequestedAt() == null) ? $this->getCeaseRequestedAt() : $this->getCeaseRequestedAt()->format('Y-m-d');
+    public function getCeaseRequestedAtFormated() {
+        return $this->getCeaseRequestedAt() ? $this->getCeaseRequestedAt()->format('Y-m-d') : null;
     }
 
     /**
@@ -469,11 +511,11 @@ class PatchPanelPort
     /**
      * Get ceasedAt formated
      *
-     * @return \DateTime
+     * @return string
      */
     public function getCeasedAtFormated()
     {
-        return ($this->getCeasedAt() == null) ? $this->getCeasedAt() : $this->getCeasedAt()->format('Y-m-d');
+        return $this->getCeasedAt() ? $this->getCeasedAt()->format('Y-m-d') : null;
     }
 
     /**
@@ -502,11 +544,11 @@ class PatchPanelPort
     /**
      * Get lastStateChange
      *
-     * @return \DateTime
+     * @return string
      */
     public function getLastStateChangeFormated()
     {
-        return ($this->getLastStateChange() == null) ? $this->getLastStateChange() : $this->getLastStateChange()->format('Y-m-d');
+        return $this->getLastStateChange() ? $this->getLastStateChange()->format('Y-m-d') : null;
     }
 
     /**
@@ -647,6 +689,29 @@ class PatchPanelPort
     }
 
     /**
+     * Get ownedBy
+     *
+     * @return integer
+     */
+    public function getLoaCode()
+    {
+        return $this->loa_code;
+    }
+
+    /**
+     * Set ownedBy
+     *
+     * @param string $loa_code
+     * @return PatchPanelPort
+     */
+    public function setLoaCode(string $loa_code): PatchPanelPort
+    {
+        $this->loa_code = $loa_code;
+
+        return $this;
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -663,7 +728,7 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function setSwitchPort(\Entities\SwitchPort $switchPort = null)
+    public function setSwitchPort(SwitchPort $switchPort = null)
     {
         $this->switchPort = $switchPort;
         return $this;
@@ -682,31 +747,28 @@ class PatchPanelPort
     /**
      * Get switchPort ID
      *
-     * @return \Entities\SwitchPort
+     * @return int
      */
-    public function getSwitchPortId()
-    {
-        return ($this->switchPort != null) ?  $this->getSwitchPort()->getId() : null;
+    public function getSwitchPortId() {
+        return $this->getSwitchPort() ?  $this->getSwitchPort()->getId() : null;
     }
 
     /**
      * Get switchPort Name
      *
-     * @return \Entities\SwitchPort
+     * @return string
      */
-    public function getSwitchPortName()
-    {
-        return ($this->switchPort != null) ?  $this->getSwitchPort()->getName() : null;
+    public function getSwitchPortName() {
+        return $this->getSwitchPort() ?  $this->getSwitchPort()->getName() : null;
     }
 
     /**
      * Allow to know if a patch panel port has a switch port set
      *
-     * @return string
+     * @return bool
      */
-    public function getHasSwitchPort()
-    {
-        return ($this->switchPort != null) ?  'true' : 'false';
+    public function getHasSwitchPort(): bool {
+        return $this->getSwitchPort() !== null;
     }
 
     /**
@@ -754,7 +816,7 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function addPatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory)
+    public function addPatchPanelPortHistory(PatchPanelPortHistory $patchPanelPortHistory)
     {
         $this->patchPanelPortHistory[] = $patchPanelPortHistory;
         return $this;
@@ -765,7 +827,7 @@ class PatchPanelPort
      *
      * @param \Entities\PatchPanelPortHistory $patchPanelPortHistory
      */
-    public function removePatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory)
+    public function removePatchPanelPortHistory(PatchPanelPortHistory $patchPanelPortHistory)
     {
         $this->patchPanelPortHistory->removeElement($patchPanelPortHistory);
     }
@@ -778,6 +840,22 @@ class PatchPanelPort
     public function getPatchPanelPortHistory()
     {
         return $this->patchPanelPortHistory;
+    }
+
+    /**
+     * Get patchPanelPortHistory
+     *
+     * @return array
+     */
+    public function getPatchPanelPortHistoryMaster()
+    {
+        $array = [];
+        foreach( $this->patchPanelPortHistory as $history ){
+            if( $history->getDuplexMasterPort() == null ) {
+                $array[] = $history;
+            }
+        }
+        return $array;
     }
 
     /**
@@ -797,7 +875,7 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function addDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+    public function addDuplexSlavePort(PatchPanelPort $duplexSlavePort)
     {
         $this->duplexSlavePorts[] = $duplexSlavePort;
 
@@ -809,7 +887,7 @@ class PatchPanelPort
      *
      * @param \Entities\PatchPanelPort $duplexSlavePort
      */
-    public function removeDuplexSlavePort(\Entities\PatchPanelPort $duplexSlavePort)
+    public function removeDuplexSlavePort(PatchPanelPort $duplexSlavePort)
     {
         $this->duplexSlavePorts->removeElement($duplexSlavePort);
     }
@@ -836,7 +914,7 @@ class PatchPanelPort
     /**
      * Get duplexSlavePorts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return PatchPanelPort
      */
     public function getDuplexSlavePort()
     {
@@ -845,15 +923,13 @@ class PatchPanelPort
                 return $slave;
             }
         }
-        else{
-            return null;
-        }
+        return null;
     }
 
     /**
      * Get duplexSlavePort name
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return string
      */
     public function getDuplexSlavePortName()
     {
@@ -868,7 +944,7 @@ class PatchPanelPort
     /**
      * Get duplexSlavePort id
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return int
      */
     public function getDuplexSlavePortId()
     {
@@ -887,7 +963,7 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function setDuplexMasterPort(\Entities\PatchPanelPort $duplexMasterPort = null)
+    public function setDuplexMasterPort(PatchPanelPort $duplexMasterPort = null)
     {
         $this->duplexMasterPort = $duplexMasterPort;
 
@@ -911,7 +987,7 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function setPatchPanel(\Entities\PatchPanel $patchPanel = null)
+    public function setPatchPanel(PatchPanel $patchPanel = null)
     {
         $this->patchPanel = $patchPanel;
         return $this;
@@ -930,13 +1006,14 @@ class PatchPanelPort
     /**
      * Set customer
      *
-     * @param \Entities\Customer $customer
+     * @param Customer $customer
      *
      * @return PatchPanelPort
      */
-    public function setCustomer(\Entities\Customer $customer = null)
+    public function setCustomer(Customer $customer = null)
     {
         $this->customer = $customer;
+        ($customer != null) ? $this->setLoaCode( str_random(25) ): null;
         return $this;
     }
 
@@ -953,7 +1030,7 @@ class PatchPanelPort
     /**
      * Get customer ID
      *
-     * @return \Entities\Customer
+     * @return int
      */
     public function getCustomerId()
     {
@@ -963,7 +1040,7 @@ class PatchPanelPort
     /**
      * Get switcher ID
      *
-     * @return \Entities\Customer
+     * @return int
      */
     public function getSwitchId()
     {
@@ -973,17 +1050,16 @@ class PatchPanelPort
     /**
      * Get switcher Name
      *
-     * @return \Entities\Customer
+     * @return string
      */
-    public function getSwitchName()
-    {
-        return ($this->getSwitchPort() != null) ? $this->getSwitchPort()->getSwitcher()->getName() : null ;
+    public function getSwitchName()  {
+        return( $this->getSwitchPort() != null ) ? $this->getSwitchPort()->getSwitcher()->getName() : null;
     }
 
     /**
      * Get customer Name
      *
-     * @return \Entities\Customer
+     * @return string
      */
     public function getCustomerName()
     {
@@ -1004,7 +1080,7 @@ class PatchPanelPort
     }
 
 
-    public function setDuplexPort($duplexPort, $newSlavePort){
+    public function setDuplexPort( PatchPanelPort $duplexPort, $newSlavePort){
         if($newSlavePort){
             $duplexPort->setDuplexMasterPort($this);
         }
@@ -1055,19 +1131,12 @@ class PatchPanelPort
         return self::$OWNED_BY[ $this->getOwnedBy() ] ?? 'Unknown';
     }
 
-    public function getCustomerForASwitchPort(){
-        $customer = null;
-        $physicalInterface = $this->getPhysicalInterface();
-        if($physicalInterface != null){
-            $virtualInterface = $physicalInterface->getVirtualInterface();
-            if($virtualInterface != null){
-                $cust = $virtualInterface->getCustomer();
-                if($cust != null){
-                    $customer = $cust;
-                }
-            }
+
+    public function getCustomerForASwitchPort(): Customer {
+        if( $this->getSwitchPort() && ( $pi = $this->getSwitchPort()->getPhysicalInterface() ) ) {
+            return $pi->getVirtualInterface()->getCustomer();
         }
-        return $customer;
+        return null;
     }
 
     /**
@@ -1090,9 +1159,18 @@ class PatchPanelPort
 
 
     /**
+     * Is this port has public files
+     *
+     * @return bool
+     */
+    public function hasPublicFiles(): bool {
+        return count( $this->getPatchPanelPortPublicFiles() ) > 0;
+    }
+
+    /**
      * Reset the data of a patch panel port after ceased
      * @author     Yann Robin <yann@islandbridgenetworks.ie>
-     * @return string
+     * @return void
      */
     public function resetPatchPanelPort(){
         $this->setState(PatchPanelPort::STATE_AVAILABLE);
@@ -1108,6 +1186,7 @@ class PatchPanelPort
         $this->setInternalUse(false);
         $this->setChargeable(false);
         $this->setCustomer(null);
+        $this->setLoaCode('');
         $this->setSwitchPort(null);
         $this->setDuplexMasterPort(null);
 
@@ -1125,7 +1204,7 @@ class PatchPanelPort
      * and reset the patch panel port when it has been duplicated
      *
      * @author     Yann Robin <yann@islandbridgenetworks.ie>
-     * @return string
+     * @return void
      */
     public function createHistory(){
         $PPPHistory = PatchPanelPortHistory::createHistory($this);
@@ -1142,7 +1221,7 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function addPatchPanelPortFile(\Entities\PatchPanelPortFile $patchPanelPortFile)
+    public function addPatchPanelPortFile(PatchPanelPortFile $patchPanelPortFile)
     {
         $this->patchPanelPortFiles[] = $patchPanelPortFile;
         return $this;
@@ -1151,9 +1230,9 @@ class PatchPanelPort
     /**
      * Remove patchPanelPortFile
      *
-     * @param \Entities\PatchPanelPortFile $patchPanelPortFile
+     * @param PatchPanelPortFile $patchPanelPortFile
      */
-    public function removePatchPanelPortFile(\Entities\PatchPanelPortFile $patchPanelPortFile)
+    public function removePatchPanelPortFile(PatchPanelPortFile $patchPanelPortFile)
     {
         $this->patchPanelPortFiles->removeElement($patchPanelPortFile);
     }
@@ -1165,6 +1244,217 @@ class PatchPanelPort
      */
     public function getPatchPanelPortFiles()
     {
-    return $this->patchPanelPortFiles;
+        return $this->patchPanelPortFiles;
     }
+
+    /**
+     * Get patchPanelPortFiles
+     *
+     * @return array
+     */
+    public function getPatchPanelPortPublicFiles()
+    {
+        $array = [];
+        foreach($this->patchPanelPortFiles as $file){
+            if(!$file->getIsPrivate()){
+                $array[] = $file;
+            }
+
+        }
+
+        return $array;
+    }
+
+    /**
+     * Create the LoA PDF file
+     * @author      Yann Robin <yann@islandbridgenetworks.ie>
+     * @param       bool $download allow to download the PDF
+     * @return      string
+     */
+    public function createLoaPDF(bool $download = false){
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('patch-panel-port/loaPDF', ['ppp' => $this]);
+
+        $pdfName = 'Loa_'.$this->getCustomer()->getName().'_'.$this->getPatchPanel()->getCabinet()->getLocation()->getName().'_'.$this->getPatchPanel()->getColoReference().'_'.$this->getName();
+        if($download){
+            return  $pdf->stream($pdfName);
+        }
+        else{
+            $temp = tempnam(sys_get_temp_dir(), 'loaPDF_');
+            $pdf->save($temp.'.pdf');
+            return $temp.'.pdf';
+        }
+    }
+
+
+    /**
+     * Is the state STATE_AVAILABLE?
+     *
+     * @return bool
+     */
+    public function isStateAvailable(): bool {
+        return $this->getState() === self::STATE_AVAILABLE;
+    }
+
+    /**
+     * Is the state STATE_AWAITING_XCONNECT?
+     *
+     * @return bool
+     */
+    public function isStateAwaitingXConnect(): bool {
+        return $this->getState() === self::STATE_AWAITING_XCONNECT;
+    }
+
+    /**
+     * Is the state STATE_CONNECTED?
+     *
+     * @return bool
+     */
+    public function isStateConnected(): bool {
+        return $this->getState() === self::STATE_CONNECTED;
+    }
+
+    /**
+     * Is the state STATE_AWAITING_CEASE?
+     *
+     * @return bool
+     */
+    public function isStateAwaitingCease(): bool {
+        return $this->getState() === self::STATE_AWAITING_CEASE;
+    }
+
+    /**
+     * Is the state STATE_CEASED?
+     *
+     * @return bool
+     */
+    public function isStateCeased(): bool {
+        return $this->getState() === self::STATE_CEASED;
+    }
+
+    /**
+     * Is the state STATE_BROKEN?
+     *
+     * @return bool
+     */
+    public function isStateBroken(): bool {
+        return $this->getState() === self::STATE_BROKEN;
+    }
+
+    /**
+     * Is the state STATE_OTHER?
+     *
+     * @return bool
+     */
+    public function isStateOther(): bool {
+        return $this->getState() === self::STATE_OTHER;
+    }
+
+
+    /**
+     * Convert this object to an array
+     *
+     * @param bool $deep Include subobjects
+     * @return array
+     */
+    public function toArray( bool $deep = false ): array {
+        $a = [
+            'id'               => $this->getId(),
+            'patchPanelId'     => $this->getPatchPanel() ? $this->getPatchPanel()->getId() : null,
+            'switchPortId'     => $this->getSwitchPort() ? $this->getSwitchPort()->getId() : null,
+            'customerId'       => $this->getCustomer()   ? $this->getCustomer()->getId()   : null,
+            'number'           => $this->getNumber(),
+            'name'             => $this->getName(),
+            'coloRef'          => $this->getColoCircuitRef(),
+            'ticketRef'        => $this->getTicketRef(),
+            'stateId'          => $this->getState(),
+            'state'            => $this->resolveStates(),
+            'notes'            => clean( $this->getNotes() ),
+            'privateNotes'     => clean( $this->getPrivateNotes() ),
+            'assignedAt'       => $this->getAssignedAt(),
+            'connectedAt'      => $this->getConnectedAt(),
+            'ceaseRequestedAt' => $this->getCeaseRequestedAt(),
+            'ceasedAt'         => $this->getCeasedAt(),
+            'internalUse'      => $this->getInternalUse(),
+            'chargeableId'     => $this->getChargeable(),
+            'chargeable'       => $this->resolveChargeable(),
+            'isDuplex'         => $this->isDuplexPort(),
+            'isDuplexMaster'   => $this->getDuplexMasterPort() ? false : true,
+            'duplexMasterId'   => $this->getDuplexMasterPort() ? $this->getDuplexMasterPort()->getId() : null,
+            'duplexSlaveId'    => $this->getDuplexSlavePort()  ? $this->getDuplexSlavePort()->getId()  : null,
+            'loaCode'          => $this->getLoaCode(),
+            'ownedById'        => $this->getOwnedBy(),
+            'ownedBy'          => $this->resolveOwnedBy(),
+            'isHistorical'     => false,
+            'files'            => [],
+        ];
+
+        foreach( $this->getPatchPanelPortFiles() as $f ) {
+            $f = [
+                'id'         => $f->getId(),
+                'name'       => $f->getName(),
+                'type'       => $f->getType(),
+                'uploadedAt' => $f->getUploadedAt(),
+                'uploadedBy' => $f->getUploadedBy(),
+                'size'       => $f->getSize(),
+                'private'    => $f->getIsPrivate(),
+            ];
+            $a['files'][] = $f;
+        }
+
+        if( $deep ) {
+            if( $a['patchPanelId'] ) {
+                $a['patchPanel'] = $this->getPatchPanel()->toArray();
+            }
+
+            // we're not going to give all the objects - just what makes sense for utilities of this
+            if( $a['switchPortId'] ) {
+                $a['switchPort']['switchId'] = $this->getSwitchPort()->getSwitcher()->getId();
+                $a['switchPort']['switch']   = $this->getSwitchPort()->getSwitcher()->getName();
+                $a['switchPort']['name']     = $this->getSwitchPort()->getName();
+                $a['switchPort']['ifName']   = $this->getSwitchPort()->getIfName();
+
+                if( $this->getSwitchPort()->getPhysicalInterface() ) {
+                    $a['switchPort']['physicalInterfaceId'] = $this->getSwitchPort()->getPhysicalInterface()->getId();
+                    $a['switchPort']['physicalInterface']['statusId'] = $this->getSwitchPort()->getPhysicalInterface()->getStatus();
+                    $a['switchPort']['physicalInterface']['status']   = $this->getSwitchPort()->getPhysicalInterface()->resolveStatus();
+
+                } else {
+                    $a['switchPort']['physicalInterfaceId'] = null;
+                }
+            }
+        }
+
+        return $a;
+    }
+
+    /**
+     * Get patch panel details as JSON-compatibale array
+     * @param bool $deep Include subobjects
+     * @return array
+     */
+    public function jsonArray( bool $deep = false ): array {
+        $a = $this->toArray($deep);
+
+        $a['assignedAt']       = $a['assignedAt']       ? Carbon::instance( $a['assignedAt']       )->toIso8601String() : null;
+        $a['connectedAt']      = $a['connectedAt']      ? Carbon::instance( $a['connectedAt']      )->toIso8601String() : null;
+        $a['ceaseRequestedAt'] = $a['ceaseRequestedAt'] ? Carbon::instance( $a['ceaseRequestedAt'] )->toIso8601String() : null;
+        $a['ceasedAt']         = $a['ceasedAt']         ? Carbon::instance( $a['ceasedAt']         )->toIso8601String() : null;
+
+        foreach( $a['files'] as $i => $f ) {
+            $a['files'][$i]['uploadedAt'] = Carbon::instance( $a['files'][$i]['uploadedAt'] )->toIso8601String();
+        }
+
+        return $a;
+    }
+
+    /**
+     * Get patch panel details as JSON
+     * @param bool $deep Include subobjects
+     * @return string
+     */
+    public function json( bool $deep = false ): string {
+        return json_encode( $this->jsonArray($deep), JSON_PRETTY_PRINT );
+    }
+
 }

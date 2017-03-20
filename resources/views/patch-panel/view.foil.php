@@ -1,69 +1,128 @@
-<?php $this->layout('layouts/ixpv4') ?>
+<?php
+    /** @var Foil\Template\Template $t */
 
-<?php $this->section('title') ?>
-<a href="<?= url('patch-panel/list')?>">Patch Panel</a>
+    $this->layout( 'layouts/ixpv4' )
+?>
+
+<?php $this->section( 'title' ) ?>
+    <a href="<?= url( 'patch-panel/list' )?>">
+        Patch Panel
+    </a>
 <?php $this->append() ?>
 
-<?php $this->section('page-header-postamble') ?>
-<li>View : <?= $t->patchPanel->getId().' '.$t->patchPanel->getName()?></li>
+<?php $this->section( 'page-header-postamble' ) ?>
+    <li>
+        View : <?= $t->pp->getId().' '.$t->pp->getName()?>
+    </li>
 <?php $this->append() ?>
 
-
-<?php $this->section('content') ?>
+<?php $this->section( 'content' ) ?>
     <div class="panel panel-default">
-        <div class="panel-heading">Informations</div>
+        <div class="panel-heading">
+            Informations
+        </div>
         <div class="panel-body">
-            <div class="form-group">
-                <div >
-                    ID : <b> <?= $t->patchPanel->getId() ?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Name :
-                    <b>
-                        <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>">
-                            <?= $t->patchPanel->getName() ?>
+            <table class="table_ppp_info">
+                <tr>
+                    <td>
+                        <b>
+                            Name :
+                        </b>
+                    </td>
+                    <td>
+                        <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$t->pp->getId()?>">
+                            <?= $t->pp->getName() ?>
                         </a>
-                    </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Colocation : <b> <?= $t->patchPanel->getColoReference() ?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Cabinet : <a href="<?= url('/cabinet/view' ).'/'.$t->patchPanel->getCabinet()->getId()?>"><b> <?= $t->patchPanel->getCabinet()->getName() ?>  </b></a>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Cable Type : <b> <?= $t->patchPanel->resolveCableType() ?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Connector Type : <b> <?= $t->patchPanel->resolveConnectorType()?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Number of Ports : <b> <a href="<?= url('/patch-panel-port/list/patch-panel' ).'/'.$t->patchPanel->getId()?>"> <?= $t->patchPanel->getAvailableForUsePortCount()." / ".$t->patchPanel->getPortCount() ?></a></b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Installation Date : <b> <?= $t->patchPanel->getInstallationDateFormated() ?> </b>
-                </div>
-            </div>
-            <div class="form-group">
-                <div>
-                    Active : <b> <?= $t->patchPanel->getActiveText() ?> </b>
-                </div>
-            </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Colocation :
+                        </b>
+                    </td>
+                    <td>
+                         <?= $t->pp->getColoReference() ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Cabinet :
+                        </b>
+                    </td>
+                    <td>
+                        <a href="<?= url( '/cabinet/view'  ).'/'.$t->pp->getCabinet()->getId()?>">
+                            <?= $t->pp->getCabinet()->getName() ?>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Cable Type :
+                        </b>
+                    </td>
+                    <td>
+                         <?= $t->pp->resolveCableType() ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Connector Type :
+                        </b>
+                    </td>
+                    <td>
+                        <?= $t->pp->resolveConnectorType()?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Number of Ports :
+                        </b>
+                    </td>
+                    <td>
+                        <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$t->pp->getId()?>">
+                            <span title="" class="label label-<?= $t->pp->getCssClassPortCount() ?>">
+                                    <?php if( $t->pp->hasDuplexPort() ): ?>
+                                        <?= $t->pp->getAvailableOnTotalPort(true) ?>
+                                    <?php else: ?>
+                                        <?= $t->pp->getAvailableOnTotalPort(false) ?>
+                                    <?php endif; ?>
+                                </span>
+
+                            <?php if( $t->pp->hasDuplexPort() ): ?>
+                                &nbsp;
+                                <span class="label label-info">
+                                    <?= $t->pp->getAvailableOnTotalPort(false) ?>
+                                </span>
+                            <?php endif; ?>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Installation Date :
+                        </b>
+                    </td>
+                    <td>
+                        <?= $t->pp->getInstallationDateFormated() ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Active :
+                        </b>
+                    </td>
+                    <td>
+                        <?= $t->pp->getActiveText() ?>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 <?php $this->append() ?>
-

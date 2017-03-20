@@ -25,6 +25,11 @@ class Vendor
     protected $Switches;
 
     /**
+     * @var string $bundle_name
+     */
+    protected $bundle_name;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -54,6 +59,8 @@ class Vendor
     {
         return $this->name;
     }
+
+
 
     /**
      * Get id
@@ -175,5 +182,19 @@ class Vendor
     public function removeSwitch(\Entities\Switcher $switches)
     {
         $this->Switches->removeElement($switches);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBundleName(): string {
+        return $this->bundle_name ?? '';
+    }
+
+    /**
+     * @param string $bundle_name
+     */
+    public function setBundleName( string $bundle_name ) {
+        $this->bundle_name = $bundle_name;
     }
 }

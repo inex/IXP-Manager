@@ -1,45 +1,39 @@
-<?php $this->layout('layouts/ixpv4') ?>
+<?php $this->layout( 'layouts/ixpv4' );
+    /** @var object $t */
+?>
 
-<?php $this->section('title') ?>
+<?php $this->section( 'title' ) ?>
     Patch Panel Port
-    <?php if($t->patchPanel): ?>
-        - <?= $t->patchPanel->getName() ?>
+    <?php if( $t->pp ): ?>
+        - <?= $t->pp->getName() ?>
     <?php endif;?>
 <?php $this->append() ?>
 
-<?php $this->section('page-header-preamble') ?>
+<?php $this->section( 'page-header-preamble' ) ?>
 
 <?php $this->append() ?>
 
 
-<?php $this->section('content') ?>
-    <?php if($t->patchPanel): ?>
-        <div class="">
+<?php $this->section( 'content' ) ?>
+    <?php if( $t->pp ): ?>
+        <div>
             <h2>
-                Ports for <?= $t->patchPanel->getName() ?>
-                <?php if( $t->patchPanel->getColoReference() != $t->patchPanel->getName() ): ?>
-                    (Colo Reference: <?= $t->patchPanel->getColoReference() ?>)
+                Ports for <?= $t->pp->getName() ?>
+                <?php if( $t->pp->getColoReference() != $t->pp->getName() ): ?>
+                    (Colo Ref: <?= $t->pp->getColoReference() ?>)
                 <?php endif; ?>
             </h2>
         </div>
     <?php endif;?>
-    <?php if(session()->has('success')): ?>
-        <div class="alert alert-success" role="alert">
-            <?= session()->get('success') ?>
-        </div>
-    <?php endif; ?>
-    <?php if(session()->has('error')): ?>
-        <div class="alert alert-danger" role="alert">
-            <b>Error : </b><?= session()->get('error') ?>
-        </div>
-    <?php endif; ?>
+
+    <?= $t->alerts() ?>
 
     <table id='patch-panel-port-list' class="table ">
         <thead>
             <tr>
                 <td>Id</td>
                 <td>Name</td>
-                <?php if(!$t->patchPanel): ?>
+                <?php if( !$t->pp ): ?>
                     <td>Patch Panel</td>
                 <?php endif;?>
                 <td>Switch / Port</td>
@@ -52,55 +46,48 @@
             </tr>
         <thead>
         <tbody>
-            <?php foreach( $t->patchPanelPorts as $patchPanelPort ): ?>
+            <?php foreach( $t->patchPanelPorts as $ppp ):
+                /** @var \Entities\PatchPanelPort $ppp */
+            ?>
                 <tr>
                     <td>
-                        <?= $patchPanelPort->getId() ?>
+                        <?= $ppp->getId() ?>
                     </td>
                     <td>
-                        <?= $patchPanelPort->getName() ?>
+                        <a href="<?= url( '/patch-panel-port/view' ).'/'.$ppp->getId()?> ">
+                            <?= $ppp->getName() ?>
+                        </a>
                     </td>
-                    <?php if(!$t->patchPanel): ?>
+                    <?php if(!$t->pp): ?>
                         <td>
-                            <a href="<?= url('patch-panel/view' ).'/'.$patchPanelPort->getPatchPanel()->getId()?>">
-                                <?= $patchPanelPort->getPatchPanel()->getName() ?>
+                            <a href="<?= url( 'patch-panel/view' ).'/'.$ppp->getPatchPanel()->getId()?>">
+                                <?= $ppp->getPatchPanel()->getName() ?>
                             </a>
                         </td>
-                    <?php endif;?>
+                    <?php endif; ?>
                     <td>
-                        <?= $patchPanelPort->getSwitchName() ?>
-                    <?php if( $patchPanelPort->getSwitchPortName() ): ?>
-                            &nbsp;::&nbsp;<?= $patchPanelPort->getSwitchPortName() ?>
+                        <?= $ppp->getSwitchName() ?>
+                    <?php if( $ppp->getSwitchPortName() ): ?>
+                            &nbsp;::&nbsp;<?= $ppp->getSwitchPortName() ?>
                     <?php endif; ?>
                     </td>
                     <td>
-                        <a href="<?= url('customer/overview/id/' ).'/'.$patchPanelPort->getCustomerId()?>">
-                            <?= $patchPanelPort->getCustomerName() ?>
+                        <a href="<?= url( 'customer/overview/id/' ).'/'.$ppp->getCustomerId()?>">
+                            <?= $ppp->getCustomerName() ?>
                         </a>
                     </td>
                     <td>
-                        <?= $patchPanelPort->getColoCircuitRef() ?>
+                        <?= $ppp->getColoCircuitRef() ?>
                     </td>
                     <td>
-                        <?= $patchPanelPort->getTicketRef() ?>
+                        <?= $ppp->getTicketRef() ?>
                     </td>
                     <td>
-                        <?= $patchPanelPort->getAssignedAtFormated() ?>
+                        <?= $ppp->getAssignedAtFormated() ?>
                     </td>
                     <td>
-                        <?php
-                            if($patchPanelPort->isAvailableForUse()):
-                                $class = 'success';
-                            elseif($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT):
-                                $class = 'warning';
-                            elseif($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED):
-                                $class = 'danger';
-                            else:
-                                $class = 'info';
-                            endif;
-                        ?>
-                        <span title="" class="label label-<?= $class ?>">
-                            <?= $patchPanelPort->resolveStates() ?>
+                        <span title="" class="label label-<?= $ppp->getStateCssClass() ?>">
+                            <?= $ppp->resolveStates() ?>
                         </span>
                     </td>
                     <td>
@@ -110,277 +97,141 @@
                                     Action <span class="caret"></span>
                                 </button>
 
-                                <ul class="dropdown-menu">
-                                    <input type="hidden"  id="notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getNotes() ?>">
-                                    <input type="hidden"  id="private_notes_<?=$patchPanelPort->getId() ?>" value="<?=$patchPanelPort->getPrivateNotes() ?>">
-                                    <input type="hidden"  id="pi_state_<?=$patchPanelPort->getId() ?>" label="<?=$patchPanelPort->getPhysicalInterfaceStateLabel()?>" value="<?=$patchPanelPort->getPhysicalInterfaceState() ?>">
-                                    <?php if($patchPanelPort->getState() == \Entities\PatchPanelPort::STATE_AVAILABLE): ?>
-                                        <li><a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId().'/allocated'?>">Allocate</a></li>
-                                    <?php endif; ?>
-                                    <?php if($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT): ?>
-                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,true,<?= $patchPanelPort->getHasSwitchPort() ?>)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CONNECTED?>">Set Connected</a></li>
-                                    <?php endif; ?>
-                                    <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED)): ?>
-                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" id="ceasedRequested<?=$patchPanelPort->getId()?>" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_AWAITING_CEASE?>">Cease requested</a></li>
-                                    <?php endif; ?>
-                                    <?php if(($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED) or ($patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_CEASE)): ?>
-                                        <li><a onclick="return popup(this,<?= $patchPanelPort->getId() ?>,false,false)" href="<?= url('/patch-panel-port/changeStatus' ).'/'.$patchPanelPort->getId().'/'.Entities\PatchPanelPort::STATE_CEASED?>">Set ceased</a></li>
-                                    <?php endif; ?>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <a id="edit-notes-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" >
+                                            <?= $ppp->isStateAvailable() ? 'Add' : 'Edit' ?> note...
+                                        </a>
+                                    </li>
+
                                     <li role="separator" class="divider"></li>
+
+                                    <?php if( $ppp->isStateAvailable() ): ?>
+                                        <li>
+                                            <a id="allocate-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/edit-to-allocate' ) . '/' . $ppp->getId() ?>">
+                                                Allocate
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+                                    <?php if( $ppp->isStateAwaitingXConnect() ): ?>
+                                        <li>
+                                            <a id="set-connected-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_CONNECTED ?>">
+                                                Set Connected
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+                                    <?php if( $ppp->isStateAwaitingXConnect() || $ppp->isStateConnected() ): ?>
+                                        <li>
+                                            <a id="request-cease-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_AWAITING_CEASE ?>">
+                                                Request Cease
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+                                    <?php if( $ppp->isStateAwaitingXConnect() || $ppp->isStateConnected() || $ppp->isStateAwaitingCease() ): ?>
+                                        <li>
+                                            <a id="set-ceased-<?= $ppp->getId() ?>"   href="<?= url( '/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_CEASED ?>">
+                                                Set Ceased
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+                                    <li role="separator" class="divider"></li>
+
+                                    <?php if( $ppp->getCustomer() ): ?>
+                                        <li> <a href="<?= url( '/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_CONNECT ?>">Email - Connect</a></li>
+                                        <li> <a href="<?= url( '/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_CEASE   ?>">Email - Cease</a></li>
+                                        <li> <a href="<?= url( '/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_INFO    ?>">Email - Information</a></li>
+                                        <li> <a href="<?= url( '/patch-panel-port/email' ) . '/' . $ppp->getId() . '/' . \Entities\PatchPanelPort::EMAIL_LOA     ?>">Email - LoA</a></li>
+                                        <li role="separator" class="divider"></li>
+                                    <?php endif; ?>
+
+                                    <?php if( $ppp->isStateAwaitingXConnect() || $ppp->isStateConnected() ): ?>
+                                        <li>
+                                            <a target="_blank" href="<?= url( '/patch-panel-port/loa-pdf' ) . '/' . $ppp->getId() ?>">
+                                                Download LoA
+                                            </a>
+                                        </li>
+                                        <li role="separator" class="divider"></li>
+                                    <?php endif; ?>
+
                                     <li>
-                                        <a onclick="return uploadPopup(<?= $patchPanelPort->getId() ?>)" href="#" title="Attach file">Attach file...</i></a>
+                                        <a id="attach-file-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" title="Attach file">
+                                            Attach file...
+                                        </a>
+                                        <li role="separator" class="divider"></li>
                                     </li>
+
                                     <li>
-                                        <a href="<?= url('/patch-panel-port/view' ).'/'.$patchPanelPort->getId()?>" title="Preview">View</i></a>
+                                        <a href="<?= url( '/patch-panel-port/view' ) . '/' . $ppp->getId()?>">
+                                            View
+                                        </a>
                                     </li>
+
                                     <li>
-                                        <a href="<?= url('/patch-panel-port/edit' ).'/'.$patchPanelPort->getId()?>" title="Edit">Edit</a>
+                                        <a href="<?= url('/patch-panel-port/edit' ) . '/' . $ppp->getId()?>">
+                                            Edit
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
-                            <a class="btn btn btn-default <?php if($patchPanelPort->getHistoryCount() == 0): ?> disabled <?php endif; ?>" title="History" <?php if($patchPanelPort->getHistoryCount() != 0): ?> href="<?= url('/patch-panel-port/history' ).'/'.$patchPanelPort->getId()?> <?php endif; ?> ">
+                            <a class="btn btn btn-default <?php if( !$ppp->getHistoryCount() ){ ?> disabled <?php } ?>" title="History"
+                                    <?php if( $ppp->getHistoryCount() ) { ?> href="<?= url( '/patch-panel-port/view' ).'/'.$ppp->getId()?> <?php } ?> ">
                                 <i class="glyphicon glyphicon-folder-open"></i>
                             </a>
                         </div>
                     </td>
                 </tr>
-
             <?php endforeach;?>
         <tbody>
     </table>
+
+
+    <!-- Modal dialog for notes / state changes -->
+    <div class="modal fade" id="notes-modal" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="notes-modal-label">Notes</h4>
+                </div>
+                <div class="modal-body" id="notes-modal-body">
+                    <p id="notes-modal-body-intro">
+                        Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..
+                        <br><br>
+                    </p>
+
+                    <h4>Public Notes</h4>
+
+                    <textarea id="notes-modal-body-public-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control" title="Public Notes"></textarea>
+
+                    <h4>Private Notes</h4>
+
+                    <textarea id="notes-modal-body-private-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control" title="Private Notes"></textarea>
+
+                    <div id="notes-modal-body-div-pi-status">
+                        <br><br>
+                        <span>Update Physical Port State To: </span>
+                        <select title="Physical Interface States" id="notes-modal-body-pi-status"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input  id="notes-modal-ppp-id"      type="hidden" name="notes-modal-ppp-id" value="">
+                    <button id="notes-modal-btn-cancel"  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                    <button id="notes-modal-btn-confirm" type="button" class="btn btn-primary"                     ><i class="fa fa-check"></i> Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
-    <script>
-        $(document).ready(function(){
+    <script type="text/javascript" src="<?= asset('/bower_components/jquery-ui/ui/widget.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/blueimp-file-upload/js/jquery.iframe-transport.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/jquery-knob/js/jquery.knob.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/blueimp-file-upload/js/jquery.fileupload.js') ?>"></script>
 
-            window.loadscript = false;
-
-            pagination = true;
-            <?php if($t->patchPanel): ?>
-                pagination = false;
-            <?php endif; ?>
-
-            $('#patch-panel-port-list').DataTable( {
-                "paging":   pagination,
-                "columnDefs": [
-                    {
-                        "targets": [ 0 ],
-                        "visible": false,
-                        "searchable": false,
-                    }
-                ],
-                "order": [[ 0, "asc" ]]
-            } );
-
-        });
-
-        function setNotesTextArea(pppId,input){
-            val_textarea = $('#'+input).text();
-            default_val = '<?= date("Y-m-d" ).' ['.$t->user->getUsername().']: '?>';
-
-            if(val_textarea == ''){
-                $('#'+input).text(default_val);
-            }
-            else{
-                if($('#'+input).text() != default_val){
-                    if(input == 'notes'){
-                        if(!window.new_notes_set){
-                            $('#'+input).text(default_val+'\n\n'+val_textarea);
-                            window.new_notes_set = true;
-                        }
-                    }
-                    else{
-                        if(!window.new_private_notes_set){
-                            $('#'+input).text(default_val+'\n\n'+val_textarea);
-                            window.new_private_notes_set = true;
-                        }
-                    }
-
-                }
-            }
-            pos = default_val.length + ($('#'+input).val().length - $('#'+input).text().length);
-            $('#'+input).setCursorPosition(pos);
-
-        }
-
-        function checkTextArea(pppId,input){
-            if($('#'+input).text() == $('#'+input).val()){
-                $('#'+input).text($('#'+input+'_'+pppId).val());
-                if(input == 'notes'){
-                    window.new_notes_set = false;
-                }
-                else{
-                    window.new_private_notes_set = false;
-                }
-
-            }
-        }
-
-        function popup(href,pppId,connected,hasSwitchPort,piState){
-            var url = $(href).attr("href");
-            var new_notes_set = false;
-            html = "<p>Consider adding details to the notes such as a internal ticket reference to the cease request / whom you have been dealing with / expected cease date / etc..</p> " +
-                "<br/>" +
-                "Public Notes : <textarea id='notes' onblur='checkTextArea("+pppId+",\"notes\")' onclick='setNotesTextArea("+pppId+",\"notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#notes_'+pppId).val()+"</textarea>" +
-                "<br/>" +
-                "Private Notes : <textarea id='private_notes' onblur='checkTextArea("+pppId+",\"private_notes\")' onclick='setNotesTextArea("+pppId+",\"private_notes\")' rows='8' class='bootbox-input bootbox-input-textarea form-control' name='note' >"+$('#private_notes_'+pppId).val()+"</textarea>";
-            if(connected){
-                if(hasSwitchPort){
-                    html += "<br/><br/><span>Update Physical Port State To:  </span><select id='PIStatus'>";
-
-                    <?php foreach ($t->physicalInterfaceLimited as $index => $state): ?>
-                        piIndex = <?= $index?>;
-                        currentState = "";
-                        if(piIndex == $('#pi_state_'+pppId).val()){
-                            currentState = "(current state)";
-                        }
-                        html += "<option <?php if($index == \Entities\PhysicalInterface::STATUS_QUARANTINE):?> selected <?php endif;?> value='<?= $index ?>'><?= $state?> "+currentState+"</option>";
-                    <?php endforeach ;?>
-                    if(currentState == ''){
-                        html += "<option value='"+$('#pi_state_'+pppId).val()+"'>"+$('#pi_state_'+pppId).attr('label')+" (current state)</option>";
-                    }
-                    html += "</select>";
-                }
-
-            }
-
-            var dialog = bootbox.dialog({
-                message: html,
-                title: "Note",
-                buttons: {
-                    cancel: {
-                        label: '<i class="fa fa-times"></i> Cancel',
-                        callback: function () {
-                            $('.bootbox.modal').modal('hide');
-                            return false;
-
-                        }
-                    },
-                    confirm: {
-                        label: '<i class="fa fa-check"></i> Confirm',
-                        callback: function () {
-                            notes = $('#notes').val();
-                            private_notes = $('#private_notes').val();
-                            if(hasSwitchPort){
-                                pi_status = $('#PIStatus').val();
-                            }
-                            else{
-                                pi_status = null;
-                            }
-
-                            $.ajax({
-                                url: "<?= url('patch-panel-port/setNotes/')?>",
-                                data: {pppId:pppId,notes: notes,private_notes:private_notes,pi_status:pi_status},
-                                type: 'GET',
-                                dataType: 'JSON',
-                                success: function (data) {
-                                    if(data.success){
-                                        document.location.href = url;
-                                        return true;
-                                    }
-                                    else{
-                                        $('.bootbox.modal').modal('hide');
-                                        return false;
-                                    }
-                                }
-                            });
-
-
-                        }
-                    }
-                }
-
-            });
-
-            dialog.init(function(){
-                window.new_notes_set = false;
-                window.new_private_notes_set = false;
-            });
-            return false;
-        }
-
-
-
-        function uploadPopup(pppId){
-            html = "<form id='upload' method='post' action='<?= url('/patch-panel-port/uploadFile' )?>/"+pppId+"' enctype='multipart/form-data'> <div id='drop'>Drop Files Here &nbsp;<a class='btn btn-success'><i class='glyphicon glyphicon-upload'></i> Browse</a> <br/><span class='info'> (max size 50MB) </span><input type='file' name='upl' multiple /> </div> <ul><!-- The file uploads will be shown here --> </ul><input type='hidden' name='_token' value='<?php echo csrf_token(); ?>'> </form>";
-
-            var dialog = bootbox.dialog({
-                message: html,
-                title: "Files Upload",
-                onEscape: function() {
-                    location.reload();
-                },
-                buttons: {
-                    cancel: {
-                        label: '<i class="fa fa-times"></i> Close',
-                        callback: function () {
-                            $('.bootbox.modal').modal('hide');
-                            location.reload();
-                            return false;
-                        }
-                    },
-                }
-
-            });
-            dialog.bind('shown.bs.modal', function(){
-
-            });
-
-            dialog.init(function(){
-
-                    $.getScript( "js/draganddrop/jquery.fileupload.js", function( data, textStatus, jqxhr ) {});
-                    $.getScript( "js/draganddrop/jquery.iframe-transport.js", function( data, textStatus, jqxhr ) {});
-                    $.getScript( "js/draganddrop/jquery.knob.js", function( data, textStatus, jqxhr ) {});
-                    $.getScript( "js/draganddrop/jquery.ui.widget.js", function( data, textStatus, jqxhr ) {});
-                    $.getScript( "js/draganddrop/script.js", function( data, textStatus, jqxhr ) {});
-                    window.loadscript = true;
-
-
-            });
-
-            return false;
-        }
-
-        function deleteFile(idFile,idPPP){
-            $.ajax({
-                url: "<?= url('patch-panel-port/deleteFile/')?>",
-                data: {idFile: idFile, idPPP: idPPP},
-                type: 'GET',
-                dataType: 'JSON',
-                success: function (data) {
-                    if(data.success){
-                        $('#file_'+idFile).fadeOut( "medium", function() {
-                            $('#file_'+idFile).remove();
-                        });
-                    }
-                    else{
-                        $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
-                        $('#delete_'+idFile).remove();
-                    }
-                }
-
-            });
-        }
-
-        function privateFile(idFile,idPPP){
-            $.ajax({
-                url: "<?= url('patch-panel-port/privateFile/')?>",
-                data: {idFile: idFile, idPPP: idPPP},
-                type: 'GET',
-                dataType: 'JSON',
-                success: function (data) {
-                    if(data.success){
-                        $('#message_'+idFile).append(' / <i class="success">'+data.message+'</i>');
-                    }
-                    else{
-                        $('#message_'+idFile).append(' / <i class="error"> '+data.message+'</i>');
-                    }
-                    $('#private_'+idFile).remove();
-                }
-
-            });
-        }
-
-    </script>
+    <?= $t->insert( 'patch-panel-port/js/index' ); ?>
 <?php $this->append() ?>

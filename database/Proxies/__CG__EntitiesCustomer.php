@@ -1016,6 +1016,17 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getUsersEmail()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUsersEmail', []);
+
+        return parent::getUsersEmail();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addTraffic95th(\Entities\Traffic95th $traffic95ths)
     {
 

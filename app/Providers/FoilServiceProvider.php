@@ -38,30 +38,30 @@ class FoilServiceProvider extends ServiceProvider
 
         $app->resolving('view', function($view) use ($app) {
 
+            $engine = new Engine($app->make('Foil\Engine'));
 
-            $view->addExtension('foil.php', 'foil', function() use ($app) {
-                $engine = new Engine($app->make('Foil\Engine'));
+            View::composer('*', function($view) {
+                if(app('request')->route() != null) {
+                    $action = app('request')->route()->getAction();
+                    $controller = class_basename($action['controller']);
+                    list($controller, $action) = explode('@', $controller);
+                } else {
+                    $action = null;
+                    $controller = null;
+                }
 
-                View::composer('*', function($view)
-                {
-                    if(app('request')->route() != null){
-                        $action = app('request')->route()->getAction();
-                        $controller = class_basename($action['controller']);
-                        list($controller, $action) = explode('@', $controller);
-                    }
-                    else{
-                        $action = null;
-                        $controller = null;
-                    }
+                $switched_user_from = (isset($_SESSION['Application']['switched_user_from']))? true : false;
+                $view->with('controller' , $controller)->with('action',$action)->with('switched_user_from', $switched_user_from);
+            });
 
-                    $switched_user_from = (isset($_SESSION['Application']['switched_user_from']))? true : false;
+            // we have a few rendering functions we want to include here:
+            $engine->engine()->loadExtension( new IXPFoilExtensions(), [ 'alerts' ] );
 
-                    $view->with('controller' , $controller)->with('action',$action)->with('switched_user_from', $switched_user_from);
+            $view->addExtension('foil.php', 'foil', function() use ($app, $engine) {
+                return $engine;
+            });
 
-                });
-                // we have a few rendering functions we want to include here:
-                $engine->engine()->loadExtension( new IXPFoilExtensions(), [] );
-
+            $view->addExtension('foil.js', 'foil', function() use ($app, $engine) {
                 return $engine;
             });
         });

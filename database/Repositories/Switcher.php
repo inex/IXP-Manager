@@ -196,7 +196,6 @@ class Switcher extends EntityRepository
 
     public function getAllPortForASwitch($id,$customerId = null, $switchPortId = null)
     {
-
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
                     FROM \\Entities\\SwitchPort sp
                         LEFT JOIN sp.Switcher s
