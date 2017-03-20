@@ -64,10 +64,10 @@ class PatchPanelPortHistoryFile extends \Entities\PatchPanelPortHistoryFile impl
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'type', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'size', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'storage_location', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'patchPanelPortHistory', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'is_private'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'type', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'size', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'storage_location', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'is_private', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'patchPanelPortHistory'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'type', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'size', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'storage_location', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'patchPanelPortHistory', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'is_private'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'type', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'uploaded_at', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'uploaded_by', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'size', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'storage_location', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'is_private', '' . "\0" . 'Entities\\PatchPanelPortHistoryFile' . "\0" . 'patchPanelPortHistory'];
     }
 
     /**
@@ -198,6 +198,17 @@ class PatchPanelPortHistoryFile extends \Entities\PatchPanelPortHistoryFile impl
     /**
      * {@inheritDoc}
      */
+    public function getNameTruncate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNameTruncate', []);
+
+        return parent::getNameTruncate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setType($type)
     {
 
@@ -220,6 +231,17 @@ class PatchPanelPortHistoryFile extends \Entities\PatchPanelPortHistoryFile impl
     /**
      * {@inheritDoc}
      */
+    public function getTypeAsIcon()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeAsIcon', []);
+
+        return parent::getTypeAsIcon();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setUploadedAt($uploadedAt)
     {
 
@@ -237,6 +259,17 @@ class PatchPanelPortHistoryFile extends \Entities\PatchPanelPortHistoryFile impl
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUploadedAt', []);
 
         return parent::getUploadedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUploadedAtFormated()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUploadedAtFormated', []);
+
+        return parent::getUploadedAtFormated();
     }
 
     /**
@@ -270,6 +303,17 @@ class PatchPanelPortHistoryFile extends \Entities\PatchPanelPortHistoryFile impl
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSize', [$size]);
 
         return parent::setSize($size);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSizeFormated()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSizeFormated', []);
+
+        return parent::getSizeFormated();
     }
 
     /**
@@ -323,6 +367,28 @@ class PatchPanelPortHistoryFile extends \Entities\PatchPanelPortHistoryFile impl
     /**
      * {@inheritDoc}
      */
+    public function setIsPrivate($isPrivate)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIsPrivate', [$isPrivate]);
+
+        return parent::setIsPrivate($isPrivate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIsPrivate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIsPrivate', []);
+
+        return parent::getIsPrivate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addPatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory)
     {
 
@@ -351,39 +417,6 @@ class PatchPanelPortHistoryFile extends \Entities\PatchPanelPortHistoryFile impl
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPortHistory', []);
 
         return parent::getPatchPanelPortHistory();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setIsPrivate($isPrivate)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIsPrivate', [$isPrivate]);
-
-        return parent::setIsPrivate($isPrivate);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getIsPrivate()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIsPrivate', []);
-
-        return parent::getIsPrivate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setPatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPatchPanelPortHistory', [$patchPanelPortHistory]);
-
-        return parent::setPatchPanelPortHistory($patchPanelPortHistory);
     }
 
 }

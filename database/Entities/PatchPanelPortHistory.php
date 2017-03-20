@@ -507,7 +507,7 @@ class PatchPanelPortHistory
     public function getCustomerName() {
         return $this->customer;
     }
-    
+
     /**
      * Set switchport
      *
@@ -569,16 +569,7 @@ class PatchPanelPortHistory
     public function getPatchPanel() {
         return $this->patchPanelPort;
     }
-
-    /**
-     * Get patchPanelPort
-     *
-     * @return \Entities\PatchPanelPort
-     */
-    public function getPatchPanel()
-    {
-        return $this->patchPanelPort;
-    }
+    
     /**
      * Add duplexSlavePort
      *

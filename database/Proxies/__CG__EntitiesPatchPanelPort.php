@@ -1071,7 +1071,6 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-
     public function hasPublicFiles(): bool
     {
 
