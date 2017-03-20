@@ -109,7 +109,7 @@ class PatchPanelPortController extends Controller
      * @return  view
      */
     public function edit( int $id, $allocating = false ) {
-        $patchPanelPort = false;
+        $ppp = false;
 
         if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
             abort(404);
@@ -215,10 +215,10 @@ class PatchPanelPortController extends Controller
 
             if( $request->input( 'customer' ) ){
                 // check if the switch port can be link to the customer
-                $custId = D2EM::getRepository(SwitchPort::class)->getCustomerForASwitchPort( $sp->getId() );
+                $custId = D2EM::getRepository( SwitchPort::class )->getCustomerForASwitchPort( $sp->getId() );
 
                 if( $custId != null ){
-                    if( $custId != $request->input('customer') ){
+                    if( $custId != $request->input( 'customer' ) ){
                         AlertContainer::push( 'Customer not allowed for this switch port !', Alert::DANGER );
                         return Redirect::to( 'patch-panel-port/edit/'.$request->input( 'id' ) )
                             ->withInput( Input::all() );
@@ -226,17 +226,17 @@ class PatchPanelPortController extends Controller
                 }
             }
         } else {
-            if($request->input('customer') and $request->input('switch')){
+            if( $request->input('customer') and $request->input( 'switch' ) ){
                 AlertContainer::push( 'You need to select a switch port !', Alert::DANGER );
-                return Redirect::to('patch-panel-port/edit/'.$request->input( 'id' ))
-                    ->withInput(Input::all());
+                return Redirect::to( 'patch-panel-port/edit/'.$request->input( 'id' ) )
+                    ->withInput( Input::all() );
             }
             $ppp->setSwitchPort( null );
         }
 
         if( $ppp->getState() != $request->input( 'state' ) ){
             $ppp->setState( $request->input( 'state' ) );
-            $ppp->setLastStateChange( new \DateTime(date('Y-m-d') ) );
+            $ppp->setLastStateChange( new \DateTime( date( 'Y-m-d' ) ) );
         }
 
         $ppp->setNotes( ( $request->input( 'notes' ) == '' ? null : $request->input( 'notes' ) ) );
@@ -244,7 +244,7 @@ class PatchPanelPortController extends Controller
         $ppp->setPrivateNotes( ( $request->input( 'private_notes' ) == '' ? null : $request->input( 'private_notes' ) )) ;
 
         $ppp->setColoCircuitRef( $request->input( 'colo_circuit_ref') );
-        $ppp->setTicketRef( $request->input( 'ticket_ref') );
+        $ppp->setTicketRef( $request->input( 'ticket_ref' ) );
 
         $ppp->setCustomer( ( $request->input( 'customer' ) ) ? D2EM::getRepository( Customer::class )->find( $request->input( 'customer' ) ) : null );
 
@@ -260,7 +260,7 @@ class PatchPanelPortController extends Controller
         }
 
         if( $request->input( 'state' ) == PatchPanelPort::STATE_CONNECTED and $request->input( 'connected_at' ) == '' ) {
-            $ppp->setConnectedAt(new \DateTime(date('Y-m-d')));
+            $ppp->setConnectedAt( new \DateTime( date( 'Y-m-d' ) ) );
         } else {
             $ppp->setConnectedAt( ( $request->input( 'connected_at' ) == '' ? null : new \DateTime( $request->input( 'connected_at' ) ) ) );
         }
@@ -278,7 +278,7 @@ class PatchPanelPortController extends Controller
         }
 
         $ppp->setInternalUse( $request->input( 'internal_use' ) );
-        $ppp->setChargeable($request->input('chargeable' ) );
+        $ppp->setChargeable($request->input( 'chargeable' ) );
         $ppp->setOwnedBy( $request->input( 'owned_by' ) );
 
         D2EM::persist( $ppp );
@@ -357,9 +357,9 @@ class PatchPanelPortController extends Controller
         }
 
         return view( 'patch-panel-port/view' )->with([
-            'ppp'    => $ppp,
-            'listHistory'       => $listHistory,
-            'isSuperUser'       => Auth::user()->isSuperUser()
+            'ppp'                       => $ppp,
+            'listHistory'               => $listHistory,
+            'isSuperUser'               => Auth::user()->isSuperUser()
         ]);
     }
 
@@ -427,7 +427,8 @@ class PatchPanelPortController extends Controller
                 abort(404);
             }
         }
-        $path = PatchPanelPortFile::getPathPPPFile( $pppFile->getStorageLocation() );
+        /* @var PatchPanelPortFile $pppFile */
+        $path = $pppFile->getPath();
 
         return response()->file( storage_path().'/files/'.$path, ['Content-Type' => $pppFile->getType()] );
     }
@@ -547,14 +548,16 @@ class PatchPanelPortController extends Controller
         }
 
         return view( 'patch-panel-port/emailForm' )->with([
-            'patchPanelPort'            => $ppp,
-            'email_type'                => $type
+            'ppp'                           => $ppp,
+            'email_type'                    => $type
         ]);
     }
 
     /**
      * Send an email to the customer (connected, ceased, info, loa PDF)
+     *
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     *
      * @params  $request instance of the current HTTP request
      * @return  view
      */
@@ -595,8 +598,8 @@ class PatchPanelPortController extends Controller
                 foreach( $ppp->getPatchPanelPortPublicFiles() as $file ){
                     $path = PatchPanelPortFile::getPathPPPFile( $file->getStorageLocation() );
                     $message->attach( storage_path().'/files/'.$path,[
-                        'as'    => $file->getName(),
-                        'mime'  => $file->getType()
+                        'as'            => $file->getName(),
+                        'mime'          => $file->getType()
                     ]);
                 }
             }
@@ -604,8 +607,8 @@ class PatchPanelPortController extends Controller
             if( $hasLoaPDF ){
                 $loaPDFPath = $ppp->createLoaPDF( false );
                 $message->attach( $loaPDFPath,[
-                    'as'    => $loaPDFPath,
-                    'mime'  => 'application/pdf'
+                    'as'                => $loaPDFPath,
+                    'mime'              => 'application/pdf'
                 ]);
             }
         });
@@ -623,7 +626,7 @@ class PatchPanelPortController extends Controller
      * @params  $id int the patch panel port
      * @return  JSON customer object
      */
-    public function sendLoadPDF( int $id )
+    public function loaPDF( int $id )
     {
         $ppp = false;
         if( $id != null ) {
@@ -632,13 +635,14 @@ class PatchPanelPortController extends Controller
             }
         }
 
+        /** @var PatchPanelPort $ppp */
         if( !Auth::user()->isSuperUser() ){
             if( $ppp->getCustomerId() != Auth::user()->getCustomer()->getId() ){
                 abort(404);
             }
         }
 
-        if( $ppp->getState() == PatchPanelPort::STATE_AWAITING_XCONNECT or $ppp->getState() == PatchPanelPort::STATE_CONNECTED ){
+        if( $ppp->isStateAwaitingXConnect() or $ppp->isStateConnected() ){
             return $ppp->createLoaPDF( true );
         } else {
             abort(404);
@@ -662,9 +666,10 @@ class PatchPanelPortController extends Controller
                 abort(404);
             }
         }
+        /** @var PatchPanelPort $ppp */
 
         if( $ppp->getLoaCode() == $loaCode ){
-            if( $ppp->getState() == PatchPanelPort::STATE_AWAITING_XCONNECT or $ppp->getState() == PatchPanelPort::STATE_CONNECTED ){
+            if( $ppp->isStateAwaitingXConnect() or $ppp->isStateConnected() ){
                 return $ppp->createLoaPDF(true);
             }
         } else {

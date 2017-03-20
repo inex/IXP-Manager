@@ -95,29 +95,43 @@
 <?php $this->section( 'scripts' ) ?>
     <script>
         $( document ).ready( function() {
-            // hide the help sections at loading
+            /**
+             * hide the help sections at loading
+             */
             $( '.help-block' ).hide();
 
-            // display / hide help sections on click on thehelp button
+            /**
+             * display / hide help sections on click on the help button
+             */
             $( "#help-btn" ).click( function() {
                 $( ".help-block" ).toggle();
             });
 
-            // set the today date on click on the today button
+            /**
+             * set the today date on click on the today button
+             */
             $( "#date-today" ).click( function() {
                 $( "#installation_date" ).val( '<?= date( "Y-m-d" ) ?>' );
             });
 
-            // set the colo_reference in empty input by the name input value
+            /**
+             * set the colo_reference in empty input by the name input value
+             */
             $( "#name" ).blur( function() {
                 if( $( "#colo_reference" ).val() == '' ){
                     $( "#colo_reference" ).val( $("#name" ).val() );
                 }
             });
 
+            /**
+            * set data to the tooltip
+            */
             $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' ,
                 '<b>Note that duplex ports should be entered as two ports.</b>' );
 
+            /**
+             * configuration of the tooltip
+             */
             $( "[data-toggle=popover]" ).popover( { placement: 'left',container: 'body', html: true, trigger: "hover" } );
         });
     </script>
