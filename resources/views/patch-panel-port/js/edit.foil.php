@@ -3,13 +3,9 @@
         $( "#"+inputName ).val( $( "#date" ).val() );
     }
 
-    var notesIntro = "### <?= date( "Y-m-d" ) . ' - ' .$t->user->getUsername() ?> \n\n";
+    var notesIntro = "### <?= date( "Y-m-d" ) . ' - ' .$t->user->getUsername() ?> \n\n\n\n";
 
     $( document ).ready(function() {
-        var new_notes_set = false;
-        var new_private_notes_set = false;
-        var val_notes_loading = $('#notes').text();
-        var val_private_notes_loading = $('#private_notes').text();
 
         /**
          * hide the help block at loading
@@ -203,63 +199,39 @@
             $( ".help-block" ).toggle();
         });
 
-        $('#notes').click(function(){
-            notesSetDateUser('notes');
-        });
+        var publicNotes  = $( '#notes' );
+        var privateNotes = $( '#private_notes' );
 
-        $('#private_notes').click(function(){
-            notesSetDateUser('private_notes');
-        });
-
-        $('#notes').blur(function(){
-            noteBlur('notes');
-        });
-
-        $('#private_notes').blur(function(){
-            noteBlur('private_notes');
-        });
-
-        function notesSetDateUser(input){
-            val_textarea = $('#'+input).text();
-            pos = notesIntro.length + ($('#'+input).val().length - $('#'+input).text().length);
-
-            if(val_textarea == '' ){
-                $('#'+input).text(notesIntro);
-                $('#'+input).setCursorPosition(pos);
+        /**
+         * Adds a prefix when a user goes to add/edit notes (typically name and date).
+         */
+        function setNotesTextArea() {
+            if( $(this).val() == '' ) {
+                $(this).val(notesIntro);
+            } else {
+                $(this).val( notesIntro  + $(this).val() );
             }
-            else{
-                if($('#'+input).text() != notesIntro){
-                    if(input == 'notes'){
-                        if(!new_notes_set){
-                            $('#'+input).text(notesIntro+'\n\n'+val_textarea);
-                            new_notes_set = true;
-                            $('#'+input).setCursorPosition(pos);
-                        }
-                    }
-                    else{
-                        if(!new_private_notes_set){
-                            $('#'+input).text(notesIntro+'\n\n'+val_textarea);
-                            new_private_notes_set = true;
-                            $('#'+input).setCursorPosition(pos);
-                        }
-                    }
-
-                }
-
-            }
+            $(this).setCursorPosition( notesIntro.length );
         }
 
-        function noteBlur(input){
-            if($('#'+input).text() == $('#'+input).val()){
-                if(input == 'notes') {
-                    $('#' + input).text(val_notes_loading);
-                    new_notes_set = false;
-                }
-                else{
-                    $('#' + input).text(val_private_notes_loading);
-                    new_private_notes_set = false;
-                }
-            }
+        /**
+         * Removes the prefix added by setNotesTextArea() if the notes where not edited
+         */
+        function unsetNotesTextArea() {
+            $(this).val( $(this).val().substring( notesIntro.length ) );
         }
+
+        // The logic of these two blocks is:
+        // 1. if the user clicks on a notes field, add a prefix (name and date typically)
+        // 2. if they make a change, remove all the handlers including that which removes the prefix
+        // 3. if they haven't made a change, we still have blur / focusout handlers and so remove the prefix
+        publicNotes.on( 'focusout', unsetNotesTextArea )
+            .on( 'focus', setNotesTextArea )
+            .on( 'keyup change', function() { $(this).off('blur focus focusout keyup change') } );
+
+        privateNotes.on( 'focusout', unsetNotesTextArea )
+            .on( 'focus', setNotesTextArea )
+            .on( 'keyup change', function() { $(this).off('blur focus focusout keyup change') } );
+
     });
 </script>

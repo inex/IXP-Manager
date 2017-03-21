@@ -1,6 +1,6 @@
 <script>
 
-    var notesIntro = "### <?= date("Y-m-d" ) . ' - ' .$t->user->getUsername() ?> \n\n";
+    var notesIntro = "### <?= date("Y-m-d" ) . ' - ' .$t->user->getUsername() ?> \n\n\n";
 
     var pagination = true;
     <?php if($t->pp): ?>
@@ -61,9 +61,8 @@
         if( $(this).val() == '' ) {
             $(this).val(notesIntro);
         } else {
-            $(this).val( notesIntro + $(this).val() );
+            $(this).val( notesIntro  + $(this).val() );
         }
-
         $(this).setCursorPosition( notesIntro.length );
     }
 
@@ -136,11 +135,11 @@
         // 1. if the user clicks on a notes field, add a prefix (name and date typically)
         // 2. if they make a change, remove all the handlers including that which removes the prefix
         // 3. if they haven't made a change, we still have blur / focusout handlers and so remove the prefix
-        publicNotes.on( 'blur focusout', unsetNotesTextArea )
+        publicNotes.on( 'focusout', unsetNotesTextArea )
             .on( 'focus', setNotesTextArea )
             .on( 'keyup change', function() { $(this).off('blur focus focusout keyup change') } );
 
-        privateNotes.on( 'blur focusout', unsetNotesTextArea )
+        privateNotes.on( 'focusout', unsetNotesTextArea )
             .on( 'focus', setNotesTextArea )
             .on( 'keyup change', function() { $(this).off('blur focus focusout keyup change') } );
     }
