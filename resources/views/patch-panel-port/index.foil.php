@@ -106,10 +106,30 @@
 
                                     <li role="separator" class="divider"></li>
 
-                                    <?php if( $ppp->isStateAvailable() ): ?>
+                                    <?php if( $ppp->isStateAvailable() or $ppp->isStateReserved() ): ?>
                                         <li>
                                             <a id="allocate-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/edit-to-allocate' ) . '/' . $ppp->getId() ?>">
                                                 Allocate
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+
+
+                                    <?php if( $ppp->isStateAvailable() ): ?>
+                                        <li role="separator" class="divider"></li>
+                                        <li>
+                                            <a id="reserved-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_RESERVED ?>">
+                                                Mark as reserved
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+                                    <?php if( $ppp->isStateReserved() ): ?>
+                                        <li role="separator" class="divider"></li>
+                                        <li>
+                                            <a id="unreserved-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_AVAILABLE ?>">
+                                                Unreserved
                                             </a>
                                         </li>
                                     <?php endif; ?>

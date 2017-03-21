@@ -23,6 +23,7 @@ class PatchPanelPort
     const STATE_AWAITING_CEASE         = 4;
     const STATE_CEASED                 = 5;
     const STATE_BROKEN                 = 6;
+    const STATE_RESERVED               = 7;
     const STATE_OTHER                  = 999;
 
 
@@ -62,6 +63,7 @@ class PatchPanelPort
         self::STATE_AWAITING_CEASE      => "Awaiting Cease",
         self::STATE_CEASED              => "Ceased",
         self::STATE_BROKEN              => "Broken",
+        self::STATE_RESERVED            => "Reserved",
         self::STATE_OTHER               => "Other"
     ];
 
@@ -1339,6 +1341,15 @@ class PatchPanelPort
      */
     public function isStateBroken(): bool {
         return $this->getState() === self::STATE_BROKEN;
+    }
+
+    /**
+     * Is the state STATE_RESERVED?
+     *
+     * @return bool
+     */
+    public function isStateReserved(): bool {
+        return $this->getState() === self::STATE_RESERVED;
     }
 
     /**

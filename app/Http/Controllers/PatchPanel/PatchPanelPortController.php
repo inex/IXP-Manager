@@ -236,7 +236,7 @@ class PatchPanelPortController extends Controller
 
         if( $ppp->getState() != $request->input( 'state' ) ){
             $ppp->setState( $request->input( 'state' ) );
-            $ppp->setLastStateChange( new \DateTime( date( 'Y-m-d' ) ) );
+            $ppp->setLastStateChange( new \DateTime );
         }
 
         $ppp->setNotes( ( $request->input( 'notes' ) == '' ? null : $request->input( 'notes' ) ) );
@@ -249,10 +249,10 @@ class PatchPanelPortController extends Controller
         $ppp->setCustomer( ( $request->input( 'customer' ) ) ? D2EM::getRepository( Customer::class )->find( $request->input( 'customer' ) ) : null );
 
         if( $request->input( 'customer' ) and $request->input( 'assigned_at' ) == ''){
-            $ppp->setAssignedAt( new \DateTime(date('Y-m-d' ) ) );
+            $ppp->setAssignedAt( new \DateTime );
         } else {
             if( $request->input( 'allocated' ) ){
-                $ppp->setAssignedAt( new \DateTime( date( 'Y-m-d' ) ) );
+                $ppp->setAssignedAt( new \DateTime );
             } else {
                 $ppp->setAssignedAt( ( $request->input( 'assigned_at' ) == '' ? null : new \DateTime( $request->input( 'assigned_at' ) ) ) );
             }
@@ -260,19 +260,19 @@ class PatchPanelPortController extends Controller
         }
 
         if( $request->input( 'state' ) == PatchPanelPort::STATE_CONNECTED and $request->input( 'connected_at' ) == '' ) {
-            $ppp->setConnectedAt( new \DateTime( date( 'Y-m-d' ) ) );
+            $ppp->setConnectedAt( new \DateTime );
         } else {
             $ppp->setConnectedAt( ( $request->input( 'connected_at' ) == '' ? null : new \DateTime( $request->input( 'connected_at' ) ) ) );
         }
 
         if( $request->input( 'state' ) == PatchPanelPort::STATE_AWAITING_CEASE and $request->input( 'ceased_requested_at' ) == '' ) {
-            $ppp->setCeaseRequestedAt( new \DateTime( date( 'Y-m-d' ) ) );
+            $ppp->setCeaseRequestedAt( new \DateTime );
         } else {
             $ppp->setCeaseRequestedAt( ( $request->input( 'ceased_requested_at' ) == '' ? null : new \DateTime( $request->input( 'ceased_requested_at' ) ) ) );
         }
 
         if( $request->input( 'state' ) == PatchPanelPort::STATE_CEASED and $request->input( 'ceased_at' ) == '' ) {
-            $ppp->setCeasedAt( new \DateTime( date( 'Y-m-d' ) ) );
+            $ppp->setCeasedAt( new \DateTime );
         } else {
             $ppp->setCeasedAt( ( $request->input( 'ceased_at' ) == '' ? null : new \DateTime( $request->input( 'ceased_at' ) ) ) );
         }
@@ -383,20 +383,22 @@ class PatchPanelPortController extends Controller
             switch ( $status ) {
                 case PatchPanelPort::STATE_CONNECTED :
                     $ppp->setState( PatchPanelPort::STATE_CONNECTED );
-                    $ppp->setConnectedAt( new \DateTime( date( 'Y-m-d' ) ) );
+                    $ppp->setConnectedAt( new \DateTime );
                     break;
                 case PatchPanelPort::STATE_AWAITING_CEASE :
                     $ppp->setState( PatchPanelPort::STATE_AWAITING_CEASE );
-                    $ppp->setCeaseRequestedAt( new \DateTime( date( 'Y-m-d' ) ) );
+                    $ppp->setCeaseRequestedAt( new \DateTime );
                     break;
                 case PatchPanelPort::STATE_CEASED :
                     $ppp->setState( PatchPanelPort::STATE_CEASED );
-                    $ppp->setCeasedAt( new \DateTime( date( 'Y-m-d' )  ));
+                    $ppp->setCeasedAt( new \DateTime );
+                    break;
+                default:
+                    $ppp->setState( $status );
                     break;
             }
 
-            $ppp->setLastStateChange( new \DateTime( date( 'Y-m-d' ) ) );
-            D2EM::persist( $ppp );
+            $ppp->setLastStateChange( new \DateTime );
             D2EM::flush();
 
             if( $status == PatchPanelPort::STATE_CEASED ){
