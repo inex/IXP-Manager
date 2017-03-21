@@ -105,6 +105,16 @@
                 <tr>
                     <td>
                         <b>
+                            Chargeable :
+                        </b>
+                    </td>
+                    <td>
+                        <?= $t->pp->resolveChargeable() ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
                             Installation Date :
                         </b>
                     </td>

@@ -71,6 +71,14 @@
             ->help( "This is optional. As an example, you may was to prefix individual fibre strands in a duplex port with <code>F</code> which would mean the name of a duplex port would be displayed as <code>F1/F2</code>." );
         ?>
 
+        <?= Former::select( 'chargeable' )
+            ->label( 'Chargeable' )
+            ->options( $t->chargeables)
+            ->select(  $t->pp ? $t->pp->getChargeable() : \Entities\PatchPanelPort::CHARGEABLE_NO)
+            ->addClass( 'chzn-select' )
+            ->help( 'help text');
+        ?>
+
         <?= Former::date( 'installation_date' )
             ->label( 'Installation Date' )
             ->append( '<button class="btn-default btn" id="date-today" type="button">Today</button>' )

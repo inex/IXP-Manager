@@ -90,6 +90,11 @@ class PatchPanel
     private $active = true;
 
     /**
+     * @var boolean
+     */
+    private $chargeable = '0';
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $patchPanelPorts;
@@ -202,6 +207,27 @@ class PatchPanel
         return ($this->active) ? 'Yes': 'No';
     }
 
+    /**
+     * Get chargeable
+     *
+     * @return boolean
+     */
+    public function getChargeable()
+    {
+        return $this->chargeable;
+
+    }
+
+    /**
+     * Get chargeable
+     *
+     * @return boolean
+     */
+    public function getChargeableDefaultNo()
+    {
+        return ($this->chargeable == 0)? PatchPanelPort::CHARGEABLE_NO :$this->getChargeable();
+
+    }
     /**
      * Get cabinet
      *
@@ -322,6 +348,19 @@ class PatchPanel
     }
 
     /**
+     * Set chargeable
+     *
+     * @param boolean $chargeable
+     *
+     * @return PatchPanelPort
+     */
+    public function setChargeable($chargeable)
+    {
+        $this->chargeable = $chargeable;
+        return $this;
+    }
+
+    /**
      * Set cabinet
      *
      * @param \Entities\Cabinet $cabinet
@@ -387,6 +426,15 @@ class PatchPanel
      */
     public function resolveConnectorType(): string {
         return self::$CONNECTOR_TYPES[ $this->getConnectorType() ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the PatchPanelPort::$CHARGEABLES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveChargeable(): string {
+        return PatchPanelPort::$CHARGEABLES[ $this->getChargeable() ] ?? 'Unknown';
     }
 
     /**

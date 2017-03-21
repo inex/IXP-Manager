@@ -174,7 +174,6 @@
     <?= Former::select('chargeable')
         ->label('Chargeable')
         ->options($t->chargeables)
-        ->select($t->ppp->getChargeableDefaultNo())
         ->addClass('chzn-select')
         ->help('help text');
     ?>

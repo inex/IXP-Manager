@@ -120,7 +120,11 @@ class PatchPanelPortController extends Controller
             $ppp = $ppp->getDuplexMasterPort();
         }
 
+        /** @var PatchPanelPort $ppp */
+
         $hasDuplex = $ppp->hasSlavePort();
+
+        $chargeable = ($allocating and $ppp->isStateAvailable()) ? $ppp->getPatchPanel()->getChargeable() : $ppp->getChargeableDefaultNo();
 
         // fill the form with patch panel port data
         Former::populate([
@@ -140,7 +144,7 @@ class PatchPanelPortController extends Controller
             'ceased_requested_at'   => $ppp->getCeaseRequestedAtFormated(),
             'ceased_at'             => $ppp->getCeasedAtFormated(),
             'last_state_change_at'  => $ppp->getLastStateChangeFormated(),
-            'chargeable'            => $ppp->getChargeableDefaultNo(),
+            'chargeable'            => $chargeable,
             'owned_by'              => $ppp->getOwnedBy()
         ]);
 
