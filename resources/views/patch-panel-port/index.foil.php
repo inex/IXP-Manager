@@ -191,7 +191,7 @@
                                     </li>
 
                                     <li>
-                                        <a href="<?= url('/patch-panel-port/edit' ) . '/' . $ppp->getId()?>">
+                                        <a href="<?= url( '/patch-panel-port/edit' ) . '/' . $ppp->getId()?>">
                                             Edit
                                         </a>
                                     </li>
@@ -247,11 +247,11 @@
     </div>
 <?php $this->append() ?>
 
-<?php $this->section('scripts') ?>
-    <script type="text/javascript" src="<?= asset('/bower_components/jquery-ui/ui/widget.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/blueimp-file-upload/js/jquery.iframe-transport.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/jquery-knob/js/jquery.knob.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/blueimp-file-upload/js/jquery.fileupload.js') ?>"></script>
+<?php $this->section( 'scripts' ) ?>
+    <script type="text/javascript" src="<?= asset( '/bower_components/jquery-ui/ui/widget.js' ) ?>"></script>
+    <script type="text/javascript" src="<?= asset( '/bower_components/blueimp-file-upload/js/jquery.iframe-transport.js' ) ?>"></script>
+    <script type="text/javascript" src="<?= asset( '/bower_components/jquery-knob/js/jquery.knob.js' ) ?>"></script>
+    <script type="text/javascript" src="<?= asset( '/bower_components/blueimp-file-upload/js/jquery.fileupload.js' ) ?>"></script>
 
     <?= $t->insert( 'patch-panel-port/js/index' ); ?>
 <?php $this->append() ?>

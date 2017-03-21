@@ -23,9 +23,9 @@
                     else:
                         $current = false;
                     endif; ?>
-                    <?php if(($t->isSuperUser) or (!$t->isSuperUser and $current)): ?>
-                        <li <?php if($current): ?> class="active" <?php endif; ?>>
-                            <a href="#<?= $pppHistory->getId() ?>" data-toggle="tab"><?php if($current): ?> Current <?php else: ?> <?= $pppHistory->getCeasedAtFormated(); ?> <?php endif; ?></a>
+                    <?php if( ( $t->isSuperUser ) or ( !$t->isSuperUser and $current ) ): ?>
+                        <li <?php if( $current ): ?> class="active" <?php endif; ?>>
+                            <a href="#<?= $pppHistory->getId() ?>" data-toggle="tab"><?php if( $current ): ?> Current <?php else: ?> <?= $pppHistory->getCeasedAtFormated(); ?> <?php endif; ?></a>
                         </li>
                     <?php endif; ?>
                 <?php endforeach; ?>
@@ -33,13 +33,13 @@
         </div>
         <div class="panel-body">
             <div class="tab-content">
-                <?php foreach ($t->listHistory as $pppHistory): ?>
-                    <?php if(get_class($pppHistory) == \Entities\PatchPanelPort::class):
+                <?php foreach ( $t->listHistory as $pppHistory ): ?>
+                    <?php if( get_class( $pppHistory ) == \Entities\PatchPanelPort::class ):
                         $current = true;
                     else:
                         $current = false;
                     endif; ?>
-                    <div class="tab-pane fade <?php if($current): ?> active in <?php endif; ?>" id="<?= $pppHistory->getId() ?>">
+                    <div class="tab-pane fade <?php if( $current ): ?> active in <?php endif; ?>" id="<?= $pppHistory->getId() ?>">
                         <div class="col-xs-6">
                             <table class="table_ppp_info">
                                 <tr>
@@ -54,8 +54,8 @@
                                         </a>
                                     </td>
                                 </tr>
-                                <?php if($current): ?>
-                                    <?php if($pppHistory->getSwitchName()): ?>
+                                <?php if( $current ): ?>
+                                    <?php if( $pppHistory->getSwitchName() ): ?>
                                         <tr>
                                             <td>
                                                 <b>
@@ -257,7 +257,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if( $current):
+                        <?php if( $current ):
                             $listFile = $pppHistory->getPatchPanelPortFiles();
                             $objectType = 'ppp';
                         else:
@@ -352,24 +352,24 @@
                         label: '<i class="fa fa-check"></i> Confirm'
                     }
                 },
-                callback: function (result) {
-                    if(result){
+                callback: function ( result ) {
+                    if( result ){
                         idPPP = <?= $t->ppp->getId()?>;
                         $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + idFile )
                         .done( function( data ) {
-                            if(data.success){
+                            if( data.success ){
                                 $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->ppp->getId()?> #list_file_"+idHistory+'_'+objectType );
-                                $('.bootbox.modal').modal('hide');
+                                $( '.bootbox.modal' ).modal( 'hide' );
                             }
                             else{
-                                $('#message_'+idFile).removeClass('success').addClass('error').html('Delete error : '+data.message);
-                                $('#delete_'+idFile).remove();
+                                $( '#message_'+idFile ).removeClass( 'success' ).addClass( 'error' ).html( 'Delete error : '+data.message );
+                                $( '#delete_'+idFile ).remove();
                             }
                         })
                         .fail( function() {
-                            throw new Error("Error running ajax query for patch-panel-port/deleteFile/");
-                            alert("Error running ajax query for patch-panel-port/deleteFile/");
-                            $("#customer").html("");
+                            throw new Error( "Error running ajax query for patch-panel-port/deleteFile/" );
+                            alert( "Error running ajax query for patch-panel-port/deleteFile/" );
+                            $( "#customer" ).html("");
                         })
                     }
                 }
