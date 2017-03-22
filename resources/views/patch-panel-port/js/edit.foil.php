@@ -48,6 +48,10 @@
             setCustomer();
         }
 
+        /**
+         * set data to the customer dropdown when we select a switche port
+         * and check if the swich port has a physical interface set and with the possibility to change the status of the physical interface
+         */
         $( "#switch_port" ).change(function(){
             setCustomer();
             <?php if( $t->allocating ): ?>
@@ -129,7 +133,9 @@
             }
         }
 
-
+        /**
+         * set data to the switcher dropdown related to the customer selected
+         */
         $( "#customer" ).change( function(){
             $( "#switch" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
             $( "#switch_port" ).html("").trigger("chosen:updated");
