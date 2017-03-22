@@ -32,10 +32,10 @@ use Illuminate\Http\Response;
 
 use IXP\Http\Controllers\Api\V4\Controller;
 
-use IXP\Tasks\Salt\SwitchConfigurationGenerator as SwitchConfigurationGenerator;
+use IXP\Tasks\Yaml\SwitchConfigurationGenerator as SwitchConfigurationGenerator;
 
 /**
- * SaltController
+ * YamlController
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   APIv4
@@ -43,10 +43,10 @@ use IXP\Tasks\Salt\SwitchConfigurationGenerator as SwitchConfigurationGenerator;
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SaltController extends Controller {
+class YamlController extends Controller {
 
     /**
-     * Generate a Salt configuration file for a given switchid
+     * Generate a Yaml configuration file for a given switchid
      *
      * This just takes one argument: the router handle to generate the configuration for. All
      * other parameters are defined by the handle's array in config/router.php.
@@ -67,7 +67,7 @@ class SaltController extends Controller {
     }
 
     /**
-     * Generate a Salt configuration file for a given switchid
+     * Generate a Yaml configuration file for a given switchid
      *
      * This just takes one argument: the router handle to generate the configuration for. All
      * other parameters are defined by the handle's array in config/router.php.

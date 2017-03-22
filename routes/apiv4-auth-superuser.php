@@ -31,8 +31,8 @@ Route::get('sflow-receivers/receivers.lst', 'SflowReceiverController@receiversLs
 
 
 // remove the following two after INEX updated to yaml
-Route::get('provisioner/salt/switch/{switchid}',        'Provisioner\SaltController@forSwitch');
-Route::get('provisioner/salt/switch-name/{switchname}', 'Provisioner\SaltController@forSwitchByName');
+Route::get('provisioner/salt/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
+Route::get('provisioner/salt/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
 
-Route::get('provisioner/yaml/switch/{switchid}',        'Provisioner\SaltController@forSwitch');
-Route::get('provisioner/yaml/switch-name/{switchname}', 'Provisioner\SaltController@forSwitchByName');
+Route::get('provisioner/yaml/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
+Route::get('provisioner/yaml/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
