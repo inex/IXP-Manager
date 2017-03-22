@@ -126,6 +126,11 @@ class VlanInterface
 
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $layer2Addresses;
+
+    /**
      * Set ipv4enabled
      *
      * @param boolean $ipv4enabled
@@ -640,4 +645,39 @@ class VlanInterface
     {
         return $this->Vlan;
     }
+
+
+    /**
+     * Add Layer2Address
+     *
+     * @param Layer2Address $layer2Address
+     * @return VlanInterface
+     */
+    public function addLayer2Address( Layer2Address $layer2Address ): VlanInterface
+    {
+        $this->layer2Addresses[] = $layer2Address;
+
+        return $this;
+    }
+
+    /**
+     * Remove Layer2Address
+     *
+     * @param Layer2Address $layer2Address
+     */
+    public function removeVlanInterface( Layer2Address $layer2Address )
+    {
+        $this->layer2Addresses->removeElement($layer2Address);
+    }
+
+    /**
+     * Get Layer2Addresses
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLayer2Addresses()
+    {
+        return $this->layer2Addresses;
+    }
+
 }

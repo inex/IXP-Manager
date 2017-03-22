@@ -1218,6 +1218,26 @@
     <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPort" owner-alias="patchPanelPortHistory" inverse-alias="patchPanelPort" many-owner="true" many-inverse="false" uuid="ac59c5ec-22c1-4f07-88e9-3eeaa60d547c">
       <association-field from="patch_panel_port_id" to="id"/>
     </association>
+    <entity name="\Entities\Layer2Address" local-name="Layer2Address" namespace="\Entities" uuid="1363c8e6-52d8-4d98-b6e9-b01eccad244d">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="7dad668a-4089-4eb6-9142-0d5561adbdb9"/>
+      <field name="vlan_interface_id" type="integer" required="true" uuid="1f4df87c-8f4d-4773-ad3c-b32600707687"/>
+      <field name="mac" type="string" size="12" uuid="a2ab2772-1efe-423c-9d37-07dc48bb4e79"/>
+      <field name="firstseen" type="datetime" uuid="415b0cb9-b4e6-45c5-a9e1-33f05fc1ba68"/>
+      <field name="lastseen" type="datetime" uuid="95776421-cf33-486c-b348-0dee67883c06"/>
+      <field name="created" type="datetime" uuid="0c578113-3941-4c56-a46b-5fa0f8566a3a"/>
+      <index name="mac_vlanint" unique="true">
+        <index-field name="mac"/>
+        <index-field name="vlan_interface_id"/>
+      </index>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Layer2Address</attribute>
+        <attribute name="table">l2address</attribute>
+        <attribute name="tableName">l2address</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Layer2Address" to="\Entities\VlanInterface" owner-alias="layer2Addresses" inverse-alias="vlanInterface" many-owner="true" many-inverse="false" parent-required="true" uuid="d055afe7-fe5a-4a17-8bb6-21aa478e1633">
+      <association-field from="vlan_interface_id" to="id"/>
+    </association>
   </module>
   <visual-data>
     <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1260,6 +1280,7 @@
     <association uuid="c9431b23-72cb-4afa-a057-ced40869cfd0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-26" center-position-y="0" color="4288059030"/>
     <association uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819" color="4288059030"/>
+    <association uuid="d055afe7-fe5a-4a17-8bb6-21aa478e1633" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="d9075ce3-753a-432f-a009-c9e386509484" color="4288059030"/>
     <association uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6" color="4288059030"/>
@@ -1282,6 +1303,7 @@
     <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
     <entity uuid="0be9b477-a199-4d85-a892-4287cf858f4d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="47" position-y="-145" size-x="0" size-x2="124" size-y="0" size-y2="59"/>
     <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" bg-color="4294967295" hdr-color="4292006610" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
+    <entity uuid="1363c8e6-52d8-4d98-b6e9-b01eccad244d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1261" position-y="1038" size-x="0" size-x2="128" size-y="0" size-y2="101"/>
     <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" bg-color="4294967295" hdr-color="4292006610" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" bg-color="4294967295" hdr-color="4292006610" position-x="1236" position-y="186" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
     <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" bg-color="4294967295" hdr-color="4292006610" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>

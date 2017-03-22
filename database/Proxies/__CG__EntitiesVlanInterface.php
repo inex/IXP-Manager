@@ -64,10 +64,10 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'ipv4enabled', 'ipv4hostname', 'ipv6enabled', 'ipv6hostname', 'mcastenabled', 'irrdbfilter', 'bgpmd5secret', 'ipv4bgpmd5secret', 'ipv6bgpmd5secret', 'maxbgpprefix', 'rsclient', 'ipv4canping', 'ipv6canping', 'ipv4monitorrcbgp', 'ipv6monitorrcbgp', 'as112client', 'busyhost', 'notes', 'id', 'IPv4Address', 'IPv6Address', 'VirtualInterface', 'Vlan'];
+            return ['__isInitialized__', 'ipv4enabled', 'ipv4hostname', 'ipv6enabled', 'ipv6hostname', 'mcastenabled', 'irrdbfilter', 'bgpmd5secret', 'ipv4bgpmd5secret', 'ipv6bgpmd5secret', 'maxbgpprefix', 'rsclient', 'ipv4canping', 'ipv6canping', 'ipv4monitorrcbgp', 'ipv6monitorrcbgp', 'as112client', 'busyhost', 'notes', 'id', 'IPv4Address', 'IPv6Address', 'VirtualInterface', 'Vlan', 'layer2Addresses'];
         }
 
-        return ['__isInitialized__', 'ipv4enabled', 'ipv4hostname', 'ipv6enabled', 'ipv6hostname', 'mcastenabled', 'irrdbfilter', 'bgpmd5secret', 'ipv4bgpmd5secret', 'ipv6bgpmd5secret', 'maxbgpprefix', 'rsclient', 'ipv4canping', 'ipv6canping', 'ipv4monitorrcbgp', 'ipv6monitorrcbgp', 'as112client', 'busyhost', 'notes', 'id', 'IPv4Address', 'IPv6Address', 'VirtualInterface', 'Vlan'];
+        return ['__isInitialized__', 'ipv4enabled', 'ipv4hostname', 'ipv6enabled', 'ipv6hostname', 'mcastenabled', 'irrdbfilter', 'bgpmd5secret', 'ipv4bgpmd5secret', 'ipv6bgpmd5secret', 'maxbgpprefix', 'rsclient', 'ipv4canping', 'ipv6canping', 'ipv4monitorrcbgp', 'ipv6monitorrcbgp', 'as112client', 'busyhost', 'notes', 'id', 'IPv4Address', 'IPv6Address', 'VirtualInterface', 'Vlan', 'layer2Addresses'];
     }
 
     /**
@@ -670,6 +670,39 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlan', []);
 
         return parent::getVlan();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addLayer2Address(\Entities\Layer2Address $layer2Address): \Entities\VlanInterface
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addLayer2Address', [$layer2Address]);
+
+        return parent::addLayer2Address($layer2Address);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeVlanInterface(\Entities\Layer2Address $layer2Address)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeVlanInterface', [$layer2Address]);
+
+        return parent::removeVlanInterface($layer2Address);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLayer2Addresses()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLayer2Addresses', []);
+
+        return parent::getLayer2Addresses();
     }
 
 }
