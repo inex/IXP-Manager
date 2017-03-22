@@ -275,6 +275,7 @@ trait IXP_Controller_Trait_Interfaces
             $vi->setName('');
             $vi->setChannelgroup(null);
             $vi->setLagFraming(false);
+            $vi->setFastLACP(false);
         }
 
     }

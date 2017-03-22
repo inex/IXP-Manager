@@ -16,7 +16,7 @@
 
             {* if there's >1 phys int and lag framing is not set, we should warn: *}
             {if count( $object->getPhysicalInterfaces() ) > 1 and !$object->getLagFraming()}
-            <div class="control-group">
+            <div class="control-group" id="lag-alert">
                 <div class="controls">
                     <span class="label label-warning">WARNING</span>
                     LAG framing is not set and there is >1 physical interfaces. This may be intended but should be verified:
@@ -25,6 +25,16 @@
             {/if}
 
             {$element->lag_framing}
+
+            <div class="control-group {if not $element->lag_framing->getValue()}hidden{/if}" id="div-fastlacp">
+                <div class="controls">
+                    <label class="checkbox" id="fastlacp-label" for="fastlacp">
+                        <input type="hidden" name="fastlacp" value="0">
+                        <input type="checkbox" name="fastlacp" id="fastlacp" value="1" {if $element->fastlacp->getValue()}checked="checked"{/if}>
+                        Use Fast LACP
+                    </label>
+                </div>
+            </div>
 
             {if $object->getBundleName()}
                 <div class="control-group">
@@ -112,6 +122,7 @@
 
 <script type="text/javascript">
 
+
 $(document).ready( function(){
 
 	$( '#btn-advanced-options' ).on( 'click', function( event ){
@@ -124,7 +135,25 @@ $(document).ready( function(){
 		$( '#btn-advanced-options' ).button( 'toggle' );
 		return false;
 	});
-	
+
+
+    $('#lag_framing').on( 'change', function() {
+        if( $('#lag-alert').length ) {
+            if ($(this).is(":checked")) {
+                $('#lag-alert').slideUp();
+            } else {
+                $('#lag-alert').slideDown();
+            }
+        }
+
+        if($(this).is(":checked")) {
+            $( "#div-fastlacp" ).slideDown().removeClass('hidden');
+        } else {
+            $( "#div-fastlacp" ).slideUp();
+        }
+
+    });
+
 });
 
 </script>
