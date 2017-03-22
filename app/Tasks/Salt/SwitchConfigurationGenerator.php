@@ -74,13 +74,7 @@ class SwitchConfigurationGenerator
     }
 
     private function template(): string {
-        $tmpl = preg_replace( '/[^\da-z_\-\/]/i', '', strtolower( 'api/v4/provisioner/salt/switch/' . $this->getSwitch()->getVendor()->getShortname() ) );
-
-        if( !view()->exists( $tmpl ) ) {
-            throw new GeneralException( "Template does not exist: " . $tmpl );
-        }
-
-        return $tmpl;
+        return 'api/v4/provisioner/yaml/switch';
     }
 
     /**
