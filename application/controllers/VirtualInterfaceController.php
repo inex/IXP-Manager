@@ -325,7 +325,8 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
                     // these options is not available in the wizard
                     $vi->setChannelgroup(null);
                     $vi->setLagFraming(false);
-                    
+                    $vi->setFastLACP(false);
+
                     $this->getD2EM()->persist( $vi );
 
                     $pi = new \Entities\PhysicalInterface();

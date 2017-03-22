@@ -656,6 +656,7 @@
       <field name="trunk" type="boolean" uuid="7bc0973f-b829-4e86-8fff-01cad0033d7b"/>
       <field name="channelgroup" type="integer" uuid="5e0cb020-4918-4766-be8c-b8c2311178dd"/>
       <field name="lag_framing" type="boolean" default="0" required="true" uuid="a23d8449-84a0-4d0e-88e5-3613f83d0a18"/>
+      <field name="fastlacp" type="boolean" default="0" required="true" uuid="7d53ec75-aa69-4ad3-beff-00b39920d1fd"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\VirtualInterface</attribute>
         <attribute name="table">virtualinterface</attribute>
@@ -1306,7 +1307,7 @@
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="4294967295" hdr-color="4292006610" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
-    <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="805" position-y="323" size-x="0" size-x2="126" size-y="0" size-y2="101"/>
+    <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="810" position-y="292" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="b8c028d1-c43e-44ef-b86e-7849c119d00f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="459" position-y="1038" size-x="0" size-x2="116" size-y="0" size-y2="129"/>
     <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>
     <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="531" position-y="-333" size-x="0" size-x2="132" size-y="0" size-y2="255"/>

@@ -123,6 +123,7 @@ class SwitchConfigurationGenerator
         $p['description']        = "Cust: {$vi->getCustomer()->getAbbreviatedName()}";
         $p['dot1q']              = $vi->getTrunk() ? 'yes' : 'no';
         $p['virtualinterfaceid'] = $vi->getId();
+        $p['fastlacp']           = $vi->getFastLACP() ? 'yes' : 'no';
         if( $vi->getChannelgroup() ) {
             $p['lagindex'] = $vi->getChannelgroup();
         }

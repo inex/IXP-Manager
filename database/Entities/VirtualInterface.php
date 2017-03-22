@@ -40,6 +40,12 @@ class VirtualInterface
     protected $lag_framing = false;
 
     /**
+     * @var bool $fastlacp
+     */
+    protected $fastlacp = false;
+
+
+    /**
      * @var integer $id
      */
     protected $id;
@@ -181,6 +187,30 @@ class VirtualInterface
 
         return $this;
     }
+
+    /**
+     * Get lag framing - fastlacp
+     *
+     * @return boolean
+     */
+    public function getFastLACP(): bool
+    {
+        return $this->fastlacp;
+    }
+
+    /**
+     * Set lag framing - fastlacp
+     *
+     * @param boolean $lag_framing
+     * @return VirtualInterface
+     */
+    public function setFastLACP(bool $fastlacp): VirtualInterface
+    {
+        $this->fastlacp = $fastlacp;
+
+        return $this;
+    }
+
 
     /**
      * Get trunk

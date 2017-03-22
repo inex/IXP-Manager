@@ -64,10 +64,10 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
+            return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'fastlacp', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
         }
 
-        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
+        return ['__isInitialized__', 'name', 'description', 'mtu', 'trunk', 'channelgroup', 'lag_framing', 'fastlacp', 'id', 'PhysicalInterfaces', 'VlanInterfaces', 'MACAddresses', 'Customer', '' . "\0" . 'Entities\\VirtualInterface' . "\0" . 'SflowReceivers'];
     }
 
     /**
@@ -270,6 +270,28 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLagFraming', [$lag_framing]);
 
         return parent::setLagFraming($lag_framing);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFastLACP(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFastLACP', []);
+
+        return parent::getFastLACP();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFastLACP(bool $fastlacp): \Entities\VirtualInterface
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFastLACP', [$fastlacp]);
+
+        return parent::setFastLACP($fastlacp);
     }
 
     /**

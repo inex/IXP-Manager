@@ -86,8 +86,13 @@ class IXP_Form_Interface_Virtual extends IXP_Form
             ->setCheckedValue( '1' );
         $this->addElement( $lagFraming );
 
+        $fastlacp = $this->createElement( 'checkbox', 'fastlacp' );
+        $fastlacp->setLabel( 'Use Fast LACP' )
+            ->setCheckedValue( '1' );
+        $this->addElement( $fastlacp );
+
         $this->addDisplayGroup(
-            [ 'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk', 'lag_framing' ],
+            [ 'custid', 'name', 'description', 'channelgroup', 'mtu', 'trunk', 'lag_framing', 'fastlacp' ],
             'virtualInterfaceDisplayGroup'
         );
 
