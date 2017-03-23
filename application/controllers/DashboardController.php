@@ -48,6 +48,10 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 
         $this->view->cust = $this->getUser()->getCustomer();
 
+
+
+        $this->view->isSuperUser    = $this->getUser()->isSuperUser();
+        $this->view->crossConnects = $this->getD2R( "\\Entities\\Customer" )->getCrossConnects( $this->getCustomer()->getId() );
         /*
             // is there a meeting available to register for?
             $this->view->meeting = false;
@@ -65,6 +69,7 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
                 }
             }
         */
+
 
         if( !$this->getCustomer()->isTypeAssociate() )
         {

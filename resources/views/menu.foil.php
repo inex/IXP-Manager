@@ -3,8 +3,8 @@
         <div class="well sidebar-nav left-sidebar">
             <ul class="nav nav-pills nav-stacked ">
                 <form class="form-inline sidebar-search-form" method="get" action="<?= url( 'search/do' ) ?>">
-                    <input type="text" class="form-control menu-search-input" style="width: 50%" placeholder="Search..." name="search">
-                    <a class="btn btn-default menu-search-help-btn active" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
+                    <input type="text" class="form-control menu-search-input" style="width: 65%" placeholder="Search..." name="search">
+                    <a class="btn btn-default menu-search-help-btn " id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
                         <span class="glyphicon glyphicon-question-sign"></span>
                     </a>
                 </form>
@@ -35,8 +35,14 @@
 
                     <?php /* {/if} */ ?>
                 </li>
-                <li>
-                    <a href="<?= url('patch-panel/') ?>">Patch Panel</a>
+                <li <?php if($t->controller == 'PatchPanelController'):?> class="active" <?php endif;?> >
+                    <a href="<?= url('patch-panel/list') ?>">Patch Panels</a>
+
+                    <?php if($t->controller == 'PatchPanelController' or $t->controller == 'PatchPanelPortController') :?>
+                        <li class="sub-menu <?php if($t->controller == 'PatchPanelPortController'):?> active <?php endif;?> " >
+                            <a href="<?= url('patch-panel-port/list') ?>">Patch Panel Port</a>
+                        </li>
+                    <?php endif;?>
                 </li>
                 <li>
                     <a href="<?= url( 'user/list' ) ?>">Users</a>

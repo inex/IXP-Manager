@@ -23,6 +23,11 @@ class PhysicalInterface
         self::STATUS_QUARANTINE   => 'Quarantine'
     );
 
+    public static $PPP_STATES = array(
+        self::STATUS_CONNECTED    => 'Connected',
+        self::STATUS_XCONNECT     => 'Awaiting X-Connect',
+    );
+
     public static $SPEED = array(
         10    => '10 Mbps',
         100   => '100 Mbps',
@@ -292,10 +297,9 @@ class PhysicalInterface
     /**
      * Get VirtualInterface
      *
-     * @return \Entities\VirtualInterface
+     * @return VirtualInterface
      */
-    public function getVirtualInterface()
-    {
+    public function getVirtualInterface() {
         return $this->VirtualInterface;
     }
 
@@ -430,5 +434,14 @@ class PhysicalInterface
     public function resolveSpeed() {
         // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
         return $this->getSwitchPort()->getIfHighSpeed() > 0 ? $this->getSwitchPort()->getIfHighSpeed() : $this->getSpeed();
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the self::$STATES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveStatus(): string {
+        return self::$STATES[ $this->getStatus() ] ?? 'Unknown';
     }
 }

@@ -101,6 +101,28 @@ class Switcher extends EntityRepository
         return $switches;
     }
 
+    /**
+     * Return an array of all switch names where the array key is the switch id
+     *
+     * @param bool          $active If `true`, return only active switches
+     * @param int           $type   If `0`, all types otherwise limit to specific type
+     * @param int           $idLocation  location requiered
+     * @return array An array of all switch names with the switch id as the key.
+     */
+    public function getNamesByLocation( $active = false, $type = 0, $idLocation = null )
+    {
+        $switches = [];
+        foreach( $this->getAndCache( $active, $type ) as $a ) {
+
+            if($idLocation != null)
+                if($a->getCabinet()->getLocation()->getId() == $idLocation)
+                    $switches[ $a->getId() ] = $a->getName();
+        }
+
+        asort( $switches );
+        return $switches;
+    }
+
 
     /**
      * Return an array of configurations
@@ -171,4 +193,47 @@ class Switcher extends EntityRepository
         return $this->getEntityManager()->createQuery( $q )->getResult();
     }
 
+
+    public function getAllPortForASwitch($id,$customerId = null, $switchPortId = null)
+    {
+        $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
+                    FROM \\Entities\\SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN sp.PhysicalInterface pi";
+
+        if($customerId != null){
+            $dql .= " LEFT JOIN pi.VirtualInterface vi ";
+        }
+
+        // Remove the switch port already use by a patch panel port
+        $dql .= " WHERE sp.id NOT IN (SELECT IDENTITY(ppp.switchPort)
+                                      FROM Entities\\PatchPanelPort ppp
+                                      WHERE ppp.switchPort IS NOT NULL";
+
+        if($switchPortId != null){
+            $switchPortId = intval($switchPortId);
+            $dql .= " AND ppp.switchPort != $switchPortId";
+
+        }
+
+        $dql .= ") AND s.id = ?1";
+
+        if($customerId != null){
+
+            $dql .= " AND vi.Customer = $customerId";
+        }
+
+        $dql .= " ORDER BY sp.id ASC";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+
+        $ports = $query->getArrayResult();
+
+        foreach( $ports as $id => $port )
+            $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+
+        return $ports;
+    }
 }

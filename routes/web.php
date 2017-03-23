@@ -41,9 +41,17 @@ Route::group(['middleware' => ['web']], function () {
     //     return view('ltest');
     // });
 
+
+
+
 });
 
+Route::group( [ 'namespace' => 'PatchPanel'], function() {
+    Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
+});
 
-Route::get('patch-panel', 'PatchPanel\PatchPanelController@index');
-Route::get('patch-panel/edit', 'PatchPanel\PatchPanelController@edit');
-Route::post('patch-panel/add', 'PatchPanel\PatchPanelController@add');
+Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
+    Route::get( 'view/{id}',                    'PatchPanelPortController@view' );
+    Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
+});
+

@@ -88,7 +88,7 @@ trait OSS_Controller_Action_Trait_Namespace
         if( $this->_session === null )
             $this->_session = $this->getResource( 'namespace' );
     
-    
+
         return $this->_session;
     }
     

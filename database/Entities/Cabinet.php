@@ -50,7 +50,7 @@ class Cabinet
     protected $CustomerEquipment;
 
     /**
-     * @var Entities\Location
+     * @var Location
      */
     protected $Location;
 
@@ -191,10 +191,10 @@ class Cabinet
     /**
      * Add Switches
      *
-     * @param Entities\Switcher $switches
+     * @param Switcher[] $switches
      * @return Cabinet
      */
-    public function addSwitche(\Entities\Switcher $switches)
+    public function addSwitche(Switcher $switches)
     {
         $this->Switches[] = $switches;
     
@@ -204,11 +204,11 @@ class Cabinet
     /**
      * Remove Switches
      *
-     * @param Entities\Switcher $switches
+     * @param Switcher $switch
      */
-    public function removeSwitche(\Entities\Switcher $switches)
+    public function removeSwitche(Switcher $switch)
     {
-        $this->Switches->removeElement($switches);
+        $this->Switches->removeElement($switch);
     }
 
     /**
@@ -257,10 +257,10 @@ class Cabinet
     /**
      * Set Location
      *
-     * @param Entities\Location $location
+     * @param Location $location
      * @return Cabinet
      */
-    public function setLocation(\Entities\Location $location = null)
+    public function setLocation(Location $location = null)
     {
         $this->Location = $location;
     
@@ -270,9 +270,9 @@ class Cabinet
     /**
      * Get Location
      *
-     * @return Entities\Location 
+     * @return Location
      */
-    public function getLocation()
+    public function getLocation(): Location
     {
         return $this->Location;
     }

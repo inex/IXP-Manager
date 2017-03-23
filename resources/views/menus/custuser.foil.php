@@ -117,7 +117,12 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="<?= url( 'auth/logout' ) ?>">Logout</a></li>
+
+                <?php if($t->switched_user_from): ?>
+                    <li><a href="<?= url( 'auth/switch-user-back' ) ?>">Switch Back</a></li>
+                <?php else: ?>
+                    <li><a href="<?= url( 'auth/logout' ) ?>">Logout </a></li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

@@ -152,7 +152,7 @@ return [
         /*
          * Debug
          */
-         Barryvdh\Debugbar\ServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -173,9 +173,18 @@ return [
          * Third party providers
          */
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
-        // LaravelDoctrine\Migrations\MigrationsServiceProvider::class,
+
         Intervention\Image\ImageServiceProvider::class,
 
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
+        Former\FormerServiceProvider::class,
+
+        GrahamCampbell\Flysystem\FlysystemServiceProvider::class,
+
+        Barryvdh\DomPDF\ServiceProvider::class,
+
+        LukeTowers\Purifier\PurifierServiceProvider::class,
     ],
 
     /*
@@ -232,6 +241,14 @@ return [
         'Image'     => Intervention\Image\Facades\Image::class,
 
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+
+        'Former' => 'Former\Facades\Former',
+        'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem',
+
+        'Purifier' => LukeTowers\Purifier\Facades\Purifier::class,
+
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+
     ],
 
 ];

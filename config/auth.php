@@ -99,7 +99,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => IXP\User::class,
+            'model' => Entities\User::class,
         ],
 
         // 'users' => [
