@@ -586,8 +586,9 @@ END_SQL
 
 # And seed the database:
 cd $IXPROOT
-php artisan db:seed --force
-
+php artisan db:seed --class=IRRDBs
+php artisan db:seed --class=Vendors
+php artisan db:seed --class=ContactGroups
 
 echo '[done]'
 
