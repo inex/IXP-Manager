@@ -455,12 +455,13 @@ class PatchPanelPortController extends Controller
         Former::populate([
             'email_to'                  => implode( ',', $mailable->getRecipients() ),
             'email_subject'             => $mailable->getSubject(),
-            'email_text'                => dd( $mailable->getBody() )
+            'email_bcc'                 => env( 'IDENTITY_SUPPORT_EMAIL' )
         ]);
 
-        return view( 'patch-panel-port/emailForm' )->with([
+        return view( 'patch-panel-port/email-form' )->with([
             'ppp'                           => $ppp,
-            'email_type'                    => $type
+            'email_type'                    => $type,
+            'mailable'                      => $mailable
         ]);
     }
 

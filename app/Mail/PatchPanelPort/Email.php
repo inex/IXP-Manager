@@ -105,6 +105,6 @@ abstract class Email extends Mailable
      * @return string The Email's body
      */
     public function getBody(): string {
-        return view( $this->tmpl, $this->buildViewData() )->render();
+        return view( $this->tmpl )->with( $this->buildViewData() )->render();
     }
 }

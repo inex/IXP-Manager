@@ -48,3 +48,4 @@ Route::post('customer/{id}/switches',                           'CustomerControl
 Route::post('switcher/{id}/switch-port',                        'SwitcherController@switchPort' );
 
 
+Route::post( 'utils/markdown',                                  'UtilsController@markdown' );
