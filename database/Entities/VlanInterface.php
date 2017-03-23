@@ -680,4 +680,26 @@ class VlanInterface
         return $this->layer2Addresses;
     }
 
+    /**
+     * Get the number of Layer2Addresses for the vlan interface
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNumberLayer2Addresses()
+    {
+        return count($this->layer2Addresses);
+    }
+
+    /**
+     * Get the number of Layer2Addresses for the vlan interface
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCssClassNumberL2A()
+    {
+        return ($this->getNumberLayer2Addresses() > 0) ? 'success' : 'danger' ;
+    }
+
+
+
 }

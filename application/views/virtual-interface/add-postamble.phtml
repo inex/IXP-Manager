@@ -111,6 +111,7 @@
                     <th>VLAN ID</th>
                     <th>IPv4 Address</th>
                     <th>IPv6 Address</th>
+                    <th>Number of l2a</th>
                     <th></th>
                 </tr>
             </thead>
@@ -136,10 +137,16 @@
                         {/if}
                     </td>
                     <td>
+                        <span class="btn-{$int->getCssClassNumberL2A()} badge">
+                            {$int->getNumberLayer2Addresses()}
+                        </span>
+                    </td>
+                    <td>
                         <div class="btn-group">
                             <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action='edit' id=$int->getId() vintid=$object->getId()}"><i class="icon-pencil"></i></a>
                             <a data-url="{genUrl controller='vlan-interface' action='delete' id=$int->getId() vintid=$object->getId()}"
                                 class="btn btn-mini" id="object-delete-vlanint-{$int->getId()}"><i class="icon-trash"></i></a>
+                            <a class="btn btn-mini" href="{genUrl controller='layer-to-interface' list=$int->getId()}"><i class="icon-eye-open"></i></a>
                         </div>
                     </td>
                 </tr>
