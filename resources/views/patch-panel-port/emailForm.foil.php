@@ -3,6 +3,11 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
+<?php $this->section('headers') ?>
+    <link rel="stylesheet" type="text/css" href="<?= asset( 'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css' ) ?>" />
+<?php $this->append() ?>
+
+
 <?php $this->section( 'title' ) ?>
     <a href="<?= url( 'patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId() )?>">
         Patch Panel Port
@@ -19,27 +24,22 @@
 
     <?= Former::open()->method( 'POST' )
         ->action( url( 'patch-panel-port/send-email') )
-        ->customWidthClass( 'col-sm-10' )
         ->addClass( 'col-md-10' );
     ?>
         <?= Former::text( 'email_to' )
-            ->label( 'To' )
-            ->help( 'help text' );
+            ->label( 'To' );
         ?>
 
         <?= Former::text( 'email_cc' )
-            ->label( 'CC' )
-            ->help( 'CC' );
+            ->label( 'CC' );
         ?>
 
         <?= Former::text( 'email_bcc' )
-            ->label( 'BCC' )
-            ->help( 'help text' );
+            ->label( 'BCC' );
         ?>
 
         <?= Former::text( 'email_subject' )
-            ->label( 'Subject' )
-            ->help( 'help text' );
+            ->label( 'Subject' );
         ?>
 
         <?php if( $t->email_type != \Entities\PatchPanelPort::EMAIL_LOA ): ?>
@@ -51,15 +51,14 @@
 
         <?= Former::textarea( 'email_text' )
             ->label( 'Email' )
-            ->rows( 30 )
-            ->style( 'width:100%' )
-            ->help( 'help text' );
+            ->rows( 30 );
         ?>
 
-        <?= Former::actions( Former::primary_submit( 'Send Email' ),
-            Former::default_link( 'Cancel' )->href( url( 'patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId() ) ),
-            Former::success_button( 'Help' )->id( 'help-btn' )
-        );?>
+        <?= Former::actions(
+                Former::primary_submit( 'Send Email' ),
+                Former::default_link( 'Cancel' )->href( url( 'patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId() ) )
+            );
+        ?>
 
         <?= Former::hidden( 'email_type' )
             ->value( $t->email_type )
@@ -73,35 +72,34 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <link rel="stylesheet" type="text/css" href="<?= asset( 'css/bootstrap-tagsinput.css' ) ?>" />
-    <script type="text/javascript" src="<?= asset( '/js/bootstrap-tagsinput.js' ) ?>"></script>
-    <script>
-        $(document).ready(function(){
-            $('#email_bcc').on( 'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
 
-            $('#email_cc').on( 'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
+<script type="text/javascript" src="<?= asset( 'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js' ) ?>"></script>
+<script>
+    $(document).ready(function(){
+        $('#email_bcc').on( 'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
+        $('#email_cc').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
+        $('#email_to').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
+    });
 
-            $('#email_to').on( 'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput({tagClass: 'label label-primary'});
-        });
+    /**
+     * allow the value to be display as a tag
+     */
+    function allowValue(event){
+        event.cancel = checkEmail(event.item);
+    }
 
-        /**
-         * allow the value to be display as a tag
-         */
-        function allowValue(event){
-            event.cancel = checkEmail(event.item);
+    /**
+     * check if the value is an email
+     */
+    function checkEmail(text){
+        var filter = /^[\w-.+]+@[a-zA-Z0-9.-]+.[a-zA-z0-9]{2,4}$/;
+
+        if (!filter.test(text)) {
+           return true;
+        } else {
+            return false;
         }
+    }
+</script>
 
-        /**
-         * check if the value is an email
-         */
-        function checkEmail(text){
-            var filter = /^[\w-.+]+@[a-zA-Z0-9.-]+.[a-zA-z0-9]{2,4}$/;
-            if (!filter.test(text)) {
-               return true;
-            }
-            else{
-                return false;
-            }
-        }
-    </script>
 <?php $this->append() ?>
