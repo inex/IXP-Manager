@@ -419,8 +419,8 @@ DB_PASSWORD="${MYSQL_IXPM_PW}"
 # This has grown organically and we intend to clean this up in a coming release and
 # documenting where and how each one is spceifically used.
 IDENTITY_LEGALNAME="${IXPNAME}"
-IDENTITY_CITY"Dublin"
-IDENTITY_COUNTRY"Ireland"
+IDENTITY_CITY="${IXPCITY}"
+IDENTITY_COUNTRY="${IXPCOUNTRY}"
 IDENTITY_ORGNAME="\${IDENTITY_LEGALNAME}"
 IDENTITY_NAME="\${IDENTITY_LEGALNAME}"
 IDENTITY_EMAIL="${IXPNOCEMAIL}"
