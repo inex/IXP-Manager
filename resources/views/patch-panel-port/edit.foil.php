@@ -5,7 +5,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Edit</li>
+    <li>Edit&nbsp;&nbsp;&nbsp; [<?= $t->ppp->getPatchPanel()->getName() ?> - <?= $t->ppp->getName() ?>]</li>
 <?php $this->append() ?>
 
 
@@ -130,7 +130,7 @@
     </div>
 
     <?= Former::select( 'state' )
-        ->label( 'States' )
+        ->label( 'Patch Panel Port Status' )
         ->options( $t->states )
         ->placeholder( 'Choose a states' )
         ->addClass( 'chzn-select' )
