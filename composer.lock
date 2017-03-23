@@ -170,21 +170,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-<<<<<<< HEAD
-                "reference": "e1ee861ebaab6537dbe295a13deba55f6bb677ec"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/e1ee861ebaab6537dbe295a13deba55f6bb677ec",
-                "reference": "e1ee861ebaab6537dbe295a13deba55f6bb677ec",
-=======
                 "reference": "328d20488cc22aa84d32ec5713e27b01707789dc"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/328d20488cc22aa84d32ec5713e27b01707789dc",
                 "reference": "328d20488cc22aa84d32ec5713e27b01707789dc",
->>>>>>> nf-patchpanels
                 "shasum": ""
             },
             "require": {
@@ -225,9 +216,6 @@
                 "profiler",
                 "webprofiler"
             ],
-<<<<<<< HEAD
-            "time": "2017-03-03T08:36:40+00:00"
-=======
             "time": "2017-03-08T09:28:16+00:00"
         },
         {
@@ -277,7 +265,6 @@
                 "pdf"
             ],
             "time": "2017-02-19T06:45:54+00:00"
->>>>>>> nf-patchpanels
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1852,21 +1839,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-<<<<<<< HEAD
-                "reference": "aabfebe71ded6ccc2fd72708fa14843df8c24cab"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/aabfebe71ded6ccc2fd72708fa14843df8c24cab",
-                "reference": "aabfebe71ded6ccc2fd72708fa14843df8c24cab",
-=======
                 "reference": "27f03801d00e5b46aaa38ae4415eb21147c634ad"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/27f03801d00e5b46aaa38ae4415eb21147c634ad",
                 "reference": "27f03801d00e5b46aaa38ae4415eb21147c634ad",
->>>>>>> nf-patchpanels
                 "shasum": ""
             },
             "require": {
@@ -1982,11 +1960,7 @@
                 "framework",
                 "laravel"
             ],
-<<<<<<< HEAD
-            "time": "2017-03-08T02:56:07+00:00"
-=======
             "time": "2017-03-08T13:34:43+00:00"
->>>>>>> nf-patchpanels
         },
         {
             "name": "laravel/tinker",
@@ -2788,19 +2762,6 @@
             "time": "2017-02-11T10:58:43+00:00"
         },
         {
-<<<<<<< HEAD
-            "name": "paragonie/random_compat",
-            "version": "v2.0.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "6968531206671f94377b01dc7888d5d1b858a01b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/6968531206671f94377b01dc7888d5d1b858a01b",
-                "reference": "6968531206671f94377b01dc7888d5d1b858a01b",
-=======
             "name": "phenx/php-svg-lib",
             "version": "v0.2",
             "source": {
@@ -2812,7 +2773,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/PhenX/php-svg-lib/zipball/de291bec8449b89acfe85691b5c71434797959dc",
                 "reference": "de291bec8449b89acfe85691b5c71434797959dc",
->>>>>>> nf-patchpanels
                 "shasum": ""
             },
             "require": {
@@ -2834,19 +2794,9 @@
                     "email": "fabien.menager@gmail.com"
                 }
             ],
-<<<<<<< HEAD
-            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-            "keywords": [
-                "csprng",
-                "pseudorandom",
-                "random"
-            ],
-            "time": "2017-03-03T20:43:42+00:00"
-=======
             "description": "A library to read, parse and export to PDF SVG files.",
             "homepage": "https://github.com/PhenX/php-svg-lib",
             "time": "2016-12-13T20:25:45+00:00"
->>>>>>> nf-patchpanels
         },
         {
             "name": "pimple/pimple",
@@ -4406,11 +4356,7 @@
                 "phpstorm",
                 "sublime"
             ],
-<<<<<<< HEAD
-            "time": "2017-03-05 19:04:42"
-=======
             "time": "2017-03-05T19:04:42+00:00"
->>>>>>> nf-patchpanels
         },
         {
             "name": "barryvdh/reflection-docblock",
@@ -4459,7 +4405,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-            "time": "2016-06-13 19:28:20"
+            "time": "2016-06-13T19:28:20+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -5133,21 +5079,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-<<<<<<< HEAD
-                "reference": "a9434b2c83896a32448ca839022c013c443cf441"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a9434b2c83896a32448ca839022c013c443cf441",
-                "reference": "a9434b2c83896a32448ca839022c013c443cf441",
-=======
                 "reference": "1148a7a0dac58b1c3acabacd10aded41b2c9d9a2"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1148a7a0dac58b1c3acabacd10aded41b2c9d9a2",
                 "reference": "1148a7a0dac58b1c3acabacd10aded41b2c9d9a2",
->>>>>>> nf-patchpanels
                 "shasum": ""
             },
             "require": {
@@ -5216,11 +5153,7 @@
                 "testing",
                 "xunit"
             ],
-<<<<<<< HEAD
-            "time": "2017-03-07T10:26:54+00:00"
-=======
             "time": "2017-03-08T14:02:01+00:00"
->>>>>>> nf-patchpanels
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -5332,21 +5265,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-<<<<<<< HEAD
-                "reference": "18a5d97c25f408f48acaf6d1b9f4079314c5996a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/18a5d97c25f408f48acaf6d1b9f4079314c5996a",
-                "reference": "18a5d97c25f408f48acaf6d1b9f4079314c5996a",
-=======
                 "reference": "2f09d5a251c4a92d1a80518c2166b5d0d742bc63"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/2f09d5a251c4a92d1a80518c2166b5d0d742bc63",
                 "reference": "2f09d5a251c4a92d1a80518c2166b5d0d742bc63",
->>>>>>> nf-patchpanels
                 "shasum": ""
             },
             "require": {
@@ -5397,11 +5321,7 @@
                 "compare",
                 "equality"
             ],
-<<<<<<< HEAD
-            "time": "2017-03-07T10:34:43+00:00"
-=======
             "time": "2016-12-10T08:07:52+00:00"
->>>>>>> nf-patchpanels
         },
         {
             "name": "sebastian/diff",
@@ -5511,21 +5431,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/exporter.git",
-<<<<<<< HEAD
-                "reference": "5e8e30670c3f36481e75211dbbcfd029a41ebf07"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/5e8e30670c3f36481e75211dbbcfd029a41ebf07",
-                "reference": "5e8e30670c3f36481e75211dbbcfd029a41ebf07",
-=======
                 "reference": "ce474bdd1a34744d7ac5d6aad3a46d48d9bac4c4"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/ce474bdd1a34744d7ac5d6aad3a46d48d9bac4c4",
                 "reference": "ce474bdd1a34744d7ac5d6aad3a46d48d9bac4c4",
->>>>>>> nf-patchpanels
                 "shasum": ""
             },
             "require": {
@@ -5579,11 +5490,7 @@
                 "export",
                 "exporter"
             ],
-<<<<<<< HEAD
-            "time": "2017-03-07T10:36:49+00:00"
-=======
             "time": "2016-11-19T08:54:04+00:00"
->>>>>>> nf-patchpanels
         },
         {
             "name": "sebastian/global-state",
@@ -5642,12 +5549,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/object-enumerator.git",
-                "reference": "c956fe7a68318639f694fc6bba0c89b7cdf1b08c"
+                "reference": "ec4f51199e45f0e5685dc7cc2be5131cc32c4714"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/object-enumerator/zipball/c956fe7a68318639f694fc6bba0c89b7cdf1b08c",
-                "reference": "c956fe7a68318639f694fc6bba0c89b7cdf1b08c",
+                "url": "https://api.github.com/repos/sebastianbergmann/object-enumerator/zipball/ec4f51199e45f0e5685dc7cc2be5131cc32c4714",
+                "reference": "ec4f51199e45f0e5685dc7cc2be5131cc32c4714",
                 "shasum": ""
             },
             "require": {
@@ -5680,7 +5587,7 @@
             ],
             "description": "Traverses array structures and object graphs to enumerate all referenced objects",
             "homepage": "https://github.com/sebastianbergmann/object-enumerator/",
-            "time": "2017-03-07T10:37:45+00:00"
+            "time": "2017-02-18T16:04:11+00:00"
         },
         {
             "name": "sebastian/recursion-context",
@@ -5688,12 +5595,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/recursion-context.git",
-                "reference": "be27cc3fc305e2532fe78a2dc93a8e2afac70165"
+                "reference": "2c3ba150cbec723aa057506e73a8d33bdb286c9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/recursion-context/zipball/be27cc3fc305e2532fe78a2dc93a8e2afac70165",
-                "reference": "be27cc3fc305e2532fe78a2dc93a8e2afac70165",
+                "url": "https://api.github.com/repos/sebastianbergmann/recursion-context/zipball/2c3ba150cbec723aa057506e73a8d33bdb286c9a",
+                "reference": "2c3ba150cbec723aa057506e73a8d33bdb286c9a",
                 "shasum": ""
             },
             "require": {
@@ -5733,7 +5640,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2017-03-08T06:52:03+00:00"
+            "time": "2016-11-19T07:33:16+00:00"
         },
         {
             "name": "sebastian/resource-operations",
@@ -5874,62 +5781,7 @@
             ],
             "description": "Symfony ClassLoader Component",
             "homepage": "https://symfony.com",
-            "time": "2017-02-18 17:35:19"
-        },
-        {
-            "name": "symfony/yaml",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/yaml.git",
-                "reference": "d1abb473764f82339862b114b45b3cd424b2d1a3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/d1abb473764f82339862b114b45b3cd424b2d1a3",
-                "reference": "d1abb473764f82339862b114b45b3cd424b2d1a3",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.9"
-            },
-            "require-dev": {
-                "symfony/console": "~2.8|~3.0"
-            },
-            "suggest": {
-                "symfony/console": "For validating YAML files using the lint command"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.3-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Yaml\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Yaml Component",
-            "homepage": "https://symfony.com",
-            "time": "2017-03-07T16:54:31+00:00"
+            "time": "2017-02-18T17:35:19+00:00"
         },
         {
             "name": "symfony/yaml",

@@ -78,10 +78,10 @@
         $( "#add-l2a" ).on( 'click', function(e){
             e.preventDefault();
             bootbox.prompt({
-                title: "This is a prompt with an email input!",
+                title: "Enter a MAC Address.",
                 inputType: 'text',
                 callback: function (result) {
-                    console.log(result);
+
                 }
             });
 

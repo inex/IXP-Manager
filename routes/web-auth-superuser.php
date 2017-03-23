@@ -34,3 +34,8 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::post( 'send-email',                      'PatchPanelPortController@sendEmail' );
 
 });
+
+
+Route::group( [ 'prefix' => 'layer-to-interface' ], function() {
+    Route::get( 'list/{id}',                        'Layer2InterfaceController@index' );
+});

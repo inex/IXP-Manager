@@ -64,10 +64,10 @@ class Layer2Address extends \Entities\Layer2Address implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'mac', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'firstseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'lastseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'created', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'id', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'vlanInterface'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'id', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'mac', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'firstseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'lastseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'created', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'vlanInterface'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'mac', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'firstseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'lastseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'created', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'id', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'vlanInterface'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'id', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'mac', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'firstseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'lastseen', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'created', '' . "\0" . 'Entities\\Layer2Address' . "\0" . 'vlanInterface'];
     }
 
     /**
@@ -173,4 +173,129 @@ class Layer2Address extends \Entities\Layer2Address implements \Doctrine\ORM\Pro
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function setMac($mac)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMac', [$mac]);
+
+        return parent::setMac($mac);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFirstSeenAt($firstSeenAt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFirstSeenAt', [$firstSeenAt]);
+
+        return parent::setFirstSeenAt($firstSeenAt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLastSeenAt($lastSeenAt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastSeenAt', [$lastSeenAt]);
+
+        return parent::setLastSeenAt($lastSeenAt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCreatedAt($createdAt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedAt', [$createdAt]);
+
+        return parent::setCreatedAt($createdAt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVlanInterface(\Entities\VlanInterface $vlanInterface = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlanInterface', [$vlanInterface]);
+
+        return parent::setVlanInterface($vlanInterface);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMac()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMac', []);
+
+        return parent::getMac();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFirstSeenAt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFirstSeenAt', []);
+
+        return parent::getFirstSeenAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLastSeenAt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastSeenAt', []);
+
+        return parent::getLastSeenAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCreatedAt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedAt', []);
+
+        return parent::getCreatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVlanInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlanInterface', []);
+
+        return parent::getVlanInterface();
+    }
+
 }
