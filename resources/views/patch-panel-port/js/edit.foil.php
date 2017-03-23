@@ -5,13 +5,12 @@
 
     var notesIntro = "### <?= date( "Y-m-d" ) . ' - ' .$t->user->getUsername() ?> \n\n\n\n";
 
+    /**
+     * hide the help block at loading
+     */
+    $('.help-block').hide();
+
     $( document ).ready(function() {
-
-        /**
-         * hide the help block at loading
-         */
-        $('.help-block').hide();
-
 
         /**
          * display the duplex ports area if a duplex port has been setted to the patch panel port

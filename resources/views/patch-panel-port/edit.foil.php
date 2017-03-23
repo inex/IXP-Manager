@@ -15,8 +15,8 @@
     <div class="alert alert-warning" role="alert">
         <b>Warning!</b>
         IXP Manager provides context-aware actions for allocating / setting connected / requested ceases / ceasing a patch
-        panel port and these <i>do the right thing</i>. As such, editing a patch panel port manually throught this
-        interface is stringly discouraged unless you know what you are doing.
+        panel port and these <i>do the right thing</i>. As such, editing a patch panel port manually through this
+        interface is strongly discouraged unless you know what you are doing.
     </div>
 <?php endif; ?>
 
@@ -30,27 +30,30 @@
 
     <?php if( !$t->allocating ): ?>
         <?= Former::text( 'number' )
-            ->label( 'Patch Panel Port Name' )
-            ->help( 'help text' );
+            ->label( 'Patch Panel Port Name' );
         ?>
 
         <?= Former::text( 'patch_panel' )
-            ->label( 'Patch Panel' )
-            ->help( 'help text' );
+            ->label( 'Patch Panel' );
         ?>
     <?php endif; ?>
 
     <?= Former::text( 'colo_circuit_ref' )
         ->label( 'Colocation Circuit Reference' )
-        ->help( 'help text' );
+        ->help( 'The cross connect reference as provided by the colocation provider.' );
     ?>
 
     <?= Former::text( 'ticket_ref' )
         ->label( 'Ticket Reference(s)' )
-        ->help( 'help text' );
+        ->help( 'This is a free text field to allow you to add helpdesk ticket reference(s) that deal with your member for this connection.' );
     ?>
 
-    <?= Former::checkbox( 'duplex' )?>
+    <?= Former::checkbox( 'duplex' )
+        ->label( 'Duplex connection?' )
+        ->help('Typically fibre connections are <em>duplex connections</em> in that they use two ports. If this is the '
+            . 'case, check this and select the partner port. <em>Duplex ports should generally start with an odd number and '
+            . 'have an even numbered partner port (assuming port numbering starts from 1).</em>' );
+    ?>
 
     <span id='duplex-port-area' style="display: none">
         <?= Former::select( 'partner_port' )
@@ -58,9 +61,33 @@
             ->fromQuery( $t->partnerPorts, 'name' )
             ->placeholder( 'Choose a partner port' )
             ->addClass( 'chzn-select' )
-            ->help( 'help text' );
+            ->help( 'The second half of the duplex port.' );
         ?>
     </span>
+
+    <div class="well help-block">
+        You have a number of options when assigning a port:
+
+        <ul>
+            <li>
+                If you have pre-wired the patch panel to a port, enter the switch and port here. So long as no customer has been
+                assigned to the switch port, the patch panel port will remain available but will be marked as connected to
+                the given switch port in the patch panel port list.
+            </li>
+            <li>
+                If the switch port has been allocated to a customer, then this patch panel port will also be allocated to that customer.
+                The backend logic will detect if this is the case and update the customer field. Conversely, if you chose a customer
+                first, the switch / switch port dropdowns will be populated with only that customer's assigned ports.
+            </li>
+            <li>
+                Sometimes you will get cross connects that are not intended to be connected to peering switches (e.g. connections to
+                co-located customer equipment, IXP metro connections, etc.). In these cases, just select the customer (and if it's the IXP
+                itself, select the IXP customer) and leave switch / switch port unselected.
+            </li>
+        </ul>
+
+        If you need to reset these fields, just click either of the <em>Reset</em> button.
+    </div>
 
     <div class="well">
         <?= Former::default_button( 'Reset' )
@@ -75,16 +102,14 @@
             ->label( 'Switch' )
             ->fromQuery( $t->switches, 'name' )
             ->placeholder( 'Choose a switch' )
-            ->addClass( 'chzn-select' )
-            ->help( 'help text' );
+            ->addClass( 'chzn-select' );
         ?>
 
         <?= Former::select( 'switch_port' )
             ->label( 'Switch Port' )
             ->fromQuery( $t->switchPorts, 'name' )
             ->placeholder( 'Choose a switch port' )
-            ->addClass( 'chzn-select' )
-            ->help( 'help text' );
+            ->addClass( 'chzn-select' );
         ?>
     </div>
 
@@ -100,8 +125,7 @@
             ->label( 'Customer' )
             ->fromQuery( $t->customers, 'name' )
             ->placeholder( 'Choose a customer' )
-            ->addClass( 'chzn-select' )
-            ->help( 'help text' );
+            ->addClass( 'chzn-select' );
         ?>
     </div>
 
@@ -110,17 +134,17 @@
         ->options( $t->states )
         ->placeholder( 'Choose a states' )
         ->addClass( 'chzn-select' )
-        ->help( 'help text' );
+        ->help( 'The state of the patch panel port.' );
     ?>
 
     <?php if( $t->allocating ): ?>
         <span id='pi_status_area' style="display: none">
             <?= Former::select( 'pi_status' )
-                ->label( 'Physical Interface status' )
+                ->label( 'Physical Interface Status' )
                 ->options( $t->piStatus )
                 ->placeholder( 'Choose a status' )
                 ->addClass( 'chzn-select' )
-                ->help( 'help text' );
+                ->help( 'This allows you to update the physical interface status when updating the patch panel port status.' );
             ?>
         </span>
     <?php endif; ?>
@@ -129,14 +153,14 @@
         ->label( 'Public Notes' )
         ->rows( 10 )
         ->style( 'width:500px' )
-        ->help( 'help text' );
+        ->help( 'These notes are visible (but not editable) to the member. You can use markdown here.' );
     ?>
 
     <?= Former::textarea( 'private_notes' )
         ->label( 'Privates Notes' )
         ->rows( 10 )
         ->style( 'width:500px' )
-        ->help( 'help text' );
+        ->help( 'These notes are <b>NOT</b> visible to the member. You can use markdown here.' );
     ?>
 
     <?php if( !$t->allocating ): ?>
@@ -175,7 +199,9 @@
         ->label( 'Chargeable' )
         ->options( $t->chargeables )
         ->addClass( 'chzn-select' )
-        ->help( 'help text' );
+        ->help( 'Usually IXPs request their members to <em>come to them</em> and bear the costs of that. '
+            . 'However, sometimes a co-location facility may charge the IXP for a half circuit or the IXP may need '
+            . 'order and pay for the connection. This can be used, for example, to reconcile billing.' );
     ?>
 
     <?= Former::radios( 'internal_use' )
@@ -183,14 +209,14 @@
             'Yes' => ['name' => 'internal_use', 'value' => '1'],
             'No' => ['name' => 'internal_use', 'value' => '0'],
         ])->inline()->check($t->ppp->getInternalUseInt())
-        ->help( 'help text' );
+        ->help( 'Indicates that this cross connect is for IXP use rather than relating to a member.' );
     ?>
 
     <?= Former::select( 'owned_by' )
         ->label( 'Owned By' )
         ->options( $t->ownedBy )
         ->addClass( 'chzn-select' )
-        ->help( 'help text' );
+        ->help( 'Indicates who order the cross connect / who the contracting entity is.' );
     ?>
 
     <?= Former::hidden( 'patch_panel_port_id' )
