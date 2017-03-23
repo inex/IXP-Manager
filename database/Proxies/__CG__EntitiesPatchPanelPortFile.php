@@ -198,6 +198,17 @@ class PatchPanelPortFile extends \Entities\PatchPanelPortFile implements \Doctri
     /**
      * {@inheritDoc}
      */
+    public function getNameTruncate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNameTruncate', []);
+
+        return parent::getNameTruncate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setType($type)
     {
 
@@ -220,6 +231,17 @@ class PatchPanelPortFile extends \Entities\PatchPanelPortFile implements \Doctri
     /**
      * {@inheritDoc}
      */
+    public function getTypeAsIcon()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTypeAsIcon', []);
+
+        return parent::getTypeAsIcon();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setUploadedAt($uploadedAt)
     {
 
@@ -237,6 +259,17 @@ class PatchPanelPortFile extends \Entities\PatchPanelPortFile implements \Doctri
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUploadedAt', []);
 
         return parent::getUploadedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUploadedAtFormated()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUploadedAtFormated', []);
+
+        return parent::getUploadedAtFormated();
     }
 
     /**
@@ -281,6 +314,17 @@ class PatchPanelPortFile extends \Entities\PatchPanelPortFile implements \Doctri
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSize', []);
 
         return parent::getSize();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSizeFormated()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSizeFormated', []);
+
+        return parent::getSizeFormated();
     }
 
     /**
@@ -362,6 +406,17 @@ class PatchPanelPortFile extends \Entities\PatchPanelPortFile implements \Doctri
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIsPrivate', []);
 
         return parent::getIsPrivate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPath()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPath', []);
+
+        return parent::getPath();
     }
 
 }

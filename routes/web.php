@@ -52,6 +52,6 @@ Route::group( [ 'namespace' => 'PatchPanel'], function() {
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
     Route::get( 'view/{id}',                    'PatchPanelPortController@view' );
-    Route::get( 'sendLoaPDF/{id}',              'PatchPanelPortController@sendLoadPDF' );
+    Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
 });
 

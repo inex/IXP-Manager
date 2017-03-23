@@ -29,6 +29,7 @@ use D2EM;
 use Entities\Cabinet;
 use Entities\PatchPanel;
 
+use Entities\PatchPanelPort;
 use Former;
 
 use Illuminate\Http\RedirectResponse;
@@ -112,11 +113,13 @@ class PatchPanelController extends Controller
             'numberOfPorts'         => 'required|between:0,*|integer',
             'port_prefix'           => 'nullable|string|max:255',
             'installation_date'     => 'date'
+
         ]);
 
         return view( 'patch-panel/edit' )->with([
             'pp'                    => $pp,
             'cabinets'              => D2EM::getRepository( Cabinet::class )->getAsArray(),
+            'chargeables'           => PatchPanelPort::$CHARGEABLES,
         ]);
     }
 
@@ -144,12 +147,14 @@ class PatchPanelController extends Controller
             abort(404);
         }
 
+        /** @var PatchPanel $pp  */
         // set the data to the object
         $pp->setName( $request->input( 'name' ) );
         $pp->setCabinet( $cabinet );
         $pp->setConnectorType( $request->input( 'connector_type' ) );
         $pp->setCableType( $request->input( 'cable_type' ) );
         $pp->setColoReference( $request->input( 'colo_reference' ) );
+        $pp->setChargeable( $request->input( 'chargeable' ) );
         $pp->setActive( true );
         $pp->setInstallationDate(
             ( $request->input( 'installation_date', false ) ? new \DateTime : new \DateTime( $request->input( 'installation_date' ) ) )

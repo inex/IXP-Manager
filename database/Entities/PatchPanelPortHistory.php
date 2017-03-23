@@ -530,7 +530,6 @@ class PatchPanelPortHistory
         return $this->switchport;
     }
 
-
     /**
      * Get id
      *
@@ -570,7 +569,7 @@ class PatchPanelPortHistory
     public function getPatchPanel() {
         return $this->patchPanelPort;
     }
-
+    
     /**
      * Add duplexSlavePort
      *
@@ -736,7 +735,6 @@ class PatchPanelPortHistory
             $slavePortHistory->setDuplexMasterPort( $pppHistory );
             D2EM::persist( $slavePortHistory );
         }
-
 
         if( $patchPanelPort->hasSlavePort() ) {
             $slavePort = $patchPanelPort->getDuplexSlavePort();

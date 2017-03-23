@@ -1225,6 +1225,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function isStateReserved(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isStateReserved', []);
+
+        return parent::isStateReserved();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function isStateOther(): bool
     {
 

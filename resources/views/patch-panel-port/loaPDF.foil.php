@@ -6,7 +6,7 @@
 <table width="100%">
     <tr>
         <td style="text-align: left">
-            Issue Date : <?= date("F d, Y") ?>
+            Issue Date : <?= date( "F d, Y" ) ?>
         </td>
         <td style="text-align: right">
             Example IXP<br/>
@@ -61,13 +61,13 @@
 
 <p>
     This LoA can be authenticated via the following URL:<br/>
-    <a target="_blank" href="<?= url('/verify-loa' ).'/'.$t->ppp->getId().'/'.$t->ppp->getLoaCode()?>">
+    <a target="_blank" href="<?= url( '/verify-loa' ).'/'.$t->ppp->getId().'/'.$t->ppp->getLoaCode()?>">
         http://ixp.dev/verify-loa/<?= $t->ppp->getId()?>/<?= $t->ppp->getLoaCode()?>
     </a>
 </p>
 
 <p>
-    (*) circuit reference (<?=sprintf("%04d", $t->ppp->getId() )?>)
+    (*) circuit reference (<?=sprintf( "%04d", $t->ppp->getId() )?>)
 </p>
 <br/>
 

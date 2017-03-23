@@ -64,10 +64,10 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
     }
 
     /**
@@ -290,6 +290,28 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function getChargeable()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeable', []);
+
+        return parent::getChargeable();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChargeableDefaultNo()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeableDefaultNo', []);
+
+        return parent::getChargeableDefaultNo();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCabinet()
     {
 
@@ -389,6 +411,17 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function setChargeable($chargeable)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setChargeable', [$chargeable]);
+
+        return parent::setChargeable($chargeable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setCabinet(\Entities\Cabinet $cabinet = NULL)
     {
 
@@ -450,6 +483,17 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveConnectorType', []);
 
         return parent::resolveConnectorType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveChargeable(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveChargeable', []);
+
+        return parent::resolveChargeable();
     }
 
     /**

@@ -6,7 +6,7 @@
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= url( 'patch-panel/list' )?>">
-        Patch Panel
+        Patch Panels
     </a>
 <?php $this->append() ?>
 
@@ -100,6 +100,16 @@
                                 </span>
                             <?php endif; ?>
                         </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Chargeable :
+                        </b>
+                    </td>
+                    <td>
+                        <?= $t->pp->resolveChargeable() ?>
                     </td>
                 </tr>
                 <tr>

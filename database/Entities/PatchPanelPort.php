@@ -5,6 +5,14 @@ namespace Entities;
 use Carbon\Carbon;
 use D2EM;
 use Doctrine\Common\Collections\ArrayCollection;
+
+use IXP\Mail\PatchPanelPort\{
+    Cease   as CeaseMail,
+    Connect as ConnectMail,
+    Info    as InfoMail,
+    Loa     as LoaMail
+};
+
 use Parsedown;
 
 
@@ -23,6 +31,7 @@ class PatchPanelPort
     const STATE_AWAITING_CEASE         = 4;
     const STATE_CEASED                 = 5;
     const STATE_BROKEN                 = 6;
+    const STATE_RESERVED               = 7;
     const STATE_OTHER                  = 999;
 
 
@@ -53,6 +62,16 @@ class PatchPanelPort
     const EMAIL_LOA                     = 4;
 
     /**
+     * @var array Email ids to classes
+     */
+    public static $EMAIL_CLASSES = [
+        self::EMAIL_CEASE       =>  CeaseMail::class,
+        self::EMAIL_CONNECT     =>  ConnectMail::class,
+        self::EMAIL_INFO        =>  InfoMail::class,
+        self::EMAIL_LOA         =>  LoaMail::class,
+    ];
+
+    /**
      * Array STATES
      */
     public static $STATES = [
@@ -62,6 +81,7 @@ class PatchPanelPort
         self::STATE_AWAITING_CEASE      => "Awaiting Cease",
         self::STATE_CEASED              => "Ceased",
         self::STATE_BROKEN              => "Broken",
+        self::STATE_RESERVED            => "Reserved",
         self::STATE_OTHER               => "Other"
     ];
 
@@ -1157,6 +1177,7 @@ class PatchPanelPort
         return count( $this->getPatchPanelPortFiles() ) > 0;
     }
 
+
     /**
      * Is this port has public files
      *
@@ -1165,7 +1186,6 @@ class PatchPanelPort
     public function hasPublicFiles(): bool {
         return count( $this->getPatchPanelPortPublicFiles() ) > 0;
     }
-
 
     /**
      * Reset the data of a patch panel port after ceased
@@ -1339,6 +1359,15 @@ class PatchPanelPort
      */
     public function isStateBroken(): bool {
         return $this->getState() === self::STATE_BROKEN;
+    }
+
+    /**
+     * Is the state STATE_RESERVED?
+     *
+     * @return bool
+     */
+    public function isStateReserved(): bool {
+        return $this->getState() === self::STATE_RESERVED;
     }
 
     /**
