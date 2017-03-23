@@ -24,8 +24,9 @@
 
 namespace IXP\Http\Controllers\PatchPanel;
 
+use Auth;
+
 use D2EM;
-Use DateTime;
 
 use Entities\Customer;
 use Entities\PatchPanel;
@@ -38,30 +39,20 @@ use Entities\SwitchPort;
 
 use Former\Facades\Former;
 
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\EmailPatchPanelPort;
 use IXP\Http\Requests\StorePatchPanelPort;
-
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-
-use Illuminate\Http\RedirectResponse;
-
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator;
-
-use Illuminate\View\View;
-
-use Auth;
-
-
-use Mail;
-use IXP\Mail\PatchPanelPort as PatchPanelPortMail;
-
+use IXP\Mail\PatchPanelPort\Email;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
+
+use Mail;
+
 
 /**
  * PatchPanelPort Controller
@@ -449,6 +440,7 @@ class PatchPanelPortController extends Controller
      * @return  view
      */
     public function email( int $id, int $type ): View {
+
         if ( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $id ) ) ) {
             abort(404, 'Patch panel port not found');
         }
@@ -457,39 +449,13 @@ class PatchPanelPortController extends Controller
             abort(404, 'Email type not found');
         }
 
+        /** @var Email $mailable */
         $mailable = new $emailClass( $ppp );
 
-        //
-        $customer = $ppp->getCustomer();
-        $usersEmail = $customer->getUsersEmail();
-        $email_to = implode(',',$usersEmail);
-        $peeringEmail = $customer->getPeeringemail();
-
-        switch ( $type ) {
-            case PatchPanelPort::EMAIL_CONNECT:
-                $subject = "Cross connect to ".env('IDENTITY_ORGNAME')." [".$ppp->getColoCircuitRef()." / ".$ppp->getName()."]";
-                break;
-
-            case PatchPanelPort::EMAIL_CEASE:
-                $subject = "Cease Cross connect to ".env('IDENTITY_ORGNAME')." [".$ppp->getColoCircuitRef()." / ".$ppp->getName()."]";
-                break;
-
-            case PatchPanelPort::EMAIL_INFO:
-                $subject = "Cross connect details for ".env('IDENTITY_ORGNAME')." [".$ppp->getColoCircuitRef()." / ".$ppp->getName()."]";
-                break;
-
-            case PatchPanelPort::EMAIL_LOA:
-                $subject = "Cross connect Letter of Agency details for ".env('IDENTITY_ORGNAME')." [".$ppp->getColoCircuitRef()." / ".$ppp->getName()."]";
-                break;
-        }
-
-        $emailText .= env( 'IDENTITY_NAME' )."\n";
-        $emailText .= env( 'IDENTITY_EMAIL' );
-
         Former::populate([
-            'email_to'                  => $email_to.','.$peeringEmail,
-            'email_subject'             => $subject,
-            'email_text'                => $emailText
+            'email_to'                  => implode( ',', $mailable->getRecipients() ),
+            'email_subject'             => $mailable->getSubject(),
+            'email_text'                => dd( $mailable->getBody() )
         ]);
 
         return view( 'patch-panel-port/emailForm' )->with([

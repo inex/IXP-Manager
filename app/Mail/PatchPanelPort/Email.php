@@ -49,6 +49,16 @@ abstract class Email extends Mailable
     public $ppp;
 
     /**
+     * @var string
+     */
+    public $subject;
+
+    /**
+     * @var string The template to use to create the email
+     */
+    protected $tmpl;
+
+    /**
      * Create a new message instance.
      *
      * @param PatchPanelPortEntity $ppp
@@ -63,4 +73,38 @@ abstract class Email extends Mailable
      * @return $this
      */
     abstract public function build();
+
+    /**
+     * Get the default recipient(s) for these emails
+     *
+     * @return array Array of email addresses
+     */
+    public function getRecipients(): array {
+        if( $this->ppp->getCustomer() ) {
+            return [ $this->ppp->getCustomer()->getNocemail() ];
+        }
+
+        return [];
+    }
+
+    /**
+     * Get the subject for an email
+     *
+     * @return string The subject for an email
+     */
+    public function getSubject(): string {
+        return $this->subject;
+    }
+
+    /**
+     * Get the email's body
+     *
+     * For this we assume Markdown and return the template as is (with
+     * rendered data).
+     *
+     * @return string The Email's body
+     */
+    public function getBody(): string {
+        return view( $this->tmpl, $this->buildViewData() )->render();
+    }
 }

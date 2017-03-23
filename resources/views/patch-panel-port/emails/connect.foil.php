@@ -11,6 +11,7 @@ cross connect where our demarcation point is:
 Patch panel:    <?= $t->ppp->getPatchPanel()->getName() ?>
 
 Port:           <?= $t->ppp->getName() ?>
+
 ```
 
 <?php if( $t->ppp->getSwitchPort() ): ?>
@@ -20,6 +21,7 @@ This request is in relation the following connection:
 Switch Port:   <?= $t->ppp->getSwitchName() ?>::<?= $t->ppp->getSwitchPortName() ?>
 
 ```
+<?php endif; ?>
 
 If you have any queries about this, please reply to this email.
 

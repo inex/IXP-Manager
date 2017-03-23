@@ -24,11 +24,7 @@
 
 namespace IXP\Mail\PatchPanelPort;
 
-//use Entities\PatchPanelPort as PatchPanelPortEntity;
-//use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-//use Illuminate\Queue\SerializesModels;
-//use Illuminate\Contracts\Queue\ShouldQueue;
+use Entities\PatchPanelPort as PatchPanelPortEntity;
 
 /**
  * Mailable for patch panel emails
@@ -39,15 +35,26 @@ use Illuminate\Mail\Mailable;
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Connect extends Mailable
+class Connect extends Email
 {
+    /**
+     * Create a new message instance.
+     *
+     * @param PatchPanelPortEntity $ppp
+     */
+    public function __construct( PatchPanelPortEntity $ppp ) {
+        parent::__construct($ppp);
+        $this->subject = "Cross connect to " . env('IDENTITY_ORGNAME' ) . " [" . $ppp->getColoCircuitRef() . " / " . $ppp->getName() . "]";
+        $this->tmpl = 'patch-panel-port/emails/connect';
+    }
+
+
     /**
      * Build the message.
      *
      * @return $this
      */
     public function build() {
-
         return $this;
     }
 }
