@@ -449,10 +449,17 @@ class PatchPanelPortController extends Controller
      * @return  view
      */
     public function email( int $id, int $type ): View {
-        if ( ! ( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $id ) ) ) {
-            abort(404);
+        if ( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $id ) ) ) {
+            abort(404, 'Patch panel port not found');
         }
 
+        if( !( $emailClass = D2EM::getRepository( PatchPanelPort::class )->resolveEmailClass( $type ) ) ) {
+            abort(404, 'Email type not found');
+        }
+
+        $mailable = new $emailClass( $ppp );
+
+        //
         $customer = $ppp->getCustomer();
         $usersEmail = $customer->getUsersEmail();
         $email_to = implode(',',$usersEmail);
@@ -461,87 +468,18 @@ class PatchPanelPortController extends Controller
         switch ( $type ) {
             case PatchPanelPort::EMAIL_CONNECT:
                 $subject = "Cross connect to ".env('IDENTITY_ORGNAME')." [".$ppp->getColoCircuitRef()." / ".$ppp->getName()."]";
-                $emailText = "Hi,\n\n";
-                $emailText .= "** ACTION REQUIRED - PLEASE SEE BELOW **\n\n";
-
-                $emailText .= "We have allocated the following cross connect demarcation point for your connection to ".env( 'IDENTITY_ORGNAME' ).". Please order a ".$ppp->getPatchPanel()->getCableType()." cross connect where our demarcation point is:\n\n";
-
-                $emailText .= "Patch panel: ".$ppp->getPatchPanel()->getName()."\n";
-                $emailText .= "Port: ".$ppp->getName()."\n\n";
-
-                if( $ppp->getSwitchPort() ){
-                    $emailText .= "This request is in relation the following connection: \n";
-                    $emailText .= "Switch Port: ".$ppp->getSwitchName().'::'.$ppp->getSwitchPortName()."\n\n";
-                }
-                $emailText .= "If you have any queries about this, please reply to this email.\n\n";
                 break;
 
             case PatchPanelPort::EMAIL_CEASE:
                 $subject = "Cease Cross connect to ".env('IDENTITY_ORGNAME')." [".$ppp->getColoCircuitRef()." / ".$ppp->getName()."]";
-
-                $emailText = "Hi,\n\n";
-                $emailText .= "** ACTION REQUIRED - PLEASE SEE BELOW **\n\n";
-                $emailText .= "You have a cross connect to ".env( 'IDENTITY_ORGNAME' )." which our records indicate is no longer required.\n\n";
-                $emailText .= "Please contact the co-location facility and request that they cease the following cross connect:\n\n";
-                $emailText .= "Colo Reference: ".$ppp->getColoCircuitRef()."\n";
-                $emailText .= "Patch panel: ".$ppp->getPatchPanel()->getName()."\n";
-                $emailText .= "Port: ".$ppp->getName()."\n";
-                $emailText .= "Connected on: ".$ppp->getConnectedAtFormated()."\n\n";
-
-                if( $ppp->hasPublicFiles() ){
-                    $emailText .= "We have attached documentation which we have on file regarding this connection which may help process this request.\n\n";
-                }
-
-                if( $ppp->getNotes() ){
-                    $emailText .= "We have also recorded the following notes which may also be of use:\n";
-                    $emailText .= $ppp->getNotes()."\n\n";
-                }
-
-                $emailText .= "> add with leading '>' so it appears quoted\n\n";
-                $emailText .= "If you have any queries about this, please reply to this email.\n\n";
                 break;
 
             case PatchPanelPort::EMAIL_INFO:
                 $subject = "Cross connect details for ".env('IDENTITY_ORGNAME')." [".$ppp->getColoCircuitRef()." / ".$ppp->getName()."]";
-
-                $emailText = "Hi,\n\n";
-                $emailText .= "You or someone in your organisation requested details on the following cross connect to ".env( 'IDENTITY_ORGNAME' ).".\n\n";
-                $emailText .= "Colo Reference: ".$ppp->getColoCircuitRef()."\n";
-                $emailText .= "Patch panel: ".$ppp->getPatchPanel()->getName()."\n";
-                $emailText .= "Port: ".$ppp->getName()."\n";
-                $emailText .= "State: ".$ppp->resolveStates()."\n";
-
-                if( $ppp->getCeaseRequestedAt() ){
-                    $emailText .= "Cease requested: ".$ppp->getCeaseRequestedAtFormated()."\n";
-                }
-
-                $emailText .= "Connected on: ".$ppp->getConnectedAtFormated()."\n\n";
-
-                if( $ppp->hasPublicFiles() ){
-                    $emailText .= "We have attached documentation which we have on file regarding this connection.\n\n";
-                }
-
-                if( $ppp->getNotes() ){
-                    $emailText .= "We have also recorded the following notes:\n\n";
-                    $emailText .= $ppp->getNotes()."\n\n";
-                }
-
-                $emailText .= "> add with leading '>' so it appears quoted\n\n";
-                $emailText .= "If you have any queries about this, please reply to this email.\n\n";
                 break;
 
             case PatchPanelPort::EMAIL_LOA:
                 $subject = "Cross connect Letter of Agency details for ".env('IDENTITY_ORGNAME')." [".$ppp->getColoCircuitRef()." / ".$ppp->getName()."]";
-
-                $emailText = "Hi,\n\n";
-                $emailText .= "You or someone in your organisation requested details on the following cross connect to ".env( 'IDENTITY_ORGNAME' ).".\n\n";
-                $emailText .= "Colo Reference: ".$ppp->getColoCircuitRef()."\n";
-                $emailText .= "Patch panel: ".$ppp->getPatchPanel()->getName()."\n";
-                $emailText .= "Port: ".$ppp->getName()."\n";
-                $emailText .= "State: ".$ppp->resolveStates()."\n\n";
-                $emailText .= "We have attached the Letter of Agency in PDF format.\n\n";
-                $emailText .= "> add with leading '>' so it appears quoted\n\n";
-                $emailText .= "If you have any queries about this, please reply to this email.\n\n";
                 break;
         }
 
