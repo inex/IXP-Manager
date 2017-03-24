@@ -49,3 +49,4 @@ Route::post('switcher/{id}/switch-port',                        'SwitcherControl
 Route::post('switcher/{id}/switch-port-prewired',               'SwitcherController@switchPortPrewired' );
 
 
+Route::post( 'utils/markdown',                                  'UtilsController@markdown' );

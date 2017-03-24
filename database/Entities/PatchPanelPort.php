@@ -5,6 +5,14 @@ namespace Entities;
 use Carbon\Carbon;
 use D2EM;
 use Doctrine\Common\Collections\ArrayCollection;
+
+use IXP\Mail\PatchPanelPort\{
+    Cease   as CeaseMail,
+    Connect as ConnectMail,
+    Info    as InfoMail,
+    Loa     as LoaMail
+};
+
 use Parsedown;
 
 
@@ -53,6 +61,16 @@ class PatchPanelPort
     const EMAIL_CEASE                   = 2;
     const EMAIL_INFO                    = 3;
     const EMAIL_LOA                     = 4;
+
+    /**
+     * @var array Email ids to classes
+     */
+    public static $EMAIL_CLASSES = [
+        self::EMAIL_CEASE       =>  CeaseMail::class,
+        self::EMAIL_CONNECT     =>  ConnectMail::class,
+        self::EMAIL_INFO        =>  InfoMail::class,
+        self::EMAIL_LOA         =>  LoaMail::class,
+    ];
 
     /**
      * Array STATES
