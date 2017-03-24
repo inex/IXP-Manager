@@ -24,6 +24,7 @@ class PatchPanelPort
     const STATE_CEASED                 = 5;
     const STATE_BROKEN                 = 6;
     const STATE_RESERVED               = 7;
+    const STATE_PREWIRED               = 8;
     const STATE_OTHER                  = 999;
 
 
@@ -64,6 +65,7 @@ class PatchPanelPort
         self::STATE_CEASED              => "Ceased",
         self::STATE_BROKEN              => "Broken",
         self::STATE_RESERVED            => "Reserved",
+        self::STATE_PREWIRED            => "Prewired",
         self::STATE_OTHER               => "Other"
     ];
 
@@ -298,11 +300,11 @@ class PatchPanelPort
      */
     public function getStateCssClass()
     {
-        if($this->isAvailableForUse()):
+        if( $this->isAvailableForUse() or $this->isStatePrewired()):
             $class = 'success';
-        elseif($this->getState() == self::STATE_AWAITING_XCONNECT):
+        elseif($this->isStateAwaitingXConnect()):
             $class = 'warning';
-        elseif($this->getState() == self::STATE_CONNECTED):
+        elseif($this->isStateConnected()):
             $class = 'danger';
         else:
             $class = 'info';
@@ -1350,6 +1352,15 @@ class PatchPanelPort
      */
     public function isStateReserved(): bool {
         return $this->getState() === self::STATE_RESERVED;
+    }
+
+    /**
+     * Is the state STATE_RESERVED?
+     *
+     * @return bool
+     */
+    public function isStatePrewired(): bool {
+        return $this->getState() === self::STATE_PREWIRED;
     }
 
     /**

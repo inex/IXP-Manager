@@ -46,5 +46,6 @@ Route::get('switch-port/{id}/physical-interface',               'SwitchPortContr
 Route::post('customer/{id}/switches',                           'CustomerController@switches' );
 
 Route::post('switcher/{id}/switch-port',                        'SwitcherController@switchPort' );
+Route::post('switcher/{id}/switch-port-prewired',               'SwitcherController@switchPortPrewired' );
 
 

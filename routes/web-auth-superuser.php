@@ -25,6 +25,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
 
     Route::get( 'edit/{id}',                        'PatchPanelPortController@edit' );
     Route::get( 'edit-to-allocate/{id}',            'PatchPanelPortController@editToAllocate' );
+    Route::get( 'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired' );
     Route::get( 'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus' );
     Route::get( 'email/{id}/{type}',                'PatchPanelPortController@email' );
 

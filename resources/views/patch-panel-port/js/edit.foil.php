@@ -38,6 +38,10 @@
         $( "#patch_panel" ).prop( 'readonly' , true);
         $( "#last_state_change_at" ).prop( 'readonly' , true);
 
+        <?php if ($t->prewired): ?>
+            $( "#states" ).prop( 'readonly' , true);
+        <?php endif; ?>
+
 
         $( "#switch" ).change(function(){
             setSwitchPort();
@@ -81,12 +85,21 @@
             customerId = $( "#customer" ).val();
             switchPortId = $( "#switch_port_id" ).val();
 
-            $.ajax( "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port", {
-                data: {
-                    switchId: switchId,
-                    custId: $( "#customer" ).val(),
-                    spId: $( "#switch_port_id" ).val()
-                },
+            <?php if ($t->prewired): ?>
+                url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port-prewired";
+                datas = {switchId: switchId,
+                        spId: $( "#switch_port_id" ).val()};
+
+            <?php else: ?>
+                url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port";
+                datas = {switchId: switchId,
+                        custId: $( "#customer" ).val(),
+                        spId: $( "#switch_port_id" ).val()};
+            <?php endif; ?>
+
+
+            $.ajax( url , {
+                data: datas,
                 type: 'POST'
             })
                 .done( function( data ) {

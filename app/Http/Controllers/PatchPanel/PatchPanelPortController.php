@@ -108,7 +108,7 @@ class PatchPanelPortController extends Controller
      * @param  int $id patch panel port that need to be edited
      * @return  view
      */
-    public function edit( int $id, $allocating = false ) {
+    public function edit( int $id, $formType = null ) {
         $ppp = false;
 
         if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
@@ -124,7 +124,32 @@ class PatchPanelPortController extends Controller
 
         $hasDuplex = $ppp->hasSlavePort();
 
+        switch ( $formType )  {
+            case 'allocated' :
+                $allocating = true;
+                $prewired = false;
+                $states = PatchPanelPort::$ALLOCATE_STATES;
+                break;
+            case 'prewired' :
+                $allocating = false;
+                $prewired = true;
+                $states = [PatchPanelPort::STATE_PREWIRED => PatchPanelPort::$STATES[PatchPanelPort::STATE_PREWIRED]];
+                break;
+            default :
+                $allocating = false;
+                $prewired = false;
+                $states = PatchPanelPort::$STATES;
+                break;
+        }
+
         $chargeable = ($allocating and $ppp->isStateAvailable()) ? $ppp->getPatchPanel()->getChargeable() : $ppp->getChargeableDefaultNo();
+
+        if($prewired){
+            $switchPort = D2EM::getRepository( Switcher::class )->getAllPortsPrewired( $ppp->getSwitchId(), $ppp->getSwitchPortId());
+        }
+        else{
+            $switchPort = D2EM::getRepository( Switcher::class )->getAllPorts( $ppp->getSwitchId(), null, $ppp->getSwitchPortId());
+        }
 
         // fill the form with patch panel port data
         Former::populate([
@@ -156,18 +181,19 @@ class PatchPanelPortController extends Controller
         }
 
         return view( 'patch-panel-port/edit' )->with([
-            'states'            => ( $allocating ) ? PatchPanelPort::$ALLOCATE_STATES : PatchPanelPort::$STATES,
+            'states'            => $states,
             'piStatus'          => PhysicalInterface::$PPP_STATES,
             'customers'         => D2EM::getRepository( Customer::class )->getNames( true ),
             'switches'          => D2EM::getRepository( Switcher::class )->getNamesByLocation( true, Switcher::TYPE_SWITCH,$ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
-            'switchPorts'       => D2EM::getRepository( Switcher::class )->getAllPortForASwitch( $ppp->getSwitchId(),null, $ppp->getSwitchPortId() ),
+            'switchPorts'       => $switchPort,
             'chargeables'       => PatchPanelPort::$CHARGEABLES,
             'ownedBy'           => PatchPanelPort::$OWNED_BY,
             'ppp'               => $ppp,
             'partnerPorts'      => $partnerPorts,
             'hasDuplex'         => $hasDuplex,
             'user'              => Auth::user(),
-            'allocating'        => ($allocating) ? true : false
+            'allocating'        => $allocating,
+            'prewired'          => $prewired
         ]);
     }
 
@@ -178,7 +204,17 @@ class PatchPanelPortController extends Controller
      * @return  view
      */
     public function editToAllocate( int $id ) {
-        return $this->edit( $id, true );
+        return $this->edit( $id, 'allocated' );
+    }
+
+    /**
+     * Display the form to edit a patch panel port
+     *
+     * @param  int $id patch panel port that need to be edited
+     * @return  view
+     */
+    public function editToPrewired( int $id ) {
+        return $this->edit( $id, 'prewired' );
     }
 
     /**
@@ -281,9 +317,9 @@ class PatchPanelPortController extends Controller
             $ppp->setCeasedAt( ( $request->input( 'ceased_at' ) == '' ? null : new \DateTime( $request->input( 'ceased_at' ) ) ) );
         }
 
-        $ppp->setInternalUse( $request->input( 'internal_use' ) );
-        $ppp->setChargeable($request->input( 'chargeable' ) );
-        $ppp->setOwnedBy( $request->input( 'owned_by' ) );
+        $ppp->setInternalUse( ( $request->input( 'internal_use' ) ) ? $request->input( 'internal_use' ) : 0 );
+        $ppp->setChargeable( ( $request->input( 'chargeable' ) ) ? $request->input( 'chargeable' ) : 0 );
+        $ppp->setOwnedBy( ( $request->input( 'owned_by' ) ) ? $request->input( 'owned_by' ) : 0 );
 
         D2EM::persist( $ppp );
 
