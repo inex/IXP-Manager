@@ -106,7 +106,7 @@
 
                                     <li role="separator" class="divider"></li>
 
-                                    <?php if( $ppp->isStateAvailable() or $ppp->isStateReserved() ): ?>
+                                    <?php if( $ppp->isStateAvailable() or $ppp->isStateReserved() or $ppp->isStatePrewired() ): ?>
                                         <li>
                                             <a id="allocate-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/edit-to-allocate' ) . '/' . $ppp->getId() ?>">
                                                 Allocate
@@ -114,7 +114,23 @@
                                         </li>
                                     <?php endif; ?>
 
+                                    <?php if( $ppp->isStateAvailable() ): ?>
+                                        <li role="separator" class="divider"></li>
+                                        <li>
+                                            <a id="prewired-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/edit-to-prewired' ) . '/' . $ppp->getId() ?>">
+                                                Prewired
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
 
+                                    <?php if( $ppp->isStatePrewired() ): ?>
+                                        <li role="separator" class="divider"></li>
+                                        <li>
+                                            <a id="prewired-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_AVAILABLE ?>">
+                                                Unset Prewired
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
 
                                     <?php if( $ppp->isStateAvailable() ): ?>
                                         <li role="separator" class="divider"></li>
@@ -124,6 +140,7 @@
                                             </a>
                                         </li>
                                     <?php endif; ?>
+
 
                                     <?php if( $ppp->isStateReserved() ): ?>
                                         <li role="separator" class="divider"></li>

@@ -47,7 +47,9 @@ class StorePatchPanelPort extends FormRequest
     {
         $allocated = $this->input('allocated');
 
-        $required = ($allocated) ? '' : 'required';
+        $prewired = $this->input('prewired');
+
+        $required = ($allocated or $prewired) ? '' : 'required';
 
         return [
             'number'                => $required.'|string|max:255',

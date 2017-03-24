@@ -3,7 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use Entities\PatchPanel;
+use Entities\PatchPanelPort as PatchPanelPortEntity;
 
 /**
  * Cabinet
@@ -58,5 +58,15 @@ class PatchPanelPort extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
         $nb = $query->getSingleScalarResult();
         return ($nb > 0) ? false : true;
+    }
+
+
+    /**
+     * Return the mailable class name for a given email type
+     * @param int $type Email type
+     * @return string Class name (or null)
+     */
+    public function resolveEmailClass( int $type ) {
+        return isset( PatchPanelPortEntity::$EMAIL_CLASSES[ $type ] ) ? PatchPanelPortEntity::$EMAIL_CLASSES[ $type ] : null;
     }
 }

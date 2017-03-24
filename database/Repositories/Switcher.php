@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Entities\SwitchPort;
 
 /**
  * Switcher
@@ -194,14 +195,15 @@ class Switcher extends EntityRepository
     }
 
 
-    public function getAllPortForASwitch($id,$customerId = null, $switchPortId = null)
+    public function getAllPorts( $id, $customerId = null, $switchPortId = null )
     {
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
                     FROM \\Entities\\SwitchPort sp
                         LEFT JOIN sp.Switcher s
-                        LEFT JOIN sp.PhysicalInterface pi";
+                        LEFT JOIN sp.PhysicalInterface pi ";
 
-        if($customerId != null){
+
+        if( $customerId != null ){
             $dql .= " LEFT JOIN pi.VirtualInterface vi ";
         }
 
@@ -210,7 +212,7 @@ class Switcher extends EntityRepository
                                       FROM Entities\\PatchPanelPort ppp
                                       WHERE ppp.switchPort IS NOT NULL";
 
-        if($switchPortId != null){
+        if( $switchPortId != null ){
             $switchPortId = intval($switchPortId);
             $dql .= " AND ppp.switchPort != $switchPortId";
 
@@ -218,8 +220,7 @@ class Switcher extends EntityRepository
 
         $dql .= ") AND s.id = ?1";
 
-        if($customerId != null){
-
+        if( $customerId != null ){
             $dql .= " AND vi.Customer = $customerId";
         }
 
@@ -231,8 +232,53 @@ class Switcher extends EntityRepository
 
         $ports = $query->getArrayResult();
 
-        foreach( $ports as $id => $port )
+        foreach( $ports as $id => $port ){
             $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+        }
+
+
+        return $ports;
+    }
+
+
+    public function getAllPortsPrewired( $id, $switchPortId = null )
+    {
+        $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
+                    FROM \\Entities\\SwitchPort sp
+                        LEFT JOIN sp.Switcher s ";
+
+
+        // Remove the switch port already use by a patch panel port
+        $dql .= " WHERE sp.id NOT IN (SELECT IDENTITY(ppp.switchPort)
+                                      FROM Entities\\PatchPanelPort ppp
+                                      WHERE ppp.switchPort IS NOT NULL";
+
+        if( $switchPortId != null ){
+            $switchPortId = intval($switchPortId);
+            $dql .= " AND ppp.switchPort != $switchPortId";
+
+        }
+
+        $dql .= ") AND s.id = ?1";
+
+
+        $dql .= " AND sp.id NOT IN (SELECT IDENTITY(pi.SwitchPort)
+                                      FROM Entities\\PhysicalInterface pi)";
+
+
+        $dql .= " AND ((sp.type = 0)  OR (sp.type = 1))";
+
+        $dql .= " ORDER BY sp.id ASC";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+        $ports = $query->getArrayResult();
+
+        foreach( $ports as $id => $port ){
+            $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+        }
+
 
         return $ports;
     }

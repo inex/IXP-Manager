@@ -6,7 +6,7 @@
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= url( 'patch-panel/list' )?>">
-        Patch Panel
+        Patch Panels
     </a>
 <?php $this->append() ?>
 

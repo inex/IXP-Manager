@@ -5,6 +5,14 @@ namespace Entities;
 use Carbon\Carbon;
 use D2EM;
 use Doctrine\Common\Collections\ArrayCollection;
+
+use IXP\Mail\PatchPanelPort\{
+    Cease   as CeaseMail,
+    Connect as ConnectMail,
+    Info    as InfoMail,
+    Loa     as LoaMail
+};
+
 use Parsedown;
 
 
@@ -24,6 +32,7 @@ class PatchPanelPort
     const STATE_CEASED                 = 5;
     const STATE_BROKEN                 = 6;
     const STATE_RESERVED               = 7;
+    const STATE_PREWIRED               = 8;
     const STATE_OTHER                  = 999;
 
 
@@ -54,6 +63,16 @@ class PatchPanelPort
     const EMAIL_LOA                     = 4;
 
     /**
+     * @var array Email ids to classes
+     */
+    public static $EMAIL_CLASSES = [
+        self::EMAIL_CEASE       =>  CeaseMail::class,
+        self::EMAIL_CONNECT     =>  ConnectMail::class,
+        self::EMAIL_INFO        =>  InfoMail::class,
+        self::EMAIL_LOA         =>  LoaMail::class,
+    ];
+
+    /**
      * Array STATES
      */
     public static $STATES = [
@@ -64,6 +83,7 @@ class PatchPanelPort
         self::STATE_CEASED              => "Ceased",
         self::STATE_BROKEN              => "Broken",
         self::STATE_RESERVED            => "Reserved",
+        self::STATE_PREWIRED            => "Prewired",
         self::STATE_OTHER               => "Other"
     ];
 
@@ -298,11 +318,11 @@ class PatchPanelPort
      */
     public function getStateCssClass()
     {
-        if($this->isAvailableForUse()):
+        if( $this->isAvailableForUse() or $this->isStatePrewired()):
             $class = 'success';
-        elseif($this->getState() == self::STATE_AWAITING_XCONNECT):
+        elseif($this->isStateAwaitingXConnect()):
             $class = 'warning';
-        elseif($this->getState() == self::STATE_CONNECTED):
+        elseif($this->isStateConnected()):
             $class = 'danger';
         else:
             $class = 'info';
@@ -1350,6 +1370,15 @@ class PatchPanelPort
      */
     public function isStateReserved(): bool {
         return $this->getState() === self::STATE_RESERVED;
+    }
+
+    /**
+     * Is the state STATE_RESERVED?
+     *
+     * @return bool
+     */
+    public function isStatePrewired(): bool {
+        return $this->getState() === self::STATE_PREWIRED;
     }
 
     /**

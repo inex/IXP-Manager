@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'patch-panel' )?>">Patch Panel</a>
+    <a href="<?= url( 'patch-panel/list' )?>">Patch Panels</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -16,6 +16,13 @@
 
 
 <?php $this->section('content') ?>
+
+<?php if( $t->pp ): ?>
+    <div class="well">
+        To add additional ports to an existing patch panel, just add the number of ports <b>you want to add</b> in <em>Add Number of Ports</em> below.
+    </div>
+<?php endif; ?>
+
 
     <?= Former::open()
         ->method( 'post' )
@@ -55,20 +62,20 @@
         ?>
 
         <?= Former::number( 'numberOfPorts' )
-            ->label( 'Number of Ports' )
+            ->label( ( $t->pp ? 'Add ' : '' ) . 'Number of Ports' )
             ->appendIcon( 'nb-port glyphicon glyphicon-info-sign' )
             ->help(
                 $t->pp ? 'There are ' . $t->pp->getPortCount() . " ports in this panel already. Enter the number of ports <b> you want to add</b> above."
                         . "<b>Note that duplex ports should be entered as two ports.</b>"
-                    : 'Please set the number of ports that you want to create for this patch panel.'
+                    : 'Please set the number of ports that you want to create for this patch panel. <b>Note that duplex ports should be entered as two ports.</b>'
             );
         ?>
 
         <?= Former::text( 'port_prefix' )
             ->label( 'Port Name Prefix' )
             ->placeholder( 'Optional port prefix' )
-            ->readonly( $t->pp && $t->pp->getPortPrefix() )
-            ->help( "This is optional. As an example, you may was to prefix individual fibre strands in a duplex port with <code>F</code> which would mean the name of a duplex port would be displayed as <code>F1/F2</code>." );
+            ->help( "This is optional. As an example, you may was to prefix individual fibre strands in a duplex port with "
+                . "<code>F</code> which would mean the name of a duplex port would be displayed as <code>F1/F2</code>." );
         ?>
 
         <?= Former::select( 'chargeable' )
@@ -76,7 +83,10 @@
             ->options( $t->chargeables)
             ->select(  $t->pp ? $t->pp->getChargeable() : \Entities\PatchPanelPort::CHARGEABLE_NO)
             ->addClass( 'chzn-select' )
-            ->help( 'help text');
+            ->help( 'Usually IXPs request their members to <em>come to them</em> and bear the costs of that. '
+                . 'However, sometimes a co-location facility may charge the IXP for a half circuit or the IXP may need '
+                . 'order and pay for the connection. Setting this only sets the default option when allocating ports to '
+                . 'members later.' );
         ?>
 
         <?= Former::date( 'installation_date' )
@@ -101,46 +111,48 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
+
     <script>
-        $( document ).ready( function() {
-            /**
-             * hide the help sections at loading
-             */
-            $( '.help-block' ).hide();
+    $( document ).ready( function() {
+        /**
+         * hide the help sections at loading
+         */
+        $( '.help-block' ).hide();
 
-            /**
-             * display / hide help sections on click on the help button
-             */
-            $( "#help-btn" ).click( function() {
-                $( ".help-block" ).toggle();
-            });
-
-            /**
-             * set the today date on click on the today button
-             */
-            $( "#date-today" ).click( function() {
-                $( "#installation_date" ).val( '<?= date( "Y-m-d" ) ?>' );
-            });
-
-            /**
-             * set the colo_reference in empty input by the name input value
-             */
-            $( "#name" ).blur( function() {
-                if( $( "#colo_reference" ).val() == '' ){
-                    $( "#colo_reference" ).val( $("#name" ).val() );
-                }
-            });
-
-            /**
-            * set data to the tooltip
-            */
-            $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' ,
-                '<b>Note that duplex ports should be entered as two ports.</b>' );
-
-            /**
-             * configuration of the tooltip
-             */
-            $( "[data-toggle=popover]" ).popover( { placement: 'left',container: 'body', html: true, trigger: "hover" } );
+        /**
+         * display / hide help sections on click on the help button
+         */
+        $( "#help-btn" ).click( function() {
+            $( ".help-block" ).toggle();
         });
+
+        /**
+         * set the today date on click on the today button
+         */
+        $( "#date-today" ).click( function() {
+            $( "#installation_date" ).val( '<?= date( "Y-m-d" ) ?>' );
+        });
+
+        /**
+         * set the colo_reference in empty input by the name input value
+         */
+        $( "#name" ).blur( function() {
+            if( $( "#colo_reference" ).val() == '' ){
+                $( "#colo_reference" ).val( $("#name" ).val() );
+            }
+        });
+
+        /**
+        * set data to the tooltip
+        */
+        $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' ,
+            '<b>Note that duplex ports should be entered as two ports.</b>' );
+
+        /**
+         * configuration of the tooltip
+         */
+        $( "[data-toggle=popover]" ).popover( { placement: 'left',container: 'body', html: true, trigger: "hover" } );
+    });
     </script>
+
 <?php $this->append() ?>
