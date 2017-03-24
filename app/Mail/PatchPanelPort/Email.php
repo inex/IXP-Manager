@@ -28,7 +28,9 @@ use Entities\PatchPanelPort as PatchPanelPortEntity;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-//use Illuminate\Contracts\Queue\ShouldQueue;
+
+use IXP\Exceptions\Mailable as MailableException;
+use IXP\Http\Requests\EmailPatchPanelPort as EmailPatchPanelPortRequest;
 
 /**
  * Mailable for patch panel emails
@@ -59,12 +61,38 @@ abstract class Email extends Mailable
     protected $tmpl;
 
     /**
+     * @var string Temporary view file
+     */
+    protected $tmpfile;
+
+    /**
+     * @var string Temporary view name
+     */
+    protected $tmpname;
+
+    /**
      * Create a new message instance.
      *
      * @param PatchPanelPortEntity $ppp
      */
     public function __construct( PatchPanelPortEntity $ppp ) {
         $this->ppp    = $ppp;
+
+        if( $this->ppp->getCustomer() ) {
+            $this->to( $this->ppp->getCustomer()->getNocemail(), $this->ppp->getCustomerName() . ' NOC' );
+        }
+
+        $this->bcc( env( 'IDENTITY_SUPPORT_EMAIL' ), env( 'IDENTITY_NAME') . ' Operations' );
+    }
+
+    /**
+     * Destructor
+     */
+    public function __destruct() {
+        // remove temporary file if it exists
+        if( $this->tmpfile && file_exists( $this->tmpfile ) ){
+            @unlink( $this->tmpfile );
+        }
     }
 
     /**
@@ -75,17 +103,22 @@ abstract class Email extends Mailable
     abstract public function build();
 
     /**
-     * Get the default recipient(s) for these emails
+     * Get the emailaddresses for to / cc / bcc
      *
      * @return array Array of email addresses
      */
-    public function getRecipients(): array {
-        if( $this->ppp->getCustomer() ) {
-            return [ $this->ppp->getCustomer()->getNocemail() ];
+    public function getRecipientEmails( string $recipientClass ): array {
+
+        assert( in_array( $recipientClass, ['to','cc','bcc'] ) );
+
+        $a = [];
+        foreach( $this->$recipientClass as $t ) {
+            $a = [ $t['address'] ];
         }
 
-        return [];
+        return $a;
     }
+
 
     /**
      * Get the subject for an email
@@ -106,5 +139,60 @@ abstract class Email extends Mailable
      */
     public function getBody(): string {
         return view( $this->tmpl )->with( $this->buildViewData() )->render();
+    }
+
+
+    /**
+     * Set up recipients and subject from a POST request.
+     *
+     * @param \IXP\Http\Requests\EmailPatchPanelPort $request
+     */
+    public function prepareFromRequest( EmailPatchPanelPortRequest $request ) {
+        // recipients
+        foreach( [ 'to', 'cc', 'bcc' ] as $r ) {
+            $hasFn = 'has' . ucfirst( $r );
+            foreach( explode(',', $request->input('email_' . $r)) as $emaddr ) {
+                if( filter_var($emaddr, FILTER_VALIDATE_EMAIL) && !$this->$hasFn( $emaddr ) ) {
+                    $this->$r($emaddr);
+                }
+            }
+        }
+
+        $this->subject($request->input('email_subject'));
+    }
+
+
+    /**
+     * Set up Markdown body from a POST request.
+     *
+     * @param \IXP\Http\Requests\EmailPatchPanelPort $request
+     */
+    public function prepareBody( EmailPatchPanelPortRequest $request ) {
+        // Templating is slightly awkward here as Laravel's Mailable is built around reading the
+        // body from a template file be we have it via post.
+        //
+        // To work around this, we'll use a temporary file in a new view namespace.
+
+        $body          = $request->input('email_text');
+        $this->tmpfile = tempnam( sys_get_temp_dir(), 'ppp_email_' );
+        $this->tmpname = basename( $this->tmpfile );
+        $this->tmpfile = $this->tmpfile . '.blade.php';
+        file_put_contents( $this->tmpfile, "@component('mail::message')\n\n" . $body . "\n\n@endcomponent\n" );
+        view()->addNamespace('ppp_emails', sys_get_temp_dir() );
+        $this->markdown( 'ppp_emails::' . $this->tmpname );
+    }
+
+    /**
+     * Checks if we can send the email
+     * @throws MailableException
+     */
+    public function checkIfSendable() {
+        if( !count( $this->to ) ) {
+            throw new MailableException( "No valid recipients" );
+        }
+
+        if( !view()->exists( $this->markdown ) ) {
+            throw new MailableException( "Could not create / load temporary template" );
+        }
     }
 }

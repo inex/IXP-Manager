@@ -31,6 +31,8 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'download-file/{id}',               'PatchPanelPortController@downloadFile' );
 
     Route::post( 'store',                           'PatchPanelPortController@store' );
-    Route::post( 'send-email',                      'PatchPanelPortController@sendEmail' );
+
+    Route::get(  'email/{id}/{type}',                'PatchPanelPortController@email' );
+    Route::post( 'send-email/{id}/{type}',           'PatchPanelPortController@sendEmail' );
 
 });

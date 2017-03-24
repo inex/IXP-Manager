@@ -44,8 +44,9 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+use IXP\Exceptions\Mailable as MailableException;
 use IXP\Http\Controllers\Controller;
-use IXP\Http\Requests\EmailPatchPanelPort;
+use IXP\Http\Requests\EmailPatchPanelPort as EmailPatchPanelPortRequest;
 use IXP\Http\Requests\StorePatchPanelPort;
 use IXP\Mail\PatchPanelPort\Email;
 use IXP\Utils\View\Alert\Alert;
@@ -431,6 +432,37 @@ class PatchPanelPortController extends Controller
     }
 
     /**
+     * Setup / validation for composing and sending emails
+     *
+     * @param  int $id patch panel port id
+     * @param  int $type Email type to send
+     * @param  Email $mailable
+     * @return  array Indexed array wity `$ppp`, `$mailable` to be unpacked with list()
+     */
+    private function setupEmailRoutes( int $id, int $type, Email $mailable = null ) {
+
+        if ( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $id ) ) ) {
+            abort(404, 'Patch panel port not found');
+        }
+
+        if( !( $emailClass = D2EM::getRepository( PatchPanelPort::class )->resolveEmailClass( $type ) ) ) {
+            abort(404, 'Email type not found');
+        }
+
+        if( !$mailable ) {
+            $mailable = new $emailClass($ppp);
+        }
+
+        Former::populate([
+            'email_to'       => implode( ',', $mailable->getRecipientEmails('to') ),
+            'email_subject'  => $mailable->getSubject(),
+            'email_bcc'      => implode( ',', $mailable->getRecipientEmails('bcc') )
+        ]);
+
+        return [ $ppp, $mailable ];
+    }
+
+    /**
      * Display and fill the form to send an email to the customer
      *
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
@@ -441,26 +473,12 @@ class PatchPanelPortController extends Controller
      */
     public function email( int $id, int $type ): View {
 
-        if ( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $id ) ) ) {
-            abort(404, 'Patch panel port not found');
-        }
-
-        if( !( $emailClass = D2EM::getRepository( PatchPanelPort::class )->resolveEmailClass( $type ) ) ) {
-            abort(404, 'Email type not found');
-        }
-
-        /** @var Email $mailable */
-        $mailable = new $emailClass( $ppp );
-
-        Former::populate([
-            'email_to'                  => implode( ',', $mailable->getRecipients() ),
-            'email_subject'             => $mailable->getSubject(),
-            'email_bcc'                 => env( 'IDENTITY_SUPPORT_EMAIL' )
-        ]);
+        /** @var PatchPanelPort $ppp */
+        list( $ppp, $mailable ) = $this->setupEmailRoutes( $id, $type );
 
         return view( 'patch-panel-port/email-form' )->with([
             'ppp'                           => $ppp,
-            'email_type'                    => $type,
+            'emailType'                     => $type,
             'mailable'                      => $mailable
         ]);
     }
@@ -470,63 +488,58 @@ class PatchPanelPortController extends Controller
      *
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
      *
-     * @params  $request instance of the current HTTP request
-     * @return  view
+     * @param EmailPatchPanelPortRequest $request
+     * @param int $id   patch panel port id
+     * @param int  $type Email type to send
+     *
+     * @return RedirectResponse|View
      */
-    public function sendEmail( EmailPatchPanelPort $request ) {
-        if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $request->input( 'patch_panel_port_id' ) ) ) ) {
-            Log::notice( 'Unknown patch panel port when editing patch panel' );
-            abort(404);
+    public function sendEmail( EmailPatchPanelPortRequest $request, int $id, int $type ) {
+
+        /** @var PatchPanelPort $ppp */
+        /** @var Email $mailable */
+        list( $ppp, $mailable ) = $this->setupEmailRoutes( $id, $type );
+
+        $mailable->prepareFromRequest( $request );
+        $mailable->prepareBody( $request );
+
+        try {
+            $mailable->checkIfSendable();
+        } catch( MailableException $e ) {
+            AlertContainer::push( $e->getMessage(), Alert::DANGER );
+
+            return view( 'patch-panel-port/email-form' )->with([
+                'ppp'                           => $ppp,
+                'emailType'                     => $type,
+                'mailable'                      => $mailable
+            ]);
         }
 
-        $email_to = $request->input( 'email_to' );
-        $email_from = env( 'IDENTITY_SUPPORT_EMAIL' );
-        $email_cc = $request->input( 'email_cc');
-        $email_bcc = $request->input( 'email_bcc');
-        $email_subject = $request->input( 'email_subject' );
-        $email_text = $request->input( 'email_text' );
+        // $hasLoaPDF = ( $request->input( 'loa' ) ? true : false );
+        // $attachFiles = ( $request->input( 'email_type' ) == PatchPanelPort::EMAIL_CEASE or $request->input( 'email_type' ) == PatchPanelPort::EMAIL_INFO ) ? true : false;
+        //            if( $attachFiles ){
+        //                foreach( $ppp->getPatchPanelPortPublicFiles() as $file ){
+        //                    $path = PatchPanelPortFile::getPathPPPFile( $file->getStorageLocation() );
+        //                    $message->attach( storage_path().'/files/'.$path,[
+        //                        'as'            => $file->getName(),
+        //                        'mime'          => $file->getType()
+        //                    ]);
+        //                }
+        //            }
+        //
+        //            if( $hasLoaPDF ){
+        //                $loaPDFPath = $ppp->createLoaPDF( false );
+        //                $message->attach( $loaPDFPath,[
+        //                    'as'                => $loaPDFPath,
+        //                    'mime'              => 'application/pdf'
+        //                ]);
+        //            }
 
-        $hasLoaPDF = ( $request->input( 'loa' ) ? true : false );
+        Mail::send( $mailable );
 
-        if( $request->input( 'email_type') == PatchPanelPort::EMAIL_LOA ){
-            $hasLoaPDF = true;
-        }
-
-        $attachFiles = ( $request->input( 'email_type' ) == PatchPanelPort::EMAIL_CEASE or $request->input( 'email_type' ) == PatchPanelPort::EMAIL_INFO ) ? true : false;
-
-        Mail::send('patch-panel-port/email', ['email_text' => $email_text], function ( $message ) use ( $hasLoaPDF,$ppp,$attachFiles,$email_to,$email_cc,$email_bcc )
-        {
-            $message->from( env( 'IDENTITY_SUPPORT_EMAIL' ) );
-            $message->to( explode( ',', $email_to ) );
-            if( $email_cc ){
-                $message->cc( explode( ',', $email_cc ) );
-            }
-
-            if( $email_bcc ){
-                $message->bcc( explode( ',', $email_bcc ) );
-            }
-
-            if( $attachFiles ){
-                foreach( $ppp->getPatchPanelPortPublicFiles() as $file ){
-                    $path = PatchPanelPortFile::getPathPPPFile( $file->getStorageLocation() );
-                    $message->attach( storage_path().'/files/'.$path,[
-                        'as'            => $file->getName(),
-                        'mime'          => $file->getType()
-                    ]);
-                }
-            }
-
-            if( $hasLoaPDF ){
-                $loaPDFPath = $ppp->createLoaPDF( false );
-                $message->attach( $loaPDFPath,[
-                    'as'                => $loaPDFPath,
-                    'mime'              => 'application/pdf'
-                ]);
-            }
-        });
+        AlertContainer::push( "Email sent.", Alert::SUCCESS );
 
         return Redirect::to( 'patch-panel-port/list/patch-panel/'.$ppp->getPatchPanel()->getId() );
-
     }
 
 

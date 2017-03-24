@@ -22,8 +22,10 @@
 
 <?php $this->section( 'content' ) ?>
 
+    <?= $t->alerts() ?>
+
     <?= Former::open()->method( 'POST' )
-        ->action( url( 'patch-panel-port/send-email') )
+        ->action( url( 'patch-panel-port/send-email/' . $t->ppp->getId() . '/' . $t->emailType ) )
         ->addClass( 'col-md-10' );
     ?>
         <?= Former::text( 'email_to' )
@@ -42,7 +44,7 @@
             ->label( 'Subject' );
         ?>
 
-        <?php if( $t->email_type != \Entities\PatchPanelPort::EMAIL_LOA ): ?>
+        <?php if( $t->emailType != \Entities\PatchPanelPort::EMAIL_LOA ): ?>
             <?= Former::checkbox( 'loa' )
                 ->label( 'Attach LoA as a PDF' )
                 ->check( true )
@@ -78,8 +80,8 @@
             );
         ?>
 
-        <?= Former::hidden( 'email_type' )
-            ->value( $t->email_type )
+        <?= Former::hidden( 'emailType' )
+            ->value( $t->emailType )
         ?>
 
         <?= Former::hidden( 'patch_panel_port_id' )
