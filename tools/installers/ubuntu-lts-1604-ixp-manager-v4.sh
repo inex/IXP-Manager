@@ -292,7 +292,9 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 log_break && apt-get install -qy apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql memcached snmp nodejs nodejs-legacy npm     \
-    php7.0-mbstring php7.0-xml php-gettext bgpq3 php-memcache unzip php-zip git &>> /tmp/ixp-manager-install.log
+    php7.0-mbstring php7.0-xml php-gettext bgpq3 php-memcache unzip php-zip git                                         \
+    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl      \
+        &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
 # First time you run PHP it may output some setup messages - bury these
@@ -419,8 +421,8 @@ DB_PASSWORD="${MYSQL_IXPM_PW}"
 # This has grown organically and we intend to clean this up in a coming release and
 # documenting where and how each one is spceifically used.
 IDENTITY_LEGALNAME="${IXPNAME}"
-IDENTITY_CITY"Dublin"
-IDENTITY_COUNTRY"Ireland"
+IDENTITY_CITY="${IXPCITY}"
+IDENTITY_COUNTRY="${IXPCOUNTRY}"
 IDENTITY_ORGNAME="\${IDENTITY_LEGALNAME}"
 IDENTITY_NAME="\${IDENTITY_LEGALNAME}"
 IDENTITY_EMAIL="${IXPNOCEMAIL}"
@@ -584,8 +586,9 @@ END_SQL
 
 # And seed the database:
 cd $IXPROOT
-php artisan db:seed --force
-
+php artisan db:seed --class=IRRDBs
+php artisan db:seed --class=Vendors
+php artisan db:seed --class=ContactGroups
 
 echo '[done]'
 
