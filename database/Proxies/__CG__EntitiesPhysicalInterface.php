@@ -507,4 +507,15 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         return parent::resolveSpeed();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveStatus(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveStatus', []);
+
+        return parent::resolveStatus();
+    }
+
 }

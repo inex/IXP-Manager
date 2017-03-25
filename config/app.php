@@ -2,6 +2,18 @@
 
 return [
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Name
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of your application. This value is used when the
+    | framework needs to place the application's name in a notification or
+    | any other location as required by the application or its packages.
+    */
+    'name' => env('APP_NAME', 'IXP Manager'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -149,9 +161,9 @@ return [
 
          Laravel\Tinker\TinkerServiceProvider::class,
 
-        /*
-         * Debug
-         */
+         /*
+          * Debug
+          */
          Barryvdh\Debugbar\ServiceProvider::class,
 
         /*
@@ -173,9 +185,18 @@ return [
          * Third party providers
          */
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
-        // LaravelDoctrine\Migrations\MigrationsServiceProvider::class,
+
         Intervention\Image\ImageServiceProvider::class,
 
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+
+        Former\FormerServiceProvider::class,
+
+        GrahamCampbell\Flysystem\FlysystemServiceProvider::class,
+
+        Barryvdh\DomPDF\ServiceProvider::class,
+
+        LukeTowers\Purifier\PurifierServiceProvider::class,
     ],
 
     /*
@@ -232,6 +253,14 @@ return [
         'Image'     => Intervention\Image\Facades\Image::class,
 
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+
+        'Former' => 'Former\Facades\Former',
+        'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem',
+
+        'Purifier' => LukeTowers\Purifier\Facades\Purifier::class,
+
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+
     ],
 
 ];

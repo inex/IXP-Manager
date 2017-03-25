@@ -65,8 +65,9 @@ class Kernel extends HttpKernel {
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
         'apiauth'          => \IXP\Http\Middleware\ApiAuthenticate::class,
-        'grapher'          => \IXP\Http\Middleware\Services\Grapher::class,
         'assert.privilege' => \IXP\Http\Middleware\AssertUserPrivilege::class,
+        'grapher'          => \IXP\Http\Middleware\Services\Grapher::class,
+        'patch-panel-port' => \IXP\Http\Middleware\PatchPanelPort::class,
     ];
 
 }

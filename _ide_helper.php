@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.15 on 2017-03-08.
+ * Generated for Laravel 5.4.16 on 2017-03-25.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -1085,6 +1085,20 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Resolve the given type with the given parameter overrides.
+         *
+         * @param string $abstract
+         * @param array $parameters
+         * @return mixed 
+         * @static 
+         */ 
+        public static function makeWith($abstract, $parameters)
+        {
+            //Method inherited from \Illuminate\Container\Container            
+            return \Illuminate\Foundation\Application::makeWith($abstract, $parameters);
+        }
+        
+        /**
          * Instantiate a concrete instance of the given type.
          *
          * @param string $concrete
@@ -1547,7 +1561,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the currently authenticated user.
          *
-         * @return \IXP\User|null 
+         * @return \Entities\User|null 
          * @static 
          */ 
         public static function user()
@@ -1582,7 +1596,7 @@ namespace Illuminate\Support\Facades {
          * Log the given user ID into the application without sessions or cookies.
          *
          * @param mixed $id
-         * @return \IXP\User|false 
+         * @return \Entities\User|false 
          * @static 
          */ 
         public static function onceUsingId($id)
@@ -1646,7 +1660,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param mixed $id
          * @param bool $remember
-         * @return \IXP\User|false 
+         * @return \Entities\User|false 
          * @static 
          */ 
         public static function loginUsingId($id, $remember = false)
@@ -1693,7 +1707,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the last user we attempted to authenticate.
          *
-         * @return \IXP\User 
+         * @return \Entities\User 
          * @static 
          */ 
         public static function getLastAttempted()
@@ -1818,7 +1832,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Return the currently cached user.
          *
-         * @return \IXP\User|null 
+         * @return \Entities\User|null 
          * @static 
          */ 
         public static function getUser()
@@ -1864,7 +1878,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Determine if the current user is authenticated.
          *
-         * @return \IXP\User 
+         * @return \Entities\User 
          * @throws \Illuminate\Auth\AuthenticationException
          * @static 
          */ 
@@ -3452,11 +3466,11 @@ namespace Illuminate\Support\Facades {
         /**
          * Get an option from the configuration options.
          *
-         * @param string $option
+         * @param string|null $option
          * @return mixed 
          * @static 
          */ 
-        public static function getConfig($option)
+        public static function getConfig($option = null)
         {
             //Method inherited from \Illuminate\Database\Connection            
             return \Illuminate\Database\MySqlConnection::getConfig($option);
@@ -5037,6 +5051,8 @@ namespace Illuminate\Support\Facades {
          * You should only list the reverse proxies that you manage directly.
          *
          * @param array $proxies A list of trusted proxies
+         * @param int $trustedHeaderSet A bit field of Request::HEADER_*, usually either Request::HEADER_FORWARDED or Request::HEADER_X_FORWARDED_ALL, to set which headers to trust from your proxies
+         * @throws \InvalidArgumentException When $trustedHeaderSet is invalid
          * @static 
          */ 
         public static function setTrustedProxies($proxies)
@@ -5055,6 +5071,18 @@ namespace Illuminate\Support\Facades {
         {
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::getTrustedProxies();
+        }
+        
+        /**
+         * Gets the set of trusted headers from trusted proxies.
+         *
+         * @return int A bit field of Request::HEADER_* that defines which headers are trusted from your proxies
+         * @static 
+         */ 
+        public static function getTrustedHeaderSet()
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request            
+            return \Illuminate\Http\Request::getTrustedHeaderSet();
         }
         
         /**
@@ -5099,6 +5127,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key The header key
          * @param string $value The header name
          * @throws \InvalidArgumentException
+         * @deprecated since version 3.3, to be removed in 4.0. Use "X-Forwarded-*" headers or the "Forwarded" header defined in RFC7239, and the $trustedHeaderSet argument of the Request::setTrustedProxies() method instead.
          * @static 
          */ 
         public static function setTrustedHeaderName($key, $value)
@@ -5113,6 +5142,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key The header key
          * @return string The header name
          * @throws \InvalidArgumentException
+         * @deprecated since version 3.3, to be removed in 4.0. Use the Request::getTrustedHeaderSet() method instead.
          * @static 
          */ 
         public static function getTrustedHeaderName($key)
@@ -8175,6 +8205,8 @@ namespace Illuminate\Support\Facades {
          * You should only list the reverse proxies that you manage directly.
          *
          * @param array $proxies A list of trusted proxies
+         * @param int $trustedHeaderSet A bit field of Request::HEADER_*, usually either Request::HEADER_FORWARDED or Request::HEADER_X_FORWARDED_ALL, to set which headers to trust from your proxies
+         * @throws \InvalidArgumentException When $trustedHeaderSet is invalid
          * @static 
          */ 
         public static function setTrustedProxies($proxies)
@@ -8193,6 +8225,18 @@ namespace Illuminate\Support\Facades {
         {
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::getTrustedProxies();
+        }
+        
+        /**
+         * Gets the set of trusted headers from trusted proxies.
+         *
+         * @return int A bit field of Request::HEADER_* that defines which headers are trusted from your proxies
+         * @static 
+         */ 
+        public static function getTrustedHeaderSet()
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request            
+            return \Illuminate\Http\Request::getTrustedHeaderSet();
         }
         
         /**
@@ -8237,6 +8281,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key The header key
          * @param string $value The header name
          * @throws \InvalidArgumentException
+         * @deprecated since version 3.3, to be removed in 4.0. Use "X-Forwarded-*" headers or the "Forwarded" header defined in RFC7239, and the $trustedHeaderSet argument of the Request::setTrustedProxies() method instead.
          * @static 
          */ 
         public static function setTrustedHeaderName($key, $value)
@@ -8251,6 +8296,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key The header key
          * @return string The header name
          * @throws \InvalidArgumentException
+         * @deprecated since version 3.3, to be removed in 4.0. Use the Request::getTrustedHeaderSet() method instead.
          * @static 
          */ 
         public static function getTrustedHeaderName($key)
@@ -12093,6 +12139,21 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Get the rendered content of the view based on a given condition.
+         *
+         * @param bool $condition
+         * @param string $view
+         * @param array $data
+         * @param array $mergeData
+         * @return string 
+         * @static 
+         */ 
+        public static function renderWhen($condition, $view, $data = array(), $mergeData = array())
+        {
+            return \Illuminate\View\Factory::renderWhen($condition, $view, $data, $mergeData);
+        }
+        
+        /**
          * Get the rendered contents of a partial from a loop.
          *
          * @param string $view
@@ -14455,6 +14516,517 @@ namespace Barryvdh\Debugbar {
  
 }
 
+namespace Former\Facades { 
+
+    class Former {
+        
+        /**
+         * Register a macro with Former
+         *
+         * @param string $name The name of the macro
+         * @param Callable $macro The macro itself
+         * @return mixed 
+         * @static 
+         */ 
+        public static function macro($name, $macro)
+        {
+            return \Former\Former::macro($name, $macro);
+        }
+        
+        /**
+         * Check if a macro exists
+         *
+         * @param string $name
+         * @return boolean 
+         * @static 
+         */ 
+        public static function hasMacro($name)
+        {
+            return \Former\Former::hasMacro($name);
+        }
+        
+        /**
+         * Get a registered macro
+         *
+         * @param string $name
+         * @return \Closure 
+         * @static 
+         */ 
+        public static function getMacro($name)
+        {
+            return \Former\Former::getMacro($name);
+        }
+        
+        /**
+         * Add values to populate the array
+         *
+         * @param mixed $values Can be an Eloquent object or an array
+         * @static 
+         */ 
+        public static function populate($values)
+        {
+            return \Former\Former::populate($values);
+        }
+        
+        /**
+         * Set the value of a particular field
+         *
+         * @param string $field The field's name
+         * @param mixed $value Its new value
+         * @static 
+         */ 
+        public static function populateField($field, $value)
+        {
+            return \Former\Former::populateField($field, $value);
+        }
+        
+        /**
+         * Get the value of a field
+         *
+         * @param string $field The field's name
+         * @param null $fallback
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getValue($field, $fallback = null)
+        {
+            return \Former\Former::getValue($field, $fallback);
+        }
+        
+        /**
+         * Fetch a field value from both the new and old POST array
+         *
+         * @param string $name A field name
+         * @param string $fallback A fallback if nothing was found
+         * @return string The results
+         * @static 
+         */ 
+        public static function getPost($name, $fallback = null)
+        {
+            return \Former\Former::getPost($name, $fallback);
+        }
+        
+        /**
+         * Set the errors to use for validations
+         *
+         * @param \Former\Message $validator The result from a validation
+         * @return void 
+         * @static 
+         */ 
+        public static function withErrors($validator = null)
+        {
+            \Former\Former::withErrors($validator);
+        }
+        
+        /**
+         * Add live validation rules
+         *
+         * @param array  *$rules An array of Laravel rules
+         * @return void 
+         * @static 
+         */ 
+        public static function withRules()
+        {
+            \Former\Former::withRules();
+        }
+        
+        /**
+         * Switch the framework used by Former
+         *
+         * @param string $framework The name of the framework to use
+         * @static 
+         */ 
+        public static function framework($framework = null)
+        {
+            return \Former\Former::framework($framework);
+        }
+        
+        /**
+         * Get a new framework instance
+         *
+         * @param string $framework
+         * @throws Exceptions\InvalidFrameworkException
+         * @return \Former\Interfaces\FrameworkInterface 
+         * @static 
+         */ 
+        public static function getFrameworkInstance($framework)
+        {
+            return \Former\Former::getFrameworkInstance($framework);
+        }
+        
+        /**
+         * Get an option from the config
+         *
+         * @param string $option The option
+         * @param mixed $default Optional fallback
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getOption($option, $default = null)
+        {
+            return \Former\Former::getOption($option, $default);
+        }
+        
+        /**
+         * Set an option on the config
+         *
+         * @param string $option
+         * @param string $value
+         * @static 
+         */ 
+        public static function setOption($option, $value)
+        {
+            return \Former\Former::setOption($option, $value);
+        }
+        
+        /**
+         * Closes a form
+         *
+         * @return string A form closing tag
+         * @static 
+         */ 
+        public static function close()
+        {
+            return \Former\Former::close();
+        }
+        
+        /**
+         * Get the errors for the current field
+         *
+         * @param string $name A field name
+         * @return string An error message
+         * @static 
+         */ 
+        public static function getErrors($name = null)
+        {
+            return \Former\Former::getErrors($name);
+        }
+        
+        /**
+         * Get a rule from the Rules array
+         *
+         * @param string $name The field to fetch
+         * @return array An array of rules
+         * @static 
+         */ 
+        public static function getRules($name)
+        {
+            return \Former\Former::getRules($name);
+        }
+         
+    }
+ 
+}
+
+namespace GrahamCampbell\Flysystem\Facades { 
+
+    class Flysystem {
+        
+        /**
+         * Get the configuration for a connection.
+         *
+         * @param string $name
+         * @throws \InvalidArgumentException
+         * @return array 
+         * @static 
+         */ 
+        public static function getConnectionConfig($name)
+        {
+            return \GrahamCampbell\Flysystem\FlysystemManager::getConnectionConfig($name);
+        }
+        
+        /**
+         * Get the factory instance.
+         *
+         * @return \GrahamCampbell\Flysystem\FlysystemFactory 
+         * @static 
+         */ 
+        public static function getFactory()
+        {
+            return \GrahamCampbell\Flysystem\FlysystemManager::getFactory();
+        }
+        
+        /**
+         * Get a connection instance.
+         *
+         * @param string $name
+         * @return object 
+         * @static 
+         */ 
+        public static function connection($name = null)
+        {
+            //Method inherited from \GrahamCampbell\Manager\AbstractManager            
+            return \GrahamCampbell\Flysystem\FlysystemManager::connection($name);
+        }
+        
+        /**
+         * Reconnect to the given connection.
+         *
+         * @param string $name
+         * @return object 
+         * @static 
+         */ 
+        public static function reconnect($name = null)
+        {
+            //Method inherited from \GrahamCampbell\Manager\AbstractManager            
+            return \GrahamCampbell\Flysystem\FlysystemManager::reconnect($name);
+        }
+        
+        /**
+         * Disconnect from the given connection.
+         *
+         * @param string $name
+         * @return void 
+         * @static 
+         */ 
+        public static function disconnect($name = null)
+        {
+            //Method inherited from \GrahamCampbell\Manager\AbstractManager            
+            \GrahamCampbell\Flysystem\FlysystemManager::disconnect($name);
+        }
+        
+        /**
+         * Get the default connection name.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getDefaultConnection()
+        {
+            //Method inherited from \GrahamCampbell\Manager\AbstractManager            
+            return \GrahamCampbell\Flysystem\FlysystemManager::getDefaultConnection();
+        }
+        
+        /**
+         * Set the default connection name.
+         *
+         * @param string $name
+         * @return void 
+         * @static 
+         */ 
+        public static function setDefaultConnection($name)
+        {
+            //Method inherited from \GrahamCampbell\Manager\AbstractManager            
+            \GrahamCampbell\Flysystem\FlysystemManager::setDefaultConnection($name);
+        }
+        
+        /**
+         * Register an extension connection resolver.
+         *
+         * @param string $name
+         * @param callable $resolver
+         * @return void 
+         * @static 
+         */ 
+        public static function extend($name, $resolver)
+        {
+            //Method inherited from \GrahamCampbell\Manager\AbstractManager            
+            \GrahamCampbell\Flysystem\FlysystemManager::extend($name, $resolver);
+        }
+        
+        /**
+         * Return all of the created connections.
+         *
+         * @return object[] 
+         * @static 
+         */ 
+        public static function getConnections()
+        {
+            //Method inherited from \GrahamCampbell\Manager\AbstractManager            
+            return \GrahamCampbell\Flysystem\FlysystemManager::getConnections();
+        }
+        
+        /**
+         * Get the config instance.
+         *
+         * @return \Illuminate\Contracts\Config\Repository 
+         * @static 
+         */ 
+        public static function getConfig()
+        {
+            //Method inherited from \GrahamCampbell\Manager\AbstractManager            
+            return \GrahamCampbell\Flysystem\FlysystemManager::getConfig();
+        }
+         
+    }
+ 
+}
+
+namespace LukeTowers\Purifier\Facades { 
+
+    class Purifier {
+        
+        /**
+         * 
+         *
+         * @param $dirty
+         * @param null $config
+         * @return mixed 
+         * @static 
+         */ 
+        public static function clean($dirty, $config = null)
+        {
+            return \LukeTowers\Purifier\Purifier::clean($dirty, $config);
+        }
+        
+        /**
+         * Get HTMLPurifier instance.
+         *
+         * @return \HTMLPurifier 
+         * @static 
+         */ 
+        public static function getInstance()
+        {
+            return \LukeTowers\Purifier\Purifier::getInstance();
+        }
+         
+    }
+ 
+}
+
+namespace Barryvdh\DomPDF { 
+
+    class Facade {
+        
+        /**
+         * Get the DomPDF instance
+         *
+         * @return \Barryvdh\DomPDF\Dompdf 
+         * @static 
+         */ 
+        public static function getDomPDF()
+        {
+            return \Barryvdh\DomPDF\PDF::getDomPDF();
+        }
+        
+        /**
+         * Set the paper size (default A4)
+         *
+         * @param string $paper
+         * @param string $orientation
+         * @return $this 
+         * @static 
+         */ 
+        public static function setPaper($paper, $orientation = 'portrait')
+        {
+            return \Barryvdh\DomPDF\PDF::setPaper($paper, $orientation);
+        }
+        
+        /**
+         * Show or hide warnings
+         *
+         * @param bool $warnings
+         * @return $this 
+         * @static 
+         */ 
+        public static function setWarnings($warnings)
+        {
+            return \Barryvdh\DomPDF\PDF::setWarnings($warnings);
+        }
+        
+        /**
+         * Load a HTML string
+         *
+         * @param string $string
+         * @param string $encoding Not used yet
+         * @return static 
+         * @static 
+         */ 
+        public static function loadHTML($string, $encoding = null)
+        {
+            return \Barryvdh\DomPDF\PDF::loadHTML($string, $encoding);
+        }
+        
+        /**
+         * Load a HTML file
+         *
+         * @param string $file
+         * @return static 
+         * @static 
+         */ 
+        public static function loadFile($file)
+        {
+            return \Barryvdh\DomPDF\PDF::loadFile($file);
+        }
+        
+        /**
+         * Load a View and convert to HTML
+         *
+         * @param string $view
+         * @param array $data
+         * @param array $mergeData
+         * @param string $encoding Not used yet
+         * @return static 
+         * @static 
+         */ 
+        public static function loadView($view, $data = array(), $mergeData = array(), $encoding = null)
+        {
+            return \Barryvdh\DomPDF\PDF::loadView($view, $data, $mergeData, $encoding);
+        }
+        
+        /**
+         * Set/Change an option in DomPdf
+         *
+         * @param array $options
+         * @return static 
+         * @static 
+         */ 
+        public static function setOptions($options)
+        {
+            return \Barryvdh\DomPDF\PDF::setOptions($options);
+        }
+        
+        /**
+         * Output the PDF as a string.
+         *
+         * @return string The rendered PDF as string
+         * @static 
+         */ 
+        public static function output()
+        {
+            return \Barryvdh\DomPDF\PDF::output();
+        }
+        
+        /**
+         * Save the PDF to a file
+         *
+         * @param $filename
+         * @return static 
+         * @static 
+         */ 
+        public static function save($filename)
+        {
+            return \Barryvdh\DomPDF\PDF::save($filename);
+        }
+        
+        /**
+         * Make the PDF downloadable by the user
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */ 
+        public static function download($filename = 'document.pdf')
+        {
+            return \Barryvdh\DomPDF\PDF::download($filename);
+        }
+        
+        /**
+         * Return a response with the PDF to show in the browser
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */ 
+        public static function stream($filename = 'document.pdf')
+        {
+            return \Barryvdh\DomPDF\PDF::stream($filename);
+        }
+         
+    }
+ 
+}
+
 
 namespace  { 
 
@@ -14525,20 +15097,6 @@ namespace  {
             public static function removedScopes()
             {    
                 return \Illuminate\Database\Eloquent\Builder::removedScopes();
-            }
-         
-            /**
-             * Apply the callback's query changes if the given "value" is true.
-             *
-             * @param bool $value
-             * @param \Closure $callback
-             * @param \Closure $default
-             * @return $this 
-             * @static 
-             */ 
-            public static function when($value, $callback, $default = null)
-            {    
-                return \Illuminate\Database\Eloquent\Builder::when($value, $callback, $default);
             }
          
             /**
@@ -14700,18 +15258,6 @@ namespace  {
             }
          
             /**
-             * Execute the query and get the first result.
-             *
-             * @param array $columns
-             * @return \Illuminate\Database\Eloquent\Model|static|null 
-             * @static 
-             */ 
-            public static function first($columns = array())
-            {    
-                return \Illuminate\Database\Eloquent\Builder::first($columns);
-            }
-         
-            /**
              * Execute the query and get the first result or throw an exception.
              *
              * @param array $columns
@@ -14797,19 +15343,6 @@ namespace  {
             }
          
             /**
-             * Chunk the results of the query.
-             *
-             * @param int $count
-             * @param callable $callback
-             * @return bool 
-             * @static 
-             */ 
-            public static function chunk($count, $callback)
-            {    
-                return \Illuminate\Database\Eloquent\Builder::chunk($count, $callback);
-            }
-         
-            /**
              * Chunk the results of a query by comparing numeric IDs.
              *
              * @param int $count
@@ -14822,19 +15355,6 @@ namespace  {
             public static function chunkById($count, $callback, $column = null, $alias = null)
             {    
                 return \Illuminate\Database\Eloquent\Builder::chunkById($count, $callback, $column, $alias);
-            }
-         
-            /**
-             * Execute a callback over each item while chunking.
-             *
-             * @param callable $callback
-             * @param int $count
-             * @return bool 
-             * @static 
-             */ 
-            public static function each($callback, $count = 1000)
-            {    
-                return \Illuminate\Database\Eloquent\Builder::each($callback, $count);
             }
          
             /**
@@ -15045,6 +15565,58 @@ namespace  {
             }
          
             /**
+             * Chunk the results of the query.
+             *
+             * @param int $count
+             * @param callable $callback
+             * @return bool 
+             * @static 
+             */ 
+            public static function chunk($count, $callback)
+            {    
+                return \Illuminate\Database\Eloquent\Builder::chunk($count, $callback);
+            }
+         
+            /**
+             * Execute a callback over each item while chunking.
+             *
+             * @param callable $callback
+             * @param int $count
+             * @return bool 
+             * @static 
+             */ 
+            public static function each($callback, $count = 1000)
+            {    
+                return \Illuminate\Database\Eloquent\Builder::each($callback, $count);
+            }
+         
+            /**
+             * Execute the query and get the first result.
+             *
+             * @param array $columns
+             * @return mixed 
+             * @static 
+             */ 
+            public static function first($columns = array())
+            {    
+                return \Illuminate\Database\Eloquent\Builder::first($columns);
+            }
+         
+            /**
+             * Apply the callback's query changes if the given "value" is true.
+             *
+             * @param mixed $value
+             * @param \Closure $callback
+             * @param \Closure $default
+             * @return mixed 
+             * @static 
+             */ 
+            public static function when($value, $callback, $default = null)
+            {    
+                return \Illuminate\Database\Eloquent\Builder::when($value, $callback, $default);
+            }
+         
+            /**
              * Add a relationship count / exists condition to the query.
              *
              * @param string $relation
@@ -15113,7 +15685,7 @@ namespace  {
              * @return \Illuminate\Database\Eloquent\Builder|static 
              * @static 
              */ 
-            public static function orWhereHas($relation, $callback, $operator = '>=', $count = 1)
+            public static function orWhereHas($relation, $callback = null, $operator = '>=', $count = 1)
             {    
                 return \Illuminate\Database\Eloquent\Builder::orWhereHas($relation, $callback, $operator, $count);
             }
@@ -15335,6 +15907,18 @@ namespace  {
             public static function crossJoin($table, $first = null, $operator = null, $second = null)
             {    
                 return \Illuminate\Database\Query\Builder::crossJoin($table, $first, $operator, $second);
+            }
+         
+            /**
+             * Pass the query to a given callback.
+             *
+             * @param \Closure $callback
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */ 
+            public static function tap($callback)
+            {    
+                return \Illuminate\Database\Query\Builder::tap($callback);
             }
          
             /**
@@ -15865,6 +16449,18 @@ namespace  {
             public static function orderBy($column, $direction = 'asc')
             {    
                 return \Illuminate\Database\Query\Builder::orderBy($column, $direction);
+            }
+         
+            /**
+             * Add a descending "order by" clause to the query.
+             *
+             * @param string $column
+             * @return $this 
+             * @static 
+             */ 
+            public static function orderByDesc($column)
+            {    
+                return \Illuminate\Database\Query\Builder::orderByDesc($column);
             }
          
             /**
@@ -16466,6 +17062,14 @@ namespace  {
     class Image extends \Intervention\Image\Facades\Image {}
 
     class Debugbar extends \Barryvdh\Debugbar\Facade {}
+
+    class Former extends \Former\Facades\Former {}
+
+    class Flysystem extends \GrahamCampbell\Flysystem\Facades\Flysystem {}
+
+    class Purifier extends \LukeTowers\Purifier\Facades\Purifier {}
+
+    class PDF extends \Barryvdh\DomPDF\Facade {}
  
 }
 

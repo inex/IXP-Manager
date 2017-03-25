@@ -424,7 +424,7 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Get Customer
      *
-     * @return Entities\Customer
+     * @return Customer
      */
     public function getCustomer()
     {

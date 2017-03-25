@@ -248,9 +248,10 @@ class CustomerController extends IXP_Controller_FrontEnd
      */
     public function overviewAction()
     {
-        $this->view->netinfo   = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
-        $this->view->cust      = $cust = $this->_loadCustomer();
-        $this->view->tab       = $this->getParam( 'tab', false );
+        $this->view->netinfo        = $this->getD2EM()->getRepository( '\\Entities\\NetworkInfo' )->asVlanProtoArray();
+        $this->view->cust           = $cust = $this->_loadCustomer();
+        $this->view->tab            = $this->getParam( 'tab', false );
+        $this->view->isSuperUser    = $this->getUser()->isSuperUser();
 
         $this->view->registerClass( 'Countries', 'OSS_Countries' );
         $this->view->registerClass( 'BillingDetails', '\\Entities\\CompanyBillingDetail' );
@@ -278,6 +279,10 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         if( $this->multiIXP() )
             $this->view->validIXPs = $this->getD2R( "\\Entities\\IXP" )->getNamesNotAssignedToCustomer( $cust->getId() );
+
+        $this->view->crossConnects = $this->getD2R( "\\Entities\\Customer" )->getCrossConnects( $cust->getId() );
+
+
 
         // does the customer have any graphs?
         $this->view->hasAggregateGraph = false;

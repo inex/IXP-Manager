@@ -2,7 +2,7 @@
 .project
 .buildpath
 .vagrant/
-vendor/
+/vendor/
 MAINT_MODE_ENABLED
 .settings/
 ixp-manager.sublime-workspace
@@ -83,6 +83,7 @@ composer.phar
 tools/installers/Vagrantfile
 
 storage/grapher/
+storage/files/*
 
 .idea/workspace.xml
 .idea/tasks.xml

@@ -17,6 +17,9 @@
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/chosen/chosen.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-manager.css') ?>" />
+    <link rel="stylesheet" type="text/css" href="<?= asset('css/draganddrop.css') ?>" />
+    <link rel="stylesheet" type="text/css" href="<?= asset('css/font-awesome.min.css') ?>" />
+
 
     <?php $this->section('headers') ?>
     <?php $this->stop() ?>
@@ -62,7 +65,7 @@
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
-        <div class="container-fluid">
+        <div class="padding20LR container-fluid">
 
             <?= $t->insert( 'menu' ); ?>
 
@@ -130,7 +133,7 @@
     <script type="text/javascript" src="<?= asset('/bower_components/vue/dist/vue.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/900-oss-framework.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/ixp-manager.js') ?>"></script>
-
+    <script type="text/javascript" src="<?= asset('/js/bootbox.min.js') ?>"></script>
 
     <?php if( Auth::check() ): ?>
     <script>

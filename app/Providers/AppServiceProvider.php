@@ -1,7 +1,8 @@
 <?php namespace IXP\Providers;
 
+use Former;
 use Illuminate\Support\ServiceProvider;
-
+use IXP\Utils\Former\Framework\TwitterBootstrap3;
 use URL;
 
 class AppServiceProvider extends ServiceProvider {
@@ -14,6 +15,14 @@ class AppServiceProvider extends ServiceProvider {
     public function boot()
     {
         $this->setupUrls();
+
+        view()->composer('layouts.master', function($view)
+        {
+            $view->with('controllerAction' , app('request')->route()->getAction()['as']);
+        });
+
+        Former::framework( TwitterBootstrap3::class );
+
     }
 
     /**

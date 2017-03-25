@@ -58,3 +58,150 @@
 </dd>
 
 </dl>
+
+<br>
+<h3>Available API Endpoints - V4</h3>
+
+{if isset( $data.0 )}
+    {assign var="example_api_key" value="`$data.0.apiKey`"}
+{else}
+    {assign var="example_api_key" value="\$your_api_key"}
+{/if}
+
+
+<p>
+    API key can be passed in the header (preferred) or on the URL. For example:
+    <ul>
+        <li> <code>curl -X GET -H "X-IXP-Manager-API-Key: {$example_api_key}" {genUrl}/api/v4/test</code></li>
+        <li> <code>wget {genUrl}/api/v4/test?apikey={$example_api_key}</code></li>
+    </ul>
+</p>
+
+<dl>
+
+    {if $user->isSuperUser()}
+
+        <dt>Patch Panel Ports</dt>
+        <dd>
+            <ul>
+                <li>
+                    Get details for an <b>active</b> patch panel port:<br>
+                    <code>{genUrl}/api/v4/patch-panel-port/{ldelim}id{rdelim}</code> where <code>id</code> is the patch panel port ID.
+                    <br><br>
+                    If a switch port has an allocated customer, the JSON response is:<br>
+                    <pre>
+{
+   "id": 38,
+   "number": 1,
+   "name": "1\/2",
+   "coloRef": "TCIE-1234",
+   "ticketRef": "234",
+   "stateId": 2,
+   "state": "Awaiting Xconnect",
+   "notes": "* 2017-03-14 [barryo]: Public",
+   "privateNotes": "* 2017-03-14 [barryo]: Private",
+   "assignedAt": "2017-03-14T00:00:00+00:00",
+   "connectedAt": null,
+   "ceaseRequestedAt": null,
+   "ceasedAt": null,
+   "internalUse": false,
+   "chargeableId": 2,
+   "chargeable": "No",
+   "isDuplex": true,
+   "isDuplexMaster": true,
+   "duplexMasterId": null,
+   "duplexSlaveId": 39,
+   "loaCode": "RJGtwp2x0Ii7feG7HybaY6nkc",
+   "ownedById": 1,
+   "ownedBy": "Customer",
+   "isHistorical": false,
+   "files": [{
+        "id":1,
+        "name":"Screen Shot 2017-03-13 at 15.57.30.png",
+        "type":"image\/png",
+        "uploadedAt":"2017-03-13T00:00:00+00:00",
+        "uploadedBy":"barryo",
+        "size":37100,
+        "private":false
+    }]
+}</pre>
+
+                    You can get <em>deeper</em> information by adding a <code>/1</code> which adds the following to the above:
+                    <pre>
+    patchPanel: {
+        id: 3,
+        cabinetId: 1,
+        name: "NAME-01",
+        coloRef: "COLO-REF-01",
+        cableTypeId: 1,
+        cableType: "UTP",
+        connectorTypeId: 1,
+        connectorType: "RJ45",
+        active: true
+    },
+    switchPort: {
+        switchId: 30,
+        switch: "swi1-deg1-1",
+        name: "X670G2-48x-4q Port 1",
+        ifName: "1:1",
+        physicalInterfaceId: 2,
+        physicalInterface: {
+            statusId: 4,
+            status: "Awaiting X-Connect"
+        }
+    }</pre>
+                    <br><br>
+                    Lastly, if the switch port does not exist, a 404 HTTP response is thrown.
+                </li>
+                <li>
+                    Set notes and private notes: [POST]<br>
+                    <code>{genUrl}/api/v4/patch-panel-port/notes/{ldelim}id{rdelim}</code> where <code>id</code> is the patch panel port ID. For example:
+                    <br>
+                    <pre>curl -X POST  -H "X-IXP-Manager-API-Key: key" --data "notes=a&private_notes=b" {genUrl}/api/v4/patch-panel-port/$id/notes</pre>
+                    Additionally, you can send a <code>&pi_status=X</code> where <code>X</code> is a physical interface state. By doing this, you can
+                    update the state through this API call. The code is forgiving - if no physical interface exists, it will fail silently and continue on.
+                    <br>
+                    If the switch port does not exist, a 404 HTTP response is thrown.
+                </li>
+                <li>
+                    Upload a file: [POST]<br>
+                    <code>{genUrl}/api/v4/patch-panel-port/upload-file/{ldelim}id{rdelim}</code> where <code>id</code> is the patch panel port ID.
+                    File should be sent as <code>upl</code>. Success yields:
+                    <br>
+                    <pre>{ldelim} "success":true, "message": "File uploaded and saved.", "id": newFileId {rdelim}</pre>
+                </li>
+                <li>
+                    Delete a file: [GET]<br>
+                    <code>{genUrl}/api/v4/patch-panel-port/delete-file/{ldelim}fileid{rdelim}</code>.
+                </li>
+                <li>
+                    Toggle a file's privacy status: [GET]<br>
+                    <code>{genUrl}/api/v4/patch-panel-port/toggle-file-privacy/{ldelim}fileid{rdelim}</code>.
+                    <br>
+                    <pre>{ldelim} "success":true, "isPrivate": true/false {rdelim}</pre>
+                </li>
+            </ul>
+        </dd>
+
+        <dt>Switch Ports</dt>
+        <dd>
+            <ul>
+                <li>
+                    Get the customer who has been allocated a switch port:<br>
+                    <code>{genUrl}/api/v4/switch-port/{ldelim}id{rdelim}/customer</code> where <code>id</code> is the switch port ID.
+                    <br><br>
+                    If a switch port has an allocated customer, the JSON response is:<br>
+                    <code>{ldelim}"customerFound":true,"id":102,"name":"Packet Shifters Ltd"{rdelim}</code><br>
+                    where the enclosed id is the customer object id.
+                    <br><br>
+                    If a switch port does not have an allocated customer, the JSON response is:<br>
+                    <code>{ldelim}"customerFound":false{rdelim}</code>
+                    <br><br>
+                    Lastly, if the switch port does not exist, a 404 HTTP response is thrown.
+                </li>
+            </ul>
+        </dd>
+
+    {/if}
+
+</dl>
