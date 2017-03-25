@@ -232,8 +232,10 @@ class PatchPanelPortController extends Controller
     public function store( StorePatchPanelPort $request ): RedirectResponse {
 
         /** @var PatchPanelPort $ppp */
-        if( $request->input( 'id' ) && !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404, 'Unknown patch panel port' );
+        if( $request->input( 'id' ) ) {
+            if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $request->input( 'id' ) ) ) ) {
+                abort(404, 'Unknown patch panel port');
+            }
         } else {
             // FIXME: yann - do we ever create ports using store()?
             $ppp = new PatchPanelPort();
