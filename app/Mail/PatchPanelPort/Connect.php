@@ -47,14 +47,4 @@ class Connect extends Email
         $this->subject = "Cross connect to " . env('IDENTITY_ORGNAME' ) . " [" . $ppp->getColoCircuitRef() . " / " . $ppp->getName() . "]";
         $this->tmpl = 'patch-panel-port/emails/connect';
     }
-
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build() {
-        return $this;
-    }
 }

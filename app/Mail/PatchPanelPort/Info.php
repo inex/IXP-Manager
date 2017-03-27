@@ -48,13 +48,4 @@ class Info extends Email
         $this->subject = "Cross connect details for  " .env('IDENTITY_ORGNAME') . " [" . $ppp->getColoCircuitRef() . " / " . $ppp->getName() . "]";
         $this->tmpl = 'patch-panel-port/emails/info';
     }
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build() {
-        return $this;
-    }
 }

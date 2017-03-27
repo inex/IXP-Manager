@@ -195,33 +195,46 @@ class Switcher extends EntityRepository
     }
 
 
-    public function getAllPorts( $id, $customerId = null, $switchPortId = null )
-    {
+    /**
+     * Returns all available switch ports where available means not in use by a
+     * patch panel port.
+     *
+     * Function specifically for use with the patch panel ports functionality.
+     *
+     * Not suitable for other generic use.
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @param int|null $cid    Customer ID, if set limit to a customer's ports
+     * @param int|null $spid   Switch port ID, if set, this port is excluded from the results
+     * @return array
+     */
+    public function getAllPorts( int $id, int $cid = null, int $spid = null ): array {
+
+        /** @noinspection SqlNoDataSourceInspection */
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
                     FROM \\Entities\\SwitchPort sp
                         LEFT JOIN sp.Switcher s
                         LEFT JOIN sp.PhysicalInterface pi ";
 
 
-        if( $customerId != null ){
-            $dql .= " LEFT JOIN pi.VirtualInterface vi ";
+        if( $cid != null ) {
+            $dql .= " LEFT JOIN pi.VirtualInterface vi 
+                      LEFT JOIN vi.Customer c";
         }
 
-        // Remove the switch port already use by a patch panel port
-        $dql .= " WHERE sp.id NOT IN (SELECT IDENTITY(ppp.switchPort)
-                                      FROM Entities\\PatchPanelPort ppp
-                                      WHERE ppp.switchPort IS NOT NULL";
+        // Remove the switch ports already in use by all patch panels
+        $dql .= " WHERE sp.id NOT IN ( SELECT IDENTITY(ppp.switchPort)
+                    FROM Entities\\PatchPanelPort ppp
+                    WHERE ppp.switchPort IS NOT NULL";
 
-        if( $switchPortId != null ){
-            $switchPortId = intval($switchPortId);
-            $dql .= " AND ppp.switchPort != $switchPortId";
-
+        if( $spid != null ) {
+            $dql .= " AND ppp.switchPort != $spid";
         }
 
         $dql .= ") AND s.id = ?1";
 
-        if( $customerId != null ){
-            $dql .= " AND vi.Customer = $customerId";
+        if( $cid != null ) {
+            $dql .= " AND c.id = $cid";
         }
 
         $dql .= " ORDER BY sp.id ASC";
@@ -229,22 +242,32 @@ class Switcher extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
         $query->setParameter( 1, $id);
 
-
         $ports = $query->getArrayResult();
 
         foreach( $ports as $id => $port ){
             $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
         }
 
-
         return $ports;
     }
 
 
-    public function getAllPortsPrewired( $id, $switchPortId = null )
-    {
+    /**
+     * Returns all available switch ports where available means not in use by a
+     * patch panel port and not assigned to a physical interface.
+     *
+     * Function specifically for use with the patch panel ports functionality.
+     *
+     * Not suitable for other generic use.
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @param int|null $spid   Switch port ID, if set, this port is excluded from the results
+     * @return array
+     */
+    public function getAllPortsPrewired( int $id, int $spid = null ): array {
+        /** @noinspection SqlNoDataSourceInspection */
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
-                    FROM \\Entities\\SwitchPort sp
+                    FROM \\Entities\SwitchPort sp
                         LEFT JOIN sp.Switcher s ";
 
 
@@ -253,10 +276,8 @@ class Switcher extends EntityRepository
                                       FROM Entities\\PatchPanelPort ppp
                                       WHERE ppp.switchPort IS NOT NULL";
 
-        if( $switchPortId != null ){
-            $switchPortId = intval($switchPortId);
-            $dql .= " AND ppp.switchPort != $switchPortId";
-
+        if( $spid !== null ){
+            $dql .= " AND ppp.switchPort != $spid";
         }
 
         $dql .= ") AND s.id = ?1";
@@ -264,7 +285,6 @@ class Switcher extends EntityRepository
 
         $dql .= " AND sp.id NOT IN (SELECT IDENTITY(pi.SwitchPort)
                                       FROM Entities\\PhysicalInterface pi)";
-
 
         $dql .= " AND ((sp.type = 0)  OR (sp.type = 1))";
 
@@ -278,7 +298,6 @@ class Switcher extends EntityRepository
         foreach( $ports as $id => $port ){
             $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
         }
-
 
         return $ports;
     }

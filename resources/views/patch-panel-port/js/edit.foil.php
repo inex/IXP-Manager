@@ -57,21 +57,28 @@
          * and check if the swich port has a physical interface set and with the possibility to change the status of the physical interface
          */
         $( "#switch_port" ).change(function(){
+
             setCustomer();
+
             <?php if( $t->allocating ): ?>
+            $('#pi_status').val('');
+            $('#pi_status').trigger("chosen:updated");
+
             if( $( "#switch_port").val() != '' ){
-                switchPortId = $( "#switch_port" ).val();
-                $.ajax( "<?= url( '/api/v4/switch-port' ) ?>/" + switchPortId + "/physical-interface" )
+                var spid = $( "#switch_port" ).val();
+                $.ajax( "<?= url( '/api/v4/switch-port' ) ?>/" + spid + "/physical-interface" )
                     .done( function( data ) {
-                        if( data.physicalInterfaceFound ) {
-                            $( "#pi_status_area" ).show();
-                        } else {
-                            $( "#pi_status_area" ).hide();
+                        $( "#pi_status_area" ).hide();
+                        if( data.physInt != undefined ) {
+                            $('#pi_status').val(data.physInt.status);
+                            $('#pi_status').trigger("chosen:updated");
+                            $("#pi_status_area").show();
                         }
                     })
                     .fail( function() {
                         alert( "Error running ajax query for switch-port/$id/physical-interface" );
                         $( "#customer" ).html("");
+                        throw "Error running ajax query for switch-port/$id/physical-interface";
                     })
             }
             <?php endif; ?>

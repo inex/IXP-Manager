@@ -150,9 +150,11 @@ class PatchPanelPortController extends Controller
         // If we're allocating this port, set the chargable flag to the patch panel's default:
         $chargeable = ( $allocating and $ppp->isStateAvailable()) ? $ppp->getPatchPanel()->getChargeable() : $ppp->getChargeable();
 
-        // FIXME yann: not sure what this is - can you talk to me about it?
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        $switchPort = D2EM::getRepository( Switcher::class )->getAllPorts( $ppp->getSwitchId(), null, $ppp->getSwitchPortId());
+        if( $ppp->getSwitchPort() ) {
+            // FIXME: Queries and logic could be improved.
+            /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
+            $switchPorts = D2EM::getRepository(Switcher::class)->getAllPorts( $ppp->getSwitchPort()->getSwitcher()->getId(), null, $ppp->getSwitchPort()->getId() );
+        }
 
         // fill the form with patch panel port data
         Former::populate([
@@ -177,7 +179,7 @@ class PatchPanelPortController extends Controller
         ]);
 
         // display the duplex port if set or the list of all duplex ports available
-        // FIXME: yann - should we not show all available ports so the user can change the duplex port if they made an error?
+        // FIXME: We should allow editing this - see https://github.com/inex/IXP-Manager/issues/307
         if( $ppp->hasSlavePort() ) {
             $partnerPorts = [ $ppp->getDuplexSlavePortId() => $ppp->getDuplexSlavePortName() ];
         } else {
@@ -188,10 +190,10 @@ class PatchPanelPortController extends Controller
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/edit' )->with([
             'states'            => $states,
-            'piStatus'          => PhysicalInterface::$PPP_STATES,
+            'piStatus'          => array_merge( [ '0' => '' ], PhysicalInterface::$STATES ),
             'customers'         => D2EM::getRepository( Customer::class )->getNames( true ),
             'switches'          => D2EM::getRepository( Switcher::class )->getNamesByLocation( true, Switcher::TYPE_SWITCH,$ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
-            'switchPorts'       => $switchPort,
+            'switchPorts'       => $switchPorts ?? [],
             'chargeables'       => PatchPanelPort::$CHARGEABLES,
             'ownedBy'           => PatchPanelPort::$OWNED_BY,
             'ppp'               => $ppp,
@@ -231,15 +233,8 @@ class PatchPanelPortController extends Controller
      */
     public function store( StorePatchPanelPort $request ): RedirectResponse {
 
-        /** @var PatchPanelPort $ppp */
-        if( $request->input( 'id' ) ) {
-            if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404, 'Unknown patch panel port');
-            }
-        } else {
-            // FIXME: yann - do we ever create ports using store()?
-            $ppp = new PatchPanelPort();
-            D2EM::persist( $ppp );
+        if( !$request->input( 'id' ) || !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $request->input( 'id' ) ) ) ) {
+            abort(404, 'Unknown patch panel port');
         }
 
         if( $request->input( 'switch_port' ) ) {
@@ -347,27 +342,18 @@ class PatchPanelPortController extends Controller
 
         // create a history and reset the patch panel port
         if( $ppp->getState() == PatchPanelPort::STATE_CEASED ) {
+            /** @noinspection PhpUndefinedMethodInspection - we need to get dynamic getRepository() factory working */
             if( D2EM::getRepository(PatchPanelPort::class)->archive( $ppp ) ) {
                 $ppp->resetPatchPanelPort();
             }
         }
 
         // set physical interface status if available
-        // FIXME - yann can you also talk to be about this:
-//        if( $request->input( 'allocated' ) ) {
-//            if( $request->input( 'pi_status' ) && $ppp->getSwitchPort()->getPhysicalInterface() ) {
-//                switch ( $request->input( 'pi_status' ) ) {
-//                    case PhysicalInterface::STATUS_CONNECTED :
-//                        $piStatus = PhysicalInterface::STATUS_QUARANTINE;
-//                        break;
-//                    case PhysicalInterface::STATUS_XCONNECT :
-//                        $piStatus = PhysicalInterface::STATUS_XCONNECT;
-//                        break;
-//                }
-//                $ppp->getSwitchPort()->getPhysicalInterface()->setStatus( $piStatus );
-//                D2EM::flush();
-//            }
-//        }
+        if( $request->input( 'allocated' ) ) {
+            if( $request->input( 'pi_status' ) && $request->input( 'pi_status' ) > 0 && $ppp->getSwitchPort()->getPhysicalInterface() ) {
+                $ppp->getSwitchPort()->getPhysicalInterface()->setStatus( $request->input( 'pi_status' ) );
+            }
+        }
 
         D2EM::flush();
 
@@ -458,6 +444,7 @@ class PatchPanelPortController extends Controller
 
             // create a history and reset the patch panel port
             if( $this->getPPP()->getState() == PatchPanelPort::STATE_CEASED ) {
+                /** @noinspection PhpUndefinedMethodInspection - we need to get dynamic getRepository() factory working */
                 if( D2EM::getRepository(PatchPanelPort::class)->archive( $this->getPPP() ) ) {
                     $this->getPPP()->resetPatchPanelPort();
                 }
@@ -572,7 +559,7 @@ class PatchPanelPortController extends Controller
             ]);
         }
 
-        if( $request->input( 'loa' ) ) {
+        if( $type == PatchPanelPort::EMAIL_LOA || $request->input( 'loa' ) ) {
             /** @var \Barryvdh\DomPDF\PDF $pdf */
             list($pdf, $pdfname) = $this->createLoAPDF( $this->getPPP() );
             $mailable->attachData( $pdf->output(), $pdfname, [

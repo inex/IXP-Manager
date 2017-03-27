@@ -148,7 +148,8 @@
                 ->options( $t->piStatus )
                 ->placeholder( 'Choose a status' )
                 ->addClass( 'chzn-select' )
-                ->help( 'This allows you to update the physical interface status when updating the patch panel port status.' );
+                ->help( 'This allows you to update the physical interface status when updating the patch panel port status. '
+                    . '<b>The current state is shown by default.</b>' );
             ?>
         </span>
     <?php endif; ?>

@@ -47,13 +47,4 @@ class Loa extends Email
         $this->subject = "Cross connect LoA details for " . env('IDENTITY_ORGNAME') . " [" . $ppp->getColoCircuitRef() . " / " . $ppp->getName() . "]";
         $this->tmpl = 'patch-panel-port/emails/loa';
     }
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build() {
-        return $this;
-    }
 }
