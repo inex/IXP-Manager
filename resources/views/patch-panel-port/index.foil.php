@@ -7,6 +7,7 @@
     <?php if( $t->pp ): ?>
         - <?= $t->pp->getName() ?>
     <?php endif;?>
+    <?= isset( $t->data()['summary'] ) ? ' :: ' . $t->summary : '' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -259,7 +260,12 @@
                     <div id="notes-modal-body-div-pi-status">
                         <br><br>
                         <span>Update Physical Port State To: </span>
-                        <select title="Physical Interface States" id="notes-modal-body-pi-status"></select>
+                        <select title="Physical Interface States" id="notes-modal-body-pi-status">
+                            <option value="0"></option>
+                            <?php foreach( Entities\PhysicalInterface::$STATES as $i => $s ): ?>
+                                <option value="<?= $i ?>"><?= $s ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">

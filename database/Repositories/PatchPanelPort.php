@@ -84,7 +84,7 @@ class PatchPanelPort extends EntityRepository
      * @param PatchPanelPortEntity $ppp
      * @return PatchPanelPortHistoryEntity
      */
-    public static function archive( PatchPanelPortEntity $ppp ): PatchPanelPortHistoryEntity {
+    public function archive( PatchPanelPortEntity $ppp ): PatchPanelPortHistoryEntity {
 
         $ppph = new PatchPanelPortHistoryEntity();
         $ppph->setFromPatchPanelPort($ppp);
@@ -111,6 +111,14 @@ class PatchPanelPort extends EntityRepository
     }
 
 
+    /**
+     * Load patch panel port objects allow them to be filtered by location, cabinet and/or cable type.
+     *
+     * @param int $location   Location ID (or zero for all)
+     * @param int $cabinet    Cabinet ID
+     * @param int $cabletype  Cable type (@see \Entities\PatchPanel::$CABLE_TYPES)
+     * @return array
+     */
     public function advancedSearch( int $location, int $cabinet, int $cabletype ) {
         $dql = "SELECT ppp
                   FROM Entities\PatchPanelPort ppp

@@ -1,9 +1,9 @@
 <script>
 
-    var notesIntro = "### <?= date("Y-m-d" ) . ' - ' .$t->user->getUsername() ?> \n\n\n";
+    var notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::user()->getUsername() ?> \n\n\n";
 
     var pagination = true;
-    <?php if($t->pp): ?>
+    <?php if($t->pp || isset( $t->data()['summary'] )): ?>
     // unless we have a single patch panel in which case we disable:
         pagination = false;
     <?php endif; ?>
@@ -106,28 +106,7 @@
 
         $('#notes-modal-body-div-pi-status').hide();
         if( action == 'set-connected' && ppp.switchPortId ) {
-
-            var haveCurrentState = false;
-            var piSelect = $('#notes-modal-body-pi-status');
-            piSelect.html('');
-
-            <?php foreach( $t->physicalInterfaceStatesSubSet as $i => $s ): ?>
-
-                var opt = '<option <?= $i == \Entities\PhysicalInterface::STATUS_QUARANTINE ? 'selected="selected"' : '' ?> value="<?= $i ?>"><?= $s ?>';
-
-                if( <?= $i ?> == ppp.switchPort.physicalInterface.statusId ) {
-                    haveCurrentState = true;
-                    opt += " (current state)";
-                }
-
-                piSelect.append( opt + '</option>' );
-
-            <?php endforeach ;?>
-
-            if( !haveCurrentState ) {
-                piSelect.append( '<option value="' + ppp.switchPort.physicalInterface.statusId + '">' + ppp.switchPort.physicalInterface.status + ' (current state)</option>' );
-            }
-
+            $('#notes-modal-body-pi-status').val( ppp.switchPort.physicalInterface.statusId );
             $('#notes-modal-body-div-pi-status').show();
         }
 

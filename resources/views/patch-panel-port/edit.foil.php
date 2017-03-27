@@ -145,7 +145,7 @@
         <span id='pi_status_area' style="display: none">
             <?= Former::select( 'pi_status' )
                 ->label( 'Physical Interface Status' )
-                ->options( $t->piStatus )
+                ->options( Entities\PhysicalInterface::$STATES )
                 ->placeholder( 'Choose a status' )
                 ->addClass( 'chzn-select' )
                 ->help( 'This allows you to update the physical interface status when updating the patch panel port status. '

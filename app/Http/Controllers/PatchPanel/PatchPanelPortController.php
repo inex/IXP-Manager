@@ -24,7 +24,9 @@
 
 namespace IXP\Http\Controllers\PatchPanel;
 
+use Entities\Cabinet;
 use Entities\Customer;
+use Entities\Location;
 use Entities\PatchPanel;
 use Entities\PatchPanelPort;
 use Entities\PatchPanelPortFile;
@@ -100,13 +102,6 @@ class PatchPanelPortController extends Controller
         return view( 'patch-panel-port/index' )->with([
             'patchPanelPorts'               => D2EM::getRepository( PatchPanelPort::class )->getAllPatchPanelPort( $ppid ),
             'pp'                            => $pp ?? false,
-            'user'                          => Auth::user(),
-
-            // this is used for some of the allocate / mark connected / etc. actions:
-            'physicalInterfaceStatesSubSet' => [
-                PhysicalInterface::STATUS_QUARANTINE => PhysicalInterface::$STATES[ PhysicalInterface::STATUS_QUARANTINE ],
-                PhysicalInterface::STATUS_CONNECTED  => PhysicalInterface::$STATES[ PhysicalInterface::STATUS_CONNECTED  ]
-            ]
         ]);
     }
 
@@ -122,18 +117,17 @@ class PatchPanelPortController extends Controller
         $cabinet   = is_numeric( $request->get('cabinet' ) ) ? intval( $request->get('cabinet' ) ) : 0;
         $cabletype = is_numeric( $request->get('type'    ) ) ? intval( $request->get('type'    ) ) : 0;
 
+        $summary = "Filtered for: ";
+        $summary .= $location ? D2EM::getRepository(Location::class)->find($location)->getName() : 'All locations';
+        $summary .= ', ' . ( $cabinet ? D2EM::getRepository(Cabinet::class)->find($cabinet)->getName() : 'all cabinets' );
+        $summary .= ', ' . ( $cabletype ? PatchPanel::$CABLE_TYPES[$cabletype] : 'all cable types' ) . '.';
+
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/index' )->with([
             'patchPanelPorts'               => D2EM::getRepository( PatchPanelPort::class )->advancedSearch(
                                                     $location, $cabinet, $cabletype ),
             'pp'                            => $pp ?? false,
-            'user'                          => Auth::user(),
-
-            // this is used for some of the allocate / mark connected / etc. actions:
-            'physicalInterfaceStatesSubSet' => [
-                PhysicalInterface::STATUS_QUARANTINE => PhysicalInterface::$STATES[ PhysicalInterface::STATUS_QUARANTINE ],
-                PhysicalInterface::STATUS_CONNECTED  => PhysicalInterface::$STATES[ PhysicalInterface::STATUS_CONNECTED  ]
-            ]
+            'summary'                       => $summary,
         ]);
     }
 
@@ -218,7 +212,6 @@ class PatchPanelPortController extends Controller
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/edit' )->with([
             'states'            => $states,
-            'piStatus'          => PhysicalInterface::$PPP_STATES,
             'customers'         => D2EM::getRepository( Customer::class )->getNames( false ),
             'switches'          => D2EM::getRepository( Switcher::class )->getNamesByLocation( true, Switcher::TYPE_SWITCH,$ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
             'switchPorts'       => $switchPorts ?? [],
