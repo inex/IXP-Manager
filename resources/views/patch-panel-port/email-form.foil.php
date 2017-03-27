@@ -47,7 +47,7 @@
         <?php if( $t->emailType != \Entities\PatchPanelPort::EMAIL_LOA ): ?>
             <?= Former::checkbox( 'loa' )
                 ->label( 'Attach LoA as a PDF' )
-                ->check( $t->ppp->isStateAvailable() || $t->ppp->isStateAwaitingXConnect() )
+                ->check( $t->emailType == 1 /* connect */ || $t->emailType == 4 /* send loa */ )
             ?>
         <?php endif; ?>
 

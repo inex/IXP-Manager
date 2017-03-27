@@ -6,7 +6,8 @@ As per your request, here are our records on the following cross connect to INEX
 ```
 Colo Reference:  {{ $ppp->getColoCircuitRef() }}
 Patch panel:     {{ $ppp->getPatchPanel()->getName() }}
-Port:            {{ $ppp->getName() }}
+Port:            {{ $ppp->getName() }} @if( $ppp->hasSlavePort() ) *(duplex port)* @endif
+
 State:           {{ $ppp->resolveStates() }}
 @if( $ppp->getCeaseRequestedAt() )
 Cease requested: {{  $ppp->getCeaseRequestedAt()->format('Y-m-d') }}

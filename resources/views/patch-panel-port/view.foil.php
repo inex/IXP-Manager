@@ -96,7 +96,7 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <?= $p->getCustomer()->getName() ?>
+                                            <?= !$current ? $p->getCustomer() : ( $p->getCustomer() ? $p->getCustomer()->getName() : '' ) ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>

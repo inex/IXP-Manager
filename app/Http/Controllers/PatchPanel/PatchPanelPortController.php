@@ -286,12 +286,12 @@ class PatchPanelPortController extends Controller
             $ppp->setLastStateChange( new \DateTime );
         }
 
-        $ppp->setNotes( ( $request->input( 'notes' ) == '' ? null : clean( $request->input( 'notes' ) ) ) );
+        $ppp->setNotes( ( clean( $request->input( 'notes', '' ) ) ) );
 
-        $ppp->setPrivateNotes( ( $request->input( 'private_notes' ) == '' ? null : clean( $request->input( 'private_notes' ) ) ) );
+        $ppp->setPrivateNotes( clean( $request->input( 'private_notes', '' )  ) );
 
-        $ppp->setColoCircuitRef( $request->input( 'colo_circuit_ref') );
-        $ppp->setTicketRef( $request->input( 'ticket_ref' ) );
+        $ppp->setColoCircuitRef( $request->input( 'colo_circuit_ref', '') );
+        $ppp->setTicketRef( $request->input( 'ticket_ref', '' ) );
 
         $ppp->setCustomer( ( $request->input( 'customer' ) ) ? D2EM::getRepository( Customer::class )->find( $request->input( 'customer' ) ) : null );
 
@@ -345,11 +345,11 @@ class PatchPanelPortController extends Controller
             }
         }
 
-        D2EM::flush();
-
         // create a history and reset the patch panel port
         if( $ppp->getState() == PatchPanelPort::STATE_CEASED ) {
-            $ppp->createHistory();
+            if( D2EM::getRepository(PatchPanelPort::class)->archive( $ppp ) ) {
+                $ppp->resetPatchPanelPort();
+            }
         }
 
         // set physical interface status if available
@@ -368,6 +368,8 @@ class PatchPanelPortController extends Controller
 //                D2EM::flush();
 //            }
 //        }
+
+        D2EM::flush();
 
         return Redirect::to( 'patch-panel-port/list/patch-panel/'.$ppp->getPatchPanel()->getId() );
 
@@ -444,11 +446,25 @@ class PatchPanelPortController extends Controller
         }
 
         $this->getPPP()->setLastStateChange( new \DateTime );
-        D2EM::flush();
 
         if( $status == PatchPanelPort::STATE_CEASED ){
-            $this->getPPP()->createHistory();
+            if( $this->getPPP()->getSwitchPort() ) {
+                AlertContainer::push( 'The patch panel port has been set to available again. Consider '
+                      . 'setting it as  prewired if the cable is still in place. It was connected to '
+                      . $this->getPPP()->getSwitchPort()->getSwitcher()->getName() . ' :: '
+                      . $this->getPPP()->getSwitchPort()->getName(),
+                  Alert::SUCCESS );
+            }
+
+            // create a history and reset the patch panel port
+            if( $this->getPPP()->getState() == PatchPanelPort::STATE_CEASED ) {
+                if( D2EM::getRepository(PatchPanelPort::class)->archive( $this->getPPP() ) ) {
+                    $this->getPPP()->resetPatchPanelPort();
+                }
+            }
         }
+
+        D2EM::flush();
 
         AlertContainer::push( 'The patch panel port has been set to: ' . $this->getPPP()->resolveStates(), Alert::SUCCESS );
         return redirect( '/patch-panel-port/list/patch-panel/'.$this->getPPP()->getPatchPanel()->getId() );

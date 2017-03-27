@@ -6,7 +6,8 @@ You or someone in your organisation requested a LoA on the following cross conne
 ```
 Colo Reference: {{ $ppp->getColoCircuitRef() }}
 Patch panel:    {{ $ppp->getPatchPanel()->getName() }}
-Port:           {{ $ppp->getName() }}
+Port:           {{ $ppp->getName() }} @if( $ppp->hasSlavePort() ) *(duplex port)* @endif
+
 State:          {{ $ppp->resolveStates() }}
 ```
 

@@ -1071,23 +1071,12 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function resetPatchPanelPort()
+    public function resetPatchPanelPort(): \Entities\PatchPanelPort
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resetPatchPanelPort', []);
 
         return parent::resetPatchPanelPort();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createHistory()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'createHistory', []);
-
-        return parent::createHistory();
     }
 
     /**

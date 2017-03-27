@@ -64,7 +64,9 @@
         <tr>
             <td></td>
             <td><b>Port:</b></td>
-            <td><?= $t->ppp->getName() ?></td>
+            <td>
+                <?= $t->ppp->getName() ?> <?php if( $t->ppp->hasSlavePort() ){ ?><em>(duplex port)</em><?php } ?>
+            </td>
         </tr>
     </table>
     <br>

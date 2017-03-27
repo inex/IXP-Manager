@@ -125,23 +125,23 @@ class PatchPanelPort
     /**
      * @var integer
      */
-    private $state;
+    private $state = self::STATE_AVAILABLE;
 
     /**
      * @var string
      */
-    private $colo_circuit_ref;
+    private $colo_circuit_ref = '';
 
     /**
      * @var string
      */
-    private $ticket_ref;
+    private $ticket_ref = '';
 
 
     /**
      * @var string
      */
-    private $notes;
+    private $notes = '';
 
     /**
      * @var \DateTime
@@ -221,12 +221,12 @@ class PatchPanelPort
     /**
      * @var string
      */
-    private $private_notes;
+    private $private_notes = '';
 
     /**
      * @var integer
      */
-    private $owned_by = '0';
+    private $owned_by = self::OWNED_CUST;
 
     /**
      * @var string
@@ -351,7 +351,7 @@ class PatchPanelPort
      */
     public function getColoCircuitRef()
     {
-        return $this->colo_circuit_ref;
+        return $this->colo_circuit_ref ?? '';
     }
 
     /**
@@ -374,7 +374,7 @@ class PatchPanelPort
      */
     public function getTicketRef()
     {
-        return $this->ticket_ref;
+        return $this->ticket_ref ?? '';
     }
 
     /**
@@ -870,13 +870,20 @@ class PatchPanelPort
     }
 
     /**
-     * Get number of patchPanelPortHistory
+     * Get number of patchPanelPortHistory which are not slave ports
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return int
      */
-    public function getHistoryCount()
-    {
-        return count($this->patchPanelPortHistory);
+    public function getMasterHistoryCount(): int {
+        $cnt = 0;
+
+        foreach( $this->getPatchPanelPortHistory() as $ppph ) {
+            if( !$ppph->getDuplexMasterPort() ) {
+                $cnt++;
+            }
+        }
+
+        return $cnt;
     }
 
     /**
@@ -1185,50 +1192,32 @@ class PatchPanelPort
     }
 
     /**
-     * Reset the data of a patch panel port after ceased
-     * @author     Yann Robin <yann@islandbridgenetworks.ie>
-     * @return void
-     */
-    public function resetPatchPanelPort(){
-        $this->setState(PatchPanelPort::STATE_AVAILABLE);
-        $this->setLastStateChange(new \DateTime(date('Y-m-d')));
-        $this->setColoCircuitRef('');
-        $this->setTicketRef('');
-        $this->setNotes(null);
-        $this->setPrivateNotes(null);
-        $this->setAssignedAt(null);
-        $this->setConnectedAt(null);
-        $this->setCeaseRequestedAt(null);
-        $this->setCeasedAt(null);
-        $this->setInternalUse(false);
-        $this->setChargeable(false);
-        $this->setCustomer(null);
-        $this->setLoaCode('');
-        $this->setSwitchPort(null);
-        $this->setDuplexMasterPort(null);
-
-        if($this->hasSlavePort()){
-            $this->removeDuplexSlavePort($this->getDuplexSlavePort());
-        }
-
-        D2EM::persist($this);
-
-    }
-
-    /**
-     * Create a patch panel port history and patch panel port file history after ceased
-     * Duplicate all the datas of the current patch panel port in the history table
-     * and reset the patch panel port when it has been duplicated
+     * Reset the port to clear and available (including slave ports)
      *
-     * @author     Yann Robin <yann@islandbridgenetworks.ie>
-     * @return void
+     * @return PatchPanelPort
      */
-    public function createHistory(){
-        $PPPHistory = PatchPanelPortHistory::createHistory($this);
-        if($this->hasFiles()){
-            PatchPanelPortHistoryFile::createHistory($this,$PPPHistory);
+    public function resetPatchPanelPort(): PatchPanelPort {
+        foreach( $this->getDuplexSlavePorts() as $pppsp ) {
+            $pppsp->resetPatchPanelPort();
+            $this->removeDuplexSlavePort( $pppsp );
         }
-        $this->resetPatchPanelPort();
+
+        return $this->setState(PatchPanelPort::STATE_AVAILABLE)
+            ->setLastStateChange(new \DateTime)
+            ->setColoCircuitRef('')
+            ->setTicketRef('')
+            ->setNotes('')
+            ->setPrivateNotes('')
+            ->setAssignedAt(null)
+            ->setConnectedAt(null)
+            ->setCeaseRequestedAt(null)
+            ->setCeasedAt(null)
+            ->setInternalUse(false)
+            ->setChargeable(false)
+            ->setCustomer(null)
+            ->setLoaCode('')
+            ->setSwitchPort(null)
+            ->setDuplexMasterPort(null);
     }
 
     /**

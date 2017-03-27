@@ -2,8 +2,11 @@
 
 namespace Repositories;
 
+use D2EM;
 use Doctrine\ORM\EntityRepository;
 use Entities\PatchPanelPort as PatchPanelPortEntity;
+use Entities\PatchPanelPortHistory as PatchPanelPortHistoryEntity;
+use Entities\PatchPanelPortHistoryFile as PatchPanelPortHistoryFileEntity;
 
 /**
  * Cabinet
@@ -68,5 +71,42 @@ class PatchPanelPort extends EntityRepository
      */
     public function resolveEmailClass( int $type ) {
         return isset( PatchPanelPortEntity::$EMAIL_CLASSES[ $type ] ) ? PatchPanelPortEntity::$EMAIL_CLASSES[ $type ] : null;
+    }
+
+
+    /**
+     * Archive a patch panel port (and its slave ports)
+     *
+     * NB: does not reset the original port. This this, use:
+     *
+     *     $ppp->resetPatchPanelPort()
+     *
+     * @param PatchPanelPortEntity $ppp
+     * @return PatchPanelPortHistoryEntity
+     */
+    public static function archive( PatchPanelPortEntity $ppp ): PatchPanelPortHistoryEntity {
+
+        $ppph = new PatchPanelPortHistoryEntity();
+        $ppph->setFromPatchPanelPort($ppp);
+        $ppp->addPatchPanelPortHistory( $ppph );
+
+        D2EM::persist($ppph);
+
+        if( $ppp->hasSlavePort() ) {
+            foreach( $ppp->getDuplexSlavePorts() as $pppsp ) {
+                $sph = clone $ppph;
+                $sph->setNumber( $pppsp->getNumber() );
+                $sph->setDuplexMasterPort( $ppph );
+                D2EM::persist( $sph );
+            }
+        }
+
+        foreach( $ppp->getPatchPanelPortPublicFiles() as $pppf ) {
+            $ppphf = new PatchPanelPortHistoryFileEntity;
+            $ppphf->setFromPatchPanelPortFile( $pppf );
+            $ppph->addPatchPanelPortHistoryFile( $ppphf );
+        }
+
+        return $ppph;
     }
 }

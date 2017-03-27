@@ -162,7 +162,7 @@
                                     <?php if( $ppp->isStateAwaitingXConnect() || $ppp->isStateConnected() ): ?>
                                         <li>
                                             <a id="request-cease-<?= $ppp->getId() ?>" href="<?= url( '/patch-panel-port/change-status' ) . '/' . $ppp->getId() . '/' . Entities\PatchPanelPort::STATE_AWAITING_CEASE ?>">
-                                                Request Cease
+                                                Set Awaiting Cease
                                             </a>
                                         </li>
                                     <?php endif; ?>
@@ -175,6 +175,13 @@
                                         </li>
                                     <?php endif; ?>
 
+                                    <li role="separator" class="divider"></li>
+
+                                    <li>
+                                        <a id="attach-file-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" title="Attach file">
+                                            Attach file...
+                                        </a>
+                                    </li>
                                     <li role="separator" class="divider"></li>
 
                                     <?php if( $ppp->getCustomer() ): ?>
@@ -201,13 +208,6 @@
                                     <?php endif; ?>
 
                                     <li>
-                                        <a id="attach-file-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" title="Attach file">
-                                            Attach file...
-                                        </a>
-                                        <li role="separator" class="divider"></li>
-                                    </li>
-
-                                    <li>
                                         <a href="<?= url( '/patch-panel-port/view' ) . '/' . $ppp->getId()?>">
                                             View
                                         </a>
@@ -224,7 +224,7 @@
                                     href="<?= url( '/patch-panel-port/view' ).'/'.$ppp->getId()?>  ">
                                 <i class="glyphicon glyphicon-folder-open"></i>
                                 &nbsp;
-                                <span class="badge"><?= count( $ppp->getPatchPanelPortHistory() ) ?></span>
+                                <span class="badge"><?= $ppp->getMasterHistoryCount() ?></span>
                             </a>
                         </div>
                     </td>

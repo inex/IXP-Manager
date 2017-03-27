@@ -10,7 +10,8 @@ Please order a {{ $ppp->getPatchPanel()->resolveCableType() }} cross connect whe
 
 ```
 Patch panel:    {{ $ppp->getPatchPanel()->getName() }}
-Port:           {{ $ppp->getName() }}
+Port:           {{ $ppp->getName() }} @if( $ppp->hasSlavePort() ) *(duplex port)* @endif
+
 ```
 
 @if( $ppp->getSwitchPort() )
