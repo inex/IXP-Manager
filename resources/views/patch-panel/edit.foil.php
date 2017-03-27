@@ -95,6 +95,17 @@
             ->value( date( 'Y-m-d' ) );
         ?>
 
+        <?= Former::textarea( 'location_notes' )
+            ->label( 'Location Notes' )
+            ->rows( 5 )
+//            ->style( 'width:500px' )
+            ->help( 'These notes are included on connection and other emails to help co-location providers correctly '
+                . 'identify their own co-location references. Unfortunately, it has been the experience of the authors '
+                . 'that co-location providers change identifiers (and ownership) like the wind changes direction. These '
+                . 'notes will be provided in a preformatted (&lt;pre&gt;) section.'
+            );
+        ?>
+
         <?= Former::hidden( 'id' )
             ->value( $t->pp ? $t->pp->getId() : '' )
         ?>

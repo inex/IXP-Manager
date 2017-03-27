@@ -774,12 +774,12 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getHistoryCount()
+    public function getMasterHistoryCount(): int
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHistoryCount', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMasterHistoryCount', []);
 
-        return parent::getHistoryCount();
+        return parent::getMasterHistoryCount();
     }
 
     /**

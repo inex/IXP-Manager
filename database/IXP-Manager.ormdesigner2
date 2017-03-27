@@ -1158,6 +1158,8 @@
       <field name="connector_type" type="integer" required="true" uuid="19f98e9b-6763-495a-aa18-a4911985e9c3"/>
       <field name="installation_date" type="datetime" uuid="e4d0c03d-5047-4456-b600-e51dd6498fe6"/>
       <field name="port_prefix" type="string" size="10" required="true" uuid="6654ced4-232e-4f37-a6d5-d55eb0ce8b8c"/>
+      <field name="chargeable" type="integer" default="0" required="true" uuid="861b803e-1b89-4e85-95dd-185c63475a3e"/>
+      <field name="location_notes" type="text" required="true" uuid="fa7aaa65-7b2a-426a-aa1f-1531de2e72fa"/>
       <field name="active" type="boolean" default="1" required="true" uuid="bed79a85-f181-413d-9892-f8fdd33ab673"/>
       <orm-attributes>
         <attribute name="table">patch_panel</attribute>
@@ -1376,7 +1378,7 @@
     <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
     <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" bg-color="4294967295" hdr-color="4292006610" position-x="1153" position-y="545" size-x="0" size-x2="115" size-y="0" size-y2="185"/>
     <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
-    <entity uuid="e64bc27c-d058-422a-987d-95e987418035" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1588" position-y="-297" size-x="0" size-x2="135" size-y="0" size-y2="115"/>
+    <entity uuid="e64bc27c-d058-422a-987d-95e987418035" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1611" position-y="-334" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
     <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="272" position-y="321" size-x="0" size-x2="98" size-y="0" size-y2="87"/>

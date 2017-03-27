@@ -338,7 +338,8 @@
                                                         <tr id="file_row_<?=$file->getId()?>">
                                                             <td>
                                                                 <?= $file->getNameTruncate() ?>
-                                                                <?php if( $file->getIsPrivate() ):?>  <i title='Private file' class="fa fa-lock fa-lg" aria-hidden="true"></i> <?php endif; ?>
+                                                                <i id="file-private-state-<?= $file->getId() ?>"
+                                                                    class="pull-right fa fa-<?= $file->getIsPrivate() ? 'lock' : 'unlock' ?> fa-lg" aria-hidden="true"></i>
                                                             </td>
                                                             <td>
                                                                 <?= $file->getSizeFormated() ?>
@@ -354,7 +355,13 @@
                                                             </td>
                                                             <td>
                                                                 <div class="btn-group btn-group-sm" role="group">
-                                                                    <a class="btn btn btn-default" target="_blank" href="<?= url('/patch-panel-port/download-file' ).'/'.$file->getId()?>" href="" title="Download">
+                                                                    <?php if( Auth::user()->isSuperUser() ): ?>
+                                                                        <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn btn-default" target="_blank" href="<?= url()->current() ?>"
+                                                                                title="Toggle Public / Private">
+                                                                            <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
+                                                                        </a>
+                                                                    <?php endif; ?>
+                                                                    <a class="btn btn btn-default" target="_blank" href="<?= url('/patch-panel-port/download-file' ).'/'.$file->getId()?>" title="Download">
                                                                         <i class="fa fa-download"></i>
                                                                     </a>
                                                                     <?php if( Auth::user()->isSuperUser() ): ?>
@@ -379,41 +386,62 @@
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
-    <script>
-        function deletePopup( idFile, idHistory, objectType ){
-            bootbox.confirm({
-                title: "Delete",
-                message: "Are you sure you want to delete this object ?",
-                buttons: {
-                    cancel: {
-                        label: '<i class="fa fa-times"></i> Cancel'
-                    },
-                    confirm: {
-                        label: '<i class="fa fa-check"></i> Confirm'
+<script>
+
+
+    $(document).ready(function() {
+
+        $("a[id|='file-toggle-private']").on('click', function (e) {
+            e.preventDefault();
+            var pppfid = (this.id).substring(20);
+
+            $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppfid )
+                .done( function( data ) {
+                    if( data.isPrivate ) {
+                        $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
+                        $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
+                    } else {
+                        $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
+                        $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
                     }
+                });
+        });
+    });
+
+    function deletePopup( idFile, idHistory, objectType ){
+        bootbox.confirm({
+            title: "Delete",
+            message: "Are you sure you want to delete this object ?",
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
                 },
-                callback: function ( result ) {
-                    if( result ){
-                        idPPP = <?= $t->ppp->getId()?>;
-                        $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + idFile )
-                        .done( function( data ) {
-                            if( data.success ){
-                                $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->ppp->getId()?> #list_file_"+idHistory+'_'+objectType );
-                                $( '.bootbox.modal' ).modal( 'hide' );
-                            }
-                            else{
-                                $( '#message_'+idFile ).removeClass( 'success' ).addClass( 'error' ).html( 'Delete error : '+data.message );
-                                $( '#delete_'+idFile ).remove();
-                            }
-                        })
-                        .fail( function() {
-                            throw new Error( "Error running ajax query for patch-panel-port/deleteFile/" );
-                            alert( "Error running ajax query for patch-panel-port/deleteFile/" );
-                            $( "#customer" ).html("");
-                        })
-                    }
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
                 }
-            });
-        }
-    </script>
+            },
+            callback: function ( result ) {
+                if( result ){
+                    idPPP = <?= $t->ppp->getId()?>;
+                    $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + idFile )
+                    .done( function( data ) {
+                        if( data.success ){
+                            $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->ppp->getId()?> #list_file_"+idHistory+'_'+objectType );
+                            $( '.bootbox.modal' ).modal( 'hide' );
+                        }
+                        else{
+                            $( '#message_'+idFile ).removeClass( 'success' ).addClass( 'error' ).html( 'Delete error : '+data.message );
+                            $( '#delete_'+idFile ).remove();
+                        }
+                    })
+                    .fail( function() {
+                        throw new Error( "Error running ajax query for patch-panel-port/deleteFile/" );
+                        alert( "Error running ajax query for patch-panel-port/deleteFile/" );
+                        $( "#customer" ).html("");
+                    })
+                }
+            }
+        });
+    }
+</script>
 <?php $this->append() ?>

@@ -47,13 +47,4 @@ class Cease extends Email
         $this->subject = "Cease cross connect to " . env('IDENTITY_ORGNAME') . " [" . $ppp->getColoCircuitRef() . " / " . $ppp->getName() . "]";
         $this->tmpl = 'patch-panel-port/emails/cease';
     }
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build() {
-        return $this;
-    }
 }
