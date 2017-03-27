@@ -32,7 +32,8 @@
 
         <?= Former::text( 'name' )
             ->label( 'Patch Panel Name' )
-            ->help( "The name / reference for the patch panel. Using the co-location provider's reference is probably the sanest / least confusing option." );
+            ->help( "The name / reference for the patch panel, displayed throughout IXP Manager. "
+                . "Using the co-location provider's reference is probably the sanest / least confusing option." );
         ?>
 
         <?= Former::text( 'colo_reference' )
