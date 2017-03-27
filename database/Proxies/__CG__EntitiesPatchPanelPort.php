@@ -1236,6 +1236,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function isStatePrewired(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isStatePrewired', []);
+
+        return parent::isStatePrewired();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function isStateOther(): bool
     {
 

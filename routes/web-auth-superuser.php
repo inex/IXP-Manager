@@ -41,4 +41,5 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
 
 Route::group( [ 'prefix' => 'layer-to-interface' ], function() {
     Route::get( 'list/{id}',                        'Layer2InterfaceController@index' );
+    Route::post( 'store',                             'Layer2InterfaceController@store' );
 });

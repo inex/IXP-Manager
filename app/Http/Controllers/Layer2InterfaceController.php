@@ -57,4 +57,27 @@ class Layer2InterfaceController extends Controller
             'vli'       => $vli
         ]);
     }
+
+    /**
+     * store a mac address
+     *
+     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     *
+     * @parama  int $id ID if the VlanInterface
+     * @return  view
+     */
+    public function store( $request ): View{
+        $id = $request->input( 'id' );
+        $mac = $request->input( 'mac' );
+
+        dd($mac);
+
+        if( !( $vli = D2EM::getRepository(VlanInterface::class)->find( $id ) ) ) {
+            return abort( '404' );
+        }
+
+        return view( 'vlan-interface/index' )->with([
+            'vli'       => $vli
+        ]);
+    }
 }

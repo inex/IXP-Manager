@@ -1,23 +1,25 @@
-<?php $this->layout( 'layouts/ixpv4' );
-    /** @var object $t */
+<?php
+/** @var Foil\Template\Template $t */
+
+    $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= url( 'virtual-interface/edit/id/'.$t->vli->getVirtualInterface()->getId())?>">Vlan Interface</a>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-postamble' ) ?>
     <li>
         Layer 2 Interface : <?= $t->vli->getVlan()->getName()?>
     </li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-
-    <li class="pull-right">
+    <span class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
             <a type="button" class="btn btn-default" id="add-l2a">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
-    </li>
+    </span>
 <?php $this->append() ?>
 
 
@@ -81,7 +83,24 @@
                 title: "Enter a MAC Address.",
                 inputType: 'text',
                 callback: function (result) {
+                    if(result != null){
+                        $.ajax( "<?= url('layer-to-interface/store')?>", {
+                            data: {
+                                id: <?= $t->vli->getId() ?>,
+                                mac: result,
+                                _token : "<?= csrf_token() ?>"
+                            },
+                            type: 'POST'
+                        })
+                            .done( function( data ) {
 
+                            })
+                            .fail( function(){
+                                alert( 'Could not update notes. API / AJAX / network error' );
+                                throw new Error("Error running ajax query for api/v4/patch-panel-port/notes");
+                            })
+
+                    }
                 }
             });
 
