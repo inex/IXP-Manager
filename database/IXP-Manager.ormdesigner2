@@ -1190,6 +1190,7 @@
       <field name="customer_id" type="integer" uuid="07bc00ca-c2a8-4d60-8e2b-ea64c26579eb"/>
       <field name="switch_port_id" type="integer" unique="true" uuid="42ed61d4-357e-435f-befb-f3701b20bec7"/>
       <field name="duplex_master_id" type="integer" uuid="0ece104a-5ac0-4881-a346-ecf5dd66504c"/>
+      <field name="loa_code" type="string" size="25" uuid="03c1f9f2-e11e-4fea-8807-90fbbd78dab8"/>
       <orm-attributes>
         <attribute name="table">patch_panel_port</attribute>
         <attribute name="tableName">patch_panel_port</attribute>
