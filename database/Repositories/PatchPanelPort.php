@@ -109,4 +109,36 @@ class PatchPanelPort extends EntityRepository
 
         return $ppph;
     }
+
+
+    public function advancedSearch( int $location, int $cabinet, int $cabletype ) {
+        $dql = "SELECT ppp
+                  FROM Entities\PatchPanelPort ppp
+                      LEFT JOIN ppp.patchPanel pp
+                      LEFT JOIN pp.cabinet cab
+                      LEFT JOIN cab.Location l ";
+
+        $wheres = [];
+
+        if( $location ) {
+            $wheres[] = "l.id = " . $location;
+        }
+
+        if( $cabinet ) {
+            $wheres[] = "cab.id = " . $cabinet;
+        }
+
+        if( $cabletype ) {
+            $wheres[] = "pp.cable_type = " . $cabletype;
+        }
+
+        if( count( $wheres ) ) {
+            $dql .= 'WHERE ' . implode(' AND ', $wheres);
+        }
+
+        $dql .= " ORDER BY pp.id ASC, ppp.number ASC";
+
+        return $this->getEntityManager()->createQuery( $dql )->getResult();
+    }
+
 }

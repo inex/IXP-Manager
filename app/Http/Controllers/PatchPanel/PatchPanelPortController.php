@@ -35,6 +35,7 @@ use Entities\User;
 
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
@@ -98,6 +99,33 @@ class PatchPanelPortController extends Controller
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/index' )->with([
             'patchPanelPorts'               => D2EM::getRepository( PatchPanelPort::class )->getAllPatchPanelPort( $ppid ),
+            'pp'                            => $pp ?? false,
+            'user'                          => Auth::user(),
+
+            // this is used for some of the allocate / mark connected / etc. actions:
+            'physicalInterfaceStatesSubSet' => [
+                PhysicalInterface::STATUS_QUARANTINE => PhysicalInterface::$STATES[ PhysicalInterface::STATUS_QUARANTINE ],
+                PhysicalInterface::STATUS_CONNECTED  => PhysicalInterface::$STATES[ PhysicalInterface::STATUS_CONNECTED  ]
+            ]
+        ]);
+    }
+
+    /**
+     * Display all the patch panel ports based on a search
+     *
+     * @param   Request $request
+     * @return  View
+     */
+    public function advancedIndex( Request $request ): View {
+
+        $location  = is_numeric( $request->get('location') ) ? intval( $request->get('location') ) : 0;
+        $cabinet   = is_numeric( $request->get('cabinet' ) ) ? intval( $request->get('cabinet' ) ) : 0;
+        $cabletype = is_numeric( $request->get('type'    ) ) ? intval( $request->get('type'    ) ) : 0;
+
+        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
+        return view( 'patch-panel-port/index' )->with([
+            'patchPanelPorts'               => D2EM::getRepository( PatchPanelPort::class )->advancedSearch(
+                                                    $location, $cabinet, $cabletype ),
             'pp'                            => $pp ?? false,
             'user'                          => Auth::user(),
 

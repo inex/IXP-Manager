@@ -68,6 +68,7 @@ class PatchPanelController extends Controller
     public function index( bool $active = true ): View {
         return view( 'patch-panel/index' )->with([
             'patchPanels'       => D2EM::getRepository( PatchPanel::class )->findBy( [ 'active' => $active ] ),
+            'locations'         => D2EM::getRepository( Cabinet::class )->getByLocationAsArray(),
             'active'            => $active
         ]);
     }

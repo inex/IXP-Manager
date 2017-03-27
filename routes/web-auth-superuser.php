@@ -21,6 +21,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port' ], function() {
     Route::get( 'list',                             'PatchPanelPortController@index' )->name('patchPanelPortIndex');
+    Route::post('advanced-list',                    'PatchPanelPortController@advancedIndex' );
     Route::get( 'list/patch-panel/{ppid}',          'PatchPanelPortController@index' );
 
     Route::get( 'edit/{id}',                        'PatchPanelPortController@edit' );

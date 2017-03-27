@@ -12,6 +12,9 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
+            <a id="btn-filter-options" class="btn btn-default" href="<?= url()->current() ?>">
+                Filter Options
+            </a>
             <a class="btn btn-default" href="<?= url('patch-panel/list' . ( $t->active ? '/inactive' : '' ) ) ?>">
                 Show <?= $t->active ? 'Inactive' : 'Active' ?>
             </a>
@@ -23,6 +26,39 @@
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
+
+    <div id="filter-row" class="row" style="display: none">
+
+        <div class="well pull-right">
+            <form class="form-inline" method="post" action="<?= url('patch-panel-port/advanced-list' ) ?>">
+                <div class="form-group">
+                    <select id="adv-search-select-locations" name="location">
+                        <option value="all">All Locations</option>
+                        <?php foreach( $t->locations as $i => $l ): ?>
+                            <option value="<?= $i ?>"><?= $l['name'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="adv-search-select-cabinets" name="cabinet">
+                        <option value="all">All Cabinets</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="adv-search-select-types" name="type">
+                        <option value="all">All Types</option>
+                        <?php foreach( \Entities\PatchPanel::$CABLE_TYPES as $i => $type ): ?>
+                            <option value="<?= $i ?>"><?= $type ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                <button type="submit" class="btn btn-default">Filter Ports</button>
+            </form>
+        </div>
+
+    </div>
+
     <?= $t->alerts() ?>
     <?php if( !count( $t->patchPanels ) && $t->active ): ?>
         <div class="alert alert-info" role="alert">
@@ -129,11 +165,35 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
-        $(document).ready( function() {
-            $( '#patch-panel-list' ).dataTable( {
-                "autoWidth": false
-            } );
+<script>
+
+    var locations = JSON.parse( '<?= json_encode( $t->locations ) ?>' );
+
+    //console.log( locations[1]['cabinets'] );
+
+    $(document).ready( function() {
+        $( '#patch-panel-list' ).dataTable( {
+            "autoWidth": false
         } );
-    </script>
+
+
+        $('#btn-filter-options').on( 'click', function( e ) {
+            e.preventDefault();
+            $('#filter-row').slideToggle();
+        });
+
+        $('#adv-search-select-locations').on( 'change', function( e ) {
+            var opts = '<option value="all">All Cabinets</option>';
+
+            if( $('#adv-search-select-locations').val() != 'all' ) {
+                for (var i in locations[$('#adv-search-select-locations').val()]['cabinets']) {
+                    opts += '<option value="' + i
+                        + '">' + locations[$('#adv-search-select-locations').val()]['cabinets'][i]['name'] + '</option>';
+                }
+            }
+
+            $('#adv-search-select-cabinets').html( opts );
+        });
+    });
+</script>
 <?php $this->append() ?>
