@@ -102,7 +102,7 @@
 
                         </td>
                         <td>
-                            <a href="<?= url( '/cabinet/view' ).'/'.$pp->getCabinet()->getId()?>">
+                            <a href="<?= url( '/cabinet/view/id' ).'/'.$pp->getCabinet()->getId()?>">
                                 <?= $pp->getCabinet()->getName() ?>
                             </a>
                         </td>
