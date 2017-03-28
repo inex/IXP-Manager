@@ -292,7 +292,7 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 log_break && apt-get install -qy apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql memcached snmp nodejs nodejs-legacy npm     \
-    php7.0-mbstring php7.0-xml php-gettext bgpq3 php-memcache unzip php-zip git                                         \
+    php7.0-mbstring php7.0-xml php7.0-gd php-gettext bgpq3 php-memcache unzip php-zip git                               \
     libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl      \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
