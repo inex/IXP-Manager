@@ -56,7 +56,7 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
 
         $this->setIXP();
-        $this->setInfrastructure();
+        $this->setInfrastructure();        
         $this->setCategory();
         $category = $this->setCategory();
         $period   = $this->setPeriod();
@@ -65,12 +65,9 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
 
         $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
 
-        /**
-         * FIXME - add back in infra
-         *
-         * if( !is_string( $this->infra ) && $this->infra )
-         * $custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
-         */
+        if( $this->infra instanceof Entities\Infrastructure ) {
+            $custs = $this->getD2R( 'Entities\Customer')->filterForInfrastructure( $custs, $this->infra );
+        }
 
         $graphs = [];
 
