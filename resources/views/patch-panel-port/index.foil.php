@@ -8,6 +8,18 @@
         - <?= $t->pp->getName() ?>
     <?php endif;?>
     <?= isset( $t->data()['summary'] ) ? ' :: ' . $t->summary : '' ?>
+
+    <?php if( $t->pp && $t->pp->hasDuplexPort() ): ?>
+        <?php $this->section( 'page-header-preamble' ) ?>
+            <li class="pull-right">
+                <div class="btn-group btn-group-xs" role="group">
+                    <button id="toggle-potential-slaves" class="btn btn-default">
+                        <span class="potential-slave">Split Duplex Ports</span>
+                        <span class="potential-slave" style="display: none;">Hide Duplex Ports</span>
+                    </button>
+                </div>
+            </li>
+        <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -47,16 +59,32 @@
             </tr>
         <thead>
         <tbody>
-            <?php foreach( $t->patchPanelPorts as $ppp ):
+            <?php
+                $lastUsedNumber = 0;
+                foreach( $t->patchPanelPorts as $ppp ):
                 /** @var \Entities\PatchPanelPort $ppp */
-            ?>
-                <tr>
+                $potentialSlave = $t->pp && $t->pp->hasDuplexPort() && !( $ppp->getNumber() % 2 ) && $ppp->isAvailableForUse();
+                ?>
+                <tr <?= $potentialSlave ? 'class="potential-slave" style="display: none;"' : '' ?>">
                     <td>
                         <?= $ppp->getId() ?>
                     </td>
                     <td>
                         <a href="<?= url( '/patch-panel-port/view' ).'/'.$ppp->getId()?> ">
-                            <?= $ppp->getName() ?>
+
+                            <?php
+                                $num = floor( $ppp->getNumber() / 2 ) + ( $ppp->getNumber() % 2 );
+
+                                if( $t->pp && $t->pp->hasDuplexPort() && !$potentialSlave && !$ppp->isDuplexPort() && $lastUsedNumber != $num ){
+                                    echo '<span class="potential-slave">' . $num . ' (</span>' . $ppp->getName() . '<span class="potential-slave">)</span>';
+                                } else {
+                                    echo $ppp->getName();
+                                }
+
+                                $lastUsedNumber = $num;
+
+                            ?>
+
                         </a>
                     </td>
                     <?php if(!$t->pp): ?>
@@ -256,7 +284,7 @@
                     </td>
                 </tr>
             <?php endforeach;?>
-        <tbody>
+        </tbody>
     </table>
 
 
