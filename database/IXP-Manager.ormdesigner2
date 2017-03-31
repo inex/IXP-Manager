@@ -1173,6 +1173,7 @@
     <entity name="\Entities\PatchPanelPort" local-name="PatchPanelPort" namespace="\Entities" uuid="6297699e-ca02-426a-b191-3270e7e93aa8">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="995e6f54-d292-44f1-a4af-1df343a5498f"/>
       <field name="patch_panel_id" type="integer" uuid="2842c5bf-c0be-40f7-ac9e-f089a09d6526"/>
+      <field name="description" type="string" size="255" uuid="6f01844b-7e25-469f-b326-be3c73e9c26e"/>
       <field name="number" type="smallint" required="true" uuid="2d964dfa-53dd-4a04-92d1-938347172eca"/>
       <field name="state" type="integer" required="true" uuid="fb079291-7b0c-4ca4-b25a-9007b5d83153"/>
       <field name="colo_circuit_ref" type="string" size="30" uuid="6b28819d-917d-4dfd-91f6-bcd1c07da533"/>
@@ -1212,6 +1213,7 @@
     <entity name="\Entities\PatchPanelPortHistory" local-name="PatchPanelPortHistory" namespace="\Entities" uuid="4322485e-ef2f-4893-a334-d1f7554c2fdb">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="2fce259d-ef0a-48c0-9487-f01df62db158"/>
       <field name="patch_panel_port_id" type="integer" uuid="0d49fde5-0be6-437e-8217-6c6e45b38e9b"/>
+      <field name="description" type="string" size="255" uuid="68e9ad49-105b-45b9-b2cc-b01913efc4e1"/>
       <field name="number" type="smallint" required="true" uuid="1e130de3-d747-46ac-ba5a-1cadc245e4df"/>
       <field name="state" type="integer" required="true" uuid="07e6ab7b-b3a4-4df9-9753-87f2ef20ae57"/>
       <field name="colo_circuit_ref" type="string" size="30" uuid="e59bfd83-0291-4644-a6c1-d4d3584760ca"/>
@@ -1361,7 +1363,7 @@
     <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="175" position-y="631" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
     <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" bg-color="4294967295" hdr-color="4292006610" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
     <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="590" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
-    <entity uuid="6297699e-ca02-426a-b191-3270e7e93aa8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1332" position-y="-327" size-x="0" size-x2="131" size-y="0" size-y2="185"/>
+    <entity uuid="6297699e-ca02-426a-b191-3270e7e93aa8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1314" position-y="-303" size-x="0" size-x2="131" size-y="0" size-y2="297"/>
     <entity uuid="6747622b-df14-45da-828f-3c676799d963" bg-color="4294967295" hdr-color="4292006610" position-x="1439" position-y="193" size-x="0" size-x2="113" size-y="0" size-y2="101"/>
     <entity uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="160" position-y="880" size-x="0" size-x2="112" size-y="0" size-y2="87"/>
     <entity uuid="709f0b3a-19e0-4026-88d3-1904231644ec" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="997" position-y="-4" size-x="0" size-x2="135" size-y="0" size-y2="73"/>

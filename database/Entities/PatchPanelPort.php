@@ -120,6 +120,16 @@ class PatchPanelPort
     /**
      * @var integer
      */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $description = '';
+
+    /**
+     * @var integer
+     */
     private $number;
 
     /**
@@ -179,11 +189,6 @@ class PatchPanelPort
     private $chargeable = false;
 
     /**
-     * @var integer
-     */
-    private $id;
-
-    /**
      * @var \Entities\SwitchPort
      */
     private $switchPort;
@@ -239,6 +244,30 @@ class PatchPanelPort
     public function __construct()
     {
         $this->patchPanelPortHistory = new ArrayCollection();
+    }
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return PatchPanelPort
+     */
+    public function setDescription(string $description): PatchPanelPort
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 
     /**
