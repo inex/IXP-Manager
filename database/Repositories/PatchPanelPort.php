@@ -97,6 +97,7 @@ class PatchPanelPort extends EntityRepository
                 $sph = clone $ppph;
                 $sph->setNumber( $pppsp->getNumber() );
                 $sph->setDuplexMasterPort( $ppph );
+                $sph->setPatchPanelPort( $pppsp );
                 D2EM::persist( $sph );
             }
         }

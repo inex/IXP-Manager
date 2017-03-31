@@ -250,7 +250,7 @@
                                     href="<?= url( '/patch-panel-port/view' ).'/'.$ppp->getId()?>  ">
                                 <i class="glyphicon glyphicon-folder-open"></i>
                                 &nbsp;
-                                <span class="badge"><?= $ppp->getMasterHistoryCount() ?></span>
+                                <span class="badge"><?= count( $ppp->getPatchPanelPortHistory() ) ?></span>
                             </a>
                         </div>
                     </td>
