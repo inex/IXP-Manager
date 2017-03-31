@@ -14,6 +14,12 @@ class PatchPanelPortHistory
      * @var integer
      */
     private $id;
+
+    /**
+     * @var string
+     */
+    private $description = '';
+
     /**
      * @var integer
      */
@@ -113,6 +119,30 @@ class PatchPanelPortHistory
      */
     public function __construct() {
         $this->duplexSlavePorts = new ArrayCollection();
+    }
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return PatchPanelPortHistory
+     */
+    public function setDescription(string $description): PatchPanelPortHistory
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description ?? '';
     }
 
     /**
@@ -712,6 +742,7 @@ class PatchPanelPortHistory
     public function setFromPatchPanelPort( PatchPanelPort $ppp ): PatchPanelPortHistory {
 
         return $this->setPatchPanelPort( $ppp )
+            ->setDescription( $ppp->getDescription() )
             ->setNumber( $ppp->getNumber() )
             ->setState( $ppp->getState() )
             ->setColoCircuitRef( $ppp->getColoCircuitRef() )

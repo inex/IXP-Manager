@@ -4,6 +4,7 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
+    <field name="description" type="string" length="255" nullable="true"/>
     <field name="number" type="smallint" nullable="false"/>
     <field name="state" type="integer" nullable="false"/>
     <field name="colo_circuit_ref" type="string" length="30" nullable="true"/>
