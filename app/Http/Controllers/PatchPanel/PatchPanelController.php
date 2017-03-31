@@ -160,7 +160,7 @@ class PatchPanelController extends Controller
         $pp->setChargeable( $request->input( 'chargeable' ) );
         $pp->setActive( true );
         $pp->setInstallationDate(
-            ( $request->input( 'installation_date', false ) ? new \DateTime : new \DateTime( $request->input( 'installation_date' ) ) )
+            ( $request->input( 'installation_date', false ) ? new \DateTime( $request->input( 'installation_date' ) ) : new \DateTime ) 
         );
         $pp->setPortPrefix( $request->input( 'port_prefix' ) ?? '' );
 
