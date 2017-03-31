@@ -281,7 +281,7 @@ pEgAAAAASUVORK5CYII=" />
         <tr>
             <td></td>
             <td><b>Port:</b></td>
-            <td><?= $t->ppp->getName() ?></td> <?php if( $t->ppp->hasSlavePort() ){ ?><em>(duplex port)</em><?php } ?>
+            <td><?= $t->ppp->getName() ?> <?php if( $t->ppp->hasSlavePort() ){ ?><em>(duplex port)</em><?php } ?> </td>
         </tr>
     </table>
     <br>
