@@ -30,7 +30,8 @@
 
     <?php if (!$t->allocating and  !$t->prewired): ?>
         <?= Former::text( 'number' )
-            ->label( 'Patch Panel Port Name' );
+            ->label( 'Patch Panel Port Name' )
+            ->forceValue( $t->ppp->getName() );
         ?>
 
         <?= Former::text( 'patch_panel' )
