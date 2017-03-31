@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.16 on 2017-03-25.
+ * Generated for Laravel 5.4.16 on 2017-03-31.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -101,56 +101,61 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the path to the application "app" directory.
          *
+         * @param string $path Optionally, a path to append to the app path
          * @return string 
          * @static 
          */ 
-        public static function path()
+        public static function path($path = '')
         {
-            return \Illuminate\Foundation\Application::path();
+            return \Illuminate\Foundation\Application::path($path);
         }
         
         /**
          * Get the base path of the Laravel installation.
          *
+         * @param string $path Optionally, a path to append to the base path
          * @return string 
          * @static 
          */ 
-        public static function basePath()
+        public static function basePath($path = '')
         {
-            return \Illuminate\Foundation\Application::basePath();
+            return \Illuminate\Foundation\Application::basePath($path);
         }
         
         /**
          * Get the path to the bootstrap directory.
          *
+         * @param string $path Optionally, a path to append to the bootstrap path
          * @return string 
          * @static 
          */ 
-        public static function bootstrapPath()
+        public static function bootstrapPath($path = '')
         {
-            return \Illuminate\Foundation\Application::bootstrapPath();
+            return \Illuminate\Foundation\Application::bootstrapPath($path);
         }
         
         /**
          * Get the path to the application configuration files.
          *
+         * @param string $path Optionally, a path to append to the config path
          * @return string 
          * @static 
          */ 
-        public static function configPath()
+        public static function configPath($path = '')
         {
-            return \Illuminate\Foundation\Application::configPath();
+            return \Illuminate\Foundation\Application::configPath($path);
         }
         
         /**
          * Get the path to the database directory.
          *
+         * @param string $path Optionally, a path to append to the database path
          * @return string 
          * @static 
          */ 
-        public static function databasePath()
+        public static function databasePath($path = '')
         {
-            return \Illuminate\Foundation\Application::databasePath();
+            return \Illuminate\Foundation\Application::databasePath($path);
         }
         
         /**
@@ -213,12 +218,13 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the path to the resources directory.
          *
+         * @param string $path
          * @return string 
          * @static 
          */ 
-        public static function resourcePath()
+        public static function resourcePath($path = '')
         {
-            return \Illuminate\Foundation\Application::resourcePath();
+            return \Illuminate\Foundation\Application::resourcePath($path);
         }
         
         /**
@@ -10752,7 +10758,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Checks if an a key is present and not null.
+         * Checks if a key is present and not null.
          *
          * @param string|array $key
          * @return bool 
@@ -12720,7 +12726,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get an instance of the last loop in the stack.
          *
-         * @return \StdClass|null 
+         * @return \stdClass|null 
          * @static 
          */ 
         public static function getLastLoop()
@@ -14015,6 +14021,22 @@ namespace Barryvdh\Debugbar {
         public static function shouldCollect($name, $default = false)
         {
             return \Barryvdh\Debugbar\LaravelDebugbar::shouldCollect($name, $default);
+        }
+        
+        /**
+         * Handle silenced errors
+         *
+         * @param $level
+         * @param $message
+         * @param string $file
+         * @param int $line
+         * @param array $context
+         * @throws \ErrorException
+         * @static 
+         */ 
+        public static function handleError($level, $message, $file = '', $line = 0, $context = array())
+        {
+            return \Barryvdh\Debugbar\LaravelDebugbar::handleError($level, $message, $file, $line, $context);
         }
         
         /**

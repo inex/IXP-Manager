@@ -37,7 +37,7 @@
                 <?php if( !$t->pp ): ?>
                     <td>Patch Panel</td>
                 <?php endif;?>
-                <td>Switch / Port</td>
+                <td>Description / Switch / Port</td>
                 <td>Customer</td>
                 <td>Colocation circuit ref</td>
                 <td>Ticket Ref</td>
@@ -67,10 +67,13 @@
                         </td>
                     <?php endif; ?>
                     <td>
-                        <?= $ppp->getSwitchName() ?>
-                    <?php if( $ppp->getSwitchPortName() ): ?>
-                            &nbsp;::&nbsp;<?= $ppp->getSwitchPortName() ?>
-                    <?php endif; ?>
+                        <?php if( trim( $ppp->getDescription() ) != '' ): ?>
+                            <?= Markdown::parse( $ppp->getDescription() ) ?>
+                            <?= $ppp->getSwitchPort() ? "<br" : "" ?>
+                        <?php endif; ?>
+                        <?php if( $ppp->getSwitchPort() ): ?>
+                            <?= $ppp->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $ppp->getSwitchPort()->getName() ?>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <a href="<?= url( 'customer/overview/id/' ).'/'.$ppp->getCustomerId()?>">

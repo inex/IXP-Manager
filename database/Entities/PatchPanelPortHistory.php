@@ -142,7 +142,7 @@ class PatchPanelPortHistory
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->description ?? '';
     }
 
     /**
@@ -742,6 +742,7 @@ class PatchPanelPortHistory
     public function setFromPatchPanelPort( PatchPanelPort $ppp ): PatchPanelPortHistory {
 
         return $this->setPatchPanelPort( $ppp )
+            ->setDescription( $ppp->getDescription() )
             ->setNumber( $ppp->getNumber() )
             ->setState( $ppp->getState() )
             ->setColoCircuitRef( $ppp->getColoCircuitRef() )

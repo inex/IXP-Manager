@@ -180,6 +180,7 @@ class PatchPanelPortController extends Controller
 
         // fill the form with patch panel port data
         Former::populate([
+            'description'           => $ppp->getDescription(),
             'number'                => $ppp->getNumber(),
             'patch_panel'           => $ppp->getPatchPanel()->getName(),
             'colo_circuit_ref'      => $ppp->getColoCircuitRef(),
@@ -254,6 +255,7 @@ class PatchPanelPortController extends Controller
      */
     public function store( StorePatchPanelPort $request ): RedirectResponse {
 
+        /** @var PatchPanelPort $ppp */
         if( !$request->input( 'id' ) || !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $request->input( 'id' ) ) ) ) {
             abort(404, 'Unknown patch panel port');
         }
@@ -302,10 +304,9 @@ class PatchPanelPortController extends Controller
             $ppp->setLastStateChange( new \DateTime );
         }
 
-        $ppp->setNotes( ( clean( $request->input( 'notes', '' ) ) ) );
-
+        $ppp->setDescription( clean( $request->input( 'description', '' ) ) );
+        $ppp->setNotes( clean( $request->input( 'notes', '' ) ) );
         $ppp->setPrivateNotes( clean( $request->input( 'private_notes', '' )  ) );
-
         $ppp->setColoCircuitRef( $request->input( 'colo_circuit_ref', '') );
         $ppp->setTicketRef( $request->input( 'ticket_ref', '' ) );
 

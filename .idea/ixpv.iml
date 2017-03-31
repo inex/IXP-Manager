@@ -49,6 +49,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/tinker" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/luketowers/purifier" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/maxhoffmann/parsedown-laravel" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/maximebf/debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/mmucklo/inflect" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/mockery/mockery" />
@@ -165,6 +166,7 @@
           <root url="file://$MODULE_DIR$/vendor/laravel/tinker" />
           <root url="file://$MODULE_DIR$/vendor/league/flysystem" />
           <root url="file://$MODULE_DIR$/vendor/luketowers/purifier" />
+          <root url="file://$MODULE_DIR$/vendor/maxhoffmann/parsedown-laravel" />
           <root url="file://$MODULE_DIR$/vendor/maximebf/debugbar" />
           <root url="file://$MODULE_DIR$/vendor/mmucklo/inflect" />
           <root url="file://$MODULE_DIR$/vendor/mockery/mockery" />
@@ -274,6 +276,7 @@
           <root url="file://$MODULE_DIR$/vendor/laravel/tinker" />
           <root url="file://$MODULE_DIR$/vendor/league/flysystem" />
           <root url="file://$MODULE_DIR$/vendor/luketowers/purifier" />
+          <root url="file://$MODULE_DIR$/vendor/maxhoffmann/parsedown-laravel" />
           <root url="file://$MODULE_DIR$/vendor/maximebf/debugbar" />
           <root url="file://$MODULE_DIR$/vendor/mmucklo/inflect" />
           <root url="file://$MODULE_DIR$/vendor/mockery/mockery" />
