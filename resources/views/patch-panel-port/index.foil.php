@@ -39,8 +39,8 @@
                 <?php endif;?>
                 <td>Description / Switch / Port</td>
                 <td>Customer</td>
-                <td>Colocation circuit ref</td>
-                <td>Ticket Ref</td>
+                <td>Colocation Ref</td>
+                <td>Flags</td>
                 <td>Assigned at</td>
                 <td>State</td>
                 <td>Action</td>
@@ -84,7 +84,21 @@
                         <?= $ppp->getColoCircuitRef() ?>
                     </td>
                     <td>
-                        <?= $ppp->getTicketRef() ?>
+
+                        <!-- FLAGS -->
+
+                        <?php if( $ppp->getInternalUse() ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Internal Use">INT</span>
+                        <?php endif; ?>
+
+                        <?php if( $ppp->getChargeable() != Entities\PatchPanelPort::CHARGEABLE_NO ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="<?= $ppp->resolveChargeable() ?>"><?= env( 'CURRENCY_HTML_ENTITY', '&euro;' ) ?></span>
+                        <?php endif; ?>
+
+                        <?php if( $cnt = count( $ppp->getPatchPanelPortFiles() ) ): ?>
+                            <span class="label label-default"><?= $cnt ?> FILES</span>
+                        <?php endif; ?>
+
                     </td>
                     <td>
                         <?= $ppp->getAssignedAtFormated() ?>

@@ -52,6 +52,8 @@
             uploadPopup( pppid );
         });
 
+        $('[data-toggle="tooltip"]').tooltip()
+
     });
 
     /**

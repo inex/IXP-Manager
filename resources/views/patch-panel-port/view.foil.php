@@ -226,7 +226,7 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <?= $p->getInternalUseText() ?>
+                                            <?= $p->getInternalUse() ? 'Yes' : 'No' ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
