@@ -25,6 +25,12 @@
          */
         $( '#duplex' ).change( function(){
             if( this.checked ){
+
+                if( $( '#partner_port option[value="<?= $t->ppp->getId() + 1 ?>"]' ).length ) {
+                    $( '#partner_port' ).val( <?= $t->ppp->getId() + 1 ?> );
+                    $( '#partner_port' ).trigger("chosen:updated");
+                }
+
                 $( "#duplex-port-area" ).show();
             } else {
                 $( "#duplex-port-area" ).hide();
