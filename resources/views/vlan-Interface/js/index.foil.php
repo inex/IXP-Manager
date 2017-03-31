@@ -97,8 +97,8 @@
         $.ajax( "<?= url( 'api/v4/l2-address/detail' ) ?>/"+l2aId )
             .done( function( data ) {
                 $("#mac").val( data.mac );
-                $("#macComma").val( data.macFormatedComma );
-                $("#macDot").val( data.macFormatedDot );
+                $("#macComma").val( data.macFormattedWithColons );
+                $("#macDot").val( data.macFormattedWithDots );
             })
             .fail( function(){
                 alert( 'Could add MAC address. API / AJAX / network error' );

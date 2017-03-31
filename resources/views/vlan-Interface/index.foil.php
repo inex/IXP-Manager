@@ -44,7 +44,7 @@
                         <?= $l2a->getId() ?>
                     </td>
                     <td>
-                        <?= $l2a->getMacFormatedComma() ?>
+                        <?= $l2a->getMacFormattedWithColons() ?>
                     </td>
                     <td>
                         <?= $l2a->getCreatedAtFormated() ?>

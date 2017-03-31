@@ -64,7 +64,7 @@ class Layer2Address {
      *
      * @return string
      */
-    public function getMacFormatedComma()
+    public function getMacFormattedWithColons()
     {
         return wordwrap($this->mac, 2, ':',true);
     }
@@ -74,7 +74,7 @@ class Layer2Address {
      *
      * @return string
      */
-    public function getMacFormatedDot()
+    public function getMacFormattedWithDots()
     {
         return wordwrap($this->mac, 4, '.',true);
     }
@@ -205,14 +205,14 @@ class Layer2Address {
      */
     public function toArray(){
         $a = [
-            'id'                => $this->getId(),
-            'mac'               => $this->getMac() ,
-            'macFormatedComma'  => $this->getMacFormatedComma(),
-            'macFormatedDot'    => $this->getMacFormatedDot(),
-            'vliId'             => $this->getVlanInterface()->getId(),
-            'createdAt'         => $this->getCreatedAt(),
-            'firstSeenAt'       => $this->getFirstSeenAt(),
-            'lastSeenAt'        => $this->getLastSeenAt()
+            'id'                        => $this->getId(),
+            'mac'                       => $this->getMac() ,
+            'macFormattedWithColons'    => $this->getMacFormattedWithColons(),
+            'macFormattedWithDots'      => $this->getMacFormattedWithDots(),
+            'vliId'                     => $this->getVlanInterface()->getId(),
+            'createdAt'                 => $this->getCreatedAt(),
+            'firstSeenAt'               => $this->getFirstSeenAt(),
+            'lastSeenAt'                => $this->getLastSeenAt()
         ];
 
         return $a;
@@ -231,5 +231,6 @@ class Layer2Address {
 
         return $a;
     }
+
 }
 
