@@ -64,10 +64,10 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
+            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
         }
 
-        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
+        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
     }
 
     /**
@@ -296,6 +296,39 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUCountsFrom()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUCountsFrom', []);
+
+        return parent::getUCountsFrom();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUCountsFrom(int $u): \Entities\Cabinet
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUCountsFrom', [$u]);
+
+        return parent::setUCountsFrom($u);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveUCountsFrom(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveUCountsFrom', []);
+
+        return parent::resolveUCountsFrom();
     }
 
     /**

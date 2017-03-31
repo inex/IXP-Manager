@@ -382,6 +382,7 @@
       <field name="name" type="string" size="255" unique="true" uuid="27783e63-e505-403c-bddd-a57a952eb6e4"/>
       <field name="cololocation" type="string" uuid="51918b07-b8d3-40f5-9703-b3c4c9c0a96a"/>
       <field name="height" type="integer" uuid="3e0b9479-8765-45c3-bbb5-5e3c35a62e41"/>
+      <field name="u_counts_from" type="smallint" uuid="3bd826cd-f0a0-4f09-8134-e4324e0e7bf3"/>
       <field name="type" type="string" size="255" uuid="bc44138d-545b-4d3d-b45c-599b6a40b9f6"/>
       <field name="notes" type="text" uuid="9fd70a08-fa80-43cd-addf-cc79c817fd13"/>
       <orm-attributes>
@@ -1161,6 +1162,8 @@
       <field name="chargeable" type="integer" default="0" required="true" uuid="861b803e-1b89-4e85-95dd-185c63475a3e"/>
       <field name="location_notes" type="text" required="true" uuid="fa7aaa65-7b2a-426a-aa1f-1531de2e72fa"/>
       <field name="active" type="boolean" default="1" required="true" uuid="bed79a85-f181-413d-9892-f8fdd33ab673"/>
+      <field name="u_position" type="integer" uuid="6cb2ebd1-76f2-4f70-8e1f-12c23e30a05d"/>
+      <field name="mounted_at" type="smallint" uuid="512d0a9a-82db-4401-ab88-5517dbcf89cf"/>
       <orm-attributes>
         <attribute name="table">patch_panel</attribute>
         <attribute name="repository-class">Repositories\PatchPanel</attribute>
@@ -1370,7 +1373,7 @@
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="4294967295" hdr-color="4292006610" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
-    <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="4294967295" hdr-color="4292006610" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
+    <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
     <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="810" position-y="292" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="b8c028d1-c43e-44ef-b86e-7849c119d00f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="459" position-y="1038" size-x="0" size-x2="116" size-y="0" size-y2="129"/>
     <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>

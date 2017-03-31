@@ -89,6 +89,7 @@ class PatchPanelController extends Controller
      * @return  View|Redirect
      */
     public function edit( int $id = null ): View {
+        /** @var PatchPanel $pp */
         $pp = false;
 
         if( $id != null ) {
@@ -101,6 +102,8 @@ class PatchPanelController extends Controller
                 'colo_reference'     => $pp->getColoReference(),
                 'location_notes'     => $pp->getLocationNotes(),
                 'cabinet'            => $pp->getCabinet()->getId(),
+                'mounted_at'         => $pp->getMountedAt(),
+                'u_position'         => $pp->getUPosition(),
                 'cable_type'         => $pp->getCableType(),
                 'connector_type'     => $pp->getConnectorType(),
                 'installation_date'  => $pp->getInstallationDateFormated(),
@@ -163,6 +166,14 @@ class PatchPanelController extends Controller
             ( $request->input( 'installation_date', false ) ? new \DateTime( $request->input( 'installation_date' ) ) : new \DateTime ) 
         );
         $pp->setPortPrefix( $request->input( 'port_prefix' ) ?? '' );
+
+        if( ( $u = $request->input( 'u_position' ) ) && is_numeric($u) ) {
+            $pp->setUPosition( (int)$u );
+        }
+
+        if( ( $mp = $request->input( 'mounted_at' ) ) && isset( PatchPanel::$MOUNTED_AT[$mp] ) ) {
+            $pp->setMountedAt( (int)$mp );
+        }
 
         D2EM::persist( $pp );
 

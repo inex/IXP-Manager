@@ -2,13 +2,28 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Entities\Cabinet
  */
 class Cabinet
 {
+    /**
+     * Constants to indicate whether 'u' positions count from top or bottom
+     */
+    const U_COUNTS_FROM_TOP    = 1;
+    const U_COUNTS_FROM_BOTTOM = 2;
+
+    /**
+     * @var array Textual representations of where u's count from
+     */
+    public static $U_COUNTS_FROM = [
+        self::U_COUNTS_FROM_TOP     => 'Top',
+        self::U_COUNTS_FROM_BOTTOM  => 'Bottom',
+    ];
+
     /**
      * @var string $name
      */
@@ -40,12 +55,12 @@ class Cabinet
     protected $id;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $Switches;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $CustomerEquipment;
 
@@ -55,12 +70,17 @@ class Cabinet
     protected $Location;
 
     /**
+     * @var int u_counts_from
+     */
+    protected $u_counts_from;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->Switches = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->CustomerEquipment = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Switches = new ArrayCollection();
+        $this->CustomerEquipment = new ArrayCollection();
     }
     
     /**
@@ -188,10 +208,39 @@ class Cabinet
         return $this->id;
     }
 
+
+    /**
+     * Get whether u's count from top or bottom
+     * @return int
+     */
+    public function getUCountsFrom() {
+        return $this->u_counts_from;
+    }
+
+    /**
+     * Set whether u's count from top or bottom
+     * @param int $u
+     * @return Cabinet
+     */
+    public function setUCountsFrom( int $u ): Cabinet {
+        assert( in_array( $u, array_keys( self::$U_COUNTS_FROM ) ) );
+        $this->u_counts_from = $u;
+        return $this;
+    }
+
+    /**
+     * Resolve as text whether u's count from top or bottom
+     * @return string
+     */
+    public function resolveUCountsFrom(): string {
+        return $this->u_counts_from ? self::$U_COUNTS_FROM[ $this->u_counts_from ] : 'Unknown';
+    }
+
+
     /**
      * Add Switches
      *
-     * @param Switcher[] $switches
+     * @param Switcher $switches
      * @return Cabinet
      */
     public function addSwitche(Switcher $switches)
@@ -214,7 +263,7 @@ class Cabinet
     /**
      * Get Switches
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return ArrayCollection
      */
     public function getSwitches()
     {
@@ -224,10 +273,10 @@ class Cabinet
     /**
      * Add CustomerEquipment
      *
-     * @param Entities\CustomerEquipment $customerEquipment
+     * @param CustomerEquipment $customerEquipment
      * @return Cabinet
      */
-    public function addCustomerEquipment(\Entities\CustomerEquipment $customerEquipment)
+    public function addCustomerEquipment(CustomerEquipment $customerEquipment)
     {
         $this->CustomerEquipment[] = $customerEquipment;
     
@@ -237,9 +286,9 @@ class Cabinet
     /**
      * Remove CustomerEquipment
      *
-     * @param Entities\CustomerEquipment $customerEquipment
+     * @param CustomerEquipment $customerEquipment
      */
-    public function removeCustomerEquipment(\Entities\CustomerEquipment $customerEquipment)
+    public function removeCustomerEquipment(CustomerEquipment $customerEquipment)
     {
         $this->CustomerEquipment->removeElement($customerEquipment);
     }
@@ -247,7 +296,7 @@ class Cabinet
     /**
      * Get CustomerEquipment
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return ArrayCollection
      */
     public function getCustomerEquipment()
     {
@@ -308,10 +357,10 @@ class Cabinet
     /**
      * Add Switches
      *
-     * @param \Entities\Switcher $switches
+     * @param Switcher $switches
      * @return Cabinet
      */
-    public function addSwitch(\Entities\Switcher $switches)
+    public function addSwitch(Switcher $switches)
     {
         $this->Switches[] = $switches;
 
@@ -321,49 +370,49 @@ class Cabinet
     /**
      * Remove Switches
      *
-     * @param \Entities\Switcher $switches
+     * @param Switcher $switches
      */
-    public function removeSwitch(\Entities\Switcher $switches)
+    public function removeSwitch(Switcher $switches)
     {
         $this->Switches->removeElement($switches);
     }
-/**
- * @var \Doctrine\Common\Collections\Collection
- */
-private $patchPanels;
 
+    /**
+     * @var Collection
+     */
+    private $patchPanels;
 
-/**
- * Add patchPanel
- *
- * @param \Entities\PatchPanel $patchPanel
- *
- * @return Cabinet
- */
-public function addPatchPanel(\Entities\PatchPanel $patchPanel)
-{
-$this->patchPanels[] = $patchPanel;
+    /**
+     * Add patchPanel
+     *
+     * @param PatchPanel $patchPanel
+     *
+     * @return Cabinet
+     */
+    public function addPatchPanel(PatchPanel $patchPanel)
+    {
+        $this->patchPanels[] = $patchPanel;
 
-return $this;
-}
+        return $this;
+    }
 
-/**
- * Remove patchPanel
- *
- * @param \Entities\PatchPanel $patchPanel
- */
-public function removePatchPanel(\Entities\PatchPanel $patchPanel)
-{
-$this->patchPanels->removeElement($patchPanel);
-}
+    /**
+     * Remove patchPanel
+     *
+     * @param \Entities\PatchPanel $patchPanel
+     */
+    public function removePatchPanel(PatchPanel $patchPanel)
+    {
+        $this->patchPanels->removeElement($patchPanel);
+    }
 
-/**
- * Get patchPanels
- *
- * @return \Doctrine\Common\Collections\Collection
- */
-public function getPatchPanels()
-{
-return $this->patchPanels;
-}
+    /**
+     * Get patchPanels
+     *
+     * @return Collection
+     */
+    public function getPatchPanels()
+    {
+        return $this->patchPanels;
+    }
 }

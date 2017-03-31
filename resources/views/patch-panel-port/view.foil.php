@@ -45,11 +45,11 @@
                                         </td>
                                         <td>
                                             Was part of duplex port with
-                                            <?php if( $p->getDuplexMasterPort() ): ?>
+                                            <?php if( $p->getDuplexMasterPort() ) { ?>
                                                 <?= $p->getDuplexMasterPort()->getPatchPanelPort()->getName() ?>
-                                            <?php else: ?>
+                                            <?php } else { ?>
                                                 <?= $p->getDuplexSlavePort()->getPatchPanelPort()->getName() ?>
-                                            <?php endif; ?>
+                                            <?php } ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
