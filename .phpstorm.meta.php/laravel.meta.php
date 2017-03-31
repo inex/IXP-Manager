@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-03-13.
+    * Generated on 2017-03-25.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -63,6 +63,10 @@ namespace PHPSTORM_META {
             'dompdf' instanceof \Dompdf\Dompdf,
             'dompdf.wrapper' instanceof \Barryvdh\DomPDF\PDF,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'former.framework' instanceof \IXP\Utils\Former\Framework\TwitterBootstrap3,
+            'former.populator' instanceof \Former\Populator,
+            'former.dispatcher' instanceof \Former\MethodDispatcher,
+            'former' instanceof \Former\Former,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'cache' instanceof \Illuminate\Cache\CacheManager,
             'cache.store' instanceof \Illuminate\Cache\Repository,
@@ -147,9 +151,6 @@ namespace PHPSTORM_META {
             'translator' instanceof \Illuminate\Translation\Translator,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
-            'former.populator' instanceof \Former\Populator,
-            'former.dispatcher' instanceof \Former\MethodDispatcher,
-            'former' instanceof \Former\Former,
             'purifier' instanceof \LukeTowers\Purifier\Purifier,
         ],
         \Illuminate\Contracts\Container\Container::make('') => [
@@ -206,6 +207,10 @@ namespace PHPSTORM_META {
             'dompdf' instanceof \Dompdf\Dompdf,
             'dompdf.wrapper' instanceof \Barryvdh\DomPDF\PDF,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'former.framework' instanceof \IXP\Utils\Former\Framework\TwitterBootstrap3,
+            'former.populator' instanceof \Former\Populator,
+            'former.dispatcher' instanceof \Former\MethodDispatcher,
+            'former' instanceof \Former\Former,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'cache' instanceof \Illuminate\Cache\CacheManager,
             'cache.store' instanceof \Illuminate\Cache\Repository,
@@ -290,9 +295,6 @@ namespace PHPSTORM_META {
             'translator' instanceof \Illuminate\Translation\Translator,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
-            'former.populator' instanceof \Former\Populator,
-            'former.dispatcher' instanceof \Former\MethodDispatcher,
-            'former' instanceof \Former\Former,
             'purifier' instanceof \LukeTowers\Purifier\Purifier,
         ],
         \App::make('') => [
@@ -349,6 +351,10 @@ namespace PHPSTORM_META {
             'dompdf' instanceof \Dompdf\Dompdf,
             'dompdf.wrapper' instanceof \Barryvdh\DomPDF\PDF,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'former.framework' instanceof \IXP\Utils\Former\Framework\TwitterBootstrap3,
+            'former.populator' instanceof \Former\Populator,
+            'former.dispatcher' instanceof \Former\MethodDispatcher,
+            'former' instanceof \Former\Former,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'cache' instanceof \Illuminate\Cache\CacheManager,
             'cache.store' instanceof \Illuminate\Cache\Repository,
@@ -433,9 +439,6 @@ namespace PHPSTORM_META {
             'translator' instanceof \Illuminate\Translation\Translator,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
-            'former.populator' instanceof \Former\Populator,
-            'former.dispatcher' instanceof \Former\MethodDispatcher,
-            'former' instanceof \Former\Former,
             'purifier' instanceof \LukeTowers\Purifier\Purifier,
         ],
         \app('') => [
@@ -492,6 +495,10 @@ namespace PHPSTORM_META {
             'dompdf' instanceof \Dompdf\Dompdf,
             'dompdf.wrapper' instanceof \Barryvdh\DomPDF\PDF,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'former.framework' instanceof \IXP\Utils\Former\Framework\TwitterBootstrap3,
+            'former.populator' instanceof \Former\Populator,
+            'former.dispatcher' instanceof \Former\MethodDispatcher,
+            'former' instanceof \Former\Former,
             'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'cache' instanceof \Illuminate\Cache\CacheManager,
             'cache.store' instanceof \Illuminate\Cache\Repository,
@@ -576,9 +583,6 @@ namespace PHPSTORM_META {
             'translator' instanceof \Illuminate\Translation\Translator,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
-            'former.populator' instanceof \Former\Populator,
-            'former.dispatcher' instanceof \Former\MethodDispatcher,
-            'former' instanceof \Former\Former,
             'purifier' instanceof \LukeTowers\Purifier\Purifier,
         ],
     ];

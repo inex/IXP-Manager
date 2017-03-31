@@ -125,23 +125,23 @@ class PatchPanelPort
     /**
      * @var integer
      */
-    private $state;
+    private $state = self::STATE_AVAILABLE;
 
     /**
      * @var string
      */
-    private $colo_circuit_ref;
+    private $colo_circuit_ref = '';
 
     /**
      * @var string
      */
-    private $ticket_ref;
+    private $ticket_ref = '';
 
 
     /**
      * @var string
      */
-    private $notes;
+    private $notes = '';
 
     /**
      * @var \DateTime
@@ -171,12 +171,12 @@ class PatchPanelPort
     /**
      * @var boolean
      */
-    private $internal_use = '0';
+    private $internal_use = false;
 
     /**
      * @var boolean
      */
-    private $chargeable = '0';
+    private $chargeable = false;
 
     /**
      * @var integer
@@ -221,12 +221,12 @@ class PatchPanelPort
     /**
      * @var string
      */
-    private $private_notes;
+    private $private_notes = '';
 
     /**
      * @var integer
      */
-    private $owned_by = '0';
+    private $owned_by = self::OWNED_CUST;
 
     /**
      * @var string
@@ -351,7 +351,7 @@ class PatchPanelPort
      */
     public function getColoCircuitRef()
     {
-        return $this->colo_circuit_ref;
+        return $this->colo_circuit_ref ?? '';
     }
 
     /**
@@ -374,7 +374,7 @@ class PatchPanelPort
      */
     public function getTicketRef()
     {
-        return $this->ticket_ref;
+        return $this->ticket_ref ?? '';
     }
 
     /**
@@ -599,7 +599,7 @@ class PatchPanelPort
     /**
      * Get internalUse
      *
-     * @return boolean
+     * @return int
      */
     public function getInternalUseInt()
     {
@@ -609,7 +609,7 @@ class PatchPanelPort
     /**
      * Get internalUse
      *
-     * @return boolean
+     * @return string
      */
     public function getInternalUseText()
     {
@@ -637,17 +637,6 @@ class PatchPanelPort
     public function getChargeable()
     {
         return $this->chargeable;
-
-    }
-
-    /**
-     * Get chargeable
-     *
-     * @return boolean
-     */
-    public function getChargeableDefaultNo()
-    {
-        return ($this->chargeable == 0)? self::CHARGEABLE_NO :$this->getChargeable();
 
     }
 
@@ -881,13 +870,20 @@ class PatchPanelPort
     }
 
     /**
-     * Get number of patchPanelPortHistory
+     * Get number of patchPanelPortHistory which are not slave ports
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return int
      */
-    public function getHistoryCount()
-    {
-        return count($this->patchPanelPortHistory);
+    public function getMasterHistoryCount(): int {
+        $cnt = 0;
+
+        foreach( $this->getPatchPanelPortHistory() as $ppph ) {
+            if( !$ppph->getDuplexMasterPort() ) {
+                $cnt++;
+            }
+        }
+
+        return $cnt;
     }
 
     /**
@@ -1035,7 +1031,13 @@ class PatchPanelPort
     public function setCustomer(Customer $customer = null)
     {
         $this->customer = $customer;
-        ($customer != null) ? $this->setLoaCode( str_random(25) ): null;
+
+        if( $customer != null && !$this->getLoaCode() ) {
+            $this->setLoaCode(str_random(25));
+        } else if( $customer == null ) {
+            $this->setLoaCode('');
+        }
+
         return $this;
     }
 
@@ -1190,50 +1192,32 @@ class PatchPanelPort
     }
 
     /**
-     * Reset the data of a patch panel port after ceased
-     * @author     Yann Robin <yann@islandbridgenetworks.ie>
-     * @return void
-     */
-    public function resetPatchPanelPort(){
-        $this->setState(PatchPanelPort::STATE_AVAILABLE);
-        $this->setLastStateChange(new \DateTime(date('Y-m-d')));
-        $this->setColoCircuitRef('');
-        $this->setTicketRef('');
-        $this->setNotes(null);
-        $this->setPrivateNotes(null);
-        $this->setAssignedAt(null);
-        $this->setConnectedAt(null);
-        $this->setCeaseRequestedAt(null);
-        $this->setCeasedAt(null);
-        $this->setInternalUse(false);
-        $this->setChargeable(false);
-        $this->setCustomer(null);
-        $this->setLoaCode('');
-        $this->setSwitchPort(null);
-        $this->setDuplexMasterPort(null);
-
-        if($this->hasSlavePort()){
-            $this->removeDuplexSlavePort($this->getDuplexSlavePort());
-        }
-
-        D2EM::persist($this);
-
-    }
-
-    /**
-     * Create a patch panel port history and patch panel port file history after ceased
-     * Duplicate all the datas of the current patch panel port in the history table
-     * and reset the patch panel port when it has been duplicated
+     * Reset the port to clear and available (including slave ports)
      *
-     * @author     Yann Robin <yann@islandbridgenetworks.ie>
-     * @return void
+     * @return PatchPanelPort
      */
-    public function createHistory(){
-        $PPPHistory = PatchPanelPortHistory::createHistory($this);
-        if($this->hasFiles()){
-            PatchPanelPortHistoryFile::createHistory($this,$PPPHistory);
+    public function resetPatchPanelPort(): PatchPanelPort {
+        foreach( $this->getDuplexSlavePorts() as $pppsp ) {
+            $pppsp->resetPatchPanelPort();
+            $this->removeDuplexSlavePort( $pppsp );
         }
-        $this->resetPatchPanelPort();
+
+        return $this->setState(PatchPanelPort::STATE_AVAILABLE)
+            ->setLastStateChange(new \DateTime)
+            ->setColoCircuitRef('')
+            ->setTicketRef('')
+            ->setNotes('')
+            ->setPrivateNotes('')
+            ->setAssignedAt(null)
+            ->setConnectedAt(null)
+            ->setCeaseRequestedAt(null)
+            ->setCeasedAt(null)
+            ->setInternalUse(false)
+            ->setChargeable(false)
+            ->setCustomer(null)
+            ->setLoaCode('')
+            ->setSwitchPort(null)
+            ->setDuplexMasterPort(null);
     }
 
     /**
@@ -1285,27 +1269,6 @@ class PatchPanelPort
         }
 
         return $array;
-    }
-
-    /**
-     * Create the LoA PDF file
-     * @author      Yann Robin <yann@islandbridgenetworks.ie>
-     * @param       bool $download allow to download the PDF
-     * @return      string
-     */
-    public function createLoaPDF(bool $download = false){
-        $pdf = app('dompdf.wrapper');
-        $pdf->loadView('patch-panel-port/loaPDF', ['ppp' => $this]);
-
-        $pdfName = 'Loa_'.$this->getCustomer()->getName().'_'.$this->getPatchPanel()->getCabinet()->getLocation()->getName().'_'.$this->getPatchPanel()->getColoReference().'_'.$this->getName();
-        if($download){
-            return  $pdf->stream($pdfName);
-        }
-        else{
-            $temp = tempnam(sys_get_temp_dir(), 'loaPDF_');
-            $pdf->save($temp.'.pdf');
-            return $temp.'.pdf';
-        }
     }
 
 
@@ -1495,6 +1458,16 @@ class PatchPanelPort
      */
     public function json( bool $deep = false ): string {
         return json_encode( $this->jsonArray($deep), JSON_PRETTY_PRINT );
+    }
+
+
+    /**
+     * A public facing reference for this. Essentially the ID.
+     *
+     * @return string
+     */
+    public function getCircuitReference(): string {
+        return sprintf( "PPP-%05d", $this->getId() );
     }
 
 }

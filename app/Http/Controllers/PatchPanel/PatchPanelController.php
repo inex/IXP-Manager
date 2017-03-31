@@ -68,6 +68,7 @@ class PatchPanelController extends Controller
     public function index( bool $active = true ): View {
         return view( 'patch-panel/index' )->with([
             'patchPanels'       => D2EM::getRepository( PatchPanel::class )->findBy( [ 'active' => $active ] ),
+            'locations'         => D2EM::getRepository( Cabinet::class )->getByLocationAsArray(),
             'active'            => $active
         ]);
     }
@@ -98,6 +99,7 @@ class PatchPanelController extends Controller
             Former::populate([
                 'name'               => $pp->getName(),
                 'colo_reference'     => $pp->getColoReference(),
+                'location_notes'     => $pp->getLocationNotes(),
                 'cabinet'            => $pp->getCabinet()->getId(),
                 'cable_type'         => $pp->getCableType(),
                 'connector_type'     => $pp->getConnectorType(),
@@ -154,10 +156,11 @@ class PatchPanelController extends Controller
         $pp->setConnectorType( $request->input( 'connector_type' ) );
         $pp->setCableType( $request->input( 'cable_type' ) );
         $pp->setColoReference( $request->input( 'colo_reference' ) );
+        $pp->setLocationNotes( clean( $request->input( 'location_notes' ) ?? '' ) );
         $pp->setChargeable( $request->input( 'chargeable' ) );
         $pp->setActive( true );
         $pp->setInstallationDate(
-            ( $request->input( 'installation_date', false ) ? new \DateTime : new \DateTime( $request->input( 'installation_date' ) ) )
+            ( $request->input( 'installation_date', false ) ? new \DateTime( $request->input( 'installation_date' ) ) : new \DateTime ) 
         );
         $pp->setPortPrefix( $request->input( 'port_prefix' ) ?? '' );
 

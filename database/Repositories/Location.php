@@ -4,6 +4,8 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\Location as LocationEntity;
+
 /**
  * Location
  *
@@ -12,4 +14,23 @@ use Doctrine\ORM\EntityRepository;
  */
 class Location extends EntityRepository
 {
+    /**
+     * Return an array of all locations
+     * @return array An array of all locations names with the location id as the key.
+     */
+    public function getAsArray(): array {
+        $locations = [];
+        foreach( $this->findAll() as $l ) {
+            /** @var LocationEntity $l */
+            $locations[$l->getId()] = [
+                'id' => $l->getId(),
+                'name' => $l->getName(),
+                'shortname' => $l->getShortname(),
+                'tag' => $l->getTag()
+            ];
+        }
+
+        return $locations;
+    }
+
 }

@@ -25,7 +25,7 @@ class PatchPanelPortController extends Controller {
      *
      * @param   int $id    The ID of the patch panel port to query
      * @param   bool $deep Return a deep array by including associated objects
-     * @return  JsonResponse
+     * @return  JsonResponse JSON customer object
      */
     public function detail( int $id, bool $deep = false ): JsonResponse {
 
@@ -51,7 +51,7 @@ class PatchPanelPortController extends Controller {
      * Set the public and private notes of a patch panel
      *
      * @param   int $id    The ID of the patch panel port to query
-     * @return  JsonResponse
+     * @return  JsonResponse JSON customer object
      */
     public function setNotes( Request $request, int $id ) {
 

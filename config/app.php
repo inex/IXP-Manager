@@ -161,10 +161,10 @@ return [
 
          Laravel\Tinker\TinkerServiceProvider::class,
 
-        /*
-         * Debug
-         */
-        Barryvdh\Debugbar\ServiceProvider::class,
+         /*
+          * Debug
+          */
+         Barryvdh\Debugbar\ServiceProvider::class,
 
         /*
          * Application Service Providers...

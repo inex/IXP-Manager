@@ -64,10 +64,10 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'location_notes', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'id', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'name', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'colo_reference', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cable_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'connector_type', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'installation_date', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'port_prefix', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'active', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'location_notes', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'chargeable', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'patchPanelPorts', '' . "\0" . 'Entities\\PatchPanel' . "\0" . 'cabinet'];
     }
 
     /**
@@ -213,6 +213,17 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function getLocationNotes()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLocationNotes', []);
+
+        return parent::getLocationNotes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCableType()
     {
 
@@ -301,17 +312,6 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getChargeableDefaultNo()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeableDefaultNo', []);
-
-        return parent::getChargeableDefaultNo();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getCabinet()
     {
 
@@ -351,6 +351,17 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setColoReference', [$coloReference]);
 
         return parent::setColoReference($coloReference);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLocationNotes(string $location_notes)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLocationNotes', [$location_notes]);
+
+        return parent::setLocationNotes($location_notes);
     }
 
     /**

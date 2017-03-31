@@ -90,9 +90,15 @@ class PatchPanel
     private $active = true;
 
     /**
+     * @var string $location_notes
+     */
+    private $location_notes = '';
+
+
+    /**
      * @var boolean
      */
-    private $chargeable = '0';
+    private $chargeable = false;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -141,6 +147,17 @@ class PatchPanel
     {
         return $this->colo_reference;
     }
+
+    /**
+     * Get location notes
+     *
+     * @return string
+     */
+    public function getLocationNotes()
+    {
+        return $this->location_notes;
+    }
+
 
     /**
      * Get cableType
@@ -219,16 +236,6 @@ class PatchPanel
     }
 
     /**
-     * Get chargeable
-     *
-     * @return boolean
-     */
-    public function getChargeableDefaultNo()
-    {
-        return ($this->chargeable == 0)? PatchPanelPort::CHARGEABLE_NO :$this->getChargeable();
-
-    }
-    /**
      * Get cabinet
      *
      * @return \Entities\Cabinet
@@ -274,6 +281,20 @@ class PatchPanel
     public function setColoReference($coloReference)
     {
         $this->colo_reference = $coloReference;
+
+        return $this;
+    }
+
+    /**
+     * Set location notes
+     *
+     * @param string $location_notes
+     *
+     * @return PatchPanel
+     */
+    public function setLocationNotes(string $location_notes)
+    {
+        $this->location_notes = $location_notes;
 
         return $this;
     }

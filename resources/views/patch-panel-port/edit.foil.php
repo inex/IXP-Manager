@@ -145,10 +145,11 @@
         <span id='pi_status_area' style="display: none">
             <?= Former::select( 'pi_status' )
                 ->label( 'Physical Interface Status' )
-                ->options( $t->piStatus )
+                ->options( Entities\PhysicalInterface::$STATES )
                 ->placeholder( 'Choose a status' )
                 ->addClass( 'chzn-select' )
-                ->help( 'This allows you to update the physical interface status when updating the patch panel port status.' );
+                ->help( 'This allows you to update the physical interface status when updating the patch panel port status. '
+                    . '<b>The current state is shown by default.</b>' );
             ?>
         </span>
     <?php endif; ?>
@@ -162,7 +163,7 @@
         ?>
     <?php endif; ?>
     <?= Former::textarea( 'private_notes' )
-        ->label( 'Privates Notes' )
+        ->label( 'Private Notes' )
         ->rows( 10 )
         ->style( 'width:500px' )
         ->help( 'These notes are <b>NOT</b> visible to the member. You can use markdown here.' );

@@ -1,0 +1,51 @@
+interfacescust:
+
+  - name: Port-Channel2
+    description: "Cust: HEAnet"
+    dot1q: yes
+    lagindex: 2
+    lagmaster: yes
+    fastlacp: no
+    virtualinterfaceid: 2
+    vlans:
+      -
+        number: 2
+        macaddress:
+    
+  - name: GigabitEthernet1
+    description: "Cust: HEAnet"
+    dot1q: yes
+    autoneg: yes
+    speed: 1000
+    lagindex: 2
+    lagmaster: no
+    fastlacp: no
+    virtualinterfaceid: 2
+    vlans:
+      -
+        number: 2
+        macaddress:
+    
+  - name: GigabitEthernet6
+    description: "Cust: AS112"
+    dot1q: no
+    autoneg: yes
+    speed: 10
+    virtualinterfaceid: 5
+    vlans:
+      -
+        number: 2
+        macaddress:
+    
+  - name: GigabitEthernet8
+    description: "Cust: Imagine"
+    dot1q: no
+    autoneg: yes
+    speed: 10000
+    virtualinterfaceid: 7
+    vlans:
+      -
+        number: 2
+        macaddress:
+    
+

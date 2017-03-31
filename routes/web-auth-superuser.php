@@ -19,9 +19,10 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
     Route::post( 'store',                           'PatchPanelController@store'  );
 });
 
-Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
+Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port' ], function() {
     Route::get( 'list',                             'PatchPanelPortController@index' )->name('patchPanelPortIndex');
-    Route::get( 'list/patch-panel/{id}',            'PatchPanelPortController@index' );
+    Route::post('advanced-list',                    'PatchPanelPortController@advancedIndex' );
+    Route::get( 'list/patch-panel/{ppid}',          'PatchPanelPortController@index' );
 
     Route::get( 'edit/{id}',                        'PatchPanelPortController@edit' );
     Route::get( 'edit-to-allocate/{id}',            'PatchPanelPortController@editToAllocate' );

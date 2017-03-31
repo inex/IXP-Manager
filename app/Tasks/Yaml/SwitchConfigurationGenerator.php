@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace IXP\Tasks\Salt;
+namespace IXP\Tasks\Yaml;
 
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -74,13 +74,7 @@ class SwitchConfigurationGenerator
     }
 
     private function template(): string {
-        $tmpl = preg_replace( '/[^\da-z_\-\/]/i', '', strtolower( 'api/v4/provisioner/salt/switch/' . $this->getSwitch()->getVendor()->getShortname() ) );
-
-        if( !view()->exists( $tmpl ) ) {
-            throw new GeneralException( "Template does not exist: " . $tmpl );
-        }
-
-        return $tmpl;
+        return 'api/v4/provisioner/yaml/switch';
     }
 
     /**
@@ -123,7 +117,6 @@ class SwitchConfigurationGenerator
         $p['description']        = "Cust: {$vi->getCustomer()->getAbbreviatedName()}";
         $p['dot1q']              = $vi->getTrunk() ? 'yes' : 'no';
         $p['virtualinterfaceid'] = $vi->getId();
-        $p['fastlacp']           = $vi->getFastLACP() ? 'yes' : 'no';
         if( $vi->getChannelgroup() ) {
             $p['lagindex'] = $vi->getChannelgroup();
         }
@@ -154,6 +147,7 @@ class SwitchConfigurationGenerator
         // bundle definition:
         $p['name']      = $vi->getBundleName();
         $p['lagmaster'] = 'yes';
+        $p['fastlacp']  = $vi->getFastLACP() ? 'yes' : 'no';
         $ports[]        = $p;
 
         // interface definitions:

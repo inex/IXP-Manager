@@ -9,7 +9,8 @@ Please contact the co-location facility and request that they cease the followin
 ```
 Colo Reference:  {{ $ppp->getColoCircuitRef() }}
 Patch panel:     {{ $ppp->getPatchPanel()->getName() }}
-Port:            {{ $ppp->getName() }}
+Port:            {{ $ppp->getName() }} @if( $ppp->hasSlavePort() ) *(duplex port)* @endif
+
 @if( $ppp->getConnectedAt() )
 Connected on:    {{  $ppp->getConnectedAt()->format('Y-m-d') }}
 @endif

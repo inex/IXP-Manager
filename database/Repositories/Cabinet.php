@@ -4,6 +4,9 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\Cabinet as CabinetEntity;
+use Entities\Location as LocationEntity;
+
 /**
  * Cabinet
  *
@@ -14,7 +17,6 @@ class Cabinet extends EntityRepository
 {
     /**
      * Return an array of all cabinets names where the array key is the cabinet id.
-     * @author Yann Robin
      * @return array An array of all cabinets names with the cabinet id as the key.
      */
     public function getAsArray(): array {
@@ -25,4 +27,46 @@ class Cabinet extends EntityRepository
 
         return $cabinets;
     }
+
+    /**
+     * Return an array of all cabinets names grouped by locations
+     *
+     * E.g.:
+     *      [
+     *          1 => [
+     *              "id" => 1,
+     *              "name" => "Equinix Kilcarbery",
+     *              "shortname" => "DEG-KCP",
+     *              "tag" => "deg1",
+     *              "cabinets" => [
+     *                  1 => [  // indexed by cabinet ID
+     *                      "id" => 1,
+     *                      "name" => "INEX-DEGK-1",
+     *                  ],
+     *                  2 => [
+     *                      "id" => 2,
+     *                      "name" => "INEX-DEGK-2",
+     *                  ],
+     *                  ...
+     *
+     * @return array An array of all cabinets names with the cabinet id as the key.
+     */
+    public function getByLocationAsArray(): array {
+        $locations = $this->getEntityManager()->getRepository( LocationEntity::class )->getAsArray();
+
+        foreach( $locations as $i => $l ) {
+            $locations[$i]['cabinets'] = [];
+        }
+
+        foreach( $this->findAll() as $c ) {
+            /** @var CabinetEntity $c */
+            $locations[ $c->getLocation()->getId() ]['cabinets'][ $c->getId() ] = [
+                'id'        => $c->getId(),
+                'name'      => $c->getName(),
+            ];
+        }
+
+        return $locations;
+    }
+
 }

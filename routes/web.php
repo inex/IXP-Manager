@@ -36,14 +36,8 @@ if( Auth::check() && Auth::user()->isSuperUser() ) {
 }
 
 
-Route::group(['middleware' => ['web']], function () {
-    // Route::get('/ltest', function() {
-    //     return view('ltest');
-    // });
-
-
-
-
+Route::group( [ 'namespace' => 'PatchPanel' ], function() {
+    Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
 });
 
 Route::group( [ 'namespace' => 'PatchPanel'], function() {

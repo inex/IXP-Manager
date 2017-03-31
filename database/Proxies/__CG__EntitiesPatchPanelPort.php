@@ -561,17 +561,6 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getChargeableDefaultNo()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeableDefaultNo', []);
-
-        return parent::getChargeableDefaultNo();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setPrivateNotes($privateNotes)
     {
 
@@ -785,12 +774,12 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getHistoryCount()
+    public function getMasterHistoryCount(): int
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHistoryCount', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMasterHistoryCount', []);
 
-        return parent::getHistoryCount();
+        return parent::getMasterHistoryCount();
     }
 
     /**
@@ -1082,23 +1071,12 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function resetPatchPanelPort()
+    public function resetPatchPanelPort(): \Entities\PatchPanelPort
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resetPatchPanelPort', []);
 
         return parent::resetPatchPanelPort();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createHistory()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'createHistory', []);
-
-        return parent::createHistory();
     }
 
     /**
@@ -1143,17 +1121,6 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPortPublicFiles', []);
 
         return parent::getPatchPanelPortPublicFiles();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createLoaPDF(bool $download = false)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'createLoaPDF', [$download]);
-
-        return parent::createLoaPDF($download);
     }
 
     /**
@@ -1286,6 +1253,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'json', [$deep]);
 
         return parent::json($deep);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCircuitReference(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCircuitReference', []);
+
+        return parent::getCircuitReference();
     }
 
 }

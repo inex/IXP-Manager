@@ -95,12 +95,15 @@ abstract class Email extends Mailable
         }
     }
 
+
     /**
      * Build the message.
      *
      * @return $this
      */
-    abstract public function build();
+    public function build() {
+        return $this;
+    }
 
     /**
      * Get the emailaddresses for to / cc / bcc

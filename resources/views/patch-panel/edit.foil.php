@@ -32,7 +32,8 @@
 
         <?= Former::text( 'name' )
             ->label( 'Patch Panel Name' )
-            ->help( "The name / reference for the patch panel. Using the co-location provider's reference is probably the sanest / least confusing option." );
+            ->help( "The name / reference for the patch panel, displayed throughout IXP Manager. "
+                . "Using the co-location provider's reference is probably the sanest / least confusing option." );
         ?>
 
         <?= Former::text( 'colo_reference' )
@@ -93,6 +94,17 @@
             ->label( 'Installation Date' )
             ->append( '<button class="btn-default btn" id="date-today" type="button">Today</button>' )
             ->value( date( 'Y-m-d' ) );
+        ?>
+
+        <?= Former::textarea( 'location_notes' )
+            ->label( 'Location Notes' )
+            ->rows( 5 )
+//            ->style( 'width:500px' )
+            ->help( 'These notes are included on connection and other emails to help co-location providers correctly '
+                . 'identify their own co-location references. Unfortunately, it has been the experience of the authors '
+                . 'that co-location providers change identifiers (and ownership) like the wind changes direction. These '
+                . 'notes will be provided in a preformatted (&lt;pre&gt;) section.'
+            );
         ?>
 
         <?= Former::hidden( 'id' )

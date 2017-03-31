@@ -31,7 +31,7 @@
 
 <div class="row-fluid">
     <div class="span12">
-        <form action="{genUrl controller="statistics" action="members"}" method="post" class="form-horizontal">
+        <form action="{genUrl controller="statistics" action="members"}{if $infraid !='aggregate'}/ixp/1/infra/{$infraid}{/if}" method="post" class="form-horizontal">
 {*
             {if $multiIXP}
                 <strong>IXP:</strong>

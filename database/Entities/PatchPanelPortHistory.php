@@ -2,8 +2,9 @@
 
 namespace Entities;
 
-Use Parsedown;
-Use D2EM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Parsedown;
+
 /**
  * PatchPanelPortHistory
  */
@@ -26,7 +27,7 @@ class PatchPanelPortHistory
     /**
      * @var string
      */
-    private $colo_circuit_ref;
+    private $colo_circuit_ref = '';
 
     /**
      * @var string
@@ -111,7 +112,7 @@ class PatchPanelPortHistory
      * Constructor
      */
     public function __construct() {
-        $this->duplexSlavePorts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->duplexSlavePorts = new ArrayCollection();
     }
 
     /**
@@ -139,13 +140,16 @@ class PatchPanelPortHistory
     /**
      * Get name
      *
-     * @return integer
+     * @return string
      */
     public function getName() {
+
         $name = $this->getNumber();
+
         if( $this->hasSlavePort() ) {
             $name .= '/' . $this->getDuplexSlavePort()->getNumber();
         }
+
         return $name;
     }
 
@@ -176,7 +180,7 @@ class PatchPanelPortHistory
      *
      * @param string $colo_circuit_ref
      *
-     * @return PatchPanelPort
+     * @return PatchPanelPortHistory
      */
     public function setColoCircuitRef( string $colo_circuit_ref ) {
         $this->colo_circuit_ref = $colo_circuit_ref;
@@ -197,7 +201,7 @@ class PatchPanelPortHistory
      *
      * @param string $ticket_ref
      *
-     * @return PatchPanelPort
+     * @return PatchPanelPortHistory
      */
     public function setTicketRef( string $ticket_ref ) {
         $this->ticket_ref = $ticket_ref;
@@ -271,7 +275,7 @@ class PatchPanelPortHistory
     /**
      * Get assignedAt formated
      *
-     * @return \DateTime
+     * @return string
      */
     public function getAssignedAtFormated() {
         return ( $this->getAssignedAt() == null ) ? $this->getAssignedAt() : $this->getAssignedAt()->format( 'Y-m-d' );
@@ -302,7 +306,7 @@ class PatchPanelPortHistory
     /**
      * Get connectedAt formated
      *
-     * @return \DateTime
+     * @return string
      */
     public function getConnectedAtFormated() {
         return ( $this->getConnectedAt() == null ) ? $this->getConnectedAt() : $this->getConnectedAt()->format( 'Y-m-d' );
@@ -333,7 +337,7 @@ class PatchPanelPortHistory
     /**
      * Get ceaseRequestedAt formated
      *
-     * @return \DateTime
+     * @return string
      */
     public function getCeaseRequestedAtFormated() {
         return ( $this->getCeaseRequestedAt() == null ) ? $this->getCeaseRequestedAt() : $this->getCeaseRequestedAt()->format( 'Y-m-d' );
@@ -364,7 +368,7 @@ class PatchPanelPortHistory
     /**
      * Get ceasedAt formated
      *
-     * @return \DateTime
+     * @return string
      */
     public function getCeasedAtFormated() {
         return ( $this->getCeasedAt() == null ) ? $this->getCeasedAt() : $this->getCeasedAt()->format( 'Y-m-d' );
@@ -546,7 +550,7 @@ class PatchPanelPortHistory
      *
      * @return PatchPanelPortHistory
      */
-    public function setPatchPanelPort( \Entities\PatchPanelPort $patchPanelPort = null ) {
+    public function setPatchPanelPort( PatchPanelPort $patchPanelPort = null ) {
         $this->patchPanelPort = $patchPanelPort;
 
         return $this;
@@ -577,7 +581,7 @@ class PatchPanelPortHistory
      *
      * @return PatchPanelPortHistory
      */
-    public function addDuplexSlavePort( \Entities\PatchPanelPortHistory $duplexSlavePort ) {
+    public function addDuplexSlavePort( PatchPanelPortHistory $duplexSlavePort ) {
         $this->duplexSlavePorts[] = $duplexSlavePort;
 
         return $this;
@@ -588,7 +592,7 @@ class PatchPanelPortHistory
      *
      * @param \Entities\PatchPanelPortHistory $duplexSlavePort
      */
-    public function removeDuplexSlavePort( \Entities\PatchPanelPortHistory $duplexSlavePort ) {
+    public function removeDuplexSlavePort( PatchPanelPortHistory $duplexSlavePort ) {
         $this->duplexSlavePorts->removeElement( $duplexSlavePort );
     }
 
@@ -608,7 +612,7 @@ class PatchPanelPortHistory
      *
      * @return PatchPanelPortHistory
      */
-    public function setDuplexMasterPort( \Entities\PatchPanelPortHistory $duplexMasterPort = null ) {
+    public function setDuplexMasterPort( PatchPanelPortHistory $duplexMasterPort = null ) {
         $this->duplexMasterPort = $duplexMasterPort;
 
         return $this;
@@ -633,18 +637,20 @@ class PatchPanelPortHistory
     }
 
     /**
-     * Get duplexSlavePorts
+     * Get duplexSlavePort
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * NOTE: This all assumes single duplex slave port
+     *
+     * @return PatchPanelPortHistory
      */
     public function getDuplexSlavePort() {
         if( $this->hasSlavePort() ) {
             foreach( $this->getDuplexSlavePorts() as $slave ) {
                 return $slave;
             }
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -670,9 +676,9 @@ class PatchPanelPortHistory
      *
      * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
      *
-     * @return PatchPanelPort
+     * @return PatchPanelPortHistory
      */
-    public function addPatchPanelPortHistoryFile( \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile ) {
+    public function addPatchPanelPortHistoryFile( PatchPanelPortHistoryFile $patchPanelPortHistoryFile ) {
         $this->patchPanelPortHistoryFiles[] = $patchPanelPortHistoryFile;
         return $this;
     }
@@ -682,7 +688,7 @@ class PatchPanelPortHistory
      *
      * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
      */
-    public function removePatchPanelPortHistoryFile( \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile ) {
+    public function removePatchPanelPortHistoryFile( PatchPanelPortHistoryFile $patchPanelPortHistoryFile ) {
         $this->patchPanelPortHistoryFiles->removeElement( $patchPanelPortHistoryFile );
     }
 
@@ -690,7 +696,7 @@ class PatchPanelPortHistory
     /**
      * Get patchPanelPortHistoryFiles
      *
-     * @return \Entities\PatchPanelPortHistoryFile
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPatchPanelPortHistoryFile() {
         return $this->patchPanelPortHistoryFiles;
@@ -698,53 +704,30 @@ class PatchPanelPortHistory
 
 
     /**
-     * Create a patch panel port history
-     * Duplicate all the datas of the current patch panel port in the history table
+     * Populate this history entity with details from a patch panel port.
      *
-     * @author     Yann Robin <yann@islandbridgenetworks.ie>
-     * @return \Entities\PatchPanelPortHistory
+     * @param PatchPanelPort $ppp
+     * @return PatchPanelPortHistory
      */
-    public static function createHistory( $patchPanelPort ) {
-        $pppHistory = new PatchPanelPortHistory();
+    public function setFromPatchPanelPort( PatchPanelPort $ppp ): PatchPanelPortHistory {
 
-        $pppHistory->setPatchPanelPort( $patchPanelPort );
-        $pppHistory->setNumber( $patchPanelPort->getNumber() );
-        $pppHistory->setState( $patchPanelPort->getState() );
-        $pppHistory->setColoCircuitRef( $patchPanelPort->getColoCircuitRef() );
-        $pppHistory->setTicketRef( $patchPanelPort->getTicketRef() );
-        $pppHistory->setNotes( $patchPanelPort->getNotes() );
-        $pppHistory->setPrivateNotes( $patchPanelPort->getPrivateNotes() );
-        $pppHistory->setAssignedAt( $patchPanelPort->getAssignedAt() );
-        $pppHistory->setConnectedAt( $patchPanelPort->getConnectedAt() );
-        $pppHistory->setCeaseRequestedAt( $patchPanelPort->getCeaseRequestedAt() );
-        $pppHistory->setCeasedAt( $patchPanelPort->getCeasedAt() );
-        $pppHistory->setInternalUse( $patchPanelPort->getInternalUse() );
-        $pppHistory->setChargeable( $patchPanelPort->getChargeable() );
-        $pppHistory->setOwnedBy( $patchPanelPort->getOwnedBy() );
-        $pppHistory->setCustomer( $patchPanelPort->getCustomerName() );
-        $pppHistory->setSwitchport( $patchPanelPort->getSwitchName() . ' / ' . $patchPanelPort->getSwitchPortName() );
-
-        $patchPanelPort->addPatchPanelPortHistory( $pppHistory );
-
-        D2EM::persist( $pppHistory );
-        D2EM::flush();
-
-        if( $patchPanelPort->hasSlavePort() ) {
-            $slavePortHistory = clone $pppHistory;
-            $slavePortHistory->setNumber( $patchPanelPort->getDuplexSlavePort()->getNumber() );
-            $slavePortHistory->setDuplexMasterPort( $pppHistory );
-            D2EM::persist( $slavePortHistory );
-        }
-
-        if( $patchPanelPort->hasSlavePort() ) {
-            $slavePort = $patchPanelPort->getDuplexSlavePort();
-            $slavePort->resetPatchPanelPort();
-        }
-        $patchPanelPort->resetPatchPanelPort();
-
-        D2EM::flush();
-
-        return $pppHistory;
+        return $this->setPatchPanelPort( $ppp )
+            ->setNumber( $ppp->getNumber() )
+            ->setState( $ppp->getState() )
+            ->setColoCircuitRef( $ppp->getColoCircuitRef() )
+            ->setTicketRef( $ppp->getTicketRef() )
+            ->setNotes( $ppp->getNotes() )
+            ->setPrivateNotes( $ppp->getPrivateNotes() )
+            ->setAssignedAt( $ppp->getAssignedAt() )
+            ->setConnectedAt( $ppp->getConnectedAt() )
+            ->setCeaseRequestedAt( $ppp->getCeaseRequestedAt() )
+            ->setCeasedAt( $ppp->getCeasedAt() )
+            ->setInternalUse( $ppp->getInternalUse() )
+            ->setChargeable( $ppp->getChargeable() )
+            ->setOwnedBy( $ppp->getOwnedBy() )
+            ->setCustomer( $ppp->getCustomer() ? $ppp->getCustomer()->getName() : '' )
+            ->setSwitchport( $ppp->getSwitchPort() ? $ppp->getSwitchPort()->getSwitcher()->getName() . '::' . $ppp->getSwitchPort()->getName() : '' );
     }
+
 
 }

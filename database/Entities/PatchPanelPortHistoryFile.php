@@ -3,7 +3,6 @@
 namespace Entities;
 
 
-Use D2EM;
 /**
  * PatchPanelPortHistoryFile
  */
@@ -171,7 +170,7 @@ class PatchPanelPortHistoryFile
     /**
      * Get uploadedAt
      *
-     * @return \DateTime
+     * @return string
      */
     public function getUploadedAtFormated()
     {
@@ -319,11 +318,11 @@ class PatchPanelPortHistoryFile
     /**
      * Add patchPanelPortHistory
      *
-     * @param \Entities\PatchPanelPortHistory $patchPanelPortHistory
+     * @param PatchPanelPortHistory $patchPanelPortHistory
      *
      * @return PatchPanelPortHistoryFile
      */
-    public function addPatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory)
+    public function addPatchPanelPortHistory(PatchPanelPortHistory $patchPanelPortHistory)
     {
         $this->patchPanelPortHistory = $patchPanelPortHistory;
 
@@ -333,9 +332,9 @@ class PatchPanelPortHistoryFile
     /**
      * Remove patchPanelPortHistory
      *
-     * @param \Entities\PatchPanelPortHistory $patchPanelPortHistory
+     * @param PatchPanelPortHistory $patchPanelPortHistory
      */
-    public function removePatchPanelPortHistory(\Entities\PatchPanelPortHistory $patchPanelPortHistory)
+    public function removePatchPanelPortHistory(PatchPanelPortHistory $patchPanelPortHistory)
     {
         $this->patchPanelPortHistory->removeElement($patchPanelPortHistory);
     }
@@ -352,34 +351,21 @@ class PatchPanelPortHistoryFile
 
 
     /**
-     * Create a patch panel port file history
-     * Duplicate all the datas of the current patch panel port file in the history table
-     * And delete the patch panel port file record at the end
+     * Populate this file history entity with details from a patch panel port file.
      *
-     * @param \Entities\PatchPanelPort $patchPanelPort
-     * @param \Entities\PatchPanelPortHistory $PPPHistory patch panel port history object
-     * @author     Yann Robin <yann@islandbridgenetworks.ie>
-     * @return string
+     * @param PatchPanelPortFile $pppf
+     * @return PatchPanelPortHistoryFile
      */
-    public static function createHistory($patchPanelPort,$PPPHistory){
+    public function setFromPatchPanelPortFile( PatchPanelPortFile $pppf ): PatchPanelPortHistoryFile {
 
-        foreach ($patchPanelPort->getPatchPanelPortFiles() as $file){
-
-            $pppHistoryFile = new PatchPanelPortHistoryFile();
-
-            $pppHistoryFile->setName($file->getName());
-            $pppHistoryFile->setSize($file->getSize());
-            $pppHistoryFile->setType($file->getType());
-            $pppHistoryFile->setStorageLocation($file->getStorageLocation());
-            $pppHistoryFile->setUploadedBy($file->getUploadedBy());
-            $pppHistoryFile->setUploadedAt($file->getUploadedAt());
-            $pppHistoryFile->setIsPrivate($file->getIsPrivate());
-            $pppHistoryFile->addPatchPanelPortHistory($PPPHistory);
-
-            D2EM::persist($pppHistoryFile);
-            D2EM::remove($file);
-        }
-
-        D2EM::flush();
+        return $this->setName( $pppf->getName() )
+            ->setSize( $pppf->getSize() )
+            ->setType( $pppf->getType() )
+            ->setStorageLocation( $pppf->getStorageLocation() )
+            ->setUploadedBy( $pppf->getUploadedBy() )
+            ->setUploadedAt( $pppf->getUploadedAt() )
+            ->setIsPrivate( $pppf->getIsPrivate() );
     }
+
 }
+

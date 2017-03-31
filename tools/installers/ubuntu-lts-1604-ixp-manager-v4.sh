@@ -290,9 +290,15 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password_again passwo
 ##################################################################
 
 echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
+
+# Prevent mrtg from prompting
+echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
+
 log_break && apt-get install -qy apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql memcached snmp nodejs nodejs-legacy npm     \
-    php7.0-mbstring php7.0-xml php-gettext bgpq3 php-memcache unzip php-zip git &>> /tmp/ixp-manager-install.log
+    php7.0-mbstring php7.0-xml php7.0-gd php-gettext bgpq3 php-memcache unzip php-zip git                               \
+    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl      \
+        &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
 # First time you run PHP it may output some setup messages - bury these
@@ -419,8 +425,8 @@ DB_PASSWORD="${MYSQL_IXPM_PW}"
 # This has grown organically and we intend to clean this up in a coming release and
 # documenting where and how each one is spceifically used.
 IDENTITY_LEGALNAME="${IXPNAME}"
-IDENTITY_CITY"Dublin"
-IDENTITY_COUNTRY"Ireland"
+IDENTITY_CITY="${IXPCITY}"
+IDENTITY_COUNTRY="${IXPCOUNTRY}"
 IDENTITY_ORGNAME="\${IDENTITY_LEGALNAME}"
 IDENTITY_NAME="\${IDENTITY_LEGALNAME}"
 IDENTITY_EMAIL="${IXPNOCEMAIL}"
@@ -584,8 +590,9 @@ END_SQL
 
 # And seed the database:
 cd $IXPROOT
-php artisan db:seed --force
-
+php artisan db:seed --class=IRRDBs --force
+php artisan db:seed --class=Vendors --force
+php artisan db:seed --class=ContactGroups --force
 
 echo '[done]'
 
@@ -622,12 +629,17 @@ END_APACHE
 log_break && cat /etc/apache2/sites-available/000-default.conf &>> /tmp/ixp-manager-install.log
 a2enmod rewrite &>> /tmp/ixp-manager-install.log
 
-chown -R root: ${IXPROOT}
-chown -R www-data: ${IXPROOT}/storage ${IXPROOT}/var ${IXPROOT}/bootstrap/cache ${IXPROOT}/database/Proxies &>> /tmp/ixp-manager-install.log
-chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
 service apache2 restart &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
+##################################################################
+### File System Permissions
+##################################################################
+
+chown -R root: ${IXPROOT}
+chown -R www-data: ${IXPROOT}/storage ${IXPROOT}/var ${IXPROOT}/bootstrap/cache ${IXPROOT}/database/Proxies \
+    ${IXPROOT}/vendor ${IXPROOT}/bower.json ${IXPROOT}/public/bower_components    &>> /tmp/ixp-manager-install.log
+chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
 
 ##################################################################
 ### Completion Details

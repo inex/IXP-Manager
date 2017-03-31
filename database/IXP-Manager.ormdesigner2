@@ -6,8 +6,8 @@
       <field name="customer_id" type="integer" required="true" uuid="07bd2228-73b4-479f-ad50-1438f9905e5f"/>
       <field name="asn" type="integer" required="true" uuid="ad41fc97-061a-4e76-bcef-01146a05f2e6"/>
       <field name="protocol" type="integer" required="true" uuid="d7b4ff15-0fbd-4e2b-85a0-7397c3d932ab"/>
-      <field name="first_seen" type="datetime" required="true" uuid="30730a88-58d8-4bee-aaf5-981fa1a49dff"/>
-      <field name="last_seen" type="datetime" required="true" uuid="a5b4e4ca-a4e3-4301-96ca-495dad968df6"/>
+      <field name="first_seen" type="datetime" uuid="30730a88-58d8-4bee-aaf5-981fa1a49dff"/>
+      <field name="last_seen" type="datetime" uuid="a5b4e4ca-a4e3-4301-96ca-495dad968df6"/>
       <index name="custasn" unique="true">
         <index-field name="asn"/>
         <index-field name="protocol"/>
@@ -61,8 +61,8 @@
       <field name="customer_id" type="integer" required="true" uuid="acd87918-2791-4530-90fd-65e46f8a774d"/>
       <field name="prefix" type="string" size="255" required="true" uuid="552d465a-f969-4d73-88f0-9aceb239cf15"/>
       <field name="protocol" type="integer" required="true" uuid="959cd9e3-0cdc-4e47-9db3-17617d470128"/>
-      <field name="first_seen" type="datetime" required="true" uuid="4d67869f-fb35-46a1-8664-938a168791b9"/>
-      <field name="last_seen" type="datetime" required="true" uuid="93f0f6bd-ab07-4564-ab3f-5262b7770bfa"/>
+      <field name="first_seen" type="datetime" uuid="4d67869f-fb35-46a1-8664-938a168791b9"/>
+      <field name="last_seen" type="datetime" uuid="93f0f6bd-ab07-4564-ab3f-5262b7770bfa"/>
       <index name="custprefix" unique="true">
         <index-field name="prefix"/>
         <index-field name="protocol"/>
@@ -1158,6 +1158,11 @@
       <field name="connector_type" type="integer" required="true" uuid="19f98e9b-6763-495a-aa18-a4911985e9c3"/>
       <field name="installation_date" type="datetime" uuid="e4d0c03d-5047-4456-b600-e51dd6498fe6"/>
       <field name="port_prefix" type="string" size="10" required="true" uuid="6654ced4-232e-4f37-a6d5-d55eb0ce8b8c"/>
+<<<<<<< HEAD
+=======
+      <field name="chargeable" type="integer" default="0" required="true" uuid="861b803e-1b89-4e85-95dd-185c63475a3e"/>
+      <field name="location_notes" type="text" required="true" uuid="fa7aaa65-7b2a-426a-aa1f-1531de2e72fa"/>
+>>>>>>> master
       <field name="active" type="boolean" default="1" required="true" uuid="bed79a85-f181-413d-9892-f8fdd33ab673"/>
       <orm-attributes>
         <attribute name="table">patch_panel</attribute>
@@ -1188,6 +1193,10 @@
       <field name="customer_id" type="integer" uuid="07bc00ca-c2a8-4d60-8e2b-ea64c26579eb"/>
       <field name="switch_port_id" type="integer" unique="true" uuid="42ed61d4-357e-435f-befb-f3701b20bec7"/>
       <field name="duplex_master_id" type="integer" uuid="0ece104a-5ac0-4881-a346-ecf5dd66504c"/>
+<<<<<<< HEAD
+=======
+      <field name="loa_code" type="string" size="25" uuid="03c1f9f2-e11e-4fea-8807-90fbbd78dab8"/>
+>>>>>>> master
       <orm-attributes>
         <attribute name="table">patch_panel_port</attribute>
         <attribute name="tableName">patch_panel_port</attribute>
@@ -1253,6 +1262,7 @@
     </entity>
     <association from="\Entities\Layer2Address" to="\Entities\VlanInterface" owner-alias="layer2Addresses" inverse-alias="vlanInterface" many-owner="true" many-inverse="false" parent-required="true" uuid="d055afe7-fe5a-4a17-8bb6-21aa478e1633">
       <association-field from="vlan_interface_id" to="id"/>
+    </association>
     <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPortHistory" owner-alias="duplexSlavePorts" inverse-alias="duplexMasterPort" many-owner="true" many-inverse="false" uuid="263cdc09-054e-49c3-9b3e-c310b4edc711">
       <association-field from="duplex_master_id" to="id"/>
     </association>
@@ -1397,7 +1407,7 @@
     <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
     <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" bg-color="4294967295" hdr-color="4292006610" position-x="1153" position-y="545" size-x="0" size-x2="115" size-y="0" size-y2="185"/>
     <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
-    <entity uuid="e64bc27c-d058-422a-987d-95e987418035" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1588" position-y="-297" size-x="0" size-x2="135" size-y="0" size-y2="115"/>
+    <entity uuid="e64bc27c-d058-422a-987d-95e987418035" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1611" position-y="-334" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
     <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="272" position-y="321" size-x="0" size-x2="98" size-y="0" size-y2="87"/>
