@@ -94,8 +94,8 @@
 
         <?= Former::select( 'chargeable' )
             ->label( 'Chargeable' )
-            ->options( $t->chargeables)
-            ->select(  $t->pp ? $t->pp->getChargeable() : \Entities\PatchPanelPort::CHARGEABLE_NO)
+            ->options( Entities\PatchPanelPort::$CHARGEABLES )
+            ->select(  $t->pp ? $t->pp->getChargeable() : Entities\PatchPanelPort::CHARGEABLE_NO )
             ->addClass( 'chzn-select' )
             ->help( 'Usually IXPs request their members to <em>come to them</em> and bear the costs of that. '
                 . 'However, sometimes a co-location facility may charge the IXP for a half circuit or the IXP may need '

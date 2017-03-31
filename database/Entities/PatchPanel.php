@@ -111,9 +111,9 @@ class PatchPanel
 
 
     /**
-     * @var boolean
+     * @var int
      */
-    private $chargeable = false;
+    private $chargeable = PatchPanelPort::CHARGEABLE_NO;
 
     /**
      * @var int
@@ -267,17 +267,6 @@ class PatchPanel
     public function getActiveText()
     {
         return ($this->active) ? 'Yes': 'No';
-    }
-
-    /**
-     * Get chargeable
-     *
-     * @return boolean
-     */
-    public function getChargeable()
-    {
-        return $this->chargeable;
-
     }
 
     /**
@@ -444,14 +433,24 @@ class PatchPanel
     /**
      * Set chargeable
      *
-     * @param boolean $chargeable
+     * @param int $chargeable
      *
      * @return PatchPanel
      */
-    public function setChargeable($chargeable)
+    public function setChargeable(int $chargeable)
     {
         $this->chargeable = $chargeable;
         return $this;
+    }
+
+    /**
+     * Get chargeable
+     *
+     * @return int
+     */
+    public function getChargeable(): int
+    {
+        return $this->chargeable;
     }
 
     /**
@@ -649,6 +648,7 @@ class PatchPanel
             $ppp->setNumber( ( $max + $i ) );
             $ppp->setState( PatchPanelPort::STATE_AVAILABLE );
             $ppp->setPatchPanel( $this );
+            $ppp->setChargeable( $this->getChargeable() );
             $ppp->setLastStateChange( new \DateTime );
             $this->addPatchPanelPort($ppp);
             D2EM::persist($ppp);

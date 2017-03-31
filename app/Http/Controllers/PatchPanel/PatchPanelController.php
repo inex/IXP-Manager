@@ -124,7 +124,6 @@ class PatchPanelController extends Controller
         return view( 'patch-panel/edit' )->with([
             'pp'                    => $pp,
             'cabinets'              => D2EM::getRepository( Cabinet::class )->getAsArray(),
-            'chargeables'           => PatchPanelPort::$CHARGEABLES,
         ]);
     }
 

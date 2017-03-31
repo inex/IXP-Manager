@@ -323,17 +323,6 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getChargeable()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeable', []);
-
-        return parent::getChargeable();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getCabinet()
     {
 
@@ -466,12 +455,23 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function setChargeable($chargeable)
+    public function setChargeable(int $chargeable)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setChargeable', [$chargeable]);
 
         return parent::setChargeable($chargeable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChargeable(): int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getChargeable', []);
+
+        return parent::getChargeable();
     }
 
     /**
