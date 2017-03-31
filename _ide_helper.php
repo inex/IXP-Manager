@@ -14874,6 +14874,84 @@ namespace GrahamCampbell\Flysystem\Facades {
  
 }
 
+namespace MaxHoffmann\Parsedown { 
+
+    class ParsedownFacade {
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function text($text)
+        {
+            return \Parsedown::text($text);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function setBreaksEnabled($breaksEnabled)
+        {
+            return \Parsedown::setBreaksEnabled($breaksEnabled);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function setMarkupEscaped($markupEscaped)
+        {
+            return \Parsedown::setMarkupEscaped($markupEscaped);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function setUrlsLinked($urlsLinked)
+        {
+            return \Parsedown::setUrlsLinked($urlsLinked);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function line($text)
+        {
+            return \Parsedown::line($text);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function parse($text)
+        {
+            return \Parsedown::parse($text);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function instance($name = 'default')
+        {
+            return \Parsedown::instance($name);
+        }
+         
+    }
+ 
+}
+
 namespace LukeTowers\Purifier\Facades { 
 
     class Purifier {
@@ -17088,6 +17166,8 @@ namespace  {
     class Former extends \Former\Facades\Former {}
 
     class Flysystem extends \GrahamCampbell\Flysystem\Facades\Flysystem {}
+
+    class Markdown extends \MaxHoffmann\Parsedown\ParsedownFacade {}
 
     class Purifier extends \LukeTowers\Purifier\Facades\Purifier {}
 
