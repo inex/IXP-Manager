@@ -95,8 +95,16 @@
                             <span class="label label-default" data-toggle="tooltip" title="<?= $ppp->resolveChargeable() ?>"><?= env( 'CURRENCY_HTML_ENTITY', '&euro;' ) ?></span>
                         <?php endif; ?>
 
-                        <?php if( $cnt = count( $ppp->getPatchPanelPortFiles() ) ): ?>
-                            <span class="label label-default"><?= $cnt ?> FILES</span>
+                        <?php if( count( $ppp->getPatchPanelPortFiles() ) ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Files">F</span>
+                        <?php endif; ?>
+
+                        <?php if( trim( $ppp->getNotes() ) != '' ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Public Note">N+</span>
+                        <?php endif; ?>
+
+                        <?php if( trim( $ppp->getPrivateNotes() ) != '' ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Private Note">N-</span>
                         <?php endif; ?>
 
                     </td>
@@ -118,7 +126,7 @@
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li>
                                         <a id="edit-notes-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" >
-                                            <?= $ppp->isStateAvailable() ? 'Add' : 'Edit' ?> note...
+                                            Notes...
                                         </a>
                                     </li>
 
