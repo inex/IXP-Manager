@@ -234,6 +234,10 @@
                             <dd>
                                 Enter IPv4 <code>a.b.c.d/x</code> or IPv6 <code>a:b::/x</code>
                             </dd>
+                            <dt>Patch Panel Port</dt>
+                            <dd>
+                                Enter ID <code>PPP-xxx</code>
+                            </dd>
                         </dl>
                     </div>
                     <div class="span6">

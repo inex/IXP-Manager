@@ -45,7 +45,15 @@ class SearchController extends IXP_Controller_AuthRequiredAction
             return;
 
         // what kind of search are we doing?
-        if( preg_match( '/^\.\d{1,3}$/', $search ) || preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $search ) )
+        if( preg_match( '/^PPP\-0*(\d+)$/', $search, $matches ) )
+        {
+            if( $ppp = $this->getD2R( '\\Entities\\PatchPanelPort' )->find( $matches[1] ) ) {
+                $this->redirect( 'patch-panel-port/view/' . $matches[1] );
+            }
+            $this->view->type = 'ppp';
+            $this->view->results = [];
+        }
+        else if( preg_match( '/^\.\d{1,3}$/', $search ) || preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $search ) )
         {
             $this->view->type = 'ipv4';
             $this->processIPSearch( $this->getD2R( '\\Entities\\IPv4Address' )->findVlanInterfaces( $search ) );
