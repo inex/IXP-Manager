@@ -300,9 +300,10 @@ class PatchPanelPort
      */
     public function getName()
     {
-        $name = $this->getPatchPanel()->getPortPrefix().$this->getNumber();
-        if($this->hasSlavePort()){
-            $name .= '/'.$this->getDuplexSlavePortName();
+        $name = $this->getPatchPanel()->getPortPrefix() . $this->getNumber();
+        if( $this->hasSlavePort() ) {
+            $name = ( $this->getNumber() % 2 ? ( floor( $this->getNumber() / 2 ) ) + 1 : $this->getNumber() / 2 ) . ' (' . $name;
+            $name .= '/' . $this->getDuplexSlavePortName() . ')';
         }
         return $name;
     }
