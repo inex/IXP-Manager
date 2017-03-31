@@ -24,16 +24,18 @@
 
 
 <?php $this->section( 'content' ) ?>
-    <table id='layer-2-interface-list' class="table ">
-        <thead>
+    <div id="message"></div>
+    <div id="list-area">
+        <table id='layer-2-interface-list' class="table">
+            <thead>
             <tr>
                 <td>Id</td>
-                <td>MAC Adress</td>
+                <td>MAC Address</td>
                 <td>Created at</td>
                 <td>Action</td>
             </tr>
-        <thead>
-        <tbody>
+            <thead>
+            <tbody >
             <?php foreach( $t->vli->getLayer2Addresses() as $l2a ):
                 /** @var \Entities\PatchPanelPort $ppp */
                 ?>
@@ -42,71 +44,73 @@
                         <?= $l2a->getId() ?>
                     </td>
                     <td>
-                        <?= $l2a->getMac() ?>
+                        <?= $l2a->getMacFormatedComma() ?>
                     </td>
                     <td>
-                        <?= $l2a->getCreatedAt() ?>
+                        <?= $l2a->getCreatedAtFormated() ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <a class="btn btn btn-default" href="<?= url( '/patch-panel/view' ).'/'.$l2a->getId()?>" title="Preview">
+                            <a class="btn btn btn-default" id="view-l2a-<?= $l2a->getId() ?>" href="#" title="View">
                                 <i class="glyphicon glyphicon-eye-open"></i>
                             </a>
-                            <a class="btn btn btn-default" href="<?= url( '/patch-panel/edit' ).'/'.$l2a->getId()?>" title="Delete">
+                            <button class="btn btn btn-default" id="delete-l2a-<?= $l2a->getId() ?>" href="#" title="Delete">
                                 <i class="glyphicon glyphicon-trash"></i>
-                            </a>
+                            </button>
                         </div>
                     </td>
                 </tr>
             <?php endforeach;?>
-        <tbody>
-    </table>
+            <tbody>
+        </table>
+    </div>
+
+    <!-- Modal dialog for views mac address with different formats -->
+    <div class="modal fade" id="notes-modal" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="notes-modal-label">MAC Address</h4>
+                </div>
+                <div class="modal-body" id="notes-modal-body">
+                    <div class="input-group">
+                        <input class="form-control" readonly id="mac">
+                        <div class="input-group-btn">
+                            <button id="btn-copy-mac" class="btn btn-copy btn-default" data-clipboard-action="copy" data-clipboard-target="#mac">
+                                <span class="glyphicon glyphicon-copy"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <input class="form-control" readonly id="macComma">
+                        <div class="input-group-btn">
+                            <button id="btn-copy-mac-comma" class="btn btn-copy btn-default" data-clipboard-action="copy" data-clipboard-target="#macComma">
+                                <span class="glyphicon glyphicon-copy"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <input class="form-control" readonly id="macDot">
+                        <div class="input-group-btn">
+                            <button id="btn-copy-mac-dot" class="btn btn-copy btn-default" data-clipboard-action="copy" data-clipboard-target="#macDot">
+                                <span class="glyphicon glyphicon-copy"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input  id="notes-modal-ppp-id"      type="hidden" name="notes-modal-ppp-id" value="">
+                    <button id="notes-modal-btn-cancel"  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
-        $(document).ready( function() {
-            $( '#layer-2-interface-list' ).DataTable({
-                "autoWidth": false,
-                "columnDefs": [{
-                    "targets": [ 0 ],
-                    "visible": false,
-                    "searchable": false,
-                }],
-                "order": [[ 0, "asc" ]]
-            });
-        } );
-
-        $( "#add-l2a" ).on( 'click', function(e){
-            e.preventDefault();
-            bootbox.prompt({
-                title: "Enter a MAC Address.",
-                inputType: 'text',
-                callback: function (result) {
-                    if(result != null){
-                        $.ajax( "<?= url('layer-to-interface/store')?>", {
-                            data: {
-                                id: <?= $t->vli->getId() ?>,
-                                mac: result,
-                                _token : "<?= csrf_token() ?>"
-                            },
-                            type: 'POST'
-                        })
-                            .done( function( data ) {
-
-                            })
-                            .fail( function(){
-                                alert( 'Could not update notes. API / AJAX / network error' );
-                                throw new Error("Error running ajax query for api/v4/patch-panel-port/notes");
-                            })
-
-                    }
-                }
-            });
-
-        });
-
-
-
-    </script>
+    <script type="text/javascript" src="<?= asset( '/bower_components/clipboard/dist/clipboard.min.js' ) ?>"></script>
+    <?= $t->insert( 'vlan-interface/js/index' ); ?>
 <?php $this->append() ?>

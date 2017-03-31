@@ -28,6 +28,7 @@
     "font-awesome": "fontawesome#^4.7.0",
     "blueimp-file-upload": "jquery-file-upload#^9.17.0",
     "jquery-knob": "^1.2.13",
-    "bootstrap-tagsinput": "bootstraptagsinput#^0.8.0"
+    "bootstrap-tagsinput": "bootstraptagsinput#^0.8.0",
+    "clipboard": "^1.6.1"
   }
 }

@@ -3,6 +3,7 @@
 namespace Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Carbon\Carbon;
 
 /**
  * Entities\VlanInterface
@@ -665,7 +666,7 @@ class VlanInterface
      *
      * @param Layer2Address $layer2Address
      */
-    public function removeVlanInterface( Layer2Address $layer2Address )
+    public function removeLayer2Address( Layer2Address $layer2Address )
     {
         $this->layer2Addresses->removeElement($layer2Address);
     }
@@ -700,6 +701,30 @@ class VlanInterface
         return ($this->getNumberLayer2Addresses() > 0) ? 'success' : 'danger' ;
     }
 
+    /**
+     * Get Layer2Address as JSON-compatibale array
+     * @param bool $isJson json format
+     * @return array
+     */
+    public function l2aArray( bool $isJson ){
+        $a = [];
+
+        foreach( $this->getLayer2Addresses() as $l2a ){
+            /** @var Layer2Address $l2a */
+            $a[$l2a->getId()]                 = $isJson ? $l2a->jsonArray() :$l2a->toArray();
+        }
+
+        return $a;
+    }
+
+    /**
+     * Get patch panel details as JSON
+     * @param bool $isJson json format
+     * @return string
+     */
+    public function l2aJson( bool $isJson ): string {
+        return json_encode( $this->l2aArray( $isJson ), JSON_PRETTY_PRINT );
+    }
 
 
 }

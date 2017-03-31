@@ -686,12 +686,12 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function removeVlanInterface(\Entities\Layer2Address $layer2Address)
+    public function removeLayer2Address(\Entities\Layer2Address $layer2Address)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeVlanInterface', [$layer2Address]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeLayer2Address', [$layer2Address]);
 
-        return parent::removeVlanInterface($layer2Address);
+        return parent::removeLayer2Address($layer2Address);
     }
 
     /**
@@ -725,6 +725,28 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCssClassNumberL2A', []);
 
         return parent::getCssClassNumberL2A();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function l2aArray(bool $isJson)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'l2aArray', [$isJson]);
+
+        return parent::l2aArray($isJson);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function l2aJson(bool $isJson): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'l2aJson', [$isJson]);
+
+        return parent::l2aJson($isJson);
     }
 
 }

@@ -2,11 +2,12 @@
 
 namespace Entities;
 
+use Carbon\Carbon;
+
 /**
  * Layer2Address
  */
-class Layer2Address
-{
+class Layer2Address {
     /**
      * @var integer
      */
@@ -36,6 +37,98 @@ class Layer2Address
      * @var \Entities\VlanInterface
      */
     private $vlanInterface;
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get mac
+     *
+     * @return string
+     */
+    public function getMac()
+    {
+        return $this->mac;
+    }
+
+    /**
+     * Get mac formated with comma (xx:xx:xx:xx:xx:xx)
+     *
+     * @return string
+     */
+    public function getMacFormatedComma()
+    {
+        return wordwrap($this->mac, 2, ':',true);
+    }
+
+    /**
+     * Get mac formated (xxxx.xxxx.xxxx)
+     *
+     * @return string
+     */
+    public function getMacFormatedDot()
+    {
+        return wordwrap($this->mac, 4, '.',true);
+    }
+
+    /**
+     * Get firstseen
+     *
+     * @return \DateTime
+     */
+    public function getFirstSeenAt()
+    {
+        return $this->firstseen;
+    }
+
+    /**
+     * Get lastseen
+     *
+     * @return \DateTime
+     */
+    public function getLastSeenAt()
+    {
+        return $this->lastseen;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAtFormated()
+    {
+        return ($this->getCreatedAt() == null) ? $this->getCreatedAt() : $this->getCreatedAt()->format('Y-m-d');
+    }
+
+    /**
+     * Get vlanInterface
+     *
+     * @return \Entities\VlanInterface
+     */
+    public function getVlanInterface()
+    {
+        return $this->vlanInterface;
+    }
+
 
 
     /**
@@ -106,64 +199,37 @@ class Layer2Address
 
 
     /**
-     * Get id
+     * Convert this object to an array
      *
-     * @return integer
+     * @return array
      */
-    public function getId()
-    {
-        return $this->id;
+    public function toArray(){
+        $a = [
+            'id'                => $this->getId(),
+            'mac'               => $this->getMac() ,
+            'macFormatedComma'  => $this->getMacFormatedComma(),
+            'macFormatedDot'    => $this->getMacFormatedDot(),
+            'vliId'             => $this->getVlanInterface()->getId(),
+            'createdAt'         => $this->getCreatedAt(),
+            'firstSeenAt'       => $this->getFirstSeenAt(),
+            'lastSeenAt'        => $this->getLastSeenAt()
+        ];
+
+        return $a;
     }
 
     /**
-     * Get mac
-     *
-     * @return string
+     * Get layer@address as JSON-compatibale array
+     * @return array
      */
-    public function getMac()
-    {
-        return $this->mac;
-    }
+    public function jsonArray( ): array {
+        $a = $this->toArray();
 
-    /**
-     * Get firstseen
-     *
-     * @return \DateTime
-     */
-    public function getFirstSeenAt()
-    {
-        return $this->firstseen;
-    }
+        $a['createdAt']     = $a['createdAt']       ? Carbon::instance( $a['createdAt']     )->toIso8601String() : null;
+        $a['firstSeenAt']   = $a['firstSeenAt']     ? Carbon::instance( $a['firstSeenAt']   )->toIso8601String() : null;
+        $a['lastSeenAt']    = $a['lastSeenAt']      ? Carbon::instance( $a['lastSeenAt']    )->toIso8601String() : null;
 
-    /**
-     * Get lastseen
-     *
-     * @return \DateTime
-     */
-    public function getLastSeenAt()
-    {
-        return $this->lastseen;
+        return $a;
     }
-
-    /**
-     * Get created
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Get vlanInterface
-     *
-     * @return \Entities\VlanInterface
-     */
-    public function getVlanInterface()
-    {
-        return $this->vlanInterface;
-    }
-
 }
 

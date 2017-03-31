@@ -27,52 +27,25 @@ Use D2EM;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-use Entities\VlanInterface;
+use Entities\VlanInterface as VlanInterfaceEntity;
 
 /**
- * Layer2Interface Controller
+ * Layer2Address Controller
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   VlanInterface
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Layer2InterfaceController extends Controller
-{
+class Layer2AddressController extends Controller{
+
     /**
-     * Display all the layer2 addresse for a VlanInterface
+     * Display all the layer2addresses for a VlanInterface
      *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @parama  int $id ID if the VlanInterface
-     * @return  view
+     * @param  int $id ID if the VlanInterface
+     * @return  View
      */
     public function index( int $id ): View{
-        $vli = false;
-
-        if( !( $vli = D2EM::getRepository(VlanInterface::class)->find( $id ) ) ) {
-            return abort( '404' );
-        }
-
-        return view( 'vlan-interface/index' )->with([
-            'vli'       => $vli
-        ]);
-    }
-
-    /**
-     * store a mac address
-     *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @parama  int $id ID if the VlanInterface
-     * @return  view
-     */
-    public function store( $request ): View{
-        $id = $request->input( 'id' );
-        $mac = $request->input( 'mac' );
-
-        dd($mac);
-
-        if( !( $vli = D2EM::getRepository(VlanInterface::class)->find( $id ) ) ) {
+        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $id ) ) ) {
             return abort( '404' );
         }
 

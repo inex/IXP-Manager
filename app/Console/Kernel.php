@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel {
 
         'IXP\Console\Commands\Upgrade\MrtgTrunkConfig',
         'IXP\Console\Commands\Utils\Export\JsonSchema\Post',
+        'IXP\Console\Commands\l2addresses',
     ];
 
     /**
