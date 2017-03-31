@@ -419,4 +419,15 @@ class PatchPanelPortHistoryFile extends \Entities\PatchPanelPortHistoryFile impl
         return parent::getPatchPanelPortHistory();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function setFromPatchPanelPortFile(\Entities\PatchPanelPortFile $pppf): \Entities\PatchPanelPortHistoryFile
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFromPatchPanelPortFile', [$pppf]);
+
+        return parent::setFromPatchPanelPortFile($pppf);
+    }
+
 }

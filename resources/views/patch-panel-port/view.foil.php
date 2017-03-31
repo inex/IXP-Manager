@@ -36,6 +36,17 @@
                         <div class="col-xs-6">
                             <table class="table_ppp_info">
 
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Description:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= Markdown::parse( $p->getDescription() ) ?>
+                                    </td>
+                                </tr>
+
                                 <?php if( $current ): ?>
                                     <tr>
                                         <td>
@@ -215,7 +226,7 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <?= $p->getInternalUseText() ?>
+                                            <?= $p->getInternalUse() ? 'Yes' : 'No' ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>

@@ -3,6 +3,9 @@ Hi,
 You or someone in your organisation requested a details on the
 following cross connect to {{ env( 'IDENTITY_ORGNAME' ) }}.
 
+@if( trim( $ppp->getDescription() ) )
+**Description**: {{ $ppp->getDescription() }}
+@endif
 
 ```
 Colo Reference:  {{ $ppp->getColoCircuitRef() }}

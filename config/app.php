@@ -197,6 +197,9 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
 
         LukeTowers\Purifier\PurifierServiceProvider::class,
+
+        MaxHoffmann\Parsedown\ParsedownServiceProvider::class,
+
     ],
 
     /*
@@ -254,12 +257,11 @@ return [
 
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
-        'Former' => 'Former\Facades\Former',
-        'Flysystem' => 'GrahamCampbell\Flysystem\Facades\Flysystem',
-
-        'Purifier' => LukeTowers\Purifier\Facades\Purifier::class,
-
-        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Former'    => Former\Facades\Former::class,
+        'Flysystem' => GrahamCampbell\Flysystem\Facades\Flysystem::class,
+        'Markdown'  => MaxHoffmann\Parsedown\ParsedownFacade::class,
+        'Purifier'  => LukeTowers\Purifier\Facades\Purifier::class,
+        'PDF'       => Barryvdh\DomPDF\Facade::class,
 
     ],
 

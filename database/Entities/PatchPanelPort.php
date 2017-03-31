@@ -120,6 +120,16 @@ class PatchPanelPort
     /**
      * @var integer
      */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $description = '';
+
+    /**
+     * @var integer
+     */
     private $number;
 
     /**
@@ -174,14 +184,9 @@ class PatchPanelPort
     private $internal_use = false;
 
     /**
-     * @var boolean
+     * @var int
      */
-    private $chargeable = false;
-
-    /**
-     * @var integer
-     */
-    private $id;
+    private $chargeable;
 
     /**
      * @var \Entities\SwitchPort
@@ -241,6 +246,30 @@ class PatchPanelPort
         $this->patchPanelPortHistory = new ArrayCollection();
     }
 
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return PatchPanelPort
+     */
+    public function setDescription(string $description): PatchPanelPort
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description ?? '';
+    }
+
     /**
      * Set number
      *
@@ -271,9 +300,10 @@ class PatchPanelPort
      */
     public function getName()
     {
-        $name = $this->getPatchPanel()->getPortPrefix().$this->getNumber();
-        if($this->hasSlavePort()){
-            $name .= '/'.$this->getDuplexSlavePortName();
+        $name = $this->getPatchPanel()->getPortPrefix() . $this->getNumber();
+        if( $this->hasSlavePort() ) {
+            $name = ( $this->getNumber() % 2 ? ( floor( $this->getNumber() / 2 ) ) + 1 : $this->getNumber() / 2 ) . ' (' . $name;
+            $name .= '/' . $this->getDuplexSlavePortName() . ')';
         }
         return $name;
     }
@@ -597,26 +627,6 @@ class PatchPanelPort
     }
 
     /**
-     * Get internalUse
-     *
-     * @return int
-     */
-    public function getInternalUseInt()
-    {
-        return $this->getInternalUse() ?  1 :  0;
-    }
-
-    /**
-     * Get internalUse
-     *
-     * @return string
-     */
-    public function getInternalUseText()
-    {
-        return $this->getInternalUse() ?  'Yes' :  'No';
-    }
-
-    /**
      * Set chargeable
      *
      * @param boolean $chargeable
@@ -636,7 +646,7 @@ class PatchPanelPort
      */
     public function getChargeable()
     {
-        return $this->chargeable;
+        return isset( self::$CHARGEABLES[ $this->chargeable ] ) ? $this->chargeable : self::CHARGEABLE_NO;
 
     }
 

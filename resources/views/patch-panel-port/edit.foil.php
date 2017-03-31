@@ -13,10 +13,10 @@
 
 <?php if (!$t->allocating and  !$t->prewired): ?>
     <div class="alert alert-warning" role="alert">
-        <b>Warning!</b>
+        <b>Note:</b>
         IXP Manager provides context-aware actions for allocating / setting connected / requested ceases / ceasing a patch
         panel port and these <i>do the right thing</i>. As such, editing a patch panel port manually through this
-        interface is strongly discouraged unless you know what you are doing.
+        interface is discouraged for lifecycle changes.
     </div>
 <?php endif; ?>
 
@@ -37,6 +37,16 @@
             ->label( 'Patch Panel' );
         ?>
     <?php endif; ?>
+
+    <?= Former::text( 'description' )
+            ->label( 'Description' )
+            ->help( 'A one line short description to be shown in the list of patch panel ports. '
+                . 'Just enough to help explain the ports purpose. Detailed information should be '
+                . 'placed in the notes below. Can also be used to explain a reserved / broken / '
+                . 'other port. Note that this is parsed as Markdown.<br><br>'
+                . '<b>NB: A description is discouraged for customer ports connected to a switch. '
+                . 'The customer name and switch port <em>are the description</em></b>.' );
+    ?>
 
     <?php if (!$t->prewired): ?>
         <?= Former::text( 'colo_circuit_ref' )
@@ -215,7 +225,7 @@
             ->radios([
                 'Yes' => ['name' => 'internal_use', 'value' => '1'],
                 'No' => ['name' => 'internal_use', 'value' => '0'],
-            ])->inline()->check($t->ppp->getInternalUseInt())
+            ])->inline()->check( $t->ppp->getInternalUse() ? '1' : '0' )
             ->help( 'Indicates that this cross connect is for IXP use rather than relating to a member.' );
         ?>
 

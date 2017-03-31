@@ -2,6 +2,9 @@ Hi,
 
 As per your request, here are our records on the following cross connect to INEX.
 
+@if( trim( $ppp->getDescription() ) )
+    **Description**: {{ $ppp->getDescription() }}
+@endif
 
 ```
 Colo Reference:  {{ $ppp->getColoCircuitRef() }}

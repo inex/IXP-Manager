@@ -37,10 +37,10 @@
                 <?php if( !$t->pp ): ?>
                     <td>Patch Panel</td>
                 <?php endif;?>
-                <td>Switch / Port</td>
+                <td>Description / Switch / Port</td>
                 <td>Customer</td>
-                <td>Colocation circuit ref</td>
-                <td>Ticket Ref</td>
+                <td>Colocation Ref</td>
+                <td>Flags</td>
                 <td>Assigned at</td>
                 <td>State</td>
                 <td>Action</td>
@@ -67,10 +67,13 @@
                         </td>
                     <?php endif; ?>
                     <td>
-                        <?= $ppp->getSwitchName() ?>
-                    <?php if( $ppp->getSwitchPortName() ): ?>
-                            &nbsp;::&nbsp;<?= $ppp->getSwitchPortName() ?>
-                    <?php endif; ?>
+                        <?php if( trim( $ppp->getDescription() ) != '' ): ?>
+                            <?= Markdown::parse( $ppp->getDescription() ) ?>
+                            <?= $ppp->getSwitchPort() ? "<br" : "" ?>
+                        <?php endif; ?>
+                        <?php if( $ppp->getSwitchPort() ): ?>
+                            <?= $ppp->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $ppp->getSwitchPort()->getName() ?>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <a href="<?= url( 'customer/overview/id/' ).'/'.$ppp->getCustomerId()?>">
@@ -81,7 +84,21 @@
                         <?= $ppp->getColoCircuitRef() ?>
                     </td>
                     <td>
-                        <?= $ppp->getTicketRef() ?>
+
+                        <!-- FLAGS -->
+
+                        <?php if( $ppp->getInternalUse() ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Internal Use">INT</span>
+                        <?php endif; ?>
+
+                        <?php if( $ppp->getChargeable() != Entities\PatchPanelPort::CHARGEABLE_NO ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="<?= $ppp->resolveChargeable() ?>"><?= env( 'CURRENCY_HTML_ENTITY', '&euro;' ) ?></span>
+                        <?php endif; ?>
+
+                        <?php if( $cnt = count( $ppp->getPatchPanelPortFiles() ) ): ?>
+                            <span class="label label-default"><?= $cnt ?> FILES</span>
+                        <?php endif; ?>
+
                     </td>
                     <td>
                         <?= $ppp->getAssignedAtFormated() ?>
