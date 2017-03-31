@@ -1,4 +1,4 @@
-![INEX Logo](http://www.ixpmanager.org/images/logos/ixp-manager.png?raw=true)
+![IXP Manager Logo](http://www.ixpmanager.org/images/logos/ixp-manager.png)
 
 INEX are pleased to release [IXP Manager](http://www.ixpmanager.org/) under an open source license (the
 GNU Public License V2) which we hope will benefit the wider IXP community,
