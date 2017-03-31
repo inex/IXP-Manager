@@ -35,6 +35,10 @@
                 <?php if( $t->pp->getColoReference() != $t->pp->getName() ): ?>
                     (Colo Ref: <?= $t->pp->getColoReference() ?>)
                 <?php endif; ?>
+                <small>
+                    <?= $t->pp->getCabinet()->getName() ?>, <?= $t->pp->getCabinet()->getLocation()->getName() ?>
+                    [<?= $t->pp->resolveCableType() ?>/<?= $t->pp->resolveConnectorType() ?>]
+                </small>
             </h2>
         </div>
     <?php endif;?>
