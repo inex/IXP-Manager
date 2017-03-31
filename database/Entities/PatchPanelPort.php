@@ -1213,6 +1213,7 @@ class PatchPanelPort
         }
 
         return $this->setState(PatchPanelPort::STATE_AVAILABLE)
+            ->setDescription('')
             ->setLastStateChange(new \DateTime)
             ->setColoCircuitRef('')
             ->setTicketRef('')
