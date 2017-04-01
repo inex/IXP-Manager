@@ -30,7 +30,8 @@
 
     <?php if (!$t->allocating and  !$t->prewired): ?>
         <?= Former::text( 'number' )
-            ->label( 'Patch Panel Port Name' );
+            ->label( 'Patch Panel Port Name' )
+            ->forceValue( $t->ppp->getName() );
         ?>
 
         <?= Former::text( 'patch_panel' )
@@ -225,7 +226,7 @@
             ->radios([
                 'Yes' => ['name' => 'internal_use', 'value' => '1'],
                 'No' => ['name' => 'internal_use', 'value' => '0'],
-            ])->inline()->check($t->ppp->getInternalUseInt())
+            ])->inline()->check( $t->ppp->getInternalUse() ? '1' : '0' )
             ->help( 'Indicates that this cross connect is for IXP use rather than relating to a member.' );
         ?>
 

@@ -75,6 +75,12 @@ class CabinetController extends IXP_Controller_FrontEnd
         $this->_feParams->viewColumns = array_merge(
             $this->_feParams->listColumns,
             [
+                'u_counts_from'        => [
+                    'title'          => "U's Count From",
+                    'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
+                    'xlator'         => \Entities\Cabinet::$U_COUNTS_FROM
+                ],
+
                 'type'       => 'Type',
                 'notes'      => 'Notes'
             ]
@@ -91,7 +97,7 @@ class CabinetController extends IXP_Controller_FrontEnd
     {
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'c.id as id, c.name as name, c.cololocation as cololocation, c.height AS height,
-                c.type AS type, c.notes AS notes, l.id AS locationid, l.name AS location'
+                c.type AS type, c.notes AS notes, c.u_counts_from AS u_counts_from, l.id AS locationid, l.name AS location'
             )
         ->from( '\\Entities\\Cabinet', 'c' )
         ->leftJoin( 'c.Location', 'l' );

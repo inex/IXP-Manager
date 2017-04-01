@@ -74,6 +74,14 @@ class IXP_Form_Cabinet extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $height );
 
+        $uCountsFrom = $this->createElement( 'select', 'u_counts_from' );
+        $uCountsFrom->setMultiOptions( array_merge( [ 0 => '' ], \Entities\Cabinet::$U_COUNTS_FROM ) )
+                ->addValidator( 'between', false, array( 1, 2 ) )
+                ->setRequired(true)
+                ->setAttrib( 'class', 'chzn-select span3' )
+                ->setLabel( "U's Count From" );
+        $this->addElement( $uCountsFrom );
+
         $notes = $this->createElement( 'textarea', 'notes' );
         $notes->setLabel( 'Notes' )
             ->setRequired( false )

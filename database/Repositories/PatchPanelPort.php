@@ -26,6 +26,8 @@ class PatchPanelPort extends EntityRepository
             $dql .= " AND pp.id = $patchPanelId";
         }
 
+        $dql .= " ORDER BY ppp.number ASC";
+
         $listPatchPanelPort = $this->getEntityManager()->createQuery( $dql )->getResult();
 
         return $listPatchPanelPort;
@@ -41,6 +43,8 @@ class PatchPanelPort extends EntityRepository
                     AND ppp.duplexMasterPort IS NULL
                     
                    AND ppp.state = ".\Entities\PatchPanelPort::STATE_AVAILABLE;
+
+        $dql .= " ORDER BY ppp.number ASC";
 
         $availablePorts = $this->getEntityManager()->createQuery( $dql )->getResult();
 
@@ -97,6 +101,7 @@ class PatchPanelPort extends EntityRepository
                 $sph = clone $ppph;
                 $sph->setNumber( $pppsp->getNumber() );
                 $sph->setDuplexMasterPort( $ppph );
+                $sph->setPatchPanelPort( $pppsp );
                 D2EM::persist( $sph );
             }
         }

@@ -8,6 +8,18 @@
         - <?= $t->pp->getName() ?>
     <?php endif;?>
     <?= isset( $t->data()['summary'] ) ? ' :: ' . $t->summary : '' ?>
+
+    <?php if( $t->pp && $t->pp->hasDuplexPort() ): ?>
+        <?php $this->section( 'page-header-preamble' ) ?>
+            <li class="pull-right">
+                <div class="btn-group btn-group-xs" role="group">
+                    <button id="toggle-potential-slaves" class="btn btn-default">
+                        <span class="potential-slave">Split Duplex Ports</span>
+                        <span class="potential-slave" style="display: none;">Hide Duplex Ports</span>
+                    </button>
+                </div>
+            </li>
+        <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -23,6 +35,10 @@
                 <?php if( $t->pp->getColoReference() != $t->pp->getName() ): ?>
                     (Colo Ref: <?= $t->pp->getColoReference() ?>)
                 <?php endif; ?>
+                <small>
+                    <?= $t->pp->getCabinet()->getName() ?>, <?= $t->pp->getCabinet()->getLocation()->getName() ?>
+                    [<?= $t->pp->resolveCableType() ?>/<?= $t->pp->resolveConnectorType() ?>]
+                </small>
             </h2>
         </div>
     <?php endif;?>
@@ -39,24 +55,40 @@
                 <?php endif;?>
                 <td>Description / Switch / Port</td>
                 <td>Customer</td>
-                <td>Colocation circuit ref</td>
-                <td>Ticket Ref</td>
+                <td>Colocation Ref</td>
+                <td>Flags</td>
                 <td>Assigned at</td>
                 <td>State</td>
                 <td>Action</td>
             </tr>
         <thead>
         <tbody>
-            <?php foreach( $t->patchPanelPorts as $ppp ):
+            <?php
+                $lastUsedNumber = 0;
+                foreach( $t->patchPanelPorts as $ppp ):
                 /** @var \Entities\PatchPanelPort $ppp */
-            ?>
-                <tr>
+                $potentialSlave = $t->pp && $t->pp->hasDuplexPort() && !( $ppp->getNumber() % 2 ) && $ppp->isAvailableForUse();
+                ?>
+                <tr <?= $potentialSlave ? 'class="potential-slave" style="display: none;"' : '' ?>">
                     <td>
                         <?= $ppp->getId() ?>
                     </td>
                     <td>
                         <a href="<?= url( '/patch-panel-port/view' ).'/'.$ppp->getId()?> ">
-                            <?= $ppp->getName() ?>
+
+                            <?php
+                                $num = floor( $ppp->getNumber() / 2 ) + ( $ppp->getNumber() % 2 );
+
+                                if( $t->pp && $t->pp->hasDuplexPort() && !$potentialSlave && !$ppp->isDuplexPort() && $lastUsedNumber != $num ){
+                                    echo '<span class="potential-slave">' . $num . ' (</span>' . $ppp->getName() . '<span class="potential-slave">)</span>';
+                                } else {
+                                    echo $ppp->getName();
+                                }
+
+                                $lastUsedNumber = $num;
+
+                            ?>
+
                         </a>
                     </td>
                     <?php if(!$t->pp): ?>
@@ -84,7 +116,29 @@
                         <?= $ppp->getColoCircuitRef() ?>
                     </td>
                     <td>
-                        <?= $ppp->getTicketRef() ?>
+
+                        <!-- FLAGS -->
+
+                        <?php if( $ppp->getInternalUse() ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Internal Use">INT</span>
+                        <?php endif; ?>
+
+                        <?php if( $ppp->getChargeable() != Entities\PatchPanelPort::CHARGEABLE_NO ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="<?= $ppp->resolveChargeable() ?>"><?= env( 'CURRENCY_HTML_ENTITY', '&euro;' ) ?></span>
+                        <?php endif; ?>
+
+                        <?php if( count( $ppp->getPatchPanelPortFiles() ) ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Files">F</span>
+                        <?php endif; ?>
+
+                        <?php if( trim( $ppp->getNotes() ) != '' ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Public Note">N+</span>
+                        <?php endif; ?>
+
+                        <?php if( trim( $ppp->getPrivateNotes() ) != '' ): ?>
+                            <span class="label label-default" data-toggle="tooltip" title="Private Note">N-</span>
+                        <?php endif; ?>
+
                     </td>
                     <td>
                         <?= $ppp->getAssignedAtFormated() ?>
@@ -104,7 +158,7 @@
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li>
                                         <a id="edit-notes-<?= $ppp->getId() ?>" href="<?= url()->current() ?>" >
-                                            <?= $ppp->isStateAvailable() ? 'Add' : 'Edit' ?> note...
+                                            Notes...
                                         </a>
                                     </li>
 
@@ -228,13 +282,13 @@
                                     href="<?= url( '/patch-panel-port/view' ).'/'.$ppp->getId()?>  ">
                                 <i class="glyphicon glyphicon-folder-open"></i>
                                 &nbsp;
-                                <span class="badge"><?= $ppp->getMasterHistoryCount() ?></span>
+                                <span class="badge"><?= count( $ppp->getPatchPanelPortHistory() ) ?></span>
                             </a>
                         </div>
                     </td>
                 </tr>
             <?php endforeach;?>
-        <tbody>
+        </tbody>
     </table>
 
 

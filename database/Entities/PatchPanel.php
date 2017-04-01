@@ -2,8 +2,9 @@
 
 namespace Entities;
 
-Use D2EM;
-use DateTime;
+use D2EM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Entities\PatchPanel
  */
@@ -47,6 +48,20 @@ class PatchPanel
         self::CONNECTOR_TYPE_LC        => 'LC',
         self::CONNECTOR_TYPE_MU        => 'MU',
         self::CONNECTOR_TYPE_OTHER     => 'Other',
+    ];
+
+    /**
+     * Counts from patch panel mount position
+     */
+    const MOUNTED_AT_FRONT = 1;
+    const MOUNTED_AT_REAR  = 2;
+
+    /**
+     * Mounted at textual representations
+     */
+    public static $MOUNTED_AT = [
+        self::MOUNTED_AT_FRONT => 'Front',
+        self::MOUNTED_AT_REAR  => 'Rear',
     ];
 
     /**
@@ -96,9 +111,19 @@ class PatchPanel
 
 
     /**
-     * @var boolean
+     * @var int
      */
-    private $chargeable = false;
+    private $chargeable = PatchPanelPort::CHARGEABLE_NO;
+
+    /**
+     * @var int
+     */
+    private $mounted_at;
+
+    /**
+     * @var int
+     */
+    private $u_position;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -115,7 +140,7 @@ class PatchPanel
      */
     public function __construct()
     {
-        $this->patchPanelPorts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->patchPanelPorts = new ArrayCollection();
     }
 
     /**
@@ -180,6 +205,26 @@ class PatchPanel
     }
 
     /**
+     * Get mounted_at
+     *
+     * @return integer
+     */
+    public function getMountedAt()
+    {
+        return $this->mounted_at;
+    }
+
+    /**
+     * Get u position
+     *
+     * @return integer
+     */
+    public function getUPosition()
+    {
+        return $this->u_position;
+    }
+
+    /**
      * Get installationDate
      *
      * @return \DateTime
@@ -222,17 +267,6 @@ class PatchPanel
     public function getActiveText()
     {
         return ($this->active) ? 'Yes': 'No';
-    }
-
-    /**
-     * Get chargeable
-     *
-     * @return boolean
-     */
-    public function getChargeable()
-    {
-        return $this->chargeable;
-
     }
 
     /**
@@ -329,6 +363,34 @@ class PatchPanel
     }
 
     /**
+     * Set mounted at
+     *
+     * @param integer $ma
+     *
+     * @return PatchPanel
+     */
+    public function setMountedAt(int $ma): PatchPanel
+    {
+        $this->mounted_at = $ma;
+
+        return $this;
+    }
+
+    /**
+     * Set u position
+     *
+     * @param integer $up
+     *
+     * @return PatchPanel
+     */
+    public function setUPosition(int $up): PatchPanel
+    {
+        $this->u_position = $up;
+
+        return $this;
+    }
+
+    /**
      * Set installationDate
      *
      * @param \DateTime $installationDate
@@ -359,7 +421,7 @@ class PatchPanel
      * Set active
      *
      * @param boolean $active
-     * @return Switcher
+     * @return PatchPanel
      */
     public function setActive($active)
     {
@@ -371,24 +433,34 @@ class PatchPanel
     /**
      * Set chargeable
      *
-     * @param boolean $chargeable
+     * @param int $chargeable
      *
-     * @return PatchPanelPort
+     * @return PatchPanel
      */
-    public function setChargeable($chargeable)
+    public function setChargeable(int $chargeable)
     {
         $this->chargeable = $chargeable;
         return $this;
     }
 
     /**
+     * Get chargeable
+     *
+     * @return int
+     */
+    public function getChargeable(): int
+    {
+        return $this->chargeable;
+    }
+
+    /**
      * Set cabinet
      *
-     * @param \Entities\Cabinet $cabinet
+     * @param Cabinet $cabinet
      *
      * @return PatchPanel
      */
-    public function setCabinet(\Entities\Cabinet $cabinet = null)
+    public function setCabinet(Cabinet $cabinet = null)
     {
         $this->cabinet = $cabinet;
 
@@ -400,11 +472,11 @@ class PatchPanel
     /**
      * Add patchPanelPort
      *
-     * @param \Entities\PatchPanelPort $patchPanelPort
+     * @param PatchPanelPort $patchPanelPort
      *
      * @return PatchPanel
      */
-    public function addPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort)
+    public function addPatchPanelPort(PatchPanelPort $patchPanelPort)
     {
         $this->patchPanelPorts[] = $patchPanelPort;
 
@@ -414,9 +486,9 @@ class PatchPanel
     /**
      * Remove patchPanelPort
      *
-     * @param \Entities\PatchPanelPort $patchPanelPort
+     * @param PatchPanelPort $patchPanelPort
      */
-    public function removePatchPanelPort(\Entities\PatchPanelPort $patchPanelPort)
+    public function removePatchPanelPort(PatchPanelPort $patchPanelPort)
     {
         $this->patchPanelPorts->removeElement($patchPanelPort);
     }
@@ -424,7 +496,6 @@ class PatchPanel
     /**
      * Check if all ports on a patch panel are available.
      *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
      * @return boolean
      */
     public function areAllPortsAvailable() {
@@ -510,9 +581,8 @@ class PatchPanel
     /**
     * get the value availble port / total port
     *
-    * @author  Yann Robin <yann@islandbridgenetworks.ie>
     *
-    * @params  bool $divide if the value need to be divide by 2 (use when some patch panel ports have duplex port)
+    * @param  bool $divide if the value need to be divide by 2 (use when some patch panel ports have duplex port)
     * @return string
     */
     public function getAvailableOnTotalPort($divide = false){
@@ -558,9 +628,7 @@ class PatchPanel
     /**
      * Create patch panel ports for a patch panel
      *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @params  int $n the number of port needed
+     * @param  int $n the number of port needed
      * @return PatchPanel
      */
     public function createPorts( int $n ): PatchPanel {
@@ -580,11 +648,37 @@ class PatchPanel
             $ppp->setNumber( ( $max + $i ) );
             $ppp->setState( PatchPanelPort::STATE_AVAILABLE );
             $ppp->setPatchPanel( $this );
+            $ppp->setChargeable( $this->getChargeable() );
             $ppp->setLastStateChange( new \DateTime );
             $this->addPatchPanelPort($ppp);
             D2EM::persist($ppp);
         }
         return $this;
+    }
+
+
+    /**
+     * A descriptive position of the patch panel in the rack
+     * @return string
+     */
+    public function getLocationDescription(): string {
+        $loc = '';
+
+        if( $this->getUPosition() ) {
+            $loc .= 'Located at U' . $this->getUPosition();
+
+            if( $cf = $this->getCabinet()->getUCountsFrom() ) {
+                $loc .= ' (counting from the ' . strtolower( Cabinet::$U_COUNTS_FROM[ $cf ] ) . ')';
+            }
+
+            if( $ma = $this->getMountedAt() ) {
+                $loc .= ' at the ' . strtolower( self::$MOUNTED_AT[$ma] ) . ' of the cabinet';
+            }
+
+            $loc .= '.';
+        }
+
+        return $loc;
     }
 }
 

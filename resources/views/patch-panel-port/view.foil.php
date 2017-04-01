@@ -36,6 +36,24 @@
                         <div class="col-xs-6">
                             <table class="table_ppp_info">
 
+                                <?php if( !$current && ( $p->getDuplexMasterPort() || $p->getDuplexSlavePort() ) ): ?>
+                                    <tr>
+                                        <td>
+                                            <b>
+                                                Duplex:
+                                            </b>
+                                        </td>
+                                        <td>
+                                            Was part of duplex port with
+                                            <?php if( $p->getDuplexMasterPort() ) { ?>
+                                                <?= $p->getDuplexMasterPort()->getPatchPanelPort()->getName() ?>
+                                            <?php } else { ?>
+                                                <?= $p->getDuplexSlavePort()->getPatchPanelPort()->getName() ?>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+
                                 <tr>
                                     <td>
                                         <b>
@@ -67,9 +85,15 @@
                                         </b>
                                     </td>
                                     <td>
-                                        <a href="<?= url( 'patch-panel-port/list/patch-panel' ).'/'.$p->getPatchPanel()->getId()?>" >
-                                            <?= $p->getPatchPanel()->getName() ?>
-                                        </a>
+                                        <?php if( $current ): ?>
+                                            <a href="<?= url( 'patch-panel-port/list/patch-panel' ).'/'.$p->getPatchPanel()->getId()?>" >
+                                                <?= $p->getPatchPanel()->getName() ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <a href="<?= url( 'patch-panel-port/list/patch-panel' ).'/'.$p->getPatchPanelPort()->getPatchPanel()->getId() ?>" >
+                                                <?= $p->getPatchPanelPort()->getPatchPanel()->getName() ?>
+                                            </a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
 
@@ -226,7 +250,7 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <?= $p->getInternalUseText() ?>
+                                            <?= $p->getInternalUse() ? 'Yes' : 'No' ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>

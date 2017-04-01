@@ -539,28 +539,6 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getInternalUseInt()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInternalUseInt', []);
-
-        return parent::getInternalUseInt();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getInternalUseText()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInternalUseText', []);
-
-        return parent::getInternalUseText();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setChargeable($chargeable)
     {
 

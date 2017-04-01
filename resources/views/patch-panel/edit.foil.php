@@ -48,6 +48,19 @@
             ->addClass( 'chzn-select' );
         ?>
 
+        <?= Former::select( 'mounted_at' )
+            ->label( 'Mounted At' )
+            ->options(   Entities\PatchPanel::$MOUNTED_AT )
+            ->placeholder( '---' )
+            ->addClass( 'chzn-select' )
+            ->help( 'Is this patch panel mounted at the front or rear of the cabinet?' );
+        ?>
+
+        <?= Former::number( 'u_position' )
+            ->label( 'U Position' )
+            ->help( "Rack 'U' position of patch panel" );
+        ?>
+
         <?= Former::select( 'cable_type' )
             ->label( 'Cable Type' )
             ->options(   Entities\PatchPanel::$CABLE_TYPES )
@@ -81,8 +94,8 @@
 
         <?= Former::select( 'chargeable' )
             ->label( 'Chargeable' )
-            ->options( $t->chargeables)
-            ->select(  $t->pp ? $t->pp->getChargeable() : \Entities\PatchPanelPort::CHARGEABLE_NO)
+            ->options( Entities\PatchPanelPort::$CHARGEABLES )
+            ->select(  $t->pp ? $t->pp->getChargeable() : Entities\PatchPanelPort::CHARGEABLE_NO )
             ->addClass( 'chzn-select' )
             ->help( 'Usually IXPs request their members to <em>come to them</em> and bear the costs of that. '
                 . 'However, sometimes a co-location facility may charge the IXP for a half circuit or the IXP may need '
@@ -103,7 +116,7 @@
             ->help( 'These notes are included on connection and other emails to help co-location providers correctly '
                 . 'identify their own co-location references. Unfortunately, it has been the experience of the authors '
                 . 'that co-location providers change identifiers (and ownership) like the wind changes direction. These '
-                . 'notes will be provided in a preformatted (&lt;pre&gt;) section.'
+                . 'notes will be parsed as Markdown.'
             );
         ?>
 

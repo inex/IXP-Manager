@@ -400,7 +400,7 @@ class PatchPanelPortController extends Controller
         } else {
             // only load history if we're a super user
             // get the patch panel port histories
-            foreach ( $this->getPPP()->getPatchPanelPortHistoryMaster() as $history ){
+            foreach ( $this->getPPP()->getPatchPanelPortHistory() as $history ){
                 $listHistory[] = $history;
             }
         }

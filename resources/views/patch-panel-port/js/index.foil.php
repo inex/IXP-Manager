@@ -52,6 +52,12 @@
             uploadPopup( pppid );
         });
 
+        $('[data-toggle="tooltip"]').tooltip()
+
+        $('#toggle-potential-slaves').on( 'click', function(e) {
+            $('.potential-slave').toggle();
+        });
+
     });
 
     /**
