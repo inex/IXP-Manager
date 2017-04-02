@@ -705,37 +705,4 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
         return parent::getLayer2Addresses();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getCssClassNumberL2A()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCssClassNumberL2A', []);
-
-        return parent::getCssClassNumberL2A();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function l2aArray(bool $isJson)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'l2aArray', [$isJson]);
-
-        return parent::l2aArray($isJson);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function l2aJson(bool $isJson): string
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'l2aJson', [$isJson]);
-
-        return parent::l2aJson($isJson);
-    }
-
 }

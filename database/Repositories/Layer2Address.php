@@ -16,31 +16,11 @@ class Layer2Address extends EntityRepository
      * Check if a mac address already exists within a given VLAN
      *
      * @param  string $mac The MAC address to search for
-     * @param  int $vli The VlanInterface ID to search
-     * @return bool true if it already exists
-     */
-    public function isMacExisting(string $mac, int $vli ): bool {
-        $dql = "SELECT count(l2a.id)
-                    FROM Entities\\Layer2Address l2a
-                    WHERE l2a.mac = ?1 
-                    AND l2a.vlanInterface = ?2";
-
-        $query = $this->getEntityManager()->createQuery( $dql );
-        $query->setParameter( 1, $mac );
-        $query->setParameter( 2, $vli );
-
-        return ( $query->getSingleScalarResult() > 0 ) ? true : false;
-    }
-
-    /**
-     * Check if a mac address already exists within a given VLAN
-     *
-     * @param  string $mac The MAC address to search for
      * @param  int $vlanid The ID of the VLAN to search
      * @return bool true if it exists
      */
     public function existsInVlan( string $mac, int $vlanid ): bool {
-        $dql = "SELECT count(l2a.id)
+        $dql = "SELECT COUNT(l2a.id)
                     FROM Entities\Layer2Address l2a
                     LEFT JOIN l2a.vlanInterface vli
                     LEFT JOIN vli.Vlan v
@@ -50,7 +30,6 @@ class Layer2Address extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
         $query->setParameter( 1, $mac );
         $query->setParameter( 2, $vlanid );
-
         return ( $query->getSingleScalarResult() > 0 ) ? true : false;
     }
 }

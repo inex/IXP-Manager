@@ -1,5 +1,6 @@
 <?php
 
+namespace IXP\Http\Controllers\Api\V4;
 
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -22,8 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers\Api\V4;
-
 use D2EM;
 
 use Entities\{
@@ -35,55 +34,61 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 
+/**
+ * Layer2Address API Controller
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Layer2AddressController extends Controller {
 
     /**
-     * Add a mac address to a Vlan Interface
+     * Add a mac address to a VLAN Interface
      *
      * @param   Request $request instance of the current HTTP request
      * @return  JsonResponse
      */
-    public function add ( Request $request ): JsonResponse{
-        if( !( $request->input( 'mac' ) ) ||  !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $request->input( 'id' ) ) ) ) {
+    public function add( Request $request ): JsonResponse {
+        /** @var VlanInterfaceEntity $vli */
+        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $request->input( 'vliid' ) ) ) ) {
             return abort( '404' );
         }
-        /** @var VlanInterfaceEntity $vli */
-        $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $request->input( 'mac' ) ) );
 
-        if( strlen( $mac ) !== 12 ){
-            return response()->json( [ 'success' => false, 'message' => 'The MAC address has a bad format!' ] );
+        $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $request->input( 'mac', '' ) ) );
+        if( strlen( $mac ) !== 12 ) {
+            return response()->json( [ 'success' => false, 'message' => 'Invalid or missing MAC addresses' ] );
         }
 
-        if( ! D2EM::getRepository( Layer2AddressEntity::class )->isMacExisting( $mac, $vli->getId() ) ) {
-            /** @var Layer2AddressEntity $l2a */
-            $l2a = new Layer2AddressEntity();
-            $l2a->setMac( $mac );
-            $l2a->setVlanInterface( $vli );
-            $l2a->setCreatedAt( new \DateTime );
-
-            D2EM::persist( $l2a );
-            D2EM::flush();
-
-            return response()->json( [ 'success' => true, 'message' => 'The MAC address has been added successfully.' ] );
-        } else {
-            return response()->json( [ 'success' => false, 'message' => 'The MAC address already exist for the current Vlan Interface!' ] );
+        if( D2EM::getRepository( Layer2AddressEntity::class )->existsInVlan( $mac, $vli->getVlan()->getId() ) ) {
+            return response()->json( [ 'success' => false, 'message' => 'The MAC address already exists within the VLAN' ] );
         }
+
+        $l2a = new Layer2AddressEntity();
+        $l2a->setMac( $mac )
+            ->setVlanInterface( $vli )
+            ->setCreatedAt( new \DateTime );
+
+        D2EM::persist( $l2a );
+        D2EM::flush();
+
+        return response()->json( [ 'success' => true, 'message' => 'The MAC address has been added successfully.' ] );
     }
 
 
     /**
      * Delete a mac address from a Vlan Interface
      *
-     * @param   int $id ID of the Layer2Interface
+     * @param   int $id ID of the Layer2Address
      * @return  JsonResponse
      */
-    public function delete ( int $id ): JsonResponse{
-        if( !( $id ) ||  !( $l2a = D2EM::getRepository( Layer2AddressEntity::class )->find( $id ) ) ) {
+    public function delete( int $id ): JsonResponse{
+        /** @var Layer2AddressEntity $l2a */
+        if( !( $l2a = D2EM::getRepository( Layer2AddressEntity::class )->find( $id ) ) ) {
             return abort( '404' );
         }
-        /** @var Layer2AddressEntity $l2a */
-        $l2a->getVlanInterface()->removeLayer2Address( $l2a );
 
+        $l2a->getVlanInterface()->removeLayer2Address( $l2a );
         D2EM::remove( $l2a );
         D2EM::flush();
 
@@ -96,8 +101,8 @@ class Layer2AddressController extends Controller {
      * @param   int $id ID of the Layer2Interface
      * @return  JsonResponse
      */
-    public function detail ( int $id ): JsonResponse{
-        if( !( $id ) ||  !( $l2a = D2EM::getRepository(Layer2AddressEntity::class)->find( $id ) ) ) {
+    public function detail( int $id ): JsonResponse{
+        if( !( $l2a = D2EM::getRepository(Layer2AddressEntity::class)->find( $id ) ) ) {
             return abort( '404' );
         }
         /** @var Layer2AddressEntity $l2a */

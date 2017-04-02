@@ -127,7 +127,7 @@
                         {$int->getVlan()->getNumber()}
                     </td>
                     <td>
-                        <a href="{genUrl controller='layer-2-address'}/vlan-interface/{$int->getId()}">
+                        <a href="{genUrl controller='layer2-address'}/vlan-interface/{$int->getId()}">
                             {if !count( $int->getLayer2Addresses() )}
                                 <span class="label label-warning">(none)</span>
                             {elseif count( $int->getLayer2Addresses() ) > 1}

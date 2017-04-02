@@ -40,6 +40,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 });
 
 
-Route::group( [ 'prefix' => 'layer-2-address' ], function() {
+Route::group( [ 'prefix' => 'layer2-address' ], function() {
     Route::get( 'vlan-interface/{vliid}',                        'Layer2AddressController@index' );
 });

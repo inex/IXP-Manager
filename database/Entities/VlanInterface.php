@@ -680,41 +680,4 @@ class VlanInterface
     {
         return $this->layer2Addresses;
     }
-
-    /**
-     * Get the number of Layer2Addresses for the vlan interface
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCssClassNumberL2A()
-    {
-        return ($this->getNumberLayer2Addresses() > 0) ? 'success' : 'danger' ;
-    }
-
-    /**
-     * Get Layer2Address as JSON-compatibale array
-     * @param bool $isJson json format
-     * @return array
-     */
-    public function l2aArray( bool $isJson ){
-        $a = [];
-
-        foreach( $this->getLayer2Addresses() as $l2a ){
-            /** @var Layer2Address $l2a */
-            $a[$l2a->getId()]                 = $isJson ? $l2a->jsonArray() :$l2a->toArray();
-        }
-
-        return $a;
-    }
-
-    /**
-     * Get patch panel details as JSON
-     * @param bool $isJson json format
-     * @return string
-     */
-    public function l2aJson( bool $isJson ): string {
-        return json_encode( $this->l2aArray( $isJson ), JSON_PRETTY_PRINT );
-    }
-
-
 }

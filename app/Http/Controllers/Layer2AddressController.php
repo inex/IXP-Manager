@@ -24,7 +24,6 @@ namespace IXP\Http\Controllers;
 
 use D2EM;
 
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 use Entities\VlanInterface as VlanInterfaceEntity;
