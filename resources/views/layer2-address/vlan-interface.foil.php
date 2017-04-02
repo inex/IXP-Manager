@@ -5,12 +5,12 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'virtual-interface/edit/id/'.$t->vli->getVirtualInterface()->getId())?>">Vlan Interface</a>
+    <a href="<?= url( 'virtual-interface/edit/id/' . $t->vli->getVirtualInterface()->getId() ) ?>">Vlan Interface</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        Layer 2 Interface : <?= $t->vli->getVlan()->getName()?>
+        Layer2 Addresses for <?= $t->vli->getVlan()->getName() ?>
     </li>
 
     <span class="pull-right">
@@ -29,15 +29,15 @@
         <table id='layer-2-interface-list' class="table">
             <thead>
             <tr>
-                <td>Id</td>
+                <td>ID</td>
                 <td>MAC Address</td>
-                <td>Created at</td>
+                <td>Created At</td>
                 <td>Action</td>
             </tr>
             <thead>
             <tbody >
             <?php foreach( $t->vli->getLayer2Addresses() as $l2a ):
-                /** @var \Entities\PatchPanelPort $ppp */
+                /** @var \Entities\Layer2Address $l2a */
                 ?>
                 <tr>
                     <td>
@@ -47,7 +47,7 @@
                         <?= $l2a->getMacFormattedWithColons() ?>
                     </td>
                     <td>
-                        <?= $l2a->getCreatedAtFormated() ?>
+                        <?= $l2a->getCreatedAt()->format('Y-m-d') ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
@@ -100,6 +100,15 @@
                             </button>
                         </div>
                     </div>
+                    <br>
+                    <div class="input-group">
+                        <input class="form-control" readonly id="macDash">
+                        <div class="input-group-btn">
+                            <button id="btn-copy-mac-dash" class="btn btn-copy btn-default" data-clipboard-action="copy" data-clipboard-target="#macDash">
+                                <span class="glyphicon glyphicon-copy"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <input  id="notes-modal-ppp-id"      type="hidden" name="notes-modal-ppp-id" value="">
@@ -112,5 +121,5 @@
 
 <?php $this->section( 'scripts' ) ?>
     <script type="text/javascript" src="<?= asset( '/bower_components/clipboard/dist/clipboard.min.js' ) ?>"></script>
-    <?= $t->insert( 'vlan-interface/js/index' ); ?>
+    <?= $t->insert( 'layer2-address/js/vlan-interface' ); ?>
 <?php $this->append() ?>

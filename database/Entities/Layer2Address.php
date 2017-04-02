@@ -80,6 +80,17 @@ class Layer2Address {
     }
 
     /**
+     * Get mac formated (xx-xx-xx-xx-xx-xx)
+     *
+     * @return string
+     */
+    public function getMacFormattedWithDashes()
+    {
+        return wordwrap($this->mac, 2, '-',true);
+    }
+
+
+    /**
      * Get firstseen
      *
      * @return \DateTime
@@ -209,6 +220,7 @@ class Layer2Address {
             'mac'                       => $this->getMac() ,
             'macFormattedWithColons'    => $this->getMacFormattedWithColons(),
             'macFormattedWithDots'      => $this->getMacFormattedWithDots(),
+            'macFormattedWithDashes'    => $this->getMacFormattedWithDashes(),
             'vliId'                     => $this->getVlanInterface()->getId(),
             'createdAt'                 => $this->getCreatedAt(),
             'firstSeenAt'               => $this->getFirstSeenAt(),

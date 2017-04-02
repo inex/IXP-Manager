@@ -708,17 +708,6 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function getNumberLayer2Addresses()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNumberLayer2Addresses', []);
-
-        return parent::getNumberLayer2Addresses();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getCssClassNumberL2A()
     {
 

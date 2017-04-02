@@ -22,7 +22,7 @@
 
 namespace IXP\Http\Controllers;
 
-Use D2EM;
+use D2EM;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -31,25 +31,27 @@ use Entities\VlanInterface as VlanInterfaceEntity;
 
 /**
  * Layer2Address Controller
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   VlanInterface
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Layer2AddressController extends Controller{
+class Layer2AddressController extends Controller
+{
 
     /**
      * Display all the layer2addresses for a VlanInterface
      *
-     * @param  int $id ID if the VlanInterface
+     * @param  int $vliid ID if the VlanInterface
      * @return  View
      */
-    public function index( int $id ): View{
-        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $id ) ) ) {
+    public function index( int $vliid ): View {
+        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ) {
             return abort( '404' );
         }
 
-        return view( 'vlan-interface/index' )->with([
+        return view( 'layer2-address/vlan-interface' )->with([
             'vli'       => $vli
         ]);
     }

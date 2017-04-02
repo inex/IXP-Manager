@@ -1,7 +1,7 @@
 <script>
     $( document ).ready( function() {
         loadDataTable();
-    } );
+    });
 
 
     /**
@@ -91,14 +91,15 @@
     /**
      * on click even allow to ave a view of the mac address (with different format)
      */
-    $(document).on('click', "a[id|='view-l2a']" ,function(e){
+    $(document).on( 'click', "a[id|='view-l2a']", function(e) {
         e.preventDefault();
         var l2aId = (this.id).substring(9);
-        $.ajax( "<?= url( 'api/v4/l2-address/detail' ) ?>/"+l2aId )
+        $.ajax( "<?= url( 'api/v4/l2-address/detail' ) ?>/" + l2aId )
             .done( function( data ) {
                 $("#mac").val( data.mac );
                 $("#macComma").val( data.macFormattedWithColons );
                 $("#macDot").val( data.macFormattedWithDots );
+                $("#macDash").val( data.macFormattedWithDashes );
             })
             .fail( function(){
                 alert( 'Could add MAC address. API / AJAX / network error' );
