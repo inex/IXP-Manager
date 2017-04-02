@@ -570,7 +570,7 @@ class VlanInterface
      *
      * @return IPv4Address
      */
-    public function getIPv4Address(): IPv4Address
+    public function getIPv4Address()
     {
         return $this->IPv4Address;
     }
@@ -593,7 +593,7 @@ class VlanInterface
      *
      * @return IPv6Address
      */
-    public function getIPv6Address(): IPv6Address
+    public function getIPv6Address()
     {
         return $this->IPv6Address;
     }
@@ -639,7 +639,7 @@ class VlanInterface
      *
      * @return Vlan
      */
-    public function getVlan(): Vlan
+    public function getVlan()
     {
         return $this->Vlan;
     }

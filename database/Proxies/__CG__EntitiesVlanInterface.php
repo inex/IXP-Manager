@@ -642,7 +642,7 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function getVirtualInterface()
+    public function getVirtualInterface(): \Entities\VirtualInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVirtualInterface', []);
