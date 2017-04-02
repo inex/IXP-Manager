@@ -116,7 +116,7 @@ class Layer2Address {
      */
     public function getCreatedAtFormated()
     {
-        return ($this->getCreatedAt() == null) ? $this->getCreatedAt() : $this->getCreatedAt()->format('Y-m-d');
+        return $this->getCreatedAt();
     }
 
     /**
@@ -138,7 +138,7 @@ class Layer2Address {
      *
      * @return Layer2Address
      */
-    public function setMac( $mac )
+    public function setMac( $mac ): Layer2Address
     {
         $this->mac = $mac;
         return $this;
@@ -151,7 +151,7 @@ class Layer2Address {
      *
      * @return Layer2Address
      */
-    public function setFirstSeenAt( $firstSeenAt )
+    public function setFirstSeenAt( $firstSeenAt ): Layer2Address
     {
         $this->firstseen = $firstSeenAt;
         return $this;
@@ -164,7 +164,7 @@ class Layer2Address {
      *
      * @return Layer2Address
      */
-    public function setLastSeenAt( $lastSeenAt )
+    public function setLastSeenAt( $lastSeenAt ): Layer2Address
     {
         $this->lastseen = $lastSeenAt;
         return $this;
@@ -177,7 +177,7 @@ class Layer2Address {
      *
      * @return Layer2Address
      */
-    public function setCreatedAt( $createdAt )
+    public function setCreatedAt( $createdAt ): Layer2Address
     {
         $this->created = $createdAt;
         return $this;
@@ -186,11 +186,11 @@ class Layer2Address {
     /**
      * Set vlanInterface
      *
-     * @param \Entities\VlanInterface $vlanInterface
+     * @param VlanInterface $vlanInterface
      *
      * @return Layer2Address
      */
-    public function setVlanInterface(\Entities\VlanInterface $vlanInterface = null)
+    public function setVlanInterface(VlanInterface $vlanInterface = null): Layer2Address
     {
         $this->vlanInterface = $vlanInterface;
         return $this;

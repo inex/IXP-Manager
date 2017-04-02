@@ -1159,11 +1159,8 @@
       <field name="connector_type" type="integer" required="true" uuid="19f98e9b-6763-495a-aa18-a4911985e9c3"/>
       <field name="installation_date" type="datetime" uuid="e4d0c03d-5047-4456-b600-e51dd6498fe6"/>
       <field name="port_prefix" type="string" size="10" required="true" uuid="6654ced4-232e-4f37-a6d5-d55eb0ce8b8c"/>
-<<<<<<< HEAD
-=======
       <field name="chargeable" type="integer" default="0" required="true" uuid="861b803e-1b89-4e85-95dd-185c63475a3e"/>
       <field name="location_notes" type="text" required="true" uuid="fa7aaa65-7b2a-426a-aa1f-1531de2e72fa"/>
->>>>>>> master
       <field name="active" type="boolean" default="1" required="true" uuid="bed79a85-f181-413d-9892-f8fdd33ab673"/>
       <field name="u_position" type="integer" uuid="6cb2ebd1-76f2-4f70-8e1f-12c23e30a05d"/>
       <field name="mounted_at" type="smallint" uuid="512d0a9a-82db-4401-ab88-5517dbcf89cf"/>
@@ -1197,10 +1194,7 @@
       <field name="customer_id" type="integer" uuid="07bc00ca-c2a8-4d60-8e2b-ea64c26579eb"/>
       <field name="switch_port_id" type="integer" unique="true" uuid="42ed61d4-357e-435f-befb-f3701b20bec7"/>
       <field name="duplex_master_id" type="integer" uuid="0ece104a-5ac0-4881-a346-ecf5dd66504c"/>
-<<<<<<< HEAD
-=======
       <field name="loa_code" type="string" size="25" uuid="03c1f9f2-e11e-4fea-8807-90fbbd78dab8"/>
->>>>>>> master
       <orm-attributes>
         <attribute name="table">patch_panel_port</attribute>
         <attribute name="tableName">patch_panel_port</attribute>
