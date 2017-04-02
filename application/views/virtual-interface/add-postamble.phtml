@@ -108,10 +108,10 @@
             <thead>
                 <tr>
                     <th>VLAN Name</th>
-                    <th>VLAN ID</th>
+                    <th>VLAN Tag</th>
+                    <th>Layer2 Address</th>
                     <th>IPv4 Address</th>
                     <th>IPv6 Address</th>
-                    <th>Number of l2a</th>
                     <th></th>
                 </tr>
             </thead>
@@ -127,6 +127,18 @@
                         {$int->getVlan()->getNumber()}
                     </td>
                     <td>
+                        <a href="{genUrl controller='layer-2-address' list=$int->getId()}">
+                            {if !count( $int->getLayer2Addresses() )}
+                                <span class="label label-warning">(none)</span>
+                            {elseif count( $int->getLayer2Addresses() ) > 1}
+                               <span class="label label-warning">(multiple)</span>
+                            {else}
+                                {assign var="l2a" value=$int->getLayer2Addresses()}
+                                {$l2a[0]->getMacFormattedWithColons()}
+                            {/if}
+                        </a>
+                    </td>
+                    <td>
                         {if $int->getIPv4Enabled() and $int->getIPv4Address()}
                             {$int->getIPv4Address()->getAddress()}
                         {/if}
@@ -137,16 +149,10 @@
                         {/if}
                     </td>
                     <td>
-                        <span class="btn-{$int->getCssClassNumberL2A()} badge">
-                            {$int->getNumberLayer2Addresses()}
-                        </span>
-                    </td>
-                    <td>
                         <div class="btn-group">
                             <a class="btn btn-mini" href="{genUrl controller='vlan-interface' action='edit' id=$int->getId() vintid=$object->getId()}"><i class="icon-pencil"></i></a>
                             <a data-url="{genUrl controller='vlan-interface' action='delete' id=$int->getId() vintid=$object->getId()}"
                                 class="btn btn-mini" id="object-delete-vlanint-{$int->getId()}"><i class="icon-trash"></i></a>
-                            <a class="btn btn-mini" href="{genUrl controller='layer-2-address' list=$int->getId()}"><i class="icon-eye-open"></i></a>
                         </div>
                     </td>
                 </tr>
