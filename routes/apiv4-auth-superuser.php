@@ -51,5 +51,9 @@ Route::post('customer/{id}/switches',                           'CustomerControl
 Route::post('switcher/{id}/switch-port',                        'SwitcherController@switchPort' );
 Route::post('switcher/{id}/switch-port-prewired',               'SwitcherController@switchPortPrewired' );
 
-
 Route::post( 'utils/markdown',                                  'UtilsController@markdown' );
+
+Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
+Route::get( 'l2-address/delete/{id}',                           'Layer2AddressController@delete' );
+Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
+Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );

@@ -127,7 +127,7 @@ class SwitchConfigurationGenerator
             $v = [];
             $v['number'] = $vli->getVlan()->getNumber();
             $v['macaddresses'] = [];
-            foreach( $vi->getMACAddresses() as $mac ) {
+            foreach( $vli->getLayer2Addresses() as $mac ) {
                 $v['macaddresses'][] = $mac->getMacFormattedWithColons();
             }
             $p['vlans'][] = $v;

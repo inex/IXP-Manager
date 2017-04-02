@@ -40,4 +40,12 @@ Route::group( [ 'namespace' => 'PatchPanel' ], function() {
     Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
 });
 
+Route::group( [ 'namespace' => 'PatchPanel'], function() {
+    Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
+});
+
+Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
+    Route::get( 'view/{id}',                    'PatchPanelPortController@view' );
+    Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
+});
 

@@ -108,7 +108,8 @@
             <thead>
                 <tr>
                     <th>VLAN Name</th>
-                    <th>VLAN ID</th>
+                    <th>VLAN Tag</th>
+                    <th>Layer2 Address</th>
                     <th>IPv4 Address</th>
                     <th>IPv6 Address</th>
                     <th></th>
@@ -124,6 +125,18 @@
                     </td>
                     <td>
                         {$int->getVlan()->getNumber()}
+                    </td>
+                    <td>
+                        <a href="{genUrl controller='layer2-address'}/vlan-interface/{$int->getId()}">
+                            {if !count( $int->getLayer2Addresses() )}
+                                <span class="label label-warning">(none)</span>
+                            {elseif count( $int->getLayer2Addresses() ) > 1}
+                               <span class="label label-warning">(multiple)</span>
+                            {else}
+                                {assign var="l2a" value=$int->getLayer2Addresses()}
+                                {$l2a[0]->getMacFormattedWithColons()}
+                            {/if}
+                        </a>
                     </td>
                     <td>
                         {if $int->getIPv4Enabled() and $int->getIPv4Address()}

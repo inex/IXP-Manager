@@ -2,8 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * Entities\VlanInterface
  */
@@ -124,6 +122,11 @@ class VlanInterface
      */
     protected $Vlan;
 
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $layer2Addresses;
 
     /**
      * Set ipv4enabled
@@ -552,10 +555,10 @@ class VlanInterface
     /**
      * Set IPv4Address
      *
-     * @param \Entities\IPv4Address $iPv4Address
+     * @param IPv4Address $iPv4Address
      * @return VlanInterface
      */
-    public function setIPv4Address(\Entities\IPv4Address $iPv4Address = null)
+    public function setIPv4Address(IPv4Address $iPv4Address = null)
     {
         $this->IPv4Address = $iPv4Address;
     
@@ -565,9 +568,9 @@ class VlanInterface
     /**
      * Get IPv4Address
      *
-     * @return \Entities\IPv4Address
+     * @return IPv4Address
      */
-    public function getIPv4Address()
+    public function getIPv4Address(): IPv4Address
     {
         return $this->IPv4Address;
     }
@@ -575,10 +578,10 @@ class VlanInterface
     /**
      * Set IPv6Address
      *
-     * @param \Entities\IPv6Address $iPv6Address
+     * @param IPv6Address $iPv6Address
      * @return VlanInterface
      */
-    public function setIPv6Address(\Entities\IPv6Address $iPv6Address = null)
+    public function setIPv6Address(IPv6Address $iPv6Address = null)
     {
         $this->IPv6Address = $iPv6Address;
     
@@ -588,9 +591,9 @@ class VlanInterface
     /**
      * Get IPv6Address
      *
-     * @return \Entities\IPv6Address
+     * @return IPv6Address
      */
-    public function getIPv6Address()
+    public function getIPv6Address(): IPv6Address
     {
         return $this->IPv6Address;
     }
@@ -598,10 +601,10 @@ class VlanInterface
     /**
      * Set VirtualInterface
      *
-     * @param \Entities\VirtualInterface $virtualInterface
+     * @param VirtualInterface $virtualInterface
      * @return VlanInterface
      */
-    public function setVirtualInterface(\Entities\VirtualInterface $virtualInterface = null)
+    public function setVirtualInterface(VirtualInterface $virtualInterface = null)
     {
         $this->VirtualInterface = $virtualInterface;
     
@@ -611,9 +614,9 @@ class VlanInterface
     /**
      * Get VirtualInterface
      *
-     * @return \Entities\VirtualInterface
+     * @return VirtualInterface
      */
-    public function getVirtualInterface()
+    public function getVirtualInterface(): VirtualInterface
     {
         return $this->VirtualInterface;
     }
@@ -621,10 +624,10 @@ class VlanInterface
     /**
      * Set Vlan
      *
-     * @param \Entities\Vlan $vlan
+     * @param Vlan $vlan
      * @return VlanInterface
      */
-    public function setVlan(\Entities\Vlan $vlan = null)
+    public function setVlan(Vlan $vlan = null)
     {
         $this->Vlan = $vlan;
     
@@ -634,10 +637,44 @@ class VlanInterface
     /**
      * Get Vlan
      *
-     * @return \Entities\Vlan
+     * @return Vlan
      */
-    public function getVlan()
+    public function getVlan(): Vlan
     {
         return $this->Vlan;
+    }
+
+
+    /**
+     * Add Layer2Address
+     *
+     * @param Layer2Address $layer2Address
+     * @return VlanInterface
+     */
+    public function addLayer2Address( Layer2Address $layer2Address ): VlanInterface
+    {
+        $this->layer2Addresses[] = $layer2Address;
+
+        return $this;
+    }
+
+    /**
+     * Remove Layer2Address
+     *
+     * @param Layer2Address $layer2Address
+     */
+    public function removeLayer2Address( Layer2Address $layer2Address )
+    {
+        $this->layer2Addresses->removeElement($layer2Address);
+    }
+
+    /**
+     * Get Layer2Addresses
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLayer2Addresses()
+    {
+        return $this->layer2Addresses;
     }
 }

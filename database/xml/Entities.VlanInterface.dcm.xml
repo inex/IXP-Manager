@@ -58,5 +58,6 @@
         <join-column name="ipv6addressid" referenced-column-name="id" unique="true"/>
       </join-columns>
     </one-to-one>
+    <one-to-many field="layer2Addresses" target-entity="Entities\Layer2Address" mapped-by="vlanInterface"/>
   </entity>
 </doctrine-mapping>
