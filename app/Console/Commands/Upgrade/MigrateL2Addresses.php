@@ -87,6 +87,7 @@ class MigrateL2Addresses extends IXPCommand
                 /** @var VirtualInterfaceEntity $vi */
                 $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $mac->virtualinterfaceid );
 
+                $cnt = 0;
                 foreach( $vi->getVlanInterfaces() as $vli ) {
 
                     // Ensure the MAC address is unique for this LAN:
@@ -105,16 +106,16 @@ class MigrateL2Addresses extends IXPCommand
                         ->setCreatedAt( new \DateTime )
                         ->setFirstSeenAt( new \DateTime( $mac->firstseen ) );
                     D2EM::persist( $l2a );
+                    D2EM::flush();
+                    $cnt++;
                 }
 
                 // if you create more than one layer2address for a virtualinterface, let the user know
-                if( count( $vi->getVlanInterfaces() ) > 1 ) {
+                if( $cnt > 1 ) {
                     $this->alert( 'Created >1 layer2address for ' . $vi->getCustomer()->getName() . ' with virtual interface: '
                         . url('virtual-interface/edit/id' ) . '/' . $vi->getId() );
                 }
             }
-
-            D2EM::flush();
         });
 
         $this->info( 'Also consider checking your database with: select mac, count(mac) as c from l2address group by mac having count(mac) > 1;' );
