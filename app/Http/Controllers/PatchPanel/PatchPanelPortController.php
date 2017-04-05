@@ -372,7 +372,7 @@ class PatchPanelPortController extends Controller
 
         // set physical interface status if available
         if( $request->input( 'allocated' ) ) {
-            if( $request->input( 'pi_status' ) && $request->input( 'pi_status' ) > 0 && $ppp->getSwitchPort()->getPhysicalInterface() ) {
+            if( $request->input( 'pi_status' ) && $request->input( 'pi_status' ) > 0 && $ppp->getSwitchPort() && $ppp->getSwitchPort()->getPhysicalInterface() ) {
                 $ppp->getSwitchPort()->getPhysicalInterface()->setStatus( $request->input( 'pi_status' ) );
             }
         }
