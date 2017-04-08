@@ -64,10 +64,10 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
+            return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
+        return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
     }
 
     /**
@@ -362,6 +362,28 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAggregateGraphName', []);
 
         return parent::getAggregateGraphName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPeeringdbIxId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPeeringdbIxId', []);
+
+        return parent::getPeeringdbIxId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPeeringdbIxId(int $id): \Entities\Infrastructure
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPeeringdbIxId', [$id]);
+
+        return parent::setPeeringdbIxId($id);
     }
 
 }

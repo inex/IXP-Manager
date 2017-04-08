@@ -62,6 +62,14 @@ class IXP_Form_Infrastructure extends IXP_Form
 
         $this->addElement( IXP_Form_IXP::createAggregateGraphNameElement() );
 
+        $peeringdb_ix_id = $this->createElement( 'text', 'peeringdb_ix_id' );
+        $peeringdb_ix_id->setRequired( false )
+            ->setLabel( 'Peering DB IX ID' )
+            ->addValidator('int')
+            ->addFilter( 'StringTrim' );
+        $this->addElement( $peeringdb_ix_id  );
+
+
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }

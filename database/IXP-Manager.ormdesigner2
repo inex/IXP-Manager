@@ -156,6 +156,7 @@
       </field>
       <field name="aggregate_graph_name" type="string" size="255" uuid="3e884e1f-245b-4e9b-a67f-aa9b4dcbcc01"/>
       <field name="ixp_id" type="integer" required="true" uuid="6d316694-a9c3-4547-9265-daf01edf6a88"/>
+      <field name="peeringdb_ix_id" type="bigint" uuid="bb30b856-4862-49b3-b240-6ac0098ac233"/>
       <index name="IXPSN" unique="true">
         <index-field name="shortname"/>
         <index-field name="ixp_id"/>
@@ -1242,6 +1243,9 @@
     <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPort" owner-alias="patchPanelPortHistory" inverse-alias="patchPanelPort" many-owner="true" many-inverse="false" uuid="ac59c5ec-22c1-4f07-88e9-3eeaa60d547c">
       <association-field from="patch_panel_port_id" to="id"/>
     </association>
+    <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPortHistory" owner-alias="duplexSlavePorts" inverse-alias="duplexMasterPort" many-owner="true" many-inverse="false" uuid="263cdc09-054e-49c3-9b3e-c310b4edc711">
+      <association-field from="duplex_master_id" to="id"/>
+    </association>
     <entity name="\Entities\Layer2Address" local-name="Layer2Address" namespace="\Entities" uuid="1363c8e6-52d8-4d98-b6e9-b01eccad244d">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="7dad668a-4089-4eb6-9142-0d5561adbdb9"/>
       <field name="vlan_interface_id" type="integer" required="true" uuid="1f4df87c-8f4d-4773-ad3c-b32600707687"/>
@@ -1261,9 +1265,6 @@
     </entity>
     <association from="\Entities\Layer2Address" to="\Entities\VlanInterface" owner-alias="layer2Addresses" inverse-alias="vlanInterface" many-owner="true" many-inverse="false" parent-required="true" uuid="d055afe7-fe5a-4a17-8bb6-21aa478e1633">
       <association-field from="vlan_interface_id" to="id"/>
-    </association>
-    <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPortHistory" owner-alias="duplexSlavePorts" inverse-alias="duplexMasterPort" many-owner="true" many-inverse="false" uuid="263cdc09-054e-49c3-9b3e-c310b4edc711">
-      <association-field from="duplex_master_id" to="id"/>
     </association>
     <entity name="\Entities\PatchPanelPortFile" local-name="PatchPanelPortFile" namespace="\Entities" uuid="fe102ac1-eef6-41b0-ae2b-87fc4fc10ba1">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="f5940254-97b6-40fa-8268-3b0b4d290aed"/>
@@ -1410,7 +1411,7 @@
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
     <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="272" position-y="321" size-x="0" size-x2="98" size-y="0" size-y2="87"/>
-    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1517" position-y="-106" size-x="0" size-x2="171" size-y="0" size-y2="101"/>
+    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1517" position-y="-112" size-x="0" size-x2="171" size-y="0" size-y2="115"/>
     <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
     <entity uuid="fe102ac1-eef6-41b0-ae2b-87fc4fc10ba1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1320" position-y="-508" size-x="0" size-x2="141" size-y="0" size-y2="115"/>
     <many-to-many-association uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a" color="4288059030"/>
