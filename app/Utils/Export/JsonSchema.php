@@ -1,5 +1,7 @@
 <?php namespace IXP\Utils\Export;
 
+use Entities\Infrastructure;
+
 use OSS_Array;
 
 /*
@@ -126,38 +128,49 @@ class JsonSchema
     {
         $ixpinfo = [];
 
-        $ixpinfo['shortname'] = config( 'identity.orgname'          );
-        $ixpinfo['name']      = config( 'identity.legalname'        );
-        $ixpinfo['country']   = config( 'identity.location.country' );
-        $ixpinfo['url']       = config( 'identity.corporate_url'    );
+        $ixp = d2r( 'IXP' )->getDefault();
 
-        # oops, messy.  ixp_id was renamed as ixf_id in v0.4
-        if( $version == self::EUROIX_JSON_VERSION_0_3 ) {
-            $ixpinfo['ixp_id'] = intval( config( 'identity.ixfid' ) );
-        } else {
-            $ixpinfo['ixf_id'] = intval( config( 'identity.ixfid' ) );
-            $ixpinfo['ixp_id'] = 1;                            // referenced in member's connections section
+        foreach( $ixp->getInfrastructures() as $infra ) {
+
+            $i = [];
+            /** @var Infrastructure $infra */
+            $i['shortname'] = $infra->getName();
+            $i['name'] = config('identity.legalname');
+            $i['country'] = config('identity.location.country');
+            $i['url'] = config('identity.corporate_url');
+
+            if( $infra->getPeeringdbIxId() ) {
+                # oops, messy.  ixp_id was renamed as ixf_id in v0.4
+                if( $version == self::EUROIX_JSON_VERSION_0_3 ) {
+                    $i['ixp_id'] = intval( $infra->getPeeringdbIxId() );
+                } else {
+                    $i['ixf_id'] = intval( $infra->getPeeringdbIxId() );
+                    $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
+                }
+            }
+
+            $i['support_email'] = config('identity.support_email');
+            $i['support_phone'] = config('identity.support_phone');
+            $i['support_contact_hours'] = config('identity.support_hours');
+
+            if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
+                // $infra['stats_api'] = FIXME;
+                $i['emergency_email'] = config('identity.support_email');
+                $i['emergency_phone'] = config('identity.support_phone');
+                $i['emergency_contact_hours'] = config('identity.support_hours');
+                $i['billing_contact_hours'] = config('identity.billing_hours');
+            }
+
+            $i['billing_email'] = config('identity.billing_email');
+            $i['billing_phone'] = config('identity.billing_phone');
+
+            $i['peering_policy_list'] = array_values(\Entities\Customer::$PEERING_POLICIES);
+
+            $i['vlan'] = d2r('NetworkInfo')->asVlanEuroIXExportArray( $infra );
+            $i['switch'] = $this->getSwitchInfo($version, $infra );
+
+            $ixpinfo[] = $i;
         }
-
-        $ixp_info['support_email']             = config( 'identity.support_email' );
-        $ixp_info['support_phone']             = config( 'identity.support_phone' );
-        $ixp_info['support_contact_hours']     = config( 'identity.support_hours' );
-
-        if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
-            // $ixpinfo['stats_api'] = FIXME;
-            $ixp_info['emergency_email']           = config( 'identity.support_email' );
-            $ixp_info['emergency_phone']           = config( 'identity.support_phone' );
-            $ixp_info['emergency_contact_hours']   = config( 'identity.support_hours' );
-            $ixp_info['billing_contact_hours']     = config( 'identity.billing_hours' );
-        }
-
-        $ixp_info['billing_email']             = config( 'identity.billing_email' );
-        $ixp_info['billing_phone']             = config( 'identity.billing_phone' );
-
-        $ixp_info['peering_policy_list'] = array_values( \Entities\Customer::$PEERING_POLICIES );
-
-        $ixpinfo['vlan']   = d2r( 'NetworkInfo' )->asVlanEuroIXExportArray();
-        $ixpinfo['switch'] = $this->getSwitchInfo( $version );
 
         return $ixpinfo;
     }
@@ -167,29 +180,25 @@ class JsonSchema
      *
      * @return array
      */
-    private function getSwitchInfo( $version )
+    private function getSwitchInfo( $version, Infrastructure $infra )
     {
         $data = [];
 
-        $ixp = d2r( 'IXP' )->getDefault();
+        foreach( $infra->getSwitchers() as $switch ) {
+            if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+                continue;
 
-        foreach( $ixp->getInfrastructures() as $infra ) {
-            foreach( $infra->getSwitchers() as $switch ) {
-                if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
-                    continue;
+            $switchentry = [];
+            $switchentry['id']      = $switch->getId();
+            $switchentry['name']    = $switch->getName();
+            $switchentry['colo']    = $switch->getCabinet()->getLocation()->getName();
+            $switchentry['city']    = config( 'identity.location.city'    );
+            $switchentry['country'] = config( 'identity.location.country' );
 
-                $switchentry = [];
-                $switchentry['id']      = $switch->getId();
-                $switchentry['name']    = $switch->getName();
-                $switchentry['colo']    = $switch->getCabinet()->getLocation()->getName();
-                $switchentry['city']    = config( 'identity.location.city'    );
-                $switchentry['country'] = config( 'identity.location.country' );
+            if( $version >= self::EUROIX_JSON_VERSION_0_5 && $switch->getCabinet()->getLocation()->getPdbFacilityId() )
+                $switchentry['pdb_facility_id'] = intval( $switch->getCabinet()->getLocation()->getPdbFacilityId() );
 
-                if( $version >= self::EUROIX_JSON_VERSION_0_5 && $switch->getCabinet()->getLocation()->getPdbFacilityId() )
-                    $switchentry['pdb_facility_id'] = intval( $switch->getCabinet()->getLocation()->getPdbFacilityId() );
-
-                $data[] = $switchentry;
-            }
+            $data[] = $switchentry;
         }
 
         return $data;
@@ -284,7 +293,7 @@ class JsonSchema
                 $conn = [];
 
                 if( $version > self::EUROIX_JSON_VERSION_0_3 )
-                    $conn['ixp_id'] = 1;
+                    $conn['ixp_id'] = $vli->getVlan()->getInfrastructure()->getId();
 
                 $conn['state']       = 'active';
                 $conn['if_list']     = $iflist;
