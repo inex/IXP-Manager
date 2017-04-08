@@ -4,6 +4,8 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\Infrastructure as InfrastructureEntity;
+
 /**
  * NetworkInfo
  *
@@ -75,12 +77,14 @@ class NetworkInfo extends EntityRepository
         return $data;
     }
 
-    public function asVlanEuroIXExportArray()
+    public function asVlanEuroIXExportArray( InfrastructureEntity $infra )
     {
         $networkInfo = $this->getEntityManager()->createQuery(
                 "SELECT n, v
                 FROM \\Entities\\NetworkInfo n
-                LEFT JOIN n.Vlan v"
+                LEFT JOIN n.Vlan v
+                LEFT JOIN v.Infrastructure i
+                WHERE i.id = " . $infra->getId()
             )->useResultCache( true, 3600 )
             ->getArrayResult();
 

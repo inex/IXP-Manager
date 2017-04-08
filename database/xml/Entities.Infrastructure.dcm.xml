@@ -12,6 +12,7 @@
       </options>
     </field>
     <field name="aggregate_graph_name" type="string" length="255" nullable="true"/>
+    <field name="peeringdb_ix_id" type="bigint" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="IXPSN" columns="shortname,ixp_id"/>
     </unique-constraints>
