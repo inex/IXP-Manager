@@ -69,6 +69,13 @@ class IXP_Form_Infrastructure extends IXP_Form
             ->addFilter( 'StringTrim' );
         $this->addElement( $peeringdb_ix_id  );
 
+        $ixf_ix_id = $this->createElement( 'text', 'ixf_ix_id' );
+        $ixf_ix_id->setRequired( false )
+                        ->setLabel( 'IX-F DB IX ID' )
+                        ->addValidator('int')
+                        ->addFilter( 'StringTrim' );
+        $this->addElement( $ixf_ix_id  );
+
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
