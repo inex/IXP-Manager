@@ -666,6 +666,7 @@ root password to: $MYSQL_ROOT_PW
 
 If you plan to use this in production, you should:
 
+ - edit the $IXPROOT/.env file 
  - secure your server with an iptables firewall
  - install an SSL certificate and redirect HTTP access to HTTPS
  - complete the installation of the many features of IXP Manager such
