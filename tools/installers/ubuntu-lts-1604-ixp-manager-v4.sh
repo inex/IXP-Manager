@@ -408,7 +408,7 @@ APP_KEY=
 APP_DEBUG=false
 
 # Web address - required for sending emails via CLI scripts, etc.
-APP_URL="http://{$IPADDRESS}"
+APP_URL="http://${IPADDRESS}"
 
 # See http://php.net/manual/en/timezones.php for a list of timezones:
 APP_TIMEZONE="UTC"
