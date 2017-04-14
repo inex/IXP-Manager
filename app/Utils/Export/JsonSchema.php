@@ -144,7 +144,9 @@ class JsonSchema
                 if( $version == self::EUROIX_JSON_VERSION_0_3 ) {
                     $i['ixp_id'] = intval( $infra->getPeeringdbIxId() );
                 } else {
-                    $i['ixf_id'] = intval( $infra->getPeeringdbIxId() );
+                    if( $infra->getIxfIxId() ) {
+                        $i[ 'ixf_id' ] = intval( $infra->getIxfIxId() );
+                    }
                     $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
                 }
             }
