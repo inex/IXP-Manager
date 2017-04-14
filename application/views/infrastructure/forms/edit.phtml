@@ -12,6 +12,7 @@
     {$element->isPrimary}
     {$element->ixp}
     {$element->aggregate_graph_name}
+    {$element->ixf_ix_id}
     {$element->peeringdb_ix_id}
 
 <div class="form-actions">
@@ -21,4 +22,41 @@
 
 </div>
 </form>
+
+<div class="row">
+<div class="span5 offset1">
+
+    <h3>IXF ID</h3>
+
+    <p>
+        The IXF ID is the ID assigned to your IXP by IX-F. You can find
+        your ID through <a href="https://db.ix-f.net/api/ixp">their API interface</a> or the drop down below.
+    </p>
+
+    <p>
+        <select id="select-ixp" name="ixp">
+            <option><em>Loading...</em></option>
+        </select><br><br>
+        <b>IX-F ID: </b><span id="ixf_id"></span>
+    </p>
+
+</div>
+<div class="span5">
+
+    <h3>PeeringDB ID</h3>
+
+    <p>
+        The PeeringDB ID is the ID assigned to your IXP by PeeringDB. You can find
+        your ID through <a href="https://www.peeringdb.com/api/ix">their API interface</a> or the drop down below.
+    </p>
+
+    <p>
+        <select id="select-pdb-ixp" name="pdbixp">
+            <option><em>Loading...</em></option>
+        </select><br><br>
+        <b>PeeringDB ID: </b><span id="pdb_id"></span>
+    </p>
+
+</div>
+</div>
 

@@ -3,46 +3,6 @@
         loadDataTable();
     });
 
-
-    /**
-     * initialisation of the Clipboard even on the class in parameter
-     */
-    var clipboard = new Clipboard('.btn-copy');
-
-    /**
-     * initialisation of tooltip
-     */
-    $('.btn-copy').tooltip({
-        trigger: 'click',
-        placement: 'bottom'
-    });
-
-    /**
-     * display a tooltip on the Clipboard button
-     */
-    function setTooltip(btn, message) {
-        $(btn).attr('data-original-title', message)
-            .tooltip('show');
-    }
-
-    /**
-     * hide a tooltip on the Clipboard button
-     */
-    function hideTooltip(btn) {
-        setTimeout(function() {
-            $(btn).tooltip('hide');
-        }, 1000);
-    }
-
-    /**
-     * success even when using Clipboard
-     */
-    clipboard.on('success', function(e) {
-        setTooltip(e.trigger, 'Copied!');
-        hideTooltip(e.trigger);
-    });
-
-
     /**
      * on click even allow to add a mac address using prompt popup
      */
@@ -88,26 +48,6 @@
         e.preventDefault();
         var l2aId = (this.id).substring(11);
         deleteL2a( l2aId );
-    });
-
-    /**
-     * on click even allow to ave a view of the mac address (with different format)
-     */
-    $(document).on( 'click', "a[id|='view-l2a']", function(e) {
-        e.preventDefault();
-        var l2aId = (this.id).substring(9);
-        $.ajax( "<?= url( 'api/v4/l2-address/detail' ) ?>/" + l2aId )
-            .done( function( data ) {
-                $("#mac").val( data.mac );
-                $("#macComma").val( data.macFormattedWithColons );
-                $("#macDot").val( data.macFormattedWithDots );
-                $("#macDash").val( data.macFormattedWithDashes );
-            })
-            .fail( function(){
-                alert( 'Could add MAC address. API / AJAX / network error' );
-                throw new Error("Error running ajax query for api/v4/l2-address/detail/{id}");
-            })
-        $('#notes-modal').modal('show');
     });
 
     /**

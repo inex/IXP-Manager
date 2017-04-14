@@ -140,6 +140,25 @@ class Layer2Address {
         return $this->vlanInterface;
     }
 
+    /**
+     * Get switch ports where this MAC is associated
+     *
+     * Returns a sorted array of unique "switchname :: switchport name" strings
+     *
+     * @return array
+     */
+    public function getSwitchPorts(): array {
+        $sps = [];
+        foreach( $this->getVlanInterface()->getVirtualInterface()->getPhysicalInterfaces() as $pi ) {
+            /** @var PhysicalInterface $pi */
+            $sp = $pi->getSwitchPort()->getSwitcher()->getName() . '::' . $pi->getSwitchPort()->getName();
+            if( !in_array( $sp, $sps ) ) {
+                $sps[] = $sp;
+            }
+        }
+        asort( $sps, SORT_NATURAL );
+        return $sps;
+    }
 
 
     /**

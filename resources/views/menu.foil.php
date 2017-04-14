@@ -129,11 +129,22 @@
                         </ul> */ ?>
                 </li>
 
-                <?php if( !config( 'ixp_fe.frontend.disabled.mac-address', false ) ): ?>
-                    <li>
-                         <a href="<?= url( '/mac-address/list' ) ?>">MAC Addresses</a>
+                <li>
+                    <a href="<?= url( '/layer2-address/list' ) ?>">MAC/L2 Addresses</a>
+                </li>
+
+                <?php if( Request::is('layer2-address/list') ): ?>
+                    <li class="<?= Request::is('layer2-address/list') ? 'active' : '' ?>">
+                        <a href="<?= url( '/layer2-address/list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Layer2 Addresses</a>
                     </li>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.mac-address', false ) ): ?>
+                        <li>
+                            <a href="<?= url( '/mac-address/list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;MAC Addresses</a>
+                        </li>
+                    <?php endif; ?>
                 <?php endif; ?>
+
 
                 <li>
                     <a href="<?= url('/vendor/list' ) ?>">Vendors</a>

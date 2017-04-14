@@ -111,7 +111,7 @@
         </li>
 
         <li>
-            <a href="{genUrl controller='ipv6-address' action='list'}">IP Addressing</a>
+            <a href="{genUrl controller='ipv6-address' action='list'}">IPv4/6 Addresses</a>
 
             {if $controller eq 'ipv4-address' or $controller eq 'ipv6-address'}
                 <ul class="nav nav-list">
@@ -126,11 +126,25 @@
 
         </li>
 
-        {if not isset( $options['frontend']['disabled']['mac-address'] ) or not $options['frontend']['disabled']['mac-address'] }
-            <li {if $controller eq 'mac-address'}class="active"{/if}>
-                 <a href="{genUrl controller='mac-address' action='list'}">MAC Addresses</a>
-            </li>
-        {/if}
+        <li>
+            <a href="{genUrl controller='layer2-address' action='list'}">MAC/L2 Addresses</a>
+
+            {if not isset( $options['frontend']['disabled']['mac-address'] ) or not $options['frontend']['disabled']['mac-address'] }
+
+                {if $controller eq 'mac-address'}
+                    <ul class="nav nav-list">
+                        <li>
+                            <a href="{genUrl controller='layer2-address' action='list'}">Layer2 Addresses</a>
+                        </li>
+                        <li {if $controller eq 'mac-address'}class="active"{/if}>
+                            <a href="{genUrl controller='mac-address' action='list'}">MAC Addresses</a>
+                        </li>
+                    </ul>
+                {/if}
+
+            {/if}
+
+        </li>
 
         <li {if $controller eq 'vendor'}class="active"{/if}>
             <a href="{genUrl controller='vendor' action='list'}">Vendors</a>

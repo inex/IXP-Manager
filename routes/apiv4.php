@@ -17,3 +17,40 @@ use Illuminate\Http\Request;
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 
+Route::get( 'peeringdb/ix', function() {
+    return response()->json( Cache::remember('peeringdb/ix', 120, function() {
+        $ixps = [];
+        if( $ixs = file_get_contents('https://www.peeringdb.com/api/ix') ) {
+            foreach( json_decode($ixs)->data as $ix ) {
+                $ixps[$ix->id] = [
+                    'pdb_id' => $ix->id,
+                    'name' => $ix->name,
+                    'city' => $ix->city,
+                    'country' => $ix->country,
+                ];
+            }
+        }
+        return $ixps;
+    })
+    );
+})->name('api-v4-peeringdb-ixs');
+
+
+Route::get( 'ix-f/ixp', function() {
+    return response()->json( Cache::remember('ix-f/ixp', 120, function() {
+            $ixps = [];
+            if( $ixs = file_get_contents('https://db.ix-f.net/api/ixp') ) {
+                foreach( json_decode($ixs)->data as $ix ) {
+                    $ixps[$ix->id] = [
+                        'ixf_id' => $ix->id,
+                        'name' => $ix->short_name,
+                        'city' => $ix->city,
+                        'country' => $ix->country,
+                    ];
+                }
+            }
+            return $ixps;
+        })
+    );
+})->name('api-v4-ixf-ixs');
+

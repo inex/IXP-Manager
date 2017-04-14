@@ -64,10 +64,10 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
+            return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
+        return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
     }
 
     /**
@@ -384,6 +384,28 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPeeringdbIxId', [$id]);
 
         return parent::setPeeringdbIxId($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIxfIxId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIxfIxId', []);
+
+        return parent::getIxfIxId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIxfIxId(int $id): \Entities\Infrastructure
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIxfIxId', [$id]);
+
+        return parent::setIxfIxId($id);
     }
 
 }
