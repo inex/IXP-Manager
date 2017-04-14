@@ -94,7 +94,7 @@
                         </td>
                         <td>
                             <a id="view-l2a-<?= $l2a->getId() ?>" name="<?= $l2a->getMac() ?>" href="#" title="View">
-                                <?= $l2a->getMacFormattedWithColons(); ?>
+                                <?= $l2a->getMac(); ?>
                             </a>
                         </td>
                         <td>
@@ -129,6 +129,10 @@
             $( '#layer-2-interface-list' ).DataTable( {
                 "autoWidth": false,
                 "iDisplayLength": 100
+            });
+
+            $("#layer-2-interface-list_filter").find( "input:first" ).on("keyup", function() {
+                $(this).val( $(this).val().toLowerCase().replace( /[\:\-\.]/g, "" ) );
             });
         });
     </script>
