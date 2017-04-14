@@ -92,8 +92,9 @@
                 </tr>
             <thead>
             <tbody>
-                <?php foreach( $t->patchPanels as $pp ):
-                    /** @var Entities\PatchPanel $pp */ ?>
+                <?php foreach( $t->patchPanels as $pp ):                    
+                    /** @var Entities\PatchPanel $pp */ 
+                    ?>
                     <tr>
                         <td>
                             <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$pp->getId()?>">

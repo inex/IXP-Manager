@@ -67,6 +67,7 @@
                 $lastUsedNumber = 0;
                 foreach( $t->patchPanelPorts as $ppp ):
                 /** @var \Entities\PatchPanelPort $ppp */
+                if( $ppp->getDuplexMasterPort() ) { continue; }
                 $potentialSlave = $t->pp && $t->pp->hasDuplexPort() && !( $ppp->getNumber() % 2 ) && $ppp->isAvailableForUse();
                 ?>
                 <tr <?= $potentialSlave ? 'class="potential-slave" style="display: none;"' : '' ?>">

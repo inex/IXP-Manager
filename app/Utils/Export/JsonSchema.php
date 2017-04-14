@@ -85,7 +85,7 @@ class JsonSchema
         if( $version == self::EUROIX_JSON_VERSION_0_3 )
             $output['ixp_info'] = $this->getIXPInfo( $version );
         else
-            $output['ixp_list'][] = $this->getIXPInfo( $version );
+            $output['ixp_list'] = $this->getIXPInfo( $version );
 
         $output['member_list'] = $this->getMemberInfo( $version );
 
