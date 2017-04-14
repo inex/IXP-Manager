@@ -20,6 +20,7 @@ and especially new and small IXPs looking to expand.
 * [How to Get Help](https://www.ixpmanager.org/support.php)
 * [Presentations & Talks](https://www.ixpmanager.org/presentations.php)
 * [Sponsors and Sponsorship](https://www.ixpmanager.org/sponsors.php)
+* Follow [@ixpmanager](https://twitter.com/ixpmanager) on Twitter
 
 ## Documentation
 
