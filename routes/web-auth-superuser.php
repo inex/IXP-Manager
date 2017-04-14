@@ -34,12 +34,13 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 
     Route::post( 'store',                           'PatchPanelPortController@store' );
 
-    Route::get(  'email/{id}/{type}',                'PatchPanelPortController@email' );
-    Route::post( 'send-email/{id}/{type}',           'PatchPanelPortController@sendEmail' );
+    Route::get(  'email/{id}/{type}',               'PatchPanelPortController@email' );
+    Route::post( 'send-email/{id}/{type}',          'PatchPanelPortController@sendEmail' );
 
 });
 
 
 Route::group( [ 'prefix' => 'layer2-address' ], function() {
-    Route::get( 'vlan-interface/{vliid}',                        'Layer2AddressController@index' );
+    Route::get( 'vlan-interface/{vliid}',            'Layer2AddressController@index' );
+    Route::get( 'list/{vlid?}',                       'Layer2AddressController@list' );
 });

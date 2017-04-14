@@ -51,7 +51,7 @@
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <a class="btn btn btn-default" id="view-l2a-<?= $l2a->getId() ?>" href="#" title="View">
+                            <a class="btn btn btn-default" id="view-l2a-<?= $l2a->getId() ?>" name="<?= $l2a->getMac() ?>" href="#" title="View">
                                 <i class="glyphicon glyphicon-eye-open"></i>
                             </a>
                             <button class="btn btn btn-default" id="delete-l2a-<?= $l2a->getId() ?>" href="#" title="Delete">
@@ -65,61 +65,10 @@
         </table>
     </div>
 
-    <!-- Modal dialog for views mac address with different formats -->
-    <div class="modal fade" id="notes-modal" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="notes-modal-label">MAC Address</h4>
-                </div>
-                <div class="modal-body" id="notes-modal-body">
-                    <div class="input-group">
-                        <input class="form-control" readonly id="mac">
-                        <div class="input-group-btn">
-                            <button id="btn-copy-mac" class="btn btn-copy btn-default" data-clipboard-action="copy" data-clipboard-target="#mac">
-                                <span class="glyphicon glyphicon-copy"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="input-group">
-                        <input class="form-control" readonly id="macComma">
-                        <div class="input-group-btn">
-                            <button id="btn-copy-mac-comma" class="btn btn-copy btn-default" data-clipboard-action="copy" data-clipboard-target="#macComma">
-                                <span class="glyphicon glyphicon-copy"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="input-group">
-                        <input class="form-control" readonly id="macDot">
-                        <div class="input-group-btn">
-                            <button id="btn-copy-mac-dot" class="btn btn-copy btn-default" data-clipboard-action="copy" data-clipboard-target="#macDot">
-                                <span class="glyphicon glyphicon-copy"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="input-group">
-                        <input class="form-control" readonly id="macDash">
-                        <div class="input-group-btn">
-                            <button id="btn-copy-mac-dash" class="btn btn-copy btn-default" data-clipboard-action="copy" data-clipboard-target="#macDash">
-                                <span class="glyphicon glyphicon-copy"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input  id="notes-modal-ppp-id"      type="hidden" name="notes-modal-ppp-id" value="">
-                    <button id="notes-modal-btn-cancel"  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?= $t->insert( 'layer2-address/modal-mac' ); ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script type="text/javascript" src="<?= asset( '/bower_components/clipboard/dist/clipboard.min.js' ) ?>"></script>
+    <?= $t->insert( 'layer2-address/js/clipboard' ); ?>
     <?= $t->insert( 'layer2-address/js/vlan-interface' ); ?>
 <?php $this->append() ?>

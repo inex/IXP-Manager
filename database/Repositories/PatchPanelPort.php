@@ -110,6 +110,7 @@ class PatchPanelPort extends EntityRepository
             $ppphf = new PatchPanelPortHistoryFileEntity;
             $ppphf->setFromPatchPanelPortFile( $pppf );
             $ppph->addPatchPanelPortHistoryFile( $ppphf );
+            D2EM::persist($ppphf);
         }
 
         return $ppph;
