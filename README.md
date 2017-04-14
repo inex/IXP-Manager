@@ -1,33 +1,36 @@
-![IXP Manager Logo](http://www.ixpmanager.org/images/logos/ixp-manager.png)
+![IXP Manager Logo](https://github.com/inex/IXP-Manager/blob/master/public/images/ixp-manager.png)
 
 INEX are pleased to release [IXP Manager](http://www.ixpmanager.org/) under an open source license (the
 GNU Public License V2) which we hope will benefit the wider IXP community,
 and especially new and small IXPs looking to expand.
 
-<!--- [![Build Status](https://travis-ci.org/inex/IXP-Manager.png?branch=master)](https://travis-ci.org/inex/IXP-Manager) - courtesy of [Travis CI](https://travis-ci.org/inex/IXP-Manager). -->
+[![Build Status](https://travis-ci.org/inex/IXP-Manager.png?branch=master)](https://travis-ci.org/inex/IXP-Manager) - courtesy of [Travis CI](https://travis-ci.org/inex/IXP-Manager).
+
+## Main Links
+
+* [IXP Manager Website](https://www.ixpmanager.org)
+* [Documentation](http://docs.ixpmanager.org) including:
+  * Installation [overview](http://docs.ixpmanager.org/install/), 
+    [by automated script](http://docs.ixpmanager.org/install/automated-script/),
+    [manually](http://docs.ixpmanager.org/install/manually/),
+    and [upgrading from v3](http://docs.ixpmanager.org/install/upgrade-v3/).
+  * [Upgrade Instructions](http://docs.ixpmanager.org/install/upgrading/)
+* [Releases](https://github.com/inex/IXP-Manager/releases)
+* [List of Users](https://www.ixpmanager.org/users.php) (contact us if you are missing!)
+* [How to Get Help](https://www.ixpmanager.org/support.php)
+* [Presentations & Talks](https://www.ixpmanager.org/presentations.php)
+* [Sponsors and Sponsorship](https://www.ixpmanager.org/sponsors.php)
 
 ## Documentation
 
-Please see the [wiki](https://github.com/inex/IXP-Manager/wiki) for general
-documentation including [installation
-instructions](https://github.com/inex/IXP-Manager/wiki/Installation).
+From v4 onwards, our documentation is now hosted on GitHub pages: http://docs.ixpmanager.org/.
 
-## IXP Manager V3 Released
-
-IXP Manager V3 was officially released on 2012-12-12 and primarily featured
-a significant amount of backend changes:
-
-* code refactoring
-* migration to Doctrine2
-* removal of all non JQuery JS libraries
-* better library consistancy and API interfaces
-* security audit
-
-IXP Manager V3 is primarily about INEX trying to fashion IXP Manager as a
-true open source project rather than something INEX specific. 
-
+For a period, some older v3 documentation may still be useful. You can find that on 
+the [wiki](https://github.com/inex/IXP-Manager/wiki).
 
 ## About IXP Manager
+
+For detailed information, see: https://www.ixpmanager.org/
 
 IXP Manager is primarily a web application with associated scripts and
 utilities which will allow IXPs to manage new customers, provision new
@@ -36,28 +39,20 @@ contained customer portal allowing IXP members to view their IXP traffic
 statistics and a unique tool called My Peering Manager enabling IXP
 members to request, manage and track peerings with other members.
 
-IXP Manager is written in PHP using the Zend Framework, the Doctrine2 ORM
-and the Smarty templating engine. The project website and source code
-can be viewed at https://github.com/inex/IXP-Manager.
-
-INEX is an Internet eXchange Point and Ireland's IP peering hub. It is a 
-neutral, industry-owned Association, founded in 1996, that provides IP 
-peering facilities for its members. INEX membership is open to all 
-organisations that can benefit from peering their IP traffic.
+[INEX](https://www.inex.ie/) is an Internet eXchange Point and Ireland's IP 
+peering hub. It is a neutral, industry-owned Association, founded in 1996, 
+that provides IP peering facilities for its members. INEX membership is open 
+to all organisations that can benefit from peering their IP traffic.
 
 See: https://www.inex.ie/
 
 Authors:
-  Barry O'Donovan, Senior Coding Dude
-  Nick Hilliard, Junior Coding Dweeb
-  Contact us via: operations (at) inex.ie
 
-The copyright statement for IXP Manager was changed on 2016-09-23 to reflect
-the fact that INEX changed its formal legal name from "Internet Neutral
-Exchange Association Limited" to "Internet Neutral Exchange Association
-Company Limited By Guarantee", as required by the Companies Act 2014.
+* [Barry O'Donovan](https://www.barryodonovan.com/contact) / [@barryo79](https://twitter.com/#!/barryo79)
+* Nick Hilliard
+* Contact us via: operations (at) inex.ie
 
-Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
 All Rights Reserved.
 
  
