@@ -65,15 +65,15 @@ class IXP_Form_Infrastructure extends IXP_Form
         $peeringdb_ix_id = $this->createElement( 'text', 'peeringdb_ix_id' );
         $peeringdb_ix_id->setRequired( false )
             ->setLabel( 'Peering DB IX ID' )
-            ->addValidator('int')
-            ->addFilter( 'StringTrim' );
+            ->addFilter( 'StringTrim' )
+            ->addFilter('Int');
         $this->addElement( $peeringdb_ix_id  );
 
         $ixf_ix_id = $this->createElement( 'text', 'ixf_ix_id' );
         $ixf_ix_id->setRequired( false )
-                        ->setLabel( 'IX-F DB IX ID' )
-                        ->addValidator('int')
-                        ->addFilter( 'StringTrim' );
+            ->setLabel( 'IX-F DB IX ID' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter('Int');
         $this->addElement( $ixf_ix_id  );
 
 

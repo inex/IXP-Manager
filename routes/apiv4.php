@@ -23,7 +23,7 @@ Route::get( 'peeringdb/ix', function() {
         if( $ixs = file_get_contents('https://www.peeringdb.com/api/ix') ) {
             foreach( json_decode($ixs)->data as $ix ) {
                 $ixps[$ix->id] = [
-                    'ixp_id' => $ix->id,
+                    'pdb_id' => $ix->id,
                     'name' => $ix->name,
                     'city' => $ix->city,
                     'country' => $ix->country,
@@ -33,7 +33,7 @@ Route::get( 'peeringdb/ix', function() {
         return $ixps;
     })
     );
-});
+})->name('api-v4-peeringdb-ixs');
 
 
 Route::get( 'ix-f/ixp', function() {
@@ -52,5 +52,5 @@ Route::get( 'ix-f/ixp', function() {
             return $ixps;
         })
     );
-});
+})->name('api-v4-ixf-ixs');
 
