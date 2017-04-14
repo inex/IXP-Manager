@@ -10,7 +10,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        Layer2 Addresses for <?= $t->vli->getVlan()->getName() ?>
+        Layer2 Address Management
     </li>
 
     <span class="pull-right">
@@ -24,6 +24,22 @@
 
 
 <?php $this->section( 'content' ) ?>
+
+    <div class="well">
+        <h3>Layer2 Address Management for <?= $t->vli->getVirtualInterface()->getCustomer()->getName() ?>'s VLAN Interface:</h3>
+
+        <dl>
+            <dt>VLAN</dt>
+            <dd><?= $t->vli->getVLAN()->getName() ?></dd>
+            <dt>Addresses</dt>
+            <dd>
+                <?= $t->vli->getIPv4Address() ? $t->vli->getIPv4Address()->getAddress() . ( $t->vli->getIPv6Address() ? ' / ' : '' ) : '' ?>
+                <?= $t->vli->getIPv6Address() ? $t->vli->getIPv6Address()->getAddress()         : '' ?>
+            </dd>
+        </dl>
+    </div>
+
+
     <div id="message"></div>
     <div id="list-area">
         <table id='layer-2-interface-list' class="table">

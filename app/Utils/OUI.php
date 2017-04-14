@@ -1,8 +1,9 @@
 <?php
 
+namespace IXP\Utils;
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,13 +23,16 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP_Exception;
+
 /**
  * OUI functions
  *
+ * Originally written 17 Feb 2014
+ *
  * @author Barry O'Donovan <barry@opensolutions.ie>
- * @package IXP_OUI3
  */
-class IXP_OUI 
+class OUI
 {
     /**
      * Where to get the OUI list from
@@ -37,12 +41,14 @@ class IXP_OUI
     public $file = 'http://standards.ieee.org/develop/regauth/oui/oui.txt';
 
     /**
-     * Raw OUI data 
+     * Raw OUI data
+     * @var string
      */
     private $raw = null;
 
     /**
      * Processed OUIs array as [ 'oui' => 'organisation', ... ]
+     * @var array
      */
     private $ouis = null;
 
@@ -51,38 +57,39 @@ class IXP_OUI
      *
      * @param string $file Where to get the OUI list from
      */
-    public function __construct( $file = false )
-    {
-        if( $file )
+    public function __construct( string $file = null ) {
+        if( $file ) {
             $this->file = $file;
+        }
     }
 
     /**
      * Load the raw OUI data from the specificed location
-     * 
-     * @return IXP_OUI An instance of this class for fluent interfaces
+     *
+     * @return OUI An instance of this class for fluent interfaces
+     * @throws IXP_Exception
      */
-    public function loadList()
-    {
+    public function loadList(): OUI {
         $this->raw = @file_get_contents( $this->file );
 
-        if( $this->raw === false )
-            throw new IXP_Exception( 'IXP_OUI - could not load OUI list from ' . $this->file );
+        if( $this->raw === false ) {
+            throw new IXP_Exception( 'IXP\\Utils\\OUI - could not load OUI list from ' . $this->file );
+        }
 
         return $this;
     }
 
-    public function processRawData( $data = false )
-    {
-        if( $data == false && $this->raw === null )
-            throw new IXP_Exception( 'IXP_OUI - cannot process when no data has been loaded or provided' );
+    public function processRawData( $data = false ): array {
+        if( $data == false && $this->raw === null ) {
+            throw new IXP_Exception( 'IXP\\Utils\\OUI - cannot process when no data has been loaded or provided' );
+        }
 
-        if( $data == false )
+        if( $data == false ) {
             $data = $this->raw;
+        }
 
         $this->ouis = [];
-        foreach( explode( "\n", $data ) as $line )
-        {
+        foreach( explode( "\n", $data ) as $line ) {
             if( preg_match( "/^\s*([0-9A-F]{6})\s+\(base 16\)\s+(.*)$/", $line, $matches ) )
                 $this->ouis[ strtolower( $matches[1] ) ] = $matches[2];
         }
