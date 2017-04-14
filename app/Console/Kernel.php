@@ -17,7 +17,9 @@ class Kernel extends ConsoleKernel {
         'IXP\Console\Commands\Router\GenerateConfiguration',
 
         'IXP\Console\Commands\Upgrade\MrtgTrunkConfig',
-        'IXP\Console\Commands\Utils\Export\JsonSchema\Post',
+
+        \IXP\Console\Commands\Utils\Export\JsonSchema\Post::class,
+        \IXP\Console\Commands\Utils\UpdateOuiDatabase::class,
         \IXP\Console\Commands\Upgrade\MigrateL2Addresses::class,
     ];
 

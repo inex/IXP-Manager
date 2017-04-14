@@ -32,4 +32,29 @@ class Layer2Address extends EntityRepository
         $query->setParameter( 2, $vlanid );
         return ( $query->getSingleScalarResult() > 0 ) ? true : false;
     }
+
+    /**
+     * Load all Layer2Addresses (optionally limited to vlan)
+     *
+     * @param  int $vlid The ID of the VLAN to search
+     * @return array Layer2Interface entities
+     */
+    public function getAll( int $vlid = null ): array {
+        $dql = "SELECT l2a
+                    FROM Entities\Layer2Address l2a
+                    LEFT JOIN l2a.vlanInterface vli
+                    LEFT JOIN vli.Vlan vl
+                    LEFT JOIN vli.VirtualInterface vi
+                    LEFT JOIN vi.Customer c ";
+
+        if( $vlid ){
+            $dql .= " WHERE vl.id = $vlid ";
+        }
+
+        $dql .= " ORDER BY c.name ASC";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getResult();
+    }
 }

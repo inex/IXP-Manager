@@ -1,5 +1,7 @@
 <?php
 
+use IXP\Utils\OUI as OUIUtil;
+
 /**
  * PHPUnit test class to test the IXP_OUI class
  */
@@ -37,7 +39,7 @@ END_DATA;
 
     public function testParse()
     {
-        $oui = new IXP_OUI();
+        $oui = new OUIUtil();
         $parsed = $oui->processRawData( $this->sampleRawData );
         $this->assertTrue( is_array( $parsed ) );
         $this->assertArrayHasKey( '000000', $parsed );
@@ -57,7 +59,7 @@ END_DATA;
      */
     public function testBadFile()
     {
-        $oui = new IXP_OUI( '/path/that/does/not/exist/I/hope.txt' );
+        $oui = new OUIUtil( '/path/that/does/not/exist/I/hope.txt' );
         $oui->loadList();
     }
 

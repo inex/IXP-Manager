@@ -25,8 +25,14 @@ namespace IXP\Http\Controllers;
 use D2EM;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Cache;
 
-use Entities\VlanInterface as VlanInterfaceEntity;
+use Entities\{
+    VlanInterface as VlanInterfaceEntity,
+    Layer2Address as Layer2AddressEntity,
+    OUI as OUIEntity,
+    Vlan as VlanEntity
+};
 
 /**
  * Layer2Address Controller
@@ -52,6 +58,31 @@ class Layer2AddressController extends Controller
 
         return view( 'layer2-address/vlan-interface' )->with([
             'vli'       => $vli
+        ]);
+    }
+
+    /**
+     * Display known MAC addresses
+     *
+     * @param  int $vlid display only the mac addresses of this vlan
+     * @return  View
+     */
+    public function list( int $vlid = null) : View {
+        $vlan = false;
+        if( $vlid != null and !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $vlid ) ) ) {
+            abort( 404 );
+        }
+
+        // get all layer2addresses:
+        $l2as    = D2EM::getRepository( Layer2AddressEntity::class )->getAll( $vlid );
+        // and turn the OUI/MAC into a manufacturer:
+        $listOui = D2EM::getRepository( OUIEntity::class )->getForLayer2Addresses( $l2as );
+
+        return view( 'layer2-address/list' )->with([
+            'list'              => $l2as,
+            'listOui'           => $listOui,
+            'Vlans'             => D2EM::getRepository( VlanEntity::class )->findAll(),
+            'Vlan'              => $vlan
         ]);
     }
 }
