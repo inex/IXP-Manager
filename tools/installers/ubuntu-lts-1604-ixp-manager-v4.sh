@@ -36,6 +36,8 @@ IXPROOT=/srv/ixpmanager
 DBNAME=ixpmanager
 DBUSER=ixpmanager
 
+IPADDRESS=$( ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v '127.0.0.1' | head -1 )
+
 touch /tmp/ixp-manager-install.log
 chmod a+w /tmp/ixp-manager-install.log
 
@@ -406,7 +408,7 @@ APP_KEY=
 APP_DEBUG=false
 
 # Web address - required for sending emails via CLI scripts, etc.
-APP_URL="http://localhost"
+APP_URL="http://${IPADDRESS}"
 
 # See http://php.net/manual/en/timezones.php for a list of timezones:
 APP_TIMEZONE="UTC"
@@ -645,8 +647,6 @@ chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
 ### Completion Details
 ##################################################################
 
-IPADDRESS=$( ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v '127.0.0.1' | head -1 )
-
 tee /root/ixp-manager-install-details.txt <<END_SUCCESS
 
 ##################################################################
@@ -666,6 +666,7 @@ root password to: $MYSQL_ROOT_PW
 
 If you plan to use this in production, you should:
 
+ - edit the $IXPROOT/.env file 
  - secure your server with an iptables firewall
  - install an SSL certificate and redirect HTTP access to HTTPS
  - complete the installation of the many features of IXP Manager such
