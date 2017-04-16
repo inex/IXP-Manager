@@ -157,7 +157,7 @@
       <field name="aggregate_graph_name" type="string" size="255" uuid="3e884e1f-245b-4e9b-a67f-aa9b4dcbcc01"/>
       <field name="ixp_id" type="integer" required="true" uuid="6d316694-a9c3-4547-9265-daf01edf6a88"/>
       <field name="peeringdb_ix_id" type="bigint" uuid="bb30b856-4862-49b3-b240-6ac0098ac233"/>
-      <field name="ixf_ix_id" type="bigint" required="true" uuid="e9080278-6bc7-4eae-b50c-04483c064ac5"/>
+      <field name="ixf_ix_id" type="bigint" uuid="e9080278-6bc7-4eae-b50c-04483c064ac5"/>
       <index name="IXPSN" unique="true">
         <index-field name="shortname"/>
         <index-field name="ixp_id"/>
