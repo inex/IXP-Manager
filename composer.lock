@@ -896,7 +896,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2017-04-03 07:04:13"
+            "time": "2017-04-03T07:04:13+00:00"
         },
         {
             "name": "dompdf/dompdf",
@@ -1361,7 +1361,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-04-07 20:03:48"
+            "time": "2017-04-07T20:03:48+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -1477,7 +1477,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-03-20 17:10:46"
+            "time": "2017-03-20T17:10:46+00:00"
         },
         {
             "name": "igorw/get-in",
@@ -1837,12 +1837,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "95a06638633359965961a11ab05967d32351cfdf"
+                "reference": "51cad04a923bf22c9ae96d77e4cb07767d634c17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/95a06638633359965961a11ab05967d32351cfdf",
-                "reference": "95a06638633359965961a11ab05967d32351cfdf",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/51cad04a923bf22c9ae96d77e4cb07767d634c17",
+                "reference": "51cad04a923bf22c9ae96d77e4cb07767d634c17",
                 "shasum": ""
             },
             "require": {
@@ -1958,7 +1958,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-04-18T12:57:27+00:00"
+            "time": "2017-04-18T15:36:20+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2099,7 +2099,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-03-22 15:43:14"
+            "time": "2017-03-22T15:43:14+00:00"
         },
         {
             "name": "luketowers/purifier",
@@ -2560,12 +2560,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opensolutions/OSS_SNMP.git",
-                "reference": "58249862a38faf0175e8e3d6d0867bd27770cb36"
+                "reference": "94821f6d73a3c5244cec4deb0e2ce99b2d99c5c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/58249862a38faf0175e8e3d6d0867bd27770cb36",
-                "reference": "58249862a38faf0175e8e3d6d0867bd27770cb36",
+                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/94821f6d73a3c5244cec4deb0e2ce99b2d99c5c6",
+                "reference": "94821f6d73a3c5244cec4deb0e2ce99b2d99c5c6",
                 "shasum": ""
             },
             "require": {
@@ -2593,7 +2593,7 @@
                 "oss_snmp",
                 "snmp"
             ],
-            "time": "2017-04-18T15:12:36+00:00"
+            "time": "2017-04-19T01:25:49+00:00"
         },
         {
             "name": "oss2/auth",
@@ -3357,7 +3357,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-13 16:59:03"
+            "time": "2017-04-13T16:59:03+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -3410,7 +3410,7 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12 14:14:56"
+            "time": "2017-04-12T14:14:56+00:00"
         },
         {
             "name": "symfony/debug",
@@ -3466,7 +3466,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12 14:14:56"
+            "time": "2017-04-12T14:14:56+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -3529,7 +3529,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-13 13:45:25"
+            "time": "2017-04-13T13:45:25+00:00"
         },
         {
             "name": "symfony/finder",
@@ -3631,7 +3631,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12 14:14:56"
+            "time": "2017-04-12T14:14:56+00:00"
         },
         {
             "name": "symfony/http-kernel",
@@ -3716,7 +3716,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-15 11:32:48"
+            "time": "2017-04-15T11:32:48+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -3775,7 +3775,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2016-11-14T01:06:16+00:00"
         },
         {
             "name": "symfony/polyfill-php55",
@@ -3880,7 +3880,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12 14:14:56"
+            "time": "2017-04-12T14:14:56+00:00"
         },
         {
             "name": "symfony/routing",
@@ -4022,7 +4022,7 @@
             ],
             "description": "Symfony Serializer Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12 14:07:15"
+            "time": "2017-04-12T14:07:15+00:00"
         },
         {
             "name": "symfony/translation",
@@ -4087,7 +4087,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12 14:14:56"
+            "time": "2017-04-12T14:14:56+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -4406,7 +4406,7 @@
                 "phpstorm",
                 "sublime"
             ],
-            "time": "2017-04-14T15:57:13+00:00"
+            "time": "2017-04-14 15:57:13"
         },
         {
             "name": "barryvdh/reflection-docblock",
@@ -4455,7 +4455,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-            "time": "2016-06-13T19:28:20+00:00"
+            "time": "2016-06-13 19:28:20"
         },
         {
             "name": "fzaninotto/faker",
@@ -4872,7 +4872,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2017-03-03 17:09:02"
+            "time": "2017-03-03T17:09:02+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -5262,7 +5262,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2017-03-07 08:47:31"
+            "time": "2017-03-07T08:47:31+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -5308,6 +5308,70 @@
             "description": "Looks up which function or method a line of code belongs to",
             "homepage": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/",
             "time": "2017-03-04T10:23:55+00:00"
+        },
+        {
+            "name": "sebastian/comparator",
+            "version": "1.2.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/comparator.git",
+                "reference": "18a5d97c25f408f48acaf6d1b9f4079314c5996a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/18a5d97c25f408f48acaf6d1b9f4079314c5996a",
+                "reference": "18a5d97c25f408f48acaf6d1b9f4079314c5996a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "sebastian/diff": "~1.2",
+                "sebastian/exporter": "~1.2 || ~2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jeff Welch",
+                    "email": "whatthejeff@gmail.com"
+                },
+                {
+                    "name": "Volker Dusch",
+                    "email": "github@wallbash.com"
+                },
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@2bepublished.at"
+                },
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de"
+                }
+            ],
+            "description": "Provides the functionality to compare PHP values for equality",
+            "homepage": "http://www.github.com/sebastianbergmann/comparator",
+            "keywords": [
+                "comparator",
+                "compare",
+                "equality"
+            ],
+            "time": "2017-03-07T10:34:43+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -5767,7 +5831,7 @@
             ],
             "description": "Symfony ClassLoader Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12T14:14:56+00:00"
+            "time": "2017-04-12 14:14:56"
         },
         {
             "name": "symfony/yaml",
