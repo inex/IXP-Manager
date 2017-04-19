@@ -1837,12 +1837,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "51cad04a923bf22c9ae96d77e4cb07767d634c17"
+                "reference": "7957f551c6fa9b1248e05dbec7bff6d717cf7a11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/51cad04a923bf22c9ae96d77e4cb07767d634c17",
-                "reference": "51cad04a923bf22c9ae96d77e4cb07767d634c17",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/7957f551c6fa9b1248e05dbec7bff6d717cf7a11",
+                "reference": "7957f551c6fa9b1248e05dbec7bff6d717cf7a11",
                 "shasum": ""
             },
             "require": {
@@ -1958,7 +1958,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-04-18T15:36:20+00:00"
+            "time": "2017-04-19T17:47:22+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2024,12 +2024,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "78b5cc4feb61a882302df4fbaf63b7662e5e4ccd"
+                "reference": "9e5ae123c8a65b8b23af99aaef16db1427dbee84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/78b5cc4feb61a882302df4fbaf63b7662e5e4ccd",
-                "reference": "78b5cc4feb61a882302df4fbaf63b7662e5e4ccd",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/9e5ae123c8a65b8b23af99aaef16db1427dbee84",
+                "reference": "9e5ae123c8a65b8b23af99aaef16db1427dbee84",
                 "shasum": ""
             },
             "require": {
@@ -2051,12 +2051,12 @@
                 "league/flysystem-azure": "Allows you to use Windows Azure Blob storage",
                 "league/flysystem-cached-adapter": "Flysystem adapter decorator for metadata caching",
                 "league/flysystem-copy": "Allows you to use Copy.com storage",
-                "league/flysystem-dropbox": "Allows you to use Dropbox storage",
                 "league/flysystem-eventable-filesystem": "Allows you to use EventableFilesystem",
                 "league/flysystem-rackspace": "Allows you to use Rackspace Cloud Files",
                 "league/flysystem-sftp": "Allows you to use SFTP server storage via phpseclib",
                 "league/flysystem-webdav": "Allows you to use WebDAV storage",
-                "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter"
+                "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter",
+                "spatie/flysystem-dropbox": "Allows you to use Dropbox storage"
             },
             "type": "library",
             "extra": {
@@ -2099,7 +2099,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-03-22T15:43:14+00:00"
+            "time": "2017-04-19T12:26:35+00:00"
         },
         {
             "name": "luketowers/purifier",
@@ -2509,12 +2509,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "c3cbf079466fad893e576d072c1f9daebfe04f95"
+                "reference": "901b895c023769ab6d8a25bf35c61c1aa2e52aa7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/c3cbf079466fad893e576d072c1f9daebfe04f95",
-                "reference": "c3cbf079466fad893e576d072c1f9daebfe04f95",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/901b895c023769ab6d8a25bf35c61c1aa2e52aa7",
+                "reference": "901b895c023769ab6d8a25bf35c61c1aa2e52aa7",
                 "shasum": ""
             },
             "require": {
@@ -2552,7 +2552,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2017-04-09T17:49:47+00:00"
+            "time": "2017-04-19T09:20:05+00:00"
         },
         {
             "name": "opensolutions/oss-snmp",
@@ -2560,12 +2560,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opensolutions/OSS_SNMP.git",
-                "reference": "94821f6d73a3c5244cec4deb0e2ce99b2d99c5c6"
+                "reference": "b5f7e3f7a7b109d53c2149a5317632a4b50a8e9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/94821f6d73a3c5244cec4deb0e2ce99b2d99c5c6",
-                "reference": "94821f6d73a3c5244cec4deb0e2ce99b2d99c5c6",
+                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/b5f7e3f7a7b109d53c2149a5317632a4b50a8e9a",
+                "reference": "b5f7e3f7a7b109d53c2149a5317632a4b50a8e9a",
                 "shasum": ""
             },
             "require": {
@@ -2593,7 +2593,7 @@
                 "oss_snmp",
                 "snmp"
             ],
-            "time": "2017-04-19T01:25:49+00:00"
+            "time": "2017-04-19T15:10:57+00:00"
         },
         {
             "name": "oss2/auth",
@@ -3639,12 +3639,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "055a2937e2700ba9dc0820a666d59f9d7acc963a"
+                "reference": "e322101db66f4bf04084f79e583a06c39990a0ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/055a2937e2700ba9dc0820a666d59f9d7acc963a",
-                "reference": "055a2937e2700ba9dc0820a666d59f9d7acc963a",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/e322101db66f4bf04084f79e583a06c39990a0ab",
+                "reference": "e322101db66f4bf04084f79e583a06c39990a0ab",
                 "shasum": ""
             },
             "require": {
@@ -3716,7 +3716,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-15T11:32:48+00:00"
+            "time": "2017-04-19T16:18:46+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
