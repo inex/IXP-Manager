@@ -22,7 +22,7 @@
             Informations
         </div>
         <div class="panel-body">
-            <table class="table_ppp_info">
+            <table class="table_view_info">
                 <tr>
                     <td>
                         <b>

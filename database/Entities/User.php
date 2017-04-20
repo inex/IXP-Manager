@@ -22,6 +22,13 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
         User::AUTH_SUPERUSER => 'SUPERUSER'
     );
 
+    public static $PRIVILEGES_ALL = array(
+        User::AUTH_PUBLIC    => 'PUBLIC',
+        User::AUTH_CUSTUSER  => 'CUSTUSER',
+        User::AUTH_CUSTADMIN => 'CUSTADMIN',
+        User::AUTH_SUPERUSER => 'SUPERUSER'
+    );
+
     public static $PRIVILEGES_TEXT = array(
         User::AUTH_CUSTUSER  => 'Customer User',
         User::AUTH_CUSTADMIN => 'Customer Administrator',

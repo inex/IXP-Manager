@@ -93,7 +93,9 @@
         <li {if $controller eq 'cabinet'}class="active"{/if}>
             <a href="{genUrl controller='cabinet' action='list'}">Cabinets</a>
         </li>
-
+        <li {if $controller eq 'router'}class="active"{/if}>
+            <a href="{genUrl controller='router' action='list'}">Routers</a>
+        </li>
         <li {if $controller eq 'switch' and $action neq 'add-ports'}class="active"{/if}>
             <a href="{genUrl controller='switch' action='list'}">Switches</a>
 

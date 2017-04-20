@@ -24,11 +24,14 @@ namespace IXP\Tasks\Router;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\Vlan;
+use D2EM;
+use IXP\Exceptions\GeneralException;
 use Illuminate\Contracts\View\View as ViewContract;
-use IXP\Exceptions\ConfigurationException;
-use IXP\Utils\Router;
-use View;
+
+use Entities\{
+    Router as RouterEntity,
+    VlanInterface as VlanInterfaceEntity
+};
 
 /**
  * ConfigurationGenerator
@@ -44,25 +47,22 @@ class ConfigurationGenerator
     /**
      * Router details object.
      *
-     * See config/routers.php
-     *
-     * @var IXP\Utils\Router
+     * @var RouterEntity $r
      */
     private $router = null;
 
-    public function __construct( string $handle ) {
-        $this->setRouter( new Router( $handle ) );
-        $this->router()->checkTemplate();
+    public function __construct( RouterEntity $r ) {
+        $this->setRouter( $r );
     }
 
     /**
      * Set the router options array
      *
-     * @throws IXP\Exceptions\GeneralException
-     * @param array $router Router details (see config/routers.php)
-     * @return IXP\Tasks\Router\ConfigurationGenerator
+     * @throws GeneralException
+     * @param RouterEntity $router Router details
+     * @return ConfigurationGenerator
      */
-    public function setRouter( Router $router ): ConfigurationGenerator {
+    public function setRouter( RouterEntity $router ): ConfigurationGenerator {
         $this->router = $router;
         return $this;
     }
@@ -70,31 +70,25 @@ class ConfigurationGenerator
     /**
      * Get the router options array
      *
-     * @return array
+     * @return RouterEntity
      */
-    public function router(): Router {
+    public function router(): RouterEntity {
         return $this->router;
     }
 
     /**
      * Generate and return the configuration
      *
-     * @throws IXP\Exceptions\GeneralException
-     * @return Illuminate\Contracts\View The configuration
+     * @throws GeneralException
+     * @return ViewContract The configuration
      */
     public function render(): ViewContract {
+        $ints = D2EM::getRepository( VlanInterfaceEntity::class )->sanitiseVlanInterfaces(
+            $this->router()->getVlan(), $this->router()->getProtocol(), $this->router()->getType(), $this->router()->getQuarantine() );
 
-        // does the VLAN exist?
-        if( !$this->router()->vlanId() || !( $vlan = d2r('Vlan')->find( $this->router()->vlanId() ) ) ) {
-            throw new ConfigurationException( "Invalid/missing vlan_id in router object" );
-        }
-
-        $ints = d2r( 'VlanInterface' )->sanitiseVlanInterfaces($vlan, $this->router()->protocol(), $this->router()->type(), $this->router()->quarantine() );
-
-        return view( $this->router()->template() )->with(
-            ['handle' => $this->router()->handle(), 'ints' => $ints, 'router' => $this->router(), 'vlan' => $vlan]
+        return view( $this->router()->getTemplate() )->with(
+            [ 'handle' => $this->router()->getHandle(), 'ints' => $ints, 'router' => $this->router(), 'vlan' => $this->router()->getVlan() ]
         );
     }
-
 
 }

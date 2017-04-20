@@ -88,7 +88,7 @@
                     IXP Admin Actions
                 </li>
 
-                <li {if $controller eq 'infrastructure'}class="active"{/if}>
+                <li>
                     <a href="<?= url('infrastructure/list') ?>">Infrastructures</a>
                 </li>
 
@@ -99,7 +99,11 @@
                 <li>
                     <a href="<?= url('/cabinet/list') ?>">Cabinets</a>
                 </li>
-
+                <li <?= $t->controller == 'RouterController' ? 'class="active"' : '' ?>>
+                    <a href="<?= url('/router/list') ?>">
+                        Routers
+                    </a>
+                </li>
                 <li>
                     <a href="<?= url('/switch/list') ?>">Switches</a>
                     <?php /*

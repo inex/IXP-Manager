@@ -1303,6 +1303,35 @@
     <association from="\Entities\PatchPanelPortHistoryFile" to="\Entities\PatchPanelPortHistory" owner-alias="patchPanelPortHistoryFiles" inverse-alias="patchPanelPortHistory" many-owner="true" many-inverse="false" uuid="9fbc7658-7e64-4754-a2da-e49ad6400671">
       <association-field from="patch_panel_port_history_id" to="id"/>
     </association>
+    <entity name="\Entities\Router" local-name="Router" namespace="\Entities" uuid="90947ea1-a2fb-430b-b55e-a4901eb1fa30">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="501af49b-86e9-40a4-af6d-cb6d66050516"/>
+      <field name="handle" type="string" required="true" unique="true" uuid="f6fb628e-7ff8-4007-b4cd-47684c7e4e33"/>
+      <field name="vlan_id" type="integer" required="true" uuid="568c3b69-1ec0-4fe4-9687-93133557d79c"/>
+      <field name="protocol" type="smallint" required="true" unsigned="true" uuid="ba568f04-889f-4570-a3cd-6267e810fe0e"/>
+      <field name="type" type="smallint" required="true" unsigned="true" uuid="27baf35e-570f-444c-9da4-b2e0e16c785a"/>
+      <field name="name" type="string" required="true" uuid="a8ce02a1-e116-427e-981c-b4ba0fd8fa32"/>
+      <field name="shortname" type="string" required="true" uuid="9b46d88a-8d47-4a63-8460-63332f26f569"/>
+      <field name="router_id" type="string" required="true" uuid="5fb8d923-5bbb-40a6-9eea-90a46faafc23"/>
+      <field name="peering_ip" type="string" required="true" uuid="d0fea000-f2bd-4954-b932-263507f0369b"/>
+      <field name="asn" type="integer" required="true" unsigned="true" uuid="6858a690-e57b-4a12-aaca-a3793383adad"/>
+      <field name="software" type="string" required="true" uuid="dcd73ab9-14cb-4016-9837-496261fc56c4"/>
+      <field name="mgmt_host" type="string" required="true" uuid="ad9502ca-d93d-43f8-99e0-58fc00b534d9"/>
+      <field name="api" type="string" uuid="e0a08104-f743-4af2-8a83-6804093a9aee"/>
+      <field name="api_type" type="smallint" required="true" unsigned="true" uuid="a8ab20e2-2d16-4fd0-8b1c-71c54b6f7862"/>
+      <field name="lg_access" type="smallint" unsigned="true" uuid="b7ef8eed-d171-4a56-b005-f174fdfe839d"/>
+      <field name="quarantine" type="boolean" required="true" uuid="1c35a4ba-d690-45f0-bf52-9f75f9a05217"/>
+      <field name="bgp_lc" type="boolean" required="true" uuid="940978a5-70fe-420e-92b0-f03b8c04ec2b"/>
+      <field name="template" type="string" required="true" uuid="a1e53f31-945e-40b2-8621-a1ced0d81384"/>
+      <field name="skip_md5" type="boolean" required="true" uuid="1a576d6a-f681-43a4-93c0-5f31524248b0"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\Router</attribute>
+        <attribute name="table">routers</attribute>
+        <attribute name="tableName">routers</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\Router" to="\Entities\Vlan" owner-alias="routers" inverse-alias="vlan" many-owner="true" many-inverse="false" parent-required="true" uuid="729deb72-6e14-4cec-9120-f722c6aeaa6a">
+      <association-field from="vlan_id" to="id"/>
+    </association>
   </module>
   <visual-data>
     <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1328,6 +1357,7 @@
     <association uuid="619331cb-7c10-46c6-ac28-f46096e91407" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="670582b5-1394-4b90-b827-0a331ea5b4aa" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
     <association uuid="6aa96961-825e-462c-bccb-e68696cb64c0" color="4288059030"/>
+    <association uuid="729deb72-6e14-4cec-9120-f722c6aeaa6a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="93708a18-58db-4061-add9-24991ccd3ce0" color="4288059030"/>
@@ -1396,6 +1426,7 @@
     <entity uuid="709f0b3a-19e0-4026-88d3-1904231644ec" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="997" position-y="-4" size-x="0" size-x2="135" size-y="0" size-y2="73"/>
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="4294967295" hdr-color="4292006610" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
+    <entity uuid="90947ea1-a2fb-430b-b55e-a4901eb1fa30" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="72" position-y="-486" size-x="0" size-x2="107" size-y="0" size-y2="241"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
     <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="810" position-y="292" size-x="0" size-x2="119" size-y="0" size-y2="129"/>

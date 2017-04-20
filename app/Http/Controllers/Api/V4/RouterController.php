@@ -24,9 +24,14 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
+
+use Entities\{
+    Router as RouterEntity
+};
+
+use D2EM;
 
 /**
  * RouterController
@@ -42,20 +47,19 @@ class RouterController extends Controller {
     /**
      * Generate a configuration.
      *
-     * This just takes one argument: the router handle to generate the configuration for. All
-     * other parameters are defined by the handle's array in config/router.php.
+     * This just takes one argument: the router handle to generate the configuration for.
      *
      * @return Response
      */
     public function genConfig( string $handle ): Response {
-        if( !config( 'routers.' . $handle, false ) ) {
+        if( !( $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $handle ] ) ) ) {
             abort( 404, "Unknown router handle" );
         }
 
-        $configView = ( new RouterConfigurationGenerator( $handle ) )->render();
+        $configView = ( new RouterConfigurationGenerator( $router ) )->render();
 
         return response( $configView->render(), 200 )
-                ->header('Content-Type', 'text/html; charset=utf-8');
+                ->header('Content-Type', 'text/plain; charset=utf-8');
     }
 
 }

@@ -34,7 +34,7 @@
                     <div class="tab-pane fade <?php if( $current ) { ?> active in <?php } ?>" id="<?= $p->getId() ?>">
                         <div class="row">
                         <div class="col-xs-6">
-                            <table class="table_ppp_info">
+                            <table class="table_view_info">
 
                                 <?php if( !$current && ( $p->getDuplexMasterPort() || $p->getDuplexSlavePort() ) ): ?>
                                     <tr>

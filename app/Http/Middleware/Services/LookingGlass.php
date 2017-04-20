@@ -27,13 +27,16 @@ namespace IXP\Http\Middleware\Services;
 use App;
 use Auth;
 use Closure;
+use D2EM;
 use Route;
 
 use Illuminate\Http\Request;
 
-use Entities\User;
+use Entities\{
+    Router as RouterEntity,
+    User as UserEntity
+};
 use IXP\Services\Grapher as LookingGlassService;
-use IXP\Utils\Router;
 use IXP\Exceptions\Utils\RouterException;
 
 // use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException};
@@ -64,7 +67,8 @@ class LookingGlass
 
         // get the router object
         try {
-            $router = new Router( $request->handle );
+            /** @var RouterEntity $router */
+            $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $request->handle ] );
             if( !$router->hasApi() ) {
                 throw new RouterException('No API available');
             }
@@ -77,7 +81,7 @@ class LookingGlass
 
         // get the appropriate looking glass service
         // (throws an exception if no appropriate Looking Glass handler)
-        $lg = App::make('IXP\Services\LookingGlass')->forRouter($router);
+        $lg = App::make('IXP\Services\LookingGlass')->forRouter( $router );
 
         $request->attributes->add(['lg' => $lg]);
 
@@ -88,11 +92,11 @@ class LookingGlass
     /**
      * This function controls access to a router for a looking glass
      *
-     * @param IXP\Utils\Router $router
+     * @param RouterEntity $router
      * @return bool
      */
-    private function authorise( Router $router ): bool {
-        if( $router->authorise( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC ) ) {
+    private function authorise( RouterEntity $router ): bool {
+        if( $router->authorise( Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) ) {
             return true;
         }
 
