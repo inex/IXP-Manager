@@ -2,11 +2,12 @@
 
 // Mailing List Subscription Management Facility
 //
-// See: https://github.com/inex/IXP-Manager/wiki/Mailing-List-Management
+// See: http://docs.ixpmanager.org/features/mailing-lists/
 //
 // Allows users to manage their own mailing list subscriptions
 
 return [
+    // Set the following to 'true' to enable mailing list functionality:
     'enabled' => false,
 
     'lists' => [

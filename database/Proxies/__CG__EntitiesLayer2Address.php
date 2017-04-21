@@ -290,6 +290,17 @@ class Layer2Address extends \Entities\Layer2Address implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
+    public function getSwitchPorts(): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchPorts', []);
+
+        return parent::getSwitchPorts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setMac($mac): \Entities\Layer2Address
     {
 
