@@ -436,4 +436,51 @@ class VlanInterface extends EntityRepository
     }
 
 
+    /**
+     * Get vli id / vi id / vlan tag / cust name matrix for sflow data processing
+     *
+     * Returns an array as follows:
+     *
+     *     [
+     *         [ 'vliid' => 1, 'viid' => 2, 'tag' => 10, 'cname' => "OGCIO" ],
+     *         ...
+     *     ]
+     *
+     * @return array
+     */
+    public function sflowMatrixArray(): array
+    {
+        return $this->getEntityManager()->createQuery(
+            "SELECT DISTINCT vli.id AS vliid, vi.id AS viid, v.number AS tag, c.name AS cname
+                    FROM Entities\VlanInterface vli
+                        LEFT JOIN vli.Vlan v
+                        LEFT JOIN vli.VirtualInterface vi
+                        LEFT JOIN vi.Customer c"
+        )->getArrayResult();
+    }
+
+    /**
+     * Get vi id / mac address for sflow data processing
+     *
+     * Returns an array as follows:
+     *
+     *     [
+     *         [ 'viid' => 2, 'mac' => '112233445566' ],
+     *         ...
+     *     ]
+     *
+     * @return array
+     */
+    public function sflowMacTableArray(): array
+    {
+        return $this->getEntityManager()->createQuery(
+            "SELECT DISTINCT vi.id AS viid, l2a.mac AS mac
+                    FROM Entities\VlanInterface vli
+                        LEFT JOIN vli.VirtualInterface vi
+                        LEFT JOIN vli.layer2Addresses l2a
+                    WHERE l2a.mac IS NOT NULL
+                    ORDER BY viid"
+        )->getArrayResult();
+    }
+
 }
