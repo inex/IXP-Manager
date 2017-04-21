@@ -57,3 +57,7 @@ Route::post( 'l2-address/add',                                  'Layer2AddressCo
 Route::get( 'l2-address/delete/{id}',                           'Layer2AddressController@delete' );
 Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
+
+
+Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceController@sflowMatrix' );
+Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
