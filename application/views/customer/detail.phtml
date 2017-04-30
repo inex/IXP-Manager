@@ -206,7 +206,7 @@
         <td width="200"><strong>IPv6 Address:</strong></td>
         <td width="200" id="value">
             {if $vli->getIpv6enabled() and $vli->getIpv6address()}
-                {$vli->getIPv6Address()->getAddress()}//{$vli->getVlan()->getSubnetSize(6)}
+                {$vli->getIPv6Address()->getAddress()}/{$vli->getVlan()->getSubnetSize(6)}
             {else}
                 IPv6 not enabled.
             {/if}
@@ -215,7 +215,7 @@
         <td width="200"><strong>IPv4 Address:</strong></td>
         <td width="200" id="value">
             {if $vli->getIpv4enabled() and $vli->getIpv4address()}
-                {$vli->getIPv4Address()->getAddress()}//{$vli->getVlan()->getSubnetSize(4)}
+                {$vli->getIPv4Address()->getAddress()}/{$vli->getVlan()->getSubnetSize(4)}
             {else}
                 IPv4 not enabled.
             {/if}
