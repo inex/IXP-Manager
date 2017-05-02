@@ -23,12 +23,12 @@ define command{
 
 define host     {
         use                     <?= config( 'ixp_api.nagios.infra_host' ) . "\n" ?>
-        host_name               bird-<?= $n . "\n" ?>
+        host_name               bird-<?= $d->getHandle() . "\n" ?>
         alias                   <?= $d->name() . "\n" ?>
         address                 <?= $d->mgmtIp() . "\n" ?>
 }
 
-    <?php $hosts[] = "bird-{$n}"; ?>
+    <?php $hosts[] = "bird-{$d->getHandle()}"; ?>
 
 <?php endforeach; ?>
 
@@ -49,7 +49,7 @@ define hostgroup {
 
 define service     {
     use                     <?= config( 'ixp_api.nagios.infra_service' ) . "\n" ?>
-    host_name               bird-<?= $n . "\n" ?>
+    host_name               bird-<?= $d->getHandle() . "\n" ?>
     service_description     Bird BGP Service
     check_command           <?= $cmd_name ?>!<?= $d->api() . "\n" ?>
 }

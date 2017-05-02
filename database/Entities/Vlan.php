@@ -78,6 +78,11 @@ class Vlan
     private $Infrastructure;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    private $routers;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -842,6 +847,10 @@ class Vlan
         return $this->Infrastructure;
     }
 
+
+
+
+
     /**
      * Add IPv4Addresses
      *
@@ -988,5 +997,39 @@ class Vlan
     public function removeIPv6Address(\Entities\IPv6Address $iPv6Addresses)
     {
         $this->IPv6Addresses->removeElement($iPv6Addresses);
+    }
+
+
+
+    /**
+     * Add router
+     *
+     * @param Router $router
+     * @return Vlan
+     */
+    public function addRouter( Router $router ): Vlan
+    {
+        $this->IPv4Addresses[] = $iPv4Addresses;
+        return $this;
+    }
+
+    /**
+     * Remove router
+     *
+     * @param Router $router
+     */
+    public function removeRouter( Router $router )
+    {
+        $this->routers->removeElement($router);
+    }
+
+    /**
+     * Get routers
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getRouters()
+    {
+        return $this->routers;
     }
 }

@@ -25,6 +25,7 @@ Route::get('nagios/birdseye_bgp_sessions/rs',                   'NagiosControlle
 Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}',          'NagiosController@birdseyeRsBgpSessions');
 
 Route::get('router/gen_config/{handle}',                        'RouterController@genConfig' );
+Route::get('router/gen-config/{handle}',                        'RouterController@genConfig' );
 
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');

@@ -24,26 +24,23 @@ namespace IXP\Http\Controllers\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
-use Cache;
+use Auth, D2EM;
 
-use Entities\User;
+use Entities\{
+    Router as RouterEntity
+};
+
 use ErrorException;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 
 use IXP\Exceptions\Services\LookingGlass\GeneralException as LookingGlassGeneralException;
 
-use IXP\Http\Requests;
 use IXP\Http\Controllers\Controller;
 
-use IXP\Utils\Router;
-
-use Redirect;
 
 /**
  * LookingGlass Controller
@@ -76,7 +73,7 @@ class LookingGlass extends Controller
 
     /**
      * The request object
-     * @var Illuminate\Http\Request $request
+     * @var Request $request
      */
     private $request = null;
 
@@ -107,7 +104,7 @@ class LookingGlass extends Controller
 
     /**
      * Request accessor
-     * @return Illuminate\Http\Request
+     * @return Request
      */
     private function request(): Request {
         return $this->request;
@@ -115,12 +112,13 @@ class LookingGlass extends Controller
 
     /**
      * Add view parameters common for all requests.
-     * @param Illuminate\View\View $view
+     * @param View $view
      */
     private function addCommonParams( View $view ): View {
         $view->with( 'status',  json_decode( $this->lg()->status() ) );
         $view->with( 'lg',      $this->lg() );
-        $view->with( 'routers', $this->makeRouterDropdown() );
+        $view->with( 'routers', D2EM::getRepository( RouterEntity::class )->makeRouterDropdown(
+            Auth::check() ? Auth::user()->getCustomer() : null, Auth::check() ? Auth::user() : null ) );
         return $view;
     }
 
@@ -128,7 +126,8 @@ class LookingGlass extends Controller
     public function index(): View {
         return app()->make('view')->make('services/lg/index')->with([
             'lg'      => false,
-            'routers' => $this->makeRouterDropdown(),
+            'routers' => D2EM::getRepository( RouterEntity::class )->makeRouterDropdown(
+                Auth::check() ? Auth::user()->getCustomer() : null, Auth::check() ? Auth::user() : null ),
         ]);
     }
 
@@ -196,52 +195,6 @@ class LookingGlass extends Controller
             'content' => json_decode( $this->lg()->symbols() ),
         ]);
         return $this->addCommonParams($view);
-    }
-
-
-    /**
-     * Gather the data for looking glass dropdowns
-     *
-     * This is the dropdown on the top right of the IXP Manager looking glass interface.
-     *
-     * @return array
-     */
-    private function makeRouterDropdown(): array {
-        $cacheKey = 'lg_dd_' . ( Auth::check() ? Auth::user()->getCustomer()->getId() : 'public' );
-        if( Cache::has( $cacheKey ) ) {
-            return Cache::get($cacheKey);
-        }
-
-        $dd = [];
-        $routers = config('routers');
-        ksort( $routers );
-
-        foreach( $routers as $key => $r ) {
-            $router = new Router( $key );
-
-            if( !$router->hasApi() ) {
-                continue;
-            }
-
-            if( !$router->authorise( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC )  ) {
-                continue;
-            }
-
-            if( $router->quarantine() ) {
-                if( !Auth::check() ) {
-                    continue;
-                }
-
-                if( !Auth::user()->isSuperUser() && !Auth::user()->getCustomer()->hasInterfacesInQuarantine() ) {
-                    continue;
-                }
-            }
-
-            $dd[$router->type()][$key] = $router->name();
-        }
-
-        Cache::put( $cacheKey, $dd, 15 );
-        return $dd;
     }
 
 }

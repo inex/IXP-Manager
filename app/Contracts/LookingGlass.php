@@ -3,7 +3,7 @@
 declare(strict_types=1);
 namespace IXP\Contracts;
 
-use IXP\Utils\Router;
+use Entities\Router;
 
 
 /*
@@ -43,13 +43,13 @@ interface LookingGlass {
     /**
      * Set the router object
      * @param Router $r
-     * @return IXP\Services\LookingGlass\BirdsEye For fluent interfaces
+     * @return LookingGlass For fluent interfaces
      */
     public function setRouter( Router $r ): LookingGlass;
 
     /**
      * Get the router object
-     * @return IXP\Utils\Router
+     * @return Router
      */
     public function router(): Router;
 

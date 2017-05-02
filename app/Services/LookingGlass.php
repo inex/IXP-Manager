@@ -30,7 +30,7 @@ use Auth;
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 use IXP\Exceptions\Services\LookingGlass\ConfigurationException;
 use IXP\Services\LookingGlass\BirdsEye as BirdseyeLookingGlass;
-use IXP\Utils\Router;
+use Entities\Router as Router;
 
 /**
  * LookingGlass
@@ -43,14 +43,6 @@ use IXP\Utils\Router;
  */
 class LookingGlass {
 
-    const API_TYPE_BIRDSEYE = 'birdseye';
-
-    /**
-     * Constructor
-     */
-    public function __construct() {
-    }
-
     /**
      * Get a looking glass implementation for a given router
      * @param Router $router
@@ -58,7 +50,7 @@ class LookingGlass {
      */
     public function forRouter( Router $r ) {
         switch( $r->apiType() ) {
-            case self::API_TYPE_BIRDSEYE:
+            case Router::API_TYPE_BIRDSEYE:
                 $be = new BirdseyeLookingGlass( $r );
                 //Birdseye supports caching but if the user is logged in we want to disable that:
                 if( Auth::check() ) {

@@ -28,9 +28,6 @@ namespace IXP\Providers;
 
 
 use Illuminate\Support\ServiceProvider;
-
-use IXP\Exceptions\Services\LookingGlass\ConfigurationException;
-use Cache;
 use Route;
 
 /**

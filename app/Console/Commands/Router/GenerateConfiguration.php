@@ -23,13 +23,13 @@
 
 use IXP\Console\Commands\Command;
 
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-
-use Symfony\Component\Console\Output\OutputInterface;
-
 use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
 
+use Entities\{
+    Router as RouterEntity
+};
+
+use D2EM;
 
  /**
   * Artisan command to generate router configurations
@@ -48,7 +48,7 @@ class GenerateConfiguration extends Command {
      * @var string
      */
     protected $signature = 'router:generate-configuration
-                        {handle : Router handle (from config/routers.php) to use}';
+                        {handle : Router handle (from "Routers" admin action) to use}';
 
     /**
      * The console command description.
@@ -64,13 +64,12 @@ class GenerateConfiguration extends Command {
      * @return mixed
      */
     public function handle(): int {
-
-        if( !config( 'routers.' . $this->argument('handle'), false ) ) {
+        if( !( $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $this->argument('handle') ] ) ) ){
             $this->error( "Unknown router handle" );
             return -1;
         }
 
-        echo ( new RouterConfigurationGenerator( $this->argument('handle') ) )->render();
+        echo ( new RouterConfigurationGenerator( $router ) )->render();
         return 0;
     }
 

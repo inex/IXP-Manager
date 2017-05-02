@@ -2,6 +2,7 @@
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use IXP\Console\Commands\Upgrade\RouterImport;
 
 class Kernel extends ConsoleKernel {
 
@@ -11,16 +12,20 @@ class Kernel extends ConsoleKernel {
      * @var array
      */
     protected $commands = [
-        'IXP\Console\Commands\Irrdb\UpdateAsnDb',
-        'IXP\Console\Commands\Irrdb\UpdatePrefixDb',
+        \IXP\Console\Commands\Irrdb\UpdateAsnDb::class,
+        \IXP\Console\Commands\Irrdb\UpdatePrefixDb::class,
 
-        'IXP\Console\Commands\Router\GenerateConfiguration',
+        \IXP\Console\Commands\Router\GenerateConfiguration::class,
 
-        'IXP\Console\Commands\Upgrade\MrtgTrunkConfig',
+        \IXP\Console\Commands\Utils\UpdateOuiDatabase::class,
+
+        \IXP\Console\Commands\Upgrade\MigrateL2Addresses::class,
+        \IXP\Console\Commands\Upgrade\MrtgTrunkConfig::class,
+        \IXP\Console\Commands\Upgrade\RouterImport::class,
 
         \IXP\Console\Commands\Utils\Export\JsonSchema\Post::class,
-        \IXP\Console\Commands\Utils\UpdateOuiDatabase::class,
-        \IXP\Console\Commands\Upgrade\MigrateL2Addresses::class,
+
+
     ];
 
     /**
