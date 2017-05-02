@@ -120,7 +120,7 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
         neighbor <?= $int['address'] ?> as <?= $int['autsys'] ?>;
         import limit <?= $int['maxprefixes'] ?> action restart;
         table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
-        <?php if( $int['bgpmd5secret'] ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
+        <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
 

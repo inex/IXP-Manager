@@ -4,7 +4,10 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
-use Entities\Vlan as VlanEntity;
+use Entities\{
+    Router as RouterEntity,
+    Vlan as VlanEntity
+};
 
 /**
  * VlanInterface
@@ -360,7 +363,7 @@ class VlanInterface extends EntityRepository
      * @param Vlan $vlan
      * @return array As defined above
      */
-    public function sanitiseVlanInterfaces( VlanEntity $vlan, int $protocol = 4, string $target = 'RS', bool $quarantine = false ): array {
+    public function sanitiseVlanInterfaces( VlanEntity $vlan, int $protocol = 4, int $target = RouterEntity::TYPE_ROUTE_SERVER, bool $quarantine = false ): array {
 
         $ints = $this->getForProto( $vlan, $protocol, false,
             $quarantine  ? \Entities\PhysicalInterface::STATUS_QUARANTINE : \Entities\PhysicalInterface::STATUS_CONNECTED
@@ -377,12 +380,11 @@ class VlanInterface extends EntityRepository
             // don't need this anymore:
             unset( $int['enabled'] );
 
-
-            if( $target == 'RS' && !$int['rsclient'] ) {
+            if( $target == RouterEntity::TYPE_ROUTE_SERVER && !$int['rsclient'] ) {
                 continue;
             }
 
-            if( $target == 'AS112' && !$int['as112client'] ) {
+            if( $target == RouterEntity::TYPE_AS112 && !$int['as112client'] ) {
                 continue;
             }
 

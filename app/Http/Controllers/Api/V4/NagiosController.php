@@ -2,8 +2,8 @@
 
 namespace IXP\Http\Controllers\Api\V4;
 
-use Illuminate\Http\Request;
-use IXP\Utils\Routers;
+use D2EM;
+use Entities\Router as RouterEntity;
 
 class NagiosController extends Controller {
 
@@ -18,42 +18,41 @@ class NagiosController extends Controller {
      */
     public function birdseyeDaemons( $vlanid = null )
     {
-        $map     = [];
-        $routers = ( new Routers )->filterForApiType('birdseye');
+        $routers = D2EM::getRepository( RouterEntity::class )->filterForApiType( RouterEntity::API_TYPE_BIRDSEYE );
 
         if( $vlanid ) {
-            $routers->filterForVlanId($vlanid);
+            $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnVlanId( $routers, $vlanid );
         }
 
-        if( $routers->isEmpty() ) {
-            abort( 404, "No definition(s) in config/routers.php for the provided VLAN ID / Bird's Eye API type." );
+        if( !count($routers) ) {
+            abort( 404, "No routers for the provided VLAN ID / Bird's Eye API type." );
         }
 
         return response()
-                ->view('api/v4/nagios/birdseye-daemons', ['routers' => $routers->getObjects(), 'vlanid' => $vlanid ?? false], 200)
-                ->header('Content-Type', 'text/html; charset=utf-8');
+                ->view('api/v4/nagios/birdseye-daemons', ['routers' => $routers, 'vlanid' => $vlanid ?? false], 200)
+                ->header('Content-Type', 'text/plain; charset=utf-8');
     }
 
 
     public function birdseyeRsBgpSessions( $vlanid = null )
     {
-        $routers = ( new Routers )->filterForApiType('birdseye');
+        $routers = D2EM::getRepository( RouterEntity::class )->filterForApiType( RouterEntity::API_TYPE_BIRDSEYE );
+        $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnType( $routers, RouterEntity::TYPE_ROUTE_SERVER );
 
-        $routers->filterForType('RS');
-        
         if( $vlanid ) {
-            $routers->filterForVlanId($vlanid);
+            $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnVlanId( $routers, $vlanid );
         }
         
-        if( $routers->isEmpty() ) {
+        if( !count( $routers ) ) {
             abort( 404, "No suitable definition(s) in config/routers.php found." );
         }
         
         $map   = [];
         $vlans = [];
         
-        foreach( $routers->getObjects() as $h => $router ) {
-        
+        foreach( $routers as $h => $router ) {
+
+            $h = $router->getHandle();
             if( !$router->hasApi() ) {
                 continue;
             }
@@ -113,7 +112,7 @@ class NagiosController extends Controller {
         
         return response()
             ->view('api/v4/nagios/birdseye-rs-bgp-daemons', ['map' => $map, 'vlanid' => $vlanid ?? false], 200)
-            ->header('Content-Type', 'text/html; charset=utf-8');
+            ->header('Content-Type', 'text/plain; charset=utf-8');
     }
 
 }

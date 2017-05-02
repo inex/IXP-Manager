@@ -64,10 +64,10 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'number', 'rcvrfname', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
+            return ['__isInitialized__', 'name', 'number', 'rcvrfname', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
         }
 
-        return ['__isInitialized__', 'name', 'number', 'rcvrfname', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
+        return ['__isInitialized__', 'name', 'number', 'rcvrfname', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
     }
 
     /**
@@ -780,6 +780,39 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeIPv6Address', [$iPv6Addresses]);
 
         return parent::removeIPv6Address($iPv6Addresses);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addRouter(\Entities\Router $router): \Entities\Vlan
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addRouter', [$router]);
+
+        return parent::addRouter($router);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeRouter(\Entities\Router $router)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRouter', [$router]);
+
+        return parent::removeRouter($router);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRouters()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRouters', []);
+
+        return parent::getRouters();
     }
 
 }

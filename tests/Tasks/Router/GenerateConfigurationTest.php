@@ -21,9 +21,9 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
-
+use Entities\Router as RouterEntity;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
 
 /**
  * PHPUnit test class to test the configuration generation of router configurations
@@ -44,7 +44,8 @@ class GenerateConfigurationTest extends TestCase
     {
         foreach( $this->rchandles as $handle )
         {
-            $conf = ( new RouterConfigurationGenerator( $handle ) )->render();
+            $router = D2EM::getRepository( RouterEntity::class )->findOneBy( ['handle' => $handle] );
+            $conf = ( new RouterConfigurationGenerator( $router ) )->render();
 
             $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-{$handle}.conf" );
             $this->assertFalse( $knownGoodConf === false, "RC Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
@@ -61,7 +62,8 @@ class GenerateConfigurationTest extends TestCase
     {
         foreach( $this->rshandles as $handle )
         {
-            $conf = ( new RouterConfigurationGenerator( $handle ) )->render();
+            $router = D2EM::getRepository( RouterEntity::class )->findOneBy( ['handle' => $handle] );
+            $conf = ( new RouterConfigurationGenerator( $router ) )->render();
 
             $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-{$handle}.conf" );
             $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
@@ -78,7 +80,8 @@ class GenerateConfigurationTest extends TestCase
     {
         foreach( $this->as112handles as $handle )
         {
-            $conf = ( new RouterConfigurationGenerator( $handle ) )->render();
+            $router = D2EM::getRepository( RouterEntity::class )->findOneBy( ['handle' => $handle] );
+            $conf = ( new RouterConfigurationGenerator( $router ) )->render();
 
             $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-{$handle}.conf" );
             $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
@@ -90,11 +93,4 @@ class GenerateConfigurationTest extends TestCase
             $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RS configuration for {$handle} do not match" );
         }
     }
-
-    public function testUnknownVlan() {
-        $this->expectException( IXP\Exceptions\ConfigurationException::class );
-        $this->expectExceptionMessage( 'Invalid/missing vlan_id in router object' );
-        $conf = ( new RouterConfigurationGenerator( 'unknown-vlan' ) )->render();
-    }
-
 }

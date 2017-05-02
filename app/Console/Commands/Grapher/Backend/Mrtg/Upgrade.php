@@ -298,6 +298,9 @@ class Upgrade extends GrapherCommand {
                 $graph = Grapher::physint( $pps['pis'][$piid] );
 
                 foreach( Graph::CATEGORIES as $c ) {
+                    if( $c == Graph::CATEGORY_BROADCASTS ) {
+                        continue;
+                    }
                     $graph->setCategory( $c );
                     echo $this->cmd(
                         "{$this->logdir}/members/{$pps['custs'][$cid]->getShortname()}/"
@@ -335,6 +338,10 @@ class Upgrade extends GrapherCommand {
                 $graph = Grapher::virtint( $vi );
 
                 foreach( Graph::CATEGORIES as $c ) {
+                    if( $c == Graph::CATEGORY_BROADCASTS ) {
+                        continue;
+                    }
+
                     $graph->setCategory( $c );
                     echo $this->cmd(
                         "{$this->logdir}/members/{$pps['custs'][$cid]->getShortname()}/"
@@ -367,6 +374,10 @@ class Upgrade extends GrapherCommand {
             $graph = Grapher::customer( $c );
 
             foreach( Graph::CATEGORIES as $c ) {
+                if( $c == Graph::CATEGORY_BROADCASTS ) {
+                    continue;
+                }
+
                 $graph->setCategory( $c );
                 echo $this->cmd(
                     "{$this->logdir}/members/{$pps['custs'][$cid]->getShortname()}/"

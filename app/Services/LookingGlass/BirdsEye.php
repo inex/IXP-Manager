@@ -25,7 +25,7 @@ namespace IXP\Services\LookingGlass;
 
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 
-use IXP\Utils\Router;
+use Entities\Router;
 
 /**
  * LookingGlass Backend -> Bird's Eye
@@ -40,7 +40,7 @@ class BirdsEye implements LookingGlassContract {
 
     /**
      * Instance of a router object representing the looking glass target
-     * @var IXP\Utils\Router
+     * @var Router
      */
     private $router;
 
@@ -80,7 +80,7 @@ class BirdsEye implements LookingGlassContract {
     /**
      * Set the router object
      * @param Router $r
-     * @return IXP\Services\LookingGlass\BirdsEye For fluent interfaces
+     * @return BirdsEye For fluent interfaces
      */
     public function setRouter( Router $r ): LookingGlassContract {
         $this->router = $r;
@@ -89,7 +89,7 @@ class BirdsEye implements LookingGlassContract {
 
     /**
      * Get the router object
-     * @return IXP\Utils\Router
+     * @return Router
      */
     public function router(): Router {
         return $this->router;
