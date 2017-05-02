@@ -51,6 +51,7 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::get( 'edit/{id}',                        'RouterController@edit' );
     Route::get( 'view/{id}',                        'RouterController@view' );
     Route::get( 'delete/{id}',                      'RouterController@delete' );
+    Route::get( 'gen-config/{id}',                  'RouterController@genConfig' );
 
     Route::post( 'store',                           'RouterController@store'  );
 });

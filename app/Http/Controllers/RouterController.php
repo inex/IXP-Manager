@@ -24,12 +24,6 @@ namespace IXP\Http\Controllers;
 
 use D2EM, Redirect, Former, Input;
 
-use Illuminate\View\View;
-
-use Illuminate\Support\Facades\View as FacadeView;
-
-use IXP\Http\Requests\StoreRouter;
-
 use Entities\{
     Router as RouterEntity,
     Vlan as VlanEntity,
@@ -37,6 +31,13 @@ use Entities\{
 };
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\View as FacadeView;
+use Illuminate\View\View;
+
+use IXP\Http\Requests\StoreRouter;
+
+use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
 
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
@@ -217,4 +218,23 @@ class RouterController extends Controller
         AlertContainer::push( 'The router has been successfully deleted.', Alert::SUCCESS );
         return Redirect::to( 'router/list');
     }
+
+
+    /**
+     * Display the details of a router
+     *
+     * @param  int    $id        router that need to be displayed
+     * @return Response
+     */
+    public function genConfig( int $id ): Response {
+        if( !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
+            abort(404);
+        }
+
+        $configView = ( new RouterConfigurationGenerator( $rt ) )->render();
+
+        return response( $configView->render(), 200 )
+            ->header('Content-Type', 'text/plain; charset=utf-8');
+    }
+
 }
