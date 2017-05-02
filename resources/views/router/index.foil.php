@@ -87,7 +87,7 @@
                         <?= $router->getAsn() ?>
                     </td>
                     <td>
-                        <?= $router->getSoftware() ?>
+                        <?= $router->resolveSoftware() ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">

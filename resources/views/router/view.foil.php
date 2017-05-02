@@ -5,17 +5,17 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'router/list' )?>">Router</a>
+    <a href="<?= url( 'router/list' )?>">Routers</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Router - <?= $t->rt->getname() ?></li>
+    <li><?= $t->rt->getName() ?></li>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
     <div class="panel panel-default">
         <div class="panel-heading">
-            Informations
+            Router Details
         </div>
         <div class="panel-body">
             <div class="col-xs-6">
@@ -23,7 +23,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Handle :
+                                Handle:
                             </b>
                         </td>
                         <td>
@@ -33,7 +33,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Vlan :
+                                Vlan:
                             </b>
                         </td>
                         <td>
@@ -45,7 +45,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Protocol :
+                                Protocol:
                             </b>
                         </td>
                         <td>
@@ -55,7 +55,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Type :
+                                Type:
                             </b>
                         </td>
                         <td>
@@ -65,7 +65,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Name :
+                                Name:
                             </b>
                         </td>
                         <td>
@@ -75,7 +75,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                ShortName :
+                                ShortName:
                             </b>
                         </td>
                         <td>
@@ -86,7 +86,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Router ID :
+                                Router ID:
                             </b>
                         </td>
                         <td>
@@ -96,7 +96,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Peering IP :
+                                Peering IP:
                             </b>
                         </td>
                         <td>
@@ -106,7 +106,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                ASN :
+                                ASN:
                             </b>
                         </td>
                         <td>
@@ -121,7 +121,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Software :
+                                Software:
                             </b>
                         </td>
                         <td>
@@ -131,7 +131,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                MGMT Host :
+                                MGMT Host:
                             </b>
                         </td>
                         <td>
@@ -141,7 +141,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                API Type :
+                                API Type:
                             </b>
                         </td>
                         <td>
@@ -151,7 +151,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                API :
+                                API:
                             </b>
                         </td>
                         <td>
@@ -163,7 +163,7 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                LG Access :
+                                LG Access:
                             </b>
                         </td>
                         <td>
@@ -173,17 +173,17 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Quarantine :
+                                Quarantine:
                             </b>
                         </td>
                         <td>
-                            <?= $t->rt->getQuarantine()  ?>
+                            <?= $t->rt->getQuarantine() ? 'Yes' : 'No'  ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                BGP LC :
+                                BGP LC:
                             </b>
                         </td>
                         <td>
@@ -203,11 +203,11 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Template :
+                                Template:
                             </b>
                         </td>
                         <td>
-                            <?= $t->rt->getTemplate() ?>
+                            <code><?= $t->rt->getTemplate() ?></code>
                         </td>
                     </tr>
                 </table>
