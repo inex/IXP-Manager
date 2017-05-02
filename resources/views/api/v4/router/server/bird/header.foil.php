@@ -39,7 +39,7 @@
 # Generated: <?= date('Y-m-d H:i:s') . "\n" ?>
 #
 
-# For VLAN: {$t->vlan->getName()} (Tag: {$t->vlan->getNumber()}, Database ID: {$t->vlan->getId()})
+# For VLAN: <?= $t->vlan->getName() ?> (Tag: <?= $t->vlan->getNumber() ?>, Database ID: <?= $t->vlan->getId() ?>)
 
 log "/var/log/bird/<?= $t->handle ?>.log" all;
 log syslog all;
