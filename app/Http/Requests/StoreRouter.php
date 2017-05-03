@@ -68,7 +68,7 @@ class StoreRouter extends FormRequest
             'software'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$SOFTWARES ) ),
             'mgmt_host'             => 'required|string|max:255',
             'api_type'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$API_TYPES ) ),
-            'api'                   => 'url' . ( $this->input('api') ? '|required' : '' ),
+            'api'                   => ( $this->input('api_type') != RouterEntity::API_TYPE_NONE ? 'url|required' : '' ),
             'lg_access'             => 'integer' . ( $this->input('api') ? '|required|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ) : '' ),
         ];
     }

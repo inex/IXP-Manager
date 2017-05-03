@@ -22,7 +22,7 @@
 
 namespace IXP\Http\Controllers;
 
-use D2EM, Redirect, Former, Input;
+use D2EM, Former, Input, Redirect;
 
 use Entities\{
     Router as RouterEntity,
@@ -31,14 +31,12 @@ use Entities\{
 };
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View as FacadeView;
 use Illuminate\View\View;
 
 use IXP\Http\Requests\StoreRouter;
 
-use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
-
+use IXP\Services\Grapher\Graph\Vlan;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
@@ -74,35 +72,35 @@ class RouterController extends Controller
      */
     public function edit( int $id = null ): View {
         /** @var RouterEntity $rt */
-        $rt = false;
-
-        if( $id and !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
-            abort(404);
+        if( $id ) {
+            if( !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
+                abort( 404 );
+            }
+        } else {
+            $rt = new RouterEntity;
         }
 
-        if( $rt ) {
-            // fill the form with router data
-            Former::populate([
-                'handle'                => $rt->getHandle(),
-                'vlan'                  => $rt->getVlan(),
-                'protocol'              => $rt->getProtocol(),
-                'type'                  => $rt->getType(),
-                'name'                  => $rt->getName(),
-                'shortname'             => $rt->getShortName(),
-                'router_id'             => $rt->getRouterId(),
-                'peering_ip'            => $rt->getPeeringIp(),
-                'asn'                   => $rt->getAsn(),
-                'software'              => $rt->getSoftware(),
-                'mgmt_host'             => $rt->getMgmtHost(),
-                'api_type'              => $rt->getApiType(),
-                'api'                   => $rt->getApi(),
-                'lg_access'             => $rt->getLgAccess(),
-                'quarantine'            => $rt->getQuarantine(),
-                'bgp_lc'                => $rt->getBgpLc(),
-                'skip_md5'              => $rt->getSkipMd5(),
-                'template'              => $rt->getTemplate()
-            ]);
-        }
+        // fill the form with router data
+        Former::populate([
+            'handle'                => $rt->getHandle(),
+            'vlan'                  => $rt->getVlan(),
+            'protocol'              => $rt->getProtocol(),
+            'type'                  => $rt->getType(),
+            'name'                  => $rt->getName(),
+            'shortname'             => $rt->getShortName(),
+            'router_id'             => $rt->getRouterId(),
+            'peering_ip'            => $rt->getPeeringIp(),
+            'asn'                   => $rt->getAsn(),
+            'software'              => $rt->getSoftware(),
+            'mgmt_host'             => $rt->getMgmtHost(),
+            'api_type'              => $rt->getApiType(),
+            'api'                   => $rt->getApi(),
+            'lg_access'             => $rt->getLgAccess(),
+            'quarantine'            => $rt->getQuarantine() ? 1 : 0,
+            'bgp_lc'                => $rt->getBgpLc() ? 1 : 0,
+            'skip_md5'              => $rt->getSkipMd5() ? 1 : 0,
+            'template'              => $rt->getTemplate()
+        ]);
 
         Former::open()->rules([
             'handle'                => 'required|string|max:255',
@@ -145,6 +143,7 @@ class RouterController extends Controller
             D2EM::persist($rt);
         }
 
+        /** @var VlanEntity $vlan */
         if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) ) ) ) {
             abort(404, 'Unknown vlan');
         }

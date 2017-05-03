@@ -142,27 +142,27 @@ class Router
     /**
      * @var integer
      */
-    private $api_type;
+    private $api_type = self::API_TYPE_NONE;
 
     /**
      * @var integer
      */
-    private $lg_access;
+    private $lg_access = User::AUTH_CUSTUSER;
 
     /**
      * @var boolean
      */
-    private $quarantine;
+    private $quarantine = false;
 
     /**
      * @var boolean
      */
-    private $bgp_lc;
+    private $bgp_lc = false;
 
     /**
      * @var boolean
      */
-    private $skip_md5;
+    private $skip_md5 = false;
 
     /**
      * @var string
