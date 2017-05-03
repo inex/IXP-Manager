@@ -21,7 +21,7 @@
 #
 
 KEY="your-api-key"
-URL="https://ixp.example.com/ixp/api/v4/router/gen_config"
+URL="https://ixp.example.com/ixp/api/v4/router/gen-config"
 ETCPATH="/usr/local/etc/bird"
 RUNPATH="/var/run/bird"
 LOGPATH="/var/log/bird"
