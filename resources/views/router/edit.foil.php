@@ -128,6 +128,8 @@
     <?= Former::checkbox( 'quarantine' )
         ->label( 'Quarantine' )
         ->text( 'Router will be used for quarantine procedures only' )
+        ->unchecked_value( 0 )
+        ->value( 1 )
         ->blockHelp( "Is this router used in quarantine rather than production? The effect of this is that BGP client
             sessions are only generated for interfaces that have a physical interface in quarantine." );
 
@@ -136,6 +138,8 @@
     <?= Former::checkbox( 'bgp_lc' )
         ->label('BGP LC')
         ->text( 'Enable Large BGP Communities / RFC8092' )
+        ->unchecked_value( 0 )
+        ->value( 1 )
         ->blockHelp( "Enable support for Large BGP Communities? (RFC8092). NB: must be supported by both the 
             template and the software / platform!" );
     ?>
@@ -143,6 +147,8 @@
     <?= Former::checkbox( 'skip_md5' )
         ->label( 'Skip MD5' )
         ->text( 'Do not include any MD5 configuration' )
+        ->unchecked_value( 0 )
+        ->value( 1 )
         ->blockHelp( 'If checked, all sessions will be configured without MD5 whether they have an
             MD5 password set on an interface or not.' );
     ?>
