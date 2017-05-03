@@ -91,7 +91,7 @@
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <a target="_blank" class="btn btn btn-default" href="<?= url('router/gen-config/') .'/' . $router->getId() ?>" title="Configuration">
+                            <a target="_blank" class="btn btn btn-default" href="<?= route('apiv4-router-gen-config', [ 'handle' => $router->getHandle() ] ) ?>" title="Configuration">
                                 <i class="glyphicon glyphicon-file"></i>
                             </a>
                             <a class="btn btn btn-default" href="<?= url('router/view/').'/'.$router->getId() ?>" title="Preview">

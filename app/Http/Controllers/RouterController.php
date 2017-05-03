@@ -219,22 +219,4 @@ class RouterController extends Controller
         return Redirect::to( 'router/list');
     }
 
-
-    /**
-     * Display the details of a router
-     *
-     * @param  int    $id        router that need to be displayed
-     * @return Response
-     */
-    public function genConfig( int $id ): Response {
-        if( !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
-
-        $configView = ( new RouterConfigurationGenerator( $rt ) )->render();
-
-        return response( $configView->render(), 200 )
-            ->header('Content-Type', 'text/plain; charset=utf-8');
-    }
-
 }
