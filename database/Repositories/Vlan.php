@@ -4,6 +4,11 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\{
+    Router as RouterEntity
+};
+
+
 use Cache;
 
 /**
@@ -391,6 +396,51 @@ class Vlan extends EntityRepository
         $q->setParameter( 'vlan', $vlan );
         $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
+    }
+
+
+
+    /**
+     * Get the IPv4 or IPv6 list for a vlan
+     *
+     * @params  $request instance of the current HTTP request
+     * @return  array of IPvX
+     */
+    public function getIPvAddress( int $vlan, int $ipType, int $vliid = null ) : array {
+
+
+        if( $ipType == RouterEntity::PROTOCOL_IPV6 )
+        {
+            $af = 'ipv6'; $entity = 'IPv6Address';
+        }
+        else
+        {
+            $af = 'ipv4'; $entity = 'IPv4Address';
+        }
+
+        $dql = "SELECT {$af}.id AS id, {$af}.address AS address
+                    FROM \\Entities\\{$entity} {$af}
+                        LEFT JOIN {$af}.Vlan v
+                        LEFT JOIN {$af}.VlanInterface vli
+                    WHERE
+                        v.id = ?1 ";
+
+        if( $vliid !== null ){
+            $dql .= 'AND ( vli.id IS NULL OR vli.id = ?2 )';
+        } else{
+            $dql .= 'AND vli.id IS NULL';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $vlan );
+
+        if( $vliid !== null ){
+            $query->setParameter( 2, $vliid );
+        }
+        
+        return $query->getArrayResult();
+
+
     }
 
 }

@@ -251,6 +251,7 @@ class PhysicalInterfaceController extends IXP_Controller_FrontEnd
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
+
         $sp = $this->getD2R( '\\Entities\\SwitchPort' )->find( $form->getElement( 'switchportid' )->getValue() );
 
         // set the switch port type to peering

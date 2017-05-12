@@ -4,5 +4,6 @@
     <option name="pluginEnabled" value="true" />
     <option name="useAutoPopup" value="true" />
     <option name="routerNamespace" value="" />
+    <option name="mainLanguage" value="en" />
   </component>
 </project>

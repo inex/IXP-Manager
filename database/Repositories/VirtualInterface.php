@@ -184,4 +184,32 @@ class VirtualInterface extends EntityRepository
         throw new GeneralException("Could not assign a free channel group number");
     }
 
+    /**
+     * Provide array of virtual interfaces for the list Action
+     *
+     */
+    public function getForList()
+    {
+        $dql = "SELECT vi.id,
+                    c.name AS customer, c.id AS custid, c.shortname AS shortname,
+                    COUNT( ppi.id ) as ppid, COUNT( pfi.id ) as fpid,
+                    l.name AS location, s.name AS switch, sp.type as type,
+                    sp.name AS port, SUM( pi.speed ) AS speed, COUNT( pi.id ) AS ports
+                    FROM \\Entities\\VirtualInterface vi
+                        LEFT JOIN vi.Customer c
+                        LEFT JOIN vi.PhysicalInterfaces pi
+                        LEFT JOIN pi.SwitchPort sp
+                        LEFT JOIN pi.PeeringPhysicalInterface ppi
+                        LEFT JOIN pi.FanoutPhysicalInterface pfi
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN s.Cabinet cab
+                        LEFT JOIN cab.Location l
+                    GROUP BY vi, ppid, fpid, speed, ports";
+
+
+        $q = $this->getEntityManager()->createQuery( $dql );
+        return $q->getArrayResult();
+    }
+
+
 }

@@ -124,10 +124,6 @@
                     confirm: {
                         label: 'Confirm',
                         className: 'btn-primary',
-                        callback: function () {
-                            console.log('dd');
-                        }
-
                     },
                     cancel: {
                         label: 'Cancel',

@@ -24,17 +24,19 @@
 
 namespace IXP\Http\Controllers\PatchPanel;
 
-use Entities\Cabinet;
-use Entities\Customer;
-use Entities\Location;
-use Entities\PatchPanel;
-use Entities\PatchPanelPort;
-use Entities\PatchPanelPortFile;
-use Entities\PhysicalInterface;
-use Entities\Switcher;
-use Entities\SwitchPort;
-use Entities\User;
+use Entities\{
+    Cabinet,
+    Customer,
+    Location,
+    PatchPanel,
+    PatchPanelPort,
+    PatchPanelPortFile,
+    PhysicalInterface,
+    Switcher,
+    SwitchPort,
+    User
 
+};
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

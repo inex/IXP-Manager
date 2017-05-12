@@ -105,7 +105,7 @@
                         spId: $( "#switch_port_id" ).val()};
 
             <?php else: ?>
-                url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port";
+                url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port-for-ppp";
                 datas = {switchId: switchId,
                         custId: $( "#customer" ).val(),
                         spId: $( "#switch_port_id" ).val()};

@@ -64,4 +64,26 @@ class VlanInterfaceController extends Controller
 
         return response()->json( $l2as );
     }
+
+    /**
+     * Delete a Vlan Interface and the Layer2Address associated
+     *
+     * @param   int $id ID of the SflowReceiver
+     * @return  JsonResponse
+     */
+    public function delete( int $id ): JsonResponse{
+        /** @var VlanInterfaceEntity $vli */
+        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $id ) ) ) {
+            return abort( '404' );
+        }
+
+        foreach( $vli->getLayer2Addresses() as $l2a ) {
+            D2EM::remove( $l2a );
+        }
+
+        D2EM::remove( $vli );
+        D2EM::flush();
+
+        return response()->json( [ 'success' => true, 'message' => 'The Vlan Interface and all the Layer2address associated have been deleted successfully.' ] );
+    }
 }

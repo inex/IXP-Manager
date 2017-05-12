@@ -411,6 +411,156 @@ class VirtualInterface
     }
 
     /**
+     * Get the Switch Port of a virtual interface.
+     *
+     * @return string|bool The switch port or false if no switch port.
+     */
+    public function getSwitchPort()
+    {
+        if( count( $this->getPhysicalInterfaces() ) )
+            return $this->getPhysicalInterfaces()[0]->getSwitchPort();
+        else
+            return false;
+    }
+
+    /**
+     * Get the location of a virtual interface.
+     *
+     * @return string|bool The location or false if no switch port.
+     */
+    public function getLocation()
+    {
+        if( count( $this->getPhysicalInterfaces() ) ){
+            return $this->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation();
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_UNSET?
+     *
+     * @return bool
+     */
+    public function isTypeUnset(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_UNSET;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_PEERING?
+     *
+     * @return bool
+     */
+    public function isTypePeering(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_PEERING;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_MONITOR?
+     *
+     * @return bool
+     */
+    public function isTypeMonitor(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_MONITOR;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_CORE?
+     *
+     * @return bool
+     */
+    public function isTypeCore(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_CORE;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_OTHER?
+     *
+     * @return bool
+     */
+    public function isTypeOther(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_OTHER;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_MANAGEMENT?
+     *
+     * @return bool
+     */
+    public function isTypeManagement(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_MANAGEMENT;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_FANOUT?
+     *
+     * @return bool
+     */
+    public function isTypeFanout(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_FANOUT;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_RESELLER?
+     *
+     * @return bool
+     */
+    public function isTypeReseller(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_RESELLER;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the SwitchPort::$TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveType(): string {
+        return SwitchPort::$TYPES[ $this->getType() ] ?? 'Unknown';
+    }
+
+    /**
      * Add MACAddresses
      *
      * @param \Entities\MACAddress $mACAddresses

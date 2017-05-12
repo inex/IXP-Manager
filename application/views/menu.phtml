@@ -31,6 +31,11 @@
             {/if}
 
         </li>
+
+        <li {if $controller eq 'virtual-interface'}class="active"{/if}>
+            <a href="{genUrl controller='virtual-interface' action='list'}">Interfaces (Virtual)</a>
+        </li>
+
         <li {if $controller eq 'patch-panel'}class="active"{/if}>
             <a href="{genUrl controller='patch-panel' action='list'}">Patch Panels</a>
         </li>

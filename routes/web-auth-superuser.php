@@ -54,3 +54,39 @@ Route::group( [ 'prefix' => 'router' ], function() {
 
     Route::post( 'store',                           'RouterController@store'  );
 });
+
+Route::group( [  'prefix' => 'virtualInterface' ], function() {
+    Route::get( 'list',                             'VirtualInterfaceController@list' );
+    Route::get( 'add',                              'VirtualInterfaceController@edit' );
+    Route::get( 'edit/{id}',                        'VirtualInterfaceController@edit' );
+    Route::get( 'view/{id}',                        'VirtualInterfaceController@view' );
+    Route::get( 'add-wizard',                       'VirtualInterfaceController@editWizard' );
+    Route::get( 'edit-wizard/{id}',                 'VirtualInterfaceController@editWizard' );
+
+    Route::post( 'store',                           'VirtualInterfaceController@store'  );
+    Route::post( 'storeWizard',                     'VirtualInterfaceController@storeInterfaceWizard'  );
+});
+
+Route::group( [  'prefix' => 'physicalInterface' ], function() {
+    Route::get( 'list',                             'PhysicalInterfaceController@list' );
+    Route::get( 'view/{id}',                        'PhysicalInterfaceController@list' );
+    Route::get( 'edit/{id}',                        'PhysicalInterfaceController@edit' );
+    Route::get( 'add/{id}/vintid/{viid}',           'PhysicalInterfaceController@edit' );
+    Route::post( 'store',                           'PhysicalInterfaceController@store'  );
+});
+
+Route::group( [  'prefix' => 'vlanInterface' ], function() {
+    Route::get( 'list',                             'VlanInterfaceController@list' );
+    Route::get( 'view/{id}',                        'VlanInterfaceController@list' );
+    Route::get( 'edit/{id}',                        'VlanInterfaceController@edit' );
+    Route::get( 'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit' );
+    Route::post( 'store',                           'VlanInterfaceController@store'  );
+});
+
+Route::group( [  'prefix' => 'sflowReceiver' ], function() {
+    Route::get( 'list',                             'SflowReceiverController@list' );
+    Route::get( 'view/{id}',                        'SflowReceiverController@view' );
+    Route::get( 'edit/{id}/',                       'SflowReceiverController@edit' );
+    Route::get( 'add/{id}/vintid/{viid}',           'SflowReceiverController@edit' );
+    Route::post( 'store',                           'SflowReceiverController@store'  );
+});

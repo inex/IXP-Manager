@@ -28,6 +28,7 @@ Route::get('router/gen_config/{handle}',                        'RouterControlle
 
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
+Route::get('sflow-receiver/delete/{id}',                        'SflowReceiverController@delete' );
 
 Route::get(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
 Route::get(  'patch-panel-port/toggle-file-privacy/{fileid}',   'PatchPanelPortController@toggleFilePrivacy' );
@@ -48,8 +49,9 @@ Route::get('switch-port/{id}/physical-interface',               'SwitchPortContr
 
 Route::post('customer/{id}/switches',                           'CustomerController@switches' );
 
-Route::post('switcher/{id}/switch-port',                        'SwitcherController@switchPort' );
+Route::post('switcher/{id}/switch-port-for-ppp',                'SwitcherController@switchPortForPPP' );
 Route::post('switcher/{id}/switch-port-prewired',               'SwitcherController@switchPortPrewired' );
+Route::post('switcher/{id}/switch-port',                        'SwitcherController@switchPort' );
 
 Route::post( 'utils/markdown',                                  'UtilsController@markdown' );
 
@@ -57,3 +59,8 @@ Route::post( 'l2-address/add',                                  'Layer2AddressCo
 Route::get( 'l2-address/delete/{id}',                           'Layer2AddressController@delete' );
 Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
+Route::get( 'vlan-interface/delete/{id}',                       'VlanInterfaceController@delete' );
+Route::post( 'vlan/{id}/ipv-address',                           'VlanController@getIPvAddress' );
+
+Route::get('physical-interface/delete/{id}',                    'PhysicalInterfaceController@delete' );
+Route::get('virtual-interface/delete/{id}',                    'VirtualInterfaceController@delete' );
