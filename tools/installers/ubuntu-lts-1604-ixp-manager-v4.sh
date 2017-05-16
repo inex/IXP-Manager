@@ -550,6 +550,12 @@ cd $IXPROOT
 log_break && php artisan doctrine:schema:create &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
+echo -n "Creating IXP Manager database views... "
+cd $IXPROOT
+log_break && mysql -u root "-p${MYSQL_ROOT_PW}" $DBNAME <tools/sql/views.sql
+echo '[done]'
+
+
 
 ##################################################################
 ### Set up initial database entities
