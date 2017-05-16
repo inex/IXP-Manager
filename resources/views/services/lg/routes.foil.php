@@ -30,7 +30,11 @@
 
     <tr>
         <td>
-            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode($r->network) ?>/table/master"
+            <?php
+                // need to split the ip/netmask so we don't urlencode() the '/' between them:
+                list( $ip, $mask ) = explode( '/', $r->network );
+            ?>
+            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode($ip) ?>/<?= $mask ?>/table/master"
                     data-toggle="modal" data-target="#route-modal">
                 <?= $r->network ?>
             </a>
