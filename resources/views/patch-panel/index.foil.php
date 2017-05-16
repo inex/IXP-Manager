@@ -28,7 +28,6 @@
 <?php $this->section('content') ?>
 
     <div id="filter-row" class="row" style="display: none">
-
         <div class="well pull-right">
             <form class="form-inline" method="post" action="<?= url('patch-panel-port/advanced-list' ) ?>">
                 <div class="form-group">
@@ -54,6 +53,12 @@
                 </div>
                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                 <button type="submit" class="btn btn-default">Filter Ports</button>
+                <div class="form-group" style="display: block;">
+                    <label>
+                        <input name="available" value='true' id="available" type="checkbox">
+                        Available for use
+                    </label>
+                </div>
             </form>
         </div>
 
@@ -130,7 +135,7 @@
                             <?php endif; ?>
                         </td>
                         <td>
-                            <?= $pp->getInstallationDateFormated() ?>
+                            <?= $pp->getInstallationDate() ? $pp->getInstallationDate()->format('Y-m-d') : 'Unknown' ?>
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">

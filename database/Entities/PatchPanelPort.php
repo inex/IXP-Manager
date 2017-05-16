@@ -88,16 +88,28 @@ class PatchPanelPort
     ];
 
     /**
-     * Array STATES
+     * Array STATES for allocated
      */
-    public static $ALLOCATE_STATES = [
-        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
-        self::STATE_CONNECTED           => "Connected"
+    public static $ALLOCATED_STATES = [
+        self::STATE_AWAITING_XCONNECT,
+        self::STATE_CONNECTED,
+        self::STATE_AWAITING_CEASE,
     ];
 
     /**
- * Array $CHARGEABLES
- */
+     * Array STATES for allocated
+     */
+    public static $AVAILABLE_STATES = [
+        self::STATE_AVAILABLE,
+        self::STATE_PREWIRED,
+        self::STATE_AWAITING_CEASE,
+        self::STATE_CEASED,
+    ];
+
+
+    /**
+     * Array $CHARGEABLES
+     */
     public static $CHARGEABLES = [
         self::CHARGEABLE_YES            => "Yes",
         self::CHARGEABLE_NO             => "No",
@@ -1104,15 +1116,40 @@ class PatchPanelPort
     /**
      * Is this port available for use?
      *
-     * It is if its state is one of: available, ceased, awaiting cease.
+     * It is if its state is one of: available, ceased, awaiting cease, prewired.
      *
      * @return bool
      */
     public function isAvailableForUse(): bool {
-        return $this->getState() == self::STATE_AVAILABLE || $this->getState() == self::STATE_CEASED
-            || $this->getState() == self::STATE_AWAITING_CEASE;
+        return in_array( $this->getState(), self::$AVAILABLE_STATES );
     }
 
+    /**
+     * Is this port os allocated?
+     *
+     * It is if its state is one of: awaiting xconnect, connected, awaiting cease.
+     *
+     * @return bool
+     */
+    public function isAllocated(): bool {
+        return in_array( $this->getState(), self::$ALLOCATED_STATES );
+    }
+
+
+    /**
+     * Get appropriate states for allocating a port / determining if a port is allocated.
+     *
+     * Returns array of elements: state ID => state description
+     *
+     * @return array
+     */
+    public static function getAllocatedStatesWithDescription() {
+        $states = [];
+        foreach( self::$ALLOCATED_STATES as $i ) {
+            $states[$i] = self::$STATES[$i];
+        }
+        return $states;
+    }
 
     public function setDuplexPort( PatchPanelPort $duplexPort, $newSlavePort){
         if($newSlavePort){

@@ -983,6 +983,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function isAllocated(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAllocated', []);
+
+        return parent::isAllocated();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setDuplexPort(\Entities\PatchPanelPort $duplexPort, $newSlavePort)
     {
 
