@@ -4,9 +4,11 @@ namespace Repositories;
 
 use D2EM;
 use Doctrine\ORM\EntityRepository;
-use Entities\PatchPanelPort as PatchPanelPortEntity;
-use Entities\PatchPanelPortHistory as PatchPanelPortHistoryEntity;
-use Entities\PatchPanelPortHistoryFile as PatchPanelPortHistoryFileEntity;
+use Entities\{
+    PatchPanelPort as PatchPanelPortEntity,
+    PatchPanelPortHistory as PatchPanelPortHistoryEntity,
+    PatchPanelPortHistoryFile as PatchPanelPortHistoryFileEntity
+};
 
 /**
  * Cabinet
@@ -118,14 +120,15 @@ class PatchPanelPort extends EntityRepository
 
 
     /**
-     * Load patch panel port objects allow them to be filtered by location, cabinet and/or cable type.
+     * Load patch panel port objects allow them to be filtered by location, cabinet and/or cable type and/or available states.
      *
-     * @param int $location   Location ID (or zero for all)
-     * @param int $cabinet    Cabinet ID
-     * @param int $cabletype  Cable type (@see \Entities\PatchPanel::$CABLE_TYPES)
+     * @param int  $location   Location ID (or zero for all)
+     * @param int  $cabinet    Cabinet ID
+     * @param int  $cabletype  Cable type (@see \Entities\PatchPanel::$CABLE_TYPES)
+     * @param bool $availableForUse  available Port states (self::STATE_AVAILABLE, self::STATE_CEASED, self::STATE_AWAITING_CEASE, self::STATE_PREWIRED)
      * @return array
      */
-    public function advancedSearch( int $location, int $cabinet, int $cabletype ) {
+    public function advancedSearch( int $location, int $cabinet, int $cabletype, bool $availableForUse ) {
         $dql = "SELECT ppp
                   FROM Entities\PatchPanelPort ppp
                       LEFT JOIN ppp.patchPanel pp
@@ -144,6 +147,10 @@ class PatchPanelPort extends EntityRepository
 
         if( $cabletype ) {
             $wheres[] = "pp.cable_type = " . $cabletype;
+        }
+
+        if( $availableForUse ) {
+            $wheres[] = "ppp.state IN (" . implode( ',', PatchPanelPortEntity::$AVAILABLE_STATES ) .") ";
         }
 
         if( count( $wheres ) ) {

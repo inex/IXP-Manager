@@ -113,19 +113,22 @@ class PatchPanelPortController extends Controller
      */
     public function advancedIndex( Request $request ): View {
 
-        $location  = is_numeric( $request->get('location') ) ? intval( $request->get('location') ) : 0;
-        $cabinet   = is_numeric( $request->get('cabinet' ) ) ? intval( $request->get('cabinet' ) ) : 0;
-        $cabletype = is_numeric( $request->get('type'    ) ) ? intval( $request->get('type'    ) ) : 0;
+        $location           = is_numeric( $request->get('location') )       ? intval( $request->get('location') )       : 0;
+        $cabinet            = is_numeric( $request->get('cabinet' ) )       ? intval( $request->get('cabinet' ) )       : 0;
+        $cabletype          = is_numeric( $request->get('type'    ) )       ? intval( $request->get('type'    ) )       : 0;
+        $availableForUse    = $request->get('available')                    ? true                                           : false;
 
         $summary = "Filtered for: ";
-        $summary .= $location ? D2EM::getRepository(Location::class)->find($location)->getName() : 'All locations';
+        $summary .= $location ? D2EM::getRepository(Location::class)->find($location)->getName() : 'all locations';
         $summary .= ', ' . ( $cabinet ? D2EM::getRepository(Cabinet::class)->find($cabinet)->getName() : 'all cabinets' );
-        $summary .= ', ' . ( $cabletype ? PatchPanel::$CABLE_TYPES[$cabletype] : 'all cable types' ) . '.';
+        $summary .= ', ' . ( $cabletype ? PatchPanel::$CABLE_TYPES[$cabletype] : 'all cable types' );
+        $summary .= ( $availableForUse ? ', available for use.' : '.' );
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/index' )->with([
             'patchPanelPorts'               => D2EM::getRepository( PatchPanelPort::class )->advancedSearch(
-                                                    $location, $cabinet, $cabletype ),
+                                                    $location, $cabinet, $cabletype, $availableForUse
+                                                ),
             'pp'                            => $pp ?? false,
             'summary'                       => $summary,
         ]);
@@ -153,7 +156,7 @@ class PatchPanelPortController extends Controller
             case 'allocate' :
                 $allocating = true;
                 $prewired   = false;
-                $states     = PatchPanelPort::$ALLOCATE_STATES;
+                $states     = PatchPanelPort::getAllocatedStatesWithDescription();
                 break;
 
             case 'prewired' :

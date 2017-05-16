@@ -914,4 +914,15 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
         return parent::resolveLgAccess();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function authorise(int $privs): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'authorise', [$privs]);
+
+        return parent::authorise($privs);
+    }
+
 }
