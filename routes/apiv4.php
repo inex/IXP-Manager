@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // IX-F Member List Export
 
+Route::get('member-export/ixf',            'MemberExportController@ixf');
 Route::get('member-export/ixf/{version}',  'MemberExportController@ixf');
 
 

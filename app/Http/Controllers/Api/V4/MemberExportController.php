@@ -38,7 +38,7 @@ class MemberExportController extends Controller {
      * @param int $protocol Protocol to generate the ARPA entries for
      * @return Response
      */
-    public function ixf( Request $request, string $version ) {
+    public function ixf( Request $request, string $version = '0.6' ) {
 
         if( !Auth::check() && !config( 'ixp_api.json_export_schema.public', false ) ) {
             abort(401, 'Public access not permitted' );
