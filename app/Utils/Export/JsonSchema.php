@@ -1,11 +1,9 @@
-<?php namespace IXP\Utils\Export;
+<?php
 
-use Entities\Infrastructure;
-
-use OSS_Array;
+namespace IXP\Utils\Export;
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -24,6 +22,10 @@ use OSS_Array;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Entities\{Customer, Infrastructure, IXP, VirtualInterface};
+
+use OSS_Array;
 
 
 /**
@@ -113,6 +115,7 @@ class JsonSchema
     {
         $ixpinfo = [];
 
+        /** @var IXP $ixp */
         $ixp = d2r( 'IXP' )->getDefault();
 
         foreach( $ixp->getInfrastructures() as $infra ) {
@@ -196,6 +199,8 @@ class JsonSchema
     private function getMemberInfo( string $version, bool $detailed )
     {
         $memberinfo = [];
+
+        /** @var IXP $ixp */
         $ixp = d2r( 'IXP' )->getDefault();
 
         $customers = OSS_Array::reindexObjects(
@@ -207,8 +212,10 @@ class JsonSchema
 
         $cnt = 0;
 
+        /** @var Customer $c */
         foreach( $customers as $c ) {
             $connlist = [];
+            /** @var VirtualInterface $vi */
             foreach( $c->getVirtualInterfaces() as $vi ) {
 
                 $iflist = [];
@@ -276,7 +283,7 @@ class JsonSchema
 
                 $conn = [];
 
-                $conn['ixp_id'] = $vli->getVlan()->getInfrastructure()->getId();
+                $conn['ixp_id']      = $vli->getVlan()->getInfrastructure()->getId();
                 $conn['state']       = 'active';
                 $conn['if_list']     = $iflist;
                 $conn['vlan_list']   = $vlanentries;
@@ -327,16 +334,16 @@ class JsonSchema
     private function xlateMemberType( $ixpmType )
     {
         switch( $ixpmType ) {
-            case \Entities\Customer::TYPE_FULL:
+            case Customer::TYPE_FULL:
                 return 'peering';
 
-            case \Entities\Customer::TYPE_INTERNAL:
+            case Customer::TYPE_INTERNAL:
                 return 'ixp';
 
-            case \Entities\Customer::TYPE_PROBONO:
+            case Customer::TYPE_PROBONO:
                 return 'probono';
 
-            case \Entities\Customer::TYPE_ROUTESERVER:
+            case Customer::TYPE_ROUTESERVER:
                 return 'routeserver';
 
             default:

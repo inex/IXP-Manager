@@ -39,12 +39,12 @@ class MemberExportController extends Controller {
      * @return Response
      */
     public function ixf( Request $request, string $version ) {
-//        if( !config( 'ixp_api.json_export_schema.public', false ) ) {
-//            $this->assertMinUserPriv( \Entities\User::AUTH_CUSTUSER );
-//        }
-//        $this->getResponse()->setHeader( 'Content-Type', 'application/json' );
-        $exporter = new \IXP\Utils\Export\JsonSchema;
 
+        if( !Auth::check() && !config( 'ixp_api.json_export_schema.public', false ) ) {
+            abort(401, 'Public access not permitted' );
+        }
+
+        $exporter = new \IXP\Utils\Export\JsonSchema;
         return response()->json( $exporter->get( $version, true, Auth::check() ) );
     }
 
