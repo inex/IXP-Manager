@@ -37,22 +37,22 @@ use OSS_Array;
  * @see        https://github.com/euro-ix/json-schemas
  * @author     Nick Hilliard <nick@foobar.org>
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @copyright  Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class JsonSchema
 {
     // Supported versions:
-    const EUROIX_JSON_VERSION_0_3 = "0.3";
-    const EUROIX_JSON_VERSION_0_4 = "0.4";
-    const EUROIX_JSON_VERSION_0_5 = "0.5";
+    // ended 201705: const EUROIX_JSON_VERSION_0_3 = "0.3";
+    // ended 201705: const EUROIX_JSON_VERSION_0_4 = "0.4";
+    // cended 201705: onst EUROIX_JSON_VERSION_0_5 = "0.5";
+    const EUROIX_JSON_VERSION_0_6 = "0.6";
     // adding a new version? update sanitiseVersion() below also!
-    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_0_5;
+
+    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_0_6;
 
     const EUROIX_JSON_VERSIONS = [
-        self::EUROIX_JSON_VERSION_0_3,
-        self::EUROIX_JSON_VERSION_0_4,
-        self::EUROIX_JSON_VERSION_0_5
+        self::EUROIX_JSON_VERSION_0_6,
     ];
 
     /**
@@ -60,34 +60,25 @@ class JsonSchema
      *
      * @param string $version The version to get (or, if null / not present then the latest)
      * @param bool   $asArray Do not convert to JSON but rather return the PHP array
+     * @param bool   $detailed Create the very detailed version (usualy for logged in users)
      * @return string|array
      */
-    public function get( $version = null, $asArray = false )
+    public function get( $version = null, $asArray = false, $detailed = true )
     {
-        if( $version === null )
+        if( $version === null ) {
             $version = self::EUROIX_JSON_LATEST;
-        else
-            $version = $this->sanitiseVersion( $version );
+        } else {
+            $version = $this->sanitiseVersion($version);
+        }
 
-        // slightly awkward as v0.3 used a date type versioning. internally we use 0.3
-        // for numeric comparisons
-        if( $version == self::EUROIX_JSON_VERSION_0_3 )
-            $output = [ 'version' => '2014110401' ];
-        else
-            $output = [ 'version' => $version ];
+        $output = [ 'version' => $version ];
 
         // normalise times to UTC for exports
         date_default_timezone_set('UTC');
         $output['timestamp'] = date( 'Y-m-d', time() ) . 'T' . date( 'H:i:s', time() ) . 'Z';
 
-        // from v0.4 onwards, this was renamed ixp_list and allows for multiple ixps
-        // (IXP Manager only supports one IXP per IXP Manager instance)
-        if( $version == self::EUROIX_JSON_VERSION_0_3 )
-            $output['ixp_info'] = $this->getIXPInfo( $version );
-        else
-            $output['ixp_list'] = $this->getIXPInfo( $version );
-
-        $output['member_list'] = $this->getMemberInfo( $version );
+        $output['ixp_list']    = $this->getIXPInfo( $version );
+        $output['member_list'] = $this->getMemberInfo( $version, $detailed );
 
         if( $asArray )
             return $output;
@@ -104,13 +95,7 @@ class JsonSchema
     {
         switch ( $version )
         {
-            // alias for v0.3
-            case '2014110401':
-                return self::EUROIX_JSON_VERSION_0_3;
-
-            case self::EUROIX_JSON_VERSION_0_3:
-            case self::EUROIX_JSON_VERSION_0_4:
-            case self::EUROIX_JSON_VERSION_0_5:
+            case self::EUROIX_JSON_VERSION_0_6:
                 return $version;
 
             default:
@@ -140,36 +125,31 @@ class JsonSchema
             $i['url'] = config('identity.corporate_url');
 
             if( $infra->getPeeringdbIxId() ) {
-                # oops, messy.  ixp_id was renamed as ixf_id in v0.4
-                if( $version == self::EUROIX_JSON_VERSION_0_3 ) {
-                    $i['ixp_id'] = intval( $infra->getPeeringdbIxId() );
-                } else {
-                    if( $infra->getIxfIxId() ) {
-                        $i[ 'ixf_id' ] = intval( $infra->getIxfIxId() );
-                    }
-                    $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
-                }
+                $i[ 'peeringdb_id' ] = intval( $infra->getPeeringdbIxId() );
             }
+
+            if( $infra->getIxfIxId() ) {
+                $i[ 'ixf_id' ] = intval( $infra->getIxfIxId() );
+            }
+
+            $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
 
             $i['support_email'] = config('identity.support_email');
             $i['support_phone'] = config('identity.support_phone');
             $i['support_contact_hours'] = config('identity.support_hours');
 
-            if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
-                // $infra['stats_api'] = FIXME;
-                $i['emergency_email'] = config('identity.support_email');
-                $i['emergency_phone'] = config('identity.support_phone');
-                $i['emergency_contact_hours'] = config('identity.support_hours');
-                $i['billing_contact_hours'] = config('identity.billing_hours');
-            }
-
+            // $infra['stats_api'] = FIXME;
+            $i['emergency_email'] = config('identity.support_email');
+            $i['emergency_phone'] = config('identity.support_phone');
+            $i['emergency_contact_hours'] = config('identity.support_hours');
+            $i['billing_contact_hours'] = config('identity.billing_hours');
             $i['billing_email'] = config('identity.billing_email');
             $i['billing_phone'] = config('identity.billing_phone');
 
             $i['peering_policy_list'] = array_values(\Entities\Customer::$PEERING_POLICIES);
 
             $i['vlan'] = d2r('NetworkInfo')->asVlanEuroIXExportArray( $infra );
-            $i['switch'] = $this->getSwitchInfo($version, $infra );
+            $i['switch'] = $this->getSwitchInfo( $version, $infra );
 
             $ixpinfo[] = $i;
         }
@@ -197,8 +177,9 @@ class JsonSchema
             $switchentry['city']    = config( 'identity.location.city'    );
             $switchentry['country'] = config( 'identity.location.country' );
 
-            if( $version >= self::EUROIX_JSON_VERSION_0_5 && $switch->getCabinet()->getLocation()->getPdbFacilityId() )
-                $switchentry['pdb_facility_id'] = intval( $switch->getCabinet()->getLocation()->getPdbFacilityId() );
+            if( $switch->getCabinet()->getLocation()->getPdbFacilityId() ) {
+                $switchentry['pdb_facility_id'] = intval($switch->getCabinet()->getLocation()->getPdbFacilityId());
+            }
 
             $data[] = $switchentry;
         }
@@ -212,7 +193,7 @@ class JsonSchema
      * @param string $version The version to collate the detail for
      * @return array
      */
-    private function getMemberInfo( $version )
+    private function getMemberInfo( string $version, bool $detailed )
     {
         $memberinfo = [];
         $ixp = d2r( 'IXP' )->getDefault();
@@ -225,17 +206,17 @@ class JsonSchema
         );
 
         $cnt = 0;
-        foreach( $customers as $c )
-        {
+
+        foreach( $customers as $c ) {
             $connlist = [];
-            foreach( $c->getVirtualInterfaces() as $vi )
-            {
+            foreach( $c->getVirtualInterfaces() as $vi ) {
+
                 $iflist = [];
                 $atLeastOnePiIsPeering   = false;
                 $atLeastOnePiIsConnected = false;
-                foreach( $vi->getPhysicalInterfaces() as $pi )
-                {
-                    // hack for LONAP as they do peering on reseller ports :-(
+
+                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                    // FIXME: hack for LONAP as they do peering on reseller ports :-(
                     if( !$pi->getSwitchPort()->isTypePeering() && !$pi->getSwitchPort()->isTypeReseller() ) {
                         continue;
                     }
@@ -257,15 +238,7 @@ class JsonSchema
 
                 $vlanentries = [];
 
-                // MAC addresses added in 0.4
-                if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
-                    $macaddrs = $vi->getMACAddresses();
-                    if( $macaddrs[0] )
-                        $vlanentry['mac_address'] = implode( ":", str_split( $macaddrs[0]->getMac(), 2 ) );
-                }
-
-                foreach( $vi->getVlanInterfaces() as $vli )
-                {
+                foreach( $vi->getVlanInterfaces() as $vli ) {
                     if( $vli->getVlan()->getPrivate() ) {
                         continue;
                     }
@@ -273,18 +246,27 @@ class JsonSchema
                     $vlanentry = [];
 
                     $vlanentry['vlan_id'] = $vli->getVlan()->getId();
+
                     if ($vli->getIpv4enabled()) {
                         $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
-                        $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
-                        $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         $vlanentry['ipv4']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 4, "AS");
+                        $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
+                        if( $detailed ) {
+                            $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
+                            $vlanentry['ipv4']['macaddresses'] = $vli->getLayer2AddressesAsArray();
+                        }
                     }
+
                     if ($vli->getIpv6enabled()) {
                         $vlanentry['ipv6']['address'] = $vli->getIPv6Address()->getAddress();
-                        $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
-                        $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
+                        $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
+                        if( $detailed ) {
+                            $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
+                            $vlanentry['ipv6']['macaddresses'] = $vli->getLayer2AddressesAsArray();
+                        }
                     }
+
                     $vlanentries[] = $vlanentry;
                 }
                 
@@ -294,9 +276,7 @@ class JsonSchema
 
                 $conn = [];
 
-                if( $version > self::EUROIX_JSON_VERSION_0_3 )
-                    $conn['ixp_id'] = $vli->getVlan()->getInfrastructure()->getId();
-
+                $conn['ixp_id'] = $vli->getVlan()->getInfrastructure()->getId();
                 $conn['state']       = 'active';
                 $conn['if_list']     = $iflist;
                 $conn['vlan_list']   = $vlanentries;
@@ -306,25 +286,29 @@ class JsonSchema
 
             $memberinfo[ $cnt ] = [
                 'asnum'		       	 => $c->getAutsys(),
-                'name'			     => $c->getName(),
-                'url'			     => $c->getCorpwww(),
-                'contact_email'		 => [ $c->getPeeringemail() ],
-                'contact_phone'		 => [ $c->getNocphone() ],
-                'peering_policy'	 => $c->getPeeringpolicy(),
-                'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z'
             ];
 
-            if( filter_var( $c->getNocwww(), FILTER_VALIDATE_URL ) !== false ) {
-                $memberinfo[ $cnt ]['peering_policy_url'] = $c->getNocwww();
-            }
+            if( $detailed ) {
+                $memberinfo[$cnt] = array_merge($memberinfo[$cnt], [
+                    'contact_email' => [ $c->getPeeringemail() ],
+                    'contact_phone' => [ $c->getNocphone() ],
+                    'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
+                    'url'			     => $c->getCorpwww(),
+                    'name'			     => $c->getName(),
+                    'peering_policy'	 => $c->getPeeringpolicy(),
+                ]);
 
-            if( $c->getNochours() && strlen( $c->getNochours() ) ) {
-                $memberinfo[ $cnt ]['contact_hours'] = $c->getNochours();
-            }
-            
-            if( $version > self::EUROIX_JSON_VERSION_0_3 ) {
+                if( filter_var($c->getNocwww(), FILTER_VALIDATE_URL) !== false ) {
+                    $memberinfo[$cnt]['peering_policy_url'] = $c->getNocwww();
+                }
+
+                if( $c->getNochours() && strlen($c->getNochours()) ) {
+                    $memberinfo[$cnt]['contact_hours'] = $c->getNochours();
+                }
+
                 $memberinfo[$cnt][ 'type' ] = $this->xlateMemberType( $c->getType() );
             }
+
 
             $memberinfo[$cnt]['connection_list'] = $connlist;
 

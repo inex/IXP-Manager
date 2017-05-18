@@ -677,4 +677,20 @@ class VlanInterface
     {
         return $this->layer2Addresses;
     }
+
+    /**
+     * Get the mac(s) of Layer2Addresses as a plain array
+     *
+     * @return array
+     */
+    public function getLayer2AddressesAsArray()
+    {
+        $macs = [];
+
+        foreach( $this->layer2Addresses as $l2a ) {
+            $macs[] = $l2a->getMac();
+        }
+
+        return $macs;
+    }
 }

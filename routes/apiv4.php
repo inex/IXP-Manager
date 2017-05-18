@@ -17,6 +17,15 @@ use Illuminate\Http\Request;
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IX-F Member List Export
+
+Route::get('member-export/ixf/{version}',  'MemberExportController@ixf');
+
+
+
+
 Route::get( 'peeringdb/ix', function() {
     return response()->json( Cache::remember('peeringdb/ix', 120, function() {
         $ixps = [];
