@@ -31,7 +31,7 @@ Target[<?=$mrtglabel?>]:    <?php
         endforeach; ?>
 
 Title[<?=$mrtglabel?>]:     <?=sprintf( "{$this->graphTitle}\n", $trafficType['name'] )?>
-Options[<?=$mrtglabel?>]:   <?=$trafficType['options']."\n"?>
+Options[<?=$mrtglabel?>]:   <?= $trafficType['options'] . ( strlen( $trafficType['options'] ) ? ' , ' : ' ' ) . "pngdate\n"?>
 YLegend[<?=$mrtglabel?>]:   <?=$trafficType['name']?> / Second
 MaxBytes[<?=$mrtglabel?>]:  <?= ( $ttype == IXP\Services\Grapher\Graph::CATEGORY_BITS ? $t->maxbytes : round( $t->maxbytes / 64 ) ) . "\n" ?>
 <?= $t->ifnot( 'directory', '!E' ) != '!E' ? "Directory[{$mrtglabel}]: {$t->directory}\n" : "\n" ?>
