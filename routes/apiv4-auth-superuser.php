@@ -17,7 +17,17 @@ use Illuminate\Http\Request;
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 
-Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');   // ?format=json also works
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DNS ARPA Entries
+//
+// Returns plain text from the given template (api/v4/dns/[template]):
+Route::get('dns/arpa/{vlanid}/{protocol}/{template}',  'DnsController@arpaTemplated');
+// Returns JSON object:
+Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
+
+
+
+
 
 Route::get('nagios/birdseye_daemons',                           'NagiosController@birdseyeDaemons');
 Route::get('nagios/birdseye_daemons/{vlanid}',                  'NagiosController@birdseyeDaemons');

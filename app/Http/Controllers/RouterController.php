@@ -36,7 +36,6 @@ use Illuminate\View\View;
 
 use IXP\Http\Requests\StoreRouter;
 
-use IXP\Services\Grapher\Graph\Vlan;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
