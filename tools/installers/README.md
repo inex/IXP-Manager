@@ -34,7 +34,7 @@ bash ./ubuntu-lts-1604-ixp-manager-v4.sh
 The install script can be tested using Vagrant. Assuming you have Vagrant installed and have cloned the IXP Manager GitHub repository to `$IXPMDIR`:
 
 ```bash
-cd $IXPMDIR/tools/install-scripts
+cd $IXPMDIR/tools/installers
 cp Vagrantfile.ubuntu-lts-1604-ixp-manager-v4 Vagrantfile
 vagrant up
 ```
