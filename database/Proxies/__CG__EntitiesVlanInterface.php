@@ -705,4 +705,15 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
         return parent::getLayer2Addresses();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getLayer2AddressesAsArray()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLayer2AddressesAsArray', []);
+
+        return parent::getLayer2AddressesAsArray();
+    }
+
 }
