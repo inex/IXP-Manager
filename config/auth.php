@@ -18,7 +18,7 @@ return [
 
     'zf1' => [
         'pwhash'     => env( 'AUTH_ZF1_PWHASH',    'bcrypt' ),
-        'hash_cost'  => env( 'AUTH_ZF1_HASH_COST', 9 ),
+        'hash_cost'  => env( 'AUTH_ZF1_HASH_COST', 10 ),
     ],
 
     /*
