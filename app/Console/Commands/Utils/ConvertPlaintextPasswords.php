@@ -62,6 +62,8 @@ class ConvertPlaintextPasswords extends IXPCommand
      */
     public function handle() {
 
+        $chunk = 0;
+
         /** @var UserEntity $user */
         foreach( D2EM::getRepository( UserEntity::class )->findAll() as $user ) {
 
@@ -72,11 +74,16 @@ class ConvertPlaintextPasswords extends IXPCommand
 
             $user->setPassword( password_hash( $user->getPassword(), PASSWORD_BCRYPT, [ 'cost' => 10 ] ) );
             $this->line( "Setting {$user->getId()}/{$user->getUsername()} - {$user->getPassword()}" );
+
+            if( $this->option( 'force' ) && ++$chunk % 20 == 0 ) {
+                D2EM::flush();
+                $this->info('Chunked 20 to database');
+            }
         }
 
         if( $this->option( 'force' ) ) {
             D2EM::flush();
-            $this->info('Saved to database');
+            $this->info("Chunked remainder to database (total {$chunk})");
         } else {
             $this->warn( 'Not saved to database! Use --force to save to database.' );
         }
