@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel {
 
         \IXP\Console\Commands\Router\GenerateConfiguration::class,
 
+        \IXP\Console\Commands\Utils\ConvertPlaintextPasswords::class,
         \IXP\Console\Commands\Utils\UpdateOuiDatabase::class,
 
         \IXP\Console\Commands\Upgrade\MigrateL2Addresses::class,
