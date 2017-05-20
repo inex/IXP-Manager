@@ -26,6 +26,12 @@ Route::get('dns/arpa/{vlanid}/{protocol}/{template}',  'DnsController@arpaTempla
 Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Users
+//
+// Returns all users (or users with given integer privilege) as JSON
+Route::get('user/json',         'UserController@json');
+Route::get('user/json/{priv}',  'UserController@json');
 
 
 

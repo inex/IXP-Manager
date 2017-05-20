@@ -488,10 +488,6 @@ GRAPHER_BACKENDS="dummy"
 # VIEW_SKIN="myskin"
 
 #######################################################################################
-# See https://github.com/inex/IXP-Manager/wiki/Password-Hashing before changing:
-AUTH_ZF1_PWHASH="bcrypt"
-
-#######################################################################################
 # See config/cache.php
 CACHE_DRIVER=memcached
 
