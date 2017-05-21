@@ -75,7 +75,7 @@
 
 <?php if( $t->lg ): ?>
     <div class="well well-sm">
-        <?= ucfirst( $t->lg->router()->software() ) ?>
+        <?= $t->lg->router()->resolveSoftware() ?>
         <?= $t->status->status->version ?>
         &nbsp;&nbsp;|&nbsp;&nbsp;
         API: <?= $t->status->api->version ?>
