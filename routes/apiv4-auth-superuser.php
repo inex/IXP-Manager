@@ -34,6 +34,17 @@ Route::get('user/json',         'UserController@json');
 Route::get('user/json/{priv}',  'UserController@json');
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// VLANs
+//
+// Returns a smokeping configuration for a given VLAN and protocol
+Route::get('vlan/smokeping/{vlanid}/{protocol}',             'VlanController@smokepingTargets');
+Route::get('vlan/smokeping/{vlanid}/{protocol}/{template}',  'VlanController@smokepingTargets');
+Route::post('vlan/smokeping/{vlanid}/{protocol}',             'VlanController@smokepingTargets');
+Route::post('vlan/smokeping/{vlanid}/{protocol}/{template}',  'VlanController@smokepingTargets');
+
+
+
 
 Route::get('nagios/birdseye_daemons',                           'NagiosController@birdseyeDaemons');
 Route::get('nagios/birdseye_daemons/{vlanid}',                  'NagiosController@birdseyeDaemons');

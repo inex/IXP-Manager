@@ -32,6 +32,7 @@ use Entities\{
 
 use Illuminate\Http\JsonResponse;
 
+
 /**
  * VlanInterface API Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -89,4 +90,5 @@ class VlanInterfaceController extends Controller
     {
         return response()->json( D2EM::getRepository( VlanInterfaceEntity::class )->sflowMacTableArray() );
     }
+
 }
