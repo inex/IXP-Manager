@@ -64,21 +64,29 @@ class VlanInterface extends EntityRepository
                        vli.ipv{$proto}canping AS canping,
                        l.name AS location_name, l.shortname AS location_shortname, l.tag AS location_tag
                     FROM Entities\\VlanInterface vli
-                        JOIN vli.VirtualInterface vi
-                        JOIN vli.IPv{$proto}Address addr
-                        JOIN vi.Customer c
-                        JOIN vi.PhysicalInterfaces pi
-                        JOIN pi.SwitchPort sp
-                        JOIN sp.Switcher s
-                        JOIN s.Cabinet cab
-                        JOIN cab.Location l
-                        JOIN vli.Vlan v
+                        LEFT JOIN vli.VirtualInterface vi
+                        LEFT JOIN vli.IPv{$proto}Address addr
+                        LEFT JOIN vi.Customer c
+                        LEFT JOIN vi.PhysicalInterfaces pi
+                        LEFT JOIN pi.SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN s.Cabinet cab
+                        LEFT JOIN cab.Location l
+                        LEFT JOIN vli.Vlan v
                     WHERE
                         v = :vlan
                         AND " . Customer::DQL_CUST_ACTIVE     . "
                         AND " . Customer::DQL_CUST_CURRENT    . "
                         AND " . Customer::DQL_CUST_TRAFFICING . "
-                        AND pi.status = :pistatus";
+                        AND pi.status = :pistatus
+                        
+                    GROUP BY 
+                        vli.id, c.id, c.name, c.abbreviatedName, c.shortname, c.autsys,
+                        c.maxprefixes, c.peeringmacro, c.peeringmacrov6,
+                        vli.ipv{$proto}enabled, addr.address, vli.ipv{$proto}bgpmd5secret, vli.maxbgpprefix,
+                        vli.as112client, vli.rsclient, vli.irrdbfilter, vli.ipv{$proto}canping,
+                        l.name, l.shortname, l.tag
+                        ";
 
         $qstr .= " ORDER BY c.autsys ASC, vli.id ASC";
 
@@ -388,13 +396,6 @@ class VlanInterface extends EntityRepository
             }
 
             if( $target == RouterEntity::TYPE_AS112 && !$int['as112client'] ) {
-                continue;
-            }
-
-            // Due the the way we format the SQL query to join with physical
-            // interfaces (of which there may be multiple per VLAN interface),
-            // we need to weed out duplicates
-            if( isset( $newints[ $int['address'] ] ) ) {
                 continue;
             }
 

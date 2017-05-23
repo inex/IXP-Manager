@@ -93,9 +93,9 @@ done
 if [[ $RELOAD -eq 1 ]]; then
     if [ $DEBUG -ne 0 ]; then
         echo "Smokeping reloading..."
-        $SMOKEPING --check && $SMOKEPING_RC reload
+        $SMOKEPING --check && $SMOKEPING_RELOAD
     else
-        $SMOKEPING --check >/dev/null && $SMOKEPING_RC reload &>/dev/null 2>&1
+        $SMOKEPING --check >/dev/null && $SMOKEPING_RELOAD &>/dev/null 2>&1
     fi
 else
     if [ $DEBUG -ne 0 ]; then
