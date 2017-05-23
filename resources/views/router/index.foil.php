@@ -49,7 +49,7 @@
                 ASN
             </td>
             <td>
-                Software
+                Last Updated
             </td>
             <td>
                 Action
@@ -64,7 +64,7 @@
                         <?= $router->getHandle() ?>
                     </td>
                     <td>
-                        <?= $router->getName() ?>
+                        <?= $router->getShortName() ?>
                     </td>
                     <td>
                         <a href="<?= url( '/vlan/view/id/' ).'/'.$router->getVlan()->getId()?> ">
@@ -75,7 +75,7 @@
                         <?= $router->resolveProtocol() ?>
                     </td>
                     <td>
-                        <?= $router->resolveType() ?>
+                        <?= $router->resolveTypeShortName() ?>
                     </td>
                     <td>
                         <?= $router->getRouterId() ?>
@@ -87,7 +87,10 @@
                         <?= $router->getAsn() ?>
                     </td>
                     <td>
-                        <?= $router->resolveSoftware() ?>
+                        <?= $router->getLastUpdated() ? $router->getLastUpdated()->format('Y-m-d H:i:s') : '(unknown)' ?>
+                        <?php if( $router->getLastUpdated() && $router->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
+                            <span class="label label-danger"><i class="glyphicon glyphicon-exclamation-sign" title="Last updated more than 1 day ago"></i></span>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">

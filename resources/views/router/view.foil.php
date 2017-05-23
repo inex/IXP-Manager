@@ -210,6 +210,19 @@ $this->layout( 'layouts/ixpv4' )
                             <code><?= $t->rt->getTemplate() ?></code>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Last Update:
+                            </b>
+                        </td>
+                        <td>
+                            <?= $t->rt->getLastUpdated() ? $t->rt->getLastUpdated()->format('Y-m-d H:i:s') : '(unknown)' ?>
+                            <?php if( $t->rt->getLastUpdated() && $t->rt->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
+                                <span class="label label-danger"><i class="glyphicon glyphicon-exclamation-sign" title="Last updated more than 1 day ago"></i></span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 </table>
             </div>
         </div>

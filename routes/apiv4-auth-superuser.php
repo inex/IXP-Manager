@@ -44,6 +44,22 @@ Route::post('vlan/smokeping/{vlanid}/{protocol}',             'VlanController@sm
 Route::post('vlan/smokeping/{vlanid}/{protocol}/{template}',  'VlanController@smokepingTargets');
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Routers
+//
+// Generate router configuration:
+Route::get('router/gen_config/{handle}',                        'RouterController@genConfig' );
+Route::get('router/gen-config/{handle}',                        'RouterController@genConfig' )
+     ->name( 'apiv4-router-gen-config' );
+
+// Get / set a routers last updated time:
+Route::post('router/updated/{handle}',                          'RouterController@setLastUpdated' );
+Route::get('router/updated/{handle}',                           'RouterController@getLastUpdated' );
+Route::get('router/updated',                                    'RouterController@getAllLastUpdated' );
+Route::get('router/updated-before/{threshold}',                 'RouterController@getAllLastUpdatedBefore' );
+
+
+
 
 
 Route::get('nagios/birdseye_daemons',                           'NagiosController@birdseyeDaemons');
@@ -51,9 +67,7 @@ Route::get('nagios/birdseye_daemons/{vlanid}',                  'NagiosControlle
 Route::get('nagios/birdseye_bgp_sessions/rs',                   'NagiosController@birdseyeRsBgpSessions');
 Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}',          'NagiosController@birdseyeRsBgpSessions');
 
-Route::get('router/gen_config/{handle}',                        'RouterController@genConfig' );
-Route::get('router/gen-config/{handle}',                        'RouterController@genConfig' )
-    ->name( 'apiv4-router-gen-config' );
+
 
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
