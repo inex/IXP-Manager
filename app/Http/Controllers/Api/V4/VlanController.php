@@ -75,10 +75,18 @@ class VlanController extends Controller
             $probe = 'FPing' . ( $protocol == 4 ? '' : '6' );
         }
 
+        // try and reorder the VLIs into alphabetical order of customer names
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v, $protocol, false );
+        $orderedVlis = [];
+        foreach( $vlis as $vli ) {
+            $orderedVlis[ $vli['cname'] . '::' . $vli['vliid'] ] = $vli;
+        }
+        ksort( $orderedVlis, SORT_STRING | SORT_FLAG_CASE );
+
         return response()
             ->view( $tmpl, [
                     'vlan'     => $v,
-                    'vlis'     => D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v, $protocol, false ),
+                    'vlis'     => $orderedVlis,
                     'probe'    => $probe,
                     'level'    => $request->input( 'level', '+++' ),
                     'protocol' => $protocol
