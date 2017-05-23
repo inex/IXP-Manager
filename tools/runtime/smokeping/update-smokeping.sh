@@ -27,9 +27,12 @@ KEY="my-ixp-manager-api-key"
 URL="https://ixp.example.com/api/v4/vlan/smokeping"
 ETCPATH="/etc/smokeping"
 SMOKEPING="/usr/bin/smokeping"
-SMOKEPING_RC="/rc.d/smokeping"
+SMOKEPING_RELOAD="/etc/rc.d/smokeping reload"
 VLANS="1 2"
 PROTOCOLS="4 6"
+
+
+# flag used to indicate if a reload is necessary below
 RELOAD=0
 
 # Parse arguments
