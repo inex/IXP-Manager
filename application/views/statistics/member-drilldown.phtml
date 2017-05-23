@@ -94,7 +94,7 @@
             <a class="btn btn-primary" href="{genUrl controller="statistics" action="member" ixp=$ixp->getId()}{if $user->getPrivs() eq 3}/shortname/{$cust->getShortname()}{/if}">
                 Statistics Overview
             </a>
-            {if $ixp->getSmokeping() and $isPort neq ''}
+            {if config( 'grapher.smokeping.url' ) and $isPort neq ''}
                 {$canPing = 0}
                 {foreach $pi->getVirtualInterface()->getVlanInterfaces() as $vli}
                     {if ( $vli->getIpv4enabled() and $vli->getIpv4canping() ) or ( $vli->getIpv6enabled() and $vli->getIpv6canping() )}

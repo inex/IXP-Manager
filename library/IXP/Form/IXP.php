@@ -94,14 +94,6 @@ class IXP_Form_IXP extends IXP_Form
             ->setAttrib( 'chzn-fix-width', '1' );
         $this->addElement( $country );
 
-        $smokeping = $this->createElement( 'text', 'smokeping' );
-        $smokeping->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
-            ->setRequired( false )
-            ->setLabel( 'Smokeping URL' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $smokeping  );
-        
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }

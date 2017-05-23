@@ -343,32 +343,5 @@ class IXP
         return $this->TrafficDaily;
     }
 
-    /**
-     * @var string
-     */
-    private $smokeping;
 
-
-    /**
-     * Set smokeping
-     *
-     * @param string $smokeping
-     * @return IXP
-     */
-    public function setSmokeping($smokeping)
-    {
-        $this->smokeping = $smokeping;
-    
-        return $this;
-    }
-
-    /**
-     * Get smokeping
-     *
-     * @return string 
-     */
-    public function getSmokeping()
-    {
-        return $this->smokeping;
-    }
 }

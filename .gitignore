@@ -45,10 +45,10 @@ application/configs/application.ini
 config/contact_group.php
 config/grapher_cli.php
 config/grapher_trunks.php
+config/grapher_smokeping_overrides.php
 config/ixp_tools.php
 config/mailinglists.php
 config/routers.php
-config/smokeping.php
 
 
 application/configs/rs*.conf

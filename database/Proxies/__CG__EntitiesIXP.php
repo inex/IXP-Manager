@@ -64,10 +64,10 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily', '' . "\0" . 'Entities\\IXP' . "\0" . 'smokeping'];
+            return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily', '' . "\0" . 'Entities\\IXP' . "\0" . 'smokeping'];
+        return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily'];
     }
 
     /**
@@ -439,28 +439,6 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTrafficDaily', []);
 
         return parent::getTrafficDaily();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setSmokeping($smokeping)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSmokeping', [$smokeping]);
-
-        return parent::setSmokeping($smokeping);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSmokeping()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSmokeping', []);
-
-        return parent::getSmokeping();
     }
 
 }

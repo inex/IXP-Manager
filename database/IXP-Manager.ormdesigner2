@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.8.1347" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<skipper version="3.2.10.1370" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -179,7 +179,6 @@
       <field name="address3" type="string" uuid="8e8b7fe8-e734-45b8-94cf-95657476c3e4"/>
       <field name="address4" type="string" uuid="4d4b3b92-df16-4e11-805e-b77bfd582742"/>
       <field name="country" type="string" uuid="72f9e0ee-d964-448f-ad2b-7e923aaf7435"/>
-      <field name="smokeping" type="string" size="255" uuid="20548855-3a72-4b18-bb6e-5ac03fa6aff8"/>
       <orm-attributes>
         <attribute name="table">ixp</attribute>
         <attribute name="tableName">ixp</attribute>
