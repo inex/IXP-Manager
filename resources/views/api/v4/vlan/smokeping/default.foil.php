@@ -21,8 +21,9 @@
 
 <?= $t->level ?> vlanint_<?= $vli['vliid'] ?>_ipv<?= $t->protocol ?>
 
-menu = <?= $vli['abrevcname'] ?> (IPv<?= $t->protocol ?>)
-title =  <?= $t->vlan->getName() ?> :: <?= $vli['abrevcname'] ?> via <?= $vli['address'] ?>
+menu = <?= preg_replace( '/[#\\\\]/', '', $vli['abrevcname'] . ' (IPv' . $t->protocol . ')' ) ?>
+
+title =  <?= preg_replace( '/[#\\\\]/', '', $t->vlan->getName() . ' :: ' . $vli['abrevcname'] . ' via ' . $vli['address'] ) ?>
 
 probe = <?= $t->probe ?>
 
