@@ -454,10 +454,15 @@
                         type: 'GET'
                     })
                         .done( function( data ) {
-                            result = ( data.success ) ? 'success': 'danger';
+                            nameClass = ( data.success ) ? 'success': 'danger';
+                            messageReturned = ( data.success ) ? 'The port has been deleted.': 'Error';
                             if( result ) {
-                                $("#message-ppp").html("<div class='alert alert-" + result + "' role='alert'>" + data.message + "</div>");
+                                $("#message-ppp").html("<div class='alert alert-" + nameClass + "' role='alert'>" + messageReturned + "</div>");
+                                if( action == 'split' ){
+                                    $("#breadcrumb-area").load( $(location).attr('pathname')+" .breadcrumb");
+                                }
                                 refreshDataTable('ppp');
+
                             }
                         })
                         .fail( function(){
