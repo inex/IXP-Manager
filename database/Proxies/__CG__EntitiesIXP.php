@@ -64,10 +64,10 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_p2p_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily', '' . "\0" . 'Entities\\IXP' . "\0" . 'aggregate_graph_name', '' . "\0" . 'Entities\\IXP' . "\0" . 'smokeping'];
+            return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'mrtg_p2p_path', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily', '' . "\0" . 'Entities\\IXP' . "\0" . 'aggregate_graph_name', '' . "\0" . 'Entities\\IXP' . "\0" . 'smokeping'];
+        return ['__isInitialized__', 'name', 'shortname', 'address1', 'address2', 'address3', 'address4', 'country', 'id', 'Infrastructures', '' . "\0" . 'Entities\\IXP' . "\0" . 'Customers', '' . "\0" . 'Entities\\IXP' . "\0" . 'TrafficDaily'];
     }
 
     /**
@@ -411,50 +411,6 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setMrtgPath($mrtgPath)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMrtgPath', [$mrtgPath]);
-
-        return parent::setMrtgPath($mrtgPath);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getMrtgPath()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMrtgPath', []);
-
-        return parent::getMrtgPath();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setMrtgP2pPath($mrtgP2pPath)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMrtgP2pPath', [$mrtgP2pPath]);
-
-        return parent::setMrtgP2pPath($mrtgP2pPath);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getMrtgP2pPath()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMrtgP2pPath', []);
-
-        return parent::getMrtgP2pPath();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function addTrafficDaily(\Entities\TrafficDaily $trafficDaily)
     {
 
@@ -483,50 +439,6 @@ class IXP extends \Entities\IXP implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTrafficDaily', []);
 
         return parent::getTrafficDaily();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setAggregateGraphName($aggregateGraphName)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAggregateGraphName', [$aggregateGraphName]);
-
-        return parent::setAggregateGraphName($aggregateGraphName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getAggregateGraphName()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAggregateGraphName', []);
-
-        return parent::getAggregateGraphName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setSmokeping($smokeping)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSmokeping', [$smokeping]);
-
-        return parent::setSmokeping($smokeping);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSmokeping()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSmokeping', []);
-
-        return parent::getSmokeping();
     }
 
 }

@@ -132,4 +132,21 @@ return [
     ],
 
 
+    /*
+     | Smokeping - mostly temporary configuration until migrated in full / proper to Grapher
+     |
+     | See: http://docs.ixpmanager.org/features/smokeping/
+     */
+    'smokeping' => [
+        'url' => env( 'GRAPHER_SMOKEPING_URL', false ),
+
+        'overrides' => call_user_func( function() {
+            if( file_exists( config_path( 'grapher_smokeping_overrides.php' ) ) ) {
+                return include( config_path( 'grapher_smokeping_overrides.php' ) );
+            } else {
+                return [];
+            }
+        }),
+    ],
+
 ];

@@ -64,10 +64,10 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
+            return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'aggregate_graph_name'];
+        return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
     }
 
     /**
@@ -340,28 +340,6 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIsPrimary', []);
 
         return parent::getIsPrimary();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setAggregateGraphName($aggregateGraphName)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAggregateGraphName', [$aggregateGraphName]);
-
-        return parent::setAggregateGraphName($aggregateGraphName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getAggregateGraphName()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAggregateGraphName', []);
-
-        return parent::getAggregateGraphName();
     }
 
     /**

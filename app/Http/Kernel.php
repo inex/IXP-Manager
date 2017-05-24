@@ -36,6 +36,12 @@ class Kernel extends HttpKernel {
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
+        'public/api/v4' => [
+            'throttle:60,1',
+            'bindings',
+            'apimaybeauth'
+        ],
+
         'api/v4' => [
             'throttle:60,1',
             'bindings',
@@ -65,6 +71,7 @@ class Kernel extends HttpKernel {
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
         'apiauth'          => \IXP\Http\Middleware\ApiAuthenticate::class,
+        'apimaybeauth'     => \IXP\Http\Middleware\ApiMaybeAuthenticate::class,
         'assert.privilege' => \IXP\Http\Middleware\AssertUserPrivilege::class,
         'grapher'          => \IXP\Http\Middleware\Services\Grapher::class,
         'patch-panel-port' => \IXP\Http\Middleware\PatchPanelPort::class,

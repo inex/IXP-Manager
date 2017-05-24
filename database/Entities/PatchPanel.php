@@ -234,11 +234,6 @@ class PatchPanel
         return $this->installation_date;
     }
 
-    public function getInstallationDateFormated()
-    {
-        return ($this->installation_date == null) ? $this->installation_date : $this->installation_date->format('Y-m-d');
-    }
-
     /**
      * Get port prefix
      *
@@ -257,16 +252,6 @@ class PatchPanel
     public function getActive()
     {
         return $this->active;
-    }
-
-    /**
-     * Get active text
-     *
-     * @return boolean
-     */
-    public function getActiveText()
-    {
-        return ($this->active) ? 'Yes': 'No';
     }
 
     /**
@@ -527,6 +512,15 @@ class PatchPanel
      */
     public function resolveChargeable(): string {
         return PatchPanelPort::$CHARGEABLES[ $this->getChargeable() ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text as
+     * defined in the PatchPanelPort::$CHARGEABLES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveMountedAt(): string {
+        return self::$MOUNTED_AT[ $this->getMountedAt() ] ?? 'Unknown';
     }
 
     /**

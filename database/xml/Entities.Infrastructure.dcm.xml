@@ -11,7 +11,6 @@
         <option name="default">0</option>
       </options>
     </field>
-    <field name="aggregate_graph_name" type="string" length="255" nullable="true"/>
     <field name="peeringdb_ix_id" type="bigint" nullable="true"/>
     <field name="ixf_ix_id" type="bigint" nullable="true"/>
     <unique-constraints>

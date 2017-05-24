@@ -367,5 +367,15 @@ class PatchPanelPortHistoryFile
             ->setIsPrivate( $pppf->getIsPrivate() );
     }
 
+    /**
+     * get the patch for the panel port history file
+     *
+     * @return string
+     */
+    public function getPath() {
+        return PatchPanelPortFile::UPLOAD_PATH . '/' . substr( $this->getStorageLocation(), 0, 1 ) . '/'
+            . substr( $this->getStorageLocation(), 1, 1 ) . '/' . $this->getStorageLocation();
+    }
+
 }
 

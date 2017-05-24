@@ -94,32 +94,6 @@ class IXP_Form_IXP extends IXP_Form
             ->setAttrib( 'chzn-fix-width', '1' );
         $this->addElement( $country );
 
-        $mrtgPath = $this->createElement( 'text', 'mrtg_path' );
-        $mrtgPath->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
-            ->setRequired( false )
-            ->setLabel( 'MRTG Path' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $mrtgPath  );
-        
-        $p2pPath = $this->createElement( 'text', 'mrtg_p2p_path' );
-        $p2pPath->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
-            ->setRequired( false )
-            ->setLabel( 'MRTG P2P Path' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $p2pPath  );
-        
-        $this->addElement( self::createAggregateGraphNameElement() );
-        
-        $smokeping = $this->createElement( 'text', 'smokeping' );
-        $smokeping->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
-            ->setRequired( false )
-            ->setLabel( 'Smokeping URL' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $smokeping  );
-        
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );
     }
@@ -146,22 +120,5 @@ class IXP_Form_IXP extends IXP_Form
         return $sw;
     }
     
-    /**
-     * Create a 'Aggregate Graph Name element used by the IXP and infrastructure forms
-     *
-     * @param string $name The element name (defaults to `aggregate_graph_name`)
-     * @return Zend_Form_Element_Text
-     */
-    public static function createAggregateGraphNameElement( $name = 'aggregate_graph_name' )
-    {
-        $agn = new Zend_Form_Element_Text( $name );
-        
-        return $agn->setRequired( false )
-            ->setLabel( 'Aggregate Graph Name' )
-            ->addFilter( 'StringTrim' )
-            ->addFilter( 'StringToLower' )
-            ->addFilter( new OSS_Filter_StripSlashes() );
-    }
-
 }
 

@@ -64,10 +64,10 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\Router' . "\0" . 'id', '' . "\0" . 'Entities\\Router' . "\0" . 'handle', '' . "\0" . 'Entities\\Router' . "\0" . 'protocol', '' . "\0" . 'Entities\\Router' . "\0" . 'type', '' . "\0" . 'Entities\\Router' . "\0" . 'name', '' . "\0" . 'Entities\\Router' . "\0" . 'shortname', '' . "\0" . 'Entities\\Router' . "\0" . 'router_id', '' . "\0" . 'Entities\\Router' . "\0" . 'peering_ip', '' . "\0" . 'Entities\\Router' . "\0" . 'asn', '' . "\0" . 'Entities\\Router' . "\0" . 'software', '' . "\0" . 'Entities\\Router' . "\0" . 'mgmt_host', '' . "\0" . 'Entities\\Router' . "\0" . 'api', '' . "\0" . 'Entities\\Router' . "\0" . 'api_type', '' . "\0" . 'Entities\\Router' . "\0" . 'lg_access', '' . "\0" . 'Entities\\Router' . "\0" . 'quarantine', '' . "\0" . 'Entities\\Router' . "\0" . 'bgp_lc', '' . "\0" . 'Entities\\Router' . "\0" . 'skip_md5', '' . "\0" . 'Entities\\Router' . "\0" . 'template', '' . "\0" . 'Entities\\Router' . "\0" . 'vlan'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\Router' . "\0" . 'id', '' . "\0" . 'Entities\\Router' . "\0" . 'handle', '' . "\0" . 'Entities\\Router' . "\0" . 'protocol', '' . "\0" . 'Entities\\Router' . "\0" . 'type', '' . "\0" . 'Entities\\Router' . "\0" . 'name', '' . "\0" . 'Entities\\Router' . "\0" . 'shortname', '' . "\0" . 'Entities\\Router' . "\0" . 'router_id', '' . "\0" . 'Entities\\Router' . "\0" . 'peering_ip', '' . "\0" . 'Entities\\Router' . "\0" . 'asn', '' . "\0" . 'Entities\\Router' . "\0" . 'software', '' . "\0" . 'Entities\\Router' . "\0" . 'mgmt_host', '' . "\0" . 'Entities\\Router' . "\0" . 'api', '' . "\0" . 'Entities\\Router' . "\0" . 'api_type', '' . "\0" . 'Entities\\Router' . "\0" . 'lg_access', '' . "\0" . 'Entities\\Router' . "\0" . 'quarantine', '' . "\0" . 'Entities\\Router' . "\0" . 'bgp_lc', '' . "\0" . 'Entities\\Router' . "\0" . 'skip_md5', '' . "\0" . 'Entities\\Router' . "\0" . 'template', '' . "\0" . 'Entities\\Router' . "\0" . 'last_updated', '' . "\0" . 'Entities\\Router' . "\0" . 'vlan'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\Router' . "\0" . 'id', '' . "\0" . 'Entities\\Router' . "\0" . 'handle', '' . "\0" . 'Entities\\Router' . "\0" . 'protocol', '' . "\0" . 'Entities\\Router' . "\0" . 'type', '' . "\0" . 'Entities\\Router' . "\0" . 'name', '' . "\0" . 'Entities\\Router' . "\0" . 'shortname', '' . "\0" . 'Entities\\Router' . "\0" . 'router_id', '' . "\0" . 'Entities\\Router' . "\0" . 'peering_ip', '' . "\0" . 'Entities\\Router' . "\0" . 'asn', '' . "\0" . 'Entities\\Router' . "\0" . 'software', '' . "\0" . 'Entities\\Router' . "\0" . 'mgmt_host', '' . "\0" . 'Entities\\Router' . "\0" . 'api', '' . "\0" . 'Entities\\Router' . "\0" . 'api_type', '' . "\0" . 'Entities\\Router' . "\0" . 'lg_access', '' . "\0" . 'Entities\\Router' . "\0" . 'quarantine', '' . "\0" . 'Entities\\Router' . "\0" . 'bgp_lc', '' . "\0" . 'Entities\\Router' . "\0" . 'skip_md5', '' . "\0" . 'Entities\\Router' . "\0" . 'template', '' . "\0" . 'Entities\\Router' . "\0" . 'vlan'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\Router' . "\0" . 'id', '' . "\0" . 'Entities\\Router' . "\0" . 'handle', '' . "\0" . 'Entities\\Router' . "\0" . 'protocol', '' . "\0" . 'Entities\\Router' . "\0" . 'type', '' . "\0" . 'Entities\\Router' . "\0" . 'name', '' . "\0" . 'Entities\\Router' . "\0" . 'shortname', '' . "\0" . 'Entities\\Router' . "\0" . 'router_id', '' . "\0" . 'Entities\\Router' . "\0" . 'peering_ip', '' . "\0" . 'Entities\\Router' . "\0" . 'asn', '' . "\0" . 'Entities\\Router' . "\0" . 'software', '' . "\0" . 'Entities\\Router' . "\0" . 'mgmt_host', '' . "\0" . 'Entities\\Router' . "\0" . 'api', '' . "\0" . 'Entities\\Router' . "\0" . 'api_type', '' . "\0" . 'Entities\\Router' . "\0" . 'lg_access', '' . "\0" . 'Entities\\Router' . "\0" . 'quarantine', '' . "\0" . 'Entities\\Router' . "\0" . 'bgp_lc', '' . "\0" . 'Entities\\Router' . "\0" . 'skip_md5', '' . "\0" . 'Entities\\Router' . "\0" . 'template', '' . "\0" . 'Entities\\Router' . "\0" . 'last_updated', '' . "\0" . 'Entities\\Router' . "\0" . 'vlan'];
     }
 
     /**
@@ -565,6 +565,28 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getLastUpdated()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastUpdated', []);
+
+        return parent::getLastUpdated();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLastUpdatedCarbon()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastUpdatedCarbon', []);
+
+        return parent::getLastUpdatedCarbon();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getVlan()
     {
 
@@ -851,6 +873,17 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function setLastUpdated(\DateTime $date): \Entities\Router
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastUpdated', [$date]);
+
+        return parent::setLastUpdated($date);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setVlan(\Entities\Vlan $vlan)
     {
 
@@ -879,6 +912,17 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
 
         return parent::resolveType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveTypeShortName(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveTypeShortName', []);
+
+        return parent::resolveTypeShortName();
     }
 
     /**
@@ -923,6 +967,17 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'authorise', [$privs]);
 
         return parent::authorise($privs);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function lastUpdatedGreaterThanSeconds(int $threshold)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'lastUpdatedGreaterThanSeconds', [$threshold]);
+
+        return parent::lastUpdatedGreaterThanSeconds($threshold);
     }
 
 }

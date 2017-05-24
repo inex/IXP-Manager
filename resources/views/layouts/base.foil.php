@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+
+    <!--  IXP MANAGER - template directory: resources/[views|skins] -->
+
     <base href="<?= url("") ?>">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

@@ -21,7 +21,8 @@
 #
 
 KEY="your-api-key"
-URL="https://ixp.example.com/ixp/api/v4/router/gen_config"
+URL="https://ixp.example.com/ixp/api/v4/router/gen-config"
+URL_DONE="https://ixp.example.com/ixp/api/v4/router/updated"
 ETCPATH="/usr/local/etc/bird"
 RUNPATH="/var/run/bird"
 LOGPATH="/var/log/bird"
@@ -145,6 +146,15 @@ else
         fi
     fi
 
+fi
+
+# tell IXP Manager the router has been updated:
+cmd="curl -s -X POST -H \"X-IXP-Manager-API-Key: ${KEY}\" ${URL_DONE}/${handle} >/dev/null"
+if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
+eval $cmd
+
+if [[ $? -ne 0 ]]; then
+    echo "Warning - could not inform IXP Manager via updated API"
 fi
 
 exit 0

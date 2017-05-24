@@ -983,12 +983,23 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function setDuplexPort(\Entities\PatchPanelPort $duplexPort, $newSlavePort)
+    public function isAllocated(): bool
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexPort', [$duplexPort, $newSlavePort]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAllocated', []);
 
-        return parent::setDuplexPort($duplexPort, $newSlavePort);
+        return parent::isAllocated();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDuplexPort(\Entities\PatchPanelPort $duplexPort)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexPort', [$duplexPort]);
+
+        return parent::setDuplexPort($duplexPort);
     }
 
     /**

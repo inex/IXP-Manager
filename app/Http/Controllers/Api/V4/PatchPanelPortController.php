@@ -2,12 +2,14 @@
 
 namespace IXP\Http\Controllers\Api\V4;
 
-use Auth;
-
-use D2EM;
+use Auth, D2EM, Storage;
 
 use Entities\{
-    PatchPanelPort, PatchPanelPortFile, PhysicalInterface
+    PatchPanelPort              as PatchPanelPortEntity,
+    PatchPanelPortHistory       as PatchPanelPortHistoryEntity,
+    PatchPanelPortFile          as PatchPanelPortFileEntity,
+    PatchPanelPortHistoryFile   as PatchPanelPortHistoryFileEntity,
+    PhysicalInterface           as PhysicalInterfaceEntity
 };
 
 use GrahamCampbell\Flysystem\FlysystemManager;
@@ -17,6 +19,16 @@ use Illuminate\Http\Request;
 
 
 
+/**
+ * PatchPanelPortController
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   APIv4
+ * @package    IXP\Http\Controllers\Api\V4
+ * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class PatchPanelPortController extends Controller {
 
 
@@ -29,7 +41,7 @@ class PatchPanelPortController extends Controller {
      */
     public function detail( int $id, bool $deep = false ): JsonResponse {
 
-        if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $id ) ) ) {
+        if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $id ) ) ) {
             abort( 404, 'No such patch panel port' );
         }
 
@@ -55,7 +67,7 @@ class PatchPanelPortController extends Controller {
      */
     public function setNotes( Request $request, int $id ) {
 
-        if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find( $id ) ) ) {
+        if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $id ) ) ) {
             abort( 404, 'No such patch panel port' );
         }
 
@@ -72,7 +84,7 @@ class PatchPanelPortController extends Controller {
         // (because we call this function from set connected / set ceased / etc)
         if( $request->input('pi_status') ) {
             if( $ppp->getSwitchPort() && ( $pi = $ppp->getSwitchPort()->getPhysicalInterface() ) ) {
-                /** @var PhysicalInterface $pi */
+                /** @var PhysicalInterfaceEntity $pi */
                 $pi->setStatus( $request->input( 'pi_status' ) );
             }
             D2EM::flush();
@@ -91,7 +103,7 @@ class PatchPanelPortController extends Controller {
      */
     public function uploadFile( Request $request, FlysystemManager $filesystem, int $id ): JsonResponse {
 
-        if( !( $ppp = D2EM::getRepository( PatchPanelPort::class )->find($id) ) ) {
+        if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find($id) ) ) {
             abort(404);
         }
 
@@ -101,7 +113,7 @@ class PatchPanelPortController extends Controller {
 
         $file = $request->file('upl');
 
-        $pppFile = new PatchPanelPortFile;
+        $pppFile = new PatchPanelPortFileEntity;
         $pppFile->setPatchPanelPort( $ppp );
         $pppFile->setStorageLocation( hash('sha256', $ppp->getId() . '-' . $file->getClientOriginalName() ) );
         $pppFile->setName( $file->getClientOriginalName() );
@@ -136,22 +148,47 @@ class PatchPanelPortController extends Controller {
     /**
      * Delete a patch panel port file
      *
-     * @param  FlysystemManager $filesystem instance of the file manager
      * @param  int $fileid patch panel port file ID
      * @return  JsonResponse
      */
-    public function deleteFile( FlysystemManager $filesystem, int $fileid ){
+    public function deleteFile( int $fileid ){
 
-        /** @var PatchPanelPortFile $pppFile */
-        if( !( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find( $fileid ) ) ) {
+        /** @var PatchPanelPortFileEntity $pppf */
+        if( !( $pppf = D2EM::getRepository( PatchPanelPortFileEntity::class )->find( $fileid ) ) ) {
             abort( 404 );
         }
 
-        $path = $pppFile->getPath();
+        $path = 'files/'.$pppf->getPath();
 
-        if( !$filesystem->has( $path ) || $filesystem->delete( $path ) ) {
-            $pppFile->getPatchPanelPort()->removePatchPanelPortFile( $pppFile );
-            D2EM::remove($pppFile);
+        if( Storage::exists( $path ) && Storage::delete( $path ) ) {
+            $pppf->getPatchPanelPort()->removePatchPanelPortFile( $pppf );
+            D2EM::remove( $pppf );
+            D2EM::flush();
+            return response()->json( ['success' => true, 'message' => 'File deleted' ] );
+        } else {
+            return response()->json( [ 'success' => false, 'message' => 'Error: file could not be deleted' ] );
+
+        }
+    }
+
+    /**
+     * Delete a patch panel port file history
+     *
+     * @param  int $fileid patch panel port history file ID
+     * @return  JsonResponse
+     */
+    public function deleteHistoryFile( int $fileid ){
+
+        /** @var PatchPanelPortHistoryFileEntity $ppphf */
+        if( !( $ppphf = D2EM::getRepository( PatchPanelPortHistoryFileEntity::class )->find( $fileid ) ) ) {
+            abort( 404 );
+        }
+
+        $path = 'files/'.$ppphf->getPath();
+
+        if( Storage::exists( $path ) && Storage::delete( $path ) ) {
+            $ppphf->getPatchPanelPortHistory()->removePatchPanelPortHistoryFile( $ppphf );
+            D2EM::remove( $ppphf );
             D2EM::flush();
             return response()->json( ['success' => true, 'message' => 'File deleted' ] );
         }
@@ -166,8 +203,8 @@ class PatchPanelPortController extends Controller {
      * @return  JsonResponse
      */
     public function toggleFilePrivacy( int $fileid ){
-        /** @var PatchPanelPortFile $pppFile */
-        if( !( $pppFile = D2EM::getRepository( PatchPanelPortFile::class )->find( $fileid ) ) ) {
+        /** @var PatchPanelPortFileEntity $pppFile */
+        if( !( $pppFile = D2EM::getRepository( PatchPanelPortFileEntity::class )->find( $fileid ) ) ) {
             abort( 404 );
         }
 
@@ -177,4 +214,66 @@ class PatchPanelPortController extends Controller {
         return response()->json( [ 'success' => true, 'isPrivate' => $pppFile->getIsPrivate() ] );
     }
 
+
+    /**
+     * Delete a patch panel port
+     *
+     * If the patch panel port has a duplex port then it will delete both ports.
+     * Also deletes associated files and histories.
+     *
+     * @param  int $id ID of the patch panel port to delete
+     * @return  JsonResponse
+     */
+    public function delete( int $id ) {
+
+        /** @var PatchPanelPortEntity $ppp */
+        if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $id ) ) ) {
+            abort( 404 );
+        }
+
+        D2EM::getRepository( PatchPanelPortEntity::class )->delete( $ppp );
+
+        return response()->json( [ 'success' => true ] );
+    }
+
+
+    /**
+     * Remove the linked port from the master and reset it as available.
+     *
+     * @param  int $id ID of the patch panel **master** port from which to split the slave
+     * @return  JsonResponse
+     */
+    public function split( int $id ){
+
+        /** @var PatchPanelPortEntity $ppp */
+        if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $id ) ) ) {
+            abort( 404 );
+        }
+
+        if( !$ppp->hasSlavePort() ) {
+            return response()->json( ['success' => false, 'message' => 'This patch panel port does not have any slave port.']) ;
+        }
+
+        $slavePort = $ppp->getDuplexSlavePort();
+
+        $ppp->removeDuplexSlavePort( $slavePort );
+
+        $ppp->setPrivateNotes(
+            "### " . date('Y-m-d') . " - ". Auth::user()->getUsername() ."\n\nThis port had a slave port: "
+            . $slavePort->getPrefix() . $slavePort->getNumber() . " which was split by " . Auth::user()->getUsername()
+            . " on " . date('Y-m-d') . ".\n\n"
+            . $ppp->getPrivateNotes()
+        );
+
+        $slavePort->resetPatchPanelPort();
+        $slavePort->setPrivateNotes(
+            "### " . date('Y-m-d') . " - ". Auth::user()->getUsername() ."\n\nThis port was a duplex slave port with "
+                . $ppp->getPrefix() . $ppp->getNumber() . " and was split by " . Auth::user()->getUsername()
+                . " on " . date('Y-m-d') . ".\n\n"
+        );
+
+        D2EM::flush();
+
+        return response()->json( [ 'success' => true, 'message' => 'The patch Panel port has been successfully split.' ] );
+    }
 }

@@ -63,12 +63,24 @@ class InfrastructureController extends IXP_Controller_FrontEnd
                 
                 $this->_feParams->listColumns = array_merge( $this->_feParams->listColumns, [
                         'name'      => 'Name',
-                        'shortname' => 'Shortname',
-                        'isPrimary'   => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
-                        'aggregate_graph_name' => 'Aggregate Graph Name'
+                        'shortname'       => 'Shortname',
+                        'isPrimary'       => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
+
+                        'ixf_ix_id' => [
+                            'title'    => 'IXF-ID',
+                            'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                            'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>'
+                        ],
+
+                        'peeringdb_ix_id' => [
+                            'title'    => 'PeeringDB ID',
+                            'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                            'subject'  => '<a href="https://www.peeringdb.com/api/ix/%%COL%%" target="_blank">%%COL%%</a>'
+                        ],
+
                     ]
                 );
-                
+
                 // display the same information in the view as the list
                 $this->_feParams->viewColumns = $this->_feParams->listColumns;
 
@@ -90,7 +102,7 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'i.id AS id, i.name AS name, i.isPrimary AS isPrimary,
                 i.shortname AS shortname, ix.shortname AS ixp_name,
-                ix.id AS ixp_id, i.aggregate_graph_name AS aggregate_graph_name'
+                ix.id AS ixp_id, i.ixf_ix_id AS ixf_ix_id, i.peeringdb_ix_id AS peeringdb_ix_id'
             )
             ->from( '\\Entities\\Infrastructure', 'i' )
             ->leftJoin( 'i.IXP', 'ix' );

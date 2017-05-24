@@ -71,10 +71,10 @@ class OSS_Crypt_Bcrypt
      * 14: 15.655678   1.565568
      * 15: 26.771987   2.677199
      */
-    private static $_cost = 9;
+    private static $_cost = 10;
 
     
-    public function __construct( $cost = 9 )
+    public function __construct( $cost = 10 )
     {
         if( CRYPT_BLOWFISH != 1 )
             throw new OSS_Crypt_Exception( 'CRYPT_BLOWFISH unavailable. See http://php.net/crypt' );
@@ -85,8 +85,8 @@ class OSS_Crypt_Bcrypt
 
     public static function hash( $plain )
     {
-        $hash = crypt( $plain, self::generateSalt() );
-    
+        $hash = password_hash( $plain, PASSWORD_BCRYPT, [ 'cost' => self::$_cost ] );
+
         if( strlen( $hash ) > 13 )
             return $hash;
     
@@ -96,13 +96,7 @@ class OSS_Crypt_Bcrypt
     
     public static function verify( $plain, $hash )
     {
-        return $hash === crypt( $plain, $hash );
+        return password_verify( $plain, $hash );
     }
-
-    public static function generateSalt()
-    {
-        return sprintf( '$2a$%02d$%s', self::$_cost, OSS_String::random( 22, true, true, true, '', '' ) );
-    }
-
 }
 

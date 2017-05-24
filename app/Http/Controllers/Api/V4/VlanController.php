@@ -27,14 +27,16 @@ namespace IXP\Http\Controllers\Api\V4;
 use D2EM;
 
 use Entities\{
-    Vlan as VlanEntity
+    Vlan as VlanEntity,
+    VlanInterface as VlanInterfaceEntity
 };
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request,Response};
+use Illuminate\Support\Facades\View as FacadeView;
 
 /**
- * VlanController API Controller
+ * Vlan API Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -51,15 +53,70 @@ class VlanController extends Controller
      * @params  $id Vlan id
      * @return  JSON array of IPvX
      */
-    public function getIPvAddress( Request $request, int $id ) : JsonResponse{
+    public function getIPvAddress( Request $request, int $id ) : JsonResponse {
 
         /** @var VlanEntity $vl */
-        if( !( $vl =  D2EM::getRepository( VlanEntity::class )->find( $id ) ) ){
+        if( !( $vl = D2EM::getRepository( VlanEntity::class )->find( $id ) ) ) {
             return abort( 404 );
         }
 
-        $ipvList = D2EM::getRepository( VlanEntity::class )->getIPvAddress( $vl->getId() , $request->input( 'ipType' ), $request->input( 'vliid' ) );
+        $ipvList = D2EM::getRepository( VlanEntity::class )->getIPvAddress( $vl->getId(), $request->input( 'ipType' ), $request->input( 'vliid' ) );
 
-        return response()->json( ['ipvList' => $ipvList] );
+        return response()->json( [ 'ipvList' => $ipvList ] );
+    }
+
+    /**
+     * Generate Smokeping configuration.
+     *
+     * @see http://docs.ixpmanager.org/features/smokeping/
+     * @param Request $request
+     * @param int $vlanid The ID of the VLAN
+     * @param int $protocol Either 4 or 6
+     * @param string $template Option template to use
+     * @return Response
+     */
+    public function smokepingTargets( Request $request, int $vlanid, int $protocol, string $template = null ): Response {
+        /** @var VlanEntity $v */
+        if( !( $v =  D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ){
+            return abort( 404, 'Unknown VLAN' );
+        }
+
+        if( !in_array( $protocol, [ 4, 6 ] ) ) {
+            return abort( 404, 'Unknown protocol' );
+        }
+
+        if( $template === null ) {
+            $tmpl = 'api/v4/vlan/smokeping/default';
+        } else {
+            $tmpl = sprintf( 'api/v4/vlan/smokeping/%s', preg_replace( '/[^a-z0-9\-]/', '', strtolower( $template ) ) );
+        }
+
+        if( !FacadeView::exists( $tmpl ) ) {
+            abort(404, 'Unknown template');
+        }
+
+        if( $request->input( 'probe', false ) ) {
+            $probe = $request->input( 'probe' );
+        } else {
+            $probe = 'FPing' . ( $protocol == 4 ? '' : '6' );
+        }
+
+        // try and reorder the VLIs into alphabetical order of customer names
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v, $protocol, false );
+        $orderedVlis = [];
+        foreach( $vlis as $vli ) {
+            $orderedVlis[ $vli['cname'] . '::' . $vli['vliid'] ] = $vli;
+        }
+        ksort( $orderedVlis, SORT_STRING | SORT_FLAG_CASE );
+
+        return response()
+            ->view( $tmpl, [
+                    'vlan'     => $v,
+                    'vlis'     => $orderedVlis,
+                    'probe'    => $probe,
+                    'level'    => $request->input( 'level', '+++' ),
+                    'protocol' => $protocol
+                ], 200 )
+            ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
 }

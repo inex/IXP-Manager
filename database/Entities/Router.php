@@ -2,6 +2,9 @@
 
 namespace Entities;
 
+use Carbon\Carbon;
+use DateTime;
+
 /**
  * Router
  */
@@ -36,6 +39,16 @@ class Router
     public static $TYPES = [
         self::TYPE_ROUTE_SERVER             => 'Route Server',
         self::TYPE_ROUTE_COLLECTOR          => 'Route Colllector',
+        self::TYPE_AS112                    => 'AS112',
+        self::TYPE_OTHER                    => 'Other'
+    ];
+
+    /**
+     * @var array Email ids to classes
+     */
+    public static $TYPES_SHORT = [
+        self::TYPE_ROUTE_SERVER             => 'RS',
+        self::TYPE_ROUTE_COLLECTOR          => 'RC',
         self::TYPE_AS112                    => 'AS112',
         self::TYPE_OTHER                    => 'Other'
     ];
@@ -142,32 +155,36 @@ class Router
     /**
      * @var integer
      */
-    private $api_type;
+    private $api_type = self::API_TYPE_NONE;
 
     /**
      * @var integer
      */
-    private $lg_access;
+    private $lg_access = User::AUTH_CUSTUSER;
 
     /**
      * @var boolean
      */
-    private $quarantine;
+    private $quarantine = false;
 
     /**
      * @var boolean
      */
-    private $bgp_lc;
+    private $bgp_lc = false;
 
     /**
      * @var boolean
      */
-    private $skip_md5;
+    private $skip_md5 = false;
 
     /**
      * @var string
      */
     private $template;
+    /**
+     * @var \DateTime
+     */
+    private $last_updated;
 
     /**
      * @var \Entities\Vlan
@@ -538,6 +555,24 @@ class Router
     }
 
     /**
+     * Get last updated
+     *
+     * @return DateTime|null
+     */
+    public function getLastUpdated() {
+        return $this->last_updated;
+    }
+
+    /**
+     * Get last updated as a Carbon object
+     *
+     * @return Carbon|null
+     */
+    public function getLastUpdatedCarbon() {
+        return $this->last_updated ? Carbon::instance( $this->getLastUpdated() ) : null;
+    }
+
+    /**
      * Get vlan
      *
      * @return \Entities\Vlan
@@ -845,6 +880,17 @@ class Router
     }
 
     /**
+     * Set last updated
+     *
+     * @param DateTime $date
+     * @return Router
+     */
+    public function setLastUpdated( DateTime $date ): Router {
+        $this->last_updated = $date;
+        return $this;
+    }
+
+    /**
      * Set vlan
      *
      * @param \Entities\Vlan $vlan
@@ -868,12 +914,21 @@ class Router
     }
 
     /**
-     * Turn the database integer representation of the protocol into text as
-     * defined in the self::$PROTOCOLS array (or 'Unknown')
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES array (or 'Unknown')
      * @return string
      */
     public function resolveType(): string {
         return self::$TYPES[ $this->getType() ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES_SHORT array (or 'Unknown')
+     * @return string
+     */
+    public function resolveTypeShortName(): string {
+        return self::$TYPES_SHORT[ $this->getType() ] ?? 'Unknown';
     }
 
     /**
@@ -911,5 +966,19 @@ class Router
      */
     function authorise( int $privs ): bool {
         return $privs >= $this->getLgAccess();
+    }
+
+    /**
+     * This function check is the last updated time is greater than the given number of seconds
+     *
+     * @return bool
+     */
+    public function lastUpdatedGreaterThanSeconds( int $threshold ) {
+        if( !$this->getLastUpdated() ) {
+            // if null, then, as far as we know, it has never been updated....
+            return true;
+        }
+
+        return $this->getLastUpdatedCarbon()->diffInSeconds( null ) > $threshold;
     }
 }

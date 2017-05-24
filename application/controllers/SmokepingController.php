@@ -138,8 +138,6 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
         header( 'Content-Type: image/png' );
         header( 'Expires: Thu, 01 Jan 1970 00:00:00 GMT' );
         
-        $ixp = $this->loadIxpById( $this->getParam( 'ixp', false ) );
-        
         $scale = $this->getParam( 'scale', array_keys( self::$PERIODS )[0] );
         if( !in_array( $scale, array_keys( self::$PERIODS ) ) )
             $scale = array_keys( self::$PERIODS )[0];
@@ -172,7 +170,13 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
         
         $target = "infra_{$infra}.vlan_{$vlan}.vlanint_{$vlanint}_{$proto}";
 
-        $filename = "{$ixp->getSmokeping()}/?displaymode=a;start=now-{$scale};end=now;target={$target}";
+        if( config( 'grapher.smokeping.overrides.' . $vlan, false ) ) {
+            $url = config( 'grapher.smokeping.overrides.' . $vlan );
+        } else {
+            $url = config( 'grapher.smokeping.url' );
+        }
+
+        $filename = "{$url}/?displaymode=a;start=now-{$scale};end=now;target={$target}";
         
         $this->getLogger()->debug( "Serving Smokeping {$target} to {$this->getUser()->getUsername()} from [{$filename}]" );
         

@@ -154,7 +154,6 @@
           <attribute name="column">isPrimary</attribute>
         </orm-attributes>
       </field>
-      <field name="aggregate_graph_name" type="string" size="255" uuid="3e884e1f-245b-4e9b-a67f-aa9b4dcbcc01"/>
       <field name="ixp_id" type="integer" required="true" uuid="6d316694-a9c3-4547-9265-daf01edf6a88"/>
       <field name="peeringdb_ix_id" type="bigint" uuid="bb30b856-4862-49b3-b240-6ac0098ac233"/>
       <field name="ixf_ix_id" type="bigint" uuid="e9080278-6bc7-4eae-b50c-04483c064ac5"/>
@@ -180,10 +179,6 @@
       <field name="address3" type="string" uuid="8e8b7fe8-e734-45b8-94cf-95657476c3e4"/>
       <field name="address4" type="string" uuid="4d4b3b92-df16-4e11-805e-b77bfd582742"/>
       <field name="country" type="string" uuid="72f9e0ee-d964-448f-ad2b-7e923aaf7435"/>
-      <field name="mrtg_path" type="string" size="255" uuid="1328ffc2-7a48-4aea-9e9c-3e1e9e50489f"/>
-      <field name="mrtg_p2p_path" type="string" size="255" uuid="f3a641a9-5f10-42ab-8a7c-97da577dad11"/>
-      <field name="aggregate_graph_name" type="string" size="255" uuid="6880fa9c-3176-45bb-9775-0bf0a5be549a"/>
-      <field name="smokeping" type="string" size="255" uuid="20548855-3a72-4b18-bb6e-5ac03fa6aff8"/>
       <orm-attributes>
         <attribute name="table">ixp</attribute>
         <attribute name="tableName">ixp</attribute>
@@ -1323,6 +1318,7 @@
       <field name="bgp_lc" type="boolean" required="true" uuid="940978a5-70fe-420e-92b0-f03b8c04ec2b"/>
       <field name="template" type="string" required="true" uuid="a1e53f31-945e-40b2-8621-a1ced0d81384"/>
       <field name="skip_md5" type="boolean" required="true" uuid="1a576d6a-f681-43a4-93c0-5f31524248b0"/>
+      <field name="last_updated" type="datetime" uuid="e6d82ff3-94c4-496a-803e-e295ff49c9b9"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Router</attribute>
         <attribute name="table">routers</attribute>
@@ -1410,7 +1406,7 @@
     <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" bg-color="4294967295" hdr-color="4292006610" position-x="421" position-y="186" size-x="0" size-x2="128" size-y="0" size-y2="171"/>
     <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="777" position-y="-344" size-x="0" size-x2="163" size-y="0" size-y2="325"/>
     <entity uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10" bg-color="4294967295" hdr-color="4292006610" position-x="1395" position-y="396" size-x="0" size-x2="109" size-y="0" size-y2="59"/>
-    <entity uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d" bg-color="4294967295" hdr-color="4292006610" position-x="1608" position-y="80" size-x="0" size-x2="122" size-y="0" size-y2="129"/>
+    <entity uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1608" position-y="80" size-x="0" size-x2="122" size-y="0" size-y2="129"/>
     <entity uuid="3da990c1-6ab8-436e-8800-e09a08ebee16" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1032" position-y="1017" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
     <entity uuid="4322485e-ef2f-4893-a334-d1f7554c2fdb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1039" position-y="-319" size-x="0" size-x2="141" size-y="0" size-y2="241"/>
     <entity uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786" bg-color="4294967295" hdr-color="4292006610" position-x="1709" position-y="-32" size-x="0" size-x2="109" size-y="0" size-y2="74"/>
@@ -1443,7 +1439,7 @@
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
     <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="272" position-y="321" size-x="0" size-x2="98" size-y="0" size-y2="87"/>
-    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1517" position-y="-112" size-x="0" size-x2="171" size-y="0" size-y2="115"/>
+    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1519" position-y="-122" size-x="0" size-x2="171" size-y="0" size-y2="129"/>
     <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
     <entity uuid="fe102ac1-eef6-41b0-ae2b-87fc4fc10ba1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1320" position-y="-508" size-x="0" size-x2="141" size-y="0" size-y2="115"/>
     <many-to-many-association uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a" color="4288059030"/>

@@ -8,9 +8,24 @@
         pagination = false;
     <?php endif; ?>
 
-
     $(document).ready(function(){
-        $('#patch-panel-port-list').DataTable({
+        loadDataTable( 'ppp' );
+        $('#table-ppp').on('draw.dt', function() {
+            unbindEvent()
+            loadEvent();
+        });
+
+    });
+
+
+
+
+
+    /**
+     * initialise the datatable table
+     */
+    function loadDataTable( tableId ){
+        table = $( '#table-' + tableId ).DataTable({
             "paging":   pagination,
             "autoWidth": false,
             "columnDefs": [{
@@ -20,6 +35,14 @@
             }],
             "order": [[ 0, "asc" ]]
         });
+        unbindEvent()
+        loadEvent();
+    }
+
+    /**
+     * initialise all the event
+     */
+    function loadEvent(){
 
         $( "a[id|='edit-notes']" ).on( 'click', function(e){
             e.preventDefault();
@@ -52,13 +75,47 @@
             uploadPopup( pppid );
         });
 
+        $( "a[id|='delete-ppp']" ).on( 'click', function(e){
+            e.preventDefault();
+            var pppid = (this.id).substring(11);
+            dangerAction( 'delete', pppid );
+        });
+
+        $( "a[id|='split-ppp']" ).on( 'click', function(e){
+            e.preventDefault();
+            var pppid = (this.id).substring(10);
+            dangerAction( 'split', pppid );
+        });
+
         $('[data-toggle="tooltip"]').tooltip()
 
         $('#toggle-potential-slaves').on( 'click', function(e) {
             $('.potential-slave').toggle();
         });
+        
+        $('.dropdown-submenu a.submenu').on("click", function(e){
+            $(this).next('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
+        });
 
-    });
+    }
+
+    function unbindEvent(){
+        $( ".dropdown-submenu a.submenu").unbind( "click" );
+        $( "#toggle-potential-slaves").unbind( "click" );
+    }
+
+    /**
+     * allow to refresh the table without reloading the page
+     * reloading only a part of the DOM
+     */
+    function refreshDataTable( htmlId ) {
+        $( "#area-"+htmlId).load( $(location).attr('pathname')+" #table-"+ htmlId ,function( ) {
+            table.destroy();
+            loadDataTable( htmlId );
+        });
+    }
 
     /**
      * Adds a prefix when a user goes to add/edit notes (typically name and date).
@@ -353,6 +410,68 @@
                     $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-lock').addClass('fa-unlock');
                 }
             });
+    }
+
+
+    function dangerAction( action, pppid){
+
+        if( action == 'delete' ){
+            message = "WARNING: Deletion is permanent and will remove the port from the patch panel including all history and files.";
+            urlAction = "<?= url('api/v4/patch-panel-port/delete') ?>/" + pppid;
+
+            if( $('#danger-dropdown-'+pppid).data("slave-port") ){
+                message += "<b> As this is a duplex port, both individual ports will be deleted. </b> If you do not want this, then split the port first."
+            }
+        }
+
+        if( action == 'split' ){
+            prefix = $('#danger-dropdown-'+pppid).data("port-prefix");
+
+            slavePort = $('#danger-dropdown-'+pppid).data("slave-port");
+            masterPort = prefix+$('#danger-dropdown-'+pppid).data("master-port");
+
+            message = "Are you sure you want to split this port? The slave port ("+ slavePort +") will be removed from the master port ("+ masterPort +") and marked as available. If you want to split the other way ("+ slavePort +" as master), split now and then use the move function on ("+ masterPort +") afterwards.";
+            urlAction = "<?= url('api/v4/patch-panel-port/split') ?>/" + pppid;
+        }
+
+
+
+
+        bootbox.confirm({
+            title: "Danger Action",
+            message: message,
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> Confirm'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.ajax( urlAction, {
+                        type: 'GET'
+                    })
+                        .done( function( data ) {
+                            result = ( data.success ) ? 'success': 'danger';
+                            if( result ) {
+                                $("#message-ppp").html("<div class='alert alert-" + result + "' role='alert'>" + data.message + "</div>");
+                                refreshDataTable('ppp');
+                            }
+                        })
+                        .fail( function(){
+                            alert( 'Could not update notes. API / AJAX / network error' );
+                            throw new Error("Error running ajax query for "+urlAction);
+                        })
+                        .always( function() {
+                            $('#notes-modal').modal('hide');
+                        });
+                }
+            }
+        });
+
+
     }
 
 </script>

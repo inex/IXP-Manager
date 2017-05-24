@@ -32,6 +32,7 @@ use Entities\{
 
 use Illuminate\Http\JsonResponse;
 
+
 /**
  * VlanInterface API Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -86,4 +87,29 @@ class VlanInterfaceController extends Controller
 
         return response()->json( [ 'success' => true, 'message' => 'The Vlan Interface and all the Layer2address associated have been deleted successfully.' ] );
     }
+
+    /**
+     * Get vli id / vi id / vlan tag / cust name matrix for sflow data processing
+     *
+     * FIXME insert reference to documentation - see islandbridgenetworks/IXP-Manager#34
+     *
+     * @return JsonResponse
+     */
+    public function sflowMatrix(): JsonResponse
+    {
+        return response()->json( D2EM::getRepository( VlanInterfaceEntity::class )->sflowMatrixArray() );
+    }
+
+    /**
+     * Get vi id / mac table for sflow data processing
+     *
+     * FIXME insert reference to documentation - see islandbridgenetworks/IXP-Manager#34
+     *
+     * @return JsonResponse
+     */
+    public function sflowMacTable(): JsonResponse
+    {
+        return response()->json( D2EM::getRepository( VlanInterfaceEntity::class )->sflowMacTableArray() );
+    }
+
 }
