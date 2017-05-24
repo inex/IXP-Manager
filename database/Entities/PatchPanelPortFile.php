@@ -52,7 +52,6 @@ class PatchPanelPortFile
      */
     private $is_private = '0';
 
-
     /**
      * Set name
      *
@@ -348,12 +347,12 @@ class PatchPanelPortFile
     /**
      * get the patch for the panel port file
      *
-     * @param string $hash hash sha256 for the file uploaded
-     *
      * @return string
      */
     public function getPath() {
         return self::UPLOAD_PATH . '/' . substr( $this->getStorageLocation(), 0, 1 ) . '/'
             . substr( $this->getStorageLocation(), 1, 1 ) . '/' . $this->getStorageLocation();
     }
+
+
 }

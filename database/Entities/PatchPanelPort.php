@@ -3,7 +3,7 @@
 namespace Entities;
 
 use Carbon\Carbon;
-use D2EM;
+use D2EM, Auth;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use IXP\Mail\PatchPanelPort\{
@@ -13,12 +13,18 @@ use IXP\Mail\PatchPanelPort\{
     Loa     as LoaMail
 };
 
+use Entities\{
+    PatchPanelPortFile  as PatchPanelPortFileEntity,
+    PatchPanelPort      as PatchPanelPortEntity
+};
+
 use Parsedown;
 
 
 /**
  * Entities\PatchPanelPort
  */
+
 class PatchPanelPort
 {
 
@@ -97,13 +103,21 @@ class PatchPanelPort
     ];
 
     /**
-     * Array STATES for allocated
+     * Array STATES for available
      */
     public static $AVAILABLE_STATES = [
         self::STATE_AVAILABLE,
         self::STATE_PREWIRED,
         self::STATE_AWAITING_CEASE,
         self::STATE_CEASED,
+    ];
+
+    /**
+     * Array STATES for available
+     */
+    public static $AVAILABLE_FOR_ALLOCATION_STATES = [
+        self::STATE_AVAILABLE,
+        self::STATE_PREWIRED,
     ];
 
 
@@ -248,7 +262,7 @@ class PatchPanelPort
     /**
      * @var string
      */
-    private $loa_code;
+    private $loa_code = '';
 
     /**
      * Constructor
@@ -1151,25 +1165,9 @@ class PatchPanelPort
         return $states;
     }
 
-    public function setDuplexPort( PatchPanelPort $duplexPort, $newSlavePort){
-        if($newSlavePort){
-            $duplexPort->setDuplexMasterPort($this);
-        }
-
-        $duplexPort->setCustomer($this->getCustomer());
-        $duplexPort->setState($this->getState());
-        $duplexPort->setNotes($this->getNotes());
-        $duplexPort->setLastStateChange($this->getLastStateChange());
-        $duplexPort->setInternalUse($this->getInternalUse());
-        $duplexPort->setChargeable($this->getChargeable());
-
-        $duplexPort->setAssignedAt($this->getAssignedAt());
-        $duplexPort->setConnectedAt($this->getConnectedAt());
-
-        $duplexPort->setCeaseRequestedAt($this->getCeaseRequestedAt());
-        $duplexPort->setCeasedAt($this->getCeasedAt());
-
-        D2EM::persist($duplexPort);
+    public function setDuplexPort( PatchPanelPort $duplexPort ){
+        $duplexPort->setDuplexMasterPort($this);
+        $this->addDuplexSlavePort( $duplexPort );
         D2EM::flush();
 
         return $duplexPort;
@@ -1517,5 +1515,6 @@ class PatchPanelPort
     public function getCircuitReference(): string {
         return sprintf( "PPP-%05d", $this->getId() );
     }
+
 
 }

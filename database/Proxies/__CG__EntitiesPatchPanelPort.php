@@ -994,12 +994,12 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function setDuplexPort(\Entities\PatchPanelPort $duplexPort, $newSlavePort)
+    public function setDuplexPort(\Entities\PatchPanelPort $duplexPort)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexPort', [$duplexPort, $newSlavePort]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDuplexPort', [$duplexPort]);
 
-        return parent::setDuplexPort($duplexPort, $newSlavePort);
+        return parent::setDuplexPort($duplexPort);
     }
 
     /**
@@ -1275,6 +1275,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCircuitReference', []);
 
         return parent::getCircuitReference();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function movePort(\Entities\PatchPanelPort $masterPort, $slavePort = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'movePort', [$masterPort, $slavePort]);
+
+        return parent::movePort($masterPort, $slavePort);
     }
 
 }

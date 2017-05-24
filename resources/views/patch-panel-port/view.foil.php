@@ -341,6 +341,7 @@
                             ?>
 
                             <div class="col-xs-12" id="area_file_<?= $p->getId()."_".$objectType ?>">
+                                <span id="message-<?= $p->getId()."-".$objectType ?>"></span>
                                 <?php if( count( $listFile ) > 0 ): ?>
                                     <div class="panel panel-default" id="list_file_<?= $p->getId()."_".$objectType ?>">
                                         <div class="panel-heading padding-10">
@@ -400,7 +401,7 @@
                                                                         <i class="fa fa-download"></i>
                                                                     </a>
                                                                     <?php if( Auth::user()->isSuperUser() ): ?>
-                                                                        <button class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>,<?= $p->getId()?>,'<?=$objectType?>')" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                                                        <button id="delete_<?=$file->getId()?>" class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>,<?= $p->getId()?>,'<?=$objectType?>')" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
                                                                     <?php endif; ?>
                                                                 </div>
                                                             </td>
@@ -457,15 +458,20 @@
             },
             callback: function ( result ) {
                 if( result ){
-                    idPPP = <?= $t->ppp->getId()?>;
-                    $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + idFile )
+                    if( objectType == 'ppp' ){
+                        urlAction = "<?= url('api/v4/patch-panel-port/delete-file') ?>";
+                    }
+                    else{
+                        urlAction = "<?= url('api/v4/patch-panel-port/delete-history-file') ?>";
+                    }
+                    $.ajax( urlAction + "/" + idFile )
                     .done( function( data ) {
                         if( data.success ){
                             $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->ppp->getId()?> #list_file_"+idHistory+'_'+objectType );
                             $( '.bootbox.modal' ).modal( 'hide' );
                         }
                         else{
-                            $( '#message_'+idFile ).removeClass( 'success' ).addClass( 'error' ).html( 'Delete error : '+data.message );
+                            $( '#message-'+idHistory+'-'+objectType ).html("<div class='alert alert-danger' role='alert'>" + data.message + "</div>");
                             $( '#delete_'+idFile ).remove();
                         }
                     })

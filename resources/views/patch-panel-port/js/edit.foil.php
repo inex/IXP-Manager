@@ -8,7 +8,16 @@
     /**
      * hide the help block at loading
      */
-    $('.help-block').hide();
+    $('p.help-block').hide();
+    $('div.help-block').hide();
+
+    /**
+     * display / hide help sections on click on the help button
+     */
+    $( "#help-btn" ).click( function() {
+        $( "p.help-block" ).toggle();
+        $( "div.help-block" ).toggle();
+    });
 
     $( document ).ready(function() {
 
@@ -222,13 +231,6 @@
             $( "#switch_port" ).html('').trigger( "chosen:updated" );
             resetCustomer();
             $( "#pi_status_area" ).hide();
-        });
-
-        /**
-         * display / hide help sections on click on the help button
-         */
-        $( "#help-btn" ).click( function() {
-            $( ".help-block" ).toggle();
         });
 
         var publicNotes  = $( '#notes' );

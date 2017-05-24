@@ -31,11 +31,14 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::get( 'email/{id}/{type}',                'PatchPanelPortController@email' );
 
     Route::get( 'download-file/{id}',               'PatchPanelPortController@downloadFile' );
+    Route::get( 'move-form/{id}',                   'PatchPanelPortController@moveForm' );
+    Route::post( 'move',                            'PatchPanelPortController@move' );
 
     Route::post( 'store',                           'PatchPanelPortController@store' );
 
     Route::get(  'email/{id}/{type}',               'PatchPanelPortController@email' );
     Route::post( 'send-email/{id}/{type}',          'PatchPanelPortController@sendEmail' );
+
 
 });
 

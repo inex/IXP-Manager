@@ -106,7 +106,7 @@ class PatchPanelController extends Controller
                 'u_position'         => $pp->getUPosition(),
                 'cable_type'         => $pp->getCableType(),
                 'connector_type'     => $pp->getConnectorType(),
-                'installation_date'  => $pp->getInstallationDateFormated(),
+                'installation_date'  => $pp->getInstallationDate()->format('Y-m-d'),
                 'port_prefix'        => $pp->getPortPrefix(),
                 'numberOfPorts'      => 0,
             ]);
@@ -190,7 +190,7 @@ class PatchPanelController extends Controller
      * @author  Yann Robin <yann@islandbridgenetworks.ie>
      *
      * @param int $id
-     * @param bool $active
+     * @param int $active
      * @return RedirectResponse
      */
     public function changeStatus( int $id, int $active ): RedirectResponse {
