@@ -328,8 +328,8 @@ class PatchPanelPort
     {
         $name = $this->getPatchPanel()->getPortPrefix() . $this->getNumber();
         if( $this->hasSlavePort() ) {
-            $name = ( $this->getNumber() % 2 ? ( floor( $this->getNumber() / 2 ) ) + 1 : $this->getNumber() / 2 ) . ' (' . $name;
-            $name .= '/' . $this->getDuplexSlavePortName() . ')';
+            $name .= '/' . $this->getDuplexSlavePortName() . ' ';
+            $name .= '(' . ( $this->getNumber() % 2 ? ( floor( $this->getNumber() / 2 ) ) + 1 : $this->getNumber() / 2 ) . ')';
         }
         return $name;
     }

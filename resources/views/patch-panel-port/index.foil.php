@@ -13,12 +13,12 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <?php if( $t->pp && $t->pp->hasDuplexPort() ): ?>
-            <div class="btn-group btn-group-xs" role="group">
+            <!-- div class="btn-group btn-group-xs" role="group">
                 <button id="toggle-potential-slaves" class="btn btn-default">
                     <span class="potential-slave">Split Duplex Ports</span>
                     <span class="potential-slave" style="display: none;">Hide Duplex Ports</span>
                 </button>
-            </div>
+            </div -->
         <?php endif; ?>
         <div class="btn-group btn-group-xs" role="group">
             <?php if( $t->pp ): ?>
@@ -77,7 +77,7 @@
                     $lastUsedNumber = 0;
                     foreach( $t->patchPanelPorts as $ppp ):
                         /** @var \Entities\PatchPanelPort $ppp */
-                        $potentialSlave = $t->pp && $t->pp->hasDuplexPort() && !( $ppp->getNumber() % 2 ) && $ppp->isAvailableForUse();
+                        $potentialSlave = false; //$t->pp && $t->pp->hasDuplexPort() && !( $ppp->getNumber() % 2 ) && $ppp->isAvailableForUse();
                         ?>
                         <tr <?= $potentialSlave ? 'class="potential-slave" style="display: none;"' : '' ?>">
                             <td>
@@ -89,8 +89,8 @@
                                     <?php
                                         $num = floor( $ppp->getNumber() / 2 ) + ( $ppp->getNumber() % 2 );
 
-                                        if( $t->pp && $t->pp->hasDuplexPort() && !$potentialSlave && !$ppp->isDuplexPort() && $lastUsedNumber != $num ){
-                                            echo '<span class="potential-slave">' . $num . ' (</span>' . $ppp->getName() . '<span class="potential-slave">)</span>';
+                                        if( $t->pp && $t->pp->hasDuplexPort() && !$ppp->isDuplexPort() /* && !$potentialSlave && !$ppp->isDuplexPort() && $lastUsedNumber != $num */ ){
+                                            echo $ppp->getName() . ' <span class="potential-slave">(' . $num . ')</span>';
                                         } else {
                                             echo $ppp->getName();
                                         }
