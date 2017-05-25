@@ -41,6 +41,9 @@ class RouteServiceProvider extends ServiceProvider {
         $this->mapApiV4Routes();
         $this->mapApiAuthSuperuserRoutes();
         //
+
+        require base_path('routes/apiv1-aliases.php');
+
     }
 
     /**
@@ -104,7 +107,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapApiV4Routes()
     {
         Route::group([
-            'middleware' => 'api/v4',
+            'middleware' => 'public/api/v4',
             'namespace' => $this->namespace . '\\Api\\V4',
             'prefix' => 'api/v4',
         ], function ($router) {

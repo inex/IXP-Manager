@@ -24,14 +24,10 @@
         <h3>Change Your Password</h3>
         <br />
         
-        {if isset( $options.resources.auth.oss.pwhash ) and $options.resources.auth.oss.pwhash eq 'plaintext'}
-            <div class="alert alert-info">
-                    Please note that your passwords are not currently hashed in the backend database. Choose a unique password for IXP Manager.
-                    Please <a href="https://github.com/inex/IXP-Manager/wiki/Password-Hashing" target="_blank">read this page</a>
-                    to understand why we need to this.
-            </div>
-        {/if}
-        
+        <div class="alert alert-info">
+            Passwords are stored in IXP Manager using <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>.
+        </div>
+
         {$passwordForm}
         
         {if isset( $customerNotesForm ) }

@@ -55,7 +55,7 @@ class VlanController extends IXP_Controller_FrontEnd
 
             'listColumns'    => [
 
-                'id'        => [ 'title' => 'UID', 'display' => false ],
+                'id'        => [ 'title' => 'DB ID' ],
                 'name'      => 'Name',
                 'number'    => '802.1q Tag',
                 'ixp'    => 'IXP',

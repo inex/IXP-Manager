@@ -3,7 +3,7 @@
 namespace Entities;
 
 use Carbon\Carbon;
-use D2EM;
+use D2EM, Auth;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use IXP\Mail\PatchPanelPort\{
@@ -13,12 +13,18 @@ use IXP\Mail\PatchPanelPort\{
     Loa     as LoaMail
 };
 
+use Entities\{
+    PatchPanelPortFile  as PatchPanelPortFileEntity,
+    PatchPanelPort      as PatchPanelPortEntity
+};
+
 use Parsedown;
 
 
 /**
  * Entities\PatchPanelPort
  */
+
 class PatchPanelPort
 {
 
@@ -88,16 +94,36 @@ class PatchPanelPort
     ];
 
     /**
-     * Array STATES
+     * Array STATES for allocated
      */
-    public static $ALLOCATE_STATES = [
-        self::STATE_AWAITING_XCONNECT   => "Awaiting Xconnect",
-        self::STATE_CONNECTED           => "Connected"
+    public static $ALLOCATED_STATES = [
+        self::STATE_AWAITING_XCONNECT,
+        self::STATE_CONNECTED,
+        self::STATE_AWAITING_CEASE,
     ];
 
     /**
- * Array $CHARGEABLES
- */
+     * Array STATES for available
+     */
+    public static $AVAILABLE_STATES = [
+        self::STATE_AVAILABLE,
+        self::STATE_PREWIRED,
+        self::STATE_AWAITING_CEASE,
+        self::STATE_CEASED,
+    ];
+
+    /**
+     * Array STATES for available
+     */
+    public static $AVAILABLE_FOR_ALLOCATION_STATES = [
+        self::STATE_AVAILABLE,
+        self::STATE_PREWIRED,
+    ];
+
+
+    /**
+     * Array $CHARGEABLES
+     */
     public static $CHARGEABLES = [
         self::CHARGEABLE_YES            => "Yes",
         self::CHARGEABLE_NO             => "No",
@@ -236,7 +262,7 @@ class PatchPanelPort
     /**
      * @var string
      */
-    private $loa_code;
+    private $loa_code = '';
 
     /**
      * Constructor
@@ -1104,35 +1130,44 @@ class PatchPanelPort
     /**
      * Is this port available for use?
      *
-     * It is if its state is one of: available, ceased, awaiting cease.
+     * It is if its state is one of: available, ceased, awaiting cease, prewired.
      *
      * @return bool
      */
     public function isAvailableForUse(): bool {
-        return $this->getState() == self::STATE_AVAILABLE || $this->getState() == self::STATE_CEASED
-            || $this->getState() == self::STATE_AWAITING_CEASE;
+        return in_array( $this->getState(), self::$AVAILABLE_STATES );
+    }
+
+    /**
+     * Is this port os allocated?
+     *
+     * It is if its state is one of: awaiting xconnect, connected, awaiting cease.
+     *
+     * @return bool
+     */
+    public function isAllocated(): bool {
+        return in_array( $this->getState(), self::$ALLOCATED_STATES );
     }
 
 
-    public function setDuplexPort( PatchPanelPort $duplexPort, $newSlavePort){
-        if($newSlavePort){
-            $duplexPort->setDuplexMasterPort($this);
+    /**
+     * Get appropriate states for allocating a port / determining if a port is allocated.
+     *
+     * Returns array of elements: state ID => state description
+     *
+     * @return array
+     */
+    public static function getAllocatedStatesWithDescription() {
+        $states = [];
+        foreach( self::$ALLOCATED_STATES as $i ) {
+            $states[$i] = self::$STATES[$i];
         }
+        return $states;
+    }
 
-        $duplexPort->setCustomer($this->getCustomer());
-        $duplexPort->setState($this->getState());
-        $duplexPort->setNotes($this->getNotes());
-        $duplexPort->setLastStateChange($this->getLastStateChange());
-        $duplexPort->setInternalUse($this->getInternalUse());
-        $duplexPort->setChargeable($this->getChargeable());
-
-        $duplexPort->setAssignedAt($this->getAssignedAt());
-        $duplexPort->setConnectedAt($this->getConnectedAt());
-
-        $duplexPort->setCeaseRequestedAt($this->getCeaseRequestedAt());
-        $duplexPort->setCeasedAt($this->getCeasedAt());
-
-        D2EM::persist($duplexPort);
+    public function setDuplexPort( PatchPanelPort $duplexPort ){
+        $duplexPort->setDuplexMasterPort($this);
+        $this->addDuplexSlavePort( $duplexPort );
         D2EM::flush();
 
         return $duplexPort;
@@ -1480,5 +1515,6 @@ class PatchPanelPort
     public function getCircuitReference(): string {
         return sprintf( "PPP-%05d", $this->getId() );
     }
+
 
 }

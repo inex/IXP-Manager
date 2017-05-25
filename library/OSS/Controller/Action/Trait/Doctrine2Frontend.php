@@ -91,6 +91,8 @@ trait OSS_Controller_Action_Trait_Doctrine2Frontend
         'DATE'     => 'date',
         'TIME'     => 'time',
         'SCRIPT'   => 'script',
+        'SPRINTF'  => 'sprintf',
+        'REPLACE'  => 'replace',
         'XLATE'    => 'xlate',
         'YES_NO'   => 'yes_no'
     ];

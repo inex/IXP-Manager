@@ -279,17 +279,6 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getInstallationDateFormated()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInstallationDateFormated', []);
-
-        return parent::getInstallationDateFormated();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getPortPrefix()
     {
 
@@ -307,17 +296,6 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActive', []);
 
         return parent::getActive();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getActiveText()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActiveText', []);
-
-        return parent::getActiveText();
     }
 
     /**
@@ -549,6 +527,17 @@ class PatchPanel extends \Entities\PatchPanel implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveChargeable', []);
 
         return parent::resolveChargeable();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveMountedAt(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveMountedAt', []);
+
+        return parent::resolveMountedAt();
     }
 
     /**

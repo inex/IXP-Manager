@@ -67,7 +67,8 @@ class Upgrade extends GrapherCommand {
                                 {--M|memberdirs : Show upgrade commands for member directories}
                                 {--P|physints : Show upgrade commands for member physical interfaces}
                                 {--Q|memberlags : Show upgrade commands for member LAG interfaces}
-                                {--C|customeragg : Show upgrade commands for member aggregate graphs}';
+                                {--C|customeragg : Show upgrade commands for member aggregate graphs}
+                                {--agg-name= : Name of aggregate graphs for IXP and infrastructure migration}';
 
     /**
      * The console command description.
@@ -171,20 +172,23 @@ class Upgrade extends GrapherCommand {
         // need to convert between the old name and the new name
         $graph = Grapher::ixp( $i );
 
+        // aggregate graph name from v3
+        $aggname = $this->option( 'agg-name' ) ? $this->option( 'agg-name' ) : 'XXXXXX';
+
         // parent dir:
         echo "mkdir -p " . Config::get('grapher.backends.mrtg.workdir' ) . "/ixp\n";
 
         foreach( Graph::CATEGORIES_BITS_PKTS as $c ) {
             $graph->setCategory( $c );
             echo $this->cmd(
-                "{$this->logdir}/ixp_peering-{$i->getAggregateGraphName()}-{$c}.log",
+                "{$this->logdir}/ixp_peering-{$aggname}-{$c}.log",
                 $this->mrtg->resolveFilePath( $graph, 'log' )
             );
 
             foreach( Graph::PERIODS as $p ) {
                 $graph->setPeriod( $p );
                 echo $this->cmd(
-                    "{$this->logdir}/ixp_peering-{$i->getAggregateGraphName()}-{$c}-{$p}.png",
+                    "{$this->logdir}/ixp_peering-{$aggname}-{$c}-{$p}.png",
                     $this->mrtg->resolveFilePath( $graph, 'png' )
                 );
             }
@@ -200,20 +204,23 @@ class Upgrade extends GrapherCommand {
             // need to convert between the old name and the new name
             $graph = Grapher::infrastructure( $i );
 
+            // aggregate graph name from v3
+            $aggname = $this->option( 'agg-name' ) ? $this->option( 'agg-name' ) : 'XXXXXX';
+
             // parent dir:
             echo "mkdir -p " . dirname( $this->mrtg->resolveFilePath( $graph, 'log' ) ) . "\n";
 
             foreach( Graph::CATEGORIES_BITS_PKTS as $c ) {
                 $graph->setCategory( $c );
                 echo $this->cmd(
-                    "{$this->logdir}/ixp_peering-{$i->getAggregateGraphName()}-{$c}.log",
+                    "{$this->logdir}/ixp_peering-{$aggname}-{$c}.log",
                     $this->mrtg->resolveFilePath( $graph, 'log' )
                 );
 
                 foreach( Graph::PERIODS as $p ) {
                     $graph->setPeriod( $p );
                     echo $this->cmd(
-                        "{$this->logdir}/ixp_peering-{$i->getAggregateGraphName()}-{$c}-{$p}.png",
+                        "{$this->logdir}/ixp_peering-{$aggname}-{$c}-{$p}.png",
                         $this->mrtg->resolveFilePath( $graph, 'png' )
                     );
                 }
@@ -298,6 +305,9 @@ class Upgrade extends GrapherCommand {
                 $graph = Grapher::physint( $pps['pis'][$piid] );
 
                 foreach( Graph::CATEGORIES as $c ) {
+                    if( $c == Graph::CATEGORY_BROADCASTS ) {
+                        continue;
+                    }
                     $graph->setCategory( $c );
                     echo $this->cmd(
                         "{$this->logdir}/members/{$pps['custs'][$cid]->getShortname()}/"
@@ -335,6 +345,10 @@ class Upgrade extends GrapherCommand {
                 $graph = Grapher::virtint( $vi );
 
                 foreach( Graph::CATEGORIES as $c ) {
+                    if( $c == Graph::CATEGORY_BROADCASTS ) {
+                        continue;
+                    }
+
                     $graph->setCategory( $c );
                     echo $this->cmd(
                         "{$this->logdir}/members/{$pps['custs'][$cid]->getShortname()}/"
@@ -367,6 +381,10 @@ class Upgrade extends GrapherCommand {
             $graph = Grapher::customer( $c );
 
             foreach( Graph::CATEGORIES as $c ) {
+                if( $c == Graph::CATEGORY_BROADCASTS ) {
+                    continue;
+                }
+
                 $graph->setCategory( $c );
                 echo $this->cmd(
                     "{$this->logdir}/members/{$pps['custs'][$cid]->getShortname()}/"

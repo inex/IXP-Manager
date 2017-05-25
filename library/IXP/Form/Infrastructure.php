@@ -60,8 +60,6 @@ class IXP_Form_Infrastructure extends IXP_Form
             ->addFilter( 'Int' );
         $this->addElement( $isPrimary );
 
-        $this->addElement( IXP_Form_IXP::createAggregateGraphNameElement() );
-
         $peeringdb_ix_id = $this->createElement( 'text', 'peeringdb_ix_id' );
         $peeringdb_ix_id->setRequired( false )
             ->setLabel( 'Peering DB IX ID' )

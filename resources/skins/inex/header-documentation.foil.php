@@ -2,7 +2,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
     <ul class="dropdown-menu">
         <li>
-            <a href="<?= url('/static/fees' ) ?>">Fees and Charges</a>
+            <a href="https://www.inex.ie/become-a-member/inex-price-list/">Fees and Charges</a>
         </li>
         <li>
             <a href="<?= url('/static/housing' ) ?>">Equipment Housing</a>

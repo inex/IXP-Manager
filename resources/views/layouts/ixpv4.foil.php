@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+
+    <!--  IXP MANAGER - template directory: resources/[views|skins] -->
+
     <base href="<?= url('') ?>/index.php">
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
@@ -77,7 +80,7 @@
 
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <ul class="breadcrumb">
+        <ol class="breadcrumb">
             <?php $this->section('page-header-preamble') ?>
             <?php $this->stop() ?>
             <li>
@@ -89,7 +92,7 @@
             </li>
             <?php $this->section('page-header-postamble') ?>
             <?php $this->stop() ?>
-        </ul>
+        </ol>
     <?php else: ?>
         <div class="page-content">
             <div class="page-header">

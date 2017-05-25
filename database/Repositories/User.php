@@ -12,7 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class User extends EntityRepository
 {
-    
+
+    /**
+     * Get all users as an array. Optionally limited to a given privilege.
+
+     * @param int $priv If not null, limit to given privilege level
+     * @return array
+     */
+    public function asArray( int $priv = null ) {
+
+        return $this->getEntityManager()->createQuery(
+                "SELECT u FROM Entities\User u" . ( is_int($priv) ? ' WHERE u.privs = ' . $priv : '' ) )
+            ->getArrayResult();
+    }
+
     /**
      * Return an array of users with their last login time ordered from most recent to oldest.
      *

@@ -752,7 +752,7 @@ class PatchPanelPortHistory
             ->setAssignedAt( $ppp->getAssignedAt() )
             ->setConnectedAt( $ppp->getConnectedAt() )
             ->setCeaseRequestedAt( $ppp->getCeaseRequestedAt() )
-            ->setCeasedAt( $ppp->getCeasedAt() )
+            ->setCeasedAt( $ppp->getCeasedAt() ? $ppp->getCeasedAt() : new \DateTime )
             ->setInternalUse( $ppp->getInternalUse() )
             ->setChargeable( $ppp->getChargeable() )
             ->setOwnedBy( $ppp->getOwnedBy() )

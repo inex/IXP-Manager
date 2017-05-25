@@ -27,12 +27,14 @@ class VlanInterface extends EntityRepository
      *     [
      *         [cid] => 999
      *         [cname] => Customer Name
+     *         [abrevcname] => Abbreviated Customer Name
      *         [cshortname] => shortname
      *         [autsys] => 65500
      *         [gmaxprefixes] => 20        // from cust table (global)
      *         [peeringmacro] => ABC
      *         [peeringmacrov6] => ABC
      *         [vliid] => 159
+     *         [canping] => 1
      *         [enabled] => 1              // VLAN interface enabled for requested protocol?
      *         [address] => 192.0.2.123    // assigned address for requested protocol?
      *         [bgpmd5secret] => qwertyui  // MD5 for requested protocol
@@ -54,28 +56,37 @@ class VlanInterface extends EntityRepository
             throw new \IXP_Exception( 'Invalid protocol specified' );
 
 
-        $qstr = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname, c.autsys AS autsys,
+        $qstr = "SELECT c.id AS cid, c.name AS cname, c.abbreviatedName AS abrevcname, c.shortname AS cshortname, c.autsys AS autsys,
                        c.maxprefixes AS gmaxprefixes, c.peeringmacro as peeringmacro, c.peeringmacrov6 as peeringmacrov6,
                        vli.id AS vliid, vli.ipv{$proto}enabled AS enabled, addr.address AS address,
                        vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix,
                        vli.as112client AS as112client, vli.rsclient AS rsclient, vli.irrdbfilter AS irrdbfilter,
+                       vli.ipv{$proto}canping AS canping,
                        l.name AS location_name, l.shortname AS location_shortname, l.tag AS location_tag
                     FROM Entities\\VlanInterface vli
-                        JOIN vli.VirtualInterface vi
-                        JOIN vli.IPv{$proto}Address addr
-                        JOIN vi.Customer c
-                        JOIN vi.PhysicalInterfaces pi
-                        JOIN pi.SwitchPort sp
-                        JOIN sp.Switcher s
-                        JOIN s.Cabinet cab
-                        JOIN cab.Location l
-                        JOIN vli.Vlan v
+                        LEFT JOIN vli.VirtualInterface vi
+                        LEFT JOIN vli.IPv{$proto}Address addr
+                        LEFT JOIN vi.Customer c
+                        LEFT JOIN vi.PhysicalInterfaces pi
+                        LEFT JOIN pi.SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN s.Cabinet cab
+                        LEFT JOIN cab.Location l
+                        LEFT JOIN vli.Vlan v
                     WHERE
                         v = :vlan
                         AND " . Customer::DQL_CUST_ACTIVE     . "
                         AND " . Customer::DQL_CUST_CURRENT    . "
                         AND " . Customer::DQL_CUST_TRAFFICING . "
-                        AND pi.status = :pistatus";
+                        AND pi.status = :pistatus
+                        
+                    GROUP BY 
+                        vli.id, c.id, c.name, c.abbreviatedName, c.shortname, c.autsys,
+                        c.maxprefixes, c.peeringmacro, c.peeringmacrov6,
+                        vli.ipv{$proto}enabled, addr.address, vli.ipv{$proto}bgpmd5secret, vli.maxbgpprefix,
+                        vli.as112client, vli.rsclient, vli.irrdbfilter, vli.ipv{$proto}canping,
+                        l.name, l.shortname, l.tag
+                        ";
 
         $qstr .= " ORDER BY c.autsys ASC, vli.id ASC";
 
@@ -388,13 +399,6 @@ class VlanInterface extends EntityRepository
                 continue;
             }
 
-            // Due the the way we format the SQL query to join with physical
-            // interfaces (of which there may be multiple per VLAN interface),
-            // we need to weed out duplicates
-            if( isset( $newints[ $int['address'] ] ) ) {
-                continue;
-            }
-
             $int['fvliid'] = sprintf( '%04d', $int['vliid'] );
 
             if( $int['maxbgpprefix'] && $int['maxbgpprefix'] > $int['gmaxprefixes'] ) {
@@ -440,7 +444,6 @@ class VlanInterface extends EntityRepository
      * Provide array of vlan interfaces for the list Action
      *
      * @param int $id The VlanInterface to find
-     *
      * @return array array of vlan interfaces
      */
     public function getForList( int $id = null )
@@ -471,6 +474,53 @@ class VlanInterface extends EntityRepository
 
         $q = $this->getEntityManager()->createQuery( $dql );
         return $q->getArrayResult();
+    }
+
+    /**
+     * Get vli id / vi id / vlan tag / cust name matrix for sflow data processing
+     *
+     * Returns an array as follows:
+     *
+     *     [
+     *         [ 'vliid' => 1, 'viid' => 2, 'tag' => 10, 'cname' => "OGCIO" ],
+     *         ...
+     *     ]
+     *
+     * @return array
+     */
+    public function sflowMatrixArray(): array
+    {
+        return $this->getEntityManager()->createQuery(
+            "SELECT DISTINCT vli.id AS vliid, vi.id AS viid, v.number AS tag, c.name AS cname
+                    FROM Entities\VlanInterface vli
+                        LEFT JOIN vli.Vlan v
+                        LEFT JOIN vli.VirtualInterface vi
+                        LEFT JOIN vi.Customer c"
+        )->getArrayResult();
+    }
+
+    /**
+     * Get vi id / mac address for sflow data processing
+     *
+     * Returns an array as follows:
+     *
+     *     [
+     *         [ 'viid' => 2, 'mac' => '112233445566' ],
+     *         ...
+     *     ]
+     *
+     * @return array
+     */
+    public function sflowMacTableArray(): array
+    {
+        return $this->getEntityManager()->createQuery(
+            "SELECT DISTINCT vi.id AS viid, l2a.mac AS mac
+                    FROM Entities\VlanInterface vli
+                        LEFT JOIN vli.VirtualInterface vi
+                        LEFT JOIN vli.layer2Addresses l2a
+                    WHERE l2a.mac IS NOT NULL
+                    ORDER BY viid"
+        )->getArrayResult();
     }
 
 }

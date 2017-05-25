@@ -41,7 +41,7 @@
 
     <?= Former::text( 'description' )
             ->label( 'Description' )
-            ->help( 'A one line short description to be shown in the list of patch panel ports. '
+            ->blockHelp( 'A one line short description to be shown in the list of patch panel ports. '
                 . 'Just enough to help explain the ports purpose. Detailed information should be '
                 . 'placed in the notes below. Can also be used to explain a reserved / broken / '
                 . 'other port. Note that this is parsed as Markdown.<br><br>'
@@ -52,18 +52,18 @@
     <?php if (!$t->prewired): ?>
         <?= Former::text( 'colo_circuit_ref' )
             ->label( 'Colocation Circuit Reference' )
-            ->help( 'The cross connect reference as provided by the colocation provider.' );
+            ->blockHelp( 'The cross connect reference as provided by the colocation provider.' );
         ?>
 
         <?= Former::text( 'ticket_ref' )
             ->label( 'Ticket Reference(s)' )
-            ->help( 'This is a free text field to allow you to add helpdesk ticket reference(s) that deal with your member for this connection.' );
+            ->blockHelp( 'This is a free text field to allow you to add helpdesk ticket reference(s) that deal with your member for this connection.' );
         ?>
     <?php endif; ?>
 
     <?= Former::checkbox( 'duplex' )
         ->label( 'Duplex connection?' )
-        ->help('Typically fibre connections are <em>duplex connections</em> in that they use two ports. If this is the '
+        ->blockHelp('Typically fibre connections are <em>duplex connections</em> in that they use two ports. If this is the '
             . 'case, check this and select the partner port. <em>Duplex ports should generally start with an odd number and '
             . 'have an even numbered partner port (assuming port numbering starts from 1).</em>' );
     ?>
@@ -74,7 +74,7 @@
             ->fromQuery( $t->partnerPorts, 'name' )
             ->placeholder( 'Choose a partner port' )
             ->addClass( 'chzn-select' )
-            ->help( 'The second half of the duplex port.' );
+            ->blockHelp( 'The second half of the duplex port.' );
         ?>
     </span>
 
@@ -149,7 +149,7 @@
         ->options( $t->states )
         ->placeholder( 'Choose a states' )
         ->addClass( 'chzn-select' )
-        ->help( 'The state of the patch panel port.' );
+        ->blockHelp( 'The state of the patch panel port.' );
     ?>
 
     <?php if( $t->allocating ): ?>
@@ -159,7 +159,7 @@
                 ->options( Entities\PhysicalInterface::$STATES )
                 ->placeholder( 'Choose a status' )
                 ->addClass( 'chzn-select' )
-                ->help( 'This allows you to update the physical interface status when updating the patch panel port status. '
+                ->blockHelp( 'This allows you to update the physical interface status when updating the patch panel port status. '
                     . '<b>The current state is shown by default.</b>' );
             ?>
         </span>
@@ -170,14 +170,14 @@
             ->label( 'Public Notes' )
             ->rows( 10 )
             ->style( 'width:500px' )
-            ->help( 'These notes are visible (but not editable) to the member. You can use markdown here.' );
+            ->blockHelp( 'These notes are visible (but not editable) to the member. You can use markdown here.' );
         ?>
     <?php endif; ?>
     <?= Former::textarea( 'private_notes' )
         ->label( 'Private Notes' )
         ->rows( 10 )
         ->style( 'width:500px' )
-        ->help( 'These notes are <b>NOT</b> visible to the member. You can use markdown here.' );
+        ->blockHelp( 'These notes are <b>NOT</b> visible to the member. You can use markdown here.' );
     ?>
 
     <?php if (!$t->prewired): ?>
@@ -185,31 +185,31 @@
             <?= Former::date( 'assigned_at' )
                 ->label( 'Assigned At' )
                 ->append( '<button class="btn-default btn" onclick="setToday( \'assigned_at\' )" type="button">Today</button>' )
-                ->help( 'help text' )
+                ->blockHelp( 'help text' )
                 ->value( date( 'Y-m-d' ) );
             ?>
 
             <?= Former::date( 'connected_at' )
                 ->label( 'Connected At' )
                 ->append( '<button class="btn-default btn" onclick="setToday( \'connected_at\' )" type="button">Today</button>' )
-                ->help( 'help text' );
+                ->blockHelp( 'help text' );
             ?>
 
             <?= Former::date( 'ceased_requested_at' )
                 ->label( 'Ceased Requested At' )
                 ->append( '<button class="btn-default btn" onclick="setToday( \'ceased_requested_at\' )" type="button">Today</button>' )
-                ->help( 'help text' );
+                ->blockHelp( 'help text' );
             ?>
 
             <?= Former::date( 'ceased_at' )
                 ->label( 'Ceased At' )
                 ->append( '<button class="btn-default btn" onclick="setToday( \'ceased_at\' )" type="button"">Today</button>' )
-                ->help( 'help text' );
+                ->blockHelp( 'help text' );
             ?>
 
             <?= Former::text( 'last_state_change_at' )
                 ->label( 'Last State change At' )
-                ->help( 'help text' );
+                ->blockHelp( 'help text' );
             ?>
         <?php endif; ?>
 
@@ -217,7 +217,7 @@
             ->label( 'Chargeable' )
             ->options( $t->chargeables )
             ->addClass( 'chzn-select' )
-            ->help( 'Usually IXPs request their members to <em>come to them</em> and bear the costs of that. '
+            ->blockHelp( 'Usually IXPs request their members to <em>come to them</em> and bear the costs of that. '
                 . 'However, sometimes a co-location facility may charge the IXP for a half circuit or the IXP may need '
                 . 'order and pay for the connection. This can be used, for example, to reconcile billing.' );
         ?>
@@ -227,14 +227,14 @@
                 'Yes' => ['name' => 'internal_use', 'value' => '1'],
                 'No' => ['name' => 'internal_use', 'value' => '0'],
             ])->inline()->check( $t->ppp->getInternalUse() ? '1' : '0' )
-            ->help( 'Indicates that this cross connect is for IXP use rather than relating to a member.' );
+            ->blockHelp( 'Indicates that this cross connect is for IXP use rather than relating to a member.' );
         ?>
 
         <?= Former::select( 'owned_by' )
             ->label( 'Owned By' )
             ->options( $t->ownedBy )
             ->addClass( 'chzn-select' )
-            ->help( 'Indicates who order the cross connect / who the contracting entity is.' );
+            ->blockHelp( 'Indicates who order the cross connect / who the contracting entity is.' );
         ?>
     <?php endif; ?>
     <?= Former::hidden( 'patch_panel_port_id' )

@@ -251,34 +251,7 @@ class Infrastructure
     {
         return $this->isPrimary;
     }
-    /**
-     * @var string
-     */
-    private $aggregate_graph_name;
 
-
-    /**
-     * Set aggregate_graph_name
-     *
-     * @param string $aggregateGraphName
-     * @return Infrastructure
-     */
-    public function setAggregateGraphName($aggregateGraphName)
-    {
-        $this->aggregate_graph_name = $aggregateGraphName;
-
-        return $this;
-    }
-
-    /**
-     * Get aggregate_graph_name
-     *
-     * @return string
-     */
-    public function getAggregateGraphName()
-    {
-        return $this->aggregate_graph_name;
-    }
 
 
     /**

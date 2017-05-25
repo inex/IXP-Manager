@@ -648,3 +648,13 @@ a.delInputRow {
 .lowerCase {
     text-transform:lowercase;
 }
+
+.dropdown-submenu {
+    position: relative !important;
+}
+
+.dropdown-submenu .dropdown-menu-l {
+    top: 0;
+    left: -163px;
+    margin-top: -1px;
+}

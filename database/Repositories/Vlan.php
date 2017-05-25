@@ -158,7 +158,6 @@ class Vlan extends EntityRepository
                     AND v.id = ?1
                     AND vli.ipv{$protocol}enabled = 1
 
-                GROUP BY vi.Customer
                 ORDER BY c.autsys ASC"
             )
             ->setParameter( 1, $vid );

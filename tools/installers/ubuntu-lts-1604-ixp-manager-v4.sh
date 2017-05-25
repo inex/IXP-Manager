@@ -488,10 +488,6 @@ GRAPHER_BACKENDS="dummy"
 # VIEW_SKIN="myskin"
 
 #######################################################################################
-# See https://github.com/inex/IXP-Manager/wiki/Password-Hashing before changing:
-AUTH_ZF1_PWHASH="bcrypt"
-
-#######################################################################################
 # See config/cache.php
 CACHE_DRIVER=memcached
 
@@ -549,6 +545,12 @@ echo -n "Setting up IXP Manager database... "
 cd $IXPROOT
 log_break && php artisan doctrine:schema:create &>> /tmp/ixp-manager-install.log
 echo '[done]'
+
+echo -n "Creating IXP Manager database views... "
+cd $IXPROOT
+log_break && mysql -u root "-p${MYSQL_ROOT_PW}" $DBNAME <tools/sql/views.sql
+echo '[done]'
+
 
 
 ##################################################################

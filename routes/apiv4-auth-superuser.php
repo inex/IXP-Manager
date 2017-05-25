@@ -17,25 +17,73 @@ use Illuminate\Http\Request;
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 
-Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');   // ?format=json also works
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DNS ARPA Entries
+//
+// Returns plain text from the given template (api/v4/dns/[template]):
+Route::get('dns/arpa/{vlanid}/{protocol}/{template}',  'DnsController@arpaTemplated');
+// Returns JSON object:
+Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Users
+//
+// Returns all users (or users with given integer privilege) as JSON
+Route::get('user/json',         'UserController@json');
+Route::get('user/json/{priv}',  'UserController@json');
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// VLANs
+//
+// Returns a smokeping configuration for a given VLAN and protocol
+Route::get('vlan/smokeping/{vlanid}/{protocol}',             'VlanController@smokepingTargets');
+Route::get('vlan/smokeping/{vlanid}/{protocol}/{template}',  'VlanController@smokepingTargets');
+Route::post('vlan/smokeping/{vlanid}/{protocol}',             'VlanController@smokepingTargets');
+Route::post('vlan/smokeping/{vlanid}/{protocol}/{template}',  'VlanController@smokepingTargets');
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Routers
+//
+// Generate router configuration:
+Route::get('router/gen_config/{handle}',                        'RouterController@genConfig' );
+Route::get('router/gen-config/{handle}',                        'RouterController@genConfig' )
+     ->name( 'apiv4-router-gen-config' );
+
+// Get / set a routers last updated time:
+Route::post('router/updated/{handle}',                          'RouterController@setLastUpdated' );
+Route::get('router/updated/{handle}',                           'RouterController@getLastUpdated' );
+Route::get('router/updated',                                    'RouterController@getAllLastUpdated' );
+Route::get('router/updated-before/{threshold}',                 'RouterController@getAllLastUpdatedBefore' );
+
+
+
+
 
 Route::get('nagios/birdseye_daemons',                           'NagiosController@birdseyeDaemons');
 Route::get('nagios/birdseye_daemons/{vlanid}',                  'NagiosController@birdseyeDaemons');
 Route::get('nagios/birdseye_bgp_sessions/rs',                   'NagiosController@birdseyeRsBgpSessions');
 Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}',          'NagiosController@birdseyeRsBgpSessions');
 
-Route::get('router/gen_config/{handle}',                        'RouterController@genConfig' );
+
 
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
 Route::get('sflow-receiver/delete/{id}',                        'SflowReceiverController@delete' );
 
 Route::get(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
+Route::get(  'patch-panel-port/delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
+Route::get(  'patch-panel-port/delete/{id}',                    'PatchPanelPortController@delete' );
+Route::get(  'patch-panel-port/split/{id}',                     'PatchPanelPortController@split' );
 Route::get(  'patch-panel-port/toggle-file-privacy/{fileid}',   'PatchPanelPortController@toggleFilePrivacy' );
 Route::post( 'patch-panel-port/upload-file/{id}',               'PatchPanelPortController@uploadFile' );
 Route::post( 'patch-panel-port/notes/{id}',                     'PatchPanelPortController@setNotes' );
 Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortController@detail');
 Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
+
+Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
 
 // remove the following two after INEX updated to yaml
 Route::get('provisioner/salt/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
@@ -58,10 +106,17 @@ Route::post( 'utils/markdown',                                  'UtilsController
 Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
 Route::get( 'l2-address/delete/{id}',                           'Layer2AddressController@delete' );
 Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
+
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
 Route::get( 'vlan-interface/delete/{id}',                       'VlanInterfaceController@delete' );
+Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceController@sflowMatrix' );
+Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
+
 Route::post( 'vlan/{id}/ipv-address',                           'VlanController@getIPvAddress' );
 Route::get( 'vlan/for-switch/{switchid}',                       'Provisioner\YamlController@vlanForSwitch' );
 
 Route::get('physical-interface/delete/{id}',                    'PhysicalInterfaceController@delete' );
 Route::get('virtual-interface/delete/{id}',                    'VirtualInterfaceController@delete' );
+
+
+

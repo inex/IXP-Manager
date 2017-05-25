@@ -88,6 +88,14 @@
                             <td>
                                 {if $row.$col}Yes{else}No{/if}
                             </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.REPLACE}
+                            <td>
+                                {str_replace( '%%COL%%', $row.$col, $cconf.subject )}
+                            </td>
+                        {elseif $cconf.type eq $FE_COL_TYPES.SPRINTF}
+                            <td>
+                                {sprintf( $cconf.sprintf, $row.$col )}
+                            </td>
                         {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}
                             <td>
                                 {$row.$col|date_format:'%Y-%m-%d %H:%M:%S'}

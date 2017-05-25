@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+
+    <!--  IXP MANAGER - template directory: resources/[views|skins] -->
+
     <base href="<?= url('') ?>/index.php">
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
