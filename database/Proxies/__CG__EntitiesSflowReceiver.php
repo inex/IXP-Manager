@@ -254,4 +254,15 @@ class SflowReceiver extends \Entities\SflowReceiver implements \Doctrine\ORM\Pro
         return parent::getVirtualInterface();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomer()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
+
+        return parent::getCustomer();
+    }
+
 }

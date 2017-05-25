@@ -78,6 +78,16 @@ class Switcher
     protected $notes;
 
     /**
+     * @var integer $asn
+     */
+    protected $asn = '';
+
+    /**
+     * @var string $loopback
+     */
+    protected $loopback;
+
+    /**
      * @var integer $id
      */
     protected $id;
@@ -798,6 +808,51 @@ class Switcher
         return $this->mauSupported;
     }
 
+    /**
+     * Set asn
+     *
+     * @param integer $asn
+     * @return Switcher
+     */
+    public function setAsn($asn)
+    {
+        $this->asn = $asn;
+
+        return $this;
+    }
+
+    /**
+     * Get asn
+     *
+     * @return integer
+     */
+    public function getAsn()
+    {
+        return $this->asn;
+    }
+
+    /**
+     * Set loopback
+     *
+     * @param string $loopback
+     * @return Switcher
+     */
+    public function setLoopback($loopback)
+    {
+        $this->loopback = $loopback;
+
+        return $this;
+    }
+
+    /**
+     * Get loopback
+     *
+     * @return string
+     */
+    public function getLoopback()
+    {
+        return $this->loopback;
+    }
 
 
 }

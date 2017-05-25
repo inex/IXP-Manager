@@ -120,7 +120,22 @@ class IXP_Form_Switch extends IXP_Form
             ->setUncheckedValue( '0' )
             ->setValue( '1' );
         $this->addElement( $active );
-        
+
+        $asn = $this->createElement( 'text', 'asn' );
+        $asn->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
+            ->addValidator( 'greaterThan', false, array( 0 ) )
+            ->setLabel( 'ASN' )
+            ->setAttrib( 'class', 'span3' );
+        $this->addElement( $asn );
+
+        $loopback = $this->createElement( 'text', 'loopback' );
+        $loopback->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
+            ->setLabel( 'LoopBack' )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $loopback );
+
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );

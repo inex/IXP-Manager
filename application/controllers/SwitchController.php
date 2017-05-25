@@ -103,7 +103,9 @@ class SwitchController extends IXP_Controller_FrontEnd
                             'title'      => 'Last Polled',
                             'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
                         ],
-                        'notes'          => 'Notes'
+                        'notes'          => 'Notes',
+                        'asn'            => 'ASN',
+                        'loopback'       => 'Loopback',
                     ]
                 );
 
@@ -134,7 +136,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 s.active AS active, s.notes AS notes, s.lastPolled AS lastPolled,
                 s.hostname AS hostname, s.os AS os, s.osDate AS osDate, s.osVersion AS osVersion,
                 s.serialNumber AS serialNumber, s.mauSupported AS mauSupported,
-                v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
+                v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet, s.asn as asn, s.loopback as loopback'
             )
             ->from( '\\Entities\\Switcher', 's' )
             ->leftJoin( 's.Infrastructure', 'i' )
@@ -289,6 +291,8 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $s->setOsDate( $snmp->getPlatform()->getOsDate() );
                 $s->setOsVersion( $snmp->getPlatform()->getOsVersion() );
                 $s->setLastPolled( new DateTime() );
+                $s->setAsn( $f->getValue( 'asn' ) );
+                $s->setLoopback( $f->getValue( 'loopback' ) );
 
                 $this->getD2EM()->persist( $s );
                 $this->getD2EM()->flush();

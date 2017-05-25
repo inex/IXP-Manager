@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
         }
 
-        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
     }
 
     /**
@@ -670,6 +670,50 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMauSupported', []);
 
         return parent::getMauSupported();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAsn($asn)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAsn', [$asn]);
+
+        return parent::setAsn($asn);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAsn()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAsn', []);
+
+        return parent::getAsn();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLoopback($loopback)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLoopback', [$loopback]);
+
+        return parent::setLoopback($loopback);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLoopback()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLoopback', []);
+
+        return parent::getLoopback();
     }
 
 }
