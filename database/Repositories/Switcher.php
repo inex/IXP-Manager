@@ -347,4 +347,37 @@ class Switcher extends EntityRepository
 
         return $ports;
     }
+
+    /**
+     * Returns all the vlan associated to the following switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllVlan( int $id ): array {
+
+        /** @noinspection SqlNoDataSourceInspection */
+        $dql = "SELECT vl.name, vl.private, vl.number
+                    FROM Entities\\VlanInterface vli
+                    LEFT JOIN vli.Vlan vl
+                    LEFT JOIN vli.VirtualInterface vi
+                    LEFT JOIN vi.PhysicalInterfaces pi
+                    LEFT JOIN pi.SwitchPort sp
+                    LEFT JOIN sp.Switcher s
+                    WHERE s.id = ?1 
+                    GROUP BY vl.id";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+        $listVlan = $query->getArrayResult();
+
+        $vlans = [];
+
+        foreach( $listVlan as $vlan ){
+            $vlans[] = $vlan;
+        }
+
+        return $vlans;
+    }
 }

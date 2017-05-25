@@ -32,6 +32,8 @@ use Illuminate\Http\Response;
 
 use IXP\Http\Controllers\Api\V4\Controller;
 
+use Entities\Switcher as SwitcherEntity;
+
 use IXP\Tasks\Yaml\SwitchConfigurationGenerator as SwitchConfigurationGenerator;
 
 /**
@@ -81,6 +83,21 @@ class YamlController extends Controller {
         }
 
         return $this->forSwitch( $request, $switch->getId() );
+    }
+
+    /**
+     * Generate a Yaml file for a given vlanid
+     *
+     * This just takes one argument: the router handle to generate the configuration for. All
+     * other parameters are defined by the handle's array in config/router.php.
+     *
+     * @return View
+     */
+    public function vlanForSwitch( int $sid ) {
+        return view( 'api/v4/provisioner/yaml/vlanForSwitch' )->with([
+            'sList'         =>          D2EM::getRepository(SwitcherEntity::class )->getAllVlan( $sid )
+        ]);
+
     }
 
 }

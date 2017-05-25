@@ -61,6 +61,7 @@ Route::get( 'l2-address/detail/{id}',                           'Layer2AddressCo
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
 Route::get( 'vlan-interface/delete/{id}',                       'VlanInterfaceController@delete' );
 Route::post( 'vlan/{id}/ipv-address',                           'VlanController@getIPvAddress' );
+Route::get( 'vlan/for-switch/{switchid}',                       'Provisioner\YamlController@vlanForSwitch' );
 
 Route::get('physical-interface/delete/{id}',                    'PhysicalInterfaceController@delete' );
 Route::get('virtual-interface/delete/{id}',                    'VirtualInterfaceController@delete' );
