@@ -374,6 +374,7 @@ class SwitchController extends IXP_Controller_FrontEnd
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
+
         $object->setCabinet(
             $this->getD2EM()->getRepository( '\\Entities\\Cabinet' )->find( $form->getElement( 'cabinetid' )->getValue() )
         );
@@ -389,6 +390,21 @@ class SwitchController extends IXP_Controller_FrontEnd
             );
         }
 
+        if( $form->getElement( 'asn' )->getValue() ){
+            if( $s = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->findBy( ['asn' => $form->getElement( 'asn' )->getValue() ]) ){
+                $id = $object->getId();
+                $asnExist = array_filter( $s, function ($e) use( $object ) {
+                    return $e->getId() != $object->getId();
+                });
+                
+                if( $asnExist ){
+                    $this->addMessage(
+                        "WARNING: you have supplied a AS number that is already is use by at least one other switch. If you are using eBGP, this will be a problem.",
+                        OSS_Message::WARNING
+                    );
+                }
+            }
+        }
         return true;
     }
 
