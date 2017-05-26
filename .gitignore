@@ -34,6 +34,7 @@ tools/perl-lib/IXPManager/pm_to_blib
 tools/perl-lib/IXPManager/ixpmanager.conf
 *.sublime-project
 *.sublime-workspace
+library/Minify/minify-options.php
 application/views/router-cli/tacacs/tacplus/key.cfg
 application/views/_skins/*/router-cli/tacacs/*/key.cfg
 application/configs/rc-inex-*conf
