@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-05-04.
+    * Generated on 2017-05-31.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -50,6 +50,7 @@ namespace PHPSTORM_META {
             'em' instanceof \Doctrine\ORM\EntityManager,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' instanceof \Doctrine\ORM\Mapping\ClassMetadataFactory,
             'LaravelDoctrine\ORM\Extensions\ExtensionManager' instanceof \LaravelDoctrine\ORM\Extensions\ExtensionManager,
+            'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
             'flysystem.adapterfactory' instanceof \GrahamCampbell\Flysystem\Adapters\ConnectionFactory,
             'flysystem.cachefactory' instanceof \GrahamCampbell\Flysystem\Cache\ConnectionFactory,
@@ -146,7 +147,6 @@ namespace PHPSTORM_META {
             'auth.password.broker' instanceof \Illuminate\Auth\Passwords\PasswordBroker,
             'translation.loader' instanceof \Illuminate\Translation\FileLoader,
             'translator' instanceof \Illuminate\Translation\Translator,
-            'validation.presence' instanceof \Illuminate\Validation\DatabasePresenceVerifier,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
             'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
@@ -195,6 +195,7 @@ namespace PHPSTORM_META {
             'em' instanceof \Doctrine\ORM\EntityManager,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' instanceof \Doctrine\ORM\Mapping\ClassMetadataFactory,
             'LaravelDoctrine\ORM\Extensions\ExtensionManager' instanceof \LaravelDoctrine\ORM\Extensions\ExtensionManager,
+            'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
             'flysystem.adapterfactory' instanceof \GrahamCampbell\Flysystem\Adapters\ConnectionFactory,
             'flysystem.cachefactory' instanceof \GrahamCampbell\Flysystem\Cache\ConnectionFactory,
@@ -291,7 +292,6 @@ namespace PHPSTORM_META {
             'auth.password.broker' instanceof \Illuminate\Auth\Passwords\PasswordBroker,
             'translation.loader' instanceof \Illuminate\Translation\FileLoader,
             'translator' instanceof \Illuminate\Translation\Translator,
-            'validation.presence' instanceof \Illuminate\Validation\DatabasePresenceVerifier,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
             'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
@@ -340,6 +340,7 @@ namespace PHPSTORM_META {
             'em' instanceof \Doctrine\ORM\EntityManager,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' instanceof \Doctrine\ORM\Mapping\ClassMetadataFactory,
             'LaravelDoctrine\ORM\Extensions\ExtensionManager' instanceof \LaravelDoctrine\ORM\Extensions\ExtensionManager,
+            'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
             'flysystem.adapterfactory' instanceof \GrahamCampbell\Flysystem\Adapters\ConnectionFactory,
             'flysystem.cachefactory' instanceof \GrahamCampbell\Flysystem\Cache\ConnectionFactory,
@@ -436,7 +437,6 @@ namespace PHPSTORM_META {
             'auth.password.broker' instanceof \Illuminate\Auth\Passwords\PasswordBroker,
             'translation.loader' instanceof \Illuminate\Translation\FileLoader,
             'translator' instanceof \Illuminate\Translation\Translator,
-            'validation.presence' instanceof \Illuminate\Validation\DatabasePresenceVerifier,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
             'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
@@ -485,6 +485,7 @@ namespace PHPSTORM_META {
             'em' instanceof \Doctrine\ORM\EntityManager,
             'Doctrine\ORM\Mapping\ClassMetadataFactory' instanceof \Doctrine\ORM\Mapping\ClassMetadataFactory,
             'LaravelDoctrine\ORM\Extensions\ExtensionManager' instanceof \LaravelDoctrine\ORM\Extensions\ExtensionManager,
+            'validation.presence' instanceof \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier,
             'image' instanceof \Intervention\Image\ImageManager,
             'flysystem.adapterfactory' instanceof \GrahamCampbell\Flysystem\Adapters\ConnectionFactory,
             'flysystem.cachefactory' instanceof \GrahamCampbell\Flysystem\Cache\ConnectionFactory,
@@ -581,7 +582,6 @@ namespace PHPSTORM_META {
             'auth.password.broker' instanceof \Illuminate\Auth\Passwords\PasswordBroker,
             'translation.loader' instanceof \Illuminate\Translation\FileLoader,
             'translator' instanceof \Illuminate\Translation\Translator,
-            'validation.presence' instanceof \Illuminate\Validation\DatabasePresenceVerifier,
             'command.tinker' instanceof \Laravel\Tinker\Console\TinkerCommand,
             'ZendFramework' instanceof \Zend_Application,
             'command.ide-helper.generate' instanceof \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand,
