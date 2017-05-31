@@ -33,6 +33,15 @@ Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
 Route::get('user/json',         'UserController@json');
 Route::get('user/json/{priv}',  'UserController@json');
 
+// Returns all users (or users with given integer privilege) as a formatted template (e.g. for TACACS)
+// see: http://docs.ixpmanager.org/features/tacacs/
+Route::get( 'user/formatted',                   'UserController@formatted');
+Route::get( 'user/formatted/{priv}',            'UserController@formatted');
+Route::get( 'user/formatted/{priv}/{template}', 'UserController@formatted');
+Route::post('user/formatted',                   'UserController@formatted');
+Route::post('user/formatted/{priv}',            'UserController@formatted');
+Route::post('user/formatted/{priv}/{template}', 'UserController@formatted');
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VLANs
