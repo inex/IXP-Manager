@@ -95,6 +95,11 @@ class PhysicalInterface
     protected $PeeringPhysicalInterface;
 
     /**
+     * @var \Entities\CoreInterface
+     */
+    protected $coreInterface;
+
+    /**
      * Set status
      *
      * @param integer $status

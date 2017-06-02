@@ -108,7 +108,7 @@ class PhysicalInterfaceController extends Controller
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'physical-interface/edit' )->with([
             'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
-            'sp'                    => $pi ? D2EM::getRepository( SwitcherEntity::class )->getAllPorts( $pi->getSwitchPort()->getSwitcher()->getId() ) : '',
+            'sp'                    => $pi ? D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId() ) : '',
             'status'                => PhysicalInterfaceEntity::$STATES,
             'speed'                 => PhysicalInterfaceEntity::$SPEED,
             'duplex'                => PhysicalInterfaceEntity::$DUPLEX,

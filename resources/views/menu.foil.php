@@ -37,19 +37,24 @@
                 </li>
                 <li <?php if($t->controller == 'VirtualInterfaceController'):?> class="active" <?php endif;?>>
                     <a href="<?= url( 'virtualInterface/list' ) ?>">Interfaces  <?= ($t->controller == 'VirtualInterfaceController' or $t->controller == 'PhysicalInterfaceController' or $t->controller == 'VlanInterfaceController' or $t->controller == 'SflowReceiverController')? '(Virtual)': ''?></a>
-                    <?php if($t->controller == 'VirtualInterfaceController' or $t->controller == 'PhysicalInterfaceController' or $t->controller == 'VlanInterfaceController' or $t->controller == 'SflowReceiverController') :?>
+                    <?php if($t->subFolder == 'interface') :?>
                         <li class="sub-menu <?php if($t->controller == 'PhysicalInterfaceController'):?> active <?php endif;?> " >
                             <a href="<?= url('physicalInterface/list') ?>">Physical Interface</a>
                         </li>
                     <?php endif;?>
-                    <?php if($t->controller == 'VirtualInterfaceController' or $t->controller == 'PhysicalInterfaceController' or $t->controller == 'VlanInterfaceController' or $t->controller == 'SflowReceiverController') :?>
+                    <?php if($t->subFolder == 'interface') :?>
                         <li class="sub-menu <?php if($t->controller == 'VlanInterfaceController'):?> active <?php endif;?> " >
                             <a href="<?= url('vlanInterface/list') ?>">Vlan Interface</a>
                         </li>
                     <?php endif;?>
-                    <?php if($t->controller == 'VirtualInterfaceController' or $t->controller == 'PhysicalInterfaceController' or $t->controller == 'VlanInterfaceController' or $t->controller == 'SflowReceiverController') :?>
+                    <?php if($t->subFolder == 'interface') :?>
                         <li class="sub-menu <?php if($t->controller == 'SflowReceiverController'):?> active <?php endif;?> " >
                             <a href="<?= url('sflowReceiver/list') ?>">Sflow Receiver</a>
+                        </li>
+                    <?php endif;?>
+                    <?php if($t->subFolder == 'interface') :?>
+                        <li class="sub-menu <?php if($t->controller == 'CoreBundleController'):?> active <?php endif;?> " >
+                            <a href="<?= url('core-bundle/list') ?>">Core Bundle</a>
                         </li>
                     <?php endif;?>
                 </li>
@@ -57,7 +62,7 @@
                 <li <?php if($t->controller == 'PatchPanelController'):?> class="active" <?php endif;?> >
                     <a href="<?= url('patch-panel/list') ?>">Patch Panels</a>
 
-                    <?php if($t->controller == 'PatchPanelController' or $t->controller == 'PatchPanelPortController') :?>
+                    <?php if($t->subFolder == 'patchpanel') :?>
                         <li class="sub-menu <?php if($t->controller == 'PatchPanelPortController'):?> active <?php endif;?> " >
                             <a href="<?= url('patch-panel-port/list') ?>">Patch Panel Port</a>
                         </li>

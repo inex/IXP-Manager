@@ -29,8 +29,6 @@
     <field name="mauSupported" type="boolean" nullable="true" column="mauSupported"/>
     <field name="lastPolled" type="datetime" nullable="true" column="lastPolled"/>
     <field name="notes" type="text" nullable="true"/>
-    <field name="asn" type="integer" nullable="true"/>
-    <field name="loopback" unique="true" type="string" length="255" nullable="true"/>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Switchers">
       <join-columns>
         <join-column name="infrastructure" referenced-column-name="id"/>

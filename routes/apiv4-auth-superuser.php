@@ -99,6 +99,7 @@ Route::post('customer/{id}/switches',                           'CustomerControl
 
 Route::post('switcher/{id}/switch-port-for-ppp',                'SwitcherController@switchPortForPPP' );
 Route::post('switcher/{id}/switch-port-prewired',               'SwitcherController@switchPortPrewired' );
+Route::post('switcher/{id}/switch-port-not-assign-to-pi',       'SwitcherController@switchPortNotAssignedToPI' );
 Route::post('switcher/{id}/switch-port',                        'SwitcherController@switchPort' );
 
 Route::post( 'utils/markdown',                                  'UtilsController@markdown' );

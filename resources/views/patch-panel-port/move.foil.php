@@ -127,8 +127,8 @@ $this->layout( 'layouts/ixpv4' )
                     <?php endif; ?>
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port" );
-                    alert( "Error running ajax query for switcher/$id/customer/$custId/switch-port/$spId" );
+                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port-not-assign-to-pi" );
+                    alert( "Error running ajax query for api/v4/switcher/$id/switch-port-not-assign-to-pi" );
                 })
                 .always( function() {
                     $( "#master-port" ).trigger( "chosen:updated" );

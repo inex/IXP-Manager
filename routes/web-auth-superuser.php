@@ -7,7 +7,7 @@
 */
 
 
-Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
+Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' , 'subFolder' => 'patchpanel' ], function() {
     Route::get( 'list',                             'PatchPanelController@index' );
     Route::get( 'list/inactive',                    'PatchPanelController@indexInactive' );
 
@@ -19,7 +19,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], functi
     Route::post( 'store',                           'PatchPanelController@store'  );
 });
 
-Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port' ], function() {
+Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port' , 'subFolder' => 'patchpanel' ], function() {
     Route::get( 'list',                             'PatchPanelPortController@index' )->name('patchPanelPortIndex');
     Route::post('advanced-list',                    'PatchPanelPortController@advancedIndex' );
     Route::get( 'list/patch-panel/{ppid}',          'PatchPanelPortController@index' );
@@ -59,7 +59,7 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::post( 'store',                           'RouterController@store'  );
 });
 
-Route::group( [  'prefix' => 'virtualInterface' ], function() {
+Route::group( [  'prefix' => 'virtualInterface', 'subFolder' => 'interface' ], function() {
     Route::get( 'list',                             'VirtualInterfaceController@list' );
     Route::get( 'add',                              'VirtualInterfaceController@edit' );
     Route::get( 'edit/{id}',                        'VirtualInterfaceController@edit' );
@@ -71,7 +71,7 @@ Route::group( [  'prefix' => 'virtualInterface' ], function() {
     Route::post( 'storeWizard',                     'VirtualInterfaceController@storeInterfaceWizard'  );
 });
 
-Route::group( [  'prefix' => 'physicalInterface' ], function() {
+Route::group( [  'prefix' => 'physicalInterface', 'subFolder' => 'interface' ], function() {
     Route::get( 'list',                             'PhysicalInterfaceController@list' );
     Route::get( 'view/{id}',                        'PhysicalInterfaceController@list' );
     Route::get( 'edit/{id}',                        'PhysicalInterfaceController@edit' );
@@ -79,7 +79,7 @@ Route::group( [  'prefix' => 'physicalInterface' ], function() {
     Route::post( 'store',                           'PhysicalInterfaceController@store'  );
 });
 
-Route::group( [  'prefix' => 'vlanInterface' ], function() {
+Route::group( [  'prefix' => 'vlanInterface', 'subFolder' => 'interface' ], function() {
     Route::get( 'list',                             'VlanInterfaceController@list' );
     Route::get( 'view/{id}',                        'VlanInterfaceController@list' );
     Route::get( 'edit/{id}',                        'VlanInterfaceController@edit' );
@@ -87,10 +87,16 @@ Route::group( [  'prefix' => 'vlanInterface' ], function() {
     Route::post( 'store',                           'VlanInterfaceController@store'  );
 });
 
-Route::group( [  'prefix' => 'sflowReceiver' ], function() {
+Route::group( [  'prefix' => 'sflowReceiver', 'subFolder' => 'interface' ], function() {
     Route::get( 'list',                             'SflowReceiverController@list' );
     Route::get( 'view/{id}',                        'SflowReceiverController@view' );
     Route::get( 'edit/{id}/',                       'SflowReceiverController@edit' );
     Route::get( 'add/{id}/vintid/{viid}',           'SflowReceiverController@edit' );
     Route::post( 'store',                           'SflowReceiverController@store'  );
+});
+
+Route::group( [  'prefix' => 'core-bundle', 'subFolder' => 'interface' ], function() {
+    Route::get( 'list',                             'CoreBundleController@list' );
+    Route::get( 'add-wizard',                       'CoreBundleController@editWizard' );
+    Route::post( 'add-core-link-frag',          'CoreBundleController@addCoreLinkFrag' );
 });

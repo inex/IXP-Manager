@@ -80,7 +80,7 @@ class Switcher
     /**
      * @var integer $asn
      */
-    protected $asn = '';
+    protected $asn;
 
     /**
      * @var string $loopback

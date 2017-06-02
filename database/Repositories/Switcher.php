@@ -312,7 +312,7 @@ class Switcher extends EntityRepository
      * @param int|null $spid   Switch port ID, if set, this port is excluded from the results
      * @return array
      */
-    public function getAllPorts( int $id, $type = null , int $spid = null ): array {
+    public function getAllPortsNotAssignedToPI( int $id, $type = null , int $spid = null ): array {
 
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
                     FROM \\Entities\\SwitchPort sp
@@ -339,6 +339,47 @@ class Switcher extends EntityRepository
 
         if( $spid  !== null )
             $query->setParameter( 2, $spid );
+
+        $ports = $query->getArrayResult();
+
+        foreach( $ports as $id => $port )
+            $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+
+        return $ports;
+    }
+
+    /**
+     * Returns all available switch ports for a switch.
+     *
+     * Restrict to only some types of switch port
+     * Exclude switch port ids from the list
+     *
+     * Suitable for other generic use.
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @param array    $types  Switch port type restrict to some types only
+     * @param array    $spid   Switch port IDs, if set, those ports are excluded from the results
+     * @return array
+     */
+    public function getAllPorts( int $id, $types = [] , $spid = [] ): array {
+
+        $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
+                    FROM Entities\\SwitchPort sp
+                    LEFT JOIN sp.Switcher s
+                    WHERE s.id = ?1 ";
+
+        if( count( $spid ) > 0 ){
+            $dql .= ' AND sp.id NOT IN ('.implode( ',', $spid ).') ';
+        }
+
+        if( count( $types ) > 0 ){
+            $dql .= ' AND sp.type IN ('.implode( ',', $types ).') ';
+        }
+
+        $dql .= " ORDER BY sp.id ASC ";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id );
 
         $ports = $query->getArrayResult();
 

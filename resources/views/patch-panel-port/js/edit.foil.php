@@ -133,8 +133,8 @@
                     $( "#switch_port" ).html( options );
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port" );
-                    alert( "Error running ajax query for switcher/$id/customer/$custId/switch-port/$spId" );
+                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port-for-ppp" );
+                    alert( "Error running ajax query for api/v4/switcher/$id/switch-port-for-ppp" );
                     $( "#customer" ).html("");
                 })
                 .always( function() {

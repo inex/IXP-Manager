@@ -118,7 +118,7 @@ $this->layout( 'layouts/ixpv4' );
 
             // ask what is that ?
             var type = "peering";
-            url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port";
+            url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port-not-assign-to-pi";
 
             $.ajax( url , {
                 data: {type : type },
@@ -132,8 +132,8 @@ $this->layout( 'layouts/ixpv4' );
                     $( "#switch-port" ).html( options );
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port" );
-                    alert( "Error running ajax query for switcher/$id/customer/$custId/switch-port/$spId" );
+                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port-not-assign-to-pi" );
+                    alert( "Error running ajax query for api/v4/switcher/$id/switch-port-not-assign-to-pi" );
                 })
                 .always( function() {
                     $( "#switch-port" ).trigger( "chosen:updated" );

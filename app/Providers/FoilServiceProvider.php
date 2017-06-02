@@ -41,17 +41,18 @@ class FoilServiceProvider extends ServiceProvider
             $engine = new Engine($app->make('Foil\Engine'));
 
             View::composer('*', function($view) {
+
                 if(app('request')->route() != null) {
                     $action = app('request')->route()->getAction();
                     $controller = class_basename($action['controller']);
+                    $subFolder = isset($action['subFolder']) ? $action['subFolder'] : '';
                     list($controller, $action) = explode('@', $controller);
                 } else {
                     $action = null;
                     $controller = null;
                 }
-
                 $switched_user_from = (isset($_SESSION['Application']['switched_user_from']))? true : false;
-                $view->with('controller' , $controller)->with('action',$action)->with('switched_user_from', $switched_user_from);
+                $view->with('subFolder' , $subFolder )->with('controller' , $controller)->with('action',$action)->with('switched_user_from', $switched_user_from);
             });
 
             // we have a few rendering functions we want to include here:

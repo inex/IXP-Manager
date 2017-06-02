@@ -64,10 +64,10 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface'];
+            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
         }
 
-        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface'];
+        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
     }
 
     /**
