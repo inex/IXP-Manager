@@ -9,13 +9,13 @@
         <option name="default">0</option>
       </options>
     </field>
+    <field name="ipv4_subnet" type="string" length="18" nullable="true"/>
+    <field name="ipv6_subnet" type="string" length="43" nullable="true"/>
     <field name="enabled" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>
       </options>
     </field>
-    <field name="ipv4Subnet" type="string" length="18" nullable="true"/>
-    <field name="ipv6Subnet" type="string" length="43" nullable="true"/>
     <one-to-one field="coreInterfaceSideA" target-entity="Entities\CoreInterface" inversed-by="coreLink">
       <join-columns>
         <join-column name="core_interface_sidea_id" referenced-column-name="id" nullable="false" unique="true"/>

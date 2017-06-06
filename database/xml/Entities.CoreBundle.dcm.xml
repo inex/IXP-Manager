@@ -1,12 +1,19 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\CoreBundle" table="corebundles" tableName="corebundles" >
+  <entity name="Entities\CoreBundle" table="corebundles" tableName="corebundles" repository-class="Repositories\CoreBundles">
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
     <field name="description" type="string" length="255" nullable="false"/>
     <field name="type" type="integer" length="20" nullable="false"/>
     <field name="graph_title" type="string" length="255" nullable="false"/>
+    <field name="bfd" type="boolean" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="ipv4_subnet" type="string" length="18" nullable="true"/>
+    <field name="ipv6_subnet" type="string" length="43" nullable="true"/>
     <field name="enabled" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>
