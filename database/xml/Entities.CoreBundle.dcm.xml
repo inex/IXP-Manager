@@ -14,6 +14,11 @@
     </field>
     <field name="ipv4_subnet" type="string" length="18" nullable="true"/>
     <field name="ipv6_subnet" type="string" length="43" nullable="true"/>
+    <field name="cost" type="integer" nullable="true">
+      <options>
+        <option name="unsigned">true</option>
+      </options>
+    </field>
     <field name="enabled" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>
