@@ -53,18 +53,18 @@
         <td><?= $r->metric ?></td>
         <td>
             <span class="badge">
-                @if( isset( $r->bgp->communities ) )
-                    {{ count( $r->bgp->communities ) }}
-                @else
+                <?php if( isset( $r->bgp->communities ) ): ?>
+                    <?= count( $r->bgp->communities ) ?>
+                <?php else: ?>
                     0
-                @endif
+                <?php endif; ?>
             </span>
 
-            @if( isset( $r->bgp->large_communities ) )
+            <?php if( isset( $r->bgp->large_communities ) ): ?>
                 <span class="badge">LC:
-                    {{ count( $r->bgp->large_communities ) }}
+                    <?= count( $r->bgp->large_communities ) ?>
                 </span>
-            @endif
+            <?php endif; ?>
         </td>
         <td>
             <?php if( isset($r->bgp->as_path) ): ?>
