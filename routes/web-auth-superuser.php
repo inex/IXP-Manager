@@ -98,5 +98,6 @@ Route::group( [  'prefix' => 'sflowReceiver', 'subFolder' => 'interface' ], func
 Route::group( [  'prefix' => 'core-bundle', 'subFolder' => 'interface' ], function() {
     Route::get( 'list',                             'CoreBundleController@list' );
     Route::get( 'add-wizard',                       'CoreBundleController@editWizard' );
-    Route::post( 'add-core-link-frag',          'CoreBundleController@addCoreLinkFrag' );
+    Route::post( 'add-core-link-frag',              'CoreBundleController@addCoreLinkFrag' );
+    Route::post( 'store-wizard',                    'CoreBundleController@storeWizard' );
 });

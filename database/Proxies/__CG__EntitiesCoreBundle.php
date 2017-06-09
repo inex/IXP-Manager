@@ -64,10 +64,10 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
     }
 
     /**
@@ -173,4 +173,118 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDescription()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', []);
+
+        return parent::getDescription();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', []);
+
+        return parent::getType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeECMP(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeECMP', []);
+
+        return parent::isTypeECMP();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeL2Lag(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeL2Lag', []);
+
+        return parent::isTypeL2Lag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeL3Lag(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeL3Lag', []);
+
+        return parent::isTypeL3Lag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeOther(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeOther', []);
+
+        return parent::isTypeOther();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getGraphTitle()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getGraphTitle', []);
+
+        return parent::getGraphTitle();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEnabled()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEnabled', []);
+
+        return parent::getEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
+
+        return parent::resolveType();
+    }
+
 }

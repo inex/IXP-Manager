@@ -48,6 +48,26 @@ class CoreBundle
     private $enabled = '0';
 
     /**
+     * @var boolean
+     */
+    private $bfd = '0';
+
+    /**
+     * @var string
+     */
+    private $ipv4_subnet;
+
+    /**
+     * @var string
+     */
+    private $ipv6_subnet;
+
+    /**
+     * @var int
+     */
+    private $cost;
+
+    /**
      * @var integer
      */
     private $id;
@@ -151,6 +171,80 @@ class CoreBundle
         return $this->enabled;
     }
 
+    /**
+     * Get bfd
+     *
+     * @return boolean
+     */
+    public function getBFD()
+    {
+        return $this->bfd;
+    }
+
+    /**
+     * Get IPv4 Subnet
+     *
+     * @return boolean
+     */
+    public function getIPv4Subnet()
+    {
+        return $this->ipv4_subnet;
+    }
+
+    /**
+     * Get IPv6 Subnet
+     *
+     * @return boolean
+     */
+    public function getIPv46Subnet()
+    {
+        return $this->ipv6_subnet;
+    }
+
+    /**
+     * Get cost
+     *
+     * @return boolean
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+
+    /**
+     * Get CoreLinks
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoreLinks()
+    {
+        return $this->coreLinks;
+    }
+
+    /**
+     * Add core Link
+     *
+     * @param CoreLink $coreLink
+     *
+     * @return PatchPanel
+     */
+    public function addCoreLink( CoreLink $coreLink)
+    {
+        $this->coreLinks[] = $coreLink;
+
+        return $this;
+    }
+
+    /**
+     * Remove patchPanelPort
+     *
+     * @param CoreLink $coreLink
+     */
+    public function removeCoreLink( CoreLink $coreLink)
+    {
+        $this->coreLinks->removeElement( $coreLink );
+    }
 
     /**
      * Turn the database integer representation of the type into text as
@@ -159,6 +253,113 @@ class CoreBundle
      */
     public function resolveType(): string {
         return self::$TYPES[ $this->getType() ] ?? 'Unknown';
+    }
+
+
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return CoreBundle
+     */
+    public function setDescription( $description )
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * Set type
+     *
+     * @param integer $type
+     *
+     * @return CoreBundle
+     */
+    public function setType( $type )
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * Set graph title
+     *
+     * @param string $graph_title
+     *
+     * @return CoreBundle
+     */
+    public function setGraphTitle( $graph_title )
+    {
+        $this->graph_title = $graph_title;
+        return $this;
+    }
+
+    /**
+     * Set enabled
+     *
+     * @param boolean $enabled
+     *
+     * @return CoreBundle
+     */
+    public function setEnabled( $enabled )
+    {
+        $this->enabled = $enabled;
+        return $this;
+    }
+
+    /**
+     * Set BFD
+     *
+     * @param boolean $bfd
+     *
+     * @return CoreBundle
+     */
+    public function setBFD( $bfd )
+    {
+        $this->bfd = $bfd;
+        return $this;
+    }
+
+    /**
+     * Set IPv4 Subnet
+     *
+     * @param string $ipv4_subnet
+     *
+     * @return CoreBundle
+     */
+    public function setIPv4Subnet( $ipv4_subnet )
+    {
+        $this->ipv4_subnet = $ipv4_subnet;
+        return $this;
+    }
+
+    /**
+     * Set IPv6 Subnet
+     *
+     * @param string $ipv6_subnet
+     *
+     * @return CoreBundle
+     */
+    public function setIPv6Subnet( $ipv6_subnet )
+    {
+        $this->ipv6_subnet = $ipv6_subnet;
+        return $this;
+    }
+
+    /**
+     * Set cost
+     *
+     * @param integer $cost
+     *
+     * @return CoreBundle
+     */
+    public function setCost( $cost )
+    {
+        $this->cost = $cost;
+        return $this;
     }
 
 }
