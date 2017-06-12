@@ -50,6 +50,7 @@ class FoilServiceProvider extends ServiceProvider
                 } else {
                     $action = null;
                     $controller = null;
+                    $subFolder = null;
                 }
                 $switched_user_from = (isset($_SESSION['Application']['switched_user_from']))? true : false;
                 $view->with('subFolder' , $subFolder )->with('controller' , $controller)->with('action',$action)->with('switched_user_from', $switched_user_from);
