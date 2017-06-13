@@ -31,7 +31,7 @@ $this->layout( 'layouts/ixpv4' );
             <hr>
             <?= Former::select( 'cust' )
                 ->label( 'Customer' )
-                ->fromQuery( $t->cust, 'name' )
+                ->fromQuery( $t->custs, 'name' )
                 ->placeholder( 'Choose a Customer' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -39,7 +39,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'vlan' )
                 ->label( 'Vlan' )
-                ->fromQuery( $t->vlan, 'name' )
+                ->fromQuery( $t->vlans, 'name' )
                 ->placeholder( 'Choose a Vlan' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -49,7 +49,7 @@ $this->layout( 'layouts/ixpv4' );
                 ->label('&nbsp;')
                 ->text( 'Use 802.1q framing' )
                 ->blockHelp( 'Indicates if this port should be configured for 802.1q framing / tagged packets.' )
-                ->check( $t->vi ? $t->vi->getTrunk() : false )
+                ->check( false )
             ?>
 
             <?= Former::checkbox( 'ipv4-enabled' )
@@ -74,7 +74,7 @@ $this->layout( 'layouts/ixpv4' );
             <hr>
             <?= Former::select( 'switch' )
                 ->label( 'Switch' )
-                ->fromQuery( $t->switches, 'name' )
+                ->fromQuery( $t->pi_switches, 'name' )
                 ->placeholder( 'Choose a Switch' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -89,7 +89,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'status' )
                 ->label( 'Status' )
-                ->fromQuery( $t->status, 'name' )
+                ->fromQuery( $t->pi_states, 'name' )
                 ->placeholder( 'Choose a status' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Only virtual interfaces with at least one <em>connected</em> interface will be considered for monitoring / route server configuration, etc.' );
@@ -97,7 +97,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'speed' )
                 ->label( 'Speed' )
-                ->fromQuery( $t->speed, 'name' )
+                ->fromQuery( $t->pi_speeds, 'name' )
                 ->placeholder( 'Choose a speed' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -105,7 +105,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'duplex' )
                 ->label( 'Duplex' )
-                ->fromQuery( $t->duplex, 'name' )
+                ->fromQuery( $t->pi_duplexes, 'name' )
                 ->placeholder( 'Choose Duplex' )
                 ->addClass( 'chzn-select' )
                 ->value(1)
@@ -235,13 +235,9 @@ $this->layout( 'layouts/ixpv4' );
 
         <br><br>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->vi ? $t->vi->getId() : null )
-        ?>
-
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( url( 'virtualInterface/list/' ) ),
+            Former::default_link( 'Cancel' )->href( route( 'interfaces/virtual/list' ) ),
             Former::success_button( 'Inline Help' )->id( 'help-btn' ),
             Former::info_link( 'External Documentation &Gt;' )->href( 'http://docs.ixpmanager.org/usage/interfaces/' )->target( '_blank' )->id( 'help-btn' )
         )->id('btn-group');?>

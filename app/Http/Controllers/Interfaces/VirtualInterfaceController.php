@@ -166,34 +166,15 @@ class VirtualInterfaceController extends Controller
      *
      * @return View
      */
-    public function wizard( int $id = null ): View {
-        $vi = false;
-        /** @var VirtualInterfaceEntity $vi */
-        if( $id and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
-
-        if( $vi ) {
-            // fill the form with Virtual interface data
-            Former::populate([
-                'cust'                  => $vi->getCustomer(),
-                'name'                  => $vi->getName(),
-                'description'           => $vi->getDescription(),
-                'channel-group'         => $vi->getChannelgroup(),
-                'mtu'                   => $vi->getMtu(),
-            ]);
-        }
-
-
+    public function wizard(): View {
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'interfaces/virtual/edit' )->with([
-            'cust'                  => D2EM::getRepository( CustomerEntity::class )->getNames(),
-            'vlan'                  => D2EM::getRepository( VlanEntity::class )->getNames( false ),
-            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
-            'status'                => PhysicalInterfaceEntity::$STATES,
-            'speed'                 => PhysicalInterfaceEntity::$SPEED,
-            'duplex'                => PhysicalInterfaceEntity::$DUPLEX,
-            'vi'                    => $vi ? $vi : false
+        return view( 'interfaces/virtual/wizard' )->with([
+            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getNames(),
+            'vlans'                 => D2EM::getRepository( VlanEntity::class )->getNames( false ),
+            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
+            'pi_states'             => PhysicalInterfaceEntity::$STATES,
+            'pi_speeds'             => PhysicalInterfaceEntity::$SPEED,
+            'pi_duplexes'           => PhysicalInterfaceEntity::$DUPLEX,
         ]);
     }
 
