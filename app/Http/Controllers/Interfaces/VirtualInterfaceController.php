@@ -46,7 +46,7 @@ use Entities\{
 
 use IXP\Http\Requests\{
     StoreVirtualInterface,
-    StoreInterfaceWizard
+    StoreVirtualInterfaceWizard
 };
 
 use IXP\Utils\View\Alert\Alert;
@@ -79,7 +79,7 @@ class VirtualInterfaceController extends Controller
      *
      * @return View
      */
-    public function edit( int $id = null ): View {
+    public function add( int $id = null ): View {
         $vi = false;
         /** @var VirtualInterfaceEntity $vi */
         if( $id and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
@@ -124,42 +124,6 @@ class VirtualInterfaceController extends Controller
     }
 
     /**
-     * Display the form to add a virtual interface
-     *
-     * @return View
-     */
-    public function editWizard( int $id = null ): View {
-        $vi = false;
-        /** @var VirtualInterfaceEntity $vi */
-        if( $id and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
-
-        if( $vi ) {
-            // fill the form with Virtual interface data
-            Former::populate([
-                'cust'                  => $vi->getCustomer(),
-                'name'                  => $vi->getName(),
-                'description'           => $vi->getDescription(),
-                'channel-group'         => $vi->getChannelgroup(),
-                'mtu'                   => $vi->getMtu(),
-            ]);
-        }
-
-
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'virtual-interface/edit-wizard' )->with([
-            'cust'                  => D2EM::getRepository( CustomerEntity::class )->getNames(),
-            'vlan'                  => D2EM::getRepository( VlanEntity::class )->getNames( false ),
-            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
-            'status'                => PhysicalInterfaceEntity::$STATES,
-            'speed'                 => PhysicalInterfaceEntity::$SPEED,
-            'duplex'                => PhysicalInterfaceEntity::$DUPLEX,
-            'vi'                    => $vi ? $vi : false
-        ]);
-    }
-
-    /**
      * Add or edit a virtual interface (set all the data needed)
      *
      * @param   StoreVirtualInterface $request instance of the current HTTP request
@@ -198,12 +162,48 @@ class VirtualInterfaceController extends Controller
     }
 
     /**
+     * Display the form to add a virtual interface
+     *
+     * @return View
+     */
+    public function wizard( int $id = null ): View {
+        $vi = false;
+        /** @var VirtualInterfaceEntity $vi */
+        if( $id and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
+            abort(404);
+        }
+
+        if( $vi ) {
+            // fill the form with Virtual interface data
+            Former::populate([
+                'cust'                  => $vi->getCustomer(),
+                'name'                  => $vi->getName(),
+                'description'           => $vi->getDescription(),
+                'channel-group'         => $vi->getChannelgroup(),
+                'mtu'                   => $vi->getMtu(),
+            ]);
+        }
+
+
+        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
+        return view( 'interfaces/virtual/edit' )->with([
+            'cust'                  => D2EM::getRepository( CustomerEntity::class )->getNames(),
+            'vlan'                  => D2EM::getRepository( VlanEntity::class )->getNames( false ),
+            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
+            'status'                => PhysicalInterfaceEntity::$STATES,
+            'speed'                 => PhysicalInterfaceEntity::$SPEED,
+            'duplex'                => PhysicalInterfaceEntity::$DUPLEX,
+            'vi'                    => $vi ? $vi : false
+        ]);
+    }
+
+    /**
      * Add or edit a interface wizard (set all the data needed)
      *
-     * @param   StoreInterfaceWizard $request instance of the current HTTP request
+     * @param   StoreVirtualInterfaceWizard $request instance of the current HTTP request
      * @return  RedirectResponse
      */
-    public function storeInterfaceWizard( StoreInterfaceWizard $request ): RedirectResponse {
+    public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse {
         /** @var CustomerEntity $cust */
         if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) ) ) ) {
             abort(404, 'Unknown customer');

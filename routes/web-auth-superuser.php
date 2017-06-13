@@ -64,14 +64,13 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     Route::group( [  'prefix' => 'virtual' ], function() {
 
         Route::get( 'list', 'VirtualInterfaceController@list' )->name( 'interfaces/virtual/list' );
-        Route::get( 'add', 'VirtualInterfaceController@edit' );
+        Route::get( 'add', 'VirtualInterfaceController@add' )->name( 'interfaces/virtual/add' );
         Route::get( 'edit/{id}', 'VirtualInterfaceController@edit' );
         Route::get( 'view/{id}', 'VirtualInterfaceController@view' );
-        Route::get( 'add-wizard', 'VirtualInterfaceController@editWizard' );
-        Route::get( 'edit-wizard/{id}', 'VirtualInterfaceController@editWizard' );
+        Route::get( 'wizard-add',  'VirtualInterfaceController@wizard' )->name( 'interfaces/virtual/wizard' );
 
         Route::post( 'store', 'VirtualInterfaceController@store' );
-        Route::post( 'storeWizard', 'VirtualInterfaceController@storeInterfaceWizard' );
+        Route::post( 'wizard-add', 'VirtualInterfaceController@storeWizard' )->name( 'interfaces/virtual/wizard-save' );
 
     });
 

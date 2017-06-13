@@ -185,26 +185,28 @@ class VirtualInterface extends EntityRepository
     }
 
     /**
-     * Provide array of virtual interfaces for the standard controller list action
+     * Providea collection of virtual interfaces for the standard controller list action
      *
-     * Returns an array of nested virtual interface objects.
+     * Example usage: resources/views/interfaces/virtual/list.foil.php
      *
      * @return array
      */
-    public function getForList()
+    public function getForList(): array
     {
         return $this->getEntityManager()->createQuery(
-                "SELECT vi, pi, c, sp, s, cab, l
+                "SELECT vi, pi, fpi, ppi, c, sp, s, cab, l, ci, ppp
                     FROM Entities\\VirtualInterface vi
                         LEFT JOIN vi.Customer c
                         LEFT JOIN vi.PhysicalInterfaces pi
+                        LEFT JOIN pi.FanoutPhysicalInterface fpi
+                        LEFT JOIN pi.PeeringPhysicalInterface ppi
                         LEFT JOIN pi.coreInterface ci
                         LEFT JOIN pi.SwitchPort sp
                         LEFT JOIN sp.Switcher s
+                        LEFT JOIN sp.patchPanelPort ppp
                         LEFT JOIN s.Cabinet cab
                         LEFT JOIN cab.Location l"
             )->getResult();
-
     }
 
 

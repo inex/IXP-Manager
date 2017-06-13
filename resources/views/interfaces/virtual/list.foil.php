@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'virtualInterface/list' )?>">Virtual Interfaces</a>
+    <a href="<?= route('interfaces/virtual/list') ?>">Virtual Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -19,12 +19,12 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
-                    <a id="" href="<?= url( '/virtualInterface/add-wizard' )?>" >
+                    <a id="" href="<?= route( 'interfaces/virtual/wizard' ) ?>" >
                         Add Interface Wizard...
                     </a>
                 </li>
                 <li>
-                    <a id="" href="<?= url( '/virtualInterface/add' )?>" >
+                    <a id="" href="<?= route( 'interfaces/virtual/add' ) ?>" >
                         Add Virtual Interface Object Only...
                     </a>
                 </li>
