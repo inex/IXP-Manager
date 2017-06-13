@@ -59,16 +59,22 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::post( 'store',                           'RouterController@store'  );
 });
 
-Route::group( [  'prefix' => 'virtualInterface', 'subFolder' => 'interface' ], function() {
-    Route::get( 'list',                             'VirtualInterfaceController@list' );
-    Route::get( 'add',                              'VirtualInterfaceController@edit' );
-    Route::get( 'edit/{id}',                        'VirtualInterfaceController@edit' );
-    Route::get( 'view/{id}',                        'VirtualInterfaceController@view' );
-    Route::get( 'add-wizard',                       'VirtualInterfaceController@editWizard' );
-    Route::get( 'edit-wizard/{id}',                 'VirtualInterfaceController@editWizard' );
+Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
 
-    Route::post( 'store',                           'VirtualInterfaceController@store'  );
-    Route::post( 'storeWizard',                     'VirtualInterfaceController@storeInterfaceWizard'  );
+    Route::group( [  'prefix' => 'virtual' ], function() {
+
+        Route::get( 'list', 'VirtualInterfaceController@list' )->name( 'interfaces/virtual/list' );
+        Route::get( 'add', 'VirtualInterfaceController@edit' );
+        Route::get( 'edit/{id}', 'VirtualInterfaceController@edit' );
+        Route::get( 'view/{id}', 'VirtualInterfaceController@view' );
+        Route::get( 'add-wizard', 'VirtualInterfaceController@editWizard' );
+        Route::get( 'edit-wizard/{id}', 'VirtualInterfaceController@editWizard' );
+
+        Route::post( 'store', 'VirtualInterfaceController@store' );
+        Route::post( 'storeWizard', 'VirtualInterfaceController@storeInterfaceWizard' );
+
+    });
+
 });
 
 Route::group( [  'prefix' => 'physicalInterface', 'subFolder' => 'interface' ], function() {

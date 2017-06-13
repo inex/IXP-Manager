@@ -1,4 +1,7 @@
 <?php
+
+namespace IXP\Http\Controllers\Interfaces;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -19,8 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-namespace IXP\Http\Controllers;
 
 use D2EM, Redirect, Former, Input;
 
@@ -43,7 +44,6 @@ use Entities\{
     IPv6Address as IPv6AddressEntity
 };
 
-
 use IXP\Http\Requests\{
     StoreVirtualInterface,
     StoreInterfaceWizard
@@ -57,7 +57,7 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * VirtualInterface Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel
+ * @category   Interfaces
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -68,9 +68,9 @@ class VirtualInterfaceController extends Controller
      *
      * @return  View
      */
-    public function list( ): View {
-        return view( 'virtual-interface/index' )->with([
-            'listVi'       => D2EM::getRepository( VirtualInterfaceEntity::class )->getForList()
+    public function list() : View {
+        return view( 'interfaces/virtual/list' )->with([
+            'vis' => D2EM::getRepository( VirtualInterfaceEntity::class )->getForList()
         ]);
     }
 
