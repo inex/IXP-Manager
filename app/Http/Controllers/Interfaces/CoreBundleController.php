@@ -41,6 +41,8 @@ use Illuminate\Http\{
     Request
 };
 
+use IXP\Http\Controllers\Controller;
+
 use IXP\Http\Requests\{
     StoreCoreBundle
 };

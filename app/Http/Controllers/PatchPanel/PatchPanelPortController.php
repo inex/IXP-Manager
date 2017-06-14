@@ -189,7 +189,7 @@ class PatchPanelPortController extends Controller
         if( $ppp->getSwitchPort() ) {
             // FIXME: Queries and logic could be improved.
             /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-            $switchPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsNotAssignedToPI( $ppp->getSwitchPort()->getSwitcher()->getId(), null, $ppp->getSwitchPort()->getId() );
+            $switchPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsNotAssignedToPI( $ppp->getSwitchPort()->getSwitcher()->getId(), [], $ppp->getSwitchPort()->getId() );
         }
 
         // fill the form with patch panel port data

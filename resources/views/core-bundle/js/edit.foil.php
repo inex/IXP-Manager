@@ -321,6 +321,7 @@
                     data: datas,
                     type: 'POST'
                 })
+
                     .done( function( data ) {
                         var options = "<option value=\"\">Choose a switch port</option>\n";
                         $.each( data.listPorts, function( key, value ){
@@ -335,6 +336,7 @@
                     .fail( function() {
                         throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port" );
                         alert( "Error running ajax query for api/v4/switcher/$id/switch-port" );
+
 
                     })
                     .always( function() {

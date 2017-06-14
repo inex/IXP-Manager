@@ -100,7 +100,7 @@
         });
 
         /**
-         * set data to the switch port dropdown when we select a switcher
+         * set data to the switch port dropdown when we select a switch
          */
         function setSwitchPort(){
             $( "#switch_port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
@@ -109,12 +109,12 @@
             switchPortId = $( "#switch_port_id" ).val();
 
             <?php if ($t->prewired): ?>
-                url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port-prewired";
+                url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-prewired";
                 datas = {switchId: switchId,
                         spId: $( "#switch_port_id" ).val()};
 
             <?php else: ?>
-                url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port-for-ppp";
+                url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-for-ppp";
                 datas = {switchId: switchId,
                         custId: $( "#customer" ).val(),
                         spId: $( "#switch_port_id" ).val()};
@@ -133,8 +133,8 @@
                     $( "#switch_port" ).html( options );
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port-for-ppp" );
-                    alert( "Error running ajax query for api/v4/switcher/$id/switch-port-for-ppp" );
+                    throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port-for-ppp" );
+                    alert( "Error running ajax query for api/v4/switch/$id/switch-port-for-ppp" );
                     $( "#customer" ).html("");
                 })
                 .always( function() {
@@ -169,7 +169,7 @@
         }
 
         /**
-         * set data to the switcher dropdown related to the customer selected
+         * set data to the switch dropdown related to the customer selected
          */
         $( "#customer" ).change( function(){
             $( "#switch" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );

@@ -59,16 +59,30 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::post( 'store',                           'RouterController@store'  );
 });
 
-Route::group( [  'prefix' => 'virtualInterface', 'subFolder' => 'interface' ], function() {
-    Route::get( 'list',                             'VirtualInterfaceController@list' );
-    Route::get( 'add',                              'VirtualInterfaceController@edit' );
-    Route::get( 'edit/{id}',                        'VirtualInterfaceController@edit' );
-    Route::get( 'view/{id}',                        'VirtualInterfaceController@view' );
-    Route::get( 'add-wizard',                       'VirtualInterfaceController@editWizard' );
-    Route::get( 'edit-wizard/{id}',                 'VirtualInterfaceController@editWizard' );
+Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
 
-    Route::post( 'store',                           'VirtualInterfaceController@store'  );
-    Route::post( 'storeWizard',                     'VirtualInterfaceController@storeInterfaceWizard'  );
+    Route::group( [  'prefix' => 'virtual' ], function() {
+
+        Route::get( 'list', 'VirtualInterfaceController@list' )->name( 'interfaces/virtual/list' );
+        Route::get( 'add', 'VirtualInterfaceController@add' )->name( 'interfaces/virtual/add' );
+        Route::get( 'edit/{id}', 'VirtualInterfaceController@edit' );
+        Route::get( 'view/{id}', 'VirtualInterfaceController@view' );
+        Route::get( 'wizard-add',  'VirtualInterfaceController@wizard' )->name( 'interfaces/virtual/wizard' );
+
+        Route::post( 'store', 'VirtualInterfaceController@store' );
+        Route::post( 'wizard-add', 'VirtualInterfaceController@storeWizard' )->name( 'interfaces/virtual/wizard-save' );
+
+    });
+
+
+
+    Route::group( [  'prefix' => 'core-bundle' ], function() {
+        Route::get( 'list',                             'CoreBundleController@list' );
+        Route::get( 'add-wizard',                       'CoreBundleController@editWizard' );
+        Route::post( 'add-core-link-frag',              'CoreBundleController@addCoreLinkFrag' );
+        Route::post( 'store-wizard',                    'CoreBundleController@storeWizard' );
+    });
+
 });
 
 Route::group( [  'prefix' => 'physicalInterface', 'subFolder' => 'interface' ], function() {
@@ -95,9 +109,3 @@ Route::group( [  'prefix' => 'sflowReceiver', 'subFolder' => 'interface' ], func
     Route::post( 'store',                           'SflowReceiverController@store'  );
 });
 
-Route::group( [  'prefix' => 'core-bundle', 'subFolder' => 'interface' ], function() {
-    Route::get( 'list',                             'CoreBundleController@list' );
-    Route::get( 'add-wizard',                       'CoreBundleController@editWizard' );
-    Route::post( 'add-core-link-frag',              'CoreBundleController@addCoreLinkFrag' );
-    Route::post( 'store-wizard',                    'CoreBundleController@storeWizard' );
-});

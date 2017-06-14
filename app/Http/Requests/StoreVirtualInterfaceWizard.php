@@ -32,7 +32,7 @@ use Entities\{
 use Illuminate\Foundation\Http\FormRequest;
 
 
-class StoreInterfaceWizard extends FormRequest
+class StoreVirtualInterfaceWizard extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

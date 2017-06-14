@@ -18,46 +18,34 @@
                 </li>
 
                 <li>
-                    <?php /*
-                    {if $controller eq 'virtual-interface' or $controller eq 'vlan-interface' or $controller eq 'physical-interface'}
-                        <a href="{genUrl controller='virtual-interface' action='list'}">Interfaces (Virtual)</a>
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'physical-interface'}class="active"{/if}>
-                                <a href="{genUrl controller='physical-interface' action='list'}">Physical Interfaces</a>
-                            </li>
-                            <li {if $controller eq 'vlan-interface' and $action neq 'quick-add'}class="active"{/if}>
-                                <a href="{genUrl controller='vlan-interface' action='list'}">Vlan Interfaces</a>
-                            </li>
-                        </ul>
-                    {else} */ ?>
-
                     <a href="<?= url( 'virtual-interface/list' ) ?>">Interfaces</a>
-
-                    <?php /* {/if} */ ?>
                 </li>
-                <li <?php if($t->controller == 'VirtualInterfaceController'):?> class="active" <?php endif;?>>
-                    <a href="<?= url( 'virtualInterface/list' ) ?>">Interfaces  <?= ($t->controller == 'VirtualInterfaceController' or $t->controller == 'PhysicalInterfaceController' or $t->controller == 'VlanInterfaceController' or $t->controller == 'SflowReceiverController')? '(Virtual)': ''?></a>
-                    <?php if($t->subFolder == 'interface') :?>
+                <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
+
+                    <a href="<?= route( 'interfaces/virtual/list' ) ?>" >
+                        Interfaces  <?= ( substr( $t->controller, -19 ) == 'InterfaceController' || in_array( $t->controller, [ 'SflowReceiverController' ] ) ) ? '(Virtual)': '' ?>
+                    </a>
+                </li>
+
+                    <?php if( substr( $t->controller, -19 ) == 'InterfaceController' || in_array( $t->controller, [ 'SflowReceiverController' ] ) ): ?>
+
                         <li class="sub-menu <?php if($t->controller == 'PhysicalInterfaceController'):?> active <?php endif;?> " >
                             <a href="<?= url('physicalInterface/list') ?>">Physical Interface</a>
                         </li>
-                    <?php endif;?>
-                    <?php if($t->subFolder == 'interface') :?>
+
                         <li class="sub-menu <?php if($t->controller == 'VlanInterfaceController'):?> active <?php endif;?> " >
                             <a href="<?= url('vlanInterface/list') ?>">Vlan Interface</a>
                         </li>
-                    <?php endif;?>
-                    <?php if($t->subFolder == 'interface') :?>
+
                         <li class="sub-menu <?php if($t->controller == 'SflowReceiverController'):?> active <?php endif;?> " >
                             <a href="<?= url('sflowReceiver/list') ?>">Sflow Receiver</a>
                         </li>
-                    <?php endif;?>
-                    <?php if($t->subFolder == 'interface') :?>
+
                         <li class="sub-menu <?php if($t->controller == 'CoreBundleController'):?> active <?php endif;?> " >
                             <a href="<?= url('core-bundle/list') ?>">Core Bundle</a>
                         </li>
-                    <?php endif;?>
-                </li>
+
+                    <?php endif; ?>
 
                 <li <?php if($t->controller == 'PatchPanelController'):?> class="active" <?php endif;?> >
                     <a href="<?= url('patch-panel/list') ?>">Patch Panels</a>

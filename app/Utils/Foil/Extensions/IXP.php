@@ -52,7 +52,7 @@ class IXP implements ExtensionInterface {
         return [
             'alerts'            => [ AlertContainer::class, 'html' ],
             'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
-            'scaleBits'         => [ $this, 'scaleBites' ],
+            'scaleBits'         => [ $this, 'scaleBits' ],
             'scaleBytes'        => [ $this, 'scaleBytes' ],
             'softwrap'          => [ $this, 'softwrap' ],
         ];

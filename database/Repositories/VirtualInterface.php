@@ -185,30 +185,28 @@ class VirtualInterface extends EntityRepository
     }
 
     /**
-     * Provide array of virtual interfaces for the list Action
+     * Providea collection of virtual interfaces for the standard controller list action
      *
+     * Example usage: resources/views/interfaces/virtual/list.foil.php
+     *
+     * @return array
      */
-    public function getForList()
+    public function getForList(): array
     {
-        $dql = "SELECT vi.id,
-                    c.name AS customer, c.id AS custid, c.shortname AS shortname,
-                    COUNT( ppi.id ) as ppid, COUNT( pfi.id ) as fpid,
-                    l.name AS location, s.name AS switch, sp.type as type,
-                    sp.name AS port, SUM( pi.speed ) AS speed, COUNT( pi.id ) AS ports
-                    FROM \\Entities\\VirtualInterface vi
+        return $this->getEntityManager()->createQuery(
+                "SELECT vi, pi, fpi, ppi, c, sp, s, cab, l, ci, ppp
+                    FROM Entities\\VirtualInterface vi
                         LEFT JOIN vi.Customer c
                         LEFT JOIN vi.PhysicalInterfaces pi
-                        LEFT JOIN pi.SwitchPort sp
+                        LEFT JOIN pi.FanoutPhysicalInterface fpi
                         LEFT JOIN pi.PeeringPhysicalInterface ppi
-                        LEFT JOIN pi.FanoutPhysicalInterface pfi
+                        LEFT JOIN pi.coreInterface ci
+                        LEFT JOIN pi.SwitchPort sp
                         LEFT JOIN sp.Switcher s
+                        LEFT JOIN sp.patchPanelPort ppp
                         LEFT JOIN s.Cabinet cab
-                        LEFT JOIN cab.Location l
-                    GROUP BY vi, ppid, fpid, speed, ports";
-
-
-        $q = $this->getEntityManager()->createQuery( $dql );
-        return $q->getArrayResult();
+                        LEFT JOIN cab.Location l"
+            )->getResult();
     }
 
 
