@@ -10,18 +10,9 @@
                     Side A :
                 </h5>
                 <hr>
-                <?php if( $t->nbLink == 1 ): ?>
-                    <?= Former::select( 's-a-'.$t->nbLink )
-                        ->id( 's-a-'.$t->nbLink )
-                        ->label( 'Switch' )
-                        ->fromQuery( $t->switches, 'name' )
-                        ->placeholder( 'Choose a switch' )
-                        ->addClass( 'chzn-select' )
-                    ?>
-                <?php endif; ?>
                 <?= Former::select( 'sp-a-'.$t->nbLink )
                     ->id( 'sp-a-'.$t->nbLink )
-                    ->label( 'Switch Port' )
+                    ->label( 'Switch Port<sup>*</sup>' )
                     ->placeholder( 'Choose a switch port' )
                     ->addClass( 'chzn-select' )
                 ?>
@@ -36,16 +27,11 @@
                 </h5>
                 <hr>
                 <?php if( $t->nbLink == 1 ): ?>
-                    <?= Former::select( 's-b-'.$t->nbLink )
-                        ->id( 's-b-'.$t->nbLink )
-                        ->label( 'Switch' )
-                        ->placeholder( 'Choose a switch' )
-                        ->addClass( 'chzn-select' )
-                    ?>
+
                 <?php endif; ?>
                 <?= Former::select( 'sp-b-'.$t->nbLink )
                     ->id( 'sp-b-'.$t->nbLink )
-                    ->label( 'Switch Port' )
+                    ->label( 'Switch Port<sup>*</sup>' )
                     ->placeholder( 'Choose a switch port' )
                     ->addClass( 'chzn-select' )
                 ?>
@@ -120,10 +106,10 @@
      * initialize the library 'chosen' on the dropdowns
      */
     function dropdownChosen(){
-        $("#s-a-"+<?= $t->nbLink ?>).chosen();
-        $("#sp-a-"+<?= $t->nbLink ?>).chosen();
-        $("#s-b-"+<?= $t->nbLink ?>).chosen();
-        $("#sp-b-"+<?= $t->nbLink ?>).chosen();
+        $( "#s-a-"+<?= $t->nbLink ?> ).chosen();
+        $( "#sp-a-"+<?= $t->nbLink ?> ).chosen();
+        $( "#s-b-"+<?= $t->nbLink ?> ).chosen();
+        $( "#sp-b-"+<?= $t->nbLink ?> ).chosen();
     }
 
     function event(){

@@ -2,6 +2,12 @@
 
 namespace Entities;
 
+use Doctrine\ORM\Mapping\Entity;
+use Entities\{
+    CoreLink            as CoreLinkEntity,
+    Switcher            as SwitcherEntity
+};
+
 /**
  * CoreBundle
  */
@@ -362,5 +368,70 @@ class CoreBundle
         return $this;
     }
 
+
+
+
+    /**
+     * Check if all the core links for the core bundle are enabled
+     *
+     * @return boolean
+     */
+    public function doAllCoreLinksEnabled( ): bool
+    {
+        foreach( $this->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            if( !$cl->getEnabled() ){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * get all core links enabled for a bundle core
+     *
+     * @return array
+     */
+    public function getCoreLinksEnabled( ): array
+    {
+        $cls = [];
+        foreach( $this->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            if( $cl->getEnabled() ){
+                $cls[] = $cl;
+            }
+        }
+
+        return $cls;
+    }
+
+    /**
+     * get switch from side A or B
+     *
+     * @return SwitcherEntity
+     */
+    public function getSwitchSideX( $sideA = true )
+    {
+        foreach( $this->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            $side = $sideA ? $cl->getCoreInterfaceSideA() : $cl->getCoreInterfaceSideB() ;
+
+            return $side->getPhysicalInterface()->getSwitchPort()->getSwitcher();
+        }
+    }
+
+    /**
+     * get the speed of the Physical interface
+     *
+     * @return integer
+     */
+    public function getSpeedPi( )
+    {
+        foreach( $this->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getSpeed();
+        }
+    }
 }
 

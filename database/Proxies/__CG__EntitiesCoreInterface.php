@@ -173,4 +173,85 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPhysicalInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPhysicalInterface', []);
+
+        return parent::getPhysicalInterface();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreLinkA()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreLinkA', []);
+
+        return parent::getCoreLinkA();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreLinkB()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreLinkB', []);
+
+        return parent::getCoreLinkB();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPhysicalInterface', [$physicalInterface]);
+
+        return parent::setPhysicalInterface($physicalInterface);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCoreLinkA(\Entities\CoreLink $coreLinkA = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreLinkA', [$coreLinkA]);
+
+        return parent::setCoreLinkA($coreLinkA);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCoreLinkB(\Entities\CoreLink $coreLinkB = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreLinkB', [$coreLinkB]);
+
+        return parent::setCoreLinkB($coreLinkB);
+    }
+
 }

@@ -361,12 +361,21 @@ class Switcher extends EntityRepository
      * @param array    $spid   Switch port IDs, if set, those ports are excluded from the results
      * @return array
      */
-    public function getAllPorts( int $id, $types = [] , $spid = [] ): array {
+    public function getAllPorts( int $id, $types = [], $spid = [], bool $notAssignToPI = true ): array {
 
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
                     FROM Entities\\SwitchPort sp
-                    LEFT JOIN sp.Switcher s
-                    WHERE s.id = ?1 ";
+                    LEFT JOIN sp.Switcher s";
+
+        if( $notAssignToPI ){
+            $dql .= " LEFT JOIN sp.PhysicalInterface pi";
+        }
+
+        $dql .= " WHERE s.id = ?1 ";
+
+        if( $notAssignToPI ){
+            $dql .= " AND pi.id IS NULL ";
+        }
 
         if( count( $spid ) > 0 ){
             $dql .= ' AND sp.id NOT IN ('.implode( ',', $spid ).') ';

@@ -1,6 +1,9 @@
 <script>
     $(document).ready( function() {
+        $( 'label.col-lg-2' ).removeClass('col-lg-2');
+
         actionRunnig = false;
+        nbCoreLink = 0;
 
         // array of switch port selected
         exludedSwitchPort = [];
@@ -9,6 +12,8 @@
             displayCoreLinks();
         }
 
+        $( "#speed").chosen();
+        $( "#duplex").chosen();
     });
 
     /**
@@ -19,7 +24,6 @@
         $('#core-links-area .col-sm-3 div.form-group').children( "div" ).removeClass('col-sm-3').addClass('col-sm-8');
         $('#core-links-area .col-sm-1 div.checkbox').parent('div').css('margin-left' , '50%');
     }
-
 
     /**
      * hide the help block at loading
@@ -39,7 +43,7 @@
      * display the core link form depending of the type selected
      */
     $( "#type" ).change( function() {
-        displayCoreLinks();
+        displayCoreLinks( );
     });
 
     /**
@@ -63,29 +67,58 @@
      * Display and set value to input depending on the type selected
      */
     function displayCoreLinks(){
-        $("#nb-core-links").val( 0 );
+        nbCoreLink = 0 ;
         $("#core-links-area").html( '' );
+        $("#nb-core-links").val( 0 );
         $("#div-links").show( );
-        if( $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?>){
-            $( '#l3-lag-area' ).show();
-            $( '#subnet' ).prop( 'required', true );
-        } else {
-            $( '#l3-lag-area' ).hide();
-            $( '#subnet' ).prop( 'required', false ) ;
-        }
-        loadBundleLinkSection( 'onLoad' );
+        actionForL3Lag();
+        actionForLxLag();
+
+        loadBundleLinkSection( 'onChange' );
     }
 
+    function actionForL3Lag(){
+        if( $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?>){
+            $( '#l3-lag-area' ).show();
+            required = true ;
+        } else {
+            $( '#l3-lag-area' ).hide();
+            required = false ;
+        }
+        $( '#subnet' ).prop( 'required', required );
+    }
+
+    function actionForLxLag(){
+        if( $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> || $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ){
+            $( '#lag-area' ).show();
+            required = true ;
+        } else{
+            $( '#lag-area' ).hide();
+            required = false ;
+        }
+
+        $( '#pi-name-a' ).prop( 'required', required );
+        $( '#pi-name-b' ).prop( 'required', required );
+        $( '#pi-channel-number-a' ).prop( 'required', required );
+        $( '#pi-channel-number-b' ).prop( 'required', required );
+    }
 
     /**
      * Check if all the switch ports have been chosen before submit
      */
     $('#core-bundle-submit-btn').click(function() {
+        $("[id|='message']").html('');
         for (var i = 1; i <= $("#nb-core-links").val(); i++) {
-            if( !$( "#sp-a-" + i ).val() ){
+            if( !$( "#sp-a-" + i ).val() || !$( "#sp-b-" + i ).val() ){
                 $( "#message-" + i ).append( "<div class='alert alert-danger' role='alert'>You need to select switch ports.</div>" );
+                $('html, body').animate({ scrollTop:$("#core-link-" + i ).offset().top }, 'slow');
                 return false;
             }
+        }
+        if( !$( "#speed" ).val() ){
+            $( "#message-1" ).append( "<div class='alert alert-danger' role='alert'>You need to select a speed.</div>" );
+            $('html, body').animate({ scrollTop:$("#core-link-1").offset().top }, 'slow');
+            return false;
         }
     });
 
@@ -93,7 +126,7 @@
      * add a new link to the core bundle
      */
     $( "#add-new-core-link" ).click( function() {
-        loadBundleLinkSection( 'addBtn', $( "#type" ).val() );
+        loadBundleLinkSection( 'addBtn' );
     });
 
     /**
@@ -121,7 +154,7 @@
      * Function adding a new core link form in the core links area
      */
     function loadBundleLinkSection( action ){
-        nbCoreLink = $( "#nb-core-links" ).val();
+        nbCoreLink = $("#nb-core-links").val( );
         if( $( "#subnet-" + nbCoreLink  ).val() ){
             subnet = $( "#subnet-" + nbCoreLink  ).val();
         } else {
@@ -130,6 +163,7 @@
 
         bundleType = $( "#type" ).val();
         error = false;
+
         $("#message-"+nbCoreLink).html('');
 
         if($('#enabled').is(':checked')){
@@ -140,7 +174,7 @@
 
         if( action == 'addBtn' ){
             // check if the switch port for side A and B are set
-            if( !$( "#s-a-1" ).val() ){
+            if( !$( "#switch-a" ).val() ){
                 error = true;
                 $( "#message-" + nbCoreLink ).append( "<div class='alert alert-danger' role='alert'>You need to select a switch for side A.</div>" );
                 return false;
@@ -151,7 +185,7 @@
                     return false;
                 }
 
-                if( !$( "#s-b-1" ).val() ){
+                if( !$( "#switch-b" ).val() ){
                     error = true;
                     $( "#message-" + nbCoreLink ).append( "<div class='alert alert-danger' role='alert'>You need to select a switch for side B.</div>" );
                     return false;
@@ -192,7 +226,7 @@
             // stop the function if there the function is already running
             if( !actionRunnig ){
                 actionRunnig = true;
-                var ajaxCall = $.ajax( "<?= url( 'core-bundle/add-core-link-frag' ) ?>", {
+                var ajaxCall = $.ajax( "<?= action( 'CoreBundleController@addCoreLinkFrag' ) ?>", {
                     data: {
                         nbCoreLink      : nbCoreLink,
                         enabled         : enabled,
@@ -203,26 +237,34 @@
                 })
                     .done( function( data ) {
                         if( data.success ){
-                            // disable the switch/switchport dropdown (side A/B) of the previous core link
-                            disableDropDown(nbCoreLink, true);
+
                             // add the new core link form
                             $('#core-links-area').append( data.htmlFrag );
+
+                            oldNbLink = $("#nb-core-links").val( );
+
                             // set the number of core links present for the core bundle
-                            $('#nb-core-links').val( data.nbCoreLinks );
+                            $("#nb-core-links").val( data.nbCoreLinks );
+
+                            if( $("#switch-a").val() ){
+                                setSwitchPort( 'a', $("#nb-core-links").val(), action );
+                            }
+
+                            if( $("#switch-b").val() ){
+                                setSwitchPort( 'b', $("#nb-core-links").val() , action );
+                            }
 
                             // event when the add icon has been clicked
                             if( action == 'addBtn' ){
+                                // disable the switch/switchport dropdown (side A/B) of the previous core link
+                                disableDropDown( oldNbLink, true);
                                 // disable the delete button of the previous core link
-                                $( "#remove-core-link-" + nbCoreLink ).prop( 'disabled', true );
-                                // set the dropdown of side B
-                                setDropDownSwitchSideB( data.nbCoreLinks );
-                                // set the switcher dropdown (A/B) with the value of the first core link
-                                $('#s-a-' + data.nbCoreLinks).val( $('#s-a-1' ).val() ).prop('disabled', true).trigger( "chosen:updated" );
-                                $('#s-b-' + data.nbCoreLinks).val( $('#s-b-1' ).val() ).prop('disabled', true).trigger( "chosen:updated" );
+                                $( "#remove-core-link-" + oldNbLink ).prop( 'disabled', true );
 
-                                // set the switch port dropdown value
-                                setSwitchPort( data.nbCoreLinks, 'a', action );
-                                setSwitchPort( data.nbCoreLinks, 'b',  action );
+                                // set the switcher dropdown (A/B) with the value of the first core link
+                                $('#switch-a' ).val( $('#switch-a' ).val() ).prop('disabled', true).trigger( "chosen:updated" );
+                                $('#switch-b' ).val( $('#switch-b' ).val() ).prop('disabled', true).trigger( "chosen:updated" );
+
                                 // set the setting from the first core link to the other
                                 setSettingsToLinks( data.nbCoreLinks );
 
@@ -230,8 +272,9 @@
                                     // set the next valid subnet to the new core link
                                     setNextSubNet( data.nbCoreLinks, subnet );
                                 }
-
                             }
+
+
                             actionRunnig = false;
                         }
 
@@ -244,34 +287,7 @@
         }
     }
 
-    /**
-     * event onchange on the switch dropdowns
-     */
-    $(document).on('change', "[id|='s']" ,function(e){
-        e.preventDefault();
-        var sid = ( this.id ).substring( 4 );
-        var sside = ( this.id ).substring( 2, 3 );
-        setSwitchPort( sid, sside );
-    });
 
-
-    /**
-     * event onchange on the switch port dropdowns
-     */
-    $(document).on('change', "[id|='sp']" ,function(e){
-        e.preventDefault();
-        var sid = ( this.id ).substring( 5 );
-        var sside = ( this.id ).substring( 3, 4 );
-
-        if( sside == 'a' && sid == 1 ) {
-            $( "#sp-b-" + sid ).html( "<option value=\"\">Choose a switch port</option>\n" ).trigger( "chosen:updated" );
-            setDropDownSwitchSideB( sid );
-        }
-
-        $( "#hidden-sp-" + sside + '-' + sid ).val( $("#sp-"+ sside + "-" + sid).val() );
-
-        excludedSwitchPort();
-    });
 
 
     /**
@@ -290,64 +306,65 @@
     /**
      * set data to the switch port dropdown when we select a switcher
      */
-    function setSwitchPort( sid, sside, action ){
-        $( "#sp-" + sside + "-"+ sid ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
-        switchId = $( "#s-" + sside + "-1" ).val();
-        excludedSwitchPort();
-        if( switchId != null && switchId != '' ){
-            url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port";
-            datas = {
-                spIdsexcluded: exludedSwitchPort
-            };
+    function setSwitchPort( sside, id, action ){
+        switchId = $( "#switch-" + sside ).val();
+        if( $("#nb-core-links").val() > 0 ){
+            $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+            excludedSwitchPort();
+            if( switchId != null && switchId != '' ){
+                url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port";
+                datas = {
+                    spIdsexcluded: exludedSwitchPort
+                };
 
-            $.ajax( url , {
-                data: datas,
-                type: 'POST'
-            })
-                .done( function( data ) {
-                    var options = "<option value=\"\">Choose a switch port</option>\n";
-                    $.each( data.listPorts, function( key, value ){
-                        options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
+                $.ajax( url , {
+                    data: datas,
+                    type: 'POST'
+                })
+                    .done( function( data ) {
+                        var options = "<option value=\"\">Choose a switch port</option>\n";
+                        $.each( data.listPorts, function( key, value ){
+                            options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
+                        });
+                        $( "#sp-" + sside + "-"+ id ).html( options );
+
+                        if( action == 'addBtn' ){
+                            selectNextSwitchPort( id, sside );
+                        }
+                    })
+                    .fail( function() {
+                        throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port" );
+                        alert( "Error running ajax query for api/v4/switcher/$id/switch-port" );
+
+                    })
+                    .always( function() {
+                        $( "#sp-" + sside + "-"+ id ).trigger( "chosen:updated" );
                     });
-                    $( "#sp-" + sside + "-"+ sid ).html( options );
-
-                    if( action == 'addBtn' ){
-                        selectNextSwitchPort( sid, sside );
-                    }
-                })
-                .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port" );
-                    alert( "Error running ajax query for api/v4/switcher/$id/switch-port" );
-
-                })
-                .always( function() {
-                    $( "#sp-" + sside + "-"+ sid ).trigger( "chosen:updated" );
-                });
+            }
         }
-
     }
 
     /**
      * Copy the switch dropdown from the side A to B excluding the switch selected in side A
      */
     function setDropDownSwitchSideB( sid ){
-        $( "#s-b-"+ sid ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+        $( "#switch-b" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
         var options = "";
-        $( "#s-a-"+ sid + ' option').each( function( ) {
-            if( this.value != $( "#s-a-"+ sid ).val() ){
+        $( "#switch-a option").each( function( ) {
+            if( this.value != $( "#switch-a" ).val() ){
                 options += "<option value=\"" + this.value + "\">" + this.text + " </option>\n";
             }
         });
-        $( "#s-b-"+ sid ).html( options ).trigger( "chosen:updated" );
+        $( "#switch-b" ).html( options ).trigger( "chosen:updated" );
     }
 
     /**
      * Disable the switch/switch port of the both side
      */
     function disableDropDown( id, disable){
-        $( "#s-a-"+ id  ).prop('disabled', disable).trigger( "chosen:updated" );
-        $( "#s-b-"+ id  ).prop('disabled', disable).trigger( "chosen:updated" );
-        $( "#sp-a-"+ id ).prop('readonly', true).trigger( "chosen:updated" );
+        $( "#switch-a" ).prop('disabled', disable).trigger( "chosen:updated" );
+        $( "#switch-b" ).prop('disabled', disable).trigger( "chosen:updated" );
+        $( "#sp-a-"+ id ).prop('disabled', disable).trigger( "chosen:updated" );
         $( "#sp-b-"+ id ).prop('disabled', disable).trigger( "chosen:updated" );
     }
 
@@ -404,4 +421,33 @@
         var nextAddress      = new Address4( nextAddressStart.address + '/' + address.subnetMask );
         $("#subnet-" + id ).val( nextAddress.address );
     }
+
+
+
+    /**
+     * event onchange on the switch dropdowns
+     */
+    $(document).on('change', "[id|='switch']" ,function(e){
+        e.preventDefault();
+        var sside = ( this.id ).substring( 7 );
+        setSwitchPort( sside , $("#nb-core-links").val() );
+        if( sside == 'a'){
+            setDropDownSwitchSideB( );
+            $( "#sp-b-1" ).html( "<option value=\"\">Choose a switch port</option>\n" ).trigger( "chosen:updated" );
+        }
+    });
+
+
+    /**
+     * event onchange on the switch port dropdowns
+     */
+    $(document).on('change', "[id|='sp']" ,function(e){
+        e.preventDefault();
+        var sid = ( this.id ).substring( 5 );
+        var sside = ( this.id ).substring( 3, 4 );
+
+        $( "#hidden-sp-" + sside + '-' + sid ).val( $("#sp-"+ sside + "-" + sid).val() );
+
+        excludedSwitchPort();
+    });
 </script>

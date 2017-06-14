@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'coreBundle/list' )?>">Core Bundle</a>
+    <a href="<?= action( 'CoreBundleController@list' )?>">Core Bundle</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -19,7 +19,7 @@ $this->layout( 'layouts/ixpv4' );
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
-                    <a id="" href="<?= url( '/core-bundle/add-wizard' )?>" >
+                    <a href="<?= action( 'CoreBundleController@editWizard' )?>" >
                         Add Core Bundle Wizard...
                     </a>
                 </li>
@@ -32,7 +32,7 @@ $this->layout( 'layouts/ixpv4' );
 
     <?= $t->alerts() ?>
     <span id="message-cb"></span>
-    <div id="area-cb">
+    <div id="area-cb" class="collapse">
         <table id='table-cb' class="table">
             <thead>
             <tr>
@@ -43,10 +43,16 @@ $this->layout( 'layouts/ixpv4' );
                     Type
                 </td>
                 <td>
-                    Graph title
+                    Enabled
                 </td>
                 <td>
-                    Enabled
+                    Switch A
+                </td>
+                <td>
+                    Switch B
+                </td>
+                <td>
+                    Capacity
                 </td>
                 <td>
                     Action
@@ -54,20 +60,33 @@ $this->layout( 'layouts/ixpv4' );
             </tr>
             <thead>
             <tbody>
-                <?php foreach( $t->listCb as $cb ):
+                <?php foreach( $t->cbs as $cb ):
                     /** @var \Entities\CoreBundle $cb */?>
                     <tr>
                         <td>
-                            <?= $cb->getDescription()   ?>
+                            <?= $t->ee( $cb->getDescription() )  ?>
                         </td>
                         <td>
-                            <?= $cb->resolveType()   ?>
+                            <?= $t->ee( $cb->resolveType() )  ?>
                         </td>
                         <td>
-                            <?= $cb->getGraphTitle()   ?>
+                            <?php if( !$cb->getEnabled() ):?>
+                                <i class="glyphicon glyphicon-remove"></i>
+                            <?php elseif( $cb->getEnabled() && $cb->doAllCoreLinksEnabled() ): ?>
+                                <i class="glyphicon glyphicon-ok"></i>
+                            <?php else:?>
+                            <span class="label label-warning"> <?= count( $cb->getCoreLinksEnabled() ) ?> / <?= count( $cb->getCoreLinks() )?> </span>
+                            <?php endif; ?>
                         </td>
                         <td>
-                            <?= $cb->getEnabled() ? 'Yes' : 'No'   ?>
+                            <?= $t->ee( $cb->getSwitchSideX( true )->getName() )  ?>
+                        </td>
+                        <td>
+                            <?= $t->ee( $cb->getSwitchSideX( false )->getName() )  ?>
+                        </td>
+                        <td>
+
+                            <?= $t->ee( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() )  ?>
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
@@ -99,6 +118,8 @@ $this->layout( 'layouts/ixpv4' );
                 "autoWidth": false,
                 "iDisplayLength": 100
             });
+
+            $( "#area-cb" ).show();
         });
     </script>
 <?php $this->append() ?>

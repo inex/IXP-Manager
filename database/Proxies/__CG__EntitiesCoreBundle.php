@@ -279,12 +279,177 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function getBFD()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBFD', []);
+
+        return parent::getBFD();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIPv4Subnet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIPv4Subnet', []);
+
+        return parent::getIPv4Subnet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIPv46Subnet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIPv46Subnet', []);
+
+        return parent::getIPv46Subnet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCost()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCost', []);
+
+        return parent::getCost();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreLinks()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreLinks', []);
+
+        return parent::getCoreLinks();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addCoreLink(\Entities\CoreLink $coreLink)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCoreLink', [$coreLink]);
+
+        return parent::addCoreLink($coreLink);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeCoreLink(\Entities\CoreLink $coreLink)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCoreLink', [$coreLink]);
+
+        return parent::removeCoreLink($coreLink);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function resolveType(): string
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
 
         return parent::resolveType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDescription($description)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', [$description]);
+
+        return parent::setDescription($description);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setType($type)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', [$type]);
+
+        return parent::setType($type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setGraphTitle($graph_title)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setGraphTitle', [$graph_title]);
+
+        return parent::setGraphTitle($graph_title);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEnabled($enabled)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEnabled', [$enabled]);
+
+        return parent::setEnabled($enabled);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setBFD($bfd)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBFD', [$bfd]);
+
+        return parent::setBFD($bfd);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIPv4Subnet($ipv4_subnet)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIPv4Subnet', [$ipv4_subnet]);
+
+        return parent::setIPv4Subnet($ipv4_subnet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIPv6Subnet($ipv6_subnet)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIPv6Subnet', [$ipv6_subnet]);
+
+        return parent::setIPv6Subnet($ipv6_subnet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCost($cost)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCost', [$cost]);
+
+        return parent::setCost($cost);
     }
 
 }

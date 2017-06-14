@@ -41,7 +41,7 @@
 
 
     <div id="message"></div>
-    <div id="list-area">
+    <div id="list-area" class="collapse">
         <table id='layer-2-interface-list' class="table">
             <thead>
             <tr>
