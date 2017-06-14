@@ -194,6 +194,64 @@ class Switcher extends EntityRepository
         return $this->getEntityManager()->createQuery( $q )->getResult();
     }
 
+    /**
+     * Returns all switch ports for a given switch.
+     *
+     * Each switchport element of the array is as follows:
+     *
+     *      [
+     *          "sp_type" => 5,
+     *          "sp_name" => "Management Port",
+     *          "sp_active" => true,
+     *          "sp_ifIndex" => 1059,
+     *          "sp_ifName" => "Management",
+     *          "sp_ifAlias" => "MgmtPort",
+     *          "sp_ifHighSpeed" => 1000,
+     *          "sp_ifMtu" => 1500,
+     *          "sp_ifPhysAddress" => "0004968F9A4F",
+     *          "sp_ifAdminStatus" => 1,
+     *          "sp_ifOperStatus" => 1,
+     *          "sp_ifLastChange" => 1473091000,
+     *          "sp_lastSnmpPoll" => DateTime {#1382
+     *          +"date": "2016-10-26 15:11:31.000000",
+     *              +"timezone_type": 3,
+     *              +"timezone": "UTC",
+     *          },
+     *          "sp_lagIfIndex" => null,
+     *          "sp_mauType" => "1000BaseTFD",
+     *          "sp_mauState" => "operational",
+     *          "sp_mauAvailability" => "available",
+     *          "sp_mauJacktype" => "rj45S",
+     *          "sp_mauAutoNegSupported" => true,
+     *          "sp_mauAutoNegAdminState" => true,
+     *          "sp_id" => 1525,
+     *          "pi_id" => null,
+     *          "sp_switchid" => 35,
+     *          "sp_type_name" => "Management",
+     *          ],
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getPorts( int $id ): array {
+
+        $dql = "SELECT sp, pi.id AS pi_id
+                    FROM Entities\\SwitchPort sp
+                      LEFT JOIN sp.Switcher s
+                      LEFT JOIN sp.PhysicalInterface pi
+                    WHERE s.id = ?1
+                    ORDER BY sp.id ASC";
+
+        $ports = $this->getEntityManager()->createQuery( $dql )
+                    ->setParameter( 1, $id )
+                    ->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, true)
+                    ->getScalarResult();
+
+        foreach( $ports as $id => $port )
+            $ports[$id]['sp_type_name'] = \Entities\SwitchPort::$TYPES[ $port['sp_type'] ];
+
+        return $ports;
+    }
 
     /**
      * Returns all available switch ports where available means not in use by a

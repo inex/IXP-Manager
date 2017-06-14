@@ -42,6 +42,16 @@ use Entities\{
 class SwitchController extends Controller {
 
     /**
+     * Get all switch ports for a given switch
+     *
+     * @param   Request $request Instance of the current HTTP request
+     * @return  JsonResponse Ports
+     */
+    public function ports( Request $request, int $id ) {
+        return response()->json( [ 'switchports' => D2EM::getRepository( SwitcherEntity::class )->getPorts( $id ) ] );
+    }
+
+    /**
      * Get the switch port for a Switch for patch panel port
      *
      * @params  $request instance of the current HTTP request

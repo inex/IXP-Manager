@@ -22,16 +22,15 @@ $( "#switch" ).change( function(){
 
     switchId = $( "#switch" ).val();
 
-    url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-not-assign-to-pi";
+    url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/ports";
 
-    $.ajax( url , {
-            data: { types: "<?= Entities\SwitchPort::TYPE_PEERING ?>,<?= Entities\SwitchPort::TYPE_UNSET ?>" },
-            type: 'POST'
-        })
+    $.ajax( url )
         .done( function( data ) {
             var options = "<option value=\"\">Choose a switch port</option>\n";
-            $.each( data.listPorts, function( key, value ){
-                options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
+            $.each( data.switchports, function( key, port ){
+                if( port.pi_id == null && [0,1].indexOf( port.sp_type ) != -1 ) {
+                    options += "<option value=\"" + port.sp_id + "\">" + port.sp_name + " (" + port.sp_type_name + ")</option>\n";
+                }
             });
             $( "#switch-port" ).html( options );
         })
