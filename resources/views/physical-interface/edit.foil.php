@@ -132,8 +132,8 @@ $this->layout( 'layouts/ixpv4' );
                     $( "#switch-port" ).html( options );
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port-not-assign-to-pi" );
-                    alert( "Error running ajax query for api/v4/switcher/$id/switch-port-not-assign-to-pi" );
+                    throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
+                    alert( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
                 })
                 .always( function() {
                     $( "#switch-port" ).trigger( "chosen:updated" );

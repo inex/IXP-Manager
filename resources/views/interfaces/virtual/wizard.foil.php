@@ -20,7 +20,7 @@ $this->layout( 'layouts/ixpv4' );
     ->customWidthClass( 'col-sm-7' )
 ?>
 
-<div class="well">
+<div id="div-well" class="well collapse"> <?php /* collapse as we change CSS is JS and will reveal it afterwards */ ?>
 
     <div class="row">
 

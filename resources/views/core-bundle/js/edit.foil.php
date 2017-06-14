@@ -316,8 +316,8 @@
                     }
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port" );
-                    alert( "Error running ajax query for api/v4/switcher/$id/switch-port" );
+                    throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port" );
+                    alert( "Error running ajax query for api/v4/switch/$id/switch-port" );
 
                 })
                 .always( function() {

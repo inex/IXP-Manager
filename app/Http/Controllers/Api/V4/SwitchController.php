@@ -39,7 +39,7 @@ use Entities\{
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class SwitcherController extends Controller {
+class SwitchController extends Controller {
 
     /**
      * Get the switch port for a Switch for patch panel port
