@@ -22,14 +22,12 @@ $( "#switch" ).change( function(){
 
     switchId = $( "#switch" ).val();
 
-    // ask what is that ?
-    var type = "peering";
-    url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port-not-assign-to-pi";
+    url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-not-assign-to-pi";
 
     $.ajax( url , {
-        data: {type : type },
-        type: 'POST'
-    })
+            data: { types: "<?= Entities\SwitchPort::TYPE_PEERING ?>,<?= Entities\SwitchPort::TYPE_UNSET ?>" },
+            type: 'POST'
+        })
         .done( function( data ) {
             var options = "<option value=\"\">Choose a switch port</option>\n";
             $.each( data.listPorts, function( key, value ){

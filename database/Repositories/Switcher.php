@@ -303,47 +303,52 @@ class Switcher extends EntityRepository
     }
 
     /**
-     * Returns all available switch ports for a switch and not assigned to a physical interface.
+     * Returns all available switch ports for a switch which are not assigned to a physical interface.
      *
-     *
-     * Suitable for other generic use.
      *
      * @param int      $id     Switch ID - switch to query
+     * @param array    $types  Array of switch port types to limit the results to, if empty - return all types
      * @param int|null $spid   Switch port ID, if set, this port is excluded from the results
      * @return array
      */
-    public function getAllPortsNotAssignedToPI( int $id, $type = null , int $spid = null ): array {
+    public function getAllPortsNotAssignedToPI( int $id, array $types = [], int $spid = null ): array {
 
-        $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
-                    FROM \\Entities\\SwitchPort sp
+        $dql = "SELECT sp.name AS name, sp.type AS typeid, sp.id AS id
+                    FROM Entities\\SwitchPort sp
                         LEFT JOIN sp.Switcher s
                         LEFT JOIN sp.PhysicalInterface pi
                     WHERE
-                        s.id = ?1 ";
+                        s.id = ?1 
+                        AND pi.id IS NULL ";
 
-        if( $spid !== null )
-            $dql .= 'AND ( pi.id IS NULL OR pi.id = ?2 ) ';
-        else
-            $dql .= 'AND pi.id IS NULL ';
+        if( $spid !== null ) {
+            $dql .= 'AND sp.id != ?2 ';
+        }
 
         // limit to ports suitable for peering?
-        if( $type == 'peering' )
-            $dql .= ' AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_PEERING . ', ' . \Entities\SwitchPort::TYPE_UNSET . ') )';
-        if( $type == 'fanout' )
-            $dql .= ' AND ( sp.type IN ( ' . \Entities\SwitchPort::TYPE_FANOUT . ', ' . \Entities\SwitchPort::TYPE_UNSET . ' ) )';
+        if( $types !== [] ) {
+            $dql .= 'AND sp.type IN ( ?3 )';
+        }
 
         $dql .= " ORDER BY sp.id ASC";
 
         $query = $this->getEntityManager()->createQuery( $dql );
         $query->setParameter( 1, $id );
 
-        if( $spid  !== null )
+        if( $spid  !== null ) {
             $query->setParameter( 2, $spid );
+        }
+
+        if( $types !== [] ) {
+            $query->setParameter( 3, $types );
+        }
 
         $ports = $query->getArrayResult();
 
-        foreach( $ports as $id => $port )
-            $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+        // resolve port types into names:
+        foreach( $ports as $id => $port ) {
+            $ports[ $id ][ 'type' ] = \Entities\SwitchPort::$TYPES[ $port[ 'typeid' ] ];
+        }
 
         return $ports;
     }
