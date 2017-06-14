@@ -74,6 +74,15 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 
     });
 
+
+
+    Route::group( [  'prefix' => 'core-bundle' ], function() {
+        Route::get( 'list',                             'CoreBundleController@list' );
+        Route::get( 'add-wizard',                       'CoreBundleController@editWizard' );
+        Route::post( 'add-core-link-frag',              'CoreBundleController@addCoreLinkFrag' );
+        Route::post( 'store-wizard',                    'CoreBundleController@storeWizard' );
+    });
+
 });
 
 Route::group( [  'prefix' => 'physicalInterface', 'subFolder' => 'interface' ], function() {
@@ -100,9 +109,3 @@ Route::group( [  'prefix' => 'sflowReceiver', 'subFolder' => 'interface' ], func
     Route::post( 'store',                           'SflowReceiverController@store'  );
 });
 
-Route::group( [  'prefix' => 'core-bundle', 'subFolder' => 'interface' ], function() {
-    Route::get( 'list',                             'CoreBundleController@list' );
-    Route::get( 'add-wizard',                       'CoreBundleController@editWizard' );
-    Route::post( 'add-core-link-frag',              'CoreBundleController@addCoreLinkFrag' );
-    Route::post( 'store-wizard',                    'CoreBundleController@storeWizard' );
-});

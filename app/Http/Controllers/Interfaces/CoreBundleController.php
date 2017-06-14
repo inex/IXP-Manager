@@ -20,7 +20,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers;
+namespace IXP\Http\Controllers\Interfaces;
 
 use D2EM, Former, Input, Redirect;
 
@@ -40,6 +40,8 @@ use Illuminate\Http\{
     RedirectResponse,
     Request
 };
+
+use IXP\Http\Controllers\Controller;
 
 use IXP\Http\Requests\{
     StoreCoreBundle
