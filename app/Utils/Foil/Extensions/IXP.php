@@ -201,7 +201,9 @@ class IXP implements ExtensionInterface {
 
             $str .= $d;
 
-            if( ($itrn+1) != $cnt && ($itrn+1) % $perline != 0 ) {
+            if( $itrn == 0 && $cnt > 1 && $perline == 1 ) {
+                $str .= $lineEnding . "\n" . str_repeat(' ', $indent);
+            } else if( ($itrn+1) != $cnt && ($itrn+1) % $perline != 0 ) {
                 $str .= $elementSeparator;
             } else if( $itrn > 0 && ($itrn+1) != $cnt && ($itrn+1) % $perline == 0 ) {
                 $str .= $lineEnding . "\n" . str_repeat( ' ', $indent );
