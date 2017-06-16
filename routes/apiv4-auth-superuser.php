@@ -93,10 +93,6 @@ Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortC
 
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
 
-// remove the following two after INEX updated to yaml
-Route::get('provisioner/salt/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
-Route::get('provisioner/salt/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
-
 Route::get('provisioner/yaml/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
 Route::get('provisioner/yaml/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
 
