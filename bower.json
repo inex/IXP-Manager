@@ -30,5 +30,8 @@
     "jquery-knob": "^1.2.13",
     "bootstrap-tagsinput": "bootstraptagsinput#^0.8.0",
     "clipboard": "^1.6.1"
+  },
+  "resolutions": {
+    "jquery": "1.9.1 - 3"
   }
 }

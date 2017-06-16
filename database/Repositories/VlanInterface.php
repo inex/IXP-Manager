@@ -249,6 +249,7 @@ class VlanInterface extends EntityRepository
                         c.autsys             AS cautsys,
                         
                         v.number             AS vtag,
+                        v.name               AS vname,
 
                         vi.id                AS viid, 
                         
