@@ -242,7 +242,9 @@ class VlanInterface extends EntityRepository
      */
     public function getForVlan( int $vlan, bool $externalOnly = false, int $pistatus = \Entities\PhysicalInterface::STATUS_CONNECTED, bool $useResultCache = true ): array
     {
-        $qstr = "SELECT c.id                 AS cid, 
+        $qstr = "SELECT DISTINCT vli.id      AS vliid,
+
+                        c.id                 AS cid, 
                         c.name               AS cname,
                         c.abbreviatedName    AS caname,
                         c.shortname          AS csname,
@@ -253,8 +255,6 @@ class VlanInterface extends EntityRepository
 
                         vi.id                AS viid, 
                         
-                        vli.id               AS vliid,
-
                         vli.ipv4enabled      AS ipv4enabled,
                         vli.ipv4hostname     AS ipv4hostname,
                         vli.ipv4canping      AS ipv4canping,
@@ -312,7 +312,7 @@ class VlanInterface extends EntityRepository
                 ->setParameter( 'vlan', $vlan )
                 ->setParameter( 'pistatus', $pistatus )
                 ->useResultCache( $useResultCache, 3600 )
-                ->getArrayResult();
+                ->getScalarResult();
     }
 
     /**
