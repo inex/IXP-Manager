@@ -50,7 +50,7 @@
         "oss2/var-utils": "dev-master",
 
         "oss2/auth": "dev-master",
-
+        
         "smarty/smarty": "~3.1",
         "foil/foil": "~0.6",
 
@@ -119,5 +119,5 @@
      "config": {
           "preferred-install": "dist"
      },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
