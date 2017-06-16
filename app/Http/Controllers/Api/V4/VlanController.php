@@ -27,7 +27,8 @@ namespace IXP\Http\Controllers\Api\V4;
 use D2EM;
 
 use Entities\{
-    Vlan as VlanEntity,
+    Router        as RouterEntity,
+    Vlan          as VlanEntity,
     VlanInterface as VlanInterfaceEntity
 };
 
@@ -45,24 +46,36 @@ use Illuminate\Support\Facades\View as FacadeView;
 class VlanController extends Controller
 {
 
-
     /**
-     * Get the IPv4 or IPv6 list for a vlan
+     * Get all IP addresses (v4 and v6) for a given VLAN.
      *
-     * @params  $request instance of the current HTTP request
-     * @params  $id Vlan id
-     * @return  JSON array of IPvX
+     * Returns a JSON object with two array elements: ipv4 and ipv6
+     *
+     * Each of these elements contain address objects of the form:
+     *
+     *     {
+     *         id: "1040",                     // address ID from the IPv4/6 table
+     *         address: "2001:7f8:18::20",     // address
+     *         v_id: "2",                      // VLAN id
+     *         vli_id: "16"                    // VlanInterface ID (or null if not assigned / in use)
+     *     },
+
+     *
+     * @params  Request $request instance of the current HTTP request
+     * @params  int $id Vlan id
+     * @return  JsonResponse array of IP addresses
      */
-    public function getIPvAddress( Request $request, int $id ) : JsonResponse {
+    public function getIPAddresses( Request $request, int $id ) : JsonResponse {
 
         /** @var VlanEntity $vl */
-        if( !( $vl = D2EM::getRepository( VlanEntity::class )->find( $id ) ) ) {
+        if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $id ) ) ) {
             return abort( 404 );
         }
 
-        $ipvList = D2EM::getRepository( VlanEntity::class )->getIPvAddress( $vl->getId(), $request->input( 'ipType' ), $request->input( 'vliid' ) );
-
-        return response()->json( [ 'ipvList' => $ipvList ] );
+        return response()->json([
+            'ipv4' => D2EM::getRepository( VlanEntity::class )->getIpAddresses( $v->getId(), RouterEntity::PROTOCOL_IPV4 ),
+            'ipv6' => D2EM::getRepository( VlanEntity::class )->getIpAddresses( $v->getId(), RouterEntity::PROTOCOL_IPV6 )
+        ]);
     }
 
     /**

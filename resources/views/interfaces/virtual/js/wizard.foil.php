@@ -24,9 +24,11 @@ $( "#switch" ).change( function(){
 
     url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/ports";
 
+    var options;
+
     $.ajax( url )
         .done( function( data ) {
-            var options = "<option value=\"\">Choose a switch port</option>\n";
+            options = "<option value=\"\">Choose a switch port</option>\n";
             $.each( data.switchports, function( key, port ){
                 if( port.pi_id == null && [0,1].indexOf( port.sp_type ) != -1 ) {
                     options += "<option value=\"" + port.sp_id + "\">" + port.sp_name + " (" + port.sp_type_name + ")</option>\n";
@@ -35,8 +37,10 @@ $( "#switch" ).change( function(){
             $( "#switch-port" ).html( options );
         })
         .fail( function() {
-            throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
-            alert( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
+            options = "<option value=\"\">ERROR</option>\n";
+            $( "#switch-port" ).html( options );
+            alert( "Error running ajax query for " + url );
+            throw new Error( "Error running ajax query for " + url );
         })
         .always( function() {
             $( "#switch-port" ).trigger( "chosen:updated" );
@@ -44,62 +48,57 @@ $( "#switch" ).change( function(){
 });
 
 
-
-
 $( "#vlan" ).on( 'change', function( event ) {
-
     setIPVx();
-
 });
 
-function setIPVx(){
+function setIPVx() {
     if( $("#vlan").val() ) {
 
         $( "#ipv4-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
         $( "#ipv6-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
 
         vlanid = $("#vlan").val();
+        var options;
 
-        $.ajax( "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ipv-address" , {
-            data: {vliid: '', ipType: <?= \Entities\Router::PROTOCOL_IPV4 ?>  },
-            type: 'POST'
-        })
+        $.ajax( "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ip-addresses" )
             .done( function( data ) {
-                var options = "<option value=\"\">Choose an IPv4</option>\n";
-                $.each( data.ipvList, function( key, value ){
-                    options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
+
+                options = "<option value=\"\">Choose an IPv4 Address</option>\n";
+                $.each( data.ipv4, function( key, ip ) {
+                    // if the address is free:
+                    if( ip.vli_id == null ) {
+                        options += "<option value=\"" + ip.address + "\">" + ip.address + " </option>\n";
+                    }
                 });
                 $( "#ipv4-address" ).html( options );
+
+                options = "<option value=\"\">Choose an IPv6 Address</option>\n";
+                $.each( data.ipv6, function( key, ip ) {
+                    // if the address is free:
+                    if( ip.vli_id == null ) {
+                        options += "<option value=\"" + ip.address + "\">" + ip.address + " </option>\n";
+                    }
+                });
+                $( "#ipv6-address" ).html( options );
+
             })
             .fail( function() {
-                throw new Error( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
-                alert( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
+                options = "<option value=\"\">ERROR</option>\n";
+                $( "#ipv4-address" ).html( options ).trigger( "chosen:updated" );
+                $( "#ipv6-address" ).html( options ).trigger( "chosen:updated" );
+
+                alert( "Error running ajax query for " + url );
+                throw new Error( "Error running ajax query for " + url );
             })
             .always( function() {
                 $( "#ipv4-address" ).trigger( "chosen:updated" );
-            });
-
-
-        $.ajax( "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ipv-address" , {
-            data: {vliid: '', ipType: <?= \Entities\Router::PROTOCOL_IPV6 ?>  },
-            type: 'POST'
-        })
-            .done( function( data ) {
-                var options = "<option value=\"\">Choose an IPv6</option>\n";
-                $.each( data.ipvList, function( key, value ){
-                    options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
-                });
-                $( "#ipv6-address" ).html( options );
-            })
-            .fail( function() {
-                throw new Error( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
-                alert( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
-            })
-            .always( function() {
                 $( "#ipv6-address" ).trigger( "chosen:updated" );
             });
 
-
+    } else {
+        $( "#ipv4-address" ).html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "chosen:updated" );
+        $( "#ipv6-address" ).html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "chosen:updated" );
     }
 }
 
