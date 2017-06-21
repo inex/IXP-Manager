@@ -1,5 +1,7 @@
 <?php
 
+namespace IXP\Http\Controllers\PatchPanel;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -21,9 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-namespace IXP\Http\Controllers\PatchPanel;
-
 use D2EM, Former, Log, Redirect;
 
 use Entities\{
@@ -39,8 +38,6 @@ use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StorePatchPanel;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
-
-
 
 /**
  * PatchPanel Controller
@@ -95,32 +92,32 @@ class PatchPanelController extends Controller
             }
 
             Former::populate([
-                'name'               => $pp->getName(),
-                'colo_reference'     => $pp->getColoReference(),
-                'location_notes'     => $pp->getLocationNotes(),
-                'cabinet'            => $pp->getCabinet()->getId(),
-                'mounted_at'         => $pp->getMountedAt(),
-                'u_position'         => $pp->getUPosition(),
-                'cable_type'         => $pp->getCableType(),
-                'connector_type'     => $pp->getConnectorType(),
-                'installation_date'  => $pp->getInstallationDate()->format('Y-m-d'),
-                'port_prefix'        => $pp->getPortPrefix(),
-                'numberOfPorts'      => 0,
+                'name'                  => $pp->getName(),
+                'colo_reference'        => $pp->getColoReference(),
+                'location_notes'        => $pp->getLocationNotes(),
+                'cabinet'               => $pp->getCabinet()->getId(),
+                'mounted_at'            => $pp->getMountedAt(),
+                'u_position'            => $pp->getUPosition(),
+                'cable_type'            => $pp->getCableType(),
+                'connector_type'        => $pp->getConnectorType(),
+                'installation_date'     => $pp->getInstallationDate()->format('Y-m-d'),
+                'port_prefix'           => $pp->getPortPrefix(),
+                'numberOfPorts'         => 0,
             ]);
         }
 
         Former::open()->rules([
-            'name'                  => 'required|max:255',
-            'colo_reference'        => 'required|max:255',
-            'numberOfPorts'         => 'required|between:0,*|integer',
-            'port_prefix'           => 'nullable|string|max:255',
-            'installation_date'     => 'date'
+            'name'                      => 'required|max:255',
+            'colo_reference'            => 'required|max:255',
+            'numberOfPorts'             => 'required|between:0,*|integer',
+            'port_prefix'               => 'nullable|string|max:255',
+            'installation_date'         => 'date'
 
         ]);
 
         return view( 'patch-panel/edit' )->with([
-            'pp'                    => $pp,
-            'cabinets'              => D2EM::getRepository( Cabinet::class )->getAsArray(),
+            'pp'                        => $pp,
+            'cabinets'                  => D2EM::getRepository( Cabinet::class )->getAsArray(),
         ]);
     }
 

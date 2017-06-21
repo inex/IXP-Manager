@@ -5,7 +5,7 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'physicalInterface/list' )?>">Physical Interfaces</a>
+    <a href="<?= action( 'Interfaces\PhysicalInterfaceController@list' )?>">Physical Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -15,10 +15,10 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('physicalInterface/list') ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= action( 'Interfaces\PhysicalInterfaceController@list' )?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= url('physicalInterface/edit').'/'.$t->listPi[0]['id'] ?>" title="edit">
+            <a type="button" class="btn btn-default" href="<?= route('interfaces/physical/edit' , [ 'id' => $t->listPi[0]['id'] ]) ?>" title="edit">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </div>
@@ -40,7 +40,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->listPi[0]['customer']   ?>
+                            <?= $t->ee( $t->listPi[0]['customer'] )   ?>
                         </td>
                     </tr>
                     <tr>
@@ -51,7 +51,7 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <a href="<?= url( '/vlan/view/id/' ) ?> ">
-                                <?= $t->listPi[0]['location'] ?>
+                                <?= $t->ee(  $t->listPi[0]['location'] )?>
                             </a>
                         </td>
                     </tr>
@@ -62,7 +62,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->listPi[0]['switch'] ?>
+                            <?= $t->ee(  $t->listPi[0]['switch'] ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -72,7 +72,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->listPi[0]['port'] ?>
+                            <?= $t->ee(  $t->listPi[0]['port'] ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -132,7 +132,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->listPi[0]['notes'] ?>
+                            <?= $t->ee(  $t->listPi[0]['notes'] ) ?>
                         </td>
                     </tr>
                 </table>

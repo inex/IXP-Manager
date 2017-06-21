@@ -226,7 +226,7 @@
             // stop the function if there the function is already running
             if( !actionRunnig ){
                 actionRunnig = true;
-                var ajaxCall = $.ajax( "<?= action( 'CoreBundleController@addCoreLinkFrag' ) ?>", {
+                var ajaxCall = $.ajax( "<?= action( 'Interfaces\CoreBundleController@addCoreLinkFrag' ) ?>", {
                     data: {
                         nbCoreLink      : nbCoreLink,
                         enabled         : enabled,

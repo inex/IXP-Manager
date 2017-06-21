@@ -1,5 +1,7 @@
 <?php
 
+namespace IXP\Http\Controllers\PatchPanel;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -20,9 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-
-namespace IXP\Http\Controllers\PatchPanel;
 
 use Entities\{
     Cabinet             as CabinetEntity,

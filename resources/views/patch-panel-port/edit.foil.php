@@ -1,11 +1,11 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'patch-panel-port/list' )?>">Patch Panel Port</a>
+    <a href="<?= route ( 'patch-panel/list' )?>">Patch Panel Port</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Edit&nbsp;&nbsp;&nbsp; [<?= $t->ppp->getPatchPanel()->getName() ?> - <?= $t->ppp->getName() ?>]</li>
+    <li>Edit&nbsp;&nbsp;[<?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> - <?= $t->ee( $t->ppp->getName() ) ?>]</li>
 <?php $this->append() ?>
 
 
@@ -23,7 +23,7 @@
 <?= $t->alerts() ?>
 
 <?= Former::open()->method( 'POST' )
-    ->action( url('patch-panel-port/store' ) )
+    ->action( action ('PatchPanel\PatchPanelPortController@store' ) )
     ->customWidthClass( 'col-sm-3' )
     ->addClass( 'col-md-10' );
 ?>
@@ -31,7 +31,7 @@
     <?php if (!$t->allocating and  !$t->prewired): ?>
         <?= Former::text( 'number' )
             ->label( 'Patch Panel Port Name' )
-            ->forceValue( $t->ppp->getName() );
+            ->forceValue( $t->ee( $t->ppp->getName() ) );
         ?>
 
         <?= Former::text( 'patch_panel' )
@@ -262,7 +262,7 @@
     ?>
 
     <?=Former::actions( Former::primary_submit( 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( url( 'patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId() ) ),
+        Former::default_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );?>
 

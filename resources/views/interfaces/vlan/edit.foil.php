@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'vlanInterface/list' )?>">Vlan Interfaces</a>
+    <a href="<?= route( 'interfaces/vlan/list' )?>">Vlan Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -14,7 +14,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('vlanInterface/list') ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= route( 'interfaces/vlan/list' )?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
             <a type="button" class="btn btn-default" href="" title="edit">
@@ -29,7 +29,7 @@ $this->layout( 'layouts/ixpv4' );
 <?= $t->alerts() ?>
     <div class="well">
         <?= Former::open()->method( 'POST' )
-            ->action( url( 'vlanInterface/store' ) )
+            ->action( action( 'Interfaces\VlanInterfaceController@store' ) )
             ->customWidthClass( 'col-sm-6' )
         ?>
         <div class="col-sm-6">
@@ -191,7 +191,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( url( 'vlanInterface/list/' ) ),
+            Former::default_link( 'Cancel' )->href( route( 'interfaces/vlan/list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         )->id('btn-group');?>
 
@@ -246,8 +246,8 @@ $this->layout( 'layouts/ixpv4' );
                         <?php endif; ?>
                     })
                     .fail( function() {
-                        throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
-                        alert( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
+                        throw new Error( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
+                        alert( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
                     })
                     .always( function() {
                         $( "#ipv4-address" ).trigger( "chosen:updated" );
@@ -270,8 +270,8 @@ $this->layout( 'layouts/ixpv4' );
                         <?php endif; ?>
                     })
                     .fail( function() {
-                        throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
-                        alert( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
+                        throw new Error( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
+                        alert( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
                     })
                     .always( function() {
                         $( "#ipv6-address" ).trigger( "chosen:updated" );

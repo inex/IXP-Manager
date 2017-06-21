@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= action( 'CoreBundleController@list' )?>">Core Bundles</a>
+    <a href="<?= action( 'Interfaces\CoreBundleController@list' )?>">Core Bundles</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -25,7 +25,7 @@ $this->layout( 'layouts/ixpv4' );
     <div class="well">
         <?= Former::open()->method( 'POST' )
             ->id( 'core-bundle-form' )
-            ->action( action ( 'CoreBundleController@storeWizard' ) )
+            ->action( action ( 'Interfaces\CoreBundleController@storeWizard' ) )
             ->customWidthClass( 'col-sm-6' )
         ?>
             <div class="col-sm-6">
@@ -264,7 +264,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?=Former::actions(
                 Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
-                Former::default_link( 'Cancel' )->href( action( 'CoreBundleController@list' ) ),
+                Former::default_link( 'Cancel' )->href( action( 'Interfaces\CoreBundleController@list' ) ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
             )->id('btn-group');?>
 
@@ -275,5 +275,5 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
     <script type="text/javascript" src="<?= asset( '/bower_components/ip-address/dist/ip-address-globals.js' ) ?>"></script>
-    <?= $t->insert( 'core-bundle/js/edit' ); ?>
+    <?= $t->insert( 'interfaces/core-bundle/js/edit' ); ?>
 <?php $this->append() ?>

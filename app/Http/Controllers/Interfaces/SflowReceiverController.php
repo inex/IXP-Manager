@@ -1,4 +1,7 @@
 <?php
+
+namespace IXP\Http\Controllers\Interfaces;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -20,7 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers;
 
 use D2EM, Redirect, Former, Input;
 
@@ -45,13 +47,11 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-
-
 /**
  * SflowReceiver Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interface
+ * @category   Interfaces
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -63,7 +63,7 @@ class SflowReceiverController extends Controller
      * @return  View
      */
     public function list(): View {
-        return view(  'sflow-receiver/index' )->with([
+        return view(  'interfaces/sflow-receiver/list' )->with([
             'listSr'       => D2EM::getRepository( SflowReceiverEntity::class )->findAll( )
         ]);
     }
@@ -77,13 +77,11 @@ class SflowReceiverController extends Controller
      * @return  view
      */
     public function view( int $id = null ): View {
-        $sflr = false;
-
         if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ){
             abort(404);
         }
 
-        return view( 'sflow-receiver/view' )->with([
+        return view( 'interfaces/sflow-receiver/view' )->with([
             'sflr'                        => $sflr
         ]);
     }
@@ -95,7 +93,6 @@ class SflowReceiverController extends Controller
      * @return View
      */
     public function edit( int $id = null,int $viid = null ): View {
-
         $sflr = false;
         /** @var SflowReceiverEntity $sr */
         if( $id and !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ) {
@@ -117,7 +114,7 @@ class SflowReceiverController extends Controller
         }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'sflow-receiver/edit' )->with([
+        return view( 'interfaces/sflow-receiver/edit' )->with([
             'sflr'                      => $sflr ? $sflr : false,
             'vi'                        => $vi
         ]);
@@ -156,7 +153,7 @@ class SflowReceiverController extends Controller
 
         AlertContainer::push( 'Sflow receiver added/updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'virtualInterface/edit/'.$sflr->getVirtualInterface()->getId() );
+        return Redirect::to( 'interfaces/virtual/edit/'.$sflr->getVirtualInterface()->getId() );
     }
 
 }

@@ -74,31 +74,6 @@ class SwitchController extends Controller {
     }
 
     /**
-     * Get the switch port for a Switch mot assigned to a Physical Interface
-     *
-     * @param   Request $request instance of the current HTTP request
-     * @param   int     $id      switch ID
-     * @return  JsonResponse JSON array of listPort
-     */
-    public function switchPortNotAssignedToPI( Request $request, int $id): JsonResponse {
-
-        if( $request->input('types', null) === null ) {
-            $types = [];
-        } else {
-            $types = explode( ',', $request->input( 'types' ) );
-            foreach( $types as $t ) {
-                if( !is_numeric($t) || !isset( SwitchPortEntity::$TYPES[$t] ) ) {
-                    abort( 400, 'Invalid switch port type(s)' );
-                }
-            }
-        }
-
-
-        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsNotAssignedToPI( $id, $types );
-        return response()->json(['listPorts' => $listPorts]);
-    }
-
-    /**
      * Get the switch port for a Switch
      *
      * @param   Request $request instance of the current HTTP request

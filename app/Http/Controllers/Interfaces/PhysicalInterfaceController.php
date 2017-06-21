@@ -1,4 +1,7 @@
 <?php
+
+namespace IXP\Http\Controllers\Interfaces;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -19,8 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-namespace IXP\Http\Controllers;
 
 use D2EM, Redirect, Former, Input;
 
@@ -49,13 +50,11 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-
-
 /**
  * PhysicalInterface Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel
+ * @category   Interfaces
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -67,7 +66,7 @@ class PhysicalInterfaceController extends Controller
      * @return  View
      */
     public function list( int $id = null ): View {
-        return view( $id ? 'physical-interface/view' : 'physical-interface/index' )->with([
+        return view( $id ? 'interfaces/physical/view' : 'interfaces/physical/list' )->with([
             'listPi'       => D2EM::getRepository( PhysicalInterfaceEntity::class )->getForList( $id ) // can we change that function by find and create the object function to get all the informations needed ?
         ]);
     }
@@ -106,14 +105,14 @@ class PhysicalInterfaceController extends Controller
 
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'physical-interface/edit' )->with([
-            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
-            'sp'                    => $pi ? D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId() ) : '',
-            'status'                => PhysicalInterfaceEntity::$STATES,
-            'speed'                 => PhysicalInterfaceEntity::$SPEED,
-            'duplex'                => PhysicalInterfaceEntity::$DUPLEX,
-            'pi'                    => $pi,
-            'vi'                    => $vi,
+        return view( 'interfaces/physical/edit' )->with([
+            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
+            'sp'                          => $pi ? D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId() ) : '',
+            'status'                      => PhysicalInterfaceEntity::$STATES,
+            'speed'                       => PhysicalInterfaceEntity::$SPEED,
+            'duplex'                      => PhysicalInterfaceEntity::$DUPLEX,
+            'pi'                          => $pi,
+            'vi'                          => $vi,
         ]);
     }
 
@@ -144,12 +143,19 @@ class PhysicalInterfaceController extends Controller
             abort(404, 'Unknown switch');
         }
 
-        if( !$vi->getCustomer()->isUniqueMonitorIndex( $request->input( 'monitorindex' ) ) ) {
-            AlertContainer::push( 'The monitor index must be unique. It has been reset below to a unique value.', Alert::DANGER );
+        if( $pi->getMonitorindex() != $request->input( 'monitorindex' ) ){
+            if( !$vi->getCustomer()->isUniqueMonitorIndex( $request->input( 'monitorindex' ) ) ) {
+                AlertContainer::push( 'The monitor index must be unique. It has been reset below to a unique value.', Alert::DANGER );
 
-            // doesnt work set all the input and replace the value of the monitor with a new value
-            return Redirect::to('physicalInterface/edit/'.$pi->getId() )->withInput( Input::all() , Input::replace(['monitorindex' => D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer()) ] ) );
+                // doesnt work set all the input and replace the value of the monitor with a new value
+                if( $request->input( 'id' ) ) {
+                    $urlRedirect = 'interfaces/physical/edit/'.$pi->getId();
+                } else {
+                    $urlRedirect = 'interfaces/physical/add/0/vintid/'.$vi->getId();
+                }
+                return Redirect::to( $urlRedirect )->withInput( Input::all() , Input::replace(['monitorindex' => D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer()) ] ) );
 
+            }
         }
 
         $pi->setSwitchPort( $sp );
@@ -165,7 +171,7 @@ class PhysicalInterfaceController extends Controller
 
         AlertContainer::push( 'Physical Interface updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'virtualInterface/edit/'.$pi->getVirtualInterface()->getId() );
+        return Redirect::to( 'interfaces/virtual/edit/'.$pi->getVirtualInterface()->getId() );
 
     }
 

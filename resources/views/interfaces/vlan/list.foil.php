@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'vlanInterface/list' )?>">Vlan Interfaces</a>
+    <a href="<?= route( 'interfaces/vlan/list' )?>">Vlan Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -15,7 +15,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?= $t->alerts() ?>
     <span id="message-vli"></span>
-    <div id="area-vli">
+    <div id="area-vli" class="collapse">
         <table id='table-vli' class="table">
             <thead>
             <tr>
@@ -45,12 +45,12 @@ $this->layout( 'layouts/ixpv4' );
                 <tr>
                     <td>
                         <a href="<?= url( '/customer/overview/id' ).'/'.$vli['custid']?>">
-                            <?= $vli['customer']   ?>
+                            <?= $t->ee( $vli['customer'] )  ?>
                         </a>
                     </td>
                     <td>
                         <a href="<?= url( 'vlan/list/id' ).'/'.$vli['vlanid']?>">
-                            <?= $vli['vlan']   ?>
+                            <?= $t->ee( $vli['vlan'] )   ?>
                         </a>
                     </td>
                     <td>
@@ -64,13 +64,13 @@ $this->layout( 'layouts/ixpv4' );
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <a class="btn btn btn-default" href="<?= url( '/virtualInterface/edit' ).'/'.$vli['vintid']?>" title="Virtual Interface">
+                            <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli['vintid'] ] ) ?>" title="Virtual Interface">
                                 <i class="glyphicon glyphicon-filter"></i>
                             </a>
-                            <a class="btn btn btn-default" href="<?= url( '/vlanInterface/view' ).'/'.$vli['id']?>" title="Preview">
+                            <a class="btn btn btn-default" href="<?= route( 'interfaces/vlan/view' , [ 'id' => $vli['id'] ] ) ?>" title="Preview">
                                 <i class="glyphicon glyphicon-eye-open"></i>
                             </a>
-                            <a class="btn btn btn-default"  href="<?= url( '/vlanInterface/edit' ).'/'.$vli['id']?>" title="Edit">
+                            <a class="btn btn btn-default"  href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli['id'] ] ) ?>" title="Edit">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </a>
 
@@ -87,10 +87,11 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <?= $t->insert( 'virtual-interface/js/interface' ); ?>
+    <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
     <script>
         $(document).ready( function() {
             loadDataTable( 'vli' );
+            $( "#area-vli" ).show();
         });
 
         /**

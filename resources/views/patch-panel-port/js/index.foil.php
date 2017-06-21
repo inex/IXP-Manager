@@ -15,11 +15,9 @@
             loadEvent();
         });
 
+        $( '#area-ppp' ).show();
+
     });
-
-
-
-
 
     /**
      * initialise the datatable table
@@ -456,7 +454,12 @@
                         .done( function( data ) {
                             result = ( data.success ) ? 'success': 'danger';
                             if( result ) {
-                                $("#message-ppp").html("<div class='alert alert-" + result + "' role='alert'>" + data.message + "</div>");
+                                if( action == 'delete' ){
+                                    messageAjax = 'The patch panel port has been deleted.';
+                                } else {
+                                    messageAjax = data.message;
+                                }
+                                $("#message-ppp").html("<div class='alert alert-" + result + "' role='alert'>" + messageAjax + "</div>");
                                 refreshDataTable('ppp');
                             }
                         })

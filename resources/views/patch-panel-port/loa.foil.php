@@ -89,8 +89,8 @@
     Should you have any questions or concerns regarding this Letter of Authority, please contact our NOC
     via the details below. <em>We generate our LoA's via our provisioning system. Each LoA can be individually
     authenticated by clicking on the following unique link:</em><br><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="<?= url( '/verify-loa' ).'/'.$t->ppp->getId().'/'.$t->ppp->getLoaCode()?>"
-        ><?= url( '/verify-loa' ).'/'.$t->ppp->getId().'/'.$t->ppp->getLoaCode() ?></a>
+    &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="<?= action ( 'PatchPanel\PatchPanelPortController@verifyLoa' , [ 'id' => $t->ppp->getId() , 'loa' => $t->ppp->getLoaCode() ] ) ?>"
+        ><?= action ( 'PatchPanel\PatchPanelPortController@verifyLoa' , [ 'id' => $t->ppp->getId() , 'loa' => $t->ppp->getLoaCode() ] ) ?></a>
 </p>
 
 

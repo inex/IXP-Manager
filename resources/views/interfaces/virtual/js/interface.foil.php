@@ -22,22 +22,22 @@
         if( type == "vli"){
             objectName = "Vlan Interface";
             urlDelete = "<?= url( 'api/v4/vlan-interface/delete/' ) ?>";
-            urlListReload = "<?= url( 'vlanInterface/list/' ) ?>";
+            urlListReload = "<?= route( 'interfaces/vlan/list' ) ?>";
         }
         else if( type == "vi" ){
             objectName = "Virtual Interface";
             urlDelete = "<?= url( 'api/v4/virtual-interface/delete' ) ?>" ;
-            urlListReload = "<?= url( 'virtualInterface/list/' ) ?>";
+            urlListReload = "<?= route( 'interfaces/virtual/list' ) ?>";
         }
         else if( type == "sflr" ){
             objectName = "Sflow Receiver";
             urlDelete = "<?= url( 'api/v4/sflow-receiver/delete' ) ?>" ;
-            urlListReload = "<?= url( 'sflowReceiver/list/' ) ?>";
+            urlListReload = "<?= route( 'interfaces/sflow-receiver/list' ) ?>";
         }
         else if( type == "pi" ){
             objectName = "Physical Interface";
             urlDelete = "<?= url( 'api/v4/physical-interface/delete' ) ?>";
-            urlListReload = "<?= url( 'physicalInterface/list/' ) ?>";
+            urlListReload = "<?= route( 'interfaces/physical/list' ) ?>";
         }
 
         if( viid ){

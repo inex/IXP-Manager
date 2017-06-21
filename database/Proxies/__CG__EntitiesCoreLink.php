@@ -173,4 +173,173 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getBFD()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBFD', []);
+
+        return parent::getBFD();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEnabled()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEnabled', []);
+
+        return parent::getEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIPv4Subnet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIPv4Subnet', []);
+
+        return parent::getIPv4Subnet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIPv46Subnet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIPv46Subnet', []);
+
+        return parent::getIPv46Subnet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreInterfaceSideA()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreInterfaceSideA', []);
+
+        return parent::getCoreInterfaceSideA();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreInterfaceSideB()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreInterfaceSideB', []);
+
+        return parent::getCoreInterfaceSideB();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreBundle()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreBundle', []);
+
+        return parent::getCoreBundle();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEnabled($enabled)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEnabled', [$enabled]);
+
+        return parent::setEnabled($enabled);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setBFD($bfd)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBFD', [$bfd]);
+
+        return parent::setBFD($bfd);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIPv4Subnet($ipv4_subnet)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIPv4Subnet', [$ipv4_subnet]);
+
+        return parent::setIPv4Subnet($ipv4_subnet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIPv6Subnet($ipv6_subnet)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIPv6Subnet', [$ipv6_subnet]);
+
+        return parent::setIPv6Subnet($ipv6_subnet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCoreInterfaceSideA(\Entities\CoreInterface $coreInterfaceSideA = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreInterfaceSideA', [$coreInterfaceSideA]);
+
+        return parent::setCoreInterfaceSideA($coreInterfaceSideA);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCoreInterfaceSideB(\Entities\CoreInterface $coreInterfaceSideB = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreInterfaceSideB', [$coreInterfaceSideB]);
+
+        return parent::setCoreInterfaceSideB($coreInterfaceSideB);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCoreBundle(\Entities\CoreBundle $coreBundle = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreBundle', [$coreBundle]);
+
+        return parent::setCoreBundle($coreBundle);
+    }
+
 }

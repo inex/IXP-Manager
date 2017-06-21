@@ -5,11 +5,11 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'router/list' )?>">Routers</a>
+    <a href="<?= action( 'RouterController@list' )?>">Routers</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li><?= $t->rt->getName() ?></li>
+    <li><?= $t->ee( $t->rt->getName() ) ?></li>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -27,7 +27,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->rt->getHandle() ?>
+                            <?= $t->ee( $t->rt->getHandle() )?>
                         </td>
                     </tr>
                     <tr>
@@ -38,7 +38,7 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <a href="<?= url( '/vlan/view/id/' ).'/'.$t->rt->getVlan()->getId()?> ">
-                                <?= $t->rt->getVlan()->getName()?>
+                                <?= $t->ee( $t->rt->getVlan()->getName() )?>
                             </a>
                         </td>
                     </tr>
@@ -49,7 +49,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->rt->resolveProtocol() ?>
+                            <?= $t->rt->resolveProtocol()?>
                         </td>
                     </tr>
                     <tr>
@@ -69,7 +69,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->rt->getName() ?>
+                            <?= $t->ee( $t->rt->getName() ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -79,7 +79,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->rt->getShortName() ?>
+                            <?= $t->ee( $t->rt->getShortName() ) ?>
 
                         </td>
                     </tr>
@@ -156,7 +156,7 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <a href="<?= $t->rt->getApi()?>">
-                                <?= $t->rt->getApi()?>
+                                <?= $t->ee( $t->rt->getApi() )?>
                             </a>
                         </td>
                     </tr>
@@ -207,7 +207,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <code><?= $t->rt->getTemplate() ?></code>
+                            <code><?= $t->ee( $t->rt->getTemplate() )?></code>
                         </td>
                     </tr>
                     <tr>

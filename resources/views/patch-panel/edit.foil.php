@@ -5,12 +5,12 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'patch-panel/list' )?>">Patch Panels</a>
+    <a href="<?= action ( 'PatchPanel\PatchPanelController@index' )?>">Patch Panels</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        <?= $t->pp ? 'Editing Patch Panel: ' . $t->pp->getName() : 'Add New Patch Panel' ?>
+        <?= $t->pp ? 'Editing Patch Panel: ' . $t->ee( $t->pp->getName() ) : 'Add New Patch Panel' ?>
     </li>
 <?php $this->append() ?>
 
@@ -26,7 +26,7 @@
 
     <?= Former::open()
         ->method( 'post' )
-        ->action( url( 'patch-panel/store' ) )
+        ->action( action ( 'PatchPanel\PatchPanelController@store' ) )
         ->customWidthClass( 'col-sm-3' );
     ?>
 
@@ -126,7 +126,7 @@
 
         <?= Former::actions(
                 Former::primary_submit( 'Save Changes' ),
-                Former::default_link( 'Cancel' )->href( url( 'patch-panel/list' ) ),
+                Former::default_link( 'Cancel' )->href(  action ( 'PatchPanel\PatchPanelController@index' ) ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
             );
         ?>

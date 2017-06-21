@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'virtual-interface/edit/id/' . $t->vli->getVirtualInterface()->getId() ) ?>">Vlan Interface</a>
+    <a href="<?= route ( 'interfaces/vlan/edit', [ 'id' => $t->vli->getVirtualInterface()->getId() ] ) ?>">Vlan Interface</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -26,11 +26,11 @@
 <?php $this->section( 'content' ) ?>
 
     <div class="well">
-        <h3>Layer2 Address Management for <?= $t->vli->getVirtualInterface()->getCustomer()->getName() ?>'s VLAN Interface:</h3>
+        <h3>Layer2 Address Management for <?= $t->ee( $t->vli->getVirtualInterface()->getCustomer()->getName() ) ?>'s VLAN Interface:</h3>
 
         <dl>
             <dt>VLAN</dt>
-            <dd><?= $t->vli->getVLAN()->getName() ?></dd>
+            <dd><?= $t->ee( $t->vli->getVLAN()->getName() ) ?></dd>
             <dt>Addresses</dt>
             <dd>
                 <?= $t->vli->getIPv4Address() ? $t->vli->getIPv4Address()->getAddress() . ( $t->vli->getIPv6Address() ? ' / ' : '' ) : '' ?>

@@ -452,4 +452,48 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
         return parent::setCost($cost);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function doAllCoreLinksEnabled(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'doAllCoreLinksEnabled', []);
+
+        return parent::doAllCoreLinksEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreLinksEnabled(): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreLinksEnabled', []);
+
+        return parent::getCoreLinksEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSwitchSideX($sideA = true)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchSideX', [$sideA]);
+
+        return parent::getSwitchSideX($sideA);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSpeedPi()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSpeedPi', []);
+
+        return parent::getSpeedPi();
+    }
+
 }

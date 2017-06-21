@@ -1,4 +1,7 @@
 <?php
+
+namespace IXP\Http\Controllers\Interfaces;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -20,7 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers;
 
 use D2EM, Redirect, Former, Input;
 
@@ -50,13 +52,11 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-
-
 /**
  * Vlan Interface Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   PatchPanel
+ * @category   Interfaces
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -68,7 +68,7 @@ class VlanInterfaceController extends Controller
      * @return  View
      */
     public function list( int $id = null ): View {
-        return view(  $id ? 'vlan-interface/view' : 'vlan-interface/index' )->with([
+        return view(  $id ? 'interfaces/vlan/view' : 'interfaces/vlan/list' )->with([
             'listVli'       => D2EM::getRepository( VlanInterfaceEntity::class )->getForList( $id )
         ]);
     }
@@ -117,7 +117,7 @@ class VlanInterfaceController extends Controller
         }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'vlan-interface/edit' )->with([
+        return view( 'interfaces/vlan/edit' )->with([
             'vlan'                      => D2EM::getRepository( VlanEntity::class )->getNames( false ),
             'vli'                       => $vli ? $vli : false,
             'vi'                        => $vi
@@ -162,7 +162,7 @@ class VlanInterfaceController extends Controller
         }
 
         if( ( $request->input('ipv4-enabled' ) && $ipv4Set == false ) || ( $request->input('ipv6-enabled' ) && $ipv6Set == false ) ) {
-            return Redirect::to('virtualInterface/add-wizard' )->withInput( Input::all() );
+            return Redirect::to('interfaces/vlan/add' )->withInput( Input::all() );
         }
 
         $vli->setVirtualInterface( $vi );
@@ -181,7 +181,7 @@ class VlanInterfaceController extends Controller
 
         AlertContainer::push( 'Vlan Interface updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'virtualInterface/edit/'.$vli->getVirtualInterface()->getId() );
+        return Redirect::to( 'interfaces/vlan/edit/'.$vli->getVirtualInterface()->getId() );
 
     }
 

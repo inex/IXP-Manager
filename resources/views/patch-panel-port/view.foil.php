@@ -3,9 +3,12 @@
 
     $this->layout( 'layouts/ixpv4' )
 ?>
-
 <?php $this->section( 'title' ) ?>
-    Patch Panel Port / Cross Connect - <?= $t->ppp->getPatchPanel()->getName() ?> :: <?= $t->ppp->getName() ?>
+    <a href="<?= route ( 'patch-panel/list' )?>">Patch Panel Port</a>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-postamble' ) ?>
+    <li> Patch Panel Port / Cross Connect - <?= $t->ppp->getPatchPanel()->getName() ?> :: <?= $t->ppp->getName() ?> </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -86,11 +89,11 @@
                                     </td>
                                     <td>
                                         <?php if( $current ): ?>
-                                            <a href="<?= url( 'patch-panel-port/list/patch-panel' ).'/'.$p->getPatchPanel()->getId()?>" >
+                                            <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanel()->getId() ] ) ?>" >
                                                 <?= $p->getPatchPanel()->getName() ?>
                                             </a>
                                         <?php else: ?>
-                                            <a href="<?= url( 'patch-panel-port/list/patch-panel' ).'/'.$p->getPatchPanelPort()->getPatchPanel()->getId() ?>" >
+                                            <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>" >
                                                 <?= $p->getPatchPanelPort()->getPatchPanel()->getName() ?>
                                             </a>
                                         <?php endif; ?>
@@ -159,10 +162,10 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <a class="btn btn-default btn-xs" href="<?= url( '/patch-panel-port/download-loa' ).'/'.$p->getId()?>">
+                                            <a class="btn btn-default btn-xs" href="<?= action( 'PatchPanel\PatchPanelPortController@downloadLoA' , [ 'id' => $p->getId() ] ) ?>">
                                                 Download
                                             </a>
-                                            <a class="btn btn-default btn-xs" target="_blank" href="<?= url( '/patch-panel-port/view-loa' ).'/'.$p->getId()?>">
+                                            <a class="btn btn-default btn-xs" target="_blank" href="<?= action( 'PatchPanel\PatchPanelPortController@viewLoA' , [ 'id' => $p->getId() ] ) ?>">
                                                 View
                                             </a>
                                         </td>
@@ -397,7 +400,7 @@
                                                                             <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
                                                                         </a>
                                                                     <?php endif; ?>
-                                                                    <a class="btn btn btn-default" target="_blank" href="<?= url('/patch-panel-port/download-file' ).'/'.$file->getId()?>" title="Download">
+                                                                    <a class="btn btn btn-default" target="_blank" href="<?= action('PatchPanel\PatchPanelPortController@downloadFile', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
                                                                         <i class="fa fa-download"></i>
                                                                     </a>
                                                                     <?php if( Auth::user()->isSuperUser() ): ?>
@@ -467,7 +470,7 @@
                     $.ajax( urlAction + "/" + idFile )
                     .done( function( data ) {
                         if( data.success ){
-                            $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->ppp->getId()?> #list_file_"+idHistory+'_'+objectType );
+                            $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= action('PatchPanel\PatchPanelPortController@view' , [ 'id' => $t->ppp->getId() ] ) ?> #list_file_"+idHistory+'_'+objectType );
                             $( '.bootbox.modal' ).modal( 'hide' );
                         }
                         else{

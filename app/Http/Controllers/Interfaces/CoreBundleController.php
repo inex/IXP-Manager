@@ -1,5 +1,6 @@
 <?php
-namespace IXP\Http\Controllers;
+
+namespace IXP\Http\Controllers\Interfaces;
 
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -57,6 +58,7 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * Router Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Interfaces
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -68,7 +70,7 @@ class CoreBundleController extends Controller
      * @return  View
      */
     public function list( int $id = null ): View {
-        return view( 'core-bundle/index' )->with([
+        return view( 'interfaces/core-bundle/list' )->with([
             'cbs'       => D2EM::getRepository( CoreBundleEntity::class )->findAll( )
         ]);
     }
@@ -87,8 +89,8 @@ class CoreBundleController extends Controller
         ]);
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'core-bundle/edit-wizard' )->with([
-            'switches'                      => D2EM::getRepository( SwitcherEntity::class )->getNames(),
+        return view( 'interfaces/core-bundle/edit-wizard' )->with([
+            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames(),
             'types'                 => CoreBundleEntity::$TYPES,
             'speed'                 => PhysicalInterfaceEntity::$SPEED,
             'duplex'                => PhysicalInterfaceEntity::$DUPLEX,
@@ -104,7 +106,7 @@ class CoreBundleController extends Controller
      */
     public function addCoreLinkFrag( Request $request ) :JsonResponse {
         $nb = $request->input("nbCoreLink") + 1;
-        $returnHTML = view('core-bundle/core-link-frag')->with([
+        $returnHTML = view('interfaces/core-bundle/core-link-frag')->with([
             'nbLink'                        => $nb,
             'enabled'                       => $request->input("enabled" ) ? true : false,
             'bundleType'                    => array_key_exists( $request->input("bundleType" ), CoreBundleEntity::$TYPES ) ? $request->input("bundleType" ) : CoreBundleEntity::TYPE_ECMP ,
@@ -126,7 +128,7 @@ class CoreBundleController extends Controller
         }
 
         if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
-            // redirect
+            return Redirect::to( 'interfaces/core-bundle/add-wizard' )->withInput( Input::all() );
         }
 
         /** @var CoreBundleEntity $cb */
@@ -184,7 +186,7 @@ class CoreBundleController extends Controller
             // Side A
             /** @var SwitchPortEntity $spA */
             if( !( $spA = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'hidden-sp-a-'.$i ) ) ) ) {
-                return Redirect::to( 'core-bundle/add-wizard' )->withInput( Input::all() );
+                return Redirect::to( 'interfaces/core-bundle/add-wizard' )->withInput( Input::all() );
             }
 
             $spA->setType( SwitchPortEntity::TYPE_CORE );
@@ -211,7 +213,7 @@ class CoreBundleController extends Controller
             // Side B
             /** @var SwitchPortEntity $spB */
             if( !( $spB = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'hidden-sp-b-'.$i ) ) ) ) {
-                return Redirect::to( 'core-bundle/add-wizard' )->withInput( Input::all() );
+                return Redirect::to( 'interfaces/core-bundle/add-wizard' )->withInput( Input::all() );
             }
 
             $spB->setType( SwitchPortEntity::TYPE_CORE );
@@ -244,6 +246,6 @@ class CoreBundleController extends Controller
 
         AlertContainer::push( 'The core bundle has been added successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'core-bundle/list' );
+        return Redirect::to( 'interfaces/core-bundle/list' );
     }
 }

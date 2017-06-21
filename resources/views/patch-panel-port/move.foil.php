@@ -5,21 +5,21 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Move Patch Panel Port - <?= $t->ppp->getPatchPanel()->getName() ?> :: <?= $t->ppp->getName() ?>
+    Move Patch Panel Port - <?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> :: <?= $t->ee( $t->ppp->getName() )?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
 
     <div class="well">
         <?= Former::open()->method( 'POST' )
-            ->action( url( 'patch-panel-port/move' ) )
+            ->action( action ( 'PatchPanel\PatchPanelPortController@move' ) )
             ->customWidthClass( 'col-sm-3' )
         ?>
 
 
             <?= Former::text( 'current-pos' )
                 ->label( 'Current position :' )
-                ->value( $t->ppp->getPatchPanel()->getName() . ' :: ' . $t->ppp->getName() )
+                ->value( $t->ee( $t->ppp->getPatchPanel()->getName() ) . ' :: ' . $t->ee( $t->ppp->getName() ) )
                 ->blockHelp( 'help text' )
                 ->disabled( true );
             ?>
@@ -60,7 +60,7 @@ $this->layout( 'layouts/ixpv4' )
 
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( url( 'sflowReceiver/list/' ) ),
+            Former::default_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         )->id('btn-group');?>
 
@@ -127,8 +127,8 @@ $this->layout( 'layouts/ixpv4' )
                     <?php endif; ?>
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
-                    alert( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
+                    throw new Error( "Error running ajax query for api/v4/patch-panel/$id/patch-panel-port-free" );
+                    alert( "Error running ajax query for api/v4/patch-panel/$id/patch-panel-port-free" );
                 })
                 .always( function() {
                     $( "#master-port" ).trigger( "chosen:updated" );

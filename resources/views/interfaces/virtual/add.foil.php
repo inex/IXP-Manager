@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'virtualInterface/list' )?>">(Virtual) Interfaces</a>
+    <a href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>">(Virtual) Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -19,12 +19,12 @@ $this->layout( 'layouts/ixpv4' );
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
-                    <a id="" href="<?= url( '/virtualInterface/add-wizard' )?>" >
+                    <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@wizard' )?>" >
                         Add Interface Wizard...
                     </a>
                 </li>
                 <li>
-                    <a id="" href="<?= url( '/virtualInterface/add' )?>" >
+                    <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@add' )?>" >
                         Virtual Interface Only...
                     </a>
                 </li>
@@ -38,18 +38,16 @@ $this->layout( 'layouts/ixpv4' );
 <?= $t->alerts() ?>
     <div class="well">
         <?= Former::open()->method( 'POST' )
-            ->action( url( 'virtualInterface/store' ) )
+            ->action( action( 'Interfaces\VirtualInterfaceController@store' ) )
             ->customWidthClass( 'col-sm-6' )
         ?>
         <div class="col-sm-6">
             <?= Former::select( 'cust' )
-
                 ->label( 'Customer' )
                 ->fromQuery( $t->cust, 'name' )
                 ->placeholder( 'Choose a Customer' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
-
             ?>
 
             <?= Former::checkbox( 'trunk' )
@@ -87,7 +85,7 @@ $this->layout( 'layouts/ixpv4' );
                         <label class="control-label">
                             <b>
                                 <code>
-                                    <?= $t->vi->getBundleName() ?>
+                                    <?= $t->ee( $t->vi->getBundleName() ) ?>
                                 </code>
                             </b>
                         </label>
@@ -158,7 +156,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( url( 'virtualInterface/list/' ) ),
+            Former::default_link( 'Cancel' )->href( action( 'Interfaces\VirtualInterfaceController@list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         )->id('btn-group');?>
 
@@ -169,7 +167,7 @@ $this->layout( 'layouts/ixpv4' );
     <div class="row-fluid">
         <h3>
             Physical Interfaces
-            <a class="btn btn-default btn-xs" href="<?= url('physicalInterface/add/0/vintid').'/'.$t->vi->getId() ?>">
+            <a class="btn btn-default btn-xs" href="<?= route('interfaces/physical/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                 <i class="glyphicon glyphicon-plus"></i>
             </a>
         </h3>
@@ -199,15 +197,15 @@ $this->layout( 'layouts/ixpv4' );
                         <tr>
                             <td>
                                 <?php if( $pi->getSwitchPort()->getSwitcher()->getCabinet() ): ?>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php if ( $pi->getSwitchPort()->getType() != \Entities\SwitchPort::TYPE_FANOUT ): ?>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getSwitchPort()->getIfName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getSwitchPort()->getIfName() ?>
                                 <?php elseif( $pi->getPeeringPhysicalInterface() ): ?>
                                     <a href="#">
-                                        <?= $pi->getPeeringPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getPeeringPhysicalInterface()->getSwitchPort()->getIfName() ?>
+                                        <?= $t->ee( $pi->getPeeringPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getPeeringPhysicalInterface()->getSwitchPort()->getIfName() ?>
                                     </a>
                                 <?php endif; ?>
                             </td>
@@ -216,7 +214,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $int->getSwitchPort()->getIfName() ?>
                                 <?php elseif( $pi->getFanoutPhysicalInterface() ): ?>
                                     <a href="">
-                                        <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ?>
+                                        <?= $t->ee( $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ?>
                                     </a>
                                 <?php endif; ?>
                             </td>
@@ -230,7 +228,7 @@ $this->layout( 'layouts/ixpv4' );
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-default" href="<?= url( '/physicalInterface/edit' ).'/'.$pi->getId()?>" title="Edit">
+                                    <a class="btn btn btn-default" href="<?= route( 'interfaces/physical/edit' , [ 'id' => $pi->getId() ] )?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>
 
@@ -248,7 +246,7 @@ $this->layout( 'layouts/ixpv4' );
                     <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                     <span class="sr-only">Information :</span>
                     There are no physical interfaces defined for this virtual interface.
-                    <a href="<?= url('physicalInterface/add/0/vintid').'/'.$t->vi->getId() ?>">
+                    <a href="<?= route('interfaces/physical/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                         Add one now...
                     </a>
                 </div>
@@ -260,7 +258,7 @@ $this->layout( 'layouts/ixpv4' );
     <div class="row-fluid">
         <h3>
             VLAN Interfaces
-            <a class="btn btn-default btn-xs" href="<?= url('vlanInterface/add/0/vintid').'/'.$t->vi->getId() ?>">
+            <a class="btn btn-default btn-xs" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                 <i class="glyphicon glyphicon-plus"></i>
             </a>
         </h3>
@@ -292,13 +290,13 @@ $this->layout( 'layouts/ixpv4' );
                         /** @var Entities\VlanInterface $vli */ ?>
                         <tr>
                             <td>
-                                <?= $vli->getVlan()->getName() ?>
+                                <?= $t->ee( $vli->getVlan()->getName() ) ?>
                             </td>
                             <td>
-                                <?= $vli->getVlan()->getNumber() ?>
+                                <?= $t->ee( $vli->getVlan()->getNumber() )?>
                             </td>
                             <td>
-                                <a href="<?= url( 'layer2-address/vlan-interface/'.$vli->getId() )?> " >
+                                <a href="<?= action ( 'Layer2AddressController@index' , [ 'id' => $vli->getId() ] )?> " >
                                     <?php if ( !count( $vli->getLayer2Addresses() ) ) : ?>
                                         <span class="label label-warning">(none)</span>
                                     <?php elseif ( count( $vli->getLayer2Addresses() ) > 1 ) : ?>
@@ -321,7 +319,7 @@ $this->layout( 'layouts/ixpv4' );
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-default" href="<?= url( '/vlanInterface/edit' ).'/'.$vli->getId()?>" title="Edit">
+                                    <a class="btn btn btn-default" href="<?= route ( 'interfaces/vlan/edit', [ 'id' => $vli->getId() ] ) ?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>
 
@@ -338,7 +336,7 @@ $this->layout( 'layouts/ixpv4' );
                     <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                     <span class="sr-only">Information :</span>
                     There are no VLAN interfaces defined for this virtual interface.
-                    <a href="<?= url('vlanInterface/add/0/vintid').'/'.$t->vi->getId() ?>">
+                    <a href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                         Add one now...
                     </a>
                 </div>
@@ -349,18 +347,24 @@ $this->layout( 'layouts/ixpv4' );
     <div class="row-fluid">
         <h3>
             Sflow Receivers
-            <a class="btn btn-default btn-xs" href="<?= url('sflowReceiver/add/0/vintid').'/'.$t->vi->getId() ?>"><i class="glyphicon glyphicon-plus"></i></a>
+            <a class="btn btn-default btn-xs" href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>"><i class="glyphicon glyphicon-plus"></i></a>
         </h3>
         <div id="message-sflr"></div>
         <div id="area-sflr">
             <?php if( count( $t->vi->getSflowReceivers() ) ) : ?>
                 <table id="table-sflr" class="table table-bordered">
                     <thead>
-                    <tr>
-                        <th>Target IP</th>
-                        <th>Target Port</th>
-                        <th>Action</th>
-                    </tr>
+                        <tr>
+                            <th>
+                                Target IP
+                            </th>
+                            <th>
+                                Target Port
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
                     <?php foreach( $t->vi->getSflowReceivers() as $sflr ):
@@ -374,7 +378,7 @@ $this->layout( 'layouts/ixpv4' );
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a class="btn btn btn-default" href="<?= url('sflowReceiver/edit').'/'.$sflr->getId() ?>">
+                                    <a class="btn btn btn-default" href="<?= route('interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>
                                     <a class="btn btn btn-default" id="delete-sflr-<?= $sflr->getId()?>">
@@ -391,7 +395,7 @@ $this->layout( 'layouts/ixpv4' );
                     <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                     <span class="sr-only">Information :</span>
                     There are no Sflow receivers defined for this virtual interface.
-                    <a href="<?= url('sflowReceiver/add/0/vintid').'/'.$t->vi->getId() ?>">
+                    <a href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                         Add one now...
                     </a>
                 </div>
@@ -403,7 +407,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <?= $t->insert( 'virtual-interface/js/interface' ); ?>
+    <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
     <script>
         $(document).ready( function() {

@@ -9,14 +9,14 @@
 
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId() )?>">
+    <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ?>">
         Patch Panel Port
     </a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        Email : <?= $t->ppp->getName()?>
+        Email : <?= $t->ee( $t->ppp->getName() )?>
     </li>
 <?php $this->append() ?>
 
@@ -25,7 +25,7 @@
     <?= $t->alerts() ?>
 
     <?= Former::open()->method( 'POST' )
-        ->action( url( 'patch-panel-port/send-email/' . $t->ppp->getId() . '/' . $t->emailType ) )
+        ->action( action ( 'PatchPanel\PatchPanelPortController@sendEmail' , [ 'id' =>  $t->ppp->getId() , 'type' => $t->emailType  ] ) )
         ->addClass( 'col-md-10' );
     ?>
         <?= Former::text( 'email_to' )
@@ -62,7 +62,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="body">
-                    <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->mailable->getBody() ?></textarea>
+                    <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->ee( $t->mailable->getBody() ) ?></textarea>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="preview">
                     <div id="well-preview" class="well" style="background: rgb(255,255,255);">
@@ -76,7 +76,7 @@
 
         <?= Former::actions(
                 Former::primary_submit( 'Send Email' ),
-                Former::default_link( 'Cancel' )->href( url( 'patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId() ) )
+                Former::default_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )
             );
         ?>
 
@@ -111,7 +111,7 @@
             $('#well-preview').html('Loading...');
             $(this).tab('show');
 
-            $.ajax( "<?= url('api/v4/utils/markdown')?>", {
+            $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
                 data: {
                     text: $('#email_text').val()
                 },

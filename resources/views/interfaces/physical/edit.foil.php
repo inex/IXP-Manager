@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'virtualInterface/list' )?>">(Virtual) Interfaces</a>
+    <a href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>">(Virtual) Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -16,7 +16,7 @@ $this->layout( 'layouts/ixpv4' );
 
     <div class="well">
         <?= Former::open()->method( 'POST' )
-            ->action( url( 'physicalInterface/store' ) )
+            ->action( action( 'Interfaces\PhysicalInterfaceController@store' ) )
             ->customWidthClass( 'col-sm-3' )
         ?>
         <div>
@@ -95,7 +95,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( url( 'physicalInterface/list/' ) ),
+            Former::default_link( 'Cancel' )->href( route ( 'interfaces/physical/list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         )->id('btn-group');?>
 
@@ -118,22 +118,23 @@ $this->layout( 'layouts/ixpv4' );
 
             // ask what is that ?
             var type = "peering";
-            url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port-not-assign-to-pi";
+            url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/ports";
 
-            $.ajax( url , {
-                data: {type : type },
-                type: 'POST'
-            })
+            $.ajax( url )
                 .done( function( data ) {
-                    var options = "<option value=\"\">Choose a switch port</option>\n";
-                    $.each( data.listPorts, function( key, value ){
-                        options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
+                    options = "<option value=\"\">Choose a switch port</option>\n";
+                    $.each( data.switchports, function( key, port ){
+                        if( port.pi_id == null && [0,1].indexOf( port.sp_type ) != -1 ) {
+                            options += "<option value=\"" + port.sp_id + "\">" + port.sp_name + " (" + port.sp_type_name + ")</option>\n";
+                        }
                     });
                     $( "#switch-port" ).html( options );
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
-                    alert( "Error running ajax query for api/v4/switch/$id/switch-port-not-assign-to-pi" );
+                    options = "<option value=\"\">ERROR</option>\n";
+                    $( "#switch-port" ).html( options );
+                    alert( "Error running ajax query for " + url );
+                    throw new Error( "Error running ajax query for " + url );
                 })
                 .always( function() {
                     $( "#switch-port" ).trigger( "chosen:updated" );

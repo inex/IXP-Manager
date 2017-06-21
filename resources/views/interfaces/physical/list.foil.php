@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'physicalInterface/list' )?>">Physical Interfaces</a>
+    <a href="<?= action( 'Interfaces\PhysicalInterfaceController@list' )?>">Physical Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -15,7 +15,7 @@ $this->layout( 'layouts/ixpv4' );
 
     <?= $t->alerts() ?>
     <span id="message-pi"></span>
-    <div id="area-pi">
+    <div id="area-pi" class="collapse">
         <table id='table-pi' class="table">
             <thead>
                 <tr>
@@ -53,21 +53,21 @@ $this->layout( 'layouts/ixpv4' );
                     <tr>
                         <td>
                             <a href="<?= url( '/customer/overview/id' ).'/'.$pi['custid']?>">
-                                <?= $pi['customer']   ?>
+                                <?= $t->ee( $pi['customer'] )   ?>
                             </a>
                         </td>
                         <td>
                             <a href="<?= url( 'location/view/id' ).'/'.$pi['locid']?>">
-                                <?= $pi['location']   ?>
+                                <?= $t->ee(  $pi['location'] )   ?>
                             </a>
                         </td>
                         <td>
                             <a href="<?= url( 'switch/view/id' ).'/'.$pi['switchid']?>">
-                                <?= $pi['switch']   ?>
+                                <?= $t->ee(  $pi['switch'] )   ?>
                             </a>
                         </td>
                         <td>
-                            <?= $pi['port']   ?>
+                            <?= $t->ee( $pi['port'] )   ?>
                         </td>
                         <td>
                             <?= isset( Entities\PhysicalInterface::$STATES[ $pi['status'] ] ) ? Entities\PhysicalInterface::$STATES[ $pi['status'] ] : 'Unknown'  ?>
@@ -83,13 +83,11 @@ $this->layout( 'layouts/ixpv4' );
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= url( '/virtualInterface/edit' ).'/'.$pi['vintid']?>" title="Virtual Interface">
+                                <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi['vintid'] ] ) ?>" title="Virtual Interface">
                                     <i class="glyphicon glyphicon-filter"></i>
                                 </a>
-                                <a class="btn btn btn-default" href="<?= url( '/physicalInterface/view' ).'/'.$pi['id']?>" title="Preview">
-                                    <i class="glyphicon glyphicon-eye-open"></i>
-                                </a>
-                                <a class="btn btn btn-default" href="<?= url( '/physicalInterface/edit' ).'/'.$pi['id']?>" title="Edit">
+
+                                <a class="btn btn btn-default" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi['id'] ] ) ?>" title="Edit">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
                                 <a class="btn btn btn-default" id="delete-pi-<?= $pi['id'] ?>" href="" title="Delete">
@@ -105,11 +103,12 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <?= $t->insert( 'virtual-interface/js/interface' ); ?>
+<?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
     <script>
 
         $(document).ready( function() {
             loadDataTable( 'pi' );
+            $( '#area-pi' ).show();
         });
 
         /**

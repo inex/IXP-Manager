@@ -3,7 +3,7 @@
         $( "#"+inputName ).val( $( "#date" ).val() );
     }
 
-    var notesIntro = "### <?= date( "Y-m-d" ) . ' - ' .$t->user->getUsername() ?> \n\n\n\n";
+    var notesIntro = "### <?= date( "Y-m-d" ) . ' - ' . $t->ee( $t->user->getUsername() ) ?> \n\n\n\n";
 
     /**
      * hide the help block at loading
@@ -133,8 +133,10 @@
                     $( "#switch_port" ).html( options );
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for api/v4/switch/$id/switch-port-for-ppp" );
-                    alert( "Error running ajax query for api/v4/switch/$id/switch-port-for-ppp" );
+                    options = "<option value=\"\">ERROR</option>\n";
+                    $( "#switch_port" ).html( options );
+                    throw new Error( "Error running ajax query for " + url );
+                    alert( "Error running ajax query for " + url );
                     $( "#customer" ).html("");
                 })
                 .always( function() {

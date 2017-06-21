@@ -102,7 +102,6 @@ Route::group( [  'prefix' => 'switch' ], function() {
 
     Route::post( '{id}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' );
     Route::post( '{id}/switch-port-prewired',         'SwitchController@switchPortPrewired' );
-    Route::post( '{id}/switch-port-not-assign-to-pi', 'SwitchController@switchPortNotAssignedToPI' );
     Route::post( '{id}/switch-port',                  'SwitchController@switchPort' );
 });
 

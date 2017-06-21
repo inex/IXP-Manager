@@ -1,6 +1,7 @@
 <script>
     $( document ).ready( function() {
         loadDataTable();
+        $( "#list-area").show();
     });
 
     /**
@@ -13,7 +14,7 @@
             inputType: 'text',
             callback: function ( result ) {
                 if( result != '' ) {
-                    $.ajax( "<?= url( 'api/v4/l2-address/add' ) ?>", {
+                    $.ajax( "<?= action ( 'Api\V4\Layer2AddressController@add' ) ?>", {
                         type: 'POST',
                         data: {
                             vliid : <?= $t->vli->getId() ?>,
@@ -55,7 +56,7 @@
      * reloading only a part of the DOM
      */
     function refreshDataTable() {
-        $( "#list-area").load( "<?= url('layer2-address/vlan-interface' ).'/'.$t->vli->getId()?> #layer-2-interface-list " ,function( ) {
+        $( "#list-area").load( "<?= action ('Layer2AddressController@index' , [ 'id' => $t->vli->getId() ] ) ?> #layer-2-interface-list " ,function( ) {
             table.destroy();
             loadDataTable();
         });
@@ -79,7 +80,7 @@
             },
             callback: function (result) {
                 if( result) {
-                    $.ajax( "<?= url( 'api/v4/l2-address/delete' ) ?>/"+l2aId )
+                    $.ajax( "<?= action ( 'Api\V4\Layer2AddressController@delete' ) ?>/"+l2aId )
                         .done( function( data ) {
                             $('.bootbox.modal').modal( 'hide' );
                             result = ( data.success ) ? 'success': 'danger';

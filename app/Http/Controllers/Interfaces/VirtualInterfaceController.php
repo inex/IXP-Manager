@@ -99,7 +99,7 @@ class VirtualInterfaceController extends Controller
 
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'virtual-interface/edit' )->with([
+        return view( 'interfaces/virtual/add' )->with([
             'cust'      => D2EM::getRepository( CustomerEntity::class)->getNames(),
             'vi'        => $vi ? $vi : false
         ]);
@@ -118,7 +118,7 @@ class VirtualInterfaceController extends Controller
             abort(404);
         }
 
-        return view( 'virtual-interface/view' )->with([
+        return view( 'interfaces/virtual/view' )->with([
             'vi'                        => $vi
         ]);
     }
@@ -157,7 +157,7 @@ class VirtualInterfaceController extends Controller
 
         AlertContainer::push( 'Virtual Interface added/updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'virtualInterface/edit/'.$vi->getId());
+        return Redirect::to( 'intefaces/virtual/edit/'.$vi->getId());
 
     }
 
@@ -336,9 +336,7 @@ class VirtualInterfaceController extends Controller
             D2EM::persist( $ip );
             $ip->setVlan( $vl );
             $ip->setAddress( $addressValue );
-        }
-        else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli )
-        {
+        } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
             AlertContainer::push( $ipVer."address ".$addressValue." is already in use.", Alert::DANGER );
             return false;
         }

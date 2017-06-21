@@ -5,7 +5,7 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'virtualInterface/list' )?>">Virtual Interfaces</a>
+    <a href="<?= action('Interfaces\VirtualInterfaceController@list') ?>">Virtual Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -15,10 +15,10 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('virtualInterface/list') ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= action('Interfaces\VirtualInterfaceController@list') ?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= url('virtualInterface/edit').'/'.$t->vi->getId() ?>" title="edit">
+            <a type="button" class="btn btn-default" href="<?= route('interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) ?>" title="edit">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </div>
@@ -41,7 +41,7 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <a href="<?= url( '/customer/overview/id' ).'/'.$t->vi->getCustomer()->getId() ?>">
-                                <?= $t->vi->getCustomer()->getName()   ?>
+                                <?= $t->ee( $t->vi->getCustomer()->getName() )  ?>
                             </a>
                         </td>
                     </tr>
@@ -52,7 +52,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->vi->getName()   ?>
+                            <?= $t->ee( $t->vi->getName() )  ?>
                         </td>
                     </tr>
                     <tr>
@@ -62,7 +62,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->vi->getDescription()   ?>
+                            <?= $t->ee( $t->vi->getDescription() )   ?>
                         </td>
                     </tr>
                     <tr>
@@ -72,7 +72,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->vi->getLocation() ? $t->vi->getLocation()->getName() : ''?>
+                            <?= $t->vi->getLocation() ? $t->ee( $t->vi->getLocation()->getName() ) : ''?>
                         </td>
                     </tr>
                     <tr>
@@ -82,7 +82,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->vi->getSwitchPort() ? $t->vi->getSwitchPort()->getName() : '' ?>
+                            <?= $t->vi->getSwitchPort() ? $t->ee( $t->vi->getSwitchPort()->getName() ) : '' ?>
                         </td>
                     </tr>
                     <tr>
@@ -161,7 +161,7 @@ $this->layout( 'layouts/ixpv4' )
                                 <label class="control-label">
                                     <b>
                                         <code>
-                                            <?= $t->vi->getBundleName() ?>
+                                            <?= $t->ee( $t->vi->getBundleName() ) ?>
                                         </code>
                                     </b>
                                 </label>
@@ -237,7 +237,7 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <?php if( $pi->getSwitchPort()->getSwitcher()->getCabinet() ): ?>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -245,7 +245,7 @@ $this->layout( 'layouts/ixpv4' )
                                     <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getSwitchPort()->getIfName() ?>
                                 <?php elseif( $pi->getPeeringPhysicalInterface() ): ?>
                                     <a href="#">
-                                        <?= $pi->getPeeringPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getPeeringPhysicalInterface()->getSwitchPort()->getIfName() ?>
+                                        <?= $t->ee( $pi->getPeeringPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getPeeringPhysicalInterface()->getSwitchPort()->getIfName() ?>
                                     </a>
                                 <?php endif; ?>
                             </td>
@@ -254,7 +254,7 @@ $this->layout( 'layouts/ixpv4' )
                                     <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $int->getSwitchPort()->getIfName() ?>
                                 <?php elseif( $pi->getFanoutPhysicalInterface() ): ?>
                                     <a href="">
-                                        <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ?>
+                                        <?= $t->ee( $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ?>
                                     </a>
                                 <?php endif; ?>
                             </td>
@@ -271,7 +271,7 @@ $this->layout( 'layouts/ixpv4' )
                                     <a class="btn btn btn-default" href="<?= url( '/physicalInterface/view' ).'/'.$pi->getId()?>" title="view">
                                         <i class="glyphicon glyphicon-eye-open"></i>
                                     </a>
-                                    <a class="btn btn btn-default" href="<?= url( '/physicalInterface/edit' ).'/'.$pi->getId()?>" title="Edit">
+                                    <a class="btn btn btn-default" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi->getId() ] ) ?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>
                                 </div>
@@ -320,13 +320,13 @@ $this->layout( 'layouts/ixpv4' )
                         /** @var Entities\VlanInterface $vli */ ?>
                         <tr>
                             <td>
-                                <?= $vli->getVlan()->getName() ?>
+                                <?= $t->ee( $vli->getVlan()->getName() ) ?>
                             </td>
                             <td>
-                                <?= $vli->getVlan()->getNumber() ?>
+                                <?= $t->ee( $vli->getVlan()->getNumber() ) ?>
                             </td>
                             <td>
-                                <a href="<?= url( 'layer2-address/vlan-interface/'.$vli->getId() )?> " >
+                                <a href="<?= action ( 'Layer2AddressController@index' , [ 'id' => $vli->getId() ] )?> " >
                                     <?php if ( !count( $vli->getLayer2Addresses() ) ) : ?>
                                         <span class="label label-warning">(none)</span>
                                     <?php elseif ( count( $vli->getLayer2Addresses() ) > 1 ) : ?>
@@ -353,7 +353,7 @@ $this->layout( 'layouts/ixpv4' )
                                         <i class="glyphicon glyphicon-eye-open"></i>
                                     </a>
 
-                                    <a class="btn btn btn-default" href="<?= url( '/vlanInterface/edit' ).'/'.$vli->getId()?>" title="Edit">
+                                    <a class="btn btn btn-default" href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli->getId() ] ) ?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>
                                 </div>
@@ -397,7 +397,7 @@ $this->layout( 'layouts/ixpv4' )
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a class="btn btn btn-default" href="<?= url('sflowReceiver/edit').'/'.$sflr->getId() ?>">
+                                        <a class="btn btn btn-default" href="<?= route ('interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ]) ?>">
                                             <i class="glyphicon glyphicon-pencil"></i>
                                         </a>
                                         <a class="btn btn btn-default" id="delete-sflr-<?= $sflr->getId()?>">
@@ -422,9 +422,6 @@ $this->layout( 'layouts/ixpv4' )
 
 <?php $this->section('scripts') ?>
     <script>
-        $(document).ready(function() {
 
-
-        });
     </script>
 <?php $this->append() ?>

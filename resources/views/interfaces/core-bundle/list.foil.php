@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= action( 'CoreBundleController@list' )?>">Core Bundle</a>
+    <a href="<?= action( 'Interfaces\CoreBundleController@list' )?>">Core Bundle</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -19,7 +19,7 @@ $this->layout( 'layouts/ixpv4' );
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
-                    <a href="<?= action( 'CoreBundleController@editWizard' )?>" >
+                    <a href="<?= action( 'Interfaces\CoreBundleController@editWizard' )?>" >
                         Add Core Bundle Wizard...
                     </a>
                 </li>

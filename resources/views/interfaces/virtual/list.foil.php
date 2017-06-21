@@ -19,12 +19,12 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
-                    <a id="" href="<?= route( 'interfaces/virtual/wizard' ) ?>" >
+                    <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@wizard' ) ?>" >
                         Add Interface Wizard...
                     </a>
                 </li>
                 <li>
-                    <a id="" href="<?= route( 'interfaces/virtual/add' ) ?>" >
+                    <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@add' ) ?>" >
                         Add Virtual Interface Object Only...
                     </a>
                 </li>
@@ -98,10 +98,10 @@
                     <?php endif; ?>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <a class="btn btn btn-default" href="<?= url( '/virtualInterface/view' ).'/' . $vi->getId() ?>" title="Preview">
+                            <a class="btn btn btn-default" href="<?= action( 'Interfaces\VirtualInterfaceController@view' , ['id' => $vi->getId() ] )?>" title="Preview">
                                 <i class="glyphicon glyphicon-eye-open"></i>
                             </a>
-                            <a class="btn btn btn-default" href="<?= url( '/virtualInterface/edit' ).'/' . $vi->getId() ?>" title="Edit">
+                            <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </a>
 

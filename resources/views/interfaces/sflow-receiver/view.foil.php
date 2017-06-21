@@ -5,7 +5,7 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'sfloweceiver/list' )?>">Sflow Receiver</a>
+    <a href="<?= route( 'interfaces/sflow-receiver/list' )?>">Sflow Receiver</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -15,10 +15,10 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('sflowReceiver/list') ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= route( 'interfaces/sflow-receiver/list' ) ?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= url('sflowReceiver/edit').'/'.$t->sflr->getId() ?>" title="edit">
+            <a type="button" class="btn btn-default" href="<?= route('interfaces/sflow-receiver/edit' , [ 'id' => $t->sflr->getId() ]) ?>" title="edit">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </div>
@@ -41,7 +41,7 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <a href="<?= url( '/customer/overview/id' ).'/'.$t->sflr->getCustomer()->getId()?>">
-                                <?= $t->sflr->getCustomer()->getName() ?>
+                                <?= $t->ee(  $t->sflr->getCustomer()->getName() ) ?>
                             </a>
                         </td>
                     </tr>
@@ -53,7 +53,7 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <a href="<?= url( 'vlan/list/id' ).'/'.$t->sflr->getVirtualInterface()->getId()?>">
-                                <?= $t->sflr->getVirtualInterface()->getName() ?>
+                                <?= $t->ee( $t->sflr->getVirtualInterface()->getName() ) ?>
                             </a>
                         </td>
                     </tr>

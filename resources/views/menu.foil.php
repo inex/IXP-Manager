@@ -30,19 +30,19 @@
                     <?php if( substr( $t->controller, -19 ) == 'InterfaceController' || in_array( $t->controller, [ 'SflowReceiverController' ] ) ): ?>
 
                         <li class="sub-menu <?php if($t->controller == 'PhysicalInterfaceController'):?> active <?php endif;?> " >
-                            <a href="<?= url('physicalInterface/list') ?>">Physical Interface</a>
+                            <a href="<?= route('interfaces/physical/list') ?>">Physical Interface</a>
                         </li>
 
                         <li class="sub-menu <?php if($t->controller == 'VlanInterfaceController'):?> active <?php endif;?> " >
-                            <a href="<?= url('vlanInterface/list') ?>">Vlan Interface</a>
+                            <a href="<?= route('interfaces/vlan/list') ?>">Vlan Interface</a>
                         </li>
 
                         <li class="sub-menu <?php if($t->controller == 'SflowReceiverController'):?> active <?php endif;?> " >
-                            <a href="<?= url('sflowReceiver/list') ?>">Sflow Receiver</a>
+                            <a href="<?= url('interfaces/sflow-receiver/list') ?>">Sflow Receiver</a>
                         </li>
 
                         <li class="sub-menu <?php if($t->controller == 'CoreBundleController'):?> active <?php endif;?> " >
-                            <a href="<?= url('core-bundle/list') ?>">Core Bundle</a>
+                            <a href="<?= url('interfaces/core-bundle/list') ?>">Core Bundle</a>
                         </li>
 
                     <?php endif; ?>

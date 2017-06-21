@@ -5,7 +5,7 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'vlanInterface/list' )?>">Vlan Interfaces</a>
+    <a href="<?= route( 'interfaces/vlan/list' )?>">Vlan Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -15,10 +15,10 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('vlanInterface/list') ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= route( 'interfaces/vlan/list' )?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= url('vlanInterface/edit').'/'.$t->listVli[0]['id'] ?>" title="edit">
+            <a type="button" class="btn btn-default" href="<?= route('interfaces/vlan/edit' , [ 'id' => $t->listVli[0]['id'] ] ) ?>" title="edit">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </div>
@@ -41,7 +41,7 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <a href="<?= url( '/customer/overview/id' ).'/'.$t->listVli[0]['custid']?>">
-                                <?= $t->listVli[0]['customer']   ?>
+                                <?= $t->ee( $t->listVli[0]['customer'] )   ?>
                             </a>
                         </td>
                     </tr>
@@ -53,7 +53,7 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <a href="<?= url( 'vlan/list/id' ).'/'.$t->listVli[0]['vlanid']?>">
-                                <?= $t->listVli[0]['vlan'] ?>
+                                <?= $t->ee( $t->listVli[0]['vlan'] ) ?>
                             </a>
                         </td>
                     </tr>
@@ -113,7 +113,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->listVli[0]['notes'] ?>
+                            <?= $t->ee( $t->listVli[0]['notes'] ) ?>
                         </td>
                     </tr>
                 </table>
