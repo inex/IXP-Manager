@@ -116,8 +116,10 @@ Route::get( 'vlan-interface/delete/{id}',                       'VlanInterfaceCo
 Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceController@sflowMatrix' );
 Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
 
-Route::post( 'vlan/{id}/ipv-address',                           'VlanController@getIPvAddress' );
-Route::get( 'vlan/for-switch/{switchid}',                       'Provisioner\YamlController@vlanForSwitch' );
+Route::group( [  'prefix' => 'vlan' ], function() {
+    Route::get( 'for-switch/{switchid}', 'Provisioner\YamlController@vlanForSwitch' );
+    Route::get( '{id}/ip-addresses',     'VlanController@getIPAddresses' );
+});
 
 Route::get('physical-interface/delete/{id}',                    'PhysicalInterfaceController@delete' );
 Route::get('virtual-interface/delete/{id}',                    'VirtualInterfaceController@delete' );

@@ -400,46 +400,52 @@ class Vlan extends EntityRepository
 
 
     /**
-     * Get the IPv4 or IPv6 list for a vlan
+     * Get the IPv4 or IPv6 list for a vlan as an array.
      *
-     * @params  $request instance of the current HTTP request
-     * @return  array of IPvX
+     * Returns a array sorted by IP address with elements:
+     *
+     *     {
+     *         id: "1040",                     // address ID from the IPv4/6 table
+     *         address: "2001:7f8:18::20",     // address
+     *         v_id: "2",                      // VLAN id
+     *         vli_id: "16"                    // VlanInterface ID (or null if not assigned / in use)
+     *     },
+     *
+     * @param  int $vlan  The ID of the VLAN to query
+     * $param  int $proto The IP protocol to get addresses for (one of RouterEntity::PROTOCOL_IPV4/6)
+     * @return array Array of addresses as defined above.
+     * @throws \Exception Only of an invalid protocol is provided
      */
-    public function getIPvAddress( int $vlan, int $ipType, int $vliid = null ) : array {
+    public function getIPAddresses( int $vlan, int $proto ) : array {
 
 
-        if( $ipType == RouterEntity::PROTOCOL_IPV6 )
-        {
-            $af = 'ipv6'; $entity = 'IPv6Address';
+        if( $proto == RouterEntity::PROTOCOL_IPV6 ) {
+            $af = 'ipv6'; $table = 'ipv6address';
+        } else if( $proto == RouterEntity::PROTOCOL_IPV4 ) {
+            $af = 'ipv4'; $table = 'ipv4address';
+        } else {
+            throw new \Exception('Invalid protocol' );
         }
-        else
-        {
-            $af = 'ipv4'; $entity = 'IPv4Address';
-        }
 
-        $dql = "SELECT {$af}.id AS id, {$af}.address AS address
-                    FROM \\Entities\\{$entity} {$af}
-                        LEFT JOIN {$af}.Vlan v
-                        LEFT JOIN {$af}.VlanInterface vli
+        // going to use a native query so we can use INET[6]_ATON
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $stmt = $conn->prepare( "SELECT {$af}.id AS id, {$af}.address AS address, v.id AS v_id, vli.id as vli_id
+                    FROM {$table} AS {$af}
+                        LEFT JOIN vlan AS v ON {$af}.vlanid = v.id
+                        LEFT JOIN vlaninterface AS vli ON {$af}.id = vli.{$af}addressid
                     WHERE
-                        v.id = ?1 ";
+                        v.id = ? 
+                    ORDER BY "
+                        . ( $proto == RouterEntity::PROTOCOL_IPV4 ? 'INET_ATON( ' : 'INET6_ATON( ' )
+                        . "address ) ASC"
+        );
 
-        if( $vliid !== null ){
-            $dql .= 'AND ( vli.id IS NULL OR vli.id = ?2 )';
-        } else{
-            $dql .= 'AND vli.id IS NULL';
-        }
+        $stmt->bindValue( 1, $vlan );
+        $stmt->execute();
 
-        $query = $this->getEntityManager()->createQuery( $dql );
-        $query->setParameter( 1, $vlan );
-
-        if( $vliid !== null ){
-            $query->setParameter( 2, $vliid );
-        }
-        
-        return $query->getArrayResult();
-
-
+        return $stmt->fetchAll( \PDO::FETCH_ASSOC );
     }
 
 }
