@@ -89,7 +89,7 @@ class CoreBundleController extends Controller
         ]);
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'interfaces/core-bundle/edit-wizard' )->with([
+        return view( 'interfaces/core-bundle/add-wizard' )->with([
             'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames(),
             'types'                 => CoreBundleEntity::$TYPES,
             'speed'                 => PhysicalInterfaceEntity::$SPEED,
@@ -150,7 +150,7 @@ class CoreBundleController extends Controller
             ]);
         }
 
-        return view( 'interfaces/core-bundle/edit' )->with([
+        return view( 'interfaces/core-bundle/edit-wizard' )->with([
             'cb'                            => $cb,
             'types'                         => CoreBundleEntity::$TYPES,
             'speed'                         => PhysicalInterfaceEntity::$SPEED,
