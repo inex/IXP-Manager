@@ -119,6 +119,15 @@ class CoreLink
         return $this->coreInterfaceSideB;
     }
 
+    /**
+     * Get the core interface (A/B)
+     *
+     * @return array
+     */
+    public function getCoreInterfaces()
+    {
+        return [ $this->getCoreInterfaceSideA(), $this->getCoreInterfaceSideB() ];
+    }
 
     /**
      * Get CoreBundle

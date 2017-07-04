@@ -145,7 +145,7 @@ class VlanInterfaceController extends Controller
         }
 
         if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'viid' ) ) ) ) {
-            abort(404 , 'Unknown vlan Interface');
+            abort(404 , 'Unknown virtual Interface');
         }
 
         /** @var VlanEntity $vl */
@@ -162,7 +162,13 @@ class VlanInterfaceController extends Controller
         }
 
         if( ( $request->input('ipv4-enabled' ) && $ipv4Set == false ) || ( $request->input('ipv6-enabled' ) && $ipv6Set == false ) ) {
-            return Redirect::to('interfaces/vlan/add' )->withInput( Input::all() );
+            if( $request->input( 'id' ) ) {
+                $urlRedirect = 'interfaces/vlan/edit/'.$vli->getId();
+            } else {
+                $urlRedirect = 'interfaces/vlan/add';
+            }
+
+            return Redirect::to($urlRedirect )->withInput( Input::all() );
         }
 
         $vli->setVirtualInterface( $vi );
@@ -181,7 +187,7 @@ class VlanInterfaceController extends Controller
 
         AlertContainer::push( 'Vlan Interface updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'interfaces/vlan/edit/'.$vli->getVirtualInterface()->getId() );
+        return Redirect::to( 'interfaces/virtual/edit/'.$vli->getVirtualInterface()->getId() );
 
     }
 

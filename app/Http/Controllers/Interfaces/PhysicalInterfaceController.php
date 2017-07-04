@@ -63,6 +63,8 @@ class PhysicalInterfaceController extends Controller
     /**
      * Display all the physicalInterfaces
      *
+     * @param   int $id ID of the physical interface
+     *
      * @return  View
      */
     public function list( int $id = null ): View {
@@ -72,12 +74,28 @@ class PhysicalInterfaceController extends Controller
     }
 
     /**
-     * Display the form to edit a physical interface
+     * Display the form to edit a physical interface from the core bundle from
+     *
+     * @param   integer $id ID of the physical interface
      *
      * @return View
      */
-    public function edit( int $id, int $viid = null ): View {
+    public function editFromCb( int $id , int $cb ){
+        return $this->edit( $id , null, $cb );
+    }
+
+    /**
+     * Display the form to edit a physical interface
+     *
+     * @param   int $id ID of the physical interface
+     * @param   int $viid ID of the virtual interface
+     * @param   int $cb id we come from the core bundle edit form
+     *
+     * @return View
+     */
+    public function edit( int $id, int $viid = null, int $cb = null ): View {
         $pi = false;
+
         /** @var PhysicalInterfaceEntity $pi */
         if( $id and !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
             abort(404);
@@ -91,7 +109,7 @@ class PhysicalInterfaceController extends Controller
 
         if( $pi ) {
             // fill the form with physical interface data
-            Former::populate([
+            $data = [
                 'switch'                  => $pi->getSwitchPort()->getSwitcher()->getId(),
                 'switch-port'             => $pi->getSwitchPort()->getId(),
                 'status'                  => $pi->getStatus(),
@@ -100,19 +118,50 @@ class PhysicalInterfaceController extends Controller
                 'autoneg-label'           => $pi->getAutoneg() ? 1 : 0,
                 'monitorindex'            => $pi->getMonitorindex() ? $pi->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer() ) ,
                 'notes'                   => $pi->getNotes()
-            ]);
+            ];
+
+            if( $piB = $pi->getOtherPICoreLink() ){
+                $dataB = [
+                    'switch-b'                  => $piB->getSwitchPort()->getSwitcher()->getId(),
+                    'switch-port-b'             => $piB->getSwitchPort()->getId(),
+                    'status-b'                  => $piB->getStatus(),
+                    'speed-b'                   => $piB->getSpeed(),
+                    'duplex-b'                  => $piB->getDuplex(),
+                    'autoneg-label-b'           => $piB->getAutoneg() ? 1 : 0,
+                    'monitorindex-b'            => $piB->getMonitorindex() ? $piB->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $piB->getVirtualInterface()->getCustomer() ) ,
+                    'notes-b'                   => $piB->getNotes()
+                ];
+
+                $data = array_merge( $data, $dataB);
+
+            }
+
+            Former::populate( $data );
+
         }
 
+        // in edit mode
+        if( $pi) {
+            // get all the switch port available and add the switch port associated to the Physical interface in the list
+            $t = array_merge( D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId(), [], null ) , [ [ "name" => $pi->getSwitchPort()->getName(), "id" => $pi->getSwitchPort()->getId() ] ] );
+
+            // ascending sort the array by ID
+            usort($t, function ($item1, $item2) {
+                return $item1['id'] <=> $item2['id'];
+            });
+        }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/physical/edit' )->with([
             'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
-            'sp'                          => $pi ? D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId() ) : '',
+            'sp'                          => $pi ? $t : '',
             'status'                      => PhysicalInterfaceEntity::$STATES,
             'speed'                       => PhysicalInterfaceEntity::$SPEED,
             'duplex'                      => PhysicalInterfaceEntity::$DUPLEX,
             'pi'                          => $pi,
+            'otherPICoreLink'             => $pi ? $pi->getOtherPICoreLink() : false,
             'vi'                          => $vi,
+            'cb'                          => $cb ? $cb : false,
         ]);
     }
 
@@ -123,7 +172,6 @@ class PhysicalInterfaceController extends Controller
      * @return  RedirectResponse
      */
     public function store( StorePhysicalInterface $request ): RedirectResponse {
-
         if( $request->input( 'id', false ) ) {
             /** @var PhysicalInterfaceEntity $pi */
             if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -132,13 +180,14 @@ class PhysicalInterfaceController extends Controller
         } else {
             $pi = new PhysicalInterfaceEntity;
             D2EM::persist( $pi );
+            $edit = false;
         }
 
         /** @var VirtualInterfaceEntity $vi */
         if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'viid' ) ) ) ){
             abort(404, 'Unknown virtual interface');
         }
-
+        /** @var SwitchPortEntity $sp */
         if( !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port' ) ) ) ) {
             abort(404, 'Unknown switch');
         }
@@ -158,6 +207,24 @@ class PhysicalInterfaceController extends Controller
             }
         }
 
+
+        if( $pi->getOtherPICoreLink() ){
+            // check if the user has changed the switch port
+            if( $sp->getId() != $pi->getSwitchPort()->getId() ){
+                $oldSp = $pi->getSwitchPort();
+                $oldSp->setType( SwitchPortEntity::TYPE_UNSET );
+            }
+
+            // check if the user has selected the same switch port
+            if( $pi->getOtherPICoreLink()->getSwitchPort()->getSwitcher()->getId() == $sp->getSwitcher()->getId() ){
+                AlertContainer::push( 'The switch port selected for this physical interface is already used by the other physical interface of the core bundle. Please select and other switch port ', Alert::DANGER );
+                return Redirect::to( 'interfaces/physical/edit/'.$pi->getId() )->withInput( Input::all() );
+
+            }
+
+            $sp->setType( SwitchPortEntity::TYPE_CORE );
+        }
+
         $pi->setSwitchPort( $sp );
         $pi->setVirtualInterface( $vi );
         $pi->setStatus( $request->input( 'status' ) );
@@ -171,7 +238,7 @@ class PhysicalInterfaceController extends Controller
 
         AlertContainer::push( 'Physical Interface updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'interfaces/virtual/edit/'.$pi->getVirtualInterface()->getId() );
+        return Redirect::to( $request->input( 'cb' ) ? 'interfaces/core-bundle/edit/'.$request->input( 'cb' ) : 'interfaces/virtual/edit/'.$pi->getVirtualInterface()->getId() );
 
     }
 

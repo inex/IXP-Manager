@@ -17,9 +17,11 @@ $this->layout( 'layouts/ixpv4' );
             <a type="button" class="btn btn-default" href="<?= route( 'interfaces/vlan/list' )?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="" title="edit">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
+            <?php if( $t->vli ): ?>
+                <a type="button" class="btn btn-default" href="<?= route( 'interfaces/vlan/view', [ 'id' => $t->vli->getId() ] )?>" title="edit">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                </a>
+            <?php endif;?>
         </div>
     </li>
 <?php $this->append() ?>
@@ -230,13 +232,10 @@ $this->layout( 'layouts/ixpv4' );
 
                 vlanid = $("#vlan").val();
 
-                $.ajax( "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ipv-address" , {
-                    data: {vliid: <?= $t->vli ? $t->vli->getId() : 0  ?>, ipType: <?= \Entities\Router::PROTOCOL_IPV4 ?>  },
-                    type: 'POST'
-                })
+                $.ajax( "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ip-addresses" )
                     .done( function( data ) {
                         var options = "<option value=\"\">Choose an IPv4</option>\n";
-                        $.each( data.ipvList, function( key, value ){
+                        $.each( data.ipv4, function( key, value ){
                             options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
                         });
                         $( "#ipv4-address" ).html( options );
@@ -244,23 +243,10 @@ $this->layout( 'layouts/ixpv4' );
                         <?php if( $t->vli && $t->vli->getIpv4enabled() && $t->vli->getIPv4Address()) :?>
                             $('#ipv4-address').val('<?= $t->vli->getIPv4Address()->getAddress() ?>');
                         <?php endif; ?>
-                    })
-                    .fail( function() {
-                        throw new Error( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
-                        alert( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
-                    })
-                    .always( function() {
-                        $( "#ipv4-address" ).trigger( "chosen:updated" );
-                    });
 
 
-                $.ajax( "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ipv-address" , {
-                    data: {vliid: <?= $t->vli ? $t->vli->getId() : 0  ?>, ipType: <?= \Entities\Router::PROTOCOL_IPV6 ?>  },
-                    type: 'POST'
-                })
-                    .done( function( data ) {
-                        var options = "<option value=\"\">Choose an IPv6</option>\n";
-                        $.each( data.ipvList, function( key, value ){
+
+                        $.each( data.ipv6, function( key, value ){
                             options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
                         });
                         $( "#ipv6-address" ).html( options );
@@ -268,16 +254,16 @@ $this->layout( 'layouts/ixpv4' );
                         <?php if( $t->vli && $t->vli->getIpv6enabled() && $t->vli->getIPv6Address()) :?>
                             $('#ipv6-address').val('<?= $t->vli->getIPv6Address()->getAddress() ?>');
                         <?php endif; ?>
+
                     })
                     .fail( function() {
-                        throw new Error( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
-                        alert( "Error running ajax query for api/v4/vlan/$id/ipv-address" );
+                        throw new Error( "Error running ajax query for api/v4/vlan/$id/ip-addresses" );
+                        alert( "Error running ajax query for api/v4/vlan/$id/ip-addresses" );
                     })
                     .always( function() {
+                        $( "#ipv4-address" ).trigger( "chosen:updated" );
                         $( "#ipv6-address" ).trigger( "chosen:updated" );
                     });
-
-
             }
         }
 

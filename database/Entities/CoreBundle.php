@@ -20,7 +20,6 @@ class CoreBundle
     const TYPE_ECMP              = 1;
     const TYPE_L2_LAG            = 2;
     const TYPE_L3_LAG            = 3;
-    const TYPE_OTHER             = 4;
 
 
 
@@ -31,7 +30,6 @@ class CoreBundle
         self::TYPE_ECMP          => "ECMP",
         self::TYPE_L2_LAG        => "L2-LAG (e.g. LACP)",
         self::TYPE_L3_LAG        => "L3-LAG",
-        self::TYPE_OTHER         => "Other",
     ];
     /**
      * @var string
@@ -409,6 +407,8 @@ class CoreBundle
     /**
      * get switch from side A or B
      *
+     * param bool $sideA if true get the side A if false Side B
+     *
      * @return SwitcherEntity
      */
     public function getSwitchSideX( $sideA = true )
@@ -432,6 +432,82 @@ class CoreBundle
             /** @var CoreLinkEntity $cl */
             return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getSpeed();
         }
+    }
+
+    /**
+     * get the customer associated virtual interface of the core bundle
+     *
+     * @return Entity|Customer
+     */
+    public function getCustomer(){
+        foreach( $this->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getVirtualInterface()->getCustomer();
+        }
+    }
+
+
+    /**
+     * get the virtual interfaces linked to the core links of the side A and B
+     *
+     * @return array
+     */
+    public function getVirtualInterfaces(){
+        $vis = [];
+
+        foreach( $this->getCoreLinks() as $cl ){
+            $vis[ 'A' ] = $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getVirtualInterface();
+            $vis[ 'B' ] = $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getVirtualInterface();
+            return $vis;
+        }
+
+    }
+
+    /**
+     * Is this core bundle has type ECMP ?
+     *
+     * @return bool
+     */
+    public function isECMP(): bool {
+        return $this->getType() == self::TYPE_ECMP;
+    }
+
+    /**
+     * Is this core bundle has type TYPE_L2_LAG ?
+     *
+     * @return bool
+     */
+    public function isL2LAG(): bool {
+        return $this->getType() == self::TYPE_L2_LAG;
+    }
+
+    /**
+     * Is this core bundle has type TYPE_L3_LAG ?
+     *
+     * @return bool
+     */
+    public function isL3LAG(): bool {
+        return $this->getType() == self::TYPE_L3_LAG;
+    }
+
+    /**
+     * Check if the switch is the same for the Physical interfaces of the core links associated to the core bundle
+     *
+     * param bool $sideA if true get the side A if false Side B
+     *
+     * @return bool
+     */
+    public function sameSwitchForEachPIFromCL( $sideA ){
+        $switches = [];
+
+        foreach( $this->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            $side = $sideA ? $cl->getCoreInterfaceSideA() : $cl->getCoreInterfaceSideB() ;
+
+            $switches[] = $side->getPhysicalInterface()->getSwitchPort()->getSwitcher()->getId();
+        }
+
+        return ( count( array_unique( $switches ) ) == 1 ) ? true : false;
     }
 }
 

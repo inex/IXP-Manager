@@ -224,6 +224,17 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
+    public function getCoreLink()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreLink', []);
+
+        return parent::getCoreLink();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = NULL)
     {
 

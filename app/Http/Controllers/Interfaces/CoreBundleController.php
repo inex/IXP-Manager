@@ -26,14 +26,14 @@ namespace IXP\Http\Controllers\Interfaces;
 use D2EM, Former, Input, Redirect;
 
 use Entities\{
-    CoreBundle          as CoreBundleEntity,
-    CoreLink            as CoreLinkEntity,
-    CoreInterface       as CoreInterfaceEntity,
-    Switcher            as SwitcherEntity,
-    SwitchPort          as SwitchPortEntity,
-    Customer            as CustomerEntity,
-    VirtualInterface    as VirtualInterfaceEntity,
-    PhysicalInterface   as PhysicalInterfaceEntity
+    CoreBundle as CoreBundleEntity,
+    CoreLink as CoreLinkEntity,
+    CoreInterface as CoreInterfaceEntity,
+    Switcher as SwitcherEntity,
+    SwitchPort as SwitchPortEntity,
+    Customer as CustomerEntity,
+    VirtualInterface as VirtualInterfaceEntity,
+    PhysicalInterface as PhysicalInterfaceEntity
 };
 
 use Illuminate\Http\{
@@ -80,7 +80,7 @@ class CoreBundleController extends Controller
      *
      * @return View
      */
-    public function editWizard(): View {
+    public function addWizard(): View {
         Former::open()->rules([
             'description'                   => 'required|string|max:255',
             'graph-title'                   => 'required|string|max:255',
@@ -113,6 +113,50 @@ class CoreBundleController extends Controller
         ])->render();
 
         return response()->json( ['success' => true, 'htmlFrag' => $returnHTML, 'nbCoreLinks' => $nb ] );
+    }
+
+
+    /**
+     * Display the form to edit a core bundle
+     *
+     * @params  int $id ID of the Core bundle
+     * @return  view
+     */
+    public function edit( int $id = null ): View {
+        $cb = false;
+        /** @var CoreBundleEntity $cb */
+        if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $id ) ) ){
+            abort(404);
+        }
+
+        Former::open()->rules([
+            'description'                   => 'required|string|max:255',
+            'graph-title'                   => 'required|string|max:255',
+            'cost'                          => 'integer',
+            'mtu'                           => 'required|integer',
+        ]);
+
+        if( $cb ) {
+            // fill the form with Virtual interface data
+            Former::populate([
+                'customer'                  => $cb->getCustomer(),
+                'description'               => $cb->getDescription(),
+                'graph-title'               => $cb->getGraphTitle(),
+                'cost'                      => $cb->getCost(),
+                'type'                      => $cb->getType(),
+                'enabled'                   => $cb->getEnabled() ? 1 : 0,
+                'bfd'                       => $cb->getBFD() ? 1 : 0,
+                'subnet'                    => $cb->getIPv4Subnet() ,
+            ]);
+        }
+
+        return view( 'interfaces/core-bundle/edit' )->with([
+            'cb'                            => $cb,
+            'types'                         => CoreBundleEntity::$TYPES,
+            'speed'                         => PhysicalInterfaceEntity::$SPEED,
+            'duplex'                        => PhysicalInterfaceEntity::$DUPLEX,
+            'customers'                     => D2EM::getRepository( CustomerEntity::class )->getAsArray( null, [CustomerEntity::TYPE_INTERNAL] )
+        ]);
     }
 
     /**
@@ -150,9 +194,9 @@ class CoreBundleController extends Controller
 
         $viSideA->setCustomer( $cust );
         $viSideA->setMtu( $request->input( 'mtu' ) );
-        $viSideA->setName( $request->input( 'pi-name-a' ) );
-        $viSideA->setChannelgroup( $request->input( 'pi-channel-number-a' ) );
-        $viSideA->setLagFraming( $request->input( 'framing' ) ? $request->input( 'framing' ) : false  );
+        $viSideA->setName( $request->input( 'vi-name-a' ) );
+        $viSideA->setChannelgroup( $request->input( 'vi-channel-number-a' ) );
+        $viSideA->setTrunk( $request->input( 'framing' ) ? $request->input( 'framing' ) : false  );
         $viSideA->setFastLACP( $request->input( 'fast-lacp' ) ? $request->input( 'fast-lacp' ) : false  );
 
         // Set value to the Virtual Interface side B
@@ -162,8 +206,8 @@ class CoreBundleController extends Controller
 
         $viSideB->setCustomer( $cust );
         $viSideB->setMtu( $request->input( 'mtu' ) );
-        $viSideB->setName( $request->input( 'pi-name-b' ) );
-        $viSideB->setChannelgroup( $request->input( 'pi-channel-number-b' ) );
+        $viSideB->setName( $request->input( 'vi-name-b' ) );
+        $viSideB->setChannelgroup( $request->input( 'vi-channel-number-b' ) );
         $viSideB->setLagFraming( $request->input( 'framing' ) ? $request->input( 'framing' ) : false  );
         $viSideB->setFastLACP( $request->input( 'fast-lacp' ) ? $request->input( 'fast-lacp' ) : false  );
 
@@ -247,5 +291,91 @@ class CoreBundleController extends Controller
         AlertContainer::push( 'The core bundle has been added successfully.', Alert::SUCCESS );
 
         return Redirect::to( 'interfaces/core-bundle/list' );
+    }
+
+
+
+    /**
+     * Edit the core links associated to a ore bundle
+     *
+     * @param   Request $request instance of the current HTTP request
+     * @param   int $id ID of the core bundle
+     * @return  RedirectResponse
+     */
+    public function storeCoreLinks( Request $request, int $id ): RedirectResponse {
+        /** @var CoreBundleEntity $cb */
+        if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $id ) ) ) {
+            abort('404', 'Unknown Core bundle');
+        }
+
+
+        foreach( $cb->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            $cl->setEnabled( $request->input( 'enabled-'.$cl->getId() ) ? $request->input( 'enabled-'.$cl->getId() ) : false );
+
+            if( $cb->isECMP() ){
+                $cl->setBFD( $request->input( 'bfd-'.$cl->getId() ) ? $request->input( 'bfd-'.$cl->getId() ) : false  );
+                $cl->setIPv4Subnet( $request->input( 'subnet-'.$cl->getId() ) );
+            }
+
+        }
+
+        D2EM::flush();
+
+        AlertContainer::push( 'The core links have been edited with success.', Alert::SUCCESS );
+
+        return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() );
+
+    }
+
+
+    /**
+     * Delete the core bundle and everything associated with
+     *
+     ** Delete the core links
+     ** Delete the core interfaces
+     ** Delete the physical interfaces
+     ** Delete the core Virtual Interfaces
+     ** Change the status of the switch ports to UNSET
+     *
+     * @param   int $id ID of the core bundle
+     * @return  RedirectResponse
+     */
+    public function deleteCoreBundle( int $id ): RedirectResponse {
+        /** @var CoreBundleEntity $cb */
+        if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $id ) ) ) {
+            abort('404', 'Unknown Core bundle');
+        }
+
+        foreach( $cb->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+
+            foreach( $cl->getCoreInterfaces() as $ci ){
+                /** @var CoreInterfaceEntity $ci */
+
+                $pi = $ci->getPhysicalInterface();
+
+                $vi = $pi->getVirtualInterface();
+
+                $sp = $vi->getSwitchPort();
+
+                $sp->setType( SwitchPortEntity::TYPE_UNSET );
+
+                D2EM::remove( $ci );
+                D2EM::remove( $pi );
+                D2EM::remove( $vi );
+            }
+
+            D2EM::remove( $cl );
+        }
+
+        D2EM::remove( $cb );
+
+        D2EM::flush();
+
+        AlertContainer::push( 'The core bundle has been deleted with success.', Alert::SUCCESS );
+
+        return Redirect::to( 'interfaces/core-bundle/list/' );
+
     }
 }

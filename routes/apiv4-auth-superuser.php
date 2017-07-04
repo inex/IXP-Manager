@@ -117,12 +117,13 @@ Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceCo
 Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
 
 Route::group( [  'prefix' => 'vlan' ], function() {
-    Route::get( 'for-switch/{switchid}', 'Provisioner\YamlController@vlanForSwitch' );
-    Route::get( '{id}/ip-addresses',     'VlanController@getIPAddresses' );
+    Route::get( 'for-switch/{switchid}',                'Provisioner\YamlController@vlanForSwitch' );
+    Route::get( '{id}/ip-addresses',                    'VlanController@getIPAddresses' );
 });
 
 Route::get('physical-interface/delete/{id}',                    'PhysicalInterfaceController@delete' );
 Route::get('virtual-interface/delete/{id}',                    'VirtualInterfaceController@delete' );
+Route::get('core-link/delete/{id}',                             'CoreLinkController@delete' );
 
 
 

@@ -185,7 +185,7 @@ class VirtualInterface extends EntityRepository
     }
 
     /**
-     * Providea collection of virtual interfaces for the standard controller list action
+     * Provide a collection of virtual interfaces for the standard controller list action
      *
      * Example usage: resources/views/interfaces/virtual/list.foil.php
      *
@@ -207,6 +207,36 @@ class VirtualInterface extends EntityRepository
                         LEFT JOIN s.Cabinet cab
                         LEFT JOIN cab.Location l"
             )->getResult();
+    }
+
+    /**
+     * Check if the virtual interface is linked to a core bundle
+     *
+     * @return array
+     */
+    public function coreBundlesLinked( int $id ){
+
+
+        $vi = $this->getEntityManager()->createQuery(
+            "SELECT DISTINCT vi
+                    FROM Entities\\VirtualInterface vi
+                        LEFT JOIN vi.PhysicalInterfaces pi
+                        INNER JOIN pi.coreInterface ci
+                        
+                        INNER JOIN ci.coreLink cl
+                        INNER JOIN cl.coreBundle cb
+                        
+                        INNER JOIN ci.coreLink2 cl2
+                        INNER JOIN cl2.coreBundle cb2
+                        
+                        WHERE vi.id = {$id}"
+        )->getResult();
+
+        if( $vi ){
+            return $vi[0];
+        }
+
+        return false;
     }
 
 

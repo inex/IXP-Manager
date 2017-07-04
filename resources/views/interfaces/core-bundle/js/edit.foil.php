@@ -1,20 +1,4 @@
 <script>
-    $(document).ready( function() {
-        $( 'label.col-lg-2' ).removeClass('col-lg-2');
-
-        actionRunnig = false;
-        nbCoreLink = 0;
-
-        // array of switch port selected
-        exludedSwitchPort = [];
-
-        if( $( "#type" ).val() ){
-            displayCoreLinks();
-        }
-
-        $( "#speed").chosen();
-        $( "#duplex").chosen();
-    });
 
     /**
      * format the inputs to make them well displayed
@@ -90,10 +74,10 @@
 
     function actionForLxLag(){
         if( $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> || $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ){
-            $( '#lag-area' ).show();
+            $( '.lag-area' ).show();
             required = true ;
         } else{
-            $( '#lag-area' ).hide();
+            $( '.lag-area' ).hide();
             required = false ;
         }
 
@@ -312,7 +296,7 @@
             $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
             excludedSwitchPort();
             if( switchId != null && switchId != '' ){
-                url = "<?= url( '/api/v4/switcher' )?>/" + switchId + "/switch-port";
+                url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port";
                 datas = {
                     spIdsexcluded: exludedSwitchPort
                 };

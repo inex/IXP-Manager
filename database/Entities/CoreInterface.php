@@ -69,6 +69,20 @@ class CoreInterface
     }
 
     /**
+     * Check which side has a core link linked
+     *
+     * @return \Entities\CoreLink
+     */
+    public function getCoreLink()
+    {
+        if( $this->getCoreLinkA() ){
+            return $this->getCoreLinkA();
+        } else {
+            return $this->getCoreLinkB();
+        }
+    }
+
+    /**
      * Set Physical Interface
      *
      * @param \Entities\PhysicalInterface $physicalInterface

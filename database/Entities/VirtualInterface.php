@@ -668,4 +668,35 @@ class VirtualInterface
         return $speed;
     }
 
+    /**
+     * Return the core bundle associated to the virtual interface or false
+     *
+     * @return \Entities\CoreBundle
+     */
+    public function getCoreBundle( ) {
+        /** @var PhysicalInterface $pi */
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $ci = $pi->getCoreInterface() ) {
+                return $ci->getCoreLink()->getCoreBundle();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the switch is the same for the Physical interfaces of the virtual interface
+     *
+     * @return bool
+     */
+    public function sameSwitchForEachPI( ){
+        $switches = [];
+
+        foreach( $this->getPhysicalInterfaces() as $pi ){
+            /** @var PhysicalInterface $pi */
+
+            $switches[] = $pi->getSwitchPort()->getSwitcher()->getId();
+        }
+
+        return ( count( array_unique( $switches ) ) == 1 ) ? true : false;
+    }
 }

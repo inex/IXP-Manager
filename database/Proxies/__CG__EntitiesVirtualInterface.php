@@ -694,4 +694,26 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         return parent::speed($connectedOnly);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreBundle()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreBundle', []);
+
+        return parent::getCoreBundle();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sameSwitchForEachPI()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'sameSwitchForEachPI', []);
+
+        return parent::sameSwitchForEachPI();
+    }
+
 }

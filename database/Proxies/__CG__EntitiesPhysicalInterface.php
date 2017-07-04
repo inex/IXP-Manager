@@ -422,6 +422,39 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function getCoreInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreInterface', []);
+
+        return parent::getCoreInterface();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreBundle()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreBundle', []);
+
+        return parent::getCoreBundle();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOtherPICoreLink()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOtherPICoreLink', []);
+
+        return parent::getOtherPICoreLink();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getRelatedInterface()
     {
 

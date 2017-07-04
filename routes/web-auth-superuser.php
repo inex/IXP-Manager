@@ -79,6 +79,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'list',                             'PhysicalInterfaceController@list' )->name( 'interfaces/physical/list' );
         Route::get( 'view',                             'PhysicalInterfaceController@list' )->name( 'interfaces/physical/view' );
         Route::get( 'edit/{id}',                        'PhysicalInterfaceController@edit' )->name( 'interfaces/physical/edit' );
+        Route::get( 'edit/{id}/from-cb/{cb}',          'PhysicalInterfaceController@editFromCb' )->name( 'interfaces/physical/edit/from-core-bundle' );
         Route::get( 'add/{id}/vintid/{viid}',           'PhysicalInterfaceController@edit' )->name( 'interfaces/physical/add' );
         Route::post( 'store',                           'PhysicalInterfaceController@store'  );
     });
@@ -101,10 +102,13 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {
-        Route::get( 'list',                             'CoreBundleController@list' );
-        Route::get( 'add-wizard',                       'CoreBundleController@editWizard' );
+        Route::get( 'list',                             'CoreBundleController@list' )->name( 'core-bundle/list');
+        Route::get( 'add-wizard',                       'CoreBundleController@addWizard' );
+        Route::get( 'edit/{id}',                        'CoreBundleController@edit' )->name( 'core-bundle/edit');
         Route::post( 'add-core-link-frag',              'CoreBundleController@addCoreLinkFrag' );
         Route::post( 'store-wizard',                    'CoreBundleController@storeWizard' );
+        Route::post( '{id}/store-core-links',           'CoreBundleController@storeCoreLinks' );
+        Route::get( 'delete/{id}',                     'CoreBundleController@deleteCoreBundle' )->name( 'core-bundle/delete');
     });
 
 

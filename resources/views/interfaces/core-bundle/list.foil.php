@@ -19,7 +19,7 @@ $this->layout( 'layouts/ixpv4' );
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
-                    <a href="<?= action( 'Interfaces\CoreBundleController@editWizard' )?>" >
+                    <a href="<?= action( 'Interfaces\CoreBundleController@addWizard' )?>" >
                         Add Core Bundle Wizard...
                     </a>
                 </li>
@@ -90,17 +90,8 @@ $this->layout( 'layouts/ixpv4' );
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="" title="">
-                                    <i class="glyphicon glyphicon-filter"></i>
-                                </a>
-                                <a class="btn btn btn-default" href="" title="Preview">
-                                    <i class="glyphicon glyphicon-eye-open"></i>
-                                </a>
-                                <a class="btn btn btn-default" href="" title="Edit">
+                                <a class="btn btn btn-default" href="<?= action( 'Interfaces\CoreBundleController@edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
                                     <i class="glyphicon glyphicon-pencil"></i>
-                                </a>
-                                <a class="btn btn btn-default" id="delete-cb" href="" title="Delete">
-                                    <i class="glyphicon glyphicon-trash"></i>
                                 </a>
                             </div>
                         </td>

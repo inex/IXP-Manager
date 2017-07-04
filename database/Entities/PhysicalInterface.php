@@ -351,6 +351,49 @@ class PhysicalInterface
     }
 
     /**
+     * Get CoreInterface
+     *
+     * @return \Entities\CoreInterface
+     */
+    public function getCoreInterface()
+    {
+        return $this->coreInterface;
+    }
+
+    /**
+     * Get the core bundle if the physical interface is associated to a core bundle
+     *
+     * @return \Entities\CoreBundle
+     */
+    public function getCoreBundle()
+    {
+        if( $ci = $this->getCoreInterface() ){
+            return $ci->getCoreLink()->getCoreBundle();
+        }
+        return false;
+    }
+
+    /**
+     * Get the other physical interface associated to the core link of the current Physical Interface
+     *
+     * @return \Entities\PhysicalInterface
+     */
+    public function getOtherPICoreLink(){
+
+        if( $ci = $this->getCoreInterface() ){
+            if( $this->getId() == $ci->getCoreLink()->getCoreInterfaceSideA()->getPhysicalInterface()->getId() ){
+                return $ci->getCoreLink()->getCoreInterfaceSideB()->getPhysicalInterface();
+            } else {
+                return $ci->getCoreLink()->getCoreInterfaceSideA()->getPhysicalInterface();
+            }
+        }
+
+        return false;
+
+
+    }
+
+    /**
      * Gets the related peering / fanout port for the current fanout / peering port
      *
      * For reseller functionality, we have the option of having fanout ports connectted to

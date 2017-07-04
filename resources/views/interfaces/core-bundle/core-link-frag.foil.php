@@ -26,9 +26,6 @@
                     Side B :
                 </h5>
                 <hr>
-                <?php if( $t->nbLink == 1 ): ?>
-
-                <?php endif; ?>
                 <?= Former::select( 'sp-b-'.$t->nbLink )
                     ->id( 'sp-b-'.$t->nbLink )
                     ->label( 'Switch Port<sup>*</sup>' )

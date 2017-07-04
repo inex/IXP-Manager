@@ -496,4 +496,70 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
         return parent::getSpeedPi();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomer()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
+
+        return parent::getCustomer();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVirtualInterfaces()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVirtualInterfaces', []);
+
+        return parent::getVirtualInterfaces();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isECMP(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isECMP', []);
+
+        return parent::isECMP();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isL2LAG(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isL2LAG', []);
+
+        return parent::isL2LAG();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isL3LAG(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isL3LAG', []);
+
+        return parent::isL3LAG();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sameSwitchForEachPIFromCL($sideA)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'sameSwitchForEachPIFromCL', [$sideA]);
+
+        return parent::sameSwitchForEachPIFromCL($sideA);
+    }
+
 }

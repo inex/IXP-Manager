@@ -22,12 +22,12 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section('content') ?>
 
 <?= $t->alerts() ?>
-    <div class="well">
-        <?= Former::open()->method( 'POST' )
-            ->id( 'core-bundle-form' )
-            ->action( action ( 'Interfaces\CoreBundleController@storeWizard' ) )
-            ->customWidthClass( 'col-sm-6' )
-        ?>
+    <?= Former::open()->method( 'POST' )
+        ->id( 'core-bundle-form' )
+        ->action( action ( 'Interfaces\CoreBundleController@storeWizard' ) )
+        ->customWidthClass( 'col-sm-6' )
+    ?>
+        <div class="well col-sm-12">
             <div class="col-sm-6">
                 <h3>
                     General Core Bundle Settings :
@@ -65,7 +65,8 @@ $this->layout( 'layouts/ixpv4' );
                     ->fromQuery( $t->types, 'name' )
                     ->placeholder( 'Choose Core Bundle type' )
                     ->addClass( 'chzn-select' )
-                    ->blockHelp( '' );
+                    ->blockHelp( '' )
+                    ->value( Entities\CoreBundle::TYPE_ECMP );
                 ?>
 
                 <?= Former::checkbox( 'enabled' )
@@ -74,19 +75,6 @@ $this->layout( 'layouts/ixpv4' );
                     ->unchecked_value( 0 )
                     ->blockHelp( "" );
                 ?>
-
-                <div id="l3-lag-area" style="display: none">
-                    <?= Former::checkbox( 'bfd' )
-                        ->label( 'BFD' )
-                        ->unchecked_value( 0 )
-                        ->value( 1 )
-                    ?>
-
-                    <?= Former::text( 'subnet' )
-                        ->label( 'SubNet' )
-                        ->placeholder( '192.0.2.0/30' )
-                    ?>
-                </div>
             </div>
             <div class="col-sm-6">
                 <h3>
@@ -106,63 +94,74 @@ $this->layout( 'layouts/ixpv4' );
                     ->min( 0 )
                     ->blockHelp( '' );
                 ?>
-                <div id="lag-area" style="display: none" >
+                <div class="lag-area" style="display: none" >
                     <?= Former::checkbox( 'fast-lacp' )
                         ->label( 'Use Fast LACP' )
                         ->unchecked_value( 0 )
                         ->value( 1 )
                     ?>
-
-                    <br/>
-                    <h4>Side A:</h4>
-                    <hr>
-                    <?= Former::text( 'pi-name-a' )
-                        ->label( 'Name<sup>*</sup>' )
-                        ->placeholder( 'Name' )
-                        ->blockHelp( 'help text' );
+                </div>
+                <div id="l3-lag-area" style="display: none">
+                    <?= Former::checkbox( 'bfd' )
+                        ->label( 'BFD' )
+                        ->unchecked_value( 0 )
+                        ->value( 1 )
                     ?>
 
-                    <?= Former::number( 'pi-channel-number-a' )
-                        ->label( 'Channel Group Number<sup>*</sup>' )
-                        ->placeholder( 'Channel Group Number' )
-                        ->blockHelp( 'help text' )
-                        ->min( 0 );
+                    <?= Former::text( 'subnet' )
+                        ->label( 'SubNet' )
+                        ->placeholder( '192.0.2.0/30' )
                     ?>
-
-
-                    <br/>
-                    <h4>Side B:</h4>
-                    <hr>
-                    <?= Former::text( 'pi-name-b' )
-                        ->label( 'Name<sup>*</sup>' )
-                        ->placeholder( 'Name' )
-                        ->blockHelp( 'help text' );
-                    ?>
-
-                    <?= Former::number( 'pi-channel-number-b' )
-                        ->label( 'Channel Group Number<sup>*</sup>' )
-                        ->placeholder( 'Channel Group Number' )
-                        ->blockHelp( 'help text' )
-                        ->min( 0 );
-                    ?>
-
                 </div>
             </div>
-            <br/>
-            <div style="clear: both"></div>
+            <div class="lag-area col-sm-12" style="display: none" >
+                <div class="col-sm-6">
+                    <h4>Side A:</h4>
+                    <hr>
+                    <?= Former::text( 'vi-name-a' )
+                        ->label( 'Name<sup>*</sup>' )
+                        ->placeholder( 'Name' )
+                        ->blockHelp( 'help text' );
+                    ?>
+
+                    <?= Former::number( 'vi-channel-number-a' )
+                        ->label( 'Channel Group Number<sup>*</sup>' )
+                        ->placeholder( 'Channel Group Number' )
+                        ->blockHelp( 'help text' )
+                        ->min( 0 );
+                    ?>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Side B:</h4>
+                    <hr>
+                    <?= Former::text( 'vi-name-b' )
+                        ->label( 'Name<sup>*</sup>' )
+                        ->placeholder( 'Name' )
+                        ->blockHelp( 'help text' );
+                    ?>
+
+                    <?= Former::number( 'vi-channel-number-b' )
+                        ->label( 'Channel Group Number<sup>*</sup>' )
+                        ->placeholder( 'Channel Group Number' )
+                        ->blockHelp( 'help text' )
+                        ->min( 0 );
+                    ?>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div style="clear: both"></div>
+        <div class="well col-sm-12">
             <div class="col-sm-12">
-                <h4> Core Link Settings :</h4>
+                <h4>Common Link Settings :</h4>
                 <hr>
             </div>
 
             <div class="col-sm-6">
-                <h5>
-                    Switch A<sup>*</sup> :
-                </h5>
-                <hr>
                 <?= Former::select( 'switch-a' )
                     ->id( 'switch-a' )
-                    ->label( '' )
+                    ->label( 'Switch A<sup>*</sup> :' )
                     ->fromQuery( $t->switches, 'name' )
                     ->placeholder( 'Choose a switch' )
                     ->addClass( 'chzn-select' )
@@ -170,30 +169,19 @@ $this->layout( 'layouts/ixpv4' );
             </div>
 
             <div class="col-sm-6">
-                <h5>
-                    Switch B<sup>*</sup> :
-                </h5>
-                <hr>
                 <?= Former::select( 'switch-b' )
                     ->id( 'switch-b' )
-                    ->label( '' )
+                    ->label( 'Switch B<sup>*</sup> :' )
                     ->placeholder( 'Choose a switch' )
                     ->addClass( 'chzn-select' )
                 ?>
             </div>
             <br/>
-            <div class="col-sm-12">
-                <h4> Physical Interface Settings :</h4>
-                <hr>
-            </div>
-
-            <div class="col-sm-4">
-                <h5>
-                    Speed<sup>*</sup> :
-                </h5>
-                <hr>
+            <div style="clear: both"></div>
+            <br/>
+            <div class="col-sm-6">
                 <?= Former::select( 'speed' )
-                    ->label( '' )
+                    ->label( 'Speed<sup>*</sup> :' )
                     ->id( 'speed' )
                     ->fromQuery( $t->speed, 'name' )
                     ->placeholder( 'Choose a Speed' )
@@ -201,30 +189,25 @@ $this->layout( 'layouts/ixpv4' );
 
                 ?>
             </div>
-
-            <div class="col-sm-4">
-                <h5>
-                    Duplex<sup>*</sup> :
-                </h5>
-                <hr>
+            <div class="col-sm-6">
                 <?= Former::select( 'duplex' )
                     ->id( 'duplex' )
-                    ->label( '' )
+                    ->label( 'Duplex<sup>*</sup> :' )
                     ->fromQuery( $t->duplex, 'name' )
                     ->placeholder( 'Choose a duplex' )
                     ->select( 'full' )
                     ->addClass( 'chzn-select' )
                 ?>
             </div>
-            <div class="col-sm-2">
-                <h5>
-                    Auto-Neg :
-                </h5>
-                <hr>
+            <br/>
+            <div style="clear: both"></div>
+            <br/>
+            <div class="col-sm-6">
                 <?= Former::checkbox( 'auto-neg' )
-                    ->label( '' )
+                    ->label( 'Auto-Neg :' )
                     ->unchecked_value( 0 )
                     ->value( 1 )
+                    ->check( true )
                     ->style('margin-left : 50%' )
                 ?>
             </div>
@@ -241,39 +224,58 @@ $this->layout( 'layouts/ixpv4' );
 
                 If you need to reset these fields, just click either of the <em>Reset</em> button.
             </div>
-            <div style="clear: both"></div>
-            <div id="div-links" style="display: none">
-                <h3>
-                    Core Links :
+        </div>
+        <div style="clear: both"></div>
+        <div id="div-links" style="display: none">
+            <h3>
+                Core Links :
 
-                    <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-xs btn btn-default" href="#" title="Add Core link">
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </button>
+                <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-xs btn btn-default" href="#" title="Add Core link">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
 
-                </h3>
-                <div class="col-sm-12" id="core-links-area">
-
-                </div>
+            </h3>
+            <div class="col-sm-12" id="core-links-area">
 
             </div>
 
-            <?= Former::hidden( 'nb-core-links' )
-                ->id( 'nb-core-links')
-                ->value( 0 )
-            ?>
+        </div>
 
-            <?=Former::actions(
-                Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
-                Former::default_link( 'Cancel' )->href( action( 'Interfaces\CoreBundleController@list' ) ),
-                Former::success_button( 'Help' )->id( 'help-btn' )
-            )->id('btn-group');?>
+        <?= Former::hidden( 'nb-core-links' )
+            ->id( 'nb-core-links')
+            ->value( 0 )
+        ?>
 
-        <?= Former::close() ?>
-    </div>
+        <?=Former::actions(
+            Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
+            Former::default_link( 'Cancel' )->href( action( 'Interfaces\CoreBundleController@list' ) ),
+            Former::success_button( 'Help' )->id( 'help-btn' )
+        )->id('btn-group');?>
+
+    <?= Former::close() ?>
+
 
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
     <script type="text/javascript" src="<?= asset( '/bower_components/ip-address/dist/ip-address-globals.js' ) ?>"></script>
     <?= $t->insert( 'interfaces/core-bundle/js/edit' ); ?>
+    <script>
+        $(document).ready( function() {
+            $( 'label.col-lg-2' ).removeClass('col-lg-2');
+
+            actionRunnig = false;
+            nbCoreLink = 0;
+
+            // array of switch port selected
+            exludedSwitchPort = [];
+
+            if( $( "#type" ).val() ){
+                displayCoreLinks();
+            }
+
+            $( "#speed").chosen();
+            $( "#duplex").chosen();
+        });
+    </script>
 <?php $this->append() ?>

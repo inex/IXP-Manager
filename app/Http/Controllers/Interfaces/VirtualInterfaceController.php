@@ -101,7 +101,8 @@ class VirtualInterfaceController extends Controller
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/virtual/add' )->with([
             'cust'      => D2EM::getRepository( CustomerEntity::class)->getNames(),
-            'vi'        => $vi ? $vi : false
+            'vi'        => $vi ? $vi : false,
+            'cb'        => $vi ? $vi->getCoreBundle() : false,
         ]);
     }
 
