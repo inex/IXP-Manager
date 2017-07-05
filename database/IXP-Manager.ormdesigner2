@@ -1375,6 +1375,7 @@
       <field name="ipv4_subnet" type="string" size="18" uuid="624abf46-a6d0-4a1c-945a-76870d5e2599"/>
       <field name="ipv6_subnet" type="string" size="43" uuid="325b3f77-76f5-4e9e-8dc8-362ecb674502"/>
       <field name="cost" type="integer" unsigned="true" uuid="39fb7efc-81c9-40d4-8087-4d38d40b3998"/>
+      <field name="preference" type="integer" unsigned="true" uuid="9aeea1cf-0533-4534-b7fc-2b40fdc86689"/>
       <field name="enabled" type="boolean" default="0" required="true" uuid="eaae1f7e-0f8a-4cd2-b61d-a874b9710253"/>
       <orm-attributes>
         <attribute name="table">corebundles</attribute>
