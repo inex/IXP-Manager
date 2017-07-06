@@ -194,9 +194,11 @@ $this->layout( 'layouts/ixpv4' );
                         <td>
                             Peering Port
                         </td>
-                        <td>
-                            Fanout Port
-                        </td>
+                        <?php if( !$t->cb ): ?>
+                            <td>
+                                Fanout Port
+                            </td>
+                        <?php endif; ?>
                         <td>
                             Speed/Duplex
                         </td>
@@ -235,15 +237,17 @@ $this->layout( 'layouts/ixpv4' );
                                 <?php endif; ?>
 
                             </td>
-                            <td>
-                                <?php if ( $pi->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $int->getSwitchPort()->getIfName() ?>
-                                <?php elseif( $pi->getFanoutPhysicalInterface() ): ?>
-                                    <a href="">
-                                        <?= $t->ee( $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ?>
-                                    </a>
-                                <?php endif; ?>
-                            </td>
+                            <?php if( !$t->cb ): ?>
+                                <td>
+                                    <?php if ( $pi->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
+                                        <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $int->getSwitchPort()->getIfName() ?>
+                                    <?php elseif( $pi->getFanoutPhysicalInterface() ): ?>
+                                        <a href="">
+                                            <?= $t->ee( $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ?>
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                            <?php endif; ?>
                             <td>
                                 <?= $pi->getSpeed() ?> / <?= $pi->getDuplex() ?>
                                 <?php if ( $pi->getAutoneg() ): ?>

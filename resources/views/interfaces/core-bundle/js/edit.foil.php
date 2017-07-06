@@ -63,10 +63,10 @@
 
     function actionForL3Lag(){
         if( $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?>){
-            $( '#l3-lag-area' ).show();
+            $( '#l3-lag-area' ).slideDown();
             required = true ;
         } else {
-            $( '#l3-lag-area' ).hide();
+            $( '#l3-lag-area' ).slideUp();
             required = false ;
         }
         $( '#subnet' ).prop( 'required', required );
@@ -74,10 +74,10 @@
 
     function actionForLxLag(){
         if( $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> || $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ){
-            $( '.lag-area' ).show();
+            $( '.lag-area' ).slideDown();
             required = true ;
         } else{
-            $( '.lag-area' ).hide();
+            $( '.lag-area' ).slideUp();
             required = false ;
         }
 

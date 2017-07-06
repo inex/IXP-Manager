@@ -435,6 +435,32 @@ class CoreBundle
     }
 
     /**
+     * get the duplex of the Physical interface
+     *
+     * @return integer
+     */
+    public function getDuplexPi( )
+    {
+        foreach( $this->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getDuplex();
+        }
+    }
+
+    /**
+     * get the auto neg of the Physical interface
+     *
+     * @return integer
+     */
+    public function getAutoNegPi( )
+    {
+        foreach( $this->getCoreLinks() as $cl ){
+            /** @var CoreLinkEntity $cl */
+            return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getAutoneg();
+        }
+    }
+
+    /**
      * get the customer associated virtual interface of the core bundle
      *
      * @return Entity|Customer

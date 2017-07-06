@@ -2,6 +2,25 @@
 /** @var Foil\Template\Template $t */
 $this->layout( 'layouts/ixpv4' );
 ?>
+<?php $this->section( 'headers' ) ?>
+    <style>
+        .checkbox input[type=checkbox]{
+            margin-left: 0px;
+        }
+
+        .col-lg-offset-2{
+            margin-left: 0px;
+        }
+
+        .checkbox{
+            text-align: center;
+        }
+
+        #table-core-link tr td{
+            vertical-align: middle;
+        }
+    </style>
+<?php $this->append() ?>
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= action( 'Interfaces\CoreBundleController@list' )?>">Core Bundles</a>

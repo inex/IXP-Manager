@@ -106,6 +106,7 @@ class CoreBundleController extends Controller
      */
     public function addCoreLinkFrag( Request $request ) :JsonResponse {
         $nb = $request->input("nbCoreLink") + 1;
+
         $returnHTML = view('interfaces/core-bundle/core-link-frag')->with([
             'nbLink'                        => $nb,
             'enabled'                       => $request->input("enabled" ) ? true : false,
@@ -378,4 +379,105 @@ class CoreBundleController extends Controller
         return Redirect::to( 'interfaces/core-bundle/list/' );
 
     }
+
+
+    /**
+     * Add a core link to a core bundle
+     *
+     * @param   Request $request instance of the current HTTP request
+     * @return  RedirectResponse
+     */
+    public function addCoreLink( Request $request ): RedirectResponse {
+        /** @var CoreBundleEntity $cb */
+        if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $request->input( 'core-bundle' ) ) ) ) {
+            abort('404', 'Unknown Core Bundle');
+        }
+
+        if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
+            return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() )->withInput( Input::all() );
+        }
+
+        $virtualInterface = $cb->getVirtualInterfaces();
+
+        // Set value to the Core Bundle
+        /** @var CoreLinkEntity $cl */
+        $cl = new CoreLinkEntity;
+        D2EM::persist( $cl );
+
+        $cl->setCoreBundle( $cb );
+        $cl->setEnabled( $request->input( 'enabled-cl-1' ) ? $request->input( 'enabled-cl-1' ) : false );
+
+        $bfd = ( $request->input( 'bfd-1' ) ? $request->input( 'bfd-1' ) : false );
+
+        $cl->setBFD( ( $cb->getType() == CoreBundleEntity::TYPE_ECMP ) ? $bfd : false );
+        $cl->setIPv4Subnet( $request->input( 'subnet-1' ) );
+
+
+        // Side A
+        /** @var SwitchPortEntity $spA */
+        if( !( $spA = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'sp-a-1' ) ) ) ) {
+            return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() )->withInput( Input::all() );
+        }
+
+        $spA->setType( SwitchPortEntity::TYPE_CORE );
+
+
+
+        /** @var PhysicalInterfaceEntity $piSideA */
+        $piSideA = new PhysicalInterfaceEntity;
+        D2EM::persist( $piSideA );
+
+        $piSideA->setSwitchPort( $spA );
+        $piSideA->setVirtualInterface( $virtualInterface[ 'A' ] );
+        $piSideA->setSpeed( $cb->getSpeedPi() );
+        $piSideA->setDuplex( $cb->getDuplexPi() );
+        $piSideA->setAutoneg( $cb->getAutoNegPi() );
+        $piSideA->setStatus( PhysicalInterfaceEntity::STATUS_CONNECTED );
+
+
+        /** @var CoreInterfaceEntity $ciSideA */
+        $ciSideA = new CoreInterfaceEntity;
+        D2EM::persist( $ciSideA );
+        $ciSideA->setPhysicalInterface( $piSideA );
+
+
+
+        // Side B
+        /** @var SwitchPortEntity $spB */
+        if( !( $spB = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'sp-b-1' ) ) ) ) {
+            return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() )->withInput( Input::all() );
+        }
+
+        $spB->setType( SwitchPortEntity::TYPE_CORE );
+
+        /** @var PhysicalInterfaceEntity $piSideB */
+        $piSideB = new PhysicalInterfaceEntity;
+        D2EM::persist( $piSideB );
+
+        $piSideB->setSwitchPort( $spB );
+        $piSideB->setVirtualInterface( $virtualInterface[ 'B' ] );
+        $piSideB->setSpeed( $cb->getSpeedPi() );
+        $piSideB->setDuplex( $cb->getDuplexPi() );
+        $piSideB->setAutoneg(  $cb->getAutoNegPi() );
+        $piSideB->setStatus( PhysicalInterfaceEntity::STATUS_CONNECTED );
+
+        /** @var CoreInterfaceEntity $ciSideB */
+        $ciSideB = new CoreInterfaceEntity;
+        D2EM::persist( $ciSideB );
+        $ciSideB->setPhysicalInterface( $piSideB );
+
+
+        $cl->setCoreInterfaceSideA( $ciSideA );
+        $cl->setCoreInterfaceSideB( $ciSideB );
+
+        $virtualInterface[ 'A' ]->addPhysicalInterface( $piSideA );
+        $virtualInterface[ 'B' ]->addPhysicalInterface( $piSideB );
+
+        D2EM::flush();
+
+        AlertContainer::push( 'The core link has been added successfully.', Alert::SUCCESS );
+
+        return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() );
+    }
+
 }

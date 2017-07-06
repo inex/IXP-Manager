@@ -107,6 +107,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'edit/{id}',                        'CoreBundleController@edit' )->name( 'core-bundle/edit');
         Route::post( 'add-core-link-frag',              'CoreBundleController@addCoreLinkFrag' );
         Route::post( 'store-wizard',                    'CoreBundleController@storeWizard' );
+        Route::post( 'add-core-link',                    'CoreBundleController@addCoreLink' );
         Route::post( '{id}/store-core-links',           'CoreBundleController@storeCoreLinks' );
         Route::get( 'delete/{id}',                     'CoreBundleController@deleteCoreBundle' )->name( 'core-bundle/delete');
     });

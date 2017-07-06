@@ -110,6 +110,7 @@ $this->layout( 'layouts/ixpv4' );
                         ->id( 'enabled' )
                         ->label( 'Enabled' )
                         ->unchecked_value( 0 )
+                        ->checked_value( 1 )
                         ->blockHelp( "" );
                     ?>
 
@@ -117,7 +118,7 @@ $this->layout( 'layouts/ixpv4' );
                         <?= Former::checkbox( 'bfd' )
                             ->label( 'BFD' )
                             ->unchecked_value( 0 )
-                            ->value( 1 )
+                            ->value( 0 )
                         ?>
 
                         <?= Former::text( 'subnet' )
@@ -173,6 +174,11 @@ $this->layout( 'layouts/ixpv4' );
 
                 <h3>
                     Core Links
+                    <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) && $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
+                        <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-xs btn btn-default" href="#" title="Add Core link">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    <?php endif;?>
                 </h3>
                 <div class="" id="area-cl">
                     <?= Former::open()->method( 'POST' )
@@ -186,12 +192,19 @@ $this->layout( 'layouts/ixpv4' );
                                     Switch A :
                                     <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) ): ?>
                                         <?= $t->cb->getSwitchSideX( true )->getName() ?>
+                                        <input type="hidden" value="<?= $t->cb->getSwitchSideX( true )->getId() ?>" id="switch-a">
                                     <?php else: ?>
                                         <span class="label label-warning">Multiple</span>
                                     <?php endif;?>
                                 </td>
                                 <td>
-                                    Switch B : <?= $t->cb->getSwitchSideX( false )->getName() ?>
+                                    Switch B :
+                                    <?php if( $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
+                                        <?= $t->cb->getSwitchSideX( false )->getName() ?>
+                                        <input type="hidden" value="<?= $t->cb->getSwitchSideX( false )->getId() ?>" id="switch-b">
+                                    <?php else: ?>
+                                        <span class="label label-warning">Multiple</span>
+                                    <?php endif;?>
                                 </td>
                             </tr>
                         </table>
@@ -211,7 +224,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </th>
                                 <?php if( $t->cb->isECMP () ): ?>
                                     <th>
-                                        BGP
+                                        BFD
                                     </th>
                                     <th>
                                         Subnet
@@ -274,14 +287,46 @@ $this->layout( 'layouts/ixpv4' );
                                 <?php $nbCl++ ?>
                             <?php endforeach; ?>
                         </table>
+
+
+
                         <?=Former::actions(
                             Former::primary_submit( 'Save Changes' )->id( 'core-links-submit-btn' )
                         )->class('text-center');?>
+
                     <?= Former::close() ?>
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="core-links-area" class="col-sm-12" style="opacity: 0; margin-bottom: 20px" >
+        <?= Former::open()->method( 'POST' )
+            ->id( 'core-link-form' )
+            ->action( action ( 'Interfaces\CoreBundleController@addCoreLink' ) )
+            ->customWidthClass( 'col-sm-6' )
+        ?>
+        <div id="core-links">
+
+        </div>
+
+        <?= Former::hidden( 'nb-core-links' )
+            ->id( 'nb-core-links')
+            ->value( 0 )
+        ?>
+
+        <?= Former::hidden( 'core-bundle' )
+            ->id( 'core-bundle')
+            ->value( $t->cb->getId() )
+        ?>
+
+        <?=Former::actions(
+            Former::primary_submit( 'Add new core link' )->id( 'new-core-links-submit-btn' )
+        )->class('text-center');?>
+
+        <?= Former::close() ?>
+    </div>
+
     <div class="col-sm-12 alert alert-danger" style="float: right;" role="alert">
         <div>
             <span style="line-height: 34px;">
@@ -292,8 +337,6 @@ $this->layout( 'layouts/ixpv4' );
             </a>
         </div>
     </div>
-
-
 
 <?php $this->append() ?>
 
@@ -442,6 +485,113 @@ $this->layout( 'layouts/ixpv4' );
         function refreshDataTable() {
             $( "#area-cl").load( $(location).attr('pathname')+" #core-link-form" );
         }
+
+        /**
+         * add a new link to the core bundle
+         */
+        $( "#add-new-core-link" ).click( function() {
+            addCoreLink( );
+        });
+
+        function addCoreLink(){
+
+            if( $( "#enabled").is( ':checked' ) ){
+                enabled = 1;
+            } else{
+                enabled = 0;
+            }
+
+
+            var ajaxCall = $.ajax( "<?= action( 'Interfaces\CoreBundleController@addCoreLinkFrag' ) ?>", {
+                data: {
+                    nbCoreLink      : 0,
+                    enabled         : enabled,
+                    bundleType      : $( "#type").val(),
+                    _token          : "<?= csrf_token() ?>"
+                },
+                type: 'POST'
+            })
+            .done( function( data ) {
+                if( data.success ){
+
+                    // add the new core link form
+                    $('#core-links').append( data.htmlFrag );
+
+                    $('#core-links-area').css( 'opacity' , '100' );
+                    $('#add-new-core-link').attr( 'disabled', 'disabled' );
+
+                    oldNbLink = $("#nb-core-links").val( );
+                    setSwitchPort( 'a' );
+                    setSwitchPort( 'b' );
+
+                    // set the number of core links present for the core bundle
+                    $("#nb-core-links").val( data.nbCoreLinks );
+                }
+
+            })
+            .fail( function() {
+                throw new Error( "Error running ajax query for core-bundle/add-core-link-frag" );
+                alert( "Error running ajax query for core-bundle/add-core-link-frag" );
+            })
+        }
+
+
+        /**
+         * set data to the switch port dropdown when we select a switcher
+         */
+        function setSwitchPort( sside ){
+            switchId = $( "#switch-" + sside ).val();
+
+            $( "#sp-" + sside + "-1" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+            if( switchId != null && switchId != '' ){
+
+                url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port";
+                $.ajax( url , {
+                    type: 'POST'
+                })
+
+                .done( function( data ) {
+                    var options = "<option value=\"\">Choose a switch port</option>\n";
+                    $.each( data.listPorts, function( key, value ){
+                        options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
+                    });
+                    $( "#sp-" + sside + "-1" ).html( options );
+                })
+                .fail( function() {
+                    throw new Error( "Error running ajax query for api/v4/switcher/$id/switch-port" );
+                    alert( "Error running ajax query for api/v4/switcher/$id/switch-port" );
+
+
+                })
+                .always( function() {
+                    $( "#sp-" + sside + "-1" ).trigger( "chosen:updated" );
+                });
+            }
+
+        }
+
+
+        /**
+         * Check if all the switch ports have been chosen before submit
+         */
+        $('#new-core-links-submit-btn').click(function() {
+            $("#message-1").html('');
+
+            if( !$( "#sp-a-1" ).val() || !$( "#sp-b-1" ).val() ){
+                $( "#message-1" ).append( "<div class='alert alert-danger' role='alert'>You need to select switch ports.</div>" );
+                return false;
+            }
+
+            // check if the subnet is valid
+            if( $( "#subnet-1").val() ) {
+                subnet = $( "#subnet-1").val();
+                if( !validSubnet( subnet ) ){
+                    error = true;
+                    $( "#message-1" ).append(  "<div class='alert alert-danger' role='alert'>The subnet " + subnet + " is not valid! </div>" );
+                    return false;
+                }
+            }
+        });
 
     </script>
 <?php $this->append() ?>

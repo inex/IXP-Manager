@@ -47,7 +47,6 @@
                     ->label( '' )
                     ->unchecked_value( 0 )
                     ->check( $t->enabled )
-                    ->style('margin-left : 50%' )
                 ?>
             </div>
 
@@ -61,7 +60,6 @@
                         ->label( '' )
                         ->unchecked_value( 0 )
                         ->value( 1 )
-                        ->style('margin-left : 50%' )
                     ?>
                 <?php endif; ?>
             </div>
