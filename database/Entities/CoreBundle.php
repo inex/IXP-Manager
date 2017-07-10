@@ -72,6 +72,11 @@ class CoreBundle
     private $cost;
 
     /**
+     * @var int
+     */
+    private $preference;
+
+    /**
      * @var integer
      */
     private $id;
@@ -213,6 +218,16 @@ class CoreBundle
     public function getCost()
     {
         return $this->cost;
+    }
+
+    /**
+     * Get preference
+     *
+     * @return boolean
+     */
+    public function getPreference()
+    {
+        return $this->preference;
     }
 
 
@@ -363,6 +378,19 @@ class CoreBundle
     public function setCost( $cost )
     {
         $this->cost = $cost;
+        return $this;
+    }
+
+    /**
+     * Set preference
+     *
+     * @param integer $preference
+     *
+     * @return CoreBundle
+     */
+    public function setPreference( $preference )
+    {
+        $this->preference = $preference;
         return $this;
     }
 

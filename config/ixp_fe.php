@@ -74,16 +74,5 @@ return [
         'public' => env( 'IXP_FE_STATISTICS_PUBLIC', true ),
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Core Bundle defaults, etc
-    |--------------------------------------------------------------------------
-    |
-    */
-
-    'core_bundle' => [
-        'default_cost'       => env( 'IXP_FE_CORE_BUNDLE_DEFAULT_COST',       10  ),
-        'default_preference' => env( 'IXP_FE_CORE_BUNDLE_DEFAULT_PREFERENCE', 100 ),
-    ],
 
 ];

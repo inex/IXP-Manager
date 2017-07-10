@@ -144,6 +144,7 @@ class CoreBundleController extends Controller
                 'description'               => $cb->getDescription(),
                 'graph-title'               => $cb->getGraphTitle(),
                 'cost'                      => $cb->getCost(),
+                'preference'                => $cb->getPreference(),
                 'type'                      => $cb->getType(),
                 'enabled'                   => $cb->getEnabled() ? 1 : 0,
                 'bfd'                       => $cb->getBFD() ? 1 : 0,
@@ -167,32 +168,59 @@ class CoreBundleController extends Controller
      * @return  RedirectResponse
      */
     public function storeWizard( StoreCoreBundle $request ): RedirectResponse {
-        /** @var CustomerEntity $cust */
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'customer' ) ) ) ) {
-            abort('404', 'Unknown Customer');
-        }
-
-        if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
-            return Redirect::to( 'interfaces/core-bundle/add-wizard' )->withInput( Input::all() );
-        }
+        $edit = false;
 
         /** @var CoreBundleEntity $cb */
-        $cb = new CoreBundleEntity;
-        D2EM::persist( $cb );
+        if( $request->input( 'cb' ) ) {
+            if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $request->input( 'cb' ) ) ) ) {
+                abort('404', 'Unknown Core Bundle');
+            }
+            $edit = true;
 
+            $vis = $cb->getVirtualInterfaces();
+            $viSideA = $vis[ 'A' ];
+            $viSideB = $vis[ 'B' ];
+        }
+        else{
+            $cb = new CoreBundleEntity;
+            D2EM::persist( $cb );
+
+            /** @var VirtualInterfaceEntity $viSideA */
+            $viSideA = new VirtualInterfaceEntity;
+            D2EM::persist( $viSideA );
+
+            /** @var VirtualInterfaceEntity $viSideB */
+            $viSideB = new VirtualInterfaceEntity;
+            D2EM::persist( $viSideB );
+        }
+
+        // set the value to the core bundle
         $cb->setDescription( $request->input( 'description' ) );
         $cb->setGraphTitle( $request->input( 'graph-title' ) );
         $cb->setCost( $request->input( 'cost' ) );
+        $cb->setPreference( $request->input( 'preference' ) );
         $cb->setType( $request->input( 'type' ) );
         $cb->setEnabled( $request->input( 'enabled' ) ? $request->input( 'enabled' ) : false );
         $cb->setBFD( $request->input( 'bfd' ) ? $request->input( 'bfd' ) : false );
         $cb->setIPv4Subnet( $request->input( 'subnet' ) ? $request->input( 'subnet' ) : null );
 
-        // Set value to the Virtual Interface side A
-        /** @var VirtualInterfaceEntity $viSideA */
-        $viSideA = new VirtualInterfaceEntity;
-        D2EM::persist( $viSideA );
+        /** @var CustomerEntity $cust */
+        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'customer' ) ) ) ) {
+            abort('404', 'Unknown Customer');
+        }
 
+        // Set the customer to the Virtual interface of each side
+        $viSideA->setCustomer( $cust );
+        $viSideB->setCustomer( $cust );
+
+        if( $edit ){
+            D2EM::flush();
+            AlertContainer::push( 'The core bundle has been updated successfully.', Alert::SUCCESS );
+            return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() );
+        }
+
+
+        // Set value to the Virtual Interface side A
         $viSideA->setCustomer( $cust );
         $viSideA->setMtu( $request->input( 'mtu' ) );
         $viSideA->setName( $request->input( 'vi-name-a' ) );
@@ -201,16 +229,16 @@ class CoreBundleController extends Controller
         $viSideA->setFastLACP( $request->input( 'fast-lacp' ) ? $request->input( 'fast-lacp' ) : false  );
 
         // Set value to the Virtual Interface side B
-        /** @var VirtualInterfaceEntity $viSideB */
-        $viSideB = new VirtualInterfaceEntity;
-        D2EM::persist( $viSideB );
 
-        $viSideB->setCustomer( $cust );
         $viSideB->setMtu( $request->input( 'mtu' ) );
         $viSideB->setName( $request->input( 'vi-name-b' ) );
         $viSideB->setChannelgroup( $request->input( 'vi-channel-number-b' ) );
         $viSideB->setLagFraming( $request->input( 'framing' ) ? $request->input( 'framing' ) : false  );
         $viSideB->setFastLACP( $request->input( 'fast-lacp' ) ? $request->input( 'fast-lacp' ) : false  );
+
+        if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
+            return Redirect::to( 'interfaces/core-bundle/add-wizard' )->withInput( Input::all() );
+        }
 
         for( $i = 1; $i <= $request->input( 'nb-core-links' ); $i++ ){
 

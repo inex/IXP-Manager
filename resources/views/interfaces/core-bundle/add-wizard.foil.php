@@ -19,6 +19,10 @@ $this->layout( 'layouts/ixpv4' );
         #table-core-link tr td{
             vertical-align: middle;
         }
+
+        #btn-group-add div{
+            text-align : center;
+        }
     </style>
 <?php $this->append() ?>
 
@@ -74,6 +78,14 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::number( 'cost' )
                     ->label( 'Cost' )
+                    ->placeholder( '10' )
+                    ->min( 0 )
+                    ->blockHelp( 'help text' );
+                ?>
+
+
+                <?= Former::number( 'preference' )
+                    ->label( 'Preference' )
                     ->placeholder( '10' )
                     ->min( 0 )
                     ->blockHelp( 'help text' );
@@ -269,7 +281,8 @@ $this->layout( 'layouts/ixpv4' );
             Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
             Former::default_link( 'Cancel' )->href( action( 'Interfaces\CoreBundleController@list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
-        )->id('btn-group');?>
+        )->id('btn-group-add')
+        ;?>
 
     <?= Former::close() ?>
 
@@ -278,7 +291,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
     <script type="text/javascript" src="<?= asset( '/bower_components/ip-address/dist/ip-address-globals.js' ) ?>"></script>
-    <?= $t->insert( 'interfaces/core-bundle/js/edit' ); ?>
+    <?= $t->insert( 'interfaces/core-bundle/js/add-wizard' ); ?>
     <script>
         $(document).ready( function() {
             $( 'label.col-lg-2' ).removeClass('col-lg-2');

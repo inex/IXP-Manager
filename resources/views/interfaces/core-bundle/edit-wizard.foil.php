@@ -106,6 +106,13 @@ $this->layout( 'layouts/ixpv4' );
                         ->blockHelp( 'help text' );
                     ?>
 
+                    <?= Former::number( 'preference' )
+                        ->label( 'Preference' )
+                        ->placeholder( '10' )
+                        ->min( 0 )
+                        ->blockHelp( 'help text' );
+                    ?>
+
                     <?= Former::checkbox( 'enabled' )
                         ->id( 'enabled' )
                         ->label( 'Enabled' )
@@ -126,6 +133,17 @@ $this->layout( 'layouts/ixpv4' );
                             ->placeholder( '192.0.2.0/30' )
                         ?>
                     <?php endif; ?>
+
+                    <?= Former::hidden( 'type' )
+                        ->id( 'type')
+                        ->value( $t->cb->getType() )
+                    ?>
+
+                    <?= Former::hidden( 'cb' )
+                        ->id( 'cb')
+                        ->value( $t->cb->getId() )
+                    ?>
+
                 </div>
                 <div style="clear: both"></div>
                 <?=Former::actions(

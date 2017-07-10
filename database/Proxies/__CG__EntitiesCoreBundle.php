@@ -64,10 +64,10 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'preference', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'preference', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
     }
 
     /**
@@ -323,6 +323,17 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function getPreference()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPreference', []);
+
+        return parent::getPreference();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCoreLinks()
     {
 
@@ -455,6 +466,17 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function setPreference($preference)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPreference', [$preference]);
+
+        return parent::setPreference($preference);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function doAllCoreLinksEnabled(): bool
     {
 
@@ -494,6 +516,28 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSpeedPi', []);
 
         return parent::getSpeedPi();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDuplexPi()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDuplexPi', []);
+
+        return parent::getDuplexPi();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAutoNegPi()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAutoNegPi', []);
+
+        return parent::getAutoNegPi();
     }
 
     /**

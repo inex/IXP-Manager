@@ -54,19 +54,27 @@ class StoreCoreBundle extends FormRequest
      */
     public function rules()
     {
-
-        return [
+        $arrayCb = [
             'customer'                  => 'required|integer',
             'description'               => 'required|string|max:255',
             'graph-title'               => 'required|string|max:255',
             'cost'                      => 'nullable|integer',
+            'preference'                => 'nullable|integer',
             'type'                      => 'required|integer|in:' . implode( ',', array_keys( CoreBundleEntity::$TYPES ) ),
             'subnet'                    => ( $this->input('type') == CoreBundleEntity::TYPE_L3_LAG ) ? "required" : "nullable",
+
+        ];
+
+        $arrayVi = [
             'mtu'                       => 'required|integer|min:0',
             'vi-name-a'                 => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|string|max:255" : "nullable",
             'vi-name-b'                 => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|string|max:255" : "nullable",
             'vi-channel-number-a'       => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|integer|min:0" : "nullable",
-            'vi-channel-number-b'       => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|integer|min:0" : "nullable",
+            'vi-channel-number-b'       => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|integer|min:0" : "nullable"
         ];
+
+        $result = $this->input( 'cb' )  ? $arrayCb : array_merge( $arrayCb, $arrayVi) ;
+
+        return $result ;
     }
 }

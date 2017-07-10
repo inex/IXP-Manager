@@ -257,6 +257,17 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getCoreInterfaces()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreInterfaces', []);
+
+        return parent::getCoreInterfaces();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCoreBundle()
     {
 
