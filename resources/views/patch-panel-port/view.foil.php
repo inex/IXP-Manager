@@ -5,7 +5,28 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Patch Panel Port / Cross Connect - <?= $t->ppp->getPatchPanel()->getName() ?> :: <?= $t->ppp->getName() ?>
+    <a href="<?= url( 'patch-panel-port/list' )?>">
+        Patch Panel Port
+    </a>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-postamble' ) ?>
+    <li>
+        Patch Panel Port / Cross Connect - <?= $t->ppp->getPatchPanel()->getName() ?> :: <?= $t->ppp->getName() ?>
+    </li>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-preamble' ) ?>
+    <li class="pull-right">
+        <div class="btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/list/patch-panel/' . $t->ppp->getPatchPanel()->getId() ) ?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
+            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/edit').'/'.$t->ppp->getId() ?>" title="edit">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+        </div>
+    </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
