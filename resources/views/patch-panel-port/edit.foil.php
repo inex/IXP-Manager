@@ -5,7 +5,19 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Edit&nbsp;&nbsp;[<?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> - <?= $t->ee( $t->ppp->getName() ) ?>]</li>
+    <li>
+        Edit&nbsp;&nbsp;[<?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> - <?= $t->ee( $t->ppp->getName() ) ?>]
+    </li>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-preamble' ) ?>
+    <li class="pull-right">
+        <div class="btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->ppp->getPAtchPanel()->getId() ]  ) ?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
+        </div>
+    </li>
 <?php $this->append() ?>
 
 
@@ -126,7 +138,7 @@
         ?>
     </div>
 
-    <?php if (!$t->prewired): ?>
+    <?php if ( !$t->prewired ): ?>
         <div class="well">
             <?= Former::default_button( 'Reset' )
                 ->addClass( 'reset-button-well reset-btn' )
@@ -165,7 +177,7 @@
         </span>
     <?php endif; ?>
 
-    <?php if (!$t->prewired): ?>
+    <?php if ( !$t->prewired ): ?>
         <?= Former::textarea( 'notes' )
             ->label( 'Public Notes' )
             ->rows( 10 )
@@ -180,7 +192,7 @@
         ->blockHelp( 'These notes are <b>NOT</b> visible to the member. You can use markdown here.' );
     ?>
 
-    <?php if (!$t->prewired): ?>
+    <?php if ( !$t->prewired ): ?>
         <?php if( !$t->allocating ): ?>
             <?= Former::date( 'assigned_at' )
                 ->label( 'Assigned At' )

@@ -1,7 +1,7 @@
 <?php
-/** @var Foil\Template\Template $t */
+    /** @var Foil\Template\Template $t */
 
-$this->layout( 'layouts/ixpv4' )
+    $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
@@ -242,19 +242,19 @@ $this->layout( 'layouts/ixpv4' )
                             </td>
                             <td>
                                 <?php if ( $pi->getSwitchPort()->getType() != \Entities\SwitchPort::TYPE_FANOUT ): ?>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getSwitchPort()->getIfName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $t->ee( $pi->getSwitchPort()->getIfName() ) ?>
                                 <?php elseif( $pi->getPeeringPhysicalInterface() ): ?>
                                     <a href="#">
-                                        <?= $t->ee( $pi->getPeeringPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getPeeringPhysicalInterface()->getSwitchPort()->getIfName() ?>
+                                        <?= $t->ee( $pi->getPeeringPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $t->ee( $pi->getPeeringPhysicalInterface()->getSwitchPort()->getIfName() )?>
                                     </a>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php if ( $pi->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $int->getSwitchPort()->getIfName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $t->ee( $pi->getSwitchPort()->getIfName() ) ?>
                                 <?php elseif( $pi->getFanoutPhysicalInterface() ): ?>
                                     <a href="">
-                                        <?= $t->ee( $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ?>
+                                        <?= $t->ee( $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $t->ee( $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ) ?>
                                     </a>
                                 <?php endif; ?>
                             </td>
@@ -339,12 +339,12 @@ $this->layout( 'layouts/ixpv4' )
                             </td>
                             <td>
                                 <?php if( $vli->getIPv4Enabled() and $vli->getIPv4Address() ) : ?>
-                                    <?=  $vli->getIPv4Address()->getAddress() ?>
+                                    <?=  $t->ee( $vli->getIPv4Address()->getAddress() ) ?>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php if( $vli->getIPv6Enabled() and $vli->getIPv6Address() ) : ?>
-                                    <?=  $vli->getIPv6Address()->getAddress() ?>
+                                    <?=  $t->ee( $vli->getIPv6Address()->getAddress() ) ?>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -390,7 +390,7 @@ $this->layout( 'layouts/ixpv4' )
                             /** @var Entities\SflowReceiver $sflr */ ?>
                             <tr>
                                 <td>
-                                    <?= $sflr->getDstIp() ?>
+                                    <?= $t->ee( $sflr->getDstIp() ) ?>
                                 </td>
                                 <td>
                                     <?= $sflr->getDstPort() ?>

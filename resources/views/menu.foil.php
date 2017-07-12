@@ -49,8 +49,7 @@
 
                 <li <?php if($t->controller == 'PatchPanelController'):?> class="active" <?php endif;?> >
                     <a href="<?= url('patch-panel/list') ?>">Patch Panels</a>
-
-                    <?php if($t->subFolder == 'patchpanel') :?>
+                    <?php if($t->controller == 'PatchPanelController'):?>
                         <li class="sub-menu <?php if($t->controller == 'PatchPanelPortController'):?> active <?php endif;?> " >
                             <a href="<?= url('patch-panel-port/list') ?>">Patch Panel Port</a>
                         </li>

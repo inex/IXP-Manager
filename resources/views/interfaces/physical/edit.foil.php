@@ -91,7 +91,6 @@ $this->layout( 'layouts/ixpv4' );
                 ->style( 'width:500px' )
                 ->blockHelp( ' ' );
             ?>
-
         </div>
 
         <?php if( $t->otherPICoreLink ): ?>
@@ -111,7 +110,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::select( 'switch-port-b' )
                     ->label( 'Switch Port' )
-                    ->fromQuery( $t->otherPICoreLink->getSwitchPort()->getName(), 'name' )
+                    ->fromQuery( $t->ee( $t->otherPICoreLink->getSwitchPort()->getName() ) , 'name' )
                     ->placeholder( 'Choose a switch port' )
                     ->addClass( 'chzn-select' )
                     ->disabled( true)

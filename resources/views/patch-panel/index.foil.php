@@ -113,7 +113,7 @@
                             </a>
                         </td>
                         <td>
-                            <?= $pp->getColoReference() ?>
+                            <?= $t->ee( $pp->getColoReference() ) ?>
                         </td>
                         <td>
                             <?= $pp->resolveCableType() ?> / <?= $pp->resolveConnectorType() ?>
@@ -172,8 +172,6 @@
 <script>
 
     var locations = JSON.parse( '<?= json_encode( $t->locations ) ?>' );
-
-    //console.log( locations[1]['cabinets'] );
 
     $(document).ready( function() {
         $( '#patch-panel-list' ).dataTable( {

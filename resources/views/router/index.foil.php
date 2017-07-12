@@ -121,9 +121,9 @@
             "autoWidth": false
         });
 
-        $( "a[id|='delete-router']" ).on( 'click', function(e){
+        $( "a[id|='delete-router']" ).on( 'click', function( e ) {
             e.preventDefault();
-            var rtid = (this.id).substring(14);
+            var rtid = ( this.id ).substring( 14 );
             bootbox.confirm({
                 message: "Do you want to delete this router ?",
                 buttons: {
@@ -136,12 +136,11 @@
                         className: 'btn-default',
                     }
                 },
-                callback: function (result) {
-                    if(result){
-                        location.href = "<?= url('router/delete')?>/"+rtid;
-                    }
-                    else{
-                        $('.bootbox.modal').modal('hide');
+                callback: function ( result ) {
+                    if( result ){
+                        location.href = "<?= url('router/delete' )?>/" + rtid;
+                    } else {
+                        $( '.bootbox.modal' ).modal( 'hide' );
                     }
                 }
             });

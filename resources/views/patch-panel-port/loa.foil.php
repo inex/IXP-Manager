@@ -54,18 +54,18 @@
         <tr>
             <td width="10%"></td>
             <td><b>Location:</b></td>
-            <td><?= $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ?></td>
+            <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?></td>
         </tr>
         <tr>
             <td></td>
             <td><b>Patch Panel:</b></td>
-            <td><?= $t->ppp->getPatchPanel()->getColoReference() ?></td>
+            <td><?= $t->ee( $t->ppp->getPatchPanel()->getColoReference() ) ?></td>
         </tr>
         <tr>
             <td></td>
             <td><b>Port:</b></td>
             <td>
-                <?= $t->ppp->getName() ?> <?php if( $t->ppp->hasSlavePort() ){ ?><em>(duplex port)</em><?php } ?>
+                <?= $t->ee( $t->ppp->getName() ) ?> <?php if( $t->ppp->hasSlavePort() ){ ?><em>(duplex port)</em><?php } ?>
             </td>
         </tr>
     </table>

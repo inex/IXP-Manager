@@ -14,6 +14,9 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class=" btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
             </button>
@@ -333,9 +336,9 @@ $this->layout( 'layouts/ixpv4' );
                                 <td>
                                     <a href="<?= action ( 'Layer2AddressController@index' , [ 'id' => $vli->getId() ] )?> " >
                                         <?php if ( !count( $vli->getLayer2Addresses() ) ) : ?>
-                                            <span class="label label-warning">(none)</span>
+                                            <span class="label btn-warning">(none)</span>
                                         <?php elseif ( count( $vli->getLayer2Addresses() ) > 1 ) : ?>
-                                            <span class="label label-warning">(multiple)</span>
+                                            <span class="label btn-warning">(multiple)</span>
                                         <?php else: ?>
                                             <?php $l2a = $vli->getLayer2Addresses() ?>
                                             <?= $l2a[0]->getMacFormattedWithColons() ?>
@@ -344,12 +347,12 @@ $this->layout( 'layouts/ixpv4' );
                                 </td>
                                 <td>
                                     <?php if( $vli->getIPv4Enabled() and $vli->getIPv4Address() ) : ?>
-                                        <?=  $vli->getIPv4Address()->getAddress() ?>
+                                        <?=  $t->ee( $vli->getIPv4Address()->getAddress() ) ?>
                                     <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php if( $vli->getIPv6Enabled() and $vli->getIPv6Address() ) : ?>
-                                        <?=  $vli->getIPv6Address()->getAddress() ?>
+                                        <?=  $t->ee( $vli->getIPv6Address()->getAddress() ) ?>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -390,25 +393,22 @@ $this->layout( 'layouts/ixpv4' );
             <div id="area-sflr">
                 <?php if( count( $t->vi->getSflowReceivers() ) ) : ?>
                     <table id="table-sflr" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Target IP
-                                </th>
-                                <th>
-                                    Target Port
-                                </th>
-                                <th>
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                        <tr>
+                            <th>
+                                Target IP
+                            </th>
+                            <th>
+                                Target Port
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
                         <?php foreach( $t->vi->getSflowReceivers() as $sflr ):
                             /** @var Entities\SflowReceiver $sflr */ ?>
                             <tr>
                                 <td>
-                                    <?= $sflr->getDstIp() ?>
+                                    <?= $t->ee( $sflr->getDstIp() ) ?>
                                 </td>
                                 <td>
                                     <?= $sflr->getDstPort() ?>
@@ -425,7 +425,6 @@ $this->layout( 'layouts/ixpv4' );
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                        </tbody>
                     </table>
                 <?php else: ?>
                     <div id="table-sflr" class="alert alert-warning" role="alert">

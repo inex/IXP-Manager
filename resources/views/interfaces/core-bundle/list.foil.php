@@ -85,7 +85,6 @@ $this->layout( 'layouts/ixpv4' );
                             <?= $t->ee( $cb->getSwitchSideX( false )->getName() )  ?>
                         </td>
                         <td>
-
                             <?= $t->ee( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() )  ?>
                         </td>
                         <td>

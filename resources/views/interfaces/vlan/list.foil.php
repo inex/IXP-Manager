@@ -57,10 +57,10 @@ $this->layout( 'layouts/ixpv4' );
                         <?= $vli['rsclient'] ? '<i class="glyphicon glyphicon-ok"></i>' : '<i class="glyphicon glyphicon-remove"></i>'   ?>
                     </td>
                     <td>
-                        <?= $vli['ipv4']   ?>
+                        <?= $t->ee( $vli['ipv4'] )  ?>
                     </td>
                     <td>
-                        <?= $vli['ipv6']   ?>
+                        <?= $t->ee( $vli['ipv6'] )  ?>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">

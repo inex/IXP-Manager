@@ -12,6 +12,23 @@ $this->layout( 'layouts/ixpv4' )
     <li><?= $t->ee( $t->rt->getName() ) ?></li>
 <?php $this->append() ?>
 
+<?php $this->section( 'page-header-preamble' ) ?>
+    <li class="pull-right">
+        <div class="btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= route('router/list' ) ?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
+            <a type="button" class="btn btn-default" href="<?= route ('router/add' ) ?>" title="add">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+            <a type="button" class="btn btn-default" href="<?= route ('router/edit' , [ 'id' => $t->rt->getId() ] ) ?>" title="edit">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+
+        </div>
+    </li>
+<?php $this->append() ?>
+
 <?php $this->section( 'content' ) ?>
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -100,7 +117,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->rt->getPeeringIp() ?>
+                            <?= $t->ee( $t->rt->getPeeringIp() ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -135,7 +152,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->rt->getMgmtHost()?>
+                            <?= $t->ee( $t->rt->getMgmtHost() ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -207,7 +224,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <code><?= $t->ee( $t->rt->getTemplate() )?></code>
+                            <code> <?= $t->ee( $t->rt->getTemplate() )?> </code>
                         </td>
                     </tr>
                     <tr>
@@ -230,10 +247,5 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
-    <script>
-        $(document).ready(function() {
 
-
-        });
-    </script>
 <?php $this->append() ?>

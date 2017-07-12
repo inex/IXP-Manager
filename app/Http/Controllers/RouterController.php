@@ -114,6 +114,7 @@ class RouterController extends Controller
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'router/edit' )->with([
             'rt'                => $rt,
+            'edit'              => $id  ? true : false,
             'vlans'             => D2EM::getRepository( VlanEntity::class )->getNames( VlanRepository::TYPE_NORMAL ),
             'protocols'         => RouterEntity::$PROTOCOLS,
             'types'             => RouterEntity::$TYPES,

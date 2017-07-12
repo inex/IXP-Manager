@@ -5,9 +5,24 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Edit</li>
+    <li><?= ( $t->edit ) ? 'Edit' : 'Add' ?></li>
+    <?= $t->rt->getId() ?>
 <?php $this->append() ?>
 
+<?php $this->section( 'page-header-preamble' ) ?>
+    <li class="pull-right">
+        <div class="btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= route('router/list' ) ?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
+            <?php if( $t->edit ): ?>
+                <a type="button" class="btn btn-default" href="<?= route ('router/add' ) ?>" title="add">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            <?php endif; ?>
+        </div>
+    </li>
+<?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
 

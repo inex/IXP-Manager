@@ -49,7 +49,7 @@ Route::group( [ 'prefix' => 'layer2-address' ], function() {
 });
 
 Route::group( [ 'prefix' => 'router' ], function() {
-    Route::get( 'list',                             'RouterController@list' );
+    Route::get( 'list',                             'RouterController@list' )->name( 'router/list');
     Route::get( 'add',                              'RouterController@edit' )->name( 'router/add');
     Route::get( 'edit/{id}',                        'RouterController@edit' )->name( 'router/edit');
     Route::get( 'view/{id}',                        'RouterController@view' );

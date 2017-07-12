@@ -65,9 +65,9 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <?= $t->listVli[0]['ipv4enabled'] ? '<span class="label label-success">Enable</span>' : '<span class="label label-danger">Disable</span>' ?>
-                            <?= $t->listVli[0]['ipv4'] ?>
+                            <?= $t->ee( $t->listVli[0]['ipv4'] ) ?>
                             <br/>
-                            <?= $t->listVli[0]['ipv4hostname'] ?>
+                            <?= $t->ee( $t->listVli[0]['ipv4hostname'] ) ?>
                             <br/>
                             <?= $t->listVli[0]['ipv4canping'] ? '<span class="label label-success">Canping</span>' : '' ?>
                             <br/>
@@ -83,7 +83,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->listVli[0]['ipv4bgpmd5secret'] ?>
+                            <?= $t->ee( $t->listVli[0]['ipv4bgpmd5secret'] ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -149,9 +149,9 @@ $this->layout( 'layouts/ixpv4' )
                         </td>
                         <td>
                             <?= $t->listVli[0]['ipv6enabled'] ? '<span class="label label-success">Enable</span>' : '<span class="label label-danger">Disable</span>' ?>
-                            <?= $t->listVli[0]['ipv6'] ?>
+                            <?= $t->ee( $t->listVli[0]['ipv6'] ) ?>
                             <br/>
-                            <?= $t->listVli[0]['ipv6hostname'] ?>
+                            <?= $t->ee( $t->listVli[0]['ipv6hostname'] )?>
                             <br/>
                             <?= $t->listVli[0]['ipv6canping'] ? '<span class="label label-success">Canping</span>' : '' ?>
                             <br/>
@@ -167,7 +167,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->listVli[0]['ipv6bgpmd5secret'] ?>
+                            <?= $t->ee( $t->listVli[0]['ipv6bgpmd5secret'] )?>
                         </td>
                     </tr>
 
@@ -208,10 +208,5 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
-    <script>
-        $(document).ready(function() {
 
-
-        });
-    </script>
 <?php $this->append() ?>

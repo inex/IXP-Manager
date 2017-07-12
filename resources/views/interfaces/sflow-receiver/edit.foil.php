@@ -11,6 +11,15 @@ $this->layout( 'layouts/ixpv4' );
     <li>Edit SflowReceiver</li>
 <?php $this->append() ?>
 
+<?php $this->section( 'page-header-preamble' ) ?>
+    <li class="pull-right">
+        <div class="btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= route( 'interfaces/sflow-receiver/list' ) ?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
+        </div>
+    </li>
+<?php $this->append() ?>
 
 <?php $this->section('content') ?>
 

@@ -64,7 +64,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <?= $t->sflr->getDstIp() ?>
+                            <?= $t->ee( $t->sflr->getDstIp() ) ?>
                         </td>
                     </tr>
                     <tr>

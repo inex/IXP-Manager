@@ -34,9 +34,7 @@
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-
     <?= $t->alerts() ?>
-
     <div id="message-vi"></div>
     <div id="area-vi" class="collapse">
         <table id='table-vi' class="table">

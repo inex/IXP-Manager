@@ -106,7 +106,7 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= action( 'Layer2AddressController@index' , [ 'viid' => $l2a->getVlanInterface()->getId() ] ) ?>" title="Edit/add layer2 addresses">
+                                <a class="btn btn btn-default" href="<?= action( 'Layer2AddressController@index' , [ 'vliid' => $l2a->getVlanInterface()->getId() ] ) ?>" title="Edit/add layer2 addresses">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
                             </div>

@@ -121,7 +121,7 @@ $this->layout( 'layouts/ixpv4' );
                 ?>
                 <?= Former::number( 'mtu' )
                     ->label( 'MTU' )
-                    ->value(9000)
+                    ->value( 9000 )
                     ->min( 0 )
                     ->blockHelp( '' );
                 ?>

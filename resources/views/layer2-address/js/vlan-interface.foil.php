@@ -80,7 +80,7 @@
             },
             callback: function (result) {
                 if( result) {
-                    $.ajax( "<?= action ( 'Api\V4\Layer2AddressController@delete' ) ?>/"+l2aId )
+                    $.ajax( "<?= url ( 'vlan-interface/l2-addresses/' ) ?>/"+l2aId )
                         .done( function( data ) {
                             $('.bootbox.modal').modal( 'hide' );
                             result = ( data.success ) ? 'success': 'danger';

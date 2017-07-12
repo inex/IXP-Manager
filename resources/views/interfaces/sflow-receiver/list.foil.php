@@ -42,7 +42,7 @@ $this->layout( 'layouts/ixpv4' );
                         </a>
                     </td>
                     <td>
-                        <?= $sflr->getDstIp() ?>
+                        <?= $t->ee( $sflr->getDstIp() ) ?>
                     </td>
                     <td>
                         <?= $sflr->getDstPort() ?>

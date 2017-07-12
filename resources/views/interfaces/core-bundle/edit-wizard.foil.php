@@ -169,7 +169,7 @@ $this->layout( 'layouts/ixpv4' );
                             Side <?= $side ?>
                         </td>
                         <td>
-                            <?= $vi->getName() ?>
+                            <?= $t->ee( $vi->getName() )?>
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
@@ -287,7 +287,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <?= Former::text( 'subnet-'.$cl->getId() )
                                                 ->label( '' )
                                                 ->placeholder( '192.0.2.0/30' )
-                                                ->value( $cl->getIPv4Subnet() )
+                                                ->value( $t->ee( $cl->getIPv4Subnet() ) )
                                                 ->class( 'subnet-cl form-control' )
                                             ?>
                                         </td>
@@ -305,8 +305,6 @@ $this->layout( 'layouts/ixpv4' );
                                 <?php $nbCl++ ?>
                             <?php endforeach; ?>
                         </table>
-
-
 
                         <?=Former::actions(
                             Former::primary_submit( 'Save Changes' )->id( 'core-links-submit-btn' )

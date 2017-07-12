@@ -11,6 +11,31 @@ $this->layout( 'layouts/ixpv4' );
     <li>Add Interface Wizard</li>
 <?php $this->append() ?>
 
+<?php $this->section( 'page-header-preamble' ) ?>
+<li class="pull-right">
+    <div class=" btn-group btn-group-xs" role="group">
+        <a type="button" class="btn btn-default" href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>" title="list">
+            <span class="glyphicon glyphicon-th-list"></span>
+        </a>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <li>
+                <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@wizard' )?>" >
+                    Add Interface Wizard...
+                </a>
+            </li>
+            <li>
+                <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@add' )?>" >
+                    Virtual Interface Only...
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>
+<?php $this->append() ?>
+
 <?php $this->section('content') ?>
 
 <?= $t->alerts() ?>

@@ -8,7 +8,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li> Patch Panel Port / Cross Connect - <?= $t->ppp->getPatchPanel()->getName() ?> :: <?= $t->ppp->getName() ?> </li>
+    <li> Patch Panel Port / Cross Connect - <?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> :: <?= $t->ee( $t->ppp->getName() ) ?> </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -38,7 +38,6 @@
                         <div class="row">
                         <div class="col-xs-6">
                             <table class="table_view_info">
-
                                 <?php if( !$current && ( $p->getDuplexMasterPort() || $p->getDuplexSlavePort() ) ): ?>
                                     <tr>
                                         <td>
@@ -49,9 +48,9 @@
                                         <td>
                                             Was part of duplex port with
                                             <?php if( $p->getDuplexMasterPort() ) { ?>
-                                                <?= $p->getDuplexMasterPort()->getPatchPanelPort()->getName() ?>
+                                                <?= $t->ee( $p->getDuplexMasterPort()->getPatchPanelPort()->getName() )?>
                                             <?php } else { ?>
-                                                <?= $p->getDuplexSlavePort()->getPatchPanelPort()->getName() ?>
+                                                <?= $t->ee( $p->getDuplexSlavePort()->getPatchPanelPort()->getName() )?>
                                             <?php } ?>
                                         </td>
                                     </tr>
@@ -64,7 +63,7 @@
                                         </b>
                                     </td>
                                     <td>
-                                        <?= Markdown::parse( $p->getDescription() ) ?>
+                                        <?= Markdown::parse( $t->ee( $p->getDescription() ) ) ?>
                                     </td>
                                 </tr>
 
@@ -76,7 +75,7 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <?= $p->getCircuitReference() ?>
+                                            <?= $t->ee( $p->getCircuitReference() ) ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -90,11 +89,11 @@
                                     <td>
                                         <?php if( $current ): ?>
                                             <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanel()->getId() ] ) ?>" >
-                                                <?= $p->getPatchPanel()->getName() ?>
+                                                <?= $t->ee( $p->getPatchPanel()->getName() ) ?>
                                             </a>
                                         <?php else: ?>
                                             <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>" >
-                                                <?= $p->getPatchPanelPort()->getPatchPanel()->getName() ?>
+                                                <?= $t->ee( $p->getPatchPanelPort()->getPatchPanel()->getName() ) ?>
                                             </a>
                                         <?php endif; ?>
                                     </td>
@@ -109,7 +108,7 @@
                                                 </b>
                                             </td>
                                             <td>
-                                                <?= $p->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $p->getSwitchPort()->getName() ?>
+                                                <?= $t->ee( $p->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $t->ee( $p->getSwitchPort()->getName() ) ?>
                                             </td>
                                         </tr>
                                     <?php endif; ?>
@@ -121,7 +120,7 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <?= $p->getSwitchport()?>
+                                            <?= $t->ee( $p->getSwitchport() )?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -134,7 +133,7 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <?= !$current ? $p->getCustomer() : ( $p->getCustomer() ? $p->getCustomer()->getName() : '' ) ?>
+                                            <?= !$current ? $p->getCustomer() : ( $p->getCustomer() ? $t->ee( $p->getCustomer()->getName() ) : '' ) ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -184,7 +183,7 @@
                                         </b>
                                     </td>
                                     <td>
-                                        <?= $p->getColoCircuitRef()?>
+                                        <?= $t->ee( $p->getColoCircuitRef() ) ?>
                                     </td>
                                 </tr>
                                 <?php if( Auth::user()->isSuperUser() ): ?>
@@ -195,7 +194,7 @@
                                             </b>
                                         </td>
                                         <td>
-                                            <?= $p->getTicketRef()?>
+                                            <?= $t->ee( $p->getTicketRef() )?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -387,10 +386,10 @@
                                                                 <i title='<?= $file->getType()?>' class="fa <?= $file->getTypeAsIcon()?> fa-lg' aria-hidden="true"></i>
                                                             </td>
                                                             <td>
-                                                                <?= $file->getUploadedAtFormated() ?>
+                                                                <?= $t->ee( $file->getUploadedAtFormated() ) ?>
                                                             </td>
                                                             <td>
-                                                                <?= $file->getUploadedBy() ?>
+                                                                <?= $t->ee( $file->getUploadedBy() ) ?>
                                                             </td>
                                                             <td>
                                                                 <div class="btn-group btn-group-sm" role="group">
