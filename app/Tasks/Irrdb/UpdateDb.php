@@ -212,12 +212,30 @@ abstract class UpdateDb
 
         $this->startTimer();
 
-        foreach( $fromDb as $i => $p ) {
-            if( ( $j = array_search( $p[$type], $fromIrrdb ) ) !== false ) {
-                // ASN/prefix exists in both db and IRRDB - no action required
-                unset( $fromDb[ $i ] );
-                unset( $fromIrrdb[ $j ] );
+        if( class_exists("\Ds\Set") ) {
+
+            $fromIrrdbSet = new \Ds\Set($fromIrrdb);
+
+            foreach( $fromDb as $i => $p ) {
+                if( $fromIrrdbSet->contains($p[$type]) ) {
+                    // ASN/prefix exists in both db and IRRDB - no action required
+                    unset($fromDb[$i]);
+                    $fromIrrdbSet->remove($p[$type]);
+                }
             }
+
+            $fromIrrdb = $fromIrrdbSet->toArray();
+
+        } else {
+
+            foreach( $fromDb as $i => $p ) {
+                if( ($j = array_search($p[$type], $fromIrrdb)) !== false ) {
+                    // ASN/prefix exists in both db and IRRDB - no action required
+                    unset($fromDb[$i]);
+                    unset($fromIrrdb[$j]);
+                }
+            }
+            
         }
 
         // at this stage, the arrays are now:
