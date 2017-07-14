@@ -115,7 +115,8 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $MD5Support );
 
         $abbreviatedName = $this->createElement( 'text', 'abbreviatedName' );
-        $abbreviatedName->setRequired( false )
+        $abbreviatedName->setRequired( true )
+            ->addValidator( 'stringLength', false, array( 1, 30, 'UTF-8' ) )
             ->setAttrib( 'class', 'span10' )
             ->setLabel( 'Abbreviated Name' )
             ->addFilter( 'StringTrim' )
