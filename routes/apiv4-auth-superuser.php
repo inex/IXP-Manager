@@ -71,11 +71,6 @@ Route::get('router/updated-before/{threshold}',                 'RouterControlle
 
 
 
-Route::get('nagios/birdseye_daemons',                           'NagiosController@birdseyeDaemons');
-Route::get('nagios/birdseye_daemons/{vlanid}',                  'NagiosController@birdseyeDaemons');
-Route::get('nagios/birdseye_bgp_sessions/rs',                   'NagiosController@birdseyeRsBgpSessions');
-Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}',          'NagiosController@birdseyeRsBgpSessions');
-
 
 
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
@@ -123,4 +118,14 @@ Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceCo
 Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::get( 'customers/{vliid}',            'NagiosController@customers' );
     Route::get( 'customers/{vliid}/{template}', 'NagiosController@customers' );
+
+    Route::get( 'switches/{infraid}',            'NagiosController@switches' );
+    Route::get( 'switches/{infraid}/{template}', 'NagiosController@switches' );
 });
+
+Route::get('nagios/birdseye_daemons',                           'NagiosController@birdseyeDaemons');
+Route::get('nagios/birdseye_daemons/{vlanid}',                  'NagiosController@birdseyeDaemons');
+Route::get('nagios/birdseye_bgp_sessions/rs',                   'NagiosController@birdseyeRsBgpSessions');
+Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}',          'NagiosController@birdseyeRsBgpSessions');
+
+

@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers\Api\V4;
 use D2EM;
 
 use Entities\{
+    Infrastructure    as InfrastructureEntity,
     PhysicalInterface as PhysicalInterfaceEntity,
     Router            as RouterEntity,
     Vlan              as VlanEntity,
@@ -75,6 +76,48 @@ class NagiosController extends Controller {
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
 
+    public function switches( Request $request, int $infraid, string $template = null ): Response {
+
+        /** @var InfrastructureEntity $infra */
+        if( !( $infra =  D2EM::getRepository( InfrastructureEntity::class )->find( $infraid ) ) ) {
+            return abort( 404, 'Unknown infrastructure' );
+        }
+
+        if( $template === null ) {
+            $tmpl = 'api/v4/nagios/switches/default';
+        } else {
+            $tmpl = sprintf( 'api/v4/nagios/switches/%s', preg_replace( '/[^a-z0-9\-]/', '', strtolower( $template ) ) );
+        }
+
+        if( !FacadeView::exists( $tmpl ) ) {
+            abort(404, 'Unknown template');
+        }
+
+//        if( $request->input( 'probe', false ) ) {
+//            $probe = $request->input( 'probe' );
+//        } else {
+//            $probe = 'FPing' . ( $protocol == 4 ? '' : '6' );
+//        }
+
+
+        $switches = $infra->getSwitchers();
+
+
+        return response()
+            ->view( $tmpl, [
+                'infra'    => $infra,
+                'switches' => $switches,
+//                'probe'    => $probe,
+//                'level'    => $request->input( 'level', '+++' ),
+//                'protocol' => $protocol
+            ], 200 )
+            ->header( 'Content-Type', 'text/plain; charset=utf-8' );
+
+
+
+
+
+    }
 
     /**
      * API call to create Nagios configuration to monitor Bird's Eye looking glasses and - thus -
