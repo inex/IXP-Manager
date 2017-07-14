@@ -41,6 +41,18 @@ abstract class UpdateDb extends Command {
     protected $procTime = 0.0;
 
     /**
+     * Setup checks
+     */
+    protected function setupChecks(): bool
+    {
+        if( !class_exists("\Ds\Set") ) {
+            $this->warn( "PHP Data Structure Ds\Set is not available. Installing it would speed up processing time considerably." );
+        }
+
+        return true;
+    }
+
+    /**
      * Returns all customers or, if specified on the command line, a specific customer
      *
      * @return array Customer entities

@@ -107,7 +107,7 @@ define hostgroup {
 
     alias           All Members in Cabinet <?= $k ?> for VLAN <?= $t->vlan->getName() ?>
 
-    members         <?= $t->softwrap( $c, 1, ', ', ',', 20 ) ?>
+    members         <?= $t->softwrap( $c, 1, ', ', ', \\', 20 ) ?>
 
 }
 
@@ -128,7 +128,7 @@ define hostgroup {
 
     alias           All Members at Location <?= $k ?> for VLAN <?= $t->vlan->getName() ?>
 
-    members         <?= $t->softwrap( $l, 1, ', ', ',', 20 ) ?>
+    members         <?= $t->softwrap( $l, 1, ', ', ', \\', 20 ) ?>
 
 }
 
@@ -147,7 +147,7 @@ define hostgroup {
 
     alias           All Members for VLAN <?= $t->vlan->getName() ?>
 
-    members         <?= $t->softwrap( $all, 1, ', ', ',', 20 ) ?>
+    members         <?= $t->softwrap( $all, 1, ', ', ', \\', 20 ) ?>
 
 }
 
