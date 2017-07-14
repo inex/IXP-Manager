@@ -166,6 +166,11 @@ class VirtualInterfaceController extends IXP_Controller_FrontEnd
 
         foreach( $vi->getVlanInterfaces() as $vli )
         {
+            foreach( $vli->getLayer2Addresses() as $l2a ) {
+                $vli->removeLayer2Address( $l2a );
+                $this->getD2EM()->remove( $l2a );
+            }
+
             $this->getLogger()->info( "Deleting VLAN interface with id #{$vli->getId()} while deleting virtual interface #{$vi->getId()}" );
             $vi->removeVlanInterface( $vli );
             $this->getD2EM()->remove( $vli );
