@@ -24,9 +24,57 @@ namespace IXP\Http\Controllers\Api\V4;
  */
 
 use D2EM;
-use Entities\Router as RouterEntity;
+
+use Entities\{
+    PhysicalInterface as PhysicalInterfaceEntity,
+    Router            as RouterEntity,
+    Vlan              as VlanEntity,
+    VlanInterface     as VlanInterfaceEntity
+};
+
+use Illuminate\Http\{Request,Response};
+use Illuminate\Support\Facades\View as FacadeView;
+
 
 class NagiosController extends Controller {
+
+
+    public function customers( Request $request, int $vlanid, string $template = null ): Response {
+
+        /** @var VlanEntity $v */
+        if( !( $v =  D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ){
+            return abort( 404, 'Unknown VLAN' );
+        }
+
+        if( $template === null ) {
+            $tmpl = 'api/v4/nagios/customers/default';
+        } else {
+            $tmpl = sprintf( 'api/v4/nagios/customers/%s', preg_replace( '/[^a-z0-9\-]/', '', strtolower( $template ) ) );
+        }
+
+        if( !FacadeView::exists( $tmpl ) ) {
+            abort(404, 'Unknown template');
+        }
+
+//        if( $request->input( 'probe', false ) ) {
+//            $probe = $request->input( 'probe' );
+//        } else {
+//            $probe = 'FPing' . ( $protocol == 4 ? '' : '6' );
+//        }
+
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForVlan( $v->getId(), false, PhysicalInterfaceEntity::STATUS_CONNECTED, false );
+
+        return response()
+            ->view( $tmpl, [
+                'vlan'     => $v,
+                'vlis'     => $vlis,
+//                'probe'    => $probe,
+//                'level'    => $request->input( 'level', '+++' ),
+//                'protocol' => $protocol
+            ], 200 )
+            ->header( 'Content-Type', 'text/plain; charset=utf-8' );
+    }
+
 
     /**
      * API call to create Nagios configuration to monitor Bird's Eye looking glasses and - thus -
