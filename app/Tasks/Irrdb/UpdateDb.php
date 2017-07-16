@@ -189,7 +189,7 @@ abstract class UpdateDb
 
         $conn = D2EM::getConnection();
         $this->startTimer();
-        $fromDb = D2EM::getRepository( $entity )->getForCustomerAndProtocol( $this->customer(), $protocol, true );
+        $fromDb = D2EM::getRepository( $entity )->getForCustomerAndProtocol( $this->customer(), $protocol );
         $this->result['dbTime'] += $this->timeElapsed();
 
         // The calling function and the Bgpq3 class does a lot of validation and error
@@ -214,11 +214,11 @@ abstract class UpdateDb
 
         $fromIrrdbSet = new \Ds\Set($fromIrrdb);
 
-        foreach( $fromDb as $id => $p ) {
-            if( $fromIrrdbSet->contains( $p ) ) {
+        foreach( $fromDb as $i => $p ) {
+            if( $fromIrrdbSet->contains( $p[$type] ) ) {
                 // ASN/prefix exists in both db and IRRDB - no action required
-                unset($fromDb[$id]);
-                $fromIrrdbSet->remove($p);
+                unset($fromDb[$i]);
+                $fromIrrdbSet->remove($p[$type]);
             }
         }
 
@@ -250,10 +250,10 @@ abstract class UpdateDb
             }
 
             foreach( $fromDb as $i => $p ) {
-                Log::debug( "DELETE [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} ID:{$i} {$p}" );
+                Log::debug( "DELETE [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} ID:{$p['id']} {$p[$type]}" );
                 $conn->executeUpdate(
                     "DELETE FROM `{$dbTable}` WHERE id = ?",
-                        [ $i ]
+                        [ $p['id'] ]
                 );
             }
 

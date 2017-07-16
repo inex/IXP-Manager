@@ -35,13 +35,16 @@ class IrrdbAsn extends EntityRepository
                 ->setParameter( 'protocol', $protocol )
                 ->getScalarResult();
 
+        // ASNs are an integer and should be returned as such:
+        array_walk( $asns, function( &$element, $key ){ $element['asn'] = (int)$element['asn']; } );
+
         if( !$flatten ) {
             return $asns;
         }
 
         $flat = [];
         foreach( $asns as $p ) {
-            $flat[ $p['id'] ] = (int)$p['asn'];
+            $flat[ $p['id'] ] = $p['asn'];
         }
 
         return $flat;

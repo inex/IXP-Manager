@@ -119,7 +119,7 @@ abstract class UpdateDb extends Command {
                 foreach( [ 'stale', 'new' ] as $type ) {
                     if( count( $r[ 'v' . $protocol ][ $type ] ) ) {
                         foreach( $r[ 'v' . $protocol ][ $type ] as $e ) {
-                            $this->line( "        " . ( $type == 'stale' ? '-' . $e : '+' . $e ) . "  [IPv{$protocol}]" );
+                            $this->line( "        " . ( $type == 'stale' ? '-' . $e[$irrdbType] : '+' . $e ) . "  [IPv{$protocol}]" );
                         }
                     }
                 }
