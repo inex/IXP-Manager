@@ -45,8 +45,8 @@ abstract class UpdateDb extends Command {
      */
     protected function setupChecks(): bool
     {
-        if( !class_exists("\Ds\Set") ) {
-            $this->warn( "PHP Data Structure Ds\Set is not available. Installing it would speed up processing time considerably." );
+        if( !extension_loaded("ds") ) {
+            $this->warn( "The PHP Data Structure Ds\Set extension is not loaded/available. Falling back to polyfill which, in extreme cases, can take ~3 hours. Install the php-ds extension!" );
         }
 
         return true;
