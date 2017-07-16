@@ -97,7 +97,17 @@
                     <td><strong>BGP :: Communities</strong></td>
                     <td>
                         <?php foreach( $r->bgp->communities as $c ): ?>
-                            (<?= implode(',',$c) ?>)
+                            (<?= implode(', ',$c) ?>)
+                        <?php endforeach; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+            <?php if (isset( $r->bgp->large_communities )): ?>
+                <tr>
+                    <td><strong>BGP :: Large Communities</strong></td>
+                    <td>
+                        <?php foreach( $r->bgp->large_communities as $c ): ?>
+                            (<?= implode(', ',$c) ?>)
                         <?php endforeach; ?>
                     </td>
                 </tr>

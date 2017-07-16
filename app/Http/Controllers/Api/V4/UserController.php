@@ -49,26 +49,43 @@ class UserController extends Controller {
         return response()->json( D2EM::getRepository( UserEntity::class )->asArray( $priv ) );
     }
 
-    //    /**
-    //     * API call to generate user records in a given format
-    //     *
-    //     * @param int $priv Optionally limit to users of given privilege
-    //     * @return Response
-    //     */
-    //    public function templated( Request $request, string $template, int $priv = null )
-    //    {
-    //        $tmpl = sprintf('api/v4/user/%s', preg_replace('/[^a-z0-9\-]/', '', strtolower( $template ) ) );
-    //
-    //        if( !FacadeView::exists( $tmpl ) ) {
-    //            abort(404, 'Unknown template');
-    //        }
-    //
-    //        $users = $priv ? D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => $priv ] )
-    //                        : D2EM::getRepository( UserEntity::class )->findAll();
-    //
-    //        return response()
-    //                ->view( $tmpl, [ 'users' => $users ], 200 )
-    //                ->header( 'Content-Type', 'text/plain; charset=utf-8' );
-    //    }
+
+    public function formatted( Request $request, int $priv = null, string $template = null ): Response {
+
+        if( $template === null && !$request->input( 'template', false ) ) {
+            $tmpl = 'api/v4/user/formatted/default';
+        } else {
+            if( $template === null ) {
+                $template = $request->input( 'template' );
+            }
+            $tmpl = sprintf( 'api/v4/user/formatted/%s', preg_replace( '/[^a-z0-9\-]/', '', strtolower( $template ) ) );
+        }
+
+        if( !FacadeView::exists( $tmpl ) ) {
+            abort(404, 'Unknown template');
+        }
+
+        if( $priv === null && $request->input( 'priv', false ) ) {
+            $priv = $request->input( 'priv' );
+        }
+
+        if( $request->input( 'users', false ) ) {
+            $users = D2EM::getRepository( UserEntity::class )->findBy([ 'username' => explode(',', $request->input( 'users' ) ), 'disabled' => 0 ]);
+        } else if( $priv !== null ) {
+            $users = D2EM::getRepository( UserEntity::class )->findBy([ 'privs' => $priv, 'disabled' => 0 ]);
+        } else {
+            $users = D2EM::getRepository( UserEntity::class )->findBy([ 'disabled' => 0 ]);
+        }
+
+        return response()
+            ->view( $tmpl, [
+                    'users'     => $users,
+                    'reqUsers'  => $request->input( 'users', false ) ? explode(',', $request->input( 'users' ) ) : [],
+                    'priv'      => $priv ?? '',
+                    'bcrypt'    => $request->input( 'bcrypt', '2y' ),
+                    'group'     => $request->input( 'group',  'admin' ),
+                ], 200 )
+            ->header( 'Content-Type', 'text/plain; charset=utf-8' );
+    }
 
 }

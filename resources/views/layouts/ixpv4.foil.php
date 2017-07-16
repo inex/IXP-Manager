@@ -80,19 +80,21 @@
 
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <ol class="breadcrumb">
-            <?php $this->section('page-header-preamble') ?>
-            <?php $this->stop() ?>
-            <li>
-                <a href="<?= url('') ?>">Home</a>
-            </li>
-            <li class="active">
-                <?php $this->section('title') ?>
+        <div id="breadcrumb-area">
+            <ol class="breadcrumb">
+                <?php $this->section('page-header-preamble') ?>
                 <?php $this->stop() ?>
-            </li>
-            <?php $this->section('page-header-postamble') ?>
-            <?php $this->stop() ?>
-        </ol>
+                <li>
+                    <a href="<?= url('') ?>">Home</a>
+                </li>
+                <li class="active">
+                    <?php $this->section('title') ?>
+                    <?php $this->stop() ?>
+                </li>
+                <?php $this->section('page-header-postamble') ?>
+                <?php $this->stop() ?>
+            </ol>
+        </div>
     <?php else: ?>
         <div class="page-content">
             <div class="page-header">

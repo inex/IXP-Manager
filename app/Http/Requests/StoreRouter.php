@@ -56,7 +56,7 @@ class StoreRouter extends FormRequest
         $this->merge( [ 'handle' => preg_replace( "/[^a-z0-9\-]/", '' , strtolower( $this->input( 'handle', '' ) ) ) ] );
 
         return [
-            'handle'                => 'required|string|max:255|unique:routers,handle' . ( $this->input('id') ? ','. $this->input('id') : '' ),
+            'handle'                => 'required|string|max:255|unique:Entities\Router,handle' . ( $this->input('id') ? ','. $this->input('id') : '' ),
             'vlan'                  => 'required|integer',
             'protocol'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
             'type'                  => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$TYPES ) ),

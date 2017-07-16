@@ -452,14 +452,22 @@
                         type: 'GET'
                     })
                         .done( function( data ) {
-                            result = ( data.success ) ? 'success': 'danger';
+
+                            let messageAjax, nameClass = ( data.success ) ? 'success': 'danger';
+
                             if( result ) {
                                 if( action == 'delete' ){
                                     messageAjax = 'The patch panel port has been deleted.';
                                 } else {
                                     messageAjax = data.message;
                                 }
-                                $("#message-ppp").html("<div class='alert alert-" + result + "' role='alert'>" + messageAjax + "</div>");
+
+                                $("#message-ppp").html("<div class='alert alert-" + nameClass + "' role='alert'>" + messageAjax + "</div>");
+
+                                if( action == 'split' ){
+                                    $("#breadcrumb-area").load( $(location).attr('pathname')+" .breadcrumb");
+                                }
+
                                 refreshDataTable('ppp');
                             }
                         })

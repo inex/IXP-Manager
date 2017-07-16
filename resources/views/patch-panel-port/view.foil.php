@@ -4,11 +4,26 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'patch-panel/list' )?>">Patch Panel Port</a>
+    <a href="<?= route ( 'patch-panel/list' )?>">
+        Patch Panel Port
+    </a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li> Patch Panel Port / Cross Connect - <?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> :: <?= $t->ee( $t->ppp->getName() ) ?> </li>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-preamble' ) ?>
+    <li class="pull-right">
+        <div class="btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/list/patch-panel/' . $t->ppp->getPatchPanel()->getId() ) ?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
+            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/edit').'/'.$t->ppp->getId() ?>" title="edit">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+        </div>
+    </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>

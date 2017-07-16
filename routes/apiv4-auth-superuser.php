@@ -33,6 +33,15 @@ Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
 Route::get('user/json',         'UserController@json');
 Route::get('user/json/{priv}',  'UserController@json');
 
+// Returns all users (or users with given integer privilege) as a formatted template (e.g. for TACACS)
+// see: http://docs.ixpmanager.org/features/tacacs/
+Route::get( 'user/formatted',                   'UserController@formatted');
+Route::get( 'user/formatted/{priv}',            'UserController@formatted');
+Route::get( 'user/formatted/{priv}/{template}', 'UserController@formatted');
+Route::post('user/formatted',                   'UserController@formatted');
+Route::post('user/formatted/{priv}',            'UserController@formatted');
+Route::post('user/formatted/{priv}/{template}', 'UserController@formatted');
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VLANs
@@ -85,10 +94,6 @@ Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortC
 
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
 
-// remove the following two after INEX updated to yaml
-Route::get('provisioner/salt/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
-Route::get('provisioner/salt/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
-
 Route::get('provisioner/yaml/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
 Route::get('provisioner/yaml/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
 
@@ -126,4 +131,8 @@ Route::get('virtual-interface/delete/{id}',                    'VirtualInterface
 Route::get('core-link/delete/{id}',                             'CoreLinkController@delete' );
 
 
+Route::group( [ 'prefix' => 'nagios' ], function() {
+    Route::get( 'customers/{vliid}',            'NagiosController@customers' );
+    Route::get( 'customers/{vliid}/{template}', 'NagiosController@customers' );
+});
 
