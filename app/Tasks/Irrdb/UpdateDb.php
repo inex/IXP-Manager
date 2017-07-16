@@ -189,7 +189,7 @@ abstract class UpdateDb
 
         $conn = D2EM::getConnection();
         $this->startTimer();
-        $fromDb = D2EM::getRepository( $entity )->getForCustomerAndProtocol( $this->customer(), $protocol );
+        $fromDb = D2EM::getRepository( $entity )->getForCustomerAndProtocol( $this->customer(), $protocol, true );
         $this->result['dbTime'] += $this->timeElapsed();
 
         // The calling function and the Bgpq3 class does a lot of validation and error
@@ -214,11 +214,11 @@ abstract class UpdateDb
 
         $fromIrrdbSet = new \Ds\Set($fromIrrdb);
 
-        foreach( $fromDb as $i => $p ) {
-            if( $fromIrrdbSet->contains($p[$type]) ) {
+        foreach( $fromDb as $id => $p ) {
+            if( $fromIrrdbSet->contains( $p ) ) {
                 // ASN/prefix exists in both db and IRRDB - no action required
-                unset($fromDb[$i]);
-                $fromIrrdbSet->remove($p[$type]);
+                unset($fromDb[$id]);
+                $fromIrrdbSet->remove($p);
             }
         }
 
@@ -241,11 +241,6 @@ abstract class UpdateDb
         try {
             $now = date( 'Y-m-d H:i:s' );
 
-            $conn->executeUpdate(
-                "UPDATE `{$dbTable}` SET last_seen = ? WHERE customer_id = ? AND protocol = ?",
-                [ $now, $this->customer()->getId(), $protocol ]
-            );
-
             foreach( $fromIrrdb as $p ) {
                 Log::debug( "INSERT [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} {$p}" );
                 $conn->executeUpdate(
@@ -254,13 +249,18 @@ abstract class UpdateDb
                 );
             }
 
-            foreach( $fromDb as $p ) {
-                Log::debug( "DELETE [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} {$p[$type]}" );
+            foreach( $fromDb as $i => $p ) {
+                Log::debug( "DELETE [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} ID:{$i} {$p}" );
                 $conn->executeUpdate(
-                    "DELETE FROM `{$dbTable}` WHERE customer_id = ? AND protocol = ? AND `{$type}` = ?",
-                    [ $this->customer()->getId(), $protocol, $p[$type] ]
+                    "DELETE FROM `{$dbTable}` WHERE id = ?",
+                        [ $i ]
                 );
             }
+
+            $conn->executeUpdate(
+                "UPDATE `{$dbTable}` SET last_seen = ? WHERE customer_id = ? AND protocol = ?",
+                [ $now, $this->customer()->getId(), $protocol ]
+            );
 
             $conn->commit();
 

@@ -86,8 +86,8 @@ abstract class UpdateDb extends Command {
 
     public function printResults( Customer $c, array $r, $irrdbType = 'prefix' )
     {
-        $this->netTime += $r[ 'netTime' ];
-        $this->dbTime += $r[ 'dbTime' ];
+        $this->netTime  += $r[ 'netTime' ];
+        $this->dbTime   += $r[ 'dbTime' ];
         $this->procTime += $r[ 'procTime' ];
 
         if( $this->isVerbosityQuiet() ) {
@@ -108,8 +108,8 @@ abstract class UpdateDb extends Command {
 
         if( $this->isVerbosityVeryVerbose() ) {
             $this->info( "    Time for net/database/processing: "
-                . sprintf( "%0.6f/", $r[ 'netTime' ] )
-                . sprintf( "%0.6f/", $r[ 'dbTime' ] )
+                . sprintf( "%0.6f/",       $r[ 'netTime' ] )
+                . sprintf( "%0.6f/",       $r[ 'dbTime' ] )
                 . sprintf( "%0.6f (secs)", $r[ 'procTime' ] )
             );
         }
@@ -119,7 +119,7 @@ abstract class UpdateDb extends Command {
                 foreach( [ 'stale', 'new' ] as $type ) {
                     if( count( $r[ 'v' . $protocol ][ $type ] ) ) {
                         foreach( $r[ 'v' . $protocol ][ $type ] as $e ) {
-                            $this->line( "        " . ( $type == 'stale' ? '-' . $e[ $irrdbType ] : '+' . $e ) . "  [IPv{$protocol}]" );
+                            $this->line( "        " . ( $type == 'stale' ? '-' . $e : '+' . $e ) . "  [IPv{$protocol}]" );
                         }
                     }
                 }
