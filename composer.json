@@ -62,7 +62,8 @@
         "maxhoffmann/parsedown-laravel": "dev-master",
         "graham-campbell/flysystem": "^3.6",
         "barryvdh/laravel-dompdf": "^0.8.0",
-        "luketowers/purifier": "dev-master"
+        "luketowers/purifier": "dev-master",
+        "php-ds/php-ds": "^1.1"
 
     },
     "require-dev": {
