@@ -212,13 +212,17 @@ abstract class UpdateDb
 
         $this->startTimer();
 
+        $fromIrrdbSet = new \Ds\Set($fromIrrdb);
+
         foreach( $fromDb as $i => $p ) {
-            if( ( $j = array_search( $p[$type], $fromIrrdb ) ) !== false ) {
+            if( $fromIrrdbSet->contains( $p[$type] ) ) {
                 // ASN/prefix exists in both db and IRRDB - no action required
-                unset( $fromDb[ $i ] );
-                unset( $fromIrrdb[ $j ] );
+                unset($fromDb[$i]);
+                $fromIrrdbSet->remove($p[$type]);
             }
         }
+
+        $fromIrrdb = $fromIrrdbSet->toArray();
 
         // at this stage, the arrays are now:
         // $fromDb      => asns/prefixes in the database that need to be deleted
@@ -237,11 +241,6 @@ abstract class UpdateDb
         try {
             $now = date( 'Y-m-d H:i:s' );
 
-            $conn->executeUpdate(
-                "UPDATE `{$dbTable}` SET last_seen = ? WHERE customer_id = ? AND protocol = ?",
-                [ $now, $this->customer()->getId(), $protocol ]
-            );
-
             foreach( $fromIrrdb as $p ) {
                 Log::debug( "INSERT [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} {$p}" );
                 $conn->executeUpdate(
@@ -250,13 +249,18 @@ abstract class UpdateDb
                 );
             }
 
-            foreach( $fromDb as $p ) {
-                Log::debug( "DELETE [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} {$p[$type]}" );
+            foreach( $fromDb as $i => $p ) {
+                Log::debug( "DELETE [{$type}]: {$this->customer()->getShortname()} IPv{$protocol} ID:{$p['id']} {$p[$type]}" );
                 $conn->executeUpdate(
-                    "DELETE FROM `{$dbTable}` WHERE customer_id = ? AND protocol = ? AND `{$type}` = ?",
-                    [ $this->customer()->getId(), $protocol, $p[$type] ]
+                    "DELETE FROM `{$dbTable}` WHERE id = ?",
+                        [ $p['id'] ]
                 );
             }
+
+            $conn->executeUpdate(
+                "UPDATE `{$dbTable}` SET last_seen = ? WHERE customer_id = ? AND protocol = ?",
+                [ $now, $this->customer()->getId(), $protocol ]
+            );
 
             $conn->commit();
 

@@ -67,6 +67,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-ds/php-ds" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
@@ -182,6 +183,7 @@
           <root url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
           <root url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
           <root url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
+          <root url="file://$MODULE_DIR$/vendor/php-ds/php-ds" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
@@ -292,6 +294,7 @@
           <root url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
           <root url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
           <root url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
+          <root url="file://$MODULE_DIR$/vendor/php-ds/php-ds" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
           <root url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
