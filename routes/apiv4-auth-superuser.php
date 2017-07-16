@@ -116,8 +116,10 @@ Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceCo
 
 
 Route::group( [ 'prefix' => 'nagios' ], function() {
-    Route::get( 'customers/{vliid}',            'NagiosController@customers' );
-    Route::get( 'customers/{vliid}/{template}', 'NagiosController@customers' );
+    Route::get(  'customers/{vliid}/{protocol}',            'NagiosController@customers' );
+    Route::post( 'customers/{vliid}/{protocol}',            'NagiosController@customers' );
+    Route::get(  'customers/{vliid}/{protocol}/{template}', 'NagiosController@customers' );
+    Route::post( 'customers/{vliid}/{protocol}/{template}', 'NagiosController@customers' );
 
     Route::get( 'switches/{infraid}',            'NagiosController@switches' );
     Route::get( 'switches/{infraid}/{template}', 'NagiosController@switches' );

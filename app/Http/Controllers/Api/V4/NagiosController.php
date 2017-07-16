@@ -40,7 +40,11 @@ use Illuminate\Support\Facades\View as FacadeView;
 class NagiosController extends Controller {
 
 
-    public function customers( Request $request, int $vlanid, string $template = null ): Response {
+    public function customers( Request $request, int $vlanid, int $protocol, string $template = null ): Response {
+
+        if( !in_array( $protocol, [ 4, 6 ] ) ) {
+            return abort( 404, 'Unknown protocol' );
+        }
 
         /** @var VlanEntity $v */
         if( !( $v =  D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ){
@@ -63,15 +67,31 @@ class NagiosController extends Controller {
 //            $probe = 'FPing' . ( $protocol == 4 ? '' : '6' );
 //        }
 
-        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForVlan( $v->getId(), false, PhysicalInterfaceEntity::STATUS_CONNECTED, false );
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v->getId(), $protocol, false, PhysicalInterfaceEntity::STATUS_CONNECTED );
 
         return response()
             ->view( $tmpl, [
                 'vlan'     => $v,
+                'protocol' => $protocol,
                 'vlis'     => $vlis,
-//                'probe'    => $probe,
-//                'level'    => $request->input( 'level', '+++' ),
-//                'protocol' => $protocol
+
+                // optional POST/GET parameters
+                'host_definition'               => $request->input( 'host_definition',        'ixp-manager-member-host'          ),
+                'host_check_command'            => $request->input( 'host_check_command',     'check-host-alive'                 ),
+                'max_check_attempts'            => $request->input( 'max_check_attempts',     '10'                               ),
+                'check_period'                  => $request->input( 'check_period',           '24x7'                             ),
+                'notification_interval'         => $request->input( 'notification_interval',  '120'                              ),
+                'notification_period'           => $request->input( 'notification_period',    '24x7'                             ),
+                'host_notification_options'     => $request->input( 'notification_options',   'd,u,r'                            ),
+                'check_interval'                => $request->input( 'check_interval',         '5'                                ),
+                'retry_check_interval'          => $request->input( 'retry_check_interval',   '1'                                ),
+                'service_definition'            => $request->input( 'service_definition',     'ixp-manager-member-service'       ),
+                'contact_groups'                => $request->input( 'contact_groups',         'admins'                           ),
+                'ping_check_command'            => $request->input( 'ping_check_command',     'check_ping!250.0,20%!500.0,60%'   ),
+                'pingbusy_check_command'        => $request->input( 'pingbusy_check_command', 'check_ping!1000.0,80%!2000.0,90%' ),
+
+                'service_notification_options'  => $request->input( 'notification_options',   'w,u,c,r'                            ),
+
             ], 200 )
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
