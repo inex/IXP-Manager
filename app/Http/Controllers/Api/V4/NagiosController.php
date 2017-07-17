@@ -178,85 +178,65 @@ class NagiosController extends Controller {
     }
 
 
-    public function birdseyeRsBgpSessions( $vlanid = null )
-    {
+    /**
+     * An API call to generate customer BGP session checks for Nagios for a given router type, VLAN and protocol.
+     *
+     * @see http://docs.ixpmanager.org/features/nagios/
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $vlanid
+     * @param int                      $protocol
+     * @param int                      $type
+     * @param string|null              $template
+     * @return \Illuminate\Http\Response
+     */
+    public function birdseyeBgpSessions( Request $request, int $vlanid, int $protocol, int $type, string $template = null ): Response {
+
+        if( !in_array( $protocol, [ 4, 6 ] ) ) {
+            return abort( 404, 'Unknown protocol' );
+        }
+
+        if( !isset( RouterEntity::$TYPES[$type] ) ) {
+            return abort( 404, 'Unknown router type' );
+        }
+
+        /** @var VlanEntity $v */
+        if( !( $v =  D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ){
+            return abort( 404, 'Unknown VLAN' );
+        }
+
+        if( $template === null ) {
+            $tmpl = 'api/v4/nagios/birdseye-bgp-sessions/default';
+        } else {
+            $tmpl = sprintf( 'api/v4/nagios/birdseye-bgp-sessions/%s', preg_replace( '/[^a-z0-9\-]/', '', strtolower( $template ) ) );
+        }
+
+        if( !FacadeView::exists( $tmpl ) ) {
+            abort(404, 'Unknown template');
+        }
+
         $routers = D2EM::getRepository( RouterEntity::class )->filterForApiType( RouterEntity::API_TYPE_BIRDSEYE );
-        $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnType( $routers, RouterEntity::TYPE_ROUTE_SERVER );
+        $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnType( $routers, $type );
 
-        if( $vlanid ) {
-            $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnVlanId( $routers, $vlanid );
-        }
-        
         if( !count( $routers ) ) {
-            abort( 404, "No suitable definition(s) in config/routers.php found." );
+            abort( 404, "No suitable router(s) found." );
         }
-        
-        $map   = [];
-        $vlans = [];
-        
-        foreach( $routers as $h => $router ) {
 
-            $h = $router->getHandle();
-            if( !$router->hasApi() ) {
-                continue;
-            }
-            
-            if( !isset( $vlans[ $router->vlanId() ] ) ) {
-                if( !( $vlans[$router->vlanId()] = d2r('Vlan')->find( $router->vlanId() ) ) ) {
-                    // non-existent VLAN
-                    continue;
-                }
-            }
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v->getId(), $protocol, false, PhysicalInterfaceEntity::STATUS_CONNECTED );
 
-            foreach( $vlans[$router->vlanId()]->getVlanInterfaces() as $vli ) {
-                if( !$vli->getRsclient() ) {
-                    continue;
-                }
-
-                $connected = false;
-                foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi ) {
-                    if( $pi->statusIsConnected() ) {
-                        $connected = true;
-                        break;
-                    }
-                }
-
-                if( !$connected ) {
-                    continue;
-                }
-
-                if( !( $vli->getVirtualInterface()->getCustomer()->isTypeFull() || $vli->getVirtualInterface()->getCustomer()->isTypeProBono() ) ) {
-                    continue;
-                }
-
-                foreach( [4,6] as $proto ) {
-                    if( !$vli->{'getIpv'.$proto.'Enabled'}() || !$vli->{'getIpv'.$proto.'monitorrcbgp'}() || !$vli->{"getIpv{$proto}canping"}() || !$vli->{"getIpv{$proto}Address"}() ) {
-                        continue;
-                    }
-
-                    // FIXME we generate these (protocol name and Nagios cust hostname) is >=2 locations now -> centralise
-                    $m = [];
-                    $m['pname'] = sprintf( "pb_%04d_as%d", $vli->getId(), $vli->getVirtualInterface()->getCustomer()->getAutsys() );
-                    $m['hname'] = sprintf( "%s-ipv%d-vlan%d-%d",
-                        $vli->getVirtualInterface()->getCustomer()->getShortname(),
-                        $proto, $vli->getVLAN()->getNumber(), $vli->getId()
-                    );
-
-                    if( $router->protocol() != $proto ) {
-                        continue;
-                    }
-
-                    $m['api']  = $router->api();
-                    $m['name'] = 'BGP sesstion to ' . $router->name();
-
-                    $map[] = $m;
-                }
-            }
-        }
-        
         return response()
-            ->view('api/v4/nagios/birdseye-rs-bgp-daemons', ['map' => $map, 'vlanid' => $vlanid ?? false], 200)
-            ->header('Content-Type', 'text/plain; charset=utf-8');
+            ->view( $tmpl, [
+                'vlan'     => $v,
+                'protocol' => $protocol,
+                'type'     => $type,
+                'typeName' => RouterEntity::$TYPES[$type],
+                'vlis'     => $vlis,
+
+                // optional POST/GET parameters
+                'service_definition'            => $request->input( 'service_definition',           'ixp-manager-member-bgp-session-service'           ),
+
+            ], 200 )
+            ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
 
 }
