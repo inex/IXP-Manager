@@ -7,6 +7,10 @@
 #
 # See: http://docs.ixpmanager.org/features/nagios/
 #
+# You should not need to edit these files - instead use your own custom skins. If
+# you can't effect the changes you need with skinning, consider posting to the mailing
+# list to see if it can be achieved / incorporated.
+#
 # VLAN id: <?= $t->vlan->getId() ?>; protocol: ipv<?= $t->protocol ?>; tag: <?= $t->vlan->getNumber() ?>; name: <?= $t->vlan->getName() ?>.
 #
 # Generated: <?= date( 'Y-m-d H:i:s' ) . "\n" ?>

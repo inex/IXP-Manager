@@ -5,12 +5,37 @@
 #
 #  Please see: https://github.com/inex/IXP-Manager/wiki/Nagios
 #
+# See: http://docs.ixpmanager.org/features/nagios/
+#
 # You should not need to edit these files - instead use your own custom skins. If
 # you can't effect the changes you need with skinning, consider posting to the mailing
 # list to see if it can be achieved / incorporated.
 #
-# Skinning: https://github.com/inex/IXP-Manager/wiki/Skinning
+# Infrastructure id: <?= $t->infra->getId() ?>; name: <?= $t->infra->getName() ?>.
 #
+# Generated: <?= date( 'Y-m-d H:i:s' ) . "\n" ?>
+#
+#
+# The following objects are used by inheritance here and need to be defined by your own configuration:
+#
+# 1. Hose definition:    <?= $t->host_definition ?>;
+#
+# You would create these yourself by creating a configuration file containing something like:
+#
+# define host {
+#     name                    <?= $t->host_definition ?>
+
+#     check_command                   check-host-alive
+#     max_check_attempts              3               ; number of not 'UP' checks to register as hard
+#     check_interval                  5               ; time between checks
+#     retry_interval                  1               ; time between checks if host is not 'UP'
+#     check_period                    24x7
+#     notification_interval           60
+#     notification_period             24x7
+#     notification_options            u,d,r
+#     contact_groups                  admins
+#     register                        0
+# }
 
 
 <?php
@@ -18,27 +43,32 @@
     // some vars for later:
     $locations      = [];
     $vendors        = [];
-    $vendorSwitches = [];
     $all            = [];
 
     /** @var Entities\Switcher $s */
     foreach( $t->switches as $s ):
 
-        $vendors[ $s->getVendor()->getShortname() ][] = $s;
+        if( !$s->getActive() ) {
+            echo "\n\n## Skipping {$s->getHostname()} as it is disabled\n\n";
+            continue;
+        }
 
-        $vendorSwitches[ $s->getVendor()->getShortname() ][] = $s->getName();
-        $locations[ $s->getCabinet()->getLocation()->getShortname() ][] = $s->getName();
-        $all[] = $s->getName();
+        $vendors[ $s->getVendor()->getShortname() ]['switches'][]                = $s->getHostname();
+        $vendors[ $s->getVendor()->getShortname() ]['bymodel'][$s->getModel()][] = $s->getHostname();
 
-        ?>
+        $locations[ $s->getCabinet()->getLocation()->getShortname() ][] = $s->getHostname();
+        $all[] = $s->getHostname();
+
+?>
 
 #
 # <?= $s->getName() ?> - <?= $s->getCabinet()->getCololocation() ?>, <?= $s->getCabinet()->getLocation()->getName() ?>.
 #
 
 define host {
-    use                     ixp-production-switch
-    host_name               <?= $s->getName() ?>
+    use                     <?= $t->host_definition ?>
+
+    host_name               <?= $s->getHostname() ?>
 
     alias                   <?= $s->getName() ?>
 
@@ -48,10 +78,28 @@ define host {
 
 <?php endforeach; ?>
 
+
+
+###############################################################################################
+###############################################################################################
+###############################################################################################
+###############################################################################################
+###############################################################################################
+###############################################################################################
+
+
+###############################################################################################
+###
+### Group: by location
+###
+###
+###
+
+
 <?php foreach( $locations as $name => $switches ): ?>
 
 define hostgroup {
-    hostgroup_name          IXP-Switches-infraid<?= $t->infra->getId() ?>-<?= $name ?>
+    hostgroup_name          ixp-switches-infraid-<?= $t->infra->getId() ?>-<?= strtolower( $name ) ?>
 
     alias                   IXP Switches at <?= $name ?> on <?= $t->infra->getName() ?>
 
@@ -62,62 +110,57 @@ define hostgroup {
 <?php endforeach; ?>
 
 
-define hostgroup {
-    hostgroup_name          IXP-Production-Switches-infraid<?= $t->infra->getId() ?>
+###############################################################################################
+###
+### Group: by infrastructure (all)
+###
+###
+###
 
-    alias                   IXP Production Switches (all on infraid<?= $t->infra->getName() ?>)
+
+define hostgroup {
+    hostgroup_name          ixp-production-switches-infraid-<?= $t->infra->getId() ?>
+
+    alias                   IXP Production Switches on <?= $t->infra->getName() ?> (all on infraid-<?= $t->infra->getId() ?>)
     members                 <?= $t->softwrap( $all, 1, ', ', ',', 28 ) ?>
+
 }
 
+
+###############################################################################################
+###
+### Group: by vendor and model
+###
+###
+###
+
 <?php foreach( $vendors as $shortname => $v ): ?>
+
+
+###############################################################################################
+### <?= $shortname ?>
+
 
 define hostgroup {
-    hostgroup_name          IXP-Switches-infraid<?= $t->infra->getId() ?>-{$shortname}
-    alias                   IXP {$shortname} Switches
-    members                 {$vendor_strings.$shortname}
+    hostgroup_name          ixp-switches-infraid-<?= $t->infra->getId() ?>-<?= strtolower( $shortname ) ?>
+
+    alias                   IXP <?= $shortname ?> Switches
+    members                 <?= $t->softwrap( $v['switches'], 1, ', ', ',', 28 ) ?>
 
 }
+
+    <?php foreach( $v['bymodel'] as $model => $modelsws ): ?>
+
+define hostgroup {
+    hostgroup_name          ixp-switches-infraid-<?= $t->infra->getId() ?>-<?= strtolower( $shortname ) ?>-<?= preg_replace( "/[^0-9a-z\-]/", "", strtolower( $model ) ) ?>
+
+    alias                   IXP <?= $shortname ?> <?= $model ?> Switches
+    members                 <?= $t->softwrap( $modelsws, 1, ', ', ',', 28 ) ?>
+
+}
+
+    <?php endforeach; ?>
 
 <?php endforeach; ?>
-
-
-<?php foreach( $vendors as $shortname => $v ): ?>
-
-define service{
-    use                             ixp-production-switch-service
-    hostgroup_name                  IXP-Switches-infraid<?= $t->infra->getId() ?>-{$shortname}
-    service_description             Chassis
-    check_command                   check_<?= $v[0]->getVendor()->getNagiosName() ?>_chassis!<?= $v[0]->getSnmppasswd() ?>
-
-}
-
-
-    <?php if( $shortname == 'Cisco'  ): ?>
-
-define service  {
-    use                             ixp-production-infraid<?= $t->infra->getId() ?>-switch-service
-    service_description             Temperature
-    hostgroup_name                  IXP-Switches-infraid<?= $t->infra->getId() ?>-<?= $shortname ?>
-    check_command                   check_<?= $v[0]->getVendor()->getNagiosName() ?>_temperature!<?= $v[0]->getSnmppasswd() ?>!32!38
-}
-
-    <?php endif; ?>
-
-<?php endforeach; ?>
-
-
-define service{
-    use                             ixp-production-infraid<?= $t->infra->getId() ?>-switch-service
-    hostgroup_name                  IXP-Production-Switches
-    service_description             ping - IPv4
-    check_command                   check_ping_ipv4!10!100.0,10%!200.0,20%
-}
-
-define service  {
-    use                             ixp-production-infraid<?= $t->infra->getId() ?>-switch-service
-    service_description             SSH
-    hostgroup_name                  IXP-Production-Switches
-    check_command                   check_ssh
-}
 
 

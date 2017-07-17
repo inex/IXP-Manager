@@ -90,7 +90,16 @@ class NagiosController extends Controller {
     }
 
 
-
+    /**
+     * An API call to generate production switch host and hostgroups for Nagios configuration for a given infrastructure.
+     *
+     * @see http://docs.ixpmanager.org/features/nagios/
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $infraid
+     * @param string|null              $template
+     * @return \Illuminate\Http\Response
+     */
     public function switches( Request $request, int $infraid, string $template = null ): Response {
 
         /** @var InfrastructureEntity $infra */
@@ -115,16 +124,11 @@ class NagiosController extends Controller {
             ->view( $tmpl, [
                 'infra'    => $infra,
                 'switches' => $switches,
-//                'probe'    => $probe,
-//                'level'    => $request->input( 'level', '+++' ),
-//                'protocol' => $protocol
+
+                // optional POST/GET parameters
+                'host_definition' => $request->input( 'host_definition', 'ixp-manager-production-switch' ),
             ], 200 )
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
-
-
-
-
-
     }
 
     /**
