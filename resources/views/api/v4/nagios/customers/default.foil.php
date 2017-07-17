@@ -57,6 +57,14 @@
 #     check_command           check_ping!250.0,20%!500.0,60%
 #     register                0
 # }
+#
+# define service {
+#     name                    ixp-manager-member-ping-busy-service
+#     use                     ixp-manager-member-service
+#     service_description     PING-Busy
+#     check_command           check_ping!1000.0,80%!2000.0,90%
+#     register                0
+# }
 
 
 <?php
@@ -114,7 +122,7 @@ define host {
 <?php else: ?>
 
 define service {
-    use                     <?= $t->ping_service_definition ?>
+    use                     <?= $vli['busyhost'] ? $t->ping_busy_service_definition : $t->ping_service_definition ?>
 
     host_name               <?= $hostname ?>
 

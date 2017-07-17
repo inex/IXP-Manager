@@ -81,9 +81,10 @@ class NagiosController extends Controller {
                 'vlis'     => $vlis,
 
                 // optional POST/GET parameters
-                'host_definition'               => $request->input( 'host_definition',         'ixp-manager-member-host'         ),
-                'service_definition'            => $request->input( 'service_definition',      'ixp-manager-member-service'      ),
-                'ping_service_definition'       => $request->input( 'ping_service_definition', 'ixp-manager-member-ping-service' ),
+                'host_definition'               => $request->input( 'host_definition',              'ixp-manager-member-host'              ),
+                'service_definition'            => $request->input( 'service_definition',           'ixp-manager-member-service'           ),
+                'ping_service_definition'       => $request->input( 'ping_service_definition',      'ixp-manager-member-ping-service'      ),
+                'ping_busy_service_definition'  => $request->input( 'ping_busy_service_definition', 'ixp-manager-member-ping-busy-service' ),
 
             ], 200 )
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
@@ -132,15 +133,16 @@ class NagiosController extends Controller {
     }
 
     /**
-     * API call to create Nagios configuration to monitor Bird's Eye looking glasses and - thus -
-     * Bird BGP daemons.
+     * An API call to generate Birdseye daemon checks for Nagios configuration for all or a given vlan.
      *
-     * Takes router / Bird instances from config/routers.php.
+     * @see http://docs.ixpmanager.org/features/nagios/
      *
-     * @param int $vlanid Optional database id of a vlan to generate config for (vlan.id)
-     * @return Response
+     * @param \Illuminate\Http\Request $request
+     * @param string|null              $template
+     * @param int                      $vlanid
+     * @return \Illuminate\Http\Response
      */
-    public function birdseyeDaemons( $vlanid = null )
+    public function birdseyeDaemons( Request $request, string $template = null, int $vlanid = null )
     {
         $routers = D2EM::getRepository( RouterEntity::class )->filterForApiType( RouterEntity::API_TYPE_BIRDSEYE );
 
@@ -152,8 +154,26 @@ class NagiosController extends Controller {
             abort( 404, "No routers for the provided VLAN ID / Bird's Eye API type." );
         }
 
+        if( $template === null ) {
+            $tmpl = 'api/v4/nagios/birdseye-daemons/default';
+        } else {
+            $tmpl = sprintf( 'api/v4/nagios/birdseye-daemons/%s', preg_replace( '/[^a-z0-9\-]/', '', strtolower( $template ) ) );
+        }
+
+        if( !FacadeView::exists( $tmpl ) ) {
+            abort(404, 'Unknown template');
+        }
+
         return response()
-                ->view('api/v4/nagios/birdseye-daemons', ['routers' => $routers, 'vlanid' => $vlanid ?? false], 200)
+                ->view( $tmpl, [
+                    'routers' => $routers,
+                    'vlanid' => $vlanid ?? false,
+
+                    // optional POST/GET parameters
+                    'host_definition'    => $request->input( 'host_definition', 'ixp-manager-host-birdseye-daemon' ),
+                    'service_definition' => $request->input( 'host_definition', 'ixp-manager-service-birdseye-daemon' ),
+
+                ], 200)
                 ->header('Content-Type', 'text/plain; charset=utf-8');
     }
 

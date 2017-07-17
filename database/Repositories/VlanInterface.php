@@ -47,6 +47,7 @@ class VlanInterface extends EntityRepository
      *         [maxbgpprefix] => 20        // VLAN interface max prefixes
      *         [as112client] => 1          // if the member is an as112 client or not
      *         [rsclient] => 1             // if the member is a route server client or not
+     *         [busyhost]
      *         [sid]
      *         [sname]
      *         [cabid]
