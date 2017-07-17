@@ -33,6 +33,7 @@ class VlanInterface extends EntityRepository
      *         [gmaxprefixes] => 20        // from cust table (global)
      *         [peeringmacro] => ABC
      *         [peeringmacrov6] => ABC
+     *         [vid]        => 2
      *         [vtag]       => 10,
      *         [vname]      => "Peering LAN #1
      *         [viid] => 120
@@ -77,6 +78,7 @@ class VlanInterface extends EntityRepository
                         c.peeringmacro    AS peeringmacro, 
                         c.peeringmacrov6  AS peeringmacrov6,
                         
+                        v.id                 AS vid,
                         v.number             AS vtag,
                         v.name               AS vname,
                         vi.id                AS viid, 
@@ -251,6 +253,7 @@ class VlanInterface extends EntityRepository
      *        "caname" => "ABC Ltd",
      *        "csname" => "abc",
      *        "cautsys" => 65501,
+     *        "vid" => 2,
      *        "vtag" => 10,
      *        "viid" => 33,
      *        "vliid" => 100,
@@ -296,6 +299,7 @@ class VlanInterface extends EntityRepository
                         c.shortname          AS csname,
                         c.autsys             AS cautsys,
                         
+                        v.id                 AS vid,
                         v.number             AS vtag,
                         v.name               AS vname,
 

@@ -5,10 +5,55 @@
 #   api/v4/nagios/customers/{vlanid}/{protocol} API call to IXP Manager.
 # Any local changes made to this script will be lost.
 #
+# See: http://docs.ixpmanager.org/features/nagios/
+#
 # VLAN id: <?= $t->vlan->getId() ?>; protocol: ipv<?= $t->protocol ?>; tag: <?= $t->vlan->getNumber() ?>; name: <?= $t->vlan->getName() ?>.
 #
 # Generated: <?= date( 'Y-m-d H:i:s' ) . "\n" ?>
 #
+#
+# The following objects are used by inheritance here and need to be defined by your own configuration:
+#
+# 1. Hose definition:    <?= $t->host_definition ?>;
+# 2. Service definition: <?= $t->service_definition ?>; and
+# 3. Ping service definition: <?= $t->ping_service_definition ?>.
+#
+# You would create these yourself by creating a configuration file containing something like:
+#
+# define host {
+#     name                    ixp-manager-member-host
+#     check_command           check-host-alive
+#     check_period            24x7
+#     max_check_attempts      10
+#     notification_interval   120
+#     notification_period     24x7
+#     notification_options    d,u,r
+#     contact_groups          admins
+#     register                0
+# }
+#
+#
+# define service {
+#     name                    ixp-manager-member-service
+#     check_period            24x7
+#     max_check_attempts      10
+#     check_interval          5
+#     retry_check_interval    1
+#     contact_groups          admins
+#     notification_interval   120
+#     notification_period     24x7
+#     notification_options    w,u,c,r
+#     register                0
+# }
+#
+# define service {
+#     name                    ixp-manager-member-ping-service
+#     use                     ixp-manager-member-service
+#     service_description     PING
+#     check_command           check_ping!250.0,20%!500.0,60%
+#     register                0
+# }
+
 
 <?php
     // some arrays for later:
@@ -26,14 +71,13 @@
 ###
 ### <?= $vli['location_name'] ?> / <?= $vli['abrevcname'] ?> / <?=  $vli['sname'] ?>.
 ###
-
 <?php
     if( !$vli['enabled'] || !$vli['address'] ) {
         echo "\n\n ## ipv{$t->protocol} not enabled / no address configured, skipping\n\n";
         continue;
     }
 
-    $hostname = preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $vli['abrevcname'] ) ) . '-as' . $vli['autsys'] . '-ipv' . $t->protocol . '-vlantag' . $vli['vtag'] . '-vliid' . $vli['vliid'];
+    $hostname = $t->nagiosHostname( $vli['abrevcname'], $vli['autsys'], $t->protocol, $vli['vid'], $vli['vliid'] );
 
     $all[]                                = $hostname;
     $switches[ $vli['sname'] ][]          = $hostname;
@@ -51,52 +95,28 @@ define host {
     alias                   <?= $vli['cname'] ?> / <?= $vli['sname'] ?> / <?= $vli['vname'] ?>.
     address                 <?= $vli['address'] ?>
 
-    check_command           <?= $t->host_check_command ?>
-
-    check_period            <?= $t->check_period ?>
-
-    max_check_attempts      <?= $t->max_check_attempts ?>
-
-    notification_interval   <?= $t->notification_interval ?>
-
-    notification_period     <?= $t->notification_period ?>
-
-    notification_options    <?= $t->host_notification_options ?>
-
-    contact_groups          <?= $t->contact_groups ?>
-
+<?php if( !$vli['canping'] ): ?>
+    ## 'canping' is set to false for this vlan interface, disabling host check:
+    check_command
+<?php endif; ?>
 }
-
-
 
 ### Service: <?= $vli['address']  ?> / <?= $vli['hostname'] ?> / <?= $vli['vname'] ?>.
 
+<?php if( !$vli['canping'] ): ?>
+
+# canping disabled for this, skipping service ping check
+
+<?php else: ?>
+
 define service {
-    use                     <?= $t->service_definition ?>
+    use                     <?= $t->ping_service_definition ?>
 
     host_name               <?= $hostname ?>
 
-    service_description     PING<?= $vli['busyhost'] ? '-busy' : '' ?>
-
-    check_command           <?= $vli['busyhost'] ? $t->pingbusy_check_command : $t->ping_check_command ?>
-
-    check_period            <?= $t->check_period ?>
-
-    max_check_attempts      <?= $t->max_check_attempts ?>
-
-    check_interval          <?= $t->check_interval ?>
-
-    retry_check_interval    <?= $t->retry_check_interval ?>
-
-    contact_groups          <?= $t->contact_groups ?>
-
-    notification_interval   <?= $t->notification_interval ?>
-
-    notification_period     <?= $t->notification_period ?>
-
-    notification_options    <?= $t->service_notification_options ?>
-
 }
+
+<?php endif; ?>
 
 <?php endforeach; ?>
 
@@ -120,7 +140,7 @@ define service {
 
 <?php foreach( $switches as $k => $c ): ?>
 
-    define hostgroup {
+define hostgroup {
     hostgroup_name  switch-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>-<?= preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $k ) ) ?>
 
     alias           All IPv<?= $t->protocol ?> Members Connected to Switch <?= $k ?> for VLAN <?= $t->vlan->getName() ?>
