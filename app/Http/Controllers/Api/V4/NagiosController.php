@@ -215,8 +215,11 @@ class NagiosController extends Controller {
             abort(404, 'Unknown template');
         }
 
+        // this is pretty inefficient...
         $routers = D2EM::getRepository( RouterEntity::class )->filterForApiType( RouterEntity::API_TYPE_BIRDSEYE );
         $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnType( $routers, $type );
+        $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnProtocol( $routers, $protocol );
+        $routers = D2EM::getRepository( RouterEntity::class )->filterCollectionOnVlanId( $routers, $v->getId() );
 
         if( !count( $routers ) ) {
             abort( 404, "No suitable router(s) found." );
@@ -226,11 +229,13 @@ class NagiosController extends Controller {
 
         return response()
             ->view( $tmpl, [
-                'vlan'     => $v,
-                'protocol' => $protocol,
-                'type'     => $type,
-                'typeName' => RouterEntity::$TYPES[$type],
-                'vlis'     => $vlis,
+                'vlan'      => $v,
+                'protocol'  => $protocol,
+                'type'      => $type,
+                'typeName'  => RouterEntity::$TYPES[$type],
+                'typeShort' => strtolower( RouterEntity::$TYPES_SHORT[$type] ),
+                'routers'   => $routers,
+                'vlis'      => $vlis,
 
                 // optional POST/GET parameters
                 'service_definition'            => $request->input( 'service_definition',           'ixp-manager-member-bgp-session-service'           ),

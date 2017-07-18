@@ -126,6 +126,7 @@
     <orderEntry type="module-library">
       <library name="PHP" type="php">
         <CLASSES>
+          <root url="file://$APPLICATION_HOME_DIR$/bin" />
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/former" />
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/html-object" />
           <root url="file://$MODULE_DIR$/vendor/aura/html" />
@@ -237,6 +238,7 @@
           <root url="jar://$APPLICATION_HOME_DIR$/plugins/phpspec/lib/phpspec.jar!/phpspec_stub" />
         </CLASSES>
         <SOURCES>
+          <root url="file://$APPLICATION_HOME_DIR$/bin" />
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/former" />
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/html-object" />
           <root url="file://$MODULE_DIR$/vendor/aura/html" />
