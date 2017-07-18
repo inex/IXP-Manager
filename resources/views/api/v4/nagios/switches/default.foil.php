@@ -103,7 +103,7 @@ define hostgroup {
 
     alias                   IXP Switches at <?= $name ?> on <?= $t->infra->getName() ?>
 
-    members                 <?= $t->softwrap( $switches, 1, ', ', ',', 28 ) ?>
+    members                 <?= $t->softwrap( $switches, 1, ', ', ', \\', 28 ) ?>
 
 }
 
@@ -122,7 +122,7 @@ define hostgroup {
     hostgroup_name          ixp-production-switches-infraid-<?= $t->infra->getId() ?>
 
     alias                   IXP Production Switches on <?= $t->infra->getName() ?> (all on infraid-<?= $t->infra->getId() ?>)
-    members                 <?= $t->softwrap( $all, 1, ', ', ',', 28 ) ?>
+    members                 <?= $t->softwrap( $all, 1, ', ', ', \\', 28 ) ?>
 
 }
 
@@ -145,7 +145,7 @@ define hostgroup {
     hostgroup_name          ixp-switches-infraid-<?= $t->infra->getId() ?>-<?= strtolower( $shortname ) ?>
 
     alias                   IXP <?= $shortname ?> Switches
-    members                 <?= $t->softwrap( $v['switches'], 1, ', ', ',', 28 ) ?>
+    members                 <?= $t->softwrap( $v['switches'], 1, ', ', ', \\', 28 ) ?>
 
 }
 
@@ -155,7 +155,7 @@ define hostgroup {
     hostgroup_name          ixp-switches-infraid-<?= $t->infra->getId() ?>-<?= strtolower( $shortname ) ?>-<?= preg_replace( "/[^0-9a-z\-]/", "", strtolower( $model ) ) ?>
 
     alias                   IXP <?= $shortname ?> <?= $model ?> Switches
-    members                 <?= $t->softwrap( $modelsws, 1, ', ', ',', 28 ) ?>
+    members                 <?= $t->softwrap( $modelsws, 1, ', ', ', \\', 28 ) ?>
 
 }
 
