@@ -10,6 +10,10 @@ NAGIOS_RELOAD="/usr/local/etc/rc.d/nagios reload"
 INFRA=""
 VLANS=""
 PROTOCOLS="4 6"
+
+# BIRDTYPE: 1 = route servers | 2 = route collectors | 3 = as112
+BIRDTYPE=""
+
 RELOAD=0
 
 # Parse arguments
@@ -28,7 +32,7 @@ for vlanid in $VLANS; do
 
     for proto in $PROTOCOLS; do
 
-        if [ $DEBUG -ne 0 ]; then echo -n "Processing $vlanid - Protocol IPv$proto.... "; fi
+        if [ $DEBUG -ne 0 ]; then echo -n "Processing vlan ID: $vlanid - protocol IPv$proto.... "; fi
 
 	curl --fail -s -H "X-IXP-Manager-API-Key: ${KEY}"  \
 	    ${URL}/customers/${vlanid}/${proto} >${CONFPATH}/customers-vlan${vlanid}-ipv${proto}.cfg.$$
@@ -70,7 +74,7 @@ done
 
 for infraid in $INFRA; do
 
-        if [ $DEBUG -ne 0 ]; then echo -n "Processing IXP Infrastructure ID $infraid.... "; fi
+        if [ $DEBUG -ne 0 ]; then echo -n "Processing IXP  ID: $infraid.... "; fi
 
 	curl --fail -s -H "X-IXP-Manager-API-Key: ${KEY}"  \
 	    ${URL}/switches/${infraid} >${CONFPATH}/switches-infraid-${infraid}.cfg.$$
@@ -106,6 +110,50 @@ for infraid in $INFRA; do
 	    fi
 	fi
   done
+
+# Process BIRD BGP sessions for customers
+
+for birdsrcs in $BIRDTYPE; do
+
+    for proto in $PROTOCOLS; do
+
+        if [ $DEBUG -ne 0 ]; then echo -n "Processing bird type ID: $birdsrcs.... "; fi
+
+	curl --fail -s -H "X-IXP-Manager-API-Key: ${KEY}"  \
+	    ${URL}/birdseye-bgp-sessions/${vlanid}/${proto}/${birdsrcs} >${CONFPATH}/birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$
+
+	if [[ $? -ne 0 ]]; then
+	    rm -f ${CONFPATH}/birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$
+	    echo FAILED ${CONFPATH}/birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg
+	    continue
+	fi
+
+	cd ${CONFPATH}
+
+	if [[ ! -f birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg ]]; then
+	    mv birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$ birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg
+	    if [ $DEBUG -ne 0 ]; then echo "created -> reload scheduled [DONE]"; fi
+	    RELOAD=1
+	else
+    	    cat birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg    | egrep -v '^#.*$' >birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.filtered
+	    cat birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$ | egrep -v '^#.*$' >birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$.filtered
+
+	    diff birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.filtered birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$.filtered >/dev/null
+	    DIFF=$?
+
+    	    rm -f birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.filtered birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$.filtered
+
+	    if [[ $DIFF -eq 0 ]]; then
+	        rm birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$
+	        if [ $DEBUG -ne 0 ]; then echo "unchanged -> skipping [DONE]"; fi
+ 	    else
+	        mv birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg.$$ birdseye-sessions-type-${birdsrcs}-IPv${proto}.cfg
+	        RELOAD=1
+	        if [ $DEBUG -ne 0 ]; then echo "changed -> updated -> reload scheduled [DONE]"; fi
+	    fi
+	fi
+  done
+done
 
 if [[ $RELOAD -eq 1 ]]; then
     if [ $DEBUG -ne 0 ]; then
