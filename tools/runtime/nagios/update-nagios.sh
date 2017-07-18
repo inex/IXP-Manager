@@ -7,8 +7,8 @@ CONFPATH="/usr/local/etc/nagios/conf-folder"
 ETCPATH="/usr/local/etc/nagios"
 NAGIOS="/usr/local/bin/nagios"
 NAGIOS_RELOAD="/usr/local/etc/rc.d/nagios reload"
-INFRA="3"
-VLANS="10"
+INFRA=""
+VLANS=""
 PROTOCOLS="4 6"
 RELOAD=0
 
