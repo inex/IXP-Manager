@@ -18,7 +18,7 @@
 #
 # The following objects are used by inheritance here and need to be defined by your own configuration:
 #
-# 1. Hose definition:    <?= $t->host_definition ?>;
+# 1. Host definition:    <?= $t->host_definition ?>;
 # 2. Service definition: <?= $t->service_definition ?>; and
 # 3. Ping service definition: <?= $t->ping_service_definition ?>.
 #
@@ -213,4 +213,3 @@ define hostgroup {
     members         <?= $t->softwrap( $all, 1, ', ', ', \\', 20 ) ?>
 
 }
-
