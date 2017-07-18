@@ -80,11 +80,22 @@ if( $t->type == \Entities\Router::TYPE_ROUTE_SERVER && !$vli['rsclient'] ) {
 }
 
 $hostname = $t->nagiosHostname( $vli['abrevcname'], $vli['autsys'], $t->protocol, $vli['vid'], $vli['vliid'] );
-$protocol = sprintf( "pb_%04d_as%d", $vli['vliid'], $vli['autsys'] );
+
+if( $t->type == \Entities\Router::TYPE_ROUTE_SERVER ) {
+    $protocol = sprintf( "pb_%04d_as%d", $vli['vliid'], $vli['autsys'] );
+} else {
+    $protocol = sprintf( "pb_as%d_vli%d_ipv%d", $vli['autsys'],  $vli['vliid'], $t->protocol );
+}
 
 $all[]                                = $hostname;
 
     foreach( $t->routers as $r ):
+    
+        // no quarantine
+        if( $r->getQuarantine() ) {
+            continue;
+        }
+        
         $byrouter[ $r->getHandle() ][] = $hostname;
 
 ?>
@@ -94,7 +105,7 @@ $all[]                                = $hostname;
 define service     {
     use                     <?= $t->service_definition . "\n" ?>
     host_name               <?= $hostname . "\n" ?>
-    service_description     BGP session to <?= $r->getHandle() ?> (<?= $r->getName() ?>)
+    service_description     BGP session to <?= $r->getHandle() . "\n" ?>
     _api_url                <?= $r->getApi() . "\n" ?>
     _protocol               <?= $protocol . "\n" ?>
 }

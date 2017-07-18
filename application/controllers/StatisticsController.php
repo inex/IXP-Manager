@@ -64,7 +64,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
         $grapher = App::make('IXP\Services\Grapher');
 
         $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
-
         if( $this->infra instanceof Entities\Infrastructure ) {
             $custs = $this->getD2R( 'Entities\Customer')->filterForInfrastructure( $custs, $this->infra );
         }
