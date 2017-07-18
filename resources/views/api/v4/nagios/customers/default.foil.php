@@ -101,7 +101,7 @@ define host {
 
 <?php if( !$vli['canping'] ): ?>
     ## 'canping' is set to false for this vlan interface, disabling host check:
-    check_command
+    check_command           null
 <?php endif; ?>
 }
 
