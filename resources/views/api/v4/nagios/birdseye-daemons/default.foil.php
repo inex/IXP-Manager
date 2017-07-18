@@ -90,11 +90,12 @@ define service     {
 ###############################################################################################
 ###############################################################################################
 
+<?php asort( $hosts ); ?>
 
 define hostgroup {
     hostgroup_name          <?= $hg_name . "\n" ?>
     alias                   Individual Bird Daemons
-    members                 <?php echo $t->softwrap( $hosts, 3, ', ', ', \\', 28 ) . "\n" ?>
+    members                 <?php echo $t->softwrap( $hosts, 1, ', ', ', \\', 28 ) . "\n" ?>
 }
 
 

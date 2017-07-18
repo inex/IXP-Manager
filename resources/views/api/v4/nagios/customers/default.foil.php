@@ -85,7 +85,7 @@
 ###
 <?php
     if( !$vli['enabled'] || !$vli['address'] ) {
-        echo "\n\n ## ipv{$t->protocol} not enabled / no address configured, skipping\n\n";
+        echo "\n\n## ipv{$t->protocol} not enabled / no address configured, skipping\n\n";
         continue;
     }
 
@@ -150,7 +150,8 @@ define service {
 ###
 ###
 
-<?php foreach( $switches as $k => $c ): ?>
+<?php foreach( $switches as $k => $c ):
+    asort( $c ); ?>
 
 define hostgroup {
     hostgroup_name  switch-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>-<?= preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $k ) ) ?>
@@ -171,7 +172,8 @@ define hostgroup {
 ###
 ###
 
-<?php foreach( $cabinets as $k => $c ): ?>
+<?php foreach( $cabinets as $k => $c ):
+    asort( $c ); ?>
 
 define hostgroup {
     hostgroup_name  cabinet-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>-<?= preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $k ) ) ?>
@@ -192,7 +194,8 @@ define hostgroup {
 ###
 ###
 
-<?php foreach( $locations as $k => $l ): ?>
+<?php foreach( $locations as $k => $l ):
+    asort( $l ); ?>
 
 define hostgroup {
     hostgroup_name  location-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>-<?= preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $k ) ) ?>
@@ -213,6 +216,8 @@ define hostgroup {
 ###
 ###
 
+<?php asort( $all ); ?>
+
 define hostgroup {
     hostgroup_name  all-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>
 
@@ -222,3 +227,4 @@ define hostgroup {
 
 }
 
+### END ###

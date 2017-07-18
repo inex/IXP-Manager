@@ -149,3 +149,6 @@ define hostgroup {
 }
 
 <?php endforeach; ?>
+
+### END ###
+

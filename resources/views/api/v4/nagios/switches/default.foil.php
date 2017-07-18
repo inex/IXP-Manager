@@ -96,7 +96,8 @@ define host {
 ###
 
 
-<?php foreach( $locations as $name => $switches ): ?>
+<?php foreach( $locations as $name => $switches ):
+    asort( $switches ); ?>
 
 define hostgroup {
     hostgroup_name          ixp-switches-infraid-<?= $t->infra->getId() ?>-<?= strtolower( $name ) ?>
@@ -117,6 +118,7 @@ define hostgroup {
 ###
 ###
 
+<?php asort( $all ); ?>
 
 define hostgroup {
     hostgroup_name          ixp-production-switches-infraid-<?= $t->infra->getId() ?>
@@ -134,7 +136,8 @@ define hostgroup {
 ###
 ###
 
-<?php foreach( $vendors as $shortname => $v ): ?>
+<?php foreach( $vendors as $shortname => $v ):
+    asort( $v) ; ?>
 
 
 ###############################################################################################
@@ -149,7 +152,8 @@ define hostgroup {
 
 }
 
-    <?php foreach( $v['bymodel'] as $model => $modelsws ): ?>
+    <?php foreach( $v['bymodel'] as $model => $modelsws ):
+            asort( $modelsws ); ?>
 
 define hostgroup {
     hostgroup_name          ixp-switches-infraid-<?= $t->infra->getId() ?>-<?= strtolower( $shortname ) ?>-<?= preg_replace( "/[^0-9a-z\-]/", "", strtolower( $model ) ) ?>
