@@ -104,7 +104,7 @@ define hostgroup {
 
     alias                   IXP Switches at <?= $name ?> on <?= $t->infra->getName() ?>
 
-    members                 <?= $t->softwrap( $switches, 1, ', ', ',', 28 ) ?>
+    members                 <?= $t->softwrap( $switches, 1, ', ', ', \\', 28 ) ?>
 
 }
 
