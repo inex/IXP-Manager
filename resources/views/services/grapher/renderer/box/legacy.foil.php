@@ -4,10 +4,10 @@
 
 ?>
 
-<table width="506" cellspacing="1" cellpadding="1">
+<table cellspacing="1" cellpadding="1">
     <tr>
-        <td colspan="8" style="width: 500; height: 135;">
-            <img width="500" height="135" border="0" src="data:image/png;base64,<?=base64_encode( $t->graph->png() )?>" />
+        <td colspan="8">
+            <img width="100%" border="0" src="data:image/png;base64,<?=base64_encode( $t->graph->png() )?>" />
         </td>
     </tr>
     <tr>

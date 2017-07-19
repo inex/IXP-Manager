@@ -138,3 +138,6 @@ Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::get(  'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
     Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
 });
+
+
+
