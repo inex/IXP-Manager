@@ -373,8 +373,12 @@ class VlanInterface extends EntityRepository
      * @param bool $useResultCache If true, use Doctrine's result cache.
      * @return \Entities\VlanInterface[] Indexed by VlanInterface ID
      */
-    public function getObjectsForVlan( $vlan, $useResultCache = true )
+    public function getObjectsForVlan( $vlan, $useResultCache = true, $protocol = null )
     {
+        if( in_array( $protocol, [ 4, 6 ] ) ) {
+            $pq = " AND vli.ipv{$protocol}enabled = 1";
+        } else
+
         $qstr = "SELECT vli
                     FROM Entities\\VlanInterface vli
                         JOIN vli.Vlan v
@@ -388,7 +392,7 @@ class VlanInterface extends EntityRepository
                         AND " . Customer::DQL_CUST_CURRENT    . "
                         AND " . Customer::DQL_CUST_TRAFFICING . "
                         AND " . Customer::DQL_CUST_EXTERNAL   . "
-                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED . "
+                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED . ( $pq ?? '' ) . "
 
                     ORDER BY c.name ASC";
 

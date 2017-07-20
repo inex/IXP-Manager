@@ -373,19 +373,19 @@ class Rrd
 
         $avg_label = $separated_maxima ? 'Avg. ' : '';
 
-        $options[] = 'LINE1:cdefa#002A97FF:Average In ';
-        if( !$separated_maxima ) {
-            $options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s';
-        }
-        $options[] = 'GPRINT:avg_in:\tAvg\\:%8.2lf%s';
-        $options[] = 'GPRINT:last_in:\tCur\\:%8.2lf%s\l';
-
         $options[] = 'AREA:cdefc#00CF00:Average Out';
         if( !$separated_maxima ) {
             $options[] = 'GPRINT:max_out:\tMax\\:%8.2lf%s';
         }
         $options[] = 'GPRINT:avg_out:\tAvg\\:%8.2lf%s';
         $options[] = 'GPRINT:last_out:\tCur\\:%8.2lf%s\l';
+
+        $options[] = 'LINE1:cdefa#002A97FF:Average In ';
+        if( !$separated_maxima ) {
+            $options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s';
+        }
+        $options[] = 'GPRINT:avg_in:\tAvg\\:%8.2lf%s';
+        $options[] = 'GPRINT:last_in:\tCur\\:%8.2lf%s\l';
 
         $options[] = 'COMMENT:\s';
 

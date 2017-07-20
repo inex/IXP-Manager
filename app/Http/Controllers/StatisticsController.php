@@ -34,7 +34,8 @@ use Entities\{
     Customer         as CustomerEntity,
     Infrastructure   as InfrastructureEntity,
     VirtualInterface as VIEntity,
-    Vlan             as VlanEntity
+    Vlan             as VlanEntity,
+    VlanInterface    as VlanInterfaceEntity
 };
 
 /**
@@ -71,19 +72,29 @@ class StatisticsController extends Controller
         $grapher = App::make('IXP\Services\Grapher');
         $this->processGraphParams($r);
 
-        // do we have an infrastructure?
-        $infra = false;
+        // do we have an infrastructure or vlan?
+        $vlan = $infra = false;
         if( $r->input( 'infra' ) && ( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) ) {
-            $targets = D2EM::getRepository( VIEntity::class )->getObjectsForInfrastructure( $infra );
+            $targets = D2EM::getRepository(VIEntity::class)->getObjectsForInfrastructure($infra);
+            $r->protocol = Graph::PROTOCOL_ALL;
+        } else if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository(VlanEntity::class)->find($r->input('vlan')) ) ) {
+            if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL ) ) {
+                $r->protocol = Graph::PROTOCOL_IPV4;
+            }
+            $targets = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $vlan, false, $r->protocol );
         } else {
             $targets = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
+            $r->protocol = Graph::PROTOCOL_ALL;
         }
+
 
 
         $graphs = [];
         foreach( $targets as $t ) {
             if( $infra ) {
                 $g = $grapher->virtint( $t );
+            } else if( $vlan ) {
+                $g = $grapher->vlanint( $t );
             } else {
                 $g = $grapher->customer( $t );
             }
@@ -102,6 +113,8 @@ class StatisticsController extends Controller
             'r'            => $r,
             'infras'       => D2EM::getRepository( InfrastructureEntity::class )->getNames(),
             'infra'        => $infra ?? false,
+            'vlans'       => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'vlan'        => $vlan ?? false,
         ]);
     }
 }
