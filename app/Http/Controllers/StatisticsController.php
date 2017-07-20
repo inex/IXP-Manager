@@ -26,12 +26,15 @@ use App, D2EM;
 
 use IXP\Services\Grapher\Graph;
 
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Cache;
 
 use Entities\{
-    Customer as CustomerEntity,
-    Vlan as VlanEntity
+    Customer         as CustomerEntity,
+    Infrastructure   as InfrastructureEntity,
+    VirtualInterface as VIEntity,
+    Vlan             as VlanEntity
 };
 
 /**
@@ -45,38 +48,60 @@ class StatisticsController extends Controller
 {
 
     /**
+     * Process and update request parameters for standard graph attributes: period, category, protocol, type.
+     *
+     * These are safe for use from the request.
+     *
+     * @param \Illuminate\Http\Request $r
+     */
+    private function processGraphParams( Request $r ) {
+        $r->period   = Graph::processParameterPeriod(   $r->input( 'period',   '' ) );
+        $r->category = Graph::processParameterCategory( $r->input( 'category', '' ) );
+        $r->protocol = Graph::processParameterProtocol( $r->input( 'protocol', '' ) );
+        $r->type     = Graph::processParameterType(     $r->input( 'type',     '' ) );
+    }
+
+    /**
      * Display all member graphs
      *
      * @return  View
      */
-    public function members() : View {
-
-//        $this->setIXP();
-//        $this->setInfrastructure();
-//        $this->setCategory();
-//        $category = $this->setCategory();
-//        $period   = $this->setPeriod();
+    public function members( Request $r ) : View {
 
         $grapher = App::make('IXP\Services\Grapher');
+        $this->processGraphParams($r);
 
-        $custs = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
+        // do we have an infrastructure?
+        $infra = false;
+        if( $r->input( 'infra' ) && ( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) ) {
+            $targets = D2EM::getRepository( VIEntity::class )->getObjectsForInfrastructure( $infra );
+        } else {
+            $targets = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
+        }
 
-//        if( $this->infra instanceof Entities\Infrastructure ) {
-//            $custs = $this->getD2R( 'Entities\Customer')->filterForInfrastructure( $custs, $this->infra );
-//        }
 
         $graphs = [];
+        foreach( $targets as $t ) {
+            if( $infra ) {
+                $g = $grapher->virtint( $t );
+            } else {
+                $g = $grapher->customer( $t );
+            }
 
-        foreach( $custs as $c ) {
-            $graphs[] = $grapher->customer( $c )
-                ->setType(     Graph::TYPE_PNG )
-                ->setProtocol( Graph::PROTOCOL_ALL )
-                ->setCategory( Graph::CATEGORY_BITS )
-                ->setPeriod( Graph::PERIOD_DAY );
+            $g->setType(     Graph::TYPE_PNG )
+                ->setProtocol( $r->protocol   )
+                ->setCategory( $r->category   )
+                ->setPeriod(   $r->period     );
+
+            $graphs[] = $g;
         }
 
         return view( 'statistics/members' )->with([
+            'graph'        => $graphs[0] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
             'graphs'       => $graphs,
+            'r'            => $r,
+            'infras'       => D2EM::getRepository( InfrastructureEntity::class )->getNames(),
+            'infra'        => $infra ?? false,
         ]);
     }
 }

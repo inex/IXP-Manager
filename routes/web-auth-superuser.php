@@ -60,5 +60,6 @@ Route::group( [ 'prefix' => 'router' ], function() {
 });
 
 Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get( 'memberss',   'StatisticsController@members' );
+    Route::get(  'memberss',   'StatisticsController@members' );
+    Route::post( 'memberss',   'StatisticsController@members' )->name( 'statistics/members' );
 });
