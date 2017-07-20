@@ -4,7 +4,7 @@
 
 ?>
 
-<table cellspacing="1" cellpadding="1">
+<table cellspacing="1" cellpadding="1" style="font-size: 12px;">
     <tr>
         <td colspan="8">
             <img width="100%" border="0" src="data:image/png;base64,<?=base64_encode( $t->graph->png() )?>" />

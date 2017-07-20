@@ -89,13 +89,13 @@ $this->layout( 'layouts/ixpv4' )
 
         <?php foreach( $t->graphs as $graph ): ?>
 
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <div id="graph-row" class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 
                 <div class="well">
                     <h4 style="vertical-align: middle">
                         <?= $graph->customer()->getFormattedName() ?>
                         <?php if( config('grapher.backends.sflow.enabled') && isset( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS[$graph->category()] ) ): ?>
-                            <span class="btn btn-mini" style="float: right">
+                            <span class="pull-right">
                                 <a class="btn btn-default btn-sm" href="<?= url('') . '/statistics/p2p/shortname/' . $graph->customer()->getShortname() . '/category/' . $graph->category() . '/period/' . $graph->period() ?>">
                                     <span class="glyphicon glyphicon-random"></span>
                                 </a>
@@ -120,4 +120,7 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
+<script>
+<?= $t->insert( 'statistics/js/members.foil.js' ); ?>
+</script>
 <?php $this->append() ?>
