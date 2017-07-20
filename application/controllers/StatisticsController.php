@@ -51,7 +51,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
     }
 
-
     public function memberAction()
     {
         $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks
