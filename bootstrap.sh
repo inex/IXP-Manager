@@ -46,9 +46,11 @@ fi
 
 if [[ -f .env ]]; then
     cp /vagrant/.env /vagrant/.env.by-vagrant.$$
+else
+    cp /vagrant/.env.vagrant /vagrant/.env
+    php /vagrant/artisan key:generate --force
 fi
 
-cp /vagrant/.env.vagrant /vagrant/.env
 
 cd /vagrant
 su - ubuntu -c "cd /vagrant && composer install"
