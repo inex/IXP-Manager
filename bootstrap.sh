@@ -44,6 +44,10 @@ elif [[ -f /vagrant/database/vagrant-base.sql ]]; then
     cat /vagrant/database/vagrant-base.sql | mysql -u root ixp
 fi
 
+if [[ -f .env ]]; then
+    cp /vagrant/.env /vagrant/.env.by-vagrant.$$
+fi
+
 cp /vagrant/.env.vagrant /vagrant/.env
 
 cd /vagrant
