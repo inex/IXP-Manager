@@ -309,14 +309,17 @@ class Rrd
         list( $indexIn, $indexOut ) = $this->getIndexKeys();
 
         // we want newest first, so iterate in reverse
-        $tin = array_reverse( $rrd['data'][ $indexIn ], true );
+        // but.... do, we?
+        // $tin = array_reverse( $rrd['data'][ $indexIn ], true );
+        $tin = $rrd['data'][ $indexIn ];
 
         $values  = [];
 
         $isBits = ( $this->graph()->category() == Graph::CATEGORY_BITS );
 
         $i = 0;
-        foreach( $tin as $ts => $v ) {
+
+         foreach( $tin as $ts => $v ) {
             if( is_numeric( $v ) && is_numeric( $rrd['data'][$indexOut][$ts] ) ) {
 
                 // first couple are often blank

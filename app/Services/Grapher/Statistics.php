@@ -21,9 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Services\Grapher;
-use IXP\Services\Grapher\Graph;
-
 /**
  * Grapher -> Statistics of the given graph
  *
@@ -85,13 +82,14 @@ class Statistics {
 
     /**
      * Graph under consideration
-     * @var IXP\Services\Grapher\Graph
+     * @var Graph
      */
     private $graph;
 
 
     /**
      * Constructor
+     * @param Graph $g
      */
     public function __construct( Graph $g ) {
         $this->graph = $g;
@@ -100,7 +98,7 @@ class Statistics {
 
     /**
      * Access for the graph object under consideration
-     * @return IXP\Services\Grapher\Graph
+     * @return Graph
      */
     public function graph(): Graph {
         return $this->graph;
@@ -112,7 +110,7 @@ class Statistics {
      * Private access as this should be accessed publically
      * via the Graph object (where it is also cached).
      *
-     * @return IXP\Services\Grapher\Graph
+     * @return array
      */
     private function data(): array {
         return $this->graph()->data();
@@ -124,7 +122,6 @@ class Statistics {
         $totalIn = 0;
         $totalOut = 0;
         $intLastTime = 0;
-        $intTime = 0;
 
         $data = $this->data();
 
@@ -148,7 +145,7 @@ class Statistics {
                     $intLastTime = $intTime;
                 }
                 else {
-                    $intRange    = $intTime - $intLastTime;
+                    $intRange    = ($intTime > $intLastTime) ? $intTime - $intLastTime : $intLastTime - $intTime;
                     $totalIn    += ( $intRange * $avgratein );
                     $totalOut   += ( $intRange * $avgrateout );
                     $intLastTime = $intTime;
@@ -177,7 +174,7 @@ class Statistics {
     /**
      * Set statistics value
      * @param float $v
-     * @return IXP\Services\Grapher\Statistics (for fluid interface)
+     * @return Statistics (for fluid interface)
      */
     public function setTotalIn( float $v ): Statistics {
         $this->totalIn = $v;
@@ -187,7 +184,7 @@ class Statistics {
     /**
      * Set statistics value
      * @param float $v
-     * @return IXP\Services\Grapher\Statistics (for fluid interface)
+     * @return Statistics (for fluid interface)
      */
     public function setTotalOut( float $v ): Statistics {
         $this->totalOut = $v;
@@ -197,7 +194,7 @@ class Statistics {
     /**
      * Set statistics value
      * @param float $v
-     * @return IXP\Services\Grapher\Statistics (for fluid interface)
+     * @return Statistics (for fluid interface)
      */
     public function setCurrentIn( float $v ): Statistics {
         $this->curIn = $v;
@@ -207,7 +204,7 @@ class Statistics {
     /**
      * Set statistics value
      * @param float $v
-     * @return IXP\Services\Grapher\Statistics (for fluid interface)
+     * @return Statistics (for fluid interface)
      */
     public function setCurrentOut( float $v ): Statistics {
         $this->curOut = $v;
@@ -217,7 +214,7 @@ class Statistics {
     /**
      * Set statistics value
      * @param float $v
-     * @return IXP\Services\Grapher\Statistics (for fluid interface)
+     * @return Statistics (for fluid interface)
      */
     public function setAverageIn( float $v ): Statistics {
         $this->averageIn = $v;
@@ -227,7 +224,7 @@ class Statistics {
     /**
      * Set statistics value
      * @param float $v
-     * @return IXP\Services\Grapher\Statistics (for fluid interface)
+     * @return Statistics (for fluid interface)
      */
     public function setAverageOut( float $v ): Statistics {
         $this->averageOut = $v;
@@ -237,7 +234,7 @@ class Statistics {
     /**
      * Set statistics value
      * @param float $v
-     * @return IXP\Services\Grapher\Statistics (for fluid interface)
+     * @return Statistics (for fluid interface)
      */
     public function setMaxIn( float $v ): Statistics {
         $this->maxIn = $v;
@@ -247,7 +244,7 @@ class Statistics {
     /**
      * Set statistics value
      * @param float $v
-     * @return IXP\Services\Grapher\Statistics (for fluid interface)
+     * @return Statistics (for fluid interface)
      */
     public function setMaxOut( float $v ): Statistics {
         $this->maxOut = $v;
