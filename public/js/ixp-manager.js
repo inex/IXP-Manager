@@ -5,6 +5,7 @@ $.ajaxSetup({
     }
 });
 
+
 /**
  * This is default function and it's called than page is loaded.
  */
