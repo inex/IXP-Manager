@@ -26,6 +26,7 @@ use IXP\Services\Grapher\{Graph,Statistics};
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
 
+use Entities\Customer as CustomerEntity;
 use Entities\PhysicalInterface as PhysicalInterfaceEntity;
 
 use Auth, Log;
@@ -62,6 +63,14 @@ class PhysicalInterface extends Graph {
      */
     public function physicalInterface(): PhysicalInterfaceEntity {
         return $this->physint;
+    }
+
+    /**
+     * Get the customer owning this virtual interface
+     * @return CustomerEntity
+     */
+    public function customer(): CustomerEntity {
+        return $this->physint->getVirtualInterface()->getCustomer();
     }
 
     /**

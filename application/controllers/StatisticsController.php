@@ -51,37 +51,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
             $this->view->custs = $this->getD2R( '\\Entities\\Customer')->filterForInfrastructure( $custs, $this->infra );
     }
 
-    public function membersAction()
-    {
-        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
-
-        $this->setIXP();
-        $this->setInfrastructure();        
-        $this->setCategory();
-        $category = $this->setCategory();
-        $period   = $this->setPeriod();
-
-        $grapher = App::make('IXP\Services\Grapher');
-
-        $custs = $this->getD2R( '\\Entities\\Customer')->getCurrentActive( false, true, false, $this->ixp );
-
-        if( $this->infra instanceof Entities\Infrastructure ) {
-            $custs = $this->getD2R( 'Entities\Customer')->filterForInfrastructure( $custs, $this->infra );
-        }
-
-        $graphs = [];
-
-        foreach( $custs as $c ) {
-            $graphs[] = $grapher->customer( $c )
-                ->setType(     Graph::TYPE_PNG )
-                ->setProtocol( Graph::PROTOCOL_ALL )
-                ->setCategory( $category )
-                ->setPeriod( $period );
-        }
-
-        $this->view->graphs = $graphs;
-    }
-
     public function memberAction()
     {
         $cust = $this->view->cust = $this->resolveCustomerByShortnameParam(); // includes security checks

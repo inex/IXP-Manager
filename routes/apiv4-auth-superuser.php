@@ -71,11 +71,6 @@ Route::get('router/updated-before/{threshold}',                 'RouterControlle
 
 
 
-Route::get('nagios/birdseye_daemons',                           'NagiosController@birdseyeDaemons');
-Route::get('nagios/birdseye_daemons/{vlanid}',                  'NagiosController@birdseyeDaemons');
-Route::get('nagios/birdseye_bgp_sessions/rs',                   'NagiosController@birdseyeRsBgpSessions');
-Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}',          'NagiosController@birdseyeRsBgpSessions');
-
 
 
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
@@ -117,6 +112,28 @@ Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceCo
 
 
 Route::group( [ 'prefix' => 'nagios' ], function() {
-    Route::get( 'customers/{vliid}',            'NagiosController@customers' );
-    Route::get( 'customers/{vliid}/{template}', 'NagiosController@customers' );
+    Route::get(  'customers/{vlanid}/{protocol}',            'NagiosController@customers' );
+    Route::post( 'customers/{vlanid}/{protocol}',            'NagiosController@customers' );
+    Route::get(  'customers/{vlanid}/{protocol}/{template}', 'NagiosController@customers' );
+    Route::post( 'customers/{vlanid}/{protocol}/{template}', 'NagiosController@customers' );
+
+    Route::get(  'switches/{infraid}',                      'NagiosController@switches' );
+    Route::post( 'switches/{infraid}',                      'NagiosController@switches' );
+    Route::get(  'switches/{infraid}/{template}',           'NagiosController@switches' );
+    Route::post( 'switches/{infraid}/{template}',           'NagiosController@switches' );
+
+    Route::get(  'birdseye-daemons',                        'NagiosController@birdseyeDaemons');
+    Route::post( 'birdseye-daemons',                        'NagiosController@birdseyeDaemons');
+    Route::get(  'birdseye-daemons/{template}',             'NagiosController@birdseyeDaemons');
+    Route::post( 'birdseye-daemons/{template}',             'NagiosController@birdseyeDaemons');
+    Route::get(  'birdseye-daemons/{template}/{vlanid}',    'NagiosController@birdseyeDaemons');
+    Route::post( 'birdseye-daemons/{template}/{vlanid}',    'NagiosController@birdseyeDaemons');
+
+    Route::get(  'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}',            'NagiosController@birdseyeBgpSessions');
+    Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}',            'NagiosController@birdseyeBgpSessions');
+    Route::get(  'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
+    Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
 });
+
+
+
