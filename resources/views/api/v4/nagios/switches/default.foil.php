@@ -18,7 +18,7 @@
 #
 # The following objects are used by inheritance here and need to be defined by your own configuration:
 #
-# 1. Hose definition:    <?= $t->host_definition ?>;
+# 1. Host definition:    <?= $t->host_definition ?>;
 #
 # You would create these yourself by creating a configuration file containing something like:
 #
@@ -166,5 +166,3 @@ define hostgroup {
     <?php endforeach; ?>
 
 <?php endforeach; ?>
-
-
