@@ -52,6 +52,7 @@ class IXP implements ExtensionInterface {
         return [
             'alerts'            => [ AlertContainer::class, 'html' ],
             'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
+            'nagiosHostname'    => [ $this, 'nagiosHostname' ],
             'scaleBits'         => [ $this, 'scaleBites' ],
             'scaleBytes'        => [ $this, 'scaleBytes' ],
             'softwrap'          => [ $this, 'softwrap' ],
@@ -201,7 +202,9 @@ class IXP implements ExtensionInterface {
 
             $str .= $d;
 
-            if( ($itrn+1) != $cnt && ($itrn+1) % $perline != 0 ) {
+            if( $itrn == 0 && $cnt > 1 && $perline == 1 ) {
+                $str .= $lineEnding . "\n" . str_repeat(' ', $indent);
+            } else if( ($itrn+1) != $cnt && ($itrn+1) % $perline != 0 ) {
                 $str .= $elementSeparator;
             } else if( $itrn > 0 && ($itrn+1) != $cnt && ($itrn+1) % $perline == 0 ) {
                 $str .= $lineEnding . "\n" . str_repeat( ' ', $indent );
@@ -212,5 +215,22 @@ class IXP implements ExtensionInterface {
 
         return $str;
     }
+
+
+    /**
+     * Get a consistent hostname for a given member VLAN interface
+     *
+     * @param string $abbreviatedName Customer's abbreviated name
+     * @param int    $asn             Customer's ASN
+     * @param int    $protocol        Protocol
+     * @param int    $vlanid          VLAN ID
+     * @param int    $vliid           VLAN Interface ID
+     * @return string
+     */
+    public function nagiosHostname( string $abbreviatedName, int $asn, int $protocol, int $vlanid, int $vliid ) {
+        return preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $abbreviatedName ) ) . '-as' . $asn . '-ipv' . $protocol . '-vlanid' . $vlanid . '-vliid' . $vliid;
+    }
+
+
 
 }

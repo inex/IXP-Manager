@@ -99,7 +99,7 @@ class Grapher implements ExtensionInterface {
         {
             if( ( $v / 1000.0 < 1.0 ) || ( sizeof( $formats ) == $i + 1 ) ) {
                 if( $returnType == 0 )
-                    return number_format( $v, $decs ) . " " . $formats[$i];
+                    return number_format( $v, $decs ) . "&nbsp;" . $formats[$i];
                 elseif( $returnType == 1 )
                     return number_format( $v, $decs );
                 else

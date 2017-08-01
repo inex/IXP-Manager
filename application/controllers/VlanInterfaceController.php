@@ -271,4 +271,20 @@ class VlanInterfaceController extends IXP_Controller_FrontEnd
         $this->redirectAndEnsureDie( 'virtual-interface/edit/id/' . $this->getParam( 'vintid' ) );
     }
 
+
+    /*
+     * If deleting a VLAN interface, we should also the delete any l2interfaces
+     *
+     * @param \Entities\VlanInterface $vli The virtual interface to delete
+     */
+    protected function preDelete( $vli )
+    {
+        foreach( $vli->getLayer2Addresses() as $l2a ) {
+            $vli->removeLayer2Address( $l2a );
+            $this->getD2EM()->remove( $l2a );
+        }
+
+        return true;
+    }
+
 }

@@ -57,3 +57,8 @@ Route::group( [ 'prefix' => 'router' ], function() {
 
     Route::post( 'store',                           'RouterController@store'  );
 });
+
+Route::group( [ 'prefix' => 'statistics' ], function() {
+    Route::get(  'members',   'StatisticsController@members' );
+    Route::post( 'members',   'StatisticsController@members' )->name( 'statistics/members' );
+});

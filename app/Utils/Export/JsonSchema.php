@@ -258,9 +258,9 @@ class JsonSchema
                         $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
                         $vlanentry['ipv4']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 4, "AS");
                         $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
+                        $vlanentry['ipv4']['macaddresses'] = $vli->getLayer2AddressesAsArray();
                         if( $detailed ) {
                             $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
-                            $vlanentry['ipv4']['macaddresses'] = $vli->getLayer2AddressesAsArray();
                         }
                     }
 
@@ -268,9 +268,9 @@ class JsonSchema
                         $vlanentry['ipv6']['address'] = $vli->getIPv6Address()->getAddress();
                         $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
                         $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
+                        $vlanentry['ipv6']['macaddresses'] = $vli->getLayer2AddressesAsArray();
                         if( $detailed ) {
                             $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
-                            $vlanentry['ipv6']['macaddresses'] = $vli->getLayer2AddressesAsArray();
                         }
                     }
 
@@ -293,16 +293,16 @@ class JsonSchema
 
             $memberinfo[ $cnt ] = [
                 'asnum'		       	 => $c->getAutsys(),
+                'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
+                'url'			 => $c->getCorpwww(),
+                'name'			 => $c->getName(),
+                'peering_policy'	 => $c->getPeeringpolicy(),
             ];
 
             if( $detailed ) {
                 $memberinfo[$cnt] = array_merge($memberinfo[$cnt], [
                     'contact_email' => [ $c->getPeeringemail() ],
                     'contact_phone' => [ $c->getNocphone() ],
-                    'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
-                    'url'			     => $c->getCorpwww(),
-                    'name'			     => $c->getName(),
-                    'peering_policy'	 => $c->getPeeringpolicy(),
                 ]);
 
                 if( filter_var($c->getNocwww(), FILTER_VALIDATE_URL) !== false ) {

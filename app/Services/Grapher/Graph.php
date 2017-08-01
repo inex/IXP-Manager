@@ -661,6 +661,15 @@ abstract class Graph {
     }
 
     /**
+     * Get the period description for a given period identifier
+     * @param string $period
+     * @return string
+     */
+    public static function resolvePeriod( string $period = null ): string {
+        return self::PERIOD_DESCS[ $period ] ?? 'Unknown';
+    }
+
+    /**
      * Get the protocol we're set to use
      * @return string
      */
@@ -685,6 +694,15 @@ abstract class Graph {
 
         $this->protocol = $v;
         return $this;
+    }
+
+    /**
+     * Get the protocol description for a given protocol identifier
+     * @param string $protocol
+     * @return string
+     */
+    public static function resolveProtocol( string $protocol ): string {
+        return self::PROTOCOL_DESCS[ $protocol ] ?? 'Unknown';
     }
 
     /**

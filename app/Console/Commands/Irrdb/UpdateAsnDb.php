@@ -56,6 +56,10 @@ class UpdateAsnDb extends UpdateDb {
      */
     public function handle(): int {
 
+        if( !$this->setupChecks() ) {
+            return -99;
+        }
+
         $customers = $this->resolveCustomers();
 
         foreach( $customers as $c ) {

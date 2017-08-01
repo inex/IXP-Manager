@@ -74,6 +74,7 @@ application/configs/application.ini.bup
 ixpmanager-preferred.sql.bz2
 mrtg-shite/
 ubuntu-xenial-16.04-cloudimg-console.log
+/inex-*.sql.bz2
 
 .cache/
 .composer/
@@ -90,3 +91,4 @@ storage/files/*
 .idea/dataSources.local.xml
 .idea/dataSources.xml
 .idea/dataSources
+

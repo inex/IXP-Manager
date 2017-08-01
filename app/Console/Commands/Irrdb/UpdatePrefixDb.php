@@ -56,6 +56,9 @@ class UpdatePrefixDb extends UpdateDb {
      */
     public function handle(): int
     {
+        if( !$this->setupChecks() ) {
+            return -99;
+        }
 
         $customers = $this->resolveCustomers();
 

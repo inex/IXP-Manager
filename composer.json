@@ -50,7 +50,7 @@
         "oss2/var-utils": "dev-master",
 
         "oss2/auth": "dev-master",
-
+        
         "smarty/smarty": "~3.1",
         "foil/foil": "~0.6",
 
@@ -62,7 +62,8 @@
         "maxhoffmann/parsedown-laravel": "dev-master",
         "graham-campbell/flysystem": "^3.6",
         "barryvdh/laravel-dompdf": "^0.8.0",
-        "luketowers/purifier": "dev-master"
+        "luketowers/purifier": "dev-master",
+        "php-ds/php-ds": "^1.1"
 
     },
     "require-dev": {
@@ -119,5 +120,5 @@
      "config": {
           "preferred-install": "dist"
      },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }

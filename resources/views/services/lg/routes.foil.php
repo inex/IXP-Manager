@@ -14,6 +14,7 @@
             <th>Next Hop</th>
             <th></th>
             <th>Metric</th>
+            <th>Communities?</th>
             <th>AS Path</th>
             <th></th>
         </tr>
@@ -50,6 +51,21 @@
             <?php endif; ?>
         </td>
         <td><?= $r->metric ?></td>
+        <td>
+            <span class="badge">
+                <?php if( isset( $r->bgp->communities ) ): ?>
+                    <?= count( $r->bgp->communities ) ?>
+                <?php else: ?>
+                    0
+                <?php endif; ?>
+            </span>
+
+            <?php if( isset( $r->bgp->large_communities ) ): ?>
+                <span class="badge">LC:
+                    <?= count( $r->bgp->large_communities ) ?>
+                </span>
+            <?php endif; ?>
+        </td>
         <td>
             <?php if( isset($r->bgp->as_path) ): ?>
                 <?= implode(' ', $r->bgp->as_path) ?>
