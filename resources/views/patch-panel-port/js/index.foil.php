@@ -276,7 +276,7 @@
             '        <input type="file" name="upl" multiple />' +
             '</div>' +
             '<ul id="upload-ul"><!-- The file uploads will be shown here --> </ul>' +
-            '<input type="hidden" name="_token" value="<?= csrf_token() ?>"> </form>';
+            '</form>';
 
         var dialog = bootbox.dialog({
             message: html,
@@ -385,7 +385,9 @@
     function deleteFile(e) {
         var pppFileId = (this.id).substring(21);
 
-        $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + pppFileId )
+        $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + pppFileId, {
+            type : 'POST'
+        } )
             .done( function( data ) {
                 if( data.success ) {
                     $('#uploaded-file-' + pppFileId).fadeOut( "medium", function() {
@@ -402,7 +404,9 @@
      */
     function toggleFilePrivacy(e) {
         var pppFileId = (this.id).substring(29);
-        $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId )
+        $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId, {
+            type: 'POST'
+        } )
             .done( function( data ) {
                 if( data.isPrivate ) {
                     $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-unlock').addClass('fa-lock');
@@ -451,7 +455,7 @@
             callback: function (result) {
                 if (result) {
                     $.ajax( urlAction, {
-                        type: 'GET'
+                        type: 'POST'
                     })
                         .done( function( data ) {
                             nameClass = ( data.success ) ? 'success': 'danger';

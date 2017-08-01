@@ -452,7 +452,9 @@
             e.preventDefault();
             var pppfid = (this.id).substring(20);
 
-            $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppfid )
+            $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
+                type: 'POST'
+            })
                 .done( function( data ) {
                     if( data.isPrivate ) {
                         $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
@@ -485,7 +487,9 @@
                     else{
                         urlAction = "<?= url('api/v4/patch-panel-port/delete-history-file') ?>";
                     }
-                    $.ajax( urlAction + "/" + idFile )
+                    $.ajax( urlAction + "/" + idFile, {
+                        type : 'POST'
+                    })
                     .done( function( data ) {
                         if( data.success ){
                             $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= url('/patch-panel-port/view' ).'/'.$t->ppp->getId()?> #list_file_"+idHistory+'_'+objectType );

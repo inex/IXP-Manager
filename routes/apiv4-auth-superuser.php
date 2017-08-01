@@ -81,11 +81,11 @@ Route::get('nagios/birdseye_bgp_sessions/rs/{vlanid}',          'NagiosControlle
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
 
-Route::get(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
-Route::get(  'patch-panel-port/delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
-Route::get(  'patch-panel-port/delete/{id}',                    'PatchPanelPortController@delete' );
-Route::get(  'patch-panel-port/split/{id}',                     'PatchPanelPortController@split' );
-Route::get(  'patch-panel-port/toggle-file-privacy/{fileid}',   'PatchPanelPortController@toggleFilePrivacy' );
+Route::post(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
+Route::post(  'patch-panel-port/delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
+Route::post(  'patch-panel-port/delete/{id}',                    'PatchPanelPortController@delete' );
+Route::post(  'patch-panel-port/split/{id}',                     'PatchPanelPortController@split' );
+Route::post(  'patch-panel-port/toggle-file-privacy/{fileid}',  'PatchPanelPortController@toggleFilePrivacy' );
 Route::post( 'patch-panel-port/upload-file/{id}',               'PatchPanelPortController@uploadFile' );
 Route::post( 'patch-panel-port/notes/{id}',                     'PatchPanelPortController@setNotes' );
 Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortController@detail');
@@ -107,7 +107,7 @@ Route::post('switcher/{id}/switch-port-prewired',               'SwitcherControl
 Route::post( 'utils/markdown',                                  'UtilsController@markdown' );
 
 Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
-Route::get( 'l2-address/delete/{id}',                           'Layer2AddressController@delete' );
+Route::post( 'l2-address/delete/{id}',                           'Layer2AddressController@delete' );
 Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
 

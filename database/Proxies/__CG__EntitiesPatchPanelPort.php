@@ -1277,15 +1277,4 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
         return parent::getCircuitReference();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function movePort(\Entities\PatchPanelPort $masterPort, $slavePort = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'movePort', [$masterPort, $slavePort]);
-
-        return parent::movePort($masterPort, $slavePort);
-    }
-
 }

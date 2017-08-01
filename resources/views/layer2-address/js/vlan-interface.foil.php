@@ -79,7 +79,9 @@
             },
             callback: function (result) {
                 if( result) {
-                    $.ajax( "<?= url( 'api/v4/l2-address/delete' ) ?>/"+l2aId )
+                    $.ajax( "<?= url( 'api/v4/l2-address/delete' ) ?>/"+l2aId , {
+                        type : 'POST'
+                    } )
                         .done( function( data ) {
                             $('.bootbox.modal').modal( 'hide' );
                             result = ( data.success ) ? 'success': 'danger';

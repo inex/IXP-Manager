@@ -102,7 +102,6 @@ class PatchPanelPortController extends Controller {
      * @return  JsonResponse
      */
     public function uploadFile( Request $request, FlysystemManager $filesystem, int $id ): JsonResponse {
-
         if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find($id) ) ) {
             abort(404);
         }
