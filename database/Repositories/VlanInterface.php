@@ -33,14 +33,28 @@ class VlanInterface extends EntityRepository
      *         [gmaxprefixes] => 20        // from cust table (global)
      *         [peeringmacro] => ABC
      *         [peeringmacrov6] => ABC
+     *         [vid]        => 2
+     *         [vtag]       => 10,
+     *         [vname]      => "Peering LAN #1
+     *         [viid] => 120
      *         [vliid] => 159
      *         [canping] => 1
      *         [enabled] => 1              // VLAN interface enabled for requested protocol?
      *         [address] => 192.0.2.123    // assigned address for requested protocol?
+     *         [monitorrcbgp] => 1
      *         [bgpmd5secret] => qwertyui  // MD5 for requested protocol
+     *         [hostname] => hostname      // Hostname
      *         [maxbgpprefix] => 20        // VLAN interface max prefixes
      *         [as112client] => 1          // if the member is an as112 client or not
      *         [rsclient] => 1             // if the member is a route server client or not
+     *         [busyhost]
+     *         [sid]
+     *         [sname]
+     *         [cabid]
+     *         [cabname]
+     *         [location_name]
+     *         [location_tag]
+     *         [location_shortname]
      *     ]
      *
      * @param \Entities\Vlan $vlan The VLAN
@@ -56,13 +70,45 @@ class VlanInterface extends EntityRepository
             throw new \IXP_Exception( 'Invalid protocol specified' );
 
 
-        $qstr = "SELECT c.id AS cid, c.name AS cname, c.abbreviatedName AS abrevcname, c.shortname AS cshortname, c.autsys AS autsys,
-                       c.maxprefixes AS gmaxprefixes, c.peeringmacro as peeringmacro, c.peeringmacrov6 as peeringmacrov6,
-                       vli.id AS vliid, vli.ipv{$proto}enabled AS enabled, addr.address AS address,
-                       vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix,
-                       vli.as112client AS as112client, vli.rsclient AS rsclient, vli.irrdbfilter AS irrdbfilter,
-                       vli.ipv{$proto}canping AS canping,
-                       l.name AS location_name, l.shortname AS location_shortname, l.tag AS location_tag
+        $qstr = "SELECT c.id              AS cid, 
+                        c.name            AS cname, 
+                        c.abbreviatedName AS abrevcname, 
+                        c.shortname       AS cshortname, 
+                        c.autsys          AS autsys, 
+                        c.maxprefixes     AS gmaxprefixes, 
+                        c.peeringmacro    AS peeringmacro, 
+                        c.peeringmacrov6  AS peeringmacrov6,
+                        
+                        v.id                 AS vid,
+                        v.number             AS vtag,
+                        v.name               AS vname,
+                        vi.id                AS viid, 
+
+                        vli.id AS vliid, 
+                       
+                        vli.ipv{$proto}enabled      AS enabled, 
+                        vli.ipv{$proto}hostname     AS hostname, 
+                        vli.ipv{$proto}monitorrcbgp AS monitorrcbgp, 
+                        vli.ipv{$proto}bgpmd5secret AS bgpmd5secret, 
+                        vli.maxbgpprefix            AS maxbgpprefix,
+                        vli.as112client             AS as112client,
+                        vli.rsclient                AS rsclient, 
+                        vli.busyhost                AS busyhost, 
+                        vli.irrdbfilter             AS irrdbfilter,
+                        vli.ipv{$proto}canping      AS canping,
+                        
+                        addr.address AS address,
+                       
+                        s.id   AS sid,
+                        s.name AS sname,
+                       
+                        cab.id   AS cabid,
+                        cab.name AS cabname,
+                       
+                        l.name      AS location_name, 
+                        l.shortname AS location_shortname, 
+                        l.tag       AS location_tag
+                       
                     FROM Entities\\VlanInterface vli
                         LEFT JOIN vli.VirtualInterface vi
                         LEFT JOIN vli.IPv{$proto}Address addr
@@ -84,7 +130,10 @@ class VlanInterface extends EntityRepository
                         vli.id, c.id, c.name, c.abbreviatedName, c.shortname, c.autsys,
                         c.maxprefixes, c.peeringmacro, c.peeringmacrov6,
                         vli.ipv{$proto}enabled, addr.address, vli.ipv{$proto}bgpmd5secret, vli.maxbgpprefix,
+                        vli.ipv{$proto}hostname, vli.ipv{$proto}monitorrcbgp, vli.busyhost,
                         vli.as112client, vli.rsclient, vli.irrdbfilter, vli.ipv{$proto}canping,
+                        s.id, s.name,
+                        cab.id, cab.name,
                         l.name, l.shortname, l.tag
                         ";
 
@@ -205,6 +254,7 @@ class VlanInterface extends EntityRepository
      *        "caname" => "ABC Ltd",
      *        "csname" => "abc",
      *        "cautsys" => 65501,
+     *        "vid" => 2,
      *        "vtag" => 10,
      *        "viid" => 33,
      *        "vliid" => 100,
@@ -250,6 +300,7 @@ class VlanInterface extends EntityRepository
                         c.shortname          AS csname,
                         c.autsys             AS cautsys,
                         
+                        v.id                 AS vid,
                         v.number             AS vtag,
                         v.name               AS vname,
 
@@ -322,8 +373,12 @@ class VlanInterface extends EntityRepository
      * @param bool $useResultCache If true, use Doctrine's result cache.
      * @return \Entities\VlanInterface[] Indexed by VlanInterface ID
      */
-    public function getObjectsForVlan( $vlan, $useResultCache = true )
+    public function getObjectsForVlan( $vlan, $useResultCache = true, $protocol = null )
     {
+        if( in_array( $protocol, [ 4, 6 ] ) ) {
+            $pq = " AND vli.ipv{$protocol}enabled = 1";
+        } else
+
         $qstr = "SELECT vli
                     FROM Entities\\VlanInterface vli
                         JOIN vli.Vlan v
@@ -337,7 +392,7 @@ class VlanInterface extends EntityRepository
                         AND " . Customer::DQL_CUST_CURRENT    . "
                         AND " . Customer::DQL_CUST_TRAFFICING . "
                         AND " . Customer::DQL_CUST_EXTERNAL   . "
-                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED . "
+                        AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED . ( $pq ?? '' ) . "
 
                     ORDER BY c.name ASC";
 

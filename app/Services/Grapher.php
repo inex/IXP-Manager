@@ -252,9 +252,13 @@ class Grapher {
     /**
      * Get an instance of a virtint graph
      * @param \Entities\VirtualInterface $int
-     * @return \IXP\Services\Grapher\Graph\VirtualInterface
+     * @return \IXP\Services\Grapher\Graph
      */
-    public function virtint( VirtualInterface $int ): VirtIntGraph {
+    public function virtint( VirtualInterface $int ): Graph {
+        // if there is only one physint, then the user really wants that:
+        if( count( $int->getPhysicalInterfaces() ) == 1 ) {
+            return $this->physint( $int->getPhysicalInterfaces()[0] );
+        }
         return new VirtIntGraph( $this, $int );
     }
 

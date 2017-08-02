@@ -26,6 +26,7 @@ use IXP\Services\Grapher\{Graph,Statistics};
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
 
+use Entities\Customer as CustomerEntity;
 use Entities\VlanInterface as VlanInterfaceEntity;
 
 use Auth, Log;
@@ -77,6 +78,14 @@ class VlanInterface extends Graph {
 
         $this->vlanint = $i;
         return $this;
+    }
+
+    /**
+     * Get the customer owning this virtual interface
+     * @return CustomerEntity
+     */
+    public function customer(): CustomerEntity {
+        return $this->vlanint->getVirtualInterface()->getCustomer();
     }
 
     /**

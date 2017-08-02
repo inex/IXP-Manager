@@ -86,6 +86,23 @@ class Router extends EntityRepository
         return $collection;
     }
 
+    /**
+     * Filter a collection of routers by protocol
+     *
+     * @param array $routers
+     * @param int   $protocol Protocol to filter on
+     * @return array
+     */
+    public function filterCollectionOnProtocol( $collection, $protocol ) {
+        foreach( $collection as $i => $r ) {
+            if( $r->getProtocol() != $protocol ) {
+                unset( $collection[$i] );
+            }
+        }
+
+        return $collection;
+    }
+
 
 
     /**
