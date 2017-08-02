@@ -17,9 +17,6 @@
                     <a href="<?= url( 'customer/list' ) ?>">Customers</a>
                 </li>
 
-                <li>
-                    <a href="<?= url( 'virtual-interface/list' ) ?>">Interfaces</a>
-                </li>
                 <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
 
                     <a href="<?= route( 'interfaces/virtual/list' ) ?>" >

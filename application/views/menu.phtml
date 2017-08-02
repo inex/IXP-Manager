@@ -15,22 +15,6 @@
         <li {if $controller eq 'customer' and ( $action eq 'list' or $action eq 'add' or $action eq 'edit' or $action eq 'dashboard' )}class="active"{/if}>
             <a href="{genUrl controller='customer' action='list'}">Customers</a>
         </li>
-        <li {if $controller eq 'virtual-interface'}class="active"{/if}>
-            {if $controller eq 'virtual-interface' or $controller eq 'vlan-interface' or $controller eq 'physical-interface'}
-                <a href="{genUrl controller='virtual-interface' action='list'}">Interfaces (Virtual)</a>
-                <ul class="nav nav-list">
-                    <li {if $controller eq 'physical-interface'}class="active"{/if}>
-                        <a href="{genUrl controller='physical-interface' action='list'}">Physical Interfaces</a>
-                    </li>
-                    <li {if $controller eq 'vlan-interface' and $action neq 'quick-add'}class="active"{/if}>
-                        <a href="{genUrl controller='vlan-interface' action='list'}">Vlan Interfaces</a>
-                    </li>
-                </ul>
-            {else}
-                <a href="{genUrl controller='virtual-interface' action='list'}">Interfaces</a>
-            {/if}
-
-        </li>
 
         <li {if $controller eq 'virtual-interface'}class="active"{/if}>
             <a href="{genUrl controller='interfaces/virtual' action='list'}">Interfaces (Virtual)</a>

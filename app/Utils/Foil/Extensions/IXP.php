@@ -53,7 +53,7 @@ class IXP implements ExtensionInterface {
             'alerts'            => [ AlertContainer::class, 'html' ],
             'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
             'nagiosHostname'    => [ $this, 'nagiosHostname' ],
-            'scaleBits'         => [ $this, 'scaleBites' ],
+            'scaleBits'         => [ $this, 'scaleBits' ],
             'scaleBytes'        => [ $this, 'scaleBytes' ],
             'softwrap'          => [ $this, 'softwrap' ],
         ];
