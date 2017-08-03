@@ -20,11 +20,12 @@
                 <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
 
                     <a href="<?= route( 'interfaces/virtual/list' ) ?>" >
-                        Interfaces  <?= ( substr( $t->controller, -19 ) == 'InterfaceController' || in_array( $t->controller, [ 'SflowReceiverController' ] ) ) ? '(Virtual)': '' ?>
+                        Interfaces  <?= ( substr( $t->controller, -19 ) == 'InterfaceController' || in_array( $t->controller, [ 'CoreBundleController', 'SflowReceiverController' ] ) ) ? '(Virtual)': '' ?>
                     </a>
+
                 </li>
 
-                    <?php if( substr( $t->controller, -19 ) == 'InterfaceController' || in_array( $t->controller, [ 'SflowReceiverController' ] ) ): ?>
+                    <?php if( substr( $t->controller, -19 ) == 'InterfaceController' || in_array( $t->controller, [ 'CoreBundleController', 'SflowReceiverController' ] ) ): ?>
 
                         <li class="sub-menu <?php if($t->controller == 'PhysicalInterfaceController'):?> active <?php endif;?> " >
                             <a href="<?= route('interfaces/physical/list') ?>">Physical Interface</a>

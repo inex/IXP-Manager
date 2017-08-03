@@ -44,7 +44,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'switch-port' )
                 ->label( 'Switch Port' )
-                ->fromQuery( $t->sp, 'name' )
+                ->fromQuery( $t->switchports, 'name' )
                 ->placeholder( 'Choose a switch port' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -52,7 +52,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'status' )
                 ->label( 'Status' )
-                ->fromQuery( $t->status, 'name' )
+                ->fromQuery( \Entities\PhysicalInterface::$STATES, 'name' )
                 ->placeholder( 'Choose a status' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -60,7 +60,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'speed' )
                 ->label( 'Speed' )
-                ->fromQuery( $t->speed, 'name' )
+                ->fromQuery( \Entities\PhysicalInterface::$SPEED, 'name' )
                 ->placeholder( 'Choose a speed' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -68,7 +68,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'duplex' )
                 ->label( 'Duplex' )
-                ->fromQuery( $t->duplex, 'name' )
+                ->fromQuery( \Entities\PhysicalInterface::$DUPLEX, 'name' )
                 ->placeholder( 'Choose Duplex' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -119,7 +119,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::select( 'status-b' )
                     ->label( 'Status' )
-                    ->fromQuery( $t->status, 'name' )
+                    ->fromQuery( \Entities\PhysicalInterface::$STATES, 'name' )
                     ->placeholder( 'Choose a status' )
                     ->addClass( 'chzn-select' )
                     ->disabled( true)
@@ -128,7 +128,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::select( 'speed-b' )
                     ->label( 'Speed' )
-                    ->fromQuery( $t->speed, 'name' )
+                    ->fromQuery( \Entities\PhysicalInterface::$SPEED, 'name' )
                     ->placeholder( 'Choose a speed' )
                     ->addClass( 'chzn-select' )
                     ->disabled( true)
@@ -137,7 +137,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::select( 'duplex-b' )
                     ->label( 'Duplex' )
-                    ->fromQuery( $t->duplex, 'name' )
+                    ->fromQuery( \Entities\PhysicalInterface::$DUPLEX, 'name' )
                     ->placeholder( 'Choose Duplex' )
                     ->addClass( 'chzn-select' )
                     ->disabled( true)

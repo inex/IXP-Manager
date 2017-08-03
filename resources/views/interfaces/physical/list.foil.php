@@ -15,6 +15,7 @@ $this->layout( 'layouts/ixpv4' );
 
     <?= $t->alerts() ?>
     <span id="message-pi"></span>
+
     <div id="area-pi" class="collapse">
         <table id='table-pi' class="table">
             <thead>
