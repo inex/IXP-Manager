@@ -91,4 +91,6 @@ storage/files/*
 .idea/dataSources.local.xml
 .idea/dataSources.xml
 .idea/dataSources
+.idea/inspectionProfiles
+
 

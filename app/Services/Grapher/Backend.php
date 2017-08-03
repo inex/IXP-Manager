@@ -33,12 +33,19 @@
 abstract class Backend {
 
     /**
+     * Get a complete list of functionality that this backend supports.
+     *
+     * @return array
+     */
+    abstract public static function supports(): array;
+
+        /**
      * Examines the provided graph object and determines if this backend is able to
      * process the request or not.
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return bool
      */
     public function canProcess( Graph $graph ): bool {
