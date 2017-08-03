@@ -60,16 +60,29 @@ use IXP\Utils\View\Alert\{
 class PhysicalInterfaceController extends Controller
 {
     /**
-     * Display all the physicalInterfaces
-     *
-     * @param   int $id ID of the physical interface
+     * Display all the physical interfaces as a list
      *
      * @return  View
      */
-    public function list( int $id = null ): View {
-        return view( $id ? 'interfaces/physical/view' : 'interfaces/physical/list' )->with([
-            // can we change that function by find and create the object function to get all the information needed ?
-            'listPi'       => D2EM::getRepository( PhysicalInterfaceEntity::class )->getForList( $id )
+    public function list(): View {
+        return view( 'interfaces/physical/list' )->with([
+            'pis'       => D2EM::getRepository( PhysicalInterfaceEntity::class )->getForList()
+        ]);
+    }
+
+    /**
+     * Display a physical interface
+     *
+     * @param int $id ID of the physical interface
+     * @return  View
+     */
+    public function view( int $id ): View {
+        if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
+            abort( 404 );
+        }
+
+        return view( 'interfaces/physical/view' )->with([
+            'pi' => $pi
         ]);
     }
 
