@@ -51,6 +51,8 @@ class IXP_Controller_Action extends OSS_Controller_Action
 
     use IXP_Controller_Trait_Common;
 
+    use OSS_Controller_Action_Trait_CSRF;
+
 
     /**
      * A variable to hold the customer record
