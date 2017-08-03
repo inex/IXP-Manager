@@ -28,8 +28,12 @@ use IXP\Services\Grapher\Graph;
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
-use Entities\{IXP,PhysicalInterface,Switcher,SwitchPort};
-use IXP\Utils\Grapher\Mrtg as MrtgFile;
+use Entities\{IXP,PhysicalInterface,SwitchPort};
+
+use IXP\Utils\Grapher\{
+    Mrtg as MrtgFile,
+    Rrd  as RrdUtil
+};
 
 use View,Log;
 
@@ -67,7 +71,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     /**
      * This function indicates whether this graphing engine supports single monolithic text
      *
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
     public function isMonolithicConfigurationSupported(): bool {
@@ -77,7 +81,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     /**
      * This function indicates whether this graphing engine supports multiple files to a directory
      *
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
     public function isMultiFileConfigurationSupported(): bool {
@@ -90,7 +94,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
+     * @param IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @param int $config_type The type of configuration to generate
      * @return array
      */
@@ -125,7 +129,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * * array `['ixpports']` conataining the PhysicalInterface IDs of peering ports
      *
      *
-     * @param \Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
+     * @param IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @return array
      */
     public function getPeeringPorts( IXP $ixp ): array {
@@ -227,9 +231,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * Wrap a switchport in a temporary PhysicalInterface.
      *
      * @see getPeeringPorts() for usage
-     * @param Entities\SwitchPort $switchport
+     * @param SwitchPort $switchport
      * @param int $id The ID to set in the physical interface
-     * @return Entities\PhysicalInterface 
+     * @return PhysicalInterface
      */
     public function wrapSwitchPortInPhysicalInterface( SwitchPort $sp, int $id ): PhysicalInterface {
         $pi = new PhysicalInterface;
@@ -247,51 +251,53 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * @return array
      */
     public static function supports(): array {
+        $rrd = config('grapher.backends.mrtg.dbtype') == 'rrd';
+
         return [
             'ixp' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
             'infrastructure' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
             'switcher' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
             'trunk' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
             'physicalinterface' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
             'virtualinterface' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
             'customer' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
             ],
         ];
     }
@@ -301,18 +307,23 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return array
      */
     public function data( Graph $graph ): array {
+
         try {
-            $mrtg = new MrtgFile( $this->resolveFilePath( $graph, 'log' ) );
+            if( config('grapher.backends.mrtg.dbtype') == 'log' ) {
+                $mrtg = new MrtgFile( $this->resolveFilePath( $graph, 'log' ) );
+                return $mrtg->data( $graph );
+            } else {
+                $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+                return $rrd->data();
+            }
         } catch( FileErrorException $e ) {
-            Log::notice("[Grapher] {$this->name()} data(): could not load file {$this->resolveFilePath( $graph, 'log' )}");
+            Log::notice("[Grapher] {$this->name()} data(): could not load file {$this->resolveFilePath( $graph, config('grapher.backends.mrtg.dbtype') )}");
             return [];
         }
-
-        return $mrtg->data( $graph );
     }
 
     /**
@@ -320,17 +331,27 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return string
      */
     public function png( Graph $graph ): string {
-        if( ( $img = @file_get_contents( $this->resolveFilePath( $graph, 'png' ) ) ) === false ){
-            // couldn't load the image so return a placeholder
-            Log::notice("[Grapher] {$this->name()} png(): could not load file {$this->resolveFilePath( $graph, 'png' )}");
-            return @file_get_contents( public_path() . "/images/image-missing.png" );
-        }
 
-        return $img;
+        try {
+            if( config('grapher.backends.mrtg.dbtype') == 'log' ) {
+                if( ( $img = @file_get_contents( $this->resolveFilePath( $graph, 'png' ) ) ) === false ) {
+                    // couldn't load the image so return a placeholder
+                    Log::notice( "[Grapher] {$this->name()} png(): could not load file {$this->resolveFilePath( $graph, 'png' )}" );
+                    return @file_get_contents( public_path() . "/images/image-missing.png" );
+                }
+                return $img;
+            } else {
+                $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+                return @file_get_contents( $rrd->png() );
+            }
+        } catch( FileErrorException $e ) {
+            Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
+            return false; // FIXME check handling of this
+        }
     }
 
     /**
@@ -342,7 +363,16 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * @return string
      */
     public function rrd( Graph $graph ): string {
-        return '';
+        try {
+            if( config('grapher.backends.mrtg.dbtype') == 'log' ) {
+                return '';
+            } else {
+                return file_get_contents( $this->resolveFilePath( $graph, 'rrd' ) );
+            }
+        } catch( FileErrorException $e ) {
+            Log::notice("[Grapher] {$this->name()} rrd(): could not load file {$this->resolveFilePath( $graph, 'rrd' )}");
+            return '';
+        }
     }
 
     /**
@@ -358,54 +388,56 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * For a given graph, return the path where the appropriate log file
      * will be found.
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return string
      */
     public function resolveFilePath( Graph $graph, $type ): string {
         $config = config('grapher.backends.mrtg');
 
+        $loggyType = $type == 'rrd' || $type = 'log';
+
         switch( $graph->classType() ) {
             case 'IXP':
                 return sprintf( "%s/ixp/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
-                    $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+                    $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Infrastructure':
                 return sprintf( "%s/infras/%03d/ixp%03d-infra%03d-%s%s.%s", $config['logdir'],
                     $graph->infrastructure()->getId(), $graph->infrastructure()->getIXP()->getId(),
-                    $graph->infrastructure()->getId(), $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+                    $graph->infrastructure()->getId(), $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Switcher':
                 return sprintf( "%s/switches/%03d/switch-aggregate-%05d-%s%s.%s", $config['logdir'],
                     $graph->switch()->getId(), $graph->switch()->getId(),
-                    $graph->category(), $type == 'log' ? '' : "-{$graph->period()}", $type );
+                    $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Trunk':
                 return sprintf( "%s/trunks/%s%s.%s", $config['logdir'], $graph->trunkname(),
-                    $type == 'log' ? '' : "-{$graph->period()}", $type );
+                    $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'PhysicalInterface':
                 return sprintf( "%s/members/%s/ints/%s-%s%s.%s", $config['logdir'],
                     $this->shardMemberDir( $graph->physicalInterface()->getVirtualInterface()->getCustomer()->getId() ),
                     $graph->identifier(), $graph->category(),
-                    $type == 'log' ? '' : "-{$graph->period()}", $type );
+                    $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'VirtualInterface':
                 return sprintf( "%s/members/%s/lags/%s-%s%s.%s", $config['logdir'],
                     $this->shardMemberDir( $graph->virtualInterface()->getCustomer()->getId() ),
                     $graph->identifier(), $graph->category(),
-                    $type == 'log' ? '' : "-{$graph->period()}", $type );
+                    $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Customer':
                 return sprintf( "%s/members/%s/%s-%s%s.%s", $config['logdir'],
                     $this->shardMemberDir( $graph->customer()->getId() ),
                     $graph->identifier(), $graph->category(),
-                    $type == 'log' ? '' : "-{$graph->period()}", $type );
+                    $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
 

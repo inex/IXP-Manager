@@ -2,7 +2,13 @@
 
 // IXP Manager v3 version of graph boxes to fit with the existing UI
 
-?>
+// RRD graphs already have all the information embedded:
+
+if( config('grapher.backends.mrtg.dbtype') == 'rrd' ): ?>
+
+    <img width="100%" border="0" src="data:image/png;base64,<?=base64_encode( $t->graph->png() )?>" />
+
+<?php else: ?>
 
 <table cellspacing="1" cellpadding="1" style="font-size: 12px;">
     <tr>
@@ -55,3 +61,6 @@
         <td></td>
     </tr>
 </table>
+
+<?php endif; ?>
+
