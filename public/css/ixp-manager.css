@@ -142,6 +142,17 @@ nav.navbar.navbar-inverse.navbar-fixed-top .collapse.navbar-collapse li a{
 }
 
 
+
+
+.ixpm-select-input-xs {
+    height: 20px;
+    line-height: 20px;
+}
+
+
+
+
+
 .reset-button-well{
     float: right;
     position: absolute;

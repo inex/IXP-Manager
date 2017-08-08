@@ -29,7 +29,6 @@ use IXP\Services\Grapher\Graph;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
 use IXP\Utils\Grapher\{
-    Mrtg as MrtgUtil,
     Rrd  as RrdUtil
 };
 
@@ -71,7 +70,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
     /**
      * This function indicates whether this graphing engine supports single monolithic text
      *
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
     public function isMonolithicConfigurationSupported(): bool {
@@ -81,7 +80,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
     /**
      * This function indicates whether this graphing engine supports multiple files to a directory
      *
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
     public function isMultiFileConfigurationSupported(): bool {
@@ -93,7 +92,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
+     * @param IXP $ixp The IXP to generate the config for (multi-IXP mode)
      * @param int $config_type The type of configuration to generate
      * @return array
      */
@@ -141,7 +140,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param \IXP\Services\Grapher\Graph $graph
      * @return array
      */
     public function data( Graph $graph ): array {
@@ -159,7 +158,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return string
      */
     public function png( Graph $graph ): string {
@@ -177,7 +176,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return string
      */
     public function rrd( Graph $graph ): string {
@@ -208,7 +207,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * For a given graph, return the filename where the appropriate data
      * will be found.
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return string
      */
     private function resolveFileName( Graph $graph, $type ): string {
@@ -242,7 +241,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * For a given graph, return the path where the appropriate file
      * will be found.
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return string
      */
     private function resolveFilePath( Graph $graph, $type ): string {

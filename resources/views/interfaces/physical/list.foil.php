@@ -15,6 +15,7 @@ $this->layout( 'layouts/ixpv4' );
 
     <?= $t->alerts() ?>
     <span id="message-pi"></span>
+
     <div id="area-pi" class="collapse">
         <table id='table-pi' class="table">
             <thead>
@@ -49,7 +50,7 @@ $this->layout( 'layouts/ixpv4' );
                 </tr>
             <thead>
             <tbody>
-                <?php foreach( $t->listPi as $pi ): ?>
+                <?php foreach( $t->pis as $pi ): ?>
                     <tr>
                         <td>
                             <a href="<?= url( '/customer/overview/id' ).'/'.$pi['custid']?>">
@@ -83,6 +84,10 @@ $this->layout( 'layouts/ixpv4' );
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn btn-default" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi['id'] ] ) ?>" title="View">
+                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                </a>
+
                                 <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi['vintid'] ] ) ?>" title="Virtual Interface">
                                     <i class="glyphicon glyphicon-filter"></i>
                                 </a>

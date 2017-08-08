@@ -20,7 +20,7 @@ $this->layout( 'layouts/ixpv4' )
             <?= Former::text( 'current-pos' )
                 ->label( 'Current position :' )
                 ->value( $t->ee( $t->ppp->getPatchPanel()->getName() ) . ' :: ' . $t->ee( $t->ppp->getName() ) )
-                ->blockHelp( 'help text' )
+                ->blockHelp( 'The current patch panel and port.' )
                 ->disabled( true );
             ?>
 
@@ -29,14 +29,14 @@ $this->layout( 'layouts/ixpv4' )
                 ->placeholder( 'Choose a Patch Panel' )
                 ->options( $t->ppAvailable )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( 'help text' );
+                ->blockHelp( 'The new patch panel to move this port to.' );
             ?>
 
             <?= Former::select( 'master-port' )
-                ->label( 'New Master Port:' )
-                ->placeholder( 'Choose a Master port' )
+                ->label( 'New Port:' )
+                ->placeholder( 'Choose a port' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( 'help text3' );
+                ->blockHelp( 'The new port to move to.' );
             ?>
 
             <?php if( $t->ppp->hasSlavePort() ): ?>
@@ -44,7 +44,7 @@ $this->layout( 'layouts/ixpv4' )
                     ->label( 'New Slave/Duplex Port:' )
                     ->placeholder( 'Choose a Duplex port' )
                     ->addClass( 'chzn-select' )
-                    ->blockHelp( 'help text' );
+                    ->blockHelp( 'The original port is a duplex port so you must also chose the slave/partner/duplex port here.' );
                 ?>
             <?php endif; ?>
 

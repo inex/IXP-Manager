@@ -1,6 +1,7 @@
 <?php
 /** @var Foil\Template\Template $t */
-
+/** @var Entities\PhysicalInterface $pi */
+$pi = $t->pi; // for convenience
 $this->layout( 'layouts/ixpv4' )
 ?>
 
@@ -18,7 +19,7 @@ $this->layout( 'layouts/ixpv4' )
             <a type="button" class="btn btn-default" href="<?= action( 'Interfaces\PhysicalInterfaceController@list' )?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= route('interfaces/physical/edit' , [ 'id' => $t->listPi[0]['id'] ]) ?>" title="edit">
+            <a type="button" class="btn btn-default" href="<?= route('interfaces/physical/edit' , [ 'id' => $pi->getId() ]) ?>" title="edit">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </div>
@@ -36,103 +37,103 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Customer :
+                                Customer:
                             </b>
                         </td>
                         <td>
-                            <?= $t->ee( $t->listPi[0]['customer'] )   ?>
+                            <?= $t->ee( $pi->getVirtualInterface()->getCustomer()->getName() ) ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Location :
+                                Location:
                             </b>
                         </td>
                         <td>
                             <a href="<?= url( '/vlan/view/id/' ) ?> ">
-                                <?= $t->ee(  $t->listPi[0]['location'] )?>
+                                <?= $t->ee(  $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() )?>
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Switch :
+                                Switch:
                             </b>
                         </td>
                         <td>
-                            <?= $t->ee(  $t->listPi[0]['switch'] ) ?>
+                            <?= $t->ee(  $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Port :
+                                Port:
                             </b>
                         </td>
                         <td>
-                            <?= $t->ee(  $t->listPi[0]['port'] ) ?>
+                            <?= $t->ee(  $pi->getSwitchPort()->getName() ) ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Status :
+                                Status:
                             </b>
                         </td>
                         <td>
-                            <?= isset( Entities\PhysicalInterface::$STATES[ $t->listPi[0]['status'] ] ) ? Entities\PhysicalInterface::$STATES[ $t->listPi[0]['status'] ] : 'Unknown'  ?>
+                            <?= $pi->resolveStatus()  ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Speed :
+                                Speed:
                             </b>
                         </td>
                         <td>
-                            <?= $t->listPi[0]['speed'] ?>
+                            <?= $pi->resolveSpeed() ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Duplex :
+                                Duplex:
                             </b>
                         </td>
                         <td>
-                            <?= $t->listPi[0]['duplex'] ?>
+                            <?= ucfirst( $pi->getDuplex() ) ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Auto-Neg :
+                                Auto-Neg:
                             </b>
                         </td>
                         <td>
-                            <?= $t->listPi[0]['autoneg'] ? 'Yes' : 'No' ?>
+                            <?= $pi->getAutoneg() ? 'Yes' : 'No' ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Monitor Index :
+                                Monitor Index:
                             </b>
                         </td>
                         <td>
-                            <?= $t->listPi[0]['monitorindex'] ?>
+                            <?= $pi->getMonitorindex() ?>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <b>
-                                Notes :
+                                Notes:
                             </b>
                         </td>
                         <td>
-                            <?= $t->ee(  $t->listPi[0]['notes'] ) ?>
+                            <?= $t->ee(  $pi->getNotes() ) ?>
                         </td>
                     </tr>
                 </table>

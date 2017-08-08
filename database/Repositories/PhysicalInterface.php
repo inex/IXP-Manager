@@ -39,13 +39,12 @@ class PhysicalInterface extends EntityRepository
     /**
      * Provide array of physical interfaces for the list Action
      *
-     * @param int $id The physical interface to find
-     *
-     * @return array array of physical interfaces
+     * @return array An array of physical interfaces
      */
-    public function getForList( int $id = null )
+    public function getForList(): array
     {
-        $dql = "SELECT pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
+        return $this->getEntityManager()->createQuery(
+            "SELECT pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
                     pi.monitorindex AS monitorindex, pi.notes AS notes, pi.autoneg AS autoneg,
                     c.name AS customer, c.id AS custid,
                     s.name AS switch, s.id AS switchid,
@@ -60,14 +59,7 @@ class PhysicalInterface extends EntityRepository
                         LEFT JOIN pi.SwitchPort sp
                         LEFT JOIN sp.Switcher s
                         LEFT JOIN s.Cabinet cab
-                        LEFT JOIN cab.Location l";
-
-        if( $id ){
-            $dql .= " WHERE pi.id = $id ";
-        }
-
-
-        $q = $this->getEntityManager()->createQuery( $dql );
-        return $q->getArrayResult();
+                        LEFT JOIN cab.Location l"
+            )->getArrayResult();
     }
 }

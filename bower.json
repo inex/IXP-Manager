@@ -31,5 +31,8 @@
     "bootstrap-tagsinput": "bootstraptagsinput#^0.8.0",
     "clipboard": "^1.6.1",
     "ip-address": "^5.0"
+  },
+  "resolutions": {
+    "jquery": "1.9.1 - 3"
   }
 }

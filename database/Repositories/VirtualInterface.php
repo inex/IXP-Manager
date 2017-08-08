@@ -4,7 +4,11 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
-use Entities\VirtualInterface as VIEntity;
+use Entities\{
+    Infrastructure as InfraEntity,
+    PhysicalInterface as PIEntity,
+    VirtualInterface as VIEntity
+};
 use IXP\Exceptions\GeneralException;
 
 /**
@@ -100,6 +104,50 @@ class VirtualInterface extends EntityRepository
         return $q->getArrayResult();
     }
 
+    /**
+     * Utility function to provide an array of all virtual interface objects on a given
+     * infrastructure
+     *
+     * @param InfraEntity $infra The infrastructure to gather VirtualInterfaces for
+     * @param int $proto Either 4 or 6 to limit the results to interface with IPv4 / IPv6
+     * @param bool $externalOnly If true (default) then only external (non-internal) interfaces will be returned
+     * @return array As defined above.
+     * @throws \IXP_Exception
+     */
+    public function getObjectsForInfrastructure( InfraEntity $infra, $proto = false, $externalOnly = true )
+    {
+        $qstr = "SELECT vi
+                    FROM Entities\VirtualInterface vi
+                        JOIN vi.Customer c
+                        JOIN vi.VlanInterfaces vli
+                        JOIN vi.PhysicalInterfaces pi
+                        JOIN pi.SwitchPort sp
+                        JOIN sp.Switcher sw
+                        JOIN sw.Infrastructure i
+                    WHERE
+                        i = :infra
+                        AND " . Customer::DQL_CUST_ACTIVE     . "
+                        AND " . Customer::DQL_CUST_CURRENT    . "
+                        AND " . Customer::DQL_CUST_TRAFFICING . "
+                        AND pi.status = " . PIEntity::STATUS_CONNECTED;
+
+        if( $proto ) {
+            if( !in_array( $proto, [ 4, 6 ] ) )
+                throw new \IXP_Exception( 'Invalid protocol specified' );
+
+            $qstr .= " AND vli.ipv{$proto}enabled = 1 ";
+        }
+
+        if( $externalOnly ) {
+            $qstr .= " AND " . Customer::DQL_CUST_EXTERNAL;
+        }
+
+        $qstr .= " ORDER BY c.name ASC";
+
+        $q = $this->getEntityManager()->createQuery( $qstr );
+        $q->setParameter( 'infra', $infra );
+        return $q->getResult();
+    }
 
     /**
      * For the given $vi, we want to ensure its channel group is unique

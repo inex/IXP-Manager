@@ -48,7 +48,7 @@ class NagiosCliController extends IXP_Controller_CliAction
         echo $this->view->render( 'nagios-cli/conf/switch-definitions.phtml' );
 
         $vendors        = [];
-        $vendor_strings = '';
+        $vendor_strings = [];
         $all            = [];
 
         foreach( $switches as $s )

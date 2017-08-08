@@ -28,8 +28,7 @@ use D2EM, Redirect, Former, Input;
 use Illuminate\View\View;
 
 use Illuminate\Http\{
-    RedirectResponse,
-    Request
+    RedirectResponse
 };
 
 use IXP\Http\Controllers\Controller;
@@ -61,15 +60,29 @@ use IXP\Utils\View\Alert\{
 class PhysicalInterfaceController extends Controller
 {
     /**
-     * Display all the physicalInterfaces
-     *
-     * @param   int $id ID of the physical interface
+     * Display all the physical interfaces as a list
      *
      * @return  View
      */
-    public function list( int $id = null ): View {
-        return view( $id ? 'interfaces/physical/view' : 'interfaces/physical/list' )->with([
-            'listPi'       => D2EM::getRepository( PhysicalInterfaceEntity::class )->getForList( $id ) // can we change that function by find and create the object function to get all the informations needed ?
+    public function list(): View {
+        return view( 'interfaces/physical/list' )->with([
+            'pis'       => D2EM::getRepository( PhysicalInterfaceEntity::class )->getForList()
+        ]);
+    }
+
+    /**
+     * Display a physical interface
+     *
+     * @param int $id ID of the physical interface
+     * @return  View
+     */
+    public function view( int $id ): View {
+        if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
+            abort( 404 );
+        }
+
+        return view( 'interfaces/physical/view' )->with([
+            'pi' => $pi
         ]);
     }
 
@@ -94,20 +107,22 @@ class PhysicalInterfaceController extends Controller
      * @return View
      */
     public function edit( int $id, int $viid = null, int $cb = null ): View {
-        $pi = false;
 
+        $pi = false;
         /** @var PhysicalInterfaceEntity $pi */
-        if( $id and !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
+        if( $id && !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
             abort(404);
         }
 
         $vi = false;
-
-        if( $viid and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
+        if( $viid && !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
             abort(404);
         }
 
+        $switchports = [];
         if( $pi ) {
+            // in edit mode
+
             // fill the form with physical interface data
             $data = [
                 'switch'                  => $pi->getSwitchPort()->getSwitcher()->getId(),
@@ -138,26 +153,22 @@ class PhysicalInterfaceController extends Controller
 
             Former::populate( $data );
 
-        }
-
-        // in edit mode
-        if( $pi) {
-            // get all the switch port available and add the switch port associated to the Physical interface in the list
-            $t = array_merge( D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId(), [], null ) , [ [ "name" => $pi->getSwitchPort()->getName(), "id" => $pi->getSwitchPort()->getId() ] ] );
+            // get all the switch ports available and add the switch port associated to the Physical interface in the list
+            $switchports = array_merge(
+                D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId(), [], null ),
+                [ [ "name" => $pi->getSwitchPort()->getName(), "id" => $pi->getSwitchPort()->getId() ] ]
+            );
 
             // ascending sort the array by ID
-            usort($t, function ($item1, $item2) {
+            usort($switchports, function ($item1, $item2) {
                 return $item1['id'] <=> $item2['id'];
             });
         }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/physical/edit' )->with([
-            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
-            'sp'                          => $pi ? $t : '',
-            'status'                      => PhysicalInterfaceEntity::$STATES,
-            'speed'                       => PhysicalInterfaceEntity::$SPEED,
-            'duplex'                      => PhysicalInterfaceEntity::$DUPLEX,
+            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames( false, SwitcherEntity::TYPE_SWITCH ),
+            'switchports'                 => $switchports,
             'pi'                          => $pi,
             'otherPICoreLink'             => $pi ? $pi->getOtherPICoreLink() : false,
             'vi'                          => $vi,
@@ -187,6 +198,7 @@ class PhysicalInterfaceController extends Controller
         if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'viid' ) ) ) ){
             abort(404, 'Unknown virtual interface');
         }
+
         /** @var SwitchPortEntity $sp */
         if( !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port' ) ) ) ) {
             abort(404, 'Unknown switch');

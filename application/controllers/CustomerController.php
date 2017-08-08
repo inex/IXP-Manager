@@ -908,4 +908,20 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $this->view->logos = $logos;
     }
+
+
+    /**
+     * Clear the cache after a add/delete/change to a customer
+     *
+     * @param \Entities\Customer $object
+     * @return boolean
+     */
+    protected function postFlush( $object )
+    {
+        Cache::forget( 'admin_home_customers' );
+        return true;
+    }
+
+
+
 }

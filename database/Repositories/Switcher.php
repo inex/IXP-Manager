@@ -58,6 +58,20 @@ class Switcher extends EntityRepository
     }
 
     /**
+     * Clear the cache of all result sets
+     */
+    public function clearCacheAll()
+    {
+        foreach( [ true, false ] as $active ) {
+            foreach( \Entities\Switcher::$TYPES as $type => $name ) {
+                $this->getEntityManager()->getConfiguration()->getQueryCacheImpl()->delete(
+                    $this->genCacheKey( $active, $type )
+                );
+            }
+        }
+    }
+
+    /**
      * Generate a deterministic caching key for given parameters
      *
      * @param bool $active If `true`, return only active switches
