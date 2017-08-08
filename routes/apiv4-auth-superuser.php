@@ -73,16 +73,11 @@ Route::get('sflow-receivers/pretag.map',                        'SflowReceiverCo
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
 Route::get('sflow-receiver/delete/{id}',                        'SflowReceiverController@delete' );
 
-Route::get(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
-Route::get(  'patch-panel-port/delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
-Route::get(  'patch-panel-port/delete/{id}',                    'PatchPanelPortController@delete' );
-Route::get(  'patch-panel-port/split/{id}',                     'PatchPanelPortController@split' );
-Route::get(  'patch-panel-port/toggle-file-privacy/{fileid}',   'PatchPanelPortController@toggleFilePrivacy' );
-Route::post( 'patch-panel-port/upload-file/{id}',               'PatchPanelPortController@uploadFile' );
-Route::post( 'patch-panel-port/notes/{id}',                     'PatchPanelPortController@setNotes' );
+
+
+
 Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortController@detail');
 Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
-
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
 
 // remove the following two after INEX updated to yaml

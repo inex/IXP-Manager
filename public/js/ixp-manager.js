@@ -1,4 +1,8 @@
-
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
                             
 /**
  * This is default function and it's called than page is loaded.

@@ -39,6 +39,14 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::get(  'email/{id}/{type}',               'PatchPanelPortController@email' );
     Route::post( 'send-email/{id}/{type}',          'PatchPanelPortController@sendEmail' );
 
+    Route::post(  'delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
+    Route::post(  'delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
+    Route::post(  'delete/{id}',                    'PatchPanelPortController@delete' );
+    Route::post(  'split/{id}',                     'PatchPanelPortController@split' );
+    Route::post(  'toggle-file-privacy/{fileid}',   'PatchPanelPortController@toggleFilePrivacy' );
+    Route::post( 'upload-file/{id}',               'PatchPanelPortController@uploadFile' );
+    Route::post( 'notes/{id}',                     'PatchPanelPortController@setNotes' );
+
 
 });
 

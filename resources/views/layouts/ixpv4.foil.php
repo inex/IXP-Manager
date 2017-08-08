@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    <meta name="csrf-token" content="<?=  csrf_token() ?>">
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/chosen/chosen.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') ?>" />
