@@ -177,7 +177,7 @@
                         <td>
                             <?php if ( $t->vi->getType() ): ?>
                                 <label class="control-label">
-                                    <span class="label <?php if( $t->vi->isTypePeering() ): ?> label-success <?php elseif( $t->vi->isTypeFanout() ): ?>label-inverse <?php endif; ?>">
+                                    <span class="label <?php if( $t->vi->isTypePeering() ): ?> label-success <?php elseif( $t->vi->isTypeFanout() ): ?>label-default <?php endif; ?>">
                                         <?= $t->vi->resolveType() ?>
                                     </span>
                                     <?php if( count( $t->vi->getPhysicalInterfaces()  ) ) : ?>
@@ -185,14 +185,14 @@
                                             /** @var Entities\PhysicalInterface $pi */ ?>
                                             <?php if( $t->vi->isTypePeering() && $pi->getFanoutPhysicalInterface() ) : ?>
                                                 <span style="margin-left: 15px;">
-                                                    <a href="">
+                                                    <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getId() ]) ?>">
                                                         See <?= $t->vi->resolveType() ?> port
                                                     </a>
                                                 </span>
                                             <?php endif; ?>
                                             <?php if( $t->vi->isTypeFanout() && $pi->getPeeringPhysicalInterface() ) : ?>
                                                 <span style="margin-left: 15px;">
-                                                    <a href="">
+                                                    <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getPeeringPhysicalInterface()->getVirtualInterface()->getId() ]) ?>">
                                                         See <?= $t->vi->resolveType() ?> port
                                                     </a>
                                                 </span>
@@ -268,7 +268,7 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-default" href="<?= url( '/physicalInterface/view' ).'/'.$pi->getId()?>" title="view">
+                                    <a class="btn btn btn-default" href="<?= url( 'interfaces/physical/view' ).'/'.$pi->getId()?>" title="view">
                                         <i class="glyphicon glyphicon-eye-open"></i>
                                     </a>
                                     <a class="btn btn btn-default" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi->getId() ] ) ?>" title="Edit">
@@ -349,7 +349,7 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-default" href="<?= url( '/vlanInterface/view' ).'/'.$vli->getId()?>" title="View">
+                                    <a class="btn btn btn-default" href="<?= url( 'interfaces/vlan/view' ).'/'.$vli->getId()?>" title="View">
                                         <i class="glyphicon glyphicon-eye-open"></i>
                                     </a>
 

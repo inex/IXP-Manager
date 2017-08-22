@@ -487,4 +487,35 @@ class PhysicalInterface
     public function resolveStatus(): string {
         return self::$STATES[ $this->getStatus() ] ?? 'Unknown';
     }
+
+    /**
+     * Removes related interface
+     *
+     * Removes a related interface and if it only has one physical interface, removes the virtual interface also
+     *
+     * @return void
+     */
+    public function removeRelatedInterface(){
+        if( $this->getRelatedInterface() ) {
+
+            $this->getRelatedInterface()->getSwitchPort()->setPhysicalInterface( null );
+
+            if( count( $this->getRelatedInterface()->getVirtualInterface()->getPhysicalInterfaces() ) == 1 ) {
+                foreach( $this->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $fnvi ){
+                    D2EM::remove( $fnvi );
+                }
+
+                foreach( $this->getRelatedInterface()->getVirtualInterface()->getMACAddresses() as $mac ){
+                    D2EM::remove( $mac );
+                }
+
+                D2EM::remove( $this->getRelatedInterface()->getVirtualInterface() );
+                D2EM::remove( $this->getRelatedInterface() );
+            } else {
+                D2EM::remove( $this->getRelatedInterface() );
+            }
+
+            $this->setFanoutPhysicalInterface( null );
+        }
+    }
 }

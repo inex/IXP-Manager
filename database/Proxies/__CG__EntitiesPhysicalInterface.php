@@ -551,4 +551,15 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         return parent::resolveStatus();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function removeRelatedInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRelatedInterface', []);
+
+        return parent::removeRelatedInterface();
+    }
+
 }

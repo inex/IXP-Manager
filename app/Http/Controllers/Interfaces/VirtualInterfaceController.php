@@ -145,6 +145,12 @@ class VirtualInterfaceController extends Controller
             abort(404, 'Unknown customer');
         }
 
+        // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
+        if( count( $vi->getPhysicalInterfaces() ) == 0 ) {
+            $request->merge( [ 'name' => '' , 'channel-group' => null ] );
+        }
+
+        // NOT SURE
         $vi->setCustomer( $cust );
         $vi->setTrunk( $request->input( 'trunk' ) ? $request->input( 'trunk' ) : false );
         $vi->setLagFraming( $request->input( 'lag_framing' ) ? $request->input( 'lag_framing' ) : false );
@@ -154,11 +160,28 @@ class VirtualInterfaceController extends Controller
         $vi->setChannelgroup( $request->input( 'channel-group' ) );
         $vi->setMtu( $request->input( 'mtu' ) );
 
+        $this->setBundleDetails( $vi );
+
+        if( count( $vi->getPhysicalInterfaces() ) > 0 ) {
+            // We need to try and make naming of the virtual interface name automatic as well as choice
+            // of the channel group number.
+
+            // let's take group number first -> needs to be unique within a switch and > 0
+            // (some devices may allow zero but programmatically it may be easier to avoid this due to legacy data)
+            // if it's a number gt zero and it's changed (if we're editing)
+
+            // ensure it's unique:
+            if( !D2EM::getRepository(VirtualInterfaceEntity::class )->validateChannelGroup( $vi ) ) {
+                AlertContainer::push( 'Channel group number is not unique within the switch.', Alert::DANGER );
+                return Redirect::to( 'interfaces/virtual/add' )->withInput();
+            }
+        }
+
         D2EM::flush();
 
         AlertContainer::push( 'Virtual Interface added/updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'intefaces/virtual/edit/'.$vi->getId());
+        return Redirect::to( 'interfaces/virtual/edit/'.$vi->getId());
 
     }
 
@@ -168,6 +191,7 @@ class VirtualInterfaceController extends Controller
      * @return View
      */
     public function wizard(): View {
+
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/virtual/wizard' )->with([
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getNames(),
@@ -176,6 +200,7 @@ class VirtualInterfaceController extends Controller
             'pi_states'             => PhysicalInterfaceEntity::$STATES,
             'pi_speeds'             => PhysicalInterfaceEntity::$SPEED,
             'pi_duplexes'           => PhysicalInterfaceEntity::$DUPLEX,
+            'resoldCusts'           => config( 'ixp.reseller.enabled') ? json_encode( D2EM::getRepository( "\\Entities\\Customer" )->getResoldCustomerNames() ) : json_encode() ,
         ]);
     }
 
@@ -207,9 +232,11 @@ class VirtualInterfaceController extends Controller
         $vi = new VirtualInterfaceEntity;
         D2EM::persist($vi);
 
+        $vi->setTrunk( $request->input( 'trunk' ) ? $request->input( 'trunk' ) : false );
+
         $vi->setCustomer( $cust );
 
-        // these options is not available in the wizard ????????
+        // those options are not available in the wizard ????????
         $vi->setName('');
         $vi->setChannelgroup(null);
         $vi->setLagFraming(false);
@@ -218,6 +245,10 @@ class VirtualInterfaceController extends Controller
         /** @var PhysicalInterfaceEntity $pi */
         $pi = new PhysicalInterfaceEntity();
         D2EM::persist($pi);
+
+        $pi->setSpeed( $request->input( 'speed' ) );
+        $pi->setStatus( $request->input( 'status' ) );
+        $pi->setDuplex( $request->input( 'duplex' ) );
 
         $pi->setVirtualInterface( $vi );
         $vi->addPhysicalInterface($pi);
@@ -228,46 +259,36 @@ class VirtualInterfaceController extends Controller
         $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $cust ) );
 
 
-        if( count( $vi->getPhysicalInterfaces() ) ) {
+        $this->setBundleDetails( $vi );
 
-            // LAGs must have a channel group and bundle name. But only if they have a phys int:
-            if( $vi->getLagFraming() && !$vi->getChannelgroup() ) {
-                $vi->setChannelgroup( D2EM::getRepository( VirtualInterfaceEntity::class )->assignChannelGroup( $vi ) );
-                AlertContainer::push( "Missing channel group assigned as this is a LAG port", Alert::INFO );
+        // Fanout part
+
+        $fanout = $request->input('fanout' );
+
+         if( isset( $fanout ) ) {
+            if( ! $this->processFanoutPhysicalInterface( $request, $pi, $vi) ){
+                return Redirect::to('virtualInterface/add-wizard' )->withInput( Input::all() );
             }
 
-            // LAGs must have a bundle name
-            if( $vi->getLagFraming() && !$vi->getName() ) {
-                // assumption on no mlags (multi chassis lags) here:
-                $vi->setName( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor()->getBundleName() );
-
-                if( $vi->getName() ) {
-                    AlertContainer::push( "Missing bundle name assigned as this is a LAG port", Alert::INFO );
-                } else {
-                    AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
-                }
-            }
-        }
-
-
-        /* ?????? if( $form->getElement( 'fanout' ) )
-        {
-            if( !$this->processFanoutPhysicalInterface( $form, $pi, $vi ) )
-                return false;
-
-            if( $pi->getRelatedInterface() )
-            {
-                $pi->getRelatedInterface()->setSpeed( $form->getValue( "speed" ) );
-                $pi->getRelatedInterface()->setStatus( $form->getValue( "status" ) );
-                $pi->getRelatedInterface()->setDuplex( $form->getValue( "duplex" ) );
-            }
-        }*  ASK WHAT IS THAT  /
+             if( $pi->getRelatedInterface() ) {
+                 $pi->getRelatedInterface()->setSpeed( $request->input( 'speed' ) );
+                 $pi->getRelatedInterface()->setStatus( $request->input( 'status' ) );
+                 $pi->getRelatedInterface()->setDuplex( $request->input( 'duplex' ) );
+             }
+         }
 
         /** @var VlanInterfaceEntity $vli */
         $vli = new VlanInterfaceEntity();
         D2EM::persist($vli);
 
+        $vli->setIrrdbfilter(   $request->input( 'irrdbfilter' )    ? $request->input( 'irrdbfilter' )  : false );
+        $vli->setMcastenabled(  $request->input( 'mcastenabled' )   ? $request->input( 'mcastenabled' ) : false );
+        $vli->setRsclient(      $request->input( 'rsclient' )       ? $request->input( 'rsclient' )     : false );
+        $vli->setAs112client(   $request->input( 'as112client' )    ? $request->input( 'as112client' )  : false );
+        $vli->setMaxbgpprefix(  $request->input( 'maxbgpprefix' ) );
+
         $vli->setVlan( $vlan );
+        // What about busy host ?
 
         $ipv4Set = null;
         $ipv6Set = null;
@@ -292,6 +313,97 @@ class VirtualInterfaceController extends Controller
 
         return Redirect::to( 'customer/overview/tab/ports/id/' . $cust->getId() );
 
+    }
+
+    /**
+     * Links peering and fanout physical interfaces.
+     *
+     * If *link with fanout port* is checked in the form, then this function:
+     *
+     * * checks if the necessary fields are set;
+     * * loads the selected SwitchPort;
+     * * creates/loads this SwitchPort's physical interface;
+     * * creates a link between the fanout and peering physical interfaces.
+     *
+     * If *link with fanout port* is not checked then this function checks
+     * if the peering port has a related interface and, if so, removes the relation.
+     *
+     * @param  Request $request instance of the current HTTP reques
+     * @param \Entities\PhysicalInterface  $pi   Peering physical interface to related with fanout physical interface (port).
+     * @param \Entities\VirtualInterface   $vi   Virtual interface of peering physical intreface
+     * @return boolean
+     */
+    private function processFanoutPhysicalInterface( $request, $pi, $vi ) {
+        if( !$request->input('fanout' ) ) {
+            $pi->removeRelatedInterface();
+        }
+
+
+        $fanoutMonitorIndex = $request->input( 'fn_monitorindex' );
+
+        if( isset( $fanoutMonitorIndex ) ) {
+
+            if( !$fanoutMonitorIndex ) {
+                //$form->getElement( 'fn_monitorindex' )->setErrorMessages( ['This value can not be empty.'] )->markAsError();
+                //return false;
+            }
+            $monitorIdx = $fanoutMonitorIndex;
+        } else {
+            $monitorIdx = D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex(
+                $vi->getCustomer()->getReseller()
+            );
+        }
+
+
+        /** @var SwitchPortEntity $fnsp */
+        if( !( $fnsp = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port-fanout' ) ) ) ) {
+            abort( 404, 'Unknown customer' );
+        }
+
+        $fnsp->setType( \Entities\SwitchPort::TYPE_FANOUT );
+
+
+        // if switch port does not have a physical interface then create one
+        if( !$fnsp->getPhysicalInterface() ) {
+            /** @var PhysicalInterfaceEntity $fnpi */
+            $fnpi = new PhysicalInterfaceEntity();
+            $fnpi->setSwitchPort( $fnsp );
+            $fnsp->setPhysicalInterface( $fnpi );
+            $fnpi->setMonitorindex( $monitorIdx );
+            D2EM::persist( $fnpi );
+        } else {
+            $fnpi = $fnsp->getPhysicalInterface();
+
+            // check if the fanout port has a physical interface and if the physical interface is different of the current physical interface
+            if( $fnsp->getPhysicalInterface()->getRelatedInterface() && $fnsp->getPhysicalInterface()->getRelatedInterface()->getId() != $pi->getId() ) {
+                AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
+                return false;
+            }
+        }
+
+
+        // if the physical interace already has a related physical interface and it's not the same as the fanout physical interface
+        if( $pi->getRelatedInterface() && $pi->getRelatedInterface()->getId() != $fnpi->getId() ) {
+            // if fanout does not have a virtual interface, relate it with old fanout port virtual interface.
+            if( !$fnpi->getVirtualInterface() ) {
+                $pi->getRelatedInterface()->getVirtualInterface()->addPhysicalInterface( $fnpi );
+                $fnpi->setVirtualInterface( $pi->getRelatedInterface()->getVirtualInterface() );
+            }
+
+            $pi->removeRelatedInterface();
+        } else if( !$fnpi->getVirtualInterface() ) {
+            // create virtual interface for fanout physical interface if doesn't have one
+            $fnvi = new VirtualInterfaceEntity();
+            $fnvi->setCustomer( $vi->getCustomer()->getReseller() );
+            $fnvi->addPhysicalInterface( $fnpi );
+            $fnpi->setVirtualInterface( $fnvi );
+            D2EM::persist( $fnvi );
+        }
+
+        $pi->setFanoutPhysicalInterface( $fnpi );
+        $fnpi->setPeeringPhysicalInterface( $pi );
+
+        return true;
     }
 
 
@@ -352,5 +464,38 @@ class VirtualInterfaceController extends Controller
         return true;
     }
 
+    /**
+     * When we have >1 phys int / LAG framing, we need to set other elements of the virtual interface appropriately:
+     * @param VirtualInterfaceEntity $vi
+     */
+    protected function setBundleDetails( VirtualInterfaceEntity $vi ){
+        if( count( $vi->getPhysicalInterfaces() ) ) {
+
+            // LAGs must have a channel group and bundle name. But only if they have a phys int:
+            if( $vi->getLagFraming() && !$vi->getChannelgroup() ) {
+                $vi->setChannelgroup( D2EM::getRepository( VirtualInterfaceEntity::class )->assignChannelGroup( $vi ) );
+                AlertContainer::push( "Missing channel group assigned as this is a LAG port", Alert::INFO );
+            }
+
+            // LAGs must have a bundle name
+            if( $vi->getLagFraming() && !$vi->getName() ) {
+                // assumption on no mlags (multi chassis lags) here:
+                $vi->setName( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor()->getBundleName() );
+
+                if( $vi->getName() ) {
+                    AlertContainer::push( "Missing bundle name assigned as this is a LAG port", Alert::INFO );
+                } else {
+                    AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
+                }
+            }
+        }
+        else{
+            // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
+            $vi->setName('');
+            $vi->setChannelgroup(null);
+            $vi->setLagFraming(false);
+            $vi->setFastLACP(false);
+        }
+    }
 
 }

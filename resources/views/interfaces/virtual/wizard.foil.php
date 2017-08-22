@@ -97,6 +97,13 @@ $this->layout( 'layouts/ixpv4' );
                 Physical Interface Settings
             </h3>
             <hr>
+            <div id="fanout-box" class="collapse">
+                <?= Former::checkbox( 'fanout' )
+                    ->label('&nbsp;')
+                    ->text( 'Associate a fanout port' )
+                    ->blockHelp( ' ' )
+                ?>
+            </div>
             <?= Former::select( 'switch' )
                 ->label( 'Switch' )
                 ->fromQuery( $t->pi_switches, 'name' )
@@ -180,7 +187,7 @@ $this->layout( 'layouts/ixpv4' );
 <br/>
 
 <div class="row">
-    <div id='ipv4-area' class="col-sm-5" style="display: none">
+    <div id='ipv4-area' class="col-sm-4" style="display: none">
         <h3>
             IPv4 Details
         </h3>
@@ -217,7 +224,7 @@ $this->layout( 'layouts/ixpv4' );
         ?>
     </div>
 
-    <div id='ipv6-area' class="col-sm-5" style="display: none">
+    <div id='ipv6-area' class="col-sm-4" style="display: none">
         <h3>
             IPv6 Details
         </h3>
@@ -253,6 +260,29 @@ $this->layout( 'layouts/ixpv4' );
             ->blockHelp( "IXP's often monitor a customer's route collector BGP session. If this is not possible / unsuitable for this customer, uncheck this box." )
         ?>
     </div>
+
+    <?php if( config( 'ixp.reseller.enabled') ): ?>
+        <div id='fanout-area' class="col-sm-4" style="display: none">
+            <h3>
+                Fanout Details
+            </h3>
+            <hr>
+            <?= Former::select( 'switch-fanout' )
+                ->label( 'Switch' )
+                ->fromQuery( $t->pi_switches, 'name' )
+                ->placeholder( 'Choose a Switch' )
+                ->addClass( 'chzn-select' )
+                ->blockHelp( '' );
+            ?>
+
+            <?= Former::select( 'switch-port-fanout' )
+                ->label( 'Switch Port' )
+                ->placeholder( 'Choose a switch port' )
+                ->addClass( 'chzn-select' )
+                ->blockHelp( '' );
+            ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <div class="row">

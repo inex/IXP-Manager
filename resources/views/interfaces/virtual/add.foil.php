@@ -67,6 +67,13 @@ $this->layout( 'layouts/ixpv4' );
 
             ?>
 
+            <?php if( $t->vi && count( $t->vi->getPhysicalInterfaces() ) > 1 && !$t->vi->getLagFraming() ): ?>
+                <div class="alert alert-warning" role="alert">
+                    <span class="label label-warning">WARNING</span>
+                    LAG framing is not set and there is >1 physical interfaces. This may be intended but should be verified:
+                </div>
+            <?php endif; ?>
+
             <?= Former::checkbox( 'lag_framing' )
                 ->label( 'Link aggregation / LAG framing' )
                 ->blockHelp( 'Indicates if operators / provisioning systems should enable LAG framing such as LACP. <br/><br/>Mandatory where there is more than one phsyical interface.<br/><br/> Otherwise optional where a member requests a single member LAG for ease of upgrades.' )
@@ -107,7 +114,7 @@ $this->layout( 'layouts/ixpv4' );
                     <label class="control-label col-sm-4">Type</label>
                     <div class="col-sm-6">
                         <label class="control-label">
-                                <span class="label <?php if( $t->vi->isTypePeering() ): ?> label-success <?php elseif( $t->vi->isTypeFanout() ): ?>label-inverse <?php endif; ?>">
+                                <span class="label <?php if( $t->vi->isTypePeering() ): ?> label-success <?php elseif( $t->vi->isTypeFanout() ): ?>label-default <?php endif; ?>">
                                     <?= $t->vi->resolveType() ?>
                                 </span>
                             <?php if( count( $t->vi->getPhysicalInterfaces()  ) ) : ?>
@@ -115,14 +122,14 @@ $this->layout( 'layouts/ixpv4' );
                                     /** @var Entities\PhysicalInterface $pi */ ?>
                                     <?php if( $t->vi->isTypePeering() && $pi->getFanoutPhysicalInterface() ) : ?>
                                         <span style="margin-left: 15px;">
-                                                <a href="">
+                                                <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getId() ]) ?>" >
                                                     See <?= $t->vi->resolveType() ?> port
                                                 </a>
                                             </span>
                                     <?php endif; ?>
                                     <?php if( $t->vi->isTypeFanout() && $pi->getPeeringPhysicalInterface() ) : ?>
                                         <span style="margin-left: 15px;">
-                                                <a href="">
+                                                <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getPeeringPhysicalInterface()->getVirtualInterface()->getId() ]) ?>" >
                                                     See <?= $t->vi->resolveType() ?> port
                                                 </a>
                                             </span>
@@ -226,7 +233,7 @@ $this->layout( 'layouts/ixpv4' );
                                 <?php if ( $pi->getSwitchPort()->getType() != \Entities\SwitchPort::TYPE_FANOUT ): ?>
                                     <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getSwitchPort()->getIfName() ?>
                                 <?php elseif( $pi->getPeeringPhysicalInterface() ): ?>
-                                    <a href="#">
+                                    <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getPeeringPhysicalInterface()->getVirtualInterface()->getId() ]) ?>">
                                         <?= $t->ee( $pi->getPeeringPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getPeeringPhysicalInterface()->getSwitchPort()->getIfName() ?>
                                     </a>
                                 <?php endif; ?>
@@ -243,9 +250,9 @@ $this->layout( 'layouts/ixpv4' );
                             <?php if( !$t->cb ): ?>
                                 <td>
                                     <?php if ( $pi->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
-                                        <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $int->getSwitchPort()->getIfName() ?>
+                                        <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getSwitchPort()->getIfName() ?>
                                     <?php elseif( $pi->getFanoutPhysicalInterface() ): ?>
-                                        <a href="">
+                                        <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getId() ]) ?>">
                                             <?= $t->ee( $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $pi->getFanoutPhysicalInterface()->getSwitchPort()->getIfName() ?>
                                         </a>
                                     <?php endif; ?>
@@ -383,62 +390,65 @@ $this->layout( 'layouts/ixpv4' );
         </div>
     <?php endif; ?>
 
-    <?php if( !$t->cb ): ?>
-        <div class="row-fluid">
-            <h3>
-                Sflow Receivers
-                <a class="btn btn-default btn-xs" href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>"><i class="glyphicon glyphicon-plus"></i></a>
-            </h3>
-            <div id="message-sflr"></div>
-            <div id="area-sflr">
-                <?php if( count( $t->vi->getSflowReceivers() ) ) : ?>
-                    <table id="table-sflr" class="table table-bordered">
-                        <tr>
-                            <th>
-                                Target IP
-                            </th>
-                            <th>
-                                Target Port
-                            </th>
-                            <th>
-                                Action
-                            </th>
-                        </tr>
-                        <?php foreach( $t->vi->getSflowReceivers() as $sflr ):
-                            /** @var Entities\SflowReceiver $sflr */ ?>
+    <?php if( config('grapher.backends.sflow.enabled') ) : ?>
+        <?php if( !$t->cb ): ?>
+            <div class="row-fluid">
+                <h3>
+                    Sflow Receivers
+                    <a class="btn btn-default btn-xs" href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>"><i class="glyphicon glyphicon-plus"></i></a>
+                </h3>
+                <div id="message-sflr"></div>
+                <div id="area-sflr">
+                    <?php if( count( $t->vi->getSflowReceivers() ) ) : ?>
+                        <table id="table-sflr" class="table table-bordered">
                             <tr>
-                                <td>
-                                    <?= $t->ee( $sflr->getDstIp() ) ?>
-                                </td>
-                                <td>
-                                    <?= $sflr->getDstPort() ?>
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a class="btn btn btn-default" href="<?= route('interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>">
-                                            <i class="glyphicon glyphicon-pencil"></i>
-                                        </a>
-                                        <a class="btn btn btn-default" id="delete-sflr-<?= $sflr->getId()?>">
-                                            <i class="glyphicon glyphicon-trash"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                <th>
+                                    Target IP
+                                </th>
+                                <th>
+                                    Target Port
+                                </th>
+                                <th>
+                                    Action
+                                </th>
                             </tr>
-                        <?php endforeach; ?>
-                    </table>
-                <?php else: ?>
-                    <div id="table-sflr" class="alert alert-warning" role="alert">
-                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                        <span class="sr-only">Information :</span>
-                        There are no Sflow receivers defined for this virtual interface.
-                        <a href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
-                            Add one now...
-                        </a>
-                    </div>
-                <?php endif; ?>
+                            <?php foreach( $t->vi->getSflowReceivers() as $sflr ):
+                                /** @var Entities\SflowReceiver $sflr */ ?>
+                                <tr>
+                                    <td>
+                                        <?= $t->ee( $sflr->getDstIp() ) ?>
+                                    </td>
+                                    <td>
+                                        <?= $sflr->getDstPort() ?>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a class="btn btn btn-default" href="<?= route('interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </a>
+                                            <a class="btn btn btn-default" id="delete-sflr-<?= $sflr->getId()?>">
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    <?php else: ?>
+                        <div id="table-sflr" class="alert alert-warning" role="alert">
+                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Information :</span>
+                            There are no Sflow receivers defined for this virtual interface.
+                            <a href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+                                Add one now...
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
     <?php endif; ?>
+
 <?php endif; ?>
 
 <?php $this->append() ?>

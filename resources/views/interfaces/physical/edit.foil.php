@@ -27,9 +27,9 @@ $this->layout( 'layouts/ixpv4' );
     <div class="well col-sm-12">
         <?= Former::open()->method( 'POST' )
             ->action( action( 'Interfaces\PhysicalInterfaceController@store' ) )
-            ->customWidthClass( $t->otherPICoreLink ? 'col-sm-6' : 'col-sm-3' )
+            ->customWidthClass( $t->otherPICoreLink || $t->enableFanout ? 'col-sm-6' : 'col-sm-3' )
         ?>
-        <div class="<?= $t->otherPICoreLink ? 'col-sm-6': 'col-sm-12'  ?>">
+        <div class="<?= $t->otherPICoreLink || $t->enableFanout ? 'col-sm-6': 'col-sm-12'  ?>">
             <h3>
                 Physical Interface Settings
             </h3>
@@ -99,6 +99,7 @@ $this->layout( 'layouts/ixpv4' );
                     Other Side of the Core Link
                 </h3>
                 <hr>
+
                 <?= Former::select( 'switch-b' )
                     ->label( 'Switch' )
                     ->fromQuery( $t->switches, 'name' )
@@ -168,6 +169,47 @@ $this->layout( 'layouts/ixpv4' );
             </div>
         <?php endif; ?>
 
+        <?php if( $t->enableFanout ): ?>
+        <div class="col-sm-6">
+            <h3>
+                Fanout Port
+            </h3>
+            <hr>
+            <?= Former::checkbox( 'fanout' )
+                ->label( 'Associate a fanout port' )
+                ->unchecked_value( 0 )
+                ->value( 1 )
+                ->blockHelp( "" ); ?>
+
+            <div id="fanout-area" style="display: none">
+                <?= Former::select( 'switch-fanout' )
+                    ->label( 'Switch Fanout' )
+                    ->fromQuery( $t->switches, 'name' )
+                    ->placeholder( 'Choose a Switch' )
+                    ->addClass( 'chzn-select' )
+                    ->blockHelp( '' );
+                ?>
+
+                <?= Former::select( 'switch-port-fanout' )
+                    ->label( 'Switch Port Fanout' )
+                    ->placeholder( 'Choose a switch port' )
+                    ->addClass( 'chzn-select' )
+                    ->blockHelp( '' );
+                ?>
+
+                <?= Former::number( 'monitorindex-fanout' )
+                    ->label( 'Monitor Index fanout' )
+                    ->blockHelp( 'help text' );
+                ?>
+
+                <?= Former::hidden( 'sp-fanout' )
+                    ->value( $t->spFanout )
+                ?>
+            </div>
+
+
+        </div>
+        <?php endif; ?>
 
         <?= Former::hidden( 'id' )
             ->value( $t->pi ? $t->pi->getId() : false )
@@ -196,38 +238,67 @@ $this->layout( 'layouts/ixpv4' );
     <script>
 
         $(document).ready( function() {
-
+            <?php if( $t->enableFanout ): ?>
+                checkFanout();
+                $( '#fanout' ).on( 'click', checkFanout );
+                $( '#switch-fanout' ).change();
+            <?php endif; ?>
         });
 
-        $( "#switch" ).change(function(){
-            $( "#switch-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+        <?php if( $t->enableFanout ): ?>
+            function checkFanout(){
+                if( $( '#fanout' ).prop( 'checked' ) )
+                    $( '#fanout-area' ).slideDown();
+                else
+                    $( '#fanout-area' ).slideUp();
 
-            switchId = $( "#switch" ).val();
+            }
 
-            // ask what is that ?
-            var type = "peering";
+        <?php endif; ?>
+
+        $( "#switch" ).on( 'change', updateSwitchPort );
+        $( "#switch-fanout" ).on( 'change', updateSwitchPort );
+
+        function updateSwitchPort( ){
+            var type = "";
+            var arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>,  <?= \Entities\SwitchPort::TYPE_PEERING ?>];
+            if( $( this ).attr( "id" ).substr( -6 ) == "fanout" )
+            {
+                type = "-fanout";
+                arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>, <?= \Entities\SwitchPort::TYPE_FANOUT ?> ];
+            }
+
+            $( "#switch-port" + type ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+
+            switchId = $( "#switch" + type ).val();
+
             url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/ports";
 
             $.ajax( url )
                 .done( function( data ) {
                     options = "<option value=\"\">Choose a switch port</option>\n";
                     $.each( data.switchports, function( key, port ){
-                        if( port.pi_id == null && [0,1].indexOf( port.sp_type ) != -1 ) {
+                        if( port.pi_id == null &&  arrayType.indexOf( port.sp_type ) != -1 ) {
                             options += "<option value=\"" + port.sp_id + "\">" + port.sp_name + " (" + port.sp_type_name + ")</option>\n";
                         }
                     });
-                    $( "#switch-port" ).html( options );
+
+
+                    ///////// select the good sp ID
+
+                    $( "#switch-port" + type ).html( options );
                 })
                 .fail( function() {
                     options = "<option value=\"\">ERROR</option>\n";
-                    $( "#switch-port" ).html( options );
+                    $( "#switch-port" + type ).html( options );
                     alert( "Error running ajax query for " + url );
                     throw new Error( "Error running ajax query for " + url );
                 })
                 .always( function() {
-                    $( "#switch-port" ).trigger( "chosen:updated" );
+                    $( "#switch-port" + type ).trigger( "chosen:updated" );
                 });
-        });
+        }
+
 
 
         /**

@@ -55,14 +55,26 @@ class StoreVirtualInterfaceWizard extends FormRequest
         return [
             'cust'                  => 'required|integer',
             'vlan'                  => 'required|integer',
+            'trunk'                 => 'boolean',
             'switch'                => 'required|integer',
             'switch-port'           => 'required|integer',
             'status'                => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$STATES ) ),
             'speed'                 => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$SPEED ) ),
             'duplex'                => 'required|string|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),
             'maxbgpprefix'          => 'integer|nullable',
+            'irrdbfilter'           => 'boolean',
+            'mcastenabled'          => 'boolean',
+            'rsclient'              => 'boolean',
+            'as112client'           => 'boolean',
             'ipv4-address'          => 'ipv4' . ( $this->input('ipv4-enabled') ? '|required' : '|nullable' ),
+            'ipv4canping'           => 'boolean',
+            'ipv4monitorrcbgp'      => 'boolean',
             'ipv6-address'          => 'ipv6' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
+            'ipv6canping'           => 'boolean',
+            'ipv6monitorrcbgp'      => 'boolean',
+            'switch-fanout'         => 'ipv6' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
+            'switch-fanout'         => 'integer' . ( $this->input('fanout') ? '|required' : '|nullable' ),
+            'switch-port-fanout'    => 'integer' . ( $this->input('fanout') ? '|required' : '|nullable' ),
         ];
     }
 }

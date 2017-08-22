@@ -123,6 +123,11 @@ class PhysicalInterfaceController extends Controller
         if( $pi ) {
             // in edit mode
 
+            if( $pi->getRelatedInterface() && $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT )
+                $pi = $pi->getRelatedInterface();
+
+            $enableFanout = config( 'ixp.reseller.enabled') && $pi->getVirtualInterface()->getCustomer()->isResoldCustomer();
+
             // fill the form with physical interface data
             $data = [
                 'switch'                  => $pi->getSwitchPort()->getSwitcher()->getId(),
@@ -135,6 +140,17 @@ class PhysicalInterfaceController extends Controller
                 'notes'                   => $pi->getNotes()
             ];
 
+            if( $enableFanout && $pi->getFanoutPhysicalInterface() ){
+                $dataFanout = [
+                    'fanout'                  => $pi->getFanoutPhysicalInterface() ? 1 : 0,
+                    'switch-fanout'           => $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getId(),
+                    'switch-port-fanout'      => $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId(),
+                    'monitorindex-fanout'     => $pi->getFanoutPhysicalInterface()->getMonitorindex()
+                ];
+
+                $data = array_merge( $data, $dataFanout);
+            }
+
             if( $piB = $pi->getOtherPICoreLink() ){
                 $dataB = [
                     'switch-b'                  => $piB->getSwitchPort()->getSwitcher()->getId(),
@@ -146,6 +162,7 @@ class PhysicalInterfaceController extends Controller
                     'monitorindex-b'            => $piB->getMonitorindex() ? $piB->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $piB->getVirtualInterface()->getCustomer() ) ,
                     'notes-b'                   => $piB->getNotes()
                 ];
+
 
                 $data = array_merge( $data, $dataB);
 
@@ -173,6 +190,8 @@ class PhysicalInterfaceController extends Controller
             'otherPICoreLink'             => $pi ? $pi->getOtherPICoreLink() : false,
             'vi'                          => $vi,
             'cb'                          => $cb ? $cb : false,
+            'enableFanout'                => $enableFanout,
+            'spFanout'                    => $enableFanout && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : null
         ]);
     }
 
