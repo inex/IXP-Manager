@@ -32,6 +32,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use IXP\Http\Controllers\Controller;
 
+use IXP\Traits\Interfaces;
+
 use Entities\{
     VirtualInterface as VirtualInterfaceEntity,
     Customer as CustomerEntity,
@@ -63,6 +65,7 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  */
 class VirtualInterfaceController extends Controller
 {
+    use Interfaces;
     /**
      * Display all the virtualInterfaces
      *
@@ -313,189 +316,6 @@ class VirtualInterfaceController extends Controller
 
         return Redirect::to( 'customer/overview/tab/ports/id/' . $cust->getId() );
 
-    }
-
-    /**
-     * Links peering and fanout physical interfaces.
-     *
-     * If *link with fanout port* is checked in the form, then this function:
-     *
-     * * checks if the necessary fields are set;
-     * * loads the selected SwitchPort;
-     * * creates/loads this SwitchPort's physical interface;
-     * * creates a link between the fanout and peering physical interfaces.
-     *
-     * If *link with fanout port* is not checked then this function checks
-     * if the peering port has a related interface and, if so, removes the relation.
-     *
-     * @param  Request $request instance of the current HTTP reques
-     * @param \Entities\PhysicalInterface  $pi   Peering physical interface to related with fanout physical interface (port).
-     * @param \Entities\VirtualInterface   $vi   Virtual interface of peering physical intreface
-     * @return boolean
-     */
-    private function processFanoutPhysicalInterface( $request, $pi, $vi ) {
-        if( !$request->input('fanout' ) ) {
-            $pi->removeRelatedInterface();
-        }
-
-
-        $fanoutMonitorIndex = $request->input( 'fn_monitorindex' );
-
-        if( isset( $fanoutMonitorIndex ) ) {
-
-            if( !$fanoutMonitorIndex ) {
-                //$form->getElement( 'fn_monitorindex' )->setErrorMessages( ['This value can not be empty.'] )->markAsError();
-                //return false;
-            }
-            $monitorIdx = $fanoutMonitorIndex;
-        } else {
-            $monitorIdx = D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex(
-                $vi->getCustomer()->getReseller()
-            );
-        }
-
-
-        /** @var SwitchPortEntity $fnsp */
-        if( !( $fnsp = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port-fanout' ) ) ) ) {
-            abort( 404, 'Unknown customer' );
-        }
-
-        $fnsp->setType( \Entities\SwitchPort::TYPE_FANOUT );
-
-
-        // if switch port does not have a physical interface then create one
-        if( !$fnsp->getPhysicalInterface() ) {
-            /** @var PhysicalInterfaceEntity $fnpi */
-            $fnpi = new PhysicalInterfaceEntity();
-            $fnpi->setSwitchPort( $fnsp );
-            $fnsp->setPhysicalInterface( $fnpi );
-            $fnpi->setMonitorindex( $monitorIdx );
-            D2EM::persist( $fnpi );
-        } else {
-            $fnpi = $fnsp->getPhysicalInterface();
-
-            // check if the fanout port has a physical interface and if the physical interface is different of the current physical interface
-            if( $fnsp->getPhysicalInterface()->getRelatedInterface() && $fnsp->getPhysicalInterface()->getRelatedInterface()->getId() != $pi->getId() ) {
-                AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
-                return false;
-            }
-        }
-
-
-        // if the physical interace already has a related physical interface and it's not the same as the fanout physical interface
-        if( $pi->getRelatedInterface() && $pi->getRelatedInterface()->getId() != $fnpi->getId() ) {
-            // if fanout does not have a virtual interface, relate it with old fanout port virtual interface.
-            if( !$fnpi->getVirtualInterface() ) {
-                $pi->getRelatedInterface()->getVirtualInterface()->addPhysicalInterface( $fnpi );
-                $fnpi->setVirtualInterface( $pi->getRelatedInterface()->getVirtualInterface() );
-            }
-
-            $pi->removeRelatedInterface();
-        } else if( !$fnpi->getVirtualInterface() ) {
-            // create virtual interface for fanout physical interface if doesn't have one
-            $fnvi = new VirtualInterfaceEntity();
-            $fnvi->setCustomer( $vi->getCustomer()->getReseller() );
-            $fnvi->addPhysicalInterface( $fnpi );
-            $fnpi->setVirtualInterface( $fnvi );
-            D2EM::persist( $fnvi );
-        }
-
-        $pi->setFanoutPhysicalInterface( $fnpi );
-        $fnpi->setPeeringPhysicalInterface( $pi );
-
-        return true;
-    }
-
-
-    /**
-     *
-     * DUPLICATED !!!!
-     *
-     * Sets IPv4 or IPv6 from form to given VlanInterface.
-     *
-     * Function checks if IPvX address is provided if IPvX is enabled. Then
-     * it checks if given IPvX address exists for current Vlan:
-     *
-     * * if it exists, it ensures is is not assigned to another interface;
-     * * if !exists, creates a new one.
-     *
-     * @param \Entities\VlanInterface      $vli  Vlan interface to assign IP to
-     * @param bool                         $ipv6 Bool to define if IP address is IPv4 or IPv6
-     * @return bool
-     */
-    private function setIp($request, $vl, $vli, $ipv6 = false )
-    {
-        $iptype = $ipv6 ? "ipv6" : "ipv4";
-        $ipVer  = $ipv6 ? "IPv6" : "IPv4";
-        $setterIPv = "set{$ipVer}Address";
-        $setterEnabled = "set{$ipVer}enabled";
-        $setterHostname = "set{$ipVer}hostname";
-        $setterSecret = "set{$ipVer}bgpmd5secret";
-        $setterPing = "set{$ipVer}canping";
-        $setterMonitor = "set{$ipVer}monitorrcbgp";
-
-        $entity = $ipv6 ? IPv6AddressEntity::class : IPv4AddressEntity::class;
-
-        $addressValue = $request->input( $iptype . '-address' );
-
-        if( !$addressValue ) {
-            AlertContainer::push( "Please select or enter an ".$ipVer." address.", Alert::DANGER );
-            return false;
-        }
-
-        if( !($ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vl->getId(), 'address' => $addressValue ] )  ) ){
-
-            $ip = new $entity();
-            D2EM::persist( $ip );
-            $ip->setVlan( $vl );
-            $ip->setAddress( $addressValue );
-        } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
-            AlertContainer::push( $ipVer."address ".$addressValue." is already in use.", Alert::DANGER );
-            return false;
-        }
-
-        $vli->$setterIPv( $ip );
-        $vli->$setterHostname( $request->input( $iptype . '-hostname' ) );
-        $vli->$setterEnabled( true );
-        $vli->$setterSecret( $request->input( $iptype . '-bgp-md5-secret' ) );
-        $vli->$setterPing( $request->input( $iptype . '-can-ping' ) );
-        $vli->$setterMonitor( $request->input( $iptype . '-monitor-rcbgp' ) );
-
-        return true;
-    }
-
-    /**
-     * When we have >1 phys int / LAG framing, we need to set other elements of the virtual interface appropriately:
-     * @param VirtualInterfaceEntity $vi
-     */
-    protected function setBundleDetails( VirtualInterfaceEntity $vi ){
-        if( count( $vi->getPhysicalInterfaces() ) ) {
-
-            // LAGs must have a channel group and bundle name. But only if they have a phys int:
-            if( $vi->getLagFraming() && !$vi->getChannelgroup() ) {
-                $vi->setChannelgroup( D2EM::getRepository( VirtualInterfaceEntity::class )->assignChannelGroup( $vi ) );
-                AlertContainer::push( "Missing channel group assigned as this is a LAG port", Alert::INFO );
-            }
-
-            // LAGs must have a bundle name
-            if( $vi->getLagFraming() && !$vi->getName() ) {
-                // assumption on no mlags (multi chassis lags) here:
-                $vi->setName( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor()->getBundleName() );
-
-                if( $vi->getName() ) {
-                    AlertContainer::push( "Missing bundle name assigned as this is a LAG port", Alert::INFO );
-                } else {
-                    AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );
-                }
-            }
-        }
-        else{
-            // we don't allow setting channel group or name until there's >= 1 physical interface / LAG framing:
-            $vi->setName('');
-            $vi->setChannelgroup(null);
-            $vi->setLagFraming(false);
-            $vi->setFastLACP(false);
-        }
     }
 
 }

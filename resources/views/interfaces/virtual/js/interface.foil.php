@@ -36,44 +36,78 @@
         }
         else if( type == "pi" ){
             objectName = "Physical Interface";
-            urlDelete = "<?= url( 'api/v4/physical-interface/delete' ) ?>";
+            urlDelete = "<?= url( 'interfaces/physical/delete' ) ?>";
             urlListReload = "<?= route( 'interfaces/physical/list' ) ?>";
         }
+
+        var reltype = "normal";
+
+        if( $( '#delete-' +type+ '-' + id ).attr( "data-type" ) == 1 ){
+            reltype = "fanout";
+        } else if( $( '#delete-' +type+ '-' + id ).attr( "data-type" ) == 6 ){
+            reltype = "peering";
+        }
+
+        var related = false;
+        if( $( '#delete-' +type+ '-' + id ).attr( "data-related" ) ){
+            related = true;
+        }
+
 
         if( viid ){
             urlListReload = "<?= url('/virtualInterface/edit/' ) ?>/"+viid ;
         }
 
-        bootbox.confirm({
-            message: "Do you really want to delete this " +objectName+ " ?",
-            buttons: {
-                confirm: {
-                    label: 'Yes',
-                    className: 'btn-primary'
+        if( !related ) {
+            bootbox.confirm({
+                message: "Do you really want to delete this " + objectName + " ?" ,
+                buttons: {
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-primary'
+                    },
+                    confirm: {
+                        label: 'Delete',
+                        className: 'btn-danger'
+                    }
                 },
-                cancel: {
-                    label: 'No',
-                    className: 'btn-danger'
+                callback: function (result) {
+                    if( result) {
+                        document.location.href = urlDelete + '/' + id;
+                    }
+
                 }
-            },
-            callback: function (result) {
-                if( result) {
-                    $.ajax( urlDelete+"/"+id )
-                        .done( function( data ) {
-                            $('.bootbox.modal').modal( 'hide' );
-                            result = ( data.success ) ? 'success': 'danger';
-                            if( result ){
-                                $( "#message-"+type ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
-                                refreshDataTable( type, urlListReload , viid);
-                            }
-                        })
-                        .fail( function(){
-                            alert( 'Could add MAC address. API / AJAX / network error' );
-                            throw new Error("Error running ajax query for api/v4/l2-address/{id}/delete");
-                        })
+            });
+        } else {
+
+            bootbox.dialog({
+                title: "",
+                message: "<b>Do you really want to delete this " +objectName+ " ? It has a related " + reltype + " interface.</b>",
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: 'btn-primary',
+                        callback: function(){
+                            return false;
+                        }
+                    },
+                    deleteRelated: {
+                        label: "Delete with related " + reltype + " interface ",
+                        className: 'btn-warning',
+                        callback: function(){
+                            document.location.href = urlDelete + '/' + id + '/related/1';
+                        }
+                    },
+                    confirm: {
+                        label: "Delete",
+                        className: 'btn-danger',
+                        callback: function(){
+                            document.location.href = urlDelete + '/' + id;
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**

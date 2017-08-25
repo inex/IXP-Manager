@@ -4,6 +4,7 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+
 /**
  * PhysicalInterface
  *
@@ -62,4 +63,5 @@ class PhysicalInterface extends EntityRepository
                         LEFT JOIN cab.Location l"
             )->getArrayResult();
     }
+
 }

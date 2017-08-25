@@ -287,5 +287,4 @@ class VirtualInterface extends EntityRepository
         return false;
     }
 
-
 }

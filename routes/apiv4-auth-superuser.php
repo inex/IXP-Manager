@@ -116,7 +116,7 @@ Route::group( [  'prefix' => 'vlan' ], function() {
     Route::get( '{id}/ip-addresses',                    'VlanController@getIPAddresses' );
 });
 
-Route::get('physical-interface/delete/{id}',                    'PhysicalInterfaceController@delete' );
+
 Route::get('virtual-interface/delete/{id}',                    'VirtualInterfaceController@delete' );
 Route::get('core-link/delete/{id}',                             'CoreLinkController@delete' );
 

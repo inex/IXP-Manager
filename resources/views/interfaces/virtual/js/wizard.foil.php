@@ -13,6 +13,11 @@
             $( "#ipv6-area" ).slideDown();
         }
 
+        if( $( "#switch" ).val() != null ){
+
+            $( "#switch" ).change();
+
+        }
         checkResoldCusts();
         checkFanout();
 
@@ -23,6 +28,7 @@
 
             $( "#cust" ).on( 'change', checkResoldCusts );
             $( '#fanout' ).on( 'click', checkFanout );
+            setFanoutSp();
 
         <?php endif; ?>
 
@@ -34,7 +40,12 @@
                 $( '#fanout-area' ).slideDown();
             else
                 $( '#fanout-area' ).slideUp();
+    }
 
+    function setFanoutSp(){
+        if( $( '#fanout' ).prop( 'checked' ) && $( "#switch-fanout" ).val() != null ){
+            $( "#switch-fanout" ).change();
+        }
     }
     function checkResoldCusts() {
 
@@ -58,10 +69,13 @@
     function updateSwitchPort(){
         var type = "";
         var arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>,  <?= \Entities\SwitchPort::TYPE_PEERING ?>];
+        var excludeSp = $( "#switch-port-fanout" ).val();
+
         if( $( this ).attr( "id" ).substr( -6 ) == "fanout" )
         {
             type = "-fanout";
             arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>, <?= \Entities\SwitchPort::TYPE_FANOUT ?> ];
+            excludeSp = $( "#switch-port" ).val();
         }
 
         $( "#switch-port" + type ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
@@ -72,13 +86,13 @@
 
         var options;
 
-        $.ajax( url ,
-            'type' =>  type
-            )
+        $.ajax( url )
             .done( function( data ) {
                 options = "<option value=\"\">Choose a switch port</option>\n";
+
+
                 $.each( data.switchports, function( key, port ){
-                    if( port.pi_id == null && arrayType.indexOf( port.sp_type ) != -1 ) {
+                    if( port.pi_id == null && arrayType.indexOf( port.sp_type ) != -1 && excludeSp != port.sp_id ) {
                         options += "<option value=\"" + port.sp_id + "\">" + port.sp_name + " (" + port.sp_type_name + ")</option>\n";
                     }
                 });

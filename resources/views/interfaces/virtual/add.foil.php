@@ -273,7 +273,7 @@ $this->layout( 'layouts/ixpv4' );
                             <?php endif; ?>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-default" href="<?= route( 'interfaces/physical/edit' , [ 'id' => $pi->getId() ] )?>" title="Edit">
+                                    <a class="btn btn btn-default" href="<?= route( 'interfaces/physical/edit/from-virtual-interface' , [ 'id' => $pi->getId() , 'vintid' => $t->vi->getId() ] )?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>
 

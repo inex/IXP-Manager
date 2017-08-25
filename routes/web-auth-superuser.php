@@ -88,8 +88,11 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'view/{id}',                        'PhysicalInterfaceController@view' )->name( 'interfaces/physical/view' );
         Route::get( 'edit/{id}',                        'PhysicalInterfaceController@edit' )->name( 'interfaces/physical/edit' );
         Route::get( 'edit/{id}/from-cb/{cb}',           'PhysicalInterfaceController@editFromCb' )->name( 'interfaces/physical/edit/from-core-bundle' );
+        Route::get( 'edit/{id}/vintid/{viid}',          'PhysicalInterfaceController@edit' )->name( 'interfaces/physical/edit/from-virtual-interface' );
         Route::get( 'add/{id}/vintid/{viid}',           'PhysicalInterfaceController@edit' )->name( 'interfaces/physical/add' );
         Route::post( 'store',                           'PhysicalInterfaceController@store'  );
+        Route::get('delete/{id}',                       'PhysicalInterfaceController@delete' );
+        Route::get('delete/{id}/related/{related}',     'PhysicalInterfaceController@delete' );
     });
 
     Route::group( [  'prefix' => 'vlan' ], function() {

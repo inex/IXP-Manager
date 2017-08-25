@@ -61,6 +61,8 @@ class StorePhysicalInterface extends FormRequest
             'duplex'                    => 'required|string|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),
             'monitorindex'              => 'nullable|integer',
             'notes'                     => 'string|nullable',
+            'switch-fanout'         => 'integer' . ( $this->input('fanout') ? '|required' : '|nullable' ),
+            'switch-port-fanout'    => 'integer' . ( $this->input('fanout') ? '|required' : '|nullable' ),
         ];
     }
 }

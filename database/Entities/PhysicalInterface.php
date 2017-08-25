@@ -404,12 +404,17 @@ class PhysicalInterface
      */
     public function getRelatedInterface()
     {
-        if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $this->getPeeringPhysicalInterface() )
-            return $this->getPeeringPhysicalInterface();
-        else if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $this->getFanoutPhysicalInterface() )
-            return $this->getFanoutPhysicalInterface();
-        else
+        if( $this->getSwitchPort() ){
+            if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $this->getPeeringPhysicalInterface() )
+                return $this->getPeeringPhysicalInterface();
+            else if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $this->getFanoutPhysicalInterface() )
+                return $this->getFanoutPhysicalInterface();
+            else
+                return false;
+        } else{
             return false;
+        }
+
     }
 
 
@@ -488,34 +493,4 @@ class PhysicalInterface
         return self::$STATES[ $this->getStatus() ] ?? 'Unknown';
     }
 
-    /**
-     * Removes related interface
-     *
-     * Removes a related interface and if it only has one physical interface, removes the virtual interface also
-     *
-     * @return void
-     */
-    public function removeRelatedInterface(){
-        if( $this->getRelatedInterface() ) {
-
-            $this->getRelatedInterface()->getSwitchPort()->setPhysicalInterface( null );
-
-            if( count( $this->getRelatedInterface()->getVirtualInterface()->getPhysicalInterfaces() ) == 1 ) {
-                foreach( $this->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $fnvi ){
-                    D2EM::remove( $fnvi );
-                }
-
-                foreach( $this->getRelatedInterface()->getVirtualInterface()->getMACAddresses() as $mac ){
-                    D2EM::remove( $mac );
-                }
-
-                D2EM::remove( $this->getRelatedInterface()->getVirtualInterface() );
-                D2EM::remove( $this->getRelatedInterface() );
-            } else {
-                D2EM::remove( $this->getRelatedInterface() );
-            }
-
-            $this->setFanoutPhysicalInterface( null );
-        }
-    }
 }

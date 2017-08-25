@@ -95,7 +95,7 @@ $this->layout( 'layouts/ixpv4' );
                                 <a class="btn btn btn-default" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi['id'] ] ) ?>" title="Edit">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
-                                <a class="btn btn btn-default" id="delete-pi-<?= $pi['id'] ?>" href="" title="Delete">
+                                <a class="btn btn btn-default" id="delete-pi-<?= $pi['id'] ?>" <?php if( $t->resellerMode && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?> " href="" title="Delete">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </a>
                             </div>
