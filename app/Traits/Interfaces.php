@@ -57,16 +57,21 @@ trait Interfaces
      */
     public function removeRelatedInterface( $pi ){
         if( $pi->getRelatedInterface() ) {
-
+            /** @var PhysicalInterfaceEntity $pi */
             $pi->getRelatedInterface()->getSwitchPort()->setPhysicalInterface( null );
 
             if( count( $pi->getRelatedInterface()->getVirtualInterface()->getPhysicalInterfaces() ) == 1 ) {
-                foreach( $pi->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $fnvi ){
-                    D2EM::remove( $fnvi );
-                }
+                foreach( $pi->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $vli ) {
+                    /** @var VlanInterface $vli */
+                    foreach( $vli->getLayer2Addresses() as $l2a ) {
+                        D2EM::remove( $l2a );
+                    }
 
-                foreach( $pi->getRelatedInterface()->getVirtualInterface()->getMACAddresses() as $mac ){
-                    D2EM::remove( $mac );
+                    foreach( $pi->getRelatedInterface()->getVirtualInterface()->getMACAddresses() as $mac ){
+                        D2EM::remove( $mac );
+                    }
+
+                    D2EM::remove( $vli );
                 }
 
                 D2EM::remove( $pi->getRelatedInterface()->getVirtualInterface() );
@@ -74,7 +79,6 @@ trait Interfaces
             } else {
                 D2EM::remove( $pi->getRelatedInterface() );
             }
-
             $pi->setFanoutPhysicalInterface( null );
         }
     }

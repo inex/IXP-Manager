@@ -27,12 +27,12 @@ use D2EM, Redirect, Former, Input;
 
 use Illuminate\View\View;
 
-use Illuminate\Http\RedirectResponse;
-
-use Illuminate\Http\Request;
+use Illuminate\Http\{
+    Request,
+    JsonResponse,
+    RedirectResponse
+};
 use IXP\Http\Controllers\Controller;
-
-use IXP\Traits\Interfaces;
 
 use Entities\{
     VirtualInterface as VirtualInterfaceEntity,
@@ -44,6 +44,11 @@ use Entities\{
     VlanInterface as VlanInterfaceEntity,
     IPv4Address as IPv4AddressEntity,
     IPv6Address as IPv6AddressEntity
+};
+
+use IXP\Traits\{
+    Common,
+    Interfaces
 };
 
 use IXP\Http\Requests\{
@@ -65,6 +70,8 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  */
 class VirtualInterfaceController extends Controller
 {
+    use Common;
+
     use Interfaces;
     /**
      * Display all the virtualInterfaces
@@ -73,7 +80,8 @@ class VirtualInterfaceController extends Controller
      */
     public function list() : View {
         return view( 'interfaces/virtual/list' )->with([
-            'vis' => D2EM::getRepository( VirtualInterfaceEntity::class )->getForList()
+            'vis'               => D2EM::getRepository( VirtualInterfaceEntity::class )->getForList(),
+            'resellerMode'      => $this->resellerMode()
         ]);
     }
 
@@ -103,9 +111,10 @@ class VirtualInterfaceController extends Controller
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/virtual/add' )->with([
-            'cust'      => D2EM::getRepository( CustomerEntity::class)->getNames(),
-            'vi'        => $vi ? $vi : false,
-            'cb'        => $vi ? $vi->getCoreBundle() : false,
+            'cust'              => D2EM::getRepository( CustomerEntity::class)->getNames(),
+            'vi'                => $vi ? $vi : false,
+            'cb'                => $vi ? $vi->getCoreBundle() : false,
+            'resellerMode'      => $this->resellerMode()
         ]);
     }
 
@@ -316,6 +325,63 @@ class VirtualInterfaceController extends Controller
 
         return Redirect::to( 'customer/overview/tab/ports/id/' . $cust->getId() );
 
+    }
+
+    /**
+     * Delete a Virtual Interface
+     *
+     * @param   Request $request instance of the current HTTP request
+     * @param   int $id ID of the VirtualInterface
+     * @return  JsonResponse
+     */
+    public function delete( Request $request,  int $id ): JsonResponse {
+        /** @var VirtualInterfaceEntity $vi */
+        if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
+            return abort( '404' );
+        }
+
+        foreach( $vi->getPhysicalInterfaces() as $pi) {
+            /** @var PhysicalInterfaceEntity $pi */
+            $vi->removePhysicalInterface( $pi );
+
+            if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_PEERING && $pi->getFanoutPhysicalInterface() ) {
+                $pi->getSwitchPort()->setPhysicalInterface( null );
+                $pi->getFanoutPhysicalInterface()->getSwitchPort()->setType( \Entities\SwitchPort::TYPE_PEERING );
+            } else if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT && $pi->getPeeringPhysicalInterface() ) {
+                if( $request->input( 'related' ) ){
+                    $this->removeRelatedInterface( $pi );
+                }
+
+                $pi->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
+            }
+            D2EM::remove( $pi );
+
+            if( $request->input( 'related' ) && $pi->getRelatedInterface() ){
+                $this->removeRelatedInterface( $pi );
+            }
+
+        }
+
+        foreach( $vi->getVlanInterfaces() as $vli ) {
+            /** @var VlanInterfaceEntity $vli */
+            foreach( $vli->getLayer2Addresses() as $l2a) {
+                D2EM::remove( $l2a );
+            }
+
+            $vi->removeVlanInterface( $vli );
+            D2EM::remove( $vli );
+        }
+
+        foreach( $vi->getMACAddresses() as $mac){
+            D2EM::remove( $mac );
+        }
+
+        D2EM::remove( $vi );
+        D2EM::flush();
+
+        AlertContainer::push( 'The Virtual Interface has been deleted successfully.', Alert::SUCCESS );
+
+        return response()->json( [ 'success' => true ]);
     }
 
 }

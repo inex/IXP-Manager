@@ -14,7 +14,7 @@ namespace IXP\Http\Controllers\Interfaces;
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
@@ -28,7 +28,7 @@ use D2EM, Redirect, Former, Input;
 use Illuminate\View\View;
 
 use Illuminate\Http\{
-    RedirectResponse
+    JsonResponse, RedirectResponse, Request
 };
 
 use IXP\Http\Controllers\Controller;
@@ -66,6 +66,7 @@ class PhysicalInterfaceController extends Controller
 {
     use Interfaces;
     use Common;
+
     /**
      * Display all the physical interfaces as a list
      *
@@ -221,7 +222,7 @@ class PhysicalInterfaceController extends Controller
             'vi'                          => $vi,
             'cb'                          => $cb ? $cb : false,
             'enableFanout'                => $enableFanout,
-            'spFanout'                    => $pi && $enableFanout && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : false
+            'spFanout'                    => $pi && $enableFanout && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : false,
         ]);
     }
 
@@ -329,11 +330,11 @@ class PhysicalInterfaceController extends Controller
     /**
      * Delete a Physical Interface
      *
+     * @param   Request $request instance of the current HTTP request
      * @param   int $id ID of the Physical Interface
-     * @param   bool $related do we have a related interface linked to thus physical interface ?
-     * @return  RedirectResponse
+     * @return  JsonResponse
      */
-    public function delete( int $id, bool $related = false ): RedirectResponse{
+    public function delete( Request $request,  int $id ): JsonResponse {
         /** @var PhysicalInterfaceEntity $pi */
         if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
             return abort( '404' );
@@ -344,14 +345,14 @@ class PhysicalInterfaceController extends Controller
             $pi->getFanoutPhysicalInterface()->getSwitchPort()->setType( SwitchPortEntity::TYPE_PEERING );
         }
         else if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT && $pi->getPeeringPhysicalInterface() ) {
-            if( $related ){
+            if( $request->input( 'related' ) ){
                 $this->removeRelatedInterface( $pi );
             }
 
             $pi->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
         }
 
-        if( $related && $pi->getRelatedInterface() ) {
+        if( $request->input( 'related' ) && $pi->getRelatedInterface() ) {
             $this->removeRelatedInterface( $pi );
             D2EM::flush();
         }
@@ -363,8 +364,7 @@ class PhysicalInterfaceController extends Controller
 
         AlertContainer::push( 'The Physical Interface has been deleted successfully.', Alert::SUCCESS );
 
-        // make the good redirection here
-        return Redirect::to( 'interfaces/physical/list' );
+        return response()->json( [ 'success' => true ] );
     }
 
 

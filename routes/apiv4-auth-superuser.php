@@ -107,7 +107,6 @@ Route::get( 'l2-address/delete/{id}',                           'Layer2AddressCo
 Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
 
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
-Route::get( 'vlan-interface/delete/{id}',                       'VlanInterfaceController@delete' );
 Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceController@sflowMatrix' );
 Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
 
@@ -117,7 +116,7 @@ Route::group( [  'prefix' => 'vlan' ], function() {
 });
 
 
-Route::get('virtual-interface/delete/{id}',                    'VirtualInterfaceController@delete' );
+
 Route::get('core-link/delete/{id}',                             'CoreLinkController@delete' );
 
 

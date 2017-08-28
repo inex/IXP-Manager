@@ -21,23 +21,19 @@
 
         if( type == "vli"){
             objectName = "Vlan Interface";
-            urlDelete = "<?= url( 'api/v4/vlan-interface/delete/' ) ?>";
-            urlListReload = "<?= route( 'interfaces/vlan/list' ) ?>";
+            urlDelete = "<?= url( 'interfaces/vlan/delete' ) ?>";
         }
         else if( type == "vi" ){
             objectName = "Virtual Interface";
-            urlDelete = "<?= url( 'api/v4/virtual-interface/delete' ) ?>" ;
-            urlListReload = "<?= route( 'interfaces/virtual/list' ) ?>";
+            urlDelete = "<?= url( 'interfaces/virtual/delete' ) ?>" ;
         }
         else if( type == "sflr" ){
             objectName = "Sflow Receiver";
             urlDelete = "<?= url( 'api/v4/sflow-receiver/delete' ) ?>" ;
-            urlListReload = "<?= route( 'interfaces/sflow-receiver/list' ) ?>";
         }
         else if( type == "pi" ){
             objectName = "Physical Interface";
             urlDelete = "<?= url( 'interfaces/physical/delete' ) ?>";
-            urlListReload = "<?= route( 'interfaces/physical/list' ) ?>";
         }
 
         var reltype = "normal";
@@ -53,11 +49,6 @@
             related = true;
         }
 
-
-        if( viid ){
-            urlListReload = "<?= url('/virtualInterface/edit/' ) ?>/"+viid ;
-        }
-
         if( !related ) {
             bootbox.confirm({
                 message: "Do you really want to delete this " + objectName + " ?" ,
@@ -71,15 +62,22 @@
                         className: 'btn-danger'
                     }
                 },
-                callback: function (result) {
+                callback: function ( result ) {
                     if( result) {
-                        document.location.href = urlDelete + '/' + id;
+                        $.ajax( urlDelete + "/" + id,{
+                            type : 'POST'
+                        })
+                            .done( function( data ) {
+                                location.reload();
+                            })
+                            .fail( function(){
+                                alert( 'Could add MAC address. API / AJAX / network error' );
+                                throw new Error("Error running ajax query for " + urlDelete + "/" + id );
+                            })
                     }
-
                 }
             });
         } else {
-
             bootbox.dialog({
                 title: "",
                 message: "<b>Do you really want to delete this " +objectName+ " ? It has a related " + reltype + " interface.</b>",
@@ -95,14 +93,35 @@
                         label: "Delete with related " + reltype + " interface ",
                         className: 'btn-warning',
                         callback: function(){
-                            document.location.href = urlDelete + '/' + id + '/related/1';
+                            $.ajax( urlDelete + "/" + id,{
+                                type : 'POST',
+                                data: {
+                                    related : true
+                                },
+                            })
+                                .done( function( data ) {
+                                    location.reload();
+                                })
+                                .fail( function(){
+                                    alert( 'Could add MAC address. API / AJAX / network error' );
+                                    throw new Error("Error running ajax query for " + urlDelete + "/" + id );
+                                })
                         }
                     },
                     confirm: {
                         label: "Delete",
                         className: 'btn-danger',
                         callback: function(){
-                            document.location.href = urlDelete + '/' + id;
+                            $.ajax( urlDelete + "/" + id,{
+                                type : 'POST'
+                            })
+                                .done( function( data ) {
+                                    location.reload();
+                                })
+                                .fail( function(){
+                                    alert( 'Could add MAC address. API / AJAX / network error' );
+                                    throw new Error("Error running ajax query for " + urlDelete + "/" + id );
+                                })
                         }
                     }
                 }

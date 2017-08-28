@@ -389,6 +389,28 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
+    public function getPeeringPhysicalInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPeeringPhysicalInterface', []);
+
+        return parent::getPeeringPhysicalInterface();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFanoutPhysicalInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFanoutPhysicalInterface', []);
+
+        return parent::getFanoutPhysicalInterface();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addVlanInterface(\Entities\VlanInterface $vlanInterfaces)
     {
 

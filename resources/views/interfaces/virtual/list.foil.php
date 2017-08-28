@@ -103,7 +103,7 @@
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </a>
 
-                            <a class="btn btn btn-default" id="delete-vi-<?= $vi->getId() ?>" href="" title="Delete Virtual Interface">
+                            <a class="btn btn btn-default" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>
                         </div>

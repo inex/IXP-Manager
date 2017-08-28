@@ -303,6 +303,35 @@ class VirtualInterface
     }
 
     /**
+     * Get peerring PhysicalInterfaces
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPeeringPhysicalInterface()
+    {
+        $ppis = [];
+        foreach( $this->getPhysicalInterfaces() as $ppi){
+            if( $ppis[] = $ppi->getPeeringPhysicalInterface() );
+        }
+        return $ppis;
+    }
+
+    /**
+     * Get fanout PhysicalInterfaces
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFanoutPhysicalInterface()
+    {
+        $ppis = [];
+        foreach( $this->getPhysicalInterfaces() as $ppi){
+            if( $ppis[] = $ppi->getFanoutPhysicalInterface() );
+
+        }
+        return $ppis;
+    }
+
+    /**
      * Add VlanInterfaces
      *
      * @param VlanInterface $vlanInterfaces

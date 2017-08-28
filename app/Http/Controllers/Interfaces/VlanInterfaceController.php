@@ -30,7 +30,13 @@ use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
+    JsonResponse,
     Request
+};
+
+use IXP\Traits\{
+    Common,
+    Interfaces
 };
 
 use IXP\Http\Controllers\Controller;
@@ -62,14 +68,33 @@ use IXP\Utils\View\Alert\{
  */
 class VlanInterfaceController extends Controller
 {
+    use Common;
+
+    use Interfaces;
     /**
-     * Display all the vlanInterfaces
+     * Display all the physical interfaces as a list
      *
      * @return  View
      */
-    public function list( int $id = null ): View {
-        return view(  $id ? 'interfaces/vlan/view' : 'interfaces/vlan/list' )->with([
-            'listVli'       => D2EM::getRepository( VlanInterfaceEntity::class )->getForList( $id )
+    public function list(): View {
+        return view( 'interfaces/vlan/list' )->with([
+            'vlis'               => D2EM::getRepository( VlanInterfaceEntity::class )->getForList()
+        ]);
+    }
+
+    /**
+     * Display a vlan Interface
+     *
+     * @param int $id ID of vlan Interface
+     * @return  View
+     */
+    public function view( int $id ): View {
+        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $id ) ) ) {
+            abort( 404 );
+        }
+
+        return view( 'interfaces/vlan/view' )->with([
+            'vli' => $vli
         ]);
     }
 
@@ -120,7 +145,8 @@ class VlanInterfaceController extends Controller
         return view( 'interfaces/vlan/edit' )->with([
             'vlan'                      => D2EM::getRepository( VlanEntity::class )->getNames( false ),
             'vli'                       => $vli ? $vli : false,
-            'vi'                        => $vi
+            'vi'                        => $vi,
+            'as112UiActive'             => $this->as112UiActive()
         ]);
     }
 
@@ -252,6 +278,30 @@ class VlanInterfaceController extends Controller
         $vli->$setterMonitor( $request->input( $iptype . '-monitor-rcbgp' ) );
 
         return true;
+    }
+
+    /**
+     * Delete a Vlan Interface and the Layer2Address associated
+     *
+     * @param   int $id ID of the SflowReceiver
+     * @return  JsonResponse
+     */
+    public function delete( int $id ): JsonResponse {
+        /** @var VlanInterfaceEntity $vli */
+        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $id ) ) ) {
+            return abort( '404' );
+        }
+
+        foreach( $vli->getLayer2Addresses() as $l2a ) {
+            D2EM::remove( $l2a );
+        }
+
+        D2EM::remove( $vli );
+        D2EM::flush();
+
+        AlertContainer::push( 'The Physical Interface has been deleted successfully.', Alert::SUCCESS );
+
+        return response()->json( [ 'success' => true ] );
     }
 
 }

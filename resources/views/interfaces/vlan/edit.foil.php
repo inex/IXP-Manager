@@ -88,13 +88,15 @@ $this->layout( 'layouts/ixpv4' );
                 ->blockHelp( ' ' )
             ?>
 
-            <?= Former::checkbox( 'as112client' )
-                ->label( 'AS112 Client' )
-                ->unchecked_value( 0 )
-                ->value( 1 )
-                ->blockHelp( ' ' )
+            <?php if( $t->as112UiActive ): ?>
+                <?= Former::checkbox( 'as112client' )
+                    ->label( 'AS112 Client' )
+                    ->unchecked_value( 0 )
+                    ->value( 1 )
+                    ->blockHelp( ' ' )
+                ?>
+            <?php endif; ?>
 
-            ?>
 
             <?= Former::checkbox( 'busyhost' )
                 ->label( 'Busy host' )

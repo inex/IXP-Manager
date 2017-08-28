@@ -81,6 +81,8 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::post( 'store',                           'VirtualInterfaceController@store' );
         Route::post( 'wizard-add',                      'VirtualInterfaceController@storeWizard' )->name( 'interfaces/virtual/wizard-save' );
 
+        Route::post('delete/{id}',                      'VirtualInterfaceController@delete' );
+
     });
 
     Route::group( [  'prefix' => 'physical' ], function() {
@@ -91,8 +93,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'edit/{id}/vintid/{viid}',          'PhysicalInterfaceController@edit' )->name( 'interfaces/physical/edit/from-virtual-interface' );
         Route::get( 'add/{id}/vintid/{viid}',           'PhysicalInterfaceController@edit' )->name( 'interfaces/physical/add' );
         Route::post( 'store',                           'PhysicalInterfaceController@store'  );
-        Route::get('delete/{id}',                       'PhysicalInterfaceController@delete' );
-        Route::get('delete/{id}/related/{related}',     'PhysicalInterfaceController@delete' );
+        Route::post('delete/{id}',                       'PhysicalInterfaceController@delete' );
     });
 
     Route::group( [  'prefix' => 'vlan' ], function() {
@@ -102,6 +103,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'edit/{id}',                        'VlanInterfaceController@edit' )->name( 'interfaces/vlan/edit' );
         Route::get( 'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit' )->name( 'interfaces/vlan/add' );
         Route::post( 'store',                           'VlanInterfaceController@store'  );
+        Route::post( 'delete/{id}',                     'VlanInterfaceController@delete' );
     });
 
     Route::group( [  'prefix' => 'sflow-receiver' ], function() {

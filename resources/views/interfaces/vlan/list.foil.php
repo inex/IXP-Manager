@@ -40,7 +40,7 @@ $this->layout( 'layouts/ixpv4' );
             </tr>
             <thead>
             <tbody>
-            <?php foreach( $t->listVli as $vli ):
+            <?php foreach( $t->vlis as $vli ):
                 /** @var Entities\VlanInterface $vli */ ?>
                 <tr>
                     <td>
