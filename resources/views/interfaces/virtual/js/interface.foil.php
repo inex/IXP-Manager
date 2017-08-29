@@ -29,7 +29,7 @@
         }
         else if( type == "sflr" ){
             objectName = "Sflow Receiver";
-            urlDelete = "<?= url( 'api/v4/sflow-receiver/delete' ) ?>" ;
+            urlDelete = "<?= url( 'interfaces/sflow-receiver/delete' ) ?>" ;
         }
         else if( type == "pi" ){
             objectName = "Physical Interface";

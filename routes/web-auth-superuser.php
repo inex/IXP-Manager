@@ -99,8 +99,9 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     Route::group( [  'prefix' => 'vlan' ], function() {
 
         Route::get( 'list',                             'VlanInterfaceController@list' )->name( 'interfaces/vlan/list' );
-        Route::get( 'view/{id}',                        'VlanInterfaceController@list' )->name( 'interfaces/vlan/view' );
+        Route::get( 'view/{id}',                        'VlanInterfaceController@view' )->name( 'interfaces/vlan/view' );
         Route::get( 'edit/{id}',                        'VlanInterfaceController@edit' )->name( 'interfaces/vlan/edit' );
+        Route::get( 'edit/{id}/vintid/{viid}',          'VlanInterfaceController@edit' )->name( 'interfaces/vlan/edit/from-virtual-interface' );
         Route::get( 'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit' )->name( 'interfaces/vlan/add' );
         Route::post( 'store',                           'VlanInterfaceController@store'  );
         Route::post( 'delete/{id}',                     'VlanInterfaceController@delete' );
@@ -110,8 +111,10 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'list',                             'SflowReceiverController@list' )->name( 'interfaces/sflow-receiver/list' );
         Route::get( 'view/{id}',                        'SflowReceiverController@view' )->name( 'interfaces/sflow-receiver/view' );
         Route::get( 'edit/{id}/',                       'SflowReceiverController@edit' )->name( 'interfaces/sflow-receiver/edit' );
+        Route::get( 'edit/{id}/vintid/{viid}',          'SflowReceiverController@edit' )->name( 'interfaces/sflow-receiver/edit/from-virtual-interface' );
         Route::get( 'add/{id}/vintid/{viid}',           'SflowReceiverController@edit' )->name( 'interfaces/sflow-receiver/add' );
         Route::post( 'store',                           'SflowReceiverController@store'  );
+        Route::post('delete/{id}',                      'SflowReceiverController@delete' );
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {

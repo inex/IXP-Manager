@@ -30,7 +30,8 @@ use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
-    Request
+    Request,
+    JsonResponse
 };
 
 use IXP\Http\Controllers\Controller;
@@ -102,6 +103,7 @@ class SflowReceiverController extends Controller
         $vi = false;
 
         if( $viid and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
+            AlertContainer::push( 'You need a containing virtual interface before you add a physical interface', Alert::DANGER );
             abort(404);
         }
 
@@ -153,7 +155,30 @@ class SflowReceiverController extends Controller
 
         AlertContainer::push( 'Sflow receiver added/updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'interfaces/virtual/edit/'.$sflr->getVirtualInterface()->getId() );
+        if( $request->input('redirect2vi' ) ) {
+            $urlRedirect = 'interfaces/virtual/edit/' . $sflr->getVirtualInterface()->getId();
+        } else {
+            $urlRedirect = 'interfaces/sflow-receiver/list';
+        }
+
+        return Redirect::to( $urlRedirect );
     }
 
+    /**
+     * Delete a Sflow receiver
+     *
+     * @param   int $id ID of the SflowReceiver
+     * @return  JsonResponse
+     */
+    public function delete( int $id ): JsonResponse{
+        /** @var SflowReceiverEntity $sflr */
+        if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ) {
+            return abort( '404' );
+        }
+
+        D2EM::remove( $sflr );
+        D2EM::flush();
+
+        return response()->json( [ 'success' => true ] );
+    }
 }

@@ -193,9 +193,13 @@ $this->layout( 'layouts/ixpv4' );
             ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
         ?>
 
+        <?= Former::hidden( 'vi-redirect' )
+            ->value( $t->vi ? true : false )
+        ?>
+
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( route( 'interfaces/vlan/list' ) ),
+            Former::default_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         )->id('btn-group');?>
 

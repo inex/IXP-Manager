@@ -51,9 +51,13 @@ $this->layout( 'layouts/ixpv4' );
                 ->value( $t->sflr ? $t->sflr->getVirtualInterface()->getId() : $t->vi->getId() )
             ?>
 
+            <?= Former::hidden( 'redirect2vi' )
+                ->value( $t->vi ? true : false )
+            ?>
+
             <?=Former::actions(
                 Former::primary_submit( 'Save Changes' ),
-                Former::default_link( 'Cancel' )->href( route( 'interfaces/sflow-receiver/list' ) ),
+                Former::default_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/sflow-receiver/list' ) ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
             )->id('btn-group');?>
 

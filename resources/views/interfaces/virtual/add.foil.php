@@ -364,7 +364,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn btn-default" href="<?= route ( 'interfaces/vlan/edit', [ 'id' => $vli->getId() ] ) ?>" title="Edit">
+                                        <a class="btn btn btn-default" href="<?= route ( 'interfaces/vlan/edit/from-virtual-interface', [ 'id' => $vli->getId(), 'viid' => $t->vi->getId() ] ) ?>" title="Edit">
                                             <i class="glyphicon glyphicon-pencil"></i>
                                         </a>
 
@@ -423,7 +423,7 @@ $this->layout( 'layouts/ixpv4' );
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <a class="btn btn btn-default" href="<?= route('interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>">
+                                            <a class="btn btn btn-default" href="<?= route('interfaces/sflow-receiver/edit/from-virtual-interface' , [ 'id' => $sflr->getId(), 'viid' => $t->vi->getId() ] ) ?>">
                                                 <i class="glyphicon glyphicon-pencil"></i>
                                             </a>
                                             <a class="btn btn btn-default" id="delete-sflr-<?= $sflr->getId()?>">

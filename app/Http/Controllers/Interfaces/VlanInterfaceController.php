@@ -123,7 +123,7 @@ class VlanInterfaceController extends Controller
                 'irrdbfilter'               => $vli->getIrrdbfilter() ? 1 : 0,
                 'mcastenabled'              => $vli->getMcastenabled() ? 1 : 0,
                 'ipv4-enabled'              => $vli->getIpv4enabled() ? 1 : 0,
-                'ipv4-address'              => $vli->getIPv4Address()->getAddress(),
+                'ipv4-address'              => $vli->getIPv4Address() ? $vli->getIPv4Address()->getAddress() : null,
                 'ipv4-hostname'             => $vli->getIpv4hostname(),
                 'ipv4-bgp-md5-secret'       => $vli->getIpv4bgpmd5secret(),
                 'ipv4-can-ping'             => $vli->getIpv4canping() ? 1 : 0,
@@ -213,71 +213,14 @@ class VlanInterfaceController extends Controller
 
         AlertContainer::push( 'Vlan Interface updated successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'interfaces/virtual/edit/'.$vli->getVirtualInterface()->getId() );
-
-    }
-
-    /**
-     *
-     * DUPLICATED !!!!
-     *
-     * Sets IPv4 or IPv6 from form to given VlanInterface.
-     *
-     * Function checks if IPvX address is provided if IPvX is enabled. Then
-     * it checks if given IPvX address exists for current Vlan:
-     *
-     * * if it exists, it ensures is is not assigned to another interface;
-     * * if !exists, creates a new one.
-     *
-     * @param \Entities\VlanInterface      $vli  Vlan interface to assign IP to
-     * @param bool                         $ipv6 Bool to define if IP address is IPv4 or IPv6
-     * @return bool
-     */
-    private function setIp($request, $vl, $vli, $ipv6 = false )
-    {
-
-        // Can do better
-        $iptype = $ipv6 ? "ipv6" : "ipv4";
-        $ipVer  = $ipv6 ? "IPv6" : "IPv4";
-        $setterIPv = "set{$ipVer}Address";
-        $setterEnabled = "set{$ipVer}enabled";
-        $setterHostname = "set{$ipVer}hostname";
-        $setterSecret = "set{$ipVer}bgpmd5secret";
-        $setterPing = "set{$ipVer}canping";
-        $setterMonitor = "set{$ipVer}monitorrcbgp";
-
-        $entity = $ipv6 ? IPv6AddressEntity::class : IPv4AddressEntity::class;
-
-        $addressValue = $request->input( $iptype . '-address' );
-
-        if( !$addressValue ) {
-            AlertContainer::push( "Please select or enter an ".$ipVer." address.", Alert::DANGER );
-            return false;
+        if( $request->input('redirect2vi' ) ) {
+            $urlRedirect = 'interfaces/virtual/edit/' . $vli->getVirtualInterface()->getId();
+        } else {
+            $urlRedirect = 'interfaces/vlan/list';
         }
 
-        if( !($ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vl->getId(), 'address' => $addressValue ] )  ) ){
+        return Redirect::to( $urlRedirect );
 
-            $ip = new $entity();
-            D2EM::persist( $ip );
-            $ip->setVlan( $vl );
-            $ip->setAddress( $addressValue );
-        }
-        else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli )
-        {
-            AlertContainer::push( $ipVer."address ".$addressValue." is already in use.", Alert::DANGER );
-            return false;
-        }
-
-
-        // ???
-        $vli->$setterIPv( $ip );
-        $vli->$setterHostname( $request->input( $iptype . '-hostname' ) );
-        $vli->$setterEnabled( true );
-        $vli->$setterSecret( $request->input( $iptype . '-bgp-md5-secret' ) );
-        $vli->$setterPing( $request->input( $iptype . '-can-ping' ) );
-        $vli->$setterMonitor( $request->input( $iptype . '-monitor-rcbgp' ) );
-
-        return true;
     }
 
     /**
