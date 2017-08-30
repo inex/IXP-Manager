@@ -103,7 +103,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'edit/{id}',                        'VlanInterfaceController@edit' )->name( 'interfaces/vlan/edit' );
         Route::get( 'edit/{id}/vintid/{viid}',          'VlanInterfaceController@edit' )->name( 'interfaces/vlan/edit/from-virtual-interface' );
         Route::get( 'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit' )->name( 'interfaces/vlan/add' );
-        Route::post( 'store',                           'VlanInterfaceController@store'  );
+        Route::post( 'store',                           'VlanInterfaceController@store'  )->name( 'interfaces/vlan/store' );
         Route::post( 'delete/{id}',                     'VlanInterfaceController@delete' );
     });
 

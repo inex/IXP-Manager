@@ -158,7 +158,8 @@ class PhysicalInterfaceController extends Controller
                         'fanout'                  => $pi->getFanoutPhysicalInterface() ? 1 : 0,
                         'switch-fanout'           => $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getId(),
                         'switch-port-fanout'      => $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId(),
-                        'monitorindex-fanout'     => $pi->getFanoutPhysicalInterface()->getMonitorindex()
+                        'monitorindex-fanout'     => $pi->getFanoutPhysicalInterface()->getMonitorindex(),
+                        'fanout-checked'          => $pi->getFanoutPhysicalInterface() ? 1 : 0,
                     ];
                 } else {
                     $dataFanout = [
@@ -303,7 +304,7 @@ class PhysicalInterfaceController extends Controller
         // Fanout part
 
 
-        $fanout = $request->input('fanout' );
+        $fanout = $request->input('fanout-checked' );
 
         if( isset( $fanout ) ) {
             if( ! $this->processFanoutPhysicalInterface( $request, $pi, $vi) ){

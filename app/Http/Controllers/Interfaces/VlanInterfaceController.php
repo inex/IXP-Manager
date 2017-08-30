@@ -58,6 +58,8 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
+use OSS_String;
+
 /**
  * Vlan Interface Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -111,7 +113,7 @@ class VlanInterfaceController extends Controller
         }
 
         $vi = false;
-
+        /** @var VirtualInterfaceEntity $vi */
         if( $viid and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
             abort(404);
         }
@@ -138,6 +140,16 @@ class VlanInterfaceController extends Controller
                 'ipv6-bgp-md5-secret'       => $vli->getIpv6bgpmd5secret(),
                 'ipv6-can-ping'             => $vli->getIpv6canping()? 1 : 0,
                 'ipv6-monitor-rcbgp'        => $vli->getIpv6canping()? 1 : 0,
+            ]);
+        }
+        else{
+            // fill the form with Virtual interface data
+            $md5 = OSS_String::random();
+            Former::populate([
+                'maxbgpprefix'              => $vi->getCustomer()->getMaxprefixes(),
+                'ipv4-bgp-md5-secret'       => $md5,
+                'ipv6-bgp-md5-secret'       => $md5,
+
             ]);
         }
 
@@ -187,14 +199,15 @@ class VlanInterfaceController extends Controller
             $ipv6Set = $this->setIp($request,$vl, $vli, true );
         }
 
+
         if( ( $request->input('ipv4-enabled' ) && $ipv4Set == false ) || ( $request->input('ipv6-enabled' ) && $ipv6Set == false ) ) {
             if( $request->input( 'id' ) ) {
-                $urlRedirect = 'interfaces/vlan/edit/'.$vli->getId();
+                $urlRedirect = 'interfaces/vlan/edit/'.$vli->getId().'vintid/'.$vli->getVirtualInterface()->getId();
             } else {
-                $urlRedirect = 'interfaces/vlan/add';
+                $urlRedirect = 'interfaces/vlan/add/0/vintid/'.$vi->getId();
             }
 
-            return Redirect::to($urlRedirect )->withInput( Input::all() );
+            return Redirect::to( $urlRedirect )->withInput( Input::all() );
         }
 
         $vli->setVirtualInterface( $vi );

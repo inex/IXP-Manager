@@ -28,10 +28,10 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section('content') ?>
 
-<?= $t->alerts() ?>
+    <?= $t->alerts() ?>
     <div class="well">
         <?= Former::open()->method( 'POST' )
-            ->action( action( 'Interfaces\VlanInterfaceController@store' ) )
+            ->action( route( 'interfaces/vlan/store' ) )
             ->customWidthClass( 'col-sm-6' )
         ?>
         <div class="col-sm-6">
@@ -133,7 +133,6 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::text( 'ipv4-bgp-md5-secret' )
                 ->label( 'IPv4 BGP MD5 Secret' )
-                ->appendIcon( 'generator-ipv4 glyphicon glyphicon-refresh' )
                 ->blockHelp( 'help text' );
             ?>
 
@@ -170,7 +169,6 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::text( 'ipv6-bgp-md5-secret' )
                 ->label( 'IPv6 BGP MD5 Secret' )
-                ->appendIcon( 'generator-ipv6 glyphicon glyphicon-refresh' )
                 ->blockHelp( 'help text' );
             ?>
 
@@ -193,7 +191,7 @@ $this->layout( 'layouts/ixpv4' );
             ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
         ?>
 
-        <?= Former::hidden( 'vi-redirect' )
+        <?= Former::hidden( 'redirect2vi' )
             ->value( $t->vi ? true : false )
         ?>
 
@@ -242,7 +240,21 @@ $this->layout( 'layouts/ixpv4' );
                     .done( function( data ) {
                         var options = "<option value=\"\">Choose an IPv4</option>\n";
                         $.each( data.ipv4, function( key, value ){
-                            options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
+
+                            // check if we have to include the IP associated to the vlan interface ( edit mode ) in order to display it in the dropdown
+                            var includeIPv4 = false;
+                            <?php if( $t->vli && $t->vli->getIpv4enabled() && $t->vli->getIPv4Address() ) :?>
+                                ipv4Id = "<?= $t->vli->getIPv4Address()->getId() ?>";
+                                if( ipv4Id == value.id){
+                                    var includeIPv4 = true;
+                                }
+
+                            <?php endif; ?>
+
+                            if( value.vli_id == null || includeIPv4 ){
+                                options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
+                            }
+
                         });
                         $( "#ipv4-address" ).html( options );
 
@@ -251,9 +263,21 @@ $this->layout( 'layouts/ixpv4' );
                         <?php endif; ?>
 
 
-
+                        var options = "<option value=\"\">Choose an IPv6</option>\n";
                         $.each( data.ipv6, function( key, value ){
-                            options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
+
+                            // check if we have to include the IP associated to the vlan interface ( edit mode ) in order to display it in the dropdown
+                            var includeIPv6 = false;
+                            <?php if( $t->vli && $t->vli->getIpv6enabled() && $t->vli->getIPv6Address() ) :?>
+                                ipv6Id = "<?= $t->vli->getIPv6address()->getId() ?>";
+                                if( ipv6Id == value.id){
+                                    var includeIPv6 = true;
+                                }
+                            <?php endif; ?>
+
+                            if( value.vli_id == null || includeIPv6 ) {
+                                options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
+                            }
                         });
                         $( "#ipv6-address" ).html( options );
 
@@ -272,32 +296,6 @@ $this->layout( 'layouts/ixpv4' );
                     });
             }
         }
-
-        function randomString( length ) {
-            var result = '';
-
-            // if we do not have a cryptographically secure version of a PRNG, just alert and return
-            if( window.crypto.getRandomValues === undefined ) {
-                alert( 'No cryptographically secure PRNG available.' );
-            } else {
-                var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                var array = new Uint32Array(length);
-
-                window.crypto.getRandomValues(array);
-                for( var i = 0; i < length; i++ )
-                    result += chars[ array[i] % chars.length ];
-            }
-
-            return result;
-        }
-
-        $( ".glyphicon-generator-ipv4" ).parent().on( 'click', function( e ) {
-            $( "#ipv4-bgp-md5-secret" ).val( randomString( 12 ) );
-        });
-
-        $( ".glyphicon-generator-ipv6" ).parent().on( 'click', function( e ) {
-            $( "#ipv6-bgp-md5-secret" ).val( $( "#ipv4-bgp-md5-secret" ).val().trim() === '' ? randomString( 12 ) : $( "#ipv4-bgp-md5-secret" ).val() );
-        });
 
         /**
          * hide the help block at loading

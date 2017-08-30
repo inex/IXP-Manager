@@ -206,6 +206,10 @@ $this->layout( 'layouts/ixpv4' );
                         ->id( 'sp-fanout' )
                         ->value( $t->spFanout )
                     ?>
+
+                    <?= Former::hidden( 'fanout-checked' )
+                        ->id( 'fanout-checked' )
+                    ?>
                 </div>
 
             </div>
@@ -249,9 +253,11 @@ $this->layout( 'layouts/ixpv4' );
             function checkFanout(){
                 if( $( '#fanout' ).prop( 'checked' ) ){
                     $( '#fanout-area' ).slideDown();
+                    $( "#fanout-checked" ).val( 1 );
                 }
                 else{
                     $( '#fanout-area' ).slideUp();
+                    $( "#fanout-checked" ).val( 0 );
                 }
             }
 

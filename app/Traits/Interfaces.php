@@ -28,7 +28,9 @@ use D2EM;
 use Entities\{
     VirtualInterface as VirtualInterfaceEntity,
     PhysicalInterface as PhysicalInterfaceEntity,
-    SwitchPort as SwitchPortEntity
+    SwitchPort as SwitchPortEntity,
+    IPv4Address as IPv4AddressEntity,
+    IPv6Address as IPv6AddressEntity
 };
 
 use IXP\Utils\View\Alert\Alert;
@@ -237,7 +239,6 @@ trait Interfaces
         }
 
         if( !($ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vl->getId(), 'address' => $addressValue ] )  ) ){
-
             $ip = new $entity();
             D2EM::persist( $ip );
             $ip->setVlan( $vl );
