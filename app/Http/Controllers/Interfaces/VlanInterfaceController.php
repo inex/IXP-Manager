@@ -146,6 +146,7 @@ class VlanInterfaceController extends Controller
             // fill the form with Virtual interface data
             $md5 = OSS_String::random();
             Former::populate([
+                'irrdbfilter'               => 1,
                 'maxbgpprefix'              => $vi->getCustomer()->getMaxprefixes(),
                 'ipv4-bgp-md5-secret'       => $md5,
                 'ipv6-bgp-md5-secret'       => $md5,
