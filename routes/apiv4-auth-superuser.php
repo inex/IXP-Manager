@@ -67,19 +67,15 @@ Route::get('router/updated/{handle}',                           'RouterControlle
 Route::get('router/updated',                                    'RouterController@getAllLastUpdated' );
 Route::get('router/updated-before/{threshold}',                 'RouterController@getAllLastUpdatedBefore' );
 
-
-
-
-
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sflow Receiver
+//
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
 
-
-
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Patch Panel Port
+//
 Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortController@detail');
 Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
@@ -94,7 +90,6 @@ Route::post('customer/{id}/switches',                           'CustomerControl
 
 Route::group( [  'prefix' => 'switch' ], function() {
     Route::get( '{id}/ports',                        'SwitchController@ports' );
-
     Route::post( '{id}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' );
     Route::post( '{id}/switch-port-prewired',         'SwitchController@switchPortPrewired' );
     Route::post( '{id}/switch-port',                  'SwitchController@switchPort' );
@@ -102,10 +97,15 @@ Route::group( [  'prefix' => 'switch' ], function() {
 
 Route::post( 'utils/markdown',                                  'UtilsController@markdown' );
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Layer 2 Address
+//
 Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
-Route::get( 'l2-address/delete/{id}',                           'Layer2AddressController@delete' );
 Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Vlan Interface
+//
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
 Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceController@sflowMatrix' );
 Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
@@ -114,11 +114,6 @@ Route::group( [  'prefix' => 'vlan' ], function() {
     Route::get( 'for-switch/{switchid}',                'Provisioner\YamlController@vlanForSwitch' );
     Route::get( '{id}/ip-addresses',                    'VlanController@getIPAddresses' );
 });
-
-
-
-Route::get('core-link/delete/{id}',                             'CoreLinkController@delete' );
-
 
 Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::get(  'customers/{vlanid}/{protocol}',            'NagiosController@customers' );

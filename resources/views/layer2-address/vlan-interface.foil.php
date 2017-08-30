@@ -24,7 +24,7 @@
 
 
 <?php $this->section( 'content' ) ?>
-
+    <?= $t->alerts() ?>
     <div class="well">
         <h3>Layer2 Address Management for <?= $t->ee( $t->vli->getVirtualInterface()->getCustomer()->getName() ) ?>'s VLAN Interface:</h3>
 

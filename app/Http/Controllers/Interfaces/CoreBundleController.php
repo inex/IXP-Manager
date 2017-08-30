@@ -368,9 +368,9 @@ class CoreBundleController extends Controller
      ** Change the status of the switch ports to UNSET
      *
      * @param   int $id ID of the core bundle
-     * @return  RedirectResponse
+     * @return  JsonResponse
      */
-    public function deleteCoreBundle( int $id ): RedirectResponse {
+    public function deleteCoreBundle( int $id ): JsonResponse {
         /** @var CoreBundleEntity $cb */
         if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $id ) ) ) {
             abort('404', 'Unknown Core bundle');
@@ -404,7 +404,7 @@ class CoreBundleController extends Controller
 
         AlertContainer::push( 'The core bundle has been deleted with success.', Alert::SUCCESS );
 
-        return Redirect::to( 'interfaces/core-bundle/list/' );
+        return response()->json( [ 'success' => true ] );
 
     }
 
@@ -506,6 +506,40 @@ class CoreBundleController extends Controller
         AlertContainer::push( 'The core link has been added successfully.', Alert::SUCCESS );
 
         return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() );
+    }
+
+    /**
+     * Delete a Core link
+     *
+     * Delete the associated core interface/ physical interface
+     * Change the type of the switch ports to UNSET
+     *
+     * @param  int $id ID of the core link to delete
+     * @return  JsonResponse
+     */
+    public function delete( int $id ) : JsonResponse {
+
+        /** @var CoreLinkEntity $cl */
+        if( !( $cl = D2EM::getRepository( CoreLinkEntity::class )->find( $id ) ) ) {
+            abort( 404 );
+        }
+
+        foreach( $cl->getCoreInterfaces() as $ci ){
+            /** @var CoreInterfaceEntity $ci */
+            $pi = $ci->getPhysicalInterface();
+            $sp = $pi->getSwitchPort();
+
+            $sp->setType( SwitchPortEntity::TYPE_UNSET );
+
+            D2EM::remove( $pi );
+            D2EM::remove( $ci );
+        }
+        D2EM::remove( $cl );
+        D2EM::flush();
+
+        AlertContainer::push( 'The core link has been deleted successfully.', Alert::SUCCESS );
+
+        return response()->json( [ 'success' => true ] );
     }
 
 }

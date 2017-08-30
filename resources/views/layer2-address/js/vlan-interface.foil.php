@@ -70,26 +70,28 @@
             message: "Do you really want to delete this MAC Address ?",
             buttons: {
                 confirm: {
-                    label: 'Yes',
-                    className: 'btn-primary'
+                    label: 'Delete',
+                    className: 'btn-danger'
                 },
                 cancel: {
-                    label: 'No',
-                    className: 'btn-danger'
+                    label: 'Cancel',
+                    className: 'btn-primary'
                 }
             },
             callback: function (result) {
                 if( result) {
-                    $.ajax( "<?= url ( 'vlan-interface/l2-addresses/' ) ?>/"+l2aId )
+                    $.ajax( "<?= url ( 'layer2-address/delete/' ) ?>/"+l2aId, {
+                            type : 'POST'
+                    })
                         .done( function( data ) {
                             $('.bootbox.modal').modal( 'hide' );
                             result = ( data.success ) ? 'success': 'danger';
                             if( result ){
-                                refreshDataTable();
+                                location.reload();
                             }
 
-                            $( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
-                            $( "button[id|='delete-l2a']" ).on('click', deleteL2a);
+                            //$( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
+                            //$( "button[id|='delete-l2a']" ).on('click', deleteL2a);
 
                         })
                         .fail( function(){
