@@ -10,6 +10,12 @@ interfacescust:
 <?php if( isset( $p['speed']     ) ){ ?>    speed: <?= $p['speed']         . "\n" ?><?php } ?>
 <?php if( isset( $p['lagindex']  ) ){ ?>    lagindex: <?= $p['lagindex']   . "\n" ?><?php } ?>
 <?php if( isset( $p['lagmaster'] ) ){ ?>    lagmaster: <?= $p['lagmaster'] . "\n" ?><?php } ?>
+<?php if( isset( $p['lagmembers'] ) ){ ?>
+    lagmembers:
+<?php foreach( $p['lagmembers'] as $lagmember ): ?>
+          - "<?= $lagmember ?>"
+<?php endforeach; ?>
+<?php } ?>
 <?php if( isset( $p['fastlacp']  ) ){ ?>    fastlacp: <?= $p['fastlacp']   . "\n" ?><?php } ?>
     virtualinterfaceid: <?= $p['virtualinterfaceid'] ?>
 

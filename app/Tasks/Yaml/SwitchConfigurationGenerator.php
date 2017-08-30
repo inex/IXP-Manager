@@ -148,7 +148,18 @@ class SwitchConfigurationGenerator
         $p['name']      = $vi->getBundleName();
         $p['lagmaster'] = 'yes';
         $p['fastlacp']  = $vi->getFastLACP() ? 'yes' : 'no';
+        $p['lagmembers']= [];
+
+        // build up list of physical ports associated with this lag master
+        foreach( $vi->getPhysicalInterfaces() as $pi ) {
+            if( !$pi->getSwitchPort() ) {
+                continue;
+            }
+            $p['lagmembers'][]= $pi->getSwitchPort()->getIfName();
+        }
         $ports[]        = $p;
+
+        unset( $p['lagmembers'] );
 
         // interface definitions:
         foreach( $vi->getPhysicalInterfaces() as $pi ) {
