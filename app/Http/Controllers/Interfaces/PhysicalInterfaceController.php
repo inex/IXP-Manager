@@ -111,32 +111,30 @@ class PhysicalInterfaceController extends Controller
      * @param   int $viid ID of the virtual interface
      * @param   int $cb id we come from the core bundle edit form
      *
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function edit( int $id, int $viid = null, int $cb = null ): View {
+    public function edit( int $id, int $viid = null, int $cb = null ) {
 
-        $pi = false;
-        $enableFanout = false;
         /** @var PhysicalInterfaceEntity $pi */
+        /** @var VirtualInterfaceEntity $vi */
+        $vi = $pi = false;
+
         if( $id && !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
             abort(404);
         }
 
-        $vi = false;
-        /** @var VirtualInterfaceEntity $vi */
         if( $viid && !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
             AlertContainer::push( 'You need a containing virtual interface before you add a physical interface', Alert::DANGER );
-            return Redirect::to( 'interfaces/virtual/add' );
+            return Redirect::back();
         }
 
-        $switchports = [];
         if( $pi ) {
-            // in edit mode
+            // ==== EDIT PI MODE
 
-            if( $pi->getRelatedInterface() && $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT )
+            // we never edit a fanout port so if we have a fanout, just swap it with the real PI:
+            if( $pi->getRelatedInterface() && $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT ) {
                 $pi = $pi->getRelatedInterface();
-
-            $enableFanout = config( 'ixp.reseller.enabled') && $pi->getVirtualInterface()->getCustomer()->isResoldCustomer();
+            }
 
             // fill the form with physical interface data
             $data = [
@@ -150,80 +148,98 @@ class PhysicalInterfaceController extends Controller
                 'notes'                   => $pi->getNotes()
             ];
 
-            if( $enableFanout ){
-                if( $pi->getFanoutPhysicalInterface() ){
-                    $dataFanout = [
-                        'fanout'                  => $pi->getFanoutPhysicalInterface() ? 1 : 0,
-                        'switch-fanout'           => $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getId(),
-                        'switch-port-fanout'      => $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId(),
-                        'monitorindex-fanout'     => $pi->getFanoutPhysicalInterface()->getMonitorindex(),
-                        'fanout-checked'          => $pi->getFanoutPhysicalInterface() ? 1 : 0,
-                    ];
-                } else {
-                    $dataFanout = [
-                        'monitorindex-fanout'     => D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer()->getReseller() )
-                    ];
-                }
-
-                $data = array_merge( $data, $dataFanout);
-            }
-
-            if( $piB = $pi->getOtherPICoreLink() ){
-                $dataB = [
-                    'switch-b'                  => $piB->getSwitchPort()->getSwitcher()->getId(),
-                    'switch-port-b'             => $piB->getSwitchPort()->getId(),
-                    'status-b'                  => $piB->getStatus(),
-                    'speed-b'                   => $piB->getSpeed(),
-                    'duplex-b'                  => $piB->getDuplex(),
-                    'autoneg-label-b'           => $piB->getAutoneg() ? 1 : 0,
-                    'monitorindex-b'            => $piB->getMonitorindex() ? $piB->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $piB->getVirtualInterface()->getCustomer() ) ,
-                    'notes-b'                   => $piB->getNotes()
-                ];
-
-
-                $data = array_merge( $data, $dataB);
-
-            }
-
-            Former::populate( $data );
-
-            // get all the switch ports available and add the switch port associated to the Physical interface in the list
+            // get all the switch ports available and add the switch port associated to the physical interface in the list
             $switchports = array_merge(
                 D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId(), [], null ),
                 [ [ "name" => $pi->getSwitchPort()->getName(), "id" => $pi->getSwitchPort()->getId() ] ]
             );
 
             // ascending sort the array by ID
-            usort($switchports, function ($item1, $item2) {
+            usort( $switchports, function( $item1, $item2 ) {
                 return $item1['id'] <=> $item2['id'];
             });
+
         } else {
-            $data = [
-                'monitorindex'            => D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer() ) ,
-            ];
-
-            if ( $enableFanout = config( 'ixp.reseller.enabled') && $vi->getCustomer()->isResoldCustomer() ) {
-                $dataFanout = [
-                    'monitorindex-fanout'            => D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer()->getReseller() ) ,
-                ];
-                $data = array_merge( $data, $dataFanout);
-            }
-
-            Former::populate( $data );
+            // ==== CREATE PI MODE
+            $data['monitorindex'] = D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer() );
         }
 
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
+        // get the fanout details or other side of the core link details as/if applicable
+        $data = $this->mergeFanoutDetails( $pi, $pi->getVirtualInterface(), $data );
+        $data = $this->mergeCoreLinkDetails( $pi, $data );
+
+        Former::populate( $data );
+
         return view( 'interfaces/physical/edit' )->with([
-            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames(  ),
-            'switchports'                 => $switchports,
+            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames(),
+            'switchports'                 => isset( $switchports ) ? $switchports : [],
             'pi'                          => $pi,
             'otherPICoreLink'             => $pi ? $pi->getOtherPICoreLink() : false,
             'vi'                          => $vi,
             'cb'                          => $cb ? $cb : false,
-            'enableFanout'                => $enableFanout,
-            'spFanout'                    => $pi && $enableFanout && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : false,
+            'enableFanout'                => isset( $data['fanout'] ) && $data['fanout'],
+            'spFanout'                    => $pi && isset( $data['fanout'] ) && $data['fanout'] && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : false,
         ]);
     }
+
+    /**
+     * Utility function called by edit(). If this physical interface being edited is part of a core link,
+     * this function adds the details of the PI on the other end of the core link to the `$data` array.
+     *
+     * @param PhysicalInterfaceEntity $pi
+     * @param array $data
+     * @return array
+     */
+    private function mergeCoreLinkDetails( PhysicalInterfaceEntity $pi, array $data ): array
+    {
+        if( !$pi || !( $piB = $pi->getOtherPICoreLink() ) ) {
+            return $data;
+        }
+
+        $data['switch-b']        = $piB->getSwitchPort()->getSwitcher()->getId();
+        $data['switch-port-b']   = $piB->getSwitchPort()->getId();
+        $data['status-b']        = $piB->getStatus();
+        $data['speed-b']         = $piB->getSpeed();
+        $data['duplex-b']        = $piB->getDuplex();
+        $data['autoneg-label-b'] = $piB->getAutoneg() ? 1 : 0;
+        $data['monitorindex-b']  = $piB->getMonitorindex() ? $piB->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $piB->getVirtualInterface()->getCustomer() );
+        $data['notes-b']         = $piB->getNotes();
+
+        return $data;
+    }
+
+    /**
+     * Utility function called by edit(). If this physical interface being edited is for a resold customer,
+     * this function adds the details of the fanout port to the `$data` array.
+     *
+     * @param PhysicalInterfaceEntity $pi
+     * @param VirtualInterfaceEntity $vi
+     * @param array $data
+     * @return array
+     */
+    private function mergeFanoutDetails( PhysicalInterfaceEntity $pi, VirtualInterfaceEntity $vi, array $data ): array
+    {
+
+        if( !( $this->resellerMode() && $vi->getCustomer()->isResoldCustomer() ) ) {
+            return $data;
+        }
+
+        if( $pi && $pi->getFanoutPhysicalInterface() ) {
+            $data['fanout']                 = $pi->getFanoutPhysicalInterface() ? 1 : 0;
+            $data['switch-fanout']          = $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getId();
+            $data['switch-port-fanout']     = $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId();
+            $data['monitorindex-fanout']    = $pi->getFanoutPhysicalInterface()->getMonitorindex();
+
+            // @yann: not sure why this is here as well as fanout above?
+            $data['fanout-checked']         = $pi->getFanoutPhysicalInterface() ? 1 : 0;
+
+        } else {
+            $data['monitorindex-fanout']    = D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer()->getReseller() );
+        }
+
+        return $data;
+    }
+
 
     /**
      * Edit a physical interface (set all the data needed)
