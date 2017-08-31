@@ -74,6 +74,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'list',                             'VirtualInterfaceController@list' )->name(  'interfaces/virtual/list' );
         Route::get( 'edit/{id}',                        'VirtualInterfaceController@add' )->name(   'interfaces/virtual/edit' );
         Route::get( 'add/',                             'VirtualInterfaceController@add' )->name(   'interfaces/virtual/add' );
+        Route::get( 'add/custid/{custid}',              'VirtualInterfaceController@addCustId' )->name(   'interfaces/virtual/add/custid' );
 
         Route::get( 'view/{id}',                        'VirtualInterfaceController@view' );
         Route::get( 'wizard-add',                       'VirtualInterfaceController@wizard' )->name( 'interfaces/virtual/wizard' );

@@ -56,6 +56,7 @@ $this->layout( 'layouts/ixpv4' );
                 ->fromQuery( $t->cust, 'name' )
                 ->placeholder( 'Choose a Customer' )
                 ->addClass( 'chzn-select' )
+                ->disabled( $t->selectedCust ? true : false )
                 ->blockHelp( '' );
             ?>
 
@@ -169,6 +170,13 @@ $this->layout( 'layouts/ixpv4' );
         <?= Former::hidden( 'id' )
             ->value( $t->vi ? $t->vi->getId() : null )
         ?>
+
+        <?php if( $t->selectedCust ): ?>
+            <?= Former::hidden( 'selectedCust' )
+                ->value( $t->selectedCust->getId() )
+            ?>
+        <?php endif; ?>
+
 
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' ),

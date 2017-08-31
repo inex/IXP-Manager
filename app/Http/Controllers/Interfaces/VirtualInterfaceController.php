@@ -88,14 +88,30 @@ class VirtualInterfaceController extends Controller
     /**
      * Display the form to add a virtual interface
      *
+     * @return  View
+     */
+    public function addCustId( int $custId = null ) : View {
+        return $this->add( null, $custId);
+    }
+
+    /**
+     * Display the form to add a virtual interface
+     *
      * @return View
      */
-    public function add( int $id = null ): View {
+    public function add( int $id = null, int $custId = null ): View {
         $vi = false;
         /** @var VirtualInterfaceEntity $vi */
         if( $id and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
             abort(404);
         }
+
+        $cust = false;
+        /** @var CustomerEntity $vi */
+        if( $custId and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
+            abort(404);
+        }
+
 
         if( $vi ) {
             // fill the form with Virtual interface data
@@ -107,6 +123,12 @@ class VirtualInterfaceController extends Controller
                 'mtu'                   => $vi->getMtu(),
             ]);
         }
+        if( $cust ) {
+            // fill the form with Virtual interface data
+            Former::populate([
+                'cust'                  => $cust->getId(),
+            ]);
+        }
 
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
@@ -114,7 +136,8 @@ class VirtualInterfaceController extends Controller
             'cust'              => D2EM::getRepository( CustomerEntity::class)->getNames(),
             'vi'                => $vi ? $vi : false,
             'cb'                => $vi ? $vi->getCoreBundle() : false,
-            'resellerMode'      => $this->resellerMode()
+            'resellerMode'      => $this->resellerMode(),
+            'selectedCust'      => $cust
         ]);
     }
 
@@ -153,7 +176,13 @@ class VirtualInterfaceController extends Controller
             D2EM::persist($vi);
         }
 
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) ) ) ) {
+        $inputCust = $request->input( 'cust' );
+        if( $request->input( 'selectedCust' ) ){
+            $inputCust = $request->input( 'selectedCust' );
+        }
+
+
+        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $inputCust ) ) ) {
             abort(404, 'Unknown customer');
         }
 
@@ -185,7 +214,7 @@ class VirtualInterfaceController extends Controller
             // ensure it's unique:
             if( !D2EM::getRepository(VirtualInterfaceEntity::class )->validateChannelGroup( $vi ) ) {
                 AlertContainer::push( 'Channel group number is not unique within the switch.', Alert::DANGER );
-                return Redirect::to( 'interfaces/virtual/add' )->withInput();
+                return Redirect::to( $request->input( 'id' ) ? 'interfaces/virtual/edit/'.$vi->getId() : 'interfaces/virtual/add' )->withInput();
             }
         }
 

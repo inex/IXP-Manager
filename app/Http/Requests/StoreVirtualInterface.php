@@ -50,7 +50,7 @@ class StoreVirtualInterface extends FormRequest
     public function rules()
     {
         return [
-            'cust'                  => 'required|integer',
+            'cust'                  => 'integer'. ( $this->input('selectedCust') ? '|nullable' : '|required' ),
             'name'                  => 'string|max:255|nullable',
             'description'           => 'string|max:255|nullable',
             'channel-group'         => 'integer|nullable',
