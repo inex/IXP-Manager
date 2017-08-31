@@ -41,8 +41,7 @@ use Entities\{
 };
 
 use IXP\Traits\{
-    Common,
-    Interfaces
+    Interfaces as InterfacesTrait
 };
 
 use IXP\Http\Requests\{
@@ -64,8 +63,7 @@ use IXP\Utils\View\Alert\{
  */
 class PhysicalInterfaceController extends Controller
 {
-    use Interfaces;
-    use Common;
+    use InterfacesTrait;
 
     /**
      * Display all the physical interfaces as a list
