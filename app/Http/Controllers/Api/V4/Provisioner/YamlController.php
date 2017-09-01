@@ -100,7 +100,7 @@ class YamlController extends Controller {
     }
 
     /**
-     * Generate a Yaml file of the core link interfaces for a given switch name
+     * Generate a Yaml file of the core link interfaces for a given switch id
      *
      * This just takes one argument: the router handle to generate the configuration for. All
      * other parameters are defined by the handle's array in config/router.php.
@@ -138,6 +138,23 @@ class YamlController extends Controller {
             'switch'      => $switch
         ]);
 
+    }
+
+    /**
+     * Generate a Yaml file of the core link interfaces for a given switch name
+     *
+     * This just takes one argument: the router name to generate the configuration for. All
+     * other parameters are handled by the coreLinkForSwitch() function.
+     *
+     * @return View
+     */
+    public function coreLinkForSwitchByName( string $switchname ) {
+
+        if( !( $switch = D2EM::getRepository('Entities\Switcher')->findOneBy(['name' => $switchname]) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->coreLinkForSwitch( $switch->getId() );
     }
 
 }
