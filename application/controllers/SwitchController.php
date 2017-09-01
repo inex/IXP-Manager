@@ -105,7 +105,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                         ],
                         'notes'          => 'Notes',
                         'asn'            => 'ASN',
-                        'loopback'       => 'Loopback',
+                        'loopback_ip'    => 'Loopback IP',
                     ]
                 );
 
@@ -136,7 +136,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 s.active AS active, s.notes AS notes, s.lastPolled AS lastPolled,
                 s.hostname AS hostname, s.os AS os, s.osDate AS osDate, s.osVersion AS osVersion,
                 s.serialNumber AS serialNumber, s.mauSupported AS mauSupported,
-                v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet, s.asn as asn, s.loopback as loopback'
+                v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet, s.asn as asn, s.loopback_ip as loopback_ip, s.loopback_name as loopback_name'
             )
             ->from( '\\Entities\\Switcher', 's' )
             ->leftJoin( 's.Infrastructure', 'i' )
@@ -292,7 +292,8 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $s->setOsVersion( $snmp->getPlatform()->getOsVersion() );
                 $s->setLastPolled( new DateTime() );
                 $s->setAsn( $f->getValue( 'asn' ) );
-                $s->setLoopback( $f->getValue( 'loopback' ) );
+                $s->setLoopbackIP( $f->getValue( 'loopback_ip' ) );
+                $s->setLoopbackName( $f->getValue( 'loopback_name' ) );
 
                 $this->getD2EM()->persist( $s );
                 $this->getD2EM()->flush();

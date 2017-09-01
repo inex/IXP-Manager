@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Entities\CoreBundle;
 use Entities\SwitchPort;
 
 /**
@@ -506,5 +507,48 @@ class Switcher extends EntityRepository
         }
 
         return $vlans;
+    }
+
+    /**
+     * Returns all the core link interface associated to the following switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllCoreLinkInterfaces( int $id ): array {
+
+        /** @noinspection SqlNoDataSourceInspection */
+        $dql = "SELECT cb.enabled, cb.description, cl.bfd, spA.name, spB.name, cl.ipv4_subnet, sA.id as saId, sB.id as sbId
+                    FROM Entities\\CoreLink cl
+                    LEFT JOIN cl.coreBundle cb
+                    
+                    LEFT JOIN cl.coreInterfaceSideA ciA
+                    LEFT JOIN cl.coreInterfaceSideB ciB
+                    
+                    
+                    LEFT JOIN ciA.physicalInterface piA
+                    LEFT JOIN ciB.physicalInterface piB
+                    
+                    LEFT JOIN piA.SwitchPort spA
+                    LEFT JOIN piB.SwitchPort spB
+                    
+                    LEFT JOIN spA.Switcher sA
+                    LEFT JOIN spB.Switcher sB
+                    
+                    WHERE sA.id = ?1 OR sB.id = ?1
+                    AND cb.type = ".CoreBundle::TYPE_ECMP;
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+        $listCoreInterface = $query->getArrayResult();
+
+        $cis = [];
+
+        foreach( $listCoreInterface as $ci ){
+            $cis[] = $ci;
+        }
+
+        return $cis;
     }
 }

@@ -128,13 +128,21 @@ class IXP_Form_Switch extends IXP_Form
             ->setAttrib( 'class', 'span3' );
         $this->addElement( $asn );
 
-        $loopback = $this->createElement( 'text', 'loopback' );
-        $loopback->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
-            ->setLabel( 'LoopBack' )
+        $loopback_ip = $this->createElement( 'text', 'loopback_ip' );
+        $loopback_ip->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
+            ->setLabel( 'Loopback IP' )
             ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
-        $this->addElement( $loopback );
+        $this->addElement( $loopback_ip );
+
+        $loopback_name = $this->createElement( 'text', 'loopback_name' );
+        $loopback_name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
+            ->setLabel( 'Loopback Name' )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $loopback_name );
 
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );

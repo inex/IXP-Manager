@@ -97,6 +97,46 @@ class YamlController extends Controller {
         return view( 'api/v4/provisioner/yaml/vlanForSwitch' )->with([
             'sList'         =>          D2EM::getRepository(SwitcherEntity::class )->getAllVlan( $sid )
         ]);
+    }
+
+    /**
+     * Generate a Yaml file of the core link interfaces for a given switch name
+     *
+     * This just takes one argument: the router handle to generate the configuration for. All
+     * other parameters are defined by the handle's array in config/router.php.
+     *
+     * @return View
+     */
+    public function coreLinkForSwitch( int $switchid ) {
+
+        /** @var \Entities\Switcher $switch */
+        if( !( $switch = D2EM::getRepository('Entities\Switcher')->find( $switchid ) ) ) {
+            abort( 404, "Unknown switchID" );
+        }
+
+        $listCis = D2EM::getRepository(SwitcherEntity::class )->getAllCoreLinkInterfaces( $switch->getId() );
+
+        foreach( $listCis as $index => $ci ){
+            if( $subnet = $ci['ipv4_subnet'] ){
+                $ip = explode( '/', $subnet )[0];
+                $mask = explode( '/', $subnet )[1];
+
+                if( $mask == '31' ){
+                    $add = ( $switchid == $ci['saId'] ) ? 0 : 1;
+                } else {
+                    $add = ( $switchid == $ci['saId'] ) ? 1 : 2;
+                }
+
+                $ip  = long2ip( ip2long( $ip ) + $add);
+
+                $listCis[ $index ][ 'ip' ] = $ip.'/'.$mask;
+            }
+        }
+
+        return view( 'api/v4/provisioner/yaml/interfacesIp' )->with([
+            'cis'         => $listCis,
+            'switch'      => $switch
+        ]);
 
     }
 

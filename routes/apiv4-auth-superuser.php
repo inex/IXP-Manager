@@ -80,8 +80,9 @@ Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortC
 Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
 
-Route::get('provisioner/yaml/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
-Route::get('provisioner/yaml/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
+Route::get('provisioner/yaml/switch/{switchid}',                            'Provisioner\YamlController@forSwitch');
+Route::get('provisioner/yaml/switch-name/{switchname}',                     'Provisioner\YamlController@forSwitchByName');
+Route::get('provisioner/yaml/core-link-interface/switch-id/{switchid}',     'Provisioner\YamlController@coreLinkForSwitch');
 
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
