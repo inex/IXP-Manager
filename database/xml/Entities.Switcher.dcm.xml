@@ -11,7 +11,8 @@
       </options>
     </field>
     <field name="hostname" type="string" length="255" nullable="true"/>
-    <field name="loopback" type="string" unique="true" length="15" nullable="true"/>
+    <field name="loopback_ip" type="string" unique="true" length="39" nullable="true"/>
+    <field name="loopback_name" type="string" length="255" nullable="true"/>
     <field name="ipv4addr" type="string" length="255" nullable="true"/>
     <field name="ipv6addr" type="string" length="255" nullable="true"/>
     <field name="snmppasswd" type="string" length="255" nullable="true"/>

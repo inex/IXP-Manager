@@ -397,7 +397,8 @@
       <field name="asn" type="integer" unsigned="true" uuid="f39bf77e-e93e-41a4-b9d4-e2b232d37924"/>
       <field name="hostname" type="string" size="255" uuid="108ec5d0-e19d-44dd-a142-ac8d33fc48b4"/>
       <field name="cabinetid" type="integer" uuid="fde8b2e4-8181-4ed5-b088-ca21c459348d"/>
-      <field name="loopback" type="string" size="15" unique="true" uuid="a66c9c40-9c33-4b48-adfc-92a70c9c7660"/>
+      <field name="loopback_ip" type="string" size="39" unique="true" uuid="a66c9c40-9c33-4b48-adfc-92a70c9c7660"/>
+      <field name="loopback_name" type="string" size="255" uuid="e45b1c6c-e35e-4e89-af8d-8c9ed385b705"/>
       <field name="ipv4addr" type="string" size="255" uuid="db341555-090f-4992-86df-7d880066410f"/>
       <field name="ipv6addr" type="string" size="255" uuid="c53d4076-8573-498f-a4ad-26c6584b85dd"/>
       <field name="snmppasswd" type="string" size="255" uuid="4b73b930-a965-4e30-81e5-8c664891c88c"/>
@@ -1380,7 +1381,7 @@
       <orm-attributes>
         <attribute name="table">corebundles</attribute>
         <attribute name="tableName">corebundles</attribute>
-        <attribute name="repository-class">Repositories\CoreBundles</attribute>
+        <attribute name="repository-class">Repositories\CoreBundle</attribute>
       </orm-attributes>
     </entity>
   </module>

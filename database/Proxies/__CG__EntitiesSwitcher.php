@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
         }
 
-        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
     }
 
     /**
@@ -697,23 +697,45 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setLoopback($loopback)
+    public function setLoopbackIP($loopback_ip)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLoopback', [$loopback]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLoopbackIP', [$loopback_ip]);
 
-        return parent::setLoopback($loopback);
+        return parent::setLoopbackIP($loopback_ip);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getLoopback()
+    public function getLoopbackIP()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLoopback', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLoopbackIP', []);
 
-        return parent::getLoopback();
+        return parent::getLoopbackIP();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLoopbackName($loopback_name)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLoopbackName', [$loopback_name]);
+
+        return parent::setLoopbackName($loopback_name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLoopbackName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLoopbackName', []);
+
+        return parent::getLoopbackName();
     }
 
 }

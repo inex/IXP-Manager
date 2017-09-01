@@ -83,9 +83,14 @@ class Switcher
     protected $asn;
 
     /**
-     * @var string $loopback
+     * @var string $loopback_ip
      */
-    protected $loopback;
+    protected $loopback_ip;
+
+    /**
+     * @var string $loopback_name
+     */
+    protected $loopback_name;
 
     /**
      * @var integer $id
@@ -832,27 +837,49 @@ class Switcher
     }
 
     /**
-     * Set loopback
+     * Set loopback IP
      *
-     * @param string $loopback
+     * @param string $loopback_ip
      * @return Switcher
      */
-    public function setLoopback($loopback)
+    public function setLoopbackIP($loopback_ip)
     {
-        $this->loopback = $loopback;
+        $this->loopback_ip = $loopback_ip;
 
         return $this;
     }
 
     /**
-     * Get loopback
+     * Get loopback IP
      *
      * @return string
      */
-    public function getLoopback()
+    public function getLoopbackIP()
     {
-        return $this->loopback;
+        return $this->loopback_ip;
     }
 
+    /**
+     * Set loopback name
+     *
+     * @param string $loopback_name
+     * @return Switcher
+     */
+    public function setLoopbackName($loopback_name)
+    {
+        $this->loopback_name = $loopback_name;
+
+        return $this;
+    }
+
+    /**
+     * Get loopback name
+     *
+     * @return string
+     */
+    public function getLoopbackName()
+    {
+        return $this->loopback_name;
+    }
 
 }
