@@ -21,6 +21,8 @@ user=<?= $u->getUsername() ?> {
     member=<?= $t->group ?>
 
     login = des "<?= '$' . $t->bcrypt . substr( $u->getPassword(), 3 ) ?>"
+    # some devices still require PAP authentication
+    pap = des "<?= '$' . $t->bcrypt . substr( $u->getPassword(), 3 ) ?>"
 }
 
 <?php endforeach; ?>
