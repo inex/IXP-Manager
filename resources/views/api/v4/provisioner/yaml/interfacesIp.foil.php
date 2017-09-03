@@ -4,6 +4,8 @@ interfacesip:
     description: "<?= $ci['description'] ?>"
     name: <?= $ci['name'] ?>
 
+    speed: <?= $ci['speed'] ?>
+
     ipv4: <?= isset($ci['ip']) ? $ci['ip'] : '' ?>
 
     shutdown: <?= $ci['enabled'] ? 'no' : 'yes' ?>
