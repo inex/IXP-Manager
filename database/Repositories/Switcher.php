@@ -517,36 +517,45 @@ class Switcher extends EntityRepository
      */
     public function getAllCoreLinkInterfaces( int $id ): array {
 
-        /** @noinspection SqlNoDataSourceInspection */
-        $dql = "SELECT cb.enabled, cb.description, cl.bfd, spA.name, spB.name, cl.ipv4_subnet, sA.id as saId, sB.id as sbId
-                    FROM Entities\\CoreLink cl
-                    LEFT JOIN cl.coreBundle cb
-                    
-                    LEFT JOIN cl.coreInterfaceSideA ciA
-                    LEFT JOIN cl.coreInterfaceSideB ciB
-                    
-                    
-                    LEFT JOIN ciA.physicalInterface piA
-                    LEFT JOIN ciB.physicalInterface piB
-                    
-                    LEFT JOIN piA.SwitchPort spA
-                    LEFT JOIN piB.SwitchPort spB
-                    
-                    LEFT JOIN spA.Switcher sA
-                    LEFT JOIN spB.Switcher sB
-                    
-                    WHERE sA.id = ?1 OR sB.id = ?1
-                    AND cb.type = ".CoreBundle::TYPE_ECMP;
-
-        $query = $this->getEntityManager()->createQuery( $dql );
-        $query->setParameter( 1, $id);
-
-        $listCoreInterface = $query->getArrayResult();
-
         $cis = [];
 
-        foreach( $listCoreInterface as $ci ){
-            $cis[] = $ci;
+        foreach( [ 'A', 'B' ] as $side ) {
+            /** @noinspection SqlNoDataSourceInspection */
+            $dql = "SELECT cb.enabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet, s$side.id as saId
+                        FROM Entities\\CoreLink cl
+                        LEFT JOIN cl.coreBundle cb
+
+                        LEFT JOIN cl.coreInterfaceSide$side ci$side
+
+                        LEFT JOIN ci$side.physicalInterface pi$side
+
+                        LEFT JOIN pi$side.SwitchPort sp$side
+
+                        LEFT JOIN sp$side.Switcher s$side
+
+                        WHERE s$side.id = ?1
+                        AND cb.type = " . CoreBundle::TYPE_ECMP;
+
+            $query = $this->getEntityManager()->createQuery( $dql );
+            $query->setParameter( 1, $id);
+
+            $listCoreInterface = $query->getArrayResult();
+
+            foreach( $listCoreInterface as $ci ){
+                $ip   = explode("/", $ci['ipv4_subnet'])[0];
+                $mask = explode("/", $ci['ipv4_subnet'])[1];
+
+                $net = ip2long($ip) & (0xffffffff << (32 - $mask));
+                $firstip = ($mask == 31) ? $net : $net + 1;
+
+                if( $side == 'A') {
+                    $ci['ip'] = long2ip ($firstip) . "/" . $mask;
+                } else {
+                    $ci['ip'] = long2ip ($firstip + 1) . "/" . $mask;
+                }
+
+                $cis[] = $ci;
+            }
         }
 
         return $cis;
