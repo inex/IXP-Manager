@@ -176,14 +176,15 @@ $this->layout( 'layouts/ixpv4' );
                 </h3>
                 <hr>
                 <?= Former::checkbox( 'fanout' )
-                    ->label( 'Associate a fanout port' )
+                    ->label( '&nbsp;' )
+                    ->text('Associate a fanout port?')
                     ->unchecked_value( 0 )
                     ->value( 1 )
                     ->blockHelp( "" ); ?>
 
                 <div id="fanout-area" style="display: none">
                     <?= Former::select( 'switch-fanout' )
-                        ->label( 'Switch Fanout' )
+                        ->label( 'Switch' )
                         ->fromQuery( $t->switches, 'name' )
                         ->placeholder( 'Choose a Switch' )
                         ->addClass( 'chzn-select' )
@@ -191,14 +192,14 @@ $this->layout( 'layouts/ixpv4' );
                     ?>
 
                     <?= Former::select( 'switch-port-fanout' )
-                        ->label( 'Switch Port Fanout' )
+                        ->label( 'Switch Port' )
                         ->placeholder( 'Choose a switch port' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( '' );
                     ?>
 
                     <?= Former::number( 'monitorindex-fanout' )
-                        ->label( 'Monitor Index fanout' )
+                        ->label( 'Monitor Index' )
                         ->blockHelp( 'help text' );
                     ?>
 
@@ -238,130 +239,6 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->append() ?>
 
-<?php $this->section( 'scripts' ) ?>
-    <script>
-
-        $(document).ready( function() {
-            <?php if( $t->enableFanout ): ?>
-                checkFanout();
-                $( '#fanout' ).on( 'click', checkFanout );
-                setSpFanout();
-            <?php endif; ?>
-        });
-
-        <?php if( $t->enableFanout ): ?>
-            function checkFanout(){
-                if( $( '#fanout' ).prop( 'checked' ) ){
-                    $( '#fanout-area' ).slideDown();
-                    $( "#fanout-checked" ).val( 1 );
-                }
-                else{
-                    $( '#fanout-area' ).slideUp();
-                    $( "#fanout-checked" ).val( 0 );
-                }
-            }
-
-            function setSpFanout(){
-                if( $( '#fanout' ).prop( 'checked' ) && $('#switch-fanout').val() != null )
-                $( '#switch-fanout' ).change();
-            }
-
-            $( "#switch-port-fanout" ).on( 'change', excludeSp );
-            $( "#switch-port" ).on( 'change', excludeSp );
-
-            // this function exclude the switch port selected in the switch port fanout dropdown ( and vice versa )
-            function excludeSp(){
-                var type = "";
-                var otherType = '-fanout';
-                if( $( this ).attr( "id" ).substr( -6 ) == "fanout" ) {
-                    type = "-fanout";
-                    var otherType = '';
-                }
-
-                selectedValue = $( "#switch-port" + type ).val();
-                $( "#switch-port" + otherType +  " option" ).show();
-                $( '#switch-port' + otherType +  ' option' ).each(function( ) {
-                    if( $( this ).val() == selectedValue ){
-                        console.log( $( this ).val() );
-                        console.log( selectedValue );
-                        $( "#switch-port" + otherType +  " option[value='" + $( this ).val() + "']" ).hide();
-
-                    }
-                });
-                $( "#switch-port" + otherType ).trigger( "chosen:updated" );
-
-
-            }
-
-        <?php endif; ?>
-        $( "#switch-fanout" ).on( 'change', updateSwitchPort );
-        $( "#switch" ).on( 'change', updateSwitchPort );
-
-
-        function updateSwitchPort( ){
-            var type = "";
-
-            enableFanout = false;
-            var excludeSp = $( "#switch-port-fanout" ).val();
-            <?php if( $t->enableFanout ): ?>
-                enableFanout = true;
-
-            <?php endif; ?>
-            var arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>,  <?= \Entities\SwitchPort::TYPE_PEERING ?>];
-            if( $( this ).attr( "id" ).substr( -6 ) == "fanout" )
-            {
-                type = "-fanout";
-                arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>, <?= \Entities\SwitchPort::TYPE_FANOUT ?> ];
-                excludeSp = $( "#switch-port" ).val();
-            }
-
-            $( "#switch-port" + type ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
-
-            switchId = $( "#switch" + type ).val();
-
-            url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/ports";
-
-            $.ajax( url )
-                .done( function( data ) {
-                    options = "<option value=\"\">Choose a switch port</option>\n";
-
-                    $.each( data.switchports, function( key, port ){
-                        if( ( ( port.pi_id == null &&  arrayType.indexOf( port.sp_type ) != -1) || ( enableFanout && port.sp_id == $( '#sp-fanout' ).val() ) ) && excludeSp != port.sp_id) {
-                            selectFanoutPort = '';
-                            if( port.sp_id == $( '#sp-fanout' ).val() ){
-                                selectFanoutPort = 'selected="selected"';
-                            }
-                            options += "<option " + selectFanoutPort + " value=\"" + port.sp_id + "\">" + port.sp_name + " (" + port.sp_type_name + ")</option>\n";
-                        }
-                    });
-
-                    $( "#switch-port" + type ).html( options );
-                })
-                .fail( function() {
-                    options = "<option value=\"\">ERROR</option>\n";
-                    $( "#switch-port" + type ).html( options );
-                    alert( "Error running ajax query for " + url );
-                    throw new Error( "Error running ajax query for " + url );
-                })
-                .always( function() {
-                    $( "#switch-port" + type ).trigger( "chosen:updated" );
-                });
-        }
-
-
-
-        /**
-         * hide the help block at loading
-         */
-        $('p.help-block').hide();
-
-        /**
-         * display / hide help sections on click on the help button
-         */
-        $( "#help-btn" ).click( function() {
-            $( "p.help-block" ).toggle();
-        });
-
-
-    </script>
-<?php $this->append() ?>
+<?php $this->section( 'scripts' ); ?>
+<?= $this->insert( 'interfaces/physical/js/edit' ) ?>
+<?php $this->append(); ?>

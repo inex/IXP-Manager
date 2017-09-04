@@ -170,7 +170,7 @@ class PhysicalInterfaceController extends Common
             'otherPICoreLink'             => $pi ? $pi->getOtherPICoreLink() : false,
             'vi'                          => $vi,
             'cb'                          => $cb ? $cb : false,
-            'enableFanout'                => isset( $data['fanout'] ) && $data['fanout'],
+            'enableFanout'                => $this->resellerMode() && $vi && $vi->getCustomer()->isResoldCustomer(),
             'spFanout'                    => $pi && isset( $data['fanout'] ) && $data['fanout'] && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : false,
         ]);
     }
