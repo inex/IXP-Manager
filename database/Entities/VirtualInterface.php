@@ -713,19 +713,22 @@ class VirtualInterface
     }
 
     /**
-     * Check if the switch is the same for the Physical interfaces of the virtual interface
+     * Check if the switch is the same for the physical interfaces of the virtual interface
      *
      * @return bool
      */
-    public function sameSwitchForEachPI( ){
-        $switches = [];
+    public function sameSwitchForEachPI() {
+        $lastSwitch = null;
 
+        /** @var PhysicalInterface $pi */
         foreach( $this->getPhysicalInterfaces() as $pi ){
-            /** @var PhysicalInterface $pi */
-
-            $switches[] = $pi->getSwitchPort()->getSwitcher()->getId();
+            if( $lastSwitch === null ) {
+                $lastSwitch = $pi->getSwitchPort()->getSwitcher()->getId();
+            } elseif( $lastSwitch !== $pi->getSwitchPort()->getSwitcher()->getId() ) {
+                return false;
+            }
         }
 
-        return ( count( array_unique( $switches ) ) == 1 ) ? true : false;
+        return true;
     }
 }

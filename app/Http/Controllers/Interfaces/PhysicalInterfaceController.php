@@ -158,7 +158,7 @@ class PhysicalInterfaceController extends Common
         }
 
         // get the fanout details or other side of the core link details as/if applicable
-        $data = $this->mergeFanoutDetails( $pi, $pi->getVirtualInterface(), $data );
+        $data = $this->mergeFanoutDetails( $pi, $pi ? $pi->getVirtualInterface() : null, $data );
         $data = $this->mergeCoreLinkDetails( $pi, $data );
 
         Former::populate( $data );
@@ -183,7 +183,7 @@ class PhysicalInterfaceController extends Common
      * @param array $data
      * @return array
      */
-    private function mergeCoreLinkDetails( PhysicalInterfaceEntity $pi, array $data ): array
+    private function mergeCoreLinkDetails( $pi, array $data ): array
     {
         if( !$pi || !( $piB = $pi->getOtherPICoreLink() ) ) {
             return $data;
@@ -210,10 +210,10 @@ class PhysicalInterfaceController extends Common
      * @param array $data
      * @return array
      */
-    private function mergeFanoutDetails( PhysicalInterfaceEntity $pi, VirtualInterfaceEntity $vi, array $data ): array
+    private function mergeFanoutDetails( $pi, $vi, array $data ): array
     {
 
-        if( !( $this->resellerMode() && $vi->getCustomer()->isResoldCustomer() ) ) {
+        if( !( $this->resellerMode() && $vi && $vi->getCustomer()->isResoldCustomer() ) ) {
             return $data;
         }
 
