@@ -61,7 +61,8 @@ $this->layout( 'layouts/ixpv4' );
             ?>
 
             <?= Former::checkbox( 'trunk' )
-                ->label( 'Use 802.1q framing' )
+                ->label( '&nbsp;' )
+                ->text( 'Use 802.1q framing' )
                 ->blockHelp( 'Indicates if operators / provisioning systems should configure this port with 802.1q framing / tagged packets.' )
                 ->check( $t->vi ? $t->vi->getTrunk() : false )
                 ->addClass( 'col-sm-6' );
@@ -76,24 +77,20 @@ $this->layout( 'layouts/ixpv4' );
             <?php endif; ?>
 
             <?= Former::checkbox( 'lag_framing' )
-                ->label( 'Link aggregation / LAG framing' )
+                ->label( '&nbsp;' )
+                ->text( 'Link aggregation / LAG framing' )
                 ->blockHelp( 'Indicates if operators / provisioning systems should enable LAG framing such as LACP. <br/><br/>Mandatory where there is more than one phsyical interface.<br/><br/> Otherwise optional where a member requests a single member LAG for ease of upgrades.' )
                 ->check( $t->vi ? $t->vi->getLagFraming() : false );
             ?>
 
             <div id='fastlacp-area' style="display: none">
                 <?= Former::checkbox( 'fastlacp' )
-                    ->label( 'Use Fast LACP' )
+                    ->label( '&nbsp;' )
+                    ->text( 'Use Fast LACP' )
                     ->blockHelp( '' )
                     ->check( $t->vi ? $t->vi->getFastLACP() : false );
                 ?>
             </div>
-
-            <?= Former::checkbox( 'advanced-options' )
-                ->label( 'Advanced Options' )
-                ->blockHelp( '' );
-
-            ?>
 
             <?php if ($t->vi && $t->vi->getBundleName() ): ?>
                 <div class="form-group">
@@ -180,8 +177,8 @@ $this->layout( 'layouts/ixpv4' );
 
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( action( 'Interfaces\VirtualInterfaceController@list' ) ),
-            Former::success_button( 'Help' )->id( 'help-btn' )
+            Former::success_button( 'Help' )->id( 'help-btn' ),
+            '<a class="btn btn-default" id="advanced-options">Advanced Options</a>'
         )->id('btn-group');?>
 
         <?= Former::close() ?>
@@ -471,6 +468,8 @@ $this->layout( 'layouts/ixpv4' );
                 $( "#btn-group div" ).append('<a style="margin-left: 5px;" href="<?= route( 'core-bundle/edit' , [ 'id' => $t->cb->getId() ] ) ?>" class="btn btn-default">Return to Core Bundle</a>');
             <?php elseif( $t->vi ): ?>
                 $( "#btn-group div" ).append('<a style="margin-left: 5px;" href="<?= url( 'customer/overview/tab/ports/id').'/'.$t->vi->getCustomer()->getId() ?>" class="btn btn-default">Return to Customer Overview</a>');
+            <?php else: ?>
+                $( "#btn-group div" ).append('<a style="margin-left: 5px;" href="<?= action( 'Interfaces\VirtualInterfaceController@list' ) ?>" class="btn btn-default">Cancel</a>');
             <?php endif;?>
 
             $( 'label.col-lg-2' ).removeClass('col-lg-2');
@@ -512,12 +511,8 @@ $this->layout( 'layouts/ixpv4' );
         /**
          * display or hide the advanced area
          */
-        $( '#advanced-options' ).change( function(){
-            if( this.checked ){
-                $( "#advanced-area" ).slideDown();
-            } else {
-                $( "#advanced-area" ).slideUp();
-            }
+        $( '#advanced-options' ).click( function() {
+                $( "#advanced-area" ).slideToggle();
         });
 
         <?php if( $t->vi ): ?>
