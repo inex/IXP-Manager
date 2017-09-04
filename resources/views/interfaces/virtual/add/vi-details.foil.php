@@ -16,7 +16,7 @@
             ->placeholder( 'Choose a Customer' )
             ->addClass( 'chzn-select' )
             ->disabled( $t->selectedCust ? true : false )
-            ->blockHelp( '' );
+            ->blockHelp( 'The customer who owns this virtual interface.' );
         ?>
 
         <?= Former::checkbox( 'trunk' )
@@ -46,7 +46,7 @@
             <?= Former::checkbox( 'fastlacp' )
                 ->label( '&nbsp;' )
                 ->text( 'Use Fast LACP' )
-                ->blockHelp( '' )
+                ->blockHelp( 'When LACP is used for LAG framing, indicates if operators / provisioning systems should enable fast LACP.' )
                 ->check( $t->vi ? $t->vi->getFastLACP() : false );
             ?>
         </div>
@@ -104,22 +104,26 @@
     <div id='advanced-area' class="col-sm-6" style="display: none">
         <?= Former::text( 'name' )
             ->label( 'Virtual Interface Name' )
-            ->blockHelp( 'help text' );
+            ->blockHelp( 'Ordinarily this is left blank. In the case of LAGs with provisioning systems, this is used to indicate the '
+                . 'interface base name for LAGs. E.g. on a Cisco, this would be <em>Port-Channel</em>.' );
         ?>
 
         <?= Former::text( 'description' )
             ->label( 'Description' )
-            ->blockHelp( 'help text' );
+            ->blockHelp( 'Free text, currently unusued.' );
         ?>
 
         <?= Former::number( 'channel-group' )
             ->label( 'Channel Group Number' )
-            ->blockHelp( 'help text' );
+            ->blockHelp( 'Ordinarily this is left blank. In the case of LAGs with provisioning systems, this is used to indicate the '
+                . 'unique LAG number where required.' );
         ?>
 
         <?= Former::number( 'mtu' )
             ->label( 'MTU' )
-            ->blockHelp( 'help text' );
+            ->blockHelp( 'The IP (layer 3) MTU to configure on an interface. Typically on an IXP, jumbo frames at enabled at layer 2 '
+                . ' while IXP participants are advised to use an IP MTU of 1500. Higher IP MTUs are configured here for core ports '
+                . ' for underlays such as VxLAN.');
         ?>
     </div>
 
