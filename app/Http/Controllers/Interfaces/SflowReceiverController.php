@@ -34,8 +34,6 @@ use Illuminate\Http\{
     JsonResponse
 };
 
-use IXP\Http\Controllers\Controller;
-
 use Entities\{
     SflowReceiver as SflowReceiverEntity,
     VirtualInterface as VirtualInterfaceEntity
@@ -56,7 +54,7 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SflowReceiverController extends Controller
+class SflowReceiverController extends Common
 {
     /**
      * Display all the SflowReceivers

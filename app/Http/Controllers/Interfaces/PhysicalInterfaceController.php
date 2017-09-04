@@ -31,17 +31,11 @@ use Illuminate\Http\{
     JsonResponse, RedirectResponse, Request
 };
 
-use IXP\Http\Controllers\Controller;
-
 use Entities\{
     PhysicalInterface as PhysicalInterfaceEntity,
     Switcher as SwitcherEntity,
     SwitchPort as SwitchPortEntity,
     VirtualInterface as VirtualInterfaceEntity
-};
-
-use IXP\Traits\{
-    Interfaces as InterfacesTrait
 };
 
 use IXP\Http\Requests\{
@@ -61,9 +55,8 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PhysicalInterfaceController extends Controller
+class PhysicalInterfaceController extends Common
 {
-    use InterfacesTrait;
 
     /**
      * Display all the physical interfaces as a list

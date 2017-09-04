@@ -92,5 +92,7 @@ storage/files/*
 .idea/dataSources.xml
 .idea/dataSources
 .idea/inspectionProfiles
+.idea/ixpv.iml
+.idea/php.xml
 
 

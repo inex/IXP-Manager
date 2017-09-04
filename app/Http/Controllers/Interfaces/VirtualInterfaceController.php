@@ -46,11 +46,6 @@ use Entities\{
     IPv6Address as IPv6AddressEntity
 };
 
-use IXP\Traits\{
-    Common,
-    Interfaces
-};
-
 use IXP\Http\Requests\{
     StoreVirtualInterface,
     StoreVirtualInterfaceWizard
@@ -68,11 +63,8 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VirtualInterfaceController extends Controller
+class VirtualInterfaceController extends Common
 {
-    use Common;
-
-    use Interfaces;
     /**
      * Display all the virtualInterfaces
      *
@@ -107,7 +99,7 @@ class VirtualInterfaceController extends Controller
         }
 
         $cust = false;
-        /** @var CustomerEntity $vi */
+        /** @var CustomerEntity $cust */
         if( $custId and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
             abort(404);
         }

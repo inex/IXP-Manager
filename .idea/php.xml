@@ -118,9 +118,16 @@
       <path value="$PROJECT_DIR$/vendor/sabberworm/php-css-parser" />
       <path value="$PROJECT_DIR$/vendor/barryvdh/laravel-debugbar" />
       <path value="$PROJECT_DIR$/vendor/php-ds/php-ds" />
+      <path value="$PROJECT_DIR$/vendor/zendframework/zend-code" />
+      <path value="$PROJECT_DIR$/vendor/zendframework/zend-eventmanager" />
+      <path value="$PROJECT_DIR$/vendor/laravel-doctrine/migrations" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/migrations" />
+      <path value="$PROJECT_DIR$/vendor/ocramius/package-versions" />
+      <path value="$PROJECT_DIR$/vendor/ocramius/proxy-manager" />
+      <path value="$PROJECT_DIR$/vendor/psr/container" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="7" />
   <component name="PhpUnit">
     <phpunit_settings>
       <PhpUnitSettings load_method="CUSTOM_LOADER" custom_loader_path="/Users/barryo/dev/ixpv/vendor/autoload.php" />

@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Traits;
+namespace IXP\Http\Controllers\Interfaces;
 
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -23,6 +23,7 @@ namespace IXP\Traits;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+
 use D2EM;
 
 use Entities\{
@@ -33,19 +34,21 @@ use Entities\{
     IPv6Address as IPv6AddressEntity
 };
 
+use IXP\Http\Controllers\Controller;
+
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
+
 /**
- * A trait of interfaces functions
- *
+ * Common Functions
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   IXP
- * @package    Traits
+ * @category   Interfaces
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-trait Interfaces
+abstract class Common extends Controller
 {
 
     /**
@@ -257,5 +260,6 @@ trait Interfaces
 
         return true;
     }
+
 
 }
