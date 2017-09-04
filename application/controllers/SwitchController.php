@@ -391,7 +391,10 @@ class SwitchController extends IXP_Controller_FrontEnd
             );
         }
 
+
+
         if( $form->getElement( 'asn' )->getValue() ){
+
             if( $s = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->findBy( ['asn' => $form->getElement( 'asn' )->getValue() ]) ){
                 $id = $object->getId();
                 $asnExist = array_filter( $s, function ($e) use( $object ) {
@@ -405,7 +408,10 @@ class SwitchController extends IXP_Controller_FrontEnd
                     );
                 }
             }
+        } else {
+            $form->getElement( 'asn' )->setValue( null );
         }
+
         return true;
     }
 
