@@ -58,7 +58,13 @@
         actionForL3Lag();
         actionForLxLag();
 
-        loadBundleLinkSection( 'onChange' );
+        if( $( "#type" ).val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ) {
+            $("#stp-div").slideDown();
+        } else {
+            $("#stp-div").slideUp();
+        }
+
+            loadBundleLinkSection( 'onChange' );
     }
 
     function actionForL3Lag(){

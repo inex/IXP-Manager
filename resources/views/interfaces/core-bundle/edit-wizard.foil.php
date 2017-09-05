@@ -99,6 +99,17 @@ $this->layout( 'layouts/ixpv4' );
                 </div>
 
                 <div class="col-sm-6">
+
+                    <?php if( $t->cb->getType() == Entities\CoreBundle::TYPE_L2_LAG ): ?>
+                        <?= Former::checkbox( 'stp' )
+                            ->id('stp')
+                            ->label( 'STP' )
+                            ->checked_value( 1 )
+                            ->unchecked_value( 0 )
+                            ->blockHelp( "" );
+                        ?>
+                    <?php endif; ?>
+
                     <?= Former::number( 'cost' )
                         ->label( 'Cost' )
                         ->placeholder( '10' )

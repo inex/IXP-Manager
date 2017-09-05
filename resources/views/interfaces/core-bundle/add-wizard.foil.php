@@ -76,6 +76,16 @@ $this->layout( 'layouts/ixpv4' );
                     ->blockHelp( 'help text' );
                 ?>
 
+                <div id="stp-div">
+                    <?= Former::checkbox( 'stp' )
+                        ->id('stp')
+                        ->label( 'STP' )
+                        ->checked_value( 1 )
+                        ->unchecked_value( 0 )
+                        ->blockHelp( "" );
+                    ?>
+                </div>
+
                 <?= Former::number( 'cost' )
                     ->label( 'Cost' )
                     ->placeholder( '10' )

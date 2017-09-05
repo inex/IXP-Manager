@@ -64,10 +64,10 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'preference', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'stp', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'preference', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'preference', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'description', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'type', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'graph_title', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'stp', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'enabled', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'bfd', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv4_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'ipv6_subnet', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'cost', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'preference', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'id', '' . "\0" . 'Entities\\CoreBundle' . "\0" . 'coreLinks'];
     }
 
     /**
@@ -279,6 +279,17 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function getSTP(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSTP', []);
+
+        return parent::getSTP();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getBFD()
     {
 
@@ -417,6 +428,17 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEnabled', [$enabled]);
 
         return parent::setEnabled($enabled);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSTP(bool $stp)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSTP', [$stp]);
+
+        return parent::setSTP($stp);
     }
 
     /**

@@ -532,7 +532,18 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function resolveSpeed()
+    public function resolveDetectedSpeed()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveDetectedSpeed', []);
+
+        return parent::resolveDetectedSpeed();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveSpeed(): string
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveSpeed', []);
