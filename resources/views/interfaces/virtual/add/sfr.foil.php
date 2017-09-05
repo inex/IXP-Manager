@@ -71,7 +71,7 @@
                             </td>
 
                         </tr>
-                        
+
                     <?php endforeach; ?>
 
                 </tbody>

@@ -53,7 +53,7 @@
     /**
      * on click even allow to delete a Sflow receiver
      */
-    $(document).on('click', "a[id|='delete-pi']" ,function(e){
+    $("a[id|='delete-pi']").on('click', function(e){
         e.preventDefault();
         var piid = (this.id).substring(10);
         deletePopup( piid, <?= $t->vi->getId() ?> , 'pi' );
@@ -62,7 +62,7 @@
     /**
      * on click even allow to delete a Sflow receiver
      */
-    $(document).on('click', "a[id|='delete-vli']" ,function(e){
+    $("a[id|='delete-vli']").on( 'click', function(e) {
         e.preventDefault();
         var vliid = (this.id).substring(11);
         deletePopup( vliid, <?= $t->vi->getId() ?>, 'vli' );
@@ -71,7 +71,7 @@
     /**
      * on click even allow to delete a Sflow receiver
      */
-    $(document).on('click', "a[id|='delete-sflr']" ,function(e){
+    $( "a[id|='delete-sflr']" ).on( 'click', function(e) {
         e.preventDefault();
         var sflrid = (this.id).substring(12);
         deletePopup( sflrid, <?= $t->vi->getId() ?>, 'sflr' );

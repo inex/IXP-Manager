@@ -3,13 +3,18 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
+
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'interfaces/sflow-receiver/list' )?>">SflowReceiver</a>
+    <a href="<?= route( 'interfaces/sflow-receiver/list' )?>">Sflow Receivers</a>
 <?php $this->append() ?>
 
+
+
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Edit SflowReceiver</li>
+    <li><?= $t->sflr ? 'Edit' : 'Add' ?> Sflow Receiver</li>
 <?php $this->append() ?>
+
+
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
@@ -21,15 +26,22 @@ $this->layout( 'layouts/ixpv4' );
     </li>
 <?php $this->append() ?>
 
+
+
 <?php $this->section('content') ?>
 
-<?= $t->alerts() ?>
-    <div class="well">
-        <?= Former::open()->method( 'POST' )
-            ->action( action( 'Interfaces\SflowReceiverController@store' ) )
-            ->customWidthClass( 'col-sm-6' )
-        ?>
-            <div class="col-sm-6">
+<div class="container-fluid">
+
+    <?= $t->alerts() ?>
+
+    <div class="row">
+
+        <div class="well col-md-12">
+
+            <?= Former::open()->method( 'post' )
+                ->action( action( 'Interfaces\SflowReceiverController@store' ) )
+                ->customWidthClass( 'col-sm-6' )
+            ?>
 
                 <?= Former::text( 'dst_ip' )
                     ->label( 'Destination IP' )
@@ -41,30 +53,31 @@ $this->layout( 'layouts/ixpv4' );
                     ->blockHelp( 'help text' );
                 ?>
 
-            </div>
+                <?= Former::hidden( 'id' )
+                    ->value( $t->sflr ? $t->sflr->getId() : null )
+                ?>
 
-            <?= Former::hidden( 'id' )
-                ->value( $t->sflr ? $t->sflr->getId() : null )
-            ?>
+                <?= Former::hidden( 'viid' )
+                    ->value( $t->sflr ? $t->sflr->getVirtualInterface()->getId() : $t->vi->getId() )
+                ?>
 
-            <?= Former::hidden( 'viid' )
-                ->value( $t->sflr ? $t->sflr->getVirtualInterface()->getId() : $t->vi->getId() )
-            ?>
+                <?=Former::actions(
+                    Former::primary_submit( $t->sflr ? 'Save Changes' : 'Add' ),
+                    Former::default_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/sflow-receiver/list' ) ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )
+                )->id('btn-group');?>
 
-            <?= Former::hidden( 'redirect2vi' )
-                ->value( $t->vi ? true : false )
-            ?>
+                <?= Former::close() ?>
 
-            <?=Former::actions(
-                Former::primary_submit( 'Save Changes' ),
-                Former::default_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/sflow-receiver/list' ) ),
-                Former::success_button( 'Help' )->id( 'help-btn' )
-            )->id('btn-group');?>
+        </div>
 
-        <?= Former::close() ?>
     </div>
 
+</div>
+
 <?php $this->append() ?>
+
+
 
 <?php $this->section( 'scripts' ) ?>
     <script>

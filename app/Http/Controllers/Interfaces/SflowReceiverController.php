@@ -68,41 +68,22 @@ class SflowReceiverController extends Common
     }
 
     /**
-     * Display the SflowReceiver informations
-     *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
-     *
-     * @params  int $id ID of the sflowReceiver
-     * @return  view
-     */
-    public function view( int $id = null ): View {
-        if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ){
-            abort(404);
-        }
-
-        return view( 'interfaces/sflow-receiver/view' )->with([
-            'sflr'                        => $sflr
-        ]);
-    }
-
-
-    /**
-     * Display the form to edit a sflowreceiver
+     * Display the form to add/edit a sflow receiver
      *
      * @return View
      */
-    public function edit( int $id = null,int $viid = null ): View {
+    public function edit( int $id = null, int $viid = null ) {
         $sflr = false;
-        /** @var SflowReceiverEntity $sr */
+        /** @var SflowReceiverEntity $sflr */
         if( $id and !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ) {
             abort(404);
         }
 
         $vi = false;
-
+        /** @var VirtualInterfaceEntity $vi */
         if( $viid and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
-            AlertContainer::push( 'You need a containing virtual interface before you add a physical interface', Alert::DANGER );
-            abort(404);
+            AlertContainer::push( 'You need a containing virtual interface before you add a sflow receiver', Alert::DANGER );
+            return Redirect::back();
         }
 
         if( $sflr ) {
@@ -113,10 +94,9 @@ class SflowReceiverController extends Common
             ]);
         }
 
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/sflow-receiver/edit' )->with([
-            'sflr'                      => $sflr ? $sflr : false,
-            'vi'                        => $vi
+            'sflr'  => $sflr ? $sflr : false,
+            'vi'    => $vi
         ]);
     }
 
@@ -128,15 +108,16 @@ class SflowReceiverController extends Common
      * @return  RedirectResponse
      */
     public function store( StoreSflowReceiver $request ): RedirectResponse {
+
         /** @var SflowReceiverEntity $sflr */
         if( $request->input( 'id', false ) ) {
-            // get the existing sflow receiver object for that ID
+            // get the existing sflow receiver object for the given ID
             if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                Log::notice( 'Unknown patch panel when editing patch panel' );
+                Log::notice( 'Unknown sflow receiver when editing' );
                 abort(404);
             }
         } else {
-            $sflr = new SflowReceiverEntity();
+            $sflr = new SflowReceiverEntity;
             D2EM::persist( $sflr );
         }
 
@@ -153,13 +134,7 @@ class SflowReceiverController extends Common
 
         AlertContainer::push( 'Sflow receiver added/updated successfully.', Alert::SUCCESS );
 
-        if( $request->input('redirect2vi' ) ) {
-            $urlRedirect = 'interfaces/virtual/edit/' . $sflr->getVirtualInterface()->getId();
-        } else {
-            $urlRedirect = 'interfaces/sflow-receiver/list';
-        }
-
-        return Redirect::to( $urlRedirect );
+        return Redirect::to( route( 'interfaces/virtual/edit', [ 'id' => $sflr->getVirtualInterface()->getId() ] ) );
     }
 
     /**
