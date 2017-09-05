@@ -8,7 +8,7 @@ bgp:
         pg-ebgp-ipv4-ixp:
             neighbors:
             <?php foreach( $t->bgps['neighbors'] as $ip => $neighbor ): ?>
-                <?= $neighbor['ip'] ?> 
+                <?= $neighbor['ip'] ?>
                     description: <?= $neighbor['description'] ?>
                     remote_as: <?= $neighbor['asn'] ?>
             <?php endforeach; ?>

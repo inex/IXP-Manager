@@ -542,7 +542,7 @@ class Switcher extends EntityRepository
             $listCoreInterface = $query->getArrayResult();
 
             foreach( $listCoreInterface as $ci ){
-                $ci['ip'] = $this->linkAddr( $ci['ipv4_subnet'] , $side );
+                $ci['ip'] = $this->linkAddr( $ci['ipv4_subnet'] , $side, true );
                 $cis[] = $ci;
             }
         }
@@ -550,7 +550,7 @@ class Switcher extends EntityRepository
         return $cis;
     }
 
-    public function linkAddr( $net , $side ){
+    public function linkAddr( $net , $side, $mask = true ){
         $ip   = explode("/", $net)[0];
         $mask = explode("/", $net)[1];
 
@@ -558,9 +558,13 @@ class Switcher extends EntityRepository
         $firstip = ($mask == 31) ? $net : $net + 1;
 
         if( $side == 'A') {
-            $ip = long2ip ($firstip) . "/" . $mask;
+            $ip = long2ip ($firstip);
         } else {
-            $ip = long2ip ($firstip + 1) . "/" . $mask;
+            $ip = long2ip ($firstip + 1);
+        }
+
+        if( $mask ){
+            $ip. "/" . $mask;
         }
 
         return $ip;
@@ -587,7 +591,6 @@ class Switcher extends EntityRepository
                     LEFT JOIN spA.Switcher sA
                     LEFT JOIN spB.Switcher sB
                     WHERE sA.id = ?1 OR sB.id = ?1
-                    AND sA.active = 1 OR sB.active = 1
                     AND cb.type = ".CoreBundle::TYPE_ECMP;
 
             $query = $this->getEntityManager()->createQuery( $dql );
@@ -602,14 +605,13 @@ class Switcher extends EntityRepository
 
                 $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
 
-                $ip = $this->linkAddr( $bgp['ipv4_subnet'] , $side );
+                $ip = $this->linkAddr( $bgp['ipv4_subnet'] , $side , false );
 
                 $neighbors[] = [ 'ip' => $ip , 'description' => $bgp[ 's' .$side. 'name'] , 'asn' => $bgp[ 's' .$side. 'asn']] ;
             }
 
-            $bgps[ 'floodlist' ] = array_unique( $floodlist ) ;
+            $bgps[ 'floodlist' ] = array_filter(array_unique( $floodlist ) );
             $bgps[ 'neighbors' ] = $neighbors;
-
         return $bgps;
     }
 
