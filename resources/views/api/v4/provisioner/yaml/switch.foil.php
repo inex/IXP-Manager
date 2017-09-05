@@ -3,10 +3,13 @@ interfacescust:
 <?php foreach( $t->ports as $p ): ?>
   - name: <?= $p['name'] ?>
 
+    type: <?= $p['type'] ?>
+
     description: "<?= $p['description'] ?>"
     dot1q: <?= $p['dot1q'] ?>
 
 <?php if( isset( $p['shutdown']  ) ){ ?>    shutdown: <?= $p['shutdown']   . "\n" ?><?php } ?>
+<?php if( isset( $p['stp']       ) ){ ?>    stp: <?= $p['stp']     . "\n" ?><?php } ?>
 <?php if( isset( $p['autoneg']   ) ){ ?>    autoneg: <?= $p['autoneg']     . "\n" ?><?php } ?>
 <?php if( isset( $p['speed']     ) ){ ?>    speed: <?= $p['speed']         . "\n" ?><?php } ?>
 <?php if( isset( $p['lagindex']  ) ){ ?>    lagindex: <?= $p['lagindex']   . "\n" ?><?php } ?>
