@@ -118,9 +118,9 @@
 
         <?php else: /* no physical interfaces yet: */ ?>
 
-            <div id="table-pi" class="alert alert-warning" role="alert">
+            <div id="table-pi" class="alert alert-info" role="alert">
                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                <span class="sr-only">Information :</span>
+                <span class="sr-only">Information:</span>
                 There are no physical interfaces defined for this virtual interface.
                 <a href="<?= route('interfaces/physical/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                     Add one now...

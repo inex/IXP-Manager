@@ -75,7 +75,7 @@
                 <?php endforeach; ?>
             </table>
         <?php else: ?>
-            <div id="table-vli" class="alert alert-warning" role="alert">
+            <div id="table-vli" class="alert alert-info" role="alert">
                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                 <span class="sr-only">Information :</span>
                 There are no VLAN interfaces defined for this virtual interface.
