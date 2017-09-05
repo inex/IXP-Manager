@@ -18,12 +18,13 @@ bgp:
 <?php endforeach; ?>
   routerid: <?= $t->switch->getLoopbackIp() ?>
 
-  vlans:
+
+vlans:
 <?php foreach( $t->vls as $vl ): ?>
-    - name: <?= $vl[ 'name' ] ?>
+  - name: <?= $vl[ 'name' ] ?>
 
-      private: <?= $vl[ 'private' ] ? 'yes' : 'no' ?>
+    private: <?= $vl[ 'private' ] ? 'yes' : 'no' ?>
 
-      tag: <?= $vl[ 'number' ] ?>
+    tag: <?= $vl[ 'number' ] ?>
 
 <?php endforeach; ?>
