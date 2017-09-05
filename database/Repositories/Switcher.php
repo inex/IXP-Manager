@@ -542,22 +542,97 @@ class Switcher extends EntityRepository
             $listCoreInterface = $query->getArrayResult();
 
             foreach( $listCoreInterface as $ci ){
-                $ip   = explode("/", $ci['ipv4_subnet'])[0];
-                $mask = explode("/", $ci['ipv4_subnet'])[1];
-
-                $net = ip2long($ip) & (0xffffffff << (32 - $mask));
-                $firstip = ($mask == 31) ? $net : $net + 1;
-
-                if( $side == 'A') {
-                    $ci['ip'] = long2ip ($firstip) . "/" . $mask;
-                } else {
-                    $ci['ip'] = long2ip ($firstip + 1) . "/" . $mask;
-                }
-
+                $ci['ip'] = $this->linkAddr( $ci['ipv4_subnet'] , $side );
                 $cis[] = $ci;
             }
         }
 
         return $cis;
+    }
+
+    public function linkAddr( $net , $side ){
+        $ip   = explode("/", $net)[0];
+        $mask = explode("/", $net)[1];
+
+        $net = ip2long($ip) & (0xffffffff << (32 - $mask));
+        $firstip = ($mask == 31) ? $net : $net + 1;
+
+        if( $side == 'A') {
+            $ip = long2ip ($firstip) . "/" . $mask;
+        } else {
+            $ip = long2ip ($firstip + 1) . "/" . $mask;
+        }
+
+        return $ip;
+    }
+
+    /**
+     * Returns all the bgp associated to the following switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllBgp( int $id ): array {
+        $bgps = [];
+
+        $dql = "SELECT  cl.ipv4_subnet, sA.id as sAid, sB.id as sBid, sA.loopback_ip as sAloopback, sB.loopback_ip as sBloopback , sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
+                    FROM Entities\\CoreLink cl
+                    LEFT JOIN cl.coreBundle cb
+                    LEFT JOIN cl.coreInterfaceSideA ciA
+                    LEFT JOIN cl.coreInterfaceSideB ciB
+                    LEFT JOIN ciA.physicalInterface piA
+                    LEFT JOIN ciB.physicalInterface piB
+                    LEFT JOIN piA.SwitchPort spA
+                    LEFT JOIN piB.SwitchPort spB
+                    LEFT JOIN spA.Switcher sA
+                    LEFT JOIN spB.Switcher sB
+                    WHERE sA.id = ?1 OR sB.id = ?1
+                    AND sA.active = 1 OR sB.active = 1
+                    AND cb.type = ".CoreBundle::TYPE_ECMP;
+
+            $query = $this->getEntityManager()->createQuery( $dql );
+            $query->setParameter( 1, $id);
+
+            $listbgp = $query->getArrayResult();
+
+            $floodlist = [];
+            $neighbors = [];
+            foreach( $listbgp as $bgp ){
+                $floodlist[] = ( $bgp[ 'sAid' ] == $id ) ? $bgp[ 'sBloopback'] : $bgp[ 'sAloopback'];
+
+                $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
+
+                $ip = $this->linkAddr( $bgp['ipv4_subnet'] , $side );
+
+                $neighbors[] = [ 'ip' => $ip , 'description' => $bgp[ 's' .$side. 'name'] , 'asn' => $bgp[ 's' .$side. 'asn']] ;
+            }
+
+            $bgps[ 'floodlist' ] = array_unique( $floodlist ) ;
+            $bgps[ 'neighbors' ] = $neighbors;
+
+        return $bgps;
+    }
+
+    /**
+     * Returns all the Vlan on the insfrascture to the following switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllVlanInInsfrascture( int $id ): array {
+
+        /** @noinspection SqlNoDataSourceInspection */
+        $dql = "SELECT vl.name, vl.number, vl.private
+                    FROM Entities\\Infrastructure inf
+                        LEFT JOIN inf.Switchers s
+                        LEFT JOIN inf.Vlans vl
+                        WHERE s.id = ?1";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+        $listVlan = $query->getArrayResult();
+
+        return $listVlan;
     }
 }

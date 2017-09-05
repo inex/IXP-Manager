@@ -140,4 +140,48 @@ class YamlController extends Controller {
         return $this->coreLinkForSwitch( $switch->getId() );
     }
 
+
+    /**
+     * Generate a Yaml file of the BGP for a given switch id
+     *
+     * This just takes one argument: the router handle to generate the configuration for. All
+     * other parameters are defined by the handle's array in config/router.php.
+     *
+     * @return View
+     */
+    public function bgpForSwitch( int $switchid ) {
+
+        /** @var \Entities\Switcher $switch */
+        if( !( $switch = D2EM::getRepository(SwitcherEntity::class )->find( $switchid ) ) ) {
+            abort( 404, "Unknown switchID" );
+        }
+
+        $listBgps = D2EM::getRepository(SwitcherEntity::class )->getAllBgp( $switch->getId() );
+
+        $listVls = D2EM::getRepository(SwitcherEntity::class )->getAllVlanInInsfrascture( $switch->getId() );
+
+        return view( 'api/v4/provisioner/yaml/bgp' )->with([
+            'bgps'          => $listBgps,
+            'vls'           => $listVls,
+            'switch'        => $switch
+        ]);
+    }
+
+    /**
+     * Generate a Yaml file of the BGP for a given switch name
+     *
+     * This just takes one argument: the router name to generate the configuration for. All
+     * other parameters are handled by the coreLinkForSwitch() function.
+     *
+     * @return View
+     */
+    public function bgpForSwitchByName( string $switchname ) {
+
+        if( !( $switch = D2EM::getRepository(SwitcherEntity::class )->findOneBy(['name' => $switchname]) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->bgpForSwitch( $switch->getId() );
+    }
+
 }
