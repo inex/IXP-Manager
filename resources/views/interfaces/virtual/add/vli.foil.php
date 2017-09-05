@@ -1,3 +1,15 @@
+<?php
+
+// ************************************************************************************************************
+// **
+// ** The "VLAN Interfaces" table on the virtual interface add/edit page.
+// **
+// ** Not a standalone template - called from interfaces/virtual/add.foil.php
+// **
+// ************************************************************************************************************
+
+?>
+
 <div class="row">
 
     <h3 class="col-md-12">
