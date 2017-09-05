@@ -1375,6 +1375,7 @@
       <field name="bfd" type="boolean" default="0" required="true" uuid="d9a995e2-d069-4ad2-80b4-be5f4ba5f9c5"/>
       <field name="ipv4_subnet" type="string" size="18" uuid="624abf46-a6d0-4a1c-945a-76870d5e2599"/>
       <field name="ipv6_subnet" type="string" size="43" uuid="325b3f77-76f5-4e9e-8dc8-362ecb674502"/>
+      <field name="stp" type="boolean" default="0" required="true" uuid="d659c084-83ce-493b-b697-17b196fcd07b"/>
       <field name="cost" type="integer" unsigned="true" uuid="39fb7efc-81c9-40d4-8087-4d38d40b3998"/>
       <field name="preference" type="integer" unsigned="true" uuid="9aeea1cf-0533-4534-b7fc-2b40fdc86689"/>
       <field name="enabled" type="boolean" default="0" required="true" uuid="eaae1f7e-0f8a-4cd2-b61d-a874b9710253"/>

@@ -148,6 +148,7 @@ class CoreBundleController extends Common
                 'type'                      => $cb->getType(),
                 'enabled'                   => $cb->getEnabled() ? 1 : 0,
                 'bfd'                       => $cb->getBFD() ? 1 : 0,
+                'stp'                       => $cb->getSTP() ? 1 : 0,
                 'subnet'                    => $cb->getIPv4Subnet() ,
             ]);
         }
@@ -202,6 +203,7 @@ class CoreBundleController extends Common
         $cb->setType( $request->input( 'type' ) );
         $cb->setEnabled( $request->input( 'enabled' ) ? $request->input( 'enabled' ) : false );
         $cb->setBFD( $request->input( 'bfd' ) ? $request->input( 'bfd' ) : false );
+        $cb->setSTP( $request->input( 'stp', false ) ? true : false );
         $cb->setIPv4Subnet( $request->input( 'subnet' ) ? $request->input( 'subnet' ) : null );
 
         /** @var CustomerEntity $cust */

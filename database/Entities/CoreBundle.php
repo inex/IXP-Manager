@@ -49,7 +49,12 @@ class CoreBundle
     /**
      * @var boolean
      */
-    private $enabled = '0';
+    private $stp = false;
+
+    /**
+     * @var boolean
+     */
+    private $enabled = false;
 
     /**
      * @var boolean
@@ -178,6 +183,16 @@ class CoreBundle
     public function getEnabled()
     {
         return $this->enabled;
+    }
+
+    /**
+     * Get STP
+     *
+     * @return boolean
+     */
+    public function getSTP(): bool
+    {
+        return $this->stp;
     }
 
     /**
@@ -326,6 +341,19 @@ class CoreBundle
     public function setEnabled( $enabled )
     {
         $this->enabled = $enabled;
+        return $this;
+    }
+
+    /**
+     * Set STP
+     *
+     * @param boolean $stp
+     *
+     * @return CoreBundle
+     */
+    public function setSTP( bool $stp )
+    {
+        $this->stp = $stp;
         return $this;
     }
 
