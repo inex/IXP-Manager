@@ -51,8 +51,11 @@ class IXP implements ExtensionInterface {
     public function provideFunctions() {
         return [
             'alerts'            => [ AlertContainer::class, 'html' ],
+            'as112UiActive'     => [ $this, 'as112UiActive' ],
             'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
+            'multiIXP'          => [ $this, 'multiIXP' ],
             'nagiosHostname'    => [ $this, 'nagiosHostname' ],
+            'resellerMode'      => [ $this, 'resellerMode' ],
             'scaleBits'         => [ $this, 'scaleBits' ],
             'scaleBytes'        => [ $this, 'scaleBytes' ],
             'softwrap'          => [ $this, 'softwrap' ],
@@ -231,6 +234,52 @@ class IXP implements ExtensionInterface {
         return preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $abbreviatedName ) ) . '-as' . $asn . '-ipv' . $protocol . '-vlanid' . $vlanid . '-vliid' . $vliid;
     }
 
+
+
+    /**
+     * Checks if reseller mode is enabled.
+     *
+     * To enable reseller mode set the env variable IXP_RESELLER_ENABLED
+     *
+     * @see http://docs.ixpmanager.org/features/reseller/
+     *
+     * @return bool
+     */
+    public function resellerMode(): bool
+    {
+        return boolval( config( 'ixp.reseller.enabled', false ) );
+    }
+
+    /**
+     * Checks if multi IXP mode is enabled.
+     *
+     * To enable multi IXP mode set the env variable IXP_MULTIIXP_ENABLED
+     *
+     * NB: this functionality is deprecated in IXP Manager v4.0 and will be
+     * removed piecemeal.
+     *
+     * @see https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
+     *
+     * @return bool
+     */
+    public function multiIXP(): bool
+    {
+        return boolval( config( 'ixp.multiixp.enabled', false ) );
+    }
+
+    /**
+     * Checks if as112 is activated in the UI.
+     *
+     * To disable as112 in the UI set the env variable IXP_AS112_UI_ACTIVE
+     *
+     * @see http://docs.ixpmanager.org/features/as112/
+     *
+     * @return bool
+     */
+    public function as112UiActive(): bool
+    {
+        return boolval( config( 'ixp.as112.ui_active', false ) );
+    }
 
 
 }

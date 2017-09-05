@@ -23,14 +23,14 @@ class PhysicalInterface
         self::STATUS_QUARANTINE   => 'Quarantine'
     );
 
-    public static $SPEED = array(
+    public static $SPEED = [
         10    => '10 Mbps',
         100   => '100 Mbps',
         1000  => '1 Gbps',
         10000 => '10 Gbps',
         40000 => '40 Gbps',
         100000 => '100 Gbps'
-    );
+    ];
 
     public static $DUPLEX = array(
         'full'   => 'full',
@@ -479,9 +479,18 @@ class PhysicalInterface
      *
      * @return int
      */
-    public function resolveSpeed() {
+    public function resolveDetectedSpeed() {
         // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
         return $this->getSwitchPort()->getIfHighSpeed() > 0 ? $this->getSwitchPort()->getIfHighSpeed() : $this->getSpeed();
+    }
+
+    /**
+     * Turn the database integer representation of the speed into text as
+     * defined in the self::$SPEEDS array (or 'Unknown')
+     * @return string
+     */
+    public function resolveSpeed(): string {
+        return self::$SPEED[ $this->getSpeed() ] ?? 'Unknown';
     }
 
     /**

@@ -65,7 +65,7 @@ class YamlController extends Controller {
         $configView = ( new SwitchConfigurationGenerator( $switch ) );
 
         return response( $configView->render(), 200 )
-                ->header('Content-Type', 'text/html; charset=utf-8');
+                ->header('Content-Type', 'text/plain; charset=utf-8');
     }
 
     /**

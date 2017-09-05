@@ -337,6 +337,10 @@ class PatchPanelPort extends EntityRepository
         if( !( $history = $this->archive( $source ) )  ) {
             return false;
         }
+        
+        // wipe source switch port as it is a unique constraint in the db
+        $sp = $source->getSwitchPort();
+        $source->setSwitchPort(null);
 
         // set all the data of the old port to the new master port
         $destination->setCustomer( $source->getCustomer() )
@@ -354,7 +358,7 @@ class PatchPanelPort extends EntityRepository
             ->setChargeable(       $source->getChargeable() )
             ->setOwnedBy(          $source->getOwnedBy() )
             ->setDescription(      $source->getDescription() )
-            ->setSwitchPort(       $source->getSwitchPort() );
+            ->setSwitchPort(       $sp );
 
         $destination->setPrivateNotes(
             "### " . date('Y-m-d')." - IXP Manager\n\nMoved from "

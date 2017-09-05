@@ -110,7 +110,6 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 
     Route::group( [  'prefix' => 'sflow-receiver' ], function() {
         Route::get( 'list',                             'SflowReceiverController@list' )->name( 'interfaces/sflow-receiver/list' );
-        Route::get( 'view/{id}',                        'SflowReceiverController@view' )->name( 'interfaces/sflow-receiver/view' );
         Route::get( 'edit/{id}/',                       'SflowReceiverController@edit' )->name( 'interfaces/sflow-receiver/edit' );
         Route::get( 'edit/{id}/vintid/{viid}',          'SflowReceiverController@edit' )->name( 'interfaces/sflow-receiver/edit/from-virtual-interface' );
         Route::get( 'add/{id}/vintid/{viid}',           'SflowReceiverController@edit' )->name( 'interfaces/sflow-receiver/add' );

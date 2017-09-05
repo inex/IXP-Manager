@@ -22,14 +22,15 @@ interfacescust:
 
     vlans:
 <?php foreach( $p['vlans'] as $vlan ): ?>
-      -
-        number: <?= $vlan['number'] ?>
+      - number: <?= $vlan['number'] ?>
 
+<?php if( count( $vlan['macaddresses']  ) ): ?>
         macaddress:
 <?php foreach( $vlan['macaddresses'] as $mac ): ?>
           - "<?= $mac ?>"
 <?php endforeach; ?>
+<?php endif; ?>
 <?php endforeach; ?>
-    
+
 <?php endforeach; ?>
 

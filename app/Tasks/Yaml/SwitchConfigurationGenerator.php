@@ -114,7 +114,7 @@ class SwitchConfigurationGenerator
     private function processVirtualInterface( VirtualInterfaceEntity $vi ): array {
 
         $p                       = [];
-        $p['description']        = "Cust: {$vi->getCustomer()->getAbbreviatedName()}";
+        $p['description']        = $vi->getCustomer()->getAbbreviatedName();
         $p['dot1q']              = $vi->getTrunk() ? 'yes' : 'no';
         $p['virtualinterfaceid'] = $vi->getId();
         if( $vi->getChannelgroup() ) {

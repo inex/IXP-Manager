@@ -35,7 +35,7 @@ class Vendors extends Seeder
     public function run()
     {
         $vendors = [
-            [ "Cisco Systems", 'Cisco', 'cisco' ],
+            [ "Cisco Systems", 'Cisco', 'cisco', 'Port-channel' ],
             [ "Foundry Networks", 'Brocade', 'brocade' ],
             [ "Extreme Networks", 'Extreme', 'extreme' ],
             [ "Force10 Networks", 'Force10', 'force10' ],
@@ -48,9 +48,10 @@ class Vendors extends Seeder
             [ "Transmode", 'Transmode', 'transmode' ],
             [ "Brocade", 'Brocade', 'brocade' ],
             [ "Juniper Networks", 'Juniper', 'juniper' ],
-            [ "Cumulus Networks", 'Cumulus', 'cumulus' ],
             [ "Linux", 'Linux', 'linux' ],
-            [ "Hewlett-Packard", 'HP', 'hp' ]
+            [ "Hewlett-Packard", 'HP', 'hp' ],
+            [ "Arista", 'Arista', 'arista', 'Port-channel' ],
+            [ "Cumulus Networks", 'Cumulus', 'cumulus', 'bond' ],
         ];
 
         foreach( $vendors as $vendor )
@@ -59,6 +60,11 @@ class Vendors extends Seeder
             $e->setName(       $vendor[0] );
             $e->setShortname(  $vendor[1] );
             $e->setNagiosName( $vendor[2] );
+            
+            if( isset( $vendor[3] ) ) {
+                $e->setBundleName( $vendor[3] );
+            }
+            
             D2EM::persist( $e );
         }
 
