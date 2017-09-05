@@ -550,7 +550,7 @@ class Switcher extends EntityRepository
         return $cis;
     }
 
-    public function linkAddr( $net , $side, $mask = true ){
+    public function linkAddr( $net, $side, $maskneeded = true ){
         $ip   = explode("/", $net)[0];
         $mask = explode("/", $net)[1];
 
@@ -563,8 +563,8 @@ class Switcher extends EntityRepository
             $ip = long2ip ($firstip + 1);
         }
 
-        if( $mask ){
-            $ip. "/" . $mask;
+        if( $maskneeded ){
+            $ip .= "/" . $mask;
         }
 
         return $ip;
