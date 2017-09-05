@@ -85,6 +85,9 @@ Route::get('provisioner/yaml/switch-name/{switchname}',                     'Pro
 Route::get('provisioner/yaml/core-link-interface/switch-id/{switchid}',     'Provisioner\YamlController@coreLinkForSwitch');
 Route::get('provisioner/yaml/core-link-interface/switch-name/{switchname}', 'Provisioner\YamlController@coreLinkForSwitchByName');
 
+Route::get('provisioner/yaml/bgp/switch-id/{switchid}',                     'Provisioner\YamlController@bgpForSwitch');
+Route::get('provisioner/yaml/bgp/switch-name/{switchname}',                 'Provisioner\YamlController@bgpForSwitchByName');
+
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
 
