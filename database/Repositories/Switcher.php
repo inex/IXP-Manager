@@ -521,7 +521,7 @@ class Switcher extends EntityRepository
 
         foreach( [ 'A', 'B' ] as $side ) {
             /** @noinspection SqlNoDataSourceInspection */
-            $dql = "SELECT cb.enabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet, s$side.id as saId
+            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet, cb.enabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet as clSubnet, s$side.id as saId
                         FROM Entities\\CoreLink cl
                         LEFT JOIN cl.coreBundle cb
 
@@ -533,8 +533,9 @@ class Switcher extends EntityRepository
 
                         LEFT JOIN sp$side.Switcher s$side
 
-                        WHERE s$side.id = ?1
-                        AND cb.type = " . CoreBundle::TYPE_ECMP;
+                        WHERE cb.type IN ( ".CoreBundle::TYPE_ECMP.",".CoreBundle::TYPE_L3_LAG." )   
+
+                        AND s$side.id = ?1";
 
             $query = $this->getEntityManager()->createQuery( $dql );
             $query->setParameter( 1, $id);
@@ -542,7 +543,8 @@ class Switcher extends EntityRepository
             $listCoreInterface = $query->getArrayResult();
 
             foreach( $listCoreInterface as $ci ){
-                $ci['ip'] = $this->linkAddr( $ci['ipv4_subnet'] , $side, true );
+                $subnet = ( $ci[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $ci['clSubnet'] : $ci['cbSubnet'];
+                $ci['ip'] = $this->linkAddr( $subnet , $side, true );
                 $cis[] = $ci;
             }
         }
@@ -605,7 +607,7 @@ class Switcher extends EntityRepository
      * @return array
      */
     public function getAllNeighbors( int $id ): array {
-        $dql = "SELECT  cl.ipv4_subnet, sA.id as sAid, sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
+        $dql = "SELECT  cb.type, cb.ipv4_subnet as cbSubnet, cl.ipv4_subnet as clSubnet, sA.id as sAid, sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
                     FROM Entities\\CoreLink cl
                     LEFT JOIN cl.coreBundle cb
                     LEFT JOIN cl.coreInterfaceSideA ciA
@@ -616,19 +618,21 @@ class Switcher extends EntityRepository
                     LEFT JOIN piB.SwitchPort spB
                     LEFT JOIN spA.Switcher sA
                     LEFT JOIN spB.Switcher sB
-                    WHERE sA.id = ?1 OR sB.id = ?1
-                    AND cb.type = ".CoreBundle::TYPE_ECMP;
+                    WHERE cb.type IN ( ".CoreBundle::TYPE_ECMP.",".CoreBundle::TYPE_L3_LAG." )   
+                    AND sA.id = ?1 OR sB.id = ?1";
 
             $query = $this->getEntityManager()->createQuery( $dql );
             $query->setParameter( 1, $id);
 
             $listbgp = $query->getArrayResult();
 
+
+
             $neighbors = [];
             foreach( $listbgp as $bgp ){
                 $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
-                
-                $neighbors[] = [ 'ip' => $this->linkAddr( $bgp['ipv4_subnet'] , $side , false ) , 'description' => $bgp[ 's' .$side. 'name'] , 'asn' => $bgp[ 's' .$side. 'asn']] ;
+                $subnet = ( $bgp[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $bgp['clSubnet'] : $bgp['cbSubnet'];
+                $neighbors[] = [ 'ip' => $this->linkAddr( $subnet , $side , false ) , 'description' => $bgp[ 's' .$side. 'name'] , 'asn' => $bgp[ 's' .$side. 'asn']] ;
             }
 
         return $neighbors;
