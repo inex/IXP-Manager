@@ -618,15 +618,14 @@ class Switcher extends EntityRepository
                     LEFT JOIN piB.SwitchPort spB
                     LEFT JOIN spA.Switcher sA
                     LEFT JOIN spB.Switcher sB
-                    WHERE cb.type IN ( ".CoreBundle::TYPE_ECMP.",".CoreBundle::TYPE_L3_LAG." )   
-                    AND sA.id = ?1 OR sB.id = ?1";
+                    
+                    WHERE sA.id = ?1 OR sB.id = ?1
+                    AND cb.type IN ( ".CoreBundle::TYPE_ECMP.",".CoreBundle::TYPE_L3_LAG." )   ";
 
             $query = $this->getEntityManager()->createQuery( $dql );
             $query->setParameter( 1, $id);
 
             $listbgp = $query->getArrayResult();
-
-
 
             $neighbors = [];
             foreach( $listbgp as $bgp ){
