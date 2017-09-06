@@ -39,7 +39,7 @@ $this->layout( 'layouts/ixpv4' );
                 ->fromQuery( $t->switches, 'name' )
                 ->placeholder( 'Choose a Switch' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'The switch where the port will be located. Selected / changing this updates the port list below.' );
             ?>
 
             <?= Former::select( 'switch-port' )
@@ -47,7 +47,8 @@ $this->layout( 'layouts/ixpv4' );
                 ->fromQuery( $t->switchports, 'name' )
                 ->placeholder( 'Choose a switch port' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'Suitable available ports. For example, when adding a peering interface, only ports of type <em>Peering</em> or <em>Unset / Unknown</em> are shown. '
+                    . 'Port types can be set by editing the appropriate switch.');
             ?>
 
             <?= Former::select( 'status' )
@@ -55,7 +56,9 @@ $this->layout( 'layouts/ixpv4' );
                 ->fromQuery( \Entities\PhysicalInterface::$STATES, 'name' )
                 ->placeholder( 'Choose a status' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'This is an important setting. Only ports (or LAGs) with at least one physical interface set to <em>Connected</em> which have elements such as '
+                    . 'route server configurations built, monitoring configuration generated, etc. Similarly, for a quarantine route collector session to be generated, the '
+                    . 'port must have the <em>Quarantine</em> state. Currently all other states are just informational.' );
             ?>
 
             <?= Former::select( 'speed' )
@@ -63,7 +66,8 @@ $this->layout( 'layouts/ixpv4' );
                 ->fromQuery( \Entities\PhysicalInterface::$SPEED, 'name' )
                 ->placeholder( 'Choose a speed' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'The port speed to be configured. Unless you are provisioning switches from IXP Manager, this is informational / useful for billing. It is also '
+                    . 'presented publically to other members in a number of places. For statistics / graphing, it dictates the maximum data rate accepted also. ' );
             ?>
 
             <?= Former::select( 'duplex' )
@@ -71,18 +75,21 @@ $this->layout( 'layouts/ixpv4' );
                 ->fromQuery( \Entities\PhysicalInterface::$DUPLEX, 'name' )
                 ->placeholder( 'Choose Duplex' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'Is half duplex even a thing anymore?' );
             ?>
 
             <?= Former::checkbox( 'autoneg-label' )
-                ->label( 'Auto-Negotiation Enabled' )
+                ->label( '&nbsp;' )
+                ->text( 'Auto-Negotiation Enabled' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
-                ->blockHelp( "" ); ?>
+                ->blockHelp( "Unless you are provisioning switches from IXP Manager, this is informational." ); ?>
 
             <?= Former::number( 'monitorindex' )
                 ->label( 'Monitor Index' )
-                ->blockHelp( 'help text' );
+                ->blockHelp( '<b>DEPRECATED.</b> This was previously used as a unique index (per customer) for generating certain elements such as graphs. It is no '
+                    . 'longer used and will be removed during the lifetime of the v4 release. Until it is removed, the only condition is per customer uniqueness - but '
+                    . 'IXP Manager will generally <em>do the right thing</em>.' );
             ?>
 
             <?= Former::textarea( 'notes' )
@@ -146,7 +153,8 @@ $this->layout( 'layouts/ixpv4' );
                 ?>
 
                 <?= Former::checkbox( 'autoneg-label-b' )
-                    ->label( 'Auto-Negotiation Enabled' )
+                    ->label('&nbsp;')
+                    ->text( 'Auto-Negotiation Enabled' )
                     ->unchecked_value( 0 )
                     ->value( 1 )
                     ->disabled( true)
@@ -155,7 +163,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::number( 'monitorindex-b' )
                     ->label( 'Monitor Index' )
                     ->disabled( true)
-                    ->blockHelp( 'help text' );
+                    ->blockHelp( '' );
                 ?>
 
                 <?= Former::textarea( 'notes-b' )
@@ -200,7 +208,7 @@ $this->layout( 'layouts/ixpv4' );
 
                     <?= Former::number( 'monitorindex-fanout' )
                         ->label( 'Monitor Index' )
-                        ->blockHelp( 'help text' );
+                        ->blockHelp( '' );
                     ?>
 
                     <?= Former::hidden( 'sp-fanout' )
