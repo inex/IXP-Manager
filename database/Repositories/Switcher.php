@@ -607,7 +607,7 @@ class Switcher extends EntityRepository
      * @return array
      */
     public function getAllNeighbors( int $id ): array {
-        $dql = "SELECT  cb.type, cb.ipv4_subnet as cbSubnet, cl.ipv4_subnet as clSubnet, sA.id as sAid, sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
+        $dql = "SELECT  cb.type, cb.ipv4_subnet as cbSubnet, cb.cost, cb.preference, cl.ipv4_subnet as clSubnet, sA.id as sAid, sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
                     FROM Entities\\CoreLink cl
                     LEFT JOIN cl.coreBundle cb
                     LEFT JOIN cl.coreInterfaceSideA ciA
@@ -631,7 +631,13 @@ class Switcher extends EntityRepository
             foreach( $listbgp as $bgp ){
                 $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
                 $subnet = ( $bgp[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $bgp['clSubnet'] : $bgp['cbSubnet'];
-                $neighbors[] = [ 'ip' => $this->linkAddr( $subnet , $side , false ) , 'description' => $bgp[ 's' .$side. 'name'] , 'asn' => $bgp[ 's' .$side. 'asn']] ;
+                $neighbors[] = [
+                    'ip' => $this->linkAddr( $subnet , $side , false ),
+                    'description' => $bgp[ 's' .$side. 'name'],
+                    'asn' => $bgp[ 's' .$side. 'asn'],
+                    'cost' => $bgp[ 'cost'],
+                    'preference' => $bgp[ 'preference'],
+                ] ;
             }
 
         return $neighbors;
