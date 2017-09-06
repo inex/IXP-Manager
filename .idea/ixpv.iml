@@ -125,7 +125,6 @@
     <orderEntry type="module-library">
       <library name="PHP" type="php">
         <CLASSES>
-          <root url="file://$APPLICATION_HOME_DIR$/bin" />
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/former" />
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/html-object" />
           <root url="file://$MODULE_DIR$/vendor/aura/html" />
@@ -158,7 +157,6 @@
           <root url="file://$MODULE_DIR$/vendor/hamcrest/hamcrest-php" />
           <root url="file://$MODULE_DIR$/vendor/igorw/get-in" />
           <root url="file://$MODULE_DIR$/vendor/intervention/image" />
-          <root url="file://$MODULE_DIR$/vendor/ircmaxell/password-compat" />
           <root url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-color" />
           <root url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-highlighter" />
           <root url="file://$MODULE_DIR$/vendor/komola/bootstrap-zend-framework" />
@@ -221,7 +219,6 @@
           <root url="file://$MODULE_DIR$/vendor/symfony/http-foundation" />
           <root url="file://$MODULE_DIR$/vendor/symfony/http-kernel" />
           <root url="file://$MODULE_DIR$/vendor/symfony/polyfill-mbstring" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/polyfill-php55" />
           <root url="file://$MODULE_DIR$/vendor/symfony/process" />
           <root url="file://$MODULE_DIR$/vendor/symfony/routing" />
           <root url="file://$MODULE_DIR$/vendor/symfony/serializer" />
@@ -236,7 +233,6 @@
           <root url="jar://$APPLICATION_HOME_DIR$/plugins/phpspec/lib/phpspec.jar!/phpspec_stub" />
         </CLASSES>
         <SOURCES>
-          <root url="file://$APPLICATION_HOME_DIR$/bin" />
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/former" />
           <root url="file://$MODULE_DIR$/vendor/anahkiasen/html-object" />
           <root url="file://$MODULE_DIR$/vendor/aura/html" />
@@ -269,7 +265,6 @@
           <root url="file://$MODULE_DIR$/vendor/hamcrest/hamcrest-php" />
           <root url="file://$MODULE_DIR$/vendor/igorw/get-in" />
           <root url="file://$MODULE_DIR$/vendor/intervention/image" />
-          <root url="file://$MODULE_DIR$/vendor/ircmaxell/password-compat" />
           <root url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-color" />
           <root url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-highlighter" />
           <root url="file://$MODULE_DIR$/vendor/komola/bootstrap-zend-framework" />
@@ -332,7 +327,6 @@
           <root url="file://$MODULE_DIR$/vendor/symfony/http-foundation" />
           <root url="file://$MODULE_DIR$/vendor/symfony/http-kernel" />
           <root url="file://$MODULE_DIR$/vendor/symfony/polyfill-mbstring" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/polyfill-php55" />
           <root url="file://$MODULE_DIR$/vendor/symfony/process" />
           <root url="file://$MODULE_DIR$/vendor/symfony/routing" />
           <root url="file://$MODULE_DIR$/vendor/symfony/serializer" />
