@@ -212,6 +212,8 @@ class SwitchConfigurationGenerator
         $p['description']        = $cb->getDescription();
         $p['dot1q']              = $vi->getTrunk() ? 'yes' : 'no';
         $p['stp']                = $cb->getSTP() ? 'yes' : 'no';
+        $p['cost']               = $cb->getCost();
+        $p['preference']         = $cb->getPreference();
         $p['virtualinterfaceid'] = $vi->getId();
         $p['corebundleid']       = $cb->getId();
         if( $vi->getChannelgroup() ) {
