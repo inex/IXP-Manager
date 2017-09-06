@@ -156,14 +156,17 @@ class YamlController extends Controller {
             abort( 404, "Unknown switchID" );
         }
 
-        $listBgps = D2EM::getRepository(SwitcherEntity::class )->getAllBgp( $switch->getId() );
+        $listFlood = D2EM::getRepository(SwitcherEntity::class )->getFloodList( $switch->getId(), true );
+
+        $listNeighbors = D2EM::getRepository(SwitcherEntity::class )->getAllNeighbors( $switch->getId() );
 
         $listVls = D2EM::getRepository(SwitcherEntity::class )->getAllVlanInInsfrascture( $switch->getId() );
 
         return view( 'api/v4/provisioner/yaml/bgp' )->with([
-            'bgps'          => $listBgps,
-            'vls'           => $listVls,
-            'switch'        => $switch
+            'neighbors'             => $listNeighbors,
+            'floods'                => $listFlood,
+            'vls'                   => $listVls,
+            'switch'                => $switch
         ]);
     }
 

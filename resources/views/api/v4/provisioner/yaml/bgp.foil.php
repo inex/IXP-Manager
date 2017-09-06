@@ -1,7 +1,7 @@
 bgp:
   floodlist:
-<?php foreach( $t->bgps['floodlist'] as $bgp ): ?>
-    - <?= $bgp ?>
+<?php foreach( $t->floods as $flood ): ?>
+    - <?= $flood ?>
 
 <?php endforeach; ?>
   local_as: <?= $t->switch->getAsn() ?>
@@ -9,7 +9,7 @@ bgp:
   out:
     pg-ebgp-ipv4-ixp:
       neighbors:
-<?php foreach( $t->bgps['neighbors'] as $ip => $neighbor ): ?>
+<?php foreach( $t->neighbors as $neighbor ): ?>
         <?= $neighbor['ip'] ?>:
           description: <?= $neighbor['description'] ?>
 

@@ -571,14 +571,40 @@ class Switcher extends EntityRepository
     }
 
     /**
+     * List of all the switch loopback IP addresses on the same infrastructure as this switch, but excluding the switch's own loopback IP address
+     *
+     * @param bool     $excludeCurrentSwitch    Exclude the switch for the final result
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getFloodList( int $id, bool $excludeCurrentSwitch = true ){
+        $dql = "SELECT  s.loopback_ip 
+                    FROM Entities\\Switcher s
+                        WHERE s.Infrastructure = (SELECT inf.id
+                                                    FROM Entities\\Switcher s2
+                                                    LEFT JOIN s2.Infrastructure inf
+                                                    WHERE s2.id = ?1)
+                        AND s.loopback_ip IS NOT NULL";
+
+        if( $excludeCurrentSwitch ){
+            $dql .= " AND s.id != ".$id;
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+        $listFlood = $query->getScalarResult();
+
+        return array_column( $listFlood, "loopback_ip");
+    }
+
+    /**
      * Returns all the bgp associated to the following switch ID
      *
      * @param int      $id     Switch ID - switch to query
      * @return array
      */
-    public function getAllBgp( int $id ): array {
-        $bgps = [];
-
+    public function getAllNeighbors( int $id ): array {
         $dql = "SELECT  cl.ipv4_subnet, sA.id as sAid, sB.id as sBid, sA.loopback_ip as sAloopback, sB.loopback_ip as sBloopback , sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
                     FROM Entities\\CoreLink cl
                     LEFT JOIN cl.coreBundle cb
@@ -598,11 +624,8 @@ class Switcher extends EntityRepository
 
             $listbgp = $query->getArrayResult();
 
-            $floodlist = [];
             $neighbors = [];
             foreach( $listbgp as $bgp ){
-                $floodlist[] = ( $bgp[ 'sAid' ] == $id ) ? $bgp[ 'sBloopback'] : $bgp[ 'sAloopback'];
-
                 $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
 
                 $ip = $this->linkAddr( $bgp['ipv4_subnet'] , $side , false );
@@ -610,9 +633,7 @@ class Switcher extends EntityRepository
                 $neighbors[] = [ 'ip' => $ip , 'description' => $bgp[ 's' .$side. 'name'] , 'asn' => $bgp[ 's' .$side. 'asn']] ;
             }
 
-            $bgps[ 'floodlist' ] = array_filter(array_unique( $floodlist ) );
-            $bgps[ 'neighbors' ] = $neighbors;
-        return $bgps;
+        return $neighbors;
     }
 
     /**
