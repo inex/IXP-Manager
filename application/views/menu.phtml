@@ -16,11 +16,15 @@
             <a href="{genUrl controller='customer' action='list'}">Customers</a>
         </li>
 
-        <li {if $controller eq 'virtual-interface'}class="active"{/if}>
-            <a href="{genUrl controller='interfaces/virtual' action='list'}">Interfaces (Virtual)</a>
+        <li>
+            <a href="{genUrl controller='interfaces/virtual' action='list'}">Interfaces / Ports</a>
         </li>
 
-        <li {if $controller eq 'patch-panel'}class="active"{/if}>
+        <li>
+            <a href="{genUrl controller='interfaces/sflow-receiver' action='list'}">Sflow Receivers</a>
+        </li>
+
+    <li {if $controller eq 'patch-panel'}class="active"{/if}>
             <a href="{genUrl controller='patch-panel' action='list'}">Patch Panels</a>
         </li>
         <li {if $controller eq 'user' and $action neq 'last'}class="active"{/if}>
@@ -82,9 +86,11 @@
         <li {if $controller eq 'cabinet'}class="active"{/if}>
             <a href="{genUrl controller='cabinet' action='list'}">Cabinets</a>
         </li>
+
         <li {if $controller eq 'router'}class="active"{/if}>
             <a href="{genUrl controller='router' action='list'}">Routers</a>
         </li>
+
         <li {if $controller eq 'switch' and $action neq 'add-ports'}class="active"{/if}>
             <a href="{genUrl controller='switch' action='list'}">Switches</a>
 
@@ -99,6 +105,10 @@
                 </ul>
             {/if}
 
+        </li>
+
+        <li>
+            <a href="{genUrl controller='interfaces/core-bundle' action='list'}">Core Bundles</a>
         </li>
 
         <li>
