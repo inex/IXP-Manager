@@ -593,7 +593,7 @@ class Switcher extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
         $query->setParameter( 1, $id);
 
-        $listFlood = $query->getScalarResult();
+        $listFlood = $query->getArrayResult();
 
         return array_column( $listFlood, "loopback_ip");
     }
@@ -605,7 +605,7 @@ class Switcher extends EntityRepository
      * @return array
      */
     public function getAllNeighbors( int $id ): array {
-        $dql = "SELECT  cl.ipv4_subnet, sA.id as sAid, sB.id as sBid, sA.loopback_ip as sAloopback, sB.loopback_ip as sBloopback , sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
+        $dql = "SELECT  cl.ipv4_subnet, sA.id as sAid, sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
                     FROM Entities\\CoreLink cl
                     LEFT JOIN cl.coreBundle cb
                     LEFT JOIN cl.coreInterfaceSideA ciA
@@ -627,10 +627,8 @@ class Switcher extends EntityRepository
             $neighbors = [];
             foreach( $listbgp as $bgp ){
                 $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
-
-                $ip = $this->linkAddr( $bgp['ipv4_subnet'] , $side , false );
-
-                $neighbors[] = [ 'ip' => $ip , 'description' => $bgp[ 's' .$side. 'name'] , 'asn' => $bgp[ 's' .$side. 'asn']] ;
+                
+                $neighbors[] = [ 'ip' => $this->linkAddr( $bgp['ipv4_subnet'] , $side , false ) , 'description' => $bgp[ 's' .$side. 'name'] , 'asn' => $bgp[ 's' .$side. 'asn']] ;
             }
 
         return $neighbors;
