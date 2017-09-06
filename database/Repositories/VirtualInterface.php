@@ -159,8 +159,8 @@ class VirtualInterface extends EntityRepository
      */
     public function validateChannelGroup( VIEntity $vi ): bool {
 
-        if( !$vi->getChannelgroup() ) {
-            throw new GeneralException("Should not be testing a null / zero channel group number");
+        if( $vi->getChannelgroup() === null ) {
+            throw new GeneralException("Should not be testing a null channel group number");
         }
 
         if( count( $vi->getPhysicalInterfaces() ) == 0 ) {

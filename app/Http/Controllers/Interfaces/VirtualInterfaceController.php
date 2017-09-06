@@ -204,7 +204,9 @@ class VirtualInterfaceController extends Common
             // if it's a number gt zero and it's changed (if we're editing)
 
             // ensure it's unique:
-            if( !D2EM::getRepository(VirtualInterfaceEntity::class )->validateChannelGroup( $vi ) ) {
+            if( count( $vi->getPhysicalInterfaces() ) == 1 && !$request->input( 'lag_framing' ) && $request->input( 'channel-group' ) === null ) {
+                // no op -> this allows a user to set a null channel group number on an interface with one PI and no lag framing.
+            } else if( !D2EM::getRepository(VirtualInterfaceEntity::class )->validateChannelGroup( $vi ) ) {
                 AlertContainer::push( 'Channel group number is not unique within the switch.', Alert::DANGER );
                 return Redirect::to( $request->input( 'id' ) ? 'interfaces/virtual/edit/'.$vi->getId() : 'interfaces/virtual/add' )->withInput();
             }
