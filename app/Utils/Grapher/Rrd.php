@@ -26,7 +26,7 @@ use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
  */
 
 use IXP\Services\Grapher\Graph;
-use IXP\Exceptions\Services\Grapher\GeneralException;
+
 
 /**
  * A class to handle RRD files
@@ -87,7 +87,7 @@ class Rrd
 
     /**
      * Graph object under consideration
-     * @var IXP\Services\Grapher\Graph
+     * @var Graph
      */
     protected $graph = null;
 
@@ -107,7 +107,8 @@ class Rrd
     /**
      * Class constructor.
      *
-     * @param $file The MRTG log file to load for analysis
+     * @param string $file  The RRD log file to load for analysis
+     * @param Graph  $graph The graph object
      */
     function __construct( string $file, Graph $graph )
     {
@@ -148,7 +149,7 @@ class Rrd
 
     /**
      * Access for the graph object under consideration
-     * @return IXP\Services\Grapher\Graph
+     * @return \IXP\Services\Grapher\Graph
      */
     private function graph(): Graph {
         return $this->graph;
@@ -161,7 +162,7 @@ class Rrd
      * @see getLocalFilename() for detals
      *
      * @return string The full path to the local directory
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
     private function getLocalDirectory() {
         // use Laravel's storage if possible
@@ -183,8 +184,9 @@ class Rrd
      *
      * @see getLocalCopy() for detals
      *
+     * @param  string $ext The extension
      * @return string The full path to the local copy
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
     private function getLocalFilename( $ext = 'rrd' ) {
         return "{$this->getLocalDirectory()}/" . self::LOCAL_CACHE_RRD_PREFIX . "{$this->graph()->key()}.{$ext}";
@@ -202,7 +204,7 @@ class Rrd
      * @see removeLocalCopies()
      *
      * @return string The full path to the local copy
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
     private function getLocalCopy(): string {
         // if it's already local, just return
@@ -241,19 +243,18 @@ class Rrd
 
     /**
      * Prepare RRD file
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
     protected function loadRrdFile() {
-
         // we need to allow for remote files but php's rrd_* functions don't support this
-        $fname = $this->getLocalCopy();
+        $this->getLocalCopy();
     }
 
     /**
      * Get the RRD file
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
-    protected function rrd() {
+    public function rrd() {
         if( !( $rrd = @file_get_contents($this->file) ) ) {
             throw new FileErrorException("Could not read RRD file [{$this->file}]");
         }
@@ -262,17 +263,33 @@ class Rrd
 
 
     /**
+     * The MRTG files have different data source names than the sflow files.
+     *
+     * This returns the appropriate keys to use when indexing arrays.
+     *
+     * @return array
+     */
+    private function getIndexKeys() {
+        if( $this->graph()->backend()->name() == 'mrtg' ) {
+            return [ 'ds0', 'ds1' ];  // in out
+        }
+
+        return [ 'traffic_in', 'traffic_out' ];
+    }
+
+
+    /**
      * From the RRD file, process the data and return it in the same format
      * as an MRTG log file.
      *
-     * @see IXP\Utils\Grapher\Mrtg::loadMrtgFile()
+     * @see \IXP\Utils\Grapher\Mrtg::loadMrtgFile()
      *
      * Processing means:
      * - only returning the values for the requested period
      * - MRTG/RRD provides traffic as bytes, change to bits
      *
      * @return array
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
     public function data(): array {
 
@@ -289,23 +306,28 @@ class Rrd
         $this->end   = $rrd['end'];
         $this->step  = $rrd['step'];
 
+        list( $indexIn, $indexOut ) = $this->getIndexKeys();
+
         // we want newest first, so iterate in reverse
-        $tin = array_reverse( $rrd['data']['traffic_in'], true );
+        // but.... do, we?
+        // $tin = array_reverse( $rrd['data'][ $indexIn ], true );
+        $tin = $rrd['data'][ $indexIn ];
 
         $values  = [];
 
         $isBits = ( $this->graph()->category() == Graph::CATEGORY_BITS );
 
         $i = 0;
-        foreach( $tin as $ts => $v ) {
-            if( is_numeric( $v ) && is_numeric( $rrd['data']['traffic_out'][$ts] ) ) {
+
+         foreach( $tin as $ts => $v ) {
+            if( is_numeric( $v ) && is_numeric( $rrd['data'][$indexOut][$ts] ) ) {
 
                 // first couple are often blank
                 if( $ts > time() - $this->step ) {
                     continue;
                 }
 
-                $values[$i] = [ (int)$ts, (int)$v, (int)$rrd['data']['traffic_out'][$ts], (int)$v, (int)$rrd['data']['traffic_out'][$ts] ];
+                $values[$i] = [ (int)$ts, (int)$v, (int)$rrd['data'][$indexOut][$ts], (int)$v, (int)$rrd['data'][$indexIn][$ts] ];
 
                 if( $isBits ) {
                     $values[$i][1] *= 8;
@@ -324,7 +346,7 @@ class Rrd
     /**
      * From the RRD file, process and return a png
      *
-     * @throws IXP\Exceptions\Utils\Grapher\FileError
+     * @throws \IXP\Exceptions\Utils\Grapher\FileError
      */
     public function png(): string {
 
@@ -334,6 +356,8 @@ class Rrd
         }
 
         $separated_maxima = ( self::PERIOD_TIME[ $this->graph()->period() ] > 60*60*24*2) ? true : false;
+
+        list( $indexIn, $indexOut ) = $this->getIndexKeys();
 
         $options = [
             '--width=600',
@@ -345,10 +369,10 @@ class Rrd
             '--vertical-label=' . $this->graph()->category() . ' / second',
             '--watermark=' . $this->graph()->watermark(),
 
-            'DEF:a='.$this->file().':traffic_in:AVERAGE',
-            'DEF:b='.$this->file().':traffic_in:MAX',
-            'DEF:c='.$this->file().':traffic_out:AVERAGE',
-            'DEF:d='.$this->file().':traffic_out:MAX',
+            'DEF:a='.$this->file().':'.$indexIn.':AVERAGE',
+            'DEF:b='.$this->file().':'.$indexIn.':MAX',
+            'DEF:c='.$this->file().':'.$indexOut.':AVERAGE',
+            'DEF:d='.$this->file().':'.$indexOut.':MAX',
 
             'CDEF:cdefa=a,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
             'CDEF:cdefb=b,' . ( $this->graph()->category() == Graph::CATEGORY_BITS ? '8' : '1' ) . ',*',
@@ -371,14 +395,7 @@ class Rrd
             $options[] = 'COMMENT:\s';
         }
 
-        $avg_label = $separated_maxima ? 'Avg. ' : '';
-
-        $options[] = 'LINE1:cdefa#002A97FF:Average In ';
-        if( !$separated_maxima ) {
-            $options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s';
-        }
-        $options[] = 'GPRINT:avg_in:\tAvg\\:%8.2lf%s';
-        $options[] = 'GPRINT:last_in:\tCur\\:%8.2lf%s\l';
+        // $avg_label = $separated_maxima ? 'Avg. ' : '';
 
         $options[] = 'AREA:cdefc#00CF00:Average Out';
         if( !$separated_maxima ) {
@@ -386,6 +403,13 @@ class Rrd
         }
         $options[] = 'GPRINT:avg_out:\tAvg\\:%8.2lf%s';
         $options[] = 'GPRINT:last_out:\tCur\\:%8.2lf%s\l';
+
+        $options[] = 'LINE1:cdefa#002A97FF:Average In ';
+        if( !$separated_maxima ) {
+            $options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s';
+        }
+        $options[] = 'GPRINT:avg_in:\tAvg\\:%8.2lf%s';
+        $options[] = 'GPRINT:last_in:\tCur\\:%8.2lf%s\l';
 
         $options[] = 'COMMENT:\s';
 

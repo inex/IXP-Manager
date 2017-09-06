@@ -1,4 +1,0 @@
-
-mysqldump --single-transaction --no-create-info --complete-insert
---skip-comments --disable-keys -u root inex | mysql -u root  inex2
-

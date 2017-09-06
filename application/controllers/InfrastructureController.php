@@ -55,7 +55,7 @@ class InfrastructureController extends IXP_Controller_FrontEnd
         {
             case \Entities\User::AUTH_SUPERUSER:
                 $this->_feParams->listColumns = [
-                    'id'        => [ 'title' => 'UID', 'display' => false ]
+                    'id'        => [ 'title' => 'DB ID' ],
                 ];
                 
                 if( $this->multiIXP() )

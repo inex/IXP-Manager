@@ -294,7 +294,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $this->getD2EM()->flush();
 
                 // clear the cache
-                $this->getD2R( '\\Entities\\Switcher' )->clearCache();
+                $this->getD2R( '\\Entities\\Switcher' )->clearCache( true, $f->getValue( 'switchtype' ) );
 
                 $this->addMessage(
                     "Switch polled and added successfully! Please configure the ports found below.", OSS_Message::SUCCESS
@@ -397,7 +397,7 @@ class SwitchController extends IXP_Controller_FrontEnd
     protected function postFlush( $object )
     {
         // this is created in Repositories\Switcher::getAndCache()
-        $this->getD2R( '\\Entities\\Switcher' )->clearCache();
+        $this->getD2R( '\\Entities\\Switcher' )->clearCacheAll();
         return true;
     }
 
