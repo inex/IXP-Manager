@@ -106,7 +106,11 @@ $this->layout( 'layouts/ixpv4' );
         $( document ).ready( function() {
             $( '#table-cb' ).DataTable( {
                 "autoWidth": false,
-                "iDisplayLength": 100
+                "iDisplayLength": 100,
+                "columnDefs": [{
+                    "targets": 2,
+                    "type": "string" ,
+                }]
             });
 
             $( "#area-cb" ).show();
