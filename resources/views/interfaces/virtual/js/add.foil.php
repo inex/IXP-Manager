@@ -27,6 +27,7 @@
      * display / hide help sections on click on the help button
      */
     $( "#help-btn" ).click( function() {
+        $( "#instructions-alert").toggle();
         $( "p.help-block" ).toggle();
     });
 

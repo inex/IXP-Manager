@@ -77,7 +77,7 @@ class VlanInterfaceController extends Common
     }
 
     /**
-     * Display a vlan Interface
+     * Display a VLAN interface
      *
      * @param int $id ID of vlan Interface
      * @return  View
@@ -93,25 +93,26 @@ class VlanInterfaceController extends Common
     }
 
     /**
-     * Display the form to edit a vlan interface
+     * Display the form to edit a VLAM interface
      *
+     * @param int $id    The VLAN interface ID
+     * @param int $viid  The virtual interface to add this VLI to
      * @return View
      */
     public function edit( int $id = null, int $viid = null ): View {
-        $vli = false;
-        /** @var VlanInterfaceEntity $vli */
+
+        $vli = false; /** @var VlanInterfaceEntity $vli */
         if( $id and !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $id ) ) ) {
             abort(404);
         }
 
-        $vi = false;
-        /** @var VirtualInterfaceEntity $vi */
+        $vi = false; /** @var VirtualInterfaceEntity $vi */
         if( $viid and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
             abort(404);
         }
 
         if( $vli ) {
-            // fill the form with Virtual interface data
+            // populate the form with VLAN interface data
             Former::populate([
                 'vlan'                      => $vli->getVlan()->getId() ,
                 'irrdbfilter'               => $vli->getIrrdbfilter() ? 1 : 0,
@@ -133,10 +134,9 @@ class VlanInterfaceController extends Common
                 'ipv6-can-ping'             => $vli->getIpv6canping()? 1 : 0,
                 'ipv6-monitor-rcbgp'        => $vli->getIpv6canping()? 1 : 0,
             ]);
-        }
-        else{
-            // fill the form with Virtual interface data
-            $md5 = OSS_String::random();
+        } else {
+            // populate the form with default data
+            $md5 = str_random(16);
             Former::populate([
                 'irrdbfilter'               => 1,
                 'maxbgpprefix'              => $vi->getCustomer()->getMaxprefixes(),
@@ -146,12 +146,10 @@ class VlanInterfaceController extends Common
             ]);
         }
 
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/vlan/edit' )->with([
             'vlan'                      => D2EM::getRepository( VlanEntity::class )->getNames( false ),
             'vli'                       => $vli ? $vli : false,
-            'vi'                        => $vi,
-            'as112UiActive'             => $this->as112UiActive()
+            'vi'                        => $vi
         ]);
     }
 

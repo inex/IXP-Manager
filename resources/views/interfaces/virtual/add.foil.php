@@ -51,6 +51,11 @@
 
 <?php $this->section('content') ?>
 
+    <div id="instructions-alert" class="alert alert-info" style="display: none;">
+        <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
+        on a production system.
+    </div>
+
     <?= $t->alerts() ?>
 
     <?= $t->insert( 'interfaces/virtual/add/vi-details' ) ?>

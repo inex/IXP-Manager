@@ -1,15 +1,18 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
+
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= route( 'interfaces/vlan/list' )?>">Vlan Interfaces</a>
 <?php $this->append() ?>
 
+
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Edit Vlan Interface</li>
+    <li><?= $t->vli ? 'Edit' : 'Add' ?> VLAN Interface</li>
 <?php $this->append() ?>
+
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
@@ -26,163 +29,223 @@ $this->layout( 'layouts/ixpv4' );
     </li>
 <?php $this->append() ?>
 
+
+
 <?php $this->section('content') ?>
 
+<div class="container-fluid">
+
     <?= $t->alerts() ?>
-    <div class="well">
-        <?= Former::open()->method( 'POST' )
-            ->action( route( 'interfaces/vlan/store' ) )
-            ->customWidthClass( 'col-sm-6' )
-        ?>
-        <div class="col-sm-6">
-            <h3>
-                General Vlan Settings
-            </h3>
-            <hr>
+
+    <div id="instructions-alert" class="alert alert-info" style="display: none;">
+        <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
+        on a production system.
+    </div>
+
+    <div class="row">
+        <h3>
+            General VLAN Settings
+        </h3>
+        <hr>
+    </div>
+
+
+    <?= Former::open()->method( 'post' )
+        ->action( route( 'interfaces/vlan/store' ) )
+        ->customWidthClass( 'col-sm-6' )
+    ?>
+
+    <div class="row">
+
+        <div class="col-md-6">
 
             <?= Former::select( 'vlan' )
                 ->label( 'Vlan' )
                 ->fromQuery( $t->vlan, 'name' )
-                ->placeholder( 'Choose a Vlan' )
+                ->placeholder( 'Choose a VLAN' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
-            ?>
-
-            <?= Former::checkbox( 'irrdbfilter' )
-                ->label( 'Apply IRRDB Filtering' )
-                ->unchecked_value( 0 )
-                ->value( 1 )
-                ->blockHelp( ' ' )
+                ->blockHelp( 'Pick the VLAN for this VLAN interface. IP address dropdowns will automatically populate on change.' );
             ?>
 
             <?= Former::checkbox( 'mcastenabled' )
-                ->label( 'Multicast Enabled' )
+                ->label('&nbsp;')
+                ->text( 'Multicast Enabled' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
-                ->blockHelp( ' ' )
+                ->blockHelp( 'Informational only unless you are using an automated provisioning system which will trigger a configuration changed based on this.' )
+            ?>
+
+            <?= Former::checkbox( 'busyhost' )
+                ->label('&nbsp;')
+                ->text( 'Busy host' )
+                ->unchecked_value( 0 )
+                ->value( 1 )
+                ->blockHelp( "This was created at INEX to quieten our monitoring systems. It is used to indicate that the customer's router is unusually slow "
+                    . "to reply to ICMP echo requests and that when monitoring, the configuration should allow for warnings after a 5sec RTT rather than 1sec "
+                    . "(for example)." )
+
             ?>
 
             <?= Former::checkbox( 'ipv4-enabled' )
-                ->label( 'IPv4 Enabled' )
+                ->label('&nbsp;')
+                ->text( 'IPv4 Enabled' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
-                ->blockHelp( ' ' )
+                ->blockHelp( 'Click to enable IPv4 and reveal associated settings.' )
+            ?>
 
+            <?= Former::checkbox( 'ipv6-enabled' )
+                ->label('&nbsp;')
+                ->text( 'IPv6 Enabled' )
+                ->unchecked_value( 0 )
+                ->value( 1 )
+                ->blockHelp( 'Click to enable IPv6 and reveal associated settings.' )
             ?>
 
         </div>
 
-        <div class="col-sm-6">
-            <br>
-            <br>
-            <br>
+        <div class="col-md-6">
+
             <?= Former::number( 'maxbgpprefix' )
                 ->label( 'Max BGP Prefixes' )
-                ->blockHelp( 'help text' );
+                ->blockHelp( 'The maximum IPv4/6 prefixes that any router configured via IXP Manager should accept for this endpoing. '
+                    . 'See <a href="http://docs.ixpmanager.org/usage/customers/#peering-details">the official documentation</a> for more details.' );
             ?>
 
             <?= Former::checkbox( 'rsclient' )
-                ->label( 'Route Server Client' )
+                ->label('&nbsp;')
+                ->text( 'Route Server Client' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
-                ->blockHelp( ' ' )
+                ->blockHelp( 'If checked, then IXP Manager will configure a BGP peer for this connection when <a href="http://docs.ixpmanager.org/features/route-servers/">generating route server configurations</a>. '
+                    . 'It is also used in other areas to show if a member uses the route servers or not, by the Peering Manager to calculate missing '
+                    . 'BGP sessions, etc.' )
             ?>
 
-            <?php if( $t->as112UiActive ): ?>
+            <?= Former::checkbox( 'irrdbfilter' )
+                ->label('&nbsp;')
+                ->text( 'Apply IRRDB Filtering' )
+                ->unchecked_value( 0 )
+                ->value( 1 )
+                ->blockHelp( 'If Apply IRRDB Filtering is <b>not</b> set, then the route servers will accept any prefixes advertised by the customer '
+                    . '(note that the default templates will filter martians and apply a max prefix limit). Generally speaking this is a very bad idea '
+                    . 'and should only be used in exceptional cases. INEX never uses this setting - but demand from other IX\'s had it added. '
+                    . 'See <a href=""http://docs.ixpmanager.org/features/irrdb/">the documentation</a> for more information.' )
+            ?>
+
+
+            <?php if( $t->as112UiActive() ): ?>
                 <?= Former::checkbox( 'as112client' )
-                    ->label( 'AS112 Client' )
+                    ->label('&nbsp;')
+                    ->text( 'AS112 Client' )
                     ->unchecked_value( 0 )
                     ->value( 1 )
-                    ->blockHelp( ' ' )
+                    ->blockHelp( 'If checked, then IXP Manager will configure a BGP peer for this connection when generating <a href="http://docs.ixpmanager.org/features/as112/">AS112 router configurations</a>.' )
                 ?>
             <?php endif; ?>
 
 
-            <?= Former::checkbox( 'busyhost' )
-                ->label( 'Busy host' )
-                ->unchecked_value( 0 )
-                ->value( 1 )
-                ->blockHelp( ' ' )
 
-            ?>
-
-            <?= Former::checkbox( 'ipv6-enabled' )
-                ->label( 'IPv6 Enabled' )
-                ->unchecked_value( 0 )
-                ->value( 1 )
-                ->blockHelp( ' ' )
-            ?>
         </div>
 
-        <br/>
-        <div id='ipv4-area' class="col-sm-6" style="display: none;float: left">
-            <h3>
+    </div>
+
+    <br/>
+
+    <div class="row">
+
+        <div id='ipv4-area' class="col-md-6" style="<?= $t->vli && $t->vli->getIPv4Enabled() ?: 'display: none;' ?> float: left;">
+
+            <h4>
                 IPv4 Details
-            </h3>
+            </h4>
+
             <hr>
+
             <?= Former::select( 'ipv4-address' )
                 ->label( 'IPv4 Address' )
-                ->placeholder( 'Choose IPv4' )
+                ->placeholder( 'Choose an IPv4 address...' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'Chose the IPv4 address from the list of available addresses for this VLAN.' );
             ?>
+
             <?= Former::text( 'ipv4-hostname' )
                 ->label( 'IPv4 Hostname' )
-                ->blockHelp( 'help text' );
+                ->blockHelp( 'This can/should be used for generated a DNS ARPA record against the above address.' );
             ?>
 
             <?= Former::text( 'ipv4-bgp-md5-secret' )
                 ->label( 'IPv4 BGP MD5 Secret' )
-                ->blockHelp( 'help text' );
+                ->blockHelp( 'The MD5 secret to protect the BGP session with. Optional but encouraged on a shared LAN such as that found at an IXP.<br><br>'
+                    . 'This is initially generated using a cryptographically secure randomly generated string.');
             ?>
 
             <?= Former::checkbox( 'ipv4-can-ping' )
-                ->label( 'IPv4 Can Ping' )
+                ->label( 'Can Ping' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
-                ->blockHelp( ' ' )
+                ->blockHelp( 'IXP Manager generates configuration for a number of other tools such as Smokeping and Nagios which ping customer routers. These are '
+                    . 'invaluable tools for problem solving, monitoring and graphing long term trends. We enable this by default unless a customer specifically '
+                    . 'asks us not to.' )
             ?>
 
             <?= Former::checkbox( 'ipv4-monitor-rcbgp' )
-                ->label( 'IPv4 Monitor RC BGP' )
+                ->label( 'Monitor RC BGP' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
-                ->blockHelp( ' ' )
+                ->blockHelp( '<b>Will be deprecated.</b> A legacy option for configuration builders that used to check for established route collector '
+                    . 'BGP sessions and warn if not present. This is deprecated and will be removed in favour of looking glass functionality.' )
             ?>
+
+            <br>
+
         </div>
 
-        <div id='ipv6-area' class="col-sm-6" style="display: none;float: right">
-            <h3>
+        <div id='ipv6-area' class="col-md-6" style="<?= $t->vli && $t->vli->getIPv6Enabled() ?: 'display: none;' ?> float: right;">
+
+            <h4>
                 IPv6 Details
-            </h3>
+            </h4>
+
             <hr>
+
             <?= Former::select( 'ipv6-address' )
                 ->label( 'IPv6 Address' )
-                ->placeholder( 'Choose IPv6' )
+                ->placeholder( 'Choose an IPv6 address...' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'Chose the IPv6 address from the list of available addresses for this VLAN.' );
             ?>
             <?= Former::text( 'ipv6-hostname' )
                 ->label( 'IPv6 Hostname' )
-                ->blockHelp( 'help text' );
+                ->blockHelp( 'This can/should be used for generated a DNS ARPA record against the above address.' );
             ?>
 
             <?= Former::text( 'ipv6-bgp-md5-secret' )
                 ->label( 'IPv6 BGP MD5 Secret' )
-                ->blockHelp( 'help text' );
+                ->blockHelp( 'The MD5 secret to protect the BGP session with. Optional but encouraged on a shared LAN such as that found at an IXP.<br><br>'
+                    . 'This is initially generated using a cryptographically secure randomly generated string.');
             ?>
 
             <?= Former::checkbox( 'ipv6-can-ping' )
-                ->label( 'IPv6 Can Ping' )
-                ->blockHelp( ' ' )
+                ->label( 'Can Ping' )
+                ->blockHelp( 'IXP Manager generates configuration for a number of other tools such as Smokeping and Nagios which ping customer routers. These are '
+                    . 'invaluable tools for problem solving, monitoring and graphing long term trends. We enable this by default unless a customer specifically '
+                    . 'asks us not to.' )
             ?>
 
             <?= Former::checkbox( 'ipv6-monitor-rcbgp' )
                 ->label( 'IPv6 Monitor RC BGP' )
-                ->blockHelp( ' ' )
+                ->blockHelp( '<b>Will be deprecated.</b> A legacy option for configuration builders that used to check for established route collector '
+                    . 'BGP sessions and warn if not present. This is deprecated and will be removed in favour of looking glass functionality.' )
             ?>
+
+            <br>
+
         </div>
 
+    </div>
+
+    <div class="row">
         <?= Former::hidden( 'id' )
             ->value( $t->vli ? $t->vli->getId() : null )
         ?>
@@ -196,7 +259,7 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <?=Former::actions(
-            Former::primary_submit( 'Save Changes' ),
+            Former::primary_submit( $t->vli ? 'Save Changes' : 'Add' ),
             Former::default_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         )->id('btn-group');?>
@@ -204,132 +267,10 @@ $this->layout( 'layouts/ixpv4' );
         <?= Former::close() ?>
     </div>
 
+</div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
-
-        $(document).ready( function() {
-            $( 'label.col-lg-2' ).removeClass('col-lg-2');
-            $( '.input-group-addon' ).addClass('btn btn-default');
-
-            if ($( '#ipv4-enabled' ).is(":checked") ) {
-                $( "#ipv4-area" ).slideDown();
-            }
-            if ($( '#ipv6-enabled' ).is(":checked") ) {
-                $( "#ipv6-area" ).slideDown();
-            }
-
-            setIPVx();
-
-        });
-
-        $( "#vlan" ).on( 'change', function( event ) {
-            setIPVx();
-        });
-
-        function setIPVx(){
-            if( $("#vlan").val() ) {
-
-                $( "#ipv4-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
-                $( "#ipv6-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
-
-                vlanid = $("#vlan").val();
-
-                $.ajax( "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ip-addresses" )
-                    .done( function( data ) {
-                        var options = "<option value=\"\">Choose an IPv4</option>\n";
-                        $.each( data.ipv4, function( key, value ){
-
-                            // check if we have to include the IP associated to the vlan interface ( edit mode ) in order to display it in the dropdown
-                            var includeIPv4 = false;
-                            <?php if( $t->vli && $t->vli->getIpv4enabled() && $t->vli->getIPv4Address() ) :?>
-                                ipv4Id = "<?= $t->vli->getIPv4Address()->getId() ?>";
-                                if( ipv4Id == value.id){
-                                    var includeIPv4 = true;
-                                }
-
-                            <?php endif; ?>
-
-                            if( value.vli_id == null || includeIPv4 ){
-                                options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
-                            }
-
-                        });
-                        $( "#ipv4-address" ).html( options );
-
-                        <?php if( $t->vli && $t->vli->getIpv4enabled() && $t->vli->getIPv4Address()) :?>
-                            $('#ipv4-address').val('<?= $t->vli->getIPv4Address()->getAddress() ?>');
-                        <?php endif; ?>
-
-
-                        var options = "<option value=\"\">Choose an IPv6</option>\n";
-                        $.each( data.ipv6, function( key, value ){
-
-                            // check if we have to include the IP associated to the vlan interface ( edit mode ) in order to display it in the dropdown
-                            var includeIPv6 = false;
-                            <?php if( $t->vli && $t->vli->getIpv6enabled() && $t->vli->getIPv6Address() ) :?>
-                                ipv6Id = "<?= $t->vli->getIPv6address()->getId() ?>";
-                                if( ipv6Id == value.id){
-                                    var includeIPv6 = true;
-                                }
-                            <?php endif; ?>
-
-                            if( value.vli_id == null || includeIPv6 ) {
-                                options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
-                            }
-                        });
-                        $( "#ipv6-address" ).html( options );
-
-                        <?php if( $t->vli && $t->vli->getIpv6enabled() && $t->vli->getIPv6Address()) :?>
-                            $('#ipv6-address').val('<?= $t->vli->getIPv6Address()->getAddress() ?>');
-                        <?php endif; ?>
-
-                    })
-                    .fail( function() {
-                        throw new Error( "Error running ajax query for api/v4/vlan/$id/ip-addresses" );
-                        alert( "Error running ajax query for api/v4/vlan/$id/ip-addresses" );
-                    })
-                    .always( function() {
-                        $( "#ipv4-address" ).trigger( "chosen:updated" );
-                        $( "#ipv6-address" ).trigger( "chosen:updated" );
-                    });
-            }
-        }
-
-        /**
-         * hide the help block at loading
-         */
-        $('p.help-block').hide();
-
-        /**
-         * display / hide help sections on click on the help button
-         */
-        $( "#help-btn" ).click( function() {
-            $( "p.help-block" ).toggle();
-        });
-
-        /**
-         * display or hide the fastlapc area
-         */
-        $( '#ipv4-enabled' ).change( function(){
-            if( this.checked ){
-                $( "#ipv4-area" ).slideDown();
-            } else {
-                $( "#ipv4-area" ).slideUp();
-            }
-        });
-
-        /**
-         * display or hide the fastlapc area
-         */
-        $( '#ipv6-enabled' ).change( function(){
-            if( this.checked ){
-                $( "#ipv6-area" ).slideDown();
-            } else {
-                $( "#ipv6-area" ).slideUp();
-            }
-        });
-
-    </script>
+    <?= $t->insert( 'interfaces/vlan/js/edit' ); ?>
 <?php $this->append() ?>
