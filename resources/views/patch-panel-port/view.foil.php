@@ -189,12 +189,6 @@
                                         </td>
                                     </tr>
                                 <?php endif; ?>
-                            </table>
-                        </div>
-
-
-                        <div class="col-xs-6">
-                            <table class="table_view_info">
                                 <tr>
                                     <td>
                                         <b>
@@ -217,6 +211,11 @@
                                         </td>
                                     </tr>
                                 <?php endif; ?>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <table class="table_view_info">
                                 <tr>
                                     <td>
                                         <b>
@@ -297,6 +296,26 @@
                                         </td>
                                     </tr>
                                 <?php endif; ?>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Cabinet Name:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $p->getPatchPanel()->getCabinet()->getName() ) ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Colocation centre:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $p->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                         </div> <!-- row -->
