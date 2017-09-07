@@ -1,7 +1,7 @@
 <td>
     {if ( ( isset( $row[$cconf.colname] ) && $row[$cconf.colname] ) || isset( $object[$cconf.colname] ) && $object[$cconf.colname] ) && (!isset( $cconf.inverse ) || !$cconf.inverse) }
-        <i class="icon-ok"></i><input type="hidden" value="1">
+        <i class="icon-ok"></i>
     {else}
-        <i class="icon-remove"></i><input type="hidden" value="0">
+        <i class="icon-remove">
     {/if}
 </td>
