@@ -70,6 +70,12 @@ class LookingGlassServiceProvider extends ServiceProvider {
             Route::get( '{handle}/route/{net}/{mask}/table/{table}',       'LookingGlass@routeTable'        );
 
         });
+
+        Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',
+            'as' => 'lg-api::', 'prefix' => 'api/v4/lg' ], function() {
+
+            Route::get( '{handle}/status', 'LookingGlass@status' );
+        });
     }
 
     /**
