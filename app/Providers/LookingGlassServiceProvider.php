@@ -74,7 +74,8 @@ class LookingGlassServiceProvider extends ServiceProvider {
         Route::group( [ 'middleware' => 'lookingglass', 'namespace' => 'IXP\Http\Controllers\Services',
             'as' => 'lg-api::', 'prefix' => 'api/v4/lg' ], function() {
 
-            Route::get( '{handle}/status', 'LookingGlass@status' );
+            Route::get( '{handle}/status',      'LookingGlass@status'        )->name('status');
+            Route::get( '{handle}/bgp-summary', 'LookingGlass@bgpSummaryApi' )->name('bgp-sum');
         });
     }
 

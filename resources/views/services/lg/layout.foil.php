@@ -92,6 +92,12 @@
                 Cached data. Maximum age: <?= $t->content->api->ttl_mins ?> mins.
             </span>
         <?php endif; ?>
+
+        <div class="pull-right" style="font-family: monospace;">
+            JSON:
+            [<a href="<?= route( "lg-api::status",  [ 'handle' => $t->lg->router()->getHandle() ] ) ?>">status</a>]
+            [<a href="<?= route( "lg-api::bgp-sum", [ 'handle' => $t->lg->router()->getHandle() ] ) ?>">bgp</a>]
+        </div>
     </div>
 <?php endif; ?>
 

@@ -133,7 +133,7 @@ class LookingGlass extends Controller
     }
 
     /**
-     * Returns the router's status
+     * Returns the router's status as JSON
      *
      * @param string $handle
      * @return \Illuminate\Http\Response JSON of status
@@ -142,6 +142,19 @@ class LookingGlass extends Controller
         // get the router status
         return response()
             ->make( $this->lg()->status() )
+            ->header('Content-Type', 'application/json');
+    }
+
+    /**
+     * Returns the router's "bgp summary" as JSON
+     *
+     * @param string $handle
+     * @return \Illuminate\Http\Response JSON of status
+     */
+    public function bgpSummaryApi( string $handle ): Response {
+        // get the router status
+        return response()
+            ->make( $this->lg()->bgpSummary() )
             ->header('Content-Type', 'application/json');
     }
 
