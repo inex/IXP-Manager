@@ -27,6 +27,9 @@ $this->layout( 'layouts/ixpv4' );
         <p>
             This page performs a live query of all routers configured with an API interface and reports live data.
         </p>
+        <p>
+            <em>Sessions</em> indicates the number of BGP sessions configured on the router while <em>Up</em> shows how many of these are actually established.
+        </p>
     </div>
 </div>
 
@@ -56,7 +59,10 @@ $this->layout( 'layouts/ixpv4' );
                 API Version
             </th>
             <th>
-                Server Time
+                Sessions
+            </th>
+            <th>
+                Up
             </th>
             <th>
                 Last Updated
@@ -97,7 +103,9 @@ $this->layout( 'layouts/ixpv4' );
 
                 <td id="<?= $router->getHandle() ?>-api-version">
                 </td>
-                <td id="<?= $router->getHandle() ?>-server-time">
+                <td id="<?= $router->getHandle() ?>-bgp-sessions">
+                </td>
+                <td id="<?= $router->getHandle() ?>-bgp-sessions-up">
                 </td>
                 <td id="<?= $router->getHandle() ?>-last-updated">
                 </td>
@@ -115,9 +123,9 @@ $this->layout( 'layouts/ixpv4' );
 <script src="<?= asset( 'bower_components/moment/min/moment.min.js' ) ?>"></script>
 <script>
 
-    var table = $('#router-list').on( 'init.dt', function () {
+    let table = $('#router-list').on( 'init.dt', function () {
 
-        var handles = [ "<?= implode( '", "', $t->routersWithApi ) ?>" ];
+        let handles = [ "<?= implode( '", "', $t->routersWithApi ) ?>" ];
 
         // get states
         handles.forEach( function( handle, index ) {
@@ -130,7 +138,7 @@ $this->layout( 'layouts/ixpv4' );
                 .done( function( data ) {
                     $('#' + handle + '-version').html( data.status.version );
                     $('#' + handle + '-api-version').html( data.api.version );
-                    $('#' + handle + '-server-time').html( moment( data.status.server_time ).format( "YYYY-MM-DD HH:mm:ss" ) );
+                    // $('#' + handle + '-server-time').html( moment( data.status.server_time ).format( "YYYY-MM-DD HH:mm:ss" ) );
                     $('#' + handle + '-last-updated').html( moment( data.status.last_reconfig ).format( "YYYY-MM-DD HH:mm:ss" ) );
                     $('#' + handle + '-last-reboot').html( moment( data.status.last_reboot ).format( "YYYY-MM-DD HH:mm:ss" ) );
 
@@ -145,8 +153,37 @@ $this->layout( 'layouts/ixpv4' );
                     }
                 })
                 .fail( function() {
-                    $('#' + handle + '-version').html( '<em>Error</em>' );
+                    $('#' + handle + '-version').html( '<span class="label label-danger">Error</span>' );
                     $('#fetched-alert').removeClass('alert-info').removeClass('alert-success').addClass('alert-danger');
+                });
+
+
+
+            $.ajax({
+                "url": "<?= url('api/v4/lg') ?>/" + handle + "/bgp-summary",
+                "type": "GET",
+                "timeout": 60000
+            })
+                .done( function( data ) {
+
+                    let total       = 0;
+                    let established = 0;
+
+                    for( let proto in data.protocols ) {
+                        if( data.protocols[proto].state === "up" ) {
+                            established++;
+                        }
+                        total++;
+                    }
+
+                    $('#' + handle + '-bgp-sessions').html( total );
+                    $('#' + handle + '-bgp-sessions-up').html( established );
+
+                    // reset datatables
+                    table.api().rows().invalidate().draw();
+                })
+                .fail( function() {
+                    $('#' + handle + '-bgp-sessions').html( '<span class="label label-danger">Error</span>' );
                 });
 
         });
