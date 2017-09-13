@@ -135,3 +135,8 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'members',   'StatisticsController@members' );
     Route::post( 'members',   'StatisticsController@members' )->name( 'statistics/members' );
 });
+
+Route::group( [ 'prefix' => 'cust-kit2' ], function() {
+    Route::get(  'list',   'CustKitController@listAction' );
+    Route::get(  'add',    'CustKitController@addAction' );
+});

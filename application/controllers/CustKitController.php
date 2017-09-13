@@ -72,7 +72,7 @@ class CustKitController extends IXP_Controller_FrontEnd
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],
-            
+
                 'name'      => 'Name'
             ]
         ];
