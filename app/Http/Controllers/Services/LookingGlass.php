@@ -134,7 +134,7 @@ class LookingGlass extends Controller
 
     /**
      * Returns the router's status
-     * 
+     *
      * @param string $handle
      * @return \Illuminate\Http\Response JSON of status
      */

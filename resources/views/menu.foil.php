@@ -99,11 +99,21 @@
                 <li>
                     <a href="<?= url('/cabinet/list') ?>">Cabinets</a>
                 </li>
-                <li <?= $t->controller == 'RouterController' ? 'class="active"' : '' ?>>
+
+                <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
                     <a href="<?= url('/router/list') ?>">
                         Routers
                     </a>
+
+                    <?php if( $t->controller == 'RouterController' ): ?>
+                        <li class="sub-menu <?php if( $t->controller == 'RouterController' && $t->action == 'status'):?> active <?php endif;?> " >
+                            <a href="<?= route('router/status') ?>">Live Status</a>
+                        </li>
+                    <?php endif;?>
+
                 </li>
+
+
                 <li>
                     <a href="<?= url('/switch/list') ?>">Switches</a>
                     <?php /*
