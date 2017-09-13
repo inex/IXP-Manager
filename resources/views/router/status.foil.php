@@ -71,7 +71,11 @@ $this->layout( 'layouts/ixpv4' );
             /** @var Entities\Router $router */ ?>
             <tr>
                 <td>
-                    <?= $router->getHandle() ?>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.lg' ) ): ?>
+                        <a href="<?= route( "lg::bgp-sum", [ 'handle' => $router->getHandle() ] ) ?>">
+                    <?php endif; ?>
+                        <?= $router->getHandle() ?>
+                    <?= config( 'ixp_fe.frontend.disabled.lg' ) ?: '</a>' ?>
                 </td>
                 <td>
                     <?= $router->getShortName() ?>
