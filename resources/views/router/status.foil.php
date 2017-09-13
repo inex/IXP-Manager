@@ -118,8 +118,9 @@ $this->layout( 'layouts/ixpv4' );
         // get states
         handles.forEach( function( handle, index ) {
 
-            $.get({
+            $.ajax({
                     "url": "<?= url('api/v4/lg') ?>/" + handle + "/status",
+                    "type": "GET",
                     "timeout": 60000
                 })
                 .done( function( data ) {
