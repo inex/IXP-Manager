@@ -2558,12 +2558,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opensolutions/OSS_SNMP.git",
-                "reference": "4fae4aca4bfd1209a208eac40f0498bbaad60c4b"
+                "reference": "5014d2fdd1ed07fe388dbdee7fe03562569b3923"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/4fae4aca4bfd1209a208eac40f0498bbaad60c4b",
-                "reference": "4fae4aca4bfd1209a208eac40f0498bbaad60c4b",
+                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/5014d2fdd1ed07fe388dbdee7fe03562569b3923",
+                "reference": "5014d2fdd1ed07fe388dbdee7fe03562569b3923",
                 "shasum": ""
             },
             "require": {
@@ -2591,7 +2591,7 @@
                 "oss_snmp",
                 "snmp"
             ],
-            "time": "2017-09-16T10:56:23+00:00"
+            "time": "2017-09-16T11:27:33+00:00"
         },
         {
             "name": "oss2/auth",
