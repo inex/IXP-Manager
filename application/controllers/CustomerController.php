@@ -581,20 +581,26 @@ class CustomerController extends IXP_Controller_FrontEnd
 
             $this->getD2EM()->flush();
 
-            if( isset( $this->_options['billing_updates']['notify'] ) && !$c->getReseller() )
+            if( config( 'ixp_tools.billing_updates_notify', false ) && !$c->getReseller() )
             {
                 $this->view->oldDetails = $old;
                 $this->view->customer   = $c;
 
-                $this->getMailer()
-                    ->setFrom( $this->_options['identity']['email'], $this->_options['identity']['name'] )
-                    ->setSubject( $this->_options['identity']['sitename'] . ' - ' . _( 'Billing Details Change Notification' ) )
-                    ->addTo( $this->_options['billing_updates']['notify'] , $this->_options['identity']['sitename'] .' - Accounts' )
-                    ->setBodyHtml( $this->view->render( 'customer/email/billing-details-changed.phtml' ) )
-                    ->send();
+                try {
+                    $this->getMailer()
+                        ->setFrom(config('identity.email'), config('identity.name'))
+                        ->setSubject(config('identity.sitename') . ' - ' . _('Billing Details Change Notification'))
+                        ->addTo(config('ixp_tools.billing_updates_notify'), config('identity.sitename') . ' - Accounts')
+                        ->setBodyHtml($this->view->render('customer/email/billing-details-changed.phtml'))
+                        ->send();
 
-                if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER )
-                    $this->addMessage( "Notification of updated billing details has been sent to " . $this->_options['billing_updates']['notify'], OSS_Message::INFO );
+                    if( $this->getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ) {
+                        $this->addMessage("Notification of updated billing details has been sent to " . config('ixp_tools.billing_updates_notify'), OSS_Message::INFO);
+                    }
+                } catch( Exception $e ) {
+                    $this->addMessage("Could not sent notification of updated billing details to " . config('ixp_tools.billing_updates_notify')
+                        . ". Check your email settings.", OSS_Message::ERROR );
+                }
             }
 
             $this->redirect( 'customer/overview/id/' . $c->getId() . '/tab/billing' );
