@@ -33,6 +33,7 @@ use Entities\{
 use ErrorException;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 use IXP\Contracts\LookingGlass as LookingGlassContract;
@@ -129,6 +130,32 @@ class LookingGlass extends Controller
             'routers' => D2EM::getRepository( RouterEntity::class )->makeRouterDropdown(
                 Auth::check() ? Auth::user()->getCustomer() : null, Auth::check() ? Auth::user() : null ),
         ]);
+    }
+
+    /**
+     * Returns the router's status as JSON
+     *
+     * @param string $handle
+     * @return \Illuminate\Http\Response JSON of status
+     */
+    public function status( string $handle ): Response {
+        // get the router status
+        return response()
+            ->make( $this->lg()->status() )
+            ->header('Content-Type', 'application/json');
+    }
+
+    /**
+     * Returns the router's "bgp summary" as JSON
+     *
+     * @param string $handle
+     * @return \Illuminate\Http\Response JSON of status
+     */
+    public function bgpSummaryApi( string $handle ): Response {
+        // get the router status
+        return response()
+            ->make( $this->lg()->bgpSummary() )
+            ->header('Content-Type', 'application/json');
     }
 
     public function bgpSummary( string $handle ): View {

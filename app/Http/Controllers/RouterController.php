@@ -62,6 +62,29 @@ class RouterController extends Controller
         ]);
     }
 
+    /**
+     * Status page for routers
+     *
+     * @return  View
+     */
+    public function status(): View {
+
+        /** @var RouterEntity[] $routers */
+        $routers = D2EM::getRepository( RouterEntity::class )->findAll();
+
+        $routersWithApi = [];
+        foreach( $routers as $r ) {
+            if( $r->hasApi() ) {
+                $routersWithApi[] = $r->getHandle();
+            }
+        }
+
+        return view( 'router/status' )->with([
+            'routers'        => $routers,
+            'routersWithApi' => $routersWithApi,
+        ]);
+    }
+
 
     /**
      * Display the form to edit a router

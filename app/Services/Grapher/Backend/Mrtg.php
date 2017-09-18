@@ -346,7 +346,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 return $img;
             } else {
                 $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
-                return @file_get_contents( $rrd->png() );
+                return @file_get_contents( $rrd->png('a') );
             }
         } catch( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
@@ -394,7 +394,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     public function resolveFilePath( Graph $graph, $type ): string {
         $config = config('grapher.backends.mrtg');
 
-        $loggyType = $type == 'rrd' || $type = 'log';
+        $loggyType = $type == 'rrd' || $type == 'log';
 
         switch( $graph->classType() ) {
             case 'IXP':

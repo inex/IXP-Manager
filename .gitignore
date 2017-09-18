@@ -93,4 +93,8 @@ storage/files/*
 .idea/dataSources
 .idea/inspectionProfiles
 
+.idea/composerJson.xml
+.idea/misc.xml
+mrtg/
+node_modules/
 
