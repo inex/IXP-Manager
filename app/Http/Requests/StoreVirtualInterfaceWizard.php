@@ -53,7 +53,7 @@ class StoreVirtualInterfaceWizard extends FormRequest
     public function rules()
     {
         return [
-            'cust'                  => 'required|integer',
+            'cust'                  => 'integer'. ( $this->input('selectedCust') ? '|nullable' : '|required' ),
             'vlan'                  => 'required|integer',
             'trunk'                 => 'boolean',
             'switch'                => 'required|integer',

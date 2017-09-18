@@ -59,8 +59,15 @@ $this->layout( 'layouts/ixpv4' );
                 ->fromQuery( $t->custs, 'name' )
                 ->placeholder( 'Choose a Customer' )
                 ->addClass( 'chzn-select' )
+                ->disabled( $t->selectedCust ? true : false )
                 ->blockHelp( '' );
             ?>
+
+            <?php if( $t->selectedCust ): ?>
+                <?= Former::hidden( 'selectedCust' )
+                    ->value( $t->selectedCust->getId() )
+                ?>
+            <?php endif; ?>
 
             <?= Former::select( 'vlan' )
                 ->label( 'Vlan' )

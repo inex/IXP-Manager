@@ -220,12 +220,36 @@ class VirtualInterfaceController extends Common
 
     }
 
+
+    /**
+     * Display the form to add a virtual interface
+     *
+     * @return  View
+     */
+    public function addWizardCustId( int $custId = null ) : View {
+        return $this->wizard( $custId );
+    }
+
+
     /**
      * Display the form to add a virtual interface
      *
      * @return View
      */
-    public function wizard(): View {
+    public function wizard( int $custId = null ): View {
+
+        $cust = false;
+        /** @var CustomerEntity $cust */
+        if( $custId and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
+            abort(404);
+        }
+
+        if( $cust ) {
+            // fill the form with Virtual interface data
+            Former::populate([
+                'cust'                  => $cust->getId(),
+            ]);
+        }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/virtual/wizard' )->with([
@@ -236,6 +260,7 @@ class VirtualInterfaceController extends Common
             'pi_speeds'             => PhysicalInterfaceEntity::$SPEED,
             'pi_duplexes'           => PhysicalInterfaceEntity::$DUPLEX,
             'resoldCusts'           => config( 'ixp.reseller.enabled') ? json_encode( D2EM::getRepository( "\\Entities\\Customer" )->getResoldCustomerNames() ) : json_encode() ,
+            'selectedCust'          => $cust
         ]);
     }
 
@@ -246,8 +271,13 @@ class VirtualInterfaceController extends Common
      * @return  RedirectResponse
      */
     public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse {
+
+        $inputCust = $request->input( 'cust' );
+        if( $request->input( 'selectedCust' ) ){
+            $inputCust = $request->input( 'selectedCust' );
+        }
         /** @var CustomerEntity $cust */
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) ) ) ) {
+        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $inputCust ) ) ) {
             abort(404, 'Unknown customer');
         }
         /** @var VlanEntity $vlan */

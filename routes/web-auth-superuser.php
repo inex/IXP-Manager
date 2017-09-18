@@ -78,6 +78,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 
         Route::get( 'view/{id}',                        'VirtualInterfaceController@view' );
         Route::get( 'wizard-add',                       'VirtualInterfaceController@wizard' )->name( 'interfaces/virtual/wizard' );
+        Route::get( 'wizard-add/custid/{custid}',       'VirtualInterfaceController@addWizardCustId' )->name(   'interfaces/virtual/add-wizard/custid' );
 
         Route::post( 'store',                           'VirtualInterfaceController@store' );
         Route::post( 'wizard-add',                      'VirtualInterfaceController@storeWizard' )->name( 'interfaces/virtual/wizard-save' );
