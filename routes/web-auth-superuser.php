@@ -132,11 +132,14 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 
 
 Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get(  'members',   'StatisticsController@members' );
-    Route::post( 'members',   'StatisticsController@members' )->name( 'statistics/members' );
+    Route::get(  'members',         'StatisticsController@members' );
+    Route::post( 'members',         'StatisticsController@members' )->name( 'statistics/members' );
 });
 
 Route::group( [ 'prefix' => 'cust-kit2' ], function() {
-    Route::get(  'list',   'CustKitController@listAction' );
-    Route::get(  'add',    'CustKitController@addAction' );
+    Route::get(  'list',            'CustKitController@listAction' );
+    Route::get(  'add',             'CustKitController@addAction' );
+    Route::get(  'edit/{id}',       'CustKitController@editAction' );
+    Route::get(  'view/{id}',       'CustKitController@viewAction' );
+    Route::get(  'delete/{id}',     'CustKitController@deleteAction' );
 });

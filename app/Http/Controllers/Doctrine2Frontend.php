@@ -110,6 +110,31 @@ abstract class Doctrine2Frontend extends Controller {
     {
 
     }
+
+    /**
+     * Add (or edit) an object
+     */
+    public function viewAction()
+    {
+
+    }
+
+    /**
+     * Add (or edit) an object
+     */
+    public function editAction()
+    {
+
+    }
+
+    /**
+     * Add (or edit) an object
+     */
+    public function deleteAction()
+    {
+
+    }
+
     /**
      * Displays the standard Frontend template or the controllers overridden version.
      *
