@@ -202,7 +202,6 @@ $this->layout( 'layouts/ixpv4' );
         <?= Former::select( 'ipv4-address' )
             ->label( 'IPv4 Address' )
             ->placeholder( 'Choose IPv4 Address' )
-            ->addClass( 'chzn-select' )
             ->blockHelp( 'Select the IP address to assign to this VLAN interface. If empty, ensure you have selected a VLAN above and that the VLAN has available addresses.' );
         ?>
         <?= Former::text( 'ipv4-hostname' )
@@ -239,7 +238,6 @@ $this->layout( 'layouts/ixpv4' );
         <?= Former::select( 'ipv6-address' )
             ->label( 'IPv6 Address' )
             ->placeholder( 'Choose IPv6 Address' )
-            ->addClass( 'chzn-select' )
             ->blockHelp( 'Select the IP address to assign to this VLAN interface. If empty, ensure you have selected a VLAN above and that the VLAN has available addresses.' );
         ?>
         <?= Former::text( 'ipv6-hostname' )

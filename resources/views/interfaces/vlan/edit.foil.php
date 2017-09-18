@@ -165,7 +165,6 @@
             <?= Former::select( 'ipv4-address' )
                 ->label( 'IPv4 Address' )
                 ->placeholder( 'Choose an IPv4 address...' )
-                ->addClass( 'chzn-select' )
                 ->blockHelp( 'Chose the IPv4 address from the list of available addresses for this VLAN.' );
             ?>
 
@@ -212,7 +211,6 @@
             <?= Former::select( 'ipv6-address' )
                 ->label( 'IPv6 Address' )
                 ->placeholder( 'Choose an IPv6 address...' )
-                ->addClass( 'chzn-select' )
                 ->blockHelp( 'Chose the IPv6 address from the list of available addresses for this VLAN.' );
             ?>
             <?= Former::text( 'ipv6-hostname' )

@@ -7,6 +7,23 @@ $(document).ready( function() {
 
     setIPVx();
 
+    $( "#ipv4-address" ).select2({
+        tags: true,
+        width: '100%'
+    });
+
+    $( "#ipv6-address" ).select2({
+        tags: true,
+        width: '100%'
+    });
+
+    if( $( '#ipv4-enabled' ).is(":checked") ) {
+        $( "#ipv4-area" ).slideDown();
+    }
+    if( $( '#ipv6-enabled' ).is(":checked") ) {
+        $( "#ipv6-area" ).slideDown();
+    }
+
 });
 
 $( "#vlan" ).on( 'change', setIPVx );

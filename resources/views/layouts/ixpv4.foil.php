@@ -19,6 +19,7 @@
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/chosen/chosen.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') ?>" />
+    <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/select2/dist/css/select2.min.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-manager.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('css/draganddrop.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('css/font-awesome.min.css') ?>" />
@@ -136,6 +137,7 @@
     <script type="text/javascript" src="<?= asset('/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/chosen/chosen.jquery.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/vue/dist/vue.min.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/select2/dist/js/select2.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/900-oss-framework.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/ixp-manager.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/bootbox.min.js') ?>"></script>

@@ -33,6 +33,16 @@
         <?php endif; ?>
 
 
+        $( "#ipv4-address" ).select2({
+            tags: true,
+            width: '100%'
+        });
+
+        $( "#ipv6-address" ).select2({
+            tags: true,
+            width: '100%'
+        });
+
     });
 
     function checkFanout(){
