@@ -504,6 +504,8 @@ class VlanInterface extends EntityRepository
                 continue;
             }
 
+            $int['protocol'] = $protocol;
+
             // don't need this anymore:
             unset( $int['enabled'] );
 

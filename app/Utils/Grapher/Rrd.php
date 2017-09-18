@@ -350,11 +350,6 @@ class Rrd
      */
     public function png(): string {
 
-        // // does the local file exist and is it less than 5mins old?
-        if( file_exists($this->getLocalFilename('png')) && ( time() - filemtime($this->localfile) < 300 ) ) {
-            return $this->getLocalFilename('png');
-        }
-
         $separated_maxima = ( self::PERIOD_TIME[ $this->graph()->period() ] > 60*60*24*2) ? true : false;
 
         list( $indexIn, $indexOut ) = $this->getIndexKeys();
@@ -387,28 +382,32 @@ class Rrd
             'VDEF:avg_out=cdefd,AVERAGE',
         ];
 
+        $options[] = 'COMMENT:Out';
+
         if( $separated_maxima ) {
-            $options[] = 'LINE2:cdefb#ff00ff:Peak Traffic In ';
-            $options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s\l';
-            $options[] = 'AREA:cdefd#006600:Peak Traffic Out';
-            $options[] = 'GPRINT:max_out:\tMax\\:%8.2lf%s\l';
-            $options[] = 'COMMENT:\s';
+            $options[] = 'AREA:cdefd#006600:Peak';
+            $options[] = 'GPRINT:max_out:%8.2lf%s\t';
+            $options[] = 'AREA:cdefc#00CF00:Avg';
+        } else {
+            $options[] = 'AREA:cdefc#00CF00:Max';
+            $options[] = 'GPRINT:max_out:%8.2lf%s\t';
+            $options[] = 'COMMENT:Avg';
         }
-
-        // $avg_label = $separated_maxima ? 'Avg. ' : '';
-
-        $options[] = 'AREA:cdefc#00CF00:Average Out';
-        if( !$separated_maxima ) {
-            $options[] = 'GPRINT:max_out:\tMax\\:%8.2lf%s';
-        }
-        $options[] = 'GPRINT:avg_out:\tAvg\\:%8.2lf%s';
+        $options[] = 'GPRINT:avg_out:%8.2lf%s';
         $options[] = 'GPRINT:last_out:\tCur\\:%8.2lf%s\l';
 
-        $options[] = 'LINE1:cdefa#002A97FF:Average In ';
-        if( !$separated_maxima ) {
-            $options[] = 'GPRINT:max_in:\tMax\\:%8.2lf%s';
+        $options[] = 'COMMENT:In ';
+
+        if( $separated_maxima ) {
+            $options[] = 'LINE1:cdefb#ff00ff:Peak';
+            $options[] = 'GPRINT:max_in:%8.2lf%s\t';
+            $options[] = 'LINE2:cdefa#002A97FF:Avg';
+        } else {
+            $options[] = 'LINE2:cdefa#002A97FF:Max';
+            $options[] = 'GPRINT:max_in:%8.2lf%s\t';
+            $options[] = 'COMMENT:Avg';
         }
-        $options[] = 'GPRINT:avg_in:\tAvg\\:%8.2lf%s';
+        $options[] = 'GPRINT:avg_in:%8.2lf%s';
         $options[] = 'GPRINT:last_in:\tCur\\:%8.2lf%s\l';
 
         $options[] = 'COMMENT:\s';
@@ -420,7 +419,6 @@ class Rrd
         }
         return $this->getLocalFilename('png');
     }
-
 
 
     /**

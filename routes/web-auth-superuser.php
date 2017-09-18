@@ -58,10 +58,11 @@ Route::group( [ 'prefix' => 'layer2-address' ], function() {
 });
 
 Route::group( [ 'prefix' => 'router' ], function() {
-    Route::get( 'list',                             'RouterController@list' )->name( 'router/list');
-    Route::get( 'add',                              'RouterController@edit' )->name( 'router/add');
-    Route::get( 'edit/{id}',                        'RouterController@edit' )->name( 'router/edit');
-    Route::get( 'view/{id}',                        'RouterController@view' );
+    Route::get( 'list',                             'RouterController@list'   )->name( 'router/list' );
+    Route::get( 'status',                           'RouterController@status' )->name('router/status');
+    Route::get( 'add',                              'RouterController@edit'   )->name( 'router/add');
+    Route::get( 'edit/{id}',                        'RouterController@edit'   )->name( 'router/edit');
+    Route::get( 'view/{id}',                        'RouterController@view'   );
     Route::get( 'delete/{id}',                      'RouterController@delete' );
     Route::get( 'gen-config/{id}',                  'RouterController@genConfig' );
 

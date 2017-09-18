@@ -38,7 +38,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": "7.0.*",
         "zendframework/zendframework1": "~1.12",
         "komola/bootstrap-zend-framework": "dev-master",
         "opensolutions/oss-snmp": "dev-master",
@@ -48,7 +48,7 @@
         "laravel-doctrine/orm": "1.3.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
-
+        
         "oss2/auth": "dev-master",
         
         "smarty/smarty": "~3.1",
@@ -116,9 +116,12 @@
              "php -r \"copy('.env.example', '.env');\"",
              "php artisan key:generate"
          ]
-     },
-     "config": {
-          "preferred-install": "dist"
-     },
-    "minimum-stability": "stable"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "platform": {
+            "php": "7.0.10"
+        }
+   },
+   "minimum-stability": "stable"
 }

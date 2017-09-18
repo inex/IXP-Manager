@@ -16,7 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.2",
+    "jquery": "~3",
     "bootstrap": "~3.3.0",
     "chosen": "~1.6",
     "vue": "~2.0",
@@ -28,9 +28,9 @@
     "font-awesome": "fontawesome#^4.7.0",
     "blueimp-file-upload": "jquery-file-upload#^9.17.0",
     "jquery-knob": "^1.2.13",
-    "bootstrap-tagsinput": "bootstraptagsinput#^0.8.0",
     "clipboard": "^1.6.1",
-    "ip-address": "^5.0"
+    "ip-address": "^5.0",
+    "moment": "^2.18.1"
   },
   "resolutions": {
     "jquery": "1.9.1 - 3"

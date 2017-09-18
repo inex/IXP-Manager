@@ -105,4 +105,7 @@ storage/files/*
 
 /node_modules/
 /package-lock.json
+.idea/composerJson.xml
+.idea/misc.xml
+mrtg/
 

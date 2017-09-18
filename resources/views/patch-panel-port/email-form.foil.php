@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section('headers') ?>
-    <link rel="stylesheet" type="text/css" href="<?= asset( 'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css' ) ?>" />
+<!--    <link rel="stylesheet" type="text/css" href="--><?//= asset( 'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css' ) ?><!--" />-->
 <?php $this->append() ?>
 
 
@@ -93,12 +93,12 @@
 
 <?php $this->section( 'scripts' ) ?>
 
-<script type="text/javascript" src="<?= asset( 'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js' ) ?>"></script>
+<!--<script type="text/javascript" src="--><?//= asset( 'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js' ) ?><!--"></script>-->
 <script>
     $(document).ready(function(){
-        $('#email_bcc').on( 'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
-        $('#email_cc').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
-        $('#email_to').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
+        //$('#email_bcc').on( 'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
+        //$('#email_cc').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
+        //$('#email_to').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
 
 
         $('#tab-link-body').on( 'click', function(e) {
