@@ -90,7 +90,7 @@ class VlanInterface
     /**
      * @var boolean $busyhost
      */
-    protected $busyhost;
+    protected $busyhost = false;
 
     /**
      * @var string $notes

@@ -240,7 +240,7 @@ class VirtualInterfaceController extends Common
 
         $cust = false;
         /** @var CustomerEntity $cust */
-        if( $custId and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
+        if( $custId && !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
             abort(404);
         }
 
@@ -272,46 +272,22 @@ class VirtualInterfaceController extends Common
      */
     public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse {
 
-        $inputCust = $request->input( 'cust' );
-        if( $request->input( 'selectedCust' ) ){
-            $inputCust = $request->input( 'selectedCust' );
-        }
-        /** @var CustomerEntity $cust */
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $inputCust ) ) ) {
-            abort(404, 'Unknown customer');
-        }
-        /** @var VlanEntity $vlan */
-        if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) ) ) ) {
-            abort(404, 'Unknown vlan');
-        }
-        /** @var SwitcherEntity $switch */
-        if( !( $switch = D2EM::getRepository( SwitcherEntity::class )->find( $request->input( 'switch' ) ) ) ) {
-            abort(404, 'Unknown switch');
-        }
-        /** @var SwitchPortEntity $sp */
-        if( !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port' ) ) ) ) {
-            abort(404, 'Unknown customer');
-        }
+        // all validation of ids is in the request object, App\Http\Requests\StoreVirtualInterfaceWizard
+        $cust   = D2EM::getRepository( CustomerEntity::class   )->find( $request->input( 'cust'        ) );    /** @var CustomerEntity   $cust   */
+        $vlan   = D2EM::getRepository( VlanEntity::class       )->find( $request->input( 'vlan'        ) );    /** @var VlanEntity       $vlan   */
+        $switch = D2EM::getRepository( SwitcherEntity::class   )->find( $request->input( 'switch'      ) );    /** @var SwitcherEntity   $switch */
+        $sp     = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port' ) );    /** @var SwitchPortEntity $sp     */
 
-        /** @var VirtualInterfaceEntity $vi */
         $vi = new VirtualInterfaceEntity;
         D2EM::persist($vi);
 
-        $vi->setTrunk( $request->input( 'trunk' ) ? $request->input( 'trunk' ) : false );
-
+        $vi->setTrunk( $request->input( 'trunk' ) ?? false );
         $vi->setCustomer( $cust );
 
-        // those options are not available in the wizard ????????
-        $vi->setName('');
-        $vi->setChannelgroup(null);
-        $vi->setLagFraming(false);
-        $vi->setFastLACP(false);
 
-        /** @var PhysicalInterfaceEntity $pi */
-        $pi = new PhysicalInterfaceEntity();
+        $pi = new PhysicalInterfaceEntity;
         D2EM::persist($pi);
-
-        $pi->setSpeed( $request->input( 'speed' ) );
+        $pi->setSpeed(  $request->input( 'speed'  ) );
         $pi->setStatus( $request->input( 'status' ) );
         $pi->setDuplex( $request->input( 'duplex' ) );
 
@@ -324,36 +300,19 @@ class VirtualInterfaceController extends Common
         $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $cust ) );
 
 
-        $this->setBundleDetails( $vi );
+        if( !$this->processFanoutPhysicalInterface( $request, $pi, $vi) ) {
+            return Redirect::to('virtualInterface/add-wizard' )->withInput( Input::all() );
+        }
 
-        // Fanout part
-
-        $fanout = $request->input('fanout' );
-
-         if( isset( $fanout ) ) {
-            if( ! $this->processFanoutPhysicalInterface( $request, $pi, $vi) ){
-                return Redirect::to('virtualInterface/add-wizard' )->withInput( Input::all() );
-            }
-
-             if( $pi->getRelatedInterface() ) {
-                 $pi->getRelatedInterface()->setSpeed( $request->input( 'speed' ) );
-                 $pi->getRelatedInterface()->setStatus( $request->input( 'status' ) );
-                 $pi->getRelatedInterface()->setDuplex( $request->input( 'duplex' ) );
-             }
-         }
-
-        /** @var VlanInterfaceEntity $vli */
         $vli = new VlanInterfaceEntity();
         D2EM::persist($vli);
 
-        $vli->setIrrdbfilter(   $request->input( 'irrdbfilter' )    ? $request->input( 'irrdbfilter' )  : false );
-        $vli->setMcastenabled(  $request->input( 'mcastenabled' )   ? $request->input( 'mcastenabled' ) : false );
-        $vli->setRsclient(      $request->input( 'rsclient' )       ? $request->input( 'rsclient' )     : false );
-        $vli->setAs112client(   $request->input( 'as112client' )    ? $request->input( 'as112client' )  : false );
+        $vli->setIrrdbfilter(   $request->input( 'irrdbfilter' )    ?? false );
+        $vli->setMcastenabled(  $request->input( 'mcastenabled' )   ?? false );
+        $vli->setRsclient(      $request->input( 'rsclient' )       ?? false );
+        $vli->setAs112client(   $request->input( 'as112client' )    ?? false );
         $vli->setMaxbgpprefix(  $request->input( 'maxbgpprefix' ) );
-
         $vli->setVlan( $vlan );
-        // What about busy host ?
 
         $ipv4Set = null;
         $ipv6Set = null;
@@ -377,7 +336,6 @@ class VirtualInterfaceController extends Common
         AlertContainer::push( "New interface created!", Alert::SUCCESS );
 
         return Redirect::to( 'customer/overview/tab/ports/id/' . $cust->getId() );
-
     }
 
     /**

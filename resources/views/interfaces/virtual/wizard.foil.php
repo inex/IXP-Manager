@@ -64,7 +64,7 @@ $this->layout( 'layouts/ixpv4' );
             ?>
 
             <?php if( $t->selectedCust ): ?>
-                <?= Former::hidden( 'selectedCust' )
+                <?= Former::hidden( 'cust' )
                     ->value( $t->selectedCust->getId() )
                 ?>
             <?php endif; ?>

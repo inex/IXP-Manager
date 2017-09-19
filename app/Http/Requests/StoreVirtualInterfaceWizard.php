@@ -53,11 +53,11 @@ class StoreVirtualInterfaceWizard extends FormRequest
     public function rules()
     {
         return [
-            'cust'                  => 'integer'. ( $this->input('selectedCust') ? '|nullable' : '|required' ),
-            'vlan'                  => 'required|integer',
+            'cust'                  => 'required|integer|exists:Entities\Customer,id',
+            'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
             'trunk'                 => 'boolean',
-            'switch'                => 'required|integer',
-            'switch-port'           => 'required|integer',
+            'switch'                => 'required|integer|exists:Entities\Switcher,id',
+            'switch-port'           => 'required|integer|exists:Entities\SwitchPort,id',
             'status'                => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$STATES ) ),
             'speed'                 => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$SPEED ) ),
             'duplex'                => 'required|string|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),

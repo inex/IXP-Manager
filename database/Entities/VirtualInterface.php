@@ -12,7 +12,7 @@ class VirtualInterface
     /**
      * @var string $name
      */
-    protected $name;
+    protected $name = '';
 
     /**
      * @var string $description
