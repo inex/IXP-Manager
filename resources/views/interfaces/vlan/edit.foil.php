@@ -161,7 +161,7 @@
             </h4>
 
             <hr>
-
+            <div id='alert-ipv4-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
             <?= Former::select( 'ipv4-address' )
                 ->label( 'IPv4 Address' )
                 ->placeholder( 'Choose an IPv4 address...' )
@@ -207,7 +207,7 @@
             </h4>
 
             <hr>
-
+            <div id='alert-ipv6-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
             <?= Former::select( 'ipv6-address' )
                 ->label( 'IPv6 Address' )
                 ->placeholder( 'Choose an IPv6 address...' )
@@ -249,6 +249,7 @@
         ?>
 
         <?= Former::hidden( 'viid' )
+            ->id( 'viid' )
             ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
         ?>
 
