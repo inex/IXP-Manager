@@ -75,6 +75,38 @@
     $( "#switch" ).on( 'change', updateSwitchPort );
     $( "#switch-fanout" ).on( 'change', updateSwitchPort );
 
+    $( "#ipv4-address" ).on( 'change', usedAcrossVlans );
+    $( "#ipv6-address" ).on( 'change', usedAcrossVlans );
+
+
+    function usedAcrossVlans(){
+        inputName = $( this ).attr( "id" );
+        ipAddress = $( '#' + inputName ).val();
+
+        console.log( ipAddress );
+        $( '#alert-' + inputName ).html( '' ).hide();
+        if( ipAddress ) {
+            url = "<?= url( '/api/v4/ip-address/used-across-vlans/' )?>/" + ipAddress ;
+
+            $.ajax( url )
+                .done( function( data ) {
+                    $.each( data.vlans, function( key, vlan ){
+                        $( '#alert-' + inputName ).append( "<div>- The IP address " + ipAddress + " is already used by the customer " + vlan.customer.name + " on the VLAN " + vlan.vlan.name + " </div>");
+                    });
+                    if(  data.vlans.length > 0 ){
+                        $( '#alert-' + inputName ).show();
+                    }
+
+                })
+                .fail( function() {
+                    alert( "Error running ajax query for " + url );
+                    throw new Error( "Error running ajax query for " + url );
+                })
+                .always( function() {
+
+                });
+        }
+    }
 
     function updateSwitchPort(){
         var type = "";
@@ -125,6 +157,8 @@
 
             $( "#ipv4-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
             $( "#ipv6-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+
+            $( '.ip-is-used-alert').html( '' ).hide();
 
             vlanid = $("#vlan").val();
             var options;

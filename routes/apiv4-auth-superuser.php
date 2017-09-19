@@ -115,10 +115,14 @@ Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceCo
 Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceController@sflowMatrix' );
 Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
 
+
+
 Route::group( [  'prefix' => 'vlan' ], function() {
     Route::get( 'for-switch/{switchid}',                'Provisioner\YamlController@vlanForSwitch' );
     Route::get( '{id}/ip-addresses',                    'VlanController@getIPAddresses' );
 });
+
+Route::get( 'ip-address/used-across-vlans/{address}',   'VlanController@UsedAcrossVlans' );
 
 Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::get(  'customers/{vlanid}/{protocol}',            'NagiosController@customers' );
@@ -143,4 +147,6 @@ Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::get(  'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
     Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
 });
+
+
 

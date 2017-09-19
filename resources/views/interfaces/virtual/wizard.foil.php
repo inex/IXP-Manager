@@ -199,6 +199,7 @@ $this->layout( 'layouts/ixpv4' );
             IPv4 Details
         </h3>
         <hr>
+        <div id='alert-ipv4-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
         <?= Former::select( 'ipv4-address' )
             ->label( 'IPv4 Address' )
             ->placeholder( 'Choose IPv4 Address' )
@@ -236,6 +237,7 @@ $this->layout( 'layouts/ixpv4' );
             IPv6 Details
         </h3>
         <hr>
+        <div id='alert-ipv6-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
         <?= Former::select( 'ipv6-address' )
             ->label( 'IPv6 Address' )
             ->placeholder( 'Choose IPv6 Address' )

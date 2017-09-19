@@ -132,4 +132,43 @@ class VlanController extends Controller
                 ], 200 )
             ->header( 'Content-Type', 'text/plain; charset=utf-8' );
     }
+
+    /**
+     * Determine is an IP address /really/ free by checking across all vlans
+     *
+     * Returns a array of object :
+     *
+     * [
+     *      {
+     *          customer: {
+     *              id: x,
+     *              name: "",
+     *              autsys: x,
+     *              abbreviated_name: ""
+     *          },
+     *          virtualinterface: {
+     *              id: x
+     *          },
+     *          vlaninterface: {
+     *              id: x
+     *          },
+     *          vlan: {
+     *              id: x,
+     *              name: "",
+     *              number: x
+     *          }
+     *      },
+     *      {
+     *
+     *      }
+     * ]
+     * $param  string $ipAddress The IP address to check
+     *
+     * @return  JsonResponse array of object
+     */
+    public function usedAcrossVlans( $ipAddress ) : JsonResponse{
+        return response()->json( [
+            'vlans' => D2EM::getRepository( VlanEntity::class )->usedAcrossVlans( $ipAddress )
+        ] );
+    }
 }
