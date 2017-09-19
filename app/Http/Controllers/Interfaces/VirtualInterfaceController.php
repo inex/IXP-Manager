@@ -232,34 +232,33 @@ class VirtualInterfaceController extends Common
 
 
     /**
-     * Display the form to add a virtual interface
+     * Display the wizard form to add a virtual interface
      *
      * @return View
      */
     public function wizard( int $custId = null ): View {
 
-        $cust = false;
-        /** @var CustomerEntity $cust */
-        if( $custId && !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
-            abort(404);
-        }
-
-        if( $cust ) {
-            // fill the form with Virtual interface data
-            Former::populate([
-                'cust'                  => $cust->getId(),
-            ]);
+        $cust = false; /** @var CustomerEntity $cust */
+        if( $custId ) {
+            if( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) {
+                // fill the form with Virtual interface data
+                Former::populate( [
+                    'cust' => $cust->getId(),
+                ] );
+            } else {
+                abort(404);
+            }
         }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/virtual/wizard' )->with([
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getNames(),
             'vlans'                 => D2EM::getRepository( VlanEntity::class )->getNames( false ),
-            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( ),
+            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
             'pi_states'             => PhysicalInterfaceEntity::$STATES,
             'pi_speeds'             => PhysicalInterfaceEntity::$SPEED,
             'pi_duplexes'           => PhysicalInterfaceEntity::$DUPLEX,
-            'resoldCusts'           => config( 'ixp.reseller.enabled') ? json_encode( D2EM::getRepository( "\\Entities\\Customer" )->getResoldCustomerNames() ) : json_encode() ,
+            'resoldCusts'           => $this->resellerMode() ? json_encode( D2EM::getRepository( CustomerEntity::class )->getResoldCustomerNames() ) : json_encode([]) ,
             'selectedCust'          => $cust
         ]);
     }

@@ -32,6 +32,7 @@ use Entities\{
     PhysicalInterface as PhysicalInterfaceEntity,
     SwitchPort as SwitchPortEntity,
     VirtualInterface as VirtualInterfaceEntity,
+    Vlan as VlanEntity,
     VlanInterface as VlanInterfaceEntity
 };
 
@@ -39,6 +40,7 @@ use Illuminate\Http\Request;
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StoreVirtualInterfaceWizard;
 
+use IXP\Services\Grapher\Graph\VlanInterface;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
@@ -225,12 +227,12 @@ abstract class Common extends Controller
      * * if !exists, creates a new one.
      *
      * @param Request                      $request
-     * @param VirtualInterfaceEntity       $vl
+     * @param VlanEntity                   $v
      * @param VlanInterfaceEntity          $vli  Vlan interface to assign IP to
      * @param bool                         $ipv6 Bool to define if IP address is IPv4 or IPv6
      * @return bool
      */
-    public function setIp($request, $vl, $vli, $ipv6 = false )
+    public function setIp( Request $request, VlanEntity $v, VlanInterfaceEntity $vli, bool $ipv6 = false )
     {
         $iptype         = $ipv6 ? "ipv6" : "ipv4";
         $ipVer          = $ipv6 ? "IPv6" : "IPv4";
@@ -250,9 +252,9 @@ abstract class Common extends Controller
             return false;
         }
 
-        if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vl->getId(), 'address' => $addressValue ] ) ) ) {
+        if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $v->getId(), 'address' => $addressValue ] ) ) ) {
             $ip = new $entity();
-            $ip->setVlan( $vl );
+            $ip->setVlan( $v );
             $ip->setAddress( $addressValue );
             D2EM::persist( $ip );
         } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
