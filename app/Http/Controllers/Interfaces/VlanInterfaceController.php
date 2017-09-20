@@ -30,17 +30,12 @@ use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse,
-    Request
+    JsonResponse
 };
-
-use IXP\Http\Controllers\Controller;
 
 use Entities\{
     VlanInterface as VlanInterfaceEntity,
     Vlan as VlanEntity,
-    IPv4Address as IPv4AddressEntity,
-    IPv6Address as IPv6AddressEntity,
     VirtualInterface as VirtualInterfaceEntity
 };
 
@@ -52,8 +47,6 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-use OSS_String;
 
 /**
  * Vlan Interface Controller
@@ -80,6 +73,7 @@ class VlanInterfaceController extends Common
      * Display a VLAN interface
      *
      * @param int $id ID of vlan Interface
+     *
      * @return  View
      */
     public function view( int $id ): View {
@@ -95,7 +89,9 @@ class VlanInterfaceController extends Common
     /**
      * Display a VLAN interface
      *
-     * @param int $id ID of vlan Interface
+     * @param int $fromid ID of vlan Interface that we will get the information
+     * @param int $toid ID of vlan Interface that we will put the value of the $fromid
+     *
      * @return  View
      */
     public function duplicate( int $fromid, int $toid )  {
@@ -189,10 +185,10 @@ class VlanInterfaceController extends Common
             abort(404 , 'Unknown virtual Interface');
         }
 
-        /** @var VlanEntity $vl */
-        if( !( $vl = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) ) ) ){
-            abort(404, 'Unknown vlan');
-        }
+        $vl = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) );   /** @var VlanEntity $vl */
+
+        $ipv4Set = false;
+        $ipv6Set = false;
 
         if( $request->input('ipv4-enabled' ) ){
             $ipv4Set = $this->setIp($request,$vl, $vli, false );
@@ -207,30 +203,26 @@ class VlanInterfaceController extends Common
             return Redirect::back()->withInput( Input::all() );
         }
 
-        $vli->setVirtualInterface( $vi );
-        $vli->setVlan( $vl );
-        $vli->setIrrdbfilter( $request->input( 'irrdbfilter' ) ? 1 : 0 );
-        $vli->setMcastenabled( $request->input( 'mcastenabled' ) ? 1 : 0 );
-
-
-        $vli->setMaxbgpprefix( $request->input( 'maxbgpprefix' ) );
-
-        $vli->setRsclient( $request->input( 'rsclient' ) ? 1 : 0 );
-        $vli->setAs112client( $request->input( 'as112client' ) ? 1 : 0 );
-        $vli->setBusyhost( $request->input( 'busyhost' ) ? 1 : 0 );
+        $vli->setVirtualInterface(  $vi );
+        $vli->setVlan(              $vl );
+        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter'  ) ? 1 : 0 );
+        $vli->setMcastenabled(      $request->input( 'mcastenabled' ) ? 1 : 0 );
+        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix' ) );
+        $vli->setRsclient(          $request->input( 'rsclient'     ) ? 1 : 0 );
+        $vli->setAs112client(       $request->input( 'as112client'  ) ? 1 : 0 );
+        $vli->setBusyhost(          $request->input( 'busyhost'     ) ? 1 : 0 );
 
         D2EM::flush();
 
         AlertContainer::push( 'Vlan Interface updated successfully.', Alert::SUCCESS );
 
-        if( $request->input('redirect2vi' ) ) {
+        if( $request->input('redirect2vi' ) || $request->input('duplicated' ) ) {
             $urlRedirect = 'interfaces/virtual/edit/' . $vli->getVirtualInterface()->getId();
         } else {
             $urlRedirect = 'interfaces/vlan/list';
         }
 
         return Redirect::to( $urlRedirect );
-
     }
 
     /**
@@ -256,5 +248,4 @@ class VlanInterfaceController extends Common
 
         return response()->json( [ 'success' => true ] );
     }
-
 }

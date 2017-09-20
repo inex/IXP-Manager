@@ -24,13 +24,12 @@ namespace IXP\Http\Controllers\Interfaces;
  */
 
 
-use D2EM, Redirect, Former, Input;
+use D2EM, Redirect, Former;
 
 use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
-    Request,
     JsonResponse
 };
 
@@ -70,18 +69,21 @@ class SflowReceiverController extends Common
     /**
      * Display the form to add/edit a sflow receiver
      *
+     * @param int $id ID of the Sflow Receiver
+     * @param int $viid ID of the Virtual Interface
+     *
      * @return View
      */
-    public function edit( int $id = null, int $viid = null ) {
+    public function edit( int $id = null, int $viid = null )  {
         $sflr = false;
         /** @var SflowReceiverEntity $sflr */
-        if( $id and !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ) {
+        if( $id && !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ) {
             abort(404);
         }
 
         $vi = false;
         /** @var VirtualInterfaceEntity $vi */
-        if( $viid and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
+        if( $viid && !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
             AlertContainer::push( 'You need a containing virtual interface before you add a sflow receiver', Alert::DANGER );
             return Redirect::back();
         }
@@ -105,6 +107,7 @@ class SflowReceiverController extends Common
      * Edit a SflowReceiver (set all the data needed)
      *
      * @param   StoreSflowReceiver $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
      */
     public function store( StoreSflowReceiver $request ): RedirectResponse {
@@ -113,7 +116,6 @@ class SflowReceiverController extends Common
         if( $request->input( 'id', false ) ) {
             // get the existing sflow receiver object for the given ID
             if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                Log::notice( 'Unknown sflow receiver when editing' );
                 abort(404);
             }
         } else {
@@ -121,10 +123,7 @@ class SflowReceiverController extends Common
             D2EM::persist( $sflr );
         }
 
-        /** @var VirtualInterfaceEntity $vi */
-        if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'viid' ) ) ) ){
-            abort(404, 'Unknown virtual interface');
-        }
+        $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'viid' ) ); /** @var VirtualInterfaceEntity $vi */
 
         $sflr->setVirtualInterface( $vi );
         $sflr->setDstIp( $request->input( 'dst_ip' ) );

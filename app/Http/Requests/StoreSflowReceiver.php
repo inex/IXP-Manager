@@ -49,7 +49,7 @@ class StoreSflowReceiver extends FormRequest
     public function rules()
     {
         return [
-            'viid'                    => 'required|integer',
+            'viid'                    => 'required|integer|exists:Entities\VirtualInterface,id',
             'dst_ip'                  => 'required|ip',
             'dst_port'                => 'required|integer',
         ];

@@ -49,7 +49,7 @@ class StoreVlanInterface extends FormRequest
     public function rules()
     {
         return [
-            'vlan'                  => 'required|integer',
+            'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
             'maxbgpprefix'          => 'integer',
             'ipv4-address'          => 'ipv4' . ( $this->input('ipv4-enabled') ? '|required' : '|nullable' ),
             'ipv4canping'           => 'boolean',

@@ -42,13 +42,10 @@ use Illuminate\Http\{
     Request
 };
 
-use IXP\Http\Controllers\Controller;
-
 use IXP\Http\Requests\{
     StoreCoreBundle
 };
 
-use Illuminate\Support\Facades\View as FacadeView;
 use Illuminate\View\View;
 
 use IXP\Utils\View\Alert\Alert;
@@ -69,7 +66,7 @@ class CoreBundleController extends Common
      *
      * @return  View
      */
-    public function list( int $id = null ): View {
+    public function list(): View {
         return view( 'interfaces/core-bundle/list' )->with([
             'cbs'       => D2EM::getRepository( CoreBundleEntity::class )->findAll( )
         ]);
@@ -102,6 +99,7 @@ class CoreBundleController extends Common
      * Display the form to add core links to the bundle core form
      *
      * @param  Request    $request        instance of the current HTTP request
+     *
      * @return JsonResponse
      */
     public function addCoreLinkFrag( Request $request ) :JsonResponse {
@@ -121,10 +119,10 @@ class CoreBundleController extends Common
      * Display the form to edit a core bundle
      *
      * @params  int $id ID of the Core bundle
+     *
      * @return  view
      */
     public function edit( int $id = null ): View {
-        $cb = false;
         /** @var CoreBundleEntity $cb */
         if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $id ) ) ){
             abort(404);
@@ -383,13 +381,12 @@ class CoreBundleController extends Common
 
             foreach( $cl->getCoreInterfaces() as $ci ){
                 /** @var CoreInterfaceEntity $ci */
-
                 $pi = $ci->getPhysicalInterface();
 
                 $vi = $pi->getVirtualInterface();
 
+                /** @var SwitchPortEntity $sp */
                 $sp = $vi->getSwitchPort();
-
                 $sp->setType( SwitchPortEntity::TYPE_UNSET );
 
                 D2EM::remove( $ci );
