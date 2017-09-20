@@ -92,45 +92,60 @@
      */
     function duplicateVliPopup( id, viid ){
 
-        var html = "Please select the Vlan. <select id='duplicateTo' class='chzn-select'>";
+        let html = `
+            <p>
+            Duplicating a VLAN interface allows you to copy IP addresses and other settings to a new VLAN
+            interface on another VLAN. Typical use cases for this is creating a quarantine VLAN interface
+            on an 802.1q tagged port for example.
+            </p>
+            <p>
+            Duplicating can also be used to copy all values to a new VLAN with needing to remember / create the
+            matching IP addresses. In this case, copy and then delete the older VLAN interface.
+            </p>
+            <p>
+                <b>
+                While IXP Manager will let you create multiple VLAN interfaces on an untagged port, it is
+                only a convenience for the above but may have unexpected consequences in production!
+                </b>
+            </p>
+            <p>
+            Please select the VLAN: <select id="duplicateTo" class="chzn-select">
+                <option></option>
+            <?php foreach( $t->vls as $id => $vl): ?>
+                <option value="<?= $id ?>"><?= $vl ?></option>
+            <?php endforeach; ?>
+            </select>
+            </p>
+        `;
 
-        <?php foreach( $t->vls as $id => $vl): ?>
-        html += "<option value='<?= $id ?>' >  <?= $vl ?>  </option>";
-        <?php endforeach; ?>
-
-        html += '</select>';
 
         dialog = bootbox.dialog({
             message: html,
-            title: "Duplicate the Vlan Interface",
-            onEscape: function() {
-                location.reload();
-            },
+            title: "Duplicate the VLAN Interface",
             buttons: {
-
                 cancel: {
                     label: '<i class="fa fa-times"></i> Close',
                     callback: function () {
                         $('.bootbox.modal').modal('hide');
-                        location.reload();
                         return false;
                     }
                 },
                 confirm: {
-                    label: '<i class="glyphicon glyphicon-ok"></i> Validate',
+                    label: '<i class="glyphicon glyphicon-ok"></i> Duplicate',
                     callback: function () {
-                        if( $( "#duplicateTo" ).val() ){
+                        let duplicateTo = $( "#duplicateTo" );
+                        if( duplicateTo.val() ) {
                             window.location.href = "<?= url( 'interfaces/vlan/duplicate' ) ?>/"+ id + "/to/" + $( "#duplicateTo" ).val();
                         }
-
                     }
-                },
+                }
             }
         });
 
         dialog.init( function(){
-            $('#duplicateTo').select2({
-                width: '50%' // need to override the changed default
+            $("#duplicateTo").select2({
+                width: "50%", // need to override the changed default
+                placeholder: "Select a VLAN..."
             });
         });
     }
