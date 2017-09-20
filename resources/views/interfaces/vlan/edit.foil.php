@@ -290,4 +290,5 @@
 
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/vlan/js/edit' ); ?>
+    <?= $t->insert( 'interfaces/virtual/js/acrossVlans' ); ?>
 <?php $this->append() ?>

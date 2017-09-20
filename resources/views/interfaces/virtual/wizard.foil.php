@@ -320,5 +320,6 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
 <?= $t->insert( 'interfaces/virtual/js/wizard' ); ?>
+<?= $t->insert( 'interfaces/virtual/js/acrossVlans' ); ?>
 <?php $this->append() ?>
 

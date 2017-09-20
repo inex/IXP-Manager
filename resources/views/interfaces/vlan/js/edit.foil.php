@@ -62,37 +62,6 @@
         }
     });
 
-
-    $( "#ipv4-address" ).on( 'change', usedAcrossVlans );
-    $( "#ipv6-address" ).on( 'change', usedAcrossVlans );
-
-    function usedAcrossVlans(){
-        inputName = $( this ).attr( "id" );
-        ipAddress = $( '#' + inputName ).val();
-
-        $( '#alert-' + inputName ).html( '' ).hide();
-        if( ipAddress ) {
-            url = "<?= url( '/api/v4/ip-address/used-across-vlans/' )?>/" + ipAddress ;
-            $.ajax( url )
-                .done( function( data ) {
-                    $.each( data.vlans, function( key, vlan ){
-                        if( vlan.virtualinterface.id != $( '#viid' ).val() ){
-                            $( '#alert-' + inputName ).append( "<div>- The IP address " + ipAddress + " is already used by the customer " + vlan.customer.name + " on the VLAN " + vlan.vlan.name + " </div>");
-                            $( '#alert-' + inputName ).show();
-                        }
-
-                    });
-                })
-                .fail( function() {
-                    alert( "Error running ajax query for " + url );
-                    throw new Error( "Error running ajax query for " + url );
-                })
-                .always( function() {
-
-                });
-        }
-    }
-
     function setIPVx()
     {
         let vlanid = $("#vlan").val();
