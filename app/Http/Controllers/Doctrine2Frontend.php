@@ -26,10 +26,6 @@ namespace IXP\Http\Controllers;
 
 use Illuminate\Support\Facades\View as ViewFacade;
 
-use Illuminate\Support\Facades\Route;
-
-use Illuminate\View\View;
-
 /**
  * Doctrine2Frontend Functions
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -46,7 +42,9 @@ abstract class Doctrine2Frontend extends Controller {
      */
     protected $feParams = null;
 
-    protected $view = null;
+    protected $data     = null;
+
+    protected $view     = null;
 
 
     /**
@@ -61,7 +59,7 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function __construct( ){
         $this->feInit();
-        $this->view[ 'col_types' ] = self::$FE_COL_TYPES;
+        $this->data[ 'col_types' ] = self::$FE_COL_TYPES;
     }
 
     static public $FE_COL_TYPES = [
@@ -83,7 +81,7 @@ abstract class Doctrine2Frontend extends Controller {
      * @throws OSS_Exception
      */
     protected function feInit(){
-        throw new OSS_Exception( 'FrontEnd controllers require an feInit() function' );
+        //throw new OSS_Exception( 'FrontEnd controllers require an feInit() function' );
     }
 
 
@@ -91,14 +89,8 @@ abstract class Doctrine2Frontend extends Controller {
      * List the contents of a database table.
      */
     public function listAction(){
-        $this->view[ 'data' ] = $this->listGetData() ;
-
-        //$this->view->listPreamble    = $this->_resolveTemplate( 'list-preamble.phtml'  );
-        //$this->view->listPostamble   = $this->_resolveTemplate( 'list-postamble.phtml' );
-        //$this->view->listRowMenu     = $this->_resolveTemplate( 'list-row-menu.phtml' );
-        //$this->view->listToolbar     = $this->_resolveTemplate( 'list-toolbar.phtml' );
-        //$this->view->listScript      = $this->_resolveTemplate( 'js/list.js' );
-        //$this->view->listAddonScript = $this->_resolveTemplate( 'js/list-addon.js' );
+        $this->data[ 'data' ]        = $this->listGetData() ;
+        $this->view[ 'listScript' ]     = $this->resolveTemplate( 'js/list' );
 
         return $this->display( 'list' );
     }
@@ -108,7 +100,7 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function addAction()
     {
-
+        return $this->display( 'edit' );
     }
 
     /**
@@ -143,7 +135,7 @@ abstract class Doctrine2Frontend extends Controller {
      * @return void
      */
     protected function display( $tpl ){
-        return view( $this->resolveTemplate( $tpl, true ) )->with( [ 'view' => $this->view ]);
+        return view( $this->resolveTemplate( $tpl, true ) )->with( [ 'data' => $this->data , 'view' => $this->view ]);
     }
 
     /**
@@ -162,12 +154,13 @@ abstract class Doctrine2Frontend extends Controller {
      * @throws OSS_Exception
      */
     protected function resolveTemplate( $tpl, $throw = false ){
-        if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {
+        if( ViewFacade::exists ( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
+            return $this->feParams->viewFolderName . "/{$tpl}";
+        } else if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {
             return "frontend/{$tpl}";
         }
 
-        if( $throw )
-            throw new OSS_Exception( sprintf( _( "No template exists in frontend or controller's view directory for %s "), $tpl ) );
+        abort(404, "No template exists in frontend or controller's view directory for ".$tpl);
 
         return false;
     }

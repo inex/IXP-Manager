@@ -45,9 +45,9 @@ class CustKitController extends Doctrine2Frontend {
     public function feInit(){
         //$this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
 
-        $this->view[ 'feParams' ] =  $this->feParams = (object)[
+        $this->data[ 'feParams' ] =  $this->feParams = (object)[
             'entity'        => '\\Entities\\CustomerEquipment',
-            'form'          => 'IXP_Form_CustKit',
+
             'pagetitle'     => 'Customer Equipment',
 
             'titleSingular' => 'Customer Equipment',
@@ -57,6 +57,8 @@ class CustKitController extends Doctrine2Frontend {
 
             'listOrderBy'    => 'name',
             'listOrderByDir' => 'ASC',
+
+            'viewFolderName' => 'cust-kit',
 
             'listColumns'    => [
 
