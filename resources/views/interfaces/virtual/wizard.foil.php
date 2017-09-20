@@ -64,7 +64,7 @@ $this->layout( 'layouts/ixpv4' );
             ?>
 
             <?php if( $t->selectedCust ): ?>
-                <?= Former::hidden( 'selectedCust' )
+                <?= Former::hidden( 'cust' )
                     ->value( $t->selectedCust->getId() )
                 ?>
             <?php endif; ?>
@@ -84,16 +84,15 @@ $this->layout( 'layouts/ixpv4' );
                 ->check( false )
             ?>
 
-            <?= Former::checkbox( 'ipv4-enabled' )
-                ->label('&nbsp;')
-                ->text( 'IPv4 Enabled' )
-                ->blockHelp( ' ' )
-
-            ?>
-
             <?= Former::checkbox( 'ipv6-enabled' )
                 ->label('&nbsp;')
                 ->text( 'IPv6 Enabled' )
+                ->blockHelp( ' ' )
+            ?>
+
+            <?= Former::checkbox( 'ipv4-enabled' )
+                ->label('&nbsp;')
+                ->text( 'IPv4 Enabled' )
                 ->blockHelp( ' ' )
             ?>
 
@@ -194,43 +193,6 @@ $this->layout( 'layouts/ixpv4' );
 <br/>
 
 <div class="row">
-    <div id='ipv4-area' class="col-sm-4" style="display: none">
-        <h3>
-            IPv4 Details
-        </h3>
-        <hr>
-        <div id='alert-ipv4-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
-        <?= Former::select( 'ipv4-address' )
-            ->label( 'IPv4 Address' )
-            ->placeholder( 'Choose IPv4 Address' )
-            ->blockHelp( 'Select the IP address to assign to this VLAN interface. If empty, ensure you have selected a VLAN above and that the VLAN has available addresses. '
-                . 'You can also create a new IPv4 address by entering it here but please use clue as validation is minimal.');
-        ?>
-        <?= Former::text( 'ipv4-hostname' )
-            ->label( 'IPv4 Hostname' )
-            ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the customer. E.g. <code>customer.ixpname.net</code>.' );
-        ?>
-
-        <?= Former::text( 'ipv4-bgp-md5-secret' )
-            ->label( 'IPv4 BGP MD5 Secret' )
-            ->appendIcon( 'generator-ipv4 glyphicon glyphicon-refresh' )
-            ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. If supported by your browser, it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
-        ?>
-
-        <?= Former::checkbox( 'ipv4-can-ping' )
-            ->label( '&nbsp;' )
-            ->text( 'IPv4 Ping Allowed / Possible' )
-            ->check( true )
-            ->blockHelp( "IXP's typically monitor customer interfaces for reachability / latency using pings. If the customer has asked you not to do this, uncheck this box." )
-        ?>
-
-        <?= Former::checkbox( 'ipv4-monitor-rcbgp' )
-            ->label( '&nbsp;' )
-            ->text( 'IPv4 Monitor Route Collector BGP' )
-            ->check(true)
-            ->blockHelp( "IXP's often monitor a customer's route collector BGP session. If this is not possible / unsuitable for this customer, uncheck this box." )
-        ?>
-    </div>
 
     <div id='ipv6-area' class="col-sm-4" style="display: none">
         <h3>
@@ -270,6 +232,44 @@ $this->layout( 'layouts/ixpv4' );
         ?>
     </div>
 
+    <div id='ipv4-area' class="col-sm-4" style="display: none">
+        <h3>
+            IPv4 Details
+        </h3>
+        <hr>
+        <div id='alert-ipv4-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
+        <?= Former::select( 'ipv4-address' )
+            ->label( 'IPv4 Address' )
+            ->placeholder( 'Choose IPv4 Address' )
+            ->blockHelp( 'Select the IP address to assign to this VLAN interface. If empty, ensure you have selected a VLAN above and that the VLAN has available addresses. '
+                . 'You can also create a new IPv4 address by entering it here but please use clue as validation is minimal.');
+        ?>
+        <?= Former::text( 'ipv4-hostname' )
+            ->label( 'IPv4 Hostname' )
+            ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the customer. E.g. <code>customer.ixpname.net</code>.' );
+        ?>
+
+        <?= Former::text( 'ipv4-bgp-md5-secret' )
+            ->label( 'IPv4 BGP MD5 Secret' )
+            ->appendIcon( 'generator-ipv4 glyphicon glyphicon-refresh' )
+            ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. If supported by your browser, it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
+        ?>
+
+        <?= Former::checkbox( 'ipv4-can-ping' )
+            ->label( '&nbsp;' )
+            ->text( 'IPv4 Ping Allowed / Possible' )
+            ->check( true )
+            ->blockHelp( "IXP's typically monitor customer interfaces for reachability / latency using pings. If the customer has asked you not to do this, uncheck this box." )
+        ?>
+
+        <?= Former::checkbox( 'ipv4-monitor-rcbgp' )
+            ->label( '&nbsp;' )
+            ->text( 'IPv4 Monitor Route Collector BGP' )
+            ->check(true)
+            ->blockHelp( "IXP's often monitor a customer's route collector BGP session. If this is not possible / unsuitable for this customer, uncheck this box." )
+        ?>
+    </div>
+    
     <?php if( config( 'ixp.reseller.enabled') ): ?>
         <div id='fanout-area' class="col-sm-4" style="display: none">
             <h3>
