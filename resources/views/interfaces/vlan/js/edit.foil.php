@@ -23,7 +23,6 @@
         if( $( '#ipv6-enabled' ).is(":checked") ) {
             $( "#ipv6-area" ).slideDown();
         }
-
     });
 
     $( "#vlan" ).on( 'change', setIPVx );
@@ -77,8 +76,6 @@
             $.ajax( url )
                 .done( function( data ) {
                     $.each( data.vlans, function( key, vlan ){
-                        console.log(  vlan.virtualinterface.id );
-                        console.log(  $( '#viid' ).val() );
                         if( vlan.virtualinterface.id != $( '#viid' ).val() ){
                             $( '#alert-' + inputName ).append( "<div>- The IP address " + ipAddress + " is already used by the customer " + vlan.customer.name + " on the VLAN " + vlan.vlan.name + " </div>");
                             $( '#alert-' + inputName ).show();
@@ -101,7 +98,7 @@
         let vlanid = $("#vlan").val();
 
         if( vlanid ) {
-            $( '#alert-' + inputName ).html( '' ).hide();
+            $( '.ip-is-used-alert').html( '' ).hide();
             let ipv4dd = $( "#ipv4-address" );
             let ipv6dd = $( "#ipv6-address" );
 
@@ -119,7 +116,8 @@
                         <?php if( $t->vli && $t->vli->getIpv4enabled() && $t->vli->getIPv4Address() ) :?>
 
                         let ipv4Id = "<?= $t->vli->getIPv4Address()->getId() ?>";
-                        if( ipv4Id === value.id){
+
+                        if( ipv4Id === value.id && !$( "#duplicated" ).val() ){
                             includeIPv4 = true;
                         }
 
@@ -129,6 +127,7 @@
                             options += "<option value=\"" + value.address + "\">" + value.address + " </option>\n";
                         }
                     });
+
                     ipv4dd.html( options );
 
                     <?php if( $t->vli && $t->vli->getIpv4enabled() && $t->vli->getIPv4Address()) :?>

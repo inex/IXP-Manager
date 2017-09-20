@@ -97,6 +97,9 @@
                                     <a class="btn btn btn-default" id="delete-vli-<?= $vli->getId()?>" href="" title="Delete Vlan Interface">
                                         <i class="glyphicon glyphicon-trash"></i>
                                     </a>
+                                    <a class="btn btn btn-default" id="duplicate-vli-<?= $vli->getId()?>" href="" title="Duplicate Vlan Interface">
+                                        <i class="glyphicon glyphicon-duplicate"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

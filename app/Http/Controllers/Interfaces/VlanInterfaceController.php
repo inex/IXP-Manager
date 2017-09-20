@@ -72,7 +72,7 @@ class VlanInterfaceController extends Common
      */
     public function list(): View {
         return view( 'interfaces/vlan/list' )->with([
-            'vlis'               => D2EM::getRepository( VlanInterfaceEntity::class )->getForList()
+            'vlis'               => D2EM::getRepository( VlanInterfaceEntity::class )->getForList(),
         ]);
     }
 
@@ -93,13 +93,24 @@ class VlanInterfaceController extends Common
     }
 
     /**
+     * Display a VLAN interface
+     *
+     * @param int $id ID of vlan Interface
+     * @return  View
+     */
+    public function duplicate( int $fromid, int $toid )  {
+        return $this->edit( $fromid, null , $toid );
+    }
+
+    /**
      * Display the form to edit a VLAM interface
      *
      * @param int $id    The VLAN interface ID
      * @param int $viid  The virtual interface to add this VLI to
+     * @param int $duplicateTo  The ID of the vlan Interface that will receive the data of the the other vli ( $id )
      * @return View
      */
-    public function edit( int $id = null, int $viid = null ): View {
+    public function edit( int $id = null, int $viid = null, int $duplicateTo = null ): View {
 
         $vli = false; /** @var VlanInterfaceEntity $vli */
         if( $id and !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $id ) ) ) {
@@ -114,7 +125,7 @@ class VlanInterfaceController extends Common
         if( $vli ) {
             // populate the form with VLAN interface data
             Former::populate([
-                'vlan'                      => $vli->getVlan()->getId() ,
+                'vlan'                      => $duplicateTo ? $duplicateTo : $vli->getVlan()->getId() ,
                 'irrdbfilter'               => $vli->getIrrdbfilter() ? 1 : 0,
                 'mcastenabled'              => $vli->getMcastenabled() ? 1 : 0,
                 'ipv4-enabled'              => $vli->getIpv4enabled() ? 1 : 0,
@@ -149,7 +160,8 @@ class VlanInterfaceController extends Common
         return view( 'interfaces/vlan/edit' )->with([
             'vlan'                      => D2EM::getRepository( VlanEntity::class )->getNames( false ),
             'vli'                       => $vli ? $vli : false,
-            'vi'                        => $vi
+            'vi'                        => $vi,
+            'duplicated'                => $duplicateTo ?? false
         ]);
     }
 
@@ -163,7 +175,7 @@ class VlanInterfaceController extends Common
     public function store( StoreVlanInterface $request ): RedirectResponse {
 
         /** @var VlanInterfaceEntity $vli */
-        if( $request->input( 'id', false ) ) {
+        if( $request->input( 'id', false ) && !$request->input( 'duplicated' ) ) {
             // get the existing VlanInterface object for that ID
             if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort( 404, 'Unknown vlan interface' );
@@ -192,13 +204,7 @@ class VlanInterfaceController extends Common
 
 
         if( ( $request->input('ipv4-enabled' ) && $ipv4Set == false ) || ( $request->input('ipv6-enabled' ) && $ipv6Set == false ) ) {
-            if( $request->input( 'id' ) ) {
-                $urlRedirect = 'interfaces/vlan/edit/'.$vli->getId().'vintid/'.$vli->getVirtualInterface()->getId();
-            } else {
-                $urlRedirect = 'interfaces/vlan/add/0/vintid/'.$vi->getId();
-            }
-
-            return Redirect::to( $urlRedirect )->withInput( Input::all() );
+            return Redirect::back()->withInput( Input::all() );
         }
 
         $vli->setVirtualInterface( $vi );

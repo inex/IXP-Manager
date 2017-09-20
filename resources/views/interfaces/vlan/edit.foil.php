@@ -64,6 +64,7 @@
                 ->fromQuery( $t->vlan, 'name' )
                 ->placeholder( 'Choose a VLAN' )
                 ->addClass( 'chzn-select' )
+                ->disabled( $t->duplicated ? true : false)
                 ->blockHelp( 'Pick the VLAN for this VLAN interface. IP address dropdowns will automatically populate on change.' );
             ?>
 
@@ -246,6 +247,23 @@
     <div class="row">
         <?= Former::hidden( 'id' )
             ->value( $t->vli ? $t->vli->getId() : null )
+        ?>
+
+        <?= Former::hidden( 'viid' )
+            ->id( 'viid' )
+            ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
+        ?>
+
+        <?php if( $t->duplicated ): ?>
+            <?= Former::hidden( 'vlan' )
+                ->id( 'vlan' )
+                ->value(  $t->duplicated )
+            ?>
+        <?php endif; ?>
+
+        <?= Former::hidden( 'duplicated' )
+            ->id( 'duplicated' )
+            ->value(  $t->duplicated ? true : false )
         ?>
 
         <?= Former::hidden( 'viid' )

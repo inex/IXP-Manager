@@ -126,6 +126,7 @@ class VirtualInterfaceController extends Common
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/virtual/add' )->with([
             'cust'              => D2EM::getRepository( CustomerEntity::class)->getNames(),
+            'vls'               => D2EM::getRepository( VlanEntity::class)->getNames(),
             'vi'                => $vi ? $vi : false,
             'cb'                => $vi ? $vi->getCoreBundle() : false,
             'resellerMode'      => $this->resellerMode(),
@@ -220,17 +221,6 @@ class VirtualInterfaceController extends Common
 
     }
 
-
-    /**
-     * Display the form to add a virtual interface
-     *
-     * @return  View
-     */
-    public function addWizardCustId( int $custId = null ) : View {
-        return $this->wizard( $custId );
-    }
-
-
     /**
      * Display the form to add a virtual interface
      *
@@ -271,13 +261,8 @@ class VirtualInterfaceController extends Common
      * @return  RedirectResponse
      */
     public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse {
-
-        $inputCust = $request->input( 'cust' );
-        if( $request->input( 'selectedCust' ) ){
-            $inputCust = $request->input( 'selectedCust' );
-        }
         /** @var CustomerEntity $cust */
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $inputCust ) ) ) {
+        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) ) ) ) {
             abort(404, 'Unknown customer');
         }
         /** @var VlanEntity $vlan */

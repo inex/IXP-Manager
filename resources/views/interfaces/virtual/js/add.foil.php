@@ -72,12 +72,68 @@
     /**
      * on click even allow to delete a Sflow receiver
      */
+    $( "a[id|='duplicate-vli']" ).on( 'click', function(e) {
+        e.preventDefault();
+        var vliid = (this.id).substring(14);
+        duplicateVliPopup( vliid, <?= $t->vi->getId() ?> );
+    });
+
+    /**
+     * on click even allow to delete a Sflow receiver
+     */
     $( "a[id|='delete-sflr']" ).on( 'click', function(e) {
         e.preventDefault();
         var sflrid = (this.id).substring(12);
         deletePopup( sflrid, <?= $t->vi->getId() ?>, 'sflr' );
     });
 
+    /**
+     * function to delete a virtual/physical/vlan interface
+     */
+    function duplicateVliPopup( id, viid ){
+
+        var html = "Please select the Vlan. <select id='duplicateTo' class='chzn-select'>";
+
+        <?php foreach( $t->vls as $id => $vl): ?>
+        html += "<option value='<?= $id ?>' >  <?= $vl ?>  </option>";
+        <?php endforeach; ?>
+
+        html += '</select>';
+
+        dialog = bootbox.dialog({
+            message: html,
+            title: "Duplicate the Vlan Interface",
+            onEscape: function() {
+                location.reload();
+            },
+            buttons: {
+
+                cancel: {
+                    label: '<i class="fa fa-times"></i> Close',
+                    callback: function () {
+                        $('.bootbox.modal').modal('hide');
+                        location.reload();
+                        return false;
+                    }
+                },
+                confirm: {
+                    label: '<i class="glyphicon glyphicon-ok"></i> Validate',
+                    callback: function () {
+                        if( $( "#duplicateTo" ).val() ){
+                            window.location.href = "<?= url( 'interfaces/vlan/duplicate' ) ?>/"+ id + "/to/" + $( "#duplicateTo" ).val();
+                        }
+
+                    }
+                },
+            }
+        });
+
+        dialog.init( function(){
+            $('#duplicateTo').select2({
+                width: '50%' // need to override the changed default
+            });
+        });
+    }
 
     <?php endif;?>
 </script>

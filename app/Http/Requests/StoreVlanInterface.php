@@ -51,6 +51,12 @@ class StoreVlanInterface extends FormRequest
         return [
             'vlan'                  => 'required|integer',
             'maxbgpprefix'          => 'integer',
+            'ipv4-address'          => 'ipv4' . ( $this->input('ipv4-enabled') ? '|required' : '|nullable' ),
+            'ipv4canping'           => 'boolean',
+            'ipv4monitorrcbgp'      => 'boolean',
+            'ipv6-address'          => 'ipv6' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
+            'ipv6canping'           => 'boolean',
+            'ipv6monitorrcbgp'      => 'boolean',
         ];
     }
 }

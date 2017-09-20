@@ -104,6 +104,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get( 'list',                             'VlanInterfaceController@list' )->name( 'interfaces/vlan/list' );
         Route::get( 'view/{id}',                        'VlanInterfaceController@view' )->name( 'interfaces/vlan/view' );
         Route::get( 'edit/{id}',                        'VlanInterfaceController@edit' )->name( 'interfaces/vlan/edit' );
+        Route::get( 'duplicate/{fromid}/to/{toid}',     'VlanInterfaceController@duplicate' )->name( 'interfaces/vlan/duplicate' );
         Route::get( 'edit/{id}/vintid/{viid}',          'VlanInterfaceController@edit' )->name( 'interfaces/vlan/edit/from-virtual-interface' );
         Route::get( 'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit' )->name( 'interfaces/vlan/add' );
         Route::post( 'store',                           'VlanInterfaceController@store'  )->name( 'interfaces/vlan/store' );
