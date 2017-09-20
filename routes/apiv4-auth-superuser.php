@@ -120,9 +120,10 @@ Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceCo
 Route::group( [  'prefix' => 'vlan' ], function() {
     Route::get( 'for-switch/{switchid}',                'Provisioner\YamlController@vlanForSwitch' );
     Route::get( '{id}/ip-addresses',                    'VlanController@getIPAddresses' );
+
+    Route::post( 'ip-address/used-across-vlans',        'VlanController@UsedAcrossVlans' );
 });
 
-Route::get( 'ip-address/used-across-vlans/{address}',   'VlanController@UsedAcrossVlans' );
 
 Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::get(  'customers/{vlanid}/{protocol}',            'NagiosController@customers' );

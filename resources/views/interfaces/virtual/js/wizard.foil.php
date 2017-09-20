@@ -79,31 +79,35 @@
     $( "#ipv6-address" ).on( 'change', usedAcrossVlans );
 
 
-    function usedAcrossVlans(){
-        inputName = $( this ).attr( "id" );
-        ipAddress = $( '#' + inputName ).val();
+    function usedAcrossVlans() {
+        let inputName = $( this ).attr( "id" );
+        let ipAddress = $( '#' + inputName ).val();
 
-        console.log( ipAddress );
         $( '#alert-' + inputName ).html( '' ).hide();
+
         if( ipAddress ) {
-            url = "<?= url( '/api/v4/ip-address/used-across-vlans/' )?>/" + ipAddress ;
 
-            $.ajax( url )
+            let html = "<ul>";
+            let url = "<?= url( '/api/v4/vlan/ip-address/used-across-vlans' )?>";
+
+            $.ajax({
+                    url: url,
+                    method: "POST",
+                    data: { ip: ipAddress }
+                })
                 .done( function( data ) {
-                    $.each( data.vlans, function( key, vlan ){
-                        $( '#alert-' + inputName ).append( "<div>- The IP address " + ipAddress + " is already used by the customer " + vlan.customer.name + " on the VLAN " + vlan.vlan.name + " </div>");
+                    $.each( data, function( key, vli ){
+                        html += `<li>${ipAddress} is in use by ${vli.customer.abbreviated_name} on ${vli.vlan.name}</li>\n`;
                     });
-                    if(  data.vlans.length > 0 ){
-                        $( '#alert-' + inputName ).show();
-                    }
-
                 })
                 .fail( function() {
-                    alert( "Error running ajax query for " + url );
+                    html += "<li>Error running ajax query for " + url + "</li>";
                     throw new Error( "Error running ajax query for " + url );
                 })
                 .always( function() {
-
+                    if( html !== "<ul>" ) {
+                        $('#alert-' + inputName).html( html + '</ul>' ).show();
+                    }
                 });
         }
     }

@@ -199,7 +199,9 @@ $this->layout( 'layouts/ixpv4' );
             IPv6 Details
         </h3>
         <hr>
-        <div id='alert-ipv6-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
+
+        <div id='alert-ipv6-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
+
         <?= Former::select( 'ipv6-address' )
             ->label( 'IPv6 Address' )
             ->placeholder( 'Choose IPv6 Address' )
@@ -237,7 +239,9 @@ $this->layout( 'layouts/ixpv4' );
             IPv4 Details
         </h3>
         <hr>
-        <div id='alert-ipv4-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
+
+        <div id='alert-ipv4-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
+
         <?= Former::select( 'ipv4-address' )
             ->label( 'IPv4 Address' )
             ->placeholder( 'Choose IPv4 Address' )
@@ -269,7 +273,7 @@ $this->layout( 'layouts/ixpv4' );
             ->blockHelp( "IXP's often monitor a customer's route collector BGP session. If this is not possible / unsuitable for this customer, uncheck this box." )
         ?>
     </div>
-    
+
     <?php if( config( 'ixp.reseller.enabled') ): ?>
         <div id='fanout-area' class="col-sm-4" style="display: none">
             <h3>

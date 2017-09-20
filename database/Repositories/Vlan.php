@@ -452,10 +452,10 @@ class Vlan extends EntityRepository
     /**
      * Determine is an IP address /really/ free by checking across all vlans
      *
-     * Returns a array of object :
+     * Returns a array of objects as follows (or empty array if not user):
      *
      * [
-     *      {
+     *      [
      *          customer: {
      *              id: x,
      *              name: "",
@@ -476,15 +476,15 @@ class Vlan extends EntityRepository
      *      },
      *      {
      *
-     *      }
+     *      ]
      * ]
      *
-     * $param  string $ipAddress The IP address to check
+     * @param  string $ip The IPv6/4 address to check
      * @return array Array of object
      */
-    public function usedAcrossVlans(string $ipAddress ) : array {
-
-        if( strpos( $ipAddress, ':' ) !== false ) {
+    public function usedAcrossVlans( string $ip ) : array
+    {
+        if( strpos( $ip, ':' ) !== false ) {
             $table = 'IPv6Address';
         } else {
             $table = 'IPv4Address';
@@ -493,10 +493,11 @@ class Vlan extends EntityRepository
         $vlis = [];
         $result = $this->getEntityManager()->createQuery(
             "SELECT vli
-                    FROM Entities\\VlanInterface vli
-                    LEFT JOIN vli.{$table} addr
-                    WHERE addr.address = ?1")
-                ->setParameter( 1, $ipAddress );
+                    FROM Entities\VlanInterface vli
+                    LEFT JOIN vli.{$table} ip
+                    WHERE ip.address = ?1"
+            )
+            ->setParameter( 1, $ip );
 
         /** @var VlanInterfaceEntity $vli */
         foreach( $result->getResult() as $vli ){

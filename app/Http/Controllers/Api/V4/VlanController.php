@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Api\V4;
  */
 
 use D2EM;
+use Validator;
 
 use Entities\{
     Router        as RouterEntity,
@@ -136,39 +137,26 @@ class VlanController extends Controller
     /**
      * Determine is an IP address /really/ free by checking across all vlans
      *
-     * Returns a array of object :
+     * Returns a array of objects where each object is the details of its usage (example below).
+     * If not used, returns an empty array.
      *
-     * [
-     *      {
-     *          customer: {
-     *              id: x,
-     *              name: "",
-     *              autsys: x,
-     *              abbreviated_name: ""
-     *          },
-     *          virtualinterface: {
-     *              id: x
-     *          },
-     *          vlaninterface: {
-     *              id: x
-     *          },
-     *          vlan: {
-     *              id: x,
-     *              name: "",
-     *              number: x
-     *          }
-     *      },
-     *      {
+     * @see VlanEntity::usedAcrossVlans() for array structure.
      *
-     *      }
-     * ]
-     * $param  string $ipAddress The IP address to check
-     *
+     * @param  string $ipAddress The IP address to check
      * @return  JsonResponse array of object
      */
-    public function usedAcrossVlans( $ipAddress ) : JsonResponse{
-        return response()->json( [
-            'vlans' => D2EM::getRepository( VlanEntity::class )->usedAcrossVlans( $ipAddress )
-        ] );
+    public function usedAcrossVlans( Request $request ) : JsonResponse {
+
+        $validator = Validator::make( $request->all(), [
+            'ip' => 'required|ip'
+        ]);
+
+        if( $validator->fails() ) {
+            abort( 422, 'Invalid or no IP address - set POST "ip" parameter.' );
+        }
+
+        return response()->json(
+            D2EM::getRepository( VlanEntity::class )->usedAcrossVlans( $request->input( 'ip' ) )
+        );
     }
 }

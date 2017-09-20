@@ -76,6 +76,16 @@ class VirtualInterfaceController extends Common
     }
 
     /**
+     * Display the form to add a virtual interface
+     *
+     * @return  View
+     */
+    public function addWizardCustId( int $custId = null ) : View {
+        return $this->wizard( $custId );
+    }
+
+
+    /**
      * Display the form to add a virtual interface with a selected customer
      *
      * @param int $custId Id of the customer to preselect
