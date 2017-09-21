@@ -1,22 +1,19 @@
 <script>
 
-    $( "#ipv4-address" ).on( 'change', usedAcrossVlans );
-    $( "#ipv6-address" ).on( 'change', usedAcrossVlans );
 
 
     function usedAcrossVlans() {
-        let inputName = $( this ).attr( "id" );
-        let ipAddress = $( '#' + inputName ).val();
+        const inputName = $( this ).attr( "id" );
+        const ipAddress = $( '#' + inputName ).val();
 
         $( '#alert-' + inputName ).html( '' ).hide();
 
         if( ipAddress ) {
 
             let html = "<ul>";
-            let url = "<?= url( '/api/v4/vlan/ip-address/used-across-vlans' )?>";
 
             $.ajax({
-                url: url,
+                url: "<?= url( '/api/v4/vlan/ip-address/used-across-vlans' )?>",
                 method: "POST",
                 data: { ip: ipAddress }
             })

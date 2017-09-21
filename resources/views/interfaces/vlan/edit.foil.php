@@ -87,20 +87,20 @@
 
             ?>
 
-            <?= Former::checkbox( 'ipv4-enabled' )
-                ->label('&nbsp;')
-                ->text( 'IPv4 Enabled' )
-                ->unchecked_value( 0 )
-                ->value( 1 )
-                ->blockHelp( 'Click to enable IPv4 and reveal associated settings.' )
-            ?>
-
             <?= Former::checkbox( 'ipv6-enabled' )
                 ->label('&nbsp;')
                 ->text( 'IPv6 Enabled' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
                 ->blockHelp( 'Click to enable IPv6 and reveal associated settings.' )
+            ?>
+
+            <?= Former::checkbox( 'ipv4-enabled' )
+                ->label('&nbsp;')
+                ->text( 'IPv4 Enabled' )
+                ->unchecked_value( 0 )
+                ->value( 1 )
+                ->blockHelp( 'Click to enable IPv4 and reveal associated settings.' )
             ?>
 
         </div>
@@ -155,6 +155,49 @@
 
     <div class="row">
 
+        <div id='ipv6-area' class="col-md-6" style="<?= $t->vli && $t->vli->getIPv6Enabled() ?: 'display: none;' ?> float: right;">
+
+            <h4>
+                IPv6 Details
+            </h4>
+
+            <hr>
+
+            <div id='alert-ipv6-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
+
+            <?= Former::select( 'ipv6-address' )
+                ->label( 'IPv6 Address' )
+                ->placeholder( 'Choose an IPv6 address...' )
+                ->blockHelp( 'Chose the IPv6 address from the list of available addresses for this VLAN.' );
+            ?>
+            <?= Former::text( 'ipv6-hostname' )
+                ->label( 'IPv6 Hostname' )
+                ->blockHelp( 'This can/should be used for generated a DNS ARPA record against the above address.' );
+            ?>
+
+            <?= Former::text( 'ipv6-bgp-md5-secret' )
+                ->label( 'IPv6 BGP MD5 Secret' )
+                ->blockHelp( 'The MD5 secret to protect the BGP session with. Optional but encouraged on a shared LAN such as that found at an IXP.<br><br>'
+                    . 'This is initially generated using a cryptographically secure randomly generated string.');
+            ?>
+
+            <?= Former::checkbox( 'ipv6-can-ping' )
+                ->label( 'Can Ping' )
+                ->blockHelp( 'IXP Manager generates configuration for a number of other tools such as Smokeping and Nagios which ping customer routers. These are '
+                    . 'invaluable tools for problem solving, monitoring and graphing long term trends. We enable this by default unless a customer specifically '
+                    . 'asks us not to.' )
+            ?>
+
+            <?= Former::checkbox( 'ipv6-monitor-rcbgp' )
+                ->label( 'IPv6 Monitor RC BGP' )
+                ->blockHelp( '<b>Will be deprecated.</b> A legacy option for configuration builders that used to check for established route collector '
+                    . 'BGP sessions and warn if not present. This is deprecated and will be removed in favour of looking glass functionality.' )
+            ?>
+
+            <br>
+
+        </div>
+
         <div id='ipv4-area' class="col-md-6" style="<?= $t->vli && $t->vli->getIPv4Enabled() ?: 'display: none;' ?> float: left;">
 
             <h4>
@@ -162,7 +205,9 @@
             </h4>
 
             <hr>
-            <div id='alert-ipv4-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
+
+            <div id='alert-ipv4-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
+
             <?= Former::select( 'ipv4-address' )
                 ->label( 'IPv4 Address' )
                 ->placeholder( 'Choose an IPv4 address...' )
@@ -193,47 +238,6 @@
                 ->label( 'Monitor RC BGP' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
-                ->blockHelp( '<b>Will be deprecated.</b> A legacy option for configuration builders that used to check for established route collector '
-                    . 'BGP sessions and warn if not present. This is deprecated and will be removed in favour of looking glass functionality.' )
-            ?>
-
-            <br>
-
-        </div>
-
-        <div id='ipv6-area' class="col-md-6" style="<?= $t->vli && $t->vli->getIPv6Enabled() ?: 'display: none;' ?> float: right;">
-
-            <h4>
-                IPv6 Details
-            </h4>
-
-            <hr>
-            <div id='alert-ipv6-address' class="alert alert-danger collapse ip-is-used-alert" role="alert"></div>
-            <?= Former::select( 'ipv6-address' )
-                ->label( 'IPv6 Address' )
-                ->placeholder( 'Choose an IPv6 address...' )
-                ->blockHelp( 'Chose the IPv6 address from the list of available addresses for this VLAN.' );
-            ?>
-            <?= Former::text( 'ipv6-hostname' )
-                ->label( 'IPv6 Hostname' )
-                ->blockHelp( 'This can/should be used for generated a DNS ARPA record against the above address.' );
-            ?>
-
-            <?= Former::text( 'ipv6-bgp-md5-secret' )
-                ->label( 'IPv6 BGP MD5 Secret' )
-                ->blockHelp( 'The MD5 secret to protect the BGP session with. Optional but encouraged on a shared LAN such as that found at an IXP.<br><br>'
-                    . 'This is initially generated using a cryptographically secure randomly generated string.');
-            ?>
-
-            <?= Former::checkbox( 'ipv6-can-ping' )
-                ->label( 'Can Ping' )
-                ->blockHelp( 'IXP Manager generates configuration for a number of other tools such as Smokeping and Nagios which ping customer routers. These are '
-                    . 'invaluable tools for problem solving, monitoring and graphing long term trends. We enable this by default unless a customer specifically '
-                    . 'asks us not to.' )
-            ?>
-
-            <?= Former::checkbox( 'ipv6-monitor-rcbgp' )
-                ->label( 'IPv6 Monitor RC BGP' )
                 ->blockHelp( '<b>Will be deprecated.</b> A legacy option for configuration builders that used to check for established route collector '
                     . 'BGP sessions and warn if not present. This is deprecated and will be removed in favour of looking glass functionality.' )
             ?>
@@ -289,6 +293,6 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <?= $t->insert( 'interfaces/vlan/js/edit' ); ?>
     <?= $t->insert( 'interfaces/virtual/js/acrossVlans' ); ?>
+    <?= $t->insert( 'interfaces/vlan/js/edit' ); ?>
 <?php $this->append() ?>

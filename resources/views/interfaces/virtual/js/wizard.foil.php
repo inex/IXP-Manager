@@ -43,6 +43,9 @@
             width: '100%'
         });
 
+        $( "#ipv4-address" ).on( 'change', usedAcrossVlans );
+        $( "#ipv6-address" ).on( 'change', usedAcrossVlans );
+
     });
 
     function checkFanout(){

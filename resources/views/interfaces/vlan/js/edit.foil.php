@@ -23,6 +23,9 @@
         if( $( '#ipv6-enabled' ).is(":checked") ) {
             $( "#ipv6-area" ).slideDown();
         }
+
+        $( "#ipv4-address" ).on( 'change', usedAcrossVlans );
+        $( "#ipv6-address" ).on( 'change', usedAcrossVlans );
     });
 
     $( "#vlan" ).on( 'change', setIPVx );
