@@ -31,19 +31,6 @@
     $( "#vlan" ).on( 'change', setIPVx );
 
     /**
-     * hide the help block at loading
-     */
-    $('p.help-block').hide();
-
-    /**
-     * display / hide help sections on click on the help button
-     */
-    $( "#help-btn" ).click( function() {
-        $( "#instructions-alert").toggle();
-        $( "p.help-block" ).toggle();
-    });
-
-    /**
      * display or hide the ipv4 area
      */
     $( '#ipv4-enabled' ).change( function() {

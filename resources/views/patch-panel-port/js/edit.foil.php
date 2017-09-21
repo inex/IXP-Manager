@@ -5,20 +5,6 @@
 
     var notesIntro = "### <?= date( "Y-m-d" ) . ' - ' . $t->ee( $t->user->getUsername() ) ?> \n\n\n\n";
 
-    /**
-     * hide the help block at loading
-     */
-    $('p.help-block').hide();
-    $('div.help-block').hide();
-
-    /**
-     * display / hide help sections on click on the help button
-     */
-    $( "#help-btn" ).click( function() {
-        $( "p.help-block" ).toggle();
-        $( "div.help-block" ).toggle();
-    });
-
     $( document ).ready(function() {
 
         /**

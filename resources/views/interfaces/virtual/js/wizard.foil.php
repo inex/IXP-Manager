@@ -203,18 +203,6 @@
     });
 
     /**
-     * hide the help block at loading
-     */
-    $('p.help-block').hide();
-
-    /**
-     * display / hide help sections on click on the help button
-     */
-    $( "#help-btn" ).click( function() {
-        $( "p.help-block" ).toggle();
-    });
-
-    /**
      * display or hide the fastlapc area
      */
     $( '#ipv4-enabled' ).change( function(){

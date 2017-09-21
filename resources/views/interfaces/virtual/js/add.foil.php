@@ -19,19 +19,6 @@
     });
 
     /**
-     * hide the help block at loading
-     */
-    $('p.help-block').hide();
-
-    /**
-     * display / hide help sections on click on the help button
-     */
-    $( "#help-btn" ).click( function() {
-        $( "#instructions-alert").toggle();
-        $( "p.help-block" ).toggle();
-    });
-
-    /**
      * display or hide the fastlapc area
      */
     $( '#lag_framing' ).change( function(){

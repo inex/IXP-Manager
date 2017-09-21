@@ -86,18 +86,6 @@ $this->layout( 'layouts/ixpv4' )
             <?php endif; ?>
         });
 
-        /**
-         * hide the help sections at loading
-         */
-        $( 'p.help-block' ).hide();
-
-        /**
-         * display / hide help sections on click on the help button
-         */
-        $( "#help-btn" ).click( function() {
-            $( "p.help-block" ).toggle();
-        });
-
 
         /**
          * set all the Patch Panel Panel Port available for the Patch Panel selected

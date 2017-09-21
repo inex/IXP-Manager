@@ -10,20 +10,6 @@
     }
 
     /**
-     * hide the help block at loading
-     */
-    $('p.help-block').hide();
-    $('div.help-block').hide();
-
-    /**
-     * display / hide help sections on click on the help button
-     */
-    $( "#help-btn" ).click( function() {
-        $( "p.help-block" ).toggle();
-        $( "div.help-block" ).toggle();
-    });
-
-    /**
      * display the core link form depending of the type selected
      */
     $( "#type" ).change( function() {

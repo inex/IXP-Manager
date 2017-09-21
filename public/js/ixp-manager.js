@@ -27,6 +27,16 @@ $( 'document' ).ready( function(){
         });
         return this;
     };
+
+    /**
+     * display / hide help sections on click on the help button
+     */
+    $( "#help-btn" ).click( function() {
+        $( ".help-block" ).toggle();
+        $( "#instructions-alert").toggle();
+    });
+
+
 });
 
 /**
