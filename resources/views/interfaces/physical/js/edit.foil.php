@@ -51,7 +51,7 @@ function excludeSp() {
             $( "#switch-port" + otherType +  " option[value='" + $( this ).val() + "']" ).hide();
         }
     });
-    $( "#switch-port" + otherType ).trigger( "chosen:updated" );
+    $( "#switch-port" + otherType ).trigger( "change" );
 }
 
 
@@ -68,7 +68,7 @@ function updateSwitchPort() {
         arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>,  <?= \Entities\SwitchPort::TYPE_PEERING ?> ];
     }
 
-    $( "#switch-port" + type ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+    $( "#switch-port" + type ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "change" );
 
     switchId = $( "#switch" + type ).val();
 
@@ -98,7 +98,7 @@ function updateSwitchPort() {
             throw new Error( "Error running ajax query for " + url );
         })
         .always( function() {
-            $( "#switch-port" + type ).trigger( "chosen:updated" );
+            $( "#switch-port" + type ).trigger( "change" );
         });
 }
 

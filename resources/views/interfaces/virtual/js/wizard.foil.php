@@ -2,6 +2,7 @@
 <script>
 
     $(document).ready( function() {
+
         // allow enough space for form labels:
         $( 'label.col-lg-2' ).removeClass('col-lg-2');
         $( '#div-well' ).show();
@@ -91,7 +92,7 @@
             excludeSp = $( "#switch-port" ).val();
         }
 
-        $( "#switch-port" + type ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+        $( "#switch-port" + type ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
 
         switchId = $( "#switch" + type ).val();
 
@@ -118,7 +119,7 @@
                 throw new Error( "Error running ajax query for " + url );
             })
             .always( function() {
-                $( "#switch-port" + type ).trigger( "chosen:updated" );
+                $( "#switch-port" + type ).trigger( "changed" );
             });
     }
 
@@ -126,8 +127,8 @@
     function setIPVx() {
         if( $("#vlan").val() ) {
 
-            $( "#ipv4-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
-            $( "#ipv6-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+            $( "#ipv4-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
+            $( "#ipv6-address" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
 
             $( '.ip-is-used-alert').html( '' ).hide();
 
@@ -158,20 +159,20 @@
                 })
                 .fail( function() {
                     options = "<option value=\"\">ERROR</option>\n";
-                    $( "#ipv4-address" ).html( options ).trigger( "chosen:updated" );
-                    $( "#ipv6-address" ).html( options ).trigger( "chosen:updated" );
+                    $( "#ipv4-address" ).html( options ).trigger( "changed" );
+                    $( "#ipv6-address" ).html( options ).trigger( "changed" );
 
                     alert( "Error running ajax query for " + url );
                     throw new Error( "Error running ajax query for " + url );
                 })
                 .always( function() {
-                    $( "#ipv4-address" ).trigger( "chosen:updated" );
-                    $( "#ipv6-address" ).trigger( "chosen:updated" );
+                    $( "#ipv4-address" ).trigger( "changed" );
+                    $( "#ipv6-address" ).trigger( "changed" );
                 });
 
         } else {
-            $( "#ipv4-address" ).html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "chosen:updated" );
-            $( "#ipv6-address" ).html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "chosen:updated" );
+            $( "#ipv4-address" ).html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "changed" );
+            $( "#ipv6-address" ).html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "changed" );
         }
     }
 

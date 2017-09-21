@@ -74,8 +74,8 @@
             let ipv4dd = $( "#ipv4-address" );
             let ipv6dd = $( "#ipv6-address" );
 
-            ipv4dd.html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger( "chosen:updated" );
-            ipv6dd.html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger( "chosen:updated" );
+            ipv4dd.html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger( "changed" );
+            ipv6dd.html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger( "changed" );
 
             $.ajax( "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ip-addresses" )
                 .done( function( data ) {
@@ -138,8 +138,8 @@
                     throw new Error( "Error running ajax query for api/v4/vlan/$id/ip-addresses" );
                 })
                 .always( function() {
-                    ipv4dd.trigger( "chosen:updated" );
-                    ipv6dd.trigger( "chosen:updated" );
+                    ipv4dd.trigger( "changed" );
+                    ipv6dd.trigger( "changed" );
                 });
         }
     }

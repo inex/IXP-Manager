@@ -219,7 +219,7 @@
     function setSwitchPort( sside ){
         switchId = $( "#switch-" + sside ).val();
 
-        $( "#sp-" + sside + "-1" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+        $( "#sp-" + sside + "-1" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
         if( switchId != null && switchId != '' ){
 
             url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port";
@@ -241,7 +241,7 @@
 
                 })
                 .always( function() {
-                    $( "#sp-" + sside + "-1" ).trigger( "chosen:updated" );
+                    $( "#sp-" + sside + "-1" ).trigger( "changed" );
                 });
         }
 

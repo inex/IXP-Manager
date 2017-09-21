@@ -18,7 +18,6 @@
   "dependencies": {
     "jquery": "~3",
     "bootstrap": "~3.3.0",
-    "chosen": "~1.6",
     "vue": "~2.0",
     "jquery-ui": "jqueryui#^1.12.1",
     "datatables.net": "^1.10.12",
@@ -32,8 +31,5 @@
     "ip-address": "^5.0",
     "moment": "^2.18.1",
     "select2": "^4.0.3"
-  },
-  "resolutions": {
-    "jquery": "1.9.1 - 3"
   }
 }

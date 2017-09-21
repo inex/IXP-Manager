@@ -101,10 +101,10 @@
      * initialize the library 'chosen' on the dropdowns
      */
     function dropdownChosen(){
-        $( "#s-a-"+<?= $t->nbLink ?> ).chosen();
-        $( "#sp-a-"+<?= $t->nbLink ?> ).chosen();
-        $( "#s-b-"+<?= $t->nbLink ?> ).chosen();
-        $( "#sp-b-"+<?= $t->nbLink ?> ).chosen();
+        $( "#s-a-"+<?= $t->nbLink ?> ).select2();
+        $( "#sp-a-"+<?= $t->nbLink ?> ).select2();
+        $( "#s-b-"+<?= $t->nbLink ?> ).select2();
+        $( "#sp-b-"+<?= $t->nbLink ?> ).select2();
     }
 
     function event(){

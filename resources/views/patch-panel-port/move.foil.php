@@ -80,7 +80,7 @@ $this->layout( 'layouts/ixpv4' )
                     nextPort = parseInt($( "#master-port" ).val()) + parseInt(1);
                     if( $( '#slave-port option[value="'+nextPort+'"]' ).length ) {
                         $( '#slave-port' ).val( nextPort );
-                        $( '#slave-port' ).trigger("chosen:updated");
+                        $( '#slave-port' ).trigger("changed");
                     }
                 });
             <?php endif; ?>
@@ -103,9 +103,9 @@ $this->layout( 'layouts/ixpv4' )
          * set all the Patch Panel Panel Port available for the Patch Panel selected
          */
         function setPPP(){
-            $( "#master-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+            $( "#master-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
             <?php if( $t->ppp->hasSlavePort() ): ?>
-                $( "#slave-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+                $( "#slave-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
             <?php endif; ?>
 
             ppId = $( "#pp" ).val();
@@ -131,9 +131,9 @@ $this->layout( 'layouts/ixpv4' )
                     alert( "Error running ajax query for api/v4/patch-panel/$id/patch-panel-port-free" );
                 })
                 .always( function() {
-                    $( "#master-port" ).trigger( "chosen:updated" );
+                    $( "#master-port" ).trigger( "changed" );
                     <?php if( $t->ppp->hasSlavePort() ): ?>
-                        $( '#slave-port' ).trigger("chosen:updated");
+                        $( '#slave-port' ).trigger("changed");
                     <?php endif; ?>
                 });
         }

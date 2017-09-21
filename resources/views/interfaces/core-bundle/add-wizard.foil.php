@@ -316,8 +316,8 @@ $this->layout( 'layouts/ixpv4' );
                 displayCoreLinks();
             }
 
-            $( "#speed").chosen();
-            $( "#duplex").chosen();
+            $( "#speed").select2();
+            $( "#duplex").select2();
         });
     </script>
 <?php $this->append() ?>
