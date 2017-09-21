@@ -1,37 +1,39 @@
 <script>
 
+/**
+ * Fn to perform an API query to see if a select IP address is in use across
+ * any VLAN and, if it is, add a warning message.
+ */
+function usedAcrossVlans() {
+    const inputName = $( this ).attr( "id" );
+    const ipAddress = $( '#' + inputName ).val();
 
+    $( '#alert-' + inputName ).html( '' ).hide();
 
-    function usedAcrossVlans() {
-        const inputName = $( this ).attr( "id" );
-        const ipAddress = $( '#' + inputName ).val();
+    if( ipAddress ) {
 
-        $( '#alert-' + inputName ).html( '' ).hide();
+        let html = "<ul>";
 
-        if( ipAddress ) {
-
-            let html = "<ul>";
-
-            $.ajax({
-                url: "<?= url( '/api/v4/vlan/ip-address/used-across-vlans' )?>",
-                method: "POST",
-                data: { ip: ipAddress }
-            })
-                .done( function( data ) {
-                    $.each( data, function( key, vli ){
-                        html += `<li>${ipAddress} is in use by ${vli.customer.abbreviated_name} on ${vli.vlan.name}</li>\n`;
-                    });
-                })
-                .fail( function() {
-                    html += "<li>Error running ajax query for " + url + "</li>";
-                    throw new Error( "Error running ajax query for " + url );
-                })
-                .always( function() {
-                    if( html !== "<ul>" ) {
-                        $('#alert-' + inputName).html( html + '</ul>' ).show();
-                    }
+        $.ajax({
+            url: "<?= url( '/api/v4/vlan/ip-address/used-across-vlans' )?>",
+            method: "POST",
+            data: { ip: ipAddress }
+        })
+            .done( function( data ) {
+                $.each( data, function( key, vli ){
+                    html += `<li>${ipAddress} is in use by ${vli.customer.abbreviated_name} on ${vli.vlan.name}</li>\n`;
                 });
-        }
+            })
+            .fail( function() {
+                html += "<li>Error running ajax query for " + url + "</li>";
+                throw new Error( "Error running ajax query for " + url );
+            })
+            .always( function() {
+                if( html !== "<ul>" ) {
+                    $('#alert-' + inputName).html( html + '</ul>' ).show();
+                }
+            });
     }
+}
 
 </script>
