@@ -193,8 +193,7 @@ function updateSwitchPort(e) {
             let options = "<option value=\"\">Choose a switch port</option>\n";
 
             $.each( data.switchports, function( key, port ) {
-                console.debug(port.sp_id === selectedPort);
-                if( ( port.pi_id === null || port.sp_id === selectedPort ) && arrayType.indexOf( port.sp_type ) !== -1 ) {
+                if( ( port.pi_id === null || port.sp_id.toString() === selectedPort ) && arrayType.indexOf( port.sp_type ) !== -1 ) {
                     options += `<option value="${port.sp_id}">${port.sp_name} (${port.sp_type_name})</option>\n`;
                 }
             });
