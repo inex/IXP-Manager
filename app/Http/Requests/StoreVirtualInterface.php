@@ -54,7 +54,7 @@ class StoreVirtualInterface extends FormRequest
             'name'                  => 'string|max:255|nullable',
             'description'           => 'string|max:255|nullable',
             'channel-group'         => 'integer|nullable',
-            'mtu'                   => 'integer|min:1|max:11000|nullable',
+            'mtu'                   => 'integer|min:1|max:64000|nullable',
         ];
     }
 }
