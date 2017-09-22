@@ -10,20 +10,6 @@
     }
 
     /**
-     * hide the help block at loading
-     */
-    $('p.help-block').hide();
-    $('div.help-block').hide();
-
-    /**
-     * display / hide help sections on click on the help button
-     */
-    $( "#help-btn" ).click( function() {
-        $( "p.help-block" ).toggle();
-        $( "div.help-block" ).toggle();
-    });
-
-    /**
      * display the core link form depending of the type selected
      */
     $( "#type" ).change( function() {
@@ -252,8 +238,8 @@
                                 $( "#remove-core-link-" + oldNbLink ).prop( 'disabled', true );
 
                                 // set the switcher dropdown (A/B) with the value of the first core link
-                                $('#switch-a' ).val( $('#switch-a' ).val() ).prop('disabled', true).trigger( "chosen:updated" );
-                                $('#switch-b' ).val( $('#switch-b' ).val() ).prop('disabled', true).trigger( "chosen:updated" );
+                                $('#switch-a' ).val( $('#switch-a' ).val() ).prop('disabled', true).trigger( "changed" );
+                                $('#switch-b' ).val( $('#switch-b' ).val() ).prop('disabled', true).trigger( "changed" );
 
                                 // set the setting from the first core link to the other
                                 setSettingsToLinks( data.nbCoreLinks );
@@ -299,7 +285,7 @@
     function setSwitchPort( sside, id, action ){
         switchId = $( "#switch-" + sside ).val();
         if( $("#nb-core-links").val() > 0 ){
-            $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+            $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
             excludedSwitchPort();
             if( switchId != null && switchId != '' ){
                 url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port";
@@ -330,7 +316,7 @@
 
                     })
                     .always( function() {
-                        $( "#sp-" + sside + "-"+ id ).trigger( "chosen:updated" );
+                        $( "#sp-" + sside + "-"+ id ).trigger( "changed" );
                     });
             }
         }
@@ -340,24 +326,24 @@
      * Copy the switch dropdown from the side A to B excluding the switch selected in side A
      */
     function setDropDownSwitchSideB( sid ){
-        $( "#switch-b" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "chosen:updated" );
+        $( "#switch-b" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
         var options = "";
         $( "#switch-a option").each( function( ) {
             if( this.value != $( "#switch-a" ).val() ){
                 options += "<option value=\"" + this.value + "\">" + this.text + " </option>\n";
             }
         });
-        $( "#switch-b" ).html( options ).trigger( "chosen:updated" );
+        $( "#switch-b" ).html( options ).trigger( "changed" );
     }
 
     /**
      * Disable the switch/switch port of the both side
      */
     function disableDropDown( id, disable){
-        $( "#switch-a" ).prop('disabled', disable).trigger( "chosen:updated" );
-        $( "#switch-b" ).prop('disabled', disable).trigger( "chosen:updated" );
-        $( "#sp-a-"+ id ).prop('disabled', disable).trigger( "chosen:updated" );
-        $( "#sp-b-"+ id ).prop('disabled', disable).trigger( "chosen:updated" );
+        $( "#switch-a" ).prop('disabled', disable).trigger( "changed" );
+        $( "#switch-b" ).prop('disabled', disable).trigger( "changed" );
+        $( "#sp-a-"+ id ).prop('disabled', disable).trigger( "changed" );
+        $( "#sp-b-"+ id ).prop('disabled', disable).trigger( "changed" );
     }
 
     /**
@@ -367,7 +353,7 @@
         lastIdSwitchPort = id - 1;
         nextValue = parseInt($( '#sp-' + side + '-'+ lastIdSwitchPort ).val()) + parseInt(1);
         if( $( "#sp-" + side + "-" + id + " option[value='"+nextValue+"']" ).length ) {
-            $( '#sp-' + side + '-'+ id).val( nextValue ).trigger("chosen:updated");
+            $( '#sp-' + side + '-'+ id).val( nextValue ).trigger("changed");
         }
 
         $("#hidden-sp-"+ side + '-' + id).val( $("#sp-"+ side + "-" + id).val() );
@@ -425,7 +411,7 @@
         setSwitchPort( sside , $("#nb-core-links").val() );
         if( sside == 'a'){
             setDropDownSwitchSideB( );
-            $( "#sp-b-1" ).html( "<option value=\"\">Choose a switch port</option>\n" ).trigger( "chosen:updated" );
+            $( "#sp-b-1" ).html( "<option value=\"\">Choose a switch port</option>\n" ).trigger( "changed" );
         }
     });
 

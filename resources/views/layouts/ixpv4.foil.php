@@ -17,7 +17,6 @@
     <meta name="author" content="">
     <meta name="csrf-token" content="<?=  csrf_token() ?>">
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>" />
-    <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/chosen/chosen.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/select2/dist/css/select2.min.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-manager.css') ?>" />
@@ -135,7 +134,6 @@
     <script type="text/javascript" src="<?= asset('/bower_components/bootstrap/dist/js/bootstrap.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/datatables.net/js/jquery.dataTables.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/chosen/chosen.jquery.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/vue/dist/vue.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/select2/dist/js/select2.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/900-oss-framework.js') ?>"></script>
@@ -144,16 +142,19 @@
 
     <?php if( Auth::check() ): ?>
     <script>
-        $( ".chzn-select" ).chosen( { width: '100%' } );
+        //$( ".chzn-select" ).chosen( { width: '100%' } );
+        $( ".chzn-select" ).select2({
+            width: '100%'
+        });
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-            $( "#menu-select-customer" ).chosen().change( function(){
+            $( "#menu-select-customer" ).select2().change( function(){
                 document.location.href = '<?= url( "/customer/overview" ) ?>/id/' + $( "#menu-select-customer" ).val();
             });
 
             <?php /* {if isset( $acust )}
                 $( "#menu-select-customer" ).val( {$acust.id} );
-                $( "#menu-select-customer" ).trigger( "chosen:updated" );
+                $( "#menu-select-customer" ).trigger( "changed" );
             {/if} */ ?>
         <?php endif; ?>
     </script>

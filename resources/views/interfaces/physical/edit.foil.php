@@ -51,6 +51,11 @@ $this->layout( 'layouts/ixpv4' );
                     . 'Port types can be set by editing the appropriate switch.');
             ?>
 
+            <?= Former::hidden( 'original-switch-port')
+                ->id('original-switch-port')
+                ->forceValue( old('switch-port') || ( $t->pi && $t->pi->getId() ) )
+            ?>
+
             <?= Former::select( 'status' )
                 ->label( 'Status' )
                 ->fromQuery( \Entities\PhysicalInterface::$STATES, 'name' )
@@ -206,6 +211,11 @@ $this->layout( 'layouts/ixpv4' );
                         ->blockHelp( '' );
                     ?>
 
+                    <?= Former::hidden( 'original-switch-port-fanout')
+                        ->id('original-switch-port-fanout')
+                        ->forceValue( old('switch-port-fanout') )
+                    ?>
+
                     <?= Former::number( 'monitorindex-fanout' )
                         ->label( 'Monitor Index' )
                         ->blockHelp( '' );
@@ -248,5 +258,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ); ?>
-<?= $this->insert( 'interfaces/physical/js/edit' ) ?>
+    <?= $t->insert( 'interfaces/common/js/interface-functions' ); ?>
+    <?= $t->insert( 'interfaces/common/js/pi-form-logic' ); ?>
+    <?= $this->insert( 'interfaces/physical/js/edit' ) ?>
 <?php $this->append(); ?>

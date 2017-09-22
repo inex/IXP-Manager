@@ -76,22 +76,3 @@ $this->layout( 'layouts/ixpv4' );
 </div>
 
 <?php $this->append() ?>
-
-
-
-<?php $this->section( 'scripts' ) ?>
-    <script>
-        /**
-         * hide the help block at loading
-         */
-        $('p.help-block').hide();
-
-        /**
-         * display / hide help sections on click on the help button
-         */
-        $( "#help-btn" ).click( function() {
-            $( "p.help-block" ).toggle();
-        });
-
-    </script>
-<?php $this->append() ?>

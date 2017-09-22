@@ -165,7 +165,7 @@ class PhysicalInterfaceController extends Common
         Former::populate( $data );
 
         return view( 'interfaces/physical/edit' )->with([
-            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames(),
+            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
             'switchports'                 => isset( $switchports ) ? $switchports : [],
             'pi'                          => $pi,
             'otherPICoreLink'             => $pi ? $pi->getOtherPICoreLink() : false,
