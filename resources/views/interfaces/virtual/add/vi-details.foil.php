@@ -150,7 +150,8 @@
         if( $t->cb ) {
             $bbtn = '<a style="margin-left: 5px;" href="' . route( 'core-bundle/edit', [ 'id' => $t->cb->getId() ] ) . '" class="btn btn-default">Return to Core Bundle</a>';
         } elseif( $t->vi ) {
-            $bbtn = '<a style="margin-left: 5px;" href="' . url( 'customer/overview/tab/ports/id' ) . '/' . $t->vi->getCustomer()->getId() . '" class="btn btn-default">Return to Customer Overview</a>';
+            $bbtn  = '<a style="margin-left: 5px;" href="' . url( 'customer/overview/tab/ports/id' ) . '/' . $t->vi->getCustomer()->getId() . '" class="btn btn-default">Return to Customer Overview</a>';
+            $bbtn .= '<a style="margin-left: 5px; display: none;" class="btn btn btn-danger pull-right" id="delete-vi-' . $t->vi->getId() . '" href="">Delete Interface</a>';
         } else {
             $bbtn = '<a style="margin-left: 5px;" href="' . action( 'Interfaces\VirtualInterfaceController@list' ) . '" class="btn btn-default">Cancel</a>';
         }

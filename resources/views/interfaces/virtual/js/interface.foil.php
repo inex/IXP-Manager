@@ -68,7 +68,11 @@ function deletePopup( id, viid, type ) {
                         type : 'POST'
                     })
                         .done( function( data ) {
-                            location.reload();
+                            if( type !== "vi" ) {
+                                location.reload();
+                            } else {
+                                window.location.href = "<?= url('') ?>";
+                            }
                         })
                         .fail( function(){
                             throw new Error( `Error running ajax query for ${urlDelete}/${id}` );

@@ -7,6 +7,7 @@
 ///
 
 const btn_advanced   = $( '#advanced-options' );
+const btn_delete     = $( '#delete-vi-<?= $t->vi ? $t->vi->getId() : "xxxxxxx" ?>' );
 
 const cb_lag_framing = $( '#lag_framing' );
 
@@ -20,10 +21,19 @@ const div_fastlacp   = $( "#fastlacp-area" );
 ///
 
 // display or hide the advanced area
-btn_advanced.click( () => { div_advanced.slideToggle() } );
+btn_advanced.click( () => { div_advanced.slideToggle(); btn_delete.slideToggle(); } );
 
 // display or hide the fastlapc area
 cb_lag_framing.change( () => { cb_lag_framing.is(":checked") ? div_fastlacp.slideDown() : div_fastlacp.slideUp() } );
+
+/**
+ * on click even allow to delete a Sflow receiver
+ */
+$("a[id|='delete-vi']").on('click', function(e){
+    e.preventDefault();
+    let viid = (this.id).substring(10);
+    deletePopup( viid, <?= $t->vi->getId() ?> , 'vi' );
+});
 
 /**
  * on click even allow to delete a Sflow receiver
@@ -66,8 +76,11 @@ $( "a[id|='delete-sflr']" ).on( 'click', function(e) {
 /// Initial states
 ///
 
-if ( $( '#name' ).val() != '' || $( '#description' ).val() != '' || ( $( '#channel-group' ).val() != '' && $( '#channel-group' ).val() != '0' ) || ( $( '#mtu' ).val() != '' && $( '#mtu' ).val() != '0' ) ) {
+if ( $( '#name' ).val() != '' || $( '#description' ).val() != '' || $( '#channel-group' ).val() != '' || $( '#mtu' ).val() != '' ) {
     div_advanced.show();
+    btn_delete.show();
+} else {
+    btn_delete.hide();
 }
 
 
