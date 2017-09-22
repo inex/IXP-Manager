@@ -146,11 +146,23 @@
     <?php endif; ?>
 
 
-    <?=Former::actions(
-        Former::primary_submit( 'Save Changes' ),
-        Former::success_button( 'Help' )->id( 'help-btn' ),
-        '<a class="btn btn-default" id="advanced-options">Advanced Options</a>'
-    )->id('btn-group');?>
+    <?php
+        if( $t->cb ) {
+            $bbtn = '<a style="margin-left: 5px;" href="' . route( 'core-bundle/edit', [ 'id' => $t->cb->getId() ] ) . '" class="btn btn-default">Return to Core Bundle</a>';
+        } elseif( $t->vi ) {
+            $bbtn = '<a style="margin-left: 5px;" href="' . url( 'customer/overview/tab/ports/id' ) . '/' . $t->vi->getCustomer()->getId() . '" class="btn btn-default">Return to Customer Overview</a>';
+        } else {
+            $bbtn = '<a style="margin-left: 5px;" href="' . action( 'Interfaces\VirtualInterfaceController@list' ) . '" class="btn btn-default">Cancel</a>';
+        }
+    ?>
+
+    <?=
+        Former::actions(
+            Former::primary_submit( 'Save Changes' ),
+            Former::success_button( 'Help' )->id( 'help-btn' ),
+            '<a class="btn btn-default" id="advanced-options">Advanced Options</a>',
+            $bbtn
+        )->id('btn-group');?>
 
     <?= Former::close() ?>
 </div>
