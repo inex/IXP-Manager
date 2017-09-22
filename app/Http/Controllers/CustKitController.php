@@ -25,7 +25,13 @@ namespace IXP\Http\Controllers;
 
 use D2EM;
 
-use Entities\CustomerEquipment as CustomerEquipmentEntity;
+use Illuminate\View\View;
+
+use Entities\{
+    CustomerEquipment   as CustomerEquipmentEntity,
+    Cabinet             as CabinetEntity,
+    Customer            as CustomerEntity
+};
 
 /**
  * CustKit Controller
@@ -95,7 +101,37 @@ class CustKitController extends Doctrine2Frontend {
 
     }
 
+    /**
+     * Display the form to edit a physical interface
+     *
+     * @param   int $id ID of the customer equipment
+     *
+     * @return View
+     */
+    public function editAction( int $id = null ) {
+        /** @var CustomerEquipmentEntity $custKit */
+        $custKit = false;
 
+        if( $id != null ) {
+            if( !( $custKit = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id) ) ) {
+                abort(404);
+            }
+
+            Former::populate([
+                'name'                  => $custKit->getName(),
+                'cust'                  => $custKit->getCustomer()->getId(),
+                'cabinet'               => $custKit->getCabinet()->getId(),
+                'description'           => $custKit->getDescription(),
+            ]);
+        }
+
+        return view( $this->feParams->viewFolderName.'/edit' )->with([
+            'data'                              => $this->data,
+            'custKit'                           => $custKit,
+            'cabinets'                          => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
+            'custs'                             => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
+        ]);
+    }
 
     /**
      * Provide array of users for the listAction and viewAction

@@ -23,8 +23,12 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Redirect;
 
 use Illuminate\Support\Facades\View as ViewFacade;
+
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 
 /**
  * Doctrine2Frontend Functions
@@ -43,6 +47,8 @@ abstract class Doctrine2Frontend extends Controller {
     protected $feParams = null;
 
     protected $data     = null;
+
+    protected $params     = null;
 
     protected $view     = null;
 
@@ -89,7 +95,7 @@ abstract class Doctrine2Frontend extends Controller {
      * List the contents of a database table.
      */
     public function listAction(){
-        $this->data[ 'data' ]        = $this->listGetData() ;
+        $this->data[ 'data' ]           = $this->listGetData() ;
         $this->view[ 'listScript' ]     = $this->resolveTemplate( 'js/list' );
 
         return $this->display( 'list' );
@@ -100,29 +106,66 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function addAction()
     {
+
+    }
+
+    /**
+     * Provide single object for view. Uses `listGetData()`
+     *
+     * @param int $id The `id` of the row to load for `viewAction`.
+     * @return array
+     */
+    protected function viewGetData( $id ) {
+        $data = $this->listGetData( $id );
+
+        if( is_array( $data ) && isset( $data[0] ) )
+            return $data[0];
+
+        abort( 404);
+    }
+
+    /**
+     * Add (or edit) an object
+     */
+    public function viewAction( $id )
+    {
+        $this->data[ 'data' ]           = $this->viewGetData( $id ) ;
+
+        return $this->display( 'view' );
+    }
+
+    /**
+     * Add (or edit) an object
+     */
+    public function prepapreEditAction()
+    {
+
+    }
+
+
+    /**
+     * Add (or edit) an object
+     */
+    protected function editAction()
+    {
+        $this->params = $this->prepapreEditAction();
+
+        dd($this->params);
         return $this->display( 'edit' );
     }
 
     /**
      * Add (or edit) an object
      */
-    public function viewAction()
-    {
-
-    }
-
-    /**
-     * Add (or edit) an object
-     */
-    public function editAction()
-    {
-
-    }
-
-    /**
-     * Add (or edit) an object
-     */
     public function deleteAction()
+    {
+
+    }
+
+    /**
+     * Edit a physical interface (set all the data needed)
+     */
+    public function storeAction()
     {
 
     }
@@ -135,7 +178,7 @@ abstract class Doctrine2Frontend extends Controller {
      * @return void
      */
     protected function display( $tpl ){
-        return view( $this->resolveTemplate( $tpl, true ) )->with( [ 'data' => $this->data , 'view' => $this->view ]);
+        return view( $this->resolveTemplate( $tpl, true ) )->with( [ 'data' => $this->data , 'view' => $this->view, 'params' => $this->params ]);
     }
 
     /**
