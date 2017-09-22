@@ -12,7 +12,7 @@ class VirtualInterface
     /**
      * @var string $name
      */
-    protected $name;
+    protected $name = '';
 
     /**
      * @var string $description
@@ -303,6 +303,35 @@ class VirtualInterface
     }
 
     /**
+     * Get peerring PhysicalInterfaces
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPeeringPhysicalInterface()
+    {
+        $ppis = [];
+        foreach( $this->getPhysicalInterfaces() as $ppi){
+            if( $ppis[] = $ppi->getPeeringPhysicalInterface() );
+        }
+        return $ppis;
+    }
+
+    /**
+     * Get fanout PhysicalInterfaces
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFanoutPhysicalInterface()
+    {
+        $ppis = [];
+        foreach( $this->getPhysicalInterfaces() as $ppi){
+            if( $ppis[] = $ppi->getFanoutPhysicalInterface() );
+
+        }
+        return $ppis;
+    }
+
+    /**
      * Add VlanInterfaces
      *
      * @param VlanInterface $vlanInterfaces
@@ -408,6 +437,156 @@ class VirtualInterface
             return $this->getPhysicalInterfaces()[0]->getSwitchPort()->getType();
         else
             return false;
+    }
+
+    /**
+     * Get the Switch Port of a virtual interface.
+     *
+     * @return string|bool The switch port or false if no switch port.
+     */
+    public function getSwitchPort()
+    {
+        if( count( $this->getPhysicalInterfaces() ) )
+            return $this->getPhysicalInterfaces()[0]->getSwitchPort();
+        else
+            return false;
+    }
+
+    /**
+     * Get the location of a virtual interface.
+     *
+     * @return string|bool The location or false if no switch port.
+     */
+    public function getLocation()
+    {
+        if( count( $this->getPhysicalInterfaces() ) ){
+            return $this->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation();
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_UNSET?
+     *
+     * @return bool
+     */
+    public function isTypeUnset(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_UNSET;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_PEERING?
+     *
+     * @return bool
+     */
+    public function isTypePeering(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_PEERING;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_MONITOR?
+     *
+     * @return bool
+     */
+    public function isTypeMonitor(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_MONITOR;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_CORE?
+     *
+     * @return bool
+     */
+    public function isTypeCore(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_CORE;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_OTHER?
+     *
+     * @return bool
+     */
+    public function isTypeOther(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_OTHER;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_MANAGEMENT?
+     *
+     * @return bool
+     */
+    public function isTypeManagement(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_MANAGEMENT;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_FANOUT?
+     *
+     * @return bool
+     */
+    public function isTypeFanout(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_FANOUT;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Is the type SwitchPort::TYPE_RESELLER?
+     *
+     * @return bool
+     */
+    public function isTypeReseller(): bool {
+        if( $this->getType() ){
+            return $this->getType() === SwitchPort::TYPE_RESELLER;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the SwitchPort::$TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveType(): string {
+        return SwitchPort::$TYPES[ $this->getType() ] ?? 'Unknown';
     }
 
     /**
@@ -518,4 +697,38 @@ class VirtualInterface
         return $speed;
     }
 
+    /**
+     * Return the core bundle associated to the virtual interface or false
+     *
+     * @return \Entities\CoreBundle
+     */
+    public function getCoreBundle( ) {
+        /** @var PhysicalInterface $pi */
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $ci = $pi->getCoreInterface() ) {
+                return $ci->getCoreLink()->getCoreBundle();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the switch is the same for the physical interfaces of the virtual interface
+     *
+     * @return bool
+     */
+    public function sameSwitchForEachPI() {
+        $lastSwitch = null;
+
+        /** @var PhysicalInterface $pi */
+        foreach( $this->getPhysicalInterfaces() as $pi ){
+            if( $lastSwitch === null ) {
+                $lastSwitch = $pi->getSwitchPort()->getSwitcher()->getId();
+            } elseif( $lastSwitch !== $pi->getSwitchPort()->getSwitcher()->getId() ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

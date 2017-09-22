@@ -4,6 +4,12 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\{
+    Router as RouterEntity,
+    VlanInterface as VlanInterfaceEntity
+};
+
+
 use Cache;
 
 /**
@@ -390,6 +396,139 @@ class Vlan extends EntityRepository
         $q->setParameter( 'vlan', $vlan );
         $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
+    }
+
+
+
+    /**
+     * Get the IPv4 or IPv6 list for a vlan as an array.
+     *
+     * Returns a array sorted by IP address with elements:
+     *
+     *     {
+     *         id: "1040",                     // address ID from the IPv4/6 table
+     *         address: "2001:7f8:18::20",     // address
+     *         v_id: "2",                      // VLAN id
+     *         vli_id: "16"                    // VlanInterface ID (or null if not assigned / in use)
+     *     },
+     *
+     * @param  int $vlan  The ID of the VLAN to query
+     * $param  int $proto The IP protocol to get addresses for (one of RouterEntity::PROTOCOL_IPV4/6)
+     * @return array Array of addresses as defined above.
+     * @throws \Exception Only of an invalid protocol is provided
+     */
+    public function getIPAddresses( int $vlan, int $proto ) : array {
+
+
+        if( $proto == RouterEntity::PROTOCOL_IPV6 ) {
+            $af = 'ipv6'; $table = 'ipv6address';
+        } else if( $proto == RouterEntity::PROTOCOL_IPV4 ) {
+            $af = 'ipv4'; $table = 'ipv4address';
+        } else {
+            throw new \Exception('Invalid protocol' );
+        }
+
+        // going to use a native query so we can use INET[6]_ATON
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $stmt = $conn->prepare( "SELECT {$af}.id AS id, {$af}.address AS address, v.id AS v_id, vli.id as vli_id
+                    FROM {$table} AS {$af}
+                        LEFT JOIN vlan AS v ON {$af}.vlanid = v.id
+                        LEFT JOIN vlaninterface AS vli ON {$af}.id = vli.{$af}addressid
+                    WHERE
+                        v.id = ? 
+                    ORDER BY "
+                        . ( $proto == RouterEntity::PROTOCOL_IPV4 ? 'INET_ATON( ' : 'INET6_ATON( ' )
+                        . "address ) ASC"
+        );
+
+        $stmt->bindValue( 1, $vlan );
+        $stmt->execute();
+
+        return $stmt->fetchAll( \PDO::FETCH_ASSOC );
+    }
+
+    /**
+     * Determine is an IP address /really/ free by checking across all vlans
+     *
+     * Returns a array of objects as follows (or empty array if not user):
+     *
+     * [
+     *      [
+     *          customer: {
+     *              id: x,
+     *              name: "",
+     *              autsys: x,
+     *              abbreviated_name: ""
+     *          },
+     *          virtualinterface: {
+     *              id: x
+     *          },
+     *          vlaninterface: {
+     *              id: x
+     *          },
+     *          vlan: {
+     *              id: x,
+     *              name: "",
+     *              number: x
+     *          }
+     *      },
+     *      {
+     *
+     *      ]
+     * ]
+     *
+     * @param  string $ip The IPv6/4 address to check
+     * @return array Array of object
+     */
+    public function usedAcrossVlans( string $ip ) : array
+    {
+        if( strpos( $ip, ':' ) !== false ) {
+            $table = 'IPv6Address';
+        } else {
+            $table = 'IPv4Address';
+        }
+
+        $vlis = [];
+        $result = $this->getEntityManager()->createQuery(
+            "SELECT vli
+                    FROM Entities\VlanInterface vli
+                    LEFT JOIN vli.{$table} ip
+                    WHERE ip.address = ?1"
+            )
+            ->setParameter( 1, $ip );
+
+        /** @var VlanInterfaceEntity $vli */
+        foreach( $result->getResult() as $vli ){
+
+            $vlis[] = (object)[
+                'customer'          => [
+                        'id'                    => $vli->getVirtualInterface()->getCustomer()->getId(),
+                        'name'                  => $vli->getVirtualInterface()->getCustomer()->getName(),
+                        'autsys'                => $vli->getVirtualInterface()->getCustomer()->getAutsys(),
+                        'abbreviated_name'      => $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName()
+                ],
+
+                'virtualinterface'  => [
+                        'id'                    => $vli->getVirtualInterface()->getId()
+                ],
+
+                'vlaninterface'     => [
+                        'id'                    => $vli->getId()
+                ],
+
+                'vlan'              => [
+                        'id'                    => $vli->getVlan()->getId(),
+                        'name'                  => $vli->getVlan()->getName(),
+                        'number'                => $vli->getVlan()->getNumber()
+                ],
+
+            ];
+
+        }
+
+        return $vlis;
     }
 
 }

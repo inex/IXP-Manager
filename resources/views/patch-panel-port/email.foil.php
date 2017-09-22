@@ -1,1 +1,0 @@
-<?= $t->email_text ?>

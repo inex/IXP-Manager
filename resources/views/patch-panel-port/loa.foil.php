@@ -54,18 +54,18 @@
         <tr>
             <td width="10%"></td>
             <td><b>Location:</b></td>
-            <td><?= $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ?></td>
+            <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?></td>
         </tr>
         <tr>
             <td></td>
             <td><b>Patch Panel:</b></td>
-            <td><?= $t->ppp->getPatchPanel()->getColoReference() ?></td>
+            <td><?= $t->ee( $t->ppp->getPatchPanel()->getColoReference() ) ?></td>
         </tr>
         <tr>
             <td></td>
             <td><b>Port:</b></td>
             <td>
-                <?= $t->ppp->getName() ?> <?php if( $t->ppp->hasSlavePort() ){ ?><em>(duplex port)</em><?php } ?>
+                <?= $t->ee( $t->ppp->getName() ) ?> <?php if( $t->ppp->hasSlavePort() ){ ?><em>(duplex port)</em><?php } ?>
             </td>
         </tr>
     </table>
@@ -89,8 +89,8 @@
     Should you have any questions or concerns regarding this Letter of Authority, please contact our NOC
     via the details below. <em>We generate our LoA's via our provisioning system. Each LoA can be individually
     authenticated by clicking on the following unique link:</em><br><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="<?= url( '/verify-loa' ).'/'.$t->ppp->getId().'/'.$t->ppp->getLoaCode()?>"
-        ><?= url( '/verify-loa' ).'/'.$t->ppp->getId().'/'.$t->ppp->getLoaCode() ?></a>
+    &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="<?= action ( 'PatchPanel\PatchPanelPortController@verifyLoa' , [ 'id' => $t->ppp->getId() , 'loa' => $t->ppp->getLoaCode() ] ) ?>"
+        ><?= action ( 'PatchPanel\PatchPanelPortController@verifyLoa' , [ 'id' => $t->ppp->getId() , 'loa' => $t->ppp->getLoaCode() ] ) ?></a>
 </p>
 
 

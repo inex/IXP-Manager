@@ -1,12 +1,54 @@
 <?php namespace IXP\Console\Commands;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use IXP\Traits\Common;
 use Entities\IXP;
 
 class Command extends \Illuminate\Console\Command {
 
-    use Common;
+    /**
+     * Checks if reseller mode is enabled.
+     *
+     * To enable reseller mode set the env variable IXP_RESELLER_ENABLED
+     *
+     * @see http://docs.ixpmanager.org/features/reseller/
+     *
+     * @return bool
+     */
+    protected function resellerMode(): bool
+    {
+        return boolval( config( 'ixp.reseller.enabled', false ) );
+    }
+
+    /**
+     * Checks if multi IXP mode is enabled.
+     *
+     * To enable multi IXP mode set the env variable IXP_MULTIIXP_ENABLED
+     *
+     * NB: this functionality is deprecated in IXP Manager v4.0 and will be
+     * removed piecemeal.
+     *
+     * @see https://github.com/inex/IXP-Manager/wiki/Multi-IXP-Functionality
+     *
+     * @return bool
+     */
+    protected function multiIXP(): bool
+    {
+        return boolval( config( 'ixp.multiixp.enabled', false ) );
+    }
+
+    /**
+     * Checks if as112 is activated in the UI.
+     *
+     * To disable as112 in the UI set the env variable IXP_AS112_UI_ACTIVE
+     *
+     * @see http://docs.ixpmanager.org/features/as112/
+     *
+     * @return bool
+     */
+    protected function as112UiActive(): bool
+    {
+        return boolval( config( 'ixp.as112.ui_active', false ) );
+    }
 
     /**
      * Get whatever IXP was specified on the command line

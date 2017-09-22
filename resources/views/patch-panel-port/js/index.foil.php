@@ -15,11 +15,9 @@
             loadEvent();
         });
 
+        $( '#area-ppp' ).show();
+
     });
-
-
-
-
 
     /**
      * initialise the datatable table
@@ -227,7 +225,7 @@
 
                 $('#notes-modal-btn-confirm').attr("disabled", true);
 
-                $.ajax( "<?= url('api/v4/patch-panel-port/notes')?>/" + ppp.id, {
+                $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
                         data: {
                             pppId: ppp.id,
                             notes: $('#notes-modal-body-public-notes').val(),
@@ -268,7 +266,7 @@
 
     function uploadPopup( pppid ){
 
-        var html = '<form id="upload" method="post" action="<?= url("api/v4/patch-panel-port/upload-file" )?>/' + pppid + '" enctype="multipart/form-data">' +
+        var html = '<form id="upload" method="post" action="<?= url("patch-panel-port/upload-file" )?>/' + pppid + '" enctype="multipart/form-data">' +
             '<div id="drop">Drop Files Here &nbsp;' +
             '    <a id="upload-drop-a" class="btn btn-success">' +
             '        <i class="glyphicon glyphicon-upload"></i> Browse</a> <br/>' +
@@ -276,7 +274,7 @@
             '        <input type="file" name="upl" multiple />' +
             '</div>' +
             '<ul id="upload-ul"><!-- The file uploads will be shown here --> </ul>' +
-            '<input type="hidden" name="_token" value="<?= csrf_token() ?>"> </form>';
+            '</form>';
 
         var dialog = bootbox.dialog({
             message: html,
@@ -385,7 +383,9 @@
     function deleteFile(e) {
         var pppFileId = (this.id).substring(21);
 
-        $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + pppFileId )
+        $.ajax( "<?= url('patch-panel-port/delete-file') ?>/" + pppFileId, {
+            type : 'POST'
+        } )
             .done( function( data ) {
                 if( data.success ) {
                     $('#uploaded-file-' + pppFileId).fadeOut( "medium", function() {
@@ -402,7 +402,9 @@
      */
     function toggleFilePrivacy(e) {
         var pppFileId = (this.id).substring(29);
-        $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId )
+        $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppFileId ,{
+            type: 'POST'
+        })
             .done( function( data ) {
                 if( data.isPrivate ) {
                     $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-unlock').addClass('fa-lock');
@@ -417,7 +419,7 @@
 
         if( action == 'delete' ){
             message = "WARNING: Deletion is permanent and will remove the port from the patch panel including all history and files.";
-            urlAction = "<?= url('api/v4/patch-panel-port/delete') ?>/" + pppid;
+            urlAction = "<?= url('patch-panel-port/delete') ?>/" + pppid;
 
             if( $('#danger-dropdown-'+pppid).data("slave-port") ){
                 message += "<b> As this is a duplex port, both individual ports will be deleted. </b> If you do not want this, then split the port first."
@@ -431,7 +433,7 @@
             masterPort = prefix+$('#danger-dropdown-'+pppid).data("master-port");
 
             message = "Are you sure you want to split this port? The slave port ("+ slavePort +") will be removed from the master port ("+ masterPort +") and marked as available. If you want to split the other way ("+ slavePort +" as master), split now and then use the move function on ("+ masterPort +") afterwards.";
-            urlAction = "<?= url('api/v4/patch-panel-port/split') ?>/" + pppid;
+            urlAction = "<?= url('patch-panel-port/split') ?>/" + pppid;
         }
 
 
@@ -451,18 +453,26 @@
             callback: function (result) {
                 if (result) {
                     $.ajax( urlAction, {
-                        type: 'GET'
+                        type: 'POST'
                     })
                         .done( function( data ) {
-                            nameClass = ( data.success ) ? 'success': 'danger';
-                            messageReturned = ( data.success ) ? 'The port has been deleted.': 'Error';
+
+                            let messageAjax, nameClass = ( data.success ) ? 'success': 'danger';
+
                             if( result ) {
-                                $("#message-ppp").html("<div class='alert alert-" + nameClass + "' role='alert'>" + messageReturned + "</div>");
+                                if( action == 'delete' ){
+                                    messageAjax = 'The patch panel port has been deleted.';
+                                } else {
+                                    messageAjax = data.message;
+                                }
+
+                                $("#message-ppp").html("<div class='alert alert-" + nameClass + "' role='alert'>" + messageAjax + "</div>");
+
                                 if( action == 'split' ){
                                     $("#breadcrumb-area").load( $(location).attr('pathname')+" .breadcrumb");
                                 }
-                                refreshDataTable('ppp');
 
+                                refreshDataTable('ppp');
                             }
                         })
                         .fail( function(){

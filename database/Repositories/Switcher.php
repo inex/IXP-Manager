@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use Entities\CoreBundle;
 use Entities\SwitchPort;
 
 /**
@@ -208,6 +209,64 @@ class Switcher extends EntityRepository
         return $this->getEntityManager()->createQuery( $q )->getResult();
     }
 
+    /**
+     * Returns all switch ports for a given switch.
+     *
+     * Each switchport element of the array is as follows:
+     *
+     *      [
+     *          "sp_type" => 5,
+     *          "sp_name" => "Management Port",
+     *          "sp_active" => true,
+     *          "sp_ifIndex" => 1059,
+     *          "sp_ifName" => "Management",
+     *          "sp_ifAlias" => "MgmtPort",
+     *          "sp_ifHighSpeed" => 1000,
+     *          "sp_ifMtu" => 1500,
+     *          "sp_ifPhysAddress" => "0004968F9A4F",
+     *          "sp_ifAdminStatus" => 1,
+     *          "sp_ifOperStatus" => 1,
+     *          "sp_ifLastChange" => 1473091000,
+     *          "sp_lastSnmpPoll" => DateTime {#1382
+     *          +"date": "2016-10-26 15:11:31.000000",
+     *              +"timezone_type": 3,
+     *              +"timezone": "UTC",
+     *          },
+     *          "sp_lagIfIndex" => null,
+     *          "sp_mauType" => "1000BaseTFD",
+     *          "sp_mauState" => "operational",
+     *          "sp_mauAvailability" => "available",
+     *          "sp_mauJacktype" => "rj45S",
+     *          "sp_mauAutoNegSupported" => true,
+     *          "sp_mauAutoNegAdminState" => true,
+     *          "sp_id" => 1525,
+     *          "pi_id" => null,
+     *          "sp_switchid" => 35,
+     *          "sp_type_name" => "Management",
+     *          ],
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getPorts( int $id ): array {
+
+        $dql = "SELECT sp, pi.id AS pi_id
+                    FROM Entities\\SwitchPort sp
+                      LEFT JOIN sp.Switcher s
+                      LEFT JOIN sp.PhysicalInterface pi
+                    WHERE s.id = ?1
+                    ORDER BY sp.id ASC";
+
+        $ports = $this->getEntityManager()->createQuery( $dql )
+                    ->setParameter( 1, $id )
+                    ->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, true)
+                    ->getScalarResult();
+
+        foreach( $ports as $id => $port )
+            $ports[$id]['sp_type_name'] = \Entities\SwitchPort::$TYPES[ $port['sp_type'] ];
+
+        return $ports;
+    }
 
     /**
      * Returns all available switch ports where available means not in use by a
@@ -222,7 +281,7 @@ class Switcher extends EntityRepository
      * @param int|null $spid   Switch port ID, if set, this port is excluded from the results
      * @return array
      */
-    public function getAllPorts( int $id, int $cid = null, int $spid = null ): array {
+    public function getAllPortsForPPP( int $id, int $cid = null, int $spid = null ): array {
 
         /** @noinspection SqlNoDataSourceInspection */
         $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
@@ -314,5 +373,296 @@ class Switcher extends EntityRepository
         }
 
         return $ports;
+    }
+
+    /**
+     * Returns all available switch ports for a switch which are not assigned to a physical interface.
+     *
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @param array    $types  Array of switch port types to limit the results to, if empty - return all types
+     * @param int|null $spid   Switch port ID, if set, this port is excluded from the results
+     * @return array
+     */
+    public function getAllPortsNotAssignedToPI( int $id, array $types = [], int $spid = null ): array {
+
+        $dql = "SELECT sp.name AS name, sp.type AS typeid, sp.id AS id
+                    FROM Entities\\SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN sp.PhysicalInterface pi
+                    WHERE
+                        s.id = ?1 
+                        AND pi.id IS NULL ";
+
+        if( $spid !== null ) {
+            $dql .= 'AND sp.id != ?2 ';
+        }
+
+        // limit to ports suitable for peering?
+        if( $types !== [] ) {
+            $dql .= 'AND sp.type IN ( ?3 )';
+        }
+
+        $dql .= " ORDER BY sp.id ASC";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id );
+
+        if( $spid  !== null ) {
+            $query->setParameter( 2, $spid );
+        }
+
+        if( $types !== [] ) {
+            $query->setParameter( 3, $types );
+        }
+
+        $ports = $query->getArrayResult();
+
+        // resolve port types into names:
+        foreach( $ports as $id => $port ) {
+            $ports[ $id ][ 'type' ] = \Entities\SwitchPort::$TYPES[ $port[ 'typeid' ] ];
+        }
+
+        return $ports;
+    }
+
+    /**
+     * Returns all available switch ports for a switch.
+     *
+     * Restrict to only some types of switch port
+     * Exclude switch port ids from the list
+     *
+     * Suitable for other generic use.
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @param array    $types  Switch port type restrict to some types only
+     * @param array    $spid   Switch port IDs, if set, those ports are excluded from the results
+     * @return array
+     */
+    public function getAllPorts( int $id, $types = [], $spid = [], bool $notAssignToPI = true ): array {
+
+        $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
+                    FROM Entities\\SwitchPort sp
+                    LEFT JOIN sp.Switcher s";
+
+        if( $notAssignToPI ){
+            $dql .= " LEFT JOIN sp.PhysicalInterface pi";
+        }
+
+        $dql .= " WHERE s.id = ?1 ";
+
+        if( $notAssignToPI ){
+            $dql .= " AND pi.id IS NULL ";
+        }
+
+        if( count( $spid ) > 0 ){
+            $dql .= ' AND sp.id NOT IN ('.implode( ',', $spid ).') ';
+        }
+
+        if( count( $types ) > 0 ){
+            $dql .= ' AND sp.type IN ('.implode( ',', $types ).') ';
+        }
+
+        $dql .= " ORDER BY sp.id ASC ";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id );
+
+        $ports = $query->getArrayResult();
+
+        foreach( $ports as $id => $port )
+            $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+
+        return $ports;
+    }
+
+    /**
+     * Returns all the vlan associated to the following switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllVlan( int $id ): array {
+
+        /** @noinspection SqlNoDataSourceInspection */
+        $dql = "SELECT vl.name, vl.private, vl.number
+                    FROM Entities\\VlanInterface vli
+                    LEFT JOIN vli.Vlan vl
+                    LEFT JOIN vli.VirtualInterface vi
+                    LEFT JOIN vi.PhysicalInterfaces pi
+                    LEFT JOIN pi.SwitchPort sp
+                    LEFT JOIN sp.Switcher s
+                    WHERE s.id = ?1 
+                    GROUP BY vl.id";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+        $listVlan = $query->getArrayResult();
+
+        $vlans = [];
+
+        foreach( $listVlan as $vlan ){
+            $vlans[] = $vlan;
+        }
+
+        return $vlans;
+    }
+
+    /**
+     * Returns all the core link interface associated to the following switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllCoreLinkInterfaces( int $id ): array {
+
+        $cis = [];
+
+        foreach( [ 'A', 'B' ] as $side ) {
+            /** @noinspection SqlNoDataSourceInspection */
+            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet, cb.enabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet as clSubnet, s$side.id as saId
+                        FROM Entities\\CoreLink cl
+                        LEFT JOIN cl.coreBundle cb
+
+                        LEFT JOIN cl.coreInterfaceSide$side ci$side
+
+                        LEFT JOIN ci$side.physicalInterface pi$side
+
+                        LEFT JOIN pi$side.SwitchPort sp$side
+
+                        LEFT JOIN sp$side.Switcher s$side
+
+                        WHERE cb.type IN ( ".CoreBundle::TYPE_ECMP.",".CoreBundle::TYPE_L3_LAG." )   
+
+                        AND s$side.id = ?1";
+
+            $query = $this->getEntityManager()->createQuery( $dql );
+            $query->setParameter( 1, $id);
+
+            $listCoreInterface = $query->getArrayResult();
+
+            foreach( $listCoreInterface as $ci ){
+                $subnet = ( $ci[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $ci['clSubnet'] : $ci['cbSubnet'];
+                $ci['ip'] = $this->linkAddr( $subnet , $side, true );
+                $cis[] = $ci;
+            }
+        }
+
+        return $cis;
+    }
+
+    public function linkAddr( $net, $side, $maskneeded = true ){
+        $ip   = explode("/", $net)[0];
+        $mask = explode("/", $net)[1];
+
+        $net = ip2long($ip) & (0xffffffff << (32 - $mask));
+        $firstip = ($mask == 31) ? $net : $net + 1;
+
+        if( $side == 'A') {
+            $ip = long2ip ($firstip);
+        } else {
+            $ip = long2ip ($firstip + 1);
+        }
+
+        if( $maskneeded ){
+            $ip .= "/" . $mask;
+        }
+
+        return $ip;
+    }
+
+    /**
+     * List of all the switch loopback IP addresses on the same infrastructure as this switch, but excluding the switch's own loopback IP address
+     *
+     * @param bool     $excludeCurrentSwitch    Exclude the switch for the final result
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getFloodList( int $id, bool $excludeCurrentSwitch = true ){
+        $dql = "SELECT  s.loopback_ip 
+                    FROM Entities\\Switcher s
+                        WHERE s.Infrastructure = (SELECT inf.id
+                                                    FROM Entities\\Switcher s2
+                                                    LEFT JOIN s2.Infrastructure inf
+                                                    WHERE s2.id = ?1)
+                        AND s.loopback_ip IS NOT NULL";
+
+        if( $excludeCurrentSwitch ){
+            $dql .= " AND s.id != ".$id;
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+        $listFlood = $query->getArrayResult();
+
+        return array_column( $listFlood, "loopback_ip");
+    }
+
+    /**
+     * Returns all the bgp associated to the following switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllNeighbors( int $id ): array {
+        $dql = "SELECT  cb.type, cb.ipv4_subnet as cbSubnet, cb.cost, cb.preference, cl.ipv4_subnet as clSubnet, sA.id as sAid, sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
+                    FROM Entities\\CoreLink cl
+                    LEFT JOIN cl.coreBundle cb
+                    LEFT JOIN cl.coreInterfaceSideA ciA
+                    LEFT JOIN cl.coreInterfaceSideB ciB
+                    LEFT JOIN ciA.physicalInterface piA
+                    LEFT JOIN ciB.physicalInterface piB
+                    LEFT JOIN piA.SwitchPort spA
+                    LEFT JOIN piB.SwitchPort spB
+                    LEFT JOIN spA.Switcher sA
+                    LEFT JOIN spB.Switcher sB
+                    WHERE ( sA.id = ?1 OR sB.id = ?1 )
+                    AND cb.type IN ( ".CoreBundle::TYPE_ECMP.",".CoreBundle::TYPE_L3_LAG." )";
+
+
+            $query = $this->getEntityManager()->createQuery( $dql );
+            $query->setParameter( 1, $id);
+
+            $listbgp = $query->getArrayResult();
+
+            $neighbors = [];
+            foreach( $listbgp as $bgp ){
+                $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
+                $subnet = ( $bgp[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $bgp['clSubnet'] : $bgp['cbSubnet'];
+                $neighbors[] = [
+                    'ip' => $this->linkAddr( $subnet , $side , false ),
+                    'description' => $bgp[ 's' .$side. 'name'],
+                    'asn' => $bgp[ 's' .$side. 'asn'],
+                    'cost' => $bgp[ 'cost'],
+                    'preference' => $bgp[ 'preference'],
+                ] ;
+            }
+
+        return $neighbors;
+    }
+
+    /**
+     * Returns all the Vlan on the insfrascture to the following switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllVlanInInsfrascture( int $id ): array {
+
+        /** @noinspection SqlNoDataSourceInspection */
+        $dql = "SELECT vl.name, vl.number, vl.private
+                    FROM Entities\\Infrastructure inf
+                        LEFT JOIN inf.Switchers s
+                        LEFT JOIN inf.Vlans vl
+                        WHERE s.id = ?1";
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id);
+
+        $listVlan = $query->getArrayResult();
+
+        return $listVlan;
     }
 }

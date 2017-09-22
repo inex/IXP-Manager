@@ -52,7 +52,7 @@
 
         {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
             <div class="btn-group" style="padding-left: 20px;">
-                <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='virtual-interface' action='edit' id=$vi->getId()}" title="Edit"><i class="icon-pencil"></i></a>
+                <a class="btn btn-mini have-tooltip-below" href="{genUrl controller='interfaces/virtual' edit=$vi->getId()}" title="Edit"><i class="icon-pencil"></i></a>
             </div>
         {/if}
 
