@@ -138,18 +138,6 @@
 <?php $this->section( 'scripts' ) ?>
 
     <script>
-
-        /**
-         * hide the help block at loading
-         */
-        $('p.help-block').hide();
-
-        /**
-         * display / hide help sections on click on the help button
-         */
-        $( "#help-btn" ).click( function() {
-            $( "p.help-block" ).toggle();
-        });
         $( document ).ready( function() {
             /**
              * set the today date on click on the today button

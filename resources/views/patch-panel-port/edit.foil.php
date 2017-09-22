@@ -49,6 +49,17 @@
         <?= Former::text( 'patch_panel' )
             ->label( 'Patch Panel' );
         ?>
+
+        <?= Former::text( 'cabinet_name' )
+            ->label( 'Cabinet Name' )
+            ->disabled( 'disable' );
+        ?>
+
+
+        <?= Former::text( 'colocation_centre' )
+            ->label( 'Colocation Centre' )
+            ->disabled( 'disable' );
+        ?>
     <?php endif; ?>
 
     <?= Former::text( 'description' )

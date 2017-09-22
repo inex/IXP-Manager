@@ -84,13 +84,13 @@ class GenerateConfigurationTest extends TestCase
             $conf = ( new RouterConfigurationGenerator( $router ) )->render();
 
             $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-{$handle}.conf" );
-            $this->assertFalse( $knownGoodConf === false, "RS Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
+            $this->assertFalse( $knownGoodConf === false, "AS112 Conf generation - could not load known good file ci-apiv4-{$handle}.conf" );
 
             // clean the configs to remove the comment lines which are irrelevent
             $conf          = preg_replace( "/^#.*$/m", "", $conf          );
             $knownGoodConf = preg_replace( "/^#.*$/m", "", $knownGoodConf );
 
-            $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RS configuration for {$handle} do not match" );
+            $this->assertEquals( $knownGoodConf, $conf, "Known good and generated AS112 configuration for {$handle} do not match" );
         }
     }
 }

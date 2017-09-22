@@ -54,8 +54,8 @@ class StorePhysicalInterface extends FormRequest
     {
 
         return [
-            'switch'                    => 'required|integer',
-            'switch-port'               => 'required|integer',
+            'switch'                    => 'required|integer|exists:Entities\Switcher,id',
+            'switch-port'               => 'required|integer|exists:Entities\SwitchPort,id',
             'status'                    => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$STATES ) ),
             'speed'                     => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$SPEED ) ),
             'duplex'                    => 'required|string|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),

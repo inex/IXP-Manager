@@ -27,15 +27,20 @@ namespace IXP\Http\Controllers\Interfaces;
 use D2EM;
 
 use Entities\{
-    VirtualInterface as VirtualInterfaceEntity,
+    IPv4Address as IPv4AddressEntity,
+    IPv6Address as IPv6AddressEntity,
     PhysicalInterface as PhysicalInterfaceEntity,
     SwitchPort as SwitchPortEntity,
-    IPv4Address as IPv4AddressEntity,
-    IPv6Address as IPv6AddressEntity
+    VirtualInterface as VirtualInterfaceEntity,
+    Vlan as VlanEntity,
+    VlanInterface as VlanInterfaceEntity
 };
 
+use Illuminate\Http\Request;
 use IXP\Http\Controllers\Controller;
+use IXP\Http\Requests\StoreVirtualInterfaceWizard;
 
+use IXP\Services\Grapher\Graph\VlanInterface;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
@@ -101,12 +106,13 @@ abstract class Common extends Controller
      * If *link with fanout port* is not checked then this function checks
      * if the peering port has a related interface and, if so, removes the relation.
      *
-     * @param  Request $request instance of the current HTTP reques
+     * @param  Request|StoreVirtualInterfaceWizard $request instance of the current HTTP reques
      * @param \Entities\PhysicalInterface  $pi   Peering physical interface to related with fanout physical interface (port).
      * @param \Entities\VirtualInterface   $vi   Virtual interface of peering physical intreface
      * @return boolean
      */
     public function processFanoutPhysicalInterface( $request, $pi, $vi ) {
+
         if( !$request->input('fanout' ) ) {
             $this->removeRelatedInterface( $pi );
             return true;
@@ -157,6 +163,7 @@ abstract class Common extends Controller
             }
 
             $this->removeRelatedInterface( $pi );
+
         } else if( !$fnpi->getVirtualInterface() ) {
             // create virtual interface for fanout physical interface if doesn't have one
             $fnvi = new VirtualInterfaceEntity();
@@ -168,6 +175,10 @@ abstract class Common extends Controller
 
         $pi->setFanoutPhysicalInterface( $fnpi );
         $fnpi->setPeeringPhysicalInterface( $pi );
+
+        $fnpi->setSpeed(  $pi->getSpeed()  );
+        $fnpi->setStatus( $pi->getStatus() );
+        $fnpi->setDuplex( $pi->getDuplex() );
 
         return true;
     }
@@ -207,56 +218,59 @@ abstract class Common extends Controller
     }
 
     /**
-     *
-     *
-     * Sets IPv4 or IPv6 from form to given VlanInterface.
+     * Sets IPv4 or IPv6 from form to given VlanInterface from request data.
      *
      * Function checks if IPvX address is provided if IPvX is enabled. Then
      * it checks if given IPvX address exists for current Vlan:
      *
+     * NB: form sanity checking must be performed BEFORE calling this function
+     *
      * * if it exists, it ensures is is not assigned to another interface;
      * * if !exists, creates a new one.
      *
-     * @param \Entities\VlanInterface      $vli  Vlan interface to assign IP to
+     * @param Request                      $request
+     * @param VlanEntity                   $v
+     * @param VlanInterfaceEntity          $vli  Vlan interface to assign IP to
      * @param bool                         $ipv6 Bool to define if IP address is IPv4 or IPv6
      * @return bool
      */
-    public function setIp($request, $vl, $vli, $ipv6 = false )
+    public function setIp( Request $request, VlanEntity $v, VlanInterfaceEntity $vli, bool $ipv6 = false )
     {
-        $iptype = $ipv6 ? "ipv6" : "ipv4";
-        $ipVer  = $ipv6 ? "IPv6" : "IPv4";
-        $setterIPv = "set{$ipVer}Address";
-        $setterEnabled = "set{$ipVer}enabled";
+        $iptype         = $ipv6 ? "ipv6" : "ipv4";
+        $ipVer          = $ipv6 ? "IPv6" : "IPv4";
+        $setterIPv      = "set{$ipVer}Address";
+        $setterEnabled  = "set{$ipVer}enabled";
         $setterHostname = "set{$ipVer}hostname";
-        $setterSecret = "set{$ipVer}bgpmd5secret";
-        $setterPing = "set{$ipVer}canping";
-        $setterMonitor = "set{$ipVer}monitorrcbgp";
+        $setterSecret   = "set{$ipVer}bgpmd5secret";
+        $setterPing     = "set{$ipVer}canping";
+        $setterMonitor  = "set{$ipVer}monitorrcbgp";
 
         $entity = $ipv6 ? IPv6AddressEntity::class : IPv4AddressEntity::class;
 
         $addressValue = $request->input( $iptype . '-address' );
 
-        if( !$addressValue ) {
-            AlertContainer::push( "Please select or enter an ".$ipVer." address.", Alert::DANGER );
-            return false;
+        if( trim( $addressValue ) ) {
+            if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $v->getId(), 'address' => $addressValue ] ) ) ) {
+                $ip = new $entity();
+                $ip->setVlan( $v );
+                $ip->setAddress( $addressValue );
+                D2EM::persist( $ip );
+            } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
+                AlertContainer::push( "{$ipVer} address {$addressValue} is already in use by another VLAN interface on the same VLAN.", Alert::DANGER );
+                return false;
+            }
+
+            $vli->$setterIPv( $ip );
+
+        } else {
+            $vli->$setterIPv( null );
         }
 
-        if( !($ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vl->getId(), 'address' => $addressValue ] )  ) ){
-            $ip = new $entity();
-            D2EM::persist( $ip );
-            $ip->setVlan( $vl );
-            $ip->setAddress( $addressValue );
-        } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
-            AlertContainer::push( $ipVer."address ".$addressValue." is already in use.", Alert::DANGER );
-            return false;
-        }
-
-        $vli->$setterIPv( $ip );
         $vli->$setterHostname( $request->input( $iptype . '-hostname' ) );
-        $vli->$setterEnabled( true );
-        $vli->$setterSecret( $request->input( $iptype . '-bgp-md5-secret' ) );
-        $vli->$setterPing( $request->input( $iptype . '-can-ping' ) );
-        $vli->$setterMonitor( $request->input( $iptype . '-monitor-rcbgp' ) );
+        $vli->$setterEnabled(  $request->input( $iptype . '-enabled', false ) );
+        $vli->$setterSecret(   $request->input( $iptype . '-bgp-md5-secret' ) );
+        $vli->$setterPing(     $request->input( $iptype . '-can-ping', false ) );
+        $vli->$setterMonitor(  $request->input( $iptype . '-monitor-rcbgp', false ) );
 
         return true;
     }

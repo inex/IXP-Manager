@@ -49,8 +49,27 @@ class StoreVlanInterface extends FormRequest
     public function rules()
     {
         return [
-            'vlan'                  => 'required|integer',
-            'maxbgpprefix'          => 'integer',
+            'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
+            'maxbgpprefix'          => 'integer|nullable',
+            'mcastenabled'          => 'boolean',
+            'busyhost'              => 'boolean',
+            'rsclient'              => 'boolean',
+            'irrdbfilter'           => 'boolean',
+            'as112client'           => 'boolean',
+
+            'ipv4-enabled'          => 'boolean',
+            'ipv4-address'          => 'ipv4' . ( $this->input('ipv4-enabled') ? '|required' : '|nullable' ),
+            'ipv4-hostname'         => 'string|max:255' . ( $this->input('ipv4-enabled') ? '|required' : '|nullable' ),
+            'ipv4-bgp-md5-secret'   => 'string|max:255|nullable',
+            'ipv4canping'           => 'boolean',
+            'ipv4monitorrcbgp'      => 'boolean',
+
+            'ipv6-enabled'          => 'boolean',
+            'ipv6-address'          => 'ipv6' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
+            'ipv6-hostname'         => 'string|max:255' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
+            'ipv6-bgp-md5-secret'   => 'string|max:255|nullable',
+            'ipv6canping'           => 'boolean',
+            'ipv6monitorrcbgp'      => 'boolean',
         ];
     }
 }

@@ -24,36 +24,35 @@
     <table id='router-list' class="table">
         <thead>
         <tr>
-            <td>
+            <th>
                 Handle
-            </td>
-            <td>
+            </th>
+            <th>
                 Name
-            </td>
-            <td>
+            </th>
+            <th>
                 Vlan
-            </td>
-            <td>
+            </th>
+            <th>
                 Protocol
-            </td>
-            <td>
+            </th>
+            <th>
                 Type
-            </td>
-            <td>
+            </th>
+            <th>
                 Router
-            </td>
-            <td>
+            </th>
+            <th>
                 Peering IP
-            </td>
-            <td>
+            </th>
+            <th>
                 ASN
-            </td>
-            <td>
+            </th>
+            <th>
                 Last Updated
-            </td>
-            <td>
-                Action
-            </td>
+            </th>
+            <th>
+            </th>
         </tr>
         <thead>
         <tbody>

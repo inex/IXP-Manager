@@ -90,6 +90,7 @@ class PhysicalInterfaceController extends Common
      * Display the form to edit a physical interface from the core bundle from
      *
      * @param   integer $id ID of the physical interface
+     * @param   integer $cb ID of core bundle
      *
      * @return View
      */
@@ -164,7 +165,7 @@ class PhysicalInterfaceController extends Common
         Former::populate( $data );
 
         return view( 'interfaces/physical/edit' )->with([
-            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames(),
+            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
             'switchports'                 => isset( $switchports ) ? $switchports : [],
             'pi'                          => $pi,
             'otherPICoreLink'             => $pi ? $pi->getOtherPICoreLink() : false,
@@ -254,22 +255,11 @@ class PhysicalInterfaceController extends Common
             D2EM::persist( $pi );
         }
 
-        if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'viid' ) ) ) ){
-            abort(404, 'Unknown virtual interface');
-        }
-
-        if( !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port' ) ) ) ) {
-            abort(404, 'Unknown switch');
-        }
+        $vi = D2EM::getRepository( VirtualInterfaceEntity::class    )->find( $request->input( 'viid'        ) );    /** @var VirtualInterfaceEntity     $vi   */
+        $sp = D2EM::getRepository( SwitchPortEntity::class          )->find( $request->input( 'switch-port' ) );    /** @var SwitchPortEntity           $sp   */
 
         // when presenting the add PI form, we include peering and unknown port types; set the selected port as peering:
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
-
-        if( $request->input( 'id' ) ) {
-            $urlRedirect = 'interfaces/physical/edit/'.$pi->getId();
-        } else {
-            $urlRedirect = 'interfaces/physical/add/0/vintid/'.$vi->getId();
-        }
 
         if( $pi->getMonitorindex() != $request->input( 'monitorindex' ) ) {
             if( !$vi->getCustomer()->isUniqueMonitorIndex( $request->input( 'monitorindex' ) ) ) {
@@ -277,7 +267,7 @@ class PhysicalInterfaceController extends Common
 
                 // doesnt work set all the input and replace the value of the monitor with a new value
                 $request->merge([ 'monitorindex' => D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer()) ]);
-                return Redirect::to( $urlRedirect )->withInput($request->all());
+                return Redirect::back( )->withInput( $request->all() );
             }
         }
 
@@ -291,7 +281,7 @@ class PhysicalInterfaceController extends Common
             // check if the user has selected the same switch port
             if( $pi->getOtherPICoreLink()->getSwitchPort()->getSwitcher()->getId() == $sp->getSwitcher()->getId() ){
                 AlertContainer::push( 'The switch port selected for this physical interface is already used by the other physical interface of the core bundle. Please select another switch port', Alert::DANGER );
-                return Redirect::to( $urlRedirect )->withInput($request->all());
+                return Redirect::back( )->withInput( $request->all() );
             }
 
             $sp->setType( SwitchPortEntity::TYPE_CORE );
@@ -299,26 +289,26 @@ class PhysicalInterfaceController extends Common
 
         $this->setBundleDetails( $vi );
 
-        $pi->setSwitchPort( $sp );
-        $pi->setVirtualInterface( $vi );
-        $pi->setStatus( $request->input( 'status' ) );
-        $pi->setSpeed( $request->input( 'speed' ) );
-        $pi->setDuplex( $request->input( 'duplex' ) );
-        $pi->setAutoneg( $request->input( 'autoneg-label' ) ? 1 : 0 );
-        $pi->setMonitorindex( $request->input( 'monitorindex' ) );
-        $pi->setNotes( $request->input( 'notes' ) );
+        $pi->setSwitchPort(         $sp );
+        $pi->setVirtualInterface(   $vi );
+        $pi->setStatus(             $request->input( 'status'           ) );
+        $pi->setSpeed(              $request->input( 'speed'            ) );
+        $pi->setDuplex(             $request->input( 'duplex'           ) );
+        $pi->setAutoneg(            $request->input( 'autoneg-label'    ) ? 1 : 0 );
+        $pi->setMonitorindex(       $request->input( 'monitorindex'     ) );
+        $pi->setNotes(              $request->input( 'notes'            ) );
 
         // Fanout part
         if( $request->input('fanout-checked' ) ) {
             if( ! $this->processFanoutPhysicalInterface( $request, $pi, $vi) ){
-                return Redirect::to( $urlRedirect )->withInput( Input::all() );
+                return Redirect::back( )->withInput( Input::all() );
             }
 
             if( $related = $pi->getRelatedInterface() ) {
                 /** @var PhysicalInterfaceEntity $related */
-                $related->setSpeed( $request->input( 'speed' ) );
-                $related->setStatus( $request->input( 'status' ) );
-                $related->setDuplex( $request->input( 'duplex' ) );
+                $related->setSpeed(     $request->input( 'speed'    ) );
+                $related->setStatus(    $request->input( 'status'   ) );
+                $related->setDuplex(    $request->input( 'duplex'   ) );
             }
         }
 
@@ -368,6 +358,4 @@ class PhysicalInterfaceController extends Common
 
         return response()->json( [ 'success' => true ] );
     }
-
-
 }

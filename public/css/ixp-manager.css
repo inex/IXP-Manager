@@ -673,3 +673,8 @@ a.delInputRow {
 td a:hover{
     text-decoration: none;
 }
+
+
+.help-block {
+    display: none;
+}

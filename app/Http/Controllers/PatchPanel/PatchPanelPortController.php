@@ -200,6 +200,8 @@ class PatchPanelPortController extends Controller
             'description'           => $ppp->getDescription(),
             'number'                => $ppp->getNumber(),
             'patch_panel'           => $ppp->getPatchPanel()->getName(),
+            'cabinet_name'          => $ppp->getPatchPanel()->getCabinet()->getName(),
+            'colocation_centre'     => $ppp->getPatchPanel()->getCabinet()->getLocation()->getName(),
             'colo_circuit_ref'      => $ppp->getColoCircuitRef(),
             'ticket_ref'            => $ppp->getTicketRef(),
             'switch'                => $ppp->getSwitchId(),

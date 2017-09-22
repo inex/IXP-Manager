@@ -59,8 +59,15 @@ $this->layout( 'layouts/ixpv4' );
                 ->fromQuery( $t->custs, 'name' )
                 ->placeholder( 'Choose a Customer' )
                 ->addClass( 'chzn-select' )
+                ->disabled( $t->selectedCust ? true : false )
                 ->blockHelp( '' );
             ?>
+
+            <?php if( $t->selectedCust ): ?>
+                <?= Former::hidden( 'cust' )
+                    ->value( $t->selectedCust->getId() )
+                ?>
+            <?php endif; ?>
 
             <?= Former::select( 'vlan' )
                 ->label( 'Vlan' )
@@ -77,16 +84,15 @@ $this->layout( 'layouts/ixpv4' );
                 ->check( false )
             ?>
 
-            <?= Former::checkbox( 'ipv4-enabled' )
-                ->label('&nbsp;')
-                ->text( 'IPv4 Enabled' )
-                ->blockHelp( ' ' )
-
-            ?>
-
             <?= Former::checkbox( 'ipv6-enabled' )
                 ->label('&nbsp;')
                 ->text( 'IPv6 Enabled' )
+                ->blockHelp( ' ' )
+            ?>
+
+            <?= Former::checkbox( 'ipv4-enabled' )
+                ->label('&nbsp;')
+                ->text( 'IPv4 Enabled' )
                 ->blockHelp( ' ' )
             ?>
 
@@ -107,7 +113,7 @@ $this->layout( 'layouts/ixpv4' );
             <?= Former::select( 'switch' )
                 ->label( 'Switch' )
                 ->fromQuery( $t->pi_switches, 'name' )
-                ->placeholder( 'Choose a Switch' )
+                ->placeholder( 'Choose a switch' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
             ?>
@@ -117,6 +123,11 @@ $this->layout( 'layouts/ixpv4' );
                 ->placeholder( 'Choose a switch port' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Shows ports that have a type of <em>Peering</em> or <em>Unknown</em> and have not been associated with any other customer / virtual interface.' );
+            ?>
+
+            <?= Former::hidden( 'original-switch-port')
+                ->id('original-switch-port')
+                ->forceValue( old('switch-port') )
             ?>
 
             <?= Former::select( 'status' )
@@ -187,102 +198,15 @@ $this->layout( 'layouts/ixpv4' );
 <br/>
 
 <div class="row">
-    <div id='ipv4-area' class="col-sm-4" style="display: none">
-        <h3>
-            IPv4 Details
-        </h3>
-        <hr>
-        <?= Former::select( 'ipv4-address' )
-            ->label( 'IPv4 Address' )
-            ->placeholder( 'Choose IPv4 Address' )
-            ->addClass( 'chzn-select' )
-            ->blockHelp( 'Select the IP address to assign to this VLAN interface. If empty, ensure you have selected a VLAN above and that the VLAN has available addresses.' );
-        ?>
-        <?= Former::text( 'ipv4-hostname' )
-            ->label( 'IPv4 Hostname' )
-            ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the customer. E.g. <code>customer.ixpname.net</code>.' );
-        ?>
 
-        <?= Former::text( 'ipv4-bgp-md5-secret' )
-            ->label( 'IPv4 BGP MD5 Secret' )
-            ->appendIcon( 'generator-ipv4 glyphicon glyphicon-refresh' )
-            ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. If supported by your browser, it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
-        ?>
-
-        <?= Former::checkbox( 'ipv4-can-ping' )
-            ->label( '&nbsp;' )
-            ->text( 'IPv4 Ping Allowed / Possible' )
-            ->check( true )
-            ->blockHelp( "IXP's typically monitor customer interfaces for reachability / latency using pings. If the customer has asked you not to do this, uncheck this box." )
-        ?>
-
-        <?= Former::checkbox( 'ipv4-monitor-rcbgp' )
-            ->label( '&nbsp;' )
-            ->text( 'IPv4 Monitor Route Collector BGP' )
-            ->check(true)
-            ->blockHelp( "IXP's often monitor a customer's route collector BGP session. If this is not possible / unsuitable for this customer, uncheck this box." )
-        ?>
+    <div id='ipv6-area' class="col-sm-4" style="<?= old( 'ipv6-enabled' ) || Former::checkbox( 'ipv6-enabled')->getValue() !== null ?: 'display: none' ?>">
+        <?= $t->insert( 'interfaces/common/vli/ipv6.foil.php' ) ?>
     </div>
 
-    <div id='ipv6-area' class="col-sm-4" style="display: none">
-        <h3>
-            IPv6 Details
-        </h3>
-        <hr>
-        <?= Former::select( 'ipv6-address' )
-            ->label( 'IPv6 Address' )
-            ->placeholder( 'Choose IPv6 Address' )
-            ->addClass( 'chzn-select' )
-            ->blockHelp( 'Select the IP address to assign to this VLAN interface. If empty, ensure you have selected a VLAN above and that the VLAN has available addresses.' );
-        ?>
-        <?= Former::text( 'ipv6-hostname' )
-            ->label( 'IPv6 Hostname' )
-            ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the customer. E.g. <code>customer.ixpname.net</code>.' );
-        ?>
-
-        <?= Former::text( 'ipv6-bgp-md5-secret' )
-            ->label( 'IPv6 BGP MD5 Secret' )
-            ->appendIcon( 'generator-ipv6 glyphicon glyphicon-refresh' )
-            ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. Can be copied from the IPv4 version if set or (if supported by your browser), it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
-        ?>
-
-        <?= Former::checkbox( 'ipv6-can-ping' )
-            ->label( '&nbsp;' )
-            ->text( 'IPv6 Ping Allowed / Possible' )
-            ->check(true)
-            ->blockHelp( "IXP's typically monitor customer interfaces for reachability / latency using pings. If the customer has asked you not to do this, uncheck this box." )
-        ?>
-
-        <?= Former::checkbox( 'ipv6-monitor-rcbgp' )
-            ->label( '&nbsp;' )
-            ->text( 'IPv6 Monitor Route Collector BGP' )
-            ->check(true)
-            ->blockHelp( "IXP's often monitor a customer's route collector BGP session. If this is not possible / unsuitable for this customer, uncheck this box." )
-        ?>
+    <div id='ipv4-area' class="col-sm-4" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled')->getValue() !== null ?: 'display: none' ?>">
+        <?= $t->insert( 'interfaces/common/vli/ipv4.foil.php' ) ?>
     </div>
 
-    <?php if( config( 'ixp.reseller.enabled') ): ?>
-        <div id='fanout-area' class="col-sm-4" style="display: none">
-            <h3>
-                Fanout Details
-            </h3>
-            <hr>
-            <?= Former::select( 'switch-fanout' )
-                ->label( 'Switch' )
-                ->fromQuery( $t->pi_switches, 'name' )
-                ->placeholder( 'Choose a Switch' )
-                ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
-            ?>
-
-            <?= Former::select( 'switch-port-fanout' )
-                ->label( 'Switch Port' )
-                ->placeholder( 'Choose a switch port' )
-                ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
-            ?>
-        </div>
-    <?php endif; ?>
 </div>
 
 <div class="row">
@@ -306,6 +230,9 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-<?= $t->insert( 'interfaces/virtual/js/wizard' ); ?>
+    <?= $t->insert( 'interfaces/common/js/interface-functions' ); ?>
+    <?= $t->insert( 'interfaces/common/js/pi-form-logic' ); ?>
+    <?= $t->insert( 'interfaces/common/js/vli-form-logic' ); ?>
+    <?= $t->insert( 'interfaces/virtual/js/wizard' ); ?>
 <?php $this->append() ?>
 

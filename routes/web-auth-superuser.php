@@ -52,27 +52,29 @@ Route::group( [ 'prefix' => 'layer2-address' ], function() {
 
 Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'list',                             'RouterController@list'     )->name( 'router/list'  );
+    Route::get(     'status',                           'RouterController@status'   )->name('router/status' );
     Route::get(     'add',                              'RouterController@edit'     )->name( 'router/add'   );
     Route::get(     'edit/{id}',                        'RouterController@edit'     )->name( 'router/edit'  );
     Route::get(     'view/{id}',                        'RouterController@view'     );
     Route::get(     'delete/{id}',                      'RouterController@delete'   );
     Route::get(     'gen-config/{id}',                  'RouterController@genConfig');
     Route::post(    'store',                            'RouterController@store'    );
+
 });
 
 Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
     Route::group( [  'prefix' => 'virtual' ], function() {
-
-        Route::get(     'list',                             'VirtualInterfaceController@list'       )->name(    'interfaces/virtual/list'       );
-        Route::get(     'edit/{id}',                        'VirtualInterfaceController@add'        )->name(    'interfaces/virtual/edit'       );
-        Route::get(     'add/',                             'VirtualInterfaceController@add'        )->name(    'interfaces/virtual/add'        );
-        Route::get(     'add/custid/{custid}',              'VirtualInterfaceController@addCustId'  )->name(    'interfaces/virtual/add/custid' );
-        Route::get(     'view/{id}',                        'VirtualInterfaceController@view'       );
-        Route::get(     'wizard-add',                       'VirtualInterfaceController@wizard'     )->name(    'interfaces/virtual/wizard'     );
-        Route::post(    'store',                            'VirtualInterfaceController@store'      );
-        Route::post(    'wizard-add',                       'VirtualInterfaceController@storeWizard')->name(    'interfaces/virtual/wizard-save');
-        Route::post(    'delete/{id}',                      'VirtualInterfaceController@delete' );
-
+        Route::get(     'list',                             'VirtualInterfaceController@list'               )->name(    'interfaces/virtual/list'               );
+        Route::get(     'edit/{id}',                        'VirtualInterfaceController@add'                )->name(    'interfaces/virtual/edit'               );
+        Route::get(     'add/',                             'VirtualInterfaceController@add'                )->name(    'interfaces/virtual/add'                );
+        Route::get(     'add/custid/{custid}',              'VirtualInterfaceController@addCustId'          )->name(    'interfaces/virtual/add/custid'         );
+        Route::get(     'view/{id}',                        'VirtualInterfaceController@view'               );
+        Route::get(     'wizard-add',                       'VirtualInterfaceController@wizard'             )->name(    'interfaces/virtual/wizard'             );
+        Route::get(     'wizard-add/custid/{custid}',       'VirtualInterfaceController@addWizardCustId'    )->name(   'interfaces/virtual/add-wizard/custid'   );
+        Route::post(    'store',                            'VirtualInterfaceController@store'              );
+        Route::post(    'wizard-add',                       'VirtualInterfaceController@storeWizard'        )->name(    'interfaces/virtual/wizard-save'        );
+        Route::post(    'delete/{id}',                      'VirtualInterfaceController@delete'             );
+        
     });
 
     Route::group( [  'prefix' => 'physical' ], function() {
@@ -87,14 +89,16 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 
     Route::group( [  'prefix' => 'vlan' ], function() {
-
-        Route::get(     'list',                             'VlanInterfaceController@list'  )->name(     'interfaces/vlan/list'                         );
-        Route::get(     'view/{id}',                        'VlanInterfaceController@view'  )->name(     'interfaces/vlan/view'                         );
-        Route::get(     'edit/{id}',                        'VlanInterfaceController@edit'  )->name(     'interfaces/vlan/edit'                         );
-        Route::get(     'edit/{id}/vintid/{viid}',          'VlanInterfaceController@edit'  )->name(     'interfaces/vlan/edit/from-virtual-interface'  );
-        Route::get(     'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit'  )->name(     'interfaces/vlan/add'                          );
-        Route::post(    'store',                            'VlanInterfaceController@store' )->name(    'interfaces/vlan/store'                         );
-        Route::post(    'delete/{id}',                      'VlanInterfaceController@delete');
+        Route::get(     'list',                             'VlanInterfaceController@list'      )->name(    'interfaces/vlan/list'                          );
+        Route::get(     'view/{id}',                        'VlanInterfaceController@view'      )->name(    'interfaces/vlan/view'                          );
+        Route::get(     'edit/{id}',                        'VlanInterfaceController@edit'      )->name(    'interfaces/vlan/edit'                          );
+        Route::get(     'duplicate/{fromid}/to/{toid}',     'VlanInterfaceController@duplicate' )->name(    'interfaces/vlan/duplicate'                     );
+        Route::get(     'edit/{id}/vintid/{viid}',          'VlanInterfaceController@edit'      )->name(    'interfaces/vlan/edit/from-virtual-interface'   );
+        Route::get(     'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit'      )->name(    'interfaces/vlan/add'                           );
+        Route::post(    'store',                            'VlanInterfaceController@store'     )->name(    'interfaces/vlan/store'                         );
+        Route::post(    'delete/{id}',                      'VlanInterfaceController@delete'    );
+        
+        
     });
 
     Route::group( [  'prefix' => 'sflow-receiver' ], function() {
