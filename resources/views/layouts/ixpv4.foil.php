@@ -54,15 +54,15 @@
     // menu templates per user type:
 
     if( !Auth::check() ) {
-        echo $t->insert("menus/public");
+        echo $t->insert("layouts/menus/public");
     } elseif( Auth::user()->isCustUser() && Auth::user()->getCustomer()->isTypeAssociate() ) {
-        echo $t->insert("menus/associate");
+        echo $t->insert("layouts/menus/associate");
     } elseif( Auth::user()->isCustUser() ) {
-        echo $t->insert("menus/custuser");
+        echo $t->insert("layouts/menus/custuser");
     } elseif( Auth::user()->isCustUser() ) {
-        echo $t->insert("menus/custadmin");
+        echo $t->insert("layouts/menus/custadmin");
     } elseif( Auth::user()->isSuperUser() ) {
-        echo $t->insert("menus/superuser");
+        echo $t->insert("layouts/menus/superuser");
     }
 ?>
 
@@ -140,25 +140,15 @@
     <script type="text/javascript" src="<?= asset('/js/ixp-manager.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/bootbox.min.js') ?>"></script>
 
-    <?php if( Auth::check() ): ?>
     <script>
-        //$( ".chzn-select" ).chosen( { width: '100%' } );
-        $( ".chzn-select" ).select2({
-            width: '100%'
-        });
+        $( ".chzn-select" ).select2({ width: '100%' });
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-            $( "#menu-select-customer" ).select2().change( function(){
+            $( "#menu-select-customer" ).select2({ placeholder: "Jump to customer...", allowClear: true }).change( function(){
                 document.location.href = '<?= url( "/customer/overview" ) ?>/id/' + $( "#menu-select-customer" ).val();
             });
-
-            <?php /* {if isset( $acust )}
-                $( "#menu-select-customer" ).val( {$acust.id} );
-                $( "#menu-select-customer" ).trigger( "changed" );
-            {/if} */ ?>
         <?php endif; ?>
     </script>
-    <?php endif; ?>
 
 
     <?php $this->section('scripts') ?>
