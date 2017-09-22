@@ -258,6 +258,7 @@ class VirtualInterfaceController extends Common
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/virtual/wizard' )->with([
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getNames(),
+            'vli'                   => false,
             'vlans'                 => D2EM::getRepository( VlanEntity::class )->getNames( false ),
             'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
             'pi_states'             => PhysicalInterfaceEntity::$STATES,
@@ -276,15 +277,15 @@ class VirtualInterfaceController extends Common
      */
     public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse {
         // all validation of ids is in the request object, App\Http\Requests\StoreVirtualInterfaceWizard
-        $cust   = D2EM::getRepository( CustomerEntity::class   )->find( $request->input( 'cust'        ) );    /** @var CustomerEntity   $cust   */
-        $vlan   = D2EM::getRepository( VlanEntity::class       )->find( $request->input( 'vlan'        ) );    /** @var VlanEntity       $vlan   */
-        $sp     = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port' ) );    /** @var SwitchPortEntity $sp     */
+        $c   = D2EM::getRepository( CustomerEntity::class   )->find( $request->input( 'cust'        ) );    /** @var CustomerEntity   $cust   */
+        $v   = D2EM::getRepository( VlanEntity::class       )->find( $request->input( 'vlan'        ) );    /** @var VlanEntity       $vlan   */
+        $sp  = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port' ) );    /** @var SwitchPortEntity $sp     */
 
         $vi = new VirtualInterfaceEntity;
         D2EM::persist($vi);
 
-        $vi->setTrunk( $request->input( 'trunk' ) ?? false );
-        $vi->setCustomer( $cust );
+        $vi->setTrunk( $request->input( 'trunk', false ) );
+        $vi->setCustomer( $c );
 
 
         $pi = new PhysicalInterfaceEntity;
@@ -299,45 +300,28 @@ class VirtualInterfaceController extends Common
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
         $pi->setSwitchPort( $sp );
 
-        $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $cust ) );
-
-
-        if( !$this->processFanoutPhysicalInterface( $request, $pi, $vi) ) {
-            return Redirect::to('virtualInterface/add-wizard' )->withInput( Input::all() );
-        }
+        $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $c ) );
 
         $vli = new VlanInterfaceEntity();
         D2EM::persist($vli);
 
-        $vli->setIrrdbfilter(   $request->input( 'irrdbfilter' )    ?? false );
-        $vli->setMcastenabled(  $request->input( 'mcastenabled' )   ?? false );
-        $vli->setRsclient(      $request->input( 'rsclient' )       ?? false );
-        $vli->setAs112client(   $request->input( 'as112client' )    ?? false );
-        $vli->setMaxbgpprefix(  $request->input( 'maxbgpprefix' ) );
-        $vli->setVlan( $vlan );
+        $vli->setVirtualInterface(  $vi );
+        $vli->setVlan(              $v  );
+        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter',  false ) );
+        $vli->setMcastenabled(      $request->input( 'mcastenabled', false ) );
+        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix', null  ) === "0" ? null : $request->input( 'maxbgpprefix', null ) );
+        $vli->setRsclient(          $request->input( 'rsclient',     false ) );
+        $vli->setAs112client(       $request->input( 'as112client',  false ) );
+        $vli->setBusyhost(          false );
 
-        $ipv4Set = null;
-        $ipv6Set = null;
-
-        if( $request->input('ipv4-enabled' ) ){
-            $ipv4Set = $this->setIp($request, $vlan, $vli, false );
-        }
-
-        if( $request->input('ipv6-enabled' ) ){
-            $ipv6Set = $this->setIp($request, $vlan, $vli, true );
-        }
-
-        if( ( $request->input('ipv4-enabled' ) && $ipv4Set == false ) || ( $request->input('ipv6-enabled' ) && $ipv6Set == false ) ) {
+        if( !$this->setIp($request, $v, $vli, false ) || !$this->setIp($request, $v, $vli, true ) ) {
             return Redirect::to('virtualInterface/add-wizard' )->withInput( Input::all() );
         }
 
-        $vli->setVirtualInterface( $vi );
-
         D2EM::flush();
-
         AlertContainer::push( "New interface created!", Alert::SUCCESS );
 
-        return Redirect::to( 'customer/overview/tab/ports/id/' . $cust->getId() );
+        return Redirect::route( 'interfaces/virtual/edit', [ 'id' => $vi->getId() ] );
     }
 
     /**

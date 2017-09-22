@@ -4,14 +4,11 @@ var fanoutEnabled = <?= $t->enableFanout ? 'true' : 'false' ?>;
 
 $(document).ready( function() {
 
-    $( "#switch-port" ).on( 'change', excludeSp );
-    $( "#switch" ).on( 'change', updateSwitchPort );
-
     if( fanoutEnabled ) {
         checkFanout();
         $('#fanout').on( 'click', checkFanout );
         setSpFanout();
-        $( "#switch-port-fanout" ).on( 'change', excludeSp );
+        //$( "#switch-port-fanout" ).on( 'change', excludeSp );
         $( "#switch-fanout" ).on( 'change', updateSwitchPort );
     }
 });
@@ -33,26 +30,6 @@ function setSpFanout(){
 }
 
 
-// this function exclude the switch port selected in the switch port fanout dropdown ( and vice versa )
-function excludeSp() {
-    let type = "";
-    let otherType = '-fanout';
-
-    if( $( this ).attr( "id" ).substr( -6 ) === "fanout" ) {
-        type = "-fanout";
-        otherType = '';
-    }
-
-    let selectedValue = $( "#switch-port" + type ).val();
-    $( "#switch-port" + otherType +  " option" ).show().each(function( ) {
-        if( $( this ).val() === selectedValue ){
-            console.log( $( this ).val() );
-            console.log( selectedValue );
-            $( "#switch-port" + otherType +  " option[value='" + $( this ).val() + "']" ).hide();
-        }
-    });
-    $( "#switch-port" + otherType ).trigger( "change" );
-}
 
 
 function updateSwitchPort() {

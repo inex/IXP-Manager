@@ -125,36 +125,32 @@ class VlanInterfaceController extends Common
                 'irrdbfilter'               => $vli->getIrrdbfilter() ? 1 : 0,
                 'mcastenabled'              => $vli->getMcastenabled() ? 1 : 0,
                 'ipv4-enabled'              => $vli->getIpv4enabled() ? 1 : 0,
-                'ipv4-address'              => $vli->getIPv4Address() ? $vli->getIPv4Address()->getAddress() : null,
+                'ipv4-address'              => $vli->getIPv4Address() ? $vli->getIPv4Address()->getId() : null,
                 'ipv4-hostname'             => $vli->getIpv4hostname(),
                 'ipv4-bgp-md5-secret'       => $vli->getIpv4bgpmd5secret(),
                 'ipv4-can-ping'             => $vli->getIpv4canping() ? 1 : 0,
-                'ipv4-monitor-rcbgp'        => $vli->getIpv4canping() ? 1 : 0,
+                'ipv4-monitor-rcbgp'        => $vli->getIpv4monitorrcbgp() ? 1 : 0,
                 'maxbgpprefix'              => $vli->getMaxbgpprefix(),
                 'rsclient'                  => $vli->getRsclient() ? 1 : 0,
                 'as112client'               => $vli->getAs112client() ? 1 : 0,
                 'busyhost'                  => $vli->getBusyhost() ? 1 : 0,
                 'ipv6-enabled'              => $vli->getIpv6enabled() ? 1 : 0,
-                'ipv6-address'              => $vli->getIPv6Address(),
+                'ipv6-address'              => $vli->getIPv6Address() ? $vli->getIPv6Address()->getId() : null,
                 'ipv6-hostname'             => $vli->getIpv6hostname(),
                 'ipv6-bgp-md5-secret'       => $vli->getIpv6bgpmd5secret(),
                 'ipv6-can-ping'             => $vli->getIpv6canping()? 1 : 0,
-                'ipv6-monitor-rcbgp'        => $vli->getIpv6canping()? 1 : 0,
+                'ipv6-monitor-rcbgp'        => $vli->getIpv6monitorrcbgp() ? 1 : 0,
             ]);
         } else {
             // populate the form with default data
-            $md5 = str_random(16);
             Former::populate([
                 'irrdbfilter'               => 1,
                 'maxbgpprefix'              => $vi->getCustomer()->getMaxprefixes(),
-                'ipv4-bgp-md5-secret'       => $md5,
-                'ipv6-bgp-md5-secret'       => $md5,
-
             ]);
         }
 
         return view( 'interfaces/vlan/edit' )->with([
-            'vlan'                      => D2EM::getRepository( VlanEntity::class )->getNames( false ),
+            'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames( false ),
             'vli'                       => $vli ? $vli : false,
             'vi'                        => $vi,
             'duplicated'                => $duplicateTo ?? false
@@ -163,7 +159,7 @@ class VlanInterfaceController extends Common
 
 
     /**
-     * Edit a vlan interface (set all the data needed)
+     * Add / edit a vlan interface (set all the data needed)
      *
      * @param   StoreVlanInterface $request instance of the current HTTP request
      * @return  RedirectResponse
@@ -185,44 +181,29 @@ class VlanInterfaceController extends Common
             abort(404 , 'Unknown virtual Interface');
         }
 
-        $vl = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) );   /** @var VlanEntity $vl */
+        $v = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) );   /** @var VlanEntity $v */
 
-        $ipv4Set = false;
-        $ipv6Set = false;
-
-        if( $request->input('ipv4-enabled' ) ){
-            $ipv4Set = $this->setIp($request,$vl, $vli, false );
-        }
-
-        if( $request->input('ipv6-enabled' ) ){
-            $ipv6Set = $this->setIp($request,$vl, $vli, true );
-        }
-
-
-        if( ( $request->input('ipv4-enabled' ) && $ipv4Set == false ) || ( $request->input('ipv6-enabled' ) && $ipv6Set == false ) ) {
+        if( !$this->setIp( $request, $v, $vli, false ) || !$this->setIp( $request, $v, $vli, true ) ) {
             return Redirect::back()->withInput( Input::all() );
         }
 
         $vli->setVirtualInterface(  $vi );
-        $vli->setVlan(              $vl );
-        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter'  ) ? 1 : 0 );
-        $vli->setMcastenabled(      $request->input( 'mcastenabled' ) ? 1 : 0 );
-        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix' ) );
-        $vli->setRsclient(          $request->input( 'rsclient'     ) ? 1 : 0 );
-        $vli->setAs112client(       $request->input( 'as112client'  ) ? 1 : 0 );
-        $vli->setBusyhost(          $request->input( 'busyhost'     ) ? 1 : 0 );
-
+        $vli->setVlan(              $v  );
+        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter',  false ) );
+        $vli->setMcastenabled(      $request->input( 'mcastenabled', false ) );
+        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix', null  ) === "0" ? null : $request->input( 'maxbgpprefix', null ) );
+        $vli->setRsclient(          $request->input( 'rsclient',     false ) );
+        $vli->setAs112client(       $request->input( 'as112client',  false ) );
+        $vli->setBusyhost(          $request->input( 'busyhost',     false ) );
         D2EM::flush();
 
         AlertContainer::push( 'Vlan Interface updated successfully.', Alert::SUCCESS );
 
         if( $request->input('redirect2vi' ) || $request->input('duplicated' ) ) {
-            $urlRedirect = 'interfaces/virtual/edit/' . $vli->getVirtualInterface()->getId();
-        } else {
-            $urlRedirect = 'interfaces/vlan/list';
+            return Redirect::to( 'interfaces/virtual/edit/' . $vli->getVirtualInterface()->getId() );
         }
 
-        return Redirect::to( $urlRedirect );
+        return Redirect::to( 'interfaces/vlan/list' );
     }
 
     /**

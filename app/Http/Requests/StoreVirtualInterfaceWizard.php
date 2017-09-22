@@ -56,25 +56,35 @@ class StoreVirtualInterfaceWizard extends FormRequest
             'cust'                  => 'required|integer|exists:Entities\Customer,id',
             'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
             'trunk'                 => 'boolean',
+
             'switch'                => 'required|integer|exists:Entities\Switcher,id',
             'switch-port'           => 'required|integer|exists:Entities\SwitchPort,id',
             'status'                => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$STATES ) ),
             'speed'                 => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$SPEED ) ),
             'duplex'                => 'required|string|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),
+
             'maxbgpprefix'          => 'integer|nullable',
-            'irrdbfilter'           => 'boolean',
             'mcastenabled'          => 'boolean',
             'rsclient'              => 'boolean',
+            'irrdbfilter'           => 'boolean',
             'as112client'           => 'boolean',
+
+            'ipv4-enabled'          => 'boolean',
             'ipv4-address'          => 'ipv4' . ( $this->input('ipv4-enabled') ? '|required' : '|nullable' ),
+            'ipv4-hostname'         => 'string|max:255' . ( $this->input('ipv4-enabled') ? '|required' : '|nullable' ),
+            'ipv4-bgp-md5-secret'   => 'string|max:255|nullable',
             'ipv4canping'           => 'boolean',
             'ipv4monitorrcbgp'      => 'boolean',
+
+            'ipv6-enabled'          => 'boolean',
             'ipv6-address'          => 'ipv6' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
+            'ipv6-hostname'         => 'string|max:255' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
+            'ipv6-bgp-md5-secret'   => 'string|max:255|nullable',
             'ipv6canping'           => 'boolean',
             'ipv6monitorrcbgp'      => 'boolean',
-            'switch-fanout'         => 'ipv6' . ( $this->input('ipv6-enabled') ? '|required' : '|nullable' ),
-            'switch-fanout'         => 'integer' . ( $this->input('fanout') ? '|required' : '|nullable' ),
-            'switch-port-fanout'    => 'integer' . ( $this->input('fanout') ? '|required' : '|nullable' ),
+
         ];
     }
 }
+
+

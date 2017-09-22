@@ -223,6 +223,8 @@ abstract class Common extends Controller
      * Function checks if IPvX address is provided if IPvX is enabled. Then
      * it checks if given IPvX address exists for current Vlan:
      *
+     * NB: form sanity checking must be performed BEFORE calling this function
+     *
      * * if it exists, it ensures is is not assigned to another interface;
      * * if !exists, creates a new one.
      *
@@ -247,27 +249,28 @@ abstract class Common extends Controller
 
         $addressValue = $request->input( $iptype . '-address' );
 
-        if( !$addressValue ) {
-            AlertContainer::push( "Please select or enter an {$ipVer} address.", Alert::DANGER );
-            return false;
+        if( trim( $addressValue ) ) {
+            if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $v->getId(), 'address' => $addressValue ] ) ) ) {
+                $ip = new $entity();
+                $ip->setVlan( $v );
+                $ip->setAddress( $addressValue );
+                D2EM::persist( $ip );
+            } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
+                AlertContainer::push( "{$ipVer} address {$addressValue} is already in use by another VLAN interface on the same VLAN.", Alert::DANGER );
+                return false;
+            }
+
+            $vli->$setterIPv( $ip );
+
+        } else {
+            $vli->$setterIPv( null );
         }
 
-        if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $v->getId(), 'address' => $addressValue ] ) ) ) {
-            $ip = new $entity();
-            $ip->setVlan( $v );
-            $ip->setAddress( $addressValue );
-            D2EM::persist( $ip );
-        } else if( $ip->getVlanInterface() && $ip->getVlanInterface() != $vli ) {
-            AlertContainer::push( "{$ipVer} address {$addressValue} is already in use by another VLAN interface on the same VLAN.", Alert::DANGER );
-            return false;
-        }
-
-        $vli->$setterIPv( $ip );
         $vli->$setterHostname( $request->input( $iptype . '-hostname' ) );
-        $vli->$setterEnabled( true );
-        $vli->$setterSecret( $request->input( $iptype . '-bgp-md5-secret' ) );
-        $vli->$setterPing( $request->input( $iptype . '-can-ping' ) );
-        $vli->$setterMonitor( $request->input( $iptype . '-monitor-rcbgp' ) );
+        $vli->$setterEnabled(  $request->input( $iptype . '-enabled', false ) );
+        $vli->$setterSecret(   $request->input( $iptype . '-bgp-md5-secret' ) );
+        $vli->$setterPing(     $request->input( $iptype . '-can-ping', false ) );
+        $vli->$setterMonitor(  $request->input( $iptype . '-monitor-rcbgp', false ) );
 
         return true;
     }
