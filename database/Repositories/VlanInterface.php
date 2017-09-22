@@ -644,7 +644,13 @@ class VlanInterface extends EntityRepository
     }
 
 
-
+    /**
+     * Utility function to copy all l2a's from one vli to another
+     *
+     * @param VlanInterfaceEntity $s Source VLI for l2a's
+     * @param VlanInterfaceEntity $d Destinatin VLI for copied l2a's
+     * @return VlanInterface
+     */
     public function copyLayer2Addresses( VlanInterfaceEntity $s, VlanInterfaceEntity $d ): VlanInterface {
         foreach( $s->getLayer2Addresses() as $l2a ) {
             $n = new Layer2AddressEntity();
