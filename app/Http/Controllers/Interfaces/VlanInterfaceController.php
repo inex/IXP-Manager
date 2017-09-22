@@ -87,10 +87,10 @@ class VlanInterfaceController extends Common
     }
 
     /**
-     * Display a VLAN interface
+     * Duplicate a VLAN interface
      *
-     * @param int $fromid ID of vlan Interface that we will get the information
-     * @param int $toid ID of vlan Interface that we will put the value of the $fromid
+     * @param int $fromid ID of VLI that we will get the information from
+     * @param int $toid   ID of vlan where we will create the new VLI
      *
      * @return  View
      */
@@ -116,6 +116,8 @@ class VlanInterfaceController extends Common
         $vi = false; /** @var VirtualInterfaceEntity $vi */
         if( $viid and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
             abort(404);
+        } else if( $vli ) {
+            $vi = $vli->getVirtualInterface();
         }
 
         if( $vli ) {
@@ -124,16 +126,19 @@ class VlanInterfaceController extends Common
                 'vlan'                      => $duplicateTo ? $duplicateTo : $vli->getVlan()->getId() ,
                 'irrdbfilter'               => $vli->getIrrdbfilter() ? 1 : 0,
                 'mcastenabled'              => $vli->getMcastenabled() ? 1 : 0,
+
                 'ipv4-enabled'              => $vli->getIpv4enabled() ? 1 : 0,
                 'ipv4-address'              => $vli->getIPv4Address() ? $vli->getIPv4Address()->getId() : null,
                 'ipv4-hostname'             => $vli->getIpv4hostname(),
                 'ipv4-bgp-md5-secret'       => $vli->getIpv4bgpmd5secret(),
                 'ipv4-can-ping'             => $vli->getIpv4canping() ? 1 : 0,
                 'ipv4-monitor-rcbgp'        => $vli->getIpv4monitorrcbgp() ? 1 : 0,
+
                 'maxbgpprefix'              => $vli->getMaxbgpprefix(),
                 'rsclient'                  => $vli->getRsclient() ? 1 : 0,
                 'as112client'               => $vli->getAs112client() ? 1 : 0,
                 'busyhost'                  => $vli->getBusyhost() ? 1 : 0,
+
                 'ipv6-enabled'              => $vli->getIpv6enabled() ? 1 : 0,
                 'ipv6-address'              => $vli->getIPv6Address() ? $vli->getIPv6Address()->getId() : null,
                 'ipv6-hostname'             => $vli->getIpv6hostname(),
@@ -153,7 +158,7 @@ class VlanInterfaceController extends Common
             'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames( false ),
             'vli'                       => $vli ? $vli : false,
             'vi'                        => $vi,
-            'duplicated'                => $duplicateTo ?? false
+            'duplicateTo'               => $duplicateTo ?? false
         ]);
     }
 
@@ -167,13 +172,21 @@ class VlanInterfaceController extends Common
     public function store( StoreVlanInterface $request ): RedirectResponse {
 
         /** @var VlanInterfaceEntity $vli */
-        if( $request->input( 'id', false ) && !$request->input( 'duplicated' ) ) {
+        if( $request->input( 'id', false ) ) {
             // get the existing VlanInterface object for that ID
             if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort( 404, 'Unknown vlan interface' );
             }
         } else {
             $vli = new VlanInterfaceEntity;
+            D2EM::persist( $vli );
+        }
+
+        // are we duplicating?
+        if( $request->input( 'duplicate' ) ) {
+            $sourceVli = $vli;
+            $vli = new VlanInterfaceEntity;
+            D2EM::getRepository( VlanInterfaceEntity::class )->copyLayer2Addresses( $sourceVli, $vli );
             D2EM::persist( $vli );
         }
 

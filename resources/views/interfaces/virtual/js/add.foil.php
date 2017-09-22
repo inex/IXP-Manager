@@ -102,13 +102,13 @@ function duplicateVliPopup( id, viid ){
             on an 802.1q tagged port for example.
             </p>
             <p>
-            Duplicating can also be used to copy all values to a new VLAN with needing to remember / create the
+            Duplicating can also be used to copy all values to a new VLAN without needing to remember / create the
             matching IP addresses. In this case, copy and then delete the older VLAN interface.
             </p>
             <p>
                 <b>
                 While IXP Manager will let you create multiple VLAN interfaces on an untagged port, it is
-                only a convenience for the above but may have unexpected consequences in production!
+                only a convenience for the above but may have unexpected consequences in production.
                 </b>
             </p>
             <p>

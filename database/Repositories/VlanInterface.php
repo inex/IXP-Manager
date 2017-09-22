@@ -5,8 +5,10 @@ namespace Repositories;
 use Doctrine\ORM\EntityRepository;
 
 use Entities\{
+    Layer2Address as Layer2AddressEntity,
     Router as RouterEntity,
-    Vlan as VlanEntity
+    Vlan as VlanEntity,
+    VlanInterface as VlanInterfaceEntity
 };
 
 /**
@@ -639,6 +641,20 @@ class VlanInterface extends EntityRepository
                     WHERE l2a.mac IS NOT NULL
                     ORDER BY viid"
         )->getArrayResult();
+    }
+
+
+
+    public function copyLayer2Addresses( VlanInterfaceEntity $s, VlanInterfaceEntity $d ): VlanInterface {
+        foreach( $s->getLayer2Addresses() as $l2a ) {
+            $n = new Layer2AddressEntity();
+            $n->setVlanInterface( $d );
+            $d->addLayer2Address( $n );
+            $n->setMac( $l2a->getMac() );
+            $this->getEntityManager()->persist( $n );
+        }
+
+        return $this;
     }
 
 }

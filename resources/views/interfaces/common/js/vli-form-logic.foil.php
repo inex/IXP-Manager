@@ -11,6 +11,9 @@ const dd_vlan         = $( "#vlan" );
 const div_ipv6        = $( "#ipv6-area" );
 const div_ipv4        = $( "#ipv4-area" );
 
+// array of AJAX requests for we can execuet other code when() then complete
+let ajaxRequests = [];
+
 //////////////////////////////////////////////////////////////////////////////////////
 // action bindings:
 
