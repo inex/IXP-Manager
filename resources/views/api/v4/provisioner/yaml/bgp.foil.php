@@ -14,7 +14,7 @@ bgp:
 <?php foreach( $t->neighbors as $neighbor ): ?>
 <?php if( isset( $neighbor['ip']          ) ){ ?>        <?= $neighbor['ip']                         . ":\n" ?><?php } ?>
 <?php if( isset( $neighbor['description'] ) ){ ?>          description: <?= $neighbor['description'] . "\n" ?><?php } ?>
-<?php if( isset( $neighbor['asn']         ) ){ ?>          asn: <?= $neighbor['asn']                 . "\n" ?><?php } ?>
+<?php if( isset( $neighbor['asn']         ) ){ ?>          remote_as: <?= $neighbor['asn']           . "\n" ?><?php } ?>
 <?php if( isset( $neighbor['cost']        ) ){ ?>          cost: <?= $neighbor['cost']               . "\n" ?><?php } ?>
 <?php if( isset( $neighbor['preference']  ) ){ ?>          preference: <?= $neighbor['preference']   . "\n" ?><?php } ?>
 <?php endforeach; ?>
