@@ -137,17 +137,20 @@ $this->layout( 'layouts/ixpv4' );
                             ->label( 'BFD' )
                             ->unchecked_value( 0 )
                             ->value( 0 )
+                            ->blockHelp( "" );
                         ?>
 
                         <?= Former::text( 'subnet' )
                             ->label( 'SubNet' )
                             ->placeholder( '192.0.2.0/30' )
+                            ->blockHelp( "" );
                         ?>
                     <?php endif; ?>
 
                     <?= Former::hidden( 'type' )
                         ->id( 'type')
                         ->value( $t->cb->getType() )
+                        ->blockHelp( "" );
                     ?>
 
                     <?= Former::hidden( 'cb' )
@@ -156,7 +159,9 @@ $this->layout( 'layouts/ixpv4' );
                     ?>
 
                 </div>
+
                 <div style="clear: both"></div>
+
                 <?=Former::actions(
                     Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
                     Former::default_link( 'Cancel' )->href( action( 'Interfaces\CoreBundleController@list' ) ),
@@ -333,9 +338,7 @@ $this->layout( 'layouts/ixpv4' );
             ->action( action ( 'Interfaces\CoreBundleController@addCoreLink' ) )
             ->customWidthClass( 'col-sm-6' )
         ?>
-        <div id="core-links">
-
-        </div>
+        <div id="core-links"></div>
 
         <?= Former::hidden( 'nb-core-links' )
             ->id( 'nb-core-links')
@@ -357,9 +360,9 @@ $this->layout( 'layouts/ixpv4' );
     <div class="col-sm-12 alert alert-danger" style="float: right;" role="alert">
         <div>
             <span style="line-height: 34px;">
-                <strong>Text ....</strong>
+                <strong>Delete core bundle ....</strong>
             </span>
-            <a class="btn btn btn-danger" onclick="deleteCoreBundle()" style="float: right;" title="Delete">
+            <a class="btn btn btn-danger" onclick="deleteElement( false , null )" style="float: right;" title="Delete">
                 Delete
             </a>
         </div>
@@ -370,4 +373,5 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'scripts' ) ?>
     <script type="text/javascript" src="<?= asset( '/bower_components/ip-address/dist/ip-address-globals.js' ) ?>"></script>
     <?= $t->insert( 'interfaces/core-bundle/js/edit-wizard' ); ?>
+    <?= $t->insert( 'interfaces/common/js/cb-functions' ); ?>
 <?php $this->append() ?>
