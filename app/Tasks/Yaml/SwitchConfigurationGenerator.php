@@ -94,7 +94,7 @@ class SwitchConfigurationGenerator
         foreach( $this->getSwitch()->getPorts() as $sp ) {
 
             /** @var \Entities\SwitchPort $sp */
-            if( !$sp->isTypePeering() && !$sp->isTypeCore() ) {
+            if( !$sp->isTypeUnset() && !$sp->isTypePeering() && !$sp->isTypeCore() ) {
                 continue;
             }
 
@@ -103,7 +103,7 @@ class SwitchConfigurationGenerator
                 continue;
             }
 
-            if( $sp->isTypePeering() && !in_array($pi->getVirtualInterface()->getId(), $visProcessed)  ) {
+            if( ( $sp->isTypeUnset() || $sp->isTypePeering() ) && !in_array($pi->getVirtualInterface()->getId(), $visProcessed)  ) {
                 $ports = array_merge($ports, $this->processVirtualInterface($pi->getVirtualInterface()));
                 $visProcessed[] = $pi->getVirtualInterface()->getId();
             } else if( $sp->isTypeCore() && !in_array($pi->getVirtualInterface()->getId(), $cbsProcessed ) && $pi->getCoreBundle()->isL2LAG() ) {
