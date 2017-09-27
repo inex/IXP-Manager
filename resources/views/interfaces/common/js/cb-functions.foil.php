@@ -3,7 +3,8 @@
      * set data to the switch port dropdown when we select a switcher
      */
     function setSwitchPort( sside, id, action, edit ){
-        switchId = $( "#switch-" + sside ).val();
+        let datas;
+        let switchId = $( "#switch-" + sside ).val();
 
         if( $("#nb-core-links").val() > 0 || edit ){
             $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
@@ -29,24 +30,24 @@
                     type: 'POST'
                 })
 
-                    .done( function( data ) {
-                        var options = "<option value=\"\">Choose a switch port</option>\n";
-                        $.each( data.listPorts, function( key, value ){
-                            options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
-                        });
-                        $( "#sp-" + sside + "-"+ id ).html( options );
-
-                        if( action == 'addBtn' ){
-                            selectNextSwitchPort( id, sside );
-                        }
-                    })
-                    .fail( function() {
-                        throw new Error( `Error running ajax query for ${url}` );
-                        alert( `Error running ajax query for ${url}` );
-                    })
-                    .always( function() {
-                        $( "#sp-" + sside + "-"+ id ).trigger( "changed" );
+                .done( function( data ) {
+                    let options = "<option value=\"\">Choose a switch port</option>\n";
+                    $.each( data.listPorts, function( key, value ){
+                        options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
                     });
+                    $( "#sp-" + sside + "-"+ id ).html( options );
+
+                    if( action == 'addBtn' ){
+                        selectNextSwitchPort( id, sside );
+                    }
+                })
+                .fail( function() {
+                    throw new Error( `Error running ajax query for ${url}` );
+                    alert( `Error running ajax query for ${url}` );
+                })
+                .always( function() {
+                    $( "#sp-" + sside + "-"+ id ).trigger( "changed" );
+                });
             }
         }
     }
