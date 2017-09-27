@@ -113,17 +113,17 @@
          */
         $( document ).on( 'click', "button[id|='remove-core-link']" ,function(e){
             e.preventDefault();
-            var id = ( this.id ).substring( 17 );
+            let id = ( this.id ).substring( 17 );
+            let beforeId = id - 1;
+
             $( "#core-link-" + id ).remove();
-            beforeId = id - 1;
 
             // allow the click on the delete button on the previous core link
-            $("#remove-core-link-"+beforeId).prop('disabled', false);
+            $( "#remove-core-link-"+beforeId ).prop( 'disabled', false );
 
             $("#nb-core-links").val( beforeId );
-            disableDropDown(id - 1 , false);
+            disableDropDown( id - 1 , false );
         });
     }
-
 </script>
 <?php $this->append() ?>

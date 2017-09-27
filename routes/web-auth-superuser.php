@@ -121,15 +121,15 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {
-        Route::get( 'list',                             'CoreBundleController@list' )->name( 'core-bundle/list');
-        Route::get( 'add-wizard',                       'CoreBundleController@addWizard' );
-        Route::get( 'edit/{id}',                        'CoreBundleController@edit' )->name( 'core-bundle/edit');
-        Route::post( 'add-core-link-frag',              'CoreBundleController@addCoreLinkFrag' );
-        Route::post( 'store-wizard',                    'CoreBundleController@storeWizard' );
-        Route::post( 'add-core-link',                   'CoreBundleController@addCoreLink' );
-        Route::post( '{id}/store-core-links',           'CoreBundleController@storeCoreLinks' );
-        Route::post( 'delete/{id}',                      'CoreBundleController@deleteCoreBundle' )->name( 'core-bundle/delete');
-        Route::post('core-link/delete/{id}',            'CoreBundleController@delete' );
+        Route::get( 'list',                             'CoreBundleController@list'             )->name( 'core-bundle/list');
+        Route::get( 'add-wizard',                       'CoreBundleController@addWizard'        );
+        Route::get( 'edit/{id}',                        'CoreBundleController@edit'             )->name( 'core-bundle/edit');
+        Route::post('add-core-link-frag',               'CoreBundleController@addCoreLinkFrag'  );
+        Route::post( 'store-wizard',                    'CoreBundleController@storeWizard'      );
+        Route::post( 'add-core-link',                   'CoreBundleController@addCoreLink'      );
+        Route::post( '{id}/store-core-links',           'CoreBundleController@storeCoreLinks'   );
+        Route::post( 'delete/{id}',                     'CoreBundleController@deleteCoreBundle' )->name( 'core-bundle/delete');
+        Route::post('core-link/delete/{id}',            'CoreBundleController@deleteCoreLink'   );
     });
 });
 

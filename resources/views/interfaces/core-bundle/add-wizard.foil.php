@@ -2,6 +2,7 @@
 /** @var Foil\Template\Template $t */
 $this->layout( 'layouts/ixpv4' );
 ?>
+
 <?php $this->section( 'headers' ) ?>
     <style>
         .checkbox input[type=checkbox]{
@@ -36,15 +37,17 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
-        <div class=" btn-group btn-group-xs" role="group">
-
+        <div class="btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= route( 'core-bundle/list' )?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
         </div>
     </li>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
 
-<?= $t->alerts() ?>
+    <?= $t->alerts() ?>
     <?= Former::open()->method( 'POST' )
         ->id( 'core-bundle-form' )
         ->action( action ( 'Interfaces\CoreBundleController@storeWizard' ) )
@@ -249,9 +252,9 @@ $this->layout( 'layouts/ixpv4' );
                     ->unchecked_value( 0 )
                     ->value( 1 )
                     ->check( true )
-                    ->style('margin-left : 50%' )
                 ?>
             </div>
+            <div style="clear: both"></div>
             <div class="well help-block">
                 You have a number of options when assigning a port:
 
@@ -301,23 +304,6 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
     <script type="text/javascript" src="<?= asset( '/bower_components/ip-address/dist/ip-address-globals.js' ) ?>"></script>
+    <?= $t->insert( 'interfaces/common/js/cb-functions' ); ?>
     <?= $t->insert( 'interfaces/core-bundle/js/add-wizard' ); ?>
-    <script>
-        $(document).ready( function() {
-            $( 'label.col-lg-2' ).removeClass('col-lg-2');
-
-            actionRunnig = false;
-            nbCoreLink = 0;
-
-            // array of switch port selected
-            exludedSwitchPort = [];
-
-            if( $( "#type" ).val() ){
-                displayCoreLinks();
-            }
-
-            $( "#speed").select2();
-            $( "#duplex").select2();
-        });
-    </script>
 <?php $this->append() ?>
