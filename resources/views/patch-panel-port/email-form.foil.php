@@ -100,7 +100,6 @@
         //$('#email_cc').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
         //$('#email_to').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
 
-
         $('#tab-link-body').on( 'click', function(e) {
             e.preventDefault();
             $(this).tab('show');
@@ -138,7 +137,7 @@
      * check if the value is an email
      */
     function checkEmail(text){
-        var filter = /^[\w-.+]+@[a-zA-Z0-9.-]+.[a-zA-z0-9]{2,4}$/;
+        let filter = /^[\w-.+]+@[a-zA-Z0-9.-]+.[a-zA-z0-9]{2,4}$/;
 
         if (!filter.test(text)) {
            return true;

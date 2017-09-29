@@ -309,7 +309,13 @@
                                         </b>
                                     </td>
                                     <td>
-                                        <?= $t->ee( $p->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
+                                        <?php if ( $p->getPatchPanel() ): ?>
+                                            <?= $t->ee( $p->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
+
+                                        <?php else: ?>
+                                            dd
+                                        <?php endif; ?>
+
                                     </td>
                                 </tr>
                             </table>
@@ -465,20 +471,20 @@
 
         $("a[id|='file-toggle-private']").on('click', function (e) {
             e.preventDefault();
-            var pppfid = (this.id).substring(20);
+            let pppfid = (this.id).substring(20);
 
             $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
                 type : 'POST'
             } )
-                .done( function( data ) {
-                    if( data.isPrivate ) {
-                        $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
-                        $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
-                    } else {
-                        $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
-                        $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
-                    }
-                });
+            .done( function( data ) {
+                if( data.isPrivate ) {
+                    $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
+                    $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
+                } else {
+                    $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
+                    $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
+                }
+            });
         });
     });
 
@@ -496,12 +502,8 @@
             },
             callback: function ( result ) {
                 if( result ){
-                    if( objectType == 'ppp' ){
-                        urlAction = "<?= url('patch-panel-port/delete-file') ?>";
-                    }
-                    else{
-                        urlAction = "<?= url('patch-panel-port/delete-history-file') ?>";
-                    }
+                    let urlAction = objectType == 'ppp' ? "<?= url('patch-panel-port/delete-file') ?>" : "<?= url('patch-panel-port/delete-history-file') ?>";
+
                     $.ajax( urlAction + "/" + idFile , {
                         type : 'POST'
                     })
