@@ -113,7 +113,7 @@ class SwitchConfigurationGenerator
         }
 
         return view($this->template())->with(
-            [ 'ports' => $ports ]
+            [ 'interfaces' => array('layer2interfaces' => $ports) ]
         );
     }
 
