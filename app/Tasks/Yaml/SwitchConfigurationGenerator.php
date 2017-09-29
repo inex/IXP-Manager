@@ -124,6 +124,7 @@ class SwitchConfigurationGenerator
         $p['description']        = $vi->getCustomer()->getAbbreviatedName();
         $p['dot1q']              = $vi->getTrunk();
         $p['virtualinterfaceid'] = $vi->getId();
+        $p['lagframing']         = $vi->getLagFraming();
         if( $vi->getChannelgroup() ) {
             $p['lagindex'] = $vi->getChannelgroup();
         }
@@ -216,6 +217,7 @@ class SwitchConfigurationGenerator
         $p['preference']         = $cb->getPreference();
         $p['virtualinterfaceid'] = $vi->getId();
         $p['corebundleid']       = $cb->getId();
+        $p['lagframing']         = $vi->getLagFraming();
         if( $vi->getChannelgroup() ) {
             $p['lagindex'] = $vi->getChannelgroup();
         }
