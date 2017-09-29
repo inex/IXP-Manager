@@ -122,7 +122,7 @@ class SwitchConfigurationGenerator
         $p                       = [];
         $p['type']               = 'edge';
         $p['description']        = $vi->getCustomer()->getAbbreviatedName();
-        $p['dot1q']              = $vi->getTrunk() ? 'yes' : 'no';
+        $p['dot1q']              = $vi->getTrunk() ? true : false;
         $p['virtualinterfaceid'] = $vi->getId();
         if( $vi->getChannelgroup() ) {
             $p['lagindex'] = $vi->getChannelgroup();
@@ -144,10 +144,10 @@ class SwitchConfigurationGenerator
         // we now have the base port config. If this is not a LAG, just return it:
         if( !$vi->getLagFraming() ) {
             $pi = $vi->getPhysicalInterfaces()[0];
-            $p['shutdown']           = ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) ? 'no' : 'yes';
+            $p['shutdown']           = ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) ? false : true;
             $p['name']               = $pi->getSwitchport()->getIfName();
             $p['speed']              = $pi->getSpeed();
-            $p['autoneg']            = $pi->getAutoneg() ? 'yes' : 'no';
+            $p['autoneg']            = $pi->getAutoneg() ? true : false;
             return [ $p ];
         }
 
@@ -155,10 +155,10 @@ class SwitchConfigurationGenerator
 
         // bundle definition:
         $p['name']      = $vi->getBundleName();
-        $p['lagmaster'] = 'yes';
-        $p['fastlacp']  = $vi->getFastLACP() ? 'yes' : 'no';
+        $p['lagmaster'] = true;
+        $p['fastlacp']  = $vi->getFastLACP() ? true : false;
         $p['lagmembers']= [];
-        $p['shutdown']  = 'yes';
+        $p['shutdown']  = true;
 
         // build up list of physical ports associated with this lag master
         foreach( $vi->getPhysicalInterfaces() as $pi ) {
@@ -169,7 +169,7 @@ class SwitchConfigurationGenerator
 
             // if any bundle members are up, the LAG is up
             if ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) {
-                $p['shutdown'] = 'no';
+                $p['shutdown'] = false;
             }
         }
         $ports[]        = $p;
@@ -182,10 +182,10 @@ class SwitchConfigurationGenerator
             if( !$pi->getSwitchPort() ) {
                 continue;
             }
-            $p['shutdown']  = ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) ? 'no' : 'yes';
+            $p['shutdown']  = ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) ? false : true;
             $p['name']      = $pi->getSwitchPort()->getIfName();
-            $p['lagmaster'] = 'no';
-            $p['autoneg']   = $pi->getAutoneg() ? 'yes' : 'no';
+            $p['lagmaster'] = false;
+            $p['autoneg']   = $pi->getAutoneg() ? true : false;
             $p['speed']     = $pi->getSpeed();
             $ports[] = $p;
         }
@@ -210,8 +210,8 @@ class SwitchConfigurationGenerator
         $p                       = [];
         $p['type']               = 'core';
         $p['description']        = $cb->getDescription();
-        $p['dot1q']              = $vi->getTrunk() ? 'yes' : 'no';
-        $p['stp']                = $cb->getSTP() ? 'yes' : 'no';
+        $p['dot1q']              = $vi->getTrunk() ? true : false;
+        $p['stp']                = $cb->getSTP() ? true : false;
         $p['cost']               = $cb->getCost();
         $p['preference']         = $cb->getPreference();
         $p['virtualinterfaceid'] = $vi->getId();
@@ -231,10 +231,10 @@ class SwitchConfigurationGenerator
 
         // we now have the base port config. If this is not a LAG, just return it:
         if( !$vi->getLagFraming() ) {
-            $p['shutdown']           = ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) ? 'no' : 'yes';
+            $p['shutdown']           = ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) ? false : true;
             $p['name']               = $pi->getSwitchport()->getIfName();
             $p['speed']              = $pi->getSpeed();
-            $p['autoneg']            = $pi->getAutoneg() ? 'yes' : 'no';
+            $p['autoneg']            = $pi->getAutoneg() ? true : false;
             return [ $p ];
         }
 
@@ -242,10 +242,10 @@ class SwitchConfigurationGenerator
 
         // bundle definition:
         $p['name']      = $vi->getBundleName();
-        $p['lagmaster'] = 'yes';
-        $p['fastlacp']  = $vi->getFastLACP() ? 'yes' : 'no';
+        $p['lagmaster'] = true;
+        $p['fastlacp']  = $vi->getFastLACP() ? true : false;
         $p['lagmembers']= [];
-        $p['shutdown']  = 'yes';
+        $p['shutdown']  = true;
 
         // build up list of physical ports associated with this lag master
         foreach( $cb->getCoreLinks() as $_cl ) {
@@ -257,13 +257,13 @@ class SwitchConfigurationGenerator
 
             // if any bundle members are up, the LAG is up
             if( $_pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED ) {
-                $p['shutdown'] = 'no';
+                $p['shutdown'] = false;
             }
         }
 
         // but if the bundle is down, the whole lot is down
         if( !$cb->getEnabled() ) {
-            $p['shutdown'] = 'yes';
+            $p['shutdown'] = true;
         }
 
         $ports[]        = $p;
@@ -278,10 +278,10 @@ class SwitchConfigurationGenerator
             if( !$_pi->getSwitchPort() ) {
                 continue;
             }
-            $p['shutdown']  = ($_pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) ? 'no' : 'yes';
+            $p['shutdown']  = ($_pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) ? false : true;
             $p['name']      = $_pi->getSwitchPort()->getIfName();
-            $p['lagmaster'] = 'no';
-            $p['autoneg']   = $_pi->getAutoneg() ? 'yes' : 'no';
+            $p['lagmaster'] = false;
+            $p['autoneg']   = $_pi->getAutoneg() ? true : false;
             $p['speed']     = $_pi->getSpeed();
             $ports[] = $p;
         }
