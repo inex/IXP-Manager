@@ -33,7 +33,8 @@ use Entities\{
     PatchPanelPortHistoryFile   as PatchPanelPortHistoryFileEntity,
     Switcher                    as SwitcherEntity,
     SwitchPort                  as SwitchPortEntity,
-    User                        as UserEntity
+    User                        as UserEntity,
+    PhysicalInterface           as PhysicalInterfaceEntity
 };
 
 use Illuminate\Http\{
@@ -92,7 +93,6 @@ class PatchPanelPortController extends Controller
      * @return PatchPanelPortEntity
      */
     private function getPPP( /** @noinspection PhpUnusedParameterInspection */ int $id = null ): PatchPanelPortEntity {
-
         if( $this->ppp === null ) {
             $this->ppp = request()->get('ppp');
             assert( $this->ppp instanceof PatchPanelPortEntity );
@@ -140,9 +140,7 @@ class PatchPanelPortController extends Controller
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/index' )->with([
-            'patchPanelPorts'               => D2EM::getRepository( PatchPanelPortEntity::class )->advancedSearch(
-                                                    $location, $cabinet, $cabletype, $availableForUse
-                                                ),
+            'patchPanelPorts'               => D2EM::getRepository( PatchPanelPortEntity::class )->advancedSearch( $location, $cabinet, $cabletype, $availableForUse ),
             'pp'                            => $pp ?? false,
             'summary'                       => $summary,
         ]);
@@ -197,27 +195,27 @@ class PatchPanelPortController extends Controller
 
         // fill the form with patch panel port data
         Former::populate([
-            'description'           => $ppp->getDescription(),
-            'number'                => $ppp->getNumber(),
-            'patch_panel'           => $ppp->getPatchPanel()->getName(),
-            'cabinet_name'          => $ppp->getPatchPanel()->getCabinet()->getName(),
-            'colocation_centre'     => $ppp->getPatchPanel()->getCabinet()->getLocation()->getName(),
-            'colo_circuit_ref'      => $ppp->getColoCircuitRef(),
-            'ticket_ref'            => $ppp->getTicketRef(),
-            'switch'                => $ppp->getSwitchId(),
-            'switch_port'           => $ppp->getSwitchPortId(),
-            'customer'              => $ppp->getCustomerId(),
-            'partner_port'          => $ppp->getDuplexSlavePortId(),
-            'state'                 => $ppp->getState(),
-            'notes'                 => $ppp->getNotes(),
-            'private_notes'         => $ppp->getPrivateNotes(),
-            'assigned_at'           => $ppp->getAssignedAtFormated(),
-            'connected_at'          => $ppp->getConnectedAtFormated(),
-            'ceased_requested_at'   => $ppp->getCeaseRequestedAtFormated(),
-            'ceased_at'             => $ppp->getCeasedAtFormated(),
-            'last_state_change_at'  => $ppp->getLastStateChangeFormated(),
-            'chargeable'            => $chargeable,
-            'owned_by'              => $ppp->getOwnedBy()
+            'description'               => $ppp->getDescription(),
+            'number'                    => $ppp->getNumber(),
+            'patch_panel'               => $ppp->getPatchPanel()->getName(),
+            'cabinet_name'              => $ppp->getPatchPanel()->getCabinet()->getName(),
+            'colocation_centre'         => $ppp->getPatchPanel()->getCabinet()->getLocation()->getName(),
+            'colo_circuit_ref'          => $ppp->getColoCircuitRef(),
+            'ticket_ref'                => $ppp->getTicketRef(),
+            'switch'                    => $ppp->getSwitchId(),
+            'switch_port'               => $ppp->getSwitchPortId(),
+            'customer'                  => $ppp->getCustomerId(),
+            'partner_port'              => $ppp->getDuplexSlavePortId(),
+            'state'                     => $ppp->getState(),
+            'notes'                     => $ppp->getNotes(),
+            'private_notes'             => $ppp->getPrivateNotes(),
+            'assigned_at'               => $ppp->getAssignedAtFormated(),
+            'connected_at'              => $ppp->getConnectedAtFormated(),
+            'ceased_requested_at'       => $ppp->getCeaseRequestedAtFormated(),
+            'ceased_at'                 => $ppp->getCeasedAtFormated(),
+            'last_state_change_at'      => $ppp->getLastStateChangeFormated(),
+            'chargeable'                => $chargeable,
+            'owned_by'                  => $ppp->getOwnedBy()
         ]);
 
         // display the duplex port if set or the list of all duplex ports available
@@ -231,18 +229,18 @@ class PatchPanelPortController extends Controller
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/edit' )->with([
-            'states'            => $states,
-            'customers'         => D2EM::getRepository( CustomerEntity::class )->getNames( false ),
-            'switches'          => D2EM::getRepository( SwitcherEntity::class )->getNamesByLocation( true, SwitcherEntity::TYPE_SWITCH,$ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
-            'switchPorts'       => $switchPorts ?? [],
-            'chargeables'       => PatchPanelPortEntity::$CHARGEABLES,
-            'ownedBy'           => PatchPanelPortEntity::$OWNED_BY,
-            'ppp'               => $ppp,
-            'partnerPorts'      => $partnerPorts,
-            'hasDuplex'         => $ppp->hasSlavePort(),
-            'user'              => Auth::user(),
-            'allocating'        => $allocating,
-            'prewired'          => $prewired
+            'states'                => $states,
+            'customers'             => D2EM::getRepository( CustomerEntity::class )->getNames( false ),
+            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNamesByLocation( true, SwitcherEntity::TYPE_SWITCH,$ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
+            'switchPorts'           => $switchPorts ?? [],
+            'chargeables'           => PatchPanelPortEntity::$CHARGEABLES,
+            'ownedBy'               => PatchPanelPortEntity::$OWNED_BY,
+            'ppp'                   => $ppp,
+            'partnerPorts'          => $partnerPorts,
+            'hasDuplex'             => $ppp->hasSlavePort(),
+            'user'                  => Auth::user(),
+            'allocating'            => $allocating,
+            'prewired'              => $prewired
         ]);
     }
 
@@ -291,8 +289,7 @@ class PatchPanelPortController extends Controller
                     $ppp->setSwitchPort($sp);
                 } else {
                     AlertContainer::push( 'The switch port selected is already used by an other patch panel port.', Alert::DANGER );
-                    return Redirect::to( 'patch-panel-port/edit/'.$request->input( 'id' ) )
-                        ->withInput( Input::all() );
+                    return Redirect::back()->withInput( Input::all() );
                 }
             }
 
@@ -304,16 +301,14 @@ class PatchPanelPortController extends Controller
                 if( $custId != null ) {
                     if( $custId != $request->input( 'customer' ) ) {
                         AlertContainer::push( 'The selected customer does not seem to have a relationship with the switch port', Alert::DANGER );
-                        return Redirect::to( 'patch-panel-port/edit/'.$request->input( 'id' ) )
-                            ->withInput( Input::all() );
+                        return Redirect::back()->withInput( Input::all() );
                     }
                 }
             }
         } else {
             if( $request->input('customer') and $request->input( 'switch' ) ) {
                 AlertContainer::push( 'You need to select a switch port when a switch is selected', Alert::DANGER );
-                return Redirect::to( 'patch-panel-port/edit/'.$request->input( 'id' ) )
-                    ->withInput( Input::all() );
+                return Redirect::back()->withInput( Input::all() );
             }
             $ppp->setSwitchPort( null );
         }
@@ -323,11 +318,12 @@ class PatchPanelPortController extends Controller
             $ppp->setLastStateChange( new \DateTime );
         }
 
-        $ppp->setDescription( clean( $request->input( 'description', '' ) ) );
-        $ppp->setNotes( clean( $request->input( 'notes', '' ) ) );
-        $ppp->setPrivateNotes( clean( $request->input( 'private_notes', '' )  ) );
-        $ppp->setColoCircuitRef( $request->input( 'colo_circuit_ref', '') );
-        $ppp->setTicketRef( $request->input( 'ticket_ref', '' ) );
+        $ppp->setDescription(       clean( $request->input( 'description',  ''  ) ) );
+        $ppp->setNotes(             clean( $request->input( 'notes',        ''  ) ) );
+        $ppp->setPrivateNotes(      clean( $request->input( 'private_notes',''  ) ) );
+
+        $ppp->setColoCircuitRef(    $request->input( 'colo_circuit_ref',    ''  ) );
+        $ppp->setTicketRef(         $request->input( 'ticket_ref',          ''  ) );
 
         $ppp->setCustomer( ( $request->input( 'customer' ) ) ? D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'customer' ) ) : null );
 
@@ -339,7 +335,6 @@ class PatchPanelPortController extends Controller
             } else {
                 $ppp->setAssignedAt( ( $request->input( 'assigned_at' ) == '' ? null : new \DateTime( $request->input( 'assigned_at' ) ) ) );
             }
-
         }
 
         if( $request->input( 'state' ) == PatchPanelPortEntity::STATE_CONNECTED and $request->input( 'connected_at' ) == '' ) {
@@ -360,13 +355,14 @@ class PatchPanelPortController extends Controller
             $ppp->setCeasedAt( ( $request->input( 'ceased_at' ) == '' ? null : new \DateTime( $request->input( 'ceased_at' ) ) ) );
         }
 
-        $ppp->setInternalUse( ( $request->input( 'internal_use' ) ) ? $request->input( 'internal_use' ) : false );
-        $ppp->setChargeable( ( $request->input( 'chargeable' ) ) ? $request->input( 'chargeable' ) : false );
-        $ppp->setOwnedBy( ( $request->input( 'owned_by' ) ) ? $request->input( 'owned_by' ) : false );
+        $ppp->setInternalUse(   ( $request->input( 'internal_use'   ) ) ? $request->input( 'internal_use'   ) : false );
+        $ppp->setChargeable(    ( $request->input( 'chargeable'     ) ) ? $request->input( 'chargeable'     ) : false );
+        $ppp->setOwnedBy(       ( $request->input( 'owned_by'       ) ) ? $request->input( 'owned_by'       ) : false );
 
 
         if( $request->input( 'duplex' ) ) {
             if( !$ppp->hasSlavePort() ) {
+                /** @var PatchPanelPortEntity $partnerPort */
                 $partnerPort = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'partner_port' ) );
                 $ppp->setDuplexPort( $partnerPort );
             }
@@ -400,7 +396,6 @@ class PatchPanelPortController extends Controller
      * @return View
      */
     public function view( int $id ): View {
-
         $listHistory[] = $this->getPPP($id);
 
         if( !Auth::user()->isSuperUser() ) {
@@ -429,8 +424,6 @@ class PatchPanelPortController extends Controller
      * @return RedirectResponse
      */
     public function changeStatus( int $id, int $status ): RedirectResponse {
-
-
         switch ( $status ) {
             case PatchPanelPortEntity::STATE_AVAILABLE:
                 if( $this->getPPP( $id )->isStatePrewired() ) {
@@ -496,7 +489,6 @@ class PatchPanelPortController extends Controller
      * @return  Response
      */
     public function downloadFile( int $pppfid ) {
-
         /** @var PatchPanelPortFileEntity $pppf */
         if( !($pppf = D2EM::getRepository(PatchPanelPortFileEntity::class)->find($pppfid)) ) {
             abort(404 );
@@ -525,7 +517,6 @@ class PatchPanelPortController extends Controller
      * @return  Email
      */
     private function setupEmailRoutes( int $type, Email $mailable = null ): Email {
-
         /** @var PatchPanelPortRepository $pppRepository */
         $pppRepository = D2EM::getRepository( PatchPanelPortEntity::class );
         if( !( $emailClass = $pppRepository->resolveEmailClass( $type ) ) ) {
@@ -553,7 +544,6 @@ class PatchPanelPortController extends Controller
      * @return  view
      */
     public function email( int $id, int $type ): View {
-
         $mailable = $this->setupEmailRoutes( $type );
 
         return view( 'patch-panel-port/email-form' )->with([
@@ -573,7 +563,6 @@ class PatchPanelPortController extends Controller
      * @return RedirectResponse|View
      */
     public function sendEmail( EmailPatchPanelPortRequest $request, int $id, int $type ) {
-
         $mailable = $this->setupEmailRoutes( $type );
 
         $mailable->prepareFromRequest( $request );
@@ -670,6 +659,7 @@ class PatchPanelPortController extends Controller
     public function viewLoA( int $id ): Response {
         $this->setupLoA();
         list($pdf, $pdfname) = $this->createLoAPDF($this->getPPP($id));
+
         return $pdf->stream($pdfname);
     }
 
@@ -682,7 +672,6 @@ class PatchPanelPortController extends Controller
      * @return  View
      */
     public function verifyLoa( int $id, string $loaCode ): View {
-
         /** @var PatchPanelPortEntity $ppp */
         $ppp = D2EM::getRepository(PatchPanelPortEntity::class)->find($id);
 
@@ -695,8 +684,8 @@ class PatchPanelPortController extends Controller
         }
 
         return view( 'patch-panel-port/verify-loa' )->with([
-            'ppp'     => D2EM::getRepository(PatchPanelPortEntity::class)->find($id),
-            'loaCode' => $loaCode
+            'ppp'           => D2EM::getRepository(PatchPanelPortEntity::class)->find($id),
+            'loaCode'       => $loaCode
         ]);
     }
 
@@ -707,7 +696,6 @@ class PatchPanelPortController extends Controller
      * @return  View
      */
     public function moveForm( int $id ): View {
-
         /** @var PatchPanelPortEntity $ppp */
         if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find($id) ) ) {
             abort(404);
@@ -727,24 +715,15 @@ class PatchPanelPortController extends Controller
      * @return  RedirectResponse
      */
     public function move( MovePatchPanelPortRequest $request ): RedirectResponse {
-        /** @var PatchPanelPortEntity $pppOld */
-        if( !( $pppOld = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'id' ) ) ) ) {
-            abort(404, 'Unknown patch panel port');
-        }
-        /** @var PatchPanelPortEntity $pppMaster */
-        if( !( $pppMaster = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'master-port' ) ) ) ) {
-            abort(404, 'Unknown patch panel port');
-        }
+        $pppOld     = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'id'           ) ) ; /** @var PatchPanelPortEntity $pppOld */
+        $pppMaster  = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'master-port'  ) ) ; /** @var PatchPanelPortEntity $pppMaster */
 
         $pppSlave = null;
 
         /** @var PatchPanelPortEntity $pppSlave */
         if( $pppOld->hasSlavePort() ){
-            if( !( $pppSlave = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'slave-port' ) ) ) ) {
-                abort(404, 'Unknown patch panel port');
-            }
+            $pppSlave = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'slave-port' ) );
         }
-
 
         if( D2EM::getRepository( PatchPanelPortEntity::class )->move( $pppOld, $pppMaster, $pppSlave ) ) {
             AlertContainer::push( 'The patch panel port has been moved.', Alert::SUCCESS );
@@ -762,7 +741,6 @@ class PatchPanelPortController extends Controller
      * @return  JsonResponse
      */
     public function deleteFile( int $fileid ){
-
         /** @var PatchPanelPortFileEntity $pppf */
         if( !( $pppf = D2EM::getRepository( PatchPanelPortFileEntity::class )->find( $fileid ) ) ) {
             abort( 404 );
@@ -774,9 +752,9 @@ class PatchPanelPortController extends Controller
             $pppf->getPatchPanelPort()->removePatchPanelPortFile( $pppf );
             D2EM::remove( $pppf );
             D2EM::flush();
-            return response()->json( ['success' => true, 'message' => 'File deleted' ] );
+            return response()->json( ['success'     => true,    'message' => 'File deleted' ] );
         } else {
-            return response()->json( [ 'success' => false, 'message' => 'Error: file could not be deleted' ] );
+            return response()->json( [ 'success'    => false,   'message' => 'Error: file could not be deleted' ] );
 
         }
     }
@@ -788,7 +766,6 @@ class PatchPanelPortController extends Controller
      * @return  JsonResponse
      */
     public function deleteHistoryFile( int $fileid ){
-
         /** @var PatchPanelPortHistoryFileEntity $ppphf */
         if( !( $ppphf = D2EM::getRepository( PatchPanelPortHistoryFileEntity::class )->find( $fileid ) ) ) {
             abort( 404 );
@@ -800,10 +777,10 @@ class PatchPanelPortController extends Controller
             $ppphf->getPatchPanelPortHistory()->removePatchPanelPortHistoryFile( $ppphf );
             D2EM::remove( $ppphf );
             D2EM::flush();
-            return response()->json( ['success' => true, 'message' => 'File deleted' ] );
+            return response()->json(    ['success'  => true,    'message' => 'File deleted' ] );
         }
 
-        return response()->json( [ 'success' => false, 'message' => 'Error: file could not be deleted' ] );
+        return response()->json(        [ 'success' => false,   'message' => 'Error: file could not be deleted' ] );
     }
 
     /**
@@ -816,13 +793,14 @@ class PatchPanelPortController extends Controller
      * @return  JsonResponse
      */
     public function delete( int $id ) {
-
         /** @var PatchPanelPortEntity $ppp */
         if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $id ) ) ) {
             abort( 404 );
         }
 
         D2EM::getRepository( PatchPanelPortEntity::class )->delete( $ppp );
+
+        AlertContainer::push( 'The patch Panel port has been successfully deleted.', Alert::SUCCESS );
 
         return response()->json( [ 'success' => true ] );
     }
@@ -834,7 +812,6 @@ class PatchPanelPortController extends Controller
      * @return  JsonResponse
      */
     public function split( int $id ){
-
         /** @var PatchPanelPortEntity $ppp */
         if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $id ) ) ) {
             abort( 404 );
@@ -864,7 +841,9 @@ class PatchPanelPortController extends Controller
 
         D2EM::flush();
 
-        return response()->json( [ 'success' => true, 'message' => 'The patch Panel port has been successfully split.' ] );
+        AlertContainer::push( 'The patch Panel port has been successfully split.', Alert::SUCCESS );
+
+        return response()->json( [ 'success' => true ] );
     }
 
     /**
@@ -894,7 +873,6 @@ class PatchPanelPortController extends Controller
      * @return  JsonResponse
      */
     public function uploadFile( Request $request, FlysystemManager $filesystem, int $id ): JsonResponse {
-
         if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find($id) ) ) {
             abort(404);
         }
@@ -906,11 +884,11 @@ class PatchPanelPortController extends Controller
         $file = $request->file('upl');
 
         $pppFile = new PatchPanelPortFileEntity;
-        $pppFile->setPatchPanelPort( $ppp );
-        $pppFile->setStorageLocation( hash('sha256', $ppp->getId() . '-' . $file->getClientOriginalName() ) );
-        $pppFile->setName( $file->getClientOriginalName() );
-        $pppFile->setUploadedAt( new \DateTime );
-        $pppFile->setUploadedBy( Auth::user()->getUsername() );
+        $pppFile->setPatchPanelPort(    $ppp );
+        $pppFile->setStorageLocation(   hash('sha256', $ppp->getId() . '-' . $file->getClientOriginalName() ) );
+        $pppFile->setName(              $file->getClientOriginalName() );
+        $pppFile->setUploadedAt(        new \DateTime );
+        $pppFile->setUploadedBy(        Auth::user()->getUsername() );
 
         $path = $pppFile->getPath();
 
@@ -921,9 +899,9 @@ class PatchPanelPortController extends Controller
         $stream = fopen( $file->getRealPath(), 'r+' );
         if( $filesystem->writeStream( $path, $stream ) ) {
 
-            $pppFile->setSize( $filesystem->getSize($path) );
-            $pppFile->setType( $filesystem->getMimetype($path) );
-            D2EM::persist( $pppFile );
+            $pppFile->setSize(  $filesystem->getSize($path) );
+            $pppFile->setType(  $filesystem->getMimetype($path) );
+            D2EM::persist(      $pppFile );
 
             $ppp->addPatchPanelPortFile( $pppFile );
             D2EM::flush();
@@ -939,10 +917,12 @@ class PatchPanelPortController extends Controller
     /**
      * Set the public and private notes of a patch panel
      *
-     * @param   int $id    The ID of the patch panel port to query
+     * @param   Request     $request    instance of the current HTTP request
+     * @param   int         $id         The ID of the patch panel port to query
+     *
      * @return  JsonResponse JSON customer object
      */
-    public function setNotes( Request $request, int $id ) {
+    public function setNotes( Request $request, int $id ) : JsonResponse {
 
         if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $id ) ) ) {
             abort( 404, 'No such patch panel port' );
@@ -969,6 +949,4 @@ class PatchPanelPortController extends Controller
 
         return response()->json( [ 'success' => true ] );
     }
-
-
 }

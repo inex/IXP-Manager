@@ -44,10 +44,12 @@
         <?= Former::text( 'number' )
             ->label( 'Patch Panel Port Name' )
             ->forceValue( $t->ee( $t->ppp->getName() ) );
+
         ?>
 
         <?= Former::text( 'patch_panel' )
             ->label( 'Patch Panel' );
+
         ?>
 
         <?= Former::text( 'cabinet_name' )
@@ -172,7 +174,8 @@
         ->options( $t->states )
         ->placeholder( 'Choose a states' )
         ->addClass( 'chzn-select' )
-        ->blockHelp( 'The state of the patch panel port.' );
+        ->blockHelp( 'The state of the patch panel port.' )
+        ->disabled( $t->prewired ? true : false );
     ?>
 
     <?php if( $t->allocating ): ?>
@@ -232,7 +235,8 @@
 
             <?= Former::text( 'last_state_change_at' )
                 ->label( 'Last State change At' )
-                ->blockHelp( 'help text' );
+                ->blockHelp( 'help text' )
+                ->disabled( true );
             ?>
         <?php endif; ?>
 
