@@ -19,11 +19,14 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="edit">
+            <a type="button" class="btn btn-default" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit">
                 <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+            <a type="button" class="btn btn-default" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>" title="Ports list">
+                <span class="glyphicon glyphicon-th"></span>
             </a>
         </div>
     </li>
