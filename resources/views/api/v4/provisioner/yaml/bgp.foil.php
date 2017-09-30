@@ -19,12 +19,4 @@ bgp:
 <?php if( isset( $neighbor['preference']  ) ){ ?>          preference: <?= $neighbor['preference']   . "\n" ?><?php } ?>
 <?php endforeach; ?>
 
-vlans:
-<?php foreach( $t->vls as $vl ): ?>
-  - name: <?= $vl[ 'name' ] ?>
-
-    private: <?= $vl[ 'private' ] ? 'yes' : 'no' ?>
-
-    tag: <?= $vl[ 'number' ] ?>
-
-<?php endforeach; ?>
+<?= yaml_emit ($t->vls,  YAML_UTF8_ENCODING) ?>
