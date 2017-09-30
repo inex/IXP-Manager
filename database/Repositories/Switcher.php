@@ -542,10 +542,19 @@ class Switcher extends EntityRepository
 
             $listCoreInterface = $query->getArrayResult();
 
+            # XXX this need to be refactored as it no longer exports CoreLinkInterface information
             foreach( $listCoreInterface as $ci ){
+                $export = [];
                 $subnet = ( $ci[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $ci['clSubnet'] : $ci['cbSubnet'];
-                $ci['ip'] = $this->linkAddr( $subnet , $side, true );
-                $cis[] = $ci;
+
+                $export[ 'ipv4' ]         = $this->linkAddr( $subnet, $side, true );
+                $export[ 'description' ]  = $ci[ 'description' ];
+                $export[ 'bfd' ]          = $ci[ 'bfd' ];
+                $export[ 'speed' ]        = $ci[ 'speed' ];
+                $export[ 'name' ]         = $ci[ 'name' ];
+                $export[ 'shutdown' ]     = !$ci[ 'enabled' ];
+
+                $cis[] = $export;
             }
         }
 
@@ -586,11 +595,11 @@ class Switcher extends EntityRepository
         $sw = $this->getEntityManager( )->getRepository('Entities\Switcher')->find( $id );
 
         if ($sw) {
-            $ci['description'] = 'Loopback interface';
-            $ci['loopback'] = true;
-            $ci['ipv4'] = $sw->getLoopbackIP().'/32';
-            $ci['name'] = $sw->getLoopbackName();
-            $ci['shutdown'] = false;
+            $ci['description']  = 'Loopback interface';
+            $ci['loopback']     = true;
+            $ci['ipv4']         = $sw->getLoopbackIP().'/32';
+            $ci['name']         = $sw->getLoopbackName();
+            $ci['shutdown']     = false;
 
             $cis[] = $ci;
         }
