@@ -86,17 +86,42 @@ class YamlController extends Controller {
     }
 
     /**
-     * Generate a Yaml file for a given vlanid
+     * Generate a Yaml file of the vlans for a given switch id
      *
-     * This just takes one argument: the router handle to generate the configuration for. All
+     * This takes one argument: the router handle to generate the vlans for. All
      * other parameters are defined by the handle's array in config/router.php.
      *
      * @return View
      */
-    public function vlanForSwitch( int $sid ) {
-        return view( 'api/v4/provisioner/yaml/vlanForSwitch' )->with([
-            'sList'         =>          D2EM::getRepository(SwitcherEntity::class )->getAllVlan( $sid )
+    public function vlansForSwitch( int $switchid ) {
+
+        /** @var \Entities\Switcher $switch */
+        if( !( $switch = D2EM::getRepository(SwitcherEntity::class )->find( $switchid ) ) ) {
+            abort( 404, "Unknown switchID" );
+        }
+
+        $listVlans['vlans'] = D2EM::getRepository(SwitcherEntity::class )->getAllVlansInInfrastructure( $switch->getId() );
+
+        return view( 'api/v4/provisioner/yaml/vlans' )->with([
+            'vlans' => $listVlans,
         ]);
+    }
+
+    /**
+     * Generate a Yaml file of the vlans for a given switch name
+     *
+     * This just takes one argument: the router name to generate the configuration for. All
+     * other parameters are handled by the vlansForSwitch() function.
+     *
+     * @return View
+     */
+    public function vlansForSwitchByName( string $switchname ) {
+
+        if( !( $switch = D2EM::getRepository(SwitcherEntity::class )->findOneBy(['name' => $switchname]) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->vlansForSwitch( $switch->getId() );
     }
 
     /**
@@ -160,8 +185,6 @@ class YamlController extends Controller {
 
         $listNeighbors = D2EM::getRepository(SwitcherEntity::class )->getAllNeighbors( $switch->getId() );
 
-        $listVlans['vlans'] = D2EM::getRepository(SwitcherEntity::class )->getAllVlansInInfrastructure( $switch->getId() );
-
         $out['bgp']['floodlist'] = $listFlood;
         $out['bgp']['routerid'] = $switch->getLoopbackIp();
         $out['bgp']['local_as'] = $switch->getAsn();
@@ -180,7 +203,6 @@ class YamlController extends Controller {
 
         return view( 'api/v4/provisioner/yaml/bgp' )->with([
             'bgp'                   => $out,
-            'vlans'                 => $listVlans,
         ]);
     }
 

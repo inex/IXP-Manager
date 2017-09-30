@@ -80,13 +80,17 @@ Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortC
 Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
 
-Route::get('provisioner/yaml/switch/{switchid}',                            'Provisioner\YamlController@forSwitch');
-Route::get('provisioner/yaml/switch-name/{switchname}',                     'Provisioner\YamlController@forSwitchByName');
-Route::get('provisioner/yaml/core-link-interface/switch-id/{switchid}',     'Provisioner\YamlController@coreLinkForSwitch');
-Route::get('provisioner/yaml/core-link-interface/switch-name/{switchname}', 'Provisioner\YamlController@coreLinkForSwitchByName');
+Route::get('provisioner/layer2interfaces/switch/{switchid}',                'Provisioner\YamlController@forSwitch');
+Route::get('provisioner/layer2interfaces/switch-name/{switchname}',         'Provisioner\YamlController@forSwitchByName');
 
-Route::get('provisioner/yaml/bgp/switch-id/{switchid}',                     'Provisioner\YamlController@bgpForSwitch');
-Route::get('provisioner/yaml/bgp/switch-name/{switchname}',                 'Provisioner\YamlController@bgpForSwitchByName');
+Route::get('provisioner/layer3interfaces/switch-id/{switchid}',             'Provisioner\YamlController@coreLinkForSwitch');
+Route::get('provisioner/layer3interfaces/switch-name/{switchname}',         'Provisioner\YamlController@coreLinkForSwitchByName');
+
+Route::get('provisioner/vlans/switch-id/{switchid}',                     'Provisioner\YamlController@vlansForSwitch');
+Route::get('provisioner/vlans/switch-name/{switchname}',                 'Provisioner\YamlController@vlansForSwitchByName');
+
+Route::get('provisioner/routing/switch-id/{switchid}',                     'Provisioner\YamlController@bgpForSwitch');
+Route::get('provisioner/routing/switch-name/{switchname}',                 'Provisioner\YamlController@bgpForSwitchByName');
 
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
@@ -118,7 +122,6 @@ Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceCo
 
 
 Route::group( [  'prefix' => 'vlan' ], function() {
-    Route::get( 'for-switch/{switchid}',                'Provisioner\YamlController@vlanForSwitch' );
     Route::get( '{id}/ip-addresses',                    'VlanController@getIPAddresses' );
 
     Route::post( 'ip-address/used-across-vlans',        'VlanController@UsedAcrossVlans' );
