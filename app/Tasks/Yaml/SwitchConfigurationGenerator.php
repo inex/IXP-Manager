@@ -74,18 +74,13 @@ class SwitchConfigurationGenerator
         return $this->switch;
     }
 
-    private function template(): string {
-        return 'api/v4/provisioner/yaml/switch';
-    }
-
     /**
      * Generate and return the configuration
      *
      * @throws GeneralException
      * @return ViewContract The configuration
      */
-    public function render(): ViewContract
-    {
+    public function generate(): array {
 
         $ports = [];
         $visProcessed = [];
@@ -112,9 +107,7 @@ class SwitchConfigurationGenerator
             }
         }
 
-        return view($this->template())->with(
-            [ 'interfaces' => array('layer2interfaces' => $ports) ]
-        );
+        return array('layer2interfaces' => $ports);
     }
 
     private function processVirtualInterface( VirtualInterfaceEntity $vi ): array {

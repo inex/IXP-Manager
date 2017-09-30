@@ -80,17 +80,17 @@ Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortC
 Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
 
-Route::get('provisioner/layer2interfaces/switch/{switchid}',                'Provisioner\YamlController@forSwitch');
-Route::get('provisioner/layer2interfaces/switch-name/{switchname}',         'Provisioner\YamlController@forSwitchByName');
+Route::get('provisioner/layer2interfaces/switch/{switchid}.{outformat}',        'Provisioner\YamlController@forSwitch');
+Route::get('provisioner/layer2interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@forSwitchByName');
 
-Route::get('provisioner/layer3interfaces/switch-id/{switchid}',             'Provisioner\YamlController@coreLinkForSwitch');
-Route::get('provisioner/layer3interfaces/switch-name/{switchname}',         'Provisioner\YamlController@coreLinkForSwitchByName');
+Route::get('provisioner/layer3interfaces/switch-id/{switchid}.{outformat}',     'Provisioner\YamlController@coreLinkForSwitch');
+Route::get('provisioner/layer3interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@coreLinkForSwitchByName');
 
-Route::get('provisioner/vlans/switch-id/{switchid}',                     'Provisioner\YamlController@vlansForSwitch');
-Route::get('provisioner/vlans/switch-name/{switchname}',                 'Provisioner\YamlController@vlansForSwitchByName');
+Route::get('provisioner/vlans/switch-id/{switchid}.{outformat}',                'Provisioner\YamlController@vlansForSwitch');
+Route::get('provisioner/vlans/switch-name/{switchname}.{outformat}',            'Provisioner\YamlController@vlansForSwitchByName');
 
-Route::get('provisioner/routing/switch-id/{switchid}',                     'Provisioner\YamlController@bgpForSwitch');
-Route::get('provisioner/routing/switch-name/{switchname}',                 'Provisioner\YamlController@bgpForSwitchByName');
+Route::get('provisioner/routing/switch-id/{switchid}.{outformat}',              'Provisioner\YamlController@bgpForSwitch');
+Route::get('provisioner/routing/switch-name/{switchname}.{outformat}',          'Provisioner\YamlController@bgpForSwitchByName');
 
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
