@@ -684,7 +684,7 @@ class Switcher extends EntityRepository
      * @param int      $id     Switch ID - switch to query
      * @return array
      */
-    public function getAllVlanInInsfrascture( int $id ): array {
+    public function getAllVlansInInfrastructure( int $id ): array {
 
         /** @noinspection SqlNoDataSourceInspection */
         $dql = "SELECT vl.name, vl.number, vl.private

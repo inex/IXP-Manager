@@ -160,7 +160,7 @@ class YamlController extends Controller {
 
         $listNeighbors = D2EM::getRepository(SwitcherEntity::class )->getAllNeighbors( $switch->getId() );
 
-        $listVls = D2EM::getRepository(SwitcherEntity::class )->getAllVlanInInsfrascture( $switch->getId() );
+        $listVls = D2EM::getRepository(SwitcherEntity::class )->getAllVlansInInfrastructure( $switch->getId() );
 
         return view( 'api/v4/provisioner/yaml/bgp' )->with([
             'neighbors'             => $listNeighbors,
