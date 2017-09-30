@@ -160,13 +160,27 @@ class YamlController extends Controller {
 
         $listNeighbors = D2EM::getRepository(SwitcherEntity::class )->getAllNeighbors( $switch->getId() );
 
-        $listVls['vlans'] = D2EM::getRepository(SwitcherEntity::class )->getAllVlansInInfrastructure( $switch->getId() );
+        $listVlans['vlans'] = D2EM::getRepository(SwitcherEntity::class )->getAllVlansInInfrastructure( $switch->getId() );
+
+        $out['bgp']['floodlist'] = $listFlood;
+        $out['bgp']['routerid'] = $switch->getLoopbackIp();
+        $out['bgp']['local_as'] = $switch->getAsn();
+
+        foreach( $listNeighbors as $neighbor ) {
+            $n = [];
+            $n['description'] = $neighbor['description'];
+            $n['remote_as'] = $neighbor['asn'];
+            $n['cost'] = $neighbor['cost'];
+            $n['preference'] = $neighbor['preference'];
+            $pgentry[$neighbor['ip']] = $n;
+        }
+
+        # XXX replace pg-ebgp-ipv4-ixp with dynamic value
+        $out['bgp']['out']['pg-ebgp-ipv4-ixp']['neighbors'] = $pgentry;
 
         return view( 'api/v4/provisioner/yaml/bgp' )->with([
-            'neighbors'             => $listNeighbors,
-            'floods'                => $listFlood,
-            'vls'                   => $listVls,
-            'switch'                => $switch
+            'bgp'                   => $out,
+            'vlans'                 => $listVlans,
         ]);
     }
 
