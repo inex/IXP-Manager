@@ -572,6 +572,32 @@ class Switcher extends EntityRepository
         return $ip;
     }
 
+
+     /**
+     * Returns the loopback interface information associated with the specified switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getLoopbackInfo( int $id ): array {
+
+        $cis = [];
+
+        $sw = $this->getEntityManager( )->getRepository('Entities\Switcher')->find( $id );
+
+        if ($sw) {
+            $ci['description'] = 'Loopback interface';
+            $ci['loopback'] = true;
+            $ci['ipv4'] = $sw->getLoopbackIP().'/32';
+            $ci['name'] = $sw->getLoopbackName();
+            $ci['shutdown'] = false;
+
+            $cis[] = $ci;
+        }
+
+        return $cis;
+    }
+
     /**
      * List of all the switch loopback IP addresses on the same infrastructure as this switch, but excluding the switch's own loopback IP address
      *

@@ -114,12 +114,12 @@ class YamlController extends Controller {
             abort( 404, "Unknown switchID" );
         }
 
-        $listCis = D2EM::getRepository(SwitcherEntity::class )->getAllCoreLinkInterfaces( $switch->getId() );
+        $interfaces['layer3interfaces'] = array_merge (
+            D2EM::getRepository(SwitcherEntity::class )->getAllCoreLinkInterfaces( $switch->getId() ),
+            D2EM::getRepository(SwitcherEntity::class )->getLoopbackInfo( $switch->getId() )
+        );
 
-        return view( 'api/v4/provisioner/yaml/interfacesIp' )->with([
-            'cis'         => $listCis,
-            'switch'      => $switch
-        ]);
+        return view( 'api/v4/provisioner/yaml/interfacesIp' )->with([ 'interfaces'  => $interfaces ]);
 
     }
 
