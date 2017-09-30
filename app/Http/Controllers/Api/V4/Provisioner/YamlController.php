@@ -213,6 +213,7 @@ class YamlController extends Controller {
         $out['bgp']['routerid'] = $switch->getLoopbackIp();
         $out['bgp']['local_as'] = $switch->getAsn();
 
+        $pgentry = [];
         foreach( $listNeighbors as $neighbor ) {
             $n = [];
             $n['description'] = $neighbor['description'];
