@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
+use D2EM, Former;
 
 use Illuminate\View\View;
 

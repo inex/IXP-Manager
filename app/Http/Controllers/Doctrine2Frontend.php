@@ -102,11 +102,23 @@ abstract class Doctrine2Frontend extends Controller {
     }
 
     /**
+     * Prepares data for view and AJAX view
+     *
+     * @return void
+     */
+    protected function addPrepareData()
+    {
+
+    }
+
+    /**
      * Add (or edit) an object
      */
     public function addAction()
     {
+        //$this->data[ 'data' ]           = $this->viewGetData( $id ) ;
 
+        return $this->display( 'edit' );
     }
 
     /**
