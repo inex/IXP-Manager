@@ -66,6 +66,7 @@ class IXP_Form_Contact extends IXP_Form
         $this->getElement( 'email' )
             ->setAttrib( 'autocomplete', 'off' )
             ->setRequired( false )
+            ->addFilter( 'StripTags' )
             ->setAttrib( 'class', "" );
 
         $phone = $this->createElement( 'text', 'phone' );
