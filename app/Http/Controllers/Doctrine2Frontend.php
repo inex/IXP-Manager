@@ -116,7 +116,7 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function addAction()
     {
-        //$this->data[ 'data' ]           = $this->viewGetData( $id ) ;
+        $this->params           = $this->addPrepareData( ) ;
 
         return $this->display( 'edit' );
     }
@@ -158,11 +158,10 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Add (or edit) an object
      */
-    protected function editAction()
+    protected function editAction( $id )
     {
-        $this->params = $this->prepapreEditAction();
+        $this->params = $this->addPrepareData( $id );
 
-        dd($this->params);
         return $this->display( 'edit' );
     }
 
@@ -177,9 +176,11 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Edit a physical interface (set all the data needed)
      */
-    public function storeAction()
+    public function storeAction( StoreCustKit $request )
     {
+        dd( $request );
 
+        return redirect( $this->listAction() );
     }
 
     /**

@@ -37,7 +37,7 @@ $this->layout( 'layouts/ixpv4' );
             <?= Former::select( 'switch' )
                 ->label( 'Switch' )
                 ->fromQuery( $t->switches, 'name' )
-                ->placeholder( 'Choose a Switch' )
+                ->placeholder( 'Choose a switch' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'The switch where the port will be located. Selected / changing this updates the port list below.' );
             ?>
@@ -51,9 +51,10 @@ $this->layout( 'layouts/ixpv4' );
                     . 'Port types can be set by editing the appropriate switch.');
             ?>
 
-            <?= Former::hidden( 'original-switch-port')
-                ->id('original-switch-port')
-                ->forceValue( old('switch-port') || ( $t->pi && $t->pi->getId() ) )
+            <?=
+                Former::hidden( 'original-switch-port')
+                    ->id('original-switch-port')
+                    ->forceValue( old('switch-port') ? old('switch-port')  : ( $t->pi && $t->pi->getSwitchPort() ? $t->pi->getSwitchPort()->getId() : '' ) )
             ?>
 
             <?= Former::select( 'status' )
@@ -115,7 +116,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::select( 'switch-b' )
                     ->label( 'Switch' )
                     ->fromQuery( $t->switches, 'name' )
-                    ->placeholder( 'Choose a Switch' )
+                    ->placeholder( 'Choose a fanout switch' )
                     ->addClass( 'chzn-select' )
                     ->disabled( true)
                     ->blockHelp( '' );
@@ -212,8 +213,8 @@ $this->layout( 'layouts/ixpv4' );
                     ?>
 
                     <?= Former::hidden( 'original-switch-port-fanout')
-                        ->id('original-switch-port-fanout')
-                        ->forceValue( old('switch-port-fanout') )
+                            ->id('original-switch-port-fanout')
+                            ->forceValue( old('switch-port-fanout') ? old('switch-port-fanout')  : ( $t->spFanout ? $t->spFanout : '' ) )
                     ?>
 
                     <?= Former::number( 'monitorindex-fanout' )

@@ -206,7 +206,7 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
     {
         $this->addMessage(
             'Editing IP addresses is not currently implemented. '
-                . 'You can acheive the same outcome by deleting / adding.',
+                . 'You can achieve the same outcome by deleting / adding.',
             OSS_Message::INFO
         );
         $this->forward( 'list' );

@@ -125,9 +125,10 @@ class PhysicalInterfaceController extends Common
         if( $pi ) {
             // ==== EDIT PI MODE
 
-            // we never edit a fanout port so if we have a fanout, just swap it with the real PI:
-            if( $pi->getRelatedInterface() && $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT ) {
-                $pi = $pi->getRelatedInterface();
+            // we never edit a fanout port:
+            if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT ) {
+                AlertContainer::push( 'Do not edit fanout ports directly. Edit the peering interface and the fanout port will be updated to match.', Alert::DANGER );
+                return Redirect::back();
             }
 
             // fill the form with physical interface data
@@ -226,7 +227,6 @@ class PhysicalInterfaceController extends Common
 
             // @yann: not sure why this is here as well as fanout above?
             $data['fanout-checked']         = $pi->getFanoutPhysicalInterface() ? 1 : 0;
-
         } else {
             $data['monitorindex-fanout']    = D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer()->getReseller() );
         }

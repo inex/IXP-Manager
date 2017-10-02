@@ -24,7 +24,7 @@ function updateIpAddresses() {
         let vlanid = dd_vlan.val();
         let url    = "<?= url( '/api/v4/vlan' )?>/" + vlanid + "/ip-addresses";
 
-        $.ajax( url )
+        ajaxRequests.push( $.ajax( url )
             .done( function( data ) {
 
                 // IPv6
@@ -65,8 +65,8 @@ function updateIpAddresses() {
             .always( function() {
                 dd_ipv6.trigger( "changed" );
                 dd_ipv4.trigger( "changed" );
-            });
-
+            })
+    ); // ajaxRequests.push()
     } else {
         dd_ipv6.html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "changed" );
         dd_ipv4.html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "changed" );
@@ -140,11 +140,11 @@ function usedAcrossVlans() {
 
         let html = "<ul>";
 
-        $.ajax({
-            url: "<?= url( '/api/v4/vlan/ip-address/used-across-vlans' )?>",
-            method: "POST",
-            data: { ip: ipAddress }
-        })
+        ajaxRequests.push( $.ajax({
+                url: "<?= url( '/api/v4/vlan/ip-address/used-across-vlans' )?>",
+                method: "POST",
+                data: { ip: ipAddress }
+            })
             .done( function( data ) {
                 $.each( data, function( key, vli ){
                     html += `<li>${ipAddress} is in use by ${vli.customer.abbreviated_name} on ${vli.vlan.name}</li>\n`;
@@ -158,7 +158,8 @@ function usedAcrossVlans() {
                 if( html !== "<ul>" ) {
                     $('#alert-' + inputName).html( html + '</ul>' ).show();
                 }
-            });
+            })
+    ); // ajaxRequests.push()
     }
 }
 
@@ -193,8 +194,7 @@ function updateSwitchPort(e) {
             let options = "<option value=\"\">Choose a switch port</option>\n";
 
             $.each( data.switchports, function( key, port ) {
-                console.debug(port.sp_id === selectedPort);
-                if( ( port.pi_id === null || port.sp_id === selectedPort ) && arrayType.indexOf( port.sp_type ) !== -1 ) {
+                if( ( port.pi_id === null || port.sp_id.toString() === selectedPort ) && arrayType.indexOf( port.sp_type ) !== -1 ) {
                     options += `<option value="${port.sp_id}">${port.sp_name} (${port.sp_type_name})</option>\n`;
                 }
             });

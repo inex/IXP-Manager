@@ -54,15 +54,16 @@ class StorePhysicalInterface extends FormRequest
     {
 
         return [
+            'viid'                      => 'required|integer|exists:Entities\VirtualInterface,id',
             'switch'                    => 'required|integer|exists:Entities\Switcher,id',
             'switch-port'               => 'required|integer|exists:Entities\SwitchPort,id',
             'status'                    => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$STATES ) ),
             'speed'                     => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$SPEED ) ),
-            'duplex'                    => 'required|string|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),
+            'duplex'                    => 'required|string|in:'  . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),
             'monitorindex'              => 'nullable|integer',
             'notes'                     => 'string|nullable',
-            'switch-fanout'         => 'integer' . ( $this->input('fanout') ? '|required' : '|nullable' ),
-            'switch-port-fanout'    => 'integer' . ( $this->input('fanout') ? '|required' : '|nullable' ),
+            'switch-fanout'             => 'integer' . ( $this->input('fanout') ? '|required|exists:Entities\Switcher,id'   : '|nullable' ),
+            'switch-port-fanout'        => 'integer' . ( $this->input('fanout') ? '|required|exists:Entities\SwitchPort,id' : '|nullable' ),
         ];
     }
 }

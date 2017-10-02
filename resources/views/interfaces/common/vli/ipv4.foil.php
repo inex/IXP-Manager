@@ -16,6 +16,7 @@
 <?= Former::hidden( 'original-ipv4-address')
         ->id('original-ipv4-address')
         ->forceValue( old('ipv4-address') !== null ? old('ipv4-address') : ( $t->vli && $t->vli->getIPv4Address() ? $t->vli->getIPv4Address()->getAddress() : '' ) )
+
 ?>
 
 <?= Former::text( 'ipv4-hostname' )

@@ -39,8 +39,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::post(    'toggle-file-privacy/{fileid}',     'PatchPanelPortController@toggleFilePrivacy'    );
     Route::post(    'upload-file/{id}',                 'PatchPanelPortController@uploadFile'           );
     Route::post(    'notes/{id}',                       'PatchPanelPortController@setNotes'             );
-
-
 });
 
 

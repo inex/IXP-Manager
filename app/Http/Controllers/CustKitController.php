@@ -108,7 +108,7 @@ class CustKitController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function editAction( int $id = null ) {
+    public function addPrepareData( int $id = null ) {
         /** @var CustomerEquipmentEntity $custKit */
         $custKit = false;
 
@@ -125,12 +125,12 @@ class CustKitController extends Doctrine2Frontend {
             ]);
         }
 
-        return view( $this->feParams->viewFolderName.'/edit' )->with([
+        return [
             'data'                              => $this->data,
             'custKit'                           => $custKit,
             'cabinets'                          => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
             'custs'                             => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
-        ]);
+        ];
     }
 
     /**
@@ -144,4 +144,7 @@ class CustKitController extends Doctrine2Frontend {
     }
 
 
+    public function storeAction( StoreCustKit $request ){
+
+    }
 }

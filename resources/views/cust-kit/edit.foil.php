@@ -36,16 +36,16 @@
                 ->blockHelp( "" );
             ?>
 
-            <?= Former::select( 'customer' )
+            <?= Former::select( 'cust' )
                 ->label( 'Customer' )
-                ->fromQuery( $t->custs, 'name' )
+                ->fromQuery( $t->params[ 'custs'], 'name' )
                 ->placeholder( 'Choose a customer' )
                 ->addClass( 'chzn-select' );
             ?>
 
             <?= Former::select( 'cabinet' )
                 ->label( 'Cabinet' )
-                ->fromQuery( $t->cabinets, 'name' )
+                ->fromQuery( $t->params[ 'cabinets'], 'name' )
                 ->placeholder( 'Choose a Cabinet' )
                 ->addClass( 'chzn-select' );
             ?>
@@ -54,6 +54,13 @@
                 ->label( 'Description' )
                 ->rows( 5 )
                 ->blockHelp( '' );
+            ?>
+
+            <?= Former::actions(
+                Former::primary_submit( 'Save Changes' ),
+                Former::default_link( 'Cancel' )->href( action ($t->controller.'@listAction') ),
+                Former::success_button( 'Help' )->id( 'help-btn' )
+            );
             ?>
 
             <?= Former::close() ?>

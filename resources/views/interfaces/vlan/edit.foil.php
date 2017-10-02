@@ -11,7 +11,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        <?= $t->vli ? 'Edit' : 'Add' ?> VLAN Interface
+        <?= $t->duplicateTo ? 'Duplicate' : ( $t->vli ? 'Edit' : 'Add' ) ?> VLAN Interface
         (<?= $t->vi->getCustomer()->getFormattedName() ?>)
     </li>
 <?php $this->append() ?>
@@ -40,6 +40,16 @@
 
     <?= $t->alerts() ?>
 
+    <?php if( $t->duplicateTo ): ?>
+
+        <div class="alert alert-info">
+            This form allows you to duplicate the selected VLAN interface from <em><?= $t->vli->getVlan()->getName() ?></em> to your chosen VLAN as indicated below.
+            The IP address(es) will be created if they do not already exist (and will be checked to ensure they are not already in use). The new interface will not
+            be created until you click the <em>Save Changes</em> button below.
+        </div>
+
+    <?php endif; ?>
+
     <div id="instructions-alert" class="alert alert-info" style="display: none;">
         <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
         on a production system.
@@ -67,7 +77,7 @@
                 ->fromQuery( $t->vlans, 'name' )
                 ->placeholder( 'Choose a VLAN' )
                 ->addClass( 'chzn-select' )
-                ->disabled( $t->duplicated ? true : false)
+                ->disabled( $t->duplicateTo ? true : false )
                 ->blockHelp( 'Pick the VLAN for this VLAN interface. IP address dropdowns will automatically populate on change.' );
             ?>
 
@@ -184,16 +194,16 @@
             ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
         ?>
 
-        <?php if( $t->duplicated ): ?>
+        <?php if( $t->duplicateTo ): ?>
             <?= Former::hidden( 'vlan' )
                 ->id( 'vlan' )
-                ->value(  $t->duplicated )
+                ->value(  $t->duplicateTo )
             ?>
         <?php endif; ?>
 
-        <?= Former::hidden( 'duplicated' )
-            ->id( 'duplicated' )
-            ->value(  $t->duplicated ? true : false )
+        <?= Former::hidden( 'duplicate' )
+            ->id( 'duplicate' )
+            ->value(  $t->duplicateTo ? true : false )
         ?>
 
         <?= Former::hidden( 'viid' )

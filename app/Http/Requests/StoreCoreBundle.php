@@ -55,7 +55,7 @@ class StoreCoreBundle extends FormRequest
     public function rules()
     {
         $arrayCb = [
-            'customer'                  => 'required|integer',
+            'customer'                  => 'required|integer|exists:Entities\Customer,id',
             'description'               => 'required|string|max:255',
             'graph-title'               => 'required|string|max:255',
             'cost'                      => 'nullable|integer',

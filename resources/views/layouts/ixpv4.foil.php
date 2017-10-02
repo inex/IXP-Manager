@@ -16,6 +16,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="csrf-token" content="<?=  csrf_token() ?>">
+
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') ?>" />
     <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/select2/dist/css/select2.min.css') ?>" />

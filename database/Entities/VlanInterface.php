@@ -693,4 +693,5 @@ class VlanInterface
 
         return $macs;
     }
+
 }

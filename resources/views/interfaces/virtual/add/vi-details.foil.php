@@ -67,35 +67,43 @@
         <?php endif; ?>
 
         <?php if ($t->vi && $t->vi->getType() ): ?>
+
             <div class="form-group">
                 <label class="control-label col-sm-4">Type</label>
+
                 <div class="col-sm-6">
+
                     <label class="control-label">
-                                <span class="label <?php if( $t->vi->isTypePeering() ): ?> label-success <?php elseif( $t->vi->isTypeFanout() ): ?>label-default <?php endif; ?>">
-                                    <?= $t->vi->resolveType() ?>
-                                </span>
-                        <?php if( count( $t->vi->getPhysicalInterfaces()  ) ) : ?>
-                            <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ):
-                                /** @var Entities\PhysicalInterface $pi */ ?>
-                                <?php if( $t->vi->isTypePeering() && $pi->getFanoutPhysicalInterface() ) : ?>
+
+                        <span class="label <?php if( $t->vi->isTypePeering() ): ?> label-success <?php elseif( $t->vi->isTypeFanout() ): ?>label-default <?php endif; ?>">
+                            <?= $t->vi->resolveType() ?>
+                        </span>
+
+                        <?php if( count( $t->vi->getPhysicalInterfaces() ) == 1 ):
+                                $pi = $t->vi->getPhysicalInterfaces()[0]; /** @var Entities\PhysicalInterface $pi */
+                            ?>
+                                <?php if( $t->vi->isTypePeering() && $pi->getFanoutPhysicalInterface() ): ?>
                                     <span style="margin-left: 15px;">
-                                                <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getId() ]) ?>" >
-                                                    See <?= $t->vi->resolveType() ?> port
-                                                </a>
-                                            </span>
-                                <?php endif; ?>
-                                <?php if( $t->vi->isTypeFanout() && $pi->getPeeringPhysicalInterface() ) : ?>
+                                        <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getId() ]) ?>" >
+                                            See fanout port
+                                        </a>
+                                    </span>
+                                <?php elseif( $t->vi->isTypeFanout() && $pi->getPeeringPhysicalInterface() ): ?>
                                     <span style="margin-left: 15px;">
-                                                <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getPeeringPhysicalInterface()->getVirtualInterface()->getId() ]) ?>" >
-                                                    See <?= $t->vi->resolveType() ?> port
-                                                </a>
-                                            </span>
+                                        <a href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi->getPeeringPhysicalInterface()->getVirtualInterface()->getId() ]) ?>" >
+                                            See peering port
+                                        </a>
+                                    </span>
                                 <?php endif; ?>
-                            <?php endforeach; ?>
+
                         <?php endif; ?>
+
                     </label>
+
                 </div>
+
             </div>
+
         <?php endif; ?>
 
         <hr>
@@ -138,11 +146,24 @@
     <?php endif; ?>
 
 
-    <?=Former::actions(
-        Former::primary_submit( 'Save Changes' ),
-        Former::success_button( 'Help' )->id( 'help-btn' ),
-        '<a class="btn btn-default" id="advanced-options">Advanced Options</a>'
-    )->id('btn-group');?>
+    <?php
+        if( $t->cb ) {
+            $bbtn = '<a style="margin-left: 5px;" href="' . route( 'core-bundle/edit', [ 'id' => $t->cb->getId() ] ) . '" class="btn btn-default">Return to Core Bundle</a>';
+        } elseif( $t->vi ) {
+            $bbtn  = '<a style="margin-left: 5px;" href="' . url( 'customer/overview/tab/ports/id' ) . '/' . $t->vi->getCustomer()->getId() . '" class="btn btn-default">Return to Customer Overview</a>';
+            $bbtn .= '<a style="margin-left: 5px; display: none;" class="btn btn btn-danger pull-right" id="delete-vi-' . $t->vi->getId() . '" href="">Delete Interface</a>';
+        } else {
+            $bbtn = '<a style="margin-left: 5px;" href="' . action( 'Interfaces\VirtualInterfaceController@list' ) . '" class="btn btn-default">Cancel</a>';
+        }
+    ?>
+
+    <?=
+        Former::actions(
+            Former::primary_submit( 'Save Changes' ),
+            Former::success_button( 'Help' )->id( 'help-btn' ),
+            '<a class="btn btn-default" id="advanced-options">Advanced Options</a>',
+            $bbtn
+        )->id('btn-group');?>
 
     <?= Former::close() ?>
 </div>

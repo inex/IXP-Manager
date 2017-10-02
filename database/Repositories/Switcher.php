@@ -542,10 +542,19 @@ class Switcher extends EntityRepository
 
             $listCoreInterface = $query->getArrayResult();
 
+            # XXX this need to be refactored as it no longer exports CoreLinkInterface information
             foreach( $listCoreInterface as $ci ){
+                $export = [];
                 $subnet = ( $ci[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $ci['clSubnet'] : $ci['cbSubnet'];
-                $ci['ip'] = $this->linkAddr( $subnet , $side, true );
-                $cis[] = $ci;
+
+                $export[ 'ipv4' ]         = $this->linkAddr( $subnet, $side, true );
+                $export[ 'description' ]  = $ci[ 'description' ];
+                $export[ 'bfd' ]          = $ci[ 'bfd' ];
+                $export[ 'speed' ]        = $ci[ 'speed' ];
+                $export[ 'name' ]         = $ci[ 'name' ];
+                $export[ 'shutdown' ]     = !$ci[ 'enabled' ];
+
+                $cis[] = $export;
             }
         }
 
@@ -570,6 +579,32 @@ class Switcher extends EntityRepository
         }
 
         return $ip;
+    }
+
+
+     /**
+     * Returns the loopback interface information associated with the specified switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getLoopbackInfo( int $id ): array {
+
+        $cis = [];
+
+        $sw = $this->getEntityManager( )->getRepository('Entities\Switcher')->find( $id );
+
+        if ($sw) {
+            $ci['description']  = 'Loopback interface';
+            $ci['loopback']     = true;
+            $ci['ipv4']         = $sw->getLoopbackIP().'/32';
+            $ci['name']         = $sw->getLoopbackName();
+            $ci['shutdown']     = false;
+
+            $cis[] = $ci;
+        }
+
+        return $cis;
     }
 
     /**
@@ -649,10 +684,10 @@ class Switcher extends EntityRepository
      * @param int      $id     Switch ID - switch to query
      * @return array
      */
-    public function getAllVlanInInsfrascture( int $id ): array {
+    public function getAllVlansInInfrastructure( int $id ): array {
 
         /** @noinspection SqlNoDataSourceInspection */
-        $dql = "SELECT vl.name, vl.number, vl.private
+        $dql = "SELECT vl.name, vl.number as tag, vl.private
                     FROM Entities\\Infrastructure inf
                         LEFT JOIN inf.Switchers s
                         LEFT JOIN inf.Vlans vl

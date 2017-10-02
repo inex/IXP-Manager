@@ -23,11 +23,9 @@ namespace IXP\Http\Requests;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MovePatchPanelPort extends FormRequest
+class StoreCustKit extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -37,7 +35,7 @@ class MovePatchPanelPort extends FormRequest
     public function authorize()
     {
         // middleware ensures superuser access only so always authorised here:
-        return Auth::getUser()->isSuperUser();
+        return true;
     }
 
     /**
@@ -48,9 +46,14 @@ class MovePatchPanelPort extends FormRequest
     public function rules()
     {
         return [
-            'id'                    => 'required|integer|exists:Entities\PatchPanelPort,id',
-            'master-port'           => 'required|integer|exists:Entities\PatchPanelPort,id',
-            'slave-port'            => $this->input('has-duplex') ? 'required|integer|exists:Entities\PatchPanelPort,id' : '',
+            'name'              => 'required|string|max:255',
+            'colo_reference'    => 'required|string|max:255',
+            'cabinet'           => 'required|integer',
+            'cable_type'        => 'required|integer',
+            'connector_type'    => 'required|integer',
+            'installation_date' => 'date',
+            'port_prefix'       => 'string|nullable',
+            'numberOfPorts'     => 'required|integer',
         ];
     }
 }
