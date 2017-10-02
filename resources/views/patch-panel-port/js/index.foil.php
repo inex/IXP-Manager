@@ -401,9 +401,8 @@
      * Toggle privacy of a file that has been just uploaded via uploadPopup
      */
     function toggleFilePrivacy(e) {
-<<<<<<< HEAD
         let pppFileId = (this.id).substring(29);
-        $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppFileId ,{
+        $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId ,{
             type: 'POST'
         })
         .done( function( data ) {
@@ -413,19 +412,6 @@
                 $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-lock').addClass('fa-unlock');
             }
         });
-=======
-        var pppFileId = (this.id).substring(29);
-        $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId, {
-            type: 'POST'
-        } )
-            .done( function( data ) {
-                if( data.isPrivate ) {
-                    $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-unlock').addClass('fa-lock');
-                } else {
-                    $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-lock').addClass('fa-unlock');
-                }
-            });
->>>>>>> csrf-api#44
     }
 
 
