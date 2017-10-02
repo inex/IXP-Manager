@@ -250,15 +250,14 @@
                                             <li role="separator" class="divider"></li>
 
                                             <?php if( $ppp->getCustomer() ): ?>
-                                                <li> <a href="<?= action( 'PatchPanel\PatchPanelPortController@email', [ 'id' => $ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_CONNECT ] )  ?>">Email - Connect</a></li>
-                                                <li> <a href="<?= action( 'PatchPanel\PatchPanelPortController@email', [ 'id' => $ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_CEASE ] )  ?>">Email - Cease</a></li>
-                                                <li> <a href="<?= action( 'PatchPanel\PatchPanelPortController@email', [ 'id' => $ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_INFO ] )  ?>">Email - Information</a></li>
-                                                <li> <a href="<?= action( 'PatchPanel\PatchPanelPortController@email', [ 'id' => $ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_LOA ] )  ?>">Email - LoA</a></li>
+                                                <li> <a href="<?= action( 'PatchPanel\PatchPanelPortController@email', [ 'id' => $ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_CONNECT ]    )  ?>">Email - Connect</a></li>
+                                                <li> <a href="<?= action( 'PatchPanel\PatchPanelPortController@email', [ 'id' => $ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_CEASE ]      )  ?>">Email - Cease</a></li>
+                                                <li> <a href="<?= action( 'PatchPanel\PatchPanelPortController@email', [ 'id' => $ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_INFO ]       )  ?>">Email - Information</a></li>
+                                                <li> <a href="<?= action( 'PatchPanel\PatchPanelPortController@email', [ 'id' => $ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_LOA ]        )  ?>">Email - LoA</a></li>
                                                 <li role="separator" class="divider"></li>
                                             <?php endif; ?>
 
                                             <?php if( $ppp->isAllocated() ): ?>
-
                                                 <li>
                                                     <a href="<?= action( 'PatchPanel\PatchPanelPortController@downloadLoA' , [ 'id' => $ppp->getId() ] ) ?>">
                                                         Download LoA

@@ -48,9 +48,9 @@ class MovePatchPanelPort extends FormRequest
     public function rules()
     {
         return [
-            'id'                    => 'required|integer',
-            'master-port'           => 'required|integer',
-            'slave-port'            => $this->input('has-duplex') ? 'required|integer' : '',
+            'id'                    => 'required|integer|exists:Entities\PatchPanelPort,id',
+            'master-port'           => 'required|integer|exists:Entities\PatchPanelPort,id',
+            'slave-port'            => $this->input('has-duplex') ? 'required|integer|exists:Entities\PatchPanelPort,id' : '',
         ];
     }
 }

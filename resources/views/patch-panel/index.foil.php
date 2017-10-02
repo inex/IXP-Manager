@@ -174,12 +174,9 @@
     var locations = JSON.parse( '<?= json_encode( $t->locations ) ?>' );
 
     $(document).ready( function() {
-        $( '#patch-panel-list' ).dataTable( {
-            "autoWidth": false
-        } );
+        $( '#patch-panel-list' ).dataTable( { "autoWidth": false } );
 
         $( '#patch-panel-list' ).show();
-
 
         $('#btn-filter-options').on( 'click', function( e ) {
             e.preventDefault();
@@ -187,12 +184,11 @@
         });
 
         $('#adv-search-select-locations').on( 'change', function( e ) {
-            var opts = '<option value="all">All Cabinets</option>';
+            let opts = `<option value="all">All Cabinets</option>` ;
 
             if( $('#adv-search-select-locations').val() != 'all' ) {
-                for (var i in locations[$('#adv-search-select-locations').val()]['cabinets']) {
-                    opts += '<option value="' + i
-                        + '">' + locations[$('#adv-search-select-locations').val()]['cabinets'][i]['name'] + '</option>';
+                for ( let i in locations[ $( '#adv-search-select-locations' ).val() ][ 'cabinets' ] ) {
+                    opts += `<option value='${i}'> ${ locations[ $( '#adv-search-select-locations' ).val() ][ 'cabinets' ][ i ][ 'name' ] }</option>`;
                 }
             }
 

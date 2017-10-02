@@ -928,6 +928,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getCabinet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', []);
+
+        return parent::getCabinet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCustomerId()
     {
 
