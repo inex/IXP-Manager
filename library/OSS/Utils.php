@@ -328,8 +328,14 @@ class OSS_Utils
      * @return string
      */
     public static function csrfToken(){
-        if( ! isset ( $_SESSION[ 'csrf-token' ] ) ){
-            $_SESSION['csrf-token'] = bin2hex(random_bytes(32));
+
+        if( !isset ( $_SESSION[ 'request-time' ] ) ){
+            $_SESSION[ 'request-time' ] = $_SERVER[ 'REQUEST_TIME_FLOAT' ];
+        }
+
+        if( $_SERVER[ 'REQUEST_TIME_FLOAT' ] != $_SESSION[ 'request-time' ] ){
+            $_SESSION['csrf-token'] = bin2hex( random_bytes(16) );
+            $_SESSION[ 'request-time' ] = $_SERVER[ 'REQUEST_TIME_FLOAT' ];
         }
 
         return $_SESSION[ 'csrf-token' ];
