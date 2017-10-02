@@ -73,9 +73,18 @@ Route::get('router/updated-before/{threshold}',                 'RouterControlle
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Patch Panel Port
 //
+Route::post(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
+Route::post(  'patch-panel-port/delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
+Route::post(  'patch-panel-port/delete/{id}',                    'PatchPanelPortController@delete' );
+Route::post(  'patch-panel-port/split/{id}',                     'PatchPanelPortController@split' );
+Route::post(  'patch-panel-port/toggle-file-privacy/{fileid}',  'PatchPanelPortController@toggleFilePrivacy' );
+Route::post( 'patch-panel-port/upload-file/{id}',               'PatchPanelPortController@uploadFile' );
+Route::post( 'patch-panel-port/notes/{id}',                     'PatchPanelPortController@setNotes' );
+
 Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortController@detail');
 Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
@@ -110,7 +119,8 @@ Route::post( 'utils/markdown',                                  'UtilsController
 // Layer 2 Address
 //
 Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
-Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
+Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );
+Route::get(  'l2-address/detail/{id}',                          'Layer2AddressController@detail' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Vlan Interface

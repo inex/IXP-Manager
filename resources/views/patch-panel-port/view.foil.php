@@ -471,9 +471,10 @@
 
         $("a[id|='file-toggle-private']").on('click', function (e) {
             e.preventDefault();
+
             let pppfid = (this.id).substring(20);
 
-            $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
+            $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
                 type : 'POST'
             } )
             .done( function( data ) {
@@ -502,6 +503,7 @@
             },
             callback: function ( result ) {
                 if( result ){
+
                     let urlAction = objectType == 'ppp' ? "<?= url('patch-panel-port/delete-file') ?>" : "<?= url('patch-panel-port/delete-history-file') ?>";
 
                     $.ajax( urlAction + "/" + idFile , {

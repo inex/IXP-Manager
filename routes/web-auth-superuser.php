@@ -28,7 +28,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::get( 'edit-to-allocate/{id}',            'PatchPanelPortController@editToAllocate' );
     Route::get( 'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired' );
     Route::get( 'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus' );
-    Route::get( 'email/{id}/{type}',                'PatchPanelPortController@email' );
 
     Route::get( 'download-file/{id}',               'PatchPanelPortController@downloadFile' );
     Route::get( 'move-form/{id}',                   'PatchPanelPortController@moveForm' );

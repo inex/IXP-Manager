@@ -80,9 +80,9 @@
             },
             callback: function (result) {
                 if( result) {
-                    $.ajax( "<?= url ( 'layer2-address/delete/' ) ?>/"+l2aId, {
-                            type : 'POST'
-                    })
+                    $.ajax( "<?= url( 'api/v4/l2-address/delete' ) ?>/"+l2aId , {
+                        type : 'POST'
+                    } )
                         .done( function( data ) {
                             $('.bootbox.modal').modal( 'hide' );
                             result = ( data.success ) ? 'success': 'danger';
