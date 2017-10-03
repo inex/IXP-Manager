@@ -61,8 +61,13 @@ return [
             'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',        true ),
             'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',    false ),
         ],
-    ],
 
+        'beta' => [
+            'core_bundles' => env( 'IXP_FE_BETA_CORE_BUNDLES', false ),
+        ],
+
+    ],
+    
     /*
     |--------------------------------------------------------------------------
     | Should aggregate, trunk and switch graphs be public?
