@@ -576,6 +576,17 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getLastUpdatedCarbon()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastUpdatedCarbon', []);
+
+        return parent::getLastUpdatedCarbon();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getVlan()
     {
 
@@ -961,12 +972,12 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function lastUpdateGreaterThan1Day()
+    public function lastUpdatedGreaterThanSeconds(int $threshold)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'lastUpdateGreaterThan1Day', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'lastUpdatedGreaterThanSeconds', [$threshold]);
 
-        return parent::lastUpdateGreaterThan1Day();
+        return parent::lastUpdatedGreaterThanSeconds($threshold);
     }
 
 }

@@ -452,4 +452,37 @@ class Customer extends EntityRepository
 
         return $crossConnected;
     }
+
+    /**
+     * Return an array of one or all customer names where the array key is the customer id.
+     *
+     * @param $types array the types needed
+     * @param $cid int The customer ID
+     *
+     * @return array An array of all customers names with the customers id as the key.
+     */
+    public function getAsArray( int $cid = null, array $types = [] ): array {
+        $request = "SELECT c
+                    FROM \\Entities\\customer c
+                    WHERE 1 = 1";
+
+        if( $cid ){
+            $request .= " AND c.id = {$cid} ";
+        }
+
+        if( count( $types) > 0 ){
+            $request .= " AND c.type IN (" . implode( ',', $types ) . ")";
+        }
+
+
+
+        $listCustomers = $this->getEntityManager()->createQuery( $request )->getResult();
+
+        $customers = [];
+        foreach( $listCustomers as $cust ) {
+            $customers[ $cust->getId() ] = $cust->getName() ;
+        }
+
+        return $customers;
+    }
 }

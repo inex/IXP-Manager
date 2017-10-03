@@ -159,8 +159,8 @@ class VirtualInterface extends EntityRepository
      */
     public function validateChannelGroup( VIEntity $vi ): bool {
 
-        if( !$vi->getChannelgroup() ) {
-            throw new GeneralException("Should not be testing a null / zero channel group number");
+        if( $vi->getChannelgroup() === null ) {
+            throw new GeneralException("Should not be testing a null channel group number");
         }
 
         if( count( $vi->getPhysicalInterfaces() ) == 0 ) {
@@ -230,6 +230,61 @@ class VirtualInterface extends EntityRepository
 
         $vi->setChannelgroup($orig);
         throw new GeneralException("Could not assign a free channel group number");
+    }
+
+    /**
+     * Provide a collection of virtual interfaces for the standard controller list action
+     *
+     * Example usage: resources/views/interfaces/virtual/list.foil.php
+     *
+     * @return array
+     */
+    public function getForList(): array
+    {
+        return $this->getEntityManager()->createQuery(
+                "SELECT vi, pi, fpi, ppi, c, sp, s, cab, l, ci, ppp
+                    FROM Entities\\VirtualInterface vi
+                        LEFT JOIN vi.Customer c
+                        LEFT JOIN vi.PhysicalInterfaces pi
+                        LEFT JOIN pi.FanoutPhysicalInterface fpi
+                        LEFT JOIN pi.PeeringPhysicalInterface ppi
+                        LEFT JOIN pi.coreInterface ci
+                        LEFT JOIN pi.SwitchPort sp
+                        LEFT JOIN sp.Switcher s
+                        LEFT JOIN sp.patchPanelPort ppp
+                        LEFT JOIN s.Cabinet cab
+                        LEFT JOIN cab.Location l"
+            )->getResult();
+    }
+
+    /**
+     * Check if the virtual interface is linked to a core bundle
+     *
+     * @return array
+     */
+    public function coreBundlesLinked( int $id ){
+
+
+        $vi = $this->getEntityManager()->createQuery(
+            "SELECT DISTINCT vi
+                    FROM Entities\\VirtualInterface vi
+                        LEFT JOIN vi.PhysicalInterfaces pi
+                        INNER JOIN pi.coreInterface ci
+                        
+                        INNER JOIN ci.coreLink cl
+                        INNER JOIN cl.coreBundle cb
+                        
+                        INNER JOIN ci.coreLink2 cl2
+                        INNER JOIN cl2.coreBundle cb2
+                        
+                        WHERE vi.id = {$id}"
+        )->getResult();
+
+        if( $vi ){
+            return $vi[0];
+        }
+
+        return false;
     }
 
 }

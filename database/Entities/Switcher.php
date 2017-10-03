@@ -78,6 +78,21 @@ class Switcher
     protected $notes;
 
     /**
+     * @var integer $asn
+     */
+    protected $asn;
+
+    /**
+     * @var string $loopback_ip
+     */
+    protected $loopback_ip;
+
+    /**
+     * @var string $loopback_name
+     */
+    protected $loopback_name;
+
+    /**
      * @var integer $id
      */
     protected $id;
@@ -798,6 +813,73 @@ class Switcher
         return $this->mauSupported;
     }
 
+    /**
+     * Set asn
+     *
+     * @param integer $asn
+     * @return Switcher
+     */
+    public function setAsn($asn)
+    {
+        $this->asn = $asn;
 
+        return $this;
+    }
+
+    /**
+     * Get asn
+     *
+     * @return integer
+     */
+    public function getAsn()
+    {
+        return $this->asn;
+    }
+
+    /**
+     * Set loopback IP
+     *
+     * @param string $loopback_ip
+     * @return Switcher
+     */
+    public function setLoopbackIP($loopback_ip)
+    {
+        $this->loopback_ip = $loopback_ip;
+
+        return $this;
+    }
+
+    /**
+     * Get loopback IP
+     *
+     * @return string
+     */
+    public function getLoopbackIP()
+    {
+        return $this->loopback_ip;
+    }
+
+    /**
+     * Set loopback name
+     *
+     * @param string $loopback_name
+     * @return Switcher
+     */
+    public function setLoopbackName($loopback_name)
+    {
+        $this->loopback_name = $loopback_name;
+
+        return $this;
+    }
+
+    /**
+     * Get loopback name
+     *
+     * @return string
+     */
+    public function getLoopbackName()
+    {
+        return $this->loopback_name;
+    }
 
 }

@@ -74,4 +74,5 @@ return [
         'public' => env( 'IXP_FE_STATISTICS_PUBLIC', true ),
     ],
 
+
 ];

@@ -103,7 +103,9 @@ class SwitchController extends IXP_Controller_FrontEnd
                             'title'      => 'Last Polled',
                             'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
                         ],
-                        'notes'          => 'Notes'
+                        'notes'          => 'Notes',
+                        'asn'            => 'ASN',
+                        'loopback_ip'    => 'Loopback IP',
                     ]
                 );
 
@@ -134,7 +136,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 s.active AS active, s.notes AS notes, s.lastPolled AS lastPolled,
                 s.hostname AS hostname, s.os AS os, s.osDate AS osDate, s.osVersion AS osVersion,
                 s.serialNumber AS serialNumber, s.mauSupported AS mauSupported,
-                v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet'
+                v.id AS vendorid, v.name AS vendor, c.id AS cabinetid, c.name AS cabinet, s.asn as asn, s.loopback_ip as loopback_ip, s.loopback_name as loopback_name'
             )
             ->from( '\\Entities\\Switcher', 's' )
             ->leftJoin( 's.Infrastructure', 'i' )
@@ -289,6 +291,9 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $s->setOsDate( $snmp->getPlatform()->getOsDate() );
                 $s->setOsVersion( $snmp->getPlatform()->getOsVersion() );
                 $s->setLastPolled( new DateTime() );
+                $s->setAsn( $f->getValue( 'asn' ) );
+                $s->setLoopbackIP( $f->getValue( 'loopback_ip' ) );
+                $s->setLoopbackName( $f->getValue( 'loopback_name' ) );
 
                 $this->getD2EM()->persist( $s );
                 $this->getD2EM()->flush();
@@ -370,6 +375,7 @@ class SwitchController extends IXP_Controller_FrontEnd
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
+
         $object->setCabinet(
             $this->getD2EM()->getRepository( '\\Entities\\Cabinet' )->find( $form->getElement( 'cabinetid' )->getValue() )
         );
@@ -383,6 +389,27 @@ class SwitchController extends IXP_Controller_FrontEnd
             $object->setInfrastructure(
                 $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructure' )->getValue() )
             );
+        }
+
+
+
+        if( $form->getElement( 'asn' )->getValue() ){
+
+            if( $s = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->findBy( ['asn' => $form->getElement( 'asn' )->getValue() ]) ){
+                $id = $object->getId();
+                $asnExist = array_filter( $s, function ($e) use( $object ) {
+                    return $e->getId() != $object->getId();
+                });
+                
+                if( $asnExist ){
+                    $this->addMessage(
+                        "WARNING: you have supplied a AS number that is already is use by at least one other switch. If you are using eBGP, this will be a problem.",
+                        OSS_Message::WARNING
+                    );
+                }
+            }
+        } else {
+            $form->getElement( 'asn' )->setValue( null );
         }
 
         return true;

@@ -67,52 +67,75 @@ Route::get('router/updated/{handle}',                           'RouterControlle
 Route::get('router/updated',                                    'RouterController@getAllLastUpdated' );
 Route::get('router/updated-before/{threshold}',                 'RouterController@getAllLastUpdatedBefore' );
 
-
-
-
-
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sflow Receiver
+//
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
 
-Route::get(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
-Route::get(  'patch-panel-port/delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
-Route::get(  'patch-panel-port/delete/{id}',                    'PatchPanelPortController@delete' );
-Route::get(  'patch-panel-port/split/{id}',                     'PatchPanelPortController@split' );
-Route::get(  'patch-panel-port/toggle-file-privacy/{fileid}',   'PatchPanelPortController@toggleFilePrivacy' );
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Patch Panel Port
+//
+Route::post(  'patch-panel-port/delete-file/{fileid}',           'PatchPanelPortController@deleteFile' );
+Route::post(  'patch-panel-port/delete-history-file/{fileid}',   'PatchPanelPortController@deleteHistoryFile' );
+Route::post(  'patch-panel-port/delete/{id}',                    'PatchPanelPortController@delete' );
+Route::post(  'patch-panel-port/split/{id}',                     'PatchPanelPortController@split' );
+Route::post(  'patch-panel-port/toggle-file-privacy/{fileid}',  'PatchPanelPortController@toggleFilePrivacy' );
 Route::post( 'patch-panel-port/upload-file/{id}',               'PatchPanelPortController@uploadFile' );
 Route::post( 'patch-panel-port/notes/{id}',                     'PatchPanelPortController@setNotes' );
+
 Route::get(  'patch-panel-port/{id}',                           'PatchPanelPortController@detail');
 Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortController@detailDeep');
-
 Route::post(  'patch-panel/{id}/patch-panel-port-free',         'PatchPanelController@getFreePatchPanelPort');
 
-// remove the following two after INEX updated to yaml
-Route::get('provisioner/salt/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
-Route::get('provisioner/salt/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
+Route::get('provisioner/layer2interfaces/switch/{switchid}.{outformat}',        'Provisioner\YamlController@forSwitch');
+Route::get('provisioner/layer2interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@forSwitchByName');
 
-Route::get('provisioner/yaml/switch/{switchid}',        'Provisioner\YamlController@forSwitch');
-Route::get('provisioner/yaml/switch-name/{switchname}', 'Provisioner\YamlController@forSwitchByName');
+Route::get('provisioner/layer3interfaces/switch-id/{switchid}.{outformat}',     'Provisioner\YamlController@coreLinkForSwitch');
+Route::get('provisioner/layer3interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@coreLinkForSwitchByName');
+
+Route::get('provisioner/vlans/switch-id/{switchid}.{outformat}',                'Provisioner\YamlController@vlansForSwitch');
+Route::get('provisioner/vlans/switch-name/{switchname}.{outformat}',            'Provisioner\YamlController@vlansForSwitchByName');
+
+Route::get('provisioner/routing/switch-id/{switchid}.{outformat}',              'Provisioner\YamlController@bgpForSwitch');
+Route::get('provisioner/routing/switch-name/{switchname}.{outformat}',          'Provisioner\YamlController@bgpForSwitchByName');
 
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
 
 Route::post('customer/{id}/switches',                           'CustomerController@switches' );
 
-Route::post('switcher/{id}/switch-port',                        'SwitcherController@switchPort' );
-Route::post('switcher/{id}/switch-port-prewired',               'SwitcherController@switchPortPrewired' );
+Route::group( [  'prefix' => 'switch' ], function() {
+    Route::get( '{id}/ports',                        'SwitchController@ports' );
+    Route::post( '{id}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' );
+    Route::post( '{id}/switch-port-prewired',         'SwitchController@switchPortPrewired' );
+    Route::post( '{id}/switch-port',                  'SwitchController@switchPort' );
+});
 
 Route::post( 'utils/markdown',                                  'UtilsController@markdown' );
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Layer 2 Address
+//
 Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
-Route::get( 'l2-address/delete/{id}',                           'Layer2AddressController@delete' );
-Route::get( 'l2-address/detail/{id}',                           'Layer2AddressController@detail' );
+Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );
+Route::get(  'l2-address/detail/{id}',                          'Layer2AddressController@detail' );
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Vlan Interface
+//
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
-
-
 Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceController@sflowMatrix' );
 Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
+
+
+
+Route::group( [  'prefix' => 'vlan' ], function() {
+    Route::get( '{id}/ip-addresses',                    'VlanController@getIPAddresses' );
+
+    Route::post( 'ip-address/used-across-vlans',        'VlanController@UsedAcrossVlans' );
+});
 
 
 Route::group( [ 'prefix' => 'nagios' ], function() {

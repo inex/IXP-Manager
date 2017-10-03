@@ -24,6 +24,7 @@ namespace IXP\Tasks\Yaml;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Entities\PhysicalInterface;
 use Entities\Switcher as SwitchEntity;
 use Entities\VirtualInterface as VirtualInterfaceEntity;
 use Entities\PhysicalInterface as PhysicalInterfaceEntity;
@@ -73,25 +74,22 @@ class SwitchConfigurationGenerator
         return $this->switch;
     }
 
-    private function template(): string {
-        return 'api/v4/provisioner/yaml/switch';
-    }
-
     /**
      * Generate and return the configuration
      *
      * @throws GeneralException
      * @return ViewContract The configuration
      */
-    public function render(): ViewContract
-    {
+    public function generate(): array {
 
         $ports = [];
         $visProcessed = [];
+        $cbsProcessed = [];
+
         foreach( $this->getSwitch()->getPorts() as $sp ) {
 
             /** @var \Entities\SwitchPort $sp */
-            if( !$sp->isTypePeering() ) {
+            if( !$sp->isTypeUnset() && !$sp->isTypePeering() && !$sp->isTypeCore() ) {
                 continue;
             }
 
@@ -100,45 +98,50 @@ class SwitchConfigurationGenerator
                 continue;
             }
 
-            if( !in_array($pi->getVirtualInterface()->getId(), $visProcessed) ) {
+            if( ( $sp->isTypeUnset() || $sp->isTypePeering() ) && !in_array($pi->getVirtualInterface()->getId(), $visProcessed)  ) {
                 $ports = array_merge($ports, $this->processVirtualInterface($pi->getVirtualInterface()));
                 $visProcessed[] = $pi->getVirtualInterface()->getId();
+            } else if( $sp->isTypeCore() && !in_array($pi->getVirtualInterface()->getId(), $cbsProcessed ) && $pi->getCoreBundle()->isL2LAG() ) {
+                $ports = array_merge( $ports, $this->processCoreBundleInterface( $pi ) );
+                $cbsProcessed[] = $pi->getVirtualInterface()->getId();
             }
         }
 
-        return view($this->template())->with(
-            [ 'ports' => $ports ]
-        );
+        return array('layer2interfaces' => $ports);
     }
 
     private function processVirtualInterface( VirtualInterfaceEntity $vi ): array {
 
         $p                       = [];
-        $p['description']        = "Cust: {$vi->getCustomer()->getAbbreviatedName()}";
-        $p['dot1q']              = $vi->getTrunk() ? 'yes' : 'no';
+        $p['type']               = 'edge';
+        $p['description']        = $vi->getCustomer()->getAbbreviatedName();
+        $p['dot1q']              = $vi->getTrunk();
         $p['virtualinterfaceid'] = $vi->getId();
+        $p['lagframing']         = $vi->getLagFraming();
         if( $vi->getChannelgroup() ) {
             $p['lagindex'] = $vi->getChannelgroup();
         }
 
         $p['vlans'] = [];
+
         foreach( $vi->getVlanInterfaces() as $vli ) {
             /** @var \Entities\VlanInterface $vli */
             $v = [];
-            $v['number'] = $vli->getVlan()->getNumber();
-            $v['macaddresses'] = [];
+            $v[ 'number' ] = $vli->getVlan()->getNumber();
+            $v[ 'macaddresses' ] = [];
             foreach( $vli->getLayer2Addresses() as $mac ) {
-                $v['macaddresses'][] = $mac->getMacFormattedWithColons();
+                $v[ 'macaddresses' ][] = $mac->getMacFormattedWithColons();
             }
-            $p['vlans'][] = $v;
+            $p[ 'vlans' ][] = $v;
         }
 
         // we now have the base port config. If this is not a LAG, just return it:
         if( !$vi->getLagFraming() ) {
             $pi = $vi->getPhysicalInterfaces()[0];
+            $p['shutdown']           = ! ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED);
             $p['name']               = $pi->getSwitchport()->getIfName();
             $p['speed']              = $pi->getSpeed();
-            $p['autoneg']            = $pi->getAutoneg() ? 'yes' : 'no';
+            $p['autoneg']            = $pi->getAutoneg();
             return [ $p ];
         }
 
@@ -146,9 +149,26 @@ class SwitchConfigurationGenerator
 
         // bundle definition:
         $p['name']      = $vi->getBundleName();
-        $p['lagmaster'] = 'yes';
-        $p['fastlacp']  = $vi->getFastLACP() ? 'yes' : 'no';
+        $p['lagmaster'] = true;
+        $p['fastlacp']  = $vi->getFastLACP();
+        $p['lagmembers']= [];
+        $p['shutdown']  = true;
+
+        // build up list of physical ports associated with this lag master
+        foreach( $vi->getPhysicalInterfaces() as $pi ) {
+            if( !$pi->getSwitchPort() ) {
+                continue;
+            }
+            $p['lagmembers'][]= $pi->getSwitchPort()->getIfName();
+
+            // if any bundle members are up, the LAG is up
+            if ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) {
+                $p['shutdown'] = false;
+            }
+        }
         $ports[]        = $p;
+
+        unset( $p['lagmembers'] );
 
         // interface definitions:
         foreach( $vi->getPhysicalInterfaces() as $pi ) {
@@ -156,9 +176,10 @@ class SwitchConfigurationGenerator
             if( !$pi->getSwitchPort() ) {
                 continue;
             }
+            $p['shutdown']  = !($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED);
             $p['name']      = $pi->getSwitchPort()->getIfName();
-            $p['lagmaster'] = 'no';
-            $p['autoneg']   = $pi->getAutoneg() ? 'yes' : 'no';
+            $p['lagmaster'] = false;
+            $p['autoneg']   = $pi->getAutoneg();
             $p['speed']     = $pi->getSpeed();
             $ports[] = $p;
         }
@@ -166,5 +187,100 @@ class SwitchConfigurationGenerator
         return $ports;
     }
 
+    private function processCoreBundleInterface( PhysicalInterfaceEntity $pi ): array {
 
+        $vi = $pi->getVirtualInterface();
+        $ci = $pi->getCoreInterface();
+        $cl = $ci->getCoreLink();
+        $cb = $cl->getCoreBundle();
+
+        // side a or side b?
+        if( $cl->getCoreInterfaceSideA()->getId() == $ci->getId() ) {
+            $sideFn = 'getCoreInterfaceSideA';
+        } else {
+            $sideFn = 'getCoreInterfaceSideB';
+        }
+
+        $p                       = [];
+        $p['type']               = 'core';
+        $p['description']        = $cb->getDescription();
+        $p['dot1q']              = $vi->getTrunk();
+        $p['stp']                = $cb->getSTP();
+        $p['cost']               = $cb->getCost();
+        $p['preference']         = $cb->getPreference();
+        $p['virtualinterfaceid'] = $vi->getId();
+        $p['corebundleid']       = $cb->getId();
+        $p['lagframing']         = $vi->getLagFraming();
+        if( $vi->getChannelgroup() ) {
+            $p['lagindex'] = $vi->getChannelgroup();
+        }
+
+        $p['vlans'] = [];
+
+        foreach( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getVlans() as $vlan ) {
+            $v = [];
+            $v[ 'number' ] = $vlan->getNumber();
+            $v[ 'macaddresses' ] = [];
+            $p[ 'vlans' ][] = $v;
+        }
+
+        // we now have the base port config. If this is not a LAG, just return it:
+        if( !$vi->getLagFraming() ) {
+            $p['shutdown']           = !($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED);
+            $p['name']               = $pi->getSwitchport()->getIfName();
+            $p['speed']              = $pi->getSpeed();
+            $p['autoneg']            = $pi->getAutoneg();
+            return [ $p ];
+        }
+
+        $ports = [];
+
+        // bundle definition:
+        $p['name']      = $vi->getBundleName();
+        $p['lagmaster'] = true;
+        $p['fastlacp']  = $vi->getFastLACP();
+        $p['lagmembers']= [];
+        $p['shutdown']  = true;
+
+        // build up list of physical ports associated with this lag master
+        foreach( $cb->getCoreLinks() as $_cl ) {
+            $_pi = $_cl->$sideFn()->getPhysicalInterface();
+            if( !$_pi->getSwitchPort() ) {
+                continue;
+            }
+            $p['lagmembers'][]= $_pi->getSwitchPort()->getIfName();
+
+            // if any bundle members are up, the LAG is up
+            if( $_pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED ) {
+                $p['shutdown'] = false;
+            }
+        }
+
+        // but if the bundle is down, the whole lot is down
+        if( !$cb->getEnabled() ) {
+            $p['shutdown'] = true;
+        }
+
+        $ports[]        = $p;
+
+        unset( $p['lagmembers'] );
+
+        // interface definitions:
+        foreach( $cb->getCoreLinks() as $_cl ) {
+            $_pi = $_cl->$sideFn()->getPhysicalInterface();
+
+            /** @var PhysicalInterfaceEntity $_pi */
+            if( !$_pi->getSwitchPort() ) {
+                continue;
+            }
+            $p['shutdown']  = !($_pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED);
+            $p['name']      = $_pi->getSwitchPort()->getIfName();
+            $p['lagmaster'] = false;
+            $p['autoneg']   = $_pi->getAutoneg();
+            $p['speed']     = $_pi->getSpeed();
+            $ports[] = $p;
+        }
+
+        return $ports;
+    }
 }

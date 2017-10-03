@@ -389,6 +389,28 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
+    public function getPeeringPhysicalInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPeeringPhysicalInterface', []);
+
+        return parent::getPeeringPhysicalInterface();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFanoutPhysicalInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFanoutPhysicalInterface', []);
+
+        return parent::getFanoutPhysicalInterface();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addVlanInterface(\Entities\VlanInterface $vlanInterfaces)
     {
 
@@ -488,6 +510,127 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
+    public function getSwitchPort()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchPort', []);
+
+        return parent::getSwitchPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLocation()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLocation', []);
+
+        return parent::getLocation();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeUnset(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeUnset', []);
+
+        return parent::isTypeUnset();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypePeering(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypePeering', []);
+
+        return parent::isTypePeering();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeMonitor(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeMonitor', []);
+
+        return parent::isTypeMonitor();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeCore(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeCore', []);
+
+        return parent::isTypeCore();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeOther(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeOther', []);
+
+        return parent::isTypeOther();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeManagement(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeManagement', []);
+
+        return parent::isTypeManagement();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeFanout(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeFanout', []);
+
+        return parent::isTypeFanout();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isTypeReseller(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeReseller', []);
+
+        return parent::isTypeReseller();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
+
+        return parent::resolveType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addMACAddresse(\Entities\MACAddress $mACAddresses)
     {
 
@@ -571,6 +714,28 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'speed', [$connectedOnly]);
 
         return parent::speed($connectedOnly);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreBundle()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreBundle', []);
+
+        return parent::getCoreBundle();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sameSwitchForEachPI()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'sameSwitchForEachPI', []);
+
+        return parent::sameSwitchForEachPI();
     }
 
 }

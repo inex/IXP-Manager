@@ -1,7 +1,9 @@
+
 .env
 .project
 .buildpath
 .vagrant/
+
 /vendor/
 MAINT_MODE_ENABLED
 .settings/
@@ -92,7 +94,18 @@ storage/files/*
 .idea/dataSources.xml
 .idea/dataSources
 .idea/inspectionProfiles
+.idea/ixpv.iml
+.idea/php.xml
 
+
+# Let's not accidently add SQL dumps to Git
+/*.sql.bz2
+/*.sql.gz
+/*.sql
+
+/node_modules/
+/package-lock.json
+.idea/composerJson.xml
+.idea/misc.xml
 mrtg/
-
 

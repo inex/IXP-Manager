@@ -32,6 +32,8 @@ use Illuminate\Http\Response;
 
 use IXP\Http\Controllers\Api\V4\Controller;
 
+use Entities\Switcher as SwitcherEntity;
+
 use IXP\Tasks\Yaml\SwitchConfigurationGenerator as SwitchConfigurationGenerator;
 
 /**
@@ -46,24 +48,33 @@ use IXP\Tasks\Yaml\SwitchConfigurationGenerator as SwitchConfigurationGenerator;
 class YamlController extends Controller {
 
     /**
-     * Generate a Yaml configuration file for a given switchid
+     * Generate a formatted output version of the given structure.
      *
-     * This just takes one argument: the router handle to generate the configuration for. All
-     * other parameters are defined by the handle's array in config/router.php.
+     * This takes two arguments: the array structure and the output format.
      *
-     * @return Response
+     * @return http response
      */
-    public function forSwitch( Request $request, int $switchid ): Response {
+    public function structuredResponse ( $array, $format ) {
 
-        /** @var \Entities\Switcher $switch */
-        if( !( $switch = D2EM::getRepository('Entities\Switcher')->find( $switchid ) ) ) {
-            abort( 404, "Unknown switchID" );
+        $output = null;
+        $contenttype = 'text/plain; charset=utf-8';
+        $httpresponse = 200;
+
+        switch ($format) {
+            case 'yaml':
+                $output = yaml_emit ( $array, YAML_UTF8_ENCODING );
+                break;
+            case 'json':
+                $output = json_encode ( $array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )."\n";
+                $contenttype = 'application/json';
+                break;
         }
 
-        $configView = ( new SwitchConfigurationGenerator( $switch ) );
+        if (!$output) {
+            $httpresponse = 200;
+        }
 
-        return response( $configView->render(), 200 )
-                ->header('Content-Type', 'text/html; charset=utf-8');
+        return response( $output, $httpresponse )->header('Content-Type', $contenttype);
     }
 
     /**
@@ -74,13 +85,165 @@ class YamlController extends Controller {
      *
      * @return Response
      */
-    public function forSwitchByname( Request $request, string $switchname ): Response {
+    public function forSwitch( Request $request, int $switchid, string $format = null ): Response {
+
+        /** @var \Entities\Switcher $switch */
+        if( !( $switch = D2EM::getRepository('Entities\Switcher')->find( $switchid ) ) ) {
+            abort( 404, "Unknown switchID" );
+        }
+
+        return $this->structuredResponse( (new SwitchConfigurationGenerator( $switch ) )->generate(), $format );
+    }
+
+    /**
+     * Generate a Yaml configuration file for a given switchid
+     *
+     * This just takes one argument: the router handle to generate the configuration for. All
+     * other parameters are defined by the handle's array in config/router.php.
+     *
+     * @return Response
+     */
+    public function forSwitchByname( Request $request, string $switchname, string $format = null ): Response {
 
         if( !( $switch = D2EM::getRepository('Entities\Switcher')->findOneBy(['name' => $switchname]) ) ) {
             abort( 404, "Unknown switch" );
         }
 
-        return $this->forSwitch( $request, $switch->getId() );
+        return $this->forSwitch( $request, $switch->getId(), $format );
+    }
+
+    /**
+     * Generate a Yaml file of the vlans for a given switch id
+     *
+     * This takes one argument: the router handle to generate the vlans for. All
+     * other parameters are defined by the handle's array in config/router.php.
+     *
+     * @return View
+     */
+    public function vlansForSwitch( int $switchid, string $format = null ) {
+
+        /** @var \Entities\Switcher $switch */
+        if( !( $switch = D2EM::getRepository(SwitcherEntity::class )->find( $switchid ) ) ) {
+            abort( 404, "Unknown switchID" );
+        }
+
+        $listVlans['vlans'] = D2EM::getRepository(SwitcherEntity::class )->getAllVlansInInfrastructure( $switch->getId() );
+
+        return $this->structuredResponse( $listVlans, $format );
+    }
+
+    /**
+     * Generate a Yaml file of the vlans for a given switch name
+     *
+     * This just takes one argument: the router name to generate the configuration for. All
+     * other parameters are handled by the vlansForSwitch() function.
+     *
+     * @return View
+     */
+    public function vlansForSwitchByName( string $switchname, string $format = null ) {
+
+        if( !( $switch = D2EM::getRepository(SwitcherEntity::class )->findOneBy(['name' => $switchname]) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->vlansForSwitch( $switch->getId(), $format );
+    }
+
+    /**
+     * Generate a Yaml file of the core link interfaces for a given switch id
+     *
+     * This just takes one argument: the router handle to generate the configuration for. All
+     * other parameters are defined by the handle's array in config/router.php.
+     *
+     * @return View
+     */
+    public function coreLinkForSwitch( int $switchid, string $format = null ) {
+
+        /** @var \Entities\Switcher $switch */
+        if( !( $switch = D2EM::getRepository('Entities\Switcher')->find( $switchid ) ) ) {
+            abort( 404, "Unknown switchID" );
+        }
+
+        $interfaces['layer3interfaces'] = array_merge (
+            D2EM::getRepository(SwitcherEntity::class )->getAllCoreLinkInterfaces( $switch->getId() ),
+            D2EM::getRepository(SwitcherEntity::class )->getLoopbackInfo( $switch->getId() )
+        );
+
+        return $this->structuredResponse( $interfaces, $format );
+    }
+
+    /**
+     * Generate a Yaml file of the core link interfaces for a given switch name
+     *
+     * This just takes one argument: the router name to generate the configuration for. All
+     * other parameters are handled by the coreLinkForSwitch() function.
+     *
+     * @return View
+     */
+    public function coreLinkForSwitchByName( string $switchname, string $format = null ) {
+
+        if( !( $switch = D2EM::getRepository('Entities\Switcher')->findOneBy(['name' => $switchname]) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->coreLinkForSwitch( $switch->getId(), $format );
+    }
+
+
+    /**
+     * Generate a Yaml file of the BGP for a given switch id
+     *
+     * This just takes one argument: the router handle to generate the configuration for. All
+     * other parameters are defined by the handle's array in config/router.php.
+     *
+     * @return View
+     */
+    public function bgpForSwitch( int $switchid, string $format = null ) {
+
+        /** @var \Entities\Switcher $switch */
+        if( !( $switch = D2EM::getRepository(SwitcherEntity::class )->find( $switchid ) ) ) {
+            abort( 404, "Unknown switchID" );
+        }
+
+        $listFlood = D2EM::getRepository(SwitcherEntity::class )->getFloodList( $switch->getId(), true );
+
+        $listNeighbors = D2EM::getRepository(SwitcherEntity::class )->getAllNeighbors( $switch->getId() );
+
+        $out['bgp']['floodlist'] = $listFlood;
+        $out['bgp']['routerid'] = $switch->getLoopbackIp();
+        $out['bgp']['local_as'] = $switch->getAsn();
+
+        $pgentry = null;
+        foreach( $listNeighbors as $neighbor ) {
+            $n = [];
+            $n['description'] = $neighbor['description'];
+            $n['remote_as'] = $neighbor['asn'];
+            $n['cost'] = $neighbor['cost'];
+            $n['preference'] = $neighbor['preference'];
+            $pgentry[$neighbor['ip']] = $n;
+        }
+
+        # XXX replace pg-ebgp-ipv4-ixp with dynamic value
+        $out['bgp']['out']['pg-ebgp-ipv4-ixp']['neighbors'] = $pgentry;
+
+        return $this->structuredResponse( $out, $format );
+    }
+
+    /**
+     * Generate a Yaml file of the BGP for a given switch name
+     *
+     * This just takes one argument: the router name to generate the configuration for. All
+     * other parameters are handled by the coreLinkForSwitch() function.
+     *
+     * @return View
+     */
+    public function bgpForSwitchByName( string $switchname, string $format = null ) {
+
+        if( !( $switch = D2EM::getRepository(SwitcherEntity::class )->findOneBy(['name' => $switchname]) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->bgpForSwitch( $switch->getId(), $format );
     }
 
 }

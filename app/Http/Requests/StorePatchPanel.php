@@ -1,5 +1,7 @@
 <?php
 
+namespace IXP\Http\Requests;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -20,8 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-namespace IXP\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -48,7 +48,7 @@ class StorePatchPanel extends FormRequest
         return [
             'name'              => 'required|string|max:255',
             'colo_reference'    => 'required|string|max:255',
-            'cabinet'           => 'required|integer',
+            'cabinet'           => 'required|integer|exists:Entities\Cabinet,id',
             'cable_type'        => 'required|integer',
             'connector_type'    => 'required|integer',
             'installation_date' => 'date',

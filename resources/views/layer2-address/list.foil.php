@@ -16,7 +16,7 @@
                      Vlan :
                     <b>
                         <?php if( $t->Vlan ): ?>
-                            <?= $t->Vlan->getName() ?>
+                            <?= $t->ee( $t->Vlan->getName() ) ?>
                         <?php else:?>
                             All
                         <?php endif;?>
@@ -25,7 +25,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
                    <li>
-                       <a href="<?= url( '/layer2-address/list' ) ?>">
+                       <a href="<?= action( 'Layer2AddressController@list' ) ?>">
                            All Vlan
                        </a>
                    </li>
@@ -33,8 +33,8 @@
                         /** @var \Entities\Vlan $vlan */
                         ?>
                         <li class="">
-                            <a href="<?= url( '/layer2-address/list' ).'/'.$vlan->getId() ?>">
-                                <?= $vlan->getName() ?>
+                            <a href="<?= action ( 'Layer2AddressController@list' , [ 'id' => $vlan->getId() ] ) ?>">
+                                <?= $t->ee( $vlan->getName() )?>
                             </a>
                         </li>
                     <?php endforeach; ?>
@@ -75,7 +75,7 @@
                     <tr>
                         <td>
                             <a href="<?= url( 'customer/view/id' ).'/' . $l2a->getVlanInterface()->getVirtualInterface()->getCustomer()->getId() ?>">
-                                <?= $l2a->getVlanInterface()->getVirtualInterface()->getCustomer()->getName() ?>
+                                <?= $t->ee( $l2a->getVlanInterface()->getVirtualInterface()->getCustomer()->getName() ) ?>
                             </a>
                         </td>
                         <td>
@@ -83,7 +83,7 @@
                         </td>
                         <td>
                             <a href="<?= url( 'vlan/view/edit' ).'/'.$l2a->getVlanInterface()->getVlan()->getId()?>">
-                                <?= $l2a->getVlanInterface()->getVlan()->getName() ?>
+                                <?= $t->ee( $l2a->getVlanInterface()->getVlan()->getName() ) ?>
                             </a>
                         </td>
                         <td>
@@ -106,7 +106,7 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= url( 'layer2-address/vlan-interface/' ).'/'.$l2a->getVlanInterface()->getId()?>" title="Edit/add layer2 addresses">
+                                <a class="btn btn btn-default" href="<?= action( 'Layer2AddressController@index' , [ 'vliid' => $l2a->getVlanInterface()->getId() ] ) ?>" title="Edit/add layer2 addresses">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
                             </div>

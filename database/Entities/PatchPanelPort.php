@@ -1088,6 +1088,16 @@ class PatchPanelPort
     }
 
     /**
+     * Get customer
+     *
+     * @return \Entities\Customer
+     */
+    public function getCabinet()
+    {
+        return $this->getPatchPanel()->getCabinet();
+    }
+
+    /**
      * Get customer ID
      *
      * @return int

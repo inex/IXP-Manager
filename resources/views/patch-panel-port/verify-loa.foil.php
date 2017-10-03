@@ -27,7 +27,7 @@
 
     <div class="alert alert-success">
         <strong>Verification Succeeded!</strong> This is a valid LoA for a new cross connect
-        where our circuit ID is <?= $t->ppp->getCircuitReference() ?>. Please proceed with
+        where our circuit ID is <?= $t->ee( $t->ppp->getCircuitReference() ) ?>. Please proceed with
         this cross connect installation with the following confirming details.
     </div>
 
@@ -37,17 +37,17 @@
             <tr>
                 <td width="10%"></td>
                 <td><b>Location:</b></td>
-                <td><?= $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ?></td>
+                <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?></td>
             </tr>
             <tr>
                 <td></td>
                 <td><b>Patch Panel:</b></td>
-                <td><?= $t->ppp->getPatchPanel()->getColoReference() ?></td>
+                <td><?= $t->ee( $t->ppp->getPatchPanel()->getColoReference() ) ?></td>
             </tr>
             <tr>
                 <td></td>
                 <td><b>Port:</b></td>
-                <td><?= $t->ppp->getName() ?></td>
+                <td><?= $t->ee( $t->ppp->getName() ) ?></td>
             </tr>
         </table>
     </div>

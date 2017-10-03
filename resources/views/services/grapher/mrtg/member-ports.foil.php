@@ -47,7 +47,7 @@
         // individual member ports:
         foreach( $t->data['custports'][$c->getId()] as $piid ):
 
-            $custmaxbytes += $t->data['pis'][$piid]->resolveSpeed() * 1000000 / 8;
+            $custmaxbytes += $t->data['pis'][$piid]->resolveDetectedSpeed() * 1000000 / 8;
 
             echo $this->insert(
                 "services/grapher/mrtg/target", [
@@ -59,7 +59,7 @@
                             $t->data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
                         ),
                     'directory'    => sprintf("members/%x/%05d/ints", $c->getId() % 16, $c->getId()),
-                    'maxbytes'     => $t->data['pis'][$piid]->resolveSpeed() * 1000000 / 8, // Mbps * bps / to bytes
+                    'maxbytes'     => $t->data['pis'][$piid]->resolveDetectedSpeed() * 1000000 / 8, // Mbps * bps / to bytes
                 ]
             ) . "\n\n\n";
 
@@ -72,7 +72,7 @@
 
                 $lagmaxbytes = 0;
                 foreach( $pis as $piid ):
-                    $lagmaxbytes += $t->data['pis'][$piid]->resolveSpeed() * 1000000 / 8;
+                    $lagmaxbytes += $t->data['pis'][$piid]->resolveDetectedSpeed() * 1000000 / 8;
                 endforeach;
 
                 echo $this->insert(

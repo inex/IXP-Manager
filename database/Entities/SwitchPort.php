@@ -918,6 +918,14 @@ class SwitchPort
     }
 
     /**
+     * Is this an unset port?
+     * @return boolean
+     */
+    public function isTypeUnset() {
+        return $this->getType() == self::TYPE_UNSET;
+    }
+
+    /**
      * Is this a peering port?
      * @return boolean
      */

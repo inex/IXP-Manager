@@ -1,4 +1,7 @@
 <?php
+
+namespace IXP\Http\Controllers;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -19,8 +22,6 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-namespace IXP\Http\Controllers;
 
 use D2EM, Former, Input, Redirect;
 
@@ -136,6 +137,7 @@ class RouterController extends Controller
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'router/edit' )->with([
             'rt'                => $rt,
+            'edit'              => $id  ? true : false,
             'vlans'             => D2EM::getRepository( VlanEntity::class )->getNames( VlanRepository::TYPE_NORMAL ),
             'protocols'         => RouterEntity::$PROTOCOLS,
             'types'             => RouterEntity::$TYPES,
