@@ -93,4 +93,6 @@ storage/files/*
 .idea/dataSources
 .idea/inspectionProfiles
 
+mrtg/
+
 
