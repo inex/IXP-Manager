@@ -70,10 +70,14 @@ trait OSS_Controller_Action_Trait_CSRF
 
             $token = $request->isXmlHttpRequest() ? $request->getHeader( 'X-CSRF-TOKEN') : $request->getParam('csrf');
 
-            if( ! hash_equals( $_SESSION[ 'csrf-token' ], $token ) ){
-                die('Invalid CSRF token');
+            if( ! hash_equals( $_SESSION[ 'csrf-token' ], $token ?? '' ) ) {
+                $this->addMessage( 'Invalid CSRF token.', OSS_Message::ERROR );
+                $this->redirectAndEnsureDie('');
             }
         }
+
+        // we should wipe the token now so that it cannot be reused
+        unset( $_SESSION[ 'csrf-token' ] );
     }
 
     /**
